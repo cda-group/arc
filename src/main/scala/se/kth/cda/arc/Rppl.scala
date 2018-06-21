@@ -30,7 +30,7 @@ object Rppl {
         // create a parser that feeds off the tokens buffer
         val parser = new ArcParser(tokens);
 
-        val tree = parser.r(); // begin parsing at r rule
+        val tree = parser.expr(); // begin parsing at r rule
         Console.out.print("<= ");
         Console.out.println(tree.toStringTree(parser)); // print LISP-style tree
       } catch {

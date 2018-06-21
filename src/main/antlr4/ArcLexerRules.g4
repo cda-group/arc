@@ -102,7 +102,6 @@ TAndAnd : '&&';
 TBarBar : '||';
 TAnd : '&';
 TCirc : '^';
-TColon : ':';
 // Literals
 TBoolLit : 'true'|'false';
 TStringLit : '"' .*? '"'; 
