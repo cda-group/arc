@@ -4,6 +4,19 @@ lexer grammar ArcLexerRules;
 fragment Digit : [0-9];
 fragment BinaryDigit : [0-1];
 fragment HexDigit : [0-9a-fA-F];
+// Numbers
+fragment BinaryInteger : '0b' BinaryDigit+;
+fragment HexInteger : '0x' HexDigit+;
+fragment DecimalInteger : Digit+;
+fragment Integer : BinaryInteger|HexInteger|DecimalInteger;
+fragment Decimal : DecimalInteger '.' DecimalInteger ([eE] '-'? DecimalInteger)?
+				| DecimalInteger [eE] '-'? DecimalInteger;
+TI8Lit : Integer [cC];
+TI16Lit : Integer 'si';
+TI32Lit : Integer;
+TI64Lit : Integer [lL];
+TF32Lit : Decimal [fF];
+TF64Lit : Decimal;
 // Tokens
 TIf : 'if';
 TIterate : 'iterate';
@@ -89,10 +102,11 @@ TAndAnd : '&&';
 TBarBar : '||';
 TAnd : '&';
 TCirc : '^';
+TColon : ':';
 // Literals
 TBoolLit : 'true'|'false';
 TStringLit : '"' .*? '"'; 
 // Regions
 Comment : '#' .*? ('\n'|EOF) -> channel(HIDDEN); // comments
-TIdentifier : [A-Za-z_][A-Za-z0-9_]+ ;             // match identifiers
+TIdentifier : [A-Za-z_][A-Za-z0-9_]*;             // match identifiers
 Whitespace : [ \t\r\n]+ -> channel(HIDDEN) ; // skip spaces, tabs, newlines, \r (Windows)

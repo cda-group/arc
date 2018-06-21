@@ -23,6 +23,10 @@ object Rppl {
         // create a buffer of tokens pulled from the lexer
         val tokens = new CommonTokenStream(lexer);
 
+        Console.out.print("<= ");
+        tokens.fill();
+        Console.out.println(tokens.getTokens);
+
         // create a parser that feeds off the tokens buffer
         val parser = new ArcParser(tokens);
 
