@@ -107,5 +107,6 @@ TBoolLit : 'true'|'false';
 TStringLit : '"' .*? '"'; 
 // Regions
 Comment : '#' .*? ('\n'|EOF) -> channel(HIDDEN); // comments
+TIndex : '$' DecimalInteger; // for struct indexes
 TIdentifier : [A-Za-z_][A-Za-z0-9_]*;             // match identifiers
 Whitespace : [ \t\r\n]+ -> channel(HIDDEN) ; // skip spaces, tabs, newlines, \r (Windows)

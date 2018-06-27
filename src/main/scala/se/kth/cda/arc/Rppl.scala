@@ -29,12 +29,25 @@ object Rppl {
 
         // create a parser that feeds off the tokens buffer
         val parser = new ArcParser(tokens);
+        // TODO do two step parsing
+
+        val translator = ASTTranslator(parser);
 
         val tree = parser.expr(); // begin parsing at r rule
         Console.out.print("<= ");
         Console.out.println(tree.toStringTree(parser)); // print LISP-style tree
+        val ast = translator.translate(tree);
+        Console.out.print("<= ");
+        Console.out.println(ast);
+        Console.out.print("<= ");
+        Console.out.print("\n");
+        PrettyPrint.print(ast, Console.out);
+        Console.out.print("\n");
       } catch {
-        case e: Throwable => Console.err.println(s"An error occurred during parsing:\n$e")
+        case e: Throwable => {
+          Console.err.println(s"An error occurred during parsing!");
+          e.printStackTrace(Console.err);
+        }
       }
     }
   }
