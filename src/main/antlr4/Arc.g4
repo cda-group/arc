@@ -17,7 +17,8 @@ type: TI8 # I8
 	| TF32 # F32
 	| TF64 # F64
 	| TBool # Bool
-	| TUnit # Unit
+	| TUnit # UnitT
+	| TString # StringT
 	| TVec '[' elemT=type ']' # Vec
 	| TStream '[' elemT=type ']' # Stream
 	| TSimd '[' elemT=type ']' # Simd
@@ -31,6 +32,7 @@ type: TI8 # I8
 	| '{' types+=type (',' types+=type)* '}' # Struct
 	| TBarBar '(' returnT=type ')' # UnitFunction
 	| TBar paramTypes+=type (',' paramTypes+=type)* TBar '(' returnT=type ')' # ParamFunction
+	| TTypeVar # TypeVariable
 	;
 
 // inner rules
@@ -69,11 +71,11 @@ operatorExpr	: literalExpr # Literal
 				| unaryExpr # Unary
 				| TMerge '(' builder=expr ',' value=expr ')' # Merge
 				| TResult '(' expr ')' # Result
-				| annotations? TAppender '[' elemT=type ']' ('(' arg=expr ')')? # NewAppender
-				| annotations? TStreamAppender '[' elemT=type ']' ('(' ')')? # NewStreamAppender
+				| annotations? TAppender ('[' elemT=type ']')? ('(' arg=expr ')')? # NewAppender
+				| annotations? TStreamAppender ('[' elemT=type ']')? ('(' ')')? # NewStreamAppender
 				| annotations? TMerger '[' elemT=type ',' commutativeBinop ']' ('(' arg=expr ')')? # NewMerger
 				| annotations? TDictMerger '[' keyT=type ',' valueT=type ',' opT=commutativeBinop ']' ('(' arg=expr ')')? # NewDictMerger
-				| annotations? TGroupMerger '[' keyT=type ',' valueT=type ']' ('(' arg=expr ')')? # NewGroupMerger
+				| annotations? TGroupMerger ('[' keyT=type ',' valueT=type ']')? ('(' arg=expr ')')? # NewGroupMerger
 				| annotations? TVecMerger '[' elemT=type ',' opT=commutativeBinop ']' ('(' arg=expr ')')? # NewVecMerger
 				| fun=(TMin|TMax|TPow) '(' left=expr ',' right=expr ')' # BinaryFunction
 				| operatorExpr '(' functionParams ')' # Application

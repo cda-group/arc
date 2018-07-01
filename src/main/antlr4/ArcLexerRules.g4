@@ -37,6 +37,7 @@ TF32 : 'f32';
 TF64 : 'f64';
 TBool : 'bool';
 TUnit : 'unit';
+TString : 'string';
 TVec : 'vec';
 TStream : 'stream';
 TDict : 'dict';
@@ -89,7 +90,6 @@ TSlash : '/';
 TPercent : '%';
 TBar : '|';
 TAt : '@';
-TQuestion : '?';
 TBang : '!';
 TEqualEqual : '==';
 TEqual : '=';
@@ -108,5 +108,6 @@ TStringLit : '"' .*? '"';
 // Regions
 Comment : '#' .*? ('\n'|EOF) -> channel(HIDDEN); // comments
 TIndex : '$' DecimalInteger; // for struct indexes
+TTypeVar : '?' DecimalInteger?;
 TIdentifier : [A-Za-z_][A-Za-z0-9_]*;             // match identifiers
 Whitespace : [ \t\r\n]+ -> channel(HIDDEN) ; // skip spaces, tabs, newlines, \r (Windows)

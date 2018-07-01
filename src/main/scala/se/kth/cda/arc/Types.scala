@@ -1,65 +1,37 @@
 package se.kth.cda.arc
 
-sealed trait Type {
+sealed trait Type extends Equals {
   def render: String;
-  def upperBound(t: Type, reason: String): Unit;
-  def lowerBound(t: Type, reason: String): Unit;
+  def isComplete: Boolean;
 }
 sealed trait ConcreteType extends Type {
-  def isAssignableTo(t: Type): Boolean;
-  def isAssignableFrom(t: Type): Boolean;
-  override def upperBound(t: Type, reason: String): Unit = {
-    assert(this.isAssignableTo(t), s"Type ${this.render} can not be assigned to ${t.render}! Caused by '$reason'.");
-  }
-
-  override def lowerBound(t: Type, reason: String): Unit = {
-    assert(this.isAssignableFrom(t), s"Type ${t.render} can not be assigned to ${this.render}! Caused by '$reason'.");
-  }
+  override def isComplete: Boolean = true;
 }
-sealed trait TypeBound extends Type;
 sealed trait CompositeType extends Type;
 sealed trait BuilderType extends CompositeType {
   def annotations: Option[AST.Annotations];
+  def resultType: Type;
+  def mergeType: Type;
+  def argType: Type;
 }
 object Types {
-  def unknown: TypeBound = new LUBound();
 
-  class LUBound extends TypeBound {
-    private var lower: Option[ConcreteType] = None;
-    private var upper: Option[ConcreteType] = None;
-    override def upperBound(t: Type, reason: String): Unit = {
-      println(s"Got upper bound $t");
-      ???
-    }
-    override def lowerBound(t: Type, reason: String): Unit = {
-      println(s"Got lower bound $t");
-      ???
-    }
-    override def toString(): String = {
-      (lower, upper) match {
-        case (None, None)                   => "TypeBound(?)"
-        case (None, Some(t))                => s"TypeBound(?<:${t.render})"
-        case (Some(t), None)                => s"TypeBound(${t.render}<:?)"
-        case (Some(t), Some(t2)) if t == t2 => s"TypeBound(${t.render})"
-        case (Some(t), Some(t2))            => s"TypeBound(${t.render}<:?<:${t2.render})"
-      }
-    }
-    override def render: String = "?";
-    def isResolved: Boolean = !lower.isEmpty && (lower == upper);
-    def toConcrete: Option[ConcreteType] = {
-      (lower, upper) match {
-        case (None, None)                   => None
-        case (None, Some(t))                => Some(t) // resolve to upper bound
-        case (Some(t), None)                => None // TODO Check how to infer lower bound
-        case (Some(t), Some(t2)) if t == t2 => Some(t)
-        case (Some(t), Some(t2))            => Some(t2) // resolve to upper bound
-      }
-    }
+  private var variableCounter: Int = 0;
+
+  def unknown: TypeVariable = {
+    val t = TypeVariable(variableCounter);
+    variableCounter += 1;
+    t
   }
 
-  sealed trait Scalar extends ConcreteType with Equals {
-    override def isAssignableTo(t: Type): Boolean = this == t; // no subtyping among scalars
-    override def isAssignableFrom(t: Type): Boolean = this == t; // no subtyping among scalars
+  case class TypeVariable(id: Int) extends Type {
+    override def render: String = s"?${id}";
+    override def isComplete: Boolean = false;
+  }
+
+  sealed trait Scalar extends ConcreteType {
+    //override def isAssignableTo(t: Type): Boolean = this == t; // no subtyping among scalars
+    //override def isAssignableFrom(t: Type): Boolean = this == t; // no subtyping among scalars
   }
   case object I8 extends Scalar {
     override def render: String = "i8";
@@ -100,62 +72,72 @@ object Types {
   case object StringT extends Scalar {
     override def render: String = "string";
   }
-  case class Vec(elemType: Type) extends CompositeType {
-    override def render: String = s"vec[${elemType.render}]";
-    override def upperBound(t: Type, reason: String): Unit = {
-      //      t match {
-      //        case Vector(otherET) => otherET.upperBound(elemType, reason)
-      //        case _               => fail(s"Type ${t.render} can not be bounded by ${this.render}! Caused by '$reason'.");
-      //      }
-      ???
-    }
-    override def lowerBound(t: Type, reason: String): Unit = ???;
+  case class Vec(elemTy: Type) extends CompositeType {
+    override def render: String = s"vec[${elemTy.render}]";
+    override def isComplete: Boolean = elemTy.isComplete;
   }
-  case class Struct(elemTypes: Vector[Type]) extends CompositeType {
-    override def render: String = elemTypes.map(_.render).mkString("{", ",", "}");
-    override def upperBound(t: Type, reason: String): Unit = ???;
-    override def lowerBound(t: Type, reason: String): Unit = ???;
+  case class Dict(keyTy: Type, valueTy: Type) extends CompositeType {
+    override def render: String = s"dict[${keyTy.render}, ${valueTy.render}]";
+    override def isComplete: Boolean = keyTy.isComplete && valueTy.isComplete;
   }
-  case class Simd(elemType: Type) extends CompositeType {
-    override def render: String = s"simd[${elemType.render}]";
-    override def upperBound(t: Type, reason: String): Unit = ???;
-    override def lowerBound(t: Type, reason: String): Unit = ???;
+  case class Struct(elemTys: Vector[Type]) extends CompositeType {
+    override def render: String = elemTys.map(_.render).mkString("{", ",", "}");
+    override def isComplete: Boolean = elemTys.forall(_.isComplete);
+  }
+  case class Simd(elemTy: Type) extends CompositeType {
+    override def render: String = s"simd[${elemTy.render}]";
+    override def isComplete: Boolean = elemTy.isComplete;
+  }
+  case class Stream(elemTy: Type) extends CompositeType {
+    override def render: String = s"stream[${elemTy.render}]";
+    override def isComplete: Boolean = elemTy.isComplete;
   }
   case class Function(params: Vector[Type], returnTy: Type) extends CompositeType {
     override def render: String = s"|${params.map(_.render).mkString(",")}|(${returnTy.render})";
-    override def upperBound(t: Type, reason: String): Unit = ???;
-    override def lowerBound(t: Type, reason: String): Unit = ???;
+    override def isComplete: Boolean = params.forall(_.isComplete) && returnTy.isComplete;
   }
   object Builders {
     case class Appender(elemTy: Type, annotations: Option[AST.Annotations]) extends BuilderType {
       override def render: String = s"appender[${elemTy.render}]";
-      override def upperBound(t: Type, reason: String): Unit = ???;
-      override def lowerBound(t: Type, reason: String): Unit = ???;
+      override def isComplete: Boolean = elemTy.isComplete;
+      override def resultType: Type = Vec(elemTy);
+      override def mergeType: Type = elemTy;
+      override def argType: Type = UnitT; // TODO optionally allows an index?
     }
     case class StreamAppender(elemTy: Type, annotations: Option[AST.Annotations]) extends BuilderType {
       override def render: String = s"streamappender[${elemTy.render}]";
-      override def upperBound(t: Type, reason: String): Unit = ???;
-      override def lowerBound(t: Type, reason: String): Unit = ???;
+      override def isComplete: Boolean = elemTy.isComplete;
+      override def resultType: Type = Stream(elemTy); // TODO technically a channel
+      override def mergeType: Type = elemTy;
+      override def argType: Type = UnitT;
     }
     case class Merger(elemTy: Type, opTy: OpType, annotations: Option[AST.Annotations]) extends BuilderType {
       override def render: String = s"merger[${elemTy.render},${opTy.render}]";
-      override def upperBound(t: Type, reason: String): Unit = ???;
-      override def lowerBound(t: Type, reason: String): Unit = ???;
+      override def isComplete: Boolean = elemTy.isComplete;
+      override def resultType: Type = elemTy;
+      override def mergeType: Type = elemTy;
+      override def argType: Type = UnitT; // TODO optionally allows elemTy
     }
     case class DictMerger(keyTy: Type, valueTy: Type, opTy: OpType, annotations: Option[AST.Annotations]) extends BuilderType {
       override def render: String = s"merger[${keyTy.render},${valueTy.render},${opTy.render}]";
-      override def upperBound(t: Type, reason: String): Unit = ???;
-      override def lowerBound(t: Type, reason: String): Unit = ???;
+      override def isComplete: Boolean = keyTy.isComplete && valueTy.isComplete;
+      override def resultType: Type = Dict(keyTy, valueTy);
+      override def mergeType: Type = Struct(Vector(keyTy, valueTy));
+      override def argType: Type = UnitT;
     }
     case class VecMerger(elemTy: Type, opTy: OpType, annotations: Option[AST.Annotations]) extends BuilderType {
       override def render: String = s"vecmerger[${elemTy.render},${opTy.render}]";
-      override def upperBound(t: Type, reason: String): Unit = ???;
-      override def lowerBound(t: Type, reason: String): Unit = ???;
+      override def isComplete: Boolean = elemTy.isComplete;
+      override def resultType: Type = Vec(elemTy);
+      override def mergeType: Type = Struct(Vector(I64, elemTy));
+      override def argType: Type = Vec(elemTy);
     }
     case class GroupMerger(keyTy: Type, valueTy: Type, annotations: Option[AST.Annotations]) extends BuilderType {
       override def render: String = s"groupmerger[${keyTy.render},${valueTy.render}]";
-      override def upperBound(t: Type, reason: String): Unit = ???;
-      override def lowerBound(t: Type, reason: String): Unit = ???;
+      override def isComplete: Boolean = keyTy.isComplete && valueTy.isComplete;
+      override def resultType: Type = Dict(keyTy, Vec(valueTy));
+      override def mergeType: Type = Struct(Vector(keyTy, valueTy));
+      override def argType: Type = UnitT;
     }
   }
 }

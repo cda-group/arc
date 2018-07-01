@@ -91,7 +91,7 @@ object PrettyPrint {
     lazy val indentStr = (0 until indent).foldLeft("")((acc, _) => acc + " ");
     lazy val lessIndentStr = (0 until (indent - 2)).foldLeft("")((acc, _) => acc + " ");
     expr.kind match {
-      case Let(name, value, body) => {
+      case Let(name, bindingTy, value, body) => {
         if (typed) {
           out.append('(');
           out.append(' ');
@@ -99,7 +99,7 @@ object PrettyPrint {
         out.append("let ");
         printSymbol(name, out);
         out.append(':');
-        printType(value.ty, out);
+        printType(bindingTy, out);
         out.append('=');
         printExpr(value, out, true, indent + INDENT_INC, true);
         out.append(';');
@@ -111,7 +111,7 @@ object PrettyPrint {
         printExpr(body, out, false, if (typed) indent + INDENT_INC else indent, true);
         if (typed) {
           out.append('\n');
-          out.append(lessIndentStr);
+          out.append(indentStr);
           out.append(')');
           out.append(':');
           printType(expr.ty, out);
@@ -138,15 +138,15 @@ object PrettyPrint {
           printExpr(body, out, true, indent + INDENT_INC, true);
         }
       }
-      case Negate(expr: Expr) => {
+      case Negate(expr) => {
         out.append('-');
         printExpr(expr, out, true, indent + 1, false);
       }
-      case Not(expr: Expr) => {
+      case Not(expr) => {
         out.append('!');
         printExpr(expr, out, true, indent + 1, false);
       }
-      case UnaryOp(kind: UnaryOpKind.UnaryOpKind, expr: Expr) => {
+      case UnaryOp(kind, expr) => {
         out.append(UnaryOpKind.print(kind));
         out.append('(');
         printExpr(expr, out, false, indent + 1, false);
