@@ -61,6 +61,7 @@ To solve this issue try annotating types where type variables remain.""";
     var changed = true;
     while (changed) {
       changed = false;
+      //println("Coalescing...");
       coalesce(topLevelConjunction) match {
         case Some(cs) => {
           changed = true;
@@ -89,6 +90,7 @@ To solve this issue try annotating types where type variables remain.""";
       };
       //println(s"=== Constraints after substitution:\n${topLevelConjunction.map(_.describe).mkString("\n∧")}\n===");
     }
+    //println("Solver finished");
     if (topLevelConjunction.isEmpty) {
       Success(Solution(typeAssignments))
     } else {
@@ -112,16 +114,28 @@ To solve this issue try annotating types where type variables remain.""";
         val (rId, lowestConstraints) = resolveForward(lowestVar, typeConstraints);
         val lId = if (rId < 0) lowestVar.id else rId;
         var newLCS = c :: lowestConstraints;
+        //println("adding extra vars");
         vars.foreach { v =>
           if (v.id != lId && v.id != lowestVar.id) {
+            //println(s"	Resolving ${v}");
             resolveForward(v, typeConstraints) match {
-              case (-1, _) => typeConstraints += (v.id -> Left(lId))
-              case (rId, cs) => {
+              case (-1, _) => {
+                //println(s"		Didn't find ${v}, assigning to $lId");
+                typeConstraints += (v.id -> Left(lId))
+              }
+              case (rId, cs) if rId != lId => {
+                //println(s"		Found ${v} -> $rId");
                 newLCS ++= cs;
+                //println(s"		Assigning $rId -> $lId");
                 typeConstraints += (rId -> Left(lId));
+              }
+              case (_, cs) if rId == lId => {
+                //println(s"		Found ${v} -> $lId");
+                newLCS ++= cs;
               }
             }
           } else if (v.id != lId && v.id == lowestVar.id) {
+            //println(s"	Mapping ${v} -> $lId");
             typeConstraints += (v.id -> Left(lId))
           }
         }
@@ -132,7 +146,7 @@ To solve this issue try annotating types where type variables remain.""";
     //      case (id, Left(rId)) => s"?${id} -> ?${rId}"
     //      case (id, Right(cs)) => s"?${id} -> ${cs.map(_.describe).mkString("∧")}"
     //    }).mkString("{\n	", "\n	", "\n}");
-    //    println(s"var constraints (raw): ${tcS}");
+    //println(s"var constraints (raw): ${tcS}");
     typeConstraints.foreach {
       case (_, Left(_)) => // leave as they are
       case (id, Right(cs)) => minimiseRelated(cs) match {
@@ -148,7 +162,7 @@ To solve this issue try annotating types where type variables remain.""";
     //      case (id, Left(rId)) => s"?${id} -> ?${rId}"
     //      case (id, Right(cs)) => s"?${id} -> ${cs.map(_.describe).mkString("∧")}"
     //    }).mkString("{\n	", "\n	", "\n}");
-    //println(s"var constraints (minimised): ${tcS2}");
+    //    println(s"var constraints (minimised): ${tcS2}");
     newCS = typeConstraints.foldLeft(newCS)((acc, e) => e match {
       case (_, Right(cs)) => acc ++ cs
       case _              => acc
@@ -196,7 +210,11 @@ To solve this issue try annotating types where type variables remain.""";
     var lookup = Option(tv.id);
     while (lookup.isDefined) {
       data.get(lookup.get) match {
-        case Some(Left(id))  => lookup = Some(id)
+        case Some(Left(id)) => if (id == lookup.get) {
+          throw new RuntimeException(s"?${lookup.get} points to itself. This is dumb!");
+        } else {
+          lookup = Some(id)
+        }
         case Some(Right(cs)) => return (lookup.get, cs)
         case None            => lookup = None
       }
@@ -207,31 +225,43 @@ To solve this issue try annotating types where type variables remain.""";
   private def rewrite(cs: List[TypeConstraint], assignments: Map[Int, Type]): Option[(List[TypeConstraint], Map[Int, Type])] = {
     import TypeConstraints._;
 
-    var newCS = List.empty[TypeConstraint];
+    var newCS = cs;
     var newAssign = assignments;
     var changed = false;
-    cs.foreach {
-      case meq: MultiEquality => {
-        if (meq.isResolved) {
-          changed = true;
-          val ty = meq.resolvedType.get;
-          meq.variables().foreach { tv =>
-            newAssign += (tv.id -> ty)
+    var changedThisIter = true;
+    while (changedThisIter) {
+      changedThisIter = false;
+      val cs = newCS;
+      newCS = List.empty[TypeConstraint];
+      cs.foreach {
+        case meq: MultiEquality => {
+          if (meq.isResolved) {
+            changedThisIter = true;
+            changed = true;
+            val ty = meq.resolvedType.get;
+            meq.variables().foreach { tv =>
+              newAssign += (tv.id -> ty)
+            }
+          } else {
+            newCS ::= meq
           }
-        } else {
-          newCS ::= meq
+        }
+        case MultiConj(members) => {
+          changedThisIter = true;
+          changed = true;
+          newCS ++= members;
+        }
+        case pred: Predicate     => newCS ::= pred
+        case bk: BuilderKind     => newCS ::= bk
+        case ik: IterableKind    => newCS ::= ik
+        case pk: ProjectableKind => newCS ::= pk
+        case Tautology => {
+          changedThisIter = true;
+          changed = true; // drop since (x and true) = x
         }
       }
-      case MultiConj(members) => {
-        changed = true;
-        newCS ++= members;
-      }
-      case pred: Predicate     => newCS ::= pred
-      case bk: BuilderKind     => newCS ::= bk
-      case ik: IterableKind    => newCS ::= ik
-      case pk: ProjectableKind => newCS ::= pk
-      case Tautology           => changed = true // drop since (x and true) = x
     }
+
     if (changed) {
       Some((newCS, newAssign))
     } else {

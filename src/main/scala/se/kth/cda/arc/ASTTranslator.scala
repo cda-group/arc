@@ -64,12 +64,19 @@ class ASTTranslator(val parser: ArcParser) {
   object MacrosVisitor extends ArcBaseVisitor[List[Macro]] {
     def visitChecked(tree: ParseTree): List[Macro] = {
       val e = this.visit(tree);
-      assert(e != null, s"Visiting a sub-tree returned null:\n${tree.toStringTree()}");
+      assert(e != null, s"Visiting a sub-tree returned null:\n${tree.toStringTree(parser)}");
       e
     }
-    //    override def visitMacros(ctx: MacrosContext): List[Macro] = {
-    //
-    //    }
+    override def visitMacros(ctx: MacrosContext): List[Macro] = {
+      val macros = ctx.`macro`().asScala.map(visitChecked(_)).flatten;
+      macros.toList
+    }
+    override def visitMacro(ctx: MacroContext): List[Macro] = {
+      val name = tokenToSymbol(ctx.name);
+      val params = ctx.macroParams().names.asScala.map(tokenToSymbol(_));
+      val body = ExprVisitor.visitChecked(ctx.body);
+      List(Macro(name, params.toVector, body, ctx))
+    }
   }
   object ExprVisitor extends ArcBaseVisitor[Expr] {
     def visitChecked(tree: ParseTree): Expr = {
