@@ -89,7 +89,8 @@ object TypeConstraints {
     }
   }
 
-  abstract class Predicate(t: Type) extends TypeConstraint {
+  abstract class Predicate extends TypeConstraint {
+    def t: Type;
     def newFromType(t: Type): Self;
     override def substitute(assignments: Map[Int, Type]): Option[Self] = {
       substituteType(t, assignments).map(ty => newFromType(ty))
@@ -105,12 +106,22 @@ object TypeConstraints {
       case tv: TypeVariable => List(tv)
       case _                => List.empty
     }
-    override def merge(c: TypeConstraint): Option[TypeConstraint] = None; // can't coalesce predicates
+    override def merge(c: TypeConstraint): Option[TypeConstraint] = c match {
+      case p: Predicate => {
+        if (this.getClass == p.getClass && this.t == p.t) {
+          Some(this)
+        } else { // could also predicates over different types if an equal exists...but hard to tell locally
+          None
+        }
+      }
+      case conj: MultiConj => conj.merge(this)
+      case _               => None
+    }
     def isSatisfied: Boolean;
   }
 
   // Basically a subtyping constraint t <= Num
-  case class IsNumeric(t: Type, signed: Boolean = false) extends Predicate(t) {
+  case class IsNumeric(t: Type, signed: Boolean = false) extends Predicate {
     override type Self = IsNumeric;
     override def describe: String = if (signed) {
       s"numeric±(${t.render})";
@@ -126,7 +137,7 @@ object TypeConstraints {
   }
 
   // Basically a subtyping constraint t <= Val
-  case class IsScalar(t: Type) extends Predicate(t) {
+  case class IsScalar(t: Type) extends Predicate {
     override type Self = IsScalar;
     override def describe: String = s"scalar(${t.render})";
     override def newFromType(t: Type): Self = IsScalar(t);
@@ -137,7 +148,7 @@ object TypeConstraints {
   }
 
   // Basically a subtyping constraint t <= Float
-  case class IsFloat(t: Type) extends Predicate(t) {
+  case class IsFloat(t: Type) extends Predicate {
     override type Self = IsFloat;
     override def describe: String = s"float(${t.render})";
     override def newFromType(t: Type): Self = IsFloat(t);
@@ -202,7 +213,8 @@ object TypeConstraints {
             None
           }
         }
-        case _ => None
+        case conj: MultiConj => conj.merge(this)
+        case _               => None
       }
     }
   }
@@ -268,7 +280,7 @@ object TypeConstraints {
           conj ::= this;
           conj ::= MultiEquality(List(otherMergeTy, mergeTy));
           conj ::= MultiEquality(List(otherResultTy, resultTy));
-          conj ::= MultiEquality(List(otherArgTy, resultTy));
+          conj ::= MultiEquality(List(otherArgTy, argTy));
           Some(MultiConj(conj))
         }
         case MultiEquality(members) if this.builderTy.isInstanceOf[TypeVariable] => {
@@ -280,7 +292,8 @@ object TypeConstraints {
             None
           }
         }
-        case _ => None
+        case conj: MultiConj => conj.merge(this)
+        case _               => None
       }
     }
   }
@@ -336,7 +349,8 @@ object TypeConstraints {
             None
           }
         }
-        case _ => None
+        case conj: MultiConj => conj.merge(this)
+        case _               => None
       }
     }
   }
@@ -445,6 +459,7 @@ object TypeConstraints {
         }
         case bk: BuilderKind  => bk.merge(this)
         case ik: IterableKind => ik.merge(this)
+        case conj: MultiConj  => conj.merge(this)
         case _                => None
       }
     }
@@ -473,7 +488,7 @@ object TypeConstraints {
     override def substitute(assignments: Map[Int, Type]): Option[Self] = None;
     override def normalise(): Option[TypeConstraint] = None;
     override def variables(): List[TypeVariable] = List.empty;
-    override def merge(c: TypeConstraint): Option[TypeConstraint] = None;
+    override def merge(c: TypeConstraint): Option[TypeConstraint] = Some(c); // drop this immediately
   }
 
   //  case object Impossibility extends TypeConstraint {
@@ -529,8 +544,31 @@ object TypeConstraints {
 
     override def merge(c: TypeConstraint): Option[TypeConstraint] = {
       c match {
-        case MultiConj(otherMembers) => Some(MultiConj(this.members ++ otherMembers))
-        case _                       => None
+        case MultiConj(otherMembers) => {
+          val combined = members ++ otherMembers;
+          ConstraintSolver.minimiseRelated(combined) match {
+            case Some(newMembers) => Some(MultiConj(newMembers))
+            case None             => Some(MultiConj(combined))
+          }
+        }
+
+        case tc => {
+          var changed = false;
+          var merging = tc;
+          val res = members.foldLeft(List.empty[TypeConstraint]) { (acc, c) =>
+            c.merge(merging) match {
+              case Some(newC) => {
+                changed = true;
+                merging = newC;
+                acc
+              }
+              case None => {
+                (c :: acc)
+              }
+            }
+          };
+          if (changed) Some(MultiConj(merging :: res)) else None
+        }
       }
     }
   }

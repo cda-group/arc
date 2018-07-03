@@ -4,8 +4,12 @@ import se.kth.cda.arc._
 import AST.Expr
 import Types._
 import scala.util.{ Try, Success, Failure }
+import scala.concurrent.duration._
+import java.util.concurrent.TimeoutException
 
 object ConstraintSolver {
+  val MAX_RUNTIME = 5.seconds;
+
   sealed trait Result {
     def isSolved: Boolean;
     def typeSubstitutions: Substituter;
@@ -58,8 +62,9 @@ To solve this issue try annotating types where type variables remain.""";
 
     var typeAssignments = Map.empty[Int, Type];
     var topLevelConjunction = initialConstraints;
+    val deadline = MAX_RUNTIME.fromNow;
     var changed = true;
-    while (changed) {
+    while (changed && deadline.hasTimeLeft()) {
       changed = false;
       //println("Coalescing...");
       coalesce(topLevelConjunction) match {
@@ -93,6 +98,8 @@ To solve this issue try annotating types where type variables remain.""";
     //println("Solver finished");
     if (topLevelConjunction.isEmpty) {
       Success(Solution(typeAssignments))
+    } else if (deadline.isOverdue()) {
+      Failure(new TimeoutException(s"Solver could not find a solution within ${MAX_RUNTIME}"));
     } else {
       Success(PartialSolution(typeAssignments, topLevelConjunction))
     }
@@ -171,7 +178,7 @@ To solve this issue try annotating types where type variables remain.""";
     if (changed) Some(newCS) else None
   }
 
-  private def minimiseRelated(cs: List[TypeConstraint]): Option[List[TypeConstraint]] = {
+  private[typeinference] def minimiseRelated(cs: List[TypeConstraint]): Option[List[TypeConstraint]] = {
     //println(s"Minimising ${cs.map(_.describe).mkString("∧")}");
     var changed = false;
     var changedThisIter = true;
@@ -208,7 +215,12 @@ To solve this issue try annotating types where type variables remain.""";
 
   private def resolveForward(tv: TypeVariable, data: Map[Int, Either[Int, List[TypeConstraint]]]): (Int, List[TypeConstraint]) = {
     var lookup = Option(tv.id);
+    var visited = List.empty[Int];
     while (lookup.isDefined) {
+      if (visited.contains(lookup.get)) {
+        throw new RuntimeException(s"Cycle in coalescing table detected: ${visited.mkString("->");}")
+      }
+      visited ::= lookup.get;
       data.get(lookup.get) match {
         case Some(Left(id)) => if (id == lookup.get) {
           throw new RuntimeException(s"?${lookup.get} points to itself. This is dumb!");
