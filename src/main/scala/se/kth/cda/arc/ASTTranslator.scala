@@ -582,6 +582,7 @@ class ASTTranslator(val parser: ArcParser) {
         case TFringeIter => FringeIter
         case TNdIter     => NdIter
         case TRangeIter  => RangeIter
+        case TKeyByIter  => KeyByIter
         case _           => UnknownIter
       }
     }
@@ -589,7 +590,7 @@ class ASTTranslator(val parser: ArcParser) {
     override def visitSimpleIter(ctx: ArcParser.SimpleIterContext): Iter = {
       val kind = tokenToIterKind(ctx.iter);
       val data = ExprVisitor.visitChecked(ctx.data);
-      Iter(kind, data)
+      Iter(kind = kind, data = data)
     }
 
     override def visitFourIter(ctx: ArcParser.FourIterContext): Iter = {
@@ -623,9 +624,15 @@ class ASTTranslator(val parser: ArcParser) {
       Iter(kind = kind, data = dummyData, start = Some(start), end = Some(end), stride = Some(stride))
     }
 
+    override def visitKeyByIter(ctx: ArcParser.KeyByIterContext): Iter = {
+      val data = ExprVisitor.visitChecked(ctx.data);
+      val keyFunc = ExprVisitor.visitChecked(ctx.keyFunc);
+      Iter(kind = IterKind.KeyByIter, data = data, keyFunc = Some(keyFunc))
+    }
+
     override def visitUnkownIter(ctx: ArcParser.UnkownIterContext): Iter = {
       val data = ExprVisitor.visitChecked(ctx.valueExpr());
-      Iter(IterKind.UnknownIter, data)
+      Iter(kind = IterKind.UnknownIter, data = data)
     }
   }
 

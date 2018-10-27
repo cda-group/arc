@@ -112,6 +112,7 @@ iterator	: iter=(TScalarIter|TSimdIter|TFringeIter|TNdIter) '(' data=valueExpr '
 			| iter=(TScalarIter|TSimdIter|TFringeIter) '(' data=valueExpr ',' start=valueExpr ',' end=valueExpr ',' stride=valueExpr ')' # FourIter
 			| TNdIter '(' data=valueExpr ',' start=valueExpr ',' end=valueExpr ',' stride=valueExpr ',' shape=valueExpr ',' strides=valueExpr ')' # SixIter
 			| TRangeIter '(' start=valueExpr ',' end=valueExpr ',' stride=valueExpr ')' # RangeIter
+			| TKeyByIter '(' data=valueExpr ',' keyFunc=lambdaExpr ')' # KeyByIter
 			| valueExpr # UnkownIter
 			;
 

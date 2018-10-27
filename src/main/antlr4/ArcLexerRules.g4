@@ -51,6 +51,7 @@ TToVec : 'tovec';
 TZip : 'zip';
 TScalarIter : 'iter';
 TNext : 'next';
+TKeyByIter : 'keyby';
 TSimdIter : 'simditer';
 TFringeIter : 'fringeiter';
 TNdIter : 'nditer';
