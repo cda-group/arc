@@ -78,6 +78,7 @@ class ASTTranslator(val parser: ArcParser) {
       List(Macro(name, params.toVector, body, ctx))
     }
   }
+
   object ExprVisitor extends ArcBaseVisitor[Expr] {
     def visitChecked(tree: ParseTree): Expr = {
       val e = this.visit(tree);
@@ -86,7 +87,7 @@ class ASTTranslator(val parser: ArcParser) {
     }
 
     override def visitParenExpr(ctx: ParenExprContext): Expr = {
-      this.visitChecked(ctx.expr())
+      this.visitChecked(ctx.valueExpr())
     }
 
     override def visitLetExpr(ctx: LetExprContext): Expr = {
@@ -120,12 +121,12 @@ class ASTTranslator(val parser: ArcParser) {
 
     override def visitCast(ctx: ArcParser.CastContext): Expr = {
       val Some(ty) = TypeVisitor.tokenToScalar(ctx.scalar);
-      val e = this.visitChecked(ctx.expr());
+      val e = this.visitChecked(ctx.valueExpr());
       Expr(ExprKind.Cast(ty, e), ty, ctx)
     }
 
     override def visitToVec(ctx: ArcParser.ToVecContext): Expr = {
-      val e = this.visitChecked(ctx.expr());
+      val e = this.visitChecked(ctx.valueExpr());
       Expr(ExprKind.ToVec(e), Types.Vec(Types.unknown), ctx)
     }
 
@@ -143,7 +144,7 @@ class ASTTranslator(val parser: ArcParser) {
     }
 
     override def visitLen(ctx: ArcParser.LenContext): Expr = {
-      val e = this.visitChecked(ctx.expr());
+      val e = this.visitChecked(ctx.valueExpr());
       Expr(ExprKind.Len(e), Types.I64, ctx)
     }
 
@@ -167,19 +168,19 @@ class ASTTranslator(val parser: ArcParser) {
     }
 
     override def visitNegate(ctx: NegateContext): Expr = {
-      val expr = this.visitChecked(ctx.expr());
+      val expr = this.visitChecked(ctx.operatorExpr());
       Expr(ExprKind.Negate(expr), expr.ty, ctx)
     }
 
     override def visitNot(ctx: NotContext): Expr = {
-      val expr = this.visitChecked(ctx.expr());
+      val expr = this.visitChecked(ctx.operatorExpr());
       Expr(ExprKind.Not(expr), Types.Bool, ctx)
     }
 
     override def visitUnaryOp(ctx: UnaryOpContext): Expr = {
       import ArcLexer._;
       import UnaryOpKind._;
-      val expr = this.visitChecked(ctx.expr());
+      val expr = this.visitChecked(ctx.valueExpr());
       val kind = ctx.op.getType match {
         case TExp  => Exp
         case TSin  => Sin
@@ -230,18 +231,18 @@ class ASTTranslator(val parser: ArcParser) {
     }
 
     override def visitBroadcast(ctx: ArcParser.BroadcastContext): Expr = {
-      val expr = this.visitChecked(ctx.expr());
+      val expr = this.visitChecked(ctx.valueExpr());
       Expr(ExprKind.Broadcast(expr), Types.Simd(Types.unknown), ctx)
     }
 
     override def visitSerialize(ctx: ArcParser.SerializeContext): Expr = {
-      val expr = this.visitChecked(ctx.expr());
+      val expr = this.visitChecked(ctx.valueExpr());
       Expr(ExprKind.Serialize(expr), Types.Vec(Types.I8), ctx)
     }
 
     override def visitDeserialize(ctx: ArcParser.DeserializeContext): Expr = {
       val annot = AnnotationVisitor.visitChecked(ctx.annotations());
-      val expr = this.visitChecked(ctx.expr());
+      val expr = this.visitChecked(ctx.valueExpr());
       val ty = TypeVisitor.visitChecked(ctx.`type`());
       Expr(ExprKind.Deserialize(ty, expr), ty, ctx, annot)
     }
@@ -281,7 +282,7 @@ class ASTTranslator(val parser: ArcParser) {
     }
 
     override def visitResult(ctx: ResultContext): Expr = {
-      val builder = this.visitChecked(ctx.expr());
+      val builder = this.visitChecked(ctx.valueExpr());
       Expr(ExprKind.Result(builder), Types.unknown, ctx)
     }
     override def visitNewAppender(ctx: NewAppenderContext): Expr = {
@@ -623,7 +624,7 @@ class ASTTranslator(val parser: ArcParser) {
     }
 
     override def visitUnkownIter(ctx: ArcParser.UnkownIterContext): Iter = {
-      val data = ExprVisitor.visitChecked(ctx.expr());
+      val data = ExprVisitor.visitChecked(ctx.valueExpr());
       Iter(IterKind.UnknownIter, data)
     }
   }

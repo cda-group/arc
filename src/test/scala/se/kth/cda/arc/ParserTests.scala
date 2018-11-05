@@ -43,7 +43,7 @@ class ParserTests extends FunSuite with Matchers {
 
   test("raw parsing") {
     "let x: i32 = 5; x".expr() shouldBe
-      "(expr (letExpr let x (typeAnnot : (type i32)) = (operatorExpr (literalExpr 5)) ; (expr (operatorExpr x))))";
+      "(expr (valueExpr (letExpr let x (typeAnnot : (type i32)) = (operatorExpr (literalExpr 5)) ; (valueExpr (operatorExpr x)))))"
 
     "|x:i32, y:f32| x".expr() shouldBe
       "(expr (lambdaExpr | (lambdaParams (param x (typeAnnot : (type i32))) , (param y (typeAnnot : (type f32)))) | (expr (operatorExpr x))))";

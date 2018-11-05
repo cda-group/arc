@@ -5,7 +5,8 @@ import ArcLexerRules;
 // top level rules
 program : macros body=expr;
 macros : macro*;
-expr : letExpr | lambdaExpr | operatorExpr;
+valueExpr : letExpr | operatorExpr;
+expr : lambdaExpr | valueExpr;
 type: TI8 # I8
 	| TI16 # I16
 	| TI32 # I32
@@ -42,42 +43,42 @@ macroParams : names+=TIdentifier (',' names+=TIdentifier)*;
 typeAnnot : ':' type;
 
 
-letExpr : TLet name=TIdentifier typeAnnot? TEqual value=operatorExpr ';' body=expr;
-lambdaExpr	: TBarBar body=expr # UnitLambda
-			| TBar lambdaParams TBar body=expr # ParamLambda
+letExpr : TLet name=TIdentifier typeAnnot? TEqual value=operatorExpr ';' body=valueExpr;
+lambdaExpr	: TBarBar body=valueExpr # UnitLambda
+			| TBar lambdaParams TBar body=valueExpr # ParamLambda
 			;
 lambdaParams : params+=param (',' params+=param)*;
 param : name=TIdentifier typeAnnot?;
 operatorExpr	: literalExpr # Literal
-				| scalar=(TI8|TI16|TI32|TI64|TU8|TU16|TU32|TU64|TF32|TF64|TBool) '(' expr ')' # Cast
-				| TToVec '(' expr ')' # ToVec
+				| scalar=(TI8|TI16|TI32|TI64|TU8|TU16|TU32|TU64|TF32|TF64|TBool) '(' valueExpr ')' # Cast
+				| TToVec '(' valueExpr ')' # ToVec
 				| TIdentifier # Ident
-				| '(' expr ')' # ParenExpr
-				| '[' entries+=expr (',' entries+=expr)* ']' # MakeVec
-				| '{' entries+=expr (',' entries+=expr)* '}' # MakeStruct
-				| annotations? TIf '(' cond=expr ',' onTrue=expr ',' onFalse=expr ')' # If
-				| TIterate '(' initial=expr ',' updateFunc=expr ')' # Iterate
-				| TSelect '(' cond=expr ',' onTrue=expr ',' onFalse=expr ')' # Select
-				| TBroadcast '(' expr ')' # Broadcast
-				| TSerialize '(' expr ')' # Serialize
-				| annotations? TDeserialize '[' type ']' '(' expr ')' # Deserialize
+				| '(' valueExpr ')' # ParenExpr
+				| '[' entries+=valueExpr (',' entries+=valueExpr)* ']' # MakeVec
+				| '{' entries+=valueExpr (',' entries+=valueExpr)* '}' # MakeStruct
+				| annotations? TIf '(' cond=valueExpr ',' onTrue=valueExpr ',' onFalse=valueExpr ')' # If
+				| TIterate '(' initial=valueExpr ',' updateFunc=lambdaExpr ')' # Iterate
+				| TSelect '(' cond=valueExpr ',' onTrue=valueExpr ',' onFalse=valueExpr ')' # Select
+				| TBroadcast '(' valueExpr ')' # Broadcast
+				| TSerialize '(' valueExpr ')' # Serialize
+				| annotations? TDeserialize '[' type ']' '(' valueExpr ')' # Deserialize
 				| annotations? cudfExpr # CUDF
 				| TZip '(' functionParams ')' # Zip
-				| annotations? TFor '(' iterator ',' builder=expr ',' body=expr ')' # For
-				| TLen '(' expr ')' # Len
-				| TLookup '(' data=expr ',' key=expr ')' # Lookup
-				| TSlice '(' data=expr ',' index=expr ',' size=expr ')' # Slice
-				| TSort '(' data=expr ',' keyFunc=expr ')' # Sort
+				| annotations? TFor '(' iterator ',' builder=valueExpr ',' body=lambdaExpr ')' # For
+				| TLen '(' valueExpr ')' # Len
+				| TLookup '(' data=valueExpr ',' key=valueExpr ')' # Lookup
+				| TSlice '(' data=valueExpr ',' index=valueExpr ',' size=valueExpr ')' # Slice
+				| TSort '(' data=valueExpr ',' keyFunc=lambdaExpr ')' # Sort
 				| unaryExpr # Unary
-				| TMerge '(' builder=expr ',' value=expr ')' # Merge
-				| TResult '(' expr ')' # Result
-				| annotations? TAppender ('[' elemT=type ']')? ('(' arg=expr ')')? # NewAppender
+				| TMerge '(' builder=valueExpr ',' value=valueExpr ')' # Merge
+				| TResult '(' valueExpr ')' # Result
+				| annotations? TAppender ('[' elemT=type ']')? ('(' arg=valueExpr ')')? # NewAppender
 				| annotations? TStreamAppender ('[' elemT=type ']')? ('(' ')')? # NewStreamAppender
-				| annotations? TMerger '[' elemT=type ',' commutativeBinop ']' ('(' arg=expr ')')? # NewMerger
-				| annotations? TDictMerger '[' keyT=type ',' valueT=type ',' opT=commutativeBinop ']' ('(' arg=expr ')')? # NewDictMerger
-				| annotations? TGroupMerger ('[' keyT=type ',' valueT=type ']')? ('(' arg=expr ')')? # NewGroupMerger
-				| annotations? TVecMerger '[' elemT=type ',' opT=commutativeBinop ']' ('(' arg=expr ')')? # NewVecMerger
-				| fun=(TMin|TMax|TPow) '(' left=expr ',' right=expr ')' # BinaryFunction
+				| annotations? TMerger '[' elemT=type ',' commutativeBinop ']' ('(' arg=valueExpr ')')? # NewMerger
+				| annotations? TDictMerger '[' keyT=type ',' valueT=type ',' opT=commutativeBinop ']' ('(' arg=valueExpr ')')? # NewDictMerger
+				| annotations? TGroupMerger ('[' keyT=type ',' valueT=type ']')? ('(' arg=valueExpr ')')? # NewGroupMerger
+				| annotations? TVecMerger '[' elemT=type ',' opT=commutativeBinop ']' ('(' arg=valueExpr ')')? # NewVecMerger
+				| fun=(TMin|TMax|TPow) '(' left=valueExpr ',' right=valueExpr ')' # BinaryFunction
 				| operatorExpr '(' functionParams ')' # Application
 				| operatorExpr '.' TIndex # Projection
 				| operatorExpr ':' type # Ascription
@@ -92,9 +93,9 @@ operatorExpr	: literalExpr # Literal
 				| left=operatorExpr TBarBar right=operatorExpr # LogicalOr
 				;
 
-unaryExpr	: TMinus expr # Negate
-			| TBang expr # Not
-			| op=(TExp | TSin | TCos | TTan | TASin | TACos | TATan | TSinh | TCosh | TTanh | TLog | TErf | TSqrt) '(' expr ')' # UnaryOp
+unaryExpr	: TMinus operatorExpr # Negate
+			| TBang operatorExpr # Not
+			| op=(TExp | TSin | TCos | TTan | TASin | TACos | TATan | TSinh | TCosh | TTanh | TLog | TErf | TSqrt) '(' valueExpr ')' # UnaryOp
 			; 
 
 literalExpr	: TI8Lit # I8Lit
@@ -107,18 +108,18 @@ literalExpr	: TI8Lit # I8Lit
 			| TStringLit # StringLit
 			; 
 
-iterator	: iter=(TScalarIter|TSimdIter|TFringeIter|TNdIter) '(' data=expr ')' # SimpleIter
-			| iter=(TScalarIter|TSimdIter|TFringeIter) '(' data=expr ',' start=expr ',' end=expr ',' stride=expr ')' # FourIter
-			| TNdIter '(' data=expr ',' start=expr ',' end=expr ',' stride=expr ',' shape=expr ',' strides=expr ')' # SixIter
-			| TRangeIter '(' start=expr ',' end=expr ',' stride=expr ')' # RangeIter
-			| expr # UnkownIter
+iterator	: iter=(TScalarIter|TSimdIter|TFringeIter|TNdIter) '(' data=valueExpr ')' # SimpleIter
+			| iter=(TScalarIter|TSimdIter|TFringeIter) '(' data=valueExpr ',' start=valueExpr ',' end=valueExpr ',' stride=valueExpr ')' # FourIter
+			| TNdIter '(' data=valueExpr ',' start=valueExpr ',' end=valueExpr ',' stride=valueExpr ',' shape=valueExpr ',' strides=valueExpr ')' # SixIter
+			| TRangeIter '(' start=valueExpr ',' end=valueExpr ',' stride=valueExpr ')' # RangeIter
+			| valueExpr # UnkownIter
 			;
 
-cudfExpr	: TCUDF '[' TStar funcPointer=expr ',' returnType=type ']' '(' functionParams ')' # PointerUDF
+cudfExpr	: TCUDF '[' TStar funcPointer=valueExpr ',' returnType=type ']' '(' functionParams ')' # PointerUDF
 			| TCUDF '[' name=TIdentifier ',' returnType=type ']' '(' functionParams ')' # NameUDF
 			;
 
-functionParams : params+=expr (',' params+=expr)*;
+functionParams : params+=valueExpr (',' params+=valueExpr)*;
 
 commutativeBinop	: TPlus # SumOp
 					| TStar # ProductOp
