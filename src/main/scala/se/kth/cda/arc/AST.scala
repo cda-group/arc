@@ -135,13 +135,15 @@ object AST {
     NdIter, // multi-dimensional nd-iter
     RangeIter, // An iterator over a range
     NextIter, // An iterator over a function that returns one value at a time
+    KeyByIter, // An iterator over the result of partitioning a vector by key
     UnknownIter // iterator still needs to be inferred from data types
     = Value;
   }
 
   case class Iter(kind: IterKind.IterKind, data: Expr,
                   start: Option[Expr] = None, end: Option[Expr] = None,
-                  stride: Option[Expr] = None, strides: Option[Expr] = None, shape: Option[Expr] = None);
+                  stride: Option[Expr] = None, strides: Option[Expr] = None,
+                  shape: Option[Expr] = None, keyFunc: Option[Expr] = None);
 
   object UnaryOpKind extends Enumeration {
     type UnaryOpKind = Value;

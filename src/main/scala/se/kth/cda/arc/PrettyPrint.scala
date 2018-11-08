@@ -45,15 +45,16 @@ object PrettyPrint {
   def printIter(iter: Iter, out: PrintStream, indent: Int): Unit = {
     import IterKind._;
 
-    val iterStr = (iter.kind match {
-      case ScalarIter  => ""
-      case SimdIter    => "simd"
-      case FringeIter  => "fringe"
-      case NdIter      => "nd"
-      case RangeIter   => "range"
-      case NextIter    => "next"
-      case UnknownIter => "?"
-    }) + "iter";
+    val iterStr = iter.kind match {
+      case ScalarIter  => "iter"
+      case SimdIter    => "simditer"
+      case FringeIter  => "fringeiter"
+      case NdIter      => "nditer"
+      case RangeIter   => "rangeiter"
+      case NextIter    => "nextiter"
+      case KeyByIter   => "keyby"
+      case UnknownIter => "?iter"
+    };
 
     if (iter.kind == NdIter) {
       out.append(iterStr);
@@ -65,6 +66,13 @@ object PrettyPrint {
       printExpr(iter.shape.get, out, true, indent + INDENT_INC, false);
       out.append(',');
       printExpr(iter.strides.get, out, true, indent + INDENT_INC, false);
+      out.append(')');
+    } else if (iter.kind == KeyByIter) {
+      out.append(iterStr);
+      out.append('(');
+      printExpr(iter.data, out, true, indent + INDENT_INC, false);
+      out.append(',');
+      printExpr(iter.keyFunc.get, out, true, indent + INDENT_INC, false);
       out.append(')');
     } else if (iter.start.isDefined) {
       out.append(iterStr);

@@ -165,12 +165,19 @@ class ConstraintGenerator(val rootExpr: Expr) {
           constrainEq(shape.ty, strides.ty, Vec(I64));
           discoverDown(Vector(shape, strides), env).map(_.map{ case Vector(sh, sts) => (sh, sts) })
         } else Success(None);
+        val keyby = if (iterator.keyFunc.isDefined) {
+          val keyFunc = iterator.keyFunc.get;
+          constrainEq(keyFunc.ty, Function(Vector(elemTy), U64));
+          constrainEq(iterator.data.ty, Stream(elemTy));
+          discoverDown(keyFunc, env)
+        } else Success(None);
         val iterO = for {
           sestO <- sest;
           shstsO <- shsts;
+          keyby0 <- keyby;
           dataO <- discoverDown(iterator.data, env)
         } yield {
-          if (sestO.isEmpty && shstsO.isEmpty && dataO.isEmpty) {
+          if (sestO.isEmpty && shstsO.isEmpty && keyby0.isEmpty && dataO.isEmpty) {
             None
           } else {
             val (start, end, stride) = sestO match {
@@ -181,8 +188,9 @@ class ConstraintGenerator(val rootExpr: Expr) {
               case Some((sh, sts)) => (Some(sh), Some(sts))
               case None            => (iterator.shape, iterator.strides)
             };
+            val keyFunc = keyby0.orElse(iterator.keyFunc)
             val data = dataO.getOrElse(iterator.data)
-            Some(Iter(iterator.kind, data, start, end, stride, shape, strides))
+            Some(Iter(iterator.kind, data, start, end, stride, shape, strides, keyFunc))
           }
         };
         val builderTy = Types.unknown;

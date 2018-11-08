@@ -166,7 +166,8 @@ object Typer {
       newEnd <- iter.end.map(v => substituteTypes(v, substitute)).invert;
       newStride <- iter.stride.map(v => substituteTypes(v, substitute)).invert;
       newStrides <- iter.strides.map(v => substituteTypes(v, substitute)).invert;
-      newShape <- iter.shape.map(v => substituteTypes(v, substitute)).invert
-    } yield Iter(iter.kind, newData, newStart, newEnd, newStride, newStrides, newShape)
+      newShape <- iter.shape.map(v => substituteTypes(v, substitute)).invert;
+      newKeyFunc <- iter.keyFunc.map(v => substituteTypes(v, substitute)).invert
+    } yield Iter(iter.kind, newData, newStart, newEnd, newStride, newStrides, newShape, newKeyFunc)
   }
 }
