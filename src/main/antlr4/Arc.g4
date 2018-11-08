@@ -53,7 +53,7 @@ operatorExpr	: literalExpr # Literal
 				| scalar=(TI8|TI16|TI32|TI64|TU8|TU16|TU32|TU64|TF32|TF64|TBool) '(' valueExpr ')' # Cast
 				| TToVec '(' valueExpr ')' # ToVec
 				| TIdentifier # Ident
-				| '(' valueExpr ')' # ParenExpr
+				| '(' expr ')' # ParenExpr
 				| '[' entries+=valueExpr (',' entries+=valueExpr)* ']' # MakeVec
 				| '{' entries+=valueExpr (',' entries+=valueExpr)* '}' # MakeStruct
 				| annotations? TIf '(' cond=valueExpr ',' onTrue=valueExpr ',' onFalse=valueExpr ')' # If
@@ -120,7 +120,7 @@ cudfExpr	: TCUDF '[' TStar funcPointer=valueExpr ',' returnType=type ']' '(' fun
 			| TCUDF '[' name=TIdentifier ',' returnType=type ']' '(' functionParams ')' # NameUDF
 			;
 
-functionParams : params+=valueExpr (',' params+=valueExpr)*;
+functionParams : params+=expr (',' params+=expr)*;
 
 commutativeBinop	: TPlus # SumOp
 					| TStar # ProductOp

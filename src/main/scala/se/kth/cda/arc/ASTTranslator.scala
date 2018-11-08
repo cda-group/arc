@@ -87,7 +87,7 @@ class ASTTranslator(val parser: ArcParser) {
     }
 
     override def visitParenExpr(ctx: ParenExprContext): Expr = {
-      this.visitChecked(ctx.valueExpr())
+      this.visitChecked(ctx.expr())
     }
 
     override def visitLetExpr(ctx: LetExprContext): Expr = {
