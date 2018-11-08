@@ -46,7 +46,7 @@ class ParserTests extends FunSuite with Matchers {
       "(expr (valueExpr (letExpr let x (typeAnnot : (type i32)) = (operatorExpr (literalExpr 5)) ; (valueExpr (operatorExpr x)))))"
 
     "|x:i32, y:f32| x".expr() shouldBe
-      "(expr (lambdaExpr | (lambdaParams (param x (typeAnnot : (type i32))) , (param y (typeAnnot : (type f32)))) | (expr (operatorExpr x))))";
+      "(expr (lambdaExpr | (lambdaParams (param x (typeAnnot : (type i32))) , (param y (typeAnnot : (type f32)))) | (valueExpr (operatorExpr x))))";
 
     "stream[vec[i32]]".`type`() shouldBe
       "(type stream [ (type vec [ (type i32) ]) ])";
