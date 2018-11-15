@@ -220,12 +220,11 @@ class ConstraintGenerator(val rootExpr: Expr) {
         constrainEq(e.ty, I64);
         discoverDownMap(inner, env)(newInner => Len(newInner))
       }
-      case Lookup(data, key) => {
-        val valueTy = Types.unknown;
-        val dataTy = Dict(key.ty, valueTy);
-        constrainEq(data.ty, dataTy);
-        constrainEq(e.ty, valueTy);
-        discoverDown(Vector(data, key), env).map(_.map {
+      case Lookup(data, index) => {
+        val resultTy = Types.unknown;
+        constrainLookup(data.ty, index.ty, resultTy);
+        constrainEq(e.ty, resultTy);
+        discoverDown(Vector(data, index), env).map(_.map {
           case Vector(newData, newKey) => Lookup(newData, newKey)
         })
       }
@@ -456,6 +455,9 @@ class ConstraintGenerator(val rootExpr: Expr) {
   }
   private def constrainBuilder(t: Type, mergeType: Type = Types.unknown, resultType: Type = Types.unknown, argType: Type = Types.unknown): Unit = {
     constrainNorm(TypeConstraints.BuilderKind(t, mergeType, resultType, argType))
+  }
+  private def constrainLookup(t: Type, indexType: Type, resultType: Type): Unit = {
+    constrainNorm(TypeConstraints.LookupKind(t, indexType, resultType))
   }
   private def constrainNorm(c: TypeConstraint): Unit = {
     c.normalise() match {
