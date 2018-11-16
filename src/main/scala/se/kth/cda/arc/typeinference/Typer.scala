@@ -96,6 +96,7 @@ object Typer {
         newReturnType <- substitute(returnType)
       } yield CUDF(Right(newPointer), newArgs, newReturnType)
       case Zip(elems) => substituteTypes(elems, substitute)(newElems => Zip(newElems))
+      case Hash(elems) => substituteTypes(elems, substitute)(newElems => Hash(newElems))
       case For(iterator, builder, body) => for {
         newIterator <- substituteTypes(iterator, substitute);
         newBuilder <- substituteTypes(builder, substitute);

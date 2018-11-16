@@ -64,6 +64,7 @@ operatorExpr	: literalExpr # Literal
 				| annotations? TDeserialize '[' type ']' '(' valueExpr ')' # Deserialize
 				| annotations? cudfExpr # CUDF
 				| TZip '(' functionParams ')' # Zip
+				| THash '(' functionParams ')' # Hash
 				| annotations? TFor '(' iterator ',' builder=valueExpr ',' body=lambdaExpr ')' # For
 				| TLen '(' valueExpr ')' # Len
 				| TLookup '(' data=valueExpr ',' key=valueExpr ')' # Lookup

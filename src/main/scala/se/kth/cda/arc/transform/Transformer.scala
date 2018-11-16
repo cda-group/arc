@@ -127,6 +127,7 @@ class Transformer[Env](
           }
         }
         case Zip(params) => transform(params, env0, newParams => Zip(newParams))
+        case Hash(params) => transform(params, env0, newParams => Hash(newParams))
         case For(iterator, builder, body) =>
           transform((iterator.data, builder, body), env0)((newData, newBuilder, newBody) =>
             For(iterator.copy(data = newData), newBuilder, newBody))

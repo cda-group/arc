@@ -40,6 +40,9 @@ class FrontEndTests extends FunSuite with Matchers {
   test("lookup dict") {
     "lookup(result(for(iter([{1,2},{1,4}]), groupmerger[i32,i32], |b,i,y| merge(b,y))), 1)"
   }
+  test("hash") {
+    "hash(1,2,3)"
+  }
   test("matrix multiplication") {
     """
     let n=2L;

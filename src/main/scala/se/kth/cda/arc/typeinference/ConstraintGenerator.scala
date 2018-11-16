@@ -146,6 +146,16 @@ class ConstraintGenerator(val rootExpr: Expr) {
           Zip(newParams)
         })
       }
+      case Hash(params) => {
+        val paramTy = Types.unknown;
+        params.foreach {
+          case p => constrainEq(p.ty, paramTy);
+        }
+        constrainEq(e.ty, I64);
+        discoverDown(params, env).map(_.map { newParams =>
+          Hash(newParams)
+        })
+      }
       case For(iterator, builder, body) => {
         val elemTy = Types.unknown;
         constrainNorm(TypeConstraints.IterableKind(iterator.data.ty, elemTy));

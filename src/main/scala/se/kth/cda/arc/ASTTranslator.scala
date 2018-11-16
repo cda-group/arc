@@ -135,6 +135,11 @@ class ASTTranslator(val parser: ArcParser) {
       Expr(ExprKind.Zip(params), Types.unknown, ctx)
     }
 
+    override def visitHash(ctx: ArcParser.HashContext): Expr = {
+      val params = ctx.functionParams().params.asScala.map(this.visitChecked(_)).toVector;
+      Expr(ExprKind.Hash(params), Types.unknown, ctx)
+    }
+
     override def visitFor(ctx: ArcParser.ForContext): Expr = {
       val annot = AnnotationVisitor.visitChecked(ctx.annotations());
       val iter = IterVisitor.visitChecked(ctx.iterator());

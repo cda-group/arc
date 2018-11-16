@@ -233,6 +233,20 @@ object PrettyPrint {
           printType(expr.ty, out);
         }
       }
+      case Hash(params) => {
+        out.append("hash(");
+        for ((e, i) <- params.view.zipWithIndex) {
+          printExpr(e, out, false, indent + 4, false);
+          if (i != (params.length - 1)) {
+            out.append(',');
+          }
+        }
+        out.append(')');
+        if (typed) {
+          out.append(':');
+          printType(expr.ty, out);
+        }
+      }
       case For(iterator, builder, body) => {
         out.append("for(");
         printIter(iterator, out, indent + 4);
