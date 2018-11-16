@@ -158,6 +158,73 @@ object TypeConstraints {
     }
   }
 
+  case class LookupKind(dataTy: Type, indexTy: Type, resultTy: Type) extends TypeConstraint {
+    override type Self = LookupKind;
+    override def describe: String = {
+      s"${resultTy.render}≼lookup(data=${dataTy.render}, key=${indexTy.render})";
+    };
+    override def substitute(assignments: Map[Int, Type]): Option[Self] = {
+      val dtO = substituteType(dataTy, assignments);
+      val itO = substituteType(indexTy, assignments);
+      val rtO = substituteType(resultTy, assignments);
+      if (dtO.isEmpty && itO.isEmpty && rtO.isEmpty) {
+        None
+      } else {
+        val newDT = dtO.getOrElse(dataTy);
+        val newIT = itO.getOrElse(indexTy);
+        val newRT = rtO.getOrElse(resultTy);
+        Some(LookupKind(newDT, newIT, newRT))
+      }
+    }
+
+    override def normalise(): Option[TypeConstraint] = {
+      dataTy match {
+        case Vec(valTy) => {
+          var conj = List.empty[TypeConstraint];
+          conj ::= MultiEquality(List(indexTy, I64));
+          conj ::= MultiEquality(List(resultTy, valTy));
+          Some(MultiConj(conj))
+        }
+        case Dict(keyTy, valTy) => {
+          var conj = List.empty[TypeConstraint];
+          conj ::= MultiEquality(List(indexTy, keyTy));
+          conj ::= MultiEquality(List(resultTy, valTy));
+          Some(MultiConj(conj))
+        }
+        case tv: TypeVariable => None // may be solved later
+        case _                => None // won't be solved but leave like this for useful error reporting
+      }
+    }
+
+    override def variables(): List[TypeVariable] = dataTy match {
+      case tv: TypeVariable => List(tv)
+      case _                => List.empty
+    }
+
+    override def merge(c: TypeConstraint): Option[TypeConstraint] = {
+      c match {
+        case LookupKind(otherDataTy, otherIndexTy, otherResultTy) if otherDataTy == this.dataTy => {
+            var conj = List.empty[TypeConstraint];
+            conj ::= this;
+            conj ::= MultiEquality(List(otherIndexTy, this.indexTy));
+            conj ::= MultiEquality(List(otherResultTy, this.resultTy));
+            Some(MultiConj(conj))
+          }
+        case MultiEquality(members) if this.dataTy.isInstanceOf[TypeVariable] => {
+          val (vars, other) = members.partition(_.isInstanceOf[TypeVariable]);
+          if (vars.contains(this.dataTy) && other.nonEmpty) {
+            val newData = LookupKind(other.head, indexTy, resultTy);
+            Some(MultiConj(List(c, newData)))
+          } else {
+            None
+          }
+        }
+        case conj: MultiConj => conj.merge(this)
+        case _               => None
+      }
+    }
+  }
+
   case class ProjectableKind(structTy: Type, fieldTy: Type, fieldIndex: Int) extends TypeConstraint {
     override type Self = ProjectableKind;
     override def describe: String = {

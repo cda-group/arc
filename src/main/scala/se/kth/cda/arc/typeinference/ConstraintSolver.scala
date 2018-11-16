@@ -267,6 +267,7 @@ To solve this issue try annotating types where type variables remain.""";
         case bk: BuilderKind     => newCS ::= bk
         case ik: IterableKind    => newCS ::= ik
         case pk: ProjectableKind => newCS ::= pk
+        case lk: LookupKind      => newCS ::= lk
         case Tautology => {
           changedThisIter = true;
           changed = true; // drop since (x and true) = x
