@@ -10,4 +10,6 @@ Arc is an intermediate representation (IR) that extends the [Weld](https://githu
 
 [Formal Model](docs/model.md)
 
+# Publications
+
 # Installation
