@@ -6,10 +6,24 @@ Arc is an intermediate representation (IR) that extends the [Weld](https://githu
 
 # Documentation
 
-[Language Reference](docs/language.md)
+[Language reference](docs/language.md)
 
-[Formal Model](docs/model.md)
+[Front-end APIs](docs/api.md)
 
-# Publications
+[Tutorial](docs/tutorial.md)
+
+[Formal model](docs/model.md)
 
 # Installation
+
+## MacOS 
+
+## Ubuntu
+
+# Running
+
+# Testing
+
+# Benchmarks
+
+# Publications
