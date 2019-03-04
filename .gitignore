@@ -21,6 +21,10 @@ project/project/
 target/
 plugin/bin/sbt
 
+# metals specific
+.metals/
+.bloop/
+
 # Scala-IDE specific
 .scala_dependencies
 .worksheet
