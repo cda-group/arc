@@ -2,13 +2,12 @@ package se.kth.cda.arc
 
 import org.antlr.v4.runtime._
 import org.antlr.v4.runtime.tree._
-import scala.util.matching.Regex
-import scala.util.Try;
-import collection.JavaConverters._
+
+import scala.collection.JavaConverters._
+import scala.util.Try
 
 class ASTTranslator(val parser: ArcParser) {
-  import AST._;
-  import ASTTranslator._;
+  import AST._
   import ArcParser._;
 
   def program(): Program = {
@@ -48,6 +47,7 @@ class ASTTranslator(val parser: ArcParser) {
   }
 
   object ProgramVisitor extends ArcBaseVisitor[Program] {
+
     def visitChecked(tree: ParseTree): Program = {
       val e = this.visit(tree);
       assert(e != null, s"Visiting a sub-tree returned null:\n${tree.toStringTree(parser)}");
@@ -61,25 +61,28 @@ class ASTTranslator(val parser: ArcParser) {
       Program(macros, expr, ctx)
     }
   }
+
   object MacrosVisitor extends ArcBaseVisitor[List[Macro]] {
+
     def visitChecked(tree: ParseTree): List[Macro] = {
       val e = this.visit(tree);
       assert(e != null, s"Visiting a sub-tree returned null:\n${tree.toStringTree(parser)}");
       e
     }
     override def visitMacros(ctx: MacrosContext): List[Macro] = {
-      val macros = ctx.`macro`().asScala.map(visitChecked(_)).flatten;
+      val macros = ctx.`macro`().asScala.flatMap(visitChecked(_));
       macros.toList
     }
     override def visitMacro(ctx: MacroContext): List[Macro] = {
       val name = tokenToSymbol(ctx.name);
-      val params = ctx.macroParams().names.asScala.map(tokenToSymbol(_));
+      val params = ctx.macroParams().names.asScala.map(tokenToSymbol);
       val body = ExprVisitor.visitChecked(ctx.body);
       List(Macro(name, params.toVector, body, ctx))
     }
   }
 
   object ExprVisitor extends ArcBaseVisitor[Expr] {
+
     def visitChecked(tree: ParseTree): Expr = {
       val e = this.visit(tree);
       assert(e != null, s"Visiting a sub-tree returned null:\n${tree.toStringTree(parser)}");
@@ -107,11 +110,16 @@ class ASTTranslator(val parser: ArcParser) {
       Expr(ExprKind.Lambda(Vector.empty, body), Types.unknown, ctx)
     }
     override def visitParamLambda(ctx: ParamLambdaContext): Expr = {
-      val params = ctx.lambdaParams().param().asScala.map { p =>
-        val name = tokenToSymbol(p.name);
-        val ty = annotToTypeBound(p.typeAnnot());
-        Parameter(name, ty)
-      }.toVector;
+      val params = ctx
+        .lambdaParams()
+        .param()
+        .asScala
+        .map { p =>
+          val name = tokenToSymbol(p.name);
+          val ty = annotToTypeBound(p.typeAnnot());
+          Parameter(name, ty)
+        }
+        .toVector;
       val body = this.visitChecked(ctx.body);
       Expr(ExprKind.Lambda(params, body), Types.unknown, ctx)
     }
@@ -183,7 +191,7 @@ class ASTTranslator(val parser: ArcParser) {
     }
 
     override def visitUnaryOp(ctx: UnaryOpContext): Expr = {
-      import ArcLexer._;
+      import ArcLexer._
       import UnaryOpKind._;
       val expr = this.visitChecked(ctx.valueExpr());
       val kind = ctx.op.getType match {
@@ -211,7 +219,7 @@ class ASTTranslator(val parser: ArcParser) {
 
     override def visitMakeStruct(ctx: MakeStructContext): Expr = {
       val elems = ctx.entries.asScala.map(e => this.visitChecked(e)).toVector;
-      Expr(ExprKind.MakeStruct(elems), Types.Struct(elems.map(_ => Types.unknown).toVector), ctx)
+      Expr(ExprKind.MakeStruct(elems), Types.Struct(elems.map(_ => Types.unknown)), ctx)
     }
 
     override def visitIf(ctx: IfContext): Expr = {
@@ -265,18 +273,28 @@ class ASTTranslator(val parser: ArcParser) {
     override def visitPointerUDF(ctx: ArcParser.PointerUDFContext): Expr = {
       val pointer = this.visitChecked(ctx.funcPointer);
       val returnType = TypeVisitor.visitChecked(ctx.returnType);
-      val args = ctx.functionParams().params.asScala.map { e =>
-        this.visitChecked(e)
-      }.toVector;
+      val args = ctx
+        .functionParams()
+        .params
+        .asScala
+        .map { e =>
+          this.visitChecked(e)
+        }
+        .toVector;
       Expr(ExprKind.CUDF(Right(pointer), args, returnType), returnType, ctx)
     }
 
     override def visitNameUDF(ctx: ArcParser.NameUDFContext): Expr = {
       val name = tokenToSymbol(ctx.name);
       val returnType = TypeVisitor.visitChecked(ctx.returnType);
-      val args = ctx.functionParams().params.asScala.map { e =>
-        this.visitChecked(e)
-      }.toVector;
+      val args = ctx
+        .functionParams()
+        .params
+        .asScala
+        .map { e =>
+          this.visitChecked(e)
+        }
+        .toVector;
       Expr(ExprKind.CUDF(Left(name), args, returnType), returnType, ctx)
     }
 
@@ -361,9 +379,14 @@ class ASTTranslator(val parser: ArcParser) {
 
     override def visitApplication(ctx: ArcParser.ApplicationContext): Expr = {
       val func = this.visitChecked(ctx.operatorExpr());
-      val args = ctx.functionParams().params.asScala.map { e =>
-        this.visitChecked(e)
-      }.toVector;
+      val args = ctx
+        .functionParams()
+        .params
+        .asScala
+        .map { e =>
+          this.visitChecked(e)
+        }
+        .toVector;
       Expr(ExprKind.Application(func, args), Types.unknown, ctx)
     }
 
@@ -526,6 +549,7 @@ class ASTTranslator(val parser: ArcParser) {
   }
 
   object AnnotationVisitor extends ArcBaseVisitor[Annotations] {
+
     def visitChecked(tree: ParseTree): Option[Annotations] = {
       if (tree == null) {
         None
@@ -557,6 +581,7 @@ class ASTTranslator(val parser: ArcParser) {
   }
 
   object OpVisitor extends ArcBaseVisitor[OpType] {
+
     def visitChecked(tree: ParseTree): OpType = {
       val e = this.visit(tree);
       assert(e != null, s"Visiting a sub-tree returned null:\n${tree.toStringTree()}");
@@ -571,6 +596,7 @@ class ASTTranslator(val parser: ArcParser) {
   }
 
   object IterVisitor extends ArcBaseVisitor[Iter] {
+
     def visitChecked(tree: ParseTree): Iter = {
       val e = this.visit(tree);
       assert(e != null, s"Visiting a sub-tree returned null:\n${tree.toStringTree(parser)}");
@@ -578,7 +604,7 @@ class ASTTranslator(val parser: ArcParser) {
     }
 
     def tokenToIterKind(t: Token): IterKind.IterKind = {
-      import ArcLexer._;
+      import ArcLexer._
       import IterKind._;
 
       t.getType match {
@@ -615,9 +641,14 @@ class ASTTranslator(val parser: ArcParser) {
       val stride = ExprVisitor.visitChecked(ctx.stride);
       val shape = ExprVisitor.visitChecked(ctx.shape);
       val strides = ExprVisitor.visitChecked(ctx.strides);
-      Iter(kind = kind, data = data,
-        start = Some(start), end = Some(end),
-        stride = Some(stride), shape = Some(shape), strides = Some(strides))
+      Iter(
+        kind = kind,
+        data = data,
+        start = Some(start),
+        end = Some(end),
+        stride = Some(stride),
+        shape = Some(shape),
+        strides = Some(strides))
     }
 
     override def visitRangeIter(ctx: ArcParser.RangeIterContext): Iter = {
@@ -642,6 +673,7 @@ class ASTTranslator(val parser: ArcParser) {
   }
 
   object TypeVisitor extends ArcBaseVisitor[Type] {
+
     def visitChecked(tree: ParseTree, allowNull: Boolean = false): Type = {
       if (allowNull && tree == null) {
         Types.unknown // just return a type variable
@@ -717,7 +749,7 @@ class ASTTranslator(val parser: ArcParser) {
     }
 
     override def visitParamFunction(ctx: ArcParser.ParamFunctionContext): Type = {
-      val params = ctx.paramTypes.asScala.map(this.visitChecked(_, false)).toVector;
+      val params = ctx.paramTypes.asScala.map(this.visitChecked(_)).toVector;
       val returnTy = this.visitChecked(ctx.returnT);
       Types.Function(params, returnTy)
     }
@@ -770,8 +802,6 @@ class ASTTranslator(val parser: ArcParser) {
 }
 
 object ASTTranslator {
-  import AST._;
-  import ArcParser._;
 
   def apply(parser: ArcParser): ASTTranslator = new ASTTranslator(parser);
 

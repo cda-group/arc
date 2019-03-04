@@ -1,11 +1,13 @@
 package se.kth.cda.arc.typeinference
 
-import se.kth.cda.arc._
-import AST.Expr
-import Types._
-import scala.util.{ Try, Success, Failure }
-import scala.concurrent.duration._
 import java.util.concurrent.TimeoutException
+
+import se.kth.cda.arc.AST.Expr
+import se.kth.cda.arc.Types._
+import se.kth.cda.arc._
+
+import scala.concurrent.duration._
+import scala.util.{Failure, Success, Try}
 
 object ConstraintSolver {
   val MAX_RUNTIME = 5.seconds;
@@ -17,16 +19,18 @@ object ConstraintSolver {
   }
   case class Solution(assignments: Map[Int, Type]) extends Result {
     override def isSolved: Boolean = true;
-    override def typeSubstitutions: Substituter = substitute(_);
+    override def typeSubstitutions: Substituter = substitute;
     private def substitute(ty: Type): Try[Type] = ty match {
-      case tv: TypeVariable => assignments.get(tv.id) match {
-        case Some(t) => Success(t)
-        case None    => Failure(new TypingException(s"Could not find mapping for ${tv.render} in complete solution!"))
-      }
-      case t => TypeConstraints.substituteType(t, assignments) match {
-        case Some(newTy) => Success(newTy)
-        case None        => Success(t)
-      }
+      case tv: TypeVariable =>
+        assignments.get(tv.id) match {
+          case Some(t) => Success(t)
+          case None    => Failure(new TypingException(s"Could not find mapping for ${tv.render} in complete solution!"))
+        }
+      case t =>
+        TypeConstraints.substituteType(t, assignments) match {
+          case Some(newTy) => Success(newTy)
+          case None        => Success(t)
+        }
     }
     override def describe: String = {
       assignments.toList.sortBy(_._1).map(t => s"?${t._1} <- ${t._2.render}").mkString("[", ",", "]");
@@ -34,17 +38,19 @@ object ConstraintSolver {
   }
   case class PartialSolution(assignments: Map[Int, Type], constraints: List[TypeConstraint]) extends Result {
     override def isSolved: Boolean = false;
-    override def typeSubstitutions: Substituter = substitute(_);
+    override def typeSubstitutions: Substituter = substitute;
     private def substitute(ty: Type): Try[Type] = ty match {
-      case tv: TypeVariable => Success(assignments.get(tv.id).getOrElse(tv)) // don't fail
-      case t => TypeConstraints.substituteType(t, assignments) match {
-        case Some(newTy) => Success(newTy)
-        case None        => Success(t)
-      }
+      case tv: TypeVariable => Success(assignments.getOrElse(tv.id, tv)) // don't fail
+      case t =>
+        TypeConstraints.substituteType(t, assignments) match {
+          case Some(newTy) => Success(newTy)
+          case None        => Success(t)
+        }
     }
     override def describe: String = {
       assignments.toList.sortBy(_._1).map(t => s"?${t._1} <- ${t._2.render}").mkString("[", ",", "]");
     }
+
     def describeUnresolvedConstraints(e: Expr): Failure[Expr] = {
       val descriptions = constraints.map(_.describe);
       val description = descriptions.mkString("\n∧ ");
@@ -57,8 +63,8 @@ To solve this issue try annotating types where type variables remain.""";
       Failure(new TypingException(msg))
     }
   }
-  def solve(initialConstraints: List[TypeConstraint]): Try[Result] = {
-    import TypeConstraints._;
+
+  def solve(initialConstraints: List[TypeConstraint]): Try[Result] = {;
 
     var typeAssignments = Map.empty[Int, Type];
     var topLevelConjunction = initialConstraints;
@@ -99,7 +105,7 @@ To solve this issue try annotating types where type variables remain.""";
     if (topLevelConjunction.isEmpty) {
       Success(Solution(typeAssignments))
     } else if (deadline.isOverdue()) {
-      Failure(new TimeoutException(s"Solver could not find a solution within ${MAX_RUNTIME}"));
+      Failure(new TimeoutException(s"Solver could not find a solution within $MAX_RUNTIME"));
     } else {
       Success(PartialSolution(typeAssignments, topLevelConjunction))
     }
@@ -117,7 +123,7 @@ To solve this issue try annotating types where type variables remain.""";
         //println(s"Skiping ${c.describe} as it has no type vars");
         newCS ::= c;
       } else {
-        val lowestVar = vars.sortBy(_.id).head;
+        val lowestVar = vars.minBy(_.id);
         val (rId, lowestConstraints) = resolveForward(lowestVar, typeConstraints);
         val lId = if (rId < 0) lowestVar.id else rId;
         var newLCS = c :: lowestConstraints;
@@ -156,13 +162,14 @@ To solve this issue try annotating types where type variables remain.""";
     //println(s"var constraints (raw): ${tcS}");
     typeConstraints.foreach {
       case (_, Left(_)) => // leave as they are
-      case (id, Right(cs)) => minimiseRelated(cs) match {
-        case Some(newCS) => {
-          changed = true;
-          typeConstraints += (id -> Right(newCS));
+      case (id, Right(cs)) =>
+        minimiseRelated(cs) match {
+          case Some(newCS) => {
+            changed = true;
+            typeConstraints += (id -> Right(newCS));
+          }
+          case None => // leave as they are
         }
-        case None => // leave as they are
-      }
     }
     //    println(s"no-var constraints: ${newCS.map(_.describe).mkString("∧")}");
     //    val tcS2 = typeConstraints.toList.sortBy(_._1).map(tc => tc match {
@@ -170,9 +177,10 @@ To solve this issue try annotating types where type variables remain.""";
     //      case (id, Right(cs)) => s"?${id} -> ${cs.map(_.describe).mkString("∧")}"
     //    }).mkString("{\n	", "\n	", "\n}");
     //    println(s"var constraints (minimised): ${tcS2}");
-    newCS = typeConstraints.foldLeft(newCS)((acc, e) => e match {
-      case (_, Right(cs)) => acc ++ cs
-      case _              => acc
+    newCS = typeConstraints.foldLeft(newCS)((acc, e) =>
+      e match {
+        case (_, Right(cs)) => acc ++ cs
+        case _              => acc
     });
     //println(s"New constraints after fold: ${newCS.map(_.describe).mkString("∧")}")
     if (changed) Some(newCS) else None
@@ -187,7 +195,7 @@ To solve this issue try annotating types where type variables remain.""";
       changedThisIter = false;
       var heads = List.empty[TypeConstraint];
       var tails = newCS;
-      while (!tails.isEmpty) {
+      while (tails.nonEmpty) {
         var merging = tails.head;
         val res = tails.tail.foldLeft(List.empty[TypeConstraint]) { (acc, c) =>
           c.merge(merging) match {
@@ -200,7 +208,7 @@ To solve this issue try annotating types where type variables remain.""";
             }
             case None => {
               //println(s"Failed to merged ${merging.describe} and ${c.describe}");
-              (c :: acc)
+              c :: acc
             }
           }
         };
@@ -213,7 +221,9 @@ To solve this issue try annotating types where type variables remain.""";
     if (changed) Some(newCS) else None
   }
 
-  private def resolveForward(tv: TypeVariable, data: Map[Int, Either[Int, List[TypeConstraint]]]): (Int, List[TypeConstraint]) = {
+  private def resolveForward(
+      tv: TypeVariable,
+      data: Map[Int, Either[Int, List[TypeConstraint]]]): (Int, List[TypeConstraint]) = {
     var lookup = Option(tv.id);
     var visited = List.empty[Int];
     while (lookup.isDefined) {
@@ -222,11 +232,12 @@ To solve this issue try annotating types where type variables remain.""";
       }
       visited ::= lookup.get;
       data.get(lookup.get) match {
-        case Some(Left(id)) => if (id == lookup.get) {
-          throw new RuntimeException(s"?${lookup.get} points to itself. This is dumb!");
-        } else {
-          lookup = Some(id)
-        }
+        case Some(Left(id)) =>
+          if (id == lookup.get) {
+            throw new RuntimeException(s"?${lookup.get} points to itself. This is dumb!");
+          } else {
+            lookup = Some(id)
+          }
         case Some(Right(cs)) => return (lookup.get, cs)
         case None            => lookup = None
       }
@@ -234,7 +245,9 @@ To solve this issue try annotating types where type variables remain.""";
     (-1, List.empty)
   }
 
-  private def rewrite(cs: List[TypeConstraint], assignments: Map[Int, Type]): Option[(List[TypeConstraint], Map[Int, Type])] = {
+  private def rewrite(
+      cs: List[TypeConstraint],
+      assignments: Map[Int, Type]): Option[(List[TypeConstraint], Map[Int, Type])] = {
     import TypeConstraints._;
 
     var newCS = cs;
@@ -282,22 +295,27 @@ To solve this issue try annotating types where type variables remain.""";
     }
   }
 
-  private def substituteAndNormalise(cs: List[TypeConstraint], assignments: Map[Int, Type]): Option[List[TypeConstraint]] = {
+  private def substituteAndNormalise(
+      cs: List[TypeConstraint],
+      assignments: Map[Int, Type]): Option[List[TypeConstraint]] = {
     var changed = false;
-    val newCS = cs.map(c => (c, c.substitute(assignments))).map {
-      case (c, Some(sub)) => (c, Some(sub), sub.normalise())
-      case (c, None)      => (c, None, c.normalise())
-    } map {
-      case (_, _, Some(norm)) => {
-        changed = true;
-        norm
+    val newCS = cs
+      .map(c => (c, c.substitute(assignments)))
+      .map {
+        case (c, Some(sub)) => (c, Some(sub), sub.normalise())
+        case (c, None)      => (c, None, c.normalise())
       }
-      case (_, Some(sub), None) => {
-        changed = true;
-        sub
-      }
-      case (orig, None, None) => orig
-    };
+      .map {
+        case (_, _, Some(norm)) => {
+          changed = true;
+          norm
+        }
+        case (_, Some(sub), None) => {
+          changed = true;
+          sub
+        }
+        case (orig, None, None) => orig
+      };
     if (changed) {
       Some(newCS)
     } else {

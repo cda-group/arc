@@ -1,10 +1,7 @@
 package se.kth.cda.arc.typeinference
 
+import se.kth.cda.arc.Types._
 import se.kth.cda.arc._
-import AST._
-import Types._
-import scala.collection.mutable
-import scala.util.{ Try, Success, Failure }
 
 sealed trait TypeConstraint {
   type Self <: TypeConstraint;
@@ -59,12 +56,12 @@ object TypeConstraints {
           Some(Function(newParams, newReturnTy.getOrElse(returnTy)))
         }
       }
-      case Builders.Appender(elemTy, annots) => substituteType(elemTy, assignments).map(ty =>
-        Builders.Appender(ty, annots))
-      case Builders.StreamAppender(elemTy, annots) => substituteType(elemTy, assignments).map(ty =>
-        Builders.StreamAppender(ty, annots))
-      case Builders.Merger(elemTy, opTy, annots) => substituteType(elemTy, assignments).map(ty =>
-        Builders.Merger(ty, opTy, annots))
+      case Builders.Appender(elemTy, annots) =>
+        substituteType(elemTy, assignments).map(ty => Builders.Appender(ty, annots))
+      case Builders.StreamAppender(elemTy, annots) =>
+        substituteType(elemTy, assignments).map(ty => Builders.StreamAppender(ty, annots))
+      case Builders.Merger(elemTy, opTy, annots) =>
+        substituteType(elemTy, assignments).map(ty => Builders.Merger(ty, opTy, annots))
       case Builders.DictMerger(keyTy, valueTy, opTy, annots) => {
         val newKeyTy = substituteType(keyTy, assignments);
         val newValueTy = substituteType(valueTy, assignments);
@@ -74,8 +71,8 @@ object TypeConstraints {
           Some(Builders.DictMerger(newKeyTy.getOrElse(keyTy), newValueTy.getOrElse(valueTy), opTy, annots))
         }
       }
-      case Builders.VecMerger(elemTy, opTy, annots) => substituteType(elemTy, assignments).map(ty =>
-        Builders.VecMerger(ty, opTy, annots))
+      case Builders.VecMerger(elemTy, opTy, annots) =>
+        substituteType(elemTy, assignments).map(ty => Builders.VecMerger(ty, opTy, annots))
       case Builders.GroupMerger(keyTy, valueTy, annots) => {
         val newKeyTy = substituteType(keyTy, assignments);
         val newValueTy = substituteType(valueTy, assignments);
@@ -123,12 +120,14 @@ object TypeConstraints {
   // Basically a subtyping constraint t <= Num
   case class IsNumeric(t: Type, signed: Boolean = false) extends Predicate {
     override type Self = IsNumeric;
-    override def describe: String = if (signed) {
-      s"numeric±(${t.render})";
-    } else {
-      s"numeric(${t.render})";
-    }
+    override def describe: String =
+      if (signed) {
+        s"numeric±(${t.render})";
+      } else {
+        s"numeric(${t.render})";
+      }
     override def newFromType(t: Type): Self = IsNumeric(t, signed);
+
     def isSatisfied: Boolean = t match {
       case I8 | I16 | I32 | I64 | F32 | F64 => true
       case U8 | U16 | U32 | U64             => !signed
@@ -141,9 +140,10 @@ object TypeConstraints {
     override type Self = IsScalar;
     override def describe: String = s"scalar(${t.render})";
     override def newFromType(t: Type): Self = IsScalar(t);
+
     def isSatisfied: Boolean = t match {
       case I8 | I16 | I32 | I64 | U8 | U16 | U32 | U64 | F32 | F64 | Bool => true
-      case _ => false
+      case _                                                              => false
     }
   }
 
@@ -152,6 +152,7 @@ object TypeConstraints {
     override type Self = IsFloat;
     override def describe: String = s"float(${t.render})";
     override def newFromType(t: Type): Self = IsFloat(t);
+
     def isSatisfied: Boolean = t match {
       case F32 | F64 => true
       case _         => false
@@ -204,12 +205,12 @@ object TypeConstraints {
     override def merge(c: TypeConstraint): Option[TypeConstraint] = {
       c match {
         case LookupKind(otherDataTy, otherIndexTy, otherResultTy) if otherDataTy == this.dataTy => {
-            var conj = List.empty[TypeConstraint];
-            conj ::= this;
-            conj ::= MultiEquality(List(otherIndexTy, this.indexTy));
-            conj ::= MultiEquality(List(otherResultTy, this.resultTy));
-            Some(MultiConj(conj))
-          }
+          var conj = List.empty[TypeConstraint];
+          conj ::= this;
+          conj ::= MultiEquality(List(otherIndexTy, this.indexTy));
+          conj ::= MultiEquality(List(otherResultTy, this.resultTy));
+          Some(MultiConj(conj))
+        }
         case MultiEquality(members) if this.dataTy.isInstanceOf[TypeVariable] => {
           val (vars, other) = members.partition(_.isInstanceOf[TypeVariable]);
           if (vars.contains(this.dataTy) && other.nonEmpty) {
@@ -230,7 +231,7 @@ object TypeConstraints {
     override def describe: String = {
       val loi = (0 until fieldIndex).foldLeft("")((acc, _) => acc + "_,");
       val roi = ",...";
-      s"${structTy.render}≼{${loi}${fieldTy.render}${roi}}"
+      s"${structTy.render}≼{$loi${fieldTy.render}$roi}"
     };
     override def substitute(assignments: Map[Int, Type]): Option[Self] = {
       val stO = substituteType(structTy, assignments);
@@ -273,7 +274,7 @@ object TypeConstraints {
         }
         case MultiEquality(members) if structTy.isInstanceOf[TypeVariable] => {
           val (vars, other) = members.partition(_.isInstanceOf[TypeVariable]);
-          if (vars.contains(structTy) && !other.isEmpty) {
+          if (vars.contains(structTy) && other.nonEmpty) {
             val newProjecKind = ProjectableKind(other.head, fieldTy, fieldIndex);
             Some(MultiConj(List(c, newProjecKind)))
           } else {
@@ -342,7 +343,8 @@ object TypeConstraints {
 
     override def merge(c: TypeConstraint): Option[TypeConstraint] = {
       c match {
-        case BuilderKind(otherBuilderTy, otherMergeTy, otherResultTy, otherArgTy) if otherBuilderTy == this.builderTy => {
+        case BuilderKind(otherBuilderTy, otherMergeTy, otherResultTy, otherArgTy)
+            if otherBuilderTy == this.builderTy => {
           var conj = List.empty[TypeConstraint];
           conj ::= this;
           conj ::= MultiEquality(List(otherMergeTy, mergeTy));
@@ -352,7 +354,7 @@ object TypeConstraints {
         }
         case MultiEquality(members) if this.builderTy.isInstanceOf[TypeVariable] => {
           val (vars, other) = members.partition(_.isInstanceOf[TypeVariable]);
-          if (vars.contains(this.builderTy) && !other.isEmpty) {
+          if (vars.contains(this.builderTy) && other.nonEmpty) {
             val newBuilder = BuilderKind(other.head, mergeTy, resultTy, argTy);
             Some(MultiConj(List(c, newBuilder)))
           } else {
@@ -409,7 +411,7 @@ object TypeConstraints {
         }
         case MultiEquality(members) if this.dataTy.isInstanceOf[TypeVariable] => {
           val (vars, other) = members.partition(_.isInstanceOf[TypeVariable]);
-          if (vars.contains(this.dataTy) && !other.isEmpty) {
+          if (vars.contains(this.dataTy) && other.nonEmpty) {
             val newIterKind = IterableKind(other.head, elemTy);
             Some(MultiConj(List(c, newIterKind)))
           } else {
@@ -456,43 +458,48 @@ object TypeConstraints {
           var conj = List.empty[TypeConstraint];
           val head :: rest = other;
           var unsatisfiable = false;
-          rest.foreach(c => (head, c) match {
-            case (Vec(eTy1), Vec(eTy2))       => conj ::= MultiEquality(List(eTy1, eTy2))
-            case (Stream(eTy1), Stream(eTy2)) => conj ::= MultiEquality(List(eTy1, eTy2))
-            case (Simd(eTy1), Simd(eTy2))     => conj ::= MultiEquality(List(eTy1, eTy2))
-            case (Dict(keyTy1, valueTy1), Dict(keyTy2, valueTy2)) => {
-              conj ::= MultiEquality(List(keyTy1, keyTy2))
-              conj ::= MultiEquality(List(valueTy1, valueTy2))
-            }
-            case (Appender(eTy1, _), Appender(eTy2, _))                                   => conj ::= MultiEquality(List(eTy1, eTy2))
-            case (StreamAppender(eTy1, _), StreamAppender(eTy2, _))                       => conj ::= MultiEquality(List(eTy1, eTy2))
-            case (Merger(eTy1, opTy1, _), Merger(eTy2, opTy2, _)) if opTy1 == opTy2       => conj ::= MultiEquality(List(eTy1, eTy2)) // no inference for opTypes
-            case (VecMerger(eTy1, opTy1, _), VecMerger(eTy2, opTy2, _)) if opTy1 == opTy2 => conj ::= MultiEquality(List(eTy1, eTy2)) // no inference for opTypes
-            case (DictMerger(keyTy1, valueTy1, opTy1, _), DictMerger(keyTy2, valueTy2, opTy2, _)) if opTy1 == opTy2 => { // no inference for opTypes
-              conj ::= MultiEquality(List(keyTy1, keyTy2))
-              conj ::= MultiEquality(List(valueTy1, valueTy2))
-            }
-            case (GroupMerger(keyTy1, valueTy1, _), GroupMerger(keyTy2, valueTy2, _)) => {
-              conj ::= MultiEquality(List(keyTy1, keyTy2))
-              conj ::= MultiEquality(List(valueTy1, valueTy2))
-            }
-            case (Struct(elemTys1), Struct(elemTys2)) if elemTys1.size == elemTys2.size => {
-              elemTys1.zip(elemTys2).foreach {
-                case (eTy1, eTy2) => conj ::= MultiEquality(List(eTy1, eTy2))
+          rest.foreach(c =>
+            (head, c) match {
+              case (Vec(eTy1), Vec(eTy2))       => conj ::= MultiEquality(List(eTy1, eTy2))
+              case (Stream(eTy1), Stream(eTy2)) => conj ::= MultiEquality(List(eTy1, eTy2))
+              case (Simd(eTy1), Simd(eTy2))     => conj ::= MultiEquality(List(eTy1, eTy2))
+              case (Dict(keyTy1, valueTy1), Dict(keyTy2, valueTy2)) => {
+                conj ::= MultiEquality(List(keyTy1, keyTy2))
+                conj ::= MultiEquality(List(valueTy1, valueTy2))
               }
-            }
-            case (Function(params1, returnTy1), Function(params2, returnTy2)) if params1.size == params2.size => {
-              params1.zip(params2).foreach {
-                case (eTy1, eTy2) => conj ::= MultiEquality(List(eTy1, eTy2))
+              case (Appender(eTy1, _), Appender(eTy2, _))             => conj ::= MultiEquality(List(eTy1, eTy2))
+              case (StreamAppender(eTy1, _), StreamAppender(eTy2, _)) => conj ::= MultiEquality(List(eTy1, eTy2))
+              case (Merger(eTy1, opTy1, _), Merger(eTy2, opTy2, _)) if opTy1 == opTy2 =>
+                conj ::= MultiEquality(List(eTy1, eTy2)) // no inference for opTypes
+              case (VecMerger(eTy1, opTy1, _), VecMerger(eTy2, opTy2, _)) if opTy1 == opTy2 =>
+                conj ::= MultiEquality(List(eTy1, eTy2)) // no inference for opTypes
+              case (DictMerger(keyTy1, valueTy1, opTy1, _), DictMerger(keyTy2, valueTy2, opTy2, _))
+                  if opTy1 == opTy2 => { // no inference for opTypes
+                conj ::= MultiEquality(List(keyTy1, keyTy2))
+                conj ::= MultiEquality(List(valueTy1, valueTy2))
               }
-              conj ::= MultiEquality(List(returnTy1, returnTy2))
-            }
-            case (t1, t2) => conj ::= {
-              unsatisfiable = true;
-              MultiEquality(List(t1, t2)); // could mark as impossible, but this gives better error reporting
-            }
+              case (GroupMerger(keyTy1, valueTy1, _), GroupMerger(keyTy2, valueTy2, _)) => {
+                conj ::= MultiEquality(List(keyTy1, keyTy2))
+                conj ::= MultiEquality(List(valueTy1, valueTy2))
+              }
+              case (Struct(elemTys1), Struct(elemTys2)) if elemTys1.size == elemTys2.size => {
+                elemTys1.zip(elemTys2).foreach {
+                  case (eTy1, eTy2) => conj ::= MultiEquality(List(eTy1, eTy2))
+                }
+              }
+              case (Function(params1, returnTy1), Function(params2, returnTy2)) if params1.size == params2.size => {
+                params1.zip(params2).foreach {
+                  case (eTy1, eTy2) => conj ::= MultiEquality(List(eTy1, eTy2))
+                }
+                conj ::= MultiEquality(List(returnTy1, returnTy2))
+              }
+              case (t1, t2) =>
+                conj ::= {
+                  unsatisfiable = true;
+                  MultiEquality(List(t1, t2)); // could mark as impossible, but this gives better error reporting
+                }
           });
-          if (!vars.isEmpty) {
+          if (vars.nonEmpty) {
             conj ::= MultiEquality(head :: vars); // assign all type variables to one instance
             Some(MultiConj(conj))
           } else if (unsatisfiable) { // there are no variables and there was an unsatisfiable case
@@ -516,7 +523,7 @@ object TypeConstraints {
           val (otherVars, otherOthers) = otherMembers.partition(_.isInstanceOf[TypeVariable]);
           val varSet = vars.toSet;
           val otherVarSet = otherVars.toSet;
-          if (!varSet.intersect(otherVarSet).isEmpty) {
+          if (varSet.intersect(otherVarSet).nonEmpty) {
             val newVars = varSet.union(otherVarSet).toList;
             val newMembers = newVars ++ others ++ otherOthers;
             Some(MultiEquality(newMembers))
@@ -607,7 +614,8 @@ object TypeConstraints {
       }
     }
 
-    override def variables(): List[TypeVariable] = List.empty; // could aggregate children...not sure if that makes sense
+    override def variables(): List[TypeVariable] =
+      List.empty; // could aggregate children...not sure if that makes sense
 
     override def merge(c: TypeConstraint): Option[TypeConstraint] = {
       c match {
@@ -630,7 +638,7 @@ object TypeConstraints {
                 acc
               }
               case None => {
-                (c :: acc)
+                c :: acc
               }
             }
           };

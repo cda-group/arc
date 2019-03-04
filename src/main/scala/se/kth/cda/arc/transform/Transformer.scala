@@ -1,9 +1,10 @@
 package se.kth.cda.arc.transform
 
 import se.kth.cda.arc.AST._
-import se.kth.cda.arc.{ Type, BuilderType, Types }
-import scala.util.{ Try, Success, Failure }
-import se.kth.cda.arc.Utils.{ TryVector, OptionTry }
+import se.kth.cda.arc.Utils.TryVector
+import se.kth.cda.arc.{BuilderType, Type}
+
+import scala.util.{Success, Try}
 
 object Transformer {
   type ExprTransformer[Env] = (Expr, Env) => Try[(Option[Expr], Env)];
@@ -13,13 +14,14 @@ object Transformer {
   def exprTransformer[Env](onExpr: ExprTransformer[Env]): Transformer[Env] = {
     new Transformer(onExpr, defaultType)
   }
-  
+
   def exprKindTransformer[Env](onExprKind: ExprKindTransformer[Env]): Transformer[Env] = {
-    val onExpr: ExprTransformer[Env] = (expr, env) => for {
-      (newKindO, env1) <- onExprKind(expr.kind, env)
-    } yield {
-      val newExprO = newKindO.map(newKind => Expr(newKind, expr.ty, expr.ctx));
-      (newExprO, env1)
+    val onExpr: ExprTransformer[Env] = (expr, env) =>
+      for {
+        (newKindO, env1) <- onExprKind(expr.kind, env)
+      } yield {
+        val newExprO = newKindO.map(newKind => Expr(newKind, expr.ty, expr.ctx));
+        (newExprO, env1)
     };
     new Transformer(onExpr, defaultType)
   }
@@ -36,9 +38,7 @@ object Transformer {
   def defaultType[Env]: TypeTransformer[Env] = (_, env) => Success(None, env);
 }
 
-class Transformer[Env](
-  val onExpr: Transformer.ExprTransformer[Env],
-  val onType: Transformer.TypeTransformer[Env]) {
+class Transformer[Env](val onExpr: Transformer.ExprTransformer[Env], val onType: Transformer.TypeTransformer[Env]) {
 
   def transform(e: Expr, env: Env): Try[Option[Expr]] = {
     import ExprKind._;
@@ -49,148 +49,157 @@ class Transformer[Env](
         case (None, newEnv)       => (false, e, newEnv)
       };
       val newExprO: Try[Option[ExprKind]] = newE.kind match {
-        case Let(name, bindingTy, value, body) => for {
-          (newBTyO, env1) <- onType(bindingTy, env0);
-          newValueO <- transform(value, env1);
-          newBodyO <- transform(body, env1)
-        } yield {
-          if (newBTyO.isEmpty && newValueO.isEmpty && newBodyO.isEmpty) {
-            None
-          } else {
-            val newBTy = newBTyO.getOrElse(bindingTy);
-            val newValue = newValueO.getOrElse(value);
-            val newBody = newBodyO.getOrElse(body);
-            Some(Let(name, newBTy, newValue, newBody))
+        case Let(name, bindingTy, value, body) =>
+          for {
+            (newBTyO, env1) <- onType(bindingTy, env0);
+            newValueO <- transform(value, env1);
+            newBodyO <- transform(body, env1)
+          } yield {
+            if (newBTyO.isEmpty && newValueO.isEmpty && newBodyO.isEmpty) {
+              None
+            } else {
+              val newBTy = newBTyO.getOrElse(bindingTy);
+              val newValue = newValueO.getOrElse(value);
+              val newBody = newBodyO.getOrElse(body);
+              Some(Let(name, newBTy, newValue, newBody))
+            }
           }
-        }
         case Lambda(params, body) => transformMap(body, env0)(newBody => Lambda(params, newBody))
         case _: Literal[_]        => Success(None)
-        case Cast(ty, expr) => for {
-          (newTyO, env1) <- onType(ty, env0);
-          newExprO <- transform(expr, env1)
-        } yield {
-          if (newTyO.isEmpty && newExprO.isEmpty) {
-            None
-          } else {
-            val newExpr = newExprO.getOrElse(expr);
-            Some(Cast(ty, expr))
+        case Cast(ty, expr) =>
+          for {
+            (newTyO, env1) <- onType(ty, env0);
+            newExprO <- transform(expr, env1)
+          } yield {
+            if (newTyO.isEmpty && newExprO.isEmpty) {
+              None
+            } else {
+              val newExpr = newExprO.getOrElse(expr);
+              Some(Cast(ty, expr))
+            }
           }
-        }
         case ToVec(expr)       => transformMap(expr, env0)(newExpr => ToVec(newExpr))
         case _: Ident          => Success(None)
         case MakeStruct(elems) => transform(elems, env0, newElems => MakeStruct(newElems))
         case MakeVec(elems)    => transform(elems, env0, newElems => MakeVec(newElems))
-        case If(cond, onTrue, onFalse) => transform((cond, onTrue, onFalse), env0)((newCond, newOnTrue, newOnFalse) =>
-          If(newCond, newOnTrue, newOnFalse))
-        case Select(cond, onTrue, onFalse) => transform((cond, onTrue, onFalse), env0)((newCond, newOnTrue, newOnFalse) =>
-          Select(newCond, newOnTrue, newOnFalse))
-        case Iterate(initial, updateFunc) => transform((initial, updateFunc), env0)((newInitial, newUpdateFunc) =>
-          Iterate(newInitial, newUpdateFunc))
+        case If(cond, onTrue, onFalse) =>
+          transform((cond, onTrue, onFalse), env0)((newCond, newOnTrue, newOnFalse) =>
+            If(newCond, newOnTrue, newOnFalse))
+        case Select(cond, onTrue, onFalse) =>
+          transform((cond, onTrue, onFalse), env0)((newCond, newOnTrue, newOnFalse) =>
+            Select(newCond, newOnTrue, newOnFalse))
+        case Iterate(initial, updateFunc) =>
+          transform((initial, updateFunc), env0)((newInitial, newUpdateFunc) => Iterate(newInitial, newUpdateFunc))
         case Broadcast(expr) => transformMap(expr, env0)(newExpr => Broadcast(newExpr))
         case Serialize(expr) => transformMap(expr, env0)(newExpr => Serialize(newExpr))
-        case Deserialize(ty, expr) => for {
-          (newTyO, env1) <- onType(ty, env0);
-          newExprO <- transform(expr, env1)
-        } yield {
-          if (newTyO.isEmpty && newExprO.isEmpty) {
-            None
-          } else {
-            val newTy = newTyO.getOrElse(ty);
-            val newExpr = newExprO.getOrElse(expr);
-            Some(Deserialize(newTy, newExpr))
+        case Deserialize(ty, expr) =>
+          for {
+            (newTyO, env1) <- onType(ty, env0);
+            newExprO <- transform(expr, env1)
+          } yield {
+            if (newTyO.isEmpty && newExprO.isEmpty) {
+              None
+            } else {
+              val newTy = newTyO.getOrElse(ty);
+              val newExpr = newExprO.getOrElse(expr);
+              Some(Deserialize(newTy, newExpr))
+            }
           }
-        }
-        case CUDF(Left(name), args, returnTy) => for {
-          (newReturnTyO, env1) <- onType(returnTy, env0);
-          newArgsO <- transform(args, env1)
-        } yield {
-          if (newReturnTyO.isEmpty && newArgsO.isEmpty) {
-            None
-          } else {
-            val newReturnTy = newReturnTyO.getOrElse(returnTy);
-            val newArgs = newArgsO.getOrElse(args);
-            Some(CUDF(Left(name), newArgs, newReturnTy))
+        case CUDF(Left(name), args, returnTy) =>
+          for {
+            (newReturnTyO, env1) <- onType(returnTy, env0);
+            newArgsO <- transform(args, env1)
+          } yield {
+            if (newReturnTyO.isEmpty && newArgsO.isEmpty) {
+              None
+            } else {
+              val newReturnTy = newReturnTyO.getOrElse(returnTy);
+              val newArgs = newArgsO.getOrElse(args);
+              Some(CUDF(Left(name), newArgs, newReturnTy))
+            }
           }
-        }
-        case CUDF(Right(pointer), args, returnTy) => for {
-          (newReturnTyO, env1) <- onType(returnTy, env0);
-          newPointerO <- transform(pointer, env1);
-          newArgsO <- transform(args, env1)
-        } yield {
-          if (newReturnTyO.isEmpty && newPointerO.isEmpty && newArgsO.isEmpty) {
-            None
-          } else {
-            val newReturnTy = newReturnTyO.getOrElse(returnTy);
-            val newPointer = newPointerO.getOrElse(pointer);
-            val newArgs = newArgsO.getOrElse(args);
-            Some(CUDF(Right(newPointer), newArgs, newReturnTy))
+        case CUDF(Right(pointer), args, returnTy) =>
+          for {
+            (newReturnTyO, env1) <- onType(returnTy, env0);
+            newPointerO <- transform(pointer, env1);
+            newArgsO <- transform(args, env1)
+          } yield {
+            if (newReturnTyO.isEmpty && newPointerO.isEmpty && newArgsO.isEmpty) {
+              None
+            } else {
+              val newReturnTy = newReturnTyO.getOrElse(returnTy);
+              val newPointer = newPointerO.getOrElse(pointer);
+              val newArgs = newArgsO.getOrElse(args);
+              Some(CUDF(Right(newPointer), newArgs, newReturnTy))
+            }
           }
-        }
-        case Zip(params) => transform(params, env0, newParams => Zip(newParams))
+        case Zip(params)  => transform(params, env0, newParams => Zip(newParams))
         case Hash(params) => transform(params, env0, newParams => Hash(newParams))
         case For(iterator, builder, body) =>
           transform((iterator.data, builder, body), env0)((newData, newBuilder, newBody) =>
             For(iterator.copy(data = newData), newBuilder, newBody))
-        case Len(expr) => transformMap(expr, env0)(newExpr => Len(newExpr))
-        case Lookup(data, key) => transform((data, key), env0)((newData, newKey) =>
-          Lookup(newData, newKey))
-        case Slice(data, index, size) => transform((data, index, size), env0)((newData, newIndex, newSize) =>
-          Slice(newData, newIndex, newSize))
-        case Sort(data, keyFunc) => transform((data, keyFunc), env0)((newData, newKeyFunc) =>
-          Sort(newData, newKeyFunc))
+        case Len(expr)         => transformMap(expr, env0)(newExpr => Len(newExpr))
+        case Lookup(data, key) => transform((data, key), env0)((newData, newKey) => Lookup(newData, newKey))
+        case Slice(data, index, size) =>
+          transform((data, index, size), env0)((newData, newIndex, newSize) => Slice(newData, newIndex, newSize))
+        case Sort(data, keyFunc) => transform((data, keyFunc), env0)((newData, newKeyFunc) => Sort(newData, newKeyFunc))
         case Negate(expr)        => transformMap(expr, env0)(newExpr => Negate(newExpr))
         case Not(expr)           => transformMap(expr, env0)(newExpr => Not(newExpr))
         case UnaryOp(kind, expr) => transformMap(expr, env0)(newExpr => UnaryOp(kind, newExpr))
-        case Merge(builder, value) => transform((builder, value), env0)((newBuilder, newValue) =>
-          Merge(newBuilder, newValue))
+        case Merge(builder, value) =>
+          transform((builder, value), env0)((newBuilder, newValue) => Merge(newBuilder, newValue))
         case Result(expr) => transformMap(expr, env0)(newExpr => Result(newExpr))
-        case NewBuilder(ty, Some(arg)) => for {
-          (newTyO, env1) <- onType(ty, env0);
-          newArgO <- transform(arg, env1)
-        } yield {
-          if (newTyO.isEmpty && newArgO.isEmpty) {
-            None
-          } else {
-            val newTy = newTyO.getOrElse(ty);
-            val newArg = newArgO.getOrElse(arg);
-            Some(NewBuilder(newTy.asInstanceOf[BuilderType], Some(newArg)))
+        case NewBuilder(ty, Some(arg)) =>
+          for {
+            (newTyO, env1) <- onType(ty, env0);
+            newArgO <- transform(arg, env1)
+          } yield {
+            if (newTyO.isEmpty && newArgO.isEmpty) {
+              None
+            } else {
+              val newTy = newTyO.getOrElse(ty);
+              val newArg = newArgO.getOrElse(arg);
+              Some(NewBuilder(newTy.asInstanceOf[BuilderType], Some(newArg)))
+            }
           }
-        }
-        case NewBuilder(ty, None) => for {
-          (newTyO, _) <- onType(ty, env0)
-        } yield {
-          newTyO.map(newTy => NewBuilder(newTy.asInstanceOf[BuilderType], None))
-        }
-        case BinOp(kind, left, right) => transform((left, right), env0)((newLeft, newRight) =>
-          BinOp(kind, newLeft, newRight))
-        case Application(funcExpr, args) => for {
-          newFuncExprO <- transform(funcExpr, env0);
-          newArgsO <- transform(args, env0)
-        } yield {
-          if (newFuncExprO.isEmpty && newArgsO.isEmpty) {
-            None
-          } else {
-            val newFuncExpr = newFuncExprO.getOrElse(funcExpr);
-            val newArgs = newArgsO.getOrElse(args);
-            Some(Application(newFuncExpr, newArgs))
+        case NewBuilder(ty, None) =>
+          for {
+            (newTyO, _) <- onType(ty, env0)
+          } yield {
+            newTyO.map(newTy => NewBuilder(newTy.asInstanceOf[BuilderType], None))
           }
-        }
-        case Projection(structExpr, index) => transformMap(structExpr, env0)(newStructExpr =>
-          Projection(newStructExpr, index))
-        case Ascription(expr, ty) => for {
-          (newTyO, env1) <- onType(ty, env0);
-          newExprO <- transform(expr, env1)
-        } yield {
-          if (newTyO.isEmpty && newExprO.isEmpty) {
-            None
-          } else {
-            val newTy = newTyO.getOrElse(ty);
-            val newExpr = newExprO.getOrElse(expr);
-            Some(Ascription(newExpr, newTy))
+        case BinOp(kind, left, right) =>
+          transform((left, right), env0)((newLeft, newRight) => BinOp(kind, newLeft, newRight))
+        case Application(funcExpr, args) =>
+          for {
+            newFuncExprO <- transform(funcExpr, env0);
+            newArgsO <- transform(args, env0)
+          } yield {
+            if (newFuncExprO.isEmpty && newArgsO.isEmpty) {
+              None
+            } else {
+              val newFuncExpr = newFuncExprO.getOrElse(funcExpr);
+              val newArgs = newArgsO.getOrElse(args);
+              Some(Application(newFuncExpr, newArgs))
+            }
           }
-        }
+        case Projection(structExpr, index) =>
+          transformMap(structExpr, env0)(newStructExpr => Projection(newStructExpr, index))
+        case Ascription(expr, ty) =>
+          for {
+            (newTyO, env1) <- onType(ty, env0);
+            newExprO <- transform(expr, env1)
+          } yield {
+            if (newTyO.isEmpty && newExprO.isEmpty) {
+              None
+            } else {
+              val newTy = newTyO.getOrElse(ty);
+              val newExpr = newExprO.getOrElse(expr);
+              Some(Ascription(newExpr, newTy))
+            }
+          }
       };
-      newExprO.map{
+      newExprO.map {
         case Some(ek) => Some(Expr(ek, newE.ty, newE.ctx));
         case None     => if (changed) Some(newE) else None;
       }
@@ -198,7 +207,7 @@ class Transformer[Env](
 
   }
 
-  def transformMap(e: Expr, env: Env)(placer: (Expr) => ExprKind): Try[Option[ExprKind]] = {
+  def transformMap(e: Expr, env: Env)(placer: Expr => ExprKind): Try[Option[ExprKind]] = {
     transform(e, env).map(_.map(placer))
   }
 
@@ -245,6 +254,7 @@ class Transformer[Env](
     }
 
   }
-  def transform(elems: Vector[Expr], env: Env, placer: (Vector[Expr]) => ExprKind): Try[Option[ExprKind]] =
+
+  def transform(elems: Vector[Expr], env: Env, placer: Vector[Expr] => ExprKind): Try[Option[ExprKind]] =
     transform(elems, env).map(_.map(placer));
 }

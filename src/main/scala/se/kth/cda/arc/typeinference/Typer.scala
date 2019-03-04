@@ -1,11 +1,13 @@
 package se.kth.cda.arc.typeinference
 
+import se.kth.cda.arc.AST._
+import se.kth.cda.arc.Utils.{OptionTry, TryVector}
 import se.kth.cda.arc._
-import AST._
-import scala.util.{ Try, Success, Failure }
-import Utils.{ TryVector, OptionTry }
+
+import scala.util.{Success, Try}
 
 object Typer {
+
   def applyTypes(e: Expr, solution: ConstraintSolver.Result): Try[Expr] = {
     //println(s"Solution:\n${solution.describe}");
     applyTypes(e, solution.typeSubstitutions).flatMap { appliedExpr =>
@@ -72,85 +74,104 @@ object Typer {
         substituteTypes(Vector(cond, onTrue, onFalse), substitute) {
           case Vector(newCond, newOnTrue, newOnFalse) => Select(newCond, newOnTrue, newOnFalse)
         }
-      case Iterate(initial, updateFunc) => for {
-        newInitial <- substituteTypes(initial, substitute);
-        newUpdateFunc <- substituteTypes(updateFunc, substitute)
-      } yield Iterate(newInitial, newUpdateFunc)
-      case Broadcast(expr: Expr) => for {
-        newExpr <- substituteTypes(expr, substitute)
-      } yield Broadcast(newExpr)
-      case Serialize(expr) => for {
-        newExpr <- substituteTypes(expr, substitute)
-      } yield Serialize(newExpr)
-      case Deserialize(ty, expr) => for {
-        newTy <- substitute(ty);
-        newExpr <- substituteTypes(expr, substitute)
-      } yield Deserialize(newTy, newExpr)
-      case CUDF(Left(name), args, returnType) => for {
-        newArgs <- substituteTypes(args, substitute)(identity);
-        newReturnType <- substitute(returnType)
-      } yield CUDF(Left(name), newArgs, newReturnType)
-      case CUDF(Right(pointer), args, returnType) => for {
-        newPointer <- substituteTypes(pointer, substitute);
-        newArgs <- substituteTypes(args, substitute)(identity);
-        newReturnType <- substitute(returnType)
-      } yield CUDF(Right(newPointer), newArgs, newReturnType)
-      case Zip(elems) => substituteTypes(elems, substitute)(newElems => Zip(newElems))
+      case Iterate(initial, updateFunc) =>
+        for {
+          newInitial <- substituteTypes(initial, substitute);
+          newUpdateFunc <- substituteTypes(updateFunc, substitute)
+        } yield Iterate(newInitial, newUpdateFunc)
+      case Broadcast(expr: Expr) =>
+        for {
+          newExpr <- substituteTypes(expr, substitute)
+        } yield Broadcast(newExpr)
+      case Serialize(expr) =>
+        for {
+          newExpr <- substituteTypes(expr, substitute)
+        } yield Serialize(newExpr)
+      case Deserialize(ty, expr) =>
+        for {
+          newTy <- substitute(ty);
+          newExpr <- substituteTypes(expr, substitute)
+        } yield Deserialize(newTy, newExpr)
+      case CUDF(Left(name), args, returnType) =>
+        for {
+          newArgs <- substituteTypes(args, substitute)(identity);
+          newReturnType <- substitute(returnType)
+        } yield CUDF(Left(name), newArgs, newReturnType)
+      case CUDF(Right(pointer), args, returnType) =>
+        for {
+          newPointer <- substituteTypes(pointer, substitute);
+          newArgs <- substituteTypes(args, substitute)(identity);
+          newReturnType <- substitute(returnType)
+        } yield CUDF(Right(newPointer), newArgs, newReturnType)
+      case Zip(elems)  => substituteTypes(elems, substitute)(newElems => Zip(newElems))
       case Hash(elems) => substituteTypes(elems, substitute)(newElems => Hash(newElems))
-      case For(iterator, builder, body) => for {
-        newIterator <- substituteTypes(iterator, substitute);
-        newBuilder <- substituteTypes(builder, substitute);
-        newBody <- substituteTypes(body, substitute)
-      } yield For (newIterator, newBuilder, newBody)
-      case Len(expr) => for {
-        newExpr <- substituteTypes(expr, substitute)
-      } yield Len(newExpr)
-      case Lookup(data, key) => for {
-        newData <- substituteTypes(data, substitute);
-        newKey <- substituteTypes(key, substitute)
-      } yield Lookup(newData, newKey)
+      case For(iterator, builder, body) =>
+        for {
+          newIterator <- substituteTypes(iterator, substitute);
+          newBuilder <- substituteTypes(builder, substitute);
+          newBody <- substituteTypes(body, substitute)
+        } yield For(newIterator, newBuilder, newBody)
+      case Len(expr) =>
+        for {
+          newExpr <- substituteTypes(expr, substitute)
+        } yield Len(newExpr)
+      case Lookup(data, key) =>
+        for {
+          newData <- substituteTypes(data, substitute);
+          newKey <- substituteTypes(key, substitute)
+        } yield Lookup(newData, newKey)
       case Slice(data, index, size) => {
         substituteTypes(Vector(data, index, size), substitute) {
           case Vector(newData, newIndex, newSize) => Slice(newData, newIndex, newSize)
         }
       }
-      case Sort(data, keyFunc) => for {
-        newData <- substituteTypes(data, substitute);
-        newKeyFunc <- substituteTypes(keyFunc, substitute)
-      } yield Sort(newData, newKeyFunc)
-      case Negate(inner) => for {
-        newInner <- substituteTypes(inner, substitute)
-      } yield Negate(newInner)
+      case Sort(data, keyFunc) =>
+        for {
+          newData <- substituteTypes(data, substitute);
+          newKeyFunc <- substituteTypes(keyFunc, substitute)
+        } yield Sort(newData, newKeyFunc)
+      case Negate(inner) =>
+        for {
+          newInner <- substituteTypes(inner, substitute)
+        } yield Negate(newInner)
 
-      case Not(inner) => for {
-        newInner <- substituteTypes(inner, substitute)
-      } yield Not(newInner)
+      case Not(inner) =>
+        for {
+          newInner <- substituteTypes(inner, substitute)
+        } yield Not(newInner)
 
-      case UnaryOp(kind, expr) => for {
-        newExpr <- substituteTypes(expr, substitute)
-      } yield UnaryOp(kind, newExpr)
-      case Merge(builder, value) => for {
-        newBuilder <- substituteTypes(builder, substitute);
-        newValue <- substituteTypes(value, substitute)
-      } yield Merge(newBuilder, newValue)
-      case Result(expr) => for {
-        newExpr <- substituteTypes(expr, substitute)
-      } yield Result(newExpr)
-      case NewBuilder(ty, arg) => for {
-        newTy <- substitute(ty);
-        newArg <- arg.map(a => substituteTypes(a, substitute)).invert
-      } yield NewBuilder(newTy.asInstanceOf[BuilderType], newArg)
-      case BinOp(kind, left, right) => for {
-        newLeft <- substituteTypes(left, substitute);
-        newRight <- substituteTypes(right, substitute)
-      } yield BinOp(kind, newLeft, newRight)
-      case Application(funcExpr, params) => for {
-        newFunc <- substituteTypes(funcExpr, substitute);
-        newParams <- substituteTypes(params, substitute)(identity)
-      } yield Application(newFunc, newParams)
-      case Projection(structExpr: Expr, index: Int) => for {
-        newStruct <- substituteTypes(structExpr, substitute)
-      } yield Projection(newStruct, index)
+      case UnaryOp(kind, expr) =>
+        for {
+          newExpr <- substituteTypes(expr, substitute)
+        } yield UnaryOp(kind, newExpr)
+      case Merge(builder, value) =>
+        for {
+          newBuilder <- substituteTypes(builder, substitute);
+          newValue <- substituteTypes(value, substitute)
+        } yield Merge(newBuilder, newValue)
+      case Result(expr) =>
+        for {
+          newExpr <- substituteTypes(expr, substitute)
+        } yield Result(newExpr)
+      case NewBuilder(ty, arg) =>
+        for {
+          newTy <- substitute(ty);
+          newArg <- arg.map(a => substituteTypes(a, substitute)).invert
+        } yield NewBuilder(newTy.asInstanceOf[BuilderType], newArg)
+      case BinOp(kind, left, right) =>
+        for {
+          newLeft <- substituteTypes(left, substitute);
+          newRight <- substituteTypes(right, substitute)
+        } yield BinOp(kind, newLeft, newRight)
+      case Application(funcExpr, params) =>
+        for {
+          newFunc <- substituteTypes(funcExpr, substitute);
+          newParams <- substituteTypes(params, substitute)(identity)
+        } yield Application(newFunc, newParams)
+      case Projection(structExpr: Expr, index: Int) =>
+        for {
+          newStruct <- substituteTypes(structExpr, substitute)
+        } yield Projection(newStruct, index)
       case Ascription(inner, ty) => {
         for {
           newInner <- substituteTypes(inner, substitute)

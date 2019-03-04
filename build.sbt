@@ -7,7 +7,7 @@ organization := "se.kth.cda"
 
 version := "0.1.0-SNAPSHOT"
 
-scalaVersion := "2.12.4"
+scalaVersion := "2.12.7"
 
 scalacOptions ++= Seq("-deprecation","-feature")
 

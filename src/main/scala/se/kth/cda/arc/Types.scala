@@ -14,6 +14,7 @@ sealed trait BuilderType extends CompositeType {
   def mergeType: Type;
   def argType: Type;
 }
+
 object Types {
 
   private var variableCounter: Int = 0;
@@ -96,6 +97,7 @@ object Types {
     override def render: String = s"|${params.map(_.render).mkString(",")}|(${returnTy.render})";
     override def isComplete: Boolean = params.forall(_.isComplete) && returnTy.isComplete;
   }
+
   object Builders {
     case class Appender(elemTy: Type, annotations: Option[AST.Annotations]) extends BuilderType {
       override def render: String = s"appender[${elemTy.render}]";
@@ -118,7 +120,8 @@ object Types {
       override def mergeType: Type = elemTy;
       override def argType: Type = UnitT; // TODO optionally allows elemTy
     }
-    case class DictMerger(keyTy: Type, valueTy: Type, opTy: OpType, annotations: Option[AST.Annotations]) extends BuilderType {
+    case class DictMerger(keyTy: Type, valueTy: Type, opTy: OpType, annotations: Option[AST.Annotations])
+        extends BuilderType {
       override def render: String = s"merger[${keyTy.render},${valueTy.render},${opTy.render}]";
       override def isComplete: Boolean = keyTy.isComplete && valueTy.isComplete;
       override def resultType: Type = Dict(keyTy, valueTy);
@@ -145,6 +148,7 @@ object Types {
 sealed trait OpType {
   def render: String;
 }
+
 object OpTypes {
   case object Sum extends OpType {
     override def render: String = "+";

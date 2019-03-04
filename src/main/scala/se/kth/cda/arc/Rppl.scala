@@ -7,6 +7,7 @@ import se.kth.cda.arc.transform.MacroExpansion
 
 // Read-Parse-Print Loop
 object Rppl {
+
   def main(args: Array[String]): Unit = {
     // create a CharStream that reads from standard input
     var active = true;
@@ -15,7 +16,7 @@ object Rppl {
         Console.out.print("=> ");
         val line = Console.in.readLine();
         if (line == null) {
-          return ; // exit on EOF
+          return; // exit on EOF
         }
         val input = CharStreams.fromString(line);
 

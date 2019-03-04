@@ -1,12 +1,14 @@
 package se.kth.cda.arc
 
 import java.io.InputStream
-import scala.util.{ Try, Success, Failure }
+
 import org.antlr.v4.runtime._
-import org.antlr.v4.runtime.tree._
-import AST._
+import se.kth.cda.arc.AST._
+
+import scala.util.Try
 
 object Arc {
+
   def macros(in: InputStream): Try[List[Macro]] = {
     val (translator, ec) = translatorForStream(in);
     ec.map(Try(translator.macros()))

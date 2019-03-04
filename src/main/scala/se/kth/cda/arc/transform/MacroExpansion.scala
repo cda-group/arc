@@ -1,22 +1,24 @@
 package se.kth.cda.arc.transform
 
-import se.kth.cda.arc.Arc
 import se.kth.cda.arc.AST._
-import scala.util.{ Try, Success, Failure }
-import scala.collection.mutable
+import se.kth.cda.arc.Arc
+
+import scala.util.{Failure, Success, Try}
 
 object MacroExpansion {
 
   case class Env(macros: Map[String, Macro], symbols: Map[String, Int], params: Map[String, Expr]) {
+
     def +(m: Macro): Try[Env] = {
       val name = m.name.text;
       if (macros.contains(name)) {
-        return Failure(new MacroException(s" Macro names must be unique! There are two entries for macro $name."))
+        Failure(new MacroException(s" Macro names must be unique! There are two entries for macro $name."))
       } else {
         val newMacros = macros + (name -> m);
         Success(this.copy(macros = newMacros))
       }
     }
+
     def ++(ms: Iterable[Macro]): Try[Env] = {
       var newMacros = macros;
       ms.foreach { m =>
@@ -29,21 +31,24 @@ object MacroExpansion {
       }
       Success(this.copy(macros = newMacros))
     }
+
     def paramsAdd(ps: Iterable[(String, Expr)]): Env = {
       this.copy(params = params ++ ps)
     }
+
     //def paramsDrop(): Env = this.copy(params = Map.empty);
     def addSymbol(sym: Symbol): Env = {
       val name = sym.name;
       symbols.get(name) match {
         case Some(_) => {
-          throw new MacroException(s"Symbol is already in store: ${name}!");
+          throw new MacroException(s"Symbol is already in store: $name!");
         }
         case None => {
           this.copy(symbols = symbols + (name -> 0))
         }
       }
     }
+
     def addAndRename(sym: Symbol): (Env, Option[Symbol]) = {
       val name = sym.name;
       symbols.get(name) match {
@@ -58,6 +63,7 @@ object MacroExpansion {
         }
       }
     }
+
     def renameSymbol(sym: Symbol): Option[Symbol] = {
       val name = sym.name;
       symbols.get(name) match {
@@ -66,6 +72,7 @@ object MacroExpansion {
         case None                      => None
       }
     }
+
     def dropSymbol(sym: Symbol): Env = {
       val name = sym.name;
       symbols.get(name) match {
@@ -77,7 +84,7 @@ object MacroExpansion {
           this.copy(symbols = symbols + (name -> newScope))
         }
         case None => {
-          throw new MacroException(s"Inconsistent symbol store: Failed to remove ${name}!");
+          throw new MacroException(s"Inconsistent symbol store: Failed to remove $name!");
         }
       }
     }
@@ -106,7 +113,7 @@ object MacroExpansion {
   }
 
   private def expand(macros: List[Macro], expr: Expr): Try[Expr] = {
-    (this.emptyEnv ++ macros) flatMap { env =>
+    (this.emptyEnv ++ macros).flatMap { env =>
       expand(env, expr)
     }
   }
@@ -147,11 +154,15 @@ object MacroExpansion {
             env.macros.get(sym.text) match {
               case Some(m) =>
                 if (m.parameters.size != args.size) {
-                  Failure(new MacroException(s"Macro ${m.name.text} takes ${m.parameters.size} parameters, was only given ${args.size} arguments at l.${sym.line}."))
+                  Failure(new MacroException(
+                    s"Macro ${m.name.text} takes ${m.parameters.size} parameters, was only given ${args.size} arguments at l.${sym.line}."))
                 } else {
-                  val bindings = m.parameters.zip(args).map {
-                    case (param, arg) => (param.text -> arg)
-                  }.toMap;
+                  val bindings = m.parameters
+                    .zip(args)
+                    .map {
+                      case (param, arg) => param.text -> arg
+                    }
+                    .toMap;
                   for {
                     bodyRenamed <- alphaC.transform(m.body, env);
                     bodyTransformed <- bodyT.transform(bodyRenamed.getOrElse(m.body), env.paramsAdd(bindings))
@@ -185,25 +196,21 @@ object MacroExpansion {
   def alphaConvert(expr: Expr, env: Env): Try[(Option[Expr], Env)] = {
     import ExprKind._;
     expr.kind match {
-      case Let(name, bty, v, b) => {
+      case Let(name, bty, v, b) =>
         env.addAndRename(name) match {
-          case (newEnv, Some(newSymb)) => {
+          case (newEnv, Some(newSymb)) =>
             Success((Some(Expr(Let(name, bty, v, b), expr.ty, expr.ctx)), newEnv))
-          }
-          case (newEnv, None) => {
+          case (newEnv, None) =>
             Success((None, newEnv))
-          }
         }
-      }
-      case Lambda(params, body) => {
+      case Lambda(params, body) =>
         val (newEnv, newParamsO) = params.foldLeft((env, Vector.empty[Option[Parameter]])) { (acc, p) =>
           acc match {
-            case (accEnv, accParams) => {
+            case (accEnv, accParams) =>
               accEnv.addAndRename(p.name) match {
                 case (newEnv, Some(newSymb)) => (newEnv, accParams :+ Some(Parameter(newSymb, p.ty)))
                 case (newEnv, None)          => (newEnv, accParams :+ None)
               }
-            }
           }
         };
         if (newParamsO.forall(_.isEmpty)) {
@@ -216,13 +223,11 @@ object MacroExpansion {
           val lam = Lambda(newParams, body);
           Success((Some(Expr(lam, expr.ty, expr.ctx)), newEnv))
         }
-      }
-      case Ident(sym) => {
+      case Ident(sym) =>
         env.renameSymbol(sym) match {
           case Some(newSym) => Success((Some(Expr(Ident(newSym), expr.ty, expr.ctx)), env))
           case None         => Success((None, env))
         }
-      }
       case _ => Success((None, env))
     }
   }

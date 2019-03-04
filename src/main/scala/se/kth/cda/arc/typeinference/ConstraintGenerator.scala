@@ -1,11 +1,11 @@
 package se.kth.cda.arc.typeinference
 
+import se.kth.cda.arc.AST._
+import se.kth.cda.arc.Types._
+import se.kth.cda.arc.Utils.TryVector
 import se.kth.cda.arc._
-import AST._
-import Types._
-import scala.collection.mutable
-import scala.util.{ Try, Success, Failure }
-import Utils.TryVector
+
+import scala.util.{Failure, Success, Try}
 
 class ConstraintGenerator(val rootExpr: Expr) {
   // top level conjuction
@@ -48,8 +48,7 @@ class ConstraintGenerator(val rootExpr: Expr) {
         val bodyTy = body.ty;
         val lambdaTy = Types.Function(paramTypes, bodyTy);
         constrainEq(e.ty, lambdaTy);
-        discoverDownMap(body, env ++ params.map(p => (p.name -> p.ty)).toList)(newBody =>
-          Lambda(params, newBody))
+        discoverDownMap(body, env ++ params.map(p => p.name -> p.ty).toList)(newBody => Lambda(params, newBody))
       }
       case Cast(ty, inner) => {
         constrainEq(e.ty, ty);
@@ -167,13 +166,13 @@ class ConstraintGenerator(val rootExpr: Expr) {
           val end = iterator.end.get;
           val stride = iterator.stride.get;
           constrainEq(start.ty, end.ty, stride.ty, I64);
-          discoverDown(Vector(start, end, stride), env).map(_.map{ case Vector(s, e, st) => (s, e, st) })
+          discoverDown(Vector(start, end, stride), env).map(_.map { case Vector(s, e, st) => (s, e, st) })
         } else Success(None);
         val shsts = if (iterator.shape.isDefined) { // shape and strides must be defined together
           val shape = iterator.shape.get;
           val strides = iterator.strides.get;
           constrainEq(shape.ty, strides.ty, Vec(I64));
-          discoverDown(Vector(shape, strides), env).map(_.map{ case Vector(sh, sts) => (sh, sts) })
+          discoverDown(Vector(shape, strides), env).map(_.map { case Vector(sh, sts) => (sh, sts) })
         } else Success(None);
         val keyby = if (iterator.keyFunc.isDefined) {
           val keyFunc = iterator.keyFunc.get;
@@ -425,8 +424,10 @@ class ConstraintGenerator(val rootExpr: Expr) {
       case (Literal.Bool(_, _), Bool)       => Success(l)
       case (Literal.UnitL(_, _), UnitT)     => Success(l)
       case (Literal.StringL(_, _), StringT) => Success(l)
-      case _ => Failure(new TypingException(
-        s"Invalid literal ascription ${l.raw}:${ty.render}! Maybe a cast is what you are looking for?"))
+      case _ =>
+        Failure(
+          new TypingException(
+            s"Invalid literal ascription ${l.raw}:${ty.render}! Maybe a cast is what you are looking for?"))
     };
     res.map(l => Some(l))
   }
@@ -463,7 +464,11 @@ class ConstraintGenerator(val rootExpr: Expr) {
   private def constrainFloat(t: Type): Unit = {
     constrainNorm(TypeConstraints.IsFloat(t))
   }
-  private def constrainBuilder(t: Type, mergeType: Type = Types.unknown, resultType: Type = Types.unknown, argType: Type = Types.unknown): Unit = {
+  private def constrainBuilder(
+      t: Type,
+      mergeType: Type = Types.unknown,
+      resultType: Type = Types.unknown,
+      argType: Type = Types.unknown): Unit = {
     constrainNorm(TypeConstraints.BuilderKind(t, mergeType, resultType, argType))
   }
   private def constrainLookup(t: Type, indexType: Type, resultType: Type): Unit = {
