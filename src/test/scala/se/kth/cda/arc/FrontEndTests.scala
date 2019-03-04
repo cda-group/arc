@@ -9,10 +9,10 @@ class FrontEndTests extends FunSuite with Matchers {
 
   implicit class StringTokenAux(val input: String) {
     def analyze: String = {
-      val inputStream = CharStreams.fromString(input);
-      val lexer = new ArcLexer(inputStream);
-      val tokenStream = new CommonTokenStream(lexer);
-      val parser = new ArcParser(tokenStream);
+      val inputStream = CharStreams.fromString(input)
+      val lexer = new ArcLexer(inputStream)
+      val tokenStream = new CommonTokenStream(lexer)
+      val parser = new ArcParser(tokenStream)
       val tree = parser.expr()
       val translator = ASTTranslator(parser)
       val ast = translator.translate(tree)

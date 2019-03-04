@@ -37,19 +37,19 @@ object Typer {
   }
 
   private def substituteTypes(kind: ExprKind, substitute: Substituter): Try[ExprKind] = {
-    import ExprKind._;
+    import ExprKind._
 
     kind match {
       case Let(name, bindingTy, value, body) => {
         for {
-          newBindingTy <- substitute(bindingTy);
-          newValue <- substituteTypes(value, substitute);
+          newBindingTy <- substitute(bindingTy)
+          newValue <- substituteTypes(value, substitute)
           newBody <- substituteTypes(body, substitute)
         } yield Let(name, newBindingTy, newValue, newBody)
       }
       case Lambda(params, body) => {
         for {
-          newParams <- params.map(p => substitute(p.ty).map(newTy => Parameter(p.name, newTy))).sequence;
+          newParams <- params.map(p => substitute(p.ty).map(newTy => Parameter(p.name, newTy))).sequence
           newBody <- substituteTypes(body, substitute)
         } yield Lambda(newParams, newBody)
       }
@@ -76,7 +76,7 @@ object Typer {
         }
       case Iterate(initial, updateFunc) =>
         for {
-          newInitial <- substituteTypes(initial, substitute);
+          newInitial <- substituteTypes(initial, substitute)
           newUpdateFunc <- substituteTypes(updateFunc, substitute)
         } yield Iterate(newInitial, newUpdateFunc)
       case Broadcast(expr: Expr) =>
@@ -89,26 +89,26 @@ object Typer {
         } yield Serialize(newExpr)
       case Deserialize(ty, expr) =>
         for {
-          newTy <- substitute(ty);
+          newTy <- substitute(ty)
           newExpr <- substituteTypes(expr, substitute)
         } yield Deserialize(newTy, newExpr)
       case CUDF(Left(name), args, returnType) =>
         for {
-          newArgs <- substituteTypes(args, substitute)(identity);
+          newArgs <- substituteTypes(args, substitute)(identity)
           newReturnType <- substitute(returnType)
         } yield CUDF(Left(name), newArgs, newReturnType)
       case CUDF(Right(pointer), args, returnType) =>
         for {
-          newPointer <- substituteTypes(pointer, substitute);
-          newArgs <- substituteTypes(args, substitute)(identity);
+          newPointer <- substituteTypes(pointer, substitute)
+          newArgs <- substituteTypes(args, substitute)(identity)
           newReturnType <- substitute(returnType)
         } yield CUDF(Right(newPointer), newArgs, newReturnType)
       case Zip(elems)  => substituteTypes(elems, substitute)(newElems => Zip(newElems))
       case Hash(elems) => substituteTypes(elems, substitute)(newElems => Hash(newElems))
       case For(iterator, builder, body) =>
         for {
-          newIterator <- substituteTypes(iterator, substitute);
-          newBuilder <- substituteTypes(builder, substitute);
+          newIterator <- substituteTypes(iterator, substitute)
+          newBuilder <- substituteTypes(builder, substitute)
           newBody <- substituteTypes(body, substitute)
         } yield For(newIterator, newBuilder, newBody)
       case Len(expr) =>
@@ -117,7 +117,7 @@ object Typer {
         } yield Len(newExpr)
       case Lookup(data, key) =>
         for {
-          newData <- substituteTypes(data, substitute);
+          newData <- substituteTypes(data, substitute)
           newKey <- substituteTypes(key, substitute)
         } yield Lookup(newData, newKey)
       case Slice(data, index, size) => {
@@ -127,7 +127,7 @@ object Typer {
       }
       case Sort(data, keyFunc) =>
         for {
-          newData <- substituteTypes(data, substitute);
+          newData <- substituteTypes(data, substitute)
           newKeyFunc <- substituteTypes(keyFunc, substitute)
         } yield Sort(newData, newKeyFunc)
       case Negate(inner) =>
@@ -146,7 +146,7 @@ object Typer {
         } yield UnaryOp(kind, newExpr)
       case Merge(builder, value) =>
         for {
-          newBuilder <- substituteTypes(builder, substitute);
+          newBuilder <- substituteTypes(builder, substitute)
           newValue <- substituteTypes(value, substitute)
         } yield Merge(newBuilder, newValue)
       case Result(expr) =>
@@ -155,17 +155,17 @@ object Typer {
         } yield Result(newExpr)
       case NewBuilder(ty, arg) =>
         for {
-          newTy <- substitute(ty);
+          newTy <- substitute(ty)
           newArg <- arg.map(a => substituteTypes(a, substitute)).invert
         } yield NewBuilder(newTy.asInstanceOf[BuilderType], newArg)
       case BinOp(kind, left, right) =>
         for {
-          newLeft <- substituteTypes(left, substitute);
+          newLeft <- substituteTypes(left, substitute)
           newRight <- substituteTypes(right, substitute)
         } yield BinOp(kind, newLeft, newRight)
       case Application(funcExpr, params) =>
         for {
-          newFunc <- substituteTypes(funcExpr, substitute);
+          newFunc <- substituteTypes(funcExpr, substitute)
           newParams <- substituteTypes(params, substitute)(identity)
         } yield Application(newFunc, newParams)
       case Projection(structExpr: Expr, index: Int) =>
@@ -183,12 +183,12 @@ object Typer {
 
   private def substituteTypes(iter: Iter, substitute: Substituter): Try[Iter] = {
     for {
-      newData <- substituteTypes(iter.data, substitute);
-      newStart <- iter.start.map(v => substituteTypes(v, substitute)).invert;
-      newEnd <- iter.end.map(v => substituteTypes(v, substitute)).invert;
-      newStride <- iter.stride.map(v => substituteTypes(v, substitute)).invert;
-      newStrides <- iter.strides.map(v => substituteTypes(v, substitute)).invert;
-      newShape <- iter.shape.map(v => substituteTypes(v, substitute)).invert;
+      newData <- substituteTypes(iter.data, substitute)
+      newStart <- iter.start.map(v => substituteTypes(v, substitute)).invert
+      newEnd <- iter.end.map(v => substituteTypes(v, substitute)).invert
+      newStride <- iter.stride.map(v => substituteTypes(v, substitute)).invert
+      newStrides <- iter.strides.map(v => substituteTypes(v, substitute)).invert
+      newShape <- iter.shape.map(v => substituteTypes(v, substitute)).invert
       newKeyFunc <- iter.keyFunc.map(v => substituteTypes(v, substitute)).invert
     } yield Iter(iter.kind, newData, newStart, newEnd, newStride, newStrides, newShape, newKeyFunc)
   }

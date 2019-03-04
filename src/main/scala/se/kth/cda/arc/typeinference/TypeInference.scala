@@ -9,16 +9,17 @@ object TypeInference {
 
   def solve(expr: Expr): Try[Expr] = {
     for {
-      (constraints, updatedExpr) <- new ConstraintGenerator(expr).generate();
-      result <- ConstraintSolver.solve(constraints);
+      (constraints, updatedExpr) <- new ConstraintGenerator(expr).generate()
+      result <- ConstraintSolver.solve(constraints)
       finalExpr <- Typer.applyTypes(updatedExpr, result)
     } yield finalExpr
   }
 }
 
 class TypingStore(stack: List[(Symbol, Type)]) {
-  def +(t: (Symbol, Type)): TypingStore = new TypingStore(t :: stack);
-  def ++(l: List[(Symbol, Type)]): TypingStore = new TypingStore(stack ::: l);
+  def +(t: (Symbol, Type)): TypingStore = new TypingStore(t :: stack)
+
+  def ++(l: List[(Symbol, Type)]): TypingStore = new TypingStore(stack ::: l)
 
   def lookup(needle: Symbol): Option[Type] = {
     stack.foreach {
@@ -30,7 +31,7 @@ class TypingStore(stack: List[(Symbol, Type)]) {
 }
 
 object TypingStore {
-  def empty(): TypingStore = new TypingStore(List.empty);
+  def empty(): TypingStore = new TypingStore(List.empty)
 }
 
 class TypingException(message: String) extends Exception(message) {

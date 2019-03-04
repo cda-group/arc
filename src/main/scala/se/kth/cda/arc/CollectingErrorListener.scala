@@ -5,7 +5,7 @@ import org.antlr.v4.runtime.tree._
 import scala.util.{Failure, Success, Try}
 
 class CollectingErrorListener extends BaseErrorListener {
-  private var errors: List[String] = List.empty;
+  private var errors: List[String] = List.empty
 
   override def syntaxError(
       recognizer: Recognizer[_, _],
@@ -14,12 +14,13 @@ class CollectingErrorListener extends BaseErrorListener {
       charPositionInLine: Int,
       msg: String,
       e: RecognitionException): Unit = {
-    val errorMsg = s"line $line:$charPositionInLine $msg";
-    errors ::= errorMsg;
+    val errorMsg = s"line $line:$charPositionInLine $msg"
+    errors ::= errorMsg
   }
 
-  def hasErrors: Boolean = errors.nonEmpty;
-  def getErrors: List[String] = errors.reverse;
+  def hasErrors: Boolean = errors.nonEmpty
+
+  def getErrors: List[String] = errors.reverse
 
   def map[T](res: Try[T]): Try[T] = res match {
     case Success(t) =>
@@ -29,8 +30,8 @@ class CollectingErrorListener extends BaseErrorListener {
         Success(t)
       }
     case Failure(f) =>
-      val newF = new ParsingException(getErrors);
-      newF.addSuppressed(f);
+      val newF = new ParsingException(getErrors)
+      newF.addSuppressed(f)
       Failure(newF)
   }
 }

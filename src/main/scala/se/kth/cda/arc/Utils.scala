@@ -9,16 +9,16 @@ object Utils {
 
   class StringBuilderStream {
 
-    private val baos = new ByteArrayOutputStream();
-    lazy val ps = new PrintStream(baos, true, "UTF-8");
+    private val baos = new ByteArrayOutputStream()
+    lazy val ps = new PrintStream(baos, true, "UTF-8")
 
-    def asPrintStream(): PrintStream = ps;
+    def asPrintStream(): PrintStream = ps
 
     def result(): String = {
-      ps.flush();
-      val data = new String(baos.toByteArray, StandardCharsets.UTF_8);
-      ps.close();
-      baos.close();
+      ps.flush()
+      val data = new String(baos.toByteArray, StandardCharsets.UTF_8)
+      ps.close()
+      baos.close()
       data
     }
   }
@@ -26,7 +26,7 @@ object Utils {
   implicit class TryVector[T](tl: Vector[Try[T]]) {
 
     def sequence: Try[Vector[T]] = {
-      val (successes, failures) = tl.partition(_.isSuccess);
+      val (successes, failures) = tl.partition(_.isSuccess)
       if (failures.isEmpty) {
         Success(successes.flatMap(_.toOption))
       } else {
