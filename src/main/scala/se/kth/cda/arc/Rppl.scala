@@ -1,9 +1,8 @@
 package se.kth.cda.arc
 
 import org.antlr.v4.runtime._
-import org.antlr.v4.runtime.tree._
-import se.kth.cda.arc.typeinference.TypeInference
 import se.kth.cda.arc.transform.MacroExpansion
+import se.kth.cda.arc.typeinference.TypeInference
 
 // Read-Parse-Print Loop
 object Rppl {
@@ -57,38 +56,33 @@ object Rppl {
           Console.out.print("\n")
           Console.out.println("Starting macro expansion")
           MacroExpansion.expand(ast) match {
-            case util.Success(expanded) => {
+            case util.Success(expanded) =>
               Console.out.print("<= ")
               Console.out.print("\n")
               PrettyPrint.print(expanded, Console.out)
               Console.out.print("\n")
               Console.out.println("Starting type inference")
               TypeInference.solve(expanded) match {
-                case util.Success(typed) => {
+                case util.Success(typed) =>
                   Console.out.println("Typed Expression:")
                   Console.out.print("<= ")
                   Console.out.print(typed.ty.render)
                   Console.out.print("\n")
                   PrettyPrint.print(typed, Console.out)
                   Console.out.print("\n")
-                }
-                case util.Failure(f) => {
+                case util.Failure(f) =>
                   Console.err.println(s"An error occurred during type inference!")
                   f.printStackTrace(Console.err)
-                }
               }
-            }
-            case util.Failure(f) => {
+            case util.Failure(f) =>
               Console.err.println(s"An error occurred during macro expansion!")
               f.printStackTrace(Console.err)
-            }
           }
         }
       } catch {
-        case e: Throwable => {
+        case e: Throwable =>
           Console.err.println(s"An error occurred during parsing!")
           e.printStackTrace(Console.err)
-        }
       }
     }
   }

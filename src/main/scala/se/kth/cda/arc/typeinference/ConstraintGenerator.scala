@@ -27,7 +27,7 @@ class ConstraintGenerator(val rootExpr: Expr) {
     import ExprKind._
 
     val newKindOT: Try[Option[ExprKind]] = e.kind match {
-      case Let(name, bindingTy, value, body) => {
+      case Let(name, bindingTy, value, body) =>
         constrainEq(e.ty, body.ty)
         constrainEq(bindingTy, value.ty)
         for {
@@ -42,53 +42,45 @@ class ConstraintGenerator(val rootExpr: Expr) {
             Some(Let(name, bindingTy, newValue, newBody))
           }
         }
-      }
-      case Lambda(params, body) => {
-        val paramTypes = params.map(_.ty).toVector
+      case Lambda(params, body) =>
+        val paramTypes = params.map(_.ty)
         val bodyTy = body.ty
         val lambdaTy = Types.Function(paramTypes, bodyTy)
         constrainEq(e.ty, lambdaTy)
         discoverDownMap(body, env ++ params.map(p => p.name -> p.ty).toList)(newBody => Lambda(params, newBody))
-      }
-      case Cast(ty, inner) => {
+      case Cast(ty, inner) =>
         constrainEq(e.ty, ty)
         discoverDownMap(inner, env)(newInner => Cast(ty, newInner))
-      }
-      case ToVec(inner) => {
+      case ToVec(inner) =>
         val keyTy = Types.unknown
         val valueTy = Types.unknown
         constrainEq(e.ty, Vec(Struct(Vector(keyTy, valueTy))))
         constrainEq(inner.ty, Dict(keyTy, valueTy))
         discoverDownMap(inner, env)(newInner => ToVec(newInner))
-      }
-      case MakeStruct(elems) => {
-        val elemTys = elems.map(e => e.ty).toVector
+      case MakeStruct(elems) =>
+        val elemTys = elems.map(e => e.ty)
         constrainEq(e.ty, Struct(elemTys))
         discoverDown(elems, env).map(_.map(newElems => MakeStruct(newElems)))
-      }
-      case MakeVec(elems) => {
+      case MakeVec(elems) =>
         val elemTy = Types.unknown
         val vecTy = Vec(elemTy)
         constrainEq(e.ty, vecTy)
-        val elemTys = elems.map(e => e.ty).toVector
-        constrainEq((elemTy +: elemTys): _*)
+        val elemTys = elems.map(e => e.ty)
+        constrainEq(elemTy +: elemTys: _*)
         discoverDown(elems, env).map(_.map(newElems => MakeVec(newElems)))
-      }
-      case If(cond: Expr, onTrue: Expr, onFalse: Expr) => {
+      case If(cond: Expr, onTrue: Expr, onFalse: Expr) =>
         constrainEq(cond.ty, Types.Bool)
         constrainEq(e.ty, onTrue.ty, onFalse.ty)
         discoverDown(Vector(cond, onTrue, onFalse), env).map(_.map {
           case Vector(newCond, newOnTrue, newOnFalse) => If(newCond, newOnTrue, newOnFalse)
         })
-      }
-      case Select(cond: Expr, onTrue: Expr, onFalse: Expr) => {
+      case Select(cond: Expr, onTrue: Expr, onFalse: Expr) =>
         constrainEq(cond.ty, Types.Bool)
         constrainEq(e.ty, onTrue.ty, onFalse.ty)
         discoverDown(Vector(cond, onTrue, onFalse), env).map(_.map {
           case Vector(newCond, newOnTrue, newOnFalse) => Select(newCond, newOnTrue, newOnFalse)
         })
-      }
-      case Iterate(initial: Expr, updateFunc: Expr) => {
+      case Iterate(initial: Expr, updateFunc: Expr) =>
         val typeParam = Types.unknown
         val funTy = Function(Vector(typeParam), Struct(Vector(typeParam, Types.Bool)))
         constrainEq(e.ty, initial.ty, typeParam)
@@ -96,28 +88,23 @@ class ConstraintGenerator(val rootExpr: Expr) {
         discoverDown(Vector(initial, updateFunc), env).map(_.map {
           case Vector(newInitial, newUpdateFunc) => Iterate(newInitial, newUpdateFunc)
         })
-      }
-      case Broadcast(inner) => {
+      case Broadcast(inner) =>
         constrainEq(e.ty, Simd(inner.ty))
         constrainScalar(inner.ty)
         discoverDownMap(inner, env)(newInner => Broadcast(newInner))
-      }
-      case Serialize(inner) => {
+      case Serialize(inner) =>
         constrainEq(e.ty, Vec(I8))
         discoverDownMap(inner, env)(newInner => Serialize(newInner))
-      }
-      case Deserialize(ty, inner) => {
+      case Deserialize(ty, inner) =>
         constrainEq(e.ty, ty)
         constrainEq(inner.ty, Vec(I8))
         discoverDownMap(inner, env)(newInner => Deserialize(ty, newInner))
-      }
-      case CUDF(Left(name), args, returnType) => {
+      case CUDF(Left(name), args, returnType) =>
         constrainEq(e.ty, returnType)
         discoverDown(args, env).map(_.map { newArgs =>
           CUDF(Left(name), newArgs, returnType)
         })
-      }
-      case CUDF(Right(pointer), args, returnType) => {
+      case CUDF(Right(pointer), args, returnType) =>
         val argTypes = args.map(e => e.ty)
         val pointerTy = Function(argTypes, returnType)
         constrainEq(e.ty, returnType)
@@ -134,8 +121,7 @@ class ConstraintGenerator(val rootExpr: Expr) {
             Some(CUDF(Right(newPointer), newArgs, returnType))
           }
         }
-      }
-      case Zip(params) => {
+      case Zip(params) =>
         val structParamTys = params.map(_ => Types.unknown)
         params.zip(structParamTys).foreach {
           case (p, spTy) => constrainEq(p.ty, Vec(spTy));
@@ -144,18 +130,14 @@ class ConstraintGenerator(val rootExpr: Expr) {
         discoverDown(params, env).map(_.map { newParams =>
           Zip(newParams)
         })
-      }
-      case Hash(params) => {
+      case Hash(params) =>
         val paramTy = Types.unknown
-        params.foreach {
-          case p => constrainEq(p.ty, paramTy);
-        }
+        params.foreach(p => constrainEq(p.ty, paramTy))
         constrainEq(e.ty, I64)
         discoverDown(params, env).map(_.map { newParams =>
           Hash(newParams)
         })
-      }
-      case For(iterator, builder, body) => {
+      case For(iterator, builder, body) =>
         val elemTy = Types.unknown
         constrainNorm(TypeConstraints.IterableKind(iterator.data.ty, elemTy))
         if (iterator.kind == IterKind.RangeIter) {
@@ -222,30 +204,26 @@ class ConstraintGenerator(val rootExpr: Expr) {
             Some(For(newIter, newBuilder, newBody))
           }
         }
-      }
-      case Len(inner) => {
+      case Len(inner) =>
         val vTy = Types.unknown
         constrainEq(inner.ty, Vec(vTy))
         constrainEq(e.ty, I64)
         discoverDownMap(inner, env)(newInner => Len(newInner))
-      }
-      case Lookup(data, index) => {
+      case Lookup(data, index) =>
         val resultTy = Types.unknown
         constrainLookup(data.ty, index.ty, resultTy)
         constrainEq(e.ty, resultTy)
         discoverDown(Vector(data, index), env).map(_.map {
           case Vector(newData, newKey) => Lookup(newData, newKey)
         })
-      }
-      case Slice(data, index, size) => {
+      case Slice(data, index, size) =>
         constrainEq(index.ty, size.ty, I64)
         val dataTy = Vec(Types.unknown)
         constrainEq(e.ty, data.ty, dataTy)
         discoverDown(Vector(data, index, size), env).map(_.map {
           case Vector(newData, newIndex, newSize) => Slice(newData, newIndex, newSize)
         })
-      }
-      case Sort(data, keyFunc) => {
+      case Sort(data, keyFunc) =>
         val elemTy = Types.unknown
         val dataTy = Vec(elemTy)
         constrainEq(e.ty, data.ty, dataTy)
@@ -254,23 +232,19 @@ class ConstraintGenerator(val rootExpr: Expr) {
         discoverDown(Vector(data, keyFunc), env).map(_.map {
           case Vector(newData, newKeyFunc) => Sort(newData, newKeyFunc)
         })
-      }
-      case Negate(inner) => {
+      case Negate(inner) =>
         constrainEq(e.ty, inner.ty)
         constrainNumeric(inner.ty, signed = true)
         discoverDownMap(inner, env)(newInner => Negate(newInner))
-      }
-      case Not(inner) => {
+      case Not(inner) =>
         constrainEq(e.ty, Types.Bool)
         constrainEq(inner.ty, Types.Bool)
         discoverDownMap(inner, env)(newInner => Not(newInner))
-      }
-      case UnaryOp(kind, inner) => {
+      case UnaryOp(kind, inner) =>
         constrainFloat(inner.ty)
         constrainEq(e.ty, inner.ty)
         discoverDownMap(inner, env)(newInner => UnaryOp(kind, newInner))
-      }
-      case Merge(builder, value) => {
+      case Merge(builder, value) =>
         constrainEq(e.ty, builder.ty)
         constrainBuilder(builder.ty, mergeType = value.ty)
         for {
@@ -285,46 +259,36 @@ class ConstraintGenerator(val rootExpr: Expr) {
             Some(Merge(newBuilder, newValue))
           }
         }
-      }
-      case Result(builder) => {
+      case Result(builder) =>
         constrainBuilder(builder.ty, resultType = e.ty)
         discoverDownMap(builder, env)(newBuilder => Result(newBuilder))
-      }
-      case NewBuilder(ty, argO) => {
+      case NewBuilder(ty, argO) =>
         constrainEq(e.ty, ty)
         argO match {
-          case Some(arg) => {
+          case Some(arg) =>
             constrainBuilder(ty, argType = arg.ty)
             discoverDownMap(arg, env)(newArg => NewBuilder(ty, Some(newArg)))
-          }
-          case None => {
+          case None =>
             constrainBuilder(ty)
             Success(None)
-          }
         }
-
-      }
-      case BinOp(kind, left, right) => {
+      case BinOp(kind, left, right) =>
         import BinOpKind._
         kind match {
 
-          case LessThan | GreaterThan | LEq | GEq => {
+          case LessThan | GreaterThan | LEq | GEq =>
             constrainEq(left.ty, right.ty)
             constrainNumeric(left.ty)
             // constrainNumeric(right.ty); // kinda redundant...
             constrainEq(e.ty, Bool)
-          }
-          case Equals | NEq => {
+          case Equals | NEq =>
             constrainEq(left.ty, right.ty)
             constrainEq(e.ty, Bool)
-          }
-          case LogicalAnd | LogicalOr => {
+          case LogicalAnd | LogicalOr =>
             constrainEq(e.ty, left.ty, right.ty, Bool)
-          }
-          case _ => { // numeric
+          case _ => // numeric
             constrainEq(e.ty, left.ty, right.ty)
             constrainNumeric(left.ty)
-          }
         }
         for {
           leftO <- discoverDown(left, env)
@@ -338,8 +302,7 @@ class ConstraintGenerator(val rootExpr: Expr) {
             Some(BinOp(kind, newLeft, newRight))
           }
         }
-      }
-      case Application(funcExpr, args) => {
+      case Application(funcExpr, args) =>
         val argTypes = args.map(e => e.ty)
         val returnTy = Types.unknown
         val funcTy = Function(argTypes, returnTy)
@@ -357,36 +320,28 @@ class ConstraintGenerator(val rootExpr: Expr) {
             Some(Application(newFunc, newArgs))
           }
         }
-      }
-      case Projection(structExpr, index) => {
+      case Projection(structExpr, index) =>
         val fieldTy = Types.unknown
         constrainNorm(TypeConstraints.ProjectableKind(structExpr.ty, fieldTy, index))
         constrainEq(e.ty, fieldTy)
         discoverDownMap(structExpr, env)(newStructExpr => Projection(newStructExpr, index))
-      }
-      case Ascription(inner, ty) => {
+      case Ascription(inner, ty) =>
         (inner.kind, ty) match {
-          case (l: Literal[_], s: Scalar) => {
+          case (l: Literal[_], s: Scalar) =>
             constrainEq(e.ty, ty)
             convertLiteral(l, s)
-          }
-          case _ => {
+          case _ =>
             constrainEq(inner.ty, ty)
             constrainEq(e.ty, ty)
             discoverDownMap(inner, env)(newInner => Ascription(newInner, ty))
-          }
         }
-
-      }
-      case Ident(s) => {
+      case Ident(s) =>
         env.lookup(s) match {
-          case Some(ty) => {
+          case Some(ty) =>
             constrainEq(e.ty, ty)
             Success(None)
-          }
           case None => Failure(new TypingException(s"Identifier $s wasn't bound in environment!"))
         }
-      }
       case _ => Success(None)
     }
     newKindOT.map(_.map(newKind => Expr(newKind, e.ty, e.ctx)))
@@ -432,7 +387,7 @@ class ConstraintGenerator(val rootExpr: Expr) {
     res.map(l => Some(l))
   }
 
-  private def discoverDownMap[T](e: Expr, env: TypingStore)(placer: (Expr) => T): Try[Option[T]] = {
+  private def discoverDownMap[T](e: Expr, env: TypingStore)(placer: Expr => T): Try[Option[T]] = {
     discoverDown(e, env).map(_.map(placer))
   }
 
@@ -476,10 +431,9 @@ class ConstraintGenerator(val rootExpr: Expr) {
   }
   private def constrainNorm(c: TypeConstraint): Unit = {
     c.normalise() match {
-      case Some(norm) if norm != TypeConstraints.Tautology => {
+      case Some(norm) if norm != TypeConstraints.Tautology =>
         //println(s"Introduced ${c.describe} normalised to ${norm.describe}");
         constraints ::= norm
-      }
       case None if c != TypeConstraints.Tautology => constraints ::= c
       case _                                      => // ignore
     }

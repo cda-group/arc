@@ -81,29 +81,26 @@ To solve this issue try annotating types where type variables remain."""
       changed = false
       //println("Coalescing...");
       coalesce(topLevelConjunction) match {
-        case Some(cs) => {
+        case Some(cs) =>
           changed = true
           topLevelConjunction = cs
-        }
         case None => // no change
       }
       //println(s"=== Constraints after coalescing:\n${topLevelConjunction.map(_.describe).mkString("\n∧")}\n===");
       //System.exit(1); // abort to avoid spam
       // rewrite first to avoid doing an empty substitution pass in the beginning
       rewrite(topLevelConjunction, typeAssignments) match {
-        case Some((cs, ass)) => {
+        case Some((cs, ass)) =>
           changed = true
           topLevelConjunction = cs
           typeAssignments = ass
-        }
         case None => // no change
       }
       //println(s"=== Constraints after rewriting:\n${topLevelConjunction.map(_.describe).mkString("\n∧")}\n===");
       topLevelConjunction = substituteAndNormalise(topLevelConjunction, typeAssignments) match {
-        case Some(cs) => {
+        case Some(cs) =>
           changed = true
           cs
-        }
         case None => topLevelConjunction
       }
       //println(s"=== Constraints after substitution:\n${topLevelConjunction.map(_.describe).mkString("\n∧")}\n===");
@@ -139,20 +136,17 @@ To solve this issue try annotating types where type variables remain."""
           if (v.id != lId && v.id != lowestVar.id) {
             //println(s"	Resolving ${v}");
             resolveForward(v, typeConstraints) match {
-              case (-1, _) => {
+              case (-1, _) =>
                 //println(s"		Didn't find ${v}, assigning to $lId");
                 typeConstraints += (v.id -> Left(lId))
-              }
-              case (rId, cs) if rId != lId => {
+              case (rId, cs) if rId != lId =>
                 //println(s"		Found ${v} -> $rId");
                 newLCS ++= cs
                 //println(s"		Assigning $rId -> $lId");
                 typeConstraints += (rId -> Left(lId))
-              }
-              case (_, cs) if rId == lId => {
+              case (_, cs) if rId == lId =>
                 //println(s"		Found ${v} -> $lId");
                 newLCS ++= cs
-              }
             }
           } else if (v.id != lId && v.id == lowestVar.id) {
             //println(s"	Mapping ${v} -> $lId");
@@ -171,10 +165,9 @@ To solve this issue try annotating types where type variables remain."""
       case (_, Left(_)) => // leave as they are
       case (id, Right(cs)) =>
         minimiseRelated(cs) match {
-          case Some(newCS) => {
+          case Some(newCS) =>
             changed = true
             typeConstraints += (id -> Right(newCS))
-          }
           case None => // leave as they are
         }
     }
@@ -206,17 +199,15 @@ To solve this issue try annotating types where type variables remain."""
         var merging = tails.head
         val res = tails.tail.foldLeft(List.empty[TypeConstraint]) { (acc, c) =>
           c.merge(merging) match {
-            case Some(newC) => {
+            case Some(newC) =>
               //println(s"Merged ${merging.describe} and ${c.describe} into ${newC.describe}");
               changed = true
               changedThisIter = true
               merging = newC
               acc
-            }
-            case None => {
+            case None =>
               //println(s"Failed to merged ${merging.describe} and ${c.describe}");
               c :: acc
-            }
           }
         }
         heads ::= merging
@@ -266,7 +257,7 @@ To solve this issue try annotating types where type variables remain."""
       val cs = newCS
       newCS = List.empty[TypeConstraint]
       cs.foreach {
-        case meq: MultiEquality => {
+        case meq: MultiEquality =>
           if (meq.isResolved) {
             changedThisIter = true
             changed = true
@@ -277,21 +268,18 @@ To solve this issue try annotating types where type variables remain."""
           } else {
             newCS ::= meq
           }
-        }
-        case MultiConj(members) => {
+        case MultiConj(members) =>
           changedThisIter = true
           changed = true
           newCS ++= members
-        }
         case pred: Predicate     => newCS ::= pred
         case bk: BuilderKind     => newCS ::= bk
         case ik: IterableKind    => newCS ::= ik
         case pk: ProjectableKind => newCS ::= pk
         case lk: LookupKind      => newCS ::= lk
-        case Tautology => {
+        case Tautology =>
           changedThisIter = true
           changed = true; // drop since (x and true) = x
-        }
       }
     }
 
@@ -313,14 +301,12 @@ To solve this issue try annotating types where type variables remain."""
         case (c, None)      => (c, None, c.normalise())
       }
       .map {
-        case (_, _, Some(norm)) => {
+        case (_, _, Some(norm)) =>
           changed = true
           norm
-        }
-        case (_, Some(sub), None) => {
+        case (_, Some(sub), None) =>
           changed = true
           sub
-        }
         case (orig, None, None) => orig
       }
     if (changed) {

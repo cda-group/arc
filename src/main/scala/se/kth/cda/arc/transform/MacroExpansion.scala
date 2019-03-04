@@ -40,27 +40,23 @@ object MacroExpansion {
     def addSymbol(sym: Symbol): Env = {
       val name = sym.name
       symbols.get(name) match {
-        case Some(_) => {
+        case Some(_) =>
           throw new MacroException(s"Symbol is already in store: $name!")
-        }
-        case None => {
+        case None =>
           this.copy(symbols = symbols + (name -> 0))
-        }
       }
     }
 
     def addAndRename(sym: Symbol): (Env, Option[Symbol]) = {
       val name = sym.name
       symbols.get(name) match {
-        case Some(scope) => {
+        case Some(scope) =>
           val newScope = scope + 1
           val newName = rename(name, newScope)
           val newSymb = Symbol(newName, None, newScope)
           (this.copy(symbols = symbols + (name -> newScope)), Some(newSymb))
-        }
-        case None => {
+        case None =>
           (this.copy(symbols = symbols + (name -> 0)), None)
-        }
       }
     }
 
@@ -76,16 +72,13 @@ object MacroExpansion {
     def dropSymbol(sym: Symbol): Env = {
       val name = sym.name
       symbols.get(name) match {
-        case Some(scope) if scope == 0 => {
+        case Some(scope) if scope == 0 =>
           this.copy(symbols = symbols - name)
-        }
-        case Some(scope) if scope != 0 => {
+        case Some(scope) if scope != 0 =>
           val newScope = scope - 1
           this.copy(symbols = symbols + (name -> newScope))
-        }
-        case None => {
+        case None =>
           throw new MacroException(s"Inconsistent symbol store: Failed to remove $name!")
-        }
       }
     }
     private val sep = "$__"
@@ -126,9 +119,8 @@ object MacroExpansion {
     while (res.isDefined) {
       lastExpr = res.get
       t.transform(res.get, env) match {
-        case Success(r) => {
+        case Success(r) =>
           res = r
-        }
         case Failure(f) => return Failure(f)
       }
     }
@@ -140,18 +132,16 @@ object MacroExpansion {
     val bodyT = Transformer.exprTransformer(bodyTransform)
     val alphaC = Transformer.exprTransformer(alphaConvert)
     val newExprT: Try[Option[Expr]] = expr.kind match {
-      case Let(name, _, _, _) => {
+      case Let(name, _, _, _) =>
         return Success((None, env.addSymbol(name)))
-      }
-      case Lambda(params, body) => {
+      case Lambda(params, body) =>
         val newEnv = params.foldLeft(env) { (accEnv, p) =>
           accEnv.addSymbol(p.name)
         }
         return Success((None, newEnv))
-      }
-      case Application(funcExpr, args) => {
+      case Application(funcExpr, args) =>
         funcExpr.kind match {
-          case Ident(sym) => {
+          case Ident(sym) =>
             env.macros.get(sym.text) match {
               case Some(m) =>
                 if (m.parameters.size != args.size) {
@@ -171,10 +161,8 @@ object MacroExpansion {
                 }
               case None => Success(None)
             }
-          }
           case _ => Success(None)
         }
-      }
       case _ => Success(None)
     }
     newExprT.map(newExpr => (newExpr, env))
@@ -183,12 +171,11 @@ object MacroExpansion {
   def bodyTransform(expr: Expr, env: Env): Try[(Option[Expr], Env)] = {
     import ExprKind._
     val newExprT = expr.kind match {
-      case Ident(sym) => {
+      case Ident(sym) =>
         env.params.get(sym.text) match {
           case Some(e) => Success(Some(e))
           case None    => Success(None)
         }
-      }
       case _ => Success(None)
     }
     newExprT.map(newExpr => (newExpr, env))
@@ -213,7 +200,7 @@ object MacroExpansion {
                 case (newEnv, None)          => (newEnv, accParams :+ None)
               }
           }
-        };
+        }
         if (newParamsO.forall(_.isEmpty)) {
           Success((None, newEnv))
         } else {

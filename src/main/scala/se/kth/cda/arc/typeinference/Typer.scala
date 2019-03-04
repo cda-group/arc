@@ -40,29 +40,25 @@ object Typer {
     import ExprKind._
 
     kind match {
-      case Let(name, bindingTy, value, body) => {
+      case Let(name, bindingTy, value, body) =>
         for {
           newBindingTy <- substitute(bindingTy)
           newValue <- substituteTypes(value, substitute)
           newBody <- substituteTypes(body, substitute)
         } yield Let(name, newBindingTy, newValue, newBody)
-      }
-      case Lambda(params, body) => {
+      case Lambda(params, body) =>
         for {
           newParams <- params.map(p => substitute(p.ty).map(newTy => Parameter(p.name, newTy))).sequence
           newBody <- substituteTypes(body, substitute)
         } yield Lambda(newParams, newBody)
-      }
-      case Cast(ty, expr) => {
+      case Cast(ty, expr) =>
         for { // ignore ty since it must be a concrete scalar
           newExpr <- substituteTypes(expr, substitute)
         } yield Cast(ty, newExpr)
-      }
-      case ToVec(expr) => {
+      case ToVec(expr) =>
         for {
           newExpr <- substituteTypes(expr, substitute)
         } yield ToVec(newExpr)
-      }
       case i: Ident          => Success(i)
       case MakeStruct(elems) => substituteTypes(elems, substitute)(newElems => MakeStruct(newElems))
       case MakeVec(elems)    => substituteTypes(elems, substitute)(newElems => MakeVec(newElems))
@@ -120,11 +116,10 @@ object Typer {
           newData <- substituteTypes(data, substitute)
           newKey <- substituteTypes(key, substitute)
         } yield Lookup(newData, newKey)
-      case Slice(data, index, size) => {
+      case Slice(data, index, size) =>
         substituteTypes(Vector(data, index, size), substitute) {
           case Vector(newData, newIndex, newSize) => Slice(newData, newIndex, newSize)
         }
-      }
       case Sort(data, keyFunc) =>
         for {
           newData <- substituteTypes(data, substitute)
@@ -172,11 +167,10 @@ object Typer {
         for {
           newStruct <- substituteTypes(structExpr, substitute)
         } yield Projection(newStruct, index)
-      case Ascription(inner, ty) => {
+      case Ascription(inner, ty) =>
         for {
           newInner <- substituteTypes(inner, substitute)
         } yield Ascription(newInner, ty)
-      }
       case l: Literal[_] => Success(l)
     }
   }

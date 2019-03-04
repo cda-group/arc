@@ -15,14 +15,13 @@ object PrettyPrint {
 
   def print(tree: ASTNode, out: PrintStream): Unit = {
     tree match {
-      case Program(macros, expr, _) => {
+      case Program(macros, expr, _) =>
         macros.foreach { m =>
           print(m, out)
           out.append('\n');
         }
         print(expr, out)
-      }
-      case Macro(name, params, body, _) => {
+      case Macro(name, params, body, _) =>
         out.append("macro ")
         printSymbol(name, out)
         out.append('(')
@@ -35,7 +34,6 @@ object PrettyPrint {
         out.append(')')
         out.append('=')
         print(body)
-      }
       case e: Expr   => printExpr(e, out, typed = true, 0, shouldIndent = true)
       case s: Symbol => printSymbol(s, out)
     }
@@ -103,7 +101,7 @@ object PrettyPrint {
     lazy val indentStr = (0 until indent).foldLeft("")((acc, _) => acc + " ")
     lazy val lessIndentStr = (0 until (indent - 2)).foldLeft("")((acc, _) => acc + " ")
     expr.kind match {
-      case Let(name, bindingTy, value, body) => {
+      case Let(name, bindingTy, value, body) =>
         if (typed) {
           out.append('(')
           out.append(' ')
@@ -128,8 +126,7 @@ object PrettyPrint {
           out.append(':')
           printType(expr.ty, out)
         }
-      }
-      case Lambda(params, body) => {
+      case Lambda(params, body) =>
         if (params.isEmpty) {
           out.append("||")
           printExpr(body, out, typed = true, indent + INDENT_INC, shouldIndent = true)
@@ -149,16 +146,13 @@ object PrettyPrint {
           out.append("  ")
           printExpr(body, out, typed = true, indent + INDENT_INC, shouldIndent = true)
         }
-      }
-      case Negate(expr) => {
+      case Negate(expr) =>
         out.append('-')
         printExpr(expr, out, typed = true, indent + 1, shouldIndent = false)
-      }
-      case Not(expr) => {
+      case Not(expr) =>
         out.append('!')
         printExpr(expr, out, typed = true, indent + 1, shouldIndent = false)
-      }
-      case UnaryOp(kind, expr) => {
+      case UnaryOp(kind, expr) =>
         out.append(UnaryOpKind.print(kind))
         out.append('(')
         printExpr(expr, out, typed = false, indent + 1, shouldIndent = false)
@@ -167,45 +161,38 @@ object PrettyPrint {
           out.append(':')
           printType(expr.ty, out)
         }
-      }
-      case Ident(s) => {
+      case Ident(s) =>
         printSymbol(s, out)
         if (typed) {
           out.append(':')
           printType(expr.ty, out)
         }
-      }
-      case l: Literal[_] => {
+      case l: Literal[_] =>
         out.append(l.raw)
         if (typed) {
           out.append(':')
           printType(expr.ty, out)
         }
-      }
-      case Cast(ty, e) => {
+      case Cast(ty, e) =>
         printType(ty, out)
         out.append('(')
         printExpr(e, out, typed = false, indent + INDENT_INC, shouldIndent = false)
         out.append(')')
-      }
-      case ToVec(e) => {
+      case ToVec(e) =>
         out.append("tovec(")
         printExpr(e, out, typed = false, indent + INDENT_INC, shouldIndent = false)
         out.append(')')
-      }
-      case Broadcast(e) => {
+      case Broadcast(e) =>
         out.append("broadcast(")
         printExpr(e, out, typed = false, indent + INDENT_INC, shouldIndent = false)
         out.append(')')
-      }
-      case CUDF(ref, args, retT) => {
+      case CUDF(ref, args, retT) =>
         out.append("cudf[")
         ref match {
           case Left(name) => printSymbol(name, out);
-          case Right(pointer) => {
+          case Right(pointer) =>
             out.append('*')
             printExpr(pointer, out, typed = false, indent + INDENT_INC, shouldIndent = false)
-          }
         }
         out.append(',')
         printType(retT, out)
@@ -222,8 +209,7 @@ object PrettyPrint {
           out.append(':')
           printType(expr.ty, out)
         }
-      }
-      case Zip(params) => {
+      case Zip(params) =>
         out.append("zip(")
         for ((e, i) <- params.view.zipWithIndex) {
           printExpr(e, out, typed = false, indent + 4, shouldIndent = false)
@@ -236,8 +222,7 @@ object PrettyPrint {
           out.append(':')
           printType(expr.ty, out)
         }
-      }
-      case Hash(params) => {
+      case Hash(params) =>
         out.append("hash(")
         for ((e, i) <- params.view.zipWithIndex) {
           printExpr(e, out, typed = false, indent + 4, shouldIndent = false)
@@ -250,8 +235,7 @@ object PrettyPrint {
           out.append(':')
           printType(expr.ty, out)
         }
-      }
-      case For(iterator, builder, body) => {
+      case For(iterator, builder, body) =>
         out.append("for(")
         printIter(iterator, out, indent + 4)
         out.append(',')
@@ -271,8 +255,7 @@ object PrettyPrint {
           out.append(':')
           printType(expr.ty, out)
         }
-      }
-      case Len(e) => {
+      case Len(e) =>
         out.append("len(")
         printExpr(e, out, typed = true, indent + 4, shouldIndent = false)
         out.append(')')
@@ -280,8 +263,7 @@ object PrettyPrint {
           out.append(':')
           printType(expr.ty, out)
         }
-      }
-      case Lookup(data, key) => {
+      case Lookup(data, key) =>
         out.append("lookup(")
         printExpr(data, out, typed = true, indent + INDENT_INC, shouldIndent = false)
         out.append(',')
@@ -291,8 +273,7 @@ object PrettyPrint {
           out.append(':')
           printType(expr.ty, out)
         }
-      }
-      case Slice(data, index, size) => {
+      case Slice(data, index, size) =>
         out.append("slice(")
         printExpr(data, out, typed = false, indent + INDENT_INC, shouldIndent = false)
         out.append(',')
@@ -304,8 +285,7 @@ object PrettyPrint {
           out.append(':')
           printType(expr.ty, out)
         }
-      }
-      case Sort(data, keyFunc) => {
+      case Sort(data, keyFunc) =>
         out.append("sort(")
         printExpr(data, out, typed = false, indent + INDENT_INC, shouldIndent = false)
         out.append(',')
@@ -315,8 +295,7 @@ object PrettyPrint {
           out.append(':')
           printType(expr.ty, out)
         }
-      }
-      case Serialize(e) => {
+      case Serialize(e) =>
         out.append("serialize(")
         printExpr(e, out, typed = false, indent + INDENT_INC, shouldIndent = false)
         out.append(')')
@@ -324,8 +303,7 @@ object PrettyPrint {
           out.append(':')
           printType(expr.ty, out)
         }
-      }
-      case Deserialize(ty, e) => {
+      case Deserialize(ty, e) =>
         out.append("deserialize[")
         printType(ty, out)
         out.append(']')
@@ -336,8 +314,7 @@ object PrettyPrint {
           out.append(':')
           printType(expr.ty, out)
         }
-      }
-      case If(cond, onTrue, onFalse) => {
+      case If(cond, onTrue, onFalse) =>
         out.append("if (")
         printExpr(cond, out, typed = false, indent + 4, shouldIndent = false)
         out.append(',')
@@ -357,8 +334,7 @@ object PrettyPrint {
           out.append(':')
           printType(expr.ty, out)
         }
-      }
-      case Select(cond, onTrue, onFalse) => {
+      case Select(cond, onTrue, onFalse) =>
         out.append("select(")
         printExpr(cond, out, typed = false, indent + INDENT_INC, shouldIndent = false)
         out.append(',')
@@ -378,8 +354,7 @@ object PrettyPrint {
           out.append(':')
           printType(expr.ty, out)
         }
-      }
-      case Iterate(init, updateFunc) => {
+      case Iterate(init, updateFunc) =>
         out.append("iterate (")
         printExpr(init, out, typed = true, indent + INDENT_INC, shouldIndent = false)
         out.append(',')
@@ -394,8 +369,7 @@ object PrettyPrint {
           out.append(':')
           printType(expr.ty, out)
         }
-      }
-      case MakeStruct(elems) => {
+      case MakeStruct(elems) =>
         out.append('{')
         for ((e, i) <- elems.view.zipWithIndex) {
           printExpr(e, out, typed = false, indent + 1, shouldIndent = false)
@@ -408,8 +382,7 @@ object PrettyPrint {
           out.append(':')
           printType(expr.ty, out)
         }
-      }
-      case MakeVec(elems) => {
+      case MakeVec(elems) =>
         out.append('[')
         for ((e, i) <- elems.view.zipWithIndex) {
           printExpr(e, out, typed = false, indent + 1, shouldIndent = false)
@@ -422,8 +395,7 @@ object PrettyPrint {
           out.append(':')
           printType(expr.ty, out)
         }
-      }
-      case Merge(builder, value) => {
+      case Merge(builder, value) =>
         out.append("merge(")
         printExpr(builder, out, typed = false, indent + INDENT_INC, shouldIndent = false)
         out.append(',')
@@ -433,8 +405,7 @@ object PrettyPrint {
           out.append(':')
           printType(expr.ty, out)
         }
-      }
-      case Result(e) => {
+      case Result(e) =>
         out.append("result(")
         printExpr(e, out, typed = false, indent + INDENT_INC, shouldIndent = false)
         out.append(')')
@@ -442,19 +413,16 @@ object PrettyPrint {
           out.append(':')
           printType(expr.ty, out)
         }
-      }
-      case NewBuilder(ty, Some(arg)) => {
+      case NewBuilder(ty, Some(arg)) =>
         printType(ty, out)
         out.append('(')
         printExpr(arg, out, typed = true, indent + INDENT_INC, shouldIndent = false)
         out.append(')')
-        // don't print type even if requested since it's redundant
-      }
-      case NewBuilder(ty, None) => {
+      // don't print type even if requested since it's redundant
+      case NewBuilder(ty, None) =>
         printType(ty, out)
-        // don't print type even if requested since it's redundant
-      }
-      case BinOp(kind, left, right) => {
+      // don't print type even if requested since it's redundant
+      case BinOp(kind, left, right) =>
         if (kind.isInfix) {
           if (typed) {
             out.append('(')
@@ -479,8 +447,7 @@ object PrettyPrint {
             printType(expr.ty, out)
           }
         }
-      }
-      case Application(fun, args) => {
+      case Application(fun, args) =>
         printExpr(fun, out, typed = false, indent, shouldIndent = false)
         out.append('(')
         for ((e, i) <- args.view.zipWithIndex) {
@@ -494,15 +461,13 @@ object PrettyPrint {
           out.append(':')
           printType(expr.ty, out)
         }
-      }
-      case Ascription(e, ty) => {
+      case Ascription(e, ty) =>
         out.append('(')
         printExpr(e, out, typed = false, indent + 1, shouldIndent = false)
         out.append(')')
         out.append(':')
         printType(ty, out)
-      }
-      case Projection(struct, index) => {
+      case Projection(struct, index) =>
         if (typed) {
           out.append('(')
         }
@@ -515,7 +480,6 @@ object PrettyPrint {
           out.append(':')
           printType(expr.ty, out)
         }
-      }
     }
   }
 }

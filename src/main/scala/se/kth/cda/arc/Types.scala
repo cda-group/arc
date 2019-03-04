@@ -31,7 +31,7 @@ object Types {
   }
 
   case class TypeVariable(id: Int) extends Type {
-    override def render: String = s"?${id}"
+    override def render: String = s"?$id"
 
     override def isComplete: Boolean = false
   }
