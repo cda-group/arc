@@ -5,6 +5,7 @@ import org.antlr.v4.runtime.tree._
 
 import scala.collection.JavaConverters._
 import scala.util.Try
+import scala.util.matching.Regex
 
 class ASTTranslator(val parser: ArcParser) {
   import AST._
@@ -393,7 +394,7 @@ class ASTTranslator(val parser: ArcParser) {
 
     override def visitProjection(ctx: ArcParser.ProjectionContext): Expr = {
       val struct = this.visitChecked(ctx.operatorExpr())
-      val index = BigInt(ctx.TIndex().getText.substring(1), 10).toInt
+      val index = BigInt(ctx.TIndex().getText.substring(1), decRadix).toInt
       Expr(ExprKind.Projection(struct, index), Types.unknown, ctx)
     }
 
@@ -536,15 +537,19 @@ class ASTTranslator(val parser: ArcParser) {
       Expr(ExprKind.Literal.StringL(raw, s), Types.StringT, ctx)
     }
 
-    val binExpr = raw"0b([01]+)(?:[cClL]|si)?".r
-    val hexExpr = raw"0x([0-9a-fA-F]+)(?:[cClL]|si)?".r
-    val decExpr = raw"([0-9]+)(?:[cClL]|si)?".r
+    val binExpr: Regex = raw"0b([01]+)(?:[cClL]|si)?".r
+    val hexExpr: Regex = raw"0x([0-9a-fA-F]+)(?:[cClL]|si)?".r
+    val decExpr: Regex = raw"([0-9]+)(?:[cClL]|si)?".r
+
+    val binRadix: Int = 2
+    val hexRadix: Int = 16
+    val decRadix: Int = 10
 
     private def extractInteger(s: String): BigInt = {
       s match {
-        case binExpr(core) => BigInt(core, 2)
-        case hexExpr(core) => BigInt(core, 16)
-        case decExpr(core) => BigInt(core, 10)
+        case binExpr(core) => BigInt(core, binRadix)
+        case hexExpr(core) => BigInt(core, hexRadix)
+        case decExpr(core) => BigInt(core, decRadix)
       }
     }
   }

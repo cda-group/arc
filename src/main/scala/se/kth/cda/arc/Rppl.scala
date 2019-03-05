@@ -5,7 +5,6 @@ import se.kth.cda.arc.transform.MacroExpansion
 import se.kth.cda.arc.typeinference.TypeInference
 
 import scala.util.control.Breaks._
-import scala.util.control.NoStackTrace
 
 // Read-Parse-Print Loop
 object Rppl {

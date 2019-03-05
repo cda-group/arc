@@ -5,7 +5,6 @@ import se.kth.cda.arc.Types._
 import se.kth.cda.arc.Utils.TryVector
 import se.kth.cda.arc._
 
-import scala.annotation.tailrec
 import scala.util.{Failure, Success, Try}
 
 class ConstraintGenerator(val rootExpr: Expr) {
@@ -150,19 +149,25 @@ class ConstraintGenerator(val rootExpr: Expr) {
           val stride = iterator.stride.get
           constrainEq(start.ty, end.ty, stride.ty, I64)
           discoverDown(Vector(start, end, stride), env).map(_.map { case Vector(s, e, st) => (s, e, st) })
-        } else Success(None)
+        } else {
+          Success(None)
+        }
         val shsts = if (iterator.shape.isDefined) { // shape and strides must be defined together
           val shape = iterator.shape.get
           val strides = iterator.strides.get
           constrainEq(shape.ty, strides.ty, Vec(I64))
           discoverDown(Vector(shape, strides), env).map(_.map { case Vector(sh, sts) => (sh, sts) })
-        } else Success(None)
+        } else {
+          Success(None)
+        }
         val keyby = if (iterator.keyFunc.isDefined) {
           val keyFunc = iterator.keyFunc.get
           constrainEq(keyFunc.ty, Function(Vector(elemTy), U64))
           constrainEq(iterator.data.ty, Stream(elemTy))
           discoverDown(keyFunc, env)
-        } else Success(None)
+        } else {
+          Success(None)
+        }
         val iterO = for {
           sestO <- sest
           shstsO <- shsts

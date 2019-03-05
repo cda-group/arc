@@ -52,6 +52,7 @@ object AST {
     }
 
     object Literal {
+
       final case class I8(raw: String, value: Int) extends Literal[Int]
 
       def tryI8(raw: String, value: Int): Try[I8] =
@@ -85,7 +86,7 @@ object AST {
       final case class U32(raw: String, value: Long) extends Literal[Long]
 
       def tryU32(raw: String, value: Long): Try[U32] =
-        tryLiteral[Long, U32]("u32", value, 0, 4294967295l, v => U32(raw, v))
+        tryLiteral[Long, U32]("u32", value, 0, 4294967295L, v => U32(raw, v))
 
       final case class U64(raw: String, value: BigInt) extends Literal[BigInt]
 

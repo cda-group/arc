@@ -10,7 +10,7 @@ import scala.concurrent.duration._
 import scala.util.{Failure, Success, Try}
 
 object ConstraintSolver {
-  val MAX_RUNTIME = 5.seconds
+  val MAX_RUNTIME: FiniteDuration = 5.seconds
 
   sealed trait Result {
     def isSolved: Boolean
@@ -124,7 +124,7 @@ To solve this issue try annotating types where type variables remain."""
       //println(s"Processing ${c.describe}...");
       val vars = c.variables()
       if (vars.isEmpty) {
-        //println(s"Skiping ${c.describe} as it has no type vars");
+        //println(s"Skipping ${c.describe} as it has no type vars");
         newCS ::= c
       } else {
         val lowestVar = vars.minBy(_.id)
@@ -134,22 +134,22 @@ To solve this issue try annotating types where type variables remain."""
         //println("adding extra vars");
         vars.foreach { v =>
           if (v.id != lId && v.id != lowestVar.id) {
-            //println(s"	Resolving ${v}");
+            //println(s"  Resolving ${v}");
             resolveForward(v, typeConstraints) match {
               case (-1, _) =>
-                //println(s"		Didn't find ${v}, assigning to $lId");
+                //println(s"  Didn't find ${v}, assigning to $lId");
                 typeConstraints += (v.id -> Left(lId))
               case (rId, cs) if rId != lId =>
-                //println(s"		Found ${v} -> $rId");
+                //println(s"  Found ${v} -> $rId");
                 newLCS ++= cs
-                //println(s"		Assigning $rId -> $lId");
+                //println(s"  Assigning $rId -> $lId");
                 typeConstraints += (rId -> Left(lId))
               case (_, cs) if rId == lId =>
-                //println(s"		Found ${v} -> $lId");
+                //println(s"  Found ${v} -> $lId");
                 newLCS ++= cs
             }
           } else if (v.id != lId && v.id == lowestVar.id) {
-            //println(s"	Mapping ${v} -> $lId");
+            //println(s" Mapping ${v} -> $lId");
             typeConstraints += (v.id -> Left(lId))
           }
         }
@@ -159,7 +159,7 @@ To solve this issue try annotating types where type variables remain."""
     //    val tcS = typeConstraints.toList.sortBy(_._1).map(tc => tc match {
     //      case (id, Left(rId)) => s"?${id} -> ?${rId}"
     //      case (id, Right(cs)) => s"?${id} -> ${cs.map(_.describe).mkString("∧")}"
-    //    }).mkString("{\n	", "\n	", "\n}");
+    //    }).mkString("{\n ", "\n ", "\n}");
     //println(s"var constraints (raw): ${tcS}");
     typeConstraints.foreach {
       case (_, Left(_)) => // leave as they are
@@ -175,7 +175,7 @@ To solve this issue try annotating types where type variables remain."""
     //    val tcS2 = typeConstraints.toList.sortBy(_._1).map(tc => tc match {
     //      case (id, Left(rId)) => s"?${id} -> ?${rId}"
     //      case (id, Right(cs)) => s"?${id} -> ${cs.map(_.describe).mkString("∧")}"
-    //    }).mkString("{\n	", "\n	", "\n}");
+    //    }).mkString("{\n ", "\n ", "\n}");
     //    println(s"var constraints (minimised): ${tcS2}");
     newCS = typeConstraints.foldLeft(newCS)((acc, e) =>
       e match {
