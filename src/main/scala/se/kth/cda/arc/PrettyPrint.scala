@@ -13,6 +13,11 @@ object PrettyPrint {
     sb.result()
   }
 
+  def println(tree: ASTNode, out: PrintStream): Unit = {
+    PrettyPrint.print(tree, out)
+    out.append('\n')
+  }
+
   def print(tree: ASTNode, out: PrintStream): Unit = {
     tree match {
       case Program(macros, expr, _) =>
