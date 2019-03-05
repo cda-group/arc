@@ -30,7 +30,7 @@ object Types {
     t
   }
 
-  case class TypeVariable(id: Int) extends Type {
+  final case class TypeVariable(id: Int) extends Type {
     override def render: String = s"?$id"
 
     override def isComplete: Boolean = false
@@ -79,39 +79,39 @@ object Types {
   case object StringT extends Scalar {
     override def render: String = "string"
   }
-  case class Vec(elemTy: Type) extends CompositeType {
+  final case class Vec(elemTy: Type) extends CompositeType {
     override def render: String = s"vec[${elemTy.render}]"
 
     override def isComplete: Boolean = elemTy.isComplete
   }
-  case class Dict(keyTy: Type, valueTy: Type) extends CompositeType {
+  final case class Dict(keyTy: Type, valueTy: Type) extends CompositeType {
     override def render: String = s"dict[${keyTy.render}, ${valueTy.render}]"
 
     override def isComplete: Boolean = keyTy.isComplete && valueTy.isComplete
   }
-  case class Struct(elemTys: Vector[Type]) extends CompositeType {
+  final case class Struct(elemTys: Vector[Type]) extends CompositeType {
     override def render: String = elemTys.map(_.render).mkString("{", ",", "}")
 
     override def isComplete: Boolean = elemTys.forall(_.isComplete)
   }
-  case class Simd(elemTy: Type) extends CompositeType {
+  final case class Simd(elemTy: Type) extends CompositeType {
     override def render: String = s"simd[${elemTy.render}]"
 
     override def isComplete: Boolean = elemTy.isComplete
   }
-  case class Stream(elemTy: Type) extends CompositeType {
+  final case class Stream(elemTy: Type) extends CompositeType {
     override def render: String = s"stream[${elemTy.render}]"
 
     override def isComplete: Boolean = elemTy.isComplete
   }
-  case class Function(params: Vector[Type], returnTy: Type) extends CompositeType {
+  final case class Function(params: Vector[Type], returnTy: Type) extends CompositeType {
     override def render: String = s"|${params.map(_.render).mkString(",")}|(${returnTy.render})"
 
     override def isComplete: Boolean = params.forall(_.isComplete) && returnTy.isComplete
   }
 
   object Builders {
-    case class Appender(elemTy: Type, annotations: Option[AST.Annotations]) extends BuilderType {
+    final case class Appender(elemTy: Type, annotations: Option[AST.Annotations]) extends BuilderType {
       override def render: String = s"appender[${elemTy.render}]"
 
       override def isComplete: Boolean = elemTy.isComplete
@@ -122,7 +122,7 @@ object Types {
 
       override def argType: Type = UnitT; // TODO optionally allows an index?
     }
-    case class StreamAppender(elemTy: Type, annotations: Option[AST.Annotations]) extends BuilderType {
+    final case class StreamAppender(elemTy: Type, annotations: Option[AST.Annotations]) extends BuilderType {
       override def render: String = s"streamappender[${elemTy.render}]"
 
       override def isComplete: Boolean = elemTy.isComplete
@@ -132,7 +132,7 @@ object Types {
 
       override def argType: Type = UnitT
     }
-    case class Merger(elemTy: Type, opTy: OpType, annotations: Option[AST.Annotations]) extends BuilderType {
+    final case class Merger(elemTy: Type, opTy: OpType, annotations: Option[AST.Annotations]) extends BuilderType {
       override def render: String = s"merger[${elemTy.render},${opTy.render}]"
 
       override def isComplete: Boolean = elemTy.isComplete
@@ -143,7 +143,7 @@ object Types {
 
       override def argType: Type = UnitT; // TODO optionally allows elemTy
     }
-    case class DictMerger(keyTy: Type, valueTy: Type, opTy: OpType, annotations: Option[AST.Annotations])
+    final case class DictMerger(keyTy: Type, valueTy: Type, opTy: OpType, annotations: Option[AST.Annotations])
         extends BuilderType {
       override def render: String = s"merger[${keyTy.render},${valueTy.render},${opTy.render}]"
 
@@ -155,7 +155,7 @@ object Types {
 
       override def argType: Type = UnitT
     }
-    case class VecMerger(elemTy: Type, opTy: OpType, annotations: Option[AST.Annotations]) extends BuilderType {
+    final case class VecMerger(elemTy: Type, opTy: OpType, annotations: Option[AST.Annotations]) extends BuilderType {
       override def render: String = s"vecmerger[${elemTy.render},${opTy.render}]"
 
       override def isComplete: Boolean = elemTy.isComplete
@@ -166,7 +166,7 @@ object Types {
 
       override def argType: Type = Vec(elemTy)
     }
-    case class GroupMerger(keyTy: Type, valueTy: Type, annotations: Option[AST.Annotations]) extends BuilderType {
+    final case class GroupMerger(keyTy: Type, valueTy: Type, annotations: Option[AST.Annotations]) extends BuilderType {
       override def render: String = s"groupmerger[${keyTy.render},${valueTy.render}]"
 
       override def isComplete: Boolean = keyTy.isComplete && valueTy.isComplete

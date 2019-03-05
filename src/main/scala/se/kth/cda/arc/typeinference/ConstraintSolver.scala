@@ -19,7 +19,7 @@ object ConstraintSolver {
 
     def describe: String
   }
-  case class Solution(assignments: Map[Int, Type]) extends Result {
+  final case class Solution(assignments: Map[Int, Type]) extends Result {
     override def isSolved: Boolean = true
 
     override def typeSubstitutions: Substituter = substitute
@@ -40,7 +40,7 @@ object ConstraintSolver {
       assignments.toList.sortBy(_._1).map(t => s"?${t._1} <- ${t._2.render}").mkString("[", ",", "]")
     }
   }
-  case class PartialSolution(assignments: Map[Int, Type], constraints: List[TypeConstraint]) extends Result {
+  final case class PartialSolution(assignments: Map[Int, Type], constraints: List[TypeConstraint]) extends Result {
     override def isSolved: Boolean = false
 
     override def typeSubstitutions: Substituter = substitute

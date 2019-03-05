@@ -3,6 +3,8 @@ package se.kth.cda.arc.typeinference
 import se.kth.cda.arc.Types._
 import se.kth.cda.arc._
 
+import scala.annotation.tailrec
+
 sealed trait TypeConstraint {
   type Self <: TypeConstraint
 
@@ -87,7 +89,7 @@ object TypeConstraints {
     }
   }
 
-  abstract class Predicate extends TypeConstraint {
+  sealed abstract class Predicate extends TypeConstraint {
     def t: Type
 
     def newFromType(t: Type): Self
@@ -120,7 +122,7 @@ object TypeConstraints {
   }
 
   // Basically a subtyping constraint t <= Num
-  case class IsNumeric(t: Type, signed: Boolean = false) extends Predicate {
+  final case class IsNumeric(t: Type, signed: Boolean = false) extends Predicate {
     override type Self = IsNumeric
 
     override def describe: String =
@@ -139,7 +141,7 @@ object TypeConstraints {
   }
 
   // Basically a subtyping constraint t <= Val
-  case class IsScalar(t: Type) extends Predicate {
+  final case class IsScalar(t: Type) extends Predicate {
     override type Self = IsScalar
 
     override def describe: String = s"scalar(${t.render})"
@@ -153,7 +155,7 @@ object TypeConstraints {
   }
 
   // Basically a subtyping constraint t <= Float
-  case class IsFloat(t: Type) extends Predicate {
+  final case class IsFloat(t: Type) extends Predicate {
     override type Self = IsFloat
 
     override def describe: String = s"float(${t.render})"
@@ -166,7 +168,7 @@ object TypeConstraints {
     }
   }
 
-  case class LookupKind(dataTy: Type, indexTy: Type, resultTy: Type) extends TypeConstraint {
+  final case class LookupKind(dataTy: Type, indexTy: Type, resultTy: Type) extends TypeConstraint {
     override type Self = LookupKind
 
     override def describe: String = {
@@ -231,7 +233,7 @@ object TypeConstraints {
     }
   }
 
-  case class ProjectableKind(structTy: Type, fieldTy: Type, fieldIndex: Int) extends TypeConstraint {
+  final case class ProjectableKind(structTy: Type, fieldTy: Type, fieldIndex: Int) extends TypeConstraint {
     override type Self = ProjectableKind
 
     override def describe: String = {
@@ -291,7 +293,7 @@ object TypeConstraints {
     }
   }
 
-  case class BuilderKind(builderTy: Type, mergeTy: Type, resultTy: Type, argTy: Type) extends TypeConstraint {
+  final case class BuilderKind(builderTy: Type, mergeTy: Type, resultTy: Type, argTy: Type) extends TypeConstraint {
     override type Self = BuilderKind
 
     override def describe: String =
@@ -367,7 +369,7 @@ object TypeConstraints {
     }
   }
 
-  case class IterableKind(dataTy: Type, elemTy: Type) extends TypeConstraint {
+  final case class IterableKind(dataTy: Type, elemTy: Type) extends TypeConstraint {
     override type Self = IterableKind
 
     override def describe: String =
@@ -422,7 +424,7 @@ object TypeConstraints {
     }
   }
 
-  case class MultiEquality(members: List[Type]) extends TypeConstraint {
+  final case class MultiEquality(members: List[Type]) extends TypeConstraint {
     override type Self = MultiEquality
 
     override def describe: String = members.map(_.render).mkString("=")
@@ -571,7 +573,7 @@ object TypeConstraints {
   //    override def variables(): List[TypeVariable] = List.empty;
   //  }
 
-  case class MultiConj(members: List[TypeConstraint]) extends TypeConstraint {
+  final case class MultiConj(members: List[TypeConstraint]) extends TypeConstraint {
     override type Self = MultiConj
 
     override def describe: String = members.map(c => s"(${c.describe})").mkString("∧")

@@ -4,6 +4,7 @@ import se.kth.cda.arc.AST._
 import se.kth.cda.arc.Utils.TryVector
 import se.kth.cda.arc.{BuilderType, Type}
 
+import scala.annotation.tailrec
 import scala.util.{Success, Try}
 
 object Transformer {

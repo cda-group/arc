@@ -2,6 +2,8 @@ package se.kth.cda.arc
 
 import java.io.PrintStream
 
+import scala.annotation.tailrec
+
 object PrettyPrint {
   import AST._
 

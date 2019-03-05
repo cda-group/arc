@@ -7,7 +7,7 @@ import scala.util.{Failure, Success, Try}
 
 object MacroExpansion {
 
-  case class Env(macros: Map[String, Macro], symbols: Map[String, Int], params: Map[String, Expr]) {
+  final case class Env(macros: Map[String, Macro], symbols: Map[String, Int], params: Map[String, Expr]) {
 
     def +(m: Macro): Try[Env] = {
       val name = m.name.text

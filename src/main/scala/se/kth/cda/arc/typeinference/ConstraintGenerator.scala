@@ -5,6 +5,7 @@ import se.kth.cda.arc.Types._
 import se.kth.cda.arc.Utils.TryVector
 import se.kth.cda.arc._
 
+import scala.annotation.tailrec
 import scala.util.{Failure, Success, Try}
 
 class ConstraintGenerator(val rootExpr: Expr) {
