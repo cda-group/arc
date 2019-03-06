@@ -7,488 +7,499 @@ object PrettyPrint {
 
   val INDENT_INC = 2
 
-  def print(tree: ASTNode): String = {
+  def prettyPrint(tree: ASTNode): String = {
     val sb = new Utils.StringBuilderStream()
-    this.print(tree, sb.asPrintStream())
+    sb.asPrintStream().prettyPrint(tree)
     sb.result()
   }
 
-  def println(tree: ASTNode, out: PrintStream): Unit = {
-    PrettyPrint.print(tree, out)
-    out.print('\n')
-  }
+  implicit class PrettyPrintStream(val out: PrintStream) extends AnyVal {
 
-  def print(tree: ASTNode, out: PrintStream): Unit = {
-    tree match {
-      case Program(macros, expr, _) =>
-        macros.foreach { m =>
-          print(m, out)
-          out.print('\n')
-        }
-        print(expr, out)
-      case Macro(name, params, body, _) =>
-        out.print("macro ")
-        printSymbol(name, out)
-        out.print('(')
-        for ((p, i) <- params.view.zipWithIndex) {
-          printSymbol(p, out)
-          if (i != (params.length - 1)) {
-            out.print(',')
+    def prettyPrint(str: String): Unit = {
+      out.print(str)
+    }
+
+    def prettyPrint(ch: Char): Unit = {
+      out.print(ch)
+    }
+
+    def prettyPrintln(tree: ASTNode): Unit = {
+      out.prettyPrint(tree)
+      out.prettyPrint('\n')
+    }
+
+    def prettyPrint(tree: ASTNode): Unit = {
+      tree match {
+        case Program(macros, expr, _) =>
+          macros.foreach { m =>
+            out.prettyPrint(m)
+            out.prettyPrint('\n')
           }
-        }
-        out.print(')')
-        out.print('=')
-        print(body, out)
-      case e: Expr   => printExpr(e, out, typed = true, 0, shouldIndent = true)
-      case s: Symbol => printSymbol(s, out)
-    }
-  }
-
-  def printSymbol(s: Symbol, out: PrintStream): Unit = out.print(s.text)
-
-  def printType(t: Type, out: PrintStream): Unit = out.print(t.render)
-
-  def printIter(iter: Iter, out: PrintStream, indent: Int): Unit = {
-    import IterKind._
-
-    val iterStr = iter.kind match {
-      case ScalarIter  => "iter"
-      case SimdIter    => "simditer"
-      case FringeIter  => "fringeiter"
-      case NdIter      => "nditer"
-      case RangeIter   => "rangeiter"
-      case NextIter    => "nextiter"
-      case KeyByIter   => "keyby"
-      case UnknownIter => "?iter"
-    }
-
-    if (iter.kind == NdIter) {
-      out.print(iterStr)
-      out.print('(')
-      printExpr(iter.data, out, typed = true, indent + INDENT_INC, shouldIndent = false)
-      out.print(',')
-      printExpr(iter.start.get, out, typed = true, indent + INDENT_INC, shouldIndent = false)
-      out.print(',')
-      printExpr(iter.shape.get, out, typed = true, indent + INDENT_INC, shouldIndent = false)
-      out.print(',')
-      printExpr(iter.strides.get, out, typed = true, indent + INDENT_INC, shouldIndent = false)
-      out.print(')')
-    } else if (iter.kind == KeyByIter) {
-      out.print(iterStr)
-      out.print('(')
-      printExpr(iter.data, out, typed = true, indent + INDENT_INC, shouldIndent = false)
-      out.print(',')
-      printExpr(iter.keyFunc.get, out, typed = true, indent + INDENT_INC, shouldIndent = false)
-      out.print(')')
-    } else if (iter.start.isDefined) {
-      out.print(iterStr)
-      out.print('(')
-      printExpr(iter.data, out, typed = true, indent + INDENT_INC, shouldIndent = false)
-      out.print(',')
-      printExpr(iter.start.get, out, typed = true, indent + INDENT_INC, shouldIndent = false)
-      out.print(',')
-      printExpr(iter.end.get, out, typed = true, indent + INDENT_INC, shouldIndent = false)
-      out.print(',')
-      printExpr(iter.stride.get, out, typed = true, indent + INDENT_INC, shouldIndent = false)
-      out.print(')')
-    } else if (iter.kind != ScalarIter) {
-      out.print(iterStr)
-      out.print('(')
-      printExpr(iter.data, out, typed = true, indent + INDENT_INC, shouldIndent = false)
-      out.print(')')
-    } else {
-      printExpr(iter.data, out, typed = true, indent, shouldIndent = false)
-    }
-  }
-
-  def printExpr(expr: Expr, out: PrintStream, typed: Boolean, indent: Int, shouldIndent: Boolean): Unit = {
-    import ExprKind._
-    lazy val indentStr = if (shouldIndent) {
-      (0 until indent).foldLeft("")((acc, _) => acc + " ")
-    } else {
-      ""
-    }
-    // lazy val lessIndentStr = (0 until (indent - 2)).foldLeft("")((acc, _) => acc + " ")
-    expr.kind match {
-      case Let(name, bindingTy, value, body) =>
-        if (typed) {
-          out.print('(')
-          out.print(' ')
-        }
-        out.print("let ")
-        printSymbol(name, out)
-        out.print(':')
-        printType(bindingTy, out)
-        out.print('=')
-        printExpr(value, out, typed = true, indent + INDENT_INC, shouldIndent = true)
-        out.print(';')
-        out.print('\n')
-        out.print(indentStr)
-        if (typed) {
-          out.print("  ")
-        }
-        printExpr(body, out, typed = false, if (typed) indent + INDENT_INC else indent, shouldIndent = true)
-        if (typed) {
-          out.print('\n')
-          out.print(indentStr)
-          out.print(')')
-          out.print(':')
-          printType(expr.ty, out)
-        }
-      case Lambda(params, body) =>
-        if (params.isEmpty) {
-          out.print("||")
-          printExpr(body, out, typed = true, indent + INDENT_INC, shouldIndent = true)
-        } else {
-          out.print('|')
+          out.prettyPrint(expr)
+        case Macro(name, params, body, _) =>
+          out.prettyPrint("macro ")
+          out.prettyPrint(name)
+          out.prettyPrint('(')
           for ((p, i) <- params.view.zipWithIndex) {
-            printSymbol(p.name, out)
-            out.print(':')
-            printType(p.ty, out)
+            out.prettyPrint(p)
             if (i != (params.length - 1)) {
-              out.print(',')
+              out.prettyPrint(',')
             }
           }
-          out.print('|')
-          out.print('\n')
-          out.print(indentStr)
-          out.print("  ")
-          printExpr(body, out, typed = true, indent + INDENT_INC, shouldIndent = true)
-        }
-      case Negate(expr) =>
-        out.print('-')
-        printExpr(expr, out, typed = true, indent + 1, shouldIndent = false)
-      case Not(expr) =>
-        out.print('!')
-        printExpr(expr, out, typed = true, indent + 1, shouldIndent = false)
-      case UnaryOp(kind, expr) =>
-        out.print(UnaryOpKind.print(kind))
-        out.print('(')
-        printExpr(expr, out, typed = false, indent + 1, shouldIndent = false)
-        out.print(')')
-        if (typed) {
-          out.print(':')
-          printType(expr.ty, out)
-        }
-      case Ident(s) =>
-        printSymbol(s, out)
-        if (typed) {
-          out.print(':')
-          printType(expr.ty, out)
-        }
-      case l: Literal[_] =>
-        out.print(l.raw)
-        if (typed) {
-          out.print(':')
-          printType(expr.ty, out)
-        }
-      case Cast(ty, e) =>
-        printType(ty, out)
-        out.print('(')
-        printExpr(e, out, typed = false, indent + INDENT_INC, shouldIndent = false)
-        out.print(')')
-      case ToVec(e) =>
-        out.print("tovec(")
-        printExpr(e, out, typed = false, indent + INDENT_INC, shouldIndent = false)
-        out.print(')')
-      case Broadcast(e) =>
-        out.print("broadcast(")
-        printExpr(e, out, typed = false, indent + INDENT_INC, shouldIndent = false)
-        out.print(')')
-      case CUDF(ref, args, retT) =>
-        out.print("cudf[")
-        ref match {
-          case Left(name) => printSymbol(name, out);
-          case Right(pointer) =>
-            out.print('*')
-            printExpr(pointer, out, typed = false, indent + INDENT_INC, shouldIndent = false)
-        }
-        out.print(',')
-        printType(retT, out)
-        out.print(']')
-        out.print('(')
-        for ((e, i) <- args.view.zipWithIndex) {
-          printExpr(e, out, typed = false, indent + INDENT_INC, shouldIndent = false)
-          if (i != (args.length - 1)) {
-            out.print(',')
-          }
-        }
-        out.print(')')
-        if (typed) {
-          out.print(':')
-          printType(expr.ty, out)
-        }
-      case Zip(params) =>
-        out.print("zip(")
-        for ((e, i) <- params.view.zipWithIndex) {
-          printExpr(e, out, typed = false, indent + 4, shouldIndent = false)
-          if (i != (params.length - 1)) {
-            out.print(',')
-          }
-        }
-        out.print(')')
-        if (typed) {
-          out.print(':')
-          printType(expr.ty, out)
-        }
-      case Hash(params) =>
-        out.print("hash(")
-        for ((e, i) <- params.view.zipWithIndex) {
-          printExpr(e, out, typed = false, indent + 4, shouldIndent = false)
-          if (i != (params.length - 1)) {
-            out.print(',')
-          }
-        }
-        out.print(')')
-        if (typed) {
-          out.print(':')
-          printType(expr.ty, out)
-        }
-      case For(iterator, builder, body) =>
-        out.print("for(")
-        printIter(iterator, out, indent + 4)
-        out.print(',')
-        out.print('\n')
-        out.print(indentStr)
-        out.print("    ")
-        printExpr(builder, out, typed = false, indent + 4, shouldIndent = true)
-        out.print(',')
-        out.print('\n')
-        out.print(indentStr)
-        out.print("    ")
-        printExpr(body, out, typed = false, indent + 4, shouldIndent = true)
-        out.print('\n')
-        out.print(indentStr)
-        out.print(')')
-        if (typed) {
-          out.print(':')
-          printType(expr.ty, out)
-        }
-      case Len(e) =>
-        out.print("len(")
-        printExpr(e, out, typed = true, indent + 4, shouldIndent = false)
-        out.print(')')
-        if (typed) {
-          out.print(':')
-          printType(expr.ty, out)
-        }
-      case Lookup(data, key) =>
-        out.print("lookup(")
-        printExpr(data, out, typed = true, indent + INDENT_INC, shouldIndent = false)
-        out.print(',')
-        printExpr(key, out, typed = true, indent + INDENT_INC, shouldIndent = false)
-        out.print(')')
-        if (typed) {
-          out.print(':')
-          printType(expr.ty, out)
-        }
-      case Slice(data, index, size) =>
-        out.print("slice(")
-        printExpr(data, out, typed = false, indent + INDENT_INC, shouldIndent = false)
-        out.print(',')
-        printExpr(index, out, typed = false, indent + INDENT_INC, shouldIndent = false)
-        out.print(',')
-        printExpr(size, out, typed = false, indent + INDENT_INC, shouldIndent = false)
-        out.print(')')
-        if (typed) {
-          out.print(':')
-          printType(expr.ty, out)
-        }
-      case Sort(data, keyFunc) =>
-        out.print("sort(")
-        printExpr(data, out, typed = false, indent + INDENT_INC, shouldIndent = false)
-        out.print(',')
-        printExpr(keyFunc, out, typed = false, indent + INDENT_INC, shouldIndent = false)
-        out.print(')')
-        if (typed) {
-          out.print(':')
-          printType(expr.ty, out)
-        }
-      case Serialize(e) =>
-        out.print("serialize(")
-        printExpr(e, out, typed = false, indent + INDENT_INC, shouldIndent = false)
-        out.print(')')
-        if (typed) {
-          out.print(':')
-          printType(expr.ty, out)
-        }
-      case Deserialize(ty, e) =>
-        out.print("deserialize[")
-        printType(ty, out)
-        out.print(']')
-        out.print('(')
-        printExpr(e, out, typed = false, indent + INDENT_INC, shouldIndent = false)
-        out.print(')')
-        if (typed) {
-          out.print(':')
-          printType(expr.ty, out)
-        }
-      case If(cond, onTrue, onFalse) =>
-        out.print("if (")
-        printExpr(cond, out, typed = false, indent + 4, shouldIndent = false)
-        out.print(',')
-        out.print('\n')
-        out.print(indentStr)
-        out.print("    ")
-        printExpr(onTrue, out, typed = true, indent + 4, shouldIndent = true)
-        out.print(',')
-        out.print('\n')
-        out.print(indentStr)
-        out.print("    ")
-        printExpr(onFalse, out, typed = true, indent + 4, shouldIndent = true)
-        out.print('\n')
-        out.print(indentStr)
-        out.print(')')
-        if (typed) {
-          out.print(':')
-          printType(expr.ty, out)
-        }
-      case Select(cond, onTrue, onFalse) =>
-        out.print("select(")
-        printExpr(cond, out, typed = false, indent + INDENT_INC, shouldIndent = false)
-        out.print(',')
-        out.print('\n')
-        out.print(indentStr)
-        out.print("  ")
-        printExpr(onTrue, out, typed = true, indent + INDENT_INC, shouldIndent = true)
-        out.print(',')
-        out.print('\n')
-        out.print(indentStr)
-        out.print("  ")
-        printExpr(onFalse, out, typed = true, indent + INDENT_INC, shouldIndent = true)
-        out.print('\n')
-        out.print(indentStr)
-        out.print(')')
-        if (typed) {
-          out.print(':')
-          printType(expr.ty, out)
-        }
-      case Iterate(init, updateFunc) =>
-        out.print("iterate (")
-        printExpr(init, out, typed = true, indent + INDENT_INC, shouldIndent = false)
-        out.print(',')
-        out.print('\n')
-        out.print(indentStr)
-        out.print("  ")
-        printExpr(updateFunc, out, typed = true, indent + INDENT_INC, shouldIndent = true)
-        out.print('\n')
-        out.print(indentStr)
-        out.print(')')
-        if (typed) {
-          out.print(':')
-          printType(expr.ty, out)
-        }
-      case MakeStruct(elems) =>
-        out.print('{')
-        for ((e, i) <- elems.view.zipWithIndex) {
-          printExpr(e, out, typed = false, indent + 1, shouldIndent = false)
-          if (i != (elems.length - 1)) {
-            out.print(',')
-          }
-        }
-        out.print('}')
-        if (typed) {
-          out.print(':')
-          printType(expr.ty, out)
-        }
-      case MakeVec(elems) =>
-        out.print('[')
-        for ((e, i) <- elems.view.zipWithIndex) {
-          printExpr(e, out, typed = false, indent + 1, shouldIndent = false)
-          if (i != (elems.length - 1)) {
-            out.print(',')
-          }
-        }
-        out.print(']')
-        if (typed) {
-          out.print(':')
-          printType(expr.ty, out)
-        }
-      case Merge(builder, value) =>
-        out.print("merge(")
-        printExpr(builder, out, typed = false, indent + INDENT_INC, shouldIndent = false)
-        out.print(',')
-        printExpr(value, out, typed = false, indent + INDENT_INC, shouldIndent = false)
-        out.print(')')
-        if (typed) {
-          out.print(':')
-          printType(expr.ty, out)
-        }
-      case Result(e) =>
-        out.print("result(")
-        printExpr(e, out, typed = false, indent + INDENT_INC, shouldIndent = false)
-        out.print(')')
-        if (typed) {
-          out.print(':')
-          printType(expr.ty, out)
-        }
-      case NewBuilder(ty, Some(arg)) =>
-        printType(ty, out)
-        out.print('(')
-        printExpr(arg, out, typed = true, indent + INDENT_INC, shouldIndent = false)
-        out.print(')')
-      // don't print type even if requested since it's redundant
-      case NewBuilder(ty, None) =>
-        printType(ty, out)
-      // don't print type even if requested since it's redundant
-      case BinOp(kind, left, right) =>
-        if (kind.isInfix) {
+          out.prettyPrint(')')
+          out.prettyPrint('=')
+          out.prettyPrint(body)
+        case e: Expr   => out.prettyPrint(e, true, 0, true)
+        case s: Symbol => out.prettyPrint(s)
+      }
+    }
+
+    def prettyPrint(s: Symbol): Unit = out.prettyPrint(s.text)
+
+    def prettyPrint(t: Type): Unit = out.prettyPrint(t.render)
+
+    def prettyPrint(iter: Iter, indent: Int): Unit = {
+      import IterKind._
+
+      val iterStr = iter.kind match {
+        case ScalarIter  => "iter"
+        case SimdIter    => "simditer"
+        case FringeIter  => "fringeiter"
+        case NdIter      => "nditer"
+        case RangeIter   => "rangeiter"
+        case NextIter    => "nextiter"
+        case KeyByIter   => "keyby"
+        case UnknownIter => "?iter"
+      }
+
+      if (iter.kind == NdIter) {
+        out.prettyPrint(iterStr)
+        out.prettyPrint('(')
+        out.prettyPrint(iter.data, true, indent + INDENT_INC, false)
+        out.prettyPrint(',')
+        out.prettyPrint(iter.start.get, true, indent + INDENT_INC, false)
+        out.prettyPrint(',')
+        out.prettyPrint(iter.shape.get, true, indent + INDENT_INC, false)
+        out.prettyPrint(',')
+        out.prettyPrint(iter.strides.get, true, indent + INDENT_INC, false)
+        out.prettyPrint(')')
+      } else if (iter.kind == KeyByIter) {
+        out.prettyPrint(iterStr)
+        out.prettyPrint('(')
+        out.prettyPrint(iter.data, true, indent + INDENT_INC, false)
+        out.prettyPrint(',')
+        out.prettyPrint(iter.keyFunc.get, true, indent + INDENT_INC, false)
+        out.prettyPrint(')')
+      } else if (iter.start.isDefined) {
+        out.prettyPrint(iterStr)
+        out.prettyPrint('(')
+        out.prettyPrint(iter.data, true, indent + INDENT_INC, false)
+        out.prettyPrint(',')
+        out.prettyPrint(iter.start.get, true, indent + INDENT_INC, false)
+        out.prettyPrint(',')
+        out.prettyPrint(iter.end.get, true, indent + INDENT_INC, false)
+        out.prettyPrint(',')
+        out.prettyPrint(iter.stride.get, true, indent + INDENT_INC, false)
+        out.prettyPrint(')')
+      } else if (iter.kind != ScalarIter) {
+        out.prettyPrint(iterStr)
+        out.prettyPrint('(')
+        out.prettyPrint(iter.data, true, indent + INDENT_INC, false)
+        out.prettyPrint(')')
+      } else {
+        out.prettyPrint(iter.data, true, indent, false)
+      }
+    }
+
+    def prettyPrint(expr: Expr, typed: Boolean, indent: Int, shouldIndent: Boolean): Unit = {
+      import ExprKind._
+      lazy val indentStr = if (shouldIndent) {
+        (0 until indent).foldLeft("")((acc, _) => acc + " ")
+      } else {
+        ""
+      }
+      // lazy val lessIndentStr = (0 until (indent - 2)).foldLeft("")((acc, _) => acc + " ")
+      expr.kind match {
+        case Let(name, bindingTy, value, body) =>
           if (typed) {
-            out.print('(')
+            out.prettyPrint('(')
+            out.prettyPrint(' ')
           }
-          printExpr(left, out, typed = true, if (typed) indent + 1 else indent, shouldIndent = false)
-          out.print(kind.symbol)
-          printExpr(right, out, typed = true, if (typed) indent + 1 else indent, shouldIndent = false)
+          out.prettyPrint("let ")
+          out.prettyPrint(name)
+          out.prettyPrint(':')
+          out.prettyPrint(bindingTy)
+          out.prettyPrint('=')
+          out.prettyPrint(value, true, indent + INDENT_INC, true)
+          out.prettyPrint(';')
+          out.prettyPrint('\n')
+          out.prettyPrint(indentStr)
           if (typed) {
-            out.print(')')
-            out.print(':')
-            printType(expr.ty, out)
+            out.prettyPrint("  ")
           }
-        } else {
-          out.print(kind.symbol)
-          out.print('(')
-          printExpr(left, out, typed = true, indent + 4, shouldIndent = false)
-          out.print(',')
-          printExpr(right, out, typed = true, indent + 4, shouldIndent = false)
-          out.print(')')
+          out.prettyPrint(body, false, if (typed) indent + INDENT_INC else indent, true)
           if (typed) {
-            out.print(':')
-            printType(expr.ty, out)
+            out.prettyPrint('\n')
+            out.prettyPrint(indentStr)
+            out.prettyPrint(')')
+            out.prettyPrint(':')
+            out.prettyPrint(expr.ty)
           }
-        }
-      case Application(fun, args) =>
-        printExpr(fun, out, typed = false, indent, shouldIndent = false)
-        out.print('(')
-        for ((e, i) <- args.view.zipWithIndex) {
-          printExpr(e, out, typed = false, indent + INDENT_INC, shouldIndent = false)
-          if (i != (args.length - 1)) {
-            out.print(',')
+        case Lambda(params, body) =>
+          if (params.isEmpty) {
+            out.prettyPrint("||")
+            out.prettyPrint(body, true, indent + INDENT_INC, true)
+          } else {
+            out.prettyPrint('|')
+            for ((p, i) <- params.view.zipWithIndex) {
+              out.prettyPrint(p.name)
+              out.prettyPrint(':')
+              out.prettyPrint(p.ty)
+              if (i != (params.length - 1)) {
+                out.prettyPrint(',')
+              }
+            }
+            out.prettyPrint('|')
+            out.prettyPrint('\n')
+            out.prettyPrint(indentStr)
+            out.prettyPrint("  ")
+            out.prettyPrint(body, true, indent + INDENT_INC, true)
           }
-        }
-        out.print(')')
-        if (typed) {
-          out.print(':')
-          printType(expr.ty, out)
-        }
-      case Ascription(e, ty) =>
-        out.print('(')
-        printExpr(e, out, typed = false, indent + 1, shouldIndent = false)
-        out.print(')')
-        out.print(':')
-        printType(ty, out)
-      case Projection(struct, index) =>
-        if (typed) {
-          out.print('(')
-        }
-        printExpr(struct, out, typed = false, indent, shouldIndent = false)
-        out.print('.')
-        out.print('$')
-        out.print(index.toString)
-        if (typed) {
-          out.print(')')
-          out.print(':')
-          printType(expr.ty, out)
-        }
+        case Negate(e) =>
+          out.prettyPrint('-')
+          out.prettyPrint(e, true, indent + 1, false)
+        case Not(e) =>
+          out.prettyPrint('!')
+          out.prettyPrint(e, true, indent + 1, false)
+        case UnaryOp(kind, e) =>
+          out.prettyPrint(UnaryOpKind.prettyPrint(kind))
+          out.prettyPrint('(')
+          out.prettyPrint(e, false, indent + 1, false)
+          out.prettyPrint(')')
+          if (typed) {
+            out.prettyPrint(':')
+            out.prettyPrint(e.ty)
+          }
+        case Ident(s) =>
+          out.prettyPrint(s)
+          if (typed) {
+            out.prettyPrint(':')
+            out.prettyPrint(expr.ty)
+          }
+        case l: Literal[_] =>
+          out.prettyPrint(l.raw)
+          if (typed) {
+            out.prettyPrint(':')
+            out.prettyPrint(expr.ty)
+          }
+        case Cast(ty, e) =>
+          out.prettyPrint(ty)
+          out.prettyPrint('(')
+          out.prettyPrint(e, false, indent + INDENT_INC, false)
+          out.prettyPrint(')')
+        case ToVec(e) =>
+          out.prettyPrint("tovec(")
+          out.prettyPrint(e, false, indent + INDENT_INC, false)
+          out.prettyPrint(')')
+        case Broadcast(e) =>
+          out.prettyPrint("broadcast(")
+          out.prettyPrint(e, false, indent + INDENT_INC, false)
+          out.prettyPrint(')')
+        case CUDF(ref, args, retT) =>
+          out.prettyPrint("cudf[")
+          ref match {
+            case Left(name) => out.prettyPrint(name);
+            case Right(pointer) =>
+              out.prettyPrint('*')
+              out.prettyPrint(pointer, false, indent + INDENT_INC, false)
+          }
+          out.prettyPrint(',')
+          out.prettyPrint(retT)
+          out.prettyPrint(']')
+          out.prettyPrint('(')
+          for ((e, i) <- args.view.zipWithIndex) {
+            out.prettyPrint(e, false, indent + INDENT_INC, false)
+            if (i != (args.length - 1)) {
+              out.prettyPrint(',')
+            }
+          }
+          out.prettyPrint(')')
+          if (typed) {
+            out.prettyPrint(':')
+            out.prettyPrint(expr.ty)
+          }
+        case Zip(params) =>
+          out.prettyPrint("zip(")
+          for ((e, i) <- params.view.zipWithIndex) {
+            out.prettyPrint(e, false, indent + 4, false)
+            if (i != (params.length - 1)) {
+              out.prettyPrint(',')
+            }
+          }
+          out.prettyPrint(')')
+          if (typed) {
+            out.prettyPrint(':')
+            out.prettyPrint(expr.ty)
+          }
+        case Hash(params) =>
+          out.prettyPrint("hash(")
+          for ((e, i) <- params.view.zipWithIndex) {
+            out.prettyPrint(e, false, indent + 4, false)
+            if (i != (params.length - 1)) {
+              out.prettyPrint(',')
+            }
+          }
+          out.prettyPrint(')')
+          if (typed) {
+            out.prettyPrint(':')
+            out.prettyPrint(expr.ty)
+          }
+        case For(iterator, builder, body) =>
+          out.prettyPrint("for(")
+          out.prettyPrint(iterator, indent + 4)
+          out.prettyPrint(',')
+          out.prettyPrint('\n')
+          out.prettyPrint(indentStr)
+          out.prettyPrint("    ")
+          out.prettyPrint(builder, false, indent + 4, true)
+          out.prettyPrint(',')
+          out.prettyPrint('\n')
+          out.prettyPrint(indentStr)
+          out.prettyPrint("    ")
+          out.prettyPrint(body, false, indent + 4, true)
+          out.prettyPrint('\n')
+          out.prettyPrint(indentStr)
+          out.prettyPrint(')')
+          if (typed) {
+            out.prettyPrint(':')
+            out.prettyPrint(expr.ty)
+          }
+        case Len(e) =>
+          out.prettyPrint("len(")
+          out.prettyPrint(e, true, indent + 4, false)
+          out.prettyPrint(')')
+          if (typed) {
+            out.prettyPrint(':')
+            out.prettyPrint(expr.ty)
+          }
+        case Lookup(data, key) =>
+          out.prettyPrint("lookup(")
+          out.prettyPrint(data, true, indent + INDENT_INC, false)
+          out.prettyPrint(',')
+          out.prettyPrint(key, true, indent + INDENT_INC, false)
+          out.prettyPrint(')')
+          if (typed) {
+            out.prettyPrint(':')
+            out.prettyPrint(expr.ty)
+          }
+        case Slice(data, index, size) =>
+          out.prettyPrint("slice(")
+          out.prettyPrint(data, false, indent + INDENT_INC, false)
+          out.prettyPrint(',')
+          out.prettyPrint(index, false, indent + INDENT_INC, false)
+          out.prettyPrint(',')
+          out.prettyPrint(size, false, indent + INDENT_INC, false)
+          out.prettyPrint(')')
+          if (typed) {
+            out.prettyPrint(':')
+            out.prettyPrint(expr.ty)
+          }
+        case Sort(data, keyFunc) =>
+          out.prettyPrint("sort(")
+          out.prettyPrint(data, false, indent + INDENT_INC, false)
+          out.prettyPrint(',')
+          out.prettyPrint(keyFunc, false, indent + INDENT_INC, false)
+          out.prettyPrint(')')
+          if (typed) {
+            out.prettyPrint(':')
+            out.prettyPrint(expr.ty)
+          }
+        case Serialize(e) =>
+          out.prettyPrint("serialize(")
+          out.prettyPrint(e, false, indent + INDENT_INC, false)
+          out.prettyPrint(')')
+          if (typed) {
+            out.prettyPrint(':')
+            out.prettyPrint(expr.ty)
+          }
+        case Deserialize(ty, e) =>
+          out.prettyPrint("deserialize[")
+          out.prettyPrint(ty)
+          out.prettyPrint(']')
+          out.prettyPrint('(')
+          out.prettyPrint(e, false, indent + INDENT_INC, false)
+          out.prettyPrint(')')
+          if (typed) {
+            out.prettyPrint(':')
+            out.prettyPrint(expr.ty)
+          }
+        case If(cond, onTrue, onFalse) =>
+          out.prettyPrint("if (")
+          out.prettyPrint(cond, false, indent + 4, false)
+          out.prettyPrint(',')
+          out.prettyPrint('\n')
+          out.prettyPrint(indentStr)
+          out.prettyPrint("    ")
+          out.prettyPrint(onTrue, true, indent + 4, true)
+          out.prettyPrint(',')
+          out.prettyPrint('\n')
+          out.prettyPrint(indentStr)
+          out.prettyPrint("    ")
+          out.prettyPrint(onFalse, true, indent + 4, true)
+          out.prettyPrint('\n')
+          out.prettyPrint(indentStr)
+          out.prettyPrint(')')
+          if (typed) {
+            out.prettyPrint(':')
+            out.prettyPrint(expr.ty)
+          }
+        case Select(cond, onTrue, onFalse) =>
+          out.prettyPrint("select(")
+          out.prettyPrint(cond, false, indent + INDENT_INC, false)
+          out.prettyPrint(',')
+          out.prettyPrint('\n')
+          out.prettyPrint(indentStr)
+          out.prettyPrint("  ")
+          out.prettyPrint(onTrue, true, indent + INDENT_INC, true)
+          out.prettyPrint(',')
+          out.prettyPrint('\n')
+          out.prettyPrint(indentStr)
+          out.prettyPrint("  ")
+          out.prettyPrint(onFalse, true, indent + INDENT_INC, true)
+          out.prettyPrint('\n')
+          out.prettyPrint(indentStr)
+          out.prettyPrint(')')
+          if (typed) {
+            out.prettyPrint(':')
+            out.prettyPrint(expr.ty)
+          }
+        case Iterate(init, updateFunc) =>
+          out.prettyPrint("iterate (")
+          out.prettyPrint(init, true, indent + INDENT_INC, false)
+          out.prettyPrint(',')
+          out.prettyPrint('\n')
+          out.prettyPrint(indentStr)
+          out.prettyPrint("  ")
+          out.prettyPrint(updateFunc, true, indent + INDENT_INC, true)
+          out.prettyPrint('\n')
+          out.prettyPrint(indentStr)
+          out.prettyPrint(')')
+          if (typed) {
+            out.prettyPrint(':')
+            out.prettyPrint(expr.ty)
+          }
+        case MakeStruct(elems) =>
+          out.prettyPrint('{')
+          for ((e, i) <- elems.view.zipWithIndex) {
+            out.prettyPrint(e, false, indent + 1, false)
+            if (i != (elems.length - 1)) {
+              out.prettyPrint(',')
+            }
+          }
+          out.prettyPrint('}')
+          if (typed) {
+            out.prettyPrint(':')
+            out.prettyPrint(expr.ty)
+          }
+        case MakeVec(elems) =>
+          out.prettyPrint('[')
+          for ((e, i) <- elems.view.zipWithIndex) {
+            out.prettyPrint(e, false, indent + 1, false)
+            if (i != (elems.length - 1)) {
+              out.prettyPrint(',')
+            }
+          }
+          out.prettyPrint(']')
+          if (typed) {
+            out.prettyPrint(':')
+            out.prettyPrint(expr.ty)
+          }
+        case Merge(builder, value) =>
+          out.prettyPrint("merge(")
+          out.prettyPrint(builder, false, indent + INDENT_INC, false)
+          out.prettyPrint(',')
+          out.prettyPrint(value, false, indent + INDENT_INC, false)
+          out.prettyPrint(')')
+          if (typed) {
+            out.prettyPrint(':')
+            out.prettyPrint(expr.ty)
+          }
+        case Result(e) =>
+          out.prettyPrint("result(")
+          out.prettyPrint(e, false, indent + INDENT_INC, false)
+          out.prettyPrint(')')
+          if (typed) {
+            out.prettyPrint(':')
+            out.prettyPrint(expr.ty)
+          }
+        case NewBuilder(ty, Some(arg)) =>
+          out.prettyPrint(ty)
+          out.prettyPrint('(')
+          out.prettyPrint(arg, true, indent + INDENT_INC, false)
+          out.prettyPrint(')')
+        // don't print type even if requested since it's redundant
+        case NewBuilder(ty, None) =>
+          out.prettyPrint(ty)
+        // don't print type even if requested since it's redundant
+        case BinOp(kind, left, right) =>
+          if (kind.isInfix) {
+            if (typed) {
+              out.prettyPrint('(')
+            }
+            out.prettyPrint(left, true, if (typed) indent + 1 else indent, false)
+            out.prettyPrint(kind.symbol)
+            out.prettyPrint(right, true, if (typed) indent + 1 else indent, false)
+            if (typed) {
+              out.prettyPrint(')')
+              out.prettyPrint(':')
+              out.prettyPrint(expr.ty)
+            }
+          } else {
+            out.prettyPrint(kind.symbol)
+            out.prettyPrint('(')
+            out.prettyPrint(left, true, indent + 4, false)
+            out.prettyPrint(',')
+            out.prettyPrint(right, true, indent + 4, false)
+            out.prettyPrint(')')
+            if (typed) {
+              out.prettyPrint(':')
+              out.prettyPrint(expr.ty)
+            }
+          }
+        case Application(fun, args) =>
+          out.prettyPrint(fun, false, indent, false)
+          out.prettyPrint('(')
+          for ((e, i) <- args.view.zipWithIndex) {
+            out.prettyPrint(e, false, indent + INDENT_INC, false)
+            if (i != (args.length - 1)) {
+              out.prettyPrint(',')
+            }
+          }
+          out.prettyPrint(')')
+          if (typed) {
+            out.prettyPrint(':')
+            out.prettyPrint(expr.ty)
+          }
+        case Ascription(e, ty) =>
+          out.prettyPrint('(')
+          out.prettyPrint(e, false, indent + 1, false)
+          out.prettyPrint(')')
+          out.prettyPrint(':')
+          out.prettyPrint(ty)
+        case Projection(struct, index) =>
+          if (typed) {
+            out.prettyPrint('(')
+          }
+          out.prettyPrint(struct, false, indent, false)
+          out.prettyPrint('.')
+          out.prettyPrint('$')
+          out.prettyPrint(index.toString)
+          if (typed) {
+            out.prettyPrint(')')
+            out.prettyPrint(':')
+            out.prettyPrint(expr.ty)
+          }
+      }
     }
   }
 }

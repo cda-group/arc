@@ -3,6 +3,7 @@ package se.kth.cda.arc
 import org.antlr.v4.runtime._
 import se.kth.cda.arc.transform.MacroExpansion
 import se.kth.cda.arc.typeinference.TypeInference
+import se.kth.cda.arc.PrettyPrint._
 
 import scala.util.control.Breaks._
 
@@ -57,8 +58,8 @@ object Rppl {
           val ast = translator.translate(tree)
           //        Console.out.print("<= ")
           //        Console.out.println(ast)
-          Console.out.println("<= ")
-          PrettyPrint.println(ast, Console.out)
+          Console.out.print("<= ")
+          Console.out.prettyPrintln(ast)
 
           Console.out.println("Starting macro expansion")
           val expanded = MacroExpansion
@@ -71,8 +72,8 @@ object Rppl {
             }
             .get
 
-          Console.out.println("<= ")
-          PrettyPrint.println(expanded, Console.out)
+          Console.out.print("<= ")
+          Console.out.prettyPrintln(expanded)
 
           Console.out.println("Starting type inference")
           val typed = TypeInference
@@ -87,12 +88,12 @@ object Rppl {
 
           Console.out.print("<= ")
           Console.out.println(typed.ty.render)
-          PrettyPrint.println(typed, Console.out)
+          Console.out.prettyPrintln(typed)
 
         }
       } catch {
         case e: Throwable =>
-          Console.err.println(s"An error occurred during parsing!")
+          Console.err.println("An error occurred during parsing!")
           e.printStackTrace(Console.err)
       }
     }

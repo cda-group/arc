@@ -46,4 +46,44 @@ object Utils {
     }
   }
 
+  object PrettyPrint {
+
+    val ps: PrintStream = new PrintStream("~/Desktop/lol")
+    println(pretty"asd ${"123"}"(ps))
+
+    trait PrettyPrint {
+      def pretty(ps: PrintStream): Unit
+    }
+
+    implicit class PrettySeq(val list: Seq[PrettyPrint]) extends AnyVal {
+
+      def sep(sep: String): PrettyPrint = (ps: PrintStream) => {
+        val it = list.iterator
+        if (it.hasNext) {
+          it.next().pretty(ps)
+          it.foreach { x =>
+            ps.print(sep)
+            x.pretty(ps)
+          }
+        }
+      }
+    }
+
+    implicit class PrettyPrintString(val str: String) extends PrettyPrint {
+      def pretty(pw: PrintStream): Unit = pw.print(str)
+    }
+
+    implicit class PrintWriterInterpolator(val sc: StringContext) extends AnyVal {
+
+      def pretty(splices: PrettyPrint*)(pw: PrintStream): Unit = {
+        val partsIter = sc.parts.iterator
+        val splicesIter = splices.iterator
+        pw.print(partsIter.next())
+        while (partsIter.hasNext) {
+          splicesIter.next().pretty(pw)
+          pw.print(partsIter.next)
+        }
+      }
+    }
+  }
 }

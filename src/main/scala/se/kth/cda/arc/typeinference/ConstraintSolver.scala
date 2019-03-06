@@ -60,7 +60,7 @@ object ConstraintSolver {
     def describeUnresolvedConstraints(e: Expr): Failure[Expr] = {
       val descriptions = constraints.map(_.describe)
       val description = descriptions.mkString("\n∧ ")
-      val exprS = PrettyPrint.print(e)
+      val exprS = PrettyPrint.prettyPrint(e)
       val msg = s"""Expression could not be typed! Closest partially typed expr:
 $exprS
 Unresolved Constraints:

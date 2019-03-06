@@ -228,7 +228,7 @@ object AST {
     type UnaryOpKind = Value
     val Exp, Sin, Cos, Tan, ASin, ACos, ATan, Sinh, Cosh, Tanh, Log, Erf, Sqrt = Value
 
-    def print(k: UnaryOpKind): String = k match {
+    def prettyPrint(k: UnaryOpKind): String = k match {
       case Exp  => "exp"
       case Sin  => "sin"
       case Cos  => "cos"
