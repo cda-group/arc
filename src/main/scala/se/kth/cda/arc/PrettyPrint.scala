@@ -15,7 +15,7 @@ object PrettyPrint {
 
   def println(tree: ASTNode, out: PrintStream): Unit = {
     PrettyPrint.print(tree, out)
-    out.append('\n')
+    out.print('\n')
   }
 
   def print(tree: ASTNode, out: PrintStream): Unit = {
@@ -23,30 +23,30 @@ object PrettyPrint {
       case Program(macros, expr, _) =>
         macros.foreach { m =>
           print(m, out)
-          out.append('\n');
+          out.print('\n')
         }
         print(expr, out)
       case Macro(name, params, body, _) =>
-        out.append("macro ")
+        out.print("macro ")
         printSymbol(name, out)
-        out.append('(')
+        out.print('(')
         for ((p, i) <- params.view.zipWithIndex) {
           printSymbol(p, out)
           if (i != (params.length - 1)) {
-            out.append(',')
+            out.print(',')
           }
         }
-        out.append(')')
-        out.append('=')
-        print(body)
+        out.print(')')
+        out.print('=')
+        print(body, out)
       case e: Expr   => printExpr(e, out, typed = true, 0, shouldIndent = true)
       case s: Symbol => printSymbol(s, out)
     }
   }
 
-  def printSymbol(s: Symbol, out: PrintStream): Unit = out.append(s.text)
+  def printSymbol(s: Symbol, out: PrintStream): Unit = out.print(s.text)
 
-  def printType(t: Type, out: PrintStream): Unit = out.append(t.render)
+  def printType(t: Type, out: PrintStream): Unit = out.print(t.render)
 
   def printIter(iter: Iter, out: PrintStream, indent: Int): Unit = {
     import IterKind._
@@ -63,39 +63,39 @@ object PrettyPrint {
     }
 
     if (iter.kind == NdIter) {
-      out.append(iterStr)
-      out.append('(')
+      out.print(iterStr)
+      out.print('(')
       printExpr(iter.data, out, typed = true, indent + INDENT_INC, shouldIndent = false)
-      out.append(',')
+      out.print(',')
       printExpr(iter.start.get, out, typed = true, indent + INDENT_INC, shouldIndent = false)
-      out.append(',')
+      out.print(',')
       printExpr(iter.shape.get, out, typed = true, indent + INDENT_INC, shouldIndent = false)
-      out.append(',')
+      out.print(',')
       printExpr(iter.strides.get, out, typed = true, indent + INDENT_INC, shouldIndent = false)
-      out.append(')')
+      out.print(')')
     } else if (iter.kind == KeyByIter) {
-      out.append(iterStr)
-      out.append('(')
+      out.print(iterStr)
+      out.print('(')
       printExpr(iter.data, out, typed = true, indent + INDENT_INC, shouldIndent = false)
-      out.append(',')
+      out.print(',')
       printExpr(iter.keyFunc.get, out, typed = true, indent + INDENT_INC, shouldIndent = false)
-      out.append(')')
+      out.print(')')
     } else if (iter.start.isDefined) {
-      out.append(iterStr)
-      out.append('(')
+      out.print(iterStr)
+      out.print('(')
       printExpr(iter.data, out, typed = true, indent + INDENT_INC, shouldIndent = false)
-      out.append(',')
+      out.print(',')
       printExpr(iter.start.get, out, typed = true, indent + INDENT_INC, shouldIndent = false)
-      out.append(',')
+      out.print(',')
       printExpr(iter.end.get, out, typed = true, indent + INDENT_INC, shouldIndent = false)
-      out.append(',')
+      out.print(',')
       printExpr(iter.stride.get, out, typed = true, indent + INDENT_INC, shouldIndent = false)
-      out.append(')')
+      out.print(')')
     } else if (iter.kind != ScalarIter) {
-      out.append(iterStr)
-      out.append('(')
+      out.print(iterStr)
+      out.print('(')
       printExpr(iter.data, out, typed = true, indent + INDENT_INC, shouldIndent = false)
-      out.append(')')
+      out.print(')')
     } else {
       printExpr(iter.data, out, typed = true, indent, shouldIndent = false)
     }
@@ -103,326 +103,330 @@ object PrettyPrint {
 
   def printExpr(expr: Expr, out: PrintStream, typed: Boolean, indent: Int, shouldIndent: Boolean): Unit = {
     import ExprKind._
-    lazy val indentStr = (0 until indent).foldLeft("")((acc, _) => acc + " ")
-    lazy val lessIndentStr = (0 until (indent - 2)).foldLeft("")((acc, _) => acc + " ")
+    lazy val indentStr = if (shouldIndent) {
+      (0 until indent).foldLeft("")((acc, _) => acc + " ")
+    } else {
+      ""
+    }
+    // lazy val lessIndentStr = (0 until (indent - 2)).foldLeft("")((acc, _) => acc + " ")
     expr.kind match {
       case Let(name, bindingTy, value, body) =>
         if (typed) {
-          out.append('(')
-          out.append(' ')
+          out.print('(')
+          out.print(' ')
         }
-        out.append("let ")
+        out.print("let ")
         printSymbol(name, out)
-        out.append(':')
+        out.print(':')
         printType(bindingTy, out)
-        out.append('=')
+        out.print('=')
         printExpr(value, out, typed = true, indent + INDENT_INC, shouldIndent = true)
-        out.append(';')
-        out.append('\n')
-        out.append(indentStr)
+        out.print(';')
+        out.print('\n')
+        out.print(indentStr)
         if (typed) {
-          out.append("  ")
+          out.print("  ")
         }
         printExpr(body, out, typed = false, if (typed) indent + INDENT_INC else indent, shouldIndent = true)
         if (typed) {
-          out.append('\n')
-          out.append(indentStr)
-          out.append(')')
-          out.append(':')
+          out.print('\n')
+          out.print(indentStr)
+          out.print(')')
+          out.print(':')
           printType(expr.ty, out)
         }
       case Lambda(params, body) =>
         if (params.isEmpty) {
-          out.append("||")
+          out.print("||")
           printExpr(body, out, typed = true, indent + INDENT_INC, shouldIndent = true)
         } else {
-          out.append('|')
+          out.print('|')
           for ((p, i) <- params.view.zipWithIndex) {
             printSymbol(p.name, out)
-            out.append(':')
+            out.print(':')
             printType(p.ty, out)
             if (i != (params.length - 1)) {
-              out.append(',')
+              out.print(',')
             }
           }
-          out.append('|')
-          out.append('\n')
-          out.append(indentStr)
-          out.append("  ")
+          out.print('|')
+          out.print('\n')
+          out.print(indentStr)
+          out.print("  ")
           printExpr(body, out, typed = true, indent + INDENT_INC, shouldIndent = true)
         }
       case Negate(expr) =>
-        out.append('-')
+        out.print('-')
         printExpr(expr, out, typed = true, indent + 1, shouldIndent = false)
       case Not(expr) =>
-        out.append('!')
+        out.print('!')
         printExpr(expr, out, typed = true, indent + 1, shouldIndent = false)
       case UnaryOp(kind, expr) =>
-        out.append(UnaryOpKind.print(kind))
-        out.append('(')
+        out.print(UnaryOpKind.print(kind))
+        out.print('(')
         printExpr(expr, out, typed = false, indent + 1, shouldIndent = false)
-        out.append(')')
+        out.print(')')
         if (typed) {
-          out.append(':')
+          out.print(':')
           printType(expr.ty, out)
         }
       case Ident(s) =>
         printSymbol(s, out)
         if (typed) {
-          out.append(':')
+          out.print(':')
           printType(expr.ty, out)
         }
       case l: Literal[_] =>
-        out.append(l.raw)
+        out.print(l.raw)
         if (typed) {
-          out.append(':')
+          out.print(':')
           printType(expr.ty, out)
         }
       case Cast(ty, e) =>
         printType(ty, out)
-        out.append('(')
+        out.print('(')
         printExpr(e, out, typed = false, indent + INDENT_INC, shouldIndent = false)
-        out.append(')')
+        out.print(')')
       case ToVec(e) =>
-        out.append("tovec(")
+        out.print("tovec(")
         printExpr(e, out, typed = false, indent + INDENT_INC, shouldIndent = false)
-        out.append(')')
+        out.print(')')
       case Broadcast(e) =>
-        out.append("broadcast(")
+        out.print("broadcast(")
         printExpr(e, out, typed = false, indent + INDENT_INC, shouldIndent = false)
-        out.append(')')
+        out.print(')')
       case CUDF(ref, args, retT) =>
-        out.append("cudf[")
+        out.print("cudf[")
         ref match {
           case Left(name) => printSymbol(name, out);
           case Right(pointer) =>
-            out.append('*')
+            out.print('*')
             printExpr(pointer, out, typed = false, indent + INDENT_INC, shouldIndent = false)
         }
-        out.append(',')
+        out.print(',')
         printType(retT, out)
-        out.append(']')
-        out.append('(')
+        out.print(']')
+        out.print('(')
         for ((e, i) <- args.view.zipWithIndex) {
           printExpr(e, out, typed = false, indent + INDENT_INC, shouldIndent = false)
           if (i != (args.length - 1)) {
-            out.append(',')
+            out.print(',')
           }
         }
-        out.append(')')
+        out.print(')')
         if (typed) {
-          out.append(':')
+          out.print(':')
           printType(expr.ty, out)
         }
       case Zip(params) =>
-        out.append("zip(")
+        out.print("zip(")
         for ((e, i) <- params.view.zipWithIndex) {
           printExpr(e, out, typed = false, indent + 4, shouldIndent = false)
           if (i != (params.length - 1)) {
-            out.append(',')
+            out.print(',')
           }
         }
-        out.append(')')
+        out.print(')')
         if (typed) {
-          out.append(':')
+          out.print(':')
           printType(expr.ty, out)
         }
       case Hash(params) =>
-        out.append("hash(")
+        out.print("hash(")
         for ((e, i) <- params.view.zipWithIndex) {
           printExpr(e, out, typed = false, indent + 4, shouldIndent = false)
           if (i != (params.length - 1)) {
-            out.append(',')
+            out.print(',')
           }
         }
-        out.append(')')
+        out.print(')')
         if (typed) {
-          out.append(':')
+          out.print(':')
           printType(expr.ty, out)
         }
       case For(iterator, builder, body) =>
-        out.append("for(")
+        out.print("for(")
         printIter(iterator, out, indent + 4)
-        out.append(',')
-        out.append('\n')
-        out.append(indentStr)
-        out.append("    ")
+        out.print(',')
+        out.print('\n')
+        out.print(indentStr)
+        out.print("    ")
         printExpr(builder, out, typed = false, indent + 4, shouldIndent = true)
-        out.append(',')
-        out.append('\n')
-        out.append(indentStr)
-        out.append("    ")
+        out.print(',')
+        out.print('\n')
+        out.print(indentStr)
+        out.print("    ")
         printExpr(body, out, typed = false, indent + 4, shouldIndent = true)
-        out.append('\n')
-        out.append(indentStr)
-        out.append(')')
+        out.print('\n')
+        out.print(indentStr)
+        out.print(')')
         if (typed) {
-          out.append(':')
+          out.print(':')
           printType(expr.ty, out)
         }
       case Len(e) =>
-        out.append("len(")
+        out.print("len(")
         printExpr(e, out, typed = true, indent + 4, shouldIndent = false)
-        out.append(')')
+        out.print(')')
         if (typed) {
-          out.append(':')
+          out.print(':')
           printType(expr.ty, out)
         }
       case Lookup(data, key) =>
-        out.append("lookup(")
+        out.print("lookup(")
         printExpr(data, out, typed = true, indent + INDENT_INC, shouldIndent = false)
-        out.append(',')
+        out.print(',')
         printExpr(key, out, typed = true, indent + INDENT_INC, shouldIndent = false)
-        out.append(')')
+        out.print(')')
         if (typed) {
-          out.append(':')
+          out.print(':')
           printType(expr.ty, out)
         }
       case Slice(data, index, size) =>
-        out.append("slice(")
+        out.print("slice(")
         printExpr(data, out, typed = false, indent + INDENT_INC, shouldIndent = false)
-        out.append(',')
+        out.print(',')
         printExpr(index, out, typed = false, indent + INDENT_INC, shouldIndent = false)
-        out.append(',')
+        out.print(',')
         printExpr(size, out, typed = false, indent + INDENT_INC, shouldIndent = false)
-        out.append(')')
+        out.print(')')
         if (typed) {
-          out.append(':')
+          out.print(':')
           printType(expr.ty, out)
         }
       case Sort(data, keyFunc) =>
-        out.append("sort(")
+        out.print("sort(")
         printExpr(data, out, typed = false, indent + INDENT_INC, shouldIndent = false)
-        out.append(',')
+        out.print(',')
         printExpr(keyFunc, out, typed = false, indent + INDENT_INC, shouldIndent = false)
-        out.append(')')
+        out.print(')')
         if (typed) {
-          out.append(':')
+          out.print(':')
           printType(expr.ty, out)
         }
       case Serialize(e) =>
-        out.append("serialize(")
+        out.print("serialize(")
         printExpr(e, out, typed = false, indent + INDENT_INC, shouldIndent = false)
-        out.append(')')
+        out.print(')')
         if (typed) {
-          out.append(':')
+          out.print(':')
           printType(expr.ty, out)
         }
       case Deserialize(ty, e) =>
-        out.append("deserialize[")
+        out.print("deserialize[")
         printType(ty, out)
-        out.append(']')
-        out.append('(')
+        out.print(']')
+        out.print('(')
         printExpr(e, out, typed = false, indent + INDENT_INC, shouldIndent = false)
-        out.append(')')
+        out.print(')')
         if (typed) {
-          out.append(':')
+          out.print(':')
           printType(expr.ty, out)
         }
       case If(cond, onTrue, onFalse) =>
-        out.append("if (")
+        out.print("if (")
         printExpr(cond, out, typed = false, indent + 4, shouldIndent = false)
-        out.append(',')
-        out.append('\n')
-        out.append(indentStr)
-        out.append("    ")
+        out.print(',')
+        out.print('\n')
+        out.print(indentStr)
+        out.print("    ")
         printExpr(onTrue, out, typed = true, indent + 4, shouldIndent = true)
-        out.append(',')
-        out.append('\n')
-        out.append(indentStr)
-        out.append("    ")
+        out.print(',')
+        out.print('\n')
+        out.print(indentStr)
+        out.print("    ")
         printExpr(onFalse, out, typed = true, indent + 4, shouldIndent = true)
-        out.append('\n')
-        out.append(indentStr)
-        out.append(')')
+        out.print('\n')
+        out.print(indentStr)
+        out.print(')')
         if (typed) {
-          out.append(':')
+          out.print(':')
           printType(expr.ty, out)
         }
       case Select(cond, onTrue, onFalse) =>
-        out.append("select(")
+        out.print("select(")
         printExpr(cond, out, typed = false, indent + INDENT_INC, shouldIndent = false)
-        out.append(',')
-        out.append('\n')
-        out.append(indentStr)
-        out.append("  ")
+        out.print(',')
+        out.print('\n')
+        out.print(indentStr)
+        out.print("  ")
         printExpr(onTrue, out, typed = true, indent + INDENT_INC, shouldIndent = true)
-        out.append(',')
-        out.append('\n')
-        out.append(indentStr)
-        out.append("  ")
+        out.print(',')
+        out.print('\n')
+        out.print(indentStr)
+        out.print("  ")
         printExpr(onFalse, out, typed = true, indent + INDENT_INC, shouldIndent = true)
-        out.append('\n')
-        out.append(indentStr)
-        out.append(')')
+        out.print('\n')
+        out.print(indentStr)
+        out.print(')')
         if (typed) {
-          out.append(':')
+          out.print(':')
           printType(expr.ty, out)
         }
       case Iterate(init, updateFunc) =>
-        out.append("iterate (")
+        out.print("iterate (")
         printExpr(init, out, typed = true, indent + INDENT_INC, shouldIndent = false)
-        out.append(',')
-        out.append('\n')
-        out.append(indentStr)
-        out.append("  ")
+        out.print(',')
+        out.print('\n')
+        out.print(indentStr)
+        out.print("  ")
         printExpr(updateFunc, out, typed = true, indent + INDENT_INC, shouldIndent = true)
-        out.append('\n')
-        out.append(indentStr)
-        out.append(')')
+        out.print('\n')
+        out.print(indentStr)
+        out.print(')')
         if (typed) {
-          out.append(':')
+          out.print(':')
           printType(expr.ty, out)
         }
       case MakeStruct(elems) =>
-        out.append('{')
+        out.print('{')
         for ((e, i) <- elems.view.zipWithIndex) {
           printExpr(e, out, typed = false, indent + 1, shouldIndent = false)
           if (i != (elems.length - 1)) {
-            out.append(',')
+            out.print(',')
           }
         }
-        out.append('}')
+        out.print('}')
         if (typed) {
-          out.append(':')
+          out.print(':')
           printType(expr.ty, out)
         }
       case MakeVec(elems) =>
-        out.append('[')
+        out.print('[')
         for ((e, i) <- elems.view.zipWithIndex) {
           printExpr(e, out, typed = false, indent + 1, shouldIndent = false)
           if (i != (elems.length - 1)) {
-            out.append(',')
+            out.print(',')
           }
         }
-        out.append(']')
+        out.print(']')
         if (typed) {
-          out.append(':')
+          out.print(':')
           printType(expr.ty, out)
         }
       case Merge(builder, value) =>
-        out.append("merge(")
+        out.print("merge(")
         printExpr(builder, out, typed = false, indent + INDENT_INC, shouldIndent = false)
-        out.append(',')
+        out.print(',')
         printExpr(value, out, typed = false, indent + INDENT_INC, shouldIndent = false)
-        out.append(')')
+        out.print(')')
         if (typed) {
-          out.append(':')
+          out.print(':')
           printType(expr.ty, out)
         }
       case Result(e) =>
-        out.append("result(")
+        out.print("result(")
         printExpr(e, out, typed = false, indent + INDENT_INC, shouldIndent = false)
-        out.append(')')
+        out.print(')')
         if (typed) {
-          out.append(':')
+          out.print(':')
           printType(expr.ty, out)
         }
       case NewBuilder(ty, Some(arg)) =>
         printType(ty, out)
-        out.append('(')
+        out.print('(')
         printExpr(arg, out, typed = true, indent + INDENT_INC, shouldIndent = false)
-        out.append(')')
+        out.print(')')
       // don't print type even if requested since it's redundant
       case NewBuilder(ty, None) =>
         printType(ty, out)
@@ -430,59 +434,59 @@ object PrettyPrint {
       case BinOp(kind, left, right) =>
         if (kind.isInfix) {
           if (typed) {
-            out.append('(')
+            out.print('(')
           }
           printExpr(left, out, typed = true, if (typed) indent + 1 else indent, shouldIndent = false)
-          out.append(kind.symbol)
+          out.print(kind.symbol)
           printExpr(right, out, typed = true, if (typed) indent + 1 else indent, shouldIndent = false)
           if (typed) {
-            out.append(')')
-            out.append(':')
+            out.print(')')
+            out.print(':')
             printType(expr.ty, out)
           }
         } else {
-          out.append(kind.symbol)
-          out.append('(')
+          out.print(kind.symbol)
+          out.print('(')
           printExpr(left, out, typed = true, indent + 4, shouldIndent = false)
-          out.append(',')
+          out.print(',')
           printExpr(right, out, typed = true, indent + 4, shouldIndent = false)
-          out.append(')')
+          out.print(')')
           if (typed) {
-            out.append(':')
+            out.print(':')
             printType(expr.ty, out)
           }
         }
       case Application(fun, args) =>
         printExpr(fun, out, typed = false, indent, shouldIndent = false)
-        out.append('(')
+        out.print('(')
         for ((e, i) <- args.view.zipWithIndex) {
           printExpr(e, out, typed = false, indent + INDENT_INC, shouldIndent = false)
           if (i != (args.length - 1)) {
-            out.append(',')
+            out.print(',')
           }
         }
-        out.append(')')
+        out.print(')')
         if (typed) {
-          out.append(':')
+          out.print(':')
           printType(expr.ty, out)
         }
       case Ascription(e, ty) =>
-        out.append('(')
+        out.print('(')
         printExpr(e, out, typed = false, indent + 1, shouldIndent = false)
-        out.append(')')
-        out.append(':')
+        out.print(')')
+        out.print(':')
         printType(ty, out)
       case Projection(struct, index) =>
         if (typed) {
-          out.append('(')
+          out.print('(')
         }
         printExpr(struct, out, typed = false, indent, shouldIndent = false)
-        out.append('.')
-        out.append('$')
-        out.append(index.toString)
+        out.print('.')
+        out.print('$')
+        out.print(index.toString)
         if (typed) {
-          out.append(')')
-          out.append(':')
+          out.print(')')
+          out.print(':')
           printType(expr.ty, out)
         }
     }

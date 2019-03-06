@@ -12,7 +12,7 @@ object Typer {
     //println(s"Solution:\n${solution.describe}");
     applyTypes(e, solution.typeSubstitutions).flatMap { appliedExpr =>
       solution match {
-        case succ: ConstraintSolver.Solution           => Success(appliedExpr)
+        case _: ConstraintSolver.Solution           => Success(appliedExpr)
         case partial: ConstraintSolver.PartialSolution => partial.describeUnresolvedConstraints(appliedExpr)
       }
     }

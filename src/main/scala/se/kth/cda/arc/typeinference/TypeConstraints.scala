@@ -3,8 +3,6 @@ package se.kth.cda.arc.typeinference
 import se.kth.cda.arc.Types._
 import se.kth.cda.arc._
 
-import scala.annotation.tailrec
-
 sealed trait TypeConstraint {
   type Self <: TypeConstraint
 
@@ -85,7 +83,7 @@ object TypeConstraints {
         } else {
           Some(Builders.GroupMerger(newKeyTy.getOrElse(keyTy), newValueTy.getOrElse(valueTy), annots))
         }
-      case c: ConcreteType => None
+      case _: ConcreteType => None
     }
   }
 
@@ -201,8 +199,8 @@ object TypeConstraints {
           conj ::= MultiEquality(List(indexTy, keyTy))
           conj ::= MultiEquality(List(resultTy, valTy))
           Some(MultiConj(conj))
-        case tv: TypeVariable => None // may be solved later
-        case _                => None // won't be solved but leave like this for useful error reporting
+        case _: TypeVariable => None // may be solved later
+        case _               => None // won't be solved but leave like this for useful error reporting
       }
     }
 
@@ -258,8 +256,8 @@ object TypeConstraints {
       structTy match {
         case Struct(args) if args.size > fieldIndex =>
           Some(MultiEquality(List(args(fieldIndex), fieldTy)))
-        case tv: TypeVariable => None // may be solved later
-        case _                => None // won't be solved but leave like this for useful error reporting
+        case _: TypeVariable => None // may be solved later
+        case _               => None // won't be solved but leave like this for useful error reporting
       }
     }
 
@@ -336,8 +334,8 @@ object TypeConstraints {
           conj ::= MultiEquality(List(Struct(resultTypes), resultTy))
           conj ::= MultiEquality(List(Struct(argTypes), argTy))
           Some(MultiConj(conj))
-        case tv: TypeVariable => None // may be solved later
-        case _                => None // won't be solved but leave like this for useful error reporting
+        case _: TypeVariable => None // may be solved later
+        case _               => None // won't be solved but leave like this for useful error reporting
       }
     }
 
@@ -393,8 +391,8 @@ object TypeConstraints {
           Some(MultiEquality(List(t, elemTy)))
         case Stream(t) =>
           Some(MultiEquality(List(t, elemTy)))
-        case tv: TypeVariable => None // may be solved later
-        case _                => None // won't be solved but leave like this for useful error reporting
+        case _: TypeVariable => None // may be solved later
+        case _               => None // won't be solved but leave like this for useful error reporting
       }
     }
 

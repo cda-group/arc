@@ -4,7 +4,6 @@ import se.kth.cda.arc.AST._
 import se.kth.cda.arc.Utils.TryVector
 import se.kth.cda.arc.{BuilderType, Type}
 
-import scala.annotation.tailrec
 import scala.util.{Success, Try}
 
 object Transformer {
@@ -35,9 +34,9 @@ object Transformer {
     new Transformer(onExpr, onType)
   }
 
-  def defaultExpr[Env]: ExprTransformer[Env] = (_, env) => Success(None, env)
+  def defaultExpr[Env]: ExprTransformer[Env] = (_, env) => Success((None, env))
 
-  def defaultType[Env]: TypeTransformer[Env] = (_, env) => Success(None, env)
+  def defaultType[Env]: TypeTransformer[Env] = (_, env) => Success((None, env))
 }
 
 class Transformer[Env](val onExpr: Transformer.ExprTransformer[Env], val onType: Transformer.TypeTransformer[Env]) {
@@ -77,7 +76,7 @@ class Transformer[Env](val onExpr: Transformer.ExprTransformer[Env], val onType:
               None
             } else {
               val newExpr = newExprO.getOrElse(expr)
-              Some(Cast(ty, expr))
+              Some(Cast(ty, newExpr))
             }
           }
         case ToVec(expr)       => transformMap(expr, env0)(newExpr => ToVec(newExpr))

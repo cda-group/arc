@@ -134,7 +134,7 @@ object MacroExpansion {
     val newExprT: Try[Option[Expr]] = expr.kind match {
       case Let(name, _, _, _) =>
         return Success((None, env.addSymbol(name)))
-      case Lambda(params, body) =>
+      case Lambda(params, body @ _) =>
         val newEnv = params.foldLeft(env) { (accEnv, p) =>
           accEnv.addSymbol(p.name)
         }
@@ -186,10 +186,8 @@ object MacroExpansion {
     expr.kind match {
       case Let(name, bty, v, b) =>
         env.addAndRename(name) match {
-          case (newEnv, Some(newSymb)) =>
-            Success((Some(Expr(Let(name, bty, v, b), expr.ty, expr.ctx)), newEnv))
-          case (newEnv, None) =>
-            Success((None, newEnv))
+          case (newEnv, Some(newSymb @ _)) => Success((Some(Expr(Let(name, bty, v, b), expr.ty, expr.ctx)), newEnv))
+          case (newEnv, None)              => Success((None, newEnv))
         }
       case Lambda(params, body) =>
         val (newEnv, newParamsO) = params.foldLeft((env, Vector.empty[Option[Parameter]])) { (acc, p) =>

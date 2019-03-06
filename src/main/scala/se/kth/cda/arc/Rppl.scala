@@ -44,7 +44,7 @@ object Rppl {
           parser.addErrorListener(errorCollector)
           // TODO do two step parsing
 
-          val tree = parser.expr() // begin parsing at r rule
+          val tree = parser.expr() // begin parsing at expr rule
           if (errorCollector.hasErrors) {
             Console.err.println(s"There were parsing errors:\n ${errorCollector.getErrors.mkString("\n")}")
             break
