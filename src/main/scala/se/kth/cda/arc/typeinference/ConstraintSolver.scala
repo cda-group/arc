@@ -62,7 +62,7 @@ object ConstraintSolver {
       val description = descriptions.mkString("\n∧ ")
       val exprS = PrettyPrint.prettyPrint(e)
       val msg = s"""Expression could not be typed! Closest partially typed expr:
-$exprS
+|$exprS
 Unresolved Constraints:
 $description
 To solve this issue try annotating types where type variables remain."""

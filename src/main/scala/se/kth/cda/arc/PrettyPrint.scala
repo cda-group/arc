@@ -15,13 +15,9 @@ object PrettyPrint {
 
   implicit class PrettyPrintStream(val out: PrintStream) extends AnyVal {
 
-    def prettyPrint(str: String): Unit = {
-      out.print(str)
-    }
+    def prettyPrint(str: String): Unit = out.print(str)
 
-    def prettyPrint(ch: Char): Unit = {
-      out.print(ch)
-    }
+    def prettyPrint(ch: Char): Unit = out.print(ch)
 
     def prettyPrintln(tree: ASTNode): Unit = {
       out.prettyPrint(tree)
@@ -49,7 +45,7 @@ object PrettyPrint {
           out.prettyPrint(')')
           out.prettyPrint('=')
           out.prettyPrint(body)
-        case e: Expr   => out.prettyPrint(e, true, 0, true)
+        case e: Expr   => out.prettyPrint(e, typed = true, 0, shouldIndent = true)
         case s: Symbol => out.prettyPrint(s)
       }
     }
@@ -75,39 +71,39 @@ object PrettyPrint {
       if (iter.kind == NdIter) {
         out.prettyPrint(iterStr)
         out.prettyPrint('(')
-        out.prettyPrint(iter.data, true, indent + INDENT_INC, false)
+        out.prettyPrint(iter.data, typed = true, indent + INDENT_INC, shouldIndent = false)
         out.prettyPrint(',')
-        out.prettyPrint(iter.start.get, true, indent + INDENT_INC, false)
+        out.prettyPrint(iter.start.get, typed = true, indent + INDENT_INC, shouldIndent = false)
         out.prettyPrint(',')
-        out.prettyPrint(iter.shape.get, true, indent + INDENT_INC, false)
+        out.prettyPrint(iter.shape.get, typed = true, indent + INDENT_INC, shouldIndent = false)
         out.prettyPrint(',')
-        out.prettyPrint(iter.strides.get, true, indent + INDENT_INC, false)
+        out.prettyPrint(iter.strides.get, typed = true, indent + INDENT_INC, shouldIndent = false)
         out.prettyPrint(')')
       } else if (iter.kind == KeyByIter) {
         out.prettyPrint(iterStr)
         out.prettyPrint('(')
-        out.prettyPrint(iter.data, true, indent + INDENT_INC, false)
+        out.prettyPrint(iter.data, typed = true, indent + INDENT_INC, shouldIndent = false)
         out.prettyPrint(',')
-        out.prettyPrint(iter.keyFunc.get, true, indent + INDENT_INC, false)
+        out.prettyPrint(iter.keyFunc.get, typed = true, indent + INDENT_INC, shouldIndent = false)
         out.prettyPrint(')')
       } else if (iter.start.isDefined) {
         out.prettyPrint(iterStr)
         out.prettyPrint('(')
-        out.prettyPrint(iter.data, true, indent + INDENT_INC, false)
+        out.prettyPrint(iter.data, typed = true, indent + INDENT_INC, shouldIndent = false)
         out.prettyPrint(',')
-        out.prettyPrint(iter.start.get, true, indent + INDENT_INC, false)
+        out.prettyPrint(iter.start.get, typed = true, indent + INDENT_INC, shouldIndent = false)
         out.prettyPrint(',')
-        out.prettyPrint(iter.end.get, true, indent + INDENT_INC, false)
+        out.prettyPrint(iter.end.get, typed = true, indent + INDENT_INC, shouldIndent = false)
         out.prettyPrint(',')
-        out.prettyPrint(iter.stride.get, true, indent + INDENT_INC, false)
+        out.prettyPrint(iter.stride.get, typed = true, indent + INDENT_INC, shouldIndent = false)
         out.prettyPrint(')')
       } else if (iter.kind != ScalarIter) {
         out.prettyPrint(iterStr)
         out.prettyPrint('(')
-        out.prettyPrint(iter.data, true, indent + INDENT_INC, false)
+        out.prettyPrint(iter.data, typed = true, indent + INDENT_INC, shouldIndent = false)
         out.prettyPrint(')')
       } else {
-        out.prettyPrint(iter.data, true, indent, false)
+        out.prettyPrint(iter.data, typed = true, indent, shouldIndent = false)
       }
     }
 
@@ -130,14 +126,14 @@ object PrettyPrint {
           out.prettyPrint(':')
           out.prettyPrint(bindingTy)
           out.prettyPrint('=')
-          out.prettyPrint(value, true, indent + INDENT_INC, true)
+          out.prettyPrint(value, typed = true, indent + INDENT_INC, shouldIndent = true)
           out.prettyPrint(';')
           out.prettyPrint('\n')
           out.prettyPrint(indentStr)
           if (typed) {
             out.prettyPrint("  ")
           }
-          out.prettyPrint(body, false, if (typed) indent + INDENT_INC else indent, true)
+          out.prettyPrint(body, typed = false, if (typed) indent + INDENT_INC else indent, shouldIndent = true)
           if (typed) {
             out.prettyPrint('\n')
             out.prettyPrint(indentStr)
@@ -148,7 +144,7 @@ object PrettyPrint {
         case Lambda(params, body) =>
           if (params.isEmpty) {
             out.prettyPrint("||")
-            out.prettyPrint(body, true, indent + INDENT_INC, true)
+            out.prettyPrint(body, typed = true, indent + INDENT_INC, shouldIndent = true)
           } else {
             out.prettyPrint('|')
             for ((p, i) <- params.view.zipWithIndex) {
@@ -163,18 +159,18 @@ object PrettyPrint {
             out.prettyPrint('\n')
             out.prettyPrint(indentStr)
             out.prettyPrint("  ")
-            out.prettyPrint(body, true, indent + INDENT_INC, true)
+            out.prettyPrint(body, typed = true, indent + INDENT_INC, shouldIndent = true)
           }
         case Negate(e) =>
           out.prettyPrint('-')
-          out.prettyPrint(e, true, indent + 1, false)
+          out.prettyPrint(e, typed = true, indent + 1, shouldIndent = false)
         case Not(e) =>
           out.prettyPrint('!')
-          out.prettyPrint(e, true, indent + 1, false)
+          out.prettyPrint(e, typed = true, indent + 1, shouldIndent = false)
         case UnaryOp(kind, e) =>
           out.prettyPrint(UnaryOpKind.prettyPrint(kind))
           out.prettyPrint('(')
-          out.prettyPrint(e, false, indent + 1, false)
+          out.prettyPrint(e, typed = false, indent + 1, shouldIndent = false)
           out.prettyPrint(')')
           if (typed) {
             out.prettyPrint(':')
@@ -195,15 +191,15 @@ object PrettyPrint {
         case Cast(ty, e) =>
           out.prettyPrint(ty)
           out.prettyPrint('(')
-          out.prettyPrint(e, false, indent + INDENT_INC, false)
+          out.prettyPrint(e, typed = false, indent + INDENT_INC, shouldIndent = false)
           out.prettyPrint(')')
         case ToVec(e) =>
           out.prettyPrint("tovec(")
-          out.prettyPrint(e, false, indent + INDENT_INC, false)
+          out.prettyPrint(e, typed = false, indent + INDENT_INC, shouldIndent = false)
           out.prettyPrint(')')
         case Broadcast(e) =>
           out.prettyPrint("broadcast(")
-          out.prettyPrint(e, false, indent + INDENT_INC, false)
+          out.prettyPrint(e, typed = false, indent + INDENT_INC, shouldIndent = false)
           out.prettyPrint(')')
         case CUDF(ref, args, retT) =>
           out.prettyPrint("cudf[")
@@ -211,14 +207,14 @@ object PrettyPrint {
             case Left(name) => out.prettyPrint(name);
             case Right(pointer) =>
               out.prettyPrint('*')
-              out.prettyPrint(pointer, false, indent + INDENT_INC, false)
+              out.prettyPrint(pointer, typed = false, indent + INDENT_INC, shouldIndent = false)
           }
           out.prettyPrint(',')
           out.prettyPrint(retT)
           out.prettyPrint(']')
           out.prettyPrint('(')
           for ((e, i) <- args.view.zipWithIndex) {
-            out.prettyPrint(e, false, indent + INDENT_INC, false)
+            out.prettyPrint(e, typed = false, indent + INDENT_INC, shouldIndent = false)
             if (i != (args.length - 1)) {
               out.prettyPrint(',')
             }
@@ -231,7 +227,7 @@ object PrettyPrint {
         case Zip(params) =>
           out.prettyPrint("zip(")
           for ((e, i) <- params.view.zipWithIndex) {
-            out.prettyPrint(e, false, indent + 4, false)
+            out.prettyPrint(e, typed = false, indent + 4, shouldIndent = false)
             if (i != (params.length - 1)) {
               out.prettyPrint(',')
             }
@@ -244,7 +240,7 @@ object PrettyPrint {
         case Hash(params) =>
           out.prettyPrint("hash(")
           for ((e, i) <- params.view.zipWithIndex) {
-            out.prettyPrint(e, false, indent + 4, false)
+            out.prettyPrint(e, typed = false, indent + 4, shouldIndent = false)
             if (i != (params.length - 1)) {
               out.prettyPrint(',')
             }
@@ -261,12 +257,12 @@ object PrettyPrint {
           out.prettyPrint('\n')
           out.prettyPrint(indentStr)
           out.prettyPrint("    ")
-          out.prettyPrint(builder, false, indent + 4, true)
+          out.prettyPrint(builder, typed = false, indent + 4, shouldIndent = true)
           out.prettyPrint(',')
           out.prettyPrint('\n')
           out.prettyPrint(indentStr)
           out.prettyPrint("    ")
-          out.prettyPrint(body, false, indent + 4, true)
+          out.prettyPrint(body, typed = false, indent + 4, shouldIndent = true)
           out.prettyPrint('\n')
           out.prettyPrint(indentStr)
           out.prettyPrint(')')
@@ -276,7 +272,7 @@ object PrettyPrint {
           }
         case Len(e) =>
           out.prettyPrint("len(")
-          out.prettyPrint(e, true, indent + 4, false)
+          out.prettyPrint(e, typed = true, indent + 4, shouldIndent = false)
           out.prettyPrint(')')
           if (typed) {
             out.prettyPrint(':')
@@ -284,9 +280,9 @@ object PrettyPrint {
           }
         case Lookup(data, key) =>
           out.prettyPrint("lookup(")
-          out.prettyPrint(data, true, indent + INDENT_INC, false)
+          out.prettyPrint(data, typed = true, indent + INDENT_INC, shouldIndent = false)
           out.prettyPrint(',')
-          out.prettyPrint(key, true, indent + INDENT_INC, false)
+          out.prettyPrint(key, typed = true, indent + INDENT_INC, shouldIndent = false)
           out.prettyPrint(')')
           if (typed) {
             out.prettyPrint(':')
@@ -294,11 +290,11 @@ object PrettyPrint {
           }
         case Slice(data, index, size) =>
           out.prettyPrint("slice(")
-          out.prettyPrint(data, false, indent + INDENT_INC, false)
+          out.prettyPrint(data, typed = false, indent + INDENT_INC, shouldIndent = false)
           out.prettyPrint(',')
-          out.prettyPrint(index, false, indent + INDENT_INC, false)
+          out.prettyPrint(index, typed = false, indent + INDENT_INC, shouldIndent = false)
           out.prettyPrint(',')
-          out.prettyPrint(size, false, indent + INDENT_INC, false)
+          out.prettyPrint(size, typed = false, indent + INDENT_INC, shouldIndent = false)
           out.prettyPrint(')')
           if (typed) {
             out.prettyPrint(':')
@@ -306,9 +302,9 @@ object PrettyPrint {
           }
         case Sort(data, keyFunc) =>
           out.prettyPrint("sort(")
-          out.prettyPrint(data, false, indent + INDENT_INC, false)
+          out.prettyPrint(data, typed = false, indent + INDENT_INC, shouldIndent = false)
           out.prettyPrint(',')
-          out.prettyPrint(keyFunc, false, indent + INDENT_INC, false)
+          out.prettyPrint(keyFunc, typed = false, indent + INDENT_INC, shouldIndent = false)
           out.prettyPrint(')')
           if (typed) {
             out.prettyPrint(':')
@@ -316,7 +312,7 @@ object PrettyPrint {
           }
         case Serialize(e) =>
           out.prettyPrint("serialize(")
-          out.prettyPrint(e, false, indent + INDENT_INC, false)
+          out.prettyPrint(e, typed = false, indent + INDENT_INC, shouldIndent = false)
           out.prettyPrint(')')
           if (typed) {
             out.prettyPrint(':')
@@ -327,7 +323,7 @@ object PrettyPrint {
           out.prettyPrint(ty)
           out.prettyPrint(']')
           out.prettyPrint('(')
-          out.prettyPrint(e, false, indent + INDENT_INC, false)
+          out.prettyPrint(e, typed = false, indent + INDENT_INC, shouldIndent = false)
           out.prettyPrint(')')
           if (typed) {
             out.prettyPrint(':')
@@ -335,17 +331,17 @@ object PrettyPrint {
           }
         case If(cond, onTrue, onFalse) =>
           out.prettyPrint("if (")
-          out.prettyPrint(cond, false, indent + 4, false)
+          out.prettyPrint(cond, typed = false, indent + 4, shouldIndent = false)
           out.prettyPrint(',')
           out.prettyPrint('\n')
           out.prettyPrint(indentStr)
           out.prettyPrint("    ")
-          out.prettyPrint(onTrue, true, indent + 4, true)
+          out.prettyPrint(onTrue, typed = true, indent + 4, shouldIndent = true)
           out.prettyPrint(',')
           out.prettyPrint('\n')
           out.prettyPrint(indentStr)
           out.prettyPrint("    ")
-          out.prettyPrint(onFalse, true, indent + 4, true)
+          out.prettyPrint(onFalse, typed = true, indent + 4, shouldIndent = true)
           out.prettyPrint('\n')
           out.prettyPrint(indentStr)
           out.prettyPrint(')')
@@ -355,17 +351,17 @@ object PrettyPrint {
           }
         case Select(cond, onTrue, onFalse) =>
           out.prettyPrint("select(")
-          out.prettyPrint(cond, false, indent + INDENT_INC, false)
+          out.prettyPrint(cond, typed = false, indent + INDENT_INC, shouldIndent = false)
           out.prettyPrint(',')
           out.prettyPrint('\n')
           out.prettyPrint(indentStr)
           out.prettyPrint("  ")
-          out.prettyPrint(onTrue, true, indent + INDENT_INC, true)
+          out.prettyPrint(onTrue, typed = true, indent + INDENT_INC, shouldIndent = true)
           out.prettyPrint(',')
           out.prettyPrint('\n')
           out.prettyPrint(indentStr)
           out.prettyPrint("  ")
-          out.prettyPrint(onFalse, true, indent + INDENT_INC, true)
+          out.prettyPrint(onFalse, typed = true, indent + INDENT_INC, shouldIndent = true)
           out.prettyPrint('\n')
           out.prettyPrint(indentStr)
           out.prettyPrint(')')
@@ -375,12 +371,12 @@ object PrettyPrint {
           }
         case Iterate(init, updateFunc) =>
           out.prettyPrint("iterate (")
-          out.prettyPrint(init, true, indent + INDENT_INC, false)
+          out.prettyPrint(init, typed = true, indent + INDENT_INC, shouldIndent = false)
           out.prettyPrint(',')
           out.prettyPrint('\n')
           out.prettyPrint(indentStr)
           out.prettyPrint("  ")
-          out.prettyPrint(updateFunc, true, indent + INDENT_INC, true)
+          out.prettyPrint(updateFunc, typed = true, indent + INDENT_INC, shouldIndent = true)
           out.prettyPrint('\n')
           out.prettyPrint(indentStr)
           out.prettyPrint(')')
@@ -391,7 +387,7 @@ object PrettyPrint {
         case MakeStruct(elems) =>
           out.prettyPrint('{')
           for ((e, i) <- elems.view.zipWithIndex) {
-            out.prettyPrint(e, false, indent + 1, false)
+            out.prettyPrint(e, typed = false, indent + 1, shouldIndent = false)
             if (i != (elems.length - 1)) {
               out.prettyPrint(',')
             }
@@ -404,7 +400,7 @@ object PrettyPrint {
         case MakeVec(elems) =>
           out.prettyPrint('[')
           for ((e, i) <- elems.view.zipWithIndex) {
-            out.prettyPrint(e, false, indent + 1, false)
+            out.prettyPrint(e, typed = false, indent + 1, shouldIndent = false)
             if (i != (elems.length - 1)) {
               out.prettyPrint(',')
             }
@@ -416,9 +412,9 @@ object PrettyPrint {
           }
         case Merge(builder, value) =>
           out.prettyPrint("merge(")
-          out.prettyPrint(builder, false, indent + INDENT_INC, false)
+          out.prettyPrint(builder, typed = false, indent + INDENT_INC, shouldIndent = false)
           out.prettyPrint(',')
-          out.prettyPrint(value, false, indent + INDENT_INC, false)
+          out.prettyPrint(value, typed = false, indent + INDENT_INC, shouldIndent = false)
           out.prettyPrint(')')
           if (typed) {
             out.prettyPrint(':')
@@ -426,7 +422,7 @@ object PrettyPrint {
           }
         case Result(e) =>
           out.prettyPrint("result(")
-          out.prettyPrint(e, false, indent + INDENT_INC, false)
+          out.prettyPrint(e, typed = false, indent + INDENT_INC, shouldIndent = false)
           out.prettyPrint(')')
           if (typed) {
             out.prettyPrint(':')
@@ -435,7 +431,7 @@ object PrettyPrint {
         case NewBuilder(ty, Some(arg)) =>
           out.prettyPrint(ty)
           out.prettyPrint('(')
-          out.prettyPrint(arg, true, indent + INDENT_INC, false)
+          out.prettyPrint(arg, typed = true, indent + INDENT_INC, shouldIndent = false)
           out.prettyPrint(')')
         // don't print type even if requested since it's redundant
         case NewBuilder(ty, None) =>
@@ -446,9 +442,9 @@ object PrettyPrint {
             if (typed) {
               out.prettyPrint('(')
             }
-            out.prettyPrint(left, true, if (typed) indent + 1 else indent, false)
+            out.prettyPrint(left, typed = true, if (typed) indent + 1 else indent, shouldIndent = false)
             out.prettyPrint(kind.symbol)
-            out.prettyPrint(right, true, if (typed) indent + 1 else indent, false)
+            out.prettyPrint(right, typed = true, if (typed) indent + 1 else indent, shouldIndent = false)
             if (typed) {
               out.prettyPrint(')')
               out.prettyPrint(':')
@@ -457,9 +453,9 @@ object PrettyPrint {
           } else {
             out.prettyPrint(kind.symbol)
             out.prettyPrint('(')
-            out.prettyPrint(left, true, indent + 4, false)
+            out.prettyPrint(left, typed = true, indent + 4, shouldIndent = false)
             out.prettyPrint(',')
-            out.prettyPrint(right, true, indent + 4, false)
+            out.prettyPrint(right, typed = true, indent + 4, shouldIndent = false)
             out.prettyPrint(')')
             if (typed) {
               out.prettyPrint(':')
@@ -467,10 +463,10 @@ object PrettyPrint {
             }
           }
         case Application(fun, args) =>
-          out.prettyPrint(fun, false, indent, false)
+          out.prettyPrint(fun, typed = false, indent, shouldIndent = false)
           out.prettyPrint('(')
           for ((e, i) <- args.view.zipWithIndex) {
-            out.prettyPrint(e, false, indent + INDENT_INC, false)
+            out.prettyPrint(e, typed = false, indent + INDENT_INC, shouldIndent = false)
             if (i != (args.length - 1)) {
               out.prettyPrint(',')
             }
@@ -482,7 +478,7 @@ object PrettyPrint {
           }
         case Ascription(e, ty) =>
           out.prettyPrint('(')
-          out.prettyPrint(e, false, indent + 1, false)
+          out.prettyPrint(e, typed = false, indent + 1, shouldIndent = false)
           out.prettyPrint(')')
           out.prettyPrint(':')
           out.prettyPrint(ty)
@@ -490,7 +486,7 @@ object PrettyPrint {
           if (typed) {
             out.prettyPrint('(')
           }
-          out.prettyPrint(struct, false, indent, false)
+          out.prettyPrint(struct, typed = false, indent, shouldIndent = false)
           out.prettyPrint('.')
           out.prettyPrint('$')
           out.prettyPrint(index.toString)
