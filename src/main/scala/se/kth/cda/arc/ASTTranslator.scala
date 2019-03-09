@@ -7,534 +7,787 @@ import scala.collection.JavaConverters._
 import scala.util.Try
 import scala.util.matching.Regex
 
-class ASTTranslator(val parser: ArcParser) {
+case class ASTTranslator(parser: ArcParser) {
   import AST._
   import ArcParser._
 
-  def program(): Program = {
-    val tree = parser.program()
-    this.translate(tree)
-  }
-  def translate(tree: ArcParser.ProgramContext): Program = ProgramVisitor.visitChecked(tree)
+  def program(): Program = ProgramVisitor.visitChecked(parser.program())
 
-  def expr(): Expr = {
-    val tree = parser.expr()
-    this.translate(tree)
-  }
-  def translate(tree: ArcParser.ExprContext): Expr = ExprVisitor.visitChecked(tree)
+  def expr(): Expr = ExprVisitor.visitChecked(parser.expr())
 
-  def macros(): List[Macro] = {
-    val tree = parser.macros()
-    this.translate(tree)
-  }
-  def translate(tree: ArcParser.MacrosContext): List[Macro] = MacrosVisitor.visitChecked(tree)
+  def macros(): List[Macro] = MacrosVisitor.visitChecked(parser.macros())
 
-  def `type`(): Type = {
-    val tree = parser.`type`()
-    this.translate(tree)
-  }
-  def translate(tree: ArcParser.TypeContext): Type = TypeVisitor.visitChecked(tree)
+  def `type`(): Type = TypeVisitor.visitChecked(parser.`type`())
 
   private def tokenToSymbol(t: Token): Symbol = Symbol(t.getText, Some(t))
 
-  private def annotToType(ctx: TypeAnnotContext): Option[Type] = {
-    val annotO = Option(ctx)
-    annotO.map(a => TypeVisitor.visitChecked(a))
-  }
-  private def annotToTypeBound(ctx: TypeAnnotContext): Type = {
-    annotToType(ctx) match {
-      case Some(ty) => ty
-      case None     => Types.unknown
-    }
-  }
+  private def annotToType(ctx: TypeAnnotContext): Option[Type] = Option(ctx).map(TypeVisitor.visitChecked(_))
+
+  private def annotToTypeBound(ctx: TypeAnnotContext): Type = annotToType(ctx).getOrElse(Types.unknown)
 
   object ProgramVisitor extends ArcBaseVisitor[Program] {
 
-    def visitChecked(tree: ParseTree): Program = {
-      val e = this.visit(tree)
-      assert(e != null, s"Visiting a sub-tree returned null:\n${tree.toStringTree(parser)}")
-      e
-    }
-    override def visitProgram(ctx: ProgramContext): Program = {
-      val macros = MacrosVisitor.visitMacros(ctx.macros())
-      assert(macros != null)
-      val expr = ExprVisitor.visitExpr(ctx.expr())
-      assert(expr != null)
-      Program(macros, expr, ctx)
-    }
+    def visitChecked(tree: ParseTree): Program =
+      Option(this.visit(tree))
+        .getOrElse {
+          throw new AssertionError(s"Visiting a sub-tree returned null:\n${tree.toStringTree(parser)}")
+        }
+
+    override def visitProgram(ctx: ProgramContext): Program =
+      Program(
+        macros = MacrosVisitor.visitMacros(ctx.macros()),
+        expr = ExprVisitor.visitExpr(ctx.expr()),
+        ctx
+      )
   }
 
   object MacrosVisitor extends ArcBaseVisitor[List[Macro]] {
 
-    def visitChecked(tree: ParseTree): List[Macro] = {
-      val e = this.visit(tree)
-      assert(e != null, s"Visiting a sub-tree returned null:\n${tree.toStringTree(parser)}")
-      e
-    }
-    override def visitMacros(ctx: MacrosContext): List[Macro] = {
-      val macros = ctx.`macro`().asScala.flatMap(visitChecked(_))
-      macros.toList
-    }
-    override def visitMacro(ctx: MacroContext): List[Macro] = {
-      val name = tokenToSymbol(ctx.name)
-      val params = ctx.macroParams().names.asScala.map(tokenToSymbol)
-      val body = ExprVisitor.visitChecked(ctx.body)
-      List(Macro(name, params.toVector, body, ctx))
-    }
+    def visitChecked(tree: ParseTree): List[Macro] =
+      Option(this.visit(tree))
+        .getOrElse {
+          throw new AssertionError(s"Visiting a sub-tree returned null:\n${tree.toStringTree(parser)}")
+        }
+
+    override def visitMacros(ctx: MacrosContext): List[Macro] = ctx.`macro`().asScala.flatMap(visitChecked(_)).toList
+
+    override def visitMacro(ctx: MacroContext): List[Macro] =
+      List(
+        Macro(
+          name = tokenToSymbol(ctx.name),
+          parameters = ctx.macroParams().names.asScala.map(tokenToSymbol).toVector,
+          body = ExprVisitor.visitChecked(ctx.body),
+          ctx
+        )
+      )
   }
 
   object ExprVisitor extends ArcBaseVisitor[Expr] {
 
-    def visitChecked(tree: ParseTree): Expr = {
-      val e = this.visit(tree)
-      assert(e != null, s"Visiting a sub-tree returned null:\n${tree.toStringTree(parser)}")
-      e
-    }
+    def visitChecked(tree: ParseTree): Expr =
+      Option(this.visit(tree))
+        .getOrElse {
+          throw new AssertionError(s"Visiting a sub-tree returned null:\n${tree.toStringTree(parser)}")
+        }
 
-    override def visitParenExpr(ctx: ParenExprContext): Expr = {
-      this.visitChecked(ctx.expr())
-    }
+    override def visitParenExpr(ctx: ParenExprContext): Expr = this.visitChecked(ctx.expr())
 
     override def visitLetExpr(ctx: LetExprContext): Expr = {
-      val name = tokenToSymbol(ctx.name)
-      assert(name != null)
-      val tyO = annotToType(ctx.typeAnnot())
-      val value = this.visitChecked(ctx.value)
-      val ty = tyO match {
-        case Some(ty) => ty
-        case None     => Types.unknown
-      }
       val body = this.visitChecked(ctx.body)
-      Expr(ExprKind.Let(name, ty, value, body), body.ty, ctx)
+      Expr(
+        kind = ExprKind.Let(
+          name = tokenToSymbol(ctx.name),
+          bindingTy = annotToType(ctx.typeAnnot()).getOrElse(Types.unknown),
+          value = this.visitChecked(ctx.value),
+          body = body
+        ),
+        ty = body.ty,
+        ctx
+      )
     }
-    override def visitUnitLambda(ctx: UnitLambdaContext): Expr = {
-      val body = this.visitChecked(ctx.body)
-      Expr(ExprKind.Lambda(Vector.empty, body), Types.unknown, ctx)
-    }
-    override def visitParamLambda(ctx: ParamLambdaContext): Expr = {
-      val params = ctx
-        .lambdaParams()
-        .param()
-        .asScala
-        .map { p =>
-          val name = tokenToSymbol(p.name)
-          val ty = annotToTypeBound(p.typeAnnot())
-          Parameter(name, ty)
-        }
-        .toVector
-      val body = this.visitChecked(ctx.body)
-      Expr(ExprKind.Lambda(params, body), Types.unknown, ctx)
-    }
-    override def visitIdent(ctx: IdentContext): Expr = {
-      Expr(ExprKind.Ident(tokenToSymbol(ctx.TIdentifier().getSymbol)), Types.unknown, ctx)
-    }
+
+    override def visitUnitLambda(ctx: UnitLambdaContext): Expr =
+      Expr(
+        kind = ExprKind.Lambda(
+          Vector.empty,
+          body = this.visitChecked(ctx.body)
+        ),
+        ty = Types.unknown,
+        ctx
+      )
+
+    override def visitParamLambda(ctx: ParamLambdaContext): Expr =
+      Expr(
+        kind = ExprKind.Lambda(
+          params = ctx
+            .lambdaParams()
+            .param()
+            .asScala
+            .map { p =>
+              Parameter(
+                name = tokenToSymbol(p.name),
+                ty = annotToTypeBound(p.typeAnnot())
+              )
+            }
+            .toVector,
+          body = this.visitChecked(ctx.body)
+        ),
+        ty = Types.unknown,
+        ctx
+      )
+
+    override def visitIdent(ctx: IdentContext): Expr =
+      Expr(
+        kind = ExprKind.Ident(
+          name = tokenToSymbol(ctx.TIdentifier().getSymbol)
+        ),
+        ty = Types.unknown,
+        ctx
+      )
 
     override def visitCast(ctx: ArcParser.CastContext): Expr = {
       val Some(ty) = TypeVisitor.tokenToScalar(ctx.scalar)
-      val e = this.visitChecked(ctx.valueExpr())
-      Expr(ExprKind.Cast(ty, e), ty, ctx)
+      Expr(
+        kind = ExprKind.Cast(
+          ty,
+          expr = this.visitChecked(ctx.valueExpr())
+        ),
+        ty,
+        ctx
+      )
     }
 
-    override def visitToVec(ctx: ArcParser.ToVecContext): Expr = {
-      val e = this.visitChecked(ctx.valueExpr())
-      Expr(ExprKind.ToVec(e), Types.Vec(Types.unknown), ctx)
-    }
+    override def visitToVec(ctx: ArcParser.ToVecContext): Expr =
+      Expr(
+        kind = ExprKind.ToVec(
+          expr = this.visitChecked(ctx.valueExpr())
+        ),
+        ty = Types.Vec(
+          elemTy = Types.unknown
+        ),
+        ctx
+      )
 
-    override def visitZip(ctx: ArcParser.ZipContext): Expr = {
-      val params = ctx.functionParams().params.asScala.map(this.visitChecked(_)).toVector
-      Expr(ExprKind.Zip(params), Types.unknown, ctx)
-    }
+    override def visitZip(ctx: ArcParser.ZipContext): Expr =
+      Expr(
+        kind = ExprKind.Zip(
+          params = ctx.functionParams().params.asScala.map(this.visitChecked(_)).toVector
+        ),
+        ty = Types.unknown,
+        ctx
+      )
 
-    override def visitHash(ctx: ArcParser.HashContext): Expr = {
-      val params = ctx.functionParams().params.asScala.map(this.visitChecked(_)).toVector
-      Expr(ExprKind.Hash(params), Types.unknown, ctx)
-    }
+    override def visitHash(ctx: ArcParser.HashContext): Expr =
+      Expr(
+        kind = ExprKind.Hash(
+          params = ctx.functionParams().params.asScala.map(this.visitChecked(_)).toVector
+        ),
+        ty = Types.unknown,
+        ctx
+      )
 
     override def visitFor(ctx: ArcParser.ForContext): Expr = {
-      val annot = AnnotationVisitor.visitChecked(ctx.annotations())
-      val iter = IterVisitor.visitChecked(ctx.iterator())
       val builder = this.visitChecked(ctx.builder)
-      val body = this.visitChecked(ctx.body)
-      Expr(ExprKind.For(iter, builder, body), builder.ty, ctx, annot)
+      Expr(
+        kind = ExprKind.For(
+          iterator = IterVisitor.visitChecked(ctx.iterator()),
+          builder,
+          body = this.visitChecked(ctx.body)
+        ),
+        ty = builder.ty,
+        ctx,
+        annotations = AnnotationVisitor.visitChecked(ctx.annotations())
+      )
     }
 
-    override def visitLen(ctx: ArcParser.LenContext): Expr = {
-      val e = this.visitChecked(ctx.valueExpr())
-      Expr(ExprKind.Len(e), Types.I64, ctx)
-    }
+    override def visitLen(ctx: ArcParser.LenContext): Expr =
+      Expr(
+        kind = ExprKind.Len(
+          expr = this.visitChecked(ctx.valueExpr())
+        ),
+        ty = Types.I64,
+        ctx
+      )
 
-    override def visitLookup(ctx: ArcParser.LookupContext): Expr = {
-      val key = this.visitChecked(ctx.key)
-      val data = this.visitChecked(ctx.data)
-      Expr(ExprKind.Lookup(data, key), Types.unknown, ctx)
-    }
+    override def visitLookup(ctx: ArcParser.LookupContext): Expr =
+      Expr(
+        kind = ExprKind.Lookup(
+          data = this.visitChecked(ctx.data),
+          key = this.visitChecked(ctx.key)
+        ),
+        ty = Types.unknown,
+        ctx
+      )
 
     override def visitSlice(ctx: ArcParser.SliceContext): Expr = {
       val data = this.visitChecked(ctx.data)
-      val index = this.visitChecked(ctx.index)
-      val size = this.visitChecked(ctx.size)
-      Expr(ExprKind.Slice(data, index, size), data.ty, ctx)
+      Expr(
+        kind = ExprKind.Slice(
+          data,
+          index = this.visitChecked(ctx.index),
+          size = this.visitChecked(ctx.size)
+        ),
+        ty = data.ty,
+        ctx
+      )
     }
 
     override def visitSort(ctx: ArcParser.SortContext): Expr = {
       val data = this.visitChecked(ctx.data)
-      val keyFunc = this.visitChecked(ctx.keyFunc)
-      Expr(ExprKind.Sort(data, keyFunc), data.ty, ctx)
+      Expr(
+        kind = ExprKind.Sort(
+          data,
+          keyFunc = this.visitChecked(ctx.keyFunc)
+        ),
+        ty = data.ty,
+        ctx
+      )
     }
 
     override def visitNegate(ctx: NegateContext): Expr = {
       val expr = this.visitChecked(ctx.operatorExpr())
-      Expr(ExprKind.Negate(expr), expr.ty, ctx)
+      Expr(
+        kind = ExprKind.Negate(
+          expr
+        ),
+        ty = expr.ty,
+        ctx
+      )
     }
 
-    override def visitNot(ctx: NotContext): Expr = {
-      val expr = this.visitChecked(ctx.operatorExpr())
-      Expr(ExprKind.Not(expr), Types.Bool, ctx)
-    }
+    override def visitNot(ctx: NotContext): Expr =
+      Expr(
+        kind = ExprKind.Not(
+          expr = this.visitChecked(ctx.operatorExpr())
+        ),
+        ty = Types.Bool,
+        ctx
+      )
 
     override def visitUnaryOp(ctx: UnaryOpContext): Expr = {
       import ArcLexer._
       import UnaryOpKind._
       val expr = this.visitChecked(ctx.valueExpr())
-      val kind = ctx.op.getType match {
-        case TExp  => Exp
-        case TSin  => Sin
-        case TCos  => Cos
-        case TTan  => Tan
-        case TASin => ASin
-        case TACos => ACos
-        case TATan => ATan
-        case TSinh => Sinh
-        case TCosh => Cosh
-        case TTanh => Tanh
-        case TLog  => Log
-        case TErf  => Erf
-        case TSqrt => Sqrt
-      }
-      Expr(ExprKind.UnaryOp(kind, expr), expr.ty, ctx)
+      Expr(
+        ExprKind.UnaryOp(
+          kind = ctx.op.getType match {
+            case TExp  => Exp
+            case TSin  => Sin
+            case TCos  => Cos
+            case TTan  => Tan
+            case TASin => ASin
+            case TACos => ACos
+            case TATan => ATan
+            case TSinh => Sinh
+            case TCosh => Cosh
+            case TTanh => Tanh
+            case TLog  => Log
+            case TErf  => Erf
+            case TSqrt => Sqrt
+          },
+          expr
+        ),
+        ty = expr.ty,
+        ctx
+      )
     }
 
-    override def visitMakeVec(ctx: MakeVecContext): Expr = {
-      val elems = ctx.entries.asScala.map(e => this.visitChecked(e)).toVector
-      Expr(ExprKind.MakeVec(elems), Types.Vec(Types.unknown), ctx)
-    }
+    override def visitMakeVec(ctx: MakeVecContext): Expr =
+      Expr(
+        kind = ExprKind.MakeVec(
+          elems = ctx.entries.asScala.map(this.visitChecked(_)).toVector
+        ),
+        ty = Types.Vec(
+          elemTy = Types.unknown
+        ),
+        ctx
+      )
 
     override def visitMakeStruct(ctx: MakeStructContext): Expr = {
-      val elems = ctx.entries.asScala.map(e => this.visitChecked(e)).toVector
-      Expr(ExprKind.MakeStruct(elems), Types.Struct(elems.map(_ => Types.unknown)), ctx)
+      val elems = ctx.entries.asScala.map(this.visitChecked(_)).toVector
+      Expr(
+        kind = ExprKind.MakeStruct(elems),
+        ty = Types.Struct(
+          elemTys = elems.map(_ => Types.unknown)
+        ),
+        ctx
+      )
     }
 
-    override def visitIf(ctx: IfContext): Expr = {
-      val annot = AnnotationVisitor.visitChecked(ctx.annotations())
-      val cond = this.visitChecked(ctx.cond)
-      val onTrue = this.visitChecked(ctx.onTrue)
-      val onFalse = this.visitChecked(ctx.onFalse)
-      Expr(ExprKind.If(cond, onTrue, onFalse), Types.unknown, ctx, annot)
-    }
+    override def visitIf(ctx: IfContext): Expr =
+      Expr(
+        kind = ExprKind.If(
+          cond = this.visitChecked(ctx.cond),
+          onTrue = this.visitChecked(ctx.onTrue),
+          onFalse = this.visitChecked(ctx.onFalse)
+        ),
+        ty = Types.unknown,
+        ctx,
+        annotations = AnnotationVisitor.visitChecked(ctx.annotations())
+      )
 
-    override def visitIterate(ctx: IterateContext): Expr = {
-      val init = this.visitChecked(ctx.initial)
-      val upF = this.visitChecked(ctx.updateFunc)
-      Expr(ExprKind.Iterate(init, upF), Types.unknown, ctx)
-    }
+    override def visitIterate(ctx: IterateContext): Expr =
+      Expr(
+        kind = ExprKind.Iterate(
+          initial = this.visitChecked(ctx.initial),
+          updateFunc = this.visitChecked(ctx.updateFunc)
+        ),
+        ty = Types.unknown,
+        ctx
+      )
 
-    override def visitSelect(ctx: SelectContext): Expr = {
-      val cond = this.visitChecked(ctx.cond)
-      val onTrue = this.visitChecked(ctx.onTrue)
-      val onFalse = this.visitChecked(ctx.onFalse)
-      Expr(ExprKind.Select(cond, onTrue, onFalse), Types.unknown, ctx)
-    }
+    override def visitSelect(ctx: SelectContext): Expr =
+      Expr(
+        kind = ExprKind.Select(
+          cond = this.visitChecked(ctx.cond),
+          onTrue = this.visitChecked(ctx.onTrue),
+          onFalse = this.visitChecked(ctx.onFalse)
+        ),
+        ty = Types.unknown,
+        ctx
+      )
 
     override def visitBroadcast(ctx: ArcParser.BroadcastContext): Expr = {
-      val expr = this.visitChecked(ctx.valueExpr())
-      Expr(ExprKind.Broadcast(expr), Types.Simd(Types.unknown), ctx)
+      Expr(
+        kind = ExprKind.Broadcast(
+          expr = this.visitChecked(ctx.valueExpr())
+        ),
+        ty = Types.Simd(
+          elemTy = Types.unknown
+        ),
+        ctx
+      )
     }
 
-    override def visitSerialize(ctx: ArcParser.SerializeContext): Expr = {
-      val expr = this.visitChecked(ctx.valueExpr())
-      Expr(ExprKind.Serialize(expr), Types.Vec(Types.I8), ctx)
-    }
+    override def visitSerialize(ctx: ArcParser.SerializeContext): Expr =
+      Expr(
+        kind = ExprKind.Serialize(
+          expr = this.visitChecked(ctx.valueExpr())
+        ),
+        ty = Types.Vec(
+          elemTy = Types.I8
+        ),
+        ctx
+      )
 
     override def visitDeserialize(ctx: ArcParser.DeserializeContext): Expr = {
-      val annot = AnnotationVisitor.visitChecked(ctx.annotations())
-      val expr = this.visitChecked(ctx.valueExpr())
       val ty = TypeVisitor.visitChecked(ctx.`type`())
-      Expr(ExprKind.Deserialize(ty, expr), ty, ctx, annot)
+      Expr(
+        kind = ExprKind.Deserialize(
+          ty,
+          expr = this.visitChecked(ctx.valueExpr())
+        ),
+        ty,
+        ctx,
+        annotations = AnnotationVisitor.visitChecked(ctx.annotations())
+      )
     }
 
     override def visitCUDF(ctx: CUDFContext): Expr = {
-      val annot = AnnotationVisitor.visitChecked(ctx.annotations())
+      val annotations = AnnotationVisitor.visitChecked(ctx.annotations())
       val udf = this.visitChecked(ctx.cudfExpr())
-      if (annot.isDefined) {
-        Expr(udf.kind, udf.ty, ctx, annot)
+      if (annotations.isDefined) {
+        Expr(
+          kind = udf.kind,
+          ty = udf.ty,
+          ctx,
+          annotations
+        )
       } else {
         udf
       }
     }
 
     override def visitPointerUDF(ctx: ArcParser.PointerUDFContext): Expr = {
-      val pointer = this.visitChecked(ctx.funcPointer)
       val returnType = TypeVisitor.visitChecked(ctx.returnType)
-      val args = ctx
-        .functionParams()
-        .params
-        .asScala
-        .map { e =>
-          this.visitChecked(e)
-        }
-        .toVector
-      Expr(ExprKind.CUDF(Right(pointer), args, returnType), returnType, ctx)
+      Expr(
+        kind = ExprKind.CUDF(
+          reference = Right(this.visitChecked(ctx.funcPointer)),
+          args = ctx
+            .functionParams()
+            .params
+            .asScala
+            .map(this.visitChecked(_))
+            .toVector,
+          returnType = TypeVisitor.visitChecked(ctx.returnType)
+        ),
+        ty = returnType,
+        ctx
+      )
     }
 
     override def visitNameUDF(ctx: ArcParser.NameUDFContext): Expr = {
-      val name = tokenToSymbol(ctx.name)
       val returnType = TypeVisitor.visitChecked(ctx.returnType)
-      val args = ctx
-        .functionParams()
-        .params
-        .asScala
-        .map { e =>
-          this.visitChecked(e)
-        }
-        .toVector
-      Expr(ExprKind.CUDF(Left(name), args, returnType), returnType, ctx)
+      Expr(
+        kind = ExprKind.CUDF(
+          reference = Left(tokenToSymbol(ctx.name)),
+          args = ctx
+            .functionParams()
+            .params
+            .asScala
+            .map(this.visitChecked(_))
+            .toVector,
+          returnType
+        ),
+        ty = returnType,
+        ctx
+      )
     }
 
     override def visitMerge(ctx: MergeContext): Expr = {
       val builder = this.visitChecked(ctx.builder)
-      val value = this.visitChecked(ctx.value)
-      Expr(ExprKind.Merge(builder, value), builder.ty, ctx)
+      Expr(
+        kind = ExprKind.Merge(
+          builder,
+          value = this.visitChecked(ctx.value)
+        ),
+        ty = builder.ty,
+        ctx
+      )
     }
 
     override def visitResult(ctx: ResultContext): Expr = {
-      val builder = this.visitChecked(ctx.valueExpr())
-      Expr(ExprKind.Result(builder), Types.unknown, ctx)
+      Expr(
+        kind = ExprKind.Result(
+          expr = this.visitChecked(ctx.valueExpr())
+        ),
+        ty = Types.unknown,
+        ctx
+      )
     }
+
     override def visitNewAppender(ctx: NewAppenderContext): Expr = {
       val annot = AnnotationVisitor.visitChecked(ctx.annotations())
-      val argO = Option(ctx.arg)
-      val arg = argO.map(this.visitChecked(_))
       val elemTy = TypeVisitor.visitChecked(ctx.elemT, allowNull = true)
       val ty = Types.Builders.Appender(elemTy, annot)
-      Expr(ExprKind.NewBuilder(ty, arg), ty, ctx)
+      Expr(
+        kind = ExprKind.NewBuilder(
+          ty,
+          arg = Option(ctx.arg).map(this.visitChecked(_))
+        ),
+        ty,
+        ctx
+      )
     }
 
     override def visitNewStreamAppender(ctx: NewStreamAppenderContext): Expr = {
       val annot = AnnotationVisitor.visitChecked(ctx.annotations())
-      val arg = None
       val elemTy = TypeVisitor.visitChecked(ctx.elemT, allowNull = true)
       val ty = Types.Builders.StreamAppender(elemTy, annot)
-      Expr(ExprKind.NewBuilder(ty, arg), ty, ctx)
+      Expr(
+        kind = ExprKind.NewBuilder(
+          ty,
+          arg = None
+        ),
+        ty,
+        ctx
+      )
     }
 
     override def visitNewMerger(ctx: NewMergerContext): Expr = {
       val annot = AnnotationVisitor.visitChecked(ctx.annotations())
-      val argO = Option(ctx.arg)
-      val arg = argO.map(this.visitChecked(_))
       val elemTy = TypeVisitor.visitChecked(ctx.elemT)
       val opTy = OpVisitor.visitChecked(ctx.commutativeBinop())
       val ty = Types.Builders.Merger(elemTy, opTy, annot)
-      Expr(ExprKind.NewBuilder(ty, arg), ty, ctx)
+      Expr(
+        kind = ExprKind.NewBuilder(
+          ty,
+          arg = Option(ctx.arg).map(this.visitChecked(_))
+        ),
+        ty,
+        ctx
+      )
     }
 
     override def visitNewDictMerger(ctx: NewDictMergerContext): Expr = {
       val annot = AnnotationVisitor.visitChecked(ctx.annotations())
-      val argO = Option(ctx.arg)
-      val arg = argO.map(this.visitChecked(_))
       val keyTy = TypeVisitor.visitChecked(ctx.keyT)
       val valueTy = TypeVisitor.visitChecked(ctx.valueT)
       val opTy = OpVisitor.visitChecked(ctx.commutativeBinop())
       val ty = Types.Builders.DictMerger(keyTy, valueTy, opTy, annot)
-      Expr(ExprKind.NewBuilder(ty, arg), ty, ctx)
+      Expr(
+        kind = ExprKind.NewBuilder(
+          ty,
+          arg = Option(ctx.arg).map(this.visitChecked(_))
+        ),
+        ty,
+        ctx
+      )
     }
+
     override def visitNewVecMerger(ctx: NewVecMergerContext): Expr = {
       val annot = AnnotationVisitor.visitChecked(ctx.annotations())
-      val argO = Option(ctx.arg)
-      val arg = argO.map(this.visitChecked(_))
       val elemTy = TypeVisitor.visitChecked(ctx.elemT)
       val opTy = OpVisitor.visitChecked(ctx.commutativeBinop())
       val ty = Types.Builders.VecMerger(elemTy, opTy, annot)
-      Expr(ExprKind.NewBuilder(ty, arg), ty, ctx)
+      Expr(
+        kind = ExprKind.NewBuilder(
+          ty,
+          arg = Option(ctx.arg).map(this.visitChecked(_))
+        ),
+        ty,
+        ctx
+      )
     }
+
     override def visitNewGroupMerger(ctx: NewGroupMergerContext): Expr = {
       val annot = AnnotationVisitor.visitChecked(ctx.annotations())
-      val argO = Option(ctx.arg)
-      val arg = argO.map(this.visitChecked(_))
       val keyTy = TypeVisitor.visitChecked(ctx.keyT, allowNull = true)
       val valueTy = TypeVisitor.visitChecked(ctx.valueT, allowNull = true)
       val ty = Types.Builders.GroupMerger(keyTy, valueTy, annot)
-      Expr(ExprKind.NewBuilder(ty, arg), ty, ctx)
+      Expr(
+        kind = ExprKind.NewBuilder(
+          ty,
+          arg = Option(ctx.arg).map(this.visitChecked(_))
+        ),
+        ty,
+        ctx
+      )
     }
 
-    override def visitBinaryFunction(ctx: BinaryFunctionContext): Expr = {
-      import ArcLexer._
+    override def visitBinaryFunction(ctx: BinaryFunctionContext): Expr =
+      Expr(
+        kind = ExprKind.BinOp(
+          kind = ctx.fun.getType match {
+            case ArcLexer.TMin => BinOpKind.Min
+            case ArcLexer.TMax => BinOpKind.Max
+            case ArcLexer.TPow => BinOpKind.Pow
+          },
+          left = this.visitChecked(ctx.left),
+          right = this.visitChecked(ctx.right)
+        ),
+        ty = Types.unknown,
+        ctx
+      )
 
-      val kind = ctx.fun.getType match {
-        case TMin => BinOpKind.Min
-        case TMax => BinOpKind.Max
-        case TPow => BinOpKind.Pow
-      }
-      val left = this.visitChecked(ctx.left)
-      val right = this.visitChecked(ctx.right)
-      Expr(ExprKind.BinOp(kind, left, right), Types.unknown, ctx)
-    }
+    override def visitApplication(ctx: ArcParser.ApplicationContext): Expr =
+      Expr(
+        kind = ExprKind.Application(
+          funcExpr = this.visitChecked(ctx.operatorExpr()),
+          params = ctx
+            .functionParams()
+            .params
+            .asScala
+            .map(this.visitChecked(_))
+            .toVector
+        ),
+        ty = Types.unknown,
+        ctx
+      )
 
-    override def visitApplication(ctx: ArcParser.ApplicationContext): Expr = {
-      val func = this.visitChecked(ctx.operatorExpr())
-      val args = ctx
-        .functionParams()
-        .params
-        .asScala
-        .map { e =>
-          this.visitChecked(e)
-        }
-        .toVector
-      Expr(ExprKind.Application(func, args), Types.unknown, ctx)
-    }
-
-    override def visitProjection(ctx: ArcParser.ProjectionContext): Expr = {
-      val struct = this.visitChecked(ctx.operatorExpr())
-      val index = BigInt(ctx.TIndex().getText.substring(1), decRadix).toInt
-      Expr(ExprKind.Projection(struct, index), Types.unknown, ctx)
-    }
+    override def visitProjection(ctx: ArcParser.ProjectionContext): Expr =
+      Expr(
+        kind = ExprKind.Projection(
+          structExpr = this.visitChecked(ctx.operatorExpr()),
+          index = BigInt(ctx.TIndex().getText.substring(1), decRadix).toInt
+        ),
+        ty = Types.unknown,
+        ctx
+      )
 
     override def visitAscription(ctx: ArcParser.AscriptionContext): Expr = {
-      val expr = this.visitChecked(ctx.operatorExpr())
       val ty = TypeVisitor.visitChecked(ctx.`type`())
-      Expr(ExprKind.Ascription(expr, ty), ty, ctx)
+      Expr(
+        kind = ExprKind.Ascription(
+          expr = this.visitChecked(ctx.operatorExpr()),
+          ty
+        ),
+        ty,
+        ctx
+      )
     }
 
-    override def visitProduct(ctx: ArcParser.ProductContext): Expr = {
-      import ArcLexer._
+    override def visitProduct(ctx: ArcParser.ProductContext): Expr =
+      Expr(
+        kind = ExprKind.BinOp(
+          kind = ctx.op.getType match {
+            case ArcLexer.TStar    => BinOpKind.Mult
+            case ArcLexer.TSlash   => BinOpKind.Div
+            case ArcLexer.TPercent => BinOpKind.Modulo
+          },
+          left = this.visitChecked(ctx.left),
+          right = this.visitChecked(ctx.right)
+        ),
+        ty = Types.unknown,
+        ctx
+      )
 
-      val kind = ctx.op.getType match {
-        case TStar    => BinOpKind.Mult
-        case TSlash   => BinOpKind.Div
-        case TPercent => BinOpKind.Modulo
-      }
-      val left = this.visitChecked(ctx.left)
-      val right = this.visitChecked(ctx.right)
-      Expr(ExprKind.BinOp(kind, left, right), Types.unknown, ctx)
-    }
+    override def visitSum(ctx: ArcParser.SumContext): Expr =
+      Expr(
+        kind = ExprKind.BinOp(
+          kind = ctx.op.getType match {
+            case ArcLexer.TPlus  => BinOpKind.Add
+            case ArcLexer.TMinus => BinOpKind.Sub
+          },
+          left = this.visitChecked(ctx.left),
+          right = this.visitChecked(ctx.right)
+        ),
+        ty = Types.unknown,
+        ctx
+      )
 
-    override def visitSum(ctx: ArcParser.SumContext): Expr = {
-      import ArcLexer._
+    override def visitComparison(ctx: ArcParser.ComparisonContext): Expr =
+      Expr(
+        kind = ExprKind.BinOp(
+          kind = ctx.op.getType match {
+            case ArcLexer.TLessThan    => BinOpKind.LessThan
+            case ArcLexer.TGreaterThan => BinOpKind.GreaterThan
+            case ArcLexer.TLEq         => BinOpKind.LEq
+            case ArcLexer.TGEq         => BinOpKind.GEq
+          },
+          left = this.visitChecked(ctx.left),
+          right = this.visitChecked(ctx.right)
+        ),
+        ty = Types.unknown,
+        ctx
+      )
 
-      val kind = ctx.op.getType match {
-        case TPlus  => BinOpKind.Add
-        case TMinus => BinOpKind.Sub
-      }
-      val left = this.visitChecked(ctx.left)
-      val right = this.visitChecked(ctx.right)
-      Expr(ExprKind.BinOp(kind, left, right), Types.unknown, ctx)
-    }
+    override def visitEquality(ctx: ArcParser.EqualityContext): Expr =
+      Expr(
+        kind = ExprKind.BinOp(
+          kind = ctx.op.getType match {
+            case ArcLexer.TEqualEqual => BinOpKind.Equals
+            case ArcLexer.TNotEqual   => BinOpKind.NEq
+          },
+          left = this.visitChecked(ctx.left),
+          right = this.visitChecked(ctx.right)
+        ),
+        ty = Types.unknown,
+        ctx
+      )
 
-    override def visitComparison(ctx: ArcParser.ComparisonContext): Expr = {
-      import ArcLexer._
+    override def visitBitwiseXor(ctx: ArcParser.BitwiseXorContext): Expr =
+      Expr(
+        kind = ExprKind.BinOp(
+          kind = BinOpKind.Xor,
+          left = this.visitChecked(ctx.left),
+          right = this.visitChecked(ctx.right)
+        ),
+        ty = Types.unknown,
+        ctx
+      )
 
-      val kind = ctx.op.getType match {
-        case TLessThan    => BinOpKind.LessThan
-        case TGreaterThan => BinOpKind.GreaterThan
-        case TLEq         => BinOpKind.LEq
-        case TGEq         => BinOpKind.GEq
-      }
-      val left = this.visitChecked(ctx.left)
-      val right = this.visitChecked(ctx.right)
-      Expr(ExprKind.BinOp(kind, left, right), Types.unknown, ctx)
-    }
+    override def visitBitwiseOr(ctx: ArcParser.BitwiseOrContext): Expr =
+      Expr(
+        kind = ExprKind.BinOp(
+          kind = BinOpKind.Or,
+          left = this.visitChecked(ctx.left),
+          right = this.visitChecked(ctx.right)
+        ),
+        ty = Types.unknown,
+        ctx
+      )
 
-    override def visitEquality(ctx: ArcParser.EqualityContext): Expr = {
-      import ArcLexer._
+    override def visitBitwiseAnd(ctx: ArcParser.BitwiseAndContext): Expr =
+      Expr(
+        kind = ExprKind.BinOp(
+          kind = BinOpKind.And,
+          left = this.visitChecked(ctx.left),
+          right = this.visitChecked(ctx.right)
+        ),
+        ty = Types.unknown,
+        ctx
+      )
 
-      val kind = ctx.op.getType match {
-        case TEqualEqual => BinOpKind.Equals
-        case TNotEqual   => BinOpKind.NEq
-      }
-      val left = this.visitChecked(ctx.left)
-      val right = this.visitChecked(ctx.right)
-      Expr(ExprKind.BinOp(kind, left, right), Types.unknown, ctx)
-    }
+    override def visitLogicalOr(ctx: ArcParser.LogicalOrContext): Expr =
+      Expr(
+        kind = ExprKind.BinOp(
+          kind = BinOpKind.LogicalOr,
+          left = this.visitChecked(ctx.left),
+          right = this.visitChecked(ctx.right)
+        ),
+        ty = Types.unknown,
+        ctx
+      )
 
-    override def visitBitwiseXor(ctx: ArcParser.BitwiseXorContext): Expr = {
-      val kind = BinOpKind.Xor
-      val left = this.visitChecked(ctx.left)
-      val right = this.visitChecked(ctx.right)
-      Expr(ExprKind.BinOp(kind, left, right), Types.unknown, ctx)
-    }
-
-    override def visitBitwiseOr(ctx: ArcParser.BitwiseOrContext): Expr = {
-      val kind = BinOpKind.Or
-      val left = this.visitChecked(ctx.left)
-      val right = this.visitChecked(ctx.right)
-      Expr(ExprKind.BinOp(kind, left, right), Types.unknown, ctx)
-    }
-
-    override def visitBitwiseAnd(ctx: ArcParser.BitwiseAndContext): Expr = {
-      val kind = BinOpKind.And
-      val left = this.visitChecked(ctx.left)
-      val right = this.visitChecked(ctx.right)
-      Expr(ExprKind.BinOp(kind, left, right), Types.unknown, ctx)
-    }
-
-    override def visitLogicalOr(ctx: ArcParser.LogicalOrContext): Expr = {
-      val kind = BinOpKind.LogicalOr
-      val left = this.visitChecked(ctx.left)
-      val right = this.visitChecked(ctx.right)
-      Expr(ExprKind.BinOp(kind, left, right), Types.unknown, ctx)
-    }
-
-    override def visitLogicalAnd(ctx: ArcParser.LogicalAndContext): Expr = {
-      val kind = BinOpKind.LogicalAnd
-      val left = this.visitChecked(ctx.left)
-      val right = this.visitChecked(ctx.right)
-      Expr(ExprKind.BinOp(kind, left, right), Types.unknown, ctx)
-    }
+    override def visitLogicalAnd(ctx: ArcParser.LogicalAndContext): Expr =
+      Expr(
+        kind = ExprKind.BinOp(
+          kind = BinOpKind.LogicalAnd,
+          left = this.visitChecked(ctx.left),
+          right = this.visitChecked(ctx.right)
+        ),
+        ty = Types.unknown,
+        ctx
+      )
 
     override def visitI8Lit(ctx: I8LitContext): Expr = {
       val raw = ctx.TI8Lit().getText
-      val num = extractInteger(raw)
-      Expr(ExprKind.Literal.I8(raw, num.toInt), Types.I8, ctx)
+      Expr(
+        kind = ExprKind.Literal.I8(
+          raw,
+          value = extractInteger(raw).toInt
+        ),
+        ty = Types.I8,
+        ctx
+      )
     }
+
     override def visitI16Lit(ctx: I16LitContext): Expr = {
       val raw = ctx.TI16Lit().getText
-      val num = extractInteger(raw)
-      Expr(ExprKind.Literal.I16(raw, num.toInt), Types.I16, ctx)
+      Expr(
+        kind = ExprKind.Literal.I16(
+          raw,
+          value = extractInteger(raw).toInt
+        ),
+        ty = Types.I16,
+        ctx
+      )
     }
+
     override def visitI32Lit(ctx: I32LitContext): Expr = {
       val raw = ctx.TI32Lit().getText
-      val num = extractInteger(raw)
-      Expr(ExprKind.Literal.I32(raw, num.toInt), Types.I32, ctx)
+      Expr(
+        kind = ExprKind.Literal.I32(
+          raw,
+          value = extractInteger(raw).toInt
+        ),
+        ty = Types.I32,
+        ctx
+      )
     }
+
     override def visitI64Lit(ctx: I64LitContext): Expr = {
       val raw = ctx.TI64Lit().getText
-      val num = extractInteger(raw)
-      Expr(ExprKind.Literal.I64(raw, num.toLong), Types.I64, ctx)
+      Expr(
+        kind = ExprKind.Literal.I64(
+          raw,
+          value = extractInteger(raw).toLong
+        ),
+        ty = Types.I64,
+        ctx
+      )
     }
 
     override def visitF32Lit(ctx: F32LitContext): Expr = {
       val raw = ctx.TF32Lit().getText
-      val num = raw.toFloat
-      Expr(ExprKind.Literal.F32(raw, num), Types.F32, ctx)
+      Expr(
+        kind = ExprKind.Literal.F32(
+          raw,
+          value = raw.toFloat
+        ),
+        ty = Types.F32,
+        ctx
+      )
     }
+
     override def visitF64Lit(ctx: F64LitContext): Expr = {
       val raw = ctx.TF64Lit().getText
-      val num = raw.toDouble
-      Expr(ExprKind.Literal.F64(raw, num), Types.F64, ctx)
+      Expr(
+        kind = ExprKind.Literal.F64(
+          raw,
+          value = raw.toDouble
+        ),
+        ty = Types.F64,
+        ctx
+      )
     }
 
     override def visitBoolLit(ctx: BoolLitContext): Expr = {
       val raw = ctx.TBoolLit().getText
-      val b = raw match {
-        case "true"  => true
-        case "false" => false
-      }
-      Expr(ExprKind.Literal.Bool(raw, b), Types.Bool, ctx)
+      Expr(
+        kind = ExprKind.Literal.Bool(
+          raw,
+          value = raw match {
+            case "true"  => true
+            case "false" => false
+          }
+        ),
+        ty = Types.Bool,
+        ctx
+      )
     }
 
     override def visitStringLit(ctx: StringLitContext): Expr = {
       val raw = ctx.TStringLit().getText
-      val s = raw.substring(1, raw.length() - 1); // TODO replace escapes
-      Expr(ExprKind.Literal.StringL(raw, s), Types.StringT, ctx)
+      Expr(
+        kind = ExprKind.Literal.StringL(
+          raw,
+          value = raw.substring(1, raw.length() - 1) // TODO replace escapes
+        ),
+        ty = Types.StringT,
+        ctx
+      )
     }
 
     val binExpr: Regex = raw"0b([01]+)(?:[cClL]|si)?".r
@@ -545,54 +798,55 @@ class ASTTranslator(val parser: ArcParser) {
     val hexRadix: Int = 16
     val decRadix: Int = 10
 
-    private def extractInteger(s: String): BigInt = {
+    private def extractInteger(s: String): BigInt =
       s match {
         case binExpr(core) => BigInt(core, binRadix)
         case hexExpr(core) => BigInt(core, hexRadix)
         case decExpr(core) => BigInt(core, decRadix)
       }
-    }
   }
 
   object AnnotationVisitor extends ArcBaseVisitor[Annotations] {
 
-    def visitChecked(tree: ParseTree): Option[Annotations] = {
+    def visitChecked(tree: ParseTree): Option[Annotations] =
       if (tree == null) {
         None
       } else {
-        val e = this.visit(tree)
-        assert(e != null, s"Visiting a sub-tree returned null:\n${tree.toStringTree(parser)}")
-        Some(e)
+        Option(this.visit(tree))
+          .orElse {
+            throw new AssertionError(s"Visiting a sub-tree returned null:\n${tree.toStringTree(parser)}")
+          }
       }
-    }
 
-    override def visitAnnotations(ctx: AnnotationsContext): Annotations = {
-      val entries = ctx.entries.asScala.flatMap(this.visitChecked(_)).foldLeft(Vector.empty[(String, Any)]) {
-        case (acc, a) => acc :+ a.params(0)
-      }
-      Annotations(entries)
-    }
+    override def visitAnnotations(ctx: AnnotationsContext): Annotations =
+      Annotations(
+        params = ctx
+          .entries
+          .asScala
+          .flatMap(this.visitChecked(_))
+          .foldLeft(Vector.empty[(String, Any)]) {
+            case (acc, a) => acc :+ a.params(0)
+          }
+      )
 
-    override def visitIdPair(ctx: IdPairContext): Annotations = {
-      val key = ctx.name.getText
-      val value = ctx.value.getText
-      Annotations(Vector(key -> value))
-    }
+    override def visitIdPair(ctx: IdPairContext): Annotations =
+      Annotations(
+        params = Vector(ctx.name.getText -> ctx.value.getText)
+      )
 
-    override def visitLiteralPair(ctx: LiteralPairContext): Annotations = {
-      val key = ctx.name.getText
-      val value = ExprVisitor.visitChecked(ctx.value).kind
-      Annotations(Vector(key -> value))
-    }
+    override def visitLiteralPair(ctx: LiteralPairContext): Annotations =
+      Annotations(
+        params = Vector(ctx.name.getText -> ExprVisitor.visitChecked(ctx.value).kind)
+      )
   }
 
   object OpVisitor extends ArcBaseVisitor[OpType] {
 
-    def visitChecked(tree: ParseTree): OpType = {
-      val e = this.visit(tree)
-      assert(e != null, s"Visiting a sub-tree returned null:\n${tree.toStringTree()}")
-      e
-    }
+    def visitChecked(tree: ParseTree): OpType =
+      Option(this.visit(tree))
+        .getOrElse(
+          throw new AssertionError(s"Visiting a sub-tree returned null:\n${tree.toStringTree()}")
+        )
 
     override def visitSumOp(ctx: SumOpContext): OpType = OpTypes.Sum
 
@@ -606,79 +860,74 @@ class ASTTranslator(val parser: ArcParser) {
 
   object IterVisitor extends ArcBaseVisitor[Iter] {
 
-    def visitChecked(tree: ParseTree): Iter = {
-      val e = this.visit(tree)
-      assert(e != null, s"Visiting a sub-tree returned null:\n${tree.toStringTree(parser)}")
-      e
-    }
+    def visitChecked(tree: ParseTree): Iter =
+      Option(this.visit(tree))
+        .getOrElse(
+          throw new AssertionError(s"Visiting a sub-tree returned null:\n${tree.toStringTree(parser)}")
+        )
 
-    def tokenToIterKind(t: Token): IterKind.IterKind = {
-      import ArcLexer._
-      import IterKind._
-
+    def tokenToIterKind(t: Token): IterKind.IterKind =
       t.getType match {
-        case TScalarIter => ScalarIter
-        case TSimdIter   => SimdIter
-        case TFringeIter => FringeIter
-        case TNdIter     => NdIter
-        case TRangeIter  => RangeIter
-        case TKeyByIter  => KeyByIter
-        case _           => UnknownIter
+        case ArcLexer.TScalarIter => IterKind.ScalarIter
+        case ArcLexer.TSimdIter   => IterKind.SimdIter
+        case ArcLexer.TFringeIter => IterKind.FringeIter
+        case ArcLexer.TNdIter     => IterKind.NdIter
+        case ArcLexer.TRangeIter  => IterKind.RangeIter
+        case ArcLexer.TKeyByIter  => IterKind.KeyByIter
+        case _                    => IterKind.UnknownIter
       }
-    }
 
-    override def visitSimpleIter(ctx: ArcParser.SimpleIterContext): Iter = {
-      val kind = tokenToIterKind(ctx.iter)
-      val data = ExprVisitor.visitChecked(ctx.data)
-      Iter(kind = kind, data = data)
-    }
-
-    override def visitFourIter(ctx: ArcParser.FourIterContext): Iter = {
-      val kind = tokenToIterKind(ctx.iter)
-      val data = ExprVisitor.visitChecked(ctx.data)
-      val start = ExprVisitor.visitChecked(ctx.start)
-      val end = ExprVisitor.visitChecked(ctx.end)
-      val stride = ExprVisitor.visitChecked(ctx.stride)
-      Iter(kind = kind, data = data, start = Some(start), end = Some(end), stride = Some(stride))
-    }
-
-    override def visitSixIter(ctx: ArcParser.SixIterContext): Iter = {
-      val kind = IterKind.NdIter
-      val data = ExprVisitor.visitChecked(ctx.data)
-      val start = ExprVisitor.visitChecked(ctx.start)
-      val end = ExprVisitor.visitChecked(ctx.end)
-      val stride = ExprVisitor.visitChecked(ctx.stride)
-      val shape = ExprVisitor.visitChecked(ctx.shape)
-      val strides = ExprVisitor.visitChecked(ctx.strides)
+    override def visitSimpleIter(ctx: ArcParser.SimpleIterContext): Iter =
       Iter(
-        kind = kind,
-        data = data,
-        start = Some(start),
-        end = Some(end),
-        stride = Some(stride),
-        shape = Some(shape),
-        strides = Some(strides))
-    }
+        kind = tokenToIterKind(ctx.iter),
+        data = ExprVisitor.visitChecked(ctx.data)
+      )
 
-    override def visitRangeIter(ctx: ArcParser.RangeIterContext): Iter = {
-      val kind = IterKind.RangeIter
-      val dummyData = Expr(ExprKind.MakeVec(Vector.empty), Types.Vec(Types.I64), ctx)
-      val start = ExprVisitor.visitChecked(ctx.start)
-      val end = ExprVisitor.visitChecked(ctx.end)
-      val stride = ExprVisitor.visitChecked(ctx.stride)
-      Iter(kind = kind, data = dummyData, start = Some(start), end = Some(end), stride = Some(stride))
-    }
+    override def visitFourIter(ctx: ArcParser.FourIterContext): Iter =
+      Iter(
+        kind = tokenToIterKind(ctx.iter),
+        data = ExprVisitor.visitChecked(ctx.data),
+        start = Some(ExprVisitor.visitChecked(ctx.start)),
+        end = Some(ExprVisitor.visitChecked(ctx.end)),
+        stride = Some(ExprVisitor.visitChecked(ctx.stride))
+      )
 
-    override def visitKeyByIter(ctx: ArcParser.KeyByIterContext): Iter = {
-      val data = ExprVisitor.visitChecked(ctx.data)
-      val keyFunc = ExprVisitor.visitChecked(ctx.keyFunc)
-      Iter(kind = IterKind.KeyByIter, data = data, keyFunc = Some(keyFunc))
-    }
+    override def visitSixIter(ctx: ArcParser.SixIterContext): Iter =
+      Iter(
+        kind = IterKind.NdIter,
+        data = ExprVisitor.visitChecked(ctx.data),
+        start = Some(ExprVisitor.visitChecked(ctx.start)),
+        end = Some(ExprVisitor.visitChecked(ctx.end)),
+        stride = Some(ExprVisitor.visitChecked(ctx.stride)),
+        shape = Some(ExprVisitor.visitChecked(ctx.shape)),
+        strides = Some(ExprVisitor.visitChecked(ctx.strides))
+      )
 
-    override def visitUnkownIter(ctx: ArcParser.UnkownIterContext): Iter = {
-      val data = ExprVisitor.visitChecked(ctx.valueExpr())
-      Iter(kind = IterKind.UnknownIter, data = data)
-    }
+    override def visitRangeIter(ctx: ArcParser.RangeIterContext): Iter =
+      Iter(
+        kind = IterKind.RangeIter,
+        data = Expr(
+          kind = ExprKind.MakeVec(Vector.empty),
+          ty = Types.Vec(Types.I64),
+          ctx
+        ),
+        start = Some(ExprVisitor.visitChecked(ctx.start)),
+        end = Some(ExprVisitor.visitChecked(ctx.end)),
+        stride = Some(ExprVisitor.visitChecked(ctx.stride))
+      )
+
+    override def visitKeyByIter(ctx: ArcParser.KeyByIterContext): Iter =
+      Iter(
+        kind = IterKind.KeyByIter,
+        data = ExprVisitor.visitChecked(ctx.data),
+        keyFunc = Some(ExprVisitor.visitChecked(ctx.keyFunc))
+      )
+
+    override def visitUnkownIter(ctx: ArcParser.UnkownIterContext): Iter =
+      Iter(
+        kind = IterKind.UnknownIter,
+        data = ExprVisitor.visitChecked(ctx.valueExpr())
+      )
   }
 
   object TypeVisitor extends ArcBaseVisitor[Type] {
@@ -688,29 +937,28 @@ class ASTTranslator(val parser: ArcParser) {
         Types.unknown // just return a type variable
       } else {
         assert(tree != null, s"Can't extract type from null-tree")
-        val e = this.visit(tree)
-        assert(e != null, s"Visiting a sub-tree returned null:\n${tree.toStringTree(parser)}")
-        e
+        Option(this.visit(tree))
+          .getOrElse {
+            throw new AssertionError(s"Visiting a sub-tree returned null:\n${tree.toStringTree(parser)}")
+          }
       }
     }
 
-    def tokenToScalar(t: Token): Option[Types.Scalar] = {
-      import ArcLexer._
+    def tokenToScalar(t: Token): Option[Types.Scalar] =
       Try(t.getType match {
-        case TI8   => Types.I8
-        case TI16  => Types.I16
-        case TI32  => Types.I32
-        case TI64  => Types.I64
-        case TU8   => Types.U8
-        case TU16  => Types.U16
-        case TU32  => Types.U32
-        case TU64  => Types.U64
-        case TF32  => Types.F32
-        case TF64  => Types.F64
-        case TBool => Types.Bool
-        case TUnit => Types.UnitT
+        case ArcLexer.TI8   => Types.I8
+        case ArcLexer.TI16  => Types.I16
+        case ArcLexer.TI32  => Types.I32
+        case ArcLexer.TI64  => Types.I64
+        case ArcLexer.TU8   => Types.U8
+        case ArcLexer.TU16  => Types.U16
+        case ArcLexer.TU32  => Types.U32
+        case ArcLexer.TU64  => Types.U64
+        case ArcLexer.TF32  => Types.F32
+        case ArcLexer.TF64  => Types.F64
+        case ArcLexer.TBool => Types.Bool
+        case ArcLexer.TUnit => Types.UnitT
       }).toOption
-    }
 
     override def visitI8(ctx: I8Context): Type = Types.I8
 
@@ -738,92 +986,90 @@ class ASTTranslator(val parser: ArcParser) {
 
     override def visitStringT(ctx: StringTContext): Type = Types.StringT
 
-    override def visitSimd(ctx: SimdContext): Type = {
-      val elemT = this.visitChecked(ctx.elemT)
-      Types.Simd(elemT)
-    }
+    override def visitSimd(ctx: SimdContext): Type =
+      Types.Simd(
+        elemTy = this.visitChecked(ctx.elemT)
+      )
 
-    override def visitVec(ctx: VecContext): Type = {
-      val elemT = this.visitChecked(ctx.elemT)
-      Types.Vec(elemT)
-    }
+    override def visitVec(ctx: VecContext): Type =
+      Types.Vec(
+        elemTy = this.visitChecked(ctx.elemT)
+      )
 
-    override def visitStream(ctx: StreamContext): Type = {
-      val elemT = this.visitChecked(ctx.elemT)
-      Types.Stream(elemT)
-    }
+    override def visitStream(ctx: StreamContext): Type =
+      Types.Stream(
+        elemTy = this.visitChecked(ctx.elemT)
+      )
 
-    override def visitDict(ctx: DictContext): Type = {
-      val keyT = this.visitChecked(ctx.keyT)
-      val valueT = this.visitChecked(ctx.valueT)
-      Types.Dict(keyT, valueT)
-    }
+    override def visitDict(ctx: DictContext): Type =
+      Types.Dict(
+        keyTy = this.visitChecked(ctx.keyT),
+        valueTy = this.visitChecked(ctx.valueT)
+      )
 
-    override def visitStruct(ctx: StructContext): Type = {
-      val elemTypes = ctx.types.asScala.map(t => TypeVisitor.visitChecked(t)).toVector
-      Types.Struct(elemTypes)
-    }
+    override def visitStruct(ctx: StructContext): Type =
+      Types.Struct(
+        elemTys = ctx.types.asScala
+          .map(TypeVisitor.visitChecked(_))
+          .toVector
+      )
 
-    override def visitUnitFunction(ctx: ArcParser.UnitFunctionContext): Type = {
-      val returnTy = this.visitChecked(ctx.returnT)
-      Types.Function(Vector.empty, returnTy)
-    }
+    override def visitUnitFunction(ctx: ArcParser.UnitFunctionContext): Type =
+      Types.Function(
+        params = Vector.empty,
+        returnTy = this.visitChecked(ctx.returnT)
+      )
 
-    override def visitParamFunction(ctx: ArcParser.ParamFunctionContext): Type = {
-      val params = ctx.paramTypes.asScala.map(this.visitChecked(_)).toVector
-      val returnTy = this.visitChecked(ctx.returnT)
-      Types.Function(params, returnTy)
-    }
+    override def visitParamFunction(ctx: ArcParser.ParamFunctionContext): Type =
+      Types.Function(
+        params = ctx.paramTypes.asScala
+          .map(this.visitChecked(_))
+          .toVector,
+        returnTy = this.visitChecked(ctx.returnT)
+      )
 
-    override def visitAppender(ctx: ArcParser.AppenderContext): Type = {
-      val annot = AnnotationVisitor.visitChecked(ctx.annotations())
-      val elemTy = TypeVisitor.visitChecked(ctx.elemT)
-      Types.Builders.Appender(elemTy, annot)
-    }
+    override def visitAppender(ctx: ArcParser.AppenderContext): Type =
+      Types.Builders.Appender(
+        elemTy = TypeVisitor.visitChecked(ctx.elemT),
+        annotations = AnnotationVisitor.visitChecked(ctx.annotations())
+      )
 
-    override def visitStreamAppender(ctx: ArcParser.StreamAppenderContext): Type = {
-      val annot = AnnotationVisitor.visitChecked(ctx.annotations())
-      val elemTy = TypeVisitor.visitChecked(ctx.elemT)
-      Types.Builders.StreamAppender(elemTy, annot)
-    }
+    override def visitStreamAppender(ctx: ArcParser.StreamAppenderContext): Type =
+      Types.Builders.StreamAppender(
+        elemTy = TypeVisitor.visitChecked(ctx.elemT),
+        annotations = AnnotationVisitor.visitChecked(ctx.annotations())
+      )
 
-    override def visitMerger(ctx: ArcParser.MergerContext): Type = {
-      val annot = AnnotationVisitor.visitChecked(ctx.annotations())
-      val elemTy = TypeVisitor.visitChecked(ctx.elemT)
-      val opTy = OpVisitor.visitChecked(ctx.commutativeBinop())
-      Types.Builders.Merger(elemTy, opTy, annot)
-    }
+    override def visitMerger(ctx: ArcParser.MergerContext): Type =
+      Types.Builders.Merger(
+        elemTy = TypeVisitor.visitChecked(ctx.elemT),
+        opTy = OpVisitor.visitChecked(ctx.commutativeBinop()),
+        annotations = AnnotationVisitor.visitChecked(ctx.annotations())
+      )
 
-    override def visitDictMerger(ctx: ArcParser.DictMergerContext): Type = {
-      val annot = AnnotationVisitor.visitChecked(ctx.annotations())
-      val keyTy = TypeVisitor.visitChecked(ctx.keyT)
-      val valueTy = TypeVisitor.visitChecked(ctx.valueT)
-      val opTy = OpVisitor.visitChecked(ctx.commutativeBinop())
-      Types.Builders.DictMerger(keyTy, valueTy, opTy, annot)
-    }
+    override def visitDictMerger(ctx: ArcParser.DictMergerContext): Type =
+      Types.Builders.DictMerger(
+        keyTy = TypeVisitor.visitChecked(ctx.keyT),
+        valueTy = TypeVisitor.visitChecked(ctx.valueT),
+        opTy = OpVisitor.visitChecked(ctx.commutativeBinop()),
+        annotations = AnnotationVisitor.visitChecked(ctx.annotations())
+      )
 
-    override def visitGroupMerger(ctx: ArcParser.GroupMergerContext): Type = {
-      val annot = AnnotationVisitor.visitChecked(ctx.annotations())
-      val keyTy = TypeVisitor.visitChecked(ctx.keyT)
-      val valueTy = TypeVisitor.visitChecked(ctx.valueT)
-      Types.Builders.GroupMerger(keyTy, valueTy, annot)
-    }
+    override def visitGroupMerger(ctx: ArcParser.GroupMergerContext): Type =
+      Types.Builders.GroupMerger(
+        keyTy = TypeVisitor.visitChecked(ctx.keyT),
+        valueTy = TypeVisitor.visitChecked(ctx.valueT),
+        annotations = AnnotationVisitor.visitChecked(ctx.annotations())
+      )
 
-    override def visitVecMerger(ctx: ArcParser.VecMergerContext): Type = {
-      val annot = AnnotationVisitor.visitChecked(ctx.annotations())
-      val elemTy = TypeVisitor.visitChecked(ctx.elemT)
-      val opTy = OpVisitor.visitChecked(ctx.commutativeBinop())
-      Types.Builders.VecMerger(elemTy, opTy, annot)
-    }
+    override def visitVecMerger(ctx: ArcParser.VecMergerContext): Type =
+      Types.Builders.VecMerger(
+        elemTy = TypeVisitor.visitChecked(ctx.elemT),
+        opTy = OpVisitor.visitChecked(ctx.commutativeBinop()),
+        annotations = AnnotationVisitor.visitChecked(ctx.annotations())
+      )
 
-    override def visitTypeVariable(ctx: ArcParser.TypeVariableContext): Type = {
-      Types.unknown // ignore the annotated number to avoid clashes
-    }
+    // ignore the annotated number to avoid clashes
+    override def visitTypeVariable(ctx: ArcParser.TypeVariableContext): Type = Types.unknown
   }
-}
-
-object ASTTranslator {
-
-  def apply(parser: ArcParser): ASTTranslator = new ASTTranslator(parser)
-
 }

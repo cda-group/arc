@@ -54,10 +54,7 @@ object Rppl {
           Console.out.print("<=")
           Console.out.println(tree.toStringTree(parser)) // print LISP-style tree
 
-          val translator = ASTTranslator(parser)
-          val ast = translator.translate(tree)
-          //        Console.out.print("<= ")
-          //        Console.out.println(ast)
+          val ast = ASTTranslator(parser).expr()
           Console.out.print("<= ")
           Console.out.prettyPrintln(ast)
 
