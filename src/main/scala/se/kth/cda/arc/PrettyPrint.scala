@@ -2,15 +2,20 @@ package se.kth.cda.arc
 
 import java.io.PrintStream
 
-object PrettyPrint {
+object Pretty {
   import AST._
 
   val INDENT_INC = 2
 
-  def prettyPrint(tree: ASTNode): String = {
+  def pretty(tree: ASTNode): String = {
     val sb = new Utils.StringBuilderStream()
     sb.asPrintStream().prettyPrint(tree)
     sb.result()
+  }
+
+  def print(tree: ASTNode): Unit = {
+    val sb = new Utils.StringBuilderStream()
+    sb.asPrintStream().prettyPrint(tree)
   }
 
   implicit class PrettyPrintStream(val out: PrintStream) extends AnyVal {

@@ -1,5 +1,6 @@
 enablePlugins(Antlr4Plugin)
 
+
 name := "Arc"
 
 organization := "se.kth.cda"
@@ -87,7 +88,8 @@ scalacOptions ++= Seq(
   "-Ywarn-nullary-unit",           // Warn when nullary methods return Unit.
   "-Ywarn-numeric-widen",          // Warn when numerics are widened.
   "-Ywarn-unused:_",               // Warn for all unused declarations
-  "-Ywarn-value-discard"           // Warn when non-Unit expression results are unused.
+  "-Ywarn-value-discard",          // Warn when non-Unit expression results are unused.
+//  "-verbose",
 )
 
 scalacOptions in (Compile, console) --= Seq("-Ywarn-unused:imports", "-Xfatal-warnings")

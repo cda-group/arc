@@ -3,8 +3,9 @@ package se.kth.cda.arc
 import org.antlr.v4.runtime._
 import se.kth.cda.arc.transform.MacroExpansion
 import se.kth.cda.arc.typeinference.TypeInference
-import se.kth.cda.arc.PrettyPrint._
+import se.kth.cda.arc.Pretty._
 
+import scala.runtime.NonLocalReturnControl
 import scala.util.control.Breaks._
 
 // Read-Parse-Print Loop
@@ -19,7 +20,7 @@ object Rppl {
           Console.out.print("=> ")
           val line = Console.in.readLine()
           Console.out.println()
-          if (line == null || line.equals("quit")) {
+          if (line == null || line.equals("")) {
             return // exit on EOF
           }
 
@@ -54,7 +55,7 @@ object Rppl {
           Console.out.print("<=")
           Console.out.println(tree.toStringTree(parser)) // print LISP-style tree
 
-          val ast = ASTTranslator(parser).expr()
+          val ast = ASTTranslator(parser).translate(tree)
           Console.out.print("<= ")
           Console.out.prettyPrintln(ast)
 
@@ -89,6 +90,8 @@ object Rppl {
 
         }
       } catch {
+        case _: NonLocalReturnControl[_] =>
+          return
         case e: Throwable =>
           Console.err.println("An error occurred during parsing!")
           e.printStackTrace(Console.err)

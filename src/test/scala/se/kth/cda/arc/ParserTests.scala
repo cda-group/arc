@@ -1,8 +1,7 @@
 package se.kth.cda.arc
 
-import org.scalatest._
 import org.antlr.v4.runtime._
-import org.antlr.v4.runtime.tree._
+import org.scalatest._
 
 import scala.language.implicitConversions
 

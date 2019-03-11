@@ -7,7 +7,8 @@ import scala.collection.JavaConverters._
 import scala.util.Try
 import scala.util.matching.Regex
 
-case class ASTTranslator(parser: ArcParser) {
+final case class ASTTranslator(parser: ArcParser) {
+
   import AST._
   import ArcParser._
 
@@ -18,6 +19,14 @@ case class ASTTranslator(parser: ArcParser) {
   def macros(): List[Macro] = MacrosVisitor.visitChecked(parser.macros())
 
   def `type`(): Type = TypeVisitor.visitChecked(parser.`type`())
+
+  def translate(tree: ArcParser.ProductContext): Program = ProgramVisitor.visitChecked(tree);
+
+  def translate(tree: ArcParser.ExprContext): Expr = ExprVisitor.visitChecked(tree);
+
+  def translate(tree: ArcParser.MacroContext): List[Macro] = MacrosVisitor.visitChecked(tree);
+
+  def translate(tree: ArcParser.TypeContext): Type = TypeVisitor.visitChecked(tree);
 
   private def tokenToSymbol(t: Token): Symbol = Symbol(t.getText, Some(t))
 
@@ -820,9 +829,7 @@ case class ASTTranslator(parser: ArcParser) {
 
     override def visitAnnotations(ctx: AnnotationsContext): Annotations =
       Annotations(
-        params = ctx
-          .entries
-          .asScala
+        params = ctx.entries.asScala
           .flatMap(this.visitChecked(_))
           .foldLeft(Vector.empty[(String, Any)]) {
             case (acc, a) => acc :+ a.params(0)
@@ -1072,4 +1079,5 @@ case class ASTTranslator(parser: ArcParser) {
     // ignore the annotated number to avoid clashes
     override def visitTypeVariable(ctx: ArcParser.TypeVariableContext): Type = Types.unknown
   }
+
 }

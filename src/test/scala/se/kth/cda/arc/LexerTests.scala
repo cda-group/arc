@@ -1,14 +1,12 @@
 package se.kth.cda.arc
 
-import org.scalatest._
-import org.antlr.v4.runtime._
-import org.antlr.v4.runtime.tree._
-import org.antlr.v4.runtime.atn.ATNConfigSet
-import org.antlr.v4.runtime.atn.DecisionInfo
-import org.antlr.v4.runtime.atn.ParserATNSimulator
-import org.antlr.v4.runtime.atn.PredictionMode
-import org.antlr.v4.runtime.dfa.DFA
 import java.util.BitSet
+
+import org.antlr.v4.runtime._
+import org.antlr.v4.runtime.atn.ATNConfigSet
+import org.antlr.v4.runtime.dfa.DFA
+import org.scalatest._
+
 import scala.language.implicitConversions
 
 sealed trait TokenComparator {
@@ -16,17 +14,17 @@ sealed trait TokenComparator {
 
   def display(v: Vocabulary): String
 }
-case class TypeComparator(tokenType: Int) extends TokenComparator {
+final case class TypeComparator(tokenType: Int) extends TokenComparator {
   override def ===(t: Token): Boolean = t.getType == tokenType
 
   override def display(v: Vocabulary): String = v.getDisplayName(tokenType)
 }
-case class TextComparator(tokenText: String) extends TokenComparator {
+final case class TextComparator(tokenText: String) extends TokenComparator {
   override def ===(t: Token): Boolean = t.getText == tokenText
 
   override def display(v: Vocabulary): String = tokenText
 }
-case class FullComparator(tokenType: Int, tokenText: String) extends TokenComparator {
+final case class FullComparator(tokenType: Int, tokenText: String) extends TokenComparator {
   override def ===(t: Token): Boolean = (t.getType == tokenType) && (t.getText == tokenText)
 
   override def display(v: Vocabulary): String = s"${v.getDisplayName(tokenType)}($tokenText)"
