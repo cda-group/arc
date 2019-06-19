@@ -109,6 +109,7 @@ object AST {
     case class Deserialize(ty: Type, expr: Expr) extends ExprKind;
     case class CUDF(reference: Either[Symbol, Expr], args: Vector[Expr], returnType: Type) extends ExprKind;
     case class Zip(params: Vector[Expr]) extends ExprKind;
+    case class Hash(params: Vector[Expr]) extends ExprKind;
     case class For(iterator: Iter, builder: Expr, body: Expr) extends ExprKind;
     case class Len(expr: Expr) extends ExprKind;
     case class Lookup(data: Expr, key: Expr) extends ExprKind;

@@ -49,6 +49,7 @@ TGroupMerger : 'groupmerger';
 TVecMerger : 'vecmerger';
 TToVec : 'tovec';
 TZip : 'zip';
+THash : 'hash';
 TScalarIter : 'iter';
 TNext : 'next';
 TKeyByIter : 'keyby';
