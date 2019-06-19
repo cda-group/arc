@@ -4,7 +4,7 @@ import org.antlr.v4.runtime._
 import se.kth.cda.arc._
 import se.kth.cda.arc.syntaxtree.AST.UnaryOpKind.UnaryOpKind
 
-import scala.util.{Failure, Success, Try}
+import scala.util.{ Failure, Success, Try }
 
 sealed trait ASTNode {
   def inputText: String
@@ -17,6 +17,15 @@ object AST {
     override def inputText: String = token.map(_.getText).getOrElse("<no associated token>")
     override def line: Int = token.map(_.getLine).getOrElse(-1)
   }
+  object Symbol {
+    private var variableCounter: Int = 0
+
+    def unknown: Symbol = {
+      val t = Symbol(s"anon-${variableCounter}");
+      variableCounter += 1
+      t
+    }
+  }
 
   final case class Program(macros: List[Macro], expr: Expr, ctx: ArcParser.ProgramContext) extends ASTNode {
     override def inputText: String = ctx.getText
@@ -24,13 +33,15 @@ object AST {
   }
 
   final case class Macro(symbol: Symbol, params: Vector[Symbol], body: Expr, ctx: ArcParser.MacroContext)
-      extends ASTNode {
+    extends ASTNode {
     override def inputText: String = ctx.getText
     override def line: Int = ctx.getStart.getLine
   }
 
+  final case class ArcStatements(exprs: List[Expr])
+
   final case class Expr(kind: ExprKind, ty: Type, ctx: ParserRuleContext, annotations: Option[Annotations] = None)
-      extends ASTNode {
+    extends ASTNode {
     override def inputText: String = ctx.getText
     override def line: Int = ctx.getStart.getLine
   }
@@ -39,7 +50,11 @@ object AST {
 
   final case class Parameter(symbol: Symbol, ty: Type)
 
-  sealed trait ExprKind
+  sealed trait ExprKind {
+    def toExpr(ty: Type): Expr = {
+      Expr(this, ty, null, None)
+    }
+  }
 
   object ExprKind {
     final case class Let(symbol: Symbol, bindingTy: Type, value: Expr, body: Expr) extends ExprKind
@@ -105,7 +120,8 @@ object AST {
       final case class StringL(raw: String, value: String) extends Literal[String]
 
       def tryLiteral[V, L <: Literal[V]](ty: String, value: V, lowerBound: V, upperBound: V, constr: V => L)(
-          implicit ord: Ordering[V]): Try[L] = {
+        implicit
+        ord: Ordering[V]): Try[L] = {
         if (ord.gteq(value, lowerBound) && ord.lteq(value, upperBound)) {
           Success(constr(value))
         } else {
@@ -216,14 +232,14 @@ object AST {
   }
 
   final case class Iter(
-      kind: IterKind.IterKind,
-      data: Expr,
-      start: Option[Expr] = None,
-      end: Option[Expr] = None,
-      stride: Option[Expr] = None,
-      strides: Option[Expr] = None,
-      shape: Option[Expr] = None,
-      keyFunc: Option[Expr] = None)
+    kind:    IterKind.IterKind,
+    data:    Expr,
+    start:   Option[Expr]      = None,
+    end:     Option[Expr]      = None,
+    stride:  Option[Expr]      = None,
+    strides: Option[Expr]      = None,
+    shape:   Option[Expr]      = None,
+    keyFunc: Option[Expr]      = None)
 
   object UnaryOpKind extends Enumeration {
     type UnaryOpKind = Value
@@ -248,7 +264,6 @@ object AST {
       case Sqrt => "sqrt"
     }
   }
-
 
   sealed trait BinOpKind {
     def isInfix: Boolean
