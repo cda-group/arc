@@ -1,7 +1,8 @@
-package se.kth.cda.arc.typeinference
+package se.kth.cda.arc.syntaxtree.typer
 
-import se.kth.cda.arc.Types._
+import se.kth.cda.arc.syntaxtree.Types._
 import se.kth.cda.arc._
+import se.kth.cda.arc.syntaxtree.{BuilderType, ConcreteType, Type, Types}
 
 sealed trait TypeConstraint {
   type Self <: TypeConstraint
@@ -22,10 +23,10 @@ sealed trait TypeConstraint {
 
 object TypeConstraints {
 
-  def substituteType(t: Type, assignments: Map[Int, Type]): Option[Type] = {
-    t match {
+  def substituteType(ty: Type, assignments: Map[Int, Type]): Option[Type] = {
+    ty match {
       case TypeVariable(id) => assignments.get(id)
-      case Vec(elemTy)      => substituteType(elemTy, assignments).map(ty => Vec(ty))
+      case Vec(elemTy)      => substituteType(elemTy, assignments).map(Vec)
       case Dict(keyTy, valueTy) =>
         val newKeyTy = substituteType(keyTy, assignments)
         val newValueTy = substituteType(valueTy, assignments)
@@ -39,14 +40,13 @@ object TypeConstraints {
         if (newTys.forall(_.isEmpty)) {
           None
         } else {
-          val newElemTys = elemTys.zip(newTys).map {
+          Some(Struct(elemTys.zip(newTys).map {
             case (_, Some(newTy)) => newTy
             case (oldTy, None)    => oldTy
-          }
-          Some(Struct(newElemTys))
+          }))
         }
-      case Simd(elemTy)   => substituteType(elemTy, assignments).map(ty => Simd(ty))
-      case Stream(elemTy) => substituteType(elemTy, assignments).map(ty => Stream(ty))
+      case Simd(elemTy)   => substituteType(elemTy, assignments).map(Simd)
+      case Stream(elemTy) => substituteType(elemTy, assignments).map(Stream)
       case Function(params, returnTy) =>
         val newParamTys = params.map(substituteType(_, assignments))
         val newReturnTy = substituteType(returnTy, assignments)
@@ -60,11 +60,11 @@ object TypeConstraints {
           Some(Function(newParams, newReturnTy.getOrElse(returnTy)))
         }
       case Builders.Appender(elemTy, annots) =>
-        substituteType(elemTy, assignments).map(ty => Builders.Appender(ty, annots))
+        substituteType(elemTy, assignments).map(Builders.Appender(_, annots))
       case Builders.StreamAppender(elemTy, annots) =>
-        substituteType(elemTy, assignments).map(ty => Builders.StreamAppender(ty, annots))
+        substituteType(elemTy, assignments).map(Builders.StreamAppender(_, annots))
       case Builders.Merger(elemTy, opTy, annots) =>
-        substituteType(elemTy, assignments).map(ty => Builders.Merger(ty, opTy, annots))
+        substituteType(elemTy, assignments).map(Builders.Merger(_, opTy, annots))
       case Builders.DictMerger(keyTy, valueTy, opTy, annots) =>
         val newKeyTy = substituteType(keyTy, assignments)
         val newValueTy = substituteType(valueTy, assignments)
@@ -74,7 +74,7 @@ object TypeConstraints {
           Some(Builders.DictMerger(newKeyTy.getOrElse(keyTy), newValueTy.getOrElse(valueTy), opTy, annots))
         }
       case Builders.VecMerger(elemTy, opTy, annots) =>
-        substituteType(elemTy, assignments).map(ty => Builders.VecMerger(ty, opTy, annots))
+        substituteType(elemTy, assignments).map(Builders.VecMerger(_, opTy, annots))
       case Builders.GroupMerger(keyTy, valueTy, annots) =>
         val newKeyTy = substituteType(keyTy, assignments)
         val newValueTy = substituteType(valueTy, assignments)
@@ -82,6 +82,22 @@ object TypeConstraints {
           None
         } else {
           Some(Builders.GroupMerger(newKeyTy.getOrElse(keyTy), newValueTy.getOrElse(valueTy), annots))
+        }
+      case Builders.Windower(discTy, aggrTy, aggrMergeTy, aggrResultTy, annots) =>
+        val newDiscTy = substituteType(discTy, assignments)
+        val newAggrTy = substituteType(aggrTy, assignments)
+        val newAggrMergeTy = substituteType(aggrMergeTy, assignments)
+        val newAggrResultTy = substituteType(aggrResultTy, assignments)
+        if (newDiscTy.isEmpty && newAggrTy.isEmpty && newAggrMergeTy.isEmpty && newAggrMergeTy.isEmpty) {
+          None
+        } else {
+          Some(
+            Builders.Windower(
+              newDiscTy.getOrElse(discTy),
+              newAggrTy.getOrElse(aggrTy),
+              newAggrMergeTy.getOrElse(aggrMergeTy),
+              newAggrResultTy.getOrElse(aggrResultTy),
+              annots))
         }
       case _: ConcreteType => None
     }
@@ -93,7 +109,7 @@ object TypeConstraints {
     def newFromType(t: Type): Self
 
     override def substitute(assignments: Map[Int, Type]): Option[Self] = {
-      substituteType(t, assignments).map(ty => newFromType(ty))
+      substituteType(t, assignments).map(newFromType)
     }
     override def normalise(): Option[TypeConstraint] = {
       if (isSatisfied) {
@@ -123,12 +139,8 @@ object TypeConstraints {
   final case class IsNumeric(t: Type, signed: Boolean = false) extends Predicate {
     override type Self = IsNumeric
 
-    override def describe: String =
-      if (signed) {
-        s"numeric±(${t.render})"
-      } else {
-        s"numeric(${t.render})"
-      }
+    override def describe: String = if (signed) { s"numeric±(${t.render})" } else { s"numeric(${t.render})" }
+
     override def newFromType(t: Type): Self = IsNumeric(t, signed)
 
     def isSatisfied: Boolean = t match {
@@ -169,30 +181,25 @@ object TypeConstraints {
   final case class LookupKind(dataTy: Type, indexTy: Type, resultTy: Type) extends TypeConstraint {
     override type Self = LookupKind
 
-    override def describe: String = {
-      s"${resultTy.render}≼lookup(data=${dataTy.render}, key=${indexTy.render})"
-    }
+    override def describe: String = s"${resultTy.render}≼lookup(data=${dataTy.render}, key=${indexTy.render})"
 
     override def substitute(assignments: Map[Int, Type]): Option[Self] = {
-      val dtO = substituteType(dataTy, assignments)
-      val itO = substituteType(indexTy, assignments)
-      val rtO = substituteType(resultTy, assignments)
-      if (dtO.isEmpty && itO.isEmpty && rtO.isEmpty) {
+      val newDataTy = substituteType(dataTy, assignments)
+      val newIndexTy = substituteType(indexTy, assignments)
+      val newResultTy = substituteType(resultTy, assignments)
+      if (newDataTy.isEmpty && newIndexTy.isEmpty && newResultTy.isEmpty) {
         None
       } else {
-        val newDT = dtO.getOrElse(dataTy)
-        val newIT = itO.getOrElse(indexTy)
-        val newRT = rtO.getOrElse(resultTy)
-        Some(LookupKind(newDT, newIT, newRT))
+        Some(LookupKind(newDataTy.getOrElse(dataTy), newIndexTy.getOrElse(indexTy), newResultTy.getOrElse(resultTy)))
       }
     }
 
     override def normalise(): Option[TypeConstraint] = {
       dataTy match {
-        case Vec(valTy) =>
+        case Vec(elemTy) =>
           var conj = List.empty[TypeConstraint]
           conj ::= MultiEquality(List(indexTy, I64))
-          conj ::= MultiEquality(List(resultTy, valTy))
+          conj ::= MultiEquality(List(resultTy, elemTy))
           Some(MultiConj(conj))
         case Dict(keyTy, valTy) =>
           var conj = List.empty[TypeConstraint]
@@ -241,14 +248,12 @@ object TypeConstraints {
     }
 
     override def substitute(assignments: Map[Int, Type]): Option[Self] = {
-      val stO = substituteType(structTy, assignments)
-      val ftO = substituteType(fieldTy, assignments)
-      if (stO.isEmpty && ftO.isEmpty) {
+      val newStructTy = substituteType(structTy, assignments)
+      val newFieldTy = substituteType(fieldTy, assignments)
+      if (newStructTy.isEmpty && newFieldTy.isEmpty) {
         None
       } else {
-        val newST = stO.getOrElse(structTy)
-        val newFT = ftO.getOrElse(fieldTy)
-        Some(ProjectableKind(newST, newFT, fieldIndex))
+        Some(ProjectableKind(newStructTy.getOrElse(structTy), newFieldTy.getOrElse(fieldTy), fieldIndex))
       }
     }
 
@@ -291,48 +296,54 @@ object TypeConstraints {
     }
   }
 
-  final case class BuilderKind(builderTy: Type, mergeTy: Type, resultTy: Type, argTy: Type) extends TypeConstraint {
+  final case class BuilderKind(builderTy: Type, mergeTy: Type, resultTy: Type, argTys: Vector[Type])
+      extends TypeConstraint {
     override type Self = BuilderKind
 
     override def describe: String =
-      s"${builderTy.render}≼builder(merge=${mergeTy.render}, result=${resultTy.render}, newarg=${argTy.render})"
+      s"${builderTy.render}≼builder(merge=${mergeTy.render}, result=${resultTy.render}, newarg=${argTys.map(_.render).mkString(",")})"
 
     override def substitute(assignments: Map[Int, Type]): Option[Self] = {
-      val btO = substituteType(builderTy, assignments)
-      val mtO = substituteType(mergeTy, assignments)
-      val rtO = substituteType(resultTy, assignments)
-      val atO = substituteType(argTy, assignments)
-      if (btO.isEmpty && mtO.isEmpty && rtO.isEmpty && atO.isEmpty) {
+      val newBuilderTy = substituteType(builderTy, assignments)
+      val newMergeTy = substituteType(mergeTy, assignments)
+      val newResultTy = substituteType(resultTy, assignments)
+      val newArgTys = argTys.map(substituteType(_, assignments))
+      if (newBuilderTy.isEmpty && newMergeTy.isEmpty && newResultTy.isEmpty && newArgTys.isEmpty) {
         None
       } else {
-        val newBT = btO.getOrElse(builderTy)
-        val newMT = mtO.getOrElse(mergeTy)
-        val newRT = rtO.getOrElse(resultTy)
-        val newAT = atO.getOrElse(argTy)
-        Some(BuilderKind(newBT, newMT, newRT, newAT))
+        Some(
+          BuilderKind(
+            newBuilderTy.getOrElse(builderTy),
+            newMergeTy.getOrElse(mergeTy),
+            newResultTy.getOrElse(resultTy),
+            newArgTys.zip(argTys).map { case (newArgTy, argTy) => newArgTy.getOrElse(argTy) }
+          )
+        )
       }
     }
 
     override def normalise(): Option[TypeConstraint] = {
       builderTy match {
-        case b: BuilderType =>
+        case bty: BuilderType =>
           var conj = List.empty[TypeConstraint]
-          conj ::= MultiEquality(List(b.mergeType, mergeTy))
-          conj ::= MultiEquality(List(b.resultType, resultTy))
-          conj ::= MultiEquality(List(b.argType, argTy))
+          conj ::= MultiEquality(List(bty.mergeType, mergeTy))
+          conj ::= MultiEquality(List(bty.resultType, resultTy))
+          bty.argTypes.zip(argTys).foreach { case (a, b) => conj ::= MultiEquality(List(a, b)) }
           Some(MultiConj(conj))
         case Struct(args) =>
           var conj = List.empty[TypeConstraint]
           val mergeTypes = args.map(_ => Types.unknown)
           val resultTypes = args.map(_ => Types.unknown)
-          val argTypes = args.map(_ => Types.unknown)
+          val argsTypes = args.map(_ => argTys.map(_ => Types.unknown))
           args.zipWithIndex.foreach {
             case (builder, index) =>
-              conj ::= BuilderKind(builder, mergeTypes(index), resultTypes(index), argTypes(index))
+              conj ::= BuilderKind(builder, mergeTypes(index), resultTypes(index), argsTypes(index))
           }
           conj ::= MultiEquality(List(Struct(mergeTypes), mergeTy))
           conj ::= MultiEquality(List(Struct(resultTypes), resultTy))
-          conj ::= MultiEquality(List(Struct(argTypes), argTy))
+          argsTypes.foreach(argTypes => { // TODO: Maybe not correct?
+            argTypes.zip(argTys).foreach { case (a, b) => conj ::= MultiEquality(List(a, b)) }
+          })
           Some(MultiConj(conj))
         case _: TypeVariable => None // may be solved later
         case _               => None // won't be solved but leave like this for useful error reporting
@@ -346,17 +357,18 @@ object TypeConstraints {
 
     override def merge(c: TypeConstraint): Option[TypeConstraint] = {
       c match {
-        case BuilderKind(otherBuilderTy, otherMergeTy, otherResultTy, otherArgTy) if otherBuilderTy == this.builderTy =>
+        case BuilderKind(otherBuilderTy, otherMergeTy, otherResultTy, otherArgTys)
+            if otherBuilderTy == this.builderTy =>
           var conj = List.empty[TypeConstraint]
           conj ::= this
           conj ::= MultiEquality(List(otherMergeTy, mergeTy))
           conj ::= MultiEquality(List(otherResultTy, resultTy))
-          conj ::= MultiEquality(List(otherArgTy, argTy))
+          otherArgTys.zip(argTys).foreach { case (a, b) => conj ::= MultiEquality(List(a, b)) }
           Some(MultiConj(conj))
         case MultiEquality(members) if this.builderTy.isInstanceOf[TypeVariable] =>
           val (vars, other) = members.partition(_.isInstanceOf[TypeVariable])
           if (vars.contains(this.builderTy) && other.nonEmpty) {
-            val newBuilder = BuilderKind(other.head, mergeTy, resultTy, argTy)
+            val newBuilder = BuilderKind(other.head, mergeTy, resultTy, argTys)
             Some(MultiConj(List(c, newBuilder)))
           } else {
             None
@@ -374,14 +386,12 @@ object TypeConstraints {
       s"${dataTy.render}≼iterable(elem=${elemTy.render})"
 
     override def substitute(assignments: Map[Int, Type]): Option[Self] = {
-      val dtO = substituteType(dataTy, assignments)
-      val etO = substituteType(elemTy, assignments)
-      if (dtO.isEmpty && etO.isEmpty) {
+      val newDataTy = substituteType(dataTy, assignments)
+      val newElemTy = substituteType(elemTy, assignments)
+      if (newDataTy.isEmpty && newElemTy.isEmpty) {
         None
       } else {
-        val newDT = dtO.getOrElse(dataTy)
-        val newET = etO.getOrElse(elemTy)
-        Some(IterableKind(newDT, newET))
+        Some(IterableKind(newDataTy.getOrElse(dataTy), newElemTy.getOrElse(elemTy)))
       }
     }
 
@@ -581,13 +591,13 @@ object TypeConstraints {
       if (newMembers.forall(_.isEmpty)) {
         None
       } else {
-        val newMembersFull = members.zip(newMembers).map {
+        Some(MultiConj(members.zip(newMembers).map {
           case (_, Some(c)) => c
           case (oldC, None) => oldC
-        }
-        Some(MultiConj(newMembersFull))
+        }))
       }
     }
+
     override def normalise(): Option[TypeConstraint] = {
       val newMembers = members.map(_.normalise())
       if (newMembers.forall(_.isEmpty)) {
@@ -613,8 +623,7 @@ object TypeConstraints {
       }
     }
 
-    override def variables(): List[TypeVariable] =
-      List.empty; // could aggregate children...not sure if that makes sense
+    override def variables(): List[TypeVariable] = List.empty // could aggregate children...not sure if that makes sense
 
     override def merge(c: TypeConstraint): Option[TypeConstraint] = {
       c match {

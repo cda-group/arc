@@ -1,15 +1,16 @@
 package se.kth.cda.arc
 
 import org.antlr.v4.runtime._
-import se.kth.cda.arc.transform.MacroExpansion
-import se.kth.cda.arc.typeinference.TypeInference
-import se.kth.cda.arc.Pretty._
+import se.kth.cda.arc.syntaxtree.PrettyPrint._
+import se.kth.cda.arc.syntaxtree.parser.{ErrorListener, Translator}
+import se.kth.cda.arc.syntaxtree.transformer.MacroExpansion
+import se.kth.cda.arc.syntaxtree.typer.TypeInference
 
 import scala.runtime.NonLocalReturnControl
 import scala.util.control.Breaks._
 
 // Read-Parse-Print Loop
-object Rppl {
+object RPPL {
 
   def main(args: Array[String]): Unit = {
     while (true) {
@@ -40,11 +41,10 @@ object Rppl {
           // create a parser that feeds off the token buffer
           Console.out.println("Starting syntactic analysis")
           val parser = new ArcParser(tokens)
-          val errorCollector = new CollectingErrorListener()
+          val errorCollector = new ErrorListener()
 
           parser.removeErrorListeners()
           parser.addErrorListener(errorCollector)
-          // TODO do two step parsing
 
           val tree = parser.expr() // begin parsing at expr rule
           if (errorCollector.hasErrors) {
@@ -55,7 +55,7 @@ object Rppl {
           Console.out.print("<=")
           Console.out.println(tree.toStringTree(parser)) // print LISP-style tree
 
-          val ast = ASTTranslator(parser).translate(tree)
+          val ast = Translator(parser).translate(tree)
           Console.out.print("<= ")
           Console.out.prettyPrintln(ast)
 

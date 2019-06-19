@@ -1,9 +1,11 @@
-package se.kth.cda.arc
+package se.kth.cda.arc.syntaxtree
 
 import java.io.PrintStream
 
-object Pretty {
-  import AST._
+import se.kth.cda.arc.Utils
+
+object PrettyPrint {
+  import se.kth.cda.arc.syntaxtree.AST._
 
   val INDENT_INC = 2
 
@@ -55,7 +57,7 @@ object Pretty {
       }
     }
 
-    def prettyPrint(s: Symbol): Unit = out.prettyPrint(s.text)
+    def prettyPrint(s: Symbol): Unit = out.prettyPrint(s.name)
 
     def prettyPrint(t: Type): Unit = out.prettyPrint(t.render)
 
@@ -153,7 +155,7 @@ object Pretty {
           } else {
             out.prettyPrint('|')
             for ((p, i) <- params.view.zipWithIndex) {
-              out.prettyPrint(p.name)
+              out.prettyPrint(p.symbol)
               out.prettyPrint(':')
               out.prettyPrint(p.ty)
               if (i != (params.length - 1)) {
@@ -173,7 +175,7 @@ object Pretty {
           out.prettyPrint('!')
           out.prettyPrint(e, typed = true, indent + 1, shouldIndent = false)
         case UnaryOp(kind, e) =>
-          out.prettyPrint(UnaryOpKind.prettyPrint(kind))
+          out.prettyPrint(kind.toString)
           out.prettyPrint('(')
           out.prettyPrint(e, typed = false, indent + 1, shouldIndent = false)
           out.prettyPrint(')')
@@ -433,14 +435,13 @@ object Pretty {
             out.prettyPrint(':')
             out.prettyPrint(expr.ty)
           }
-        case NewBuilder(ty, Some(arg)) =>
+        case NewBuilder(ty, args) =>
           out.prettyPrint(ty)
-          out.prettyPrint('(')
-          out.prettyPrint(arg, typed = true, indent + INDENT_INC, shouldIndent = false)
-          out.prettyPrint(')')
-        // don't print type even if requested since it's redundant
-        case NewBuilder(ty, None) =>
-          out.prettyPrint(ty)
+          if (args.length > 0) {
+            out.prettyPrint('(')
+            args.foreach(out.prettyPrint(_, typed = true, indent + INDENT_INC, shouldIndent = false))
+            out.prettyPrint(')')
+          }
         // don't print type even if requested since it's redundant
         case BinOp(kind, left, right) =>
           if (kind.isInfix) {

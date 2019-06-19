@@ -1,4 +1,4 @@
-package se.kth.cda.arc
+package se.kth.cda.arc.syntaxtree
 
 sealed trait Type extends Equals {
   def render: String
@@ -17,7 +17,7 @@ sealed trait BuilderType extends CompositeType {
 
   def mergeType: Type
 
-  def argType: Type
+  def argTypes: Vector[Type]
 }
 
 object Types {
@@ -37,8 +37,8 @@ object Types {
   }
 
   sealed trait Scalar extends ConcreteType {
-    //override def isAssignableTo(t: Type): Boolean = this == t; // no subtyping among scalars
-    //override def isAssignableFrom(t: Type): Boolean = this == t; // no subtyping among scalars
+    //override def isAssignableTo(t: Type): Boolean = this == t // no subtyping among scalars
+    //override def isAssignableFrom(t: Type): Boolean = this == t // no subtyping among scalars
   }
   case object I8 extends Scalar {
     override def render: String = "i8"
@@ -120,17 +120,17 @@ object Types {
 
       override def mergeType: Type = elemTy
 
-      override def argType: Type = UnitT; // TODO optionally allows an index?
+      override def argTypes: Vector[Type] = Vector(UnitT) // TODO optionally allows an index?
     }
     final case class StreamAppender(elemTy: Type, annotations: Option[AST.Annotations]) extends BuilderType {
       override def render: String = s"streamappender[${elemTy.render}]"
 
       override def isComplete: Boolean = elemTy.isComplete
 
-      override def resultType: Type = Stream(elemTy); // TODO technically a channel
+      override def resultType: Type = Stream(elemTy) // TODO technically a channel
       override def mergeType: Type = elemTy
 
-      override def argType: Type = UnitT
+      override def argTypes: Vector[Type] = Vector(UnitT)
     }
     final case class Merger(elemTy: Type, opTy: OpType, annotations: Option[AST.Annotations]) extends BuilderType {
       override def render: String = s"merger[${elemTy.render},${opTy.render}]"
@@ -141,7 +141,7 @@ object Types {
 
       override def mergeType: Type = elemTy
 
-      override def argType: Type = UnitT; // TODO optionally allows elemTy
+      override def argTypes: Vector[Type] = Vector(UnitT) // TODO optionally allows elemTy
     }
     final case class DictMerger(keyTy: Type, valueTy: Type, opTy: OpType, annotations: Option[AST.Annotations])
         extends BuilderType {
@@ -153,7 +153,7 @@ object Types {
 
       override def mergeType: Type = Struct(Vector(keyTy, valueTy))
 
-      override def argType: Type = UnitT
+      override def argTypes: Vector[Type] = Vector(UnitT)
     }
     final case class VecMerger(elemTy: Type, opTy: OpType, annotations: Option[AST.Annotations]) extends BuilderType {
       override def render: String = s"vecmerger[${elemTy.render},${opTy.render}]"
@@ -164,7 +164,7 @@ object Types {
 
       override def mergeType: Type = Struct(Vector(I64, elemTy))
 
-      override def argType: Type = Vec(elemTy)
+      override def argTypes: Vector[Type] = Vector(Vec(elemTy))
     }
     final case class GroupMerger(keyTy: Type, valueTy: Type, annotations: Option[AST.Annotations]) extends BuilderType {
       override def render: String = s"groupmerger[${keyTy.render},${valueTy.render}]"
@@ -175,7 +175,25 @@ object Types {
 
       override def mergeType: Type = Struct(Vector(keyTy, valueTy))
 
-      override def argType: Type = UnitT
+      override def argTypes: Vector[Type] = Vector(UnitT)
+    }
+
+    final case class Windower(discTy: Type, aggrTy: Type, aggrMergeTy: Type, aggrResultTy: Type, annotations: Option[AST.Annotations])
+        extends BuilderType {
+      override def render: String = s"windower[${discTy.render},${aggrTy.render}]"
+
+      override def isComplete: Boolean = discTy.isComplete && aggrTy.isComplete
+
+      override def resultType: Type = Stream(Struct(Vector(U64, aggrResultTy)))
+
+      override def mergeType: Type = aggrMergeTy
+
+      override def argTypes: Vector[Type] =
+        Vector(
+          Function(params = Vector(mergeType, Vec(U64), discTy), returnTy = Struct(Vector(discTy, Vec(U64)))),
+          Function(params = Vector(U64, Vec(U64), discTy), returnTy = Struct(Vector(discTy, Vec(U64)))),
+          Function(params = Vector(U64, aggrTy), returnTy = Struct(Vector(U64, resultType)))
+        )
     }
   }
 }

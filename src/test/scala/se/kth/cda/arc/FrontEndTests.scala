@@ -2,8 +2,10 @@ package se.kth.cda.arc
 
 import org.antlr.v4.runtime.{CharStreams, CommonTokenStream}
 import org.scalatest.{Assertion, FunSuite, Matchers}
-import se.kth.cda.arc.transform.MacroExpansion
-import se.kth.cda.arc.typeinference.TypeInference
+import se.kth.cda.arc.syntaxtree.PrettyPrint
+import se.kth.cda.arc.syntaxtree.parser.Translator
+import se.kth.cda.arc.syntaxtree.transformer.MacroExpansion
+import se.kth.cda.arc.syntaxtree.typer.TypeInference
 
 class FrontEndTests extends FunSuite with Matchers {
 
@@ -13,11 +15,11 @@ class FrontEndTests extends FunSuite with Matchers {
       val lexer = new ArcLexer(inputStream)
       val tokenStream = new CommonTokenStream(lexer)
       val parser = new ArcParser(tokenStream)
-      val translator = ASTTranslator(parser)
+      val translator = Translator(parser)
       val ast = translator.expr()
       val expanded = MacroExpansion.expand(ast).get
       val typed = TypeInference.solve(expanded).get
-      Pretty.pretty(typed)
+      PrettyPrint.pretty(typed)
     }
   }
 

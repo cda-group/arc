@@ -1,45 +1,45 @@
-package se.kth.cda.arc.typeinference
+package se.kth.cda.arc.syntaxtree.typer
 
-import se.kth.cda.arc.AST._
+import se.kth.cda.arc.syntaxtree.AST._
 import se.kth.cda.arc.Utils.{OptionTry, TryVector}
 import se.kth.cda.arc._
+import se.kth.cda.arc.syntaxtree.BuilderType
 
 import scala.util.{Success, Try}
 
 object Typer {
 
-  def applyTypes(e: Expr, solution: ConstraintSolver.Result): Try[Expr] = {
+  def applyTypes(expr: Expr, solution: ConstraintSolver.Result): Try[Expr] = {
     //println(s"Solution:\n${solution.describe}");
-    applyTypes(e, solution.typeSubstitutions).flatMap { appliedExpr =>
+    applyTypes(expr, solution.typeSubstitutions).flatMap(appliedExpr =>
       solution match {
-        case _: ConstraintSolver.Solution           => Success(appliedExpr)
+        case _: ConstraintSolver.Solution              => Success(appliedExpr)
         case partial: ConstraintSolver.PartialSolution => partial.describeUnresolvedConstraints(appliedExpr)
-      }
-    }
+    })
   }
 
-  def applyTypes(e: Expr, substitute: Substituter): Try[Expr] = {
-    substituteTypes(e, substitute)
+  def applyTypes(expr: Expr, substitute: Substituter): Try[Expr] = {
+    substituteTypes(expr, substitute)
   }
 
-  private def substituteTypes(e: Expr, substitute: Substituter): Try[Expr] = {
+  private def substituteTypes(expr: Expr, substitute: Substituter): Try[Expr] = {
     for {
-      eTy <- substitute(e.ty)
-      eKind <- substituteTypes(e.kind, substitute)
-    } yield Expr(eKind, eTy, e.ctx)
+      newTy <- substitute(expr.ty)
+      newKind <- substituteTypes(expr.kind, substitute)
+    } yield Expr(newKind, newTy, expr.ctx)
 
   }
 
   private def substituteTypes[T](elems: Vector[Expr], substitute: Substituter)(placer: Vector[Expr] => T): Try[T] = {
     for {
-      newElems <- elems.map(e => substituteTypes(e, substitute)).sequence
+      newElems <- elems.map(substituteTypes(_, substitute)).sequence
     } yield placer(newElems)
   }
 
-  private def substituteTypes(kind: ExprKind, substitute: Substituter): Try[ExprKind] = {
+  private def substituteTypes(exprKind: ExprKind, substitute: Substituter): Try[ExprKind] = {
     import ExprKind._
 
-    kind match {
+    exprKind match {
       case Let(name, bindingTy, value, body) =>
         for {
           newBindingTy <- substitute(bindingTy)
@@ -48,7 +48,7 @@ object Typer {
         } yield Let(name, newBindingTy, newValue, newBody)
       case Lambda(params, body) =>
         for {
-          newParams <- params.map(p => substitute(p.ty).map(newTy => Parameter(p.name, newTy))).sequence
+          newParams <- params.map(p => substitute(p.ty).map(Parameter(p.symbol, _))).sequence
           newBody <- substituteTypes(body, substitute)
         } yield Lambda(newParams, newBody)
       case Cast(ty, expr) =>
@@ -60,8 +60,8 @@ object Typer {
           newExpr <- substituteTypes(expr, substitute)
         } yield ToVec(newExpr)
       case i: Ident          => Success(i)
-      case MakeStruct(elems) => substituteTypes(elems, substitute)(newElems => MakeStruct(newElems))
-      case MakeVec(elems)    => substituteTypes(elems, substitute)(newElems => MakeVec(newElems))
+      case MakeStruct(elems) => substituteTypes(elems, substitute)(MakeStruct)
+      case MakeVec(elems)    => substituteTypes(elems, substitute)(MakeVec)
       case If(cond, onTrue, onFalse) =>
         substituteTypes(Vector(cond, onTrue, onFalse), substitute) {
           case Vector(newCond, newOnTrue, newOnFalse) => If(newCond, newOnTrue, newOnFalse)
@@ -99,8 +99,8 @@ object Typer {
           newArgs <- substituteTypes(args, substitute)(identity)
           newReturnType <- substitute(returnType)
         } yield CUDF(Right(newPointer), newArgs, newReturnType)
-      case Zip(elems)  => substituteTypes(elems, substitute)(newElems => Zip(newElems))
-      case Hash(elems) => substituteTypes(elems, substitute)(newElems => Hash(newElems))
+      case Zip(elems)  => substituteTypes(elems, substitute)(Zip)
+      case Hash(elems) => substituteTypes(elems, substitute)(Hash)
       case For(iterator, builder, body) =>
         for {
           newIterator <- substituteTypes(iterator, substitute)
@@ -129,12 +129,10 @@ object Typer {
         for {
           newInner <- substituteTypes(inner, substitute)
         } yield Negate(newInner)
-
       case Not(inner) =>
         for {
           newInner <- substituteTypes(inner, substitute)
         } yield Not(newInner)
-
       case UnaryOp(kind, expr) =>
         for {
           newExpr <- substituteTypes(expr, substitute)
@@ -148,24 +146,24 @@ object Typer {
         for {
           newExpr <- substituteTypes(expr, substitute)
         } yield Result(newExpr)
-      case NewBuilder(ty, arg) =>
+      case NewBuilder(ty, args) =>
         for {
           newTy <- substitute(ty)
-          newArg <- arg.map(a => substituteTypes(a, substitute)).invert
-        } yield NewBuilder(newTy.asInstanceOf[BuilderType], newArg)
+          newArgs <- args.map(substituteTypes(_, substitute)).sequence
+        } yield NewBuilder(newTy.asInstanceOf[BuilderType], newArgs)
       case BinOp(kind, left, right) =>
         for {
           newLeft <- substituteTypes(left, substitute)
           newRight <- substituteTypes(right, substitute)
         } yield BinOp(kind, newLeft, newRight)
-      case Application(funcExpr, params) =>
+      case Application(expr, params) =>
         for {
-          newFunc <- substituteTypes(funcExpr, substitute)
+          newFunc <- substituteTypes(expr, substitute)
           newParams <- substituteTypes(params, substitute)(identity)
         } yield Application(newFunc, newParams)
-      case Projection(structExpr: Expr, index: Int) =>
+      case Projection(expr: Expr, index: Int) =>
         for {
-          newStruct <- substituteTypes(structExpr, substitute)
+          newStruct <- substituteTypes(expr, substitute)
         } yield Projection(newStruct, index)
       case Ascription(inner, ty) =>
         for {
@@ -178,12 +176,12 @@ object Typer {
   private def substituteTypes(iter: Iter, substitute: Substituter): Try[Iter] = {
     for {
       newData <- substituteTypes(iter.data, substitute)
-      newStart <- iter.start.map(v => substituteTypes(v, substitute)).invert
-      newEnd <- iter.end.map(v => substituteTypes(v, substitute)).invert
-      newStride <- iter.stride.map(v => substituteTypes(v, substitute)).invert
-      newStrides <- iter.strides.map(v => substituteTypes(v, substitute)).invert
-      newShape <- iter.shape.map(v => substituteTypes(v, substitute)).invert
-      newKeyFunc <- iter.keyFunc.map(v => substituteTypes(v, substitute)).invert
+      newStart <- iter.start.map(substituteTypes(_, substitute)).invert
+      newEnd <- iter.end.map(substituteTypes(_, substitute)).invert
+      newStride <- iter.stride.map(substituteTypes(_, substitute)).invert
+      newStrides <- iter.strides.map(substituteTypes(_, substitute)).invert
+      newShape <- iter.shape.map(substituteTypes(_, substitute)).invert
+      newKeyFunc <- iter.keyFunc.map(substituteTypes(_, substitute)).invert
     } yield Iter(iter.kind, newData, newStart, newEnd, newStride, newStrides, newShape, newKeyFunc)
   }
 }

@@ -1,10 +1,11 @@
-package se.kth.cda.arc.typeinference
+package se.kth.cda.arc.syntaxtree.typer
 
 import java.util.concurrent.TimeoutException
 
-import se.kth.cda.arc.AST.Expr
-import se.kth.cda.arc.Types._
+import se.kth.cda.arc.syntaxtree.AST.Expr
+import se.kth.cda.arc.syntaxtree.Types._
 import se.kth.cda.arc._
+import se.kth.cda.arc.syntaxtree.{PrettyPrint, Type}
 
 import scala.concurrent.duration._
 import scala.util.{Failure, Success, Try}
@@ -19,6 +20,7 @@ object ConstraintSolver {
 
     def describe: String
   }
+
   final case class Solution(assignments: Map[Int, Type]) extends Result {
     override def isSolved: Boolean = true
 
@@ -40,6 +42,7 @@ object ConstraintSolver {
       assignments.toList.sortBy(_._1).map(t => s"?${t._1} <- ${t._2.render}").mkString("[", ",", "]")
     }
   }
+
   final case class PartialSolution(assignments: Map[Int, Type], constraints: List[TypeConstraint]) extends Result {
     override def isSolved: Boolean = false
 
@@ -60,7 +63,7 @@ object ConstraintSolver {
     def describeUnresolvedConstraints(e: Expr): Failure[Expr] = {
       val descriptions = constraints.map(_.describe)
       val description = descriptions.mkString("\n∧ ")
-      val exprS = Pretty.pretty(e)
+      val exprS = PrettyPrint.pretty(e)
       val msg = s"""Expression could not be typed! Closest partially typed expr:
 |$exprS
 Unresolved Constraints:
@@ -71,7 +74,6 @@ To solve this issue try annotating types where type variables remain."""
   }
 
   def solve(initialConstraints: List[TypeConstraint]): Try[Result] = {
-    ;
 
     var typeAssignments = Map.empty[Int, Type]
     var topLevelConjunction = initialConstraints
@@ -186,7 +188,7 @@ To solve this issue try annotating types where type variables remain."""
     if (changed) Some(newCS) else None
   }
 
-  private[typeinference] def minimiseRelated(cs: List[TypeConstraint]): Option[List[TypeConstraint]] = {
+  private[typer] def minimiseRelated(cs: List[TypeConstraint]): Option[List[TypeConstraint]] = {
     //println(s"Minimising ${cs.map(_.describe).mkString("∧")}");
     var changed = false
     var changedThisIter = true

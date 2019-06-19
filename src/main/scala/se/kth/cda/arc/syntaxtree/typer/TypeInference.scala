@@ -1,7 +1,8 @@
-package se.kth.cda.arc.typeinference
+package se.kth.cda.arc.syntaxtree.typer
 
-import se.kth.cda.arc.AST._
+import se.kth.cda.arc.syntaxtree.AST._
 import se.kth.cda.arc._
+import se.kth.cda.arc.syntaxtree.Type
 
 import scala.util.Try
 

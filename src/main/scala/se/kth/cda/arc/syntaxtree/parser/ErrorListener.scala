@@ -1,10 +1,10 @@
-package se.kth.cda.arc
+package se.kth.cda.arc.syntaxtree.parser
 
 import org.antlr.v4.runtime._
 
 import scala.util.{Failure, Success, Try}
 
-class CollectingErrorListener extends BaseErrorListener {
+class ErrorListener extends BaseErrorListener {
   private var errors: List[String] = List.empty
 
   override def syntaxError(

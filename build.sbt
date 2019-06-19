@@ -37,7 +37,7 @@ wartremoverErrors ++= Seq(
   Wart.ExplicitImplicitTypes,
   Wart.FinalCaseClass,
   Wart.FinalVal,
-  Wart.ImplicitConversion,
+  // Wart.ImplicitConversion,
   Wart.ImplicitParameter,
   Wart.IsInstanceOf,
   Wart.JavaConversions,

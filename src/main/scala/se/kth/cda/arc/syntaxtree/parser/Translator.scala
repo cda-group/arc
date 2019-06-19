@@ -1,16 +1,18 @@
-package se.kth.cda.arc
+package se.kth.cda.arc.syntaxtree.parser
 
-import org.antlr.v4.runtime._
-import org.antlr.v4.runtime.tree._
+import org.antlr.v4.runtime.Token
+import org.antlr.v4.runtime.tree.ParseTree
+import se.kth.cda.arc._
+import se.kth.cda.arc.syntaxtree.{OpType, OpTypes, Type, Types}
 
 import scala.collection.JavaConverters._
 import scala.util.Try
 import scala.util.matching.Regex
 
-final case class ASTTranslator(parser: ArcParser) {
+final case class Translator(parser: ArcParser) {
 
-  import AST._
   import ArcParser._
+  import se.kth.cda.arc.syntaxtree.AST._
 
   def program(): Program = ProgramVisitor.visitChecked(parser.program())
 
@@ -20,13 +22,13 @@ final case class ASTTranslator(parser: ArcParser) {
 
   def `type`(): Type = TypeVisitor.visitChecked(parser.`type`())
 
-  def translate(tree: ArcParser.ProductContext): Program = ProgramVisitor.visitChecked(tree);
+  def translate(tree: ArcParser.ProductContext): Program = ProgramVisitor.visitChecked(tree)
 
-  def translate(tree: ArcParser.ExprContext): Expr = ExprVisitor.visitChecked(tree);
+  def translate(tree: ArcParser.ExprContext): Expr = ExprVisitor.visitChecked(tree)
 
-  def translate(tree: ArcParser.MacroContext): List[Macro] = MacrosVisitor.visitChecked(tree);
+  def translate(tree: ArcParser.MacroContext): List[Macro] = MacrosVisitor.visitChecked(tree)
 
-  def translate(tree: ArcParser.TypeContext): Type = TypeVisitor.visitChecked(tree);
+  def translate(tree: ArcParser.TypeContext): Type = TypeVisitor.visitChecked(tree)
 
   private def tokenToSymbol(t: Token): Symbol = Symbol(t.getText, Some(t))
 
@@ -63,8 +65,8 @@ final case class ASTTranslator(parser: ArcParser) {
     override def visitMacro(ctx: MacroContext): List[Macro] =
       List(
         Macro(
-          name = tokenToSymbol(ctx.name),
-          parameters = ctx.macroParams().names.asScala.map(tokenToSymbol).toVector,
+          symbol = tokenToSymbol(ctx.name),
+          params = ctx.macroParams().names.asScala.map(tokenToSymbol).toVector,
           body = ExprVisitor.visitChecked(ctx.body),
           ctx
         )
@@ -85,7 +87,7 @@ final case class ASTTranslator(parser: ArcParser) {
       val body = this.visitChecked(ctx.body)
       Expr(
         kind = ExprKind.Let(
-          name = tokenToSymbol(ctx.name),
+          symbol = tokenToSymbol(ctx.name),
           bindingTy = annotToType(ctx.typeAnnot()).getOrElse(Types.unknown),
           value = this.visitChecked(ctx.value),
           body = body
@@ -114,7 +116,7 @@ final case class ASTTranslator(parser: ArcParser) {
             .asScala
             .map { p =>
               Parameter(
-                name = tokenToSymbol(p.name),
+                symbol = tokenToSymbol(p.name),
                 ty = annotToTypeBound(p.typeAnnot())
               )
             }
@@ -128,7 +130,7 @@ final case class ASTTranslator(parser: ArcParser) {
     override def visitIdent(ctx: IdentContext): Expr =
       Expr(
         kind = ExprKind.Ident(
-          name = tokenToSymbol(ctx.TIdentifier().getSymbol)
+          symbol = tokenToSymbol(ctx.TIdentifier().getSymbol)
         ),
         ty = Types.unknown,
         ctx
@@ -160,7 +162,7 @@ final case class ASTTranslator(parser: ArcParser) {
     override def visitZip(ctx: ArcParser.ZipContext): Expr =
       Expr(
         kind = ExprKind.Zip(
-          params = ctx.functionParams().params.asScala.map(this.visitChecked(_)).toVector
+          params = ctx.functionParams().params.asScala.map(this.visitChecked).toVector
         ),
         ty = Types.unknown,
         ctx
@@ -169,7 +171,7 @@ final case class ASTTranslator(parser: ArcParser) {
     override def visitHash(ctx: ArcParser.HashContext): Expr =
       Expr(
         kind = ExprKind.Hash(
-          params = ctx.functionParams().params.asScala.map(this.visitChecked(_)).toVector
+          params = ctx.functionParams().params.asScala.map(this.visitChecked).toVector
         ),
         ty = Types.unknown,
         ctx
@@ -284,7 +286,7 @@ final case class ASTTranslator(parser: ArcParser) {
     override def visitMakeVec(ctx: MakeVecContext): Expr =
       Expr(
         kind = ExprKind.MakeVec(
-          elems = ctx.entries.asScala.map(this.visitChecked(_)).toVector
+          elems = ctx.entries.asScala.map(this.visitChecked).toVector
         ),
         ty = Types.Vec(
           elemTy = Types.unknown
@@ -293,7 +295,7 @@ final case class ASTTranslator(parser: ArcParser) {
       )
 
     override def visitMakeStruct(ctx: MakeStructContext): Expr = {
-      val elems = ctx.entries.asScala.map(this.visitChecked(_)).toVector
+      val elems = ctx.entries.asScala.map(this.visitChecked).toVector
       Expr(
         kind = ExprKind.MakeStruct(elems),
         ty = Types.Struct(
@@ -396,9 +398,9 @@ final case class ASTTranslator(parser: ArcParser) {
             .functionParams()
             .params
             .asScala
-            .map(this.visitChecked(_))
+            .map(this.visitChecked)
             .toVector,
-          returnType = TypeVisitor.visitChecked(ctx.returnType)
+          returnTy = TypeVisitor.visitChecked(ctx.returnType)
         ),
         ty = returnType,
         ctx
@@ -414,7 +416,7 @@ final case class ASTTranslator(parser: ArcParser) {
             .functionParams()
             .params
             .asScala
-            .map(this.visitChecked(_))
+            .map(this.visitChecked)
             .toVector,
           returnType
         ),
@@ -452,7 +454,7 @@ final case class ASTTranslator(parser: ArcParser) {
       Expr(
         kind = ExprKind.NewBuilder(
           ty,
-          arg = Option(ctx.arg).map(this.visitChecked(_))
+          args = Option(ctx.arg).map(this.visitChecked).toVector
         ),
         ty,
         ctx
@@ -466,7 +468,7 @@ final case class ASTTranslator(parser: ArcParser) {
       Expr(
         kind = ExprKind.NewBuilder(
           ty,
-          arg = None
+          args = Vector.empty
         ),
         ty,
         ctx
@@ -481,7 +483,7 @@ final case class ASTTranslator(parser: ArcParser) {
       Expr(
         kind = ExprKind.NewBuilder(
           ty,
-          arg = Option(ctx.arg).map(this.visitChecked(_))
+          args = Option(ctx.arg).map(this.visitChecked).toVector
         ),
         ty,
         ctx
@@ -497,7 +499,7 @@ final case class ASTTranslator(parser: ArcParser) {
       Expr(
         kind = ExprKind.NewBuilder(
           ty,
-          arg = Option(ctx.arg).map(this.visitChecked(_))
+          args = Option(ctx.arg).map(this.visitChecked).toVector
         ),
         ty,
         ctx
@@ -512,7 +514,7 @@ final case class ASTTranslator(parser: ArcParser) {
       Expr(
         kind = ExprKind.NewBuilder(
           ty,
-          arg = Option(ctx.arg).map(this.visitChecked(_))
+          args = Option(ctx.arg).map(this.visitChecked).toVector
         ),
         ty,
         ctx
@@ -527,7 +529,28 @@ final case class ASTTranslator(parser: ArcParser) {
       Expr(
         kind = ExprKind.NewBuilder(
           ty,
-          arg = Option(ctx.arg).map(this.visitChecked(_))
+          args = Option(ctx.arg).map(this.visitChecked).toVector
+        ),
+        ty,
+        ctx
+      )
+    }
+
+    override def visitNewWindower(ctx: NewWindowerContext): Expr = {
+      val annot = AnnotationVisitor.visitChecked(ctx.annotations())
+      val ty = Types.Builders.Windower(
+        discTy = TypeVisitor.visitChecked(ctx.discT),
+        aggrTy = TypeVisitor.visitChecked(ctx.aggrT),
+        aggrMergeTy = Types.unknown,
+        aggrResultTy = Types.unknown,
+        annot)
+      Expr(
+        kind = ExprKind.NewBuilder(
+          ty,
+          args = Vector(
+            ExprVisitor.visitChecked(ctx.assign),
+            ExprVisitor.visitChecked(ctx.trigger),
+            ExprVisitor.visitChecked(ctx.lower))
         ),
         ty,
         ctx
@@ -542,8 +565,8 @@ final case class ASTTranslator(parser: ArcParser) {
             case ArcLexer.TMax => BinOpKind.Max
             case ArcLexer.TPow => BinOpKind.Pow
           },
-          left = this.visitChecked(ctx.left),
-          right = this.visitChecked(ctx.right)
+          lhs = this.visitChecked(ctx.left),
+          rhs = this.visitChecked(ctx.right)
         ),
         ty = Types.unknown,
         ctx
@@ -552,12 +575,12 @@ final case class ASTTranslator(parser: ArcParser) {
     override def visitApplication(ctx: ArcParser.ApplicationContext): Expr =
       Expr(
         kind = ExprKind.Application(
-          funcExpr = this.visitChecked(ctx.operatorExpr()),
-          params = ctx
+          expr = this.visitChecked(ctx.operatorExpr()),
+          args = ctx
             .functionParams()
             .params
             .asScala
-            .map(this.visitChecked(_))
+            .map(this.visitChecked)
             .toVector
         ),
         ty = Types.unknown,
@@ -567,7 +590,7 @@ final case class ASTTranslator(parser: ArcParser) {
     override def visitProjection(ctx: ArcParser.ProjectionContext): Expr =
       Expr(
         kind = ExprKind.Projection(
-          structExpr = this.visitChecked(ctx.operatorExpr()),
+          expr = this.visitChecked(ctx.operatorExpr()),
           index = BigInt(ctx.TIndex().getText.substring(1), decRadix).toInt
         ),
         ty = Types.unknown,
@@ -590,12 +613,12 @@ final case class ASTTranslator(parser: ArcParser) {
       Expr(
         kind = ExprKind.BinOp(
           kind = ctx.op.getType match {
-            case ArcLexer.TStar    => BinOpKind.Mult
+            case ArcLexer.TStar    => BinOpKind.Mul
             case ArcLexer.TSlash   => BinOpKind.Div
-            case ArcLexer.TPercent => BinOpKind.Modulo
+            case ArcLexer.TPercent => BinOpKind.Mod
           },
-          left = this.visitChecked(ctx.left),
-          right = this.visitChecked(ctx.right)
+          lhs = this.visitChecked(ctx.left),
+          rhs = this.visitChecked(ctx.right)
         ),
         ty = Types.unknown,
         ctx
@@ -608,8 +631,8 @@ final case class ASTTranslator(parser: ArcParser) {
             case ArcLexer.TPlus  => BinOpKind.Add
             case ArcLexer.TMinus => BinOpKind.Sub
           },
-          left = this.visitChecked(ctx.left),
-          right = this.visitChecked(ctx.right)
+          lhs = this.visitChecked(ctx.left),
+          rhs = this.visitChecked(ctx.right)
         ),
         ty = Types.unknown,
         ctx
@@ -619,13 +642,13 @@ final case class ASTTranslator(parser: ArcParser) {
       Expr(
         kind = ExprKind.BinOp(
           kind = ctx.op.getType match {
-            case ArcLexer.TLessThan    => BinOpKind.LessThan
-            case ArcLexer.TGreaterThan => BinOpKind.GreaterThan
+            case ArcLexer.TLessThan    => BinOpKind.Lt
+            case ArcLexer.TGreaterThan => BinOpKind.Gt
             case ArcLexer.TLEq         => BinOpKind.LEq
             case ArcLexer.TGEq         => BinOpKind.GEq
           },
-          left = this.visitChecked(ctx.left),
-          right = this.visitChecked(ctx.right)
+          lhs = this.visitChecked(ctx.left),
+          rhs = this.visitChecked(ctx.right)
         ),
         ty = Types.unknown,
         ctx
@@ -635,11 +658,11 @@ final case class ASTTranslator(parser: ArcParser) {
       Expr(
         kind = ExprKind.BinOp(
           kind = ctx.op.getType match {
-            case ArcLexer.TEqualEqual => BinOpKind.Equals
+            case ArcLexer.TEqualEqual => BinOpKind.Eq
             case ArcLexer.TNotEqual   => BinOpKind.NEq
           },
-          left = this.visitChecked(ctx.left),
-          right = this.visitChecked(ctx.right)
+          lhs = this.visitChecked(ctx.left),
+          rhs = this.visitChecked(ctx.right)
         ),
         ty = Types.unknown,
         ctx
@@ -648,9 +671,9 @@ final case class ASTTranslator(parser: ArcParser) {
     override def visitBitwiseXor(ctx: ArcParser.BitwiseXorContext): Expr =
       Expr(
         kind = ExprKind.BinOp(
-          kind = BinOpKind.Xor,
-          left = this.visitChecked(ctx.left),
-          right = this.visitChecked(ctx.right)
+          kind = BinOpKind.BwXor,
+          lhs = this.visitChecked(ctx.left),
+          rhs = this.visitChecked(ctx.right)
         ),
         ty = Types.unknown,
         ctx
@@ -659,9 +682,9 @@ final case class ASTTranslator(parser: ArcParser) {
     override def visitBitwiseOr(ctx: ArcParser.BitwiseOrContext): Expr =
       Expr(
         kind = ExprKind.BinOp(
-          kind = BinOpKind.Or,
-          left = this.visitChecked(ctx.left),
-          right = this.visitChecked(ctx.right)
+          kind = BinOpKind.BwOr,
+          lhs = this.visitChecked(ctx.left),
+          rhs = this.visitChecked(ctx.right)
         ),
         ty = Types.unknown,
         ctx
@@ -670,9 +693,9 @@ final case class ASTTranslator(parser: ArcParser) {
     override def visitBitwiseAnd(ctx: ArcParser.BitwiseAndContext): Expr =
       Expr(
         kind = ExprKind.BinOp(
-          kind = BinOpKind.And,
-          left = this.visitChecked(ctx.left),
-          right = this.visitChecked(ctx.right)
+          kind = BinOpKind.BwAnd,
+          lhs = this.visitChecked(ctx.left),
+          rhs = this.visitChecked(ctx.right)
         ),
         ty = Types.unknown,
         ctx
@@ -681,9 +704,9 @@ final case class ASTTranslator(parser: ArcParser) {
     override def visitLogicalOr(ctx: ArcParser.LogicalOrContext): Expr =
       Expr(
         kind = ExprKind.BinOp(
-          kind = BinOpKind.LogicalOr,
-          left = this.visitChecked(ctx.left),
-          right = this.visitChecked(ctx.right)
+          kind = BinOpKind.Or,
+          lhs = this.visitChecked(ctx.left),
+          rhs = this.visitChecked(ctx.right)
         ),
         ty = Types.unknown,
         ctx
@@ -692,9 +715,9 @@ final case class ASTTranslator(parser: ArcParser) {
     override def visitLogicalAnd(ctx: ArcParser.LogicalAndContext): Expr =
       Expr(
         kind = ExprKind.BinOp(
-          kind = BinOpKind.LogicalAnd,
-          left = this.visitChecked(ctx.left),
-          right = this.visitChecked(ctx.right)
+          kind = BinOpKind.And,
+          lhs = this.visitChecked(ctx.left),
+          rhs = this.visitChecked(ctx.right)
         ),
         ty = Types.unknown,
         ctx
@@ -830,7 +853,7 @@ final case class ASTTranslator(parser: ArcParser) {
     override def visitAnnotations(ctx: AnnotationsContext): Annotations =
       Annotations(
         params = ctx.entries.asScala
-          .flatMap(this.visitChecked(_))
+          .flatMap(this.visitChecked)
           .foldLeft(Vector.empty[(String, Any)]) {
             case (acc, a) => acc :+ a.params(0)
           }
@@ -1073,6 +1096,15 @@ final case class ASTTranslator(parser: ArcParser) {
       Types.Builders.VecMerger(
         elemTy = TypeVisitor.visitChecked(ctx.elemT),
         opTy = OpVisitor.visitChecked(ctx.commutativeBinop()),
+        annotations = AnnotationVisitor.visitChecked(ctx.annotations())
+      )
+
+    override def visitWindower(ctx: ArcParser.WindowerContext): Type =
+      Types.Builders.Windower(
+        discTy = TypeVisitor.visitChecked(ctx.discT),
+        aggrTy = TypeVisitor.visitChecked(ctx.aggrT),
+        aggrMergeTy = TypeVisitor.visitChecked(ctx.aggrMergeT),
+        aggrResultTy = TypeVisitor.visitChecked(ctx.aggrResultT),
         annotations = AnnotationVisitor.visitChecked(ctx.annotations())
       )
 

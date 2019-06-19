@@ -23,6 +23,22 @@ object Utils {
     }
   }
 
+  class PrintWriterStream {
+
+    private val baos = new ByteArrayOutputStream()
+    lazy val ps = new PrintStream(baos, true, "UTF-8")
+
+    def asPrintWriter(): PrintStream = ps
+
+    def result(): String = {
+      ps.flush()
+      val data = new String(baos.toByteArray, StandardCharsets.UTF_8)
+      ps.close()
+      baos.close()
+      data
+    }
+  }
+
   implicit class TryVector[T](tl: Vector[Try[T]]) {
 
     def sequence: Try[Vector[T]] = {
