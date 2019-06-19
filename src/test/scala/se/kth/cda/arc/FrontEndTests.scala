@@ -2,23 +2,24 @@ package se.kth.cda.arc
 
 import org.antlr.v4.runtime.{CharStreams, CommonTokenStream}
 import org.scalatest.{Assertion, FunSuite, Matchers}
-import se.kth.cda.arc.transform.MacroExpansion
-import se.kth.cda.arc.typeinference.TypeInference
+import se.kth.cda.arc.syntaxtree.PrettyPrint
+import se.kth.cda.arc.syntaxtree.parser.Translator
+import se.kth.cda.arc.syntaxtree.transformer.MacroExpansion
+import se.kth.cda.arc.syntaxtree.typer.TypeInference
 
 class FrontEndTests extends FunSuite with Matchers {
 
   implicit class StringTokenAux(val input: String) {
-    def analyze: String = {
-      val inputStream = CharStreams.fromString(input);
-      val lexer = new ArcLexer(inputStream);
-      val tokenStream = new CommonTokenStream(lexer);
-      val parser = new ArcParser(tokenStream);
-      val tree = parser.expr()
-      val translator = ASTTranslator(parser)
-      val ast = translator.translate(tree)
+    def compile: String = {
+      val inputStream = CharStreams.fromString(input)
+      val lexer = new ArcLexer(inputStream)
+      val tokenStream = new CommonTokenStream(lexer)
+      val parser = new ArcParser(tokenStream)
+      val translator = Translator(parser)
+      val ast = translator.expr()
       val expanded = MacroExpansion.expand(ast).get
       val typed = TypeInference.solve(expanded).get
-      PrettyPrint.print(typed)
+      PrettyPrint.pretty(typed)
     }
   }
 
@@ -31,7 +32,7 @@ class FrontEndTests extends FunSuite with Matchers {
   }
 
   test("basic") {
-    "let x: i32 = 5; let y = x; y".analyze shouldBeApprox
+    "let x: i32 = 5; let y = x; y".compile shouldBeApprox
       "( let x:i32=5:i32; let y:i32=x:i32; y ):i32"
   }
   test("lookup vec") {
@@ -69,7 +70,7 @@ class FrontEndTests extends FunSuite with Matchers {
             )
       );
     result(C)
-    """.analyze shouldBeApprox
+    """.compile shouldBeApprox
     """
     ( let n:i64=2L:i64;
       let p:i64=2L:i64;
@@ -144,7 +145,7 @@ class FrontEndTests extends FunSuite with Matchers {
       let cond2 = select(max_delta < tolerance, false, true);
       {{new_ranks, iteration+1}, cond1 && cond2}
     )
-    """.analyze shouldBeApprox
+    """.compile shouldBeApprox
     """
     ( let src:vec[i64]=[0L,0L,1L,2L]:vec[i64];
     let dst:vec[i64]=[1L,2L,2L,0L]:vec[i64];

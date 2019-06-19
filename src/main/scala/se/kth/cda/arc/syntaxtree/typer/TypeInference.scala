@@ -1,23 +1,27 @@
-package se.kth.cda.arc.typeinference
+package se.kth.cda.arc.syntaxtree.typer
 
+import se.kth.cda.arc.syntaxtree.AST._
 import se.kth.cda.arc._
-import AST._
-import scala.util.{ Try, Success, Failure }
-import Utils.TryVector
+import se.kth.cda.arc.syntaxtree.Type
+
+import scala.util.Try
 
 object TypeInference {
+
   def solve(expr: Expr): Try[Expr] = {
     for {
-      (constraints, updatedExpr) <- new ConstraintGenerator(expr).generate();
-      result <- ConstraintSolver.solve(constraints);
+      (constraints, updatedExpr) <- new ConstraintGenerator(expr).generate()
+      result <- ConstraintSolver.solve(constraints)
       finalExpr <- Typer.applyTypes(updatedExpr, result)
     } yield finalExpr
   }
 }
 
 class TypingStore(stack: List[(Symbol, Type)]) {
-  def +(t: (Symbol, Type)): TypingStore = new TypingStore(t :: stack);
-  def ++(l: List[(Symbol, Type)]): TypingStore = new TypingStore(stack ::: l);
+  def +(t: (Symbol, Type)): TypingStore = new TypingStore(t :: stack)
+
+  def ++(l: List[(Symbol, Type)]): TypingStore = new TypingStore(stack ::: l)
+
   def lookup(needle: Symbol): Option[Type] = {
     stack.foreach {
       case (s, t) if s.name == needle.name => return Some(t)
@@ -26,8 +30,9 @@ class TypingStore(stack: List[(Symbol, Type)]) {
     None
   }
 }
+
 object TypingStore {
-  def empty(): TypingStore = new TypingStore(List.empty);
+  def empty(): TypingStore = new TypingStore(List.empty)
 }
 
 class TypingException(message: String) extends Exception(message) {

@@ -1,28 +1,48 @@
 package se.kth.cda.arc
 
-import java.io.{ ByteArrayOutputStream, OutputStream, PrintStream, IOException }
-import java.nio.charset.StandardCharsets;
-import scala.util.{ Try, Success, Failure }
+import java.io.{ByteArrayOutputStream, PrintStream}
+import java.nio.charset.StandardCharsets
+
+import scala.util.{Failure, Success, Try}
 
 object Utils {
+
   class StringBuilderStream {
 
-    private val baos = new ByteArrayOutputStream();
-    lazy val ps = new PrintStream(baos, true, "UTF-8");
+    private val baos = new ByteArrayOutputStream()
+    lazy val ps = new PrintStream(baos, true, "UTF-8")
 
-    def asPrintStream(): PrintStream = ps;
+    def asPrintStream(): PrintStream = ps
+
     def result(): String = {
-      ps.flush();
-      val data = new String(baos.toByteArray(), StandardCharsets.UTF_8);
-      ps.close();
-      baos.close();
+      ps.flush()
+      val data = new String(baos.toByteArray, StandardCharsets.UTF_8)
+      ps.close()
+      baos.close()
+      data
+    }
+  }
+
+  class PrintWriterStream {
+
+    private val baos = new ByteArrayOutputStream()
+    lazy val ps = new PrintStream(baos, true, "UTF-8")
+
+    def asPrintWriter(): PrintStream = ps
+
+    def result(): String = {
+      ps.flush()
+      val data = new String(baos.toByteArray, StandardCharsets.UTF_8)
+      ps.close()
+      baos.close()
       data
     }
   }
 
   implicit class TryVector[T](tl: Vector[Try[T]]) {
+
     def sequence: Try[Vector[T]] = {
-      val (successes, failures) = tl.partition(_.isSuccess);
+      val (successes, failures) = tl.partition(_.isSuccess)
       if (failures.isEmpty) {
         Success(successes.flatMap(_.toOption))
       } else {
@@ -35,9 +55,11 @@ object Utils {
   }
 
   implicit class OptionTry[T](o: Option[Try[T]]) {
+
     def invert: Try[Option[T]] = o match {
       case Some(t) => t.map(v => Some(v))
       case None    => Success(None)
     }
   }
+
 }
