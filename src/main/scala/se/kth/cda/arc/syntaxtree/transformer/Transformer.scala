@@ -2,7 +2,7 @@ package se.kth.cda.arc.syntaxtree.transformer
 
 import se.kth.cda.arc.syntaxtree.AST._
 import se.kth.cda.arc.Utils.TryVector
-import se.kth.cda.arc.syntaxtree.{BuilderType, Type}
+import se.kth.cda.arc.syntaxtree.{Builder, Type}
 
 import scala.util.{Success, Try}
 
@@ -164,7 +164,7 @@ final case class Transformer[Env](onExpr: Transformer.ExprTransformer[Env], onTy
             } else {
               Some(
                 NewBuilder(
-                  ty = newTy.getOrElse(ty).asInstanceOf[BuilderType],
+                  ty = newTy.getOrElse(ty).asInstanceOf[Builder],
                   args = newArgs.getOrElse(args)
                 )
               )

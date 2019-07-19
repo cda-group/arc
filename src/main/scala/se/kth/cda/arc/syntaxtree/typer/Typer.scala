@@ -1,9 +1,8 @@
 package se.kth.cda.arc.syntaxtree.typer
 
-import se.kth.cda.arc.syntaxtree.AST._
 import se.kth.cda.arc.Utils.{OptionTry, TryVector}
-import se.kth.cda.arc._
-import se.kth.cda.arc.syntaxtree.BuilderType
+import se.kth.cda.arc.syntaxtree.AST._
+import se.kth.cda.arc.syntaxtree.Builder
 
 import scala.util.{Success, Try}
 
@@ -150,7 +149,7 @@ object Typer {
         for {
           newTy <- substitute(ty)
           newArgs <- args.map(substituteTypes(_, substitute)).sequence
-        } yield NewBuilder(newTy.asInstanceOf[BuilderType], newArgs)
+        } yield NewBuilder(newTy.asInstanceOf[Builder], newArgs)
       case BinOp(kind, left, right) =>
         for {
           newLeft <- substituteTypes(left, substitute)

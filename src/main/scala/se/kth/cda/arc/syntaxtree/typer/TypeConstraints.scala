@@ -1,8 +1,7 @@
 package se.kth.cda.arc.syntaxtree.typer
 
-import se.kth.cda.arc.syntaxtree.Types._
-import se.kth.cda.arc._
-import se.kth.cda.arc.syntaxtree.{BuilderType, ConcreteType, Type, Types}
+import se.kth.cda.arc.syntaxtree.Type._
+import se.kth.cda.arc.syntaxtree.{Builder, ConcreteType, Type}
 
 sealed trait TypeConstraint {
   type Self <: TypeConstraint
@@ -59,31 +58,31 @@ object TypeConstraints {
           }
           Some(Function(newParams, newReturnTy.getOrElse(returnTy)))
         }
-      case Builders.Appender(elemTy, annots) =>
-        substituteType(elemTy, assignments).map(Builders.Appender(_, annots))
-      case Builders.StreamAppender(elemTy, annots) =>
-        substituteType(elemTy, assignments).map(Builders.StreamAppender(_, annots))
-      case Builders.Merger(elemTy, opTy, annots) =>
-        substituteType(elemTy, assignments).map(Builders.Merger(_, opTy, annots))
-      case Builders.DictMerger(keyTy, valueTy, opTy, annots) =>
+      case Builder.Appender(elemTy, annots) =>
+        substituteType(elemTy, assignments).map(Builder.Appender(_, annots))
+      case Builder.StreamAppender(elemTy, annots) =>
+        substituteType(elemTy, assignments).map(Builder.StreamAppender(_, annots))
+      case Builder.Merger(elemTy, opTy, annots) =>
+        substituteType(elemTy, assignments).map(Builder.Merger(_, opTy, annots))
+      case Builder.DictMerger(keyTy, valueTy, opTy, annots) =>
         val newKeyTy = substituteType(keyTy, assignments)
         val newValueTy = substituteType(valueTy, assignments)
         if (newKeyTy.isEmpty && newValueTy.isEmpty) {
           None
         } else {
-          Some(Builders.DictMerger(newKeyTy.getOrElse(keyTy), newValueTy.getOrElse(valueTy), opTy, annots))
+          Some(Builder.DictMerger(newKeyTy.getOrElse(keyTy), newValueTy.getOrElse(valueTy), opTy, annots))
         }
-      case Builders.VecMerger(elemTy, opTy, annots) =>
-        substituteType(elemTy, assignments).map(Builders.VecMerger(_, opTy, annots))
-      case Builders.GroupMerger(keyTy, valueTy, annots) =>
+      case Builder.VecMerger(elemTy, opTy, annots) =>
+        substituteType(elemTy, assignments).map(Builder.VecMerger(_, opTy, annots))
+      case Builder.GroupMerger(keyTy, valueTy, annots) =>
         val newKeyTy = substituteType(keyTy, assignments)
         val newValueTy = substituteType(valueTy, assignments)
         if (newKeyTy.isEmpty && newValueTy.isEmpty) {
           None
         } else {
-          Some(Builders.GroupMerger(newKeyTy.getOrElse(keyTy), newValueTy.getOrElse(valueTy), annots))
+          Some(Builder.GroupMerger(newKeyTy.getOrElse(keyTy), newValueTy.getOrElse(valueTy), annots))
         }
-      case Builders.Windower(discTy, aggrTy, aggrMergeTy, aggrResultTy, annots) =>
+      case Builder.Windower(discTy, aggrTy, aggrMergeTy, aggrResultTy, annots) =>
         val newDiscTy = substituteType(discTy, assignments)
         val newAggrTy = substituteType(aggrTy, assignments)
         val newAggrMergeTy = substituteType(aggrMergeTy, assignments)
@@ -92,7 +91,7 @@ object TypeConstraints {
           None
         } else {
           Some(
-            Builders.Windower(
+            Builder.Windower(
               newDiscTy.getOrElse(discTy),
               newAggrTy.getOrElse(aggrTy),
               newAggrMergeTy.getOrElse(aggrMergeTy),
@@ -324,7 +323,7 @@ object TypeConstraints {
 
     override def normalise(): Option[TypeConstraint] = {
       builderTy match {
-        case bty: BuilderType =>
+        case bty: Builder =>
           var conj = List.empty[TypeConstraint]
           conj ::= MultiEquality(List(bty.mergeType, mergeTy))
           conj ::= MultiEquality(List(bty.resultType, resultTy))
@@ -332,9 +331,9 @@ object TypeConstraints {
           Some(MultiConj(conj))
         case Struct(args) =>
           var conj = List.empty[TypeConstraint]
-          val mergeTypes = args.map(_ => Types.unknown)
-          val resultTypes = args.map(_ => Types.unknown)
-          val argsTypes = args.map(_ => argTys.map(_ => Types.unknown))
+          val mergeTypes = args.map(_ => Type.unknown)
+          val resultTypes = args.map(_ => Type.unknown)
+          val argsTypes = args.map(_ => argTys.map(_ => Type.unknown))
           args.zipWithIndex.foreach {
             case (builder, index) =>
               conj ::= BuilderKind(builder, mergeTypes(index), resultTypes(index), argsTypes(index))
@@ -463,7 +462,7 @@ object TypeConstraints {
             Some(MultiEquality(newMembers))
           }
         } else {
-          import Builders._
+          import Builder._
           var conj = List.empty[TypeConstraint]
           val head :: rest = other
           var unsatisfiable = false

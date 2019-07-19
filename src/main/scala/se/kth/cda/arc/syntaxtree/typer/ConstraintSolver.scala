@@ -3,8 +3,7 @@ package se.kth.cda.arc.syntaxtree.typer
 import java.util.concurrent.TimeoutException
 
 import se.kth.cda.arc.syntaxtree.AST.Expr
-import se.kth.cda.arc.syntaxtree.Types._
-import se.kth.cda.arc._
+import se.kth.cda.arc.syntaxtree.Type._
 import se.kth.cda.arc.syntaxtree.{PrettyPrint, Type}
 
 import scala.concurrent.duration._

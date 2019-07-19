@@ -1,10 +1,9 @@
 package se.kth.cda.arc.syntaxtree.typer
 
 import se.kth.cda.arc.syntaxtree.AST._
-import se.kth.cda.arc.syntaxtree.Types._
+import se.kth.cda.arc.syntaxtree.Type._
 import se.kth.cda.arc.Utils.TryVector
-import se.kth.cda.arc._
-import se.kth.cda.arc.syntaxtree.{Type, Types}
+import se.kth.cda.arc.syntaxtree.Type
 
 import scala.util.{Failure, Success, Try}
 
@@ -42,14 +41,14 @@ class ConstraintGenerator(val rootExpr: Expr) {
           }
         }
       case Lambda(params, body) =>
-        constrainEq(expr.ty, Types.Function(params.map(_.ty), body.ty))
+        constrainEq(expr.ty, Type.Function(params.map(_.ty), body.ty))
         discoverDownMap(body, env ++ params.map(p => p.symbol -> p.ty).toList)(Lambda(params, _))
       case Cast(ty, inner) =>
         constrainEq(expr.ty, ty)
         discoverDownMap(inner, env)(Cast(ty, _))
       case ToVec(inner) =>
-        val keyTy = Types.unknown
-        val valueTy = Types.unknown
+        val keyTy = Type.unknown
+        val valueTy = Type.unknown
         constrainEq(expr.ty, Vec(Struct(Vector(keyTy, valueTy))))
         constrainEq(inner.ty, Dict(keyTy, valueTy))
         discoverDownMap(inner, env)(newInner => ToVec(newInner))
@@ -57,27 +56,27 @@ class ConstraintGenerator(val rootExpr: Expr) {
         constrainEq(expr.ty, Struct(elems.map(_.ty)))
         discoverDown(elems, env).map(_.map(MakeStruct))
       case MakeVec(elems) =>
-        val elemTy = Types.unknown
+        val elemTy = Type.unknown
         val vecTy = Vec(elemTy)
         val elemTys = elems.map(_.ty)
         constrainEq(expr.ty, vecTy)
         constrainEq(elemTy +: elemTys: _*)
         discoverDown(elems, env).map(_.map(MakeVec))
       case If(cond: Expr, onTrue: Expr, onFalse: Expr) =>
-        constrainEq(cond.ty, Types.Bool)
+        constrainEq(cond.ty, Type.Bool)
         constrainEq(expr.ty, onTrue.ty, onFalse.ty)
         discoverDown(Vector(cond, onTrue, onFalse), env).map(_.map {
           case Vector(newCond, newOnTrue, newOnFalse) => If(newCond, newOnTrue, newOnFalse)
         })
       case Select(cond: Expr, onTrue: Expr, onFalse: Expr) =>
-        constrainEq(cond.ty, Types.Bool)
+        constrainEq(cond.ty, Type.Bool)
         constrainEq(expr.ty, onTrue.ty, onFalse.ty)
         discoverDown(Vector(cond, onTrue, onFalse), env).map(_.map {
           case Vector(newCond, newOnTrue, newOnFalse) => Select(newCond, newOnTrue, newOnFalse)
         })
       case Iterate(initial: Expr, updateFunc: Expr) =>
-        val typeParam = Types.unknown
-        val funTy = Function(Vector(typeParam), Struct(Vector(typeParam, Types.Bool)))
+        val typeParam = Type.unknown
+        val funTy = Function(Vector(typeParam), Struct(Vector(typeParam, Type.Bool)))
         constrainEq(expr.ty, initial.ty, typeParam)
         constrainEq(updateFunc.ty, funTy)
         discoverDown(Vector(initial, updateFunc), env).map(_.map {
@@ -116,7 +115,7 @@ class ConstraintGenerator(val rootExpr: Expr) {
           }
         }
       case Zip(params) =>
-        val elem_tys = params.map(_ => Types.unknown)
+        val elem_tys = params.map(_ => Type.unknown)
         params.zip(elem_tys).foreach {
           case (param, elem_ty) => constrainEq(param.ty, Vec(elem_ty));
         }
@@ -125,11 +124,11 @@ class ConstraintGenerator(val rootExpr: Expr) {
           Zip(newParams)
         })
       case Hash(params) =>
-        params.foreach(param => constrainEq(param.ty, Types.unknown))
+        params.foreach(param => constrainEq(param.ty, Type.unknown))
         constrainEq(expr.ty, I64)
         discoverDown(params, env).map(_.map(Hash))
       case For(iter, builder, body) =>
-        val elemTy = Types.unknown
+        val elemTy = Type.unknown
         constrainNorm(TypeConstraints.IterableKind(iter.data.ty, elemTy))
         if (iter.kind == IterKind.RangeIter) {
           constrainEq(elemTy, I64)
@@ -178,7 +177,7 @@ class ConstraintGenerator(val rootExpr: Expr) {
             Some(Iter(iter.kind, newData, newStart, newEnd, newStride, newShape, newStrides, newKeyFunc))
           }
         }
-        val builderTy = Types.unknown
+        val builderTy = Type.unknown
         val funcTy = Function(Vector(builderTy, I64, elemTy), builderTy)
         constrainBuilder(builderTy)
         constrainEq(builder.ty, builderTy)
@@ -196,11 +195,11 @@ class ConstraintGenerator(val rootExpr: Expr) {
           }
         }
       case Len(inner) =>
-        constrainEq(inner.ty, Vec(Types.unknown))
+        constrainEq(inner.ty, Vec(Type.unknown))
         constrainEq(expr.ty, I64)
         discoverDownMap(inner, env)(Len)
       case Lookup(data, index) =>
-        val resultTy = Types.unknown
+        val resultTy = Type.unknown
         constrainLookup(data.ty, index.ty, resultTy)
         constrainEq(expr.ty, resultTy)
         discoverDown(Vector(data, index), env).map(_.map {
@@ -208,14 +207,14 @@ class ConstraintGenerator(val rootExpr: Expr) {
         })
       case Slice(data, index, size) =>
         constrainEq(index.ty, size.ty, I64)
-        constrainEq(expr.ty, data.ty, Vec(Types.unknown))
+        constrainEq(expr.ty, data.ty, Vec(Type.unknown))
         discoverDown(Vector(data, index, size), env).map(_.map {
           case Vector(newData, newIndex, newSize) => Slice(newData, newIndex, newSize)
         })
       case Sort(data, keyFunc) =>
-        val elemTy = Types.unknown
+        val elemTy = Type.unknown
         constrainEq(expr.ty, data.ty, Vec(elemTy))
-        val funTy = Function(Vector(elemTy, elemTy), Types.I32)
+        val funTy = Function(Vector(elemTy, elemTy), Type.I32)
         constrainEq(keyFunc.ty, funTy)
         discoverDown(Vector(data, keyFunc), env).map(_.map {
           case Vector(newData, newKeyFunc) => Sort(newData, newKeyFunc)
@@ -225,8 +224,8 @@ class ConstraintGenerator(val rootExpr: Expr) {
         constrainNumeric(inner.ty, signed = true)
         discoverDownMap(inner, env)(Negate)
       case Not(inner) =>
-        constrainEq(expr.ty, Types.Bool)
-        constrainEq(inner.ty, Types.Bool)
+        constrainEq(expr.ty, Type.Bool)
+        constrainEq(inner.ty, Type.Bool)
         discoverDownMap(inner, env)(Not)
       case UnaryOp(kind, inner) =>
         constrainFloat(inner.ty)
@@ -291,7 +290,7 @@ class ConstraintGenerator(val rootExpr: Expr) {
           }
         }
       case Application(funcExpr, args) =>
-        val returnTy = Types.unknown
+        val returnTy = Type.unknown
         constrainEq(expr.ty, returnTy)
         constrainEq(funcExpr.ty, Function(args.map(_.ty), returnTy))
         for {
@@ -305,7 +304,7 @@ class ConstraintGenerator(val rootExpr: Expr) {
           }
         }
       case Projection(structExpr, index) =>
-        val fieldTy = Types.unknown
+        val fieldTy = Type.unknown
         constrainNorm(TypeConstraints.ProjectableKind(structExpr.ty, fieldTy, index))
         constrainEq(expr.ty, fieldTy)
         discoverDownMap(structExpr, env)(Projection(_, index))
@@ -404,10 +403,10 @@ class ConstraintGenerator(val rootExpr: Expr) {
     constrainNorm(TypeConstraints.IsFloat(t))
   }
   private def constrainBuilder(
-      t: Type,
-      mergeType: Type = Types.unknown,
-      resultType: Type = Types.unknown,
-      argTypes: Vector[Type] = Vector(Types.unknown)): Unit = {
+                                t: Type,
+                                mergeType: Type = Type.unknown,
+                                resultType: Type = Type.unknown,
+                                argTypes: Vector[Type] = Vector(Type.unknown)): Unit = {
     constrainNorm(TypeConstraints.BuilderKind(t, mergeType, resultType, argTypes))
   }
   private def constrainLookup(t: Type, indexType: Type, resultType: Type): Unit = {

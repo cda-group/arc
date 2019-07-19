@@ -3,7 +3,7 @@ package se.kth.cda.arc.syntaxtree.parser
 import org.antlr.v4.runtime.Token
 import org.antlr.v4.runtime.tree.ParseTree
 import se.kth.cda.arc._
-import se.kth.cda.arc.syntaxtree.{OpType, OpTypes, Type, Types}
+import se.kth.cda.arc.syntaxtree.{MergeOp, Type}
 
 import scala.collection.JavaConverters._
 import scala.util.Try
@@ -34,7 +34,7 @@ final case class Translator(parser: ArcParser) {
 
   private def annotToType(ctx: TypeAnnotContext): Option[Type] = Option(ctx).map(TypeVisitor.visitChecked(_))
 
-  private def annotToTypeBound(ctx: TypeAnnotContext): Type = annotToType(ctx).getOrElse(Types.unknown)
+  private def annotToTypeBound(ctx: TypeAnnotContext): Type = annotToType(ctx).getOrElse(Type.unknown)
 
   object ProgramVisitor extends ArcBaseVisitor[Program] {
 
@@ -88,7 +88,7 @@ final case class Translator(parser: ArcParser) {
       Expr(
         kind = ExprKind.Let(
           symbol = tokenToSymbol(ctx.name),
-          bindingTy = annotToType(ctx.typeAnnot()).getOrElse(Types.unknown),
+          bindingTy = annotToType(ctx.typeAnnot()).getOrElse(Type.unknown),
           value = this.visitChecked(ctx.value),
           body = body
         ),
@@ -103,7 +103,7 @@ final case class Translator(parser: ArcParser) {
           Vector.empty,
           body = this.visitChecked(ctx.body)
         ),
-        ty = Types.unknown,
+        ty = Type.unknown,
         ctx
       )
 
@@ -123,7 +123,7 @@ final case class Translator(parser: ArcParser) {
             .toVector,
           body = this.visitChecked(ctx.body)
         ),
-        ty = Types.unknown,
+        ty = Type.unknown,
         ctx
       )
 
@@ -132,7 +132,7 @@ final case class Translator(parser: ArcParser) {
         kind = ExprKind.Ident(
           symbol = tokenToSymbol(ctx.TIdentifier().getSymbol)
         ),
-        ty = Types.unknown,
+        ty = Type.unknown,
         ctx
       )
 
@@ -153,8 +153,8 @@ final case class Translator(parser: ArcParser) {
         kind = ExprKind.ToVec(
           expr = this.visitChecked(ctx.valueExpr())
         ),
-        ty = Types.Vec(
-          elemTy = Types.unknown
+        ty = Type.Vec(
+          elemTy = Type.unknown
         ),
         ctx
       )
@@ -164,7 +164,7 @@ final case class Translator(parser: ArcParser) {
         kind = ExprKind.Zip(
           params = ctx.functionParams().params.asScala.map(this.visitChecked).toVector
         ),
-        ty = Types.unknown,
+        ty = Type.unknown,
         ctx
       )
 
@@ -173,7 +173,7 @@ final case class Translator(parser: ArcParser) {
         kind = ExprKind.Hash(
           params = ctx.functionParams().params.asScala.map(this.visitChecked).toVector
         ),
-        ty = Types.unknown,
+        ty = Type.unknown,
         ctx
       )
 
@@ -196,7 +196,7 @@ final case class Translator(parser: ArcParser) {
         kind = ExprKind.Len(
           expr = this.visitChecked(ctx.valueExpr())
         ),
-        ty = Types.I64,
+        ty = Type.I64,
         ctx
       )
 
@@ -206,7 +206,7 @@ final case class Translator(parser: ArcParser) {
           data = this.visitChecked(ctx.data),
           key = this.visitChecked(ctx.key)
         ),
-        ty = Types.unknown,
+        ty = Type.unknown,
         ctx
       )
 
@@ -251,7 +251,7 @@ final case class Translator(parser: ArcParser) {
         kind = ExprKind.Not(
           expr = this.visitChecked(ctx.operatorExpr())
         ),
-        ty = Types.Bool,
+        ty = Type.Bool,
         ctx
       )
 
@@ -288,8 +288,8 @@ final case class Translator(parser: ArcParser) {
         kind = ExprKind.MakeVec(
           elems = ctx.entries.asScala.map(this.visitChecked).toVector
         ),
-        ty = Types.Vec(
-          elemTy = Types.unknown
+        ty = Type.Vec(
+          elemTy = Type.unknown
         ),
         ctx
       )
@@ -298,8 +298,8 @@ final case class Translator(parser: ArcParser) {
       val elems = ctx.entries.asScala.map(this.visitChecked).toVector
       Expr(
         kind = ExprKind.MakeStruct(elems),
-        ty = Types.Struct(
-          elemTys = elems.map(_ => Types.unknown)
+        ty = Type.Struct(
+          elemTys = elems.map(_ => Type.unknown)
         ),
         ctx
       )
@@ -312,7 +312,7 @@ final case class Translator(parser: ArcParser) {
           onTrue = this.visitChecked(ctx.onTrue),
           onFalse = this.visitChecked(ctx.onFalse)
         ),
-        ty = Types.unknown,
+        ty = Type.unknown,
         ctx,
         annotations = AnnotationVisitor.visitChecked(ctx.annotations())
       )
@@ -323,7 +323,7 @@ final case class Translator(parser: ArcParser) {
           initial = this.visitChecked(ctx.initial),
           updateFunc = this.visitChecked(ctx.updateFunc)
         ),
-        ty = Types.unknown,
+        ty = Type.unknown,
         ctx
       )
 
@@ -334,7 +334,7 @@ final case class Translator(parser: ArcParser) {
           onTrue = this.visitChecked(ctx.onTrue),
           onFalse = this.visitChecked(ctx.onFalse)
         ),
-        ty = Types.unknown,
+        ty = Type.unknown,
         ctx
       )
 
@@ -343,8 +343,8 @@ final case class Translator(parser: ArcParser) {
         kind = ExprKind.Broadcast(
           expr = this.visitChecked(ctx.valueExpr())
         ),
-        ty = Types.Simd(
-          elemTy = Types.unknown
+        ty = Type.Simd(
+          elemTy = Type.unknown
         ),
         ctx
       )
@@ -355,8 +355,8 @@ final case class Translator(parser: ArcParser) {
         kind = ExprKind.Serialize(
           expr = this.visitChecked(ctx.valueExpr())
         ),
-        ty = Types.Vec(
-          elemTy = Types.I8
+        ty = Type.Vec(
+          elemTy = Type.I8
         ),
         ctx
       )
@@ -442,7 +442,7 @@ final case class Translator(parser: ArcParser) {
         kind = ExprKind.Result(
           expr = this.visitChecked(ctx.valueExpr())
         ),
-        ty = Types.unknown,
+        ty = Type.unknown,
         ctx
       )
     }
@@ -450,7 +450,7 @@ final case class Translator(parser: ArcParser) {
     override def visitNewAppender(ctx: NewAppenderContext): Expr = {
       val annot = AnnotationVisitor.visitChecked(ctx.annotations())
       val elemTy = TypeVisitor.visitChecked(ctx.elemT, allowNull = true)
-      val ty = Types.Builders.Appender(elemTy, annot)
+      val ty = Type.Builder.Appender(elemTy, annot)
       Expr(
         kind = ExprKind.NewBuilder(
           ty,
@@ -464,7 +464,7 @@ final case class Translator(parser: ArcParser) {
     override def visitNewStreamAppender(ctx: NewStreamAppenderContext): Expr = {
       val annot = AnnotationVisitor.visitChecked(ctx.annotations())
       val elemTy = TypeVisitor.visitChecked(ctx.elemT, allowNull = true)
-      val ty = Types.Builders.StreamAppender(elemTy, annot)
+      val ty = Type.Builder.StreamAppender(elemTy, annot)
       Expr(
         kind = ExprKind.NewBuilder(
           ty,
@@ -479,7 +479,7 @@ final case class Translator(parser: ArcParser) {
       val annot = AnnotationVisitor.visitChecked(ctx.annotations())
       val elemTy = TypeVisitor.visitChecked(ctx.elemT)
       val opTy = OpVisitor.visitChecked(ctx.commutativeBinop())
-      val ty = Types.Builders.Merger(elemTy, opTy, annot)
+      val ty = Type.Builder.Merger(elemTy, opTy, annot)
       Expr(
         kind = ExprKind.NewBuilder(
           ty,
@@ -495,7 +495,7 @@ final case class Translator(parser: ArcParser) {
       val keyTy = TypeVisitor.visitChecked(ctx.keyT)
       val valueTy = TypeVisitor.visitChecked(ctx.valueT)
       val opTy = OpVisitor.visitChecked(ctx.commutativeBinop())
-      val ty = Types.Builders.DictMerger(keyTy, valueTy, opTy, annot)
+      val ty = Type.Builder.DictMerger(keyTy, valueTy, opTy, annot)
       Expr(
         kind = ExprKind.NewBuilder(
           ty,
@@ -510,7 +510,7 @@ final case class Translator(parser: ArcParser) {
       val annot = AnnotationVisitor.visitChecked(ctx.annotations())
       val elemTy = TypeVisitor.visitChecked(ctx.elemT)
       val opTy = OpVisitor.visitChecked(ctx.commutativeBinop())
-      val ty = Types.Builders.VecMerger(elemTy, opTy, annot)
+      val ty = Type.Builder.VecMerger(elemTy, opTy, annot)
       Expr(
         kind = ExprKind.NewBuilder(
           ty,
@@ -525,7 +525,7 @@ final case class Translator(parser: ArcParser) {
       val annot = AnnotationVisitor.visitChecked(ctx.annotations())
       val keyTy = TypeVisitor.visitChecked(ctx.keyT, allowNull = true)
       val valueTy = TypeVisitor.visitChecked(ctx.valueT, allowNull = true)
-      val ty = Types.Builders.GroupMerger(keyTy, valueTy, annot)
+      val ty = Type.Builder.GroupMerger(keyTy, valueTy, annot)
       Expr(
         kind = ExprKind.NewBuilder(
           ty,
@@ -538,11 +538,11 @@ final case class Translator(parser: ArcParser) {
 
     override def visitNewWindower(ctx: NewWindowerContext): Expr = {
       val annot = AnnotationVisitor.visitChecked(ctx.annotations())
-      val ty = Types.Builders.Windower(
+      val ty = Type.Builder.Windower(
         discTy = TypeVisitor.visitChecked(ctx.discT),
         aggrTy = TypeVisitor.visitChecked(ctx.aggrT),
-        aggrMergeTy = Types.unknown,
-        aggrResultTy = Types.unknown,
+        aggrMergeTy = Type.unknown,
+        aggrResultTy = Type.unknown,
         annot)
       Expr(
         kind = ExprKind.NewBuilder(
@@ -568,7 +568,7 @@ final case class Translator(parser: ArcParser) {
           lhs = this.visitChecked(ctx.left),
           rhs = this.visitChecked(ctx.right)
         ),
-        ty = Types.unknown,
+        ty = Type.unknown,
         ctx
       )
 
@@ -583,7 +583,7 @@ final case class Translator(parser: ArcParser) {
             .map(this.visitChecked)
             .toVector
         ),
-        ty = Types.unknown,
+        ty = Type.unknown,
         ctx
       )
 
@@ -593,7 +593,7 @@ final case class Translator(parser: ArcParser) {
           expr = this.visitChecked(ctx.operatorExpr()),
           index = BigInt(ctx.TIndex().getText.substring(1), decRadix).toInt
         ),
-        ty = Types.unknown,
+        ty = Type.unknown,
         ctx
       )
 
@@ -620,7 +620,7 @@ final case class Translator(parser: ArcParser) {
           lhs = this.visitChecked(ctx.left),
           rhs = this.visitChecked(ctx.right)
         ),
-        ty = Types.unknown,
+        ty = Type.unknown,
         ctx
       )
 
@@ -634,7 +634,7 @@ final case class Translator(parser: ArcParser) {
           lhs = this.visitChecked(ctx.left),
           rhs = this.visitChecked(ctx.right)
         ),
-        ty = Types.unknown,
+        ty = Type.unknown,
         ctx
       )
 
@@ -650,7 +650,7 @@ final case class Translator(parser: ArcParser) {
           lhs = this.visitChecked(ctx.left),
           rhs = this.visitChecked(ctx.right)
         ),
-        ty = Types.unknown,
+        ty = Type.unknown,
         ctx
       )
 
@@ -664,7 +664,7 @@ final case class Translator(parser: ArcParser) {
           lhs = this.visitChecked(ctx.left),
           rhs = this.visitChecked(ctx.right)
         ),
-        ty = Types.unknown,
+        ty = Type.unknown,
         ctx
       )
 
@@ -675,7 +675,7 @@ final case class Translator(parser: ArcParser) {
           lhs = this.visitChecked(ctx.left),
           rhs = this.visitChecked(ctx.right)
         ),
-        ty = Types.unknown,
+        ty = Type.unknown,
         ctx
       )
 
@@ -686,7 +686,7 @@ final case class Translator(parser: ArcParser) {
           lhs = this.visitChecked(ctx.left),
           rhs = this.visitChecked(ctx.right)
         ),
-        ty = Types.unknown,
+        ty = Type.unknown,
         ctx
       )
 
@@ -697,7 +697,7 @@ final case class Translator(parser: ArcParser) {
           lhs = this.visitChecked(ctx.left),
           rhs = this.visitChecked(ctx.right)
         ),
-        ty = Types.unknown,
+        ty = Type.unknown,
         ctx
       )
 
@@ -708,7 +708,7 @@ final case class Translator(parser: ArcParser) {
           lhs = this.visitChecked(ctx.left),
           rhs = this.visitChecked(ctx.right)
         ),
-        ty = Types.unknown,
+        ty = Type.unknown,
         ctx
       )
 
@@ -719,7 +719,7 @@ final case class Translator(parser: ArcParser) {
           lhs = this.visitChecked(ctx.left),
           rhs = this.visitChecked(ctx.right)
         ),
-        ty = Types.unknown,
+        ty = Type.unknown,
         ctx
       )
 
@@ -730,7 +730,7 @@ final case class Translator(parser: ArcParser) {
           raw,
           value = extractInteger(raw).toInt
         ),
-        ty = Types.I8,
+        ty = Type.I8,
         ctx
       )
     }
@@ -742,7 +742,7 @@ final case class Translator(parser: ArcParser) {
           raw,
           value = extractInteger(raw).toInt
         ),
-        ty = Types.I16,
+        ty = Type.I16,
         ctx
       )
     }
@@ -754,7 +754,7 @@ final case class Translator(parser: ArcParser) {
           raw,
           value = extractInteger(raw).toInt
         ),
-        ty = Types.I32,
+        ty = Type.I32,
         ctx
       )
     }
@@ -766,7 +766,7 @@ final case class Translator(parser: ArcParser) {
           raw,
           value = extractInteger(raw).toLong
         ),
-        ty = Types.I64,
+        ty = Type.I64,
         ctx
       )
     }
@@ -778,7 +778,7 @@ final case class Translator(parser: ArcParser) {
           raw,
           value = raw.toFloat
         ),
-        ty = Types.F32,
+        ty = Type.F32,
         ctx
       )
     }
@@ -790,7 +790,7 @@ final case class Translator(parser: ArcParser) {
           raw,
           value = raw.toDouble
         ),
-        ty = Types.F64,
+        ty = Type.F64,
         ctx
       )
     }
@@ -805,7 +805,7 @@ final case class Translator(parser: ArcParser) {
             case "false" => false
           }
         ),
-        ty = Types.Bool,
+        ty = Type.Bool,
         ctx
       )
     }
@@ -817,7 +817,7 @@ final case class Translator(parser: ArcParser) {
           raw,
           value = raw.substring(1, raw.length() - 1) // TODO replace escapes
         ),
-        ty = Types.StringT,
+        ty = Type.StringT,
         ctx
       )
     }
@@ -870,21 +870,21 @@ final case class Translator(parser: ArcParser) {
       )
   }
 
-  object OpVisitor extends ArcBaseVisitor[OpType] {
+  object OpVisitor extends ArcBaseVisitor[MergeOp] {
 
-    def visitChecked(tree: ParseTree): OpType =
+    def visitChecked(tree: ParseTree): MergeOp =
       Option(this.visit(tree))
         .getOrElse(
           throw new AssertionError(s"Visiting a sub-tree returned null:\n${tree.toStringTree()}")
         )
 
-    override def visitSumOp(ctx: SumOpContext): OpType = OpTypes.Sum
+    override def visitSumOp(ctx: SumOpContext): MergeOp = MergeOp.Sum
 
-    override def visitProductOp(ctx: ProductOpContext): OpType = OpTypes.Product
+    override def visitProductOp(ctx: ProductOpContext): MergeOp = MergeOp.Product
 
-    override def visitMaxOp(ctx: MaxOpContext): OpType = OpTypes.Max
+    override def visitMaxOp(ctx: MaxOpContext): MergeOp = MergeOp.Max
 
-    override def visitMinOp(ctx: MinOpContext): OpType = OpTypes.Min
+    override def visitMinOp(ctx: MinOpContext): MergeOp = MergeOp.Min
 
   }
 
@@ -938,7 +938,7 @@ final case class Translator(parser: ArcParser) {
         kind = IterKind.RangeIter,
         data = Expr(
           kind = ExprKind.MakeVec(Vector.empty),
-          ty = Types.Vec(Types.I64),
+          ty = Type.Vec(Type.I64),
           ctx
         ),
         start = Some(ExprVisitor.visitChecked(ctx.start)),
@@ -964,7 +964,7 @@ final case class Translator(parser: ArcParser) {
 
     def visitChecked(tree: ParseTree, allowNull: Boolean = false): Type = {
       if (allowNull && tree == null) {
-        Types.unknown // just return a type variable
+        Type.unknown // just return a type variable
       } else {
         assert(tree != null, s"Can't extract type from null-tree")
         Option(this.visit(tree))
@@ -974,84 +974,84 @@ final case class Translator(parser: ArcParser) {
       }
     }
 
-    def tokenToScalar(t: Token): Option[Types.Scalar] =
+    def tokenToScalar(t: Token): Option[Type.Scalar] =
       Try(t.getType match {
-        case ArcLexer.TI8   => Types.I8
-        case ArcLexer.TI16  => Types.I16
-        case ArcLexer.TI32  => Types.I32
-        case ArcLexer.TI64  => Types.I64
-        case ArcLexer.TU8   => Types.U8
-        case ArcLexer.TU16  => Types.U16
-        case ArcLexer.TU32  => Types.U32
-        case ArcLexer.TU64  => Types.U64
-        case ArcLexer.TF32  => Types.F32
-        case ArcLexer.TF64  => Types.F64
-        case ArcLexer.TBool => Types.Bool
-        case ArcLexer.TUnit => Types.UnitT
+        case ArcLexer.TI8   => Type.I8
+        case ArcLexer.TI16  => Type.I16
+        case ArcLexer.TI32  => Type.I32
+        case ArcLexer.TI64  => Type.I64
+        case ArcLexer.TU8   => Type.U8
+        case ArcLexer.TU16  => Type.U16
+        case ArcLexer.TU32  => Type.U32
+        case ArcLexer.TU64  => Type.U64
+        case ArcLexer.TF32  => Type.F32
+        case ArcLexer.TF64  => Type.F64
+        case ArcLexer.TBool => Type.Bool
+        case ArcLexer.TUnit => Type.UnitT
       }).toOption
 
-    override def visitI8(ctx: I8Context): Type = Types.I8
+    override def visitI8(ctx: I8Context): Type = Type.I8
 
-    override def visitI16(ctx: I16Context): Type = Types.I16
+    override def visitI16(ctx: I16Context): Type = Type.I16
 
-    override def visitI32(ctx: I32Context): Type = Types.I32
+    override def visitI32(ctx: I32Context): Type = Type.I32
 
-    override def visitI64(ctx: I64Context): Type = Types.I64
+    override def visitI64(ctx: I64Context): Type = Type.I64
 
-    override def visitU8(ctx: U8Context): Type = Types.U8
+    override def visitU8(ctx: U8Context): Type = Type.U8
 
-    override def visitU16(ctx: U16Context): Type = Types.U16
+    override def visitU16(ctx: U16Context): Type = Type.U16
 
-    override def visitU32(ctx: U32Context): Type = Types.U32
+    override def visitU32(ctx: U32Context): Type = Type.U32
 
-    override def visitU64(ctx: U64Context): Type = Types.U64
+    override def visitU64(ctx: U64Context): Type = Type.U64
 
-    override def visitF32(ctx: F32Context): Type = Types.F32
+    override def visitF32(ctx: F32Context): Type = Type.F32
 
-    override def visitF64(ctx: F64Context): Type = Types.F64
+    override def visitF64(ctx: F64Context): Type = Type.F64
 
-    override def visitBool(ctx: BoolContext): Type = Types.Bool
+    override def visitBool(ctx: BoolContext): Type = Type.Bool
 
-    override def visitUnitT(ctx: UnitTContext): Type = Types.UnitT
+    override def visitUnitT(ctx: UnitTContext): Type = Type.UnitT
 
-    override def visitStringT(ctx: StringTContext): Type = Types.StringT
+    override def visitStringT(ctx: StringTContext): Type = Type.StringT
 
     override def visitSimd(ctx: SimdContext): Type =
-      Types.Simd(
+      Type.Simd(
         elemTy = this.visitChecked(ctx.elemT)
       )
 
     override def visitVec(ctx: VecContext): Type =
-      Types.Vec(
+      Type.Vec(
         elemTy = this.visitChecked(ctx.elemT)
       )
 
     override def visitStream(ctx: StreamContext): Type =
-      Types.Stream(
+      Type.Stream(
         elemTy = this.visitChecked(ctx.elemT)
       )
 
     override def visitDict(ctx: DictContext): Type =
-      Types.Dict(
+      Type.Dict(
         keyTy = this.visitChecked(ctx.keyT),
         valueTy = this.visitChecked(ctx.valueT)
       )
 
     override def visitStruct(ctx: StructContext): Type =
-      Types.Struct(
+      Type.Struct(
         elemTys = ctx.types.asScala
           .map(TypeVisitor.visitChecked(_))
           .toVector
       )
 
     override def visitUnitFunction(ctx: ArcParser.UnitFunctionContext): Type =
-      Types.Function(
+      Type.Function(
         params = Vector.empty,
         returnTy = this.visitChecked(ctx.returnT)
       )
 
     override def visitParamFunction(ctx: ArcParser.ParamFunctionContext): Type =
-      Types.Function(
+      Type.Function(
         params = ctx.paramTypes.asScala
           .map(this.visitChecked(_))
           .toVector,
@@ -1059,26 +1059,26 @@ final case class Translator(parser: ArcParser) {
       )
 
     override def visitAppender(ctx: ArcParser.AppenderContext): Type =
-      Types.Builders.Appender(
+      Type.Builder.Appender(
         elemTy = TypeVisitor.visitChecked(ctx.elemT),
         annotations = AnnotationVisitor.visitChecked(ctx.annotations())
       )
 
     override def visitStreamAppender(ctx: ArcParser.StreamAppenderContext): Type =
-      Types.Builders.StreamAppender(
+      Type.Builder.StreamAppender(
         elemTy = TypeVisitor.visitChecked(ctx.elemT),
         annotations = AnnotationVisitor.visitChecked(ctx.annotations())
       )
 
     override def visitMerger(ctx: ArcParser.MergerContext): Type =
-      Types.Builders.Merger(
+      Type.Builder.Merger(
         elemTy = TypeVisitor.visitChecked(ctx.elemT),
         opTy = OpVisitor.visitChecked(ctx.commutativeBinop()),
         annotations = AnnotationVisitor.visitChecked(ctx.annotations())
       )
 
     override def visitDictMerger(ctx: ArcParser.DictMergerContext): Type =
-      Types.Builders.DictMerger(
+      Type.Builder.DictMerger(
         keyTy = TypeVisitor.visitChecked(ctx.keyT),
         valueTy = TypeVisitor.visitChecked(ctx.valueT),
         opTy = OpVisitor.visitChecked(ctx.commutativeBinop()),
@@ -1086,21 +1086,21 @@ final case class Translator(parser: ArcParser) {
       )
 
     override def visitGroupMerger(ctx: ArcParser.GroupMergerContext): Type =
-      Types.Builders.GroupMerger(
+      Type.Builder.GroupMerger(
         keyTy = TypeVisitor.visitChecked(ctx.keyT),
         valueTy = TypeVisitor.visitChecked(ctx.valueT),
         annotations = AnnotationVisitor.visitChecked(ctx.annotations())
       )
 
     override def visitVecMerger(ctx: ArcParser.VecMergerContext): Type =
-      Types.Builders.VecMerger(
+      Type.Builder.VecMerger(
         elemTy = TypeVisitor.visitChecked(ctx.elemT),
         opTy = OpVisitor.visitChecked(ctx.commutativeBinop()),
         annotations = AnnotationVisitor.visitChecked(ctx.annotations())
       )
 
     override def visitWindower(ctx: ArcParser.WindowerContext): Type =
-      Types.Builders.Windower(
+      Type.Builder.Windower(
         discTy = TypeVisitor.visitChecked(ctx.discT),
         aggrTy = TypeVisitor.visitChecked(ctx.aggrT),
         aggrMergeTy = TypeVisitor.visitChecked(ctx.aggrMergeT),
@@ -1109,7 +1109,7 @@ final case class Translator(parser: ArcParser) {
       )
 
     // ignore the annotated number to avoid clashes
-    override def visitTypeVariable(ctx: ArcParser.TypeVariableContext): Type = Types.unknown
+    override def visitTypeVariable(ctx: ArcParser.TypeVariableContext): Type = Type.unknown
   }
 
 }

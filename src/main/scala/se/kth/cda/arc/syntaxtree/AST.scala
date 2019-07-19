@@ -4,10 +4,11 @@ import org.antlr.v4.runtime._
 import se.kth.cda.arc._
 import se.kth.cda.arc.syntaxtree.AST.UnaryOpKind.UnaryOpKind
 
-import scala.util.{ Failure, Success, Try }
+import scala.util.{Failure, Success, Try}
 
 sealed trait ASTNode {
   def inputText: String
+
   def line: Int
 }
 
@@ -15,13 +16,15 @@ object AST {
 
   final case class Symbol(name: String, token: Option[Token] = None, scopeId: Int = 0) extends ASTNode {
     override def inputText: String = token.map(_.getText).getOrElse("<no associated token>")
+
     override def line: Int = token.map(_.getLine).getOrElse(-1)
   }
+
   object Symbol {
     private var variableCounter: Int = 0
 
     def unknown: Symbol = {
-      val t = Symbol(s"anon-${variableCounter}");
+      val t = Symbol(s"anon-$variableCounter")
       variableCounter += 1
       t
     }
@@ -29,12 +32,14 @@ object AST {
 
   final case class Program(macros: List[Macro], expr: Expr, ctx: ArcParser.ProgramContext) extends ASTNode {
     override def inputText: String = ctx.getText
+
     override def line: Int = ctx.getStart.getLine
   }
 
   final case class Macro(symbol: Symbol, params: Vector[Symbol], body: Expr, ctx: ArcParser.MacroContext)
     extends ASTNode {
     override def inputText: String = ctx.getText
+
     override def line: Int = ctx.getStart.getLine
   }
 
@@ -43,6 +48,7 @@ object AST {
   final case class Expr(kind: ExprKind, ty: Type, ctx: ParserRuleContext, annotations: Option[Annotations] = None)
     extends ASTNode {
     override def inputText: String = ctx.getText
+
     override def line: Int = ctx.getStart.getLine
   }
 
@@ -51,12 +57,14 @@ object AST {
   final case class Parameter(symbol: Symbol, ty: Type)
 
   sealed trait ExprKind {
+
     def toExpr(ty: Type): Expr = {
       Expr(this, ty, null, None)
     }
   }
 
   object ExprKind {
+
     final case class Let(symbol: Symbol, bindingTy: Type, value: Expr, body: Expr) extends ExprKind
 
     final case class Lambda(params: Vector[Parameter], body: Expr) extends ExprKind
@@ -134,6 +142,7 @@ object AST {
         def this(value: String, ty: String, bounds: (String, String)) {
           this(s"$ty literal value does not fit into bounds: ${bounds._1} <= $value <= ${bounds._2}")
         }
+
         def this(message: String, cause: Throwable) {
           this(message)
           initCause(cause)
@@ -147,8 +156,10 @@ object AST {
           this(null: String)
         }
       }
+
     }
-    final case class Cast(ty: Types.Scalar, expr: Expr) extends ExprKind
+
+    final case class Cast(ty: Type.Scalar, expr: Expr) extends ExprKind
 
     final case class ToVec(expr: Expr) extends ExprKind
 
@@ -196,7 +207,7 @@ object AST {
 
     final case class Result(expr: Expr) extends ExprKind
 
-    final case class NewBuilder(ty: BuilderType, args: Vector[Expr]) extends ExprKind
+    final case class NewBuilder(ty: Builder, args: Vector[Expr]) extends ExprKind
 
     final case class BinOp(kind: BinOpKind, lhs: Expr, rhs: Expr) extends ExprKind
 
@@ -232,14 +243,14 @@ object AST {
   }
 
   final case class Iter(
-    kind:    IterKind.IterKind,
-    data:    Expr,
-    start:   Option[Expr]      = None,
-    end:     Option[Expr]      = None,
-    stride:  Option[Expr]      = None,
-    strides: Option[Expr]      = None,
-    shape:   Option[Expr]      = None,
-    keyFunc: Option[Expr]      = None)
+                         kind: IterKind.IterKind,
+                         data: Expr,
+                         start: Option[Expr] = None,
+                         end: Option[Expr] = None,
+                         stride: Option[Expr] = None,
+                         strides: Option[Expr] = None,
+                         shape: Option[Expr] = None,
+                         keyFunc: Option[Expr] = None)
 
   object UnaryOpKind extends Enumeration {
     type UnaryOpKind = Value
@@ -247,106 +258,147 @@ object AST {
   }
 
   implicit class UnaryOpKindImpl(val self: UnaryOpKind) extends AnyVal {
+
     import UnaryOpKind._
+
     override def toString: String = self match {
-      case Exp  => "exp"
-      case Sin  => "sin"
-      case Cos  => "cos"
-      case Tan  => "tan"
+      case Exp => "exp"
+      case Sin => "sin"
+      case Cos => "cos"
+      case Tan => "tan"
       case ASin => "asin"
       case ACos => "acos"
       case ATan => "atan"
       case Sinh => "sinh"
       case Cosh => "cosh"
       case Tanh => "tanh"
-      case Log  => "log"
-      case Erf  => "erf"
+      case Log => "log"
+      case Erf => "erf"
       case Sqrt => "sqrt"
     }
   }
 
   sealed trait BinOpKind {
     def isInfix: Boolean
+
     def symbol: String
   }
 
   object BinOpKind {
+
     case object Min extends BinOpKind {
       override def isInfix = false
+
       override def symbol = "min"
     }
+
     case object Max extends BinOpKind {
       override def isInfix = false
+
       override def symbol = "max"
     }
+
     case object Pow extends BinOpKind {
       override def isInfix = false
+
       override def symbol = "pow"
     }
+
     case object Mul extends BinOpKind {
       override def isInfix = true
+
       override def symbol = "*"
     }
+
     case object Div extends BinOpKind {
       override def isInfix = true
+
       override def symbol = "/"
     }
+
     case object Mod extends BinOpKind {
       override def isInfix = true
+
       override def symbol = "%"
     }
+
     case object Add extends BinOpKind {
       override def isInfix = true
+
       override def symbol = "+"
     }
+
     case object Sub extends BinOpKind {
       override def isInfix = true
+
       override def symbol = "-"
     }
+
     case object Lt extends BinOpKind {
       override def isInfix = true
+
       override def symbol = "<"
     }
+
     case object Gt extends BinOpKind {
       override def isInfix = true
+
       override def symbol = ">"
     }
+
     case object LEq extends BinOpKind {
       override def isInfix = true
+
       override def symbol = "<="
     }
+
     case object GEq extends BinOpKind {
       override def isInfix = true
+
       override def symbol = ">="
     }
+
     case object Eq extends BinOpKind {
       override def isInfix = true
+
       override def symbol = "=="
     }
+
     case object NEq extends BinOpKind {
       override def isInfix = true
+
       override def symbol = "!="
     }
+
     case object BwAnd extends BinOpKind {
       override def isInfix = true
+
       override def symbol = "&"
     }
+
     case object BwXor extends BinOpKind {
       override def isInfix = true
+
       override def symbol = "^"
     }
+
     case object BwOr extends BinOpKind {
       override def isInfix = true
+
       override def symbol = "|"
     }
+
     case object And extends BinOpKind {
       override def isInfix = true
+
       override def symbol = "&&"
     }
+
     case object Or extends BinOpKind {
       override def isInfix = true
+
       override def symbol = "||"
     }
-  }
 
+  }
 }
