@@ -317,6 +317,16 @@ object PrettyPrint {
             out.prettyPrint(':')
             out.prettyPrint(expr.ty)
           }
+        case Drain(source, sink) =>
+          out.prettyPrint("drain(")
+          out.prettyPrint(source, typed = false, indent + INDENT_INC, shouldIndent = false)
+          out.prettyPrint(',')
+          out.prettyPrint(sink, typed = false, indent + INDENT_INC, shouldIndent = false)
+          out.prettyPrint(')')
+          if (typed) {
+            out.prettyPrint(':')
+            out.prettyPrint(expr.ty)
+          }
         case Serialize(e) =>
           out.prettyPrint("serialize(")
           out.prettyPrint(e, typed = false, indent + INDENT_INC, shouldIndent = false)

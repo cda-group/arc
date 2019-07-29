@@ -3,8 +3,6 @@ package se.kth.cda.arc
 import org.antlr.v4.runtime._
 import org.scalatest._
 
-import scala.language.implicitConversions
-
 class ParserTests extends FunSuite with Matchers {
   implicit class StringTokenAux(val input: String) {
 

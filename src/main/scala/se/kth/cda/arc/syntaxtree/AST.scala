@@ -24,7 +24,7 @@ object AST {
     private var variableCounter: Int = 0
 
     def unknown: Symbol = {
-      val t = Symbol(s"anon-$variableCounter")
+      val t = Symbol(s"anon_$variableCounter")
       variableCounter += 1
       t
     }
@@ -197,6 +197,8 @@ object AST {
 
     final case class Sort(data: Expr, keyFunc: Expr) extends ExprKind
 
+    final case class Drain(source: Expr, sink: Expr) extends ExprKind
+
     final case class Negate(expr: Expr) extends ExprKind
 
     final case class Not(expr: Expr) extends ExprKind
@@ -242,15 +244,14 @@ object AST {
     = Value
   }
 
-  final case class Iter(
-                         kind: IterKind.IterKind,
-                         data: Expr,
-                         start: Option[Expr] = None,
-                         end: Option[Expr] = None,
-                         stride: Option[Expr] = None,
-                         strides: Option[Expr] = None,
-                         shape: Option[Expr] = None,
-                         keyFunc: Option[Expr] = None)
+  final case class Iter(kind: IterKind.IterKind,
+                        data: Expr,
+                        start: Option[Expr] = None,
+                        end: Option[Expr] = None,
+                        stride: Option[Expr] = None,
+                        strides: Option[Expr] = None,
+                        shape: Option[Expr] = None,
+                        keyFunc: Option[Expr] = None)
 
   object UnaryOpKind extends Enumeration {
     type UnaryOpKind = Value
@@ -401,4 +402,5 @@ object AST {
     }
 
   }
+
 }

@@ -211,6 +211,22 @@ class ConstraintGenerator(val rootExpr: Expr) {
         discoverDown(Vector(data, index, size), env).map(_.map {
           case Vector(newData, newIndex, newSize) => Slice(newData, newIndex, newSize)
         })
+      // TODO: Drain might be more hassle than what it is worth
+      //case Drain(source, sink) =>
+      //  val elemTy = Type.unknown
+      //  constrainEq(Stream(elemTy), source.ty)
+      //  constrainEq(expr.ty, sink.ty)
+      //  constrainBuilder(sink.ty, mergeType = Stream(sink.ty))
+      //  for {
+      //    newBuilder <- discoverDown(builder, env)
+      //    newValue <- discoverDown(value, env)
+      //  } yield {
+      //    if (newBuilder.isEmpty && newValue.isEmpty) {
+      //      None
+      //    } else {
+      //      Some(Merge(newBuilder.getOrElse(builder), newValue.getOrElse(value)))
+      //    }
+      //  }
       case Sort(data, keyFunc) =>
         val elemTy = Type.unknown
         constrainEq(expr.ty, data.ty, Vec(elemTy))

@@ -67,6 +67,7 @@ final case class Transformer[Env](onExpr: Transformer.ExprTransformer[Env], onTy
         case Lookup(data, key)             => transformMap((data, key), env)(Lookup)
         case Slice(data, index, size)      => transformMap((data, index, size), env)(Slice)
         case Sort(data, keyFunc)           => transformMap((data, keyFunc), env)(Sort)
+        case Drain(source, sink)           => transformMap((source, sink), env)(Drain)
         case Merge(builder, value)         => transformMap((builder, value), env)(Merge)
         case BinOp(kind, left, right)      => transformMap((left, right), env)(BinOp(kind, _, _))
         case Let(symbol, bindingTy, value, body) =>

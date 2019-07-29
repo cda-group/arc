@@ -124,6 +124,11 @@ object Typer {
           newData <- substituteTypes(data, substitute)
           newKeyFunc <- substituteTypes(keyFunc, substitute)
         } yield Sort(newData, newKeyFunc)
+      case Drain(source, sink) =>
+        for {
+          newSource <- substituteTypes(source, substitute)
+          newSink <- substituteTypes(sink, substitute)
+        } yield Drain(newSource, newSink)
       case Negate(inner) =>
         for {
           newInner <- substituteTypes(inner, substitute)
