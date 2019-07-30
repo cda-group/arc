@@ -194,8 +194,11 @@ object Type {
 
       override def argTypes: Vector[Type] =
         Vector(
-          Function(params = Vector(mergeType, Vec(U64), discTy), returnTy = Struct(Vector(discTy, Vec(U64)))),
-          Function(params = Vector(U64, Vec(U64), discTy), returnTy = Struct(Vector(discTy, Vec(U64)))),
+          // Assign
+          Function(params = Vector(mergeType, Vec(U64), discTy), returnTy = Struct(Vector(Vec(U64), discTy))),
+          // Trigger
+          Function(params = Vector(U64, Vec(U64), discTy), returnTy = Struct(Vector(Vec(U64), discTy))),
+          // Lower
           Function(params = Vector(U64, aggrTy), returnTy = Struct(Vector(U64, resultType)))
         )
     }
