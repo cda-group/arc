@@ -447,9 +447,14 @@ object PrettyPrint {
           }
         case NewBuilder(ty, args) =>
           out.prettyPrint(ty)
-          if (args.length > 0) {
+          if (args.nonEmpty) {
             out.prettyPrint('(')
-            args.foreach(out.prettyPrint(_, typed = true, indent + INDENT_INC, shouldIndent = false))
+            for ((p, i) <- args.view.zipWithIndex) {
+              out.prettyPrint(p, typed = true, indent + INDENT_INC, shouldIndent = false)
+              if (i != (args.length - 1)) {
+                out.prettyPrint(',')
+              }
+            }
             out.prettyPrint(')')
           }
         // don't print type even if requested since it's redundant
