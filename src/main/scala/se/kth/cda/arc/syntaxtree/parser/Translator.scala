@@ -834,6 +834,15 @@ final case class Translator(parser: ArcParser) {
       )
     }
 
+    override def visitUnitLit(ctx: UnitLitContext): Expr = {
+      val raw = ctx.TUnitLit().getText
+      Expr(
+        kind = ExprKind.Literal.UnitL(raw),
+        ty = Type.UnitT,
+        ctx
+      )
+    }
+
     val binExpr: Regex = raw"0b([01]+)(?:[cClL]|si)?".r
     val hexExpr: Regex = raw"0x([0-9a-fA-F]+)(?:[cClL]|si)?".r
     val decExpr: Regex = raw"([0-9]+)(?:[cClL]|si)?".r

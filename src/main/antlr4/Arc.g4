@@ -127,6 +127,7 @@ literalExpr
 | TF64Lit # F64Lit
 | TBoolLit # BoolLit
 | TStringLit # StringLit
+| TUnitLit # UnitLit
 ;
 
 iterator

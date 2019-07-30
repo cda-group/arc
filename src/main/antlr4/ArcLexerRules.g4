@@ -108,7 +108,8 @@ TAnd : '&';
 TCirc : '^';
 // Literals
 TBoolLit : 'true'|'false';
-TStringLit : '"' .*? '"'; 
+TStringLit : '"' .*? '"';
+TUnitLit : '()';
 // Regions
 Comment : '#' .*? ('\n'|EOF) -> channel(HIDDEN); // comments
 TIndex : '$' DecimalInteger; // for struct indexes
