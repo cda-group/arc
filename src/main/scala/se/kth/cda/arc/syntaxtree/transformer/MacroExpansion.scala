@@ -78,7 +78,7 @@ object MacroExpansion {
   val emptyEnv = Env(Map.empty, Map.empty, Map.empty)
 
   lazy val standardMacros: List[Macro] =
-    Option(getClass.getResourceAsStream("/standard_macros.weld"))
+    Option(classOf[Macro].getResourceAsStream("/standard_macros.weld"))
       .map(Compiler.macros)
       .get
       .getOrElse(throw new java.io.FileNotFoundException("standard_macros.weld"))
