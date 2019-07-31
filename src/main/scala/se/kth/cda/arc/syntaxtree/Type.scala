@@ -184,22 +184,24 @@ object Type {
         aggrResultTy: Type,
         annotations: Option[AST.Annotations])
         extends Builder {
-      override def render: String = s"windower[${discTy.render},${aggrTy.render}]"
+      override def render: String =
+        s"windower[${discTy.render},${aggrTy.render},${aggrMergeTy.render},${aggrResultTy.render}]"
 
-      override def isComplete: Boolean = discTy.isComplete && aggrTy.isComplete
+      override def isComplete: Boolean =
+        discTy.isComplete && aggrTy.isComplete && aggrMergeTy.isComplete && aggrResultTy.isComplete
 
-      override def resultType: Type = Stream(Struct(Vector(U64, aggrResultTy)))
+      override def resultType: Type = Stream(aggrResultTy)
 
       override def mergeType: Type = aggrMergeTy
 
       override def argTypes: Vector[Type] =
         Vector(
           // Assign
-          Function(params = Vector(mergeType, Vec(U64), discTy), returnTy = Struct(Vector(Vec(U64), discTy))),
+          Function(params = Vector(I64, Vec(I64), discTy), returnTy = Struct(Vector(Vec(I64), discTy))),
           // Trigger
-          Function(params = Vector(U64, Vec(U64), discTy), returnTy = Struct(Vector(Vec(U64), discTy))),
+          Function(params = Vector(I64, Vec(I64), discTy), returnTy = Struct(Vector(Vec(I64), discTy))),
           // Lower
-          Function(params = Vector(U64, aggrTy), returnTy = Struct(Vector(U64, resultType)))
+          Function(params = Vector(aggrTy), returnTy = aggrResultTy)
         )
     }
   }

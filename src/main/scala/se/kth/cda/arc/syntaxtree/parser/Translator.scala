@@ -274,18 +274,18 @@ final case class Translator(parser: ArcParser) {
       Expr(
         ExprKind.UnaryOp(
           kind = ctx.op.getType match {
-            case TExp => Exp
-            case TSin => Sin
-            case TCos => Cos
-            case TTan => Tan
+            case TExp  => Exp
+            case TSin  => Sin
+            case TCos  => Cos
+            case TTan  => Tan
             case TASin => ASin
             case TACos => ACos
             case TATan => ATan
             case TSinh => Sinh
             case TCosh => Cosh
             case TTanh => Tanh
-            case TLog => Log
-            case TErf => Erf
+            case TLog  => Log
+            case TErf  => Erf
             case TSqrt => Sqrt
           },
           expr
@@ -553,9 +553,10 @@ final case class Translator(parser: ArcParser) {
       val ty = Type.Builder.Windower(
         discTy = TypeVisitor.visitChecked(ctx.discT),
         aggrTy = TypeVisitor.visitChecked(ctx.aggrT),
-        aggrMergeTy = Type.unknown,
-        aggrResultTy = Type.unknown,
-        annot)
+        aggrMergeTy = TypeVisitor.visitChecked(ctx.aggrMergeT),
+        aggrResultTy = TypeVisitor.visitChecked(ctx.aggrResultT),
+        annot
+      )
       Expr(
         kind = ExprKind.NewBuilder(
           ty,
@@ -625,8 +626,8 @@ final case class Translator(parser: ArcParser) {
       Expr(
         kind = ExprKind.BinOp(
           kind = ctx.op.getType match {
-            case ArcLexer.TStar => BinOpKind.Mul
-            case ArcLexer.TSlash => BinOpKind.Div
+            case ArcLexer.TStar    => BinOpKind.Mul
+            case ArcLexer.TSlash   => BinOpKind.Div
             case ArcLexer.TPercent => BinOpKind.Mod
           },
           lhs = this.visitChecked(ctx.left),
@@ -640,7 +641,7 @@ final case class Translator(parser: ArcParser) {
       Expr(
         kind = ExprKind.BinOp(
           kind = ctx.op.getType match {
-            case ArcLexer.TPlus => BinOpKind.Add
+            case ArcLexer.TPlus  => BinOpKind.Add
             case ArcLexer.TMinus => BinOpKind.Sub
           },
           lhs = this.visitChecked(ctx.left),
@@ -654,10 +655,10 @@ final case class Translator(parser: ArcParser) {
       Expr(
         kind = ExprKind.BinOp(
           kind = ctx.op.getType match {
-            case ArcLexer.TLessThan => BinOpKind.Lt
+            case ArcLexer.TLessThan    => BinOpKind.Lt
             case ArcLexer.TGreaterThan => BinOpKind.Gt
-            case ArcLexer.TLEq => BinOpKind.LEq
-            case ArcLexer.TGEq => BinOpKind.GEq
+            case ArcLexer.TLEq         => BinOpKind.LEq
+            case ArcLexer.TGEq         => BinOpKind.GEq
           },
           lhs = this.visitChecked(ctx.left),
           rhs = this.visitChecked(ctx.right)
@@ -671,7 +672,7 @@ final case class Translator(parser: ArcParser) {
         kind = ExprKind.BinOp(
           kind = ctx.op.getType match {
             case ArcLexer.TEqualEqual => BinOpKind.Eq
-            case ArcLexer.TNotEqual => BinOpKind.NEq
+            case ArcLexer.TNotEqual   => BinOpKind.NEq
           },
           lhs = this.visitChecked(ctx.left),
           rhs = this.visitChecked(ctx.right)
@@ -813,7 +814,7 @@ final case class Translator(parser: ArcParser) {
         kind = ExprKind.Literal.Bool(
           raw,
           value = raw match {
-            case "true" => true
+            case "true"  => true
             case "false" => false
           }
         ),
@@ -920,12 +921,12 @@ final case class Translator(parser: ArcParser) {
     def tokenToIterKind(t: Token): IterKind.IterKind =
       t.getType match {
         case ArcLexer.TScalarIter => IterKind.ScalarIter
-        case ArcLexer.TSimdIter => IterKind.SimdIter
+        case ArcLexer.TSimdIter   => IterKind.SimdIter
         case ArcLexer.TFringeIter => IterKind.FringeIter
-        case ArcLexer.TNdIter => IterKind.NdIter
-        case ArcLexer.TRangeIter => IterKind.RangeIter
-        case ArcLexer.TKeyByIter => IterKind.KeyByIter
-        case _ => IterKind.UnknownIter
+        case ArcLexer.TNdIter     => IterKind.NdIter
+        case ArcLexer.TRangeIter  => IterKind.RangeIter
+        case ArcLexer.TKeyByIter  => IterKind.KeyByIter
+        case _                    => IterKind.UnknownIter
       }
 
     override def visitSimpleIter(ctx: ArcParser.SimpleIterContext): Iter =
@@ -997,16 +998,16 @@ final case class Translator(parser: ArcParser) {
 
     def tokenToScalar(t: Token): Option[Type.Scalar] =
       Try(t.getType match {
-        case ArcLexer.TI8 => Type.I8
-        case ArcLexer.TI16 => Type.I16
-        case ArcLexer.TI32 => Type.I32
-        case ArcLexer.TI64 => Type.I64
-        case ArcLexer.TU8 => Type.U8
-        case ArcLexer.TU16 => Type.U16
-        case ArcLexer.TU32 => Type.U32
-        case ArcLexer.TU64 => Type.U64
-        case ArcLexer.TF32 => Type.F32
-        case ArcLexer.TF64 => Type.F64
+        case ArcLexer.TI8   => Type.I8
+        case ArcLexer.TI16  => Type.I16
+        case ArcLexer.TI32  => Type.I32
+        case ArcLexer.TI64  => Type.I64
+        case ArcLexer.TU8   => Type.U8
+        case ArcLexer.TU16  => Type.U16
+        case ArcLexer.TU32  => Type.U32
+        case ArcLexer.TU64  => Type.U64
+        case ArcLexer.TF32  => Type.F32
+        case ArcLexer.TF64  => Type.F64
         case ArcLexer.TBool => Type.Bool
         case ArcLexer.TUnit => Type.UnitT
       }).toOption
