@@ -63,6 +63,7 @@ object ASTUtils {
 
     def isBuilderType: Boolean = self match {
       case Struct(types) => types.forall(_.isBuilderType)
+      case Function(_, returnTy) => returnTy.isBuilderType
       case _ => self.isInstanceOf[Builder]
     }
 
@@ -88,6 +89,7 @@ object ASTUtils {
 
     def isArcType: Boolean = self match {
       case Struct(types) => types.forall(_.isArcType)
+      case Function(_, returnTy) => returnTy.isArcType
       case _ => self.isInstanceOf[StreamAppender] ||
         self.isInstanceOf[Windower]
     }
