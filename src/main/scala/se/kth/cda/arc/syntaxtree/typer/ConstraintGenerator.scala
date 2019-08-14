@@ -151,10 +151,10 @@ class ConstraintGenerator(val rootExpr: Expr) {
           } else {
             Success(None)
           }
-          keyFunc <- if (iter.keyFunc.isDefined) {
-            val keyFunc = iter.keyFunc.get
-            constrainEq(keyFunc.ty, Function(Vector(elemTy), U64))
+          keyFunc <- if (iter.keyFunc.isDefined) { // data and keyFunc must be defined together
             constrainEq(iter.data.ty, Stream(elemTy))
+            val keyFunc = iter.keyFunc.get
+            constrainEq(keyFunc.ty, Function(Vector(elemTy), Vec(I32)))
             discoverDown(keyFunc, env)
           } else {
             Success(None)
