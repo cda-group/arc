@@ -151,7 +151,7 @@ class ConstraintGenerator(val rootExpr: Expr) {
           } else {
             Success(None)
           }
-          keyby <- if (iter.keyFunc.isDefined) {
+          keyFunc <- if (iter.keyFunc.isDefined) {
             val keyFunc = iter.keyFunc.get
             constrainEq(keyFunc.ty, Function(Vector(elemTy), U64))
             constrainEq(iter.data.ty, Stream(elemTy))
@@ -161,7 +161,7 @@ class ConstraintGenerator(val rootExpr: Expr) {
           }
           data <- discoverDown(iter.data, env)
         } yield {
-          if (sest.isEmpty && shsts.isEmpty && keyby.isEmpty && data.isEmpty) {
+          if (sest.isEmpty && shsts.isEmpty && keyFunc.isEmpty && data.isEmpty) {
             None
           } else {
             val (newStart, newEnd, newStride) = sest match {
@@ -172,7 +172,7 @@ class ConstraintGenerator(val rootExpr: Expr) {
               case Some((sh, sts)) => (Some(sh), Some(sts))
               case None            => (iter.shape, iter.strides)
             }
-            val newKeyFunc = keyby.orElse(iter.keyFunc)
+            val newKeyFunc = keyFunc.orElse(iter.keyFunc)
             val newData = data.getOrElse(iter.data)
             Some(Iter(iter.kind, newData, newStart, newEnd, newStride, newShape, newStrides, newKeyFunc))
           }
