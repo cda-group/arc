@@ -4,6 +4,7 @@ import se.kth.cda.arc.syntaxtree.AST._
 import se.kth.cda.arc.syntaxtree.Type._
 import se.kth.cda.arc.Utils.TryVector
 import se.kth.cda.arc.syntaxtree.Type
+import se.kth.cda.arc.syntaxtree.Type.Builder.Windower
 
 import scala.util.{Failure, Success, Try}
 
@@ -264,6 +265,11 @@ class ConstraintGenerator(val rootExpr: Expr) {
         constrainBuilder(builder.ty, resultType = expr.ty)
         discoverDownMap(builder, env)(Result)
       case NewBuilder(ty, args) =>
+        ty match {
+          case Windower(_, aggrTy, aggrMergeTy, aggrResultTy, _) =>
+            constrainBuilder(aggrTy, mergeType = aggrMergeTy, resultType = aggrResultTy)
+          case _ => ()
+        }
         constrainEq(expr.ty, ty)
         constrainBuilder(ty, argTypes = args.map(_.ty))
         for {

@@ -87,7 +87,7 @@ object TypeConstraints {
         val newAggrTy = substituteType(aggrTy, assignments)
         val newAggrMergeTy = substituteType(aggrMergeTy, assignments)
         val newAggrResultTy = substituteType(aggrResultTy, assignments)
-        if (newDiscTy.isEmpty && newAggrTy.isEmpty && newAggrMergeTy.isEmpty && newAggrMergeTy.isEmpty) {
+        if (newDiscTy.isEmpty && newAggrTy.isEmpty && newAggrMergeTy.isEmpty && newAggrResultTy.isEmpty) {
           None
         } else {
           Some(
