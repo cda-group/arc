@@ -91,7 +91,8 @@ object ASTUtils {
       case Struct(types) => types.forall(_.isArcType)
       case Function(_, returnTy) => returnTy.isArcType
       case _ => self.isInstanceOf[StreamAppender] ||
-        self.isInstanceOf[Windower]
+        self.isInstanceOf[Windower] ||
+        self.isInstanceOf[Stream]
     }
 
     def children: Vector[Type] = self match {
