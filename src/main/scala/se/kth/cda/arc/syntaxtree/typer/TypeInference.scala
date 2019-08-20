@@ -2,6 +2,7 @@ package se.kth.cda.arc.syntaxtree.typer
 
 import se.kth.cda.arc.syntaxtree.AST._
 import se.kth.cda.arc.syntaxtree.Type
+import se.kth.cda.arc.syntaxtree.typer.PostProcess._
 
 import scala.util.Try
 
@@ -12,7 +13,7 @@ object TypeInference {
       (constraints, updatedExpr) <- new ConstraintGenerator(expr).generate()
       result <- ConstraintSolver.solve(constraints)
       finalExpr <- Typer.applyTypes(updatedExpr, result)
-    } yield finalExpr
+    } yield finalExpr.postProcess
   }
 }
 
