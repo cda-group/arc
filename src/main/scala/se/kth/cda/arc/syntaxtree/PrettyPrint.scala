@@ -72,7 +72,7 @@ object PrettyPrint {
         case RangeIter   => "rangeiter"
         case NextIter    => "nextiter"
         case KeyByIter   => "keyby"
-        case UnknownIter => "?iter"
+        case UnknownIter => "iter" // Make sure this doesn't happen
       }
 
       if (iter.kind == NdIter) {
