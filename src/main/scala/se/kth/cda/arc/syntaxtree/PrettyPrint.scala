@@ -124,6 +124,7 @@ object PrettyPrint {
       // lazy val lessIndentStr = (0 until (indent - 2)).foldLeft("")((acc, _) => acc + " ")
       expr.kind match {
         case Let(name, bindingTy, value, body) =>
+          out.prettyPrint('(')
           if (typed) {
             out.prettyPrint('(')
             out.prettyPrint(' ')
@@ -148,6 +149,7 @@ object PrettyPrint {
             out.prettyPrint(':')
             out.prettyPrint(expr.ty)
           }
+          out.prettyPrint(')')
         case Lambda(params, body) =>
           if (params.isEmpty) {
             out.prettyPrint("||")
@@ -484,7 +486,9 @@ object PrettyPrint {
             }
           }
         case Application(fun, args) =>
+          out.prettyPrint('(')
           out.prettyPrint(fun, typed = false, indent, shouldIndent = false)
+          out.prettyPrint(')')
           out.prettyPrint('(')
           for ((e, i) <- args.view.zipWithIndex) {
             out.prettyPrint(e, typed = false, indent + INDENT_INC, shouldIndent = false)
