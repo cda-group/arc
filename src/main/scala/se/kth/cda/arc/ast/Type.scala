@@ -1,4 +1,4 @@
-package se.kth.cda.arc.syntaxtree
+package se.kth.cda.arc.ast
 
 sealed trait Type extends Equals {
   def render: String

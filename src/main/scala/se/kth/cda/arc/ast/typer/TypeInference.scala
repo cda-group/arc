@@ -1,8 +1,8 @@
-package se.kth.cda.arc.syntaxtree.typer
+package se.kth.cda.arc.ast.typer
 
-import se.kth.cda.arc.syntaxtree.AST._
-import se.kth.cda.arc.syntaxtree.Type
-import se.kth.cda.arc.syntaxtree.typer.PostProcess._
+import se.kth.cda.arc.ast.AST._
+import se.kth.cda.arc.ast.Type
+import se.kth.cda.arc.ast.typer.PostProcess._
 
 import scala.util.Try
 

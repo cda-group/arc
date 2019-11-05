@@ -1,8 +1,8 @@
-package se.kth.cda.arc.syntaxtree.typer
+package se.kth.cda.arc.ast.typer
 
 import se.kth.cda.arc.Utils.{OptionTry, TryVector}
-import se.kth.cda.arc.syntaxtree.AST._
-import se.kth.cda.arc.syntaxtree.Builder
+import se.kth.cda.arc.ast.AST._
+import se.kth.cda.arc.ast.Builder
 
 import scala.util.{Success, Try}
 

@@ -1,9 +1,9 @@
-package se.kth.cda.arc.syntaxtree.parser
+package se.kth.cda.arc.ast.parser
 
 import org.antlr.v4.runtime.Token
 import org.antlr.v4.runtime.tree.ParseTree
 import se.kth.cda.arc._
-import se.kth.cda.arc.syntaxtree.{MergeOp, Type}
+import se.kth.cda.arc.ast.{MergeOp, Type}
 
 import scala.collection.JavaConverters._
 import scala.util.Try
@@ -12,7 +12,7 @@ import scala.util.matching.Regex
 final case class Translator(parser: ArcParser) {
 
   import ArcParser._
-  import se.kth.cda.arc.syntaxtree.AST._
+  import se.kth.cda.arc.ast.AST._
 
   def program(): Program = ProgramVisitor.visitChecked(parser.program())
 

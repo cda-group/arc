@@ -2,12 +2,12 @@ package se.kth.cda.arc
 
 import org.antlr.v4.runtime.{CharStreams, CommonTokenStream}
 import org.scalatest.{Assertion, FunSuite, Matchers}
-import se.kth.cda.arc.syntaxtree.PrettyPrint
-import se.kth.cda.arc.syntaxtree.parser.Translator
-import se.kth.cda.arc.syntaxtree.transformer.MacroExpansion
-import se.kth.cda.arc.syntaxtree.typer.TypeInference
+import se.kth.cda.arc.ast.parser.Translator
+import se.kth.cda.arc.ast.transformer.MacroExpansion
+import se.kth.cda.arc.ast.typer.TypeInference
 
 class FrontEndTests extends FunSuite with Matchers {
+  import se.kth.cda.arc.ast.printer.Printer._
 
   implicit class StringTokenAux(val input: String) {
     def compile: String = {
@@ -19,7 +19,7 @@ class FrontEndTests extends FunSuite with Matchers {
       val ast = translator.expr()
       val expanded = MacroExpansion.expand(ast).get
       val typed = TypeInference.solve(expanded).get
-      PrettyPrint.pretty(typed)
+      typed.toStringFormat("ARC")
     }
   }
 

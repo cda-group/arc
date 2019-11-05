@@ -1,7 +1,7 @@
-package se.kth.cda.arc.syntaxtree.typer
+package se.kth.cda.arc.ast.typer
 
-import se.kth.cda.arc.syntaxtree.Type._
-import se.kth.cda.arc.syntaxtree.{Builder, ConcreteType, Type}
+import se.kth.cda.arc.ast.Type._
+import se.kth.cda.arc.ast.{Builder, ConcreteType, Type}
 
 sealed trait TypeConstraint {
   type Self <: TypeConstraint

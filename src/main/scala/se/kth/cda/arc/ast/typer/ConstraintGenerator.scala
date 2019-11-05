@@ -1,10 +1,10 @@
-package se.kth.cda.arc.syntaxtree.typer
+package se.kth.cda.arc.ast.typer
 
-import se.kth.cda.arc.syntaxtree.AST._
-import se.kth.cda.arc.syntaxtree.Type._
+import se.kth.cda.arc.ast.AST._
+import se.kth.cda.arc.ast.Type._
 import se.kth.cda.arc.Utils.TryVector
-import se.kth.cda.arc.syntaxtree.Type
-import se.kth.cda.arc.syntaxtree.Type.Builder.Windower
+import se.kth.cda.arc.ast.Type
+import se.kth.cda.arc.ast.Type.Builder.Windower
 
 import scala.util.{Failure, Success, Try}
 

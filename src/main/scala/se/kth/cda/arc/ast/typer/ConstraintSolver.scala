@@ -1,10 +1,11 @@
-package se.kth.cda.arc.syntaxtree.typer
+package se.kth.cda.arc.ast.typer
 
 import java.util.concurrent.TimeoutException
 
-import se.kth.cda.arc.syntaxtree.AST.Expr
-import se.kth.cda.arc.syntaxtree.Type._
-import se.kth.cda.arc.syntaxtree.{PrettyPrint, Type}
+import se.kth.cda.arc.ast.AST.Expr
+import se.kth.cda.arc.ast.Type._
+import se.kth.cda.arc.ast.Type
+import se.kth.cda.arc.ast.printer.Printer._
 
 import scala.concurrent.duration._
 import scala.util.{Failure, Success, Try}
@@ -62,7 +63,7 @@ object ConstraintSolver {
     def describeUnresolvedConstraints(e: Expr): Failure[Expr] = {
       val descriptions = constraints.map(_.describe)
       val description = descriptions.mkString("\n∧ ")
-      val exprS = PrettyPrint.pretty(e)
+      val exprS = e.toStringFormat("ARC")
       val msg = s"""Expression could not be typed! Closest partially typed expr:
 |$exprS
 Unresolved Constraints:

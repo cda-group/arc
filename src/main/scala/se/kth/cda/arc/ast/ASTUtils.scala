@@ -1,7 +1,7 @@
-package se.kth.cda.arc.syntaxtree
+package se.kth.cda.arc.ast
 
-import se.kth.cda.arc.syntaxtree.AST.Expr
-import se.kth.cda.arc.syntaxtree.AST.ExprKind._
+import se.kth.cda.arc.ast.AST.Expr
+import se.kth.cda.arc.ast.AST.ExprKind._
 
 object ASTUtils {
 

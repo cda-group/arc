@@ -1,4 +1,4 @@
-package se.kth.cda.arc.syntaxtree.parser
+package se.kth.cda.arc.ast.parser
 
 import org.antlr.v4.runtime._
 

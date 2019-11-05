@@ -1,9 +1,9 @@
-package se.kth.cda.arc.syntaxtree.typer
+package se.kth.cda.arc.ast.typer
 
-import se.kth.cda.arc.syntaxtree.AST.ExprKind._
-import se.kth.cda.arc.syntaxtree.AST.IterKind.IterKind
-import se.kth.cda.arc.syntaxtree.AST.{Expr, ExprKind, Iter, IterKind}
-import se.kth.cda.arc.syntaxtree.{CompoundType, ConcreteType, Type}
+import se.kth.cda.arc.ast.AST.ExprKind._
+import se.kth.cda.arc.ast.AST.IterKind.IterKind
+import se.kth.cda.arc.ast.AST.{Expr, ExprKind, Iter, IterKind}
+import se.kth.cda.arc.ast.{CompoundType, ConcreteType, Type}
 
 object PostProcess {
   implicit class PostProcessExpr(val self: Expr) extends AnyVal {
@@ -50,7 +50,7 @@ object PostProcess {
 
   implicit class PostProcessIter(val self: Iter) extends AnyVal {
 
-    import se.kth.cda.arc.syntaxtree.ASTUtils.TypeMethods
+    import se.kth.cda.arc.ast.ASTUtils.TypeMethods
 
     def postProcess: Iter = {
       val newKind = self.kind match {

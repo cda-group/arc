@@ -1,8 +1,8 @@
-package se.kth.cda.arc.syntaxtree.transformer
+package se.kth.cda.arc.ast.transformer
 
-import se.kth.cda.arc.syntaxtree.AST._
+import se.kth.cda.arc.ast.AST._
 import se.kth.cda.arc.Utils.TryVector
-import se.kth.cda.arc.syntaxtree.{Builder, Type}
+import se.kth.cda.arc.ast.{Builder, Type}
 
 import scala.util.{Success, Try}
 

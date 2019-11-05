@@ -1,10 +1,10 @@
 package se.kth.cda.arc
 
 import org.antlr.v4.runtime._
-import se.kth.cda.arc.syntaxtree.PrettyPrint._
-import se.kth.cda.arc.syntaxtree.parser.{ErrorListener, Translator}
-import se.kth.cda.arc.syntaxtree.transformer.MacroExpansion
-import se.kth.cda.arc.syntaxtree.typer.TypeInference
+import se.kth.cda.arc.ast.printer.Printer._
+import se.kth.cda.arc.ast.parser.{ErrorListener, Translator}
+import se.kth.cda.arc.ast.transformer.MacroExpansion
+import se.kth.cda.arc.ast.typer.TypeInference
 
 import scala.runtime.NonLocalReturnControl
 import scala.util.control.Breaks._
@@ -12,7 +12,7 @@ import scala.util.control.Breaks._
 // Read-Parse-Print Loop
 object RPPL {
 
-  def main(args: Array[String]): Unit = {
+  def run(): Unit = {
     while (true) {
       try {
         breakable {
@@ -57,7 +57,7 @@ object RPPL {
 
           val ast = Translator(parser).translate(tree)
           Console.out.print("<= ")
-          Console.out.prettyPrintln(ast)
+          Console.out.print(ast.toStringFormat("ARC"))
 
           Console.out.println("Starting macro expansion")
           val expanded = MacroExpansion
@@ -71,7 +71,7 @@ object RPPL {
             .get
 
           Console.out.print("<= ")
-          Console.out.prettyPrintln(expanded)
+          Console.out.print(expanded.toStringFormat("ARC"))
 
           Console.out.println("Starting type inference")
           val typed = TypeInference
@@ -86,7 +86,7 @@ object RPPL {
 
           Console.out.print("<= ")
           Console.out.println(typed.ty.render)
-          Console.out.prettyPrintln(typed)
+          Console.out.print(typed.toStringFormat("ARC"))
 
         }
       } catch {

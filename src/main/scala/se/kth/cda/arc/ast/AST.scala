@@ -1,8 +1,8 @@
-package se.kth.cda.arc.syntaxtree
+package se.kth.cda.arc.ast
 
 import org.antlr.v4.runtime._
 import se.kth.cda.arc._
-import se.kth.cda.arc.syntaxtree.AST.UnaryOpKind.UnaryOpKind
+import se.kth.cda.arc.ast.AST.UnaryOpKind.UnaryOpKind
 
 import scala.util.{Failure, Success, Try}
 

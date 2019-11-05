@@ -3,10 +3,15 @@ package se.kth.cda.arc
 import java.io.InputStream
 
 import org.antlr.v4.runtime._
-import se.kth.cda.arc.syntaxtree.AST._
-import se.kth.cda.arc.syntaxtree.parser.{ErrorListener, Translator}
+import se.kth.cda.arc.ast.AST
+import se.kth.cda.arc.ast.AST._
+import se.kth.cda.arc.ast.parser.{ErrorListener, Translator}
+import se.kth.cda.arc.ast.transformer.MacroExpansion
+import se.kth.cda.arc.ast.typer.TypeInference
 
-import scala.util.Try
+import scala.util.{Success, Try}
+
+final case class CompilerException(msg: String) extends Exception
 
 object Compiler {
 
@@ -35,4 +40,17 @@ object Compiler {
     parser.addErrorListener(errorCollector)
     (Translator(parser), errorCollector)
   }
+
+  def run(input: String): AST.Expr = {
+    val inputStream = CharStreams.fromString(input)
+    val lexer = new ArcLexer(inputStream)
+    val tokenStream = new CommonTokenStream(lexer)
+    val parser = new ArcParser(tokenStream)
+    val translator = Translator(parser)
+    val ast = translator.expr()
+    val expanded = MacroExpansion.expand(ast).get
+    val typed = TypeInference.solve(expanded).get
+    typed
+  }
+
 }
