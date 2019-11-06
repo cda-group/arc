@@ -13,7 +13,7 @@ object Printer {
       val ps = sb.asPrintStream()
       format match {
         case "ARC" => ps.printArc(ast)
-        case "MLIR" => ps.printMLIR(ast)
+        case "MLIR" => ast.toMLIR
         case _ => ps.print("Unrecognized format " + format)
       }
       sb.result()

@@ -2,509 +2,148 @@ package se.kth.cda.arc.ast.printer
 
 import java.io.PrintStream
 
-import se.kth.cda.arc.ast.AST.ExprKind.{Application, Ascription, BinOp, Broadcast, CUDF, Cast, Deserialize, Drain, For, Hash, Ident, If, Iterate, Lambda, Len, Let, Literal, Lookup, MakeStruct, MakeVec, Merge, Negate, NewBuilder, Not, Projection, Result, Select, Serialize, Slice, Sort, ToVec, UnaryOp, Zip}
-import se.kth.cda.arc.ast.AST.IterKind.{FringeIter, KeyByIter, NdIter, NextIter, RangeIter, ScalarIter, SimdIter, UnknownIter}
-import se.kth.cda.arc.ast.AST.{Expr, ExprKind, Iter, IterKind, Macro, Program, Symbol}
-import se.kth.cda.arc.ast.{ASTNode, Type}
+import se.kth.cda.arc.ast.AST.ExprKind._
+import se.kth.cda.arc.ast.AST.IterKind._
+import se.kth.cda.arc.ast.AST._
+import se.kth.cda.arc.ast.Type.Builder._
+import se.kth.cda.arc.ast.Type._
+import se.kth.cda.arc.ast._
 
 object MLIRPrinter {
 
-  val INDENT_INC = 2
+  implicit class ASTToMLIR(val self: ASTNode) extends AnyVal {
 
-  implicit class MLIRPrintStream(val out: PrintStream) extends AnyVal {
-
-    def printMLIR(str: String): Unit = out.print(str)
-
-    def printMLIR(ch: Char): Unit = out.print(ch)
-
-    def printMLIR(tree: ASTNode): Unit = {
-      tree match {
-        case Program(macros, expr, _) =>
-          macros.foreach { m =>
-            out.printMLIR(m)
-            out.printMLIR('\n')
-          }
-          out.printMLIR(expr)
-        case Macro(name, params, body, _) =>
-          out.printMLIR("macro ")
-          out.printMLIR(name)
-          out.printMLIR('(')
-          for ((p, i) <- params.view.zipWithIndex) {
-            out.printMLIR(p)
-            if (i != (params.length - 1)) {
-              out.printMLIR(',')
-            }
-          }
-          out.printMLIR(')')
-          out.printMLIR('=')
-          out.printMLIR(body)
-        case e: Expr   => out.printMLIR(e, typed = true, 0, shouldIndent = true)
-        case s: Symbol => out.printMLIR(s)
-      }
-    }
-
-    def printMLIR(s: Symbol): Unit = out.printMLIR(s.name)
-
-    def printMLIR(t: Type): Unit = out.printMLIR(t.render)
-
-    def printMLIR(iter: Iter, indent: Int): Unit = {
-      import IterKind._
-
-      val iterStr = iter.kind match {
-        case ScalarIter  => "iter"
-        case SimdIter    => "simditer"
-        case FringeIter  => "fringeiter"
-        case NdIter      => "nditer"
-        case RangeIter   => "rangeiter"
-        case NextIter    => "nextiter"
-        case KeyByIter   => "keyby"
-        case UnknownIter => "iter" // Make sure this doesn't happen
-      }
-
-      if (iter.kind == NdIter) {
-        out.printMLIR(iterStr)
-        out.printMLIR('(')
-        out.printMLIR(iter.data, typed = true, indent + INDENT_INC, shouldIndent = false)
-        out.printMLIR(',')
-        out.printMLIR(iter.start.get, typed = true, indent + INDENT_INC, shouldIndent = false)
-        out.printMLIR(',')
-        out.printMLIR(iter.shape.get, typed = true, indent + INDENT_INC, shouldIndent = false)
-        out.printMLIR(',')
-        out.printMLIR(iter.strides.get, typed = true, indent + INDENT_INC, shouldIndent = false)
-        out.printMLIR(')')
-      } else if (iter.kind == KeyByIter) {
-        out.printMLIR(iterStr)
-        out.printMLIR('(')
-        out.printMLIR(iter.data, typed = true, indent + INDENT_INC, shouldIndent = false)
-        out.printMLIR(',')
-        out.printMLIR(iter.keyFunc.get, typed = true, indent + INDENT_INC, shouldIndent = false)
-        out.printMLIR(')')
-      } else if (iter.start.isDefined) {
-        out.printMLIR(iterStr)
-        out.printMLIR('(')
-        out.printMLIR(iter.data, typed = true, indent + INDENT_INC, shouldIndent = false)
-        out.printMLIR(',')
-        out.printMLIR(iter.start.get, typed = true, indent + INDENT_INC, shouldIndent = false)
-        out.printMLIR(',')
-        out.printMLIR(iter.end.get, typed = true, indent + INDENT_INC, shouldIndent = false)
-        out.printMLIR(',')
-        out.printMLIR(iter.stride.get, typed = true, indent + INDENT_INC, shouldIndent = false)
-        out.printMLIR(')')
-      } else if (iter.kind != ScalarIter) {
-        out.printMLIR(iterStr)
-        out.printMLIR('(')
-        out.printMLIR(iter.data, typed = true, indent + INDENT_INC, shouldIndent = false)
-        out.printMLIR(')')
-      } else {
-        out.printMLIR(iter.data, typed = true, indent, shouldIndent = false)
-      }
-    }
-
-    def printMLIR(expr: Expr, typed: Boolean, indent: Int, shouldIndent: Boolean): Unit = {
-      import ExprKind._
-      lazy val indentStr = if (shouldIndent) {
-        (0 until indent).foldLeft("")((acc, _) => acc + " ")
-      } else {
-        ""
-      }
-      // lazy val lessIndentStr = (0 until (indent - 2)).foldLeft("")((acc, _) => acc + " ")
-      expr.kind match {
-        case Let(name, bindingTy, value, body) =>
-          if (typed) {
-            out.printMLIR('(')
-            out.printMLIR(' ')
-          }
-          out.printMLIR("let ")
-          out.printMLIR(name)
-          out.printMLIR(':')
-          out.printMLIR(bindingTy)
-          out.printMLIR('=')
-          out.printMLIR(value, typed = true, indent + INDENT_INC, shouldIndent = true)
-          out.printMLIR(';')
-          out.printMLIR('\n')
-          out.printMLIR(indentStr)
-          if (typed) {
-            out.printMLIR("  ")
-          }
-          out.printMLIR(body, typed = false, if (typed) indent + INDENT_INC else indent, shouldIndent = true)
-          if (typed) {
-            out.printMLIR('\n')
-            out.printMLIR(indentStr)
-            out.printMLIR(')')
-            out.printMLIR(':')
-            out.printMLIR(expr.ty)
-          }
-        case Lambda(params, body) =>
-          if (params.isEmpty) {
-            out.printMLIR("||")
-            out.printMLIR(body, typed = true, indent + INDENT_INC, shouldIndent = true)
-          } else {
-            out.printMLIR('|')
-            for ((p, i) <- params.view.zipWithIndex) {
-              out.printMLIR(p.symbol)
-              out.printMLIR(':')
-              out.printMLIR(p.ty)
-              if (i != (params.length - 1)) {
-                out.printMLIR(',')
-              }
-            }
-            out.printMLIR('|')
-            out.printMLIR('\n')
-            out.printMLIR(indentStr)
-            out.printMLIR("  ")
-            out.printMLIR(body, typed = true, indent + INDENT_INC, shouldIndent = true)
-          }
-        case Negate(e) =>
-          out.printMLIR('-')
-          out.printMLIR(e, typed = true, indent + 1, shouldIndent = false)
-        case Not(e) =>
-          out.printMLIR('!')
-          out.printMLIR(e, typed = true, indent + 1, shouldIndent = false)
-        case UnaryOp(kind, e) =>
-          out.printMLIR(kind.toString)
-          out.printMLIR('(')
-          out.printMLIR(e, typed = false, indent + 1, shouldIndent = false)
-          out.printMLIR(')')
-          if (typed) {
-            out.printMLIR(':')
-            out.printMLIR(e.ty)
-          }
-        case Ident(s) =>
-          out.printMLIR(s)
-          if (typed) {
-            out.printMLIR(':')
-            out.printMLIR(expr.ty)
-          }
-        case l: Literal[_] =>
-          out.printMLIR(l.raw)
-          if (typed) {
-            out.printMLIR(':')
-            out.printMLIR(expr.ty)
-          }
-        case Cast(ty, e) =>
-          out.printMLIR(ty)
-          out.printMLIR('(')
-          out.printMLIR(e, typed = false, indent + INDENT_INC, shouldIndent = false)
-          out.printMLIR(')')
-        case ToVec(e) =>
-          out.printMLIR("tovec(")
-          out.printMLIR(e, typed = false, indent + INDENT_INC, shouldIndent = false)
-          out.printMLIR(')')
-        case Broadcast(e) =>
-          out.printMLIR("broadcast(")
-          out.printMLIR(e, typed = false, indent + INDENT_INC, shouldIndent = false)
-          out.printMLIR(')')
-        case CUDF(ref, args, retT) =>
-          out.printMLIR("cudf[")
-          ref match {
-            case Left(name) => out.printMLIR(name);
-            case Right(pointer) =>
-              out.printMLIR('*')
-              out.printMLIR(pointer, typed = false, indent + INDENT_INC, shouldIndent = false)
-          }
-          out.printMLIR(',')
-          out.printMLIR(retT)
-          out.printMLIR(']')
-          out.printMLIR('(')
-          for ((e, i) <- args.view.zipWithIndex) {
-            out.printMLIR(e, typed = false, indent + INDENT_INC, shouldIndent = false)
-            if (i != (args.length - 1)) {
-              out.printMLIR(',')
-            }
-          }
-          out.printMLIR(')')
-          if (typed) {
-            out.printMLIR(':')
-            out.printMLIR(expr.ty)
-          }
-        case Zip(params) =>
-          out.printMLIR("zip(")
-          for ((e, i) <- params.view.zipWithIndex) {
-            out.printMLIR(e, typed = false, indent + 4, shouldIndent = false)
-            if (i != (params.length - 1)) {
-              out.printMLIR(',')
-            }
-          }
-          out.printMLIR(')')
-          if (typed) {
-            out.printMLIR(':')
-            out.printMLIR(expr.ty)
-          }
-        case Hash(params) =>
-          out.printMLIR("hash(")
-          for ((e, i) <- params.view.zipWithIndex) {
-            out.printMLIR(e, typed = false, indent + 4, shouldIndent = false)
-            if (i != (params.length - 1)) {
-              out.printMLIR(',')
-            }
-          }
-          out.printMLIR(')')
-          if (typed) {
-            out.printMLIR(':')
-            out.printMLIR(expr.ty)
-          }
-        case For(iterator, builder, body) =>
-          out.printMLIR("for(")
-          out.printMLIR(iterator, indent + 4)
-          out.printMLIR(',')
-          out.printMLIR('\n')
-          out.printMLIR(indentStr)
-          out.printMLIR("    ")
-          out.printMLIR(builder, typed = false, indent + 4, shouldIndent = true)
-          out.printMLIR(',')
-          out.printMLIR('\n')
-          out.printMLIR(indentStr)
-          out.printMLIR("    ")
-          out.printMLIR(body, typed = false, indent + 4, shouldIndent = true)
-          out.printMLIR('\n')
-          out.printMLIR(indentStr)
-          out.printMLIR(')')
-          if (typed) {
-            out.printMLIR(':')
-            out.printMLIR(expr.ty)
-          }
-        case Len(e) =>
-          out.printMLIR("len(")
-          out.printMLIR(e, typed = true, indent + 4, shouldIndent = false)
-          out.printMLIR(')')
-          if (typed) {
-            out.printMLIR(':')
-            out.printMLIR(expr.ty)
-          }
-        case Lookup(data, key) =>
-          out.printMLIR("lookup(")
-          out.printMLIR(data, typed = true, indent + INDENT_INC, shouldIndent = false)
-          out.printMLIR(',')
-          out.printMLIR(key, typed = true, indent + INDENT_INC, shouldIndent = false)
-          out.printMLIR(')')
-          if (typed) {
-            out.printMLIR(':')
-            out.printMLIR(expr.ty)
-          }
-        case Slice(data, index, size) =>
-          out.printMLIR("slice(")
-          out.printMLIR(data, typed = false, indent + INDENT_INC, shouldIndent = false)
-          out.printMLIR(',')
-          out.printMLIR(index, typed = false, indent + INDENT_INC, shouldIndent = false)
-          out.printMLIR(',')
-          out.printMLIR(size, typed = false, indent + INDENT_INC, shouldIndent = false)
-          out.printMLIR(')')
-          if (typed) {
-            out.printMLIR(':')
-            out.printMLIR(expr.ty)
-          }
-        case Sort(data, keyFunc) =>
-          out.printMLIR("sort(")
-          out.printMLIR(data, typed = false, indent + INDENT_INC, shouldIndent = false)
-          out.printMLIR(',')
-          out.printMLIR(keyFunc, typed = false, indent + INDENT_INC, shouldIndent = false)
-          out.printMLIR(')')
-          if (typed) {
-            out.printMLIR(':')
-            out.printMLIR(expr.ty)
-          }
-        case Drain(source, sink) =>
-          out.printMLIR("drain(")
-          out.printMLIR(source, typed = false, indent + INDENT_INC, shouldIndent = false)
-          out.printMLIR(',')
-          out.printMLIR(sink, typed = false, indent + INDENT_INC, shouldIndent = false)
-          out.printMLIR(')')
-          if (typed) {
-            out.printMLIR(':')
-            out.printMLIR(expr.ty)
-          }
-        case Serialize(e) =>
-          out.printMLIR("serialize(")
-          out.printMLIR(e, typed = false, indent + INDENT_INC, shouldIndent = false)
-          out.printMLIR(')')
-          if (typed) {
-            out.printMLIR(':')
-            out.printMLIR(expr.ty)
-          }
-        case Deserialize(ty, e) =>
-          out.printMLIR("deserialize[")
-          out.printMLIR(ty)
-          out.printMLIR(']')
-          out.printMLIR('(')
-          out.printMLIR(e, typed = false, indent + INDENT_INC, shouldIndent = false)
-          out.printMLIR(')')
-          if (typed) {
-            out.printMLIR(':')
-            out.printMLIR(expr.ty)
-          }
-        case If(cond, onTrue, onFalse) =>
-          out.printMLIR("if (")
-          out.printMLIR(cond, typed = false, indent + 4, shouldIndent = false)
-          out.printMLIR(',')
-          out.printMLIR('\n')
-          out.printMLIR(indentStr)
-          out.printMLIR("    ")
-          out.printMLIR(onTrue, typed = true, indent + 4, shouldIndent = true)
-          out.printMLIR(',')
-          out.printMLIR('\n')
-          out.printMLIR(indentStr)
-          out.printMLIR("    ")
-          out.printMLIR(onFalse, typed = true, indent + 4, shouldIndent = true)
-          out.printMLIR('\n')
-          out.printMLIR(indentStr)
-          out.printMLIR(')')
-          if (typed) {
-            out.printMLIR(':')
-            out.printMLIR(expr.ty)
-          }
-        case Select(cond, onTrue, onFalse) =>
-          out.printMLIR("select(")
-          out.printMLIR(cond, typed = false, indent + INDENT_INC, shouldIndent = false)
-          out.printMLIR(',')
-          out.printMLIR('\n')
-          out.printMLIR(indentStr)
-          out.printMLIR("  ")
-          out.printMLIR(onTrue, typed = true, indent + INDENT_INC, shouldIndent = true)
-          out.printMLIR(',')
-          out.printMLIR('\n')
-          out.printMLIR(indentStr)
-          out.printMLIR("  ")
-          out.printMLIR(onFalse, typed = true, indent + INDENT_INC, shouldIndent = true)
-          out.printMLIR('\n')
-          out.printMLIR(indentStr)
-          out.printMLIR(')')
-          if (typed) {
-            out.printMLIR(':')
-            out.printMLIR(expr.ty)
-          }
-        case Iterate(init, updateFunc) =>
-          out.printMLIR("iterate (")
-          out.printMLIR(init, typed = true, indent + INDENT_INC, shouldIndent = false)
-          out.printMLIR(',')
-          out.printMLIR('\n')
-          out.printMLIR(indentStr)
-          out.printMLIR("  ")
-          out.printMLIR(updateFunc, typed = true, indent + INDENT_INC, shouldIndent = true)
-          out.printMLIR('\n')
-          out.printMLIR(indentStr)
-          out.printMLIR(')')
-          if (typed) {
-            out.printMLIR(':')
-            out.printMLIR(expr.ty)
-          }
-        case MakeStruct(elems) =>
-          out.printMLIR('{')
-          for ((e, i) <- elems.view.zipWithIndex) {
-            out.printMLIR(e, typed = false, indent + 1, shouldIndent = false)
-            if (i != (elems.length - 1)) {
-              out.printMLIR(',')
-            }
-          }
-          out.printMLIR('}')
-          if (typed) {
-            out.printMLIR(':')
-            out.printMLIR(expr.ty)
-          }
-        case MakeVec(elems) =>
-          out.printMLIR('[')
-          for ((e, i) <- elems.view.zipWithIndex) {
-            out.printMLIR(e, typed = false, indent + 1, shouldIndent = false)
-            if (i != (elems.length - 1)) {
-              out.printMLIR(',')
-            }
-          }
-          out.printMLIR(']')
-          if (typed) {
-            out.printMLIR(':')
-            out.printMLIR(expr.ty)
-          }
-        case Merge(builder, value) =>
-          out.printMLIR("merge(")
-          out.printMLIR(builder, typed = false, indent + INDENT_INC, shouldIndent = false)
-          out.printMLIR(',')
-          out.printMLIR(value, typed = false, indent + INDENT_INC, shouldIndent = false)
-          out.printMLIR(')')
-          if (typed) {
-            out.printMLIR(':')
-            out.printMLIR(expr.ty)
-          }
-        case Result(e) =>
-          out.printMLIR("result(")
-          out.printMLIR(e, typed = false, indent + INDENT_INC, shouldIndent = false)
-          out.printMLIR(')')
-          if (typed) {
-            out.printMLIR(':')
-            out.printMLIR(expr.ty)
-          }
-        case NewBuilder(ty, args) =>
-          out.printMLIR(ty)
-          if (args.nonEmpty) {
-            out.printMLIR('(')
-            for ((p, i) <- args.view.zipWithIndex) {
-              out.printMLIR(p, typed = true, indent + INDENT_INC, shouldIndent = false)
-              if (i != (args.length - 1)) {
-                out.printMLIR(',')
-              }
-            }
-            out.printMLIR(')')
-          }
-        // don't print type even if requested since it's redundant
-        case BinOp(kind, left, right) =>
-          if (kind.isInfix) {
-            if (typed) {
-              out.printMLIR('(')
-            }
-            out.printMLIR(left, typed = true, if (typed) indent + 1 else indent, shouldIndent = false)
-            out.printMLIR(kind.symbol)
-            out.printMLIR(right, typed = true, if (typed) indent + 1 else indent, shouldIndent = false)
-            if (typed) {
-              out.printMLIR(')')
-              out.printMLIR(':')
-              out.printMLIR(expr.ty)
-            }
-          } else {
-            out.printMLIR(kind.symbol)
-            out.printMLIR('(')
-            out.printMLIR(left, typed = true, indent + 4, shouldIndent = false)
-            out.printMLIR(',')
-            out.printMLIR(right, typed = true, indent + 4, shouldIndent = false)
-            out.printMLIR(')')
-            if (typed) {
-              out.printMLIR(':')
-              out.printMLIR(expr.ty)
-            }
-          }
-        case Application(fun, args) =>
-          out.printMLIR('(')
-          out.printMLIR(fun, typed = false, indent, shouldIndent = false)
-          out.printMLIR(')')
-          out.printMLIR('(')
-          for ((e, i) <- args.view.zipWithIndex) {
-            out.printMLIR(e, typed = false, indent + INDENT_INC, shouldIndent = false)
-            if (i != (args.length - 1)) {
-              out.printMLIR(',')
-            }
-          }
-          out.printMLIR(')')
-          if (typed) {
-            out.printMLIR(':')
-            out.printMLIR(expr.ty)
-          }
-        case Ascription(e, ty) =>
-          out.printMLIR('(')
-          out.printMLIR(e, typed = false, indent + 1, shouldIndent = false)
-          out.printMLIR(')')
-          out.printMLIR(':')
-          out.printMLIR(ty)
-        case Projection(struct, index) =>
-          if (typed) {
-            out.printMLIR('(')
-          }
-          out.printMLIR(struct, typed = false, indent, shouldIndent = false)
-          out.printMLIR('.')
-          out.printMLIR('$')
-          out.printMLIR(index.toString)
-          if (typed) {
-            out.printMLIR(')')
-            out.printMLIR(':')
-            out.printMLIR(expr.ty)
-          }
-      }
+    def toMLIR: String = self match {
+      case symbol: Symbol      => symbol.toMLIR
+      case Program(_, expr, _) => expr.toMLIR
+      case expr: Expr          => expr.toMLIR
     }
   }
+
+  implicit class SymbolToMLIR(val self: Symbol) extends AnyVal {
+    def toMLIR: String = {
+      val Symbol(name, token, scope) = self
+      s"${name}_$scope"
+    }
+  }
+
+  implicit class ExprToMLIR(val self: Expr) extends AnyVal {
+
+    def toMLIR: String = self.kind match {
+      case literal: Literal[_]                 => literal.toMLIR
+      case Let(symbol, bindingTy, value, body) => s""
+      case Lambda(params, body)                => s""
+      case Cast(ty, expr)                      => s""
+      case ToVec(expr)                         => s""
+      case Ident(symbol)                       => s""
+      case MakeStruct(elems)                   => s""
+      case MakeVec(elems)                      => s""
+      case If(cond, onTrue, onFalse)           => s""
+      case Select(cond, onTrue, onFalse)       => s""
+      case Iterate(initial, updateFunc)        => s""
+      case Broadcast(expr)                     => s""
+      case Serialize(expr)                     => s""
+      case Deserialize(ty, expr)               => s""
+      case CUDF(reference, args, returnTy)     => s""
+      case Zip(params)                         => s""
+      case Hash(params)                        => s""
+      case For(iterator, builder, body)        => s""
+      case Len(expr)                           => s""
+      case Lookup(data, key)                   => s""
+      case Slice(data, index, size)            => s""
+      case Sort(data, keyFunc)                 => s""
+      case Drain(source, sink)                 => s""
+      case Negate(expr)                        => s""
+      case Not(expr)                           => s""
+      case UnaryOp(kind, expr)                 => s""
+      case Merge(builder, value)               => s""
+      case Result(expr)                        => s""
+      case NewBuilder(ty, args)                => s""
+      case BinOp(kind, lhs, rhs)               => s""
+      case Application(expr, args)             => s""
+      case Projection(expr, index)             => s""
+      case Ascription(expr, ty)                => s""
+    }
+  }
+
+  implicit class IteratorToMLIR(val self: IterKind) extends AnyVal {
+
+    def toMLIR: String = self match {
+      case ScalarIter  => s""
+      case SimdIter    => s""
+      case FringeIter  => s""
+      case NdIter      => s""
+      case RangeIter   => s""
+      case NextIter    => s""
+      case KeyByIter   => s""
+      case UnknownIter => s""
+    }
+  }
+
+  implicit class TypeToMLIR(val self: Type) extends AnyVal {
+
+    def toMLIR: String = self match {
+      case I8                                                               => s""
+      case I16                                                              => s""
+      case I32                                                              => s""
+      case I64                                                              => s""
+      case U8                                                               => s""
+      case U16                                                              => s""
+      case U32                                                              => s""
+      case U64                                                              => s""
+      case F32                                                              => s""
+      case F64                                                              => s""
+      case Bool                                                             => s""
+      case UnitT                                                            => s""
+      case StringT                                                          => s""
+      case Appender(elemTy, annotations)                                    => s""
+      case StreamAppender(elemTy, annotations)                              => s""
+      case Merger(elemTy, opTy, annotations)                                => s""
+      case DictMerger(keyTy, valueTy, opTy, annotations)                    => s""
+      case VecMerger(elemTy, opTy, annotations)                             => s""
+      case GroupMerger(keyTy, valueTy, annotations)                         => s""
+      case Windower(discTy, aggrTy, aggrMergeTy, aggrResultTy, annotations) => s""
+      case Vec(elemTy)                                                      => s""
+      case Dict(keyTy, valueTy)                                             => s""
+      case Struct(elemTys)                                                  => s""
+      case Simd(elemTy)                                                     => s""
+      case Stream(elemTy)                                                   => s""
+      case Function(params, returnTy)                                       => s""
+      case TypeVariable(id)                                                 => s""
+    }
+  }
+
+  implicit class LiteralToMLIR(val self: Literal[_]) extends AnyVal {
+
+    def toMLIR: String = self match {
+      case Literal.I8(raw, value)      => s""
+      case Literal.I16(raw, value)     => s""
+      case Literal.I32(raw, value)     => s""
+      case Literal.I64(raw, value)     => s""
+      case Literal.U8(raw, value)      => s""
+      case Literal.U16(raw, value)     => s""
+      case Literal.U32(raw, value)     => s""
+      case Literal.U64(raw, value)     => s""
+      case Literal.F32(raw, value)     => s""
+      case Literal.F64(raw, value)     => s""
+      case Literal.Bool(raw, value)    => s""
+      case Literal.UnitL(raw, value)   => s""
+      case Literal.StringL(raw, value) => s""
+    }
+  }
+
+  implicit class NewBuilderToMLIR(val self: NewBuilder) extends AnyVal {
+    def toMLIR: String = {
+      val NewBuilder(ty, args) = self
+      s""
+    }
+  }
+
+  implicit class AnnotationToMLIR(val self: Annotations) extends AnyVal {
+    def toMLIR: String = {
+      val Annotations(params) = self
+      s""
+    }
+  }
+
 }
