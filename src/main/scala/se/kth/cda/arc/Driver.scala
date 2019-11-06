@@ -15,7 +15,7 @@ object Driver {
         // Read input file, write to output file
       case Array("-f", format, "-i", inputPath, "-o", outputPath) =>
         val inputFile = scala.io.Source.fromFile(inputPath)
-        val code = inputFile.getLines().toString()
+        val code = inputFile.getLines.mkString("\n")
         inputFile.close()
         val ast = Compiler.run(code)
         val outputFile = new File(outputPath)
