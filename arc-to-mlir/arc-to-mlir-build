@@ -54,8 +54,6 @@ function llvm-cmake {
 	return
     fi
 
-    #          -DCMAKE_GENERATOR="Unix Makefiles" \
-
     CXX=clang++ CC=clang cmake \
        -DCMAKE_GENERATOR="Ninja" \
        -DCMAKE_INSTALL_PREFIX="$LLVM_INSTALL_DIR" \
@@ -67,8 +65,9 @@ function llvm-cmake {
        -DLLVM_USE_SPLIT_DWARF=ON \
        -DLLVM_CCACHE_BUILD=1 \
        -DLLVM_BUILD_EXAMPLES=OFF \
-       -DLLVM_EXTERNAL_PROJECTS="mlir" \
-       -DLLVM_EXTERNAL_MLIR_SOURCE_DIR="$A2M/mlir" \
+       -DLLVM_EXTERNAL_PROJECTS="mlir;arc-to-mlir" \
+       -DLLVM_EXTERNAL_MLIR_SOURCE_DIR="$A2M/tensorflow-mlir" \
+       -DLLVM_EXTERNAL_ARC_TO_MLIR_SOURCE_DIR="$A2M/src" \
        $LLVM_SRC_DIR/llvm || fail "cmaking LLVM"
 }
 
