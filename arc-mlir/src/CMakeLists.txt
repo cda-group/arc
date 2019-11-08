@@ -1,7 +1,13 @@
+include_directories(../tensorflow-mlir/include/)
 set(LLVM_LINK_COMPONENTS
   Support
   )
 
 add_llvm_executable(arc-mlir main.cpp)
 llvm_update_compile_flags(arc-mlir)
-target_link_libraries(arc-mlir PRIVATE LLVMSupport)
+target_link_libraries(arc-mlir PRIVATE
+  LLVMSupport
+  MLIRAnalysis
+  MLIRIR
+  MLIRParser
+  MLIRTransforms)
