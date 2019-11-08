@@ -127,3 +127,6 @@ modules.xml
 
 
 # End of https://www.gitignore.io/api/intellij
+
+# arc-to-llvm build system flag file
+arc-to-mlir/.guessed-arc-to-mlir
