@@ -8,13 +8,14 @@ object Printer {
   import se.kth.cda.arc.ast.printer.MLIRPrinter._
 
   implicit class Printer(val ast: ASTNode) extends AnyVal {
+
     def toStringFormat(format: String): String = {
       val sb = new Utils.StringBuilderStream()
       val ps = sb.asPrintStream()
       format match {
-        case "ARC" => ps.printArc(ast)
+        case "ARC"  => ps.printArc(ast)
         case "MLIR" => ast.toMLIR
-        case _ => ps.print("Unrecognized format " + format)
+        case _      => ps.print("Unrecognized format " + format)
       }
       sb.result()
     }
