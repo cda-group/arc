@@ -93,3 +93,5 @@ scalacOptions ++= Seq(
 )
 
 scalacOptions in (Compile, console) --= Seq("-Ywarn-unused:imports", "-Xfatal-warnings")
+
+addSbtPlugin("org.scalameta" % "sbt-scalafmt" % "2.2.0")
