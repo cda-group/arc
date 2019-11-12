@@ -10,14 +10,16 @@ object Printer {
   implicit class Printer(val ast: ASTNode) extends AnyVal {
 
     def toStringFormat(format: String): String = {
-      val sb = new Utils.StringBuilderStream()
-      val ps = sb.asPrintStream()
       format match {
-        case "ARC"  => ps.printArc(ast)
+        case "ARC" => {
+          val sb = new Utils.StringBuilderStream()
+          val ps = sb.asPrintStream()
+          ps.printArc(ast)
+          sb.result()
+        }
         case "MLIR" => ast.toMLIR
-        case _      => ps.print("Unrecognized format " + format)
+        case _      => s"Unrecognized format ${format}"
       }
-      sb.result()
     }
 
   }
