@@ -27,7 +27,8 @@ More information about the project can be found [here](https://cda-group.github.
 Assuming Scala and `sbt` are installed, the following clones and builds the project.
 
 ```bash
-git clone https://github.com/cda-group/arc
+git clone https://github.com/cda-group/arc.git
+git submodule update --init --recursive
 
 cd arc/
 sbt build           # Compile front-end
