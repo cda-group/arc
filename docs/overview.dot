@@ -1,0 +1,38 @@
+digraph structs {
+    node [shape=record];
+    struct3 [
+        label="
+            {
+                { Scala (Arc) | {
+                    Lexing
+                    |
+                    Parsing
+                    |
+                    Macro expansion
+                    |
+                    Name resolution
+                    |
+                    Type inference
+                    |
+                    MLIR code generation
+                    }
+                }
+                |
+                { C++ (MLIR) | {
+                    Standard compiler optimizations
+                    |
+                    Dataflow optimizations
+                    |
+                    Domain-specific optimizations
+                    |
+                    Hardware-acceleration
+                    |
+                    Dataflow code generation
+                    }
+                }
+                |
+                { Rust (Arcon) }
+            }
+        "
+    ];
+}

@@ -1,10 +1,43 @@
-# Arc
+<h1 align="center">The Arc Intermediate Representation</h1>
 
 [![Build Status](https://travis-ci.org/cda-group/arc.svg?branch=master)](https://travis-ci.org/cda-group/arc/)
 
-Arc is an intermediate representation (IR) that extends the [Weld](https://github.com/weld-project/weld) IR with streaming primitives. At the language level, Arc is able to capture the semantics of both stream and batch processing.
+**Arc** is an [*intermediate representation*](https://en.wikipedia.org/wiki/Intermediate_representation) for expressing transformations over batch and streaming data. The output of the Arc compiler is a *dataflow graph* that can be deployed on distributed stream processing runtimes. While the goal is to be runtime-agnostic, Arc is primarily intended to run on top of [Arcon](https://github.com/cda-group/arcon) - a native Rust-based runner.
+
+This repository is divided into two parts:
+
+* A *front-end* compiler for Arc implemented in Scala, which takes care of
+  * Lexing/Parsing through [ANTLR](https://www.antlr.org/).
+  * Macro expansion/Name resolution.
+  * Type inference.
+  * [MLIR](https://github.com/tensorflow/mlir) code generation.
+* A *middle-end* optimizer, implemented in C++ using [MLIR](https://github.com/tensorflow/mlir), which (will) take care of:
+  * Standard compiler optimizations.
+  * Dataflow optimizations.
+  * Domain-specific optimizations.
+  * Hardware-acceleration.
+  * Dataflow code generation.
+
+More information about the project can be found [here](https://cda-group.github.io/).
+
+# Getting Started
+
+## macOS / Linux
+
+Assuming Scala and `sbt` are installed, the following clones and builds the project.
+
+```bash
+git clone https://github.com/cda-group/arc
+
+cd arc/
+sbt build           # Compile front-end
+cd arc-to-mlir/
+./arc-to-mlir-build # Compile middle-end
+```
 
 # Documentation
+
+Documentation will be added as Arc matures.
 
 * [Language reference](docs/language.md)
 
@@ -14,16 +47,8 @@ Arc is an intermediate representation (IR) that extends the [Weld](https://githu
 
 * [Formal model](docs/model.md)
 
-# Installation
+# System Overview
 
-## MacOS 
-
-## Ubuntu
-
-# Running
-
-# Testing
-
-# Benchmarks
-
-# Publications
+<p align="center">
+  <img src="docs/overview.dot.png">
+</p>
