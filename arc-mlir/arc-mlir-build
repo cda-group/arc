@@ -22,6 +22,13 @@ if [ ! -f ${A2M}/.guessed-arc-mlir ]; then
     sleep 10
 fi
 
+# prefer gold if it is available
+A2M_LINKER_SELECTTION=""
+if command -v ld.gold >/dev/null 2>&1; then
+    echo "Will use gold"
+    A2M_LINKER_SELECTTION="-DLLVM_USE_LINKER=gold"
+fi
+
 LLVM_SRC_DIR="$A2M/llvm-project"
 LLVM_BUILD_DIR="$A2M_BUILD/llvm-build/"
 LLVM_INSTALL_DIR="$A2M_BUILD/llvm-install"
@@ -55,7 +62,7 @@ function llvm-cmake {
        -DCMAKE_EXPORT_COMPILE_COMMANDS=1 \
        -DCMAKE_BUILD_TYPE=$BUILD_FLAVOUR \
        -DLLVM_TARGETS_TO_BUILD="host" \
-       -DLLVM_USE_LINKER=gold \
+       $A2M_LINKER_SELECTTION \
        -DBUILD_SHARED_LIBS=0 \
        -DLLVM_USE_SPLIT_DWARF=ON \
        -DLLVM_CCACHE_BUILD=1 \
