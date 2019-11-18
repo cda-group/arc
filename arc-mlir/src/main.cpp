@@ -11,6 +11,9 @@
 
 namespace cl = llvm::cl;
 
+using namespace mlir;
+using namespace llvm;
+
 static cl::opt<std::string> inputFilename(cl::Positional,
                                           cl::desc("<input arc file>"),
                                           cl::init("-"),
@@ -31,10 +34,11 @@ int main(int argc, char *argv[]) {
     return -1;
   }
 
-  mlir::MLIRContext context;
-  llvm::SourceMgr sourceMgr;
+  MLIRContext context;
+  SourceMgr sourceMgr;
+
   sourceMgr.AddNewSourceBuffer(std::move(*fileOrErr), llvm::SMLoc());
-  mlir::OwningModuleRef module = mlir::parseSourceFile(sourceMgr, &context);
+  OwningModuleRef module = mlir::parseSourceFile(sourceMgr, &context);
   if (!module) {
     llvm::errs() << "Error can't load file " << inputFilename << "\n";
     return 3;
