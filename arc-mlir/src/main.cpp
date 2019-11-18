@@ -1,5 +1,6 @@
 #include <llvm/Support/CommandLine.h>
 #include <llvm/Support/ErrorOr.h>
+#include <llvm/Support/InitLLVM.h>
 #include <llvm/Support/MemoryBuffer.h>
 #include <llvm/Support/SourceMgr.h>
 #include <llvm/Support/raw_ostream.h>
@@ -25,6 +26,7 @@ static cl::opt<std::string> outputFilename(cl::Positional,
                                            cl::value_desc("filename"));
 
 int main(int argc, char *argv[]) {
+  InitLLVM y(argc, argv);
   cl::ParseCommandLineOptions(argc, argv, "arc-mlir tool\n");
 
   llvm::ErrorOr<std::unique_ptr<llvm::MemoryBuffer>> fileOrErr =
