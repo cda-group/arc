@@ -21,6 +21,7 @@ object MLIRPrinter {
   }
 
   implicit class SymbolToMLIR(val self: Symbol) extends AnyVal {
+
     def toMLIR: String = {
       val Symbol(name, token, scope) = self
       s"${name}_$scope"
@@ -30,15 +31,35 @@ object MLIRPrinter {
   implicit class ExprToMLIR(val self: Expr) extends AnyVal {
 
     def toMLIR: String = self.kind match {
-      case literal: Literal[_]                 => literal.toMLIR
+      case Literal.I8(raw, value)              =>
+        s"""
+           |
+           |""".stripMargin
+      case Literal.I16(raw, value)             => s""
+      case Literal.I32(raw, value)             => s""
+      case Literal.I64(raw, value)             => s""
+      case Literal.U8(raw, value)              => s""
+      case Literal.U16(raw, value)             => s""
+      case Literal.U32(raw, value)             => s""
+      case Literal.U64(raw, value)             => s""
+      case Literal.F32(raw, value)             => s""
+      case Literal.F64(raw, value)             => s""
+      case Literal.Bool(raw, value)            => s""
+      case Literal.UnitL(raw, value)           => s""
+      case Literal.StringL(raw, value)         => s""
       case Let(symbol, bindingTy, value, body) => s""
+      case If(cond, onTrue, onFalse)           => s""
+      case Ident(symbol)                       => s""
+      case Merge(builder, value)               => s""
+      case Result(expr)                        => s""
+      case BinOp(kind, lhs, rhs)               => s""
       case Lambda(params, body)                => s""
+      case NewBuilder(ty, args)                => s""
+      case For(iterator, builder, body)        => s""
       case Cast(ty, expr)                      => s""
       case ToVec(expr)                         => s""
-      case Ident(symbol)                       => s""
       case MakeStruct(elems)                   => s""
       case MakeVec(elems)                      => s""
-      case If(cond, onTrue, onFalse)           => s""
       case Select(cond, onTrue, onFalse)       => s""
       case Iterate(initial, updateFunc)        => s""
       case Broadcast(expr)                     => s""
@@ -47,7 +68,6 @@ object MLIRPrinter {
       case CUDF(reference, args, returnTy)     => s""
       case Zip(params)                         => s""
       case Hash(params)                        => s""
-      case For(iterator, builder, body)        => s""
       case Len(expr)                           => s""
       case Lookup(data, key)                   => s""
       case Slice(data, index, size)            => s""
@@ -56,10 +76,6 @@ object MLIRPrinter {
       case Negate(expr)                        => s""
       case Not(expr)                           => s""
       case UnaryOp(kind, expr)                 => s""
-      case Merge(builder, value)               => s""
-      case Result(expr)                        => s""
-      case NewBuilder(ty, args)                => s""
-      case BinOp(kind, lhs, rhs)               => s""
       case Application(expr, args)             => s""
       case Projection(expr, index)             => s""
       case Ascription(expr, ty)                => s""
@@ -113,26 +129,8 @@ object MLIRPrinter {
     }
   }
 
-  implicit class LiteralToMLIR(val self: Literal[_]) extends AnyVal {
-
-    def toMLIR: String = self match {
-      case Literal.I8(raw, value)      => s""
-      case Literal.I16(raw, value)     => s""
-      case Literal.I32(raw, value)     => s""
-      case Literal.I64(raw, value)     => s""
-      case Literal.U8(raw, value)      => s""
-      case Literal.U16(raw, value)     => s""
-      case Literal.U32(raw, value)     => s""
-      case Literal.U64(raw, value)     => s""
-      case Literal.F32(raw, value)     => s""
-      case Literal.F64(raw, value)     => s""
-      case Literal.Bool(raw, value)    => s""
-      case Literal.UnitL(raw, value)   => s""
-      case Literal.StringL(raw, value) => s""
-    }
-  }
-
   implicit class NewBuilderToMLIR(val self: NewBuilder) extends AnyVal {
+
     def toMLIR: String = {
       val NewBuilder(ty, args) = self
       s""
@@ -140,6 +138,7 @@ object MLIRPrinter {
   }
 
   implicit class AnnotationToMLIR(val self: Annotations) extends AnyVal {
+
     def toMLIR: String = {
       val Annotations(params) = self
       s""
