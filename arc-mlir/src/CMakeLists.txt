@@ -11,3 +11,7 @@ target_link_libraries(arc-mlir PRIVATE
   MLIRIR
   MLIRParser
   MLIRTransforms)
+
+whole_archive_link(arc-mlir
+  MLIRAffineOps
+  MLIRStandardOps)
