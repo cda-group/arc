@@ -1,3 +1,4 @@
+set(ARC_MLIR_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 include_directories(../tensorflow-mlir/include/)
 set(LLVM_LINK_COMPONENTS
   Support
@@ -22,7 +23,9 @@ file(GLOB ARC_JAR ${PROJECT_SOURCE_DIR}/../../../target/scala-*/Arc-assembly-*.j
 message(STATUS "ARC_JAR => ${ARC_JAR}")
 
 configure_file(
-    ${CMAKE_CURRENT_SOURCE_DIR}/arc-to-mlir.in
+    ${ARC_MLIR_SOURCE_DIR}/arc-to-mlir.in
     ${LLVM_BINARY_DIR}/bin/arc-to-mlir
     @ONLY
     )
+
+add_subdirectory(tests)
