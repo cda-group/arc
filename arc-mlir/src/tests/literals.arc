@@ -1,4 +1,5 @@
 # RUN: arc-to-mlir -i %s | FileCheck %s
+# RUN: arc-to-mlir -i %s | arc-mlir | FileCheck %s
 
 # Here we check positive literals, there is no point in checking the
 # negative literals as they will be represented by a
