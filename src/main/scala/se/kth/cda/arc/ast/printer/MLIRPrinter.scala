@@ -132,7 +132,7 @@ object MLIRPrinter {
         }
         case Literal.Bool(raw, value) => {
           val tmp = newTmp
-          out.print(s"${tmp} = constant ${value} : ${self.ty.toMLIR}\n"); s"${tmp}"
+          out.print(s"${tmp} = constant ${if (value) 1 else 0} : ${self.ty.toMLIR}\n"); s"${tmp}"
         }
         case Literal.UnitL(raw, value) => {
           val tmp = newTmp
@@ -227,7 +227,7 @@ object MLIRPrinter {
       case U64                                                              => s"u64"
       case F32                                                              => s"f32"
       case F64                                                              => s"f64"
-      case Bool                                                             => s""
+      case Bool                                                             => s"i1"
       case UnitT                                                            => s"none"
       case StringT                                                          => s""
       case Appender(elemTy, annotations)                                    => s""

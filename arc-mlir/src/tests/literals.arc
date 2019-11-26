@@ -45,4 +45,11 @@ let pos_f64 : f64 = 1.7976931348623157e308;
 let neg_f64 : f64 = -1.7976931348623157e308;
 #CHECK: {{%[^ ]+}} = constant -1.79769313486231{{[0-9]+[Ee]\+?}}308 : f64
 
+let true_bool : bool = true;
+#CHECK: {{%[^ ]+}} = constant 1 : i1
+
+let false_bool : bool = false;
+#CHECK: {{%[^ ]+}} = constant 0 : i1
+
+
 4711
