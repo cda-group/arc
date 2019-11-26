@@ -56,7 +56,6 @@ int main(int argc, char *argv[]) {
     return 3;
   }
 
-  module->dump();
-
+  module->print(output->os());
   return 0;
 }
