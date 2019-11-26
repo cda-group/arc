@@ -164,16 +164,32 @@ object MLIRPrinter {
         case Slice(data, index, size)            => s""
         case Sort(data, keyFunc)                 => s""
         case Drain(source, sink)                 => s""
-        case Negate(expr)                        => s""
-        case Not(expr)                           => s""
-        case UnaryOp(kind, expr)                 => s""
-        case Merge(builder, value)               => s""
-        case Result(expr)                        => s""
-        case NewBuilder(ty, args)                => s""
-        case BinOp(kind, lhs, rhs)               => dumpBinOp(identifiers, kind, lhs, rhs)
-        case Application(expr, args)             => s""
-        case Projection(expr, index)             => s""
-        case Ascription(expr, ty)                => s""
+        case Negate(Expr(Literal.I8(_, value), _, _, _)) => {
+          val tmp = newTmp; out.print(s"${tmp} = constant -${value} : ${self.ty.toMLIR}\n"); s"${tmp}"
+        }
+        case Negate(Expr(Literal.I16(_, value), _, _, _)) => {
+          val tmp = newTmp; out.print(s"${tmp} = constant -${value} : ${self.ty.toMLIR}\n"); s"${tmp}"
+        }
+        /* The AST represents negative literals as a Scala signed integer, as
+           an i32 can be -2147483648, and 2147483648 cannot be
+           represented, we use the raw string. We do the same for
+           i64 */
+        case Negate(Expr(Literal.I32(raw, _), _, _, _)) => {
+          val tmp = newTmp; out.print(s"${tmp} = constant -${raw} : ${self.ty.toMLIR}\n"); s"${tmp}"
+        }
+        case Negate(Expr(Literal.I64(raw, _), _, _, _)) => { // We have to drop the L/l suffix
+          val tmp = newTmp; out.print(s"${tmp} = constant -${raw.dropRight(1)} : ${self.ty.toMLIR}\n"); s"${tmp}"
+        }
+        case Negate(expr)            => s""
+        case Not(expr)               => s""
+        case UnaryOp(kind, expr)     => s""
+        case Merge(builder, value)   => s""
+        case Result(expr)            => s""
+        case NewBuilder(ty, args)    => s""
+        case BinOp(kind, lhs, rhs)   => dumpBinOp(identifiers, kind, lhs, rhs)
+        case Application(expr, args) => s""
+        case Projection(expr, index) => s""
+        case Ascription(expr, ty)    => s""
       }
     }
   }
