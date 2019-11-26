@@ -122,13 +122,13 @@ object MLIRPrinter {
           val tmp = newTmp
           out.print(s"${tmp} = constant ${value} : ${self.ty.toMLIR}\n"); s"${tmp}"
         }
-        case Literal.F32(raw, value) => {
+        case Literal.F32(raw, _) => {
           val tmp = newTmp
-          out.print(s"${tmp} = constant ${value} : ${self.ty.toMLIR}\n"); s"${tmp}"
+          out.print(s"${tmp} = constant ${raw.dropRight(1)} : ${self.ty.toMLIR}\n"); s"${tmp}"
         }
-        case Literal.F64(raw, value) => {
+        case Literal.F64(raw, _) => {
           val tmp = newTmp
-          out.print(s"${tmp} = constant ${value} : ${self.ty.toMLIR}\n"); s"${tmp}"
+          out.print(s"${tmp} = constant ${raw} : ${self.ty.toMLIR}\n"); s"${tmp}"
         }
         case Literal.Bool(raw, value) => {
           val tmp = newTmp
@@ -179,6 +179,12 @@ object MLIRPrinter {
         }
         case Negate(Expr(Literal.I64(raw, _), _, _, _)) => { // We have to drop the L/l suffix
           val tmp = newTmp; out.print(s"${tmp} = constant -${raw.dropRight(1)} : ${self.ty.toMLIR}\n"); s"${tmp}"
+        }
+        case Negate(Expr(Literal.F32(raw, _), _, _, _)) => {
+          val tmp = newTmp; out.print(s"${tmp} = constant -${raw.dropRight(1)} : ${self.ty.toMLIR}\n"); s"${tmp}"
+        }
+        case Negate(Expr(Literal.F64(raw, _), _, _, _)) => {
+          val tmp = newTmp; out.print(s"${tmp} = constant -${raw} : ${self.ty.toMLIR}\n"); s"${tmp}"
         }
         case Negate(expr)            => s""
         case Not(expr)               => s""
