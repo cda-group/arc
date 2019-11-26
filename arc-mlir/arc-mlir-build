@@ -1,0 +1,79 @@
+#!/bin/bash
+
+# Try to guess the location of the arc-mlir repository
+
+if [[ -z "$A2M" ]] ; then
+    A2M=$(realpath $(dirname "$(which "$0")")/)
+    echo The arc-mlir repository is assumed to be at ${A2M}, override by setting A2M.
+else
+    echo A2M is ${A2M}
+fi
+
+if [[ -z "$A2M_BUILD" ]] ; then
+    echo "No build directory specified with A2M_BUILD, assuming ${A2M}/build"
+    A2M_BUILD="${A2M}/build"
+else
+    echo "Will use $A2M_BUILD as the scratch directory"
+fi
+
+if [ ! -f ${A2M}/.guessed-arc-mlir ]; then
+    echo "Waiting 10s before proceeding, next run will proceed directly"
+    touch ${A2M}/.guessed-arc-mlir
+    sleep 10
+fi
+
+# prefer gold if it is available
+A2M_LINKER_SELECTTION=""
+if command -v ld.gold >/dev/null 2>&1; then
+    echo "Will use gold"
+    A2M_LINKER_SELECTTION="-DLLVM_USE_LINKER=gold"
+fi
+
+LLVM_SRC_DIR="$A2M/llvm-project"
+LLVM_BUILD_DIR="$A2M_BUILD/llvm-build/"
+LLVM_INSTALL_DIR="$A2M_BUILD/llvm-install"
+
+# default to a debug build
+BUILD_FLAVOUR="${BUILD_FLAVOUR:-Debug}"
+
+echo "Will build a $BUILD_FLAVOUR build"
+
+# Report a failure and exit
+function fail {
+    echo "Failure: $*"
+    exit 1
+}
+
+function llvm-cmake {
+
+    mkdir -p $LLVM_BUILD_DIR || fail "creating $LLVM_BUILD_DIR"
+    cd $LLVM_BUILD_DIR
+
+    if [ -f compile_commands.json ]; then
+	echo "LLVM is already configured"
+	return
+    fi
+
+    CXX=clang++ CC=clang cmake \
+       -DCMAKE_GENERATOR="Ninja" \
+       -DCMAKE_INSTALL_PREFIX="$LLVM_INSTALL_DIR" \
+       -DCMAKE_EXPORT_COMPILE_COMMANDS=1 \
+       -DCMAKE_BUILD_TYPE=$BUILD_FLAVOUR \
+       -DLLVM_TARGETS_TO_BUILD="host" \
+       $A2M_LINKER_SELECTTION \
+       -DBUILD_SHARED_LIBS=0 \
+       -DLLVM_USE_SPLIT_DWARF=ON \
+       -DLLVM_CCACHE_BUILD=1 \
+       -DLLVM_BUILD_EXAMPLES=OFF \
+       -DLLVM_EXTERNAL_PROJECTS="mlir;arc-mlir" \
+       -DLLVM_EXTERNAL_MLIR_SOURCE_DIR="$A2M/tensorflow-mlir" \
+       -DLLVM_EXTERNAL_ARC_MLIR_SOURCE_DIR="$A2M/src" \
+       $LLVM_SRC_DIR/llvm || fail "cmaking LLVM"
+}
+
+function llvm-build {
+    cmake --build $LLVM_BUILD_DIR || fail "building LLVM"
+}
+
+llvm-cmake
+llvm-build

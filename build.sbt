@@ -95,3 +95,10 @@ scalacOptions ++= Seq(
 scalacOptions in (Compile, console) --= Seq("-Ywarn-unused:imports", "-Xfatal-warnings")
 
 addSbtPlugin("org.scalameta" % "sbt-scalafmt" % "2.2.0")
+
+assemblyMergeStrategy in assembly := {
+  case "reflect.properties" => MergeStrategy.concat
+  case x =>
+    val oldStrategy = (assemblyMergeStrategy in assembly).value
+    oldStrategy(x)
+}
