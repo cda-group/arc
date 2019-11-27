@@ -11,12 +11,16 @@ fragment DecimalInteger : Digit+;
 fragment Integer : BinaryInteger|HexInteger|DecimalInteger;
 fragment Decimal : DecimalInteger '.' DecimalInteger ([eE] '-'? DecimalInteger)?
 				| DecimalInteger [eE] '-'? DecimalInteger;
-TI8Lit : Integer [cC];
-TI16Lit : Integer 'si';
-TI32Lit : Integer;
-TI64Lit : Integer [lL];
-TF32Lit : Decimal [fF];
-TF64Lit : Decimal;
+TI8Lit : Integer ('i8' | [cC]);
+TI16Lit : Integer ('i16' | 'si');
+TI32Lit : Integer 'i32'?;
+TI64Lit : Integer ('i64' | [lL]);
+TU8Lit : Integer 'u8';
+TU16Lit : Integer 'u16';
+TU32Lit : Integer 'u32';
+TU64Lit : Integer 'u64';
+TF32Lit : Decimal ('f32' | [fF]);
+TF64Lit : Decimal 'f64'?;
 // Tokens
 TIf : 'if';
 TIterate : 'iterate';

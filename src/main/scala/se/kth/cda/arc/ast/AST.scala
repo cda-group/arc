@@ -14,6 +14,7 @@ sealed trait ASTNode {
 
 object AST {
 
+
   final case class Symbol(name: String, token: Option[Token] = None, scopeId: Int = 0) extends ASTNode {
     override def inputText: String = token.map(_.getText).getOrElse("<no associated token>")
 

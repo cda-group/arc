@@ -784,6 +784,54 @@ final case class Translator(parser: ArcParser) {
       )
     }
 
+    override def visitU8Lit(ctx: U8LitContext): Expr = {
+      val raw = ctx.TU8Lit().getText
+      Expr(
+        kind = ExprKind.Literal.U8(
+          raw,
+          value = extractInteger(raw).toInt
+        ),
+        ty = Type.U8,
+        ctx
+      )
+    }
+
+    override def visitU16Lit(ctx: U16LitContext): Expr = {
+      val raw = ctx.TU16Lit().getText
+      Expr(
+        kind = ExprKind.Literal.U16(
+          raw,
+          value = extractInteger(raw).toInt
+        ),
+        ty = Type.U16,
+        ctx
+      )
+    }
+
+    override def visitU32Lit(ctx: U32LitContext): Expr = {
+      val raw = ctx.TU32Lit().getText
+      Expr(
+        kind = ExprKind.Literal.U32(
+          raw,
+          value = extractInteger(raw).toInt
+        ),
+        ty = Type.U32,
+        ctx
+      )
+    }
+
+    override def visitU64Lit(ctx: U64LitContext): Expr = {
+      val raw = ctx.TU64Lit().getText
+      Expr(
+        kind = ExprKind.Literal.U64(
+          raw,
+          value = extractInteger(raw).toLong
+        ),
+        ty = Type.U64,
+        ctx
+      )
+    }
+
     override def visitF32Lit(ctx: F32LitContext): Expr = {
       val raw = ctx.TF32Lit().getText
       Expr(

@@ -91,12 +91,38 @@ class LexerTests extends FunSuite with Matchers {
 
     //"(a)".isInvalid; // temporarily until the parser introduces parens
 
-    "42si" === Array(TI16Lit, EOF)
     "0b10" === Array(TI32Lit, EOF)
     "0x10" === Array(TI32Lit, EOF)
 
-    "1e-5f" == Array(TF32Lit, EOF)
-    "1e-5" == Array(TF64Lit, EOF)
+    "1e-5f" === Array(TF32Lit, EOF)
+    "1e-5" === Array(TF64Lit, EOF)
+
+    "123i8" === Array(TI8Lit, EOF)
+    "123i16" === Array(TI16Lit, EOF)
+    "123i32" === Array(TI32Lit, EOF)
+    "123i64" === Array(TI64Lit, EOF)
+
+    "123u8" === Array(TU8Lit, EOF)
+    "123u16" === Array(TU16Lit, EOF)
+    "123u32" === Array(TU32Lit, EOF)
+    "123u64" === Array(TU64Lit, EOF)
+
+    "123.0f32" === Array(TF32Lit, EOF)
+    "123.0f64" === Array(TF64Lit, EOF)
+
+    "123c" === Array(TI8Lit, EOF)
+    "123C" === Array(TI8Lit, EOF)
+    "123si" === Array(TI16Lit, EOF)
+    "123" === Array(TI32Lit, EOF)
+    "123l" === Array(TI64Lit, EOF)
+    "123L" === Array(TF64Lit, EOF)
+    "123.0f" === Array(TF32Lit, EOF)
+    "123.0F" === Array(TF32Lit, EOF)
+    "123.0" === Array(TF64Lit, EOF)
+    "123.0" === Array(TF64Lit, EOF)
+
+    "1e-5f" === Array(TF32Lit, EOF)
+    "1e-5" === Array(TF64Lit, EOF)
   }
 }
 

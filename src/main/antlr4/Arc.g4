@@ -123,6 +123,10 @@ literalExpr
 | TI16Lit # I16Lit
 | TI32Lit # I32Lit
 | TI64Lit # I64Lit
+| TU8Lit # U8Lit
+| TU16Lit # U16Lit
+| TU32Lit # U32Lit
+| TU64Lit # U64Lit
 | TF32Lit # F32Lit
 | TF64Lit # F64Lit
 | TBoolLit # BoolLit
