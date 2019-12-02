@@ -88,6 +88,17 @@ object MLIRPrinter {
       tmp
     }
 
+    def dumpVec(identifiers: SymbolMap, elems: Vector[Expr], ty: Type): String = {
+      val Vec(elemTy) = ty
+      val es = elems.map(_.toMLIR(identifiers))
+      val elementTypes = es.map(_ => elemTy.toMLIR).mkString(", ")
+      val tmp = newTmp
+      out.print(s"""${tmp} = "arc.make_vector"(${es
+        .mkString(", ")}) : (${elementTypes}) -> tensor<${es.length}x${elemTy.toMLIR}>\n""");
+      s"${tmp}"
+      tmp
+    }
+
     def toMLIR(identifiers: SymbolMap): String = {
       self.kind match {
         case Literal.I8(raw, value) => {
@@ -148,7 +159,7 @@ object MLIRPrinter {
         case ToVec(expr)                         => s""
         case Ident(symbol)                       => s"${identifiers(symbol.name)}"
         case MakeStruct(elems)                   => s""
-        case MakeVec(elems)                      => s""
+        case MakeVec(elems)                      => dumpVec(identifiers, elems, self.ty)
         case If(cond, onTrue, onFalse)           => s""
         case Select(cond, onTrue, onFalse)       => s""
         case Iterate(initial, updateFunc)        => s""
@@ -237,7 +248,7 @@ object MLIRPrinter {
       case VecMerger(elemTy, opTy, annotations)                             => s""
       case GroupMerger(keyTy, valueTy, annotations)                         => s""
       case Windower(discTy, aggrTy, aggrMergeTy, aggrResultTy, annotations) => s""
-      case Vec(elemTy)                                                      => s""
+      case Vec(elemTy)                                                      => s"tensor<?x${elemTy.toMLIR}>"
       case Dict(keyTy, valueTy)                                             => s""
       case Struct(elemTys)                                                  => s""
       case Simd(elemTy)                                                     => s""
