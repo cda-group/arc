@@ -130,3 +130,6 @@ modules.xml
 
 # arc-to-llvm build system flag file
 arc-mlir/.guessed-arc-mlir
+
+# Editor backup files
+*~
