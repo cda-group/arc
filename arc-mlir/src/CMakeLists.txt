@@ -1,17 +1,28 @@
 set(ARC_MLIR_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 include_directories(../tensorflow-mlir/include/)
+include_directories(include/)
+include_directories(${CMAKE_CURRENT_BINARY_DIR}/../mlir/include/)
+include_directories(${CMAKE_CURRENT_BINARY_DIR}/include/)
+
 set(LLVM_LINK_COMPONENTS
   Support
   )
 
-add_llvm_executable(arc-mlir main.cpp)
+add_llvm_executable(arc-mlir main.cpp arc-dialect.cpp)
 llvm_update_compile_flags(arc-mlir)
+add_dependencies(arc-mlir ArcDialectOpsIncGen)
+
 target_link_libraries(arc-mlir PRIVATE
   LLVMSupport
   MLIRAnalysis
   MLIRIR
+  MLIRTransforms
+  MLIRLLVMIR
+  MLIRPass
+  MLIRSupport
+  MLIROptMain
   MLIRParser
-  MLIRTransforms)
+)
 
 whole_archive_link(arc-mlir
   MLIRAffineOps
@@ -29,3 +40,4 @@ configure_file(
     )
 
 add_subdirectory(tests)
+add_subdirectory(include)
