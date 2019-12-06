@@ -51,5 +51,18 @@ let true_bool : bool = true;
 let false_bool : bool = false;
 #CHECK: {{%[^ ]+}} = constant 0 : i1
 
+let bool_vector : vec[bool] = [true, false, true, false];
+#CHECK-DAG: [[E0:%[^ ]+]] = constant 1 : i1
+#CHECK-DAG: [[E1:%[^ ]+]] = constant 0 : i1
+#CHECK-DAG: [[E2:%[^ ]+]] = constant 1 : i1
+#CHECK-DAG: [[E3:%[^ ]+]] = constant 0 : i1
+#CHECK: {{%[^ ]+}} = "arc.make_vector"([[E0]], [[E1]], [[E2]], [[E3]]) : (i1, i1, i1, i1) -> tensor<4xi1>
+
+let f64_vector : vec[f64] = [0.694, 1.0, 1.4142, 3.14];
+#CHECK-DAG: [[E4:%[^ ]+]] = constant {{[^:]+}} : f64
+#CHECK-DAG: [[E5:%[^ ]+]] = constant {{[^:]+}} : f64
+#CHECK-DAG: [[E6:%[^ ]+]] = constant {{[^:]+}} : f64
+#CHECK-DAG: [[E7:%[^ ]+]] = constant {{[^:]+}} : f64
+#CHECK: {{%[^ ]+}} = "arc.make_vector"([[E4]], [[E5]], [[E6]], [[E7]]) : (f64, f64, f64, f64) -> tensor<4xf64>
 
 4711
