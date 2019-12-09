@@ -46,18 +46,18 @@ class FrontEndTests extends FunSuite with Matchers {
   }
   test("matrix multiplication") {
     """
-    let n=2L;
-    let p=2L;
-    let m=3L;
+    let n=2i64;
+    let p=2i64;
+    let m=3i64;
     let A=[1,2,3,4,5,6];
     let B=[1,2,4,5,7,8];
-    let C=for(rangeiter(0L,n,1L),
+    let C=for(rangeiter(0i64,n,1i64),
           appender[i32],
           |Cn,xn,i|
-            for(rangeiter(0L,p,1L),
+            for(rangeiter(0i64,p,1i64),
                 Cn,
                 |Cp,xp,j|
-                  ( let s=for(rangeiter(0L,m,1L),
+                  ( let s=for(rangeiter(0i64,m,1i64),
                         merger[i32,+],
                         |sum,xm,k|
                           ( let Aik=lookup(A,((i*n)+k));
@@ -72,18 +72,18 @@ class FrontEndTests extends FunSuite with Matchers {
     result(C)
     """.compile shouldBeApprox
     """
-    ( let n:i64=2L:i64;
-      let p:i64=2L:i64;
-      let m:i64=3L:i64;
+    ( let n:i64=2i64:i64;
+      let p:i64=2i64:i64;
+      let m:i64=3i64:i64;
       let A:vec[i32]=[1,2,3,4,5,6]:vec[i32];
       let B:vec[i32]=[1,2,4,5,7,8]:vec[i32];
-      let C:appender[i32]=for(rangeiter([]:vec[i64],0L:i64,n:i64,1L:i64),
+      let C:appender[i32]=for(rangeiter([]:vec[i64],0i64:i64,n:i64,1i64:i64),
             appender[i32],
             |Cn:appender[i32],xn:i64,i:i64|
-              for(rangeiter([]:vec[i64],0L:i64,p:i64,1L:i64),
+              for(rangeiter([]:vec[i64],0i64:i64,p:i64,1i64:i64),
                   Cn,
                   |Cp:appender[i32],xp:i64,j:i64|
-                    ( let s:merger[i32,+]=for(rangeiter([]:vec[i64],0L:i64,m:i64,1L:i64),
+                    ( let s:merger[i32,+]=for(rangeiter([]:vec[i64],0i64:i64,m:i64,1i64:i64),
                           merger[i32,+],
                           |sum:merger[i32,+],xm:i64,k:i64|
                             ( let Aik:i32=lookup(A:vec[i32],((i:i64*n:i64):i64+k:i64):i64):i32;
@@ -101,20 +101,20 @@ class FrontEndTests extends FunSuite with Matchers {
   }
   test("pagerank") {
     """
-    let src = [0L,0L,1L,2L];
-    let dst = [1L,2L,2L,0L];
+    let src = [0i64,0i64,1i64,2i64];
+    let dst = [1i64,2i64,2i64,0i64];
 
     let out_edges = zip(src, dst);
     let in_edges  = zip(dst, src);
 
     let in_nbrs = result(for(iter(in_edges), groupmerger[i64,i64], |b,i,x| merge(b, x)));
 
-    let fan_outs = result(for(iter(out_edges), dictmerger[i64,i64,+], |b,i,x| merge(b, {x.$0, 1L})));
+    let fan_outs = result(for(iter(out_edges), dictmerger[i64,i64,+], |b,i,x| merge(b, {x.$0, 1i64})));
 
-    let n = result(for(iter(zip(src, dst)), merger[i64,max], |b,i,x| merge(merge(b, x.$0), x.$1))) + 1L;
+    let n = result(for(iter(zip(src, dst)), merger[i64,max], |b,i,x| merge(merge(b, x.$0), x.$1))) + 1i64;
 
     let initial_rank = 1.0/f64(n);
-    let initial_ranks = result(for(rangeiter(0L, n, 1L), appender, |b,i,x| merge(b, initial_rank)));
+    let initial_ranks = result(for(rangeiter(0i64, n, 1i64), appender, |b,i,x| merge(b, initial_rank)));
 
     let start = {initial_ranks, 0};
 
@@ -126,7 +126,7 @@ class FrontEndTests extends FunSuite with Matchers {
       let old_ranks = iterator.$0;
       let iteration = iterator.$1;
 
-      let new_ranks = result(for(rangeiter(0L, n, 1L), appender, |ranks,i,node|
+      let new_ranks = result(for(rangeiter(0i64, n, 1i64), appender, |ranks,i,node|
         let in_nbrs_of_node = lookup(in_nbrs, node);
         let s = result(for(iter(in_nbrs_of_node), merger[f64,+], |sum,j,in_nbr|
           let fan_out = lookup(fan_outs, in_nbr);
@@ -147,8 +147,8 @@ class FrontEndTests extends FunSuite with Matchers {
     )
     """.compile shouldBeApprox
     """
-    ( let src:vec[i64]=[0L,0L,1L,2L]:vec[i64];
-    let dst:vec[i64]=[1L,2L,2L,0L]:vec[i64];
+    ( let src:vec[i64]=[0i64,0i64,1i64,2i64]:vec[i64];
+    let dst:vec[i64]=[1i64,2i64,2i64,0i64]:vec[i64];
     let out_edges:vec[{i64,i64}]=zip(src,dst):vec[{i64,i64}];
     let in_edges:vec[{i64,i64}]=zip(dst,src):vec[{i64,i64}];
     let in_nbrs:dict[i64, vec[i64]]=result(for(in_edges:vec[{i64,i64}],
@@ -159,15 +159,15 @@ class FrontEndTests extends FunSuite with Matchers {
     let fan_outs:dict[i64, i64]=result(for(out_edges:vec[{i64,i64}],
             merger[i64,i64,+],
             |b:merger[i64,i64,+],i:i64,x:{i64,i64}|
-              merge(b,{x.$0,1L}):merger[i64,i64,+]
+              merge(b,{x.$0,1i64}):merger[i64,i64,+]
         )):dict[i64, i64];
     let n:i64=(result(for(zip(src,dst):vec[{i64,i64}],
              merger[i64,max],
              |b:merger[i64,max],i:i64,x:{i64,i64}|
                merge(merge(b,x.$0),x.$1):merger[i64,max]
-         )):i64+1L:i64):i64;
+         )):i64+1i64:i64):i64;
     let initial_rank:f64=(1.0:f64/f64(n)):f64;
-    let initial_ranks:vec[f64]=result(for(rangeiter([]:vec[i64],0L:i64,n:i64,1L:i64),
+    let initial_ranks:vec[f64]=result(for(rangeiter([]:vec[i64],0i64:i64,n:i64,1i64:i64),
             appender[f64],
             |b:appender[f64],i:i64,x:i64|
               merge(b,initial_rank):appender[f64]
@@ -180,7 +180,7 @@ class FrontEndTests extends FunSuite with Matchers {
       |iterator:{vec[f64],i32}|
         ( let old_ranks:vec[f64]=(iterator.$0):vec[f64];
           let iteration:i32=(iterator.$1):i32;
-          let new_ranks:vec[f64]=result(for(rangeiter([]:vec[i64],0L:i64,n:i64,1L:i64),
+          let new_ranks:vec[f64]=result(for(rangeiter([]:vec[i64],0i64:i64,n:i64,1i64:i64),
                   appender[f64],
                   |ranks:appender[f64],i:i64,node:i64|
                     ( let in_nbrs_of_node:vec[i64]=lookup(in_nbrs:dict[i64, vec[i64]],node:i64):vec[i64];

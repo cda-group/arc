@@ -789,7 +789,7 @@ final case class Translator(parser: ArcParser) {
       Expr(
         kind = ExprKind.Literal.F32(
           raw,
-          value = raw.toFloat
+          value = raw.dropRight(3).toFloat
         ),
         ty = Type.F32,
         ctx
@@ -844,9 +844,9 @@ final case class Translator(parser: ArcParser) {
       )
     }
 
-    val binExpr: Regex = raw"0b([01]+)(?:[cClL]|si)?".r
-    val hexExpr: Regex = raw"0x([0-9a-fA-F]+)(?:[cClL]|si)?".r
-    val decExpr: Regex = raw"([0-9]+)(?:[cClL]|si)?".r
+    val binExpr: Regex = raw"0b([01]+)(?:i8|i16|i64)?".r
+    val hexExpr: Regex = raw"0x([0-9a-fA-F]+)(?:i8|i16|i64)?".r
+    val decExpr: Regex = raw"([0-9]+)(?:i8|i16|i64)?".r
 
     val binRadix: Int = 2
     val hexRadix: Int = 16

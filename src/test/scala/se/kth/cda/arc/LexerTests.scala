@@ -63,23 +63,16 @@ class LexerTests extends FunSuite with Matchers {
 
     "0b10" =?= Array(TI32Lit, EOF)
     "0x10" =?= Array(TI32Lit, EOF)
-
-    "1e-5f" =?= Array(TF32Lit, EOF)
-    "1e-5" =?= Array(TF64Lit, EOF)
-
-    "123c" =?= Array(TI8Lit, EOF)
-    "123C" =?= Array(TI8Lit, EOF)
-    "123si" =?= Array(TI16Lit, EOF)
     "123" =?= Array(TI32Lit, EOF)
-    "123l" =?= Array(TI64Lit, EOF)
-    "123L" =?= Array(TI64Lit, EOF)
-    "123.0f" =?= Array(TF32Lit, EOF)
-    "123.0F" =?= Array(TF32Lit, EOF)
-    "123.0" =?= Array(TF64Lit, EOF)
+
+    "1e-5" =?= Array(TF64Lit, EOF)
     "123.0" =?= Array(TF64Lit, EOF)
 
-    "1e-5f" =?= Array(TF32Lit, EOF)
-    "1e-5" =?= Array(TF64Lit, EOF)
+    "123i8" =?= Array(TI8Lit, EOF)
+    "123i16" =?= Array(TI16Lit, EOF)
+    "123i64" =?= Array(TI64Lit, EOF)
+
+    "123.0f32" =?= Array(TF32Lit, EOF)
   }
 }
 
