@@ -30,6 +30,18 @@ let pos_i64 : i64 = 9223372036854775807i64;
 let neg_i64 : i64 = -9223372036854775808i64;
 #CHECK: {{%[^ ]+}} = constant -9223372036854775808 : i64
 
+let pos_u8 : u8 = 255u8;
+#CHECK: {{%[^ ]+}} = constant -1 : i8
+
+let pos_u16 : u16 = 65535u16;
+#CHECK: {{%[^ ]+}} = constant -1 : i16
+
+let pos_u32 : u32 = 4294967295u32;
+#CHECK: {{%[^ ]+}} = constant -1 : i32
+
+let pos_u64 : u64 = 18446744073709551615u64;
+#CHECK: {{%[^ ]+}} = constant -1 : i64
+
 # As MLIR does not support hex floating point values we only check the
 # f32 to 6 significant digits and f64 to 15.
 

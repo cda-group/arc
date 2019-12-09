@@ -72,6 +72,11 @@ class LexerTests extends FunSuite with Matchers {
     "123i16" =?= Array(TI16Lit, EOF)
     "123i64" =?= Array(TI64Lit, EOF)
 
+    "123u8" =?= Array(TU8Lit, EOF)
+    "123u16" =?= Array(TU16Lit, EOF)
+    "123u32" =?= Array(TU32Lit, EOF)
+    "123u64" =?= Array(TU64Lit, EOF)
+
     "123.0f32" =?= Array(TF32Lit, EOF)
   }
 }

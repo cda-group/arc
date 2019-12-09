@@ -15,6 +15,10 @@ TI8Lit : Integer 'i8';
 TI16Lit : Integer 'i16';
 TI32Lit : Integer;
 TI64Lit : Integer 'i64';
+TU8Lit : Integer 'u8';
+TU16Lit : Integer 'u16';
+TU32Lit : Integer 'u32';
+TU64Lit : Integer 'u64';
 TF32Lit : Decimal 'f32';
 TF64Lit : Decimal;
 // Tokens
