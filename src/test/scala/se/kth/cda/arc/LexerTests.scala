@@ -9,38 +9,12 @@ import org.scalatest._
 
 import scala.language.implicitConversions
 
-sealed trait TokenComparator {
-  def ===(t: Token): Boolean
+object LexerTests {
 
-  def display(v: Vocabulary): String
-}
-final case class TypeComparator(tokenType: Int) extends TokenComparator {
-  override def ===(t: Token): Boolean = t.getType == tokenType
+  type TokenType = Int;
 
-  override def display(v: Vocabulary): String = v.getDisplayName(tokenType)
-}
-final case class TextComparator(tokenText: String) extends TokenComparator {
-  override def ===(t: Token): Boolean = t.getText == tokenText
-
-  override def display(v: Vocabulary): String = tokenText
-}
-final case class FullComparator(tokenType: Int, tokenText: String) extends TokenComparator {
-  override def ===(t: Token): Boolean = (t.getType == tokenType) && (t.getText == tokenText)
-
-  override def display(v: Vocabulary): String = s"${v.getDisplayName(tokenType)}($tokenText)"
-}
-class LexerTests extends FunSuite with Matchers {
-
-  implicit def intToTypeComp(i: Int): TokenComparator = TypeComparator(i)
-
-  implicit def strToTextComp(s: String): TokenComparator = TextComparator(s)
-
-  implicit class IntCompAux(val i: Int) {
-    def apply(s: String): TokenComparator = FullComparator(i, s)
-  }
-
-  implicit class StringTokenAux(val input: String) {
-    def ===(tokenIds: Array[TokenComparator]): Unit = {
+  implicit class StringTokenAux(val input: String) extends AnyVal {
+    def =?=(tokenIds: Array[TokenType]): Unit = {
       val inputStream = CharStreams.fromString(input)
       val lexer = new ArcLexer(inputStream)
       val errorC = new ErrorCounter()
@@ -58,45 +32,54 @@ class LexerTests extends FunSuite with Matchers {
         if (token.getChannel == Lexer.DEFAULT_TOKEN_CHANNEL) {
           assert(idPos < tokenIds.length, s"Expected no input, but got $token.")
           val expected = tokenIds(idPos)
-          assert(expected === token, s"Expected ${expected.display(vocab)}, but got $token at position $idPos.")
+          val found = token.getType
+          assert(expected == found, s"""
+            |Expected ${vocab.getDisplayName(expected)},
+            |found ${vocab.getDisplayName(found)} $found at position $idPos.
+            |""".stripMargin)
+
           idPos += 1
         }
         tokenPos += 1
       }
     }
-
-    def isInvalid(): Unit = {
-      val inputStream = CharStreams.fromString(input)
-      val lexer = new ArcLexer(inputStream)
-      val errorC = new ErrorCounter()
-      lexer.addErrorListener(errorC)
-      val tokenStream = new CommonTokenStream(lexer)
-      tokenStream.fill()
-      assert(errorC.hasErrors, s"Expected an error but tokenized fine to:\n${tokenStream.getTokens}")
-    }
   }
+}
+
+class LexerTests extends FunSuite with Matchers {
 
   test("basic token types") {
+    import LexerTests.StringTokenAux
     import ArcLexer._
     import Token.EOF
 
-    """"test string"""" === Array(TStringLit, EOF)
-    """"test" string""" === Array(TStringLit, TIdentifier, EOF)
+    """"test string"""" =?= Array(TStringLit, EOF)
+    """"test" string""" =?= Array(TStringLit, TString, EOF)
 
-    "a for 23 + z0" === Array(TIdentifier, TFor, TI32Lit, TPlus, TIdentifier, EOF)
+    "a for 23 + z0" =?= Array(TIdentifier, TFor, TI32Lit, TPlus, TIdentifier, EOF)
 
-    "= == | || & &&" === Array(TEqual, TEqualEqual, TBar, TBarBar, TAnd, TAndAnd, EOF)
-    "|t| !t" === Array(TBar, TIdentifier, TBar, TBang, TIdentifier, EOF)
-    "|a:i8| a" === Array(TBar, TIdentifier, ":", TI8, TBar, TIdentifier, EOF)
+    "= == | || & &&" =?= Array(TEqual, TEqualEqual, TBar, TBarBar, TAnd, TAndAnd, EOF)
+    "|t| !t" =?= Array(TBar, TIdentifier, TBar, TBang, TIdentifier, EOF)
 
-    //"(a)".isInvalid; // temporarily until the parser introduces parens
+    "0b10" =?= Array(TI32Lit, EOF)
+    "0x10" =?= Array(TI32Lit, EOF)
 
-    "42si" === Array(TI16Lit, EOF)
-    "0b10" === Array(TI32Lit, EOF)
-    "0x10" === Array(TI32Lit, EOF)
+    "1e-5f" =?= Array(TF32Lit, EOF)
+    "1e-5" =?= Array(TF64Lit, EOF)
 
-    "1e-5f" == Array(TF32Lit, EOF)
-    "1e-5" == Array(TF64Lit, EOF)
+    "123c" =?= Array(TI8Lit, EOF)
+    "123C" =?= Array(TI8Lit, EOF)
+    "123si" =?= Array(TI16Lit, EOF)
+    "123" =?= Array(TI32Lit, EOF)
+    "123l" =?= Array(TI64Lit, EOF)
+    "123L" =?= Array(TI64Lit, EOF)
+    "123.0f" =?= Array(TF32Lit, EOF)
+    "123.0F" =?= Array(TF32Lit, EOF)
+    "123.0" =?= Array(TF64Lit, EOF)
+    "123.0" =?= Array(TF64Lit, EOF)
+
+    "1e-5f" =?= Array(TF32Lit, EOF)
+    "1e-5" =?= Array(TF64Lit, EOF)
   }
 }
 
