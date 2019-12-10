@@ -1,0 +1,84 @@
+name: Arc CI
+
+on: [push]
+
+# Some taken from
+# https://github.com/hiyainc-oss/trie-map/blob/5b892223e50854a4e0f9f86cd20c91efb5985126/.github/workflows/scala.yml
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout source
+      uses: actions/checkout@v1
+
+    - name: Install JDK 1.8
+      uses: actions/setup-java@v1
+      with:
+        java-version: 1.8
+
+    - name: Install ninja-build tool
+      uses: seanmiddleditch/gha-setup-ninja@v1
+
+    - name: Cache Ivy
+      id: cache-ivy
+      uses: actions/cache@v1.0.3
+      with:
+        path: ~/.ivy2
+        key: ${{ runner.os }}-ivy-${{ hashFiles('arc-frontend/**/*.sbt') }}
+
+    - name: Cache SBT
+      id: cache-sbt
+      uses: actions/cache@v1.0.3
+      with:
+        path: ~/.sbt
+        key: ${{ runner.os }}-sbt-${{ hashFiles('arc-frontend/**/*.sbt') }}
+
+    - name: Cache arc-frontend
+      id: cache-arc-frontend
+      uses: actions/cache@v1.0.3
+      with:
+        path: arc-frontend/target
+        key: ${{ runner.os }}-arc-frontend-${{ hashFiles('arc-frontend/**/*.sbt') }}-${{ hashFiles('arc-frontend/src/**/**') }}
+
+    - name: Cache arc-mlir
+      id: cache-arc-mlir
+      uses: actions/cache@v1.0.3
+      with:
+        path: $A2M_BUILD
+        key: ${{ runner.os }}-arc-mlir-${{ hashFiles('arc-mlir/src/**/**') }}-${{ hashFiles('.gitmodules') }}
+
+    - name: Cache LLVM submodule
+      id: cache-llvm
+      uses: actions/cache@v1.0.3
+      with:
+        path: arc-mlir/llvm-project
+        key: cache-llvm
+
+    - name: Cache MLIR submodule
+      id: cache-mlir
+      uses: actions/cache@v1.0.3
+      with:
+        path: arc-mlir/tensorflow-mlir
+        key: cache-mlir
+
+    - name: Update submodule
+      run: git submodule update --init --recursive
+
+    - name: Build and test arc-frontend
+      run: |
+        cd arc-frontend
+        sbt test assembly
+
+    - name: Build and test arc-mlir
+      run: |
+        cd arc-mlir
+        ./arc-mlir-build
+        cd $A2M_BUILD/llvm-build/
+        ninja check-arc-mlir
+      env:
+        A2M_BUILD: ${{ format('{0}/build', runner.temp) }}
+        A2M_ASSERTS: 1
+        A2M_CONDITIONAL_CACHE: 0
+        BUILD_FLAVOUR: Release

@@ -28,12 +28,19 @@ Assuming Scala and `sbt` are installed, the following clones and builds the proj
 
 ```bash
 git clone https://github.com/cda-group/arc.git
-git submodule update --init --recursive
 
 cd arc/
-sbt build           # Compile front-end
-cd arc-to-mlir/
-./arc-to-mlir-build # Compile middle-end
+
+git submodule update --init --recursive
+
+# Compile front-end
+cd arc-frontend && sbt assembly && cd -
+
+# Compile middle-end
+cd arc-mlir/ && ./arc-to-mlir-build && cd - # Takes a while
+
+# Run tests
+cd arc-mlir/build/llvm-build/ && ninja check-arc-mlir && cd -
 ```
 
 # Documentation

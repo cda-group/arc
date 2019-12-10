@@ -30,7 +30,7 @@ whole_archive_link(arc-mlir
 
 # Ugly hack to try to detect the jar of the arc scala tools in order
 # to make wrapper shell script
-file(GLOB ARC_JAR ${PROJECT_SOURCE_DIR}/../../../target/scala-*/Arc-assembly-*.jar)
+file(GLOB ARC_JAR ${PROJECT_SOURCE_DIR}/../../../arc-frontend/target/scala-*/Arc-assembly-*.jar)
 message(STATUS "ARC_JAR => ${ARC_JAR}")
 
 configure_file(
