@@ -135,7 +135,7 @@ object MLIRPrinter {
         }
         case Literal.F32(raw, _) => {
           val tmp = newTmp
-          out.print(s"${tmp} = constant ${raw.dropRight(1)} : ${self.ty.toMLIR}\n"); s"${tmp}"
+          out.print(s"${tmp} = constant ${raw.dropRight(3)} : ${self.ty.toMLIR}\n"); s"${tmp}"
         }
         case Literal.F64(raw, _) => {
           val tmp = newTmp
@@ -189,10 +189,10 @@ object MLIRPrinter {
           val tmp = newTmp; out.print(s"${tmp} = constant -${raw} : ${self.ty.toMLIR}\n"); s"${tmp}"
         }
         case Negate(Expr(Literal.I64(raw, _), _, _, _)) => { // We have to drop the L/l suffix
-          val tmp = newTmp; out.print(s"${tmp} = constant -${raw.dropRight(1)} : ${self.ty.toMLIR}\n"); s"${tmp}"
+          val tmp = newTmp; out.print(s"${tmp} = constant -${raw.dropRight(3)} : ${self.ty.toMLIR}\n"); s"${tmp}"
         }
         case Negate(Expr(Literal.F32(raw, _), _, _, _)) => {
-          val tmp = newTmp; out.print(s"${tmp} = constant -${raw.dropRight(1)} : ${self.ty.toMLIR}\n"); s"${tmp}"
+          val tmp = newTmp; out.print(s"${tmp} = constant -${raw.dropRight(3)} : ${self.ty.toMLIR}\n"); s"${tmp}"
         }
         case Negate(Expr(Literal.F64(raw, _), _, _, _)) => {
           val tmp = newTmp; out.print(s"${tmp} = constant -${raw} : ${self.ty.toMLIR}\n"); s"${tmp}"
@@ -232,10 +232,10 @@ object MLIRPrinter {
       case I16                                                              => s"i16"
       case I32                                                              => s"i32"
       case I64                                                              => s"i64"
-      case U8                                                               => s"u8"
-      case U16                                                              => s"u16"
-      case U32                                                              => s"u32"
-      case U64                                                              => s"u64"
+      case U8                                                               => s"i8"
+      case U16                                                              => s"i16"
+      case U32                                                              => s"i32"
+      case U64                                                              => s"i64"
       case F32                                                              => s"f32"
       case F64                                                              => s"f64"
       case Bool                                                             => s"i1"

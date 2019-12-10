@@ -6,16 +6,16 @@
 # negation. Likewise, as weld does not have a syntax for unsigned
 # literals we don't check that either.
 
-let pos_i8 : i8 = 127c;
+let pos_i8 : i8 = 127i8;
 #CHECK: {{%[^ ]+}} = constant 127 : i8
 
-let neg_i8 : i8 = -128c;
+let neg_i8 : i8 = -128i8;
 #CHECK: {{%[^ ]+}} = constant -128 : i8
 
-let pos_i16 : i16 = 32767si;
+let pos_i16 : i16 = 32767i16;
 #CHECK: {{%[^ ]+}} = constant 32767 : i16
 
-let neg_i16 : i16 = -32768si;
+let neg_i16 : i16 = -32768i16;
 #CHECK: {{%[^ ]+}} = constant -32768 : i16
 
 let pos_i32 : i32 = 2147483647;
@@ -24,19 +24,31 @@ let pos_i32 : i32 = 2147483647;
 let neg_i32 : i32 = -2147483648;
 #CHECK: {{%[^ ]+}} = constant -2147483648 : i32
 
-let pos_i64 : i64 = 9223372036854775807L;
+let pos_i64 : i64 = 9223372036854775807i64;
 #CHECK: {{%[^ ]+}} = constant 9223372036854775807 : i64
 
-let neg_i64 : i64 = -9223372036854775808L;
+let neg_i64 : i64 = -9223372036854775808i64;
 #CHECK: {{%[^ ]+}} = constant -9223372036854775808 : i64
+
+let pos_u8 : u8 = 255u8;
+#CHECK: {{%[^ ]+}} = constant -1 : i8
+
+let pos_u16 : u16 = 65535u16;
+#CHECK: {{%[^ ]+}} = constant -1 : i16
+
+let pos_u32 : u32 = 4294967295u32;
+#CHECK: {{%[^ ]+}} = constant -1 : i32
+
+let pos_u64 : u64 = 18446744073709551615u64;
+#CHECK: {{%[^ ]+}} = constant -1 : i64
 
 # As MLIR does not support hex floating point values we only check the
 # f32 to 6 significant digits and f64 to 15.
 
-let pos_f32 : f32 = 3.4028234664e38f;
+let pos_f32 : f32 = 3.4028234664e38f32;
 #CHECK: {{%[^ ]+}} = constant 3.40282{{[0-9]+[Ee]\+?}}38 : f32
 
-let neg_f32 : f32 = -3.4028234664e38f;
+let neg_f32 : f32 = -3.4028234664e38f32;
 #CHECK: {{%[^ ]+}} = constant -3.40282{{[0-9]+[Ee]\+?}}38 : f32
 
 let pos_f64 : f64 = 1.7976931348623157e308;

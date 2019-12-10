@@ -115,7 +115,7 @@ object AST {
       final case class U64(raw: String, value: BigInt) extends Literal[BigInt]
 
       def tryU64(raw: String, value: BigInt): Try[U64] =
-        tryLiteral[BigInt, U64]("u64", value, BigInt(0), BigInt(Long.MaxValue) << 1, v => U64(raw, v))
+        tryLiteral[BigInt, U64]("u64", value, BigInt(0), BigInt("18446744073709551615"), v => U64(raw, v))
 
       final case class F32(raw: String, value: Float) extends Literal[Float]
 

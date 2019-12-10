@@ -784,12 +784,60 @@ final case class Translator(parser: ArcParser) {
       )
     }
 
+    override def visitU8Lit(ctx: U8LitContext): Expr = {
+      val raw = ctx.TU8Lit().getText
+      Expr(
+        kind = ExprKind.Literal.U8(
+          raw,
+          value = extractInteger(raw, 7).toInt
+        ),
+        ty = Type.U8,
+        ctx
+      )
+    }
+
+    override def visitU16Lit(ctx: U16LitContext): Expr = {
+      val raw = ctx.TU16Lit().getText
+      Expr(
+        kind = ExprKind.Literal.U16(
+          raw,
+          value = extractInteger(raw, 15).toInt
+        ),
+        ty = Type.U16,
+        ctx
+      )
+    }
+
+    override def visitU32Lit(ctx: U32LitContext): Expr = {
+      val raw = ctx.TU32Lit().getText
+      Expr(
+        kind = ExprKind.Literal.U32(
+          raw,
+          value = extractInteger(raw, 31).toInt
+        ),
+        ty = Type.U32,
+        ctx
+      )
+    }
+
+    override def visitU64Lit(ctx: U64LitContext): Expr = {
+      val raw = ctx.TU64Lit().getText
+      Expr(
+        kind = ExprKind.Literal.U64(
+          raw,
+          value = extractInteger(raw, 63).toLong
+        ),
+        ty = Type.U64,
+        ctx
+      )
+    }
+
     override def visitF32Lit(ctx: F32LitContext): Expr = {
       val raw = ctx.TF32Lit().getText
       Expr(
         kind = ExprKind.Literal.F32(
           raw,
-          value = raw.toFloat
+          value = raw.dropRight(3).toFloat
         ),
         ty = Type.F32,
         ctx
@@ -844,20 +892,37 @@ final case class Translator(parser: ArcParser) {
       )
     }
 
-    val binExpr: Regex = raw"0b([01]+)(?:[cClL]|si)?".r
-    val hexExpr: Regex = raw"0x([0-9a-fA-F]+)(?:[cClL]|si)?".r
-    val decExpr: Regex = raw"([0-9]+)(?:[cClL]|si)?".r
+    val binExpr: Regex = raw"0b([01]+)(?:i8|i16|i64|u8|u16|u32|u64)?".r
+    val hexExpr: Regex = raw"0x([0-9a-fA-F]+)(?:i8|i16|i64|u8|u16|u32|u64)?".r
+    val decExpr: Regex = raw"([0-9]+)(?:i8|i16|i64|u8|u16|u32|u64)?".r
 
     val binRadix: Int = 2
     val hexRadix: Int = 16
     val decRadix: Int = 10
 
-    private def extractInteger(s: String): BigInt =
-      s match {
+    private def extractInteger(str: String, from: Int = 0): BigInt = {
+      val int = str match {
         case binExpr(core) => BigInt(core, binRadix)
         case hexExpr(core) => BigInt(core, hexRadix)
         case decExpr(core) => BigInt(core, decRadix)
       }
+      if (from > 0) {
+        signExtend(int, from)
+      } else {
+        int
+      }
+    }
+
+    def signExtend(v: BigInt, from: Int): BigInt = {
+      val signBit: Int = 1 << from
+      if ((signBit | v) != 0) {
+        val mask: Int = ~((1 << (from + 1))-1)
+        v | mask
+      } else {
+        v
+      }
+    }
+
   }
 
   object AnnotationVisitor extends ArcBaseVisitor[Annotations] {
