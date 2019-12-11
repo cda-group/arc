@@ -36,6 +36,13 @@ LLVM_INSTALL_DIR="$A2M_BUILD/llvm-install"
 # default to a debug build
 BUILD_FLAVOUR="${BUILD_FLAVOUR:-Debug}"
 
+# Do we want assertions?
+if [[ -z "$A2M_ASSERTS" ]] ; then
+    A2M_ASSERTS=""
+else
+    A2M_ASSERTS="-DLLVM_ENABLE_ASSERTIONS=ON"
+fi
+
 echo "Will build a $BUILD_FLAVOUR build"
 
 # Report a failure and exit
@@ -61,6 +68,7 @@ function llvm-cmake {
        -DCMAKE_BUILD_TYPE=$BUILD_FLAVOUR \
        -DLLVM_TARGETS_TO_BUILD="host" \
        $A2M_LINKER_SELECTTION \
+       $A2M_ASSERTS \
        -DBUILD_SHARED_LIBS=0 \
        -DLLVM_USE_SPLIT_DWARF=ON \
        -DLLVM_CCACHE_BUILD=1 \
