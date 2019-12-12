@@ -40,6 +40,7 @@ BUILD_FLAVOUR="${BUILD_FLAVOUR:-Debug}"
 if [[ -z "$A2M_ASSERTS" ]] ; then
     A2M_ASSERTS=""
 else
+    echo "Assertions are enabled"
     A2M_ASSERTS="-DLLVM_ENABLE_ASSERTIONS=ON"
 fi
 
