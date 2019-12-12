@@ -42,26 +42,26 @@ jobs:
         path: arc-frontend/target
         key: ${{ runner.os }}-arc-frontend-${{ hashFiles('arc-frontend/**/*.sbt') }}-${{ hashFiles('arc-frontend/src/**/**') }}
 
-    - name: Cache arc-mlir
-      id: cache-arc-mlir
-      uses: actions/cache@v1.0.3
-      with:
-        path: $A2M_BUILD
-        key: ${{ runner.os }}-arc-mlir-${{ hashFiles('arc-mlir/src/**/**') }}-${{ hashFiles('.gitmodules') }}
+    # - name: Cache arc-mlir
+    #   id: cache-arc-mlir
+    #   uses: actions/cache@v1.0.3
+    #   with:
+    #     path: $A2M_BUILD
+    #     key: ${{ runner.os }}-arc-mlir-${{ hashFiles('arc-mlir/src/**/**') }}-${{ hashFiles('.gitmodules') }}
 
-    - name: Cache LLVM submodule
-      id: cache-llvm
-      uses: actions/cache@v1.0.3
-      with:
-        path: arc-mlir/llvm-project
-        key: cache-llvm
+    # - name: Cache LLVM submodule
+    #   id: cache-llvm
+    #   uses: actions/cache@v1.0.3
+    #   with:
+    #     path: arc-mlir/llvm-project
+    #     key: cache-llvm
 
-    - name: Cache MLIR submodule
-      id: cache-mlir
-      uses: actions/cache@v1.0.3
-      with:
-        path: arc-mlir/tensorflow-mlir
-        key: cache-mlir
+    # - name: Cache MLIR submodule
+    #   id: cache-mlir
+    #   uses: actions/cache@v1.0.3
+    #   with:
+    #     path: arc-mlir/tensorflow-mlir
+    #     key: cache-mlir
 
     - name: Update submodule
       run: git submodule update --init --recursive
