@@ -92,6 +92,7 @@ function llvm-cmake {
 function llvm-build {
     echo "Running build in $LLVM_BUILD_DIR"
     cmake --build $LLVM_BUILD_DIR || fail "building LLVM"
+    echo "The size of the build directory is $(du -hs $LLVM_BUILD_DIR | cut -f 1)"
 }
 
 llvm-cmake
