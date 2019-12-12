@@ -61,6 +61,7 @@ function fail {
 function llvm-cmake {
 
     mkdir -p $LLVM_BUILD_DIR || fail "creating $LLVM_BUILD_DIR"
+    echo "Will use $LLVM_BUILD_DIR as the build directory"
     cd $LLVM_BUILD_DIR
 
     if [ -f compile_commands.json ]; then
@@ -68,6 +69,7 @@ function llvm-cmake {
 	return
     fi
 
+    echo "Running Cmake in $(pwd)"
     CXX=clang++ CC=clang cmake \
        -DCMAKE_GENERATOR="Ninja" \
        -DCMAKE_INSTALL_PREFIX="$LLVM_INSTALL_DIR" \
@@ -87,6 +89,7 @@ function llvm-cmake {
 }
 
 function llvm-build {
+    echo "Running build in $LLVM_BUILD_DIR"
     cmake --build $LLVM_BUILD_DIR || fail "building LLVM"
 }
 
