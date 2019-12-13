@@ -64,7 +64,7 @@ jobs:
         key: cache-mlir
 
     - name: Update submodule
-      run: git submodule update --init --recursive --depth 1
+      run: git submodule update --init --recursive
 
     - name: Build and test arc-frontend
       run: |
