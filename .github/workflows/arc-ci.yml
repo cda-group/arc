@@ -56,12 +56,12 @@ jobs:
     #     path: arc-mlir/llvm-project
     #     key: cache-llvm
 
-    # - name: Cache MLIR submodule
-    #   id: cache-mlir
-    #   uses: actions/cache@v1.0.3
-    #   with:
-    #     path: arc-mlir/tensorflow-mlir
-    #     key: cache-mlir
+    - name: Cache MLIR build dir
+      id: cache-mlir
+      uses: actions/cache@v1.0.3
+      with:
+        path: ${{ format('{0}/build', runner.temp) }}
+        key: cache-mlir
 
     - name: Update submodule
       run: git submodule update --init --recursive --depth 1
