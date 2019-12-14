@@ -61,7 +61,7 @@ jobs:
       uses: actions/cache@v1.0.3
       with:
         path: ${{ format('{0}/build', runner.temp) }}
-        key: cache-mlir
+        key: mlir-cache
 
     - name: Update submodule
       run: git submodule update --init --recursive
