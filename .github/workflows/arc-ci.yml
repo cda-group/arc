@@ -81,4 +81,4 @@ jobs:
         A2M_BUILD: ${{ format('{0}/build', runner.temp) }}
         A2M_ASSERTS: 1
         A2M_CONDITIONAL_CACHE: 0
-        BUILD_FLAVOUR: Release
+        BUILD_FLAVOUR: MinSizeRel
