@@ -56,12 +56,39 @@ jobs:
     #     path: arc-mlir/llvm-project
     #     key: cache-llvm
 
-    - name: Cache MLIR build dir
-      id: cache-mlir
-      uses: actions/cache@v1.0.3
+    - uses: actions/cache@v1.0.3
+      id: mlir-cache
       with:
-        path: ${{ format('{0}/build', runner.temp) }}
-        key: mlir-cache
+        path: build.tgz.a
+        key: mlir-cache-a
+
+    - uses: actions/cache@v1.0.3
+      with:
+        path: build.tgz.b
+        key: mlir-cache-b
+
+    - uses: actions/cache@v1.0.3
+      with:
+        path: build.tgz.c
+        key: mlir-cache-c
+
+    - uses: actions/cache@v1.0.3
+      with:
+        path: build.tgz.d
+        key: mlir-cache-d
+
+    - uses: actions/cache@v1.0.3
+      with:
+        path: build.tgz.e
+        key: mlir-cache-e
+
+    - name: Hack - Join MLIR cache pieces
+      if: steps.mlir-cache.outputs.cache-hit == 'true'
+      run: |
+        # Join cache pieces into one archive
+        cat build.tgz.* > build.tgz
+        # Unzip the archive and put it in the build directory
+        tar -zxvf build.tgz ${{ format('{0}/build/', runner.temp) }}
 
     - name: Update submodule
       run: git submodule update --init --recursive
@@ -82,3 +109,12 @@ jobs:
         A2M_ASSERTS: 1
         A2M_CONDITIONAL_CACHE: 0
         BUILD_FLAVOUR: MinSizeRel
+
+    # Get around that damn caching the limit
+    - name: Hack - Cache MLIR build dir
+      run: |
+        # Cache the build directory
+        tar -cz -f build.tgz ${{ format('{0}/build', runner.temp) }}
+        # Split the cache into chunks of 400MB
+        split -b 400m build.tgz build.tgz.
+
