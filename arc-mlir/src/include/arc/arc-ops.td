@@ -63,4 +63,15 @@ def MakeVector
     return mlir::success();
   }];
 }
+
+def ArcKeep : Arc_Op<"keep", []> {
+  let summary = "Operation consuming anything and having side effects.";
+  let description = [{An operation used for debugging and testing. Can be used
+                      to prevent optimization passes from removing dummy
+                      results.
+  }];
+  let arguments = (ins Variadic<AnyType> : $values);
+  let results = (outs);
+}
+
 #endif // ARC_OPS
