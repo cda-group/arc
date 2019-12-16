@@ -48,6 +48,8 @@ def MakeVector
 
   let results = (outs 1DTensorOf<[AnyType]>);
 
+  let hasCanonicalizer = 1;
+
   let verifier = [{
     unsigned NumOperands = this->getOperation()->getNumOperands();
     auto ElemTy = this->getOperation()->getOperand(0)->getType();
