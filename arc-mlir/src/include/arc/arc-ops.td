@@ -48,6 +48,8 @@ def MakeVector
 
   let results = (outs 1DTensorOf<[AnyType]>);
 
+  let hasCanonicalizer = 1;
+
   let verifier = [{
     unsigned NumOperands = this->getOperation()->getNumOperands();
     auto ElemTy = this->getOperation()->getOperand(0)->getType();
@@ -63,4 +65,15 @@ def MakeVector
     return mlir::success();
   }];
 }
+
+def ArcKeep : Arc_Op<"keep", []> {
+  let summary = "Operation consuming anything and having side effects.";
+  let description = [{An operation used for debugging and testing. Can be used
+                      to prevent optimization passes from removing dummy
+                      results.
+  }];
+  let arguments = (ins Variadic<AnyType> : $values);
+  let results = (outs);
+}
+
 #endif // ARC_OPS
