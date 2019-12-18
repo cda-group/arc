@@ -1,11 +1,6 @@
 # RUN: arc-to-mlir -i %s | FileCheck %s
 # RUN: arc-to-mlir -i %s | arc-mlir | FileCheck %s
 
-# Here we check positive literals, there is no point in checking the
-# negative literals as they will be represented by a
-# negation. Likewise, as weld does not have a syntax for unsigned
-# literals we don't check that either.
-
 let pos_i8 : i8 = 127i8;
 #CHECK: {{%[^ ]+}} = constant 127 : i8
 
