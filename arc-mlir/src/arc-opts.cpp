@@ -30,19 +30,20 @@ using namespace arc;
 namespace {
 
 bool AllValuesAreConstant(Operation::operand_range &ops) {
-  for (mlir::Value *a : ops) {
-    Operation *op = a->getDefiningOp();
+  for (const mlir::Value &a : ops) {
+    Operation *op = a.getDefiningOp();
     if (!op || !isa<ConstantOp>(op)) // function arguments have no defining op
       return false;
   }
   return true;
 }
 
-DenseElementsAttr ToDenseAttribs(Value *result, Operation::operand_range &ops) {
+DenseElementsAttr ToDenseAttribs(mlir::OpResult result,
+                                 Operation::operand_range &ops) {
   ShapedType st = result->getType().cast<ShapedType>();
   std::vector<Attribute> attribs;
-  for (mlir::Value *a : ops) {
-    ConstantOp def = cast<ConstantOp>(a->getDefiningOp());
+  for (const mlir::Value &a : ops) {
+    ConstantOp def = cast<ConstantOp>(a.getDefiningOp());
     attribs.push_back(def.getValue());
   }
   return DenseElementsAttr::get(st, llvm::makeArrayRef(attribs));

@@ -80,8 +80,8 @@ function llvm-cmake {
        -DLLVM_USE_SPLIT_DWARF=ON \
        $A2M_CCACHE \
        -DLLVM_BUILD_EXAMPLES=OFF \
-       -DLLVM_EXTERNAL_PROJECTS="mlir;arc-mlir" \
-       -DLLVM_EXTERNAL_MLIR_SOURCE_DIR="$A2M/tensorflow-mlir" \
+       -DLLVM_ENABLE_PROJECTS=mlir\
+       -DLLVM_EXTERNAL_PROJECTS="arc-mlir" \
        -DLLVM_EXTERNAL_ARC_MLIR_SOURCE_DIR="$A2M/src" \
        $LLVM_SRC_DIR/llvm || fail "cmaking LLVM"
 }
