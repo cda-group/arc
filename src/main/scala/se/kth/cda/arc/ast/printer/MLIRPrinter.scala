@@ -75,16 +75,188 @@ object MLIRPrinter {
       bodyValue
     }
 
-    def dumpBinOp(identifiers: SymbolMap, kind: BinOpKind, lhs: Expr, rhs: Expr): String = {
-      val operator = kind match {
-        case BinOpKind.Add => s"addi"
-        case _             => "/* unknown binop */"
+    def expandLtCmp(lhs: String, rhs: String, ty: Type): String = {
+      val tmp = newTmp
+      val cmpOp = ty match {
+        case I8  => """cmpi "slt""""
+        case I16 => """cmpi "slt""""
+        case I32 => """cmpi "slt""""
+        case I64 => """cmpi "slt""""
+        case U8  => """cmpi "ult""""
+        case U16 => """cmpi "ult""""
+        case U32 => """cmpi "ult""""
+        case U64 => """cmpi "ult""""
+        case F32 => """cmpf "olt""""
+        case F64 => """cmpf "olt""""
+        case _   => "/* Unsupported type: ${ty} */"
       }
+      out.print(s"""${tmp} = ${cmpOp}, ${lhs}, ${rhs} : ${ty.toMLIR}\n""")
+      tmp
+    }
 
+    def expandMin(result: String, lhs: String, rhs: String, ty: Type): Type = {
+      out.print(s"${result} = select ${expandLtCmp(lhs, rhs, ty)}, ${lhs}, ${rhs} : ${ty.toMLIR}\n")
+      ty
+    }
+
+    def expandMax(result: String, lhs: String, rhs: String, ty: Type): Type = {
+      out.print(s"${result} = select ${expandLtCmp(lhs, rhs, ty)}, ${rhs}, ${lhs} : ${ty.toMLIR}\n")
+      ty
+    }
+
+    def dumpBinOp(identifiers: SymbolMap, kind: BinOpKind, lhs: Expr, rhs: Expr, ty: Type): String = {
       val lhsValue = lhs.toMLIR(identifiers)
       val rhsValue = rhs.toMLIR(identifiers)
       val tmp = newTmp
-      out.print(s"${tmp} = ${operator} ${lhsValue}, ${rhsValue} : ${self.ty.toMLIR}\n")
+
+      val (operator: String, typeTag: Type) = (kind, ty, lhs.ty) match {
+        case (BinOpKind.Add, I8, _)      => ("addi", ty)
+        case (BinOpKind.Add, I16, _)     => ("addi", ty)
+        case (BinOpKind.Add, I32, _)     => ("addi", ty)
+        case (BinOpKind.Add, I64, _)     => ("addi", ty)
+        case (BinOpKind.Add, U8, _)      => ("addi", ty)
+        case (BinOpKind.Add, U16, _)     => ("addi", ty)
+        case (BinOpKind.Add, U32, _)     => ("addi", ty)
+        case (BinOpKind.Add, U64, _)     => ("addi", ty)
+        case (BinOpKind.Add, F32, _)     => ("addf", ty)
+        case (BinOpKind.Add, F64, _)     => ("addf", ty)
+        case (BinOpKind.Sub, I8, _)      => ("subi", ty)
+        case (BinOpKind.Sub, I16, _)     => ("subi", ty)
+        case (BinOpKind.Sub, I32, _)     => ("subi", ty)
+        case (BinOpKind.Sub, I64, _)     => ("subi", ty)
+        case (BinOpKind.Sub, U8, _)      => ("subi", ty)
+        case (BinOpKind.Sub, U16, _)     => ("subi", ty)
+        case (BinOpKind.Sub, U32, _)     => ("subi", ty)
+        case (BinOpKind.Sub, U64, _)     => ("subi", ty)
+        case (BinOpKind.Sub, F32, _)     => ("subf", ty)
+        case (BinOpKind.Sub, F64, _)     => ("subf", ty)
+        case (BinOpKind.Mul, I8, _)      => ("muli", ty)
+        case (BinOpKind.Mul, I16, _)     => ("muli", ty)
+        case (BinOpKind.Mul, I32, _)     => ("muli", ty)
+        case (BinOpKind.Mul, I64, _)     => ("muli", ty)
+        case (BinOpKind.Mul, U8, _)      => ("muli", ty)
+        case (BinOpKind.Mul, U16, _)     => ("muli", ty)
+        case (BinOpKind.Mul, U32, _)     => ("muli", ty)
+        case (BinOpKind.Mul, U64, _)     => ("muli", ty)
+        case (BinOpKind.Mul, F32, _)     => ("mulf", ty)
+        case (BinOpKind.Mul, F64, _)     => ("mulf", ty)
+        case (BinOpKind.Div, I8, _)      => ("divis", ty)
+        case (BinOpKind.Div, I16, _)     => ("divis", ty)
+        case (BinOpKind.Div, I32, _)     => ("divis", ty)
+        case (BinOpKind.Div, I64, _)     => ("divis", ty)
+        case (BinOpKind.Div, U8, _)      => ("diviu", ty)
+        case (BinOpKind.Div, U16, _)     => ("diviu", ty)
+        case (BinOpKind.Div, U32, _)     => ("diviu", ty)
+        case (BinOpKind.Div, U64, _)     => ("diviu", ty)
+        case (BinOpKind.Div, F32, _)     => ("divf", ty)
+        case (BinOpKind.Div, F64, _)     => ("divf", ty)
+        case (BinOpKind.Mod, I8, _)      => ("remis", ty)
+        case (BinOpKind.Mod, I16, _)     => ("remis", ty)
+        case (BinOpKind.Mod, I32, _)     => ("remis", ty)
+        case (BinOpKind.Mod, I64, _)     => ("remis", ty)
+        case (BinOpKind.Mod, U8, _)      => ("remiu", ty)
+        case (BinOpKind.Mod, U16, _)     => ("remiu", ty)
+        case (BinOpKind.Mod, U32, _)     => ("remiu", ty)
+        case (BinOpKind.Mod, U64, _)     => ("remiu", ty)
+        case (BinOpKind.Mod, F32, _)     => ("remf", ty)
+        case (BinOpKind.Mod, F64, _)     => ("remf", ty)
+        case (BinOpKind.Lt, Bool, I8)    => ("""cmpi "slt", """, lhs.ty)
+        case (BinOpKind.Lt, Bool, I16)   => ("""cmpi "slt", """, lhs.ty)
+        case (BinOpKind.Lt, Bool, I32)   => ("""cmpi "slt", """, lhs.ty)
+        case (BinOpKind.Lt, Bool, I64)   => ("""cmpi "slt", """, lhs.ty)
+        case (BinOpKind.Lt, Bool, U8)    => ("""cmpi "ult", """, lhs.ty)
+        case (BinOpKind.Lt, Bool, U16)   => ("""cmpi "ult", """, lhs.ty)
+        case (BinOpKind.Lt, Bool, U32)   => ("""cmpi "ult", """, lhs.ty)
+        case (BinOpKind.Lt, Bool, U64)   => ("""cmpi "ult", """, lhs.ty)
+        case (BinOpKind.Lt, Bool, F32)   => ("""cmpf "olt", """, lhs.ty)
+        case (BinOpKind.Lt, Bool, F64)   => ("""cmpf "olt", """, lhs.ty)
+        case (BinOpKind.LEq, Bool, I8)   => ("""cmpi "sle", """, lhs.ty)
+        case (BinOpKind.LEq, Bool, I16)  => ("""cmpi "sle", """, lhs.ty)
+        case (BinOpKind.LEq, Bool, I32)  => ("""cmpi "sle", """, lhs.ty)
+        case (BinOpKind.LEq, Bool, I64)  => ("""cmpi "sle", """, lhs.ty)
+        case (BinOpKind.LEq, Bool, U8)   => ("""cmpi "ule", """, lhs.ty)
+        case (BinOpKind.LEq, Bool, U16)  => ("""cmpi "ule", """, lhs.ty)
+        case (BinOpKind.LEq, Bool, U32)  => ("""cmpi "ule", """, lhs.ty)
+        case (BinOpKind.LEq, Bool, U64)  => ("""cmpi "ule", """, lhs.ty)
+        case (BinOpKind.LEq, Bool, F32)  => ("""cmpf "ole", """, lhs.ty)
+        case (BinOpKind.LEq, Bool, F64)  => ("""cmpf "ole", """, lhs.ty)
+        case (BinOpKind.Gt, Bool, I8)    => ("""cmpi "sgt", """, lhs.ty)
+        case (BinOpKind.Gt, Bool, I16)   => ("""cmpi "sgt", """, lhs.ty)
+        case (BinOpKind.Gt, Bool, I32)   => ("""cmpi "sgt", """, lhs.ty)
+        case (BinOpKind.Gt, Bool, I64)   => ("""cmpi "sgt", """, lhs.ty)
+        case (BinOpKind.Gt, Bool, U8)    => ("""cmpi "ugt", """, lhs.ty)
+        case (BinOpKind.Gt, Bool, U16)   => ("""cmpi "ugt", """, lhs.ty)
+        case (BinOpKind.Gt, Bool, U32)   => ("""cmpi "ugt", """, lhs.ty)
+        case (BinOpKind.Gt, Bool, U64)   => ("""cmpi "ugt", """, lhs.ty)
+        case (BinOpKind.Gt, Bool, F32)   => ("""cmpf "ogt", """, lhs.ty)
+        case (BinOpKind.Gt, Bool, F64)   => ("""cmpf "ogt", """, lhs.ty)
+        case (BinOpKind.GEq, Bool, I8)   => ("""cmpi "sge", """, lhs.ty)
+        case (BinOpKind.GEq, Bool, I16)  => ("""cmpi "sge", """, lhs.ty)
+        case (BinOpKind.GEq, Bool, I32)  => ("""cmpi "sge", """, lhs.ty)
+        case (BinOpKind.GEq, Bool, I64)  => ("""cmpi "sge", """, lhs.ty)
+        case (BinOpKind.GEq, Bool, U8)   => ("""cmpi "uge", """, lhs.ty)
+        case (BinOpKind.GEq, Bool, U16)  => ("""cmpi "uge", """, lhs.ty)
+        case (BinOpKind.GEq, Bool, U32)  => ("""cmpi "uge", """, lhs.ty)
+        case (BinOpKind.GEq, Bool, U64)  => ("""cmpi "uge", """, lhs.ty)
+        case (BinOpKind.GEq, Bool, F32)  => ("""cmpf "oge", """, lhs.ty)
+        case (BinOpKind.GEq, Bool, F64)  => ("""cmpf "oge", """, lhs.ty)
+        case (BinOpKind.Eq, Bool, Bool)  => ("""cmpi "eq", """, lhs.ty)
+        case (BinOpKind.Eq, Bool, I8)    => ("""cmpi "eq", """, lhs.ty)
+        case (BinOpKind.Eq, Bool, I16)   => ("""cmpi "eq", """, lhs.ty)
+        case (BinOpKind.Eq, Bool, I32)   => ("""cmpi "eq", """, lhs.ty)
+        case (BinOpKind.Eq, Bool, I64)   => ("""cmpi "eq", """, lhs.ty)
+        case (BinOpKind.Eq, Bool, U8)    => ("""cmpi "eq", """, lhs.ty)
+        case (BinOpKind.Eq, Bool, U16)   => ("""cmpi "eq", """, lhs.ty)
+        case (BinOpKind.Eq, Bool, U32)   => ("""cmpi "eq", """, lhs.ty)
+        case (BinOpKind.Eq, Bool, U64)   => ("""cmpi "eq", """, lhs.ty)
+        case (BinOpKind.Eq, Bool, F32)   => ("""cmpf "oeq", """, lhs.ty)
+        case (BinOpKind.Eq, Bool, F64)   => ("""cmpf "oeq", """, lhs.ty)
+        case (BinOpKind.NEq, Bool, Bool) => ("""cmpi "ne", """, lhs.ty)
+        case (BinOpKind.NEq, Bool, I8)   => ("""cmpi "ne", """, lhs.ty)
+        case (BinOpKind.NEq, Bool, I16)  => ("""cmpi "ne", """, lhs.ty)
+        case (BinOpKind.NEq, Bool, I32)  => ("""cmpi "ne", """, lhs.ty)
+        case (BinOpKind.NEq, Bool, I64)  => ("""cmpi "ne", """, lhs.ty)
+        case (BinOpKind.NEq, Bool, U8)   => ("""cmpi "ne", """, lhs.ty)
+        case (BinOpKind.NEq, Bool, U16)  => ("""cmpi "ne", """, lhs.ty)
+        case (BinOpKind.NEq, Bool, U32)  => ("""cmpi "ne", """, lhs.ty)
+        case (BinOpKind.NEq, Bool, U64)  => ("""cmpi "ne", """, lhs.ty)
+        case (BinOpKind.NEq, Bool, F32)  => ("""cmpf "one", """, lhs.ty)
+        case (BinOpKind.NEq, Bool, F64)  => ("""cmpf "one", """, lhs.ty)
+        case (BinOpKind.And, Bool, Bool) => ("and", lhs.ty)
+        case (BinOpKind.Or, Bool, Bool)  => ("or", lhs.ty)
+        case (BinOpKind.BwAnd, I8, _)    => ("and", ty)
+        case (BinOpKind.BwAnd, I16, _)   => ("and", ty)
+        case (BinOpKind.BwAnd, I32, _)   => ("and", ty)
+        case (BinOpKind.BwAnd, I64, _)   => ("and", ty)
+        case (BinOpKind.BwAnd, U8, _)    => ("and", ty)
+        case (BinOpKind.BwAnd, U16, _)   => ("and", ty)
+        case (BinOpKind.BwAnd, U32, _)   => ("and", ty)
+        case (BinOpKind.BwAnd, U64, _)   => ("and", ty)
+        case (BinOpKind.BwOr, I8, _)     => ("or", ty)
+        case (BinOpKind.BwOr, I16, _)    => ("or", ty)
+        case (BinOpKind.BwOr, I32, _)    => ("or", ty)
+        case (BinOpKind.BwOr, I64, _)    => ("or", ty)
+        case (BinOpKind.BwOr, U8, _)     => ("or", ty)
+        case (BinOpKind.BwOr, U16, _)    => ("or", ty)
+        case (BinOpKind.BwOr, U32, _)    => ("or", ty)
+        case (BinOpKind.BwOr, U64, _)    => ("or", ty)
+        case (BinOpKind.BwXor, I8, _)    => ("xor", ty)
+        case (BinOpKind.BwXor, I16, _)   => ("xor", ty)
+        case (BinOpKind.BwXor, I32, _)   => ("xor", ty)
+        case (BinOpKind.BwXor, I64, _)   => ("xor", ty)
+        case (BinOpKind.BwXor, U8, _)    => ("xor", ty)
+        case (BinOpKind.BwXor, U16, _)   => ("xor", ty)
+        case (BinOpKind.BwXor, U32, _)   => ("xor", ty)
+        case (BinOpKind.BwXor, U64, _)   => ("xor", ty)
+        case (BinOpKind.Min, _, _)       => ("", expandMin(tmp, lhsValue, rhsValue, lhs.ty))
+        case (BinOpKind.Max, _, _)       => ("", expandMax(tmp, lhsValue, rhsValue, lhs.ty))
+        case _                           => s"/* unknown binop ${kind} : result-ty: ${ty}, lhs-ty: ${lhs.ty} */"
+      }
+      operator match {
+        case "" => Unit
+        case _ =>
+          out.print(s"${tmp} = ${operator} ${lhsValue}, ${rhsValue} : ${typeTag.toMLIR}\n")
+      }
       tmp
     }
 
@@ -203,7 +375,7 @@ object MLIRPrinter {
         case Merge(builder, value)   => s""
         case Result(expr)            => s""
         case NewBuilder(ty, args)    => s""
-        case BinOp(kind, lhs, rhs)   => dumpBinOp(identifiers, kind, lhs, rhs)
+        case BinOp(kind, lhs, rhs)   => dumpBinOp(identifiers, kind, lhs, rhs, self.ty)
         case Application(expr, args) => s""
         case Projection(expr, index) => s""
         case Ascription(expr, ty)    => s""
