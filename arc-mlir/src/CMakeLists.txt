@@ -1,5 +1,5 @@
 set(ARC_MLIR_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
-include_directories(../tensorflow-mlir/include/)
+include_directories(../llvm-project/mlir/include/)
 include_directories(include/)
 include_directories(${CMAKE_CURRENT_BINARY_DIR}/../mlir/include/)
 include_directories(${CMAKE_CURRENT_BINARY_DIR}/include/)
@@ -10,7 +10,7 @@ set(LLVM_LINK_COMPONENTS
 
 set(LLVM_TARGET_DEFINITIONS arc-opts.td)
 set(MLIR_TABLEGEN_EXE ${LLVM_BINARY_DIR}/bin/mlir-tblgen)
-set(TBLGEN_INCDIRS "-I${CMAKE_CURRENT_SOURCE_DIR}/../tensorflow-mlir/include/")
+set(TBLGEN_INCDIRS "-I${CMAKE_CURRENT_SOURCE_DIR}/../llvm-project/mlir/include/")
 mlir_tablegen(arc-opts.inc -gen-rewriters ${TBLGEN_INCDIRS} "-I${CMAKE_CURRENT_SOURCE_DIR}/include")
 add_public_tablegen_target(ArcDialectOptsIncGen)
 
@@ -18,9 +18,12 @@ add_public_tablegen_target(ArcDialectOptsIncGen)
 set(ARCMLIR_MODULES main.cpp arc-dialect.cpp arc-opts.cpp)
 
 set(LIBS
-  MLIRAffineOps
-  MLIRLoopsToGPU
   MLIRAnalysis
+  MLIRAffineOps
+  MLIRAffineToStandard
+  MLIRLoopsToGPU
+  MLIRLinalgToLLVM
+
   MLIRLoopToStandard
   MLIREDSC
   MLIRFxpMathOps
@@ -39,7 +42,8 @@ set(LIBS
   MLIRQuantOps
   MLIRROCDLIR
   MLIRSPIRV
-  MLIRSPIRVConversion
+  MLIRStandardToSPIRVTransforms
+  MLIRSPIRVTestPasses
   MLIRSPIRVTransforms
   MLIRStandardOps
   MLIRStandardToLLVM
@@ -51,6 +55,7 @@ set(LIBS
   MLIRSupport
   MLIRVectorOps
   MLIRVectorToLLVM
+  MLIRVectorToLoops
 )
 
 add_llvm_executable(arc-mlir ${ARCMLIR_MODULES})
