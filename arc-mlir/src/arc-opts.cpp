@@ -40,7 +40,7 @@ bool AllValuesAreConstant(Operation::operand_range &ops) {
 
 DenseElementsAttr ToDenseAttribs(mlir::OpResult result,
                                  Operation::operand_range &ops) {
-  ShapedType st = result->getType().cast<ShapedType>();
+  ShapedType st = result.getType().cast<ShapedType>();
   std::vector<Attribute> attribs;
   for (const mlir::Value &a : ops) {
     ConstantOp def = cast<ConstantOp>(a.getDefiningOp());
