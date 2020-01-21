@@ -9,6 +9,7 @@ import se.kth.cda.arc.ast.Type.Builder._
 import se.kth.cda.arc.ast.Type._
 import se.kth.cda.arc.ast._
 import se.kth.cda.arc.Utils
+import se.kth.cda.arc.ast.AST.UnaryOpKind.UnaryOpKind
 
 object MLIRPrinter {
 
@@ -276,6 +277,22 @@ object MLIRPrinter {
       tmp
     }
 
+    def dumpUnaryOp(identifiers: SymbolMap, kind: UnaryOpKind, expr: Expr, ty: Type): String = {
+      val exprValue = expr.toMLIR(identifiers)
+      val tmp = newTmp
+
+      val (operator: String) = (kind, ty) match {
+        case (UnaryOpKind.Exp, F32) => "exp"
+        case (UnaryOpKind.Exp, F64) => "exp"
+      }
+      operator match {
+        case "" => Unit
+        case _ =>
+          out.print(s"${tmp} = ${operator} ${exprValue} : ${ty.toMLIR}\n")
+      }
+      tmp
+    }
+
     def dumpVec(identifiers: SymbolMap, elems: Vector[Expr], ty: Type): String = {
       val Vec(elemTy) = ty
       val es = elems.map(_.toMLIR(identifiers))
@@ -387,7 +404,7 @@ object MLIRPrinter {
         }
         case Negate(expr)            => s""
         case Not(expr)               => s""
-        case UnaryOp(kind, expr)     => s""
+        case UnaryOp(kind, expr)     => dumpUnaryOp(identifiers, kind, expr, self.ty)
         case Merge(builder, value)   => s""
         case Result(expr)            => s""
         case NewBuilder(ty, args)    => s""
