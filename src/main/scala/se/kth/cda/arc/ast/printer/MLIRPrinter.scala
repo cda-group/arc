@@ -326,6 +326,11 @@ object MLIRPrinter {
           out.print(s"""${tmp} = "arc.erf"(${exprValue}) : (${ty.toMLIR}) -> ${ty.toMLIR}\n"""); ""
         case (UnaryOpKind.Erf, F64) =>
           out.print(s"""${tmp} = "arc.erf"(${exprValue}) : (${ty.toMLIR}) -> ${ty.toMLIR}\n"""); ""
+
+        case (UnaryOpKind.Sqrt, F32) =>
+          out.print(s"""${tmp} = "arc.sqrt"(${exprValue}) : (${ty.toMLIR}) -> ${ty.toMLIR}\n"""); ""
+        case (UnaryOpKind.Sqrt, F64) =>
+          out.print(s"""${tmp} = "arc.sqrt"(${exprValue}) : (${ty.toMLIR}) -> ${ty.toMLIR}\n"""); ""
       }
       operator match {
         case "" => Unit
