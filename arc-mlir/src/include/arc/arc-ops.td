@@ -76,4 +76,42 @@ def ArcKeep : Arc_Op<"keep", []> {
   let results = (outs);
 }
 
+/* The structure for these unary operands is stolen from the standard dialect */
+class ArcUnaryOp<string mnemonic, list<OpTrait> traits = []>
+    : Op<Arc_Dialect, mnemonic, !listconcat(traits, [NoSideEffect])> {
+  let results = (outs AnyType);
+}
+
+class ArcUnaryOpSameOperandAndResultType<string mnemonic,
+                                         list<OpTrait> traits = []>
+    : ArcUnaryOp<mnemonic, !listconcat(traits, [SameOperandsAndResultType])> {
+  let parser =
+      [{ return impl::parseOneResultSameOperandTypeOp(parser, result); }];
+}
+
+class ArcFloatUnaryOp<string mnemonic, list<OpTrait> traits = []>
+    : ArcUnaryOpSameOperandAndResultType<mnemonic, traits>,
+      Arguments<(ins FloatLike
+                 : $operand)>;
+
+def SinOp : ArcFloatUnaryOp<"sin"> {
+  let summary = "sine of the specified value";
+  let description =
+      [{The `sin` operation computes the sine of a given
+        value.It takes one operand and returns one result of the same
+        type.This type may be a float scalar type,
+        a vector whose element type is float,
+        or a tensor of floats.It has no standard attributes.}];
+}
+
+def TanOp : ArcFloatUnaryOp<"tan"> {
+  let summary = "tangent of the specified value";
+  let description =
+      [{The `tan` operation computes the tangent of a given
+        value.It takes one operand and returns one result of the same
+        type.This type may be a float scalar type,
+        a vector whose element type is float,
+        or a tensor of floats.It has no standard attributes.}];
+}
+
 #endif // ARC_OPS

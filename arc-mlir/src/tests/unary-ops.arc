@@ -42,4 +42,16 @@ let cos_f32 : f32 = cos c_f32;
 let cos_f64 : f64 = cos c_f64;
 #CHECK: {{%[^ ]+}} = cos {{%[^ ]+}} : f64
 
+let sin_f32 : f32 = sin c_f32;
+#CHECK: {{%[^ ]+}} = "arc.sin"({{%[^ ]+}}) : (f32) -> f32
+
+let sin_f64 : f64 = sin c_f64;
+#CHECK: {{%[^ ]+}} = "arc.sin"({{%[^ ]+}}) : (f64) -> f64
+
+let tan_f32 : f32 = tan c_f32;
+#CHECK: {{%[^ ]+}} = "arc.tan"({{%[^ ]+}}) : (f32) -> f32
+
+let tan_f64 : f64 = tan c_f64;
+#CHECK: {{%[^ ]+}} = "arc.tan"({{%[^ ]+}}) : (f64) -> f64
+
 4711
