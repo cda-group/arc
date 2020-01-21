@@ -104,6 +104,21 @@ object MLIRPrinter {
       ty
     }
 
+    def getMulOperand(ty: Type): String = {
+      ty match {
+        case I8  => "muli"
+        case I16 => "muli"
+        case I32 => "muli"
+        case I64 => "muli"
+        case U8  => "muli"
+        case U16 => "muli"
+        case U32 => "muli"
+        case U64 => "muli"
+        case F32 => "mulf"
+        case F64 => "mulf"
+      }
+    }
+
     def dumpBinOp(identifiers: SymbolMap, kind: BinOpKind, lhs: Expr, rhs: Expr, ty: Type): String = {
       val lhsValue = lhs.toMLIR(identifiers)
       val rhsValue = rhs.toMLIR(identifiers)
@@ -130,16 +145,7 @@ object MLIRPrinter {
         case (BinOpKind.Sub, U64, _)     => ("subi", ty)
         case (BinOpKind.Sub, F32, _)     => ("subf", ty)
         case (BinOpKind.Sub, F64, _)     => ("subf", ty)
-        case (BinOpKind.Mul, I8, _)      => ("muli", ty)
-        case (BinOpKind.Mul, I16, _)     => ("muli", ty)
-        case (BinOpKind.Mul, I32, _)     => ("muli", ty)
-        case (BinOpKind.Mul, I64, _)     => ("muli", ty)
-        case (BinOpKind.Mul, U8, _)      => ("muli", ty)
-        case (BinOpKind.Mul, U16, _)     => ("muli", ty)
-        case (BinOpKind.Mul, U32, _)     => ("muli", ty)
-        case (BinOpKind.Mul, U64, _)     => ("muli", ty)
-        case (BinOpKind.Mul, F32, _)     => ("mulf", ty)
-        case (BinOpKind.Mul, F64, _)     => ("mulf", ty)
+        case (BinOpKind.Mul, _, _)       => (getMulOperand(ty), ty)
         case (BinOpKind.Div, I8, _)      => ("divi_signed", ty)
         case (BinOpKind.Div, I16, _)     => ("divi_signed", ty)
         case (BinOpKind.Div, I32, _)     => ("divi_signed", ty)
