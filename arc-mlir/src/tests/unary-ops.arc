@@ -54,4 +54,23 @@ let tan_f32 : f32 = tan c_f32;
 let tan_f64 : f64 = tan c_f64;
 #CHECK: {{%[^ ]+}} = "arc.tan"({{%[^ ]+}}) : (f64) -> f64
 
+let acos_f32 : f32 = acos c_f32;
+#CHECK: {{%[^ ]+}} = "arc.acos"({{%[^ ]+}}) : (f32) -> f32
+
+let acos_f64 : f64 = acos c_f64;
+#CHECK: {{%[^ ]+}} = "arc.acos"({{%[^ ]+}}) : (f64) -> f64
+
+let asin_f32 : f32 = asin c_f32;
+#CHECK: {{%[^ ]+}} = "arc.asin"({{%[^ ]+}}) : (f32) -> f32
+
+let asin_f64 : f64 = asin c_f64;
+#CHECK: {{%[^ ]+}} = "arc.asin"({{%[^ ]+}}) : (f64) -> f64
+
+let atan_f32 : f32 = atan c_f32;
+#CHECK: {{%[^ ]+}} = "arc.atan"({{%[^ ]+}}) : (f32) -> f32
+
+let atan_f64 : f64 = atan c_f64;
+#CHECK: {{%[^ ]+}} = "arc.atan"({{%[^ ]+}}) : (f64) -> f64
+
+
 4711

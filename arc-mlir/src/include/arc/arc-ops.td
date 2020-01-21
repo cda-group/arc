@@ -114,4 +114,34 @@ def TanOp : ArcFloatUnaryOp<"tan"> {
         or a tensor of floats.It has no standard attributes.}];
 }
 
+def AcosOp : ArcFloatUnaryOp<"acos"> {
+  let summary = "arcus cosine of the specified value";
+  let description =
+      [{The `sin` operation computes the arcus cosine of a given
+        value.It takes one operand and returns one result of the same
+        type.This type may be a float scalar type,
+        a vector whose element type is float,
+        or a tensor of floats.It has no standard attributes.}];
+}
+
+def AsinOp : ArcFloatUnaryOp<"asin"> {
+  let summary = "arcus sine of the specified value";
+  let description =
+      [{The `sin` operation computes the arcus sine of a given
+        value.It takes one operand and returns one result of the same
+        type.This type may be a float scalar type,
+        a vector whose element type is float,
+        or a tensor of floats.It has no standard attributes.}];
+}
+
+def AtanOp : ArcFloatUnaryOp<"atan"> {
+  let summary = "arcus tangent of the specified value";
+  let description =
+      [{The `tan` operation computes the arcus tangent of a given
+        value.It takes one operand and returns one result of the same
+        type.This type may be a float scalar type,
+        a vector whose element type is float,
+        or a tensor of floats.It has no standard attributes.}];
+}
+
 #endif // ARC_OPS

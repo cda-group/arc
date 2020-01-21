@@ -297,6 +297,19 @@ object MLIRPrinter {
           out.print(s"""${tmp} = "arc.tan"(${exprValue}) : (${ty.toMLIR}) -> ${ty.toMLIR}\n"""); ""
         case (UnaryOpKind.Tan, F64) =>
           out.print(s"""${tmp} = "arc.tan"(${exprValue}) : (${ty.toMLIR}) -> ${ty.toMLIR}\n"""); ""
+
+        case (UnaryOpKind.ACos, F32) =>
+          out.print(s"""${tmp} = "arc.acos"(${exprValue}) : (${ty.toMLIR}) -> ${ty.toMLIR}\n"""); ""
+        case (UnaryOpKind.ACos, F64) =>
+          out.print(s"""${tmp} = "arc.acos"(${exprValue}) : (${ty.toMLIR}) -> ${ty.toMLIR}\n"""); ""
+        case (UnaryOpKind.ASin, F32) =>
+          out.print(s"""${tmp} = "arc.asin"(${exprValue}) : (${ty.toMLIR}) -> ${ty.toMLIR}\n"""); ""
+        case (UnaryOpKind.ASin, F64) =>
+          out.print(s"""${tmp} = "arc.asin"(${exprValue}) : (${ty.toMLIR}) -> ${ty.toMLIR}\n"""); ""
+        case (UnaryOpKind.ATan, F32) =>
+          out.print(s"""${tmp} = "arc.atan"(${exprValue}) : (${ty.toMLIR}) -> ${ty.toMLIR}\n"""); ""
+        case (UnaryOpKind.ATan, F64) =>
+          out.print(s"""${tmp} = "arc.atan"(${exprValue}) : (${ty.toMLIR}) -> ${ty.toMLIR}\n"""); ""
       }
       operator match {
         case "" => Unit
