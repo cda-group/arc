@@ -284,6 +284,8 @@ object MLIRPrinter {
       val (operator: String) = (kind, ty) match {
         case (UnaryOpKind.Exp, F32) => "exp"
         case (UnaryOpKind.Exp, F64) => "exp"
+        case (UnaryOpKind.Log, F32) => "log"
+        case (UnaryOpKind.Log, F64) => "log"
       }
       operator match {
         case "" => Unit

@@ -30,4 +30,10 @@ let exp_f32 : f32 = exp c_f32;
 let exp_f64 : f64 = exp c_f64;
 #CHECK: {{%[^ ]+}} = exp {{%[^ ]+}} : f64
 
+let log_f32 : f32 = log c_f32;
+#CHECK: {{%[^ ]+}} = log {{%[^ ]+}} : f32
+
+let log_f64 : f64 = log c_f64;
+#CHECK: {{%[^ ]+}} = log {{%[^ ]+}} : f64
+
 4711
