@@ -286,6 +286,9 @@ object MLIRPrinter {
         case (UnaryOpKind.Exp, F64) => "exp"
         case (UnaryOpKind.Log, F32) => "log"
         case (UnaryOpKind.Log, F64) => "log"
+
+        case (UnaryOpKind.Cos, F32) => "cos"
+        case (UnaryOpKind.Cos, F64) => "cos"
       }
       operator match {
         case "" => Unit

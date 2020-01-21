@@ -36,4 +36,10 @@ let log_f32 : f32 = log c_f32;
 let log_f64 : f64 = log c_f64;
 #CHECK: {{%[^ ]+}} = log {{%[^ ]+}} : f64
 
+let cos_f32 : f32 = cos c_f32;
+#CHECK: {{%[^ ]+}} = cos {{%[^ ]+}} : f32
+
+let cos_f64 : f64 = cos c_f64;
+#CHECK: {{%[^ ]+}} = cos {{%[^ ]+}} : f64
+
 4711
