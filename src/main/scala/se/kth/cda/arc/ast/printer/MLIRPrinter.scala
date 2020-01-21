@@ -310,6 +310,9 @@ object MLIRPrinter {
           out.print(s"""${tmp} = "arc.atan"(${exprValue}) : (${ty.toMLIR}) -> ${ty.toMLIR}\n"""); ""
         case (UnaryOpKind.ATan, F64) =>
           out.print(s"""${tmp} = "arc.atan"(${exprValue}) : (${ty.toMLIR}) -> ${ty.toMLIR}\n"""); ""
+
+        case (UnaryOpKind.Tanh, F32) => "tanh"
+        case (UnaryOpKind.Tanh, F64) => "tanh"
       }
       operator match {
         case "" => Unit
