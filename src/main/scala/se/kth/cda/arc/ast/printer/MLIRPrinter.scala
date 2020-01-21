@@ -321,6 +321,11 @@ object MLIRPrinter {
           out.print(s"""${tmp} = "arc.sinh"(${exprValue}) : (${ty.toMLIR}) -> ${ty.toMLIR}\n"""); ""
         case (UnaryOpKind.Tanh, F32) => "tanh"
         case (UnaryOpKind.Tanh, F64) => "tanh"
+
+        case (UnaryOpKind.Erf, F32) =>
+          out.print(s"""${tmp} = "arc.erf"(${exprValue}) : (${ty.toMLIR}) -> ${ty.toMLIR}\n"""); ""
+        case (UnaryOpKind.Erf, F64) =>
+          out.print(s"""${tmp} = "arc.erf"(${exprValue}) : (${ty.toMLIR}) -> ${ty.toMLIR}\n"""); ""
       }
       operator match {
         case "" => Unit

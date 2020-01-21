@@ -90,4 +90,10 @@ let tanh_f32 : f32 = tanh c_f32;
 let tanh_f64 : f64 = tanh c_f64;
 #CHECK: {{%[^ ]+}} = tanh {{%[^ ]+}} : f64
 
+let erf_f32 : f32 = erf c_f32;
+#CHECK: {{%[^ ]+}} = "arc.erf"({{%[^ ]+}}) : (f32) -> f32
+
+let erf_f64 : f64 = erf c_f64;
+#CHECK: {{%[^ ]+}} = "arc.erf"({{%[^ ]+}}) : (f64) -> f64
+
 4711

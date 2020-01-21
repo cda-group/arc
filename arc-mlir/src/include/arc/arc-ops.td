@@ -164,4 +164,13 @@ def SinhOp : ArcFloatUnaryOp<"sinh"> {
         or a tensor of floats.It has no standard attributes.}];
 }
 
+def ErfOp : ArcFloatUnaryOp<"erf"> {
+  let summary = "error function of the specified value";
+  let description =
+      [{The `erf' operation computes the Gauss error function of a given
+        value. It takes one operand and returns one result of the same
+        type. This type may be a float scalar type, a vector whose element
+        type is float, or a tensor of floats.It has no standard attributes.}];
+}
+
 #endif // ARC_OPS
