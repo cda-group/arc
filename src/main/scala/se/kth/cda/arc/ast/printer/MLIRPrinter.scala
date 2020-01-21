@@ -311,6 +311,14 @@ object MLIRPrinter {
         case (UnaryOpKind.ATan, F64) =>
           out.print(s"""${tmp} = "arc.atan"(${exprValue}) : (${ty.toMLIR}) -> ${ty.toMLIR}\n"""); ""
 
+        case (UnaryOpKind.Cosh, F32) =>
+          out.print(s"""${tmp} = "arc.cosh"(${exprValue}) : (${ty.toMLIR}) -> ${ty.toMLIR}\n"""); ""
+        case (UnaryOpKind.Cosh, F64) =>
+          out.print(s"""${tmp} = "arc.cosh"(${exprValue}) : (${ty.toMLIR}) -> ${ty.toMLIR}\n"""); ""
+        case (UnaryOpKind.Sinh, F32) =>
+          out.print(s"""${tmp} = "arc.sinh"(${exprValue}) : (${ty.toMLIR}) -> ${ty.toMLIR}\n"""); ""
+        case (UnaryOpKind.Sinh, F64) =>
+          out.print(s"""${tmp} = "arc.sinh"(${exprValue}) : (${ty.toMLIR}) -> ${ty.toMLIR}\n"""); ""
         case (UnaryOpKind.Tanh, F32) => "tanh"
         case (UnaryOpKind.Tanh, F64) => "tanh"
       }

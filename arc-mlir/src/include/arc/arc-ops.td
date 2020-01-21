@@ -144,4 +144,24 @@ def AtanOp : ArcFloatUnaryOp<"atan"> {
         or a tensor of floats.It has no standard attributes.}];
 }
 
+def CoshOp : ArcFloatUnaryOp<"cosh"> {
+  let summary = "hyperbolic cosine of the specified value";
+  let description =
+      [{The `cosh` operation computes the hyperbolic cosine of a given
+        value.It takes one operand and returns one result of the same
+        type.This type may be a float scalar type,
+        a vector whose element type is float,
+        or a tensor of floats.It has no standard attributes.}];
+}
+
+def SinhOp : ArcFloatUnaryOp<"sinh"> {
+  let summary = "hyperbolic sine of the specified value";
+  let description =
+      [{The `sinh` operation computes the hyperbolic sine of a given
+        value.It takes one operand and returns one result of the same
+        type.This type may be a float scalar type,
+        a vector whose element type is float,
+        or a tensor of floats.It has no standard attributes.}];
+}
+
 #endif // ARC_OPS

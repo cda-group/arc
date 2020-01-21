@@ -72,6 +72,18 @@ let atan_f32 : f32 = atan c_f32;
 let atan_f64 : f64 = atan c_f64;
 #CHECK: {{%[^ ]+}} = "arc.atan"({{%[^ ]+}}) : (f64) -> f64
 
+let cosh_f32 : f32 = cosh c_f32;
+#CHECK: {{%[^ ]+}} = "arc.cosh"({{%[^ ]+}}) : (f32) -> f32
+
+let cosh_f64 : f64 = cosh c_f64;
+#CHECK: {{%[^ ]+}} = "arc.cosh"({{%[^ ]+}}) : (f64) -> f64
+
+let sinh_f32 : f32 = sinh c_f32;
+#CHECK: {{%[^ ]+}} = "arc.sinh"({{%[^ ]+}}) : (f32) -> f32
+
+let sinh_f64 : f64 = sinh c_f64;
+#CHECK: {{%[^ ]+}} = "arc.sinh"({{%[^ ]+}}) : (f64) -> f64
+
 let tanh_f32 : f32 = tanh c_f32;
 #CHECK: {{%[^ ]+}} = tanh {{%[^ ]+}} : f32
 
