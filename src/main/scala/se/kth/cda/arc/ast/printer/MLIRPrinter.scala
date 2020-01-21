@@ -119,6 +119,15 @@ object MLIRPrinter {
       }
     }
 
+    def expandPow(result: String, lhs: String, rhs: String, ty: Type): Type = {
+      val base = newTmp
+      val prod = newTmp
+      out.print(s"${base} = log ${lhs} : ${ty.toMLIR}\n")
+      out.print(s"${prod} = ${getMulOperand(ty)} ${base}, ${rhs} : ${ty.toMLIR}\n")
+      out.print(s"${result} = exp ${prod} : ${ty.toMLIR}\n")
+      ty
+    }
+
     def dumpBinOp(identifiers: SymbolMap, kind: BinOpKind, lhs: Expr, rhs: Expr, ty: Type): String = {
       val lhsValue = lhs.toMLIR(identifiers)
       val rhsValue = rhs.toMLIR(identifiers)
@@ -256,6 +265,7 @@ object MLIRPrinter {
         case (BinOpKind.BwXor, U64, _)   => ("xor", ty)
         case (BinOpKind.Min, _, _)       => ("", expandMin(tmp, lhsValue, rhsValue, lhs.ty))
         case (BinOpKind.Max, _, _)       => ("", expandMax(tmp, lhsValue, rhsValue, lhs.ty))
+        case (BinOpKind.Pow, _, _)       => ("", expandPow(tmp, lhsValue, rhsValue, lhs.ty))
         case _                           => s"/* unknown binop ${kind} : result-ty: ${ty}, lhs-ty: ${lhs.ty} */"
       }
       operator match {
