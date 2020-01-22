@@ -9,6 +9,7 @@ import se.kth.cda.arc.ast.Type.Builder._
 import se.kth.cda.arc.ast.Type._
 import se.kth.cda.arc.ast._
 import se.kth.cda.arc.Utils
+import se.kth.cda.arc.ast.AST.UnaryOpKind.UnaryOpKind
 
 object MLIRPrinter {
 
@@ -104,6 +105,30 @@ object MLIRPrinter {
       ty
     }
 
+    def getMulOperand(ty: Type): String = {
+      ty match {
+        case I8  => "muli"
+        case I16 => "muli"
+        case I32 => "muli"
+        case I64 => "muli"
+        case U8  => "muli"
+        case U16 => "muli"
+        case U32 => "muli"
+        case U64 => "muli"
+        case F32 => "mulf"
+        case F64 => "mulf"
+      }
+    }
+
+    def expandPow(result: String, lhs: String, rhs: String, ty: Type): Type = {
+      val base = newTmp
+      val prod = newTmp
+      out.print(s"${base} = log ${lhs} : ${ty.toMLIR}\n")
+      out.print(s"${prod} = ${getMulOperand(ty)} ${base}, ${rhs} : ${ty.toMLIR}\n")
+      out.print(s"${result} = exp ${prod} : ${ty.toMLIR}\n")
+      ty
+    }
+
     def dumpBinOp(identifiers: SymbolMap, kind: BinOpKind, lhs: Expr, rhs: Expr, ty: Type): String = {
       val lhsValue = lhs.toMLIR(identifiers)
       val rhsValue = rhs.toMLIR(identifiers)
@@ -130,16 +155,7 @@ object MLIRPrinter {
         case (BinOpKind.Sub, U64, _)     => ("subi", ty)
         case (BinOpKind.Sub, F32, _)     => ("subf", ty)
         case (BinOpKind.Sub, F64, _)     => ("subf", ty)
-        case (BinOpKind.Mul, I8, _)      => ("muli", ty)
-        case (BinOpKind.Mul, I16, _)     => ("muli", ty)
-        case (BinOpKind.Mul, I32, _)     => ("muli", ty)
-        case (BinOpKind.Mul, I64, _)     => ("muli", ty)
-        case (BinOpKind.Mul, U8, _)      => ("muli", ty)
-        case (BinOpKind.Mul, U16, _)     => ("muli", ty)
-        case (BinOpKind.Mul, U32, _)     => ("muli", ty)
-        case (BinOpKind.Mul, U64, _)     => ("muli", ty)
-        case (BinOpKind.Mul, F32, _)     => ("mulf", ty)
-        case (BinOpKind.Mul, F64, _)     => ("mulf", ty)
+        case (BinOpKind.Mul, _, _)       => (getMulOperand(ty), ty)
         case (BinOpKind.Div, I8, _)      => ("divi_signed", ty)
         case (BinOpKind.Div, I16, _)     => ("divi_signed", ty)
         case (BinOpKind.Div, I32, _)     => ("divi_signed", ty)
@@ -250,12 +266,76 @@ object MLIRPrinter {
         case (BinOpKind.BwXor, U64, _)   => ("xor", ty)
         case (BinOpKind.Min, _, _)       => ("", expandMin(tmp, lhsValue, rhsValue, lhs.ty))
         case (BinOpKind.Max, _, _)       => ("", expandMax(tmp, lhsValue, rhsValue, lhs.ty))
+        case (BinOpKind.Pow, _, _)       => ("", expandPow(tmp, lhsValue, rhsValue, lhs.ty))
         case _                           => s"/* unknown binop ${kind} : result-ty: ${ty}, lhs-ty: ${lhs.ty} */"
       }
       operator match {
         case "" => Unit
         case _ =>
           out.print(s"${tmp} = ${operator} ${lhsValue}, ${rhsValue} : ${typeTag.toMLIR}\n")
+      }
+      tmp
+    }
+
+    def dumpUnaryOp(identifiers: SymbolMap, kind: UnaryOpKind, expr: Expr, ty: Type): String = {
+      val exprValue = expr.toMLIR(identifiers)
+      val tmp = newTmp
+
+      val (operator: String) = (kind, ty) match {
+        case (UnaryOpKind.Exp, F32) => "exp"
+        case (UnaryOpKind.Exp, F64) => "exp"
+        case (UnaryOpKind.Log, F32) => "log"
+        case (UnaryOpKind.Log, F64) => "log"
+
+        case (UnaryOpKind.Cos, F32) => "cos"
+        case (UnaryOpKind.Cos, F64) => "cos"
+        case (UnaryOpKind.Sin, F32) =>
+          out.print(s"""${tmp} = "arc.sin"(${exprValue}) : (${ty.toMLIR}) -> ${ty.toMLIR}\n"""); ""
+        case (UnaryOpKind.Sin, F64) =>
+          out.print(s"""${tmp} = "arc.sin"(${exprValue}) : (${ty.toMLIR}) -> ${ty.toMLIR}\n"""); ""
+        case (UnaryOpKind.Tan, F32) =>
+          out.print(s"""${tmp} = "arc.tan"(${exprValue}) : (${ty.toMLIR}) -> ${ty.toMLIR}\n"""); ""
+        case (UnaryOpKind.Tan, F64) =>
+          out.print(s"""${tmp} = "arc.tan"(${exprValue}) : (${ty.toMLIR}) -> ${ty.toMLIR}\n"""); ""
+
+        case (UnaryOpKind.ACos, F32) =>
+          out.print(s"""${tmp} = "arc.acos"(${exprValue}) : (${ty.toMLIR}) -> ${ty.toMLIR}\n"""); ""
+        case (UnaryOpKind.ACos, F64) =>
+          out.print(s"""${tmp} = "arc.acos"(${exprValue}) : (${ty.toMLIR}) -> ${ty.toMLIR}\n"""); ""
+        case (UnaryOpKind.ASin, F32) =>
+          out.print(s"""${tmp} = "arc.asin"(${exprValue}) : (${ty.toMLIR}) -> ${ty.toMLIR}\n"""); ""
+        case (UnaryOpKind.ASin, F64) =>
+          out.print(s"""${tmp} = "arc.asin"(${exprValue}) : (${ty.toMLIR}) -> ${ty.toMLIR}\n"""); ""
+        case (UnaryOpKind.ATan, F32) =>
+          out.print(s"""${tmp} = "arc.atan"(${exprValue}) : (${ty.toMLIR}) -> ${ty.toMLIR}\n"""); ""
+        case (UnaryOpKind.ATan, F64) =>
+          out.print(s"""${tmp} = "arc.atan"(${exprValue}) : (${ty.toMLIR}) -> ${ty.toMLIR}\n"""); ""
+
+        case (UnaryOpKind.Cosh, F32) =>
+          out.print(s"""${tmp} = "arc.cosh"(${exprValue}) : (${ty.toMLIR}) -> ${ty.toMLIR}\n"""); ""
+        case (UnaryOpKind.Cosh, F64) =>
+          out.print(s"""${tmp} = "arc.cosh"(${exprValue}) : (${ty.toMLIR}) -> ${ty.toMLIR}\n"""); ""
+        case (UnaryOpKind.Sinh, F32) =>
+          out.print(s"""${tmp} = "arc.sinh"(${exprValue}) : (${ty.toMLIR}) -> ${ty.toMLIR}\n"""); ""
+        case (UnaryOpKind.Sinh, F64) =>
+          out.print(s"""${tmp} = "arc.sinh"(${exprValue}) : (${ty.toMLIR}) -> ${ty.toMLIR}\n"""); ""
+        case (UnaryOpKind.Tanh, F32) => "tanh"
+        case (UnaryOpKind.Tanh, F64) => "tanh"
+
+        case (UnaryOpKind.Erf, F32) =>
+          out.print(s"""${tmp} = "arc.erf"(${exprValue}) : (${ty.toMLIR}) -> ${ty.toMLIR}\n"""); ""
+        case (UnaryOpKind.Erf, F64) =>
+          out.print(s"""${tmp} = "arc.erf"(${exprValue}) : (${ty.toMLIR}) -> ${ty.toMLIR}\n"""); ""
+
+        case (UnaryOpKind.Sqrt, F32) =>
+          out.print(s"""${tmp} = "arc.sqrt"(${exprValue}) : (${ty.toMLIR}) -> ${ty.toMLIR}\n"""); ""
+        case (UnaryOpKind.Sqrt, F64) =>
+          out.print(s"""${tmp} = "arc.sqrt"(${exprValue}) : (${ty.toMLIR}) -> ${ty.toMLIR}\n"""); ""
+      }
+      operator match {
+        case "" => Unit
+        case _ =>
+          out.print(s"${tmp} = ${operator} ${exprValue} : ${ty.toMLIR}\n")
       }
       tmp
     }
@@ -371,7 +451,7 @@ object MLIRPrinter {
         }
         case Negate(expr)            => s""
         case Not(expr)               => s""
-        case UnaryOp(kind, expr)     => s""
+        case UnaryOp(kind, expr)     => dumpUnaryOp(identifiers, kind, expr, self.ty)
         case Merge(builder, value)   => s""
         case Result(expr)            => s""
         case NewBuilder(ty, args)    => s""

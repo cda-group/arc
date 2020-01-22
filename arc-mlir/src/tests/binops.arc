@@ -395,4 +395,14 @@ let max_f64 : f64 = max(c_f64, c1_f64);
 #CHECK-DAG: [[A9:%[^ ]+]] = cmpf "olt", [[B9:%[^ ]+]], [[C9:%[^ ]+]] : f64
 #CHECK: {{%[^ ]+}} = select [[A9]], [[C9]], [[B9]] : f64
 
+let pow_f32: f32 = pow(c_f32, c1_f32);
+#CHECK-DAG: [[AA0:%[^ ]+]] = log [[AA1:%[^ ]+]] : f32
+#CHECK-DAG: [[AA2:%[^ ]+]] = mulf [[AA0:%[^ ]+]], [[AA3:%[^ ]+]] : f32
+#CHECK: {{%[^ ]+}} = exp [[AA2]] : f32
+
+let pow_f64: f64 = pow(c_f64, c1_f64);
+#CHECK-DAG: [[AA0:%[^ ]+]] = log [[AA1:%[^ ]+]] : f64
+#CHECK-DAG: [[AA2:%[^ ]+]] = mulf [[AA0:%[^ ]+]], [[AA3:%[^ ]+]] : f64
+#CHECK: {{%[^ ]+}} = exp [[AA2]] : f64
+
 4711

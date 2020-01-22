@@ -76,4 +76,110 @@ def ArcKeep : Arc_Op<"keep", []> {
   let results = (outs);
 }
 
+/* The structure for these unary operands is stolen from the standard dialect */
+class ArcUnaryOp<string mnemonic, list<OpTrait> traits = []>
+    : Op<Arc_Dialect, mnemonic, !listconcat(traits, [NoSideEffect])> {
+  let results = (outs AnyType);
+}
+
+class ArcUnaryOpSameOperandAndResultType<string mnemonic,
+                                         list<OpTrait> traits = []>
+    : ArcUnaryOp<mnemonic, !listconcat(traits, [SameOperandsAndResultType])> {
+  let parser =
+      [{ return impl::parseOneResultSameOperandTypeOp(parser, result); }];
+}
+
+class ArcFloatUnaryOp<string mnemonic, list<OpTrait> traits = []>
+    : ArcUnaryOpSameOperandAndResultType<mnemonic, traits>,
+      Arguments<(ins FloatLike
+                 : $operand)>;
+
+def SinOp : ArcFloatUnaryOp<"sin"> {
+  let summary = "sine of the specified value";
+  let description =
+      [{The `sin` operation computes the sine of a given
+        value.It takes one operand and returns one result of the same
+        type.This type may be a float scalar type,
+        a vector whose element type is float,
+        or a tensor of floats.It has no standard attributes.}];
+}
+
+def TanOp : ArcFloatUnaryOp<"tan"> {
+  let summary = "tangent of the specified value";
+  let description =
+      [{The `tan` operation computes the tangent of a given
+        value.It takes one operand and returns one result of the same
+        type.This type may be a float scalar type,
+        a vector whose element type is float,
+        or a tensor of floats.It has no standard attributes.}];
+}
+
+def AcosOp : ArcFloatUnaryOp<"acos"> {
+  let summary = "arcus cosine of the specified value";
+  let description =
+      [{The `sin` operation computes the arcus cosine of a given
+        value.It takes one operand and returns one result of the same
+        type.This type may be a float scalar type,
+        a vector whose element type is float,
+        or a tensor of floats.It has no standard attributes.}];
+}
+
+def AsinOp : ArcFloatUnaryOp<"asin"> {
+  let summary = "arcus sine of the specified value";
+  let description =
+      [{The `sin` operation computes the arcus sine of a given
+        value.It takes one operand and returns one result of the same
+        type.This type may be a float scalar type,
+        a vector whose element type is float,
+        or a tensor of floats.It has no standard attributes.}];
+}
+
+def AtanOp : ArcFloatUnaryOp<"atan"> {
+  let summary = "arcus tangent of the specified value";
+  let description =
+      [{The `tan` operation computes the arcus tangent of a given
+        value.It takes one operand and returns one result of the same
+        type.This type may be a float scalar type,
+        a vector whose element type is float,
+        or a tensor of floats.It has no standard attributes.}];
+}
+
+def CoshOp : ArcFloatUnaryOp<"cosh"> {
+  let summary = "hyperbolic cosine of the specified value";
+  let description =
+      [{The `cosh` operation computes the hyperbolic cosine of a given
+        value.It takes one operand and returns one result of the same
+        type.This type may be a float scalar type,
+        a vector whose element type is float,
+        or a tensor of floats.It has no standard attributes.}];
+}
+
+def SinhOp : ArcFloatUnaryOp<"sinh"> {
+  let summary = "hyperbolic sine of the specified value";
+  let description =
+      [{The `sinh` operation computes the hyperbolic sine of a given
+        value.It takes one operand and returns one result of the same
+        type.This type may be a float scalar type,
+        a vector whose element type is float,
+        or a tensor of floats.It has no standard attributes.}];
+}
+
+def ErfOp : ArcFloatUnaryOp<"erf"> {
+  let summary = "error function of the specified value";
+  let description =
+      [{The `erf' operation computes the Gauss error function of a given
+        value. It takes one operand and returns one result of the same
+        type. This type may be a float scalar type, a vector whose element
+        type is float, or a tensor of floats.It has no standard attributes.}];
+}
+
+def SqrtOp : ArcFloatUnaryOp<"sqrt"> {
+  let summary = "square root of the specified value";
+  let description =
+      [{The `sqrt' operation computes the square root of a given
+        value. It takes one operand and returns one result of the same
+        type. This type may be a float scalar type, a vector whose element
+        type is float, or a tensor of floats.It has no standard attributes.}];
+}
+
 #endif // ARC_OPS
