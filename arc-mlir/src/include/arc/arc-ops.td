@@ -54,7 +54,7 @@ def MakeVector
     unsigned NumOperands = this->getOperation()->getNumOperands();
     auto ElemTy = this->getOperation()->getOperand(0).getType();
     auto TensorTy =
-        this->getOperation()->getResult(0).getType().dyn_cast<TensorType>();
+        this->getOperation()->getResult(0).getType().cast<TensorType>();
     if (!TensorTy.hasStaticShape())
       return emitOpError("result must have static shape, expected ")
              << RankedTensorType::get({NumOperands}, ElemTy);
