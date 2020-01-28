@@ -182,4 +182,35 @@ def SqrtOp : ArcFloatUnaryOp<"sqrt"> {
         type is float, or a tensor of floats.It has no standard attributes.}];
 }
 
+def MakeTuple
+    : Arc_Op<"make_tuple", [NoSideEffect]> {
+  let summary = "create a tuple from a sequence of values";
+  let description =
+      [{A pure operation which turns its arguments into a tuple}];
+
+  let arguments = (ins Variadic<AnyType> : $values);
+
+  let results = (outs AnyTuple);
+
+  let verifier = [{
+    auto Operation = this->getOperation();
+    unsigned NumOperands = Operation->getNumOperands();
+    auto TupleTy = Operation->getResult(0).getType().cast<TupleType>();
+    auto ElemTys = TupleTy.getTypes();
+    if (NumOperands != TupleTy.size())
+      return emitOpError("result does not match the number of operands: found ")
+             << NumOperands << " but expected " << TupleTy.size()
+             << " operands";
+    if (NumOperands == 0)
+      return emitOpError("tuple must contain at least one element ");
+    unsigned I = 0;
+    for (const Type &ElemTy : Operation->getOperands().getTypes()) {
+        if (ElemTys[I] != ElemTy)
+           return emitOpError("operand types do not match, found ")
+              << ElemTy << " but expected " << ElemTys[I];
+        I++;
+    }
+    return mlir::success();
+  }];
+}
 #endif // ARC_OPS
