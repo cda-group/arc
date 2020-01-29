@@ -213,4 +213,32 @@ def MakeTuple
     return mlir::success();
   }];
 }
+
+def IndexTuple
+    : Arc_Op<"index_tuple", [NoSideEffect]> {
+  let summary = "index into a tuple using a constant value";
+  let description = [{A pure operation which reads a value from a tuple}];
+
+  let arguments = (ins AnyTuple:$values, NonNegativeI64Attr:$index);
+
+  let results = (outs AnyType);
+
+  let verifier = [{
+    auto Operation = this->getOperation();
+    auto ResultTy = Operation->getResult(0).getType();
+    auto TupleTy = Operation->getOperand(0).getType().cast<TupleType>();
+    auto ElemTys = TupleTy.getTypes();
+    auto Index = getAttrOfType<IntegerAttr>("index").getValue().getZExtValue();
+    auto NumElems = TupleTy.size();
+    auto IndexTy = ElemTys[Index];
+    if (Index >= NumElems)
+      return emitOpError("index ") << Index
+        << " is out-of-bounds for tuple with size " << NumElems;
+    if (IndexTy != ResultTy)
+      return emitOpError("element type at index ") << Index
+        << " does not match result, found " << IndexTy
+        << " but expected " << ResultTy;
+    return mlir::success();
+  }];
+}
 #endif // ARC_OPS
