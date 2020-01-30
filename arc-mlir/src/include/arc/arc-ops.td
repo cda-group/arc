@@ -241,4 +241,48 @@ def IndexTuple
     return mlir::success();
   }];
 }
+
+def ArcBlockResultOp :
+    Arc_Op<"block.result", [HasParent<"IfOp">,
+                            Terminator, SameOperandsAndResultType]> {
+  let summary = "specifies the value of a block";
+  let description = [{
+    "arc.block.result" is a special terminator operation for the block inside
+    "arc.if". It terminates the region. It should have the same type as the
+    parent if.
+
+    ```mlir
+      "arc.block.result"(%b) : (f32) -> f64
+    ```
+  }];
+
+  let arguments = (ins AnyType:$result);
+  let results = (outs AnyType);
+}
+
+def IfOp : Arc_Op<"if",
+      [SingleBlockImplicitTerminator<"ArcBlockResultOp">]> {
+  let summary = "if-then-else operation";
+  let description = [{
+    The "arc.if" operation represents an if-then-else construct for
+    conditionally executing two regions of code. The operand to an if operation
+    is a boolean value. The operation produces a single result. For example:
+
+    ```mlir
+    "arc.if"(%a) ( {
+      "arc.block.result"(%b) : (f64) -> f64
+    },  {
+      "arc.block.result"(%c) : (f64) -> f64
+    }) : (i1) -> f64
+    ```
+  }];
+  let arguments = (ins I1:$condition);
+  let regions = (region SizedRegion<1>:$thenRegion, SizedRegion<1>:$elseRegion);
+  let results = (outs AnyType);
+
+  let extraClassDeclaration = [{ LogicalResult customVerify(); }];
+
+  let verifier = [{ return customVerify(); }];
+}
+
 #endif // ARC_OPS

@@ -25,6 +25,8 @@
 
 #include <mlir/IR/Dialect.h>
 #include <mlir/IR/Function.h>
+#include <mlir/IR/Builders.h>
+#include <mlir/IR/Operation.h>
 
 using namespace mlir;
 
