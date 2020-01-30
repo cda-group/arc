@@ -351,6 +351,19 @@ object MLIRPrinter {
       tmp
     }
 
+    def dumpIf(identifiers: SymbolMap, cond: Expr, onTrue: Expr, onFalse: Expr, ty: Type): String = {
+      val result = newTmp
+      val condValue = cond.toMLIR(identifiers)
+
+      out.print(s"""${result} = "arc.if"(${condValue}) ({\n""")
+      val onTrueResult = onTrue.toMLIR(identifiers)
+      out.print(s""" ${newTmp} = "arc.block.result"(${onTrueResult}) : (${ty.toMLIR}) -> ${ty.toMLIR}\n}, {\n""")
+      val onFalseResult = onFalse.toMLIR(identifiers)
+      out.print(s"""  ${newTmp} = "arc.block.result"(${onFalseResult}) : (${ty.toMLIR}) -> ${ty.toMLIR}\n""")
+      out.print(s"""}) : (${Bool.toMLIR}) -> ${ty.toMLIR}\n""")
+      s"${result}"
+    }
+
     def toMLIR(identifiers: SymbolMap): String = {
       self.kind match {
         case Literal.I8(raw, value) => {
@@ -412,7 +425,7 @@ object MLIRPrinter {
         case Ident(symbol)                       => s"${identifiers(symbol.name)}"
         case MakeStruct(elems)                   => s""
         case MakeVec(elems)                      => dumpVec(identifiers, elems, self.ty)
-        case If(cond, onTrue, onFalse)           => s""
+        case If(cond, onTrue, onFalse)           => dumpIf(identifiers, cond, onTrue, onFalse, self.ty)
         case Select(cond, onTrue, onFalse)       => s""
         case Iterate(initial, updateFunc)        => s""
         case Broadcast(expr)                     => s""
