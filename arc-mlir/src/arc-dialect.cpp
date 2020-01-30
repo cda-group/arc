@@ -21,11 +21,10 @@
 //
 //===----------------------------------------------------------------------===//
 
-#include "arc/arc-dialect.h"
-
-#include "mlir/IR/Builders.h"
 #include "mlir/IR/StandardTypes.h"
 #include "llvm/Support/raw_ostream.h"
+
+#include "arc/arc-dialect.h"
 
 using namespace mlir;
 using namespace arc;
@@ -43,6 +42,29 @@ ArcDialect::ArcDialect(mlir::MLIRContext *ctx) : mlir::Dialect("arc", ctx) {
 //===----------------------------------------------------------------------===//
 // Arc Operations
 //===----------------------------------------------------------------------===//
+
+LogicalResult IfOp::customVerify() {
+  // We check that the result types of the blocks matche the result
+  // type of the operator.
+  auto Op = this->getOperation();
+  auto ResultTy = Op->getResult(0).getType();
+  bool FoundErrors = false;
+  auto CheckResultType = [this, ResultTy, &FoundErrors](ArcBlockResultOp R) {
+    if (R.getResult().getType() != ResultTy) {
+      FoundErrors = true;
+      emitOpError("result type does not match the type of the parent: found ")
+          << R.getResult().getType() << " but expected " << ResultTy;
+    }
+  };
+
+  for (unsigned RegionIdx = 0; RegionIdx < Op->getNumRegions(); RegionIdx++)
+    Op->getRegion(RegionIdx).walk(CheckResultType);
+
+  if (FoundErrors)
+    return mlir::failure();
+  return mlir::success();
+}
+
 //===----------------------------------------------------------------------===//
 // TableGen'd op method definitions
 //===----------------------------------------------------------------------===//
