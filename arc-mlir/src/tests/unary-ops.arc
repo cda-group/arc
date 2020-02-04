@@ -97,9 +97,9 @@ let erf_f64 : f64 = erf c_f64;
 #CHECK: {{%[^ ]+}} = "arc.erf"({{%[^ ]+}}) : (f64) -> f64
 
 let sqrt_f32 : f32 = sqrt c_f32;
-#CHECK: {{%[^ ]+}} = "arc.sqrt"({{%[^ ]+}}) : (f32) -> f32
+#CHECK: {{%[^ ]+}} = sqrt {{%[^ ]+}} : f32
 
 let sqrt_f64 : f64 = sqrt c_f64;
-#CHECK: {{%[^ ]+}} = "arc.sqrt"({{%[^ ]+}}) : (f64) -> f64
+#CHECK: {{%[^ ]+}} = sqrt {{%[^ ]+}} : f64
 
 4711
