@@ -173,7 +173,7 @@ def ErfOp : ArcFloatUnaryOp<"erf"> {
         type is float, or a tensor of floats.It has no standard attributes.}];
 }
 
-def SqrtOp : ArcFloatUnaryOp<"sqrt"> {
+def ArcSqrtOp : ArcFloatUnaryOp<"sqrt"> {
   let summary = "square root of the specified value";
   let description =
       [{The `sqrt' operation computes the square root of a given
