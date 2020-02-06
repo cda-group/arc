@@ -20,6 +20,7 @@
 #include "arc/arc-dialect.h"
 #include <llvm/Support/raw_ostream.h>
 #include <mlir/Dialect/StandardOps/Ops.h>
+#include <mlir/IR/BlockAndValueMapping.h>
 #include <mlir/IR/Matchers.h>
 #include <mlir/IR/PatternMatch.h>
 
@@ -49,6 +50,46 @@ DenseElementsAttr ToDenseAttribs(mlir::OpResult result,
   return DenseElementsAttr::get(st, llvm::makeArrayRef(attribs));
 }
 
+struct ConstantFoldArcIf : public RewritePattern {
+  ConstantFoldArcIf(MLIRContext *context)
+      : RewritePattern("arc.if", 1, context) {}
+
+  PatternMatchResult match(Operation *op) const override {
+    Operation *def = op->getOperand(0).getDefiningOp();
+    if (def && isa<ConstantOp>(def))
+      return matchSuccess();
+    return matchFailure();
+  }
+
+  void rewrite(Operation *op, PatternRewriter &rewriter) const override {
+    int64_t cond =
+        cast<ConstantIntOp>(op->getOperand(0).getDefiningOp()).getValue();
+    Region &region = op->getRegion(cond ? 0 : 1);
+    Block &block = region.getBlocks().front();
+
+    Operation *block_result =
+        block.getTerminator()->getOperand(0).getDefiningOp();
+    Operation *cloned_result = nullptr;
+    BlockAndValueMapping mapper;
+    // We do the rewrite manually and not using
+    // PatternRewriter::cloneRegion*() as we don't want to preserve
+    // the blocks.
+    for (auto &to_clone : block) {
+      if (&to_clone == block.getTerminator()) {
+        if (auto mappedOp = mapper.lookupOrNull(block_result->getResult(0))) {
+          cloned_result = mappedOp.getDefiningOp();
+        } else {
+          cloned_result = block_result;
+        }
+        break;
+      }
+      Operation *cloned = to_clone.clone(mapper);
+      rewriter.insert(cloned);
+    }
+    rewriter.replaceOp(op, cloned_result->getResults());
+  }
+};
+
 #include "arc-opts.inc"
 
 } // end anonymous namespace
@@ -56,4 +97,9 @@ DenseElementsAttr ToDenseAttribs(mlir::OpResult result,
 void MakeVector::getCanonicalizationPatterns(OwningRewritePatternList &results,
                                              MLIRContext *context) {
   populateWithGenerated(context, &results);
+}
+
+void IfOp::getCanonicalizationPatterns(OwningRewritePatternList &results,
+                                       MLIRContext *context) {
+  results.insert<ConstantFoldArcIf>(context);
 }
