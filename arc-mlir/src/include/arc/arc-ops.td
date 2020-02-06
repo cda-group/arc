@@ -274,6 +274,8 @@ def IfOp : Arc_Op<"if",
   let extraClassDeclaration = [{ LogicalResult customVerify(); }];
 
   let verifier = [{ return customVerify(); }];
+
+  let hasCanonicalizer = 1;
 }
 
 #endif // ARC_OPS
