@@ -227,13 +227,13 @@ def IndexTuple
     auto Operation = this->getOperation();
     auto ResultTy = Operation->getResult(0).getType();
     auto TupleTy = Operation->getOperand(0).getType().cast<TupleType>();
-    auto ElemTys = TupleTy.getTypes();
     auto Index = getAttrOfType<IntegerAttr>("index").getValue().getZExtValue();
     auto NumElems = TupleTy.size();
-    auto IndexTy = ElemTys[Index];
     if (Index >= NumElems)
       return emitOpError("index ") << Index
         << " is out-of-bounds for tuple with size " << NumElems;
+    auto ElemTys = TupleTy.getTypes();
+    auto IndexTy = ElemTys[Index];
     if (IndexTy != ResultTy)
       return emitOpError("element type at index ") << Index
         << " does not match result, found " << IndexTy
