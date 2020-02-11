@@ -23,6 +23,7 @@
 #ifndef ARC_DIALECT_H_
 #define ARC_DIALECT_H_
 
+#include "mlir/IR/StandardTypes.h"
 #include <mlir/IR/Dialect.h>
 #include <mlir/IR/Function.h>
 #include <mlir/IR/Builders.h>
@@ -32,18 +33,56 @@ using namespace mlir;
 
 namespace arc {
 
+namespace detail {
+struct AppenderTypeStorage;
+};
+
 /// This is the definition of the Arc dialect.
 class ArcDialect : public mlir::Dialect {
 public:
   explicit ArcDialect(mlir::MLIRContext *ctx);
 
   static llvm::StringRef getDialectNamespace() { return "arc"; }
+
+  /// Parse a type registered to this dialect.
+  Type parseType(DialectAsmParser &parser) const override;
+
+  /// Print a type registered to this dialect.
+  void printType(Type type, DialectAsmPrinter &os) const override;
 };
 
 /// Include the auto-generated header file containing the declarations of the
 /// arc operations.
 #define GET_OP_CLASSES
 #include "arc/ops.h.inc"
+
+//===----------------------------------------------------------------------===//
+// Toy Types
+//===----------------------------------------------------------------------===//
+
+namespace types {
+
+enum Kind {
+  // These kinds will be used by Arc.
+  Appender = Type::Kind::FIRST_PRIVATE_EXPERIMENTAL_0_TYPE,
+};
+
+bool isValueType(Type type);
+
+bool isBuilderType(Type type);
+
+class AppenderType
+    : public Type::TypeBase<AppenderType, Type, detail::AppenderTypeStorage> {
+public:
+  using Base::Base;
+
+  static bool kindof(unsigned kind) { return kind == arc::types::Appender; }
+
+  static AppenderType get(Type mergeType);
+
+  Type getMergeType();
+};
+} // namespace types
 
 } // end namespace arc
 
