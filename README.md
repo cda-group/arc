@@ -27,13 +27,20 @@ More information about the project can be found [here](https://cda-group.github.
 Assuming Scala and `sbt` are installed, the following clones and builds the project.
 
 ```bash
-git clone https://github.com/cda-group/arc.git
-git submodule update --init --recursive
+git clone https://github.com/cda-group/arc.github
 
 cd arc/
-sbt build           # Compile front-end
-cd arc-to-mlir/
-./arc-to-mlir-build # Compile middle-end
+
+git submodule update --init --recursive
+
+# Compile arc-frontend
+cd arc-frontend; sbt assembly; cd -
+
+# Compile arc-mlir
+cd arc-mlir/; ./arc-to-mlir-build; cd -
+
+# Run tests
+cd arc-mlir/build/llvm-build/; ninja check-arc-mlir; cd -
 ```
 
 # Documentation
