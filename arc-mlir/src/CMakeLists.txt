@@ -15,7 +15,7 @@ mlir_tablegen(Opts.inc -gen-rewriters ${TBLGEN_INCDIRS} "-I${CMAKE_CURRENT_SOURC
 add_public_tablegen_target(ArcDialectOptsIncGen)
 
 
-set(ARCMLIR_MODULES Main.cpp Dialect.cpp Opts.cpp)
+set(ARCMLIR_MODULES Main.cpp Dialect.cpp Opts.cpp Types.cpp)
 
 set(LIBS
   MLIRAnalysis
