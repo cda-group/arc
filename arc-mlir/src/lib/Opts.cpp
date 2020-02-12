@@ -1,7 +1,7 @@
-//===- Pattern Match Optimizations for ARC --------------------------===//
+//===- Pattern Match Optimizations for ARC --------------------------------===//
 //
 // Copyright 2019 The MLIR Authors.
-// Copyright 2019 RISE AB.
+// Copyright 2019 KTH Royal Institute of Technology.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,6 +15,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 // =============================================================================
+//
+// Defines the optimizations of the Arc dialect.
+//
 //===----------------------------------------------------------------------===//
 
 #include "arc/Dialect.h"
