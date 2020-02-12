@@ -60,9 +60,19 @@ public:
   using Base::Base;
 
   static bool kindof(unsigned kind) { return kind == Appender; }
+  static AppenderType get(Type mergeType) {
+    return Base::get(mergeType.getContext(), Appender, mergeType);
+  }
+  static ComplexType getChecked(MLIRContext *ctx, Type mergeType,
+                                Location loc) {
+    return Base::getChecked(loc, ctx, Appender, mergeType);
+  }
 
-  static AppenderType get(Type mergeType);
-
+  static LogicalResult
+  verifyConstructionInvariants(llvm::Optional<Location> loc, MLIRContext *ctx,
+                               Type mergeType);
+  static Type parse(DialectAsmParser &parser);
+  void print(DialectAsmPrinter &os);
   Type getMergeType();
 };
 } // namespace arc::types

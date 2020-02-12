@@ -51,7 +51,7 @@ Type ArcDialect::parseType(DialectAsmParser &parser) const {
   if (failed(parser.parseKeyword(&keyword)))
     return nullptr;
   if (keyword == "appender")
-    return parseAppenderType(parser);
+    return AppenderType::parse(parser);
   parser.emitError(parser.getNameLoc(), "unknown type keyword " + keyword);
   return nullptr;
 }

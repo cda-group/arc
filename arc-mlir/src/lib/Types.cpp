@@ -29,11 +29,11 @@ using namespace mlir;
 using namespace arc;
 using namespace types;
 
+namespace arc::types {
+
 //===----------------------------------------------------------------------===//
 // Shared Functions
 //===----------------------------------------------------------------------===//
-
-namespace arc::types {
 
 bool isValueType(Type type) {
   switch (type.getKind()) {
@@ -95,13 +95,6 @@ struct AppenderTypeStorage : public TypeStorage {
   }
 };
 
-Type AppenderType::getMergeType() { return getImpl()->mergeType; }
-
-AppenderType AppenderType::get(Type mergeType) {
-  mlir::MLIRContext *context = mergeType.getContext();
-  return Base::get(context, Kind::Appender, mergeType);
-}
-
 Type AppenderType::parse(DialectAsmParser &parser) {
   if (parser.parseLess())
     return nullptr;
@@ -109,18 +102,26 @@ Type AppenderType::parse(DialectAsmParser &parser) {
   mlir::Type mergeType;
   if (parser.parseType(mergeType))
     return nullptr;
-  if (!isValueType(mergeType)) {
-    parser.emitError(loc,
-                     "merge type for an appender must be a value type, got: ")
-        << mergeType;
-    return nullptr;
-  }
   if (parser.parseGreater())
     return nullptr;
   return AppenderType::get(mergeType);
 }
 
 void AppenderType::print(DialectAsmPrinter &os) const {
-  os << "appender" << '<' << t.getMergeType() << '>';
+  os << "appender" << '<' << getMergeType() << '>';
 }
+
+LogicalResult
+AppenderType::verifyConstructionInvariants(llvm::Optional<Location> loc,
+                                           MLIRContext *ctx, Type mergeType) {
+  if (!isValueType(mergeType)) {
+    emitOptionalError(
+        loc, "appender merge type must be a value type, got: ", mergeType);
+    return failure();
+  }
+  return success();
+}
+
+Type AppenderType::getMergeType() { return getImpl()->mergeType; }
+
 } // namespace arc::types
