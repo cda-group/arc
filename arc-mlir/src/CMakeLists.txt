@@ -81,3 +81,4 @@ configure_file(
 
 add_subdirectory(tests)
 add_subdirectory(include)
+add_subdirectory(lib) # ???
