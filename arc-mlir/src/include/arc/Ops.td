@@ -27,6 +27,10 @@
 include "mlir/IR/OpBase.td"
 #endif // OP_BASE
 
+//===----------------------------------------------------------------------===//
+// Arc Dialect
+//===----------------------------------------------------------------------===//
+
 def Arc_Dialect : Dialect {
   let name = "arc";
   let cppNamespace = "arc";
@@ -173,8 +177,7 @@ def ErfOp : ArcFloatUnaryOp<"erf"> {
         type is float, or a tensor of floats.It has no standard attributes.}];
 }
 
-def MakeTuple
-    : Arc_Op<"make_tuple", [NoSideEffect]> {
+def MakeTuple : Arc_Op<"make_tuple", [NoSideEffect]> {
   let summary = "create a tuple from a sequence of values";
   let description =
       [{A pure operation which turns its arguments into a tuple}];
@@ -205,8 +208,7 @@ def MakeTuple
   }];
 }
 
-def IndexTuple
-    : Arc_Op<"index_tuple", [NoSideEffect]> {
+def IndexTuple : Arc_Op<"index_tuple", [NoSideEffect]> {
   let summary = "index into a tuple using a constant value";
   let description = [{A pure operation which reads a value from a tuple}];
 
@@ -251,8 +253,7 @@ def ArcBlockResultOp :
   let results = (outs AnyType);
 }
 
-def IfOp : Arc_Op<"if",
-      [SingleBlockImplicitTerminator<"ArcBlockResultOp">]> {
+def IfOp : Arc_Op<"if", [SingleBlockImplicitTerminator<"ArcBlockResultOp">]> {
   let summary = "if-then-else operation";
   let description = [{
     The "arc.if" operation represents an if-then-else construct for
