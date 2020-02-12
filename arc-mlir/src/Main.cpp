@@ -38,7 +38,7 @@
 #include <mlir/Support/FileUtilities.h>
 #include <mlir/Support/MlirOptMain.h>
 
-#include "arc/arc-dialect.h"
+#include "arc/Dialect.h"
 
 namespace cl = llvm::cl;
 

@@ -25,7 +25,7 @@ include "mlir/Dialect/StandardOps/Ops.td"
 #endif // STANDARD_OPS
 
 #ifndef ARC_OPS
-include "arc/arc-ops.td"
+include "arc/Ops.td"
 #endif // ARC_OPS
 
 def AllValuesAreConstants
