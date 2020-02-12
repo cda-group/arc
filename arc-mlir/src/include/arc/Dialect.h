@@ -54,7 +54,7 @@ public:
 /// Include the auto-generated header file containing the declarations of the
 /// arc operations.
 #define GET_OP_CLASSES
-#include "arc/ops.h.inc"
+#include "arc/Ops.h.inc"
 
 //===----------------------------------------------------------------------===//
 // Toy Types

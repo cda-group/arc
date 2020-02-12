@@ -17,7 +17,7 @@
 // =============================================================================
 //===----------------------------------------------------------------------===//
 
-#include "arc/arc-dialect.h"
+#include "arc/Dialect.h"
 #include <llvm/Support/raw_ostream.h>
 #include <mlir/Dialect/StandardOps/Ops.h>
 #include <mlir/IR/BlockAndValueMapping.h>
@@ -90,7 +90,7 @@ struct ConstantFoldArcIf : public RewritePattern {
   }
 };
 
-#include "arc-opts.inc"
+#include "Opts.inc"
 
 } // end anonymous namespace
 

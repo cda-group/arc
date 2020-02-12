@@ -8,14 +8,14 @@ set(LLVM_LINK_COMPONENTS
   Support
   )
 
-set(LLVM_TARGET_DEFINITIONS arc-opts.td)
+set(LLVM_TARGET_DEFINITIONS Opts.td)
 set(MLIR_TABLEGEN_EXE ${LLVM_BINARY_DIR}/bin/mlir-tblgen)
 set(TBLGEN_INCDIRS "-I${CMAKE_CURRENT_SOURCE_DIR}/../llvm-project/mlir/include/")
-mlir_tablegen(arc-opts.inc -gen-rewriters ${TBLGEN_INCDIRS} "-I${CMAKE_CURRENT_SOURCE_DIR}/include")
+mlir_tablegen(Opts.inc -gen-rewriters ${TBLGEN_INCDIRS} "-I${CMAKE_CURRENT_SOURCE_DIR}/include")
 add_public_tablegen_target(ArcDialectOptsIncGen)
 
 
-set(ARCMLIR_MODULES main.cpp arc-dialect.cpp arc-opts.cpp)
+set(ARCMLIR_MODULES Main.cpp Dialect.cpp Opts.cpp)
 
 set(LIBS
   MLIRAnalysis
