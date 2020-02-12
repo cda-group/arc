@@ -1,7 +1,7 @@
-//===- ARC-MLIR Optimizer Driver -------------------------------===//
+//===- ARC-MLIR Optimizer Driver ------------------------------------------===//
 //
 // Copyright 2019 The MLIR Authors.
-// Copyright 2019 RISE AB.
+// Copyright 2019 KTH Royal Institute of Technology.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -16,8 +16,8 @@
 // limitations under the License.
 // =============================================================================
 //
-// Main entry function for arc-mlir for when built as standalone
-// binary.  Stolen from mlir-opt.
+// Main entry function for arc-mlir for when built as standalone binary. Stolen
+// from mlir-opt.
 //
 //===----------------------------------------------------------------------===//
 #include <llvm/Support/CommandLine.h>
