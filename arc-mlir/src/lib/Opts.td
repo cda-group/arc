@@ -31,11 +31,10 @@ include "mlir/Dialect/StandardOps/Ops.td"
 include "arc/Ops.td"
 #endif // ARC_OPS
 
-def AllValuesAreConstants
-    : Constraint<CPred<"AllValuesAreConstant($0)">>;
+def AllValuesAreConstants : Constraint<CPred<"AllValuesAreConstant($0)">>;
 def ConstValuesToDenseAttrib : NativeCodeCall<"ToDenseAttribs($0, $1)">;
-def ConstantMakeVectorPattern
-    : Pat<(MakeVector:$result $values), (ConstantOp (ConstValuesToDenseAttrib $result, $values)),
+def ConstantMakeVectorPattern : Pat<(MakeVector:$result $values),
+          (ConstantOp (ConstValuesToDenseAttrib $result, $values)),
           [(AllValuesAreConstants $values)]>;
 
 #endif // ARC_OPTS
