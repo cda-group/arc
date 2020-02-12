@@ -20,6 +20,8 @@
 // from mlir-opt.
 //
 //===----------------------------------------------------------------------===//
+
+#include "arc/Dialect.h"
 #include <llvm/Support/CommandLine.h>
 #include <llvm/Support/ErrorOr.h>
 #include <llvm/Support/InitLLVM.h>
@@ -37,8 +39,6 @@
 #include <mlir/Pass/PassManager.h>
 #include <mlir/Support/FileUtilities.h>
 #include <mlir/Support/MlirOptMain.h>
-
-#include "arc/Dialect.h"
 
 namespace cl = llvm::cl;
 

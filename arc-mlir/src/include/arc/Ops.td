@@ -42,6 +42,7 @@ class Arc_Op<string mnemonic, list<OpTrait> traits = []>
 //===----------------------------------------------------------------------===//
 // Arc Operations
 //===----------------------------------------------------------------------===//
+
 def MakeVector
     : Arc_Op<"make_vector", [NoSideEffect, SameOperandsAndResultElementType]> {
   let summary = "create a vector from a sequence of values";
