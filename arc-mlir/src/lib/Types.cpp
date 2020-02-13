@@ -74,6 +74,36 @@ bool isBuilderType(Type type) {
 // AppenderType
 //===----------------------------------------------------------------------===//
 
+struct AppenderTypeStorage : public TypeStorage {
+  AppenderTypeStorage(Type mergeType) : mergeType(mergeType) {}
+
+  Type mergeType;
+
+  using KeyTy = Type;
+
+  bool operator==(const KeyTy &key) const { return key == KeyTy(mergeType); }
+
+  static llvm::hash_code hashKey(const KeyTy &key) {
+    return llvm::hash_combine(key);
+  }
+
+  static KeyTy getKey(Type mergeType) { return KeyTy(mergeType); }
+
+  static AppenderTypeStorage *construct(TypeStorageAllocator &allocator,
+                                        const KeyTy &key) {
+    return new (allocator.allocate<AppenderTypeStorage>())
+        AppenderTypeStorage(key);
+  }
+};
+
+AppenderType AppenderType::get(Type mergeType) {
+  return Base::get(mergeType.getContext(), Appender, mergeType);
+}
+
+AppenderType AppenderType::getChecked(Type mergeType, Location loc) {
+  return Base::getChecked(loc, mergeType.getContext(), Appender, mergeType);
+}
+
 Type AppenderType::getMergeType() const { return getImpl()->mergeType; }
 
 Type AppenderType::parse(DialectAsmParser &parser) {
