@@ -76,11 +76,6 @@ bool isBuilderType(Type type) {
 
 Type AppenderType::getMergeType() const { return getImpl()->mergeType; }
 
-AppenderType AppenderType::get(Type mergeType) {
-  mlir::MLIRContext *context = mergeType.getContext();
-  return Base::get(context, Kind::Appender, mergeType);
-}
-
 Type AppenderType::parse(DialectAsmParser &parser) {
   if (parser.parseLess())
     return nullptr;
@@ -88,12 +83,6 @@ Type AppenderType::parse(DialectAsmParser &parser) {
   mlir::Type mergeType;
   if (parser.parseType(mergeType))
     return nullptr;
-  if (!isValueType(mergeType)) {
-    parser.emitError(loc,
-                     "merge type for an appender must be a value type, got: ")
-        << mergeType;
-    return nullptr;
-  }
   if (parser.parseGreater())
     return nullptr;
   return AppenderType::getChecked(mergeType, loc);
