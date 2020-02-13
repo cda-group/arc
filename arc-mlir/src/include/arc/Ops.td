@@ -40,6 +40,20 @@ class Arc_Op<string mnemonic, list<OpTrait> traits = []>
     : Op<Arc_Dialect, mnemonic, traits>;
 
 //===----------------------------------------------------------------------===//
+// Arc Predicates
+//===----------------------------------------------------------------------===//
+
+def AnyValue : Type<Or<[
+  AnyInteger.predicate,
+  AnyFloat.predicate,
+]>, "any value type">;
+
+def AnyAppender : Type<CPred<"$_self.isa<AppenderType>()">, "any appender">;
+def AnyBuilder : Type<Or<[
+  AnyAppender.predicate
+]>, "any builder type">;
+
+//===----------------------------------------------------------------------===//
 // Arc Operations
 //===----------------------------------------------------------------------===//
 
