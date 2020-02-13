@@ -85,6 +85,9 @@ public:
   static AppenderType get(Type mergeType) {
     return Base::get(mergeType.getContext(), Appender, mergeType);
   }
+  static AppenderType getChecked(Type mergeType, Location loc) {
+    return Base::getChecked(loc, mergeType.getContext(), Appender, mergeType);
+  }
 
   static LogicalResult
   verifyConstructionInvariants(llvm::Optional<Location> loc, MLIRContext *ctx,

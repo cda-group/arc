@@ -79,19 +79,13 @@ Type AppenderType::getMergeType() const { return getImpl()->mergeType; }
 Type AppenderType::parse(DialectAsmParser &parser) {
   if (parser.parseLess())
     return nullptr;
-  llvm::SMLoc loc = parser.getCurrentLocation();
+  Location loc = parser.getEncodedSourceLoc(parser.getCurrentLocation());
   mlir::Type mergeType;
   if (parser.parseType(mergeType))
     return nullptr;
-  if (!isValueType(mergeType)) {
-    parser.emitError(loc,
-                     "merge type for an appender must be a value type, got: ")
-        << mergeType;
-    return nullptr;
-  }
   if (parser.parseGreater())
     return nullptr;
-  return AppenderType::get(mergeType);
+  return AppenderType::getChecked(mergeType, loc);
 }
 
 void AppenderType::print(DialectAsmPrinter &os) const {
