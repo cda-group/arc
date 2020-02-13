@@ -79,7 +79,7 @@ Type AppenderType::getMergeType() const { return getImpl()->mergeType; }
 Type AppenderType::parse(DialectAsmParser &parser) {
   if (parser.parseLess())
     return nullptr;
-  llvm::SMLoc loc = parser.getCurrentLocation();
+  Location loc = parser.getEncodedSourceLoc(parser.getCurrentLocation());
   mlir::Type mergeType;
   if (parser.parseType(mergeType))
     return nullptr;
