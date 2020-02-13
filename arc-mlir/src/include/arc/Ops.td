@@ -61,6 +61,20 @@ class Arc_FloatUnaryOp<string mnemonic, list<OpTrait> traits = []>
       Arguments<(ins FloatLike:$operand)>;
 
 //===----------------------------------------------------------------------===//
+// Arc Predicates
+//===----------------------------------------------------------------------===//
+
+def AnyValue : Type<Or<[
+  AnySignlessInteger.predicate,
+  AnyFloat.predicate,
+]>, "any value type">;
+
+def AnyAppender : Type<CPred<"$_self.isa<AppenderType>()">, "any appender">;
+def AnyBuilder : Type<Or<[
+  AnyAppender.predicate
+]>, "any builder type">;
+
+//===----------------------------------------------------------------------===//
 // Arc Operations
 //===----------------------------------------------------------------------===//
 
