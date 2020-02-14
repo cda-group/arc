@@ -326,29 +326,28 @@ def MakeAppenderOp : Arc_Op<"make_appender", [NoSideEffect, Linear]> {
   let results = (outs AnyAppender);
 }
 
-def MergeAppenderOp : Arc_Op<"merge_appender", [NoSideEffect, Linear]> {
-  let summary = "merge a value into an appender";
+def MergeOp : Arc_Op<"merge", [NoSideEffect, Linear]> {
+  let summary = "merge a value into a builder";
   let description = [{
-    The "arc.merge_appender" operation takes an appender and a value, and
-    returns a new appender with the value stored into the old appender. The old
-    appender is consumed in the process. Note that the result of this operation
-    must be used exactly once.
+    The "arc.merge" operation takes a builder and a value, and returns a new
+    builder with the value stored into the old builder. The old builder is
+    consumed in the process. Note that the result of this operation must be
+    used exactly once.
 
     ```mlir
     %a = "arc.make_appender"() : () -> !arc.appender<i32>
     %v = constant 5 : i32
-    %b = "arc.merge_appender"(%a, %v) : (!arc.appender<i32>, i32)
-                                      -> !arc.appender<i32>
+    %b = "arc.merge"(%a, %v) : (!arc.appender<i32>, i32) -> !arc.appender<i32>
     ```
   }];
-  let arguments = (ins AnyAppender:$appender, AnyValue:$value);
+  let arguments = (ins AnyBuilder:$builder, AnyValue:$value);
   let results = (outs AnyAppender);
   let verifier = [{
     auto Operation = this->getOperation();
-    auto BuilderTy = Operation->getOperand(0).getType().cast<AppenderType>();
+    auto BuilderTy = Operation->getOperand(0).getType().cast<BuilderType>();
     auto MergeTy = BuilderTy.getMergeType();
     auto ValueTy = Operation->getOperand(1).getType();
-    auto ResultTy = Operation->getResult(0).getType().cast<AppenderType>();
+    auto ResultTy = Operation->getResult(0).getType().cast<BuilderType>();
     if (MergeTy != ValueTy)
       return emitOpError("value type does not match merge type, found ")
         << ValueTy << " but expected " << MergeTy;
@@ -359,35 +358,26 @@ def MergeAppenderOp : Arc_Op<"merge_appender", [NoSideEffect, Linear]> {
   }];
 }
 
-def ResultAppenderOp : Arc_Op<"result_appender", [NoSideEffect]> {
-  let summary = "materialize an appender into a value";
+def ResultOp : Arc_Op<"result", [NoSideEffect]> {
+  let summary = "materialize a builder into a value";
   let description = [{
-    The "arc.result_appender" operation takes an appender and materializes it
-    into a value of its result type. The resulting value is returned, and the
-    appender is consumed in the process.
+    The "arc.result" operation takes a builder and materializes it into a value
+    of its result type. The resulting value is returned, and the builder is
+    consumed in the process.
 
     ```mlir
     %a = "arc.make_appender"() : () -> !arc.appender<i32>
     %v = constant 5 : i32
-    %b = "arc.merge_appender"(%a, %v) : (!arc.appender<i32>, i32)
-                                      -> !arc.appender<i32>
-    %r = "arc.result_appender"(%b) : (!arc.appender<i32>) -> i32
+    %b = "arc.merge"(%a, %v) : (!arc.appender<i32>, i32) -> !arc.appender<i32>
+    %r = "arc.result"(%b) : (!arc.appender<i32>) -> i32
     ```
   }];
   let arguments = (ins AnyAppender:$builder);
-  let results = (outs 1DTensorOf<[AnyType]>);
+  let results = (outs AnyType);
 
-  let verifier = [{
-    auto Operation = this->getOperation();
-    auto BuilderTy = Operation->getOperand(0).getType().cast<AppenderType>();
-    auto MergeTy = BuilderTy.getMergeType();
-    auto TensorTy = Operation->getResult(0).getType().cast<TensorType>();
-    auto ElemTy = TensorTy.getElementType();
-    if (MergeTy != ElemTy)
-      return emitOpError("element type of tensor does not match merge type of ")
-          << "appender, found " << ElemTy << " but expected " << MergeTy;
-    return mlir::success();
-  }];
+  let extraClassDeclaration = [{ LogicalResult customVerify(); }];
+
+  let verifier = [{ return customVerify(); }];
 }
 
 #endif // ARC_OPS

@@ -96,6 +96,23 @@ LogicalResult IfOp::customVerify() {
   return mlir::success();
 }
 
+LogicalResult ResultOp::customVerify() {
+  auto Operation = this->getOperation();
+  auto BuilderTy = Operation->getOperand(0).getType().cast<BuilderType>();
+  switch (BuilderTy.getKind()) {
+  default:
+    llvm_unreachable("Unhandled Arc type");
+  case Appender:
+    auto MergeTy = BuilderTy.getMergeType();
+    auto TensorTy = Operation->getResult(0).getType().cast<TensorType>();
+    auto ElemTy = TensorTy.getElementType();
+    if (MergeTy != ElemTy)
+      return emitOpError("element type of tensor does not match merge type of ")
+             << "appender, found " << ElemTy << " but expected " << MergeTy;
+    return mlir::success();
+  }
+}
+
 //===----------------------------------------------------------------------===//
 // TableGen'd op method definitions
 //===----------------------------------------------------------------------===//
