@@ -133,7 +133,7 @@ LogicalResult If::customVerify() {
   auto Op = this->getOperation();
   auto ResultTy = Op->getResult(0).getType();
   bool FoundErrors = false;
-  auto CheckResultType = [this, ResultTy, &FoundErrors](ArcBlockResult R) {
+  auto CheckResultType = [this, ResultTy, &FoundErrors](BlockResult R) {
     if (R.getResult().getType() != ResultTy) {
       FoundErrors = true;
       emitOpError("result type does not match the type of the parent: found ")
