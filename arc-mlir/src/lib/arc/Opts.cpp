@@ -53,8 +53,8 @@ DenseElementsAttr ToDenseAttribs(mlir::OpResult result,
   return DenseElementsAttr::get(st, llvm::makeArrayRef(attribs));
 }
 
-struct ConstantFoldArcIf : public RewritePattern {
-  ConstantFoldArcIf(MLIRContext *ctx) : RewritePattern("arc.if", 1, ctx) {}
+struct ConstantFoldIf : public RewritePattern {
+  ConstantFoldIf(MLIRContext *ctx) : RewritePattern("arc.if", 1, ctx) {}
 
   PatternMatchResult match(Operation *op) const override {
     Operation *def = op->getOperand(0).getDefiningOp();
@@ -103,5 +103,5 @@ void MakeVectorOp::getCanonicalizationPatterns(
 
 void IfOp::getCanonicalizationPatterns(OwningRewritePatternList &results,
                                        MLIRContext *ctx) {
-  results.insert<ConstantFoldArcIf>(ctx);
+  results.insert<ConstantFoldIf>(ctx);
 }

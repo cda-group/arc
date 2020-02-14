@@ -36,8 +36,29 @@ def Arc_Dialect : Dialect {
   let cppNamespace = "arc";
 }
 
+//===----------------------------------------------------------------------===//
+// Arc Operation Classes
+//===----------------------------------------------------------------------===//
+
 class Arc_Op<string mnemonic, list<OpTrait> traits = []>
     : Op<Arc_Dialect, mnemonic, traits>;
+
+/* The structure for these unary operands is stolen from the standard dialect */
+class Arc_UnaryOp<string mnemonic, list<OpTrait> traits = []>
+    : Op<Arc_Dialect, mnemonic, !listconcat(traits, [NoSideEffect])> {
+  let results = (outs AnyType);
+}
+
+class Arc_UnaryOpSameOperandAndResultType<string mnemonic,
+                                         list<OpTrait> traits = []>
+    : Arc_UnaryOp<mnemonic, !listconcat(traits, [SameOperandsAndResultType])> {
+  let parser =
+      [{ return impl::parseOneResultSameOperandTypeOp(parser, result); }];
+}
+
+class Arc_FloatUnaryOp<string mnemonic, list<OpTrait> traits = []>
+    : Arc_UnaryOpSameOperandAndResultType<mnemonic, traits>,
+      Arguments<(ins FloatLike:$operand)>;
 
 //===----------------------------------------------------------------------===//
 // Arc Operations
@@ -67,24 +88,7 @@ def ArcKeepOp : Arc_Op<"keep", []> {
   let results = (outs);
 }
 
-/* The structure for these unary operands is stolen from the standard dialect */
-class ArcUnaryOp<string mnemonic, list<OpTrait> traits = []>
-    : Op<Arc_Dialect, mnemonic, !listconcat(traits, [NoSideEffect])> {
-  let results = (outs AnyType);
-}
-
-class ArcUnaryOpSameOperandAndResultType<string mnemonic,
-                                         list<OpTrait> traits = []>
-    : ArcUnaryOp<mnemonic, !listconcat(traits, [SameOperandsAndResultType])> {
-  let parser =
-      [{ return impl::parseOneResultSameOperandTypeOp(parser, result); }];
-}
-
-class ArcFloatUnaryOp<string mnemonic, list<OpTrait> traits = []>
-    : ArcUnaryOpSameOperandAndResultType<mnemonic, traits>,
-      Arguments<(ins FloatLike:$operand)>;
-
-def SinOp : ArcFloatUnaryOp<"sin"> {
+def SinOp : Arc_FloatUnaryOp<"sin"> {
   let summary = "sine of the specified value";
   let description = [{
     The `sin` operation computes the sine of a given
@@ -95,7 +99,7 @@ def SinOp : ArcFloatUnaryOp<"sin"> {
   }];
 }
 
-def TanOp : ArcFloatUnaryOp<"tan"> {
+def TanOp : Arc_FloatUnaryOp<"tan"> {
   let summary = "tangent of the specified value";
   let description = [{
     The `tan` operation computes the tangent of a given
@@ -106,7 +110,7 @@ def TanOp : ArcFloatUnaryOp<"tan"> {
   }];
 }
 
-def AcosOp : ArcFloatUnaryOp<"acos"> {
+def AcosOp : Arc_FloatUnaryOp<"acos"> {
   let summary = "arcus cosine of the specified value";
   let description = [{
     The `sin` operation computes the arcus cosine of a given
@@ -117,7 +121,7 @@ def AcosOp : ArcFloatUnaryOp<"acos"> {
   }];
 }
 
-def AsinOp : ArcFloatUnaryOp<"asin"> {
+def AsinOp : Arc_FloatUnaryOp<"asin"> {
   let summary = "arcus sine of the specified value";
   let description = [{
     The `sin` operation computes the arcus sine of a given
@@ -128,7 +132,7 @@ def AsinOp : ArcFloatUnaryOp<"asin"> {
   }];
 }
 
-def AtanOp : ArcFloatUnaryOp<"atan"> {
+def AtanOp : Arc_FloatUnaryOp<"atan"> {
   let summary = "arcus tangent of the specified value";
   let description = [{
     The `tan` operation computes the arcus tangent of a given
@@ -139,7 +143,7 @@ def AtanOp : ArcFloatUnaryOp<"atan"> {
   }];
 }
 
-def CoshOp : ArcFloatUnaryOp<"cosh"> {
+def CoshOp : Arc_FloatUnaryOp<"cosh"> {
   let summary = "hyperbolic cosine of the specified value";
   let description = [{
     The `cosh` operation computes the hyperbolic cosine of a given
@@ -150,7 +154,7 @@ def CoshOp : ArcFloatUnaryOp<"cosh"> {
   }];
 }
 
-def SinhOp : ArcFloatUnaryOp<"sinh"> {
+def SinhOp : Arc_FloatUnaryOp<"sinh"> {
   let summary = "hyperbolic sine of the specified value";
   let description = [{
     The `sinh` operation computes the hyperbolic sine of a given
@@ -161,7 +165,7 @@ def SinhOp : ArcFloatUnaryOp<"sinh"> {
   }];
 }
 
-def ErfOp : ArcFloatUnaryOp<"erf"> {
+def ErfOp : Arc_FloatUnaryOp<"erf"> {
   let summary = "error function of the specified value";
   let description = [{
     The `erf' operation computes the Gauss error function of a given
