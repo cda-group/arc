@@ -47,7 +47,9 @@ cd arc-mlir/build/llvm-build/; ninja check-arc-mlir; cd -
 
 Documentation will be added as Arc matures.
 
-* [Language reference](docs/language.md)
+* [Generated MLIR Docs](./docs/Ops.md)
+
+* [Formal Language reference](docs/language.md)
 
 * [Front-end APIs](docs/api.md)
 
