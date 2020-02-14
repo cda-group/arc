@@ -49,17 +49,17 @@ def MakeVector
   let description =
       [{A pure operation which turns its arguments into a vector}];
 
-  let arguments = (ins Variadic<AnyType> : $values);
+  let arguments = (ins Variadic<AnyType>:$values);
 
   let results = (outs 1DTensorOf<[AnyType]>);
 
   let hasCanonicalizer = 1;
 
   let verifier = [{
-    unsigned NumOperands = this->getOperation()->getNumOperands();
-    auto ElemTy = this->getOperation()->getOperand(0).getType();
-    auto TensorTy =
-        this->getOperation()->getResult(0).getType().cast<TensorType>();
+    auto Operation = this->getOperation();
+    auto NumOperands = Operation->getNumOperands();
+    auto ElemTy = Operation->getOperand(0).getType();
+    auto TensorTy = Operation->getResult(0).getType().cast<TensorType>();
     if (!TensorTy.hasStaticShape())
       return emitOpError("result must have static shape, expected ")
              << RankedTensorType::get({NumOperands}, ElemTy);
@@ -77,7 +77,7 @@ def ArcKeep : Arc_Op<"keep", []> {
                       to prevent optimization passes from removing dummy
                       results.
   }];
-  let arguments = (ins Variadic<AnyType> : $values);
+  let arguments = (ins Variadic<AnyType>:$values);
   let results = (outs);
 }
 
@@ -96,8 +96,7 @@ class ArcUnaryOpSameOperandAndResultType<string mnemonic,
 
 class ArcFloatUnaryOp<string mnemonic, list<OpTrait> traits = []>
     : ArcUnaryOpSameOperandAndResultType<mnemonic, traits>,
-      Arguments<(ins FloatLike
-                 : $operand)>;
+      Arguments<(ins FloatLike:$operand)>;
 
 def SinOp : ArcFloatUnaryOp<"sin"> {
   let summary = "sine of the specified value";
@@ -183,13 +182,13 @@ def MakeTuple : Arc_Op<"make_tuple", [NoSideEffect]> {
   let description =
       [{A pure operation which turns its arguments into a tuple}];
 
-  let arguments = (ins Variadic<AnyType> : $values);
+  let arguments = (ins Variadic<AnyType>:$values);
 
   let results = (outs AnyTuple);
 
   let verifier = [{
     auto Operation = this->getOperation();
-    unsigned NumOperands = Operation->getNumOperands();
+    auto NumOperands = Operation->getNumOperands();
     auto TupleTy = Operation->getResult(0).getType().cast<TupleType>();
     auto ElemTys = TupleTy.getTypes();
     if (NumOperands != TupleTy.size())
