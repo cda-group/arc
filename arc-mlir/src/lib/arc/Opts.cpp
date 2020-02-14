@@ -42,8 +42,9 @@ bool AllValuesAreConstant(Operation::operand_range &ops) {
   return true;
 }
 
-DenseElementsAttr ToDenseAttribs(mlir::OpResult result,
-                                 Operation::operand_range &ops) {
+DenseElementsAttr
+ConstantValuesToDenseAttributes(mlir::OpResult result,
+                                Operation::operand_range &ops) {
   ShapedType st = result.getType().cast<ShapedType>();
   std::vector<Attribute> attribs;
   for (const mlir::Value &a : ops) {

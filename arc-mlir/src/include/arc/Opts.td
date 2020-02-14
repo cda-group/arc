@@ -32,9 +32,10 @@ include "arc/Ops.td"
 #endif // ARC_OPS
 
 def AllValuesAreConstants : Constraint<CPred<"AllValuesAreConstant($0)">>;
-def ConstValuesToDenseAttrib : NativeCodeCall<"ToDenseAttribs($0, $1)">;
+def ConstantValuesToDenseAttributes :
+    NativeCodeCall<"ConstantValuesToDenseAttributes($0, $1)">;
 def ConstantMakeVectorPattern : Pat<(MakeVector:$result $values),
-          (ConstantOp (ConstValuesToDenseAttrib $result, $values)),
+          (ConstantOp (ConstantValuesToDenseAttributes $result, $values)),
           [(AllValuesAreConstants $values)]>;
 
 #endif // ARC_OPTS
