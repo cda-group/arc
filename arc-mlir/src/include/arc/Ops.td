@@ -75,6 +75,23 @@ def AnyBuilder : Type<Or<[
 ]>, "any builder type">;
 
 //===----------------------------------------------------------------------===//
+// Arc Traits
+//===----------------------------------------------------------------------===//
+
+def Linear : PredOpTrait<
+  "result must have exactly one use",
+  CPred<"$_op.getResult(0).hasOneUse()">
+>;
+
+def Affine : PredOpTrait<
+  "result must have at most one use",
+  Or<[
+    CPred<"$_op.getResult(0).use_empty()">,
+    CPred<"$_op.getResult(0).hasOneUse()">
+  ]>
+>;
+
+//===----------------------------------------------------------------------===//
 // Arc Operations
 //===----------------------------------------------------------------------===//
 
