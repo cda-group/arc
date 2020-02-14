@@ -8,7 +8,7 @@ set(LLVM_LINK_COMPONENTS
   Support
   )
 
-set(LLVM_TARGET_DEFINITIONS lib/arc/Opts.td)
+set(LLVM_TARGET_DEFINITIONS include/arc/Opts.td)
 set(MLIR_TABLEGEN_EXE ${LLVM_BINARY_DIR}/bin/mlir-tblgen)
 set(TBLGEN_INCDIRS "-I${CMAKE_CURRENT_SOURCE_DIR}/../llvm-project/mlir/include/")
 mlir_tablegen(Opts.inc -gen-rewriters ${TBLGEN_INCDIRS} "-I${CMAKE_CURRENT_SOURCE_DIR}/include")
