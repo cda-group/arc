@@ -48,27 +48,11 @@ def MakeVector
   let summary = "create a vector from a sequence of values";
   let description =
       [{A pure operation which turns its arguments into a vector}];
-
   let arguments = (ins Variadic<AnyType>:$values);
-
   let results = (outs 1DTensorOf<[AnyType]>);
-
   let hasCanonicalizer = 1;
-
-  let verifier = [{
-    auto Operation = this->getOperation();
-    auto NumOperands = Operation->getNumOperands();
-    auto ElemTy = Operation->getOperand(0).getType();
-    auto TensorTy = Operation->getResult(0).getType().cast<TensorType>();
-    if (!TensorTy.hasStaticShape())
-      return emitOpError("result must have static shape, expected ")
-             << RankedTensorType::get({NumOperands}, ElemTy);
-    if (NumOperands != TensorTy.getNumElements())
-      return emitOpError("result does not match the number of operands: found ")
-             << NumOperands << " but expected " << TensorTy.getNumElements()
-             << " operands";
-    return mlir::success();
-  }];
+  let extraClassDeclaration = [{ LogicalResult customVerify(); }];
+  let verifier = [{ return customVerify(); }];
 }
 
 def ArcKeep : Arc_Op<"keep", []> {
@@ -181,58 +165,19 @@ def MakeTuple : Arc_Op<"make_tuple", [NoSideEffect]> {
   let summary = "create a tuple from a sequence of values";
   let description =
       [{A pure operation which turns its arguments into a tuple}];
-
   let arguments = (ins Variadic<AnyType>:$values);
-
   let results = (outs AnyTuple);
-
-  let verifier = [{
-    auto Operation = this->getOperation();
-    auto NumOperands = Operation->getNumOperands();
-    auto TupleTy = Operation->getResult(0).getType().cast<TupleType>();
-    auto ElemTys = TupleTy.getTypes();
-    if (NumOperands != TupleTy.size())
-      return emitOpError("result does not match the number of operands: found ")
-             << NumOperands << " but expected " << TupleTy.size()
-             << " operands";
-    if (NumOperands == 0)
-      return emitOpError("tuple must contain at least one element ");
-    unsigned I = 0;
-    for (const Type &ElemTy : Operation->getOperands().getTypes()) {
-        if (ElemTys[I] != ElemTy)
-           return emitOpError("operand types do not match, found ")
-              << ElemTy << " but expected " << ElemTys[I];
-        I++;
-    }
-    return mlir::success();
-  }];
+  let extraClassDeclaration = [{ LogicalResult customVerify(); }];
+  let verifier = [{ return customVerify(); }];
 }
 
 def IndexTuple : Arc_Op<"index_tuple", [NoSideEffect]> {
   let summary = "index into a tuple using a constant value";
   let description = [{A pure operation which reads a value from a tuple}];
-
   let arguments = (ins AnyTuple:$values, NonNegativeI64Attr:$index);
-
   let results = (outs AnyType);
-
-  let verifier = [{
-    auto Operation = this->getOperation();
-    auto ResultTy = Operation->getResult(0).getType();
-    auto TupleTy = Operation->getOperand(0).getType().cast<TupleType>();
-    auto Index = getAttrOfType<IntegerAttr>("index").getValue().getZExtValue();
-    auto NumElems = TupleTy.size();
-    if (Index >= NumElems)
-      return emitOpError("index ") << Index
-        << " is out-of-bounds for tuple with size " << NumElems;
-    auto ElemTys = TupleTy.getTypes();
-    auto IndexTy = ElemTys[Index];
-    if (IndexTy != ResultTy)
-      return emitOpError("element type at index ") << Index
-        << " does not match result, found " << IndexTy
-        << " but expected " << ResultTy;
-    return mlir::success();
-  }];
+  let extraClassDeclaration = [{ LogicalResult customVerify(); }];
+  let verifier = [{ return customVerify(); }];
 }
 
 def ArcBlockResultOp :
@@ -248,7 +193,6 @@ def ArcBlockResultOp :
       "arc.block.result"(%b) : (f32) -> f64
     ```
   }];
-
   let arguments = (ins AnyType:$result);
   let results = (outs AnyType);
 }
@@ -271,11 +215,8 @@ def IfOp : Arc_Op<"if", [SingleBlockImplicitTerminator<"ArcBlockResultOp">]> {
   let arguments = (ins I1:$condition);
   let regions = (region SizedRegion<1>:$thenRegion, SizedRegion<1>:$elseRegion);
   let results = (outs AnyType);
-
   let extraClassDeclaration = [{ LogicalResult customVerify(); }];
-
   let verifier = [{ return customVerify(); }];
-
   let hasCanonicalizer = 1;
 }
 
