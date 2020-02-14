@@ -127,13 +127,13 @@ LogicalResult IndexTuple::customVerify() {
   return mlir::success();
 }
 
-LogicalResult IfOp::customVerify() {
+LogicalResult If::customVerify() {
   // We check that the result types of the blocks matche the result
   // type of the operator.
   auto Op = this->getOperation();
   auto ResultTy = Op->getResult(0).getType();
   bool FoundErrors = false;
-  auto CheckResultType = [this, ResultTy, &FoundErrors](ArcBlockResultOp R) {
+  auto CheckResultType = [this, ResultTy, &FoundErrors](ArcBlockResult R) {
     if (R.getResult().getType() != ResultTy) {
       FoundErrors = true;
       emitOpError("result type does not match the type of the parent: found ")

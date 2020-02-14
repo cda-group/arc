@@ -101,7 +101,7 @@ void MakeVector::getCanonicalizationPatterns(OwningRewritePatternList &results,
   populateWithGenerated(ctx, &results);
 }
 
-void IfOp::getCanonicalizationPatterns(OwningRewritePatternList &results,
+void If::getCanonicalizationPatterns(OwningRewritePatternList &results,
                                        MLIRContext *ctx) {
   results.insert<ConstantFoldArcIf>(ctx);
 }
