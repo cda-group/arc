@@ -68,7 +68,7 @@ def MakeVectorOp
     : Arc_Op<"make_vector", [NoSideEffect, SameOperandsAndResultElementType]> {
   let summary = "create a vector from a sequence of values";
   let description = [{
-    A pure operation which turns its arguments into a vector
+    A pure operation which turns its arguments into a vector.
   }];
   let arguments = (ins Variadic<AnyType>:$values);
   let results = (outs 1DTensorOf<[AnyType]>);
@@ -80,9 +80,8 @@ def MakeVectorOp
 def ArcKeepOp : Arc_Op<"keep", []> {
   let summary = "Operation consuming anything and having side effects.";
   let description = [{
-    An operation used for debugging and testing. Can be used
-    to prevent optimization passes from removing dummy
-    results.
+    An operation used for debugging and testing. Can be used to prevent
+    optimization passes from removing dummy results.
   }];
   let arguments = (ins Variadic<AnyType>:$values);
   let results = (outs);
@@ -91,94 +90,87 @@ def ArcKeepOp : Arc_Op<"keep", []> {
 def SinOp : Arc_FloatUnaryOp<"sin"> {
   let summary = "sine of the specified value";
   let description = [{
-    The `sin` operation computes the sine of a given
-    value.It takes one operand and returns one result of the same
-    type.This type may be a float scalar type,
-    a vector whose element type is float,
-    or a tensor of floats.It has no standard attributes.
+    The `sin` operation computes the sine of a given value.
+    It takes one operand and returns one result of the same type. This type may
+    be a float scalar type, a vector whose element type is float, or a tensor of
+    floats. It has no standard attributes.
   }];
 }
 
 def TanOp : Arc_FloatUnaryOp<"tan"> {
   let summary = "tangent of the specified value";
   let description = [{
-    The `tan` operation computes the tangent of a given
-    value.It takes one operand and returns one result of the same
-    type.This type may be a float scalar type,
-    a vector whose element type is float,
-    or a tensor of floats.It has no standard attributes.
+    The `tan` operation computes the tangent of a given value.
+    It takes one operand and returns one result of the same type. This type may
+    be a float scalar type, a vector whose element type is float, or a tensor of
+    floats. It has no standard attributes.
   }];
 }
 
 def AcosOp : Arc_FloatUnaryOp<"acos"> {
   let summary = "arcus cosine of the specified value";
   let description = [{
-    The `sin` operation computes the arcus cosine of a given
-    value.It takes one operand and returns one result of the same
-    type.This type may be a float scalar type,
-    a vector whose element type is float,
-    or a tensor of floats.It has no standard attributes.
+    The `sin` operation computes the arcus cosine of a given value.
+    It takes one operand and returns one result of the same type. This type may
+    be a float scalar type, a vector whose element type is float, or a tensor of
+    floats. It has no standard attributes.
   }];
 }
 
 def AsinOp : Arc_FloatUnaryOp<"asin"> {
   let summary = "arcus sine of the specified value";
   let description = [{
-    The `sin` operation computes the arcus sine of a given
-    value.It takes one operand and returns one result of the same
-    type.This type may be a float scalar type,
-    a vector whose element type is float,
-    or a tensor of floats.It has no standard attributes.
+    The `sin` operation computes the arcus sine of a given value.
+    It takes one operand and returns one result of the same type. This type may
+    be a float scalar type, a vector whose element type is float, or a tensor of
+    floats. It has no standard attributes.
   }];
 }
 
 def AtanOp : Arc_FloatUnaryOp<"atan"> {
   let summary = "arcus tangent of the specified value";
   let description = [{
-    The `tan` operation computes the arcus tangent of a given
-    value.It takes one operand and returns one result of the same
-    type.This type may be a float scalar type,
-    a vector whose element type is float,
-    or a tensor of floats.It has no standard attributes.
+    The `tan` operation computes the arcus tangent of a given value.
+    It takes one operand and returns one result of the same type. This type may
+    be a float scalar type, a vector whose element type is float, or a tensor of
+    floats. It has no standard attributes.
   }];
 }
 
 def CoshOp : Arc_FloatUnaryOp<"cosh"> {
   let summary = "hyperbolic cosine of the specified value";
   let description = [{
-    The `cosh` operation computes the hyperbolic cosine of a given
-    value.It takes one operand and returns one result of the same
-    type.This type may be a float scalar type,
-    a vector whose element type is float,
-    or a tensor of floats.It has no standard attributes.
+    The `cosh` operation computes the hyperbolic cosine of a given value.
+    It takes one operand and returns one result of the same type. This type may
+    be a float scalar type, a vector whose element type is float, or a tensor of
+    floats. It has no standard attributes.
   }];
 }
 
 def SinhOp : Arc_FloatUnaryOp<"sinh"> {
   let summary = "hyperbolic sine of the specified value";
   let description = [{
-    The `sinh` operation computes the hyperbolic sine of a given
-    value.It takes one operand and returns one result of the same
-    type.This type may be a float scalar type,
-    a vector whose element type is float,
-    or a tensor of floats.It has no standard attributes.
+    The `sinh` operation computes the hyperbolic sine of a given value.
+    It takes one operand and returns one result of the same type. This type may
+    be a float scalar type, a vector whose element type is float, or a tensor of
+    floats. It has no standard attributes.
   }];
 }
 
 def ErfOp : Arc_FloatUnaryOp<"erf"> {
   let summary = "error function of the specified value";
   let description = [{
-    The `erf' operation computes the Gauss error function of a given
-    value. It takes one operand and returns one result of the same
-    type. This type may be a float scalar type, a vector whose element
-    type is float, or a tensor of floats.It has no standard attributes.
+    The `erf' operation computes the Gauss error function of a given value.
+    It takes one operand and returns one result of the same type. This type may
+    be a float scalar type, a vector whose element type is float, or a tensor of
+    floats. It has no standard attributes.
   }];
 }
 
 def MakeTupleOp : Arc_Op<"make_tuple", [NoSideEffect]> {
   let summary = "create a tuple from a sequence of values";
   let description = [{
-    A pure operation which turns its arguments into a tuple
+    A pure operation which turns its arguments into a tuple.
   }];
   let arguments = (ins Variadic<AnyType>:$values);
   let results = (outs AnyTuple);
@@ -189,7 +181,7 @@ def MakeTupleOp : Arc_Op<"make_tuple", [NoSideEffect]> {
 def IndexTupleOp : Arc_Op<"index_tuple", [NoSideEffect]> {
   let summary = "index into a tuple using a constant value";
   let description = [{
-    A pure operation which reads a value from a tuple
+    A pure operation which reads a value from a tuple.
   }];
   let arguments = (ins AnyTuple:$values, NonNegativeI64Attr:$index);
   let results = (outs AnyType);
