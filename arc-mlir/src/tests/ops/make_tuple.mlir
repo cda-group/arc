@@ -19,7 +19,7 @@ module @toplevel {
   func @main() {
     %a = constant 0 : i1
     %b = constant 1 : i1
-    // expected-error@+1 {{'arc.make_tuple' op operand types do not match, found 'i1' but expected 'f32'}}
+    // expected-error@+1 {{'arc.make_tuple' op operand types do not match: expected 'f32' but found 'i1'}}
     %1 = "arc.make_tuple"(%a, %b) : (i1, i1) -> tuple<i1,f32>
     return
   }
@@ -43,7 +43,7 @@ module @toplevel {
   func @main() {
     %a = constant 0 : i1
     %b = constant 1 : i1
-    // expected-error@+1 {{'arc.make_tuple' op result does not match the number of operands: found 2 but expected 1 operands}}
+    // expected-error@+1 {{'arc.make_tuple' op result does not match the number of operands: expected 1 but found 2 operands}}
     %1 = "arc.make_tuple"(%a, %b) : (i1, i1) -> tuple<i1>
     return
   }

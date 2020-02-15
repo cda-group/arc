@@ -63,7 +63,7 @@ module @toplevel {
     %c = constant 1 : i1
     %d = constant 0 : i1
 
-    // expected-error@+1 {{'arc.make_vector' op result must have static shape, expected 'tensor<4xi1>'}}
+    // expected-error@+1 {{'arc.make_vector' op result must have static shape: expected 'tensor<4xi1>'}}
     %1 = "arc.make_vector"(%b, %b, %c, %d) : (i1, i1, i1, i1) -> tensor<?xi1>
     return
   }
@@ -77,7 +77,7 @@ module @toplevel {
     %c = constant 1 : i1
     %d = constant 0 : i1
 
-    // expected-error@+1 {{'arc.make_vector' op result does not match the number of operands: found 4 but expected 5 operands}}
+    // expected-error@+1 {{'arc.make_vector' op result does not match the number of operands: expected 5 but found 4 operands}}
     %1 = "arc.make_vector"(%b, %b, %c, %d) : (i1, i1, i1, i1) -> tensor<5xi1>
     return
   }

@@ -127,7 +127,7 @@ AppenderType::verifyConstructionInvariants(llvm::Optional<Location> loc,
                                            MLIRContext *ctx, Type mergeType) {
   if (!isValueType(mergeType)) {
     emitOptionalError(
-        loc, "appender merge type must be a value type, got: ", mergeType);
+        loc, "appender merge type must be a value type: found ", mergeType);
     return failure();
   }
   return success();

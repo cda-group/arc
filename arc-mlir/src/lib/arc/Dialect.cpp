@@ -80,11 +80,12 @@ LogicalResult MakeVectorOp::customVerify() {
   auto ElemTy = Operation->getOperand(0).getType();
   auto TensorTy = Operation->getResult(0).getType().cast<TensorType>();
   if (!TensorTy.hasStaticShape())
-    return emitOpError("result must have static shape, expected ")
+    return emitOpError("result must have static shape: expected ")
            << RankedTensorType::get({NumOperands}, ElemTy);
   if (NumOperands != TensorTy.getNumElements())
-    return emitOpError("result does not match the number of operands: found ")
-           << NumOperands << " but expected " << TensorTy.getNumElements()
+    return emitOpError(
+               "result does not match the number of operands: expected ")
+           << TensorTy.getNumElements() << " but found " << NumOperands
            << " operands";
   return mlir::success();
 }
@@ -95,15 +96,16 @@ LogicalResult MakeTupleOp::customVerify() {
   auto TupleTy = Operation->getResult(0).getType().cast<TupleType>();
   auto ElemTys = TupleTy.getTypes();
   if (NumOperands != TupleTy.size())
-    return emitOpError("result does not match the number of operands: found ")
-           << NumOperands << " but expected " << TupleTy.size() << " operands";
+    return emitOpError(
+               "result does not match the number of operands: expected ")
+           << TupleTy.size() << " but found " << NumOperands << " operands";
   if (NumOperands == 0)
     return emitOpError("tuple must contain at least one element ");
   unsigned I = 0;
   for (const Type &ElemTy : Operation->getOperands().getTypes()) {
     if (ElemTys[I] != ElemTy)
-      return emitOpError("operand types do not match, found ")
-             << ElemTy << " but expected " << ElemTys[I];
+      return emitOpError("operand types do not match: expected ")
+             << ElemTys[I] << " but found " << ElemTy;
     I++;
   }
   return mlir::success();
@@ -122,8 +124,8 @@ LogicalResult IndexTupleOp::customVerify() {
   auto IndexTy = ElemTys[Index];
   if (IndexTy != ResultTy)
     return emitOpError("element type at index ")
-           << Index << " does not match result, found " << IndexTy
-           << " but expected " << ResultTy;
+           << Index << " does not match result: expected " << ResultTy
+           << " but found " << IndexTy;
   return mlir::success();
 }
 
@@ -136,8 +138,9 @@ LogicalResult IfOp::customVerify() {
   auto CheckResultType = [this, ResultTy, &FoundErrors](ArcBlockResultOp R) {
     if (R.getResult().getType() != ResultTy) {
       FoundErrors = true;
-      emitOpError("result type does not match the type of the parent: found ")
-          << R.getResult().getType() << " but expected " << ResultTy;
+      emitOpError(
+          "result type does not match the type of the parent: expected ")
+          << ResultTy << " but found " << R.getResult().getType();
     }
   };
 
