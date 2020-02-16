@@ -23,9 +23,8 @@
 #ifndef ARC_OPS
 #define ARC_OPS
 
-#ifndef OP_BASE
 include "mlir/IR/OpBase.td"
-#endif // OP_BASE
+include "mlir/Analysis/InferTypeOpInterface.td"
 
 //===----------------------------------------------------------------------===//
 // Arc Dialect
@@ -273,7 +272,11 @@ def MakeAppenderOp : Arc_Op<"make_appender", [NoSideEffect, Linear]> {
   let results = (outs AnyAppender);
 }
 
-def MergeOp : Arc_Op<"merge", [NoSideEffect, Linear]> {
+def MergeOp : Arc_Op<"merge", [
+  NoSideEffect,
+  Linear,
+  DeclareOpInterfaceMethods<InferTypeOpInterface>
+]> {
   let summary = "merge a value into a builder";
   let description = [{
     The "arc.merge" operation takes a builder and a value, and returns a new

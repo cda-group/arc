@@ -158,5 +158,45 @@ AppenderType::verifyConstructionInvariants(Location loc, Type mergeType,
   }
   return success();
 }
+
+//===----------------------------------------------------------------------===//
+// UnknownType
+//===----------------------------------------------------------------------===//
+
+static int counter = 0;
+
+struct UnknownTypeStorage : public TypeStorage {
+
+  UnknownTypeStorage(int id) : id(id) {}
+
+  int id;
+
+  using KeyTy = int;
+
+  bool operator==(const KeyTy &key) const { return key == id; }
+
+  static llvm::hash_code hashKey(const KeyTy &key) {
+    return llvm::hash_combine(key);
+  }
+
+  static KeyTy getKey(int id) { return KeyTy(id); }
+
+  static UnknownTypeStorage *construct(TypeStorageAllocator &allocator,
+                                       const KeyTy &key) {
+    return new (allocator.allocate<UnknownTypeStorage>())
+        UnknownTypeStorage(key);
+  }
+};
+
+UnknownType UnknownType::get(MLIRContext *ctx) {
+  int id = counter;
+  counter += 1;
+  return Base::get(ctx, Unknown, id);
+}
+
+int UnknownType::getId() const { return getImpl()->id; }
+
+void UnknownType::print(DialectAsmPrinter &os) const { os << "unknown"; }
+
 } // namespace types
 } // namespace arc

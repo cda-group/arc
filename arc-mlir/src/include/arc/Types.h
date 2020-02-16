@@ -37,6 +37,7 @@ namespace types {
 
 enum Kind {
   Appender = Type::Kind::FIRST_PRIVATE_EXPERIMENTAL_0_TYPE,
+  Unknown,
 };
 
 //===----------------------------------------------------------------------===//
@@ -52,6 +53,7 @@ bool isBuilderType(Type type);
 
 struct BuilderTypeStorage;
 struct AppenderTypeStorage;
+struct UnknownTypeStorage;
 
 //===----------------------------------------------------------------------===//
 // Arc Types
@@ -81,6 +83,18 @@ public:
   static Type parse(DialectAsmParser &parser);
   void print(DialectAsmPrinter &os) const;
 };
+
+class UnknownType
+    : public Type::TypeBase<UnknownType, Type, UnknownTypeStorage> {
+public:
+  using Base::Base;
+
+  static bool kindof(unsigned kind) { return kind == Unknown; }
+  static UnknownType get(MLIRContext *ctx);
+  void print(DialectAsmPrinter &os) const;
+  int getId() const;
+};
+
 } // namespace types
 } // namespace arc
 
