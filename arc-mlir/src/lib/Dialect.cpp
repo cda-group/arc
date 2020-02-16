@@ -52,6 +52,8 @@ Type ArcDialect::parseType(DialectAsmParser &parser) const {
     return nullptr;
   if (keyword == "appender")
     return AppenderType::parse(parser);
+  if (keyword == "unknown")
+    return UnknownType::get(getContext());
   parser.emitError(parser.getNameLoc(), "unknown type keyword " + keyword);
   return nullptr;
 }
@@ -66,6 +68,9 @@ void ArcDialect::printType(Type type, DialectAsmPrinter &os) const {
     llvm_unreachable("Unhandled Arc type");
   case Appender:
     type.cast<AppenderType>().print(os);
+    break;
+  case Unknown:
+    type.cast<UnknownType>().print(os);
     break;
   }
 }
@@ -94,6 +99,26 @@ LogicalResult IfOp::customVerify() {
   if (FoundErrors)
     return mlir::failure();
   return mlir::success();
+}
+
+//===----------------------------------------------------------------------===//
+// Arc Type Inference
+//===----------------------------------------------------------------------===//
+
+LogicalResult MergeAppenderOp::inferReturnTypes(
+    MLIRContext *ctx, Optional<Location> loc, ValueRange operands,
+    ArrayRef<NamedAttribute> attributes, RegionRange regions,
+    SmallVectorImpl<Type> &inferedReturnTypes) {
+  auto BuilderTy = operands[0].getType().cast<AppenderType>();
+  auto MergeTy = BuilderTy.getMergeType();
+  auto ValueTy = operands[1].getType();
+  if (MergeTy != ValueTy)
+    return emitOptionalError(
+        loc,
+        "'arc.merge_appender' op value type does not match merge type, found ",
+        ValueTy, " but expected ", MergeTy);
+  inferedReturnTypes.assign({BuilderTy});
+  return success();
 }
 
 //===----------------------------------------------------------------------===//

@@ -28,6 +28,7 @@
 #include <mlir/IR/Dialect.h>
 #include <mlir/IR/Function.h>
 #include <mlir/IR/Operation.h>
+#include <mlir/Analysis/InferTypeOpInterface.h>
 
 using namespace mlir;
 

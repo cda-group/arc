@@ -23,9 +23,8 @@
 #ifndef ARC_OPS
 #define ARC_OPS
 
-#ifndef OP_BASE
 include "mlir/IR/OpBase.td"
-#endif // OP_BASE
+include "mlir/Analysis/InferTypeOpInterface.td"
 
 //===----------------------------------------------------------------------===//
 // Arc Dialect
@@ -326,7 +325,11 @@ def MakeAppenderOp : Arc_Op<"make_appender", [NoSideEffect, Linear]> {
   let results = (outs AnyAppender);
 }
 
-def MergeAppenderOp : Arc_Op<"merge_appender", [NoSideEffect, Linear]> {
+def MergeAppenderOp : Arc_Op<"merge_appender", [
+    NoSideEffect,
+    Linear,
+    DeclareOpInterfaceMethods<InferTypeOpInterface>
+  ]> {
   let summary = "merge a value into an appender";
   let description = [{
     The "arc.merge_appender" operation takes an appender and a value, and
@@ -344,17 +347,6 @@ def MergeAppenderOp : Arc_Op<"merge_appender", [NoSideEffect, Linear]> {
   let arguments = (ins AnyAppender:$appender, AnyValue:$value);
   let results = (outs AnyAppender);
   let verifier = [{
-    auto Operation = this->getOperation();
-    auto BuilderTy = Operation->getOperand(0).getType().cast<AppenderType>();
-    auto MergeTy = BuilderTy.getMergeType();
-    auto ValueTy = Operation->getOperand(1).getType();
-    auto ResultTy = Operation->getResult(0).getType().cast<AppenderType>();
-    if (MergeTy != ValueTy)
-      return emitOpError("value type does not match merge type, found ")
-        << ValueTy << " but expected " << MergeTy;
-    if (BuilderTy != ResultTy)
-      return emitOpError("result type does not match builder type, found: ")
-        << ResultTy << " but expected " << BuilderTy;
     return mlir::success();
   }];
 }

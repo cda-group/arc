@@ -6,7 +6,7 @@ module @toplevel {
   func @main() {
     %v = constant 5 : i32
     %0 = "arc.make_appender"() : () -> !arc.appender<i32>
-    %1 = "arc.merge_appender"(%0, %v) : (!arc.appender<i32>, i32) -> !arc.appender<i32>
+    %1 = "arc.merge_appender"(%0, %v) : (!arc.appender<i32>, i32) -> i32
     %r = "arc.result_appender"(%1) : (!arc.appender<i32>) -> tensor<?xi32>
     return
   }
@@ -34,7 +34,7 @@ module @toplevel {
     %0 = "arc.make_appender"() : () -> !arc.appender<i32>
     %v = constant 5 : i32
 
-    // expected-error@+1 {{'arc.merge_appender' op result type does not match builder type, found: '!arc.appender<i64>' but expected '!arc.appender<i32>'}}
+    // expected-error@+1 {{'arc.merge_appender' op inferred type incompatible with return type of operation}}
     %1 = "arc.merge_appender"(%0, %v) : (!arc.appender<i32>, i32) -> !arc.appender<i64>
 
     %c = "arc.result_appender"(%1) : (!arc.appender<i64>) -> tensor<?xi64>
