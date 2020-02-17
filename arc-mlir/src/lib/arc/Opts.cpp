@@ -1,7 +1,7 @@
-//===- Pattern Match Optimizations for ARC --------------------------===//
+//===- Pattern Match Optimizations for ARC --------------------------------===//
 //
 // Copyright 2019 The MLIR Authors.
-// Copyright 2019 RISE AB.
+// Copyright 2019 KTH Royal Institute of Technology.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,9 +15,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 // =============================================================================
+//
+// Defines the optimizations of the Arc dialect.
+//
 //===----------------------------------------------------------------------===//
 
-#include "arc/arc-dialect.h"
+#include "arc/Dialect.h"
 #include <llvm/Support/raw_ostream.h>
 #include <mlir/Dialect/StandardOps/Ops.h>
 #include <mlir/IR/BlockAndValueMapping.h>
@@ -39,8 +42,9 @@ bool AllValuesAreConstant(Operation::operand_range &ops) {
   return true;
 }
 
-DenseElementsAttr ToDenseAttribs(mlir::OpResult result,
-                                 Operation::operand_range &ops) {
+DenseElementsAttr
+ConstantValuesToDenseAttributes(mlir::OpResult result,
+                                Operation::operand_range &ops) {
   ShapedType st = result.getType().cast<ShapedType>();
   std::vector<Attribute> attribs;
   for (const mlir::Value &a : ops) {
@@ -50,9 +54,8 @@ DenseElementsAttr ToDenseAttribs(mlir::OpResult result,
   return DenseElementsAttr::get(st, llvm::makeArrayRef(attribs));
 }
 
-struct ConstantFoldArcIf : public RewritePattern {
-  ConstantFoldArcIf(MLIRContext *context)
-      : RewritePattern("arc.if", 1, context) {}
+struct ConstantFoldIf : public RewritePattern {
+  ConstantFoldIf(MLIRContext *ctx) : RewritePattern("arc.if", 1, ctx) {}
 
   PatternMatchResult match(Operation *op) const override {
     Operation *def = op->getOperand(0).getDefiningOp();
@@ -90,16 +93,16 @@ struct ConstantFoldArcIf : public RewritePattern {
   }
 };
 
-#include "arc-opts.inc"
+#include "Opts.inc"
 
 } // end anonymous namespace
 
-void MakeVector::getCanonicalizationPatterns(OwningRewritePatternList &results,
-                                             MLIRContext *context) {
-  populateWithGenerated(context, &results);
+void MakeVectorOp::getCanonicalizationPatterns(
+    OwningRewritePatternList &results, MLIRContext *ctx) {
+  populateWithGenerated(ctx, &results);
 }
 
 void IfOp::getCanonicalizationPatterns(OwningRewritePatternList &results,
-                                       MLIRContext *context) {
-  results.insert<ConstantFoldArcIf>(context);
+                                       MLIRContext *ctx) {
+  results.insert<ConstantFoldIf>(ctx);
 }

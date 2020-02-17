@@ -37,18 +37,10 @@ LLVM_INSTALL_DIR="$A2M_BUILD/llvm-install"
 BUILD_FLAVOUR="${BUILD_FLAVOUR:-Debug}"
 
 # Do we want assertions?
-if [[ -z "$A2M_ASSERTS" ]] ; then
-    A2M_ASSERTS=""
-else
-    A2M_ASSERTS="-DLLVM_ENABLE_ASSERTIONS=ON"
-fi
+A2M_ASSERTS="${A2M_ASSERTS:+-DLLVM_ENABLE_ASSERTIONS=ON}"
 
 # Do we want ccache?
-if [[ -z "$A2M_CCACHE" ]] ; then
-    A2M_CCACHE=""
-else
-    A2M_CCACHE="-DLLVM_CCACHE_BUILD=1"
-fi
+A2M_CCACHE="${A2M_CCACHE:+-DLLVM_CCACHE_BUILD=1}"
 
 echo "Will build a $BUILD_FLAVOUR build"
 
@@ -64,8 +56,8 @@ function llvm-cmake {
     cd $LLVM_BUILD_DIR
 
     if [ -f compile_commands.json ]; then
-	echo "LLVM is already configured"
-	return
+      echo "LLVM is already configured"
+      return
     fi
 
     CXX=clang++ CC=clang cmake \

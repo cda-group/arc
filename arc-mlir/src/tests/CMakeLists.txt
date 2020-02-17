@@ -1,5 +1,4 @@
 # Stolen from the mlir repo
-#add_subdirectory(weld)
 
 configure_lit_site_cfg(
   ${CMAKE_CURRENT_SOURCE_DIR}/lit.site.cfg.py.in

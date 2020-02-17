@@ -8,14 +8,13 @@ set(LLVM_LINK_COMPONENTS
   Support
   )
 
-set(LLVM_TARGET_DEFINITIONS arc-opts.td)
+set(LLVM_TARGET_DEFINITIONS include/arc/Opts.td)
 set(MLIR_TABLEGEN_EXE ${LLVM_BINARY_DIR}/bin/mlir-tblgen)
 set(TBLGEN_INCDIRS "-I${CMAKE_CURRENT_SOURCE_DIR}/../llvm-project/mlir/include/")
-mlir_tablegen(arc-opts.inc -gen-rewriters ${TBLGEN_INCDIRS} "-I${CMAKE_CURRENT_SOURCE_DIR}/include")
+mlir_tablegen(Opts.inc -gen-rewriters ${TBLGEN_INCDIRS} "-I${CMAKE_CURRENT_SOURCE_DIR}/include")
 add_public_tablegen_target(ArcDialectOptsIncGen)
 
-
-set(ARCMLIR_MODULES main.cpp arc-dialect.cpp arc-opts.cpp)
+set(ARCMLIR_MODULES Main.cpp lib/arc/Dialect.cpp lib/arc/Opts.cpp lib/arc/Types.cpp)
 
 set(LIBS
   MLIRAnalysis
@@ -70,7 +69,7 @@ target_link_libraries(arc-mlir PRIVATE ${LIBS} LLVMSupport)
 
 # Ugly hack to try to detect the jar of the arc scala tools in order
 # to make wrapper shell script
-file(GLOB ARC_JAR ${PROJECT_SOURCE_DIR}/../../../target/scala-*/Arc-assembly-*.jar)
+file(GLOB ARC_JAR ${PROJECT_SOURCE_DIR}/../../../arc-frontend/target/scala-*/Arc-assembly-*.jar)
 message(STATUS "ARC_JAR => ${ARC_JAR}")
 
 configure_file(
