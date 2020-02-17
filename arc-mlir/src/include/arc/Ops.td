@@ -43,7 +43,7 @@ class Arc_Op<string mnemonic, list<OpTrait> traits = []>
 // Arc Operations
 //===----------------------------------------------------------------------===//
 
-def MakeVector
+def MakeVectorOp
     : Arc_Op<"make_vector", [NoSideEffect, SameOperandsAndResultElementType]> {
   let summary = "create a vector from a sequence of values";
   let description = [{
@@ -56,7 +56,7 @@ def MakeVector
   let verifier = [{ return customVerify(); }];
 }
 
-def ArcKeep : Arc_Op<"keep", []> {
+def ArcKeepOp : Arc_Op<"keep", []> {
   let summary = "Operation consuming anything and having side effects.";
   let description = [{
     An operation used for debugging and testing. Can be used
@@ -171,7 +171,7 @@ def ErfOp : ArcFloatUnaryOp<"erf"> {
   }];
 }
 
-def MakeTuple : Arc_Op<"make_tuple", [NoSideEffect]> {
+def MakeTupleOp : Arc_Op<"make_tuple", [NoSideEffect]> {
   let summary = "create a tuple from a sequence of values";
   let description = [{
     A pure operation which turns its arguments into a tuple
@@ -182,7 +182,7 @@ def MakeTuple : Arc_Op<"make_tuple", [NoSideEffect]> {
   let verifier = [{ return customVerify(); }];
 }
 
-def IndexTuple : Arc_Op<"index_tuple", [NoSideEffect]> {
+def IndexTupleOp : Arc_Op<"index_tuple", [NoSideEffect]> {
   let summary = "index into a tuple using a constant value";
   let description = [{
     A pure operation which reads a value from a tuple

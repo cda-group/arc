@@ -74,7 +74,7 @@ void ArcDialect::printType(Type type, DialectAsmPrinter &os) const {
 // Arc Operations
 //===----------------------------------------------------------------------===//
 
-LogicalResult MakeVector::customVerify() {
+LogicalResult MakeVectorOp::customVerify() {
   auto Operation = this->getOperation();
   auto NumOperands = Operation->getNumOperands();
   auto ElemTy = Operation->getOperand(0).getType();
@@ -89,7 +89,7 @@ LogicalResult MakeVector::customVerify() {
   return mlir::success();
 }
 
-LogicalResult MakeTuple::customVerify() {
+LogicalResult MakeTupleOp::customVerify() {
   auto Operation = this->getOperation();
   auto NumOperands = Operation->getNumOperands();
   auto TupleTy = Operation->getResult(0).getType().cast<TupleType>();
@@ -109,7 +109,7 @@ LogicalResult MakeTuple::customVerify() {
   return mlir::success();
 }
 
-LogicalResult IndexTuple::customVerify() {
+LogicalResult IndexTupleOp::customVerify() {
   auto Operation = this->getOperation();
   auto ResultTy = Operation->getResult(0).getType();
   auto TupleTy = Operation->getOperand(0).getType().cast<TupleType>();

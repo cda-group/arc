@@ -96,8 +96,8 @@ struct ConstantFoldArcIf : public RewritePattern {
 
 } // end anonymous namespace
 
-void MakeVector::getCanonicalizationPatterns(OwningRewritePatternList &results,
-                                             MLIRContext *ctx) {
+void MakeVectorOp::getCanonicalizationPatterns(
+    OwningRewritePatternList &results, MLIRContext *ctx) {
   populateWithGenerated(ctx, &results);
 }
 
