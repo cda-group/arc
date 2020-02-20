@@ -16,6 +16,8 @@ add_public_tablegen_target(ArcDialectOptsIncGen)
 
 set(ARCMLIR_MODULES Main.cpp lib/arc/Dialect.cpp lib/arc/Opts.cpp lib/arc/Types.cpp)
 
+set(RUSTMLIR_MODULES lib/rust/Dialect.cpp lib/rust/Types.cpp)
+
 set(LIBS
   LLVMAsmParser
   LLVMCore
@@ -73,9 +75,11 @@ set(LIBS
   MLIRVectorToLoops
 )
 
-add_llvm_executable(arc-mlir ${ARCMLIR_MODULES})
+add_llvm_executable(arc-mlir ${ARCMLIR_MODULES} ${RUSTMLIR_MODULES})
 add_dependencies(arc-mlir ArcDialectOpsIncGen)
 add_dependencies(arc-mlir ArcDialectOptsIncGen)
+
+add_dependencies(arc-mlir RustDialectOpsIncGen)
 
 llvm_update_compile_flags(arc-mlir)
 

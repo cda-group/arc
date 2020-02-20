@@ -22,6 +22,7 @@
 //===----------------------------------------------------------------------===//
 
 #include "arc/Dialect.h"
+#include "rust/Dialect.h"
 #include <llvm/Support/CommandLine.h>
 #include <llvm/Support/ErrorOr.h>
 #include <llvm/Support/InitLLVM.h>
@@ -78,6 +79,7 @@ int main(int argc, char **argv) {
   mlir::registerAllDialects();
   mlir::registerAllPasses();
   mlir::registerDialect<ArcDialect>();
+  mlir::registerDialect<rust::RustDialect>();
 
   // Register any pass manager command line options.
   registerPassManagerCLOptions();

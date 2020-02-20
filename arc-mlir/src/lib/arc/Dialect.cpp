@@ -130,7 +130,7 @@ LogicalResult IndexTupleOp::customVerify() {
 }
 
 LogicalResult IfOp::customVerify() {
-  // We check that the result types of the blocks matche the result
+  // We check that the result types of the blocks match the result
   // type of the operator.
   auto Op = this->getOperation();
   auto ResultTy = Op->getResult(0).getType();
