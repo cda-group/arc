@@ -101,7 +101,7 @@ AppenderType AppenderType::get(Type mergeType) {
 }
 
 AppenderType AppenderType::getChecked(Type mergeType, Location loc) {
-  return Base::getChecked(loc, mergeType.getContext(), Appender, mergeType);
+  return Base::getChecked(loc, Appender, mergeType);
 }
 
 Type AppenderType::getMergeType() const { return getImpl()->mergeType; }
@@ -122,12 +122,11 @@ void AppenderType::print(DialectAsmPrinter &os) const {
   os << "appender" << '<' << getMergeType() << '>';
 }
 
-LogicalResult
-AppenderType::verifyConstructionInvariants(llvm::Optional<Location> loc,
-                                           MLIRContext *ctx, Type mergeType) {
+LogicalResult AppenderType::verifyConstructionInvariants(Location loc,
+                                                         Type mergeType) {
   if (!isValueType(mergeType)) {
-    emitOptionalError(
-        loc, "appender merge type must be a value type: found ", mergeType);
+    emitOptionalError(loc, "appender merge type must be a value type: found ",
+                      mergeType);
     return failure();
   }
   return success();

@@ -17,41 +17,57 @@ add_public_tablegen_target(ArcDialectOptsIncGen)
 set(ARCMLIR_MODULES Main.cpp lib/arc/Dialect.cpp lib/arc/Opts.cpp lib/arc/Types.cpp)
 
 set(LIBS
-  MLIRAnalysis
-  MLIRAffineOps
+  LLVMAsmParser
+  LLVMCore
+  LLVMSupport
   MLIRAffineToStandard
-  MLIRLoopsToGPU
-  MLIRLinalgToLLVM
-
-  MLIRLoopToStandard
+  MLIRAllDialects
+  MLIRAnalysis
+  MLIRDialect
   MLIREDSC
   MLIRFxpMathOps
   MLIRGPU
+  MLIRGPUtoCUDATransforms
   MLIRGPUtoNVVMTransforms
   MLIRGPUtoROCDLTransforms
   MLIRGPUtoSPIRVTransforms
-  MLIRLinalgOps
+  MLIRGPUtoVulkanTransforms
+  MLIRIR
   MLIRLLVMIR
+  MLIRLinalgAnalysis
+  MLIRLinalgEDSC
+  MLIRLinalgOps
+  MLIRLinalgToLLVM
+  MLIRLinalgToSPIRVTransforms
+  MLIRLinalgTransforms
+  MLIRLinalgUtils
+  MLIRLoopAnalysis
   MLIRLoopOps
+  MLIRLoopOpsTransforms
+  MLIRLoopToStandard
+  MLIRLoopsToGPU
   MLIRNVVMIR
-  MLIROptMain
+  MLIROpenMP
+  MLIROptLib
   MLIRParser
   MLIRPass
-  MLIRQuantizerTransforms
   MLIRQuantOps
+  MLIRQuantizerFxpMathConfig
+  MLIRQuantizerSupport
+  MLIRQuantizerTransforms
   MLIRROCDLIR
   MLIRSPIRV
-  MLIRStandardToSPIRVTransforms
   MLIRSPIRVTestPasses
   MLIRSPIRVTransforms
-  MLIRStandardOps
   MLIRStandardToLLVM
-  MLIRTransforms
+  MLIRStandardToSPIRVTransforms
+  MLIRSupport
   MLIRTestDialect
   MLIRTestIR
   MLIRTestPass
   MLIRTestTransforms
-  MLIRSupport
+  MLIRTransformUtils
+  MLIRTransforms
   MLIRVectorOps
   MLIRVectorToLLVM
   MLIRVectorToLoops
@@ -62,8 +78,6 @@ add_dependencies(arc-mlir ArcDialectOpsIncGen)
 add_dependencies(arc-mlir ArcDialectOptsIncGen)
 
 llvm_update_compile_flags(arc-mlir)
-
-whole_archive_link(arc-mlir ${LIBS})
 
 target_link_libraries(arc-mlir PRIVATE ${LIBS} LLVMSupport)
 

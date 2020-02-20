@@ -22,7 +22,7 @@
 
 #include "arc/Dialect.h"
 #include <llvm/Support/raw_ostream.h>
-#include <mlir/Dialect/StandardOps/Ops.h>
+#include <mlir/Dialect/StandardOps/IR/Ops.h>
 #include <mlir/IR/BlockAndValueMapping.h>
 #include <mlir/IR/Matchers.h>
 #include <mlir/IR/PatternMatch.h>

@@ -64,9 +64,8 @@ public:
   static bool kindof(unsigned kind) { return kind == Appender; }
   static AppenderType get(Type mergeType);
   static AppenderType getChecked(Type mergeType, Location loc);
-  static LogicalResult
-  verifyConstructionInvariants(llvm::Optional<Location> loc, MLIRContext *ctx,
-                               Type mergeType);
+  static LogicalResult verifyConstructionInvariants(Location loc,
+                                                    Type mergeType);
   static Type parse(DialectAsmParser &parser);
   void print(DialectAsmPrinter &os) const;
   Type getMergeType() const;
