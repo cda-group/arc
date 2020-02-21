@@ -1,0 +1,27 @@
+[book]
+authors = ["Klas Segeljakt", "Frej Drejhammar"]
+description = "Arc documentation."
+multilingual = false
+src = "src"
+title = "Arc"
+
+[build]
+build-dir = "book"
+create-missing = true
+
+[preprocess.index]
+
+[preprocess.links]
+
+[output.html]
+default-theme = "rust"
+no-section-label = true
+git_repository_url = "www.github.com/cda-group/arc"
+git_repository_icon = "fa-github"
+
+[output.html.playpen]
+editable = false
+copy-js = false
+
+[output.html.search]
+enable = true
