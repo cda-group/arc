@@ -16,6 +16,11 @@ jobs:
         with:
           mdbook-version: 'latest'
 
+      - name: Setup graphviz
+        uses: kamiazya/setup-graphviz@v1
+
+      - run: dot -Tpng ./docs/src/*.dot -O
+
       - run: mdbook build ./docs/
 
       - name: Deploy
