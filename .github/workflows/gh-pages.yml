@@ -28,3 +28,4 @@ jobs:
         with:
           deploy_key: ${{ secrets.GITHUB_PAGES }}
           publish_dir: ./docs/book/
+          force_orphan: true
