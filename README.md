@@ -45,18 +45,4 @@ cd arc-mlir/build/llvm-build/; ninja check-arc-mlir; cd -
 
 # Documentation
 
-Documentation will be added as Arc matures.
-
-* [Language reference](docs/language.md)
-
-* [Front-end APIs](docs/api.md)
-
-* [Tutorial](docs/tutorial.md)
-
-* [Formal model](docs/model.md)
-
-# System Overview
-
-<p align="center">
-  <img src="docs/overview.dot.png">
-</p>
+[Documentation](www.github.com/cda-group/arc)
