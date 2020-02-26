@@ -34,6 +34,8 @@
 #include <mlir/Analysis/Verifier.h>
 #include <mlir/IR/MLIRContext.h>
 #include <mlir/IR/Module.h>
+#include <mlir/InitAllDialects.h>
+#include <mlir/InitAllPasses.h>
 #include <mlir/Parser.h>
 #include <mlir/Pass/Pass.h>
 #include <mlir/Pass/PassManager.h>
@@ -73,6 +75,8 @@ static cl::opt<bool>
 int main(int argc, char **argv) {
   InitLLVM y(argc, argv);
 
+  mlir::registerAllDialects();
+  mlir::registerAllPasses();
   mlir::registerDialect<ArcDialect>();
 
   // Register any pass manager command line options.

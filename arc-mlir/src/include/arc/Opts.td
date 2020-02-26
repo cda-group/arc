@@ -24,7 +24,7 @@
 #define ARC_OPTS
 
 #ifndef STANDARD_OPS
-include "mlir/Dialect/StandardOps/Ops.td"
+include "mlir/Dialect/StandardOps/IR/Ops.td"
 #endif // STANDARD_OPS
 
 #ifndef ARC_OPS
