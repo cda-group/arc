@@ -47,14 +47,19 @@ class Rust_Op<string mnemonic, list<OpTrait> traits = []>
 // Rust Operations
 //===----------------------------------------------------------------------===//
 
-def Rust_CrateOp : Rust_Op<"crate", [IsolatedFromAbove, SymbolTable, Symbol,
-  SingleBlockImplicitTerminator<"CrateEndOp">]> {
+def Rust_CrateOp : Rust_Op<"crate", [
+  IsolatedFromAbove, SymbolTable, Symbol,
+  SingleBlockImplicitTerminator<"CrateEndOp">
+]> {
   let summary = "top-level rust crate";
-  let description = [{ }];
+  let description = [{}];
   let arguments = (ins);
-  let regions = (region SizedRegion<1>:$body);
+  let regions = (region SizedRegion<1> : $body);
   let results = (outs);
-  let extraClassDeclaration = [{ LogicalResult customVerify(); }];
+  let extraClassDeclaration = [{
+    LogicalResult customVerify();
+    LogicalResult writeCrate(std::string, raw_ostream & os);
+  }];
   let verifier = [{ return customVerify(); }];
 }
 

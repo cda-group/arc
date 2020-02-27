@@ -22,6 +22,8 @@
 //===----------------------------------------------------------------------===//
 
 #include "rust/Dialect.h"
+#include <llvm/Support/FileSystem.h>
+#include <llvm/Support/Path.h>
 #include <llvm/Support/raw_ostream.h>
 #include <mlir/IR/DialectImplementation.h>
 #include <mlir/IR/StandardTypes.h>
@@ -116,6 +118,81 @@ static LogicalResult verify(RustReturnOp returnOp) {
                "result type does not match the type of the function: expected ")
            << funReturnType << " but found " << returnType;
   }
+  return success();
+}
+
+//===----------------------------------------------------------------------===//
+// RustDialect Rust Printing
+//===----------------------------------------------------------------------===//
+
+static bool writeToml(StringRef filename, StringRef crateName) {
+  std::error_code EC;
+  llvm::raw_fd_ostream out(filename, EC, llvm::sys::fs::CD_CreateAlways,
+                           llvm::sys::fs::FA_Write, llvm::sys::fs::OF_Text);
+
+  if (EC) {
+    llvm::errs() << "Failed to create " << filename << ", " << EC.message()
+                 << "\n";
+    return false;
+  }
+
+  out << "[package]\n"
+      << "name = \"" << crateName << "\"\n"
+      << "version = \"0.1.0\"\n"
+      << "authors = [\"arc-mlir\"]\n"
+      << "edition = \"2018\"\n"
+      << "\n"
+      << "[dependencies]\n";
+
+  out.close();
+  return true;
+}
+
+LogicalResult CrateOp::writeCrate(std::string top_dir, llvm::raw_ostream &o) {
+  llvm::errs() << "writing crate \"" << getName() << "\" to " << top_dir
+               << "\n";
+  SmallString<128> crate_dir(top_dir);
+  llvm::sys::path::append(crate_dir, getName());
+  SmallString<128> src_dir(crate_dir);
+  llvm::sys::path::append(src_dir, "src");
+
+  SmallString<128> toml_filename(crate_dir);
+  llvm::sys::path::append(toml_filename, "Cargo.toml");
+
+  SmallString<128> rs_filename(src_dir);
+  llvm::sys::path::append(rs_filename, "lib.rs");
+
+  std::error_code EC = llvm::sys::fs::create_directories(src_dir);
+  if (EC) {
+    llvm::errs() << "Unable to create crate directories: " << src_dir << ", "
+                 << EC.message() << ".\n";
+    return failure();
+  }
+
+  if (!writeToml(toml_filename, getName()))
+    return failure();
+
+  llvm::raw_fd_ostream out(rs_filename, EC, llvm::sys::fs::CD_CreateAlways,
+                           llvm::sys::fs::FA_Write, llvm::sys::fs::OF_Text);
+
+  if (EC) {
+    llvm::errs() << "Failed to create " << rs_filename << ", " << EC.message()
+                 << "\n";
+    return failure();
+  }
+
+  // Write a small dummy test so that even an empty crate compiles and
+  // tests successfully.
+  out << "#[cfg(test)]\n"
+      << "mod tests {\n"
+      << "#[test]\n"
+      << "fn it_works() {\n"
+      << "assert_eq!(true, true);\n"
+      << "}\n"
+      << "}\n";
+
+  out.close();
+
   return success();
 }
 

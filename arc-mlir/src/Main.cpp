@@ -21,6 +21,7 @@
 //
 //===----------------------------------------------------------------------===//
 
+#include "arc/ArcOptMain.h"
 #include "arc/Dialect.h"
 #include "rust/Dialect.h"
 #include <llvm/Support/CommandLine.h>
@@ -41,7 +42,6 @@
 #include <mlir/Pass/Pass.h>
 #include <mlir/Pass/PassManager.h>
 #include <mlir/Support/FileUtilities.h>
-#include <mlir/Support/MlirOptMain.h>
 
 namespace cl = llvm::cl;
 
@@ -102,6 +102,6 @@ int main(int argc, char **argv) {
     exit(1);
   }
 
-  return failed(MlirOptMain(output->os(), std::move(file), passPipeline,
-                            splitInputFile, verifyDiagnostics, verifyPasses));
+  return failed(ArcOptMain(output->os(), std::move(file), passPipeline,
+                           splitInputFile, verifyDiagnostics, verifyPasses));
 }

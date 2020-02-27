@@ -14,7 +14,7 @@ set(TBLGEN_INCDIRS "-I${CMAKE_CURRENT_SOURCE_DIR}/../llvm-project/mlir/include/"
 mlir_tablegen(Opts.inc -gen-rewriters ${TBLGEN_INCDIRS} "-I${CMAKE_CURRENT_SOURCE_DIR}/include")
 add_public_tablegen_target(ArcDialectOptsIncGen)
 
-set(ARCMLIR_MODULES Main.cpp lib/arc/Dialect.cpp lib/arc/Opts.cpp lib/arc/Types.cpp)
+set(ARCMLIR_MODULES Main.cpp lib/arc/Dialect.cpp lib/arc/Opts.cpp lib/arc/Types.cpp lib/ArcOptMain.cpp)
 
 set(RUSTMLIR_MODULES lib/rust/Dialect.cpp lib/rust/Types.cpp)
 
