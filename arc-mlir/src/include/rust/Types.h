@@ -56,6 +56,7 @@ public:
   static bool kindof(unsigned kind) { return kind == RUST_TYPE; }
   static RustType get(MLIRContext *context, StringRef type);
   void print(DialectAsmPrinter &os) const;
+  raw_ostream &printAsRust(raw_ostream &os) const;
   StringRef getRustType() const;
 };
 } // namespace types

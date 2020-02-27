@@ -22,6 +22,7 @@
 //===----------------------------------------------------------------------===//
 
 #include "rust/Dialect.h"
+#include "rust/RustPrinterStream.h"
 #include <llvm/Support/FileSystem.h>
 #include <llvm/Support/Path.h>
 #include <llvm/Support/raw_ostream.h>
@@ -124,6 +125,15 @@ static LogicalResult verify(RustReturnOp returnOp) {
 //===----------------------------------------------------------------------===//
 // RustDialect Rust Printing
 //===----------------------------------------------------------------------===//
+namespace rust {
+RustPrinterStream &operator<<(RustPrinterStream &os, const Value &v) {
+  return os.print(v);
+}
+
+RustPrinterStream &operator<<(RustPrinterStream &os, const RustType &t) {
+  return os.print(t);
+}
+} // namespace rust
 
 static bool writeToml(StringRef filename, StringRef crateName) {
   std::error_code EC;

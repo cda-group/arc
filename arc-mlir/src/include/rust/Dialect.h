@@ -34,6 +34,8 @@ using namespace mlir;
 
 namespace rust {
 
+class RustPrinterStream;
+
 /// This is the definition of the Rust dialect.
 class RustDialect : public mlir::Dialect {
 public:

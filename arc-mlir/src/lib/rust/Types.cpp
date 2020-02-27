@@ -53,6 +53,11 @@ struct RustTypeStorage : public TypeStorage {
                                     const KeyTy &key) {
     return new (allocator.allocate<RustTypeStorage>()) RustTypeStorage(key);
   }
+
+  raw_ostream &printAsRust(raw_ostream &os) const {
+    os << rustType;
+    return os;
+  }
 };
 
 RustType RustType::get(MLIRContext *context, StringRef type) {
@@ -62,5 +67,10 @@ RustType RustType::get(MLIRContext *context, StringRef type) {
 StringRef RustType::getRustType() const { return getImpl()->rustType; }
 
 void RustType::print(DialectAsmPrinter &os) const { os << getRustType(); }
+
+raw_ostream &RustType::printAsRust(raw_ostream &os) const {
+  return getImpl()->printAsRust(os);
+}
+
 } // namespace types
 } // namespace rust
