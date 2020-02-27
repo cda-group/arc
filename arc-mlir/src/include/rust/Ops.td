@@ -100,6 +100,9 @@ def Rust_RustFuncOp : Rust_Op<"func", [FunctionLike, IsolatedFromAbove, Symbol]>
 
     /// Verifies the body of the function.
     LogicalResult verifyBody();
+
+    // Write this function as Rust code to os
+    void writeRust(raw_ostream &os);
   }];
 }
 
@@ -116,7 +119,11 @@ def Rust_RustReturnOp : Rust_Op<"return", [HasParent<"RustFuncOp">,
   let results = (outs AnyType);
 
   let verifier = [{ return ::verify(*this); }];
-}
 
+  let extraClassDeclaration = [{
+    // Write this function as Rust code to os
+    void writeRust(RustPrinterStream &);
+  }];
+}
 
 #endif // RUST_OPS

@@ -191,6 +191,10 @@ LogicalResult CrateOp::writeCrate(std::string top_dir, llvm::raw_ostream &o) {
     return failure();
   }
 
+  for (Operation &operation : this->body().front())
+    if (RustFuncOp op = dyn_cast<RustFuncOp>(operation))
+      op.writeRust(out);
+
   // Write a small dummy test so that even an empty crate compiles and
   // tests successfully.
   out << "#[cfg(test)]\n"
@@ -204,6 +208,45 @@ LogicalResult CrateOp::writeCrate(std::string top_dir, llvm::raw_ostream &o) {
   out.close();
 
   return success();
+}
+
+// Write this function as Rust code to os
+void RustFuncOp::writeRust(raw_ostream &os) {
+  RustPrinterStream PS(os);
+
+  PS << "pub fn " << getName() << "(";
+
+  // Dump the function arguments
+  unsigned numFuncArguments = getNumArguments();
+  for (unsigned i = 0; i < numFuncArguments; i++) {
+    if (i != 0)
+      PS << ", ";
+    Value v = front().getArgument(i);
+    RustType t = v.getType().cast<RustType>();
+    PS << v << ": " << t;
+  }
+  PS << ") ";
+  if (getNumFuncResults()) { // The return type
+    RustType funReturnType = getType().getResult(0).cast<RustType>();
+    PS << "-> " << funReturnType << " ";
+  }
+
+  // Dumping the body
+  PS << "{\n";
+  for (Operation &operation : this->body().front()) {
+    if (RustReturnOp op = dyn_cast<RustReturnOp>(operation))
+      op.writeRust(PS);
+    else {
+      os << "\ncompile_error!(\"Unsupported Op: ";
+      operation.print(os);
+      os << "\");\n";
+    }
+  }
+  PS << "}\n";
+}
+
+void RustReturnOp::writeRust(RustPrinterStream &PS) {
+  PS << "return " << getOperand() << ";\n";
 }
 
 //===----------------------------------------------------------------------===//
