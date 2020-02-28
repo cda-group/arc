@@ -21,7 +21,9 @@
 //
 //===----------------------------------------------------------------------===//
 
+#include "arc/ArcOptMain.h"
 #include "arc/Dialect.h"
+#include "rust/Dialect.h"
 #include <llvm/Support/CommandLine.h>
 #include <llvm/Support/ErrorOr.h>
 #include <llvm/Support/InitLLVM.h>
@@ -40,7 +42,6 @@
 #include <mlir/Pass/Pass.h>
 #include <mlir/Pass/PassManager.h>
 #include <mlir/Support/FileUtilities.h>
-#include <mlir/Support/MlirOptMain.h>
 
 namespace cl = llvm::cl;
 
@@ -78,6 +79,7 @@ int main(int argc, char **argv) {
   mlir::registerAllDialects();
   mlir::registerAllPasses();
   mlir::registerDialect<ArcDialect>();
+  mlir::registerDialect<rust::RustDialect>();
 
   // Register any pass manager command line options.
   registerPassManagerCLOptions();
@@ -100,6 +102,6 @@ int main(int argc, char **argv) {
     exit(1);
   }
 
-  return failed(MlirOptMain(output->os(), std::move(file), passPipeline,
-                            splitInputFile, verifyDiagnostics, verifyPasses));
+  return failed(ArcOptMain(output->os(), std::move(file), passPipeline,
+                           splitInputFile, verifyDiagnostics, verifyPasses));
 }
