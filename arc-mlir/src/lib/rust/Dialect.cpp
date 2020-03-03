@@ -214,6 +214,24 @@ LogicalResult CrateOp::writeCrate(std::string top_dir, llvm::raw_ostream &o) {
   return success();
 }
 
+static RustPrinterStream &writeRust(Operation &operation,
+                                    RustPrinterStream &PS) {
+  if (RustReturnOp op = dyn_cast<RustReturnOp>(operation))
+    op.writeRust(PS);
+  else if (RustConstantOp op = dyn_cast<RustConstantOp>(operation))
+    op.writeRust(PS);
+  else if (RustUnaryOp op = dyn_cast<RustUnaryOp>(operation))
+    op.writeRust(PS);
+  else if (RustBinaryOp op = dyn_cast<RustBinaryOp>(operation))
+    op.writeRust(PS);
+  else {
+    PS.getBodyStream() << "\ncompile_error!(\"Unsupported Op: ";
+    operation.print(PS.getBodyStream());
+    PS.getBodyStream() << "\");\n";
+  }
+  return PS;
+}
+
 // Write this function as Rust code to os
 void RustFuncOp::writeRust(RustPrinterStream &PS) {
 
@@ -237,19 +255,7 @@ void RustFuncOp::writeRust(RustPrinterStream &PS) {
   // Dumping the body
   PS << "{\n";
   for (Operation &operation : this->body().front()) {
-    if (RustReturnOp op = dyn_cast<RustReturnOp>(operation))
-      op.writeRust(PS);
-    else if (RustConstantOp op = dyn_cast<RustConstantOp>(operation))
-      op.writeRust(PS);
-    else if (RustUnaryOp op = dyn_cast<RustUnaryOp>(operation))
-      op.writeRust(PS);
-    else if (RustBinaryOp op = dyn_cast<RustBinaryOp>(operation))
-      op.writeRust(PS);
-    else {
-      PS.getBodyStream() << "\ncompile_error!(\"Unsupported Op: ";
-      operation.print(PS.getBodyStream());
-      PS.getBodyStream() << "\");\n";
-    }
+    ::writeRust(operation, PS);
   }
   PS << "}\n";
 }
