@@ -9,10 +9,10 @@
 }) {sym_name = "this_is_the_name_of_the_second_function", type = (!rust<"f32">) -> !rust<"f32"> } : () -> ()
 
 "rust.func"() ( {
- ^bb0(%arg0: !rust<"f64">, %arg1: !rust<"f32">):
+ ^bb0(%arg0: !rust<"f64">):
  "rust.return"(%arg0) : (!rust<"f64">) -> (!rust<"f64">)
 
-}) {sym_name = "this_is_the_name_of_the_third_function", type = (!rust<"f64">, !rust<"f32">) -> !rust<"f64"> } : () -> ()
+}) {sym_name = "this_is_the_name_of_the_third_function", type = (!rust<"f64">) -> !rust<"f64"> } : () -> ()
 
 "rust.func"() ( {
  ^bb0:
