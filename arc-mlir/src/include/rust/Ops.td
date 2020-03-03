@@ -43,6 +43,8 @@ def Rust_Dialect : Dialect {
 class Rust_Op<string mnemonic, list<OpTrait> traits = []>
     : Op<Rust_Dialect, mnemonic, traits>;
 
+def AnyRustType : Type<CPred<"$_self.isa<RustType>()">, "any RustType">;
+
 //===----------------------------------------------------------------------===//
 // Rust Operations
 //===----------------------------------------------------------------------===//
@@ -115,8 +117,8 @@ def Rust_RustReturnOp : Rust_Op<"return", [HasParent<"RustFuncOp">,
     by an incovation of the `rust.func`.
   }];
 
-  let arguments = (ins AnyType:$result);
-  let results = (outs AnyType);
+  let arguments = (ins AnyRustType:$result);
+  let results = (outs AnyRustType);
 
   let verifier = [{ return ::verify(*this); }];
 
@@ -134,7 +136,7 @@ def Rust_RustConstantOp : Rust_Op<"constant", [NoSideEffect]> {
   }];
 
   let arguments = (ins StrAttr : $value);
-  let results = (outs AnyType);
+  let results = (outs AnyRustType);
 
   let extraClassDeclaration = [{
     Attribute getValue() { return getAttr("value"); }
@@ -150,8 +152,8 @@ def Rust_RustUnaryOp : Rust_Op<"unaryop", [SameOperandsAndResultType]> {
     the operator in Rust syntax.
   }];
 
-  let arguments = (ins StrAttr : $op, AnyType : $arg);
-  let results = (outs AnyType);
+  let arguments = (ins StrAttr : $op, AnyRustType : $arg);
+  let results = (outs AnyRustType);
 
   let extraClassDeclaration = [{
     StringRef getOperator() {
@@ -170,8 +172,8 @@ def Rust_RustBinaryOp : Rust_Op<"binaryop", [SameOperandsAndResultType]> {
     the operator in Rust syntax.
   }];
 
-  let arguments = (ins StrAttr : $op, AnyType : $LHS, AnyType : $RHS);
-  let results = (outs AnyType);
+  let arguments = (ins StrAttr : $op, AnyRustType : $LHS, AnyRustType : $RHS);
+  let results = (outs AnyRustType);
 
   let extraClassDeclaration = [{
     StringRef getOperator() {
