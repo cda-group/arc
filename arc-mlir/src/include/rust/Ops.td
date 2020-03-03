@@ -126,4 +126,21 @@ def Rust_RustReturnOp : Rust_Op<"return", [HasParent<"RustFuncOp">,
   }];
 }
 
+def Rust_RustConstantOp : Rust_Op<"constant", [NoSideEffect]> {
+  let summary = "a rust constant.";
+  let description = [{
+    A Rust constant, the value attribute is the string representation of the
+    constant in Rust syntax.
+  }];
+
+  let arguments = (ins StrAttr : $value);
+  let results = (outs AnyType);
+
+  let extraClassDeclaration = [{
+    Attribute getValue() { return getAttr("value"); }
+    // Write this constant as Rust code to os
+    void writeRust(RustPrinterStream &);
+  }];
+}
+
 #endif // RUST_OPS

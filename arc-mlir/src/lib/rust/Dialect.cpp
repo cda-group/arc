@@ -239,6 +239,8 @@ void RustFuncOp::writeRust(RustPrinterStream &PS) {
   for (Operation &operation : this->body().front()) {
     if (RustReturnOp op = dyn_cast<RustReturnOp>(operation))
       op.writeRust(PS);
+    else if (RustConstantOp op = dyn_cast<RustConstantOp>(operation))
+      op.writeRust(PS);
     else {
       PS.getBodyStream() << "\ncompile_error!(\"Unsupported Op: ";
       operation.print(PS.getBodyStream());
@@ -251,6 +253,8 @@ void RustFuncOp::writeRust(RustPrinterStream &PS) {
 void RustReturnOp::writeRust(RustPrinterStream &PS) {
   PS << "return " << getOperand() << ";\n";
 }
+
+void RustConstantOp::writeRust(RustPrinterStream &PS) { PS.getConstant(*this); }
 
 //===----------------------------------------------------------------------===//
 // TableGen'd op method definitions

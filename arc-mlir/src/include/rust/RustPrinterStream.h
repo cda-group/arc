@@ -60,6 +60,18 @@ public:
     return Value2ID[v];
   }
 
+  unsigned getConstant(RustConstantOp v) {
+    if (Value2ID.find(v) == Value2ID.end()) {
+      StringAttr str = v.getValue().dyn_cast<StringAttr>();
+      unsigned id = get(v);
+      types::RustType cType = v.getType().cast<types::RustType>();
+      Constants << "const v" << id << " : ";
+      cType.printAsRust(Constants) << " = " << str.getValue() << ";\n";
+      return id;
+    }
+    return Value2ID[v];
+  }
+
   RustPrinterStream &print(Value v) {
     Body << "v" << get(v);
     return *this;
