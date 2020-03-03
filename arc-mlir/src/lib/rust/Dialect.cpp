@@ -191,9 +191,13 @@ LogicalResult CrateOp::writeCrate(std::string top_dir, llvm::raw_ostream &o) {
     return failure();
   }
 
+  RustPrinterStream PS(out);
+
   for (Operation &operation : this->body().front())
     if (RustFuncOp op = dyn_cast<RustFuncOp>(operation))
-      op.writeRust(out);
+      op.writeRust(PS);
+
+  PS.flush();
 
   // Write a small dummy test so that even an empty crate compiles and
   // tests successfully.
@@ -210,9 +214,30 @@ LogicalResult CrateOp::writeCrate(std::string top_dir, llvm::raw_ostream &o) {
   return success();
 }
 
+static RustPrinterStream &writeRust(Operation &operation,
+                                    RustPrinterStream &PS) {
+  if (RustReturnOp op = dyn_cast<RustReturnOp>(operation))
+    op.writeRust(PS);
+  else if (RustConstantOp op = dyn_cast<RustConstantOp>(operation))
+    op.writeRust(PS);
+  else if (RustUnaryOp op = dyn_cast<RustUnaryOp>(operation))
+    op.writeRust(PS);
+  else if (RustBinaryOp op = dyn_cast<RustBinaryOp>(operation))
+    op.writeRust(PS);
+  else if (RustIfOp op = dyn_cast<RustIfOp>(operation))
+    op.writeRust(PS);
+  else if (RustBlockResultOp op = dyn_cast<RustBlockResultOp>(operation))
+    op.writeRust(PS);
+  else {
+    PS.getBodyStream() << "\ncompile_error!(\"Unsupported Op: ";
+    operation.print(PS.getBodyStream());
+    PS.getBodyStream() << "\");\n";
+  }
+  return PS;
+}
+
 // Write this function as Rust code to os
-void RustFuncOp::writeRust(raw_ostream &os) {
-  RustPrinterStream PS(os);
+void RustFuncOp::writeRust(RustPrinterStream &PS) {
 
   PS << "pub fn " << getName() << "(";
 
@@ -234,19 +259,45 @@ void RustFuncOp::writeRust(raw_ostream &os) {
   // Dumping the body
   PS << "{\n";
   for (Operation &operation : this->body().front()) {
-    if (RustReturnOp op = dyn_cast<RustReturnOp>(operation))
-      op.writeRust(PS);
-    else {
-      os << "\ncompile_error!(\"Unsupported Op: ";
-      operation.print(os);
-      os << "\");\n";
-    }
+    ::writeRust(operation, PS);
   }
   PS << "}\n";
 }
 
 void RustReturnOp::writeRust(RustPrinterStream &PS) {
   PS << "return " << getOperand() << ";\n";
+}
+
+void RustConstantOp::writeRust(RustPrinterStream &PS) { PS.getConstant(*this); }
+
+void RustUnaryOp::writeRust(RustPrinterStream &PS) {
+  auto r = getResult();
+  types::RustType rt = r.getType().cast<types::RustType>();
+  PS << "let " << r << ":" << rt << " = " << getOperator() << getOperand()
+     << ";\n";
+}
+
+void RustBinaryOp::writeRust(RustPrinterStream &PS) {
+  auto r = getResult();
+  types::RustType rt = r.getType().cast<types::RustType>();
+  PS << "let " << r << ":" << rt << " = " << LHS() << " " << getOperator()
+     << " " << RHS() << ";\n";
+}
+
+void RustIfOp::writeRust(RustPrinterStream &PS) {
+  auto r = getResult();
+  types::RustType rt = r.getType().cast<types::RustType>();
+  PS << "let " << r << ":" << rt << " = if " << getOperand() << " {\n";
+  for (Operation &operation : thenRegion().front())
+    ::writeRust(operation, PS);
+  PS << "} else {\n";
+  for (Operation &operation : elseRegion().front())
+    ::writeRust(operation, PS);
+  PS << "};\n";
+}
+
+void RustBlockResultOp::writeRust(RustPrinterStream &PS) {
+  PS << getOperand() << "\n";
 }
 
 //===----------------------------------------------------------------------===//

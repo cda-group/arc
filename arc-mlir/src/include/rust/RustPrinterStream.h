@@ -33,31 +33,72 @@ namespace rust {
 // unique ids.
 class RustPrinterStream {
   llvm::raw_ostream &OS;
-  unsigned NextID;
-  DenseMap<Value, unsigned> Value2ID;
+
+  llvm::raw_string_ostream Constants, Body;
+
+  std::string ConstantsStr, BodyStr;
+
+  // Variables are using positive IDs, constants are assigned negative
+  // IDs.
+  int NextID, NextConstID;
+  DenseMap<Value, int> Value2ID;
 
 public:
-  RustPrinterStream(llvm::raw_ostream &os) : OS(os), NextID(0){};
+  RustPrinterStream(llvm::raw_ostream &os)
+      : OS(os), Constants(ConstantsStr), Body(BodyStr), NextID(0),
+        NextConstID(0){};
 
-  unsigned get(Value v) {
-    if (Value2ID.find(v) == Value2ID.end())
-      Value2ID[v] = NextID++;
-    return Value2ID[v];
+  void flush() {
+    OS << Constants.str();
+    OS << Body.str();
+  }
+
+  llvm::raw_ostream &getBodyStream() { return Body; }
+
+  llvm::raw_ostream &getConstantsStream() { return Constants; }
+
+  std::string get(Value v) {
+    auto found = Value2ID.find(v);
+    int id = 0;
+    if (found == Value2ID.end()) {
+      id = NextID++;
+      Value2ID[v] = id;
+    } else
+      id = found->second;
+    if (id < 0)
+      return "C" + std::to_string(-id);
+    else
+      return "v" + std::to_string(id);
+  }
+
+  std::string getConstant(RustConstantOp v) {
+    auto found = Value2ID.find(v);
+    int id = 0;
+    if (found == Value2ID.end()) {
+      id = --NextConstID;
+      Value2ID[v] = id;
+    } else
+      id = found->second;
+    StringAttr str = v.getValue().dyn_cast<StringAttr>();
+    types::RustType cType = v.getType().cast<types::RustType>();
+    Constants << "const C" << -id << " : ";
+    cType.printAsRust(Constants) << " = " << str.getValue() << ";\n";
+    return "C" + std::to_string(-id);
   }
 
   RustPrinterStream &print(Value v) {
-    OS << "v" << get(v);
+    Body << get(v);
     return *this;
   }
 
   RustPrinterStream &print(types::RustType t) {
-    t.printAsRust(OS);
+    t.printAsRust(Body);
     return *this;
   }
 
   template <typename T>
   RustPrinterStream &print(T t) {
-    OS << t;
+    Body << t;
     return *this;
   }
 };

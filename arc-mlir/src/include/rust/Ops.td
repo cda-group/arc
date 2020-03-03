@@ -43,6 +43,9 @@ def Rust_Dialect : Dialect {
 class Rust_Op<string mnemonic, list<OpTrait> traits = []>
     : Op<Rust_Dialect, mnemonic, traits>;
 
+def AnyRustType : Type<CPred<"$_self.isa<RustType>()">, "any RustType">;
+def BoolRustType : Type<CPred<"$_self.isa<RustType>() && $_self.cast<RustType>().isBool()">, "a Rust boolean type">;
+
 //===----------------------------------------------------------------------===//
 // Rust Operations
 //===----------------------------------------------------------------------===//
@@ -102,7 +105,7 @@ def Rust_RustFuncOp : Rust_Op<"func", [FunctionLike, IsolatedFromAbove, Symbol]>
     LogicalResult verifyBody();
 
     // Write this function as Rust code to os
-    void writeRust(raw_ostream &os);
+    void writeRust(RustPrinterStream &os);
   }];
 }
 
@@ -115,13 +118,116 @@ def Rust_RustReturnOp : Rust_Op<"return", [HasParent<"RustFuncOp">,
     by an incovation of the `rust.func`.
   }];
 
-  let arguments = (ins AnyType:$result);
-  let results = (outs AnyType);
+  let arguments = (ins AnyRustType:$result);
+  let results = (outs AnyRustType);
 
   let verifier = [{ return ::verify(*this); }];
 
   let extraClassDeclaration = [{
     // Write this function as Rust code to os
+    void writeRust(RustPrinterStream &);
+  }];
+}
+
+def Rust_RustConstantOp : Rust_Op<"constant", [NoSideEffect]> {
+  let summary = "a rust constant.";
+  let description = [{
+    A Rust constant, the value attribute is the string representation of the
+    constant in Rust syntax.
+  }];
+
+  let arguments = (ins StrAttr : $value);
+  let results = (outs AnyRustType);
+
+  let extraClassDeclaration = [{
+    Attribute getValue() { return getAttr("value"); }
+    // Write this constant as Rust code to os
+    void writeRust(RustPrinterStream &);
+  }];
+}
+
+def Rust_RustUnaryOp : Rust_Op<"unaryop", [SameOperandsAndResultType]> {
+  let summary = "a Rust unary operation.";
+  let description = [{
+    A Rust unary operation, the op attribute is the string representation of
+    the operator in Rust syntax.
+  }];
+
+  let arguments = (ins StrAttr : $op, AnyRustType : $arg);
+  let results = (outs AnyRustType);
+
+  let extraClassDeclaration = [{
+    StringRef getOperator() {
+      return getAttr("op").dyn_cast<StringAttr>().getValue();
+    }
+
+    // Write this operation as Rust code to the stream
+    void writeRust(RustPrinterStream &);
+  }];
+}
+
+def Rust_RustBinaryOp : Rust_Op<"binaryop", [SameOperandsAndResultType]> {
+  let summary = "a Rust unary operation.";
+  let description = [{
+    A Rust unary operation, the op attribute is the string representation of
+    the operator in Rust syntax.
+  }];
+
+  let arguments = (ins StrAttr : $op, AnyRustType : $LHS, AnyRustType : $RHS);
+  let results = (outs AnyRustType);
+
+  let extraClassDeclaration = [{
+    StringRef getOperator() {
+      return getAttr("op").dyn_cast<StringAttr>().getValue();
+    }
+
+    // Write this operation as Rust code to the stream
+    void writeRust(RustPrinterStream &);
+  }];
+}
+
+def Rust_RustBlockResultOp
+    : Rust_Op<"block.result",
+              [HasParent<"RustIfOp">, Terminator, SameOperandsAndResultType]> {
+  let summary = "specifies the value of a block";
+  let description = [{
+    "rust.block.result" is a special terminator operation for the block inside
+    "rust.if". It terminates the region. It should have the same type as the
+    parent if.
+
+    ```mlir
+      "rust.block.result"(%b) : (!rust<"f64">) -> !rust<"f64">
+    ```
+  }];
+  let arguments = (ins AnyRustType : $result);
+  let results = (outs AnyRustType);
+  let extraClassDeclaration = [{
+    // Write this operation as Rust code to the stream
+    void writeRust(RustPrinterStream &);
+  }];
+}
+
+def Rust_RustIfOp
+    : Rust_Op<"if", [SingleBlockImplicitTerminator<"RustBlockResultOp">]> {
+  let summary = "if-then-else operation";
+  let description = [{
+    The "rust.if" operation represents an if-then-else construct for
+    conditionally executing two regions of code. The operand to an if operation
+    is a boolean value. The operation produces a single result. For example:
+
+    ```mlir
+    "rust.if"(%a) ( {
+      "rust.block.result"(%b) : (!rust<"f64">) -> !rust<"f64">
+    },  {
+      "rust.block.result"(%c) : (!rust<"f64">) -> !rust<"f64">
+    }) : (!rust<"bool">) -> !rust<"f64">
+    ```
+  }];
+  let arguments = (ins BoolRustType : $condition);
+  let regions = (region SizedRegion<1>:$thenRegion, SizedRegion<1>:$elseRegion);
+  let results = (outs AnyRustType);
+  let extraClassDeclaration = [{
+    // Write this operation as Rust code to the stream
     void writeRust(RustPrinterStream &);
   }];
 }

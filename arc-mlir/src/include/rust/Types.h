@@ -58,6 +58,7 @@ public:
   void print(DialectAsmPrinter &os) const;
   raw_ostream &printAsRust(raw_ostream &os) const;
   StringRef getRustType() const;
+  bool isBool() const;
 };
 } // namespace types
 } // namespace rust
