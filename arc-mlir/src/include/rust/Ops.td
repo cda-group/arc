@@ -163,4 +163,24 @@ def Rust_RustUnaryOp : Rust_Op<"unaryop", [SameOperandsAndResultType]> {
   }];
 }
 
+def Rust_RustBinaryOp : Rust_Op<"binaryop", [SameOperandsAndResultType]> {
+  let summary = "a Rust unary operation.";
+  let description = [{
+    A Rust unary operation, the op attribute is the string representation of
+    the operator in Rust syntax.
+  }];
+
+  let arguments = (ins StrAttr : $op, AnyType : $LHS, AnyType : $RHS);
+  let results = (outs AnyType);
+
+  let extraClassDeclaration = [{
+    StringRef getOperator() {
+      return getAttr("op").dyn_cast<StringAttr>().getValue();
+    }
+
+    // Write this operation as Rust code to the stream
+    void writeRust(RustPrinterStream &);
+  }];
+}
+
 #endif // RUST_OPS

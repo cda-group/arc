@@ -243,6 +243,8 @@ void RustFuncOp::writeRust(RustPrinterStream &PS) {
       op.writeRust(PS);
     else if (RustUnaryOp op = dyn_cast<RustUnaryOp>(operation))
       op.writeRust(PS);
+    else if (RustBinaryOp op = dyn_cast<RustBinaryOp>(operation))
+      op.writeRust(PS);
     else {
       PS.getBodyStream() << "\ncompile_error!(\"Unsupported Op: ";
       operation.print(PS.getBodyStream());
@@ -263,6 +265,13 @@ void RustUnaryOp::writeRust(RustPrinterStream &PS) {
   types::RustType rt = r.getType().cast<types::RustType>();
   PS << "let " << r << ":" << rt << " = " << getOperator() << getOperand()
      << ";\n";
+}
+
+void RustBinaryOp::writeRust(RustPrinterStream &PS) {
+  auto r = getResult();
+  types::RustType rt = r.getType().cast<types::RustType>();
+  PS << "let " << r << ":" << rt << " = " << LHS() << " " << getOperator()
+     << " " << RHS() << ";\n";
 }
 
 //===----------------------------------------------------------------------===//
