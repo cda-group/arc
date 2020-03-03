@@ -38,12 +38,15 @@ class RustPrinterStream {
 
   std::string ConstantsStr, BodyStr;
 
-  unsigned NextID;
-  DenseMap<Value, unsigned> Value2ID;
+  // Variables are using positive IDs, constants are assigned negative
+  // IDs.
+  int NextID, NextConstID;
+  DenseMap<Value, int> Value2ID;
 
 public:
   RustPrinterStream(llvm::raw_ostream &os)
-      : OS(os), Constants(ConstantsStr), Body(BodyStr), NextID(0){};
+      : OS(os), Constants(ConstantsStr), Body(BodyStr), NextID(0),
+        NextConstID(0){};
 
   void flush() {
     OS << Constants.str();
@@ -54,26 +57,37 @@ public:
 
   llvm::raw_ostream &getConstantsStream() { return Constants; }
 
-  unsigned get(Value v) {
-    if (Value2ID.find(v) == Value2ID.end())
-      Value2ID[v] = NextID++;
-    return Value2ID[v];
+  std::string get(Value v) {
+    auto found = Value2ID.find(v);
+    int id = 0;
+    if (found == Value2ID.end()) {
+      id = NextID++;
+      Value2ID[v] = id;
+    } else
+      id = found->second;
+    if (id < 0)
+      return "C" + std::to_string(-id);
+    else
+      return "v" + std::to_string(id);
   }
 
-  unsigned getConstant(RustConstantOp v) {
-    if (Value2ID.find(v) == Value2ID.end()) {
-      StringAttr str = v.getValue().dyn_cast<StringAttr>();
-      unsigned id = get(v);
-      types::RustType cType = v.getType().cast<types::RustType>();
-      Constants << "const v" << id << " : ";
-      cType.printAsRust(Constants) << " = " << str.getValue() << ";\n";
-      return id;
-    }
-    return Value2ID[v];
+  std::string getConstant(RustConstantOp v) {
+    auto found = Value2ID.find(v);
+    int id = 0;
+    if (found == Value2ID.end()) {
+      id = --NextConstID;
+      Value2ID[v] = id;
+    } else
+      id = found->second;
+    StringAttr str = v.getValue().dyn_cast<StringAttr>();
+    types::RustType cType = v.getType().cast<types::RustType>();
+    Constants << "const C" << -id << " : ";
+    cType.printAsRust(Constants) << " = " << str.getValue() << ";\n";
+    return "C" + std::to_string(-id);
   }
 
   RustPrinterStream &print(Value v) {
-    Body << "v" << get(v);
+    Body << get(v);
     return *this;
   }
 
