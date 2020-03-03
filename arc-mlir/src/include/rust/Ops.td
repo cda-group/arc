@@ -102,7 +102,7 @@ def Rust_RustFuncOp : Rust_Op<"func", [FunctionLike, IsolatedFromAbove, Symbol]>
     LogicalResult verifyBody();
 
     // Write this function as Rust code to os
-    void writeRust(raw_ostream &os);
+    void writeRust(RustPrinterStream &os);
   }];
 }
 

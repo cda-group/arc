@@ -33,11 +33,26 @@ namespace rust {
 // unique ids.
 class RustPrinterStream {
   llvm::raw_ostream &OS;
+
+  llvm::raw_string_ostream Constants, Body;
+
+  std::string ConstantsStr, BodyStr;
+
   unsigned NextID;
   DenseMap<Value, unsigned> Value2ID;
 
 public:
-  RustPrinterStream(llvm::raw_ostream &os) : OS(os), NextID(0){};
+  RustPrinterStream(llvm::raw_ostream &os)
+      : OS(os), Constants(ConstantsStr), Body(BodyStr), NextID(0){};
+
+  void flush() {
+    OS << Constants.str();
+    OS << Body.str();
+  }
+
+  llvm::raw_ostream &getBodyStream() { return Body; }
+
+  llvm::raw_ostream &getConstantsStream() { return Constants; }
 
   unsigned get(Value v) {
     if (Value2ID.find(v) == Value2ID.end())
@@ -46,18 +61,18 @@ public:
   }
 
   RustPrinterStream &print(Value v) {
-    OS << "v" << get(v);
+    Body << "v" << get(v);
     return *this;
   }
 
   RustPrinterStream &print(types::RustType t) {
-    t.printAsRust(OS);
+    t.printAsRust(Body);
     return *this;
   }
 
   template <typename T>
   RustPrinterStream &print(T t) {
-    OS << t;
+    Body << t;
     return *this;
   }
 };

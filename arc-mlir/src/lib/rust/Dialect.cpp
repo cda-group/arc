@@ -191,9 +191,13 @@ LogicalResult CrateOp::writeCrate(std::string top_dir, llvm::raw_ostream &o) {
     return failure();
   }
 
+  RustPrinterStream PS(out);
+
   for (Operation &operation : this->body().front())
     if (RustFuncOp op = dyn_cast<RustFuncOp>(operation))
-      op.writeRust(out);
+      op.writeRust(PS);
+
+  PS.flush();
 
   // Write a small dummy test so that even an empty crate compiles and
   // tests successfully.
@@ -211,8 +215,7 @@ LogicalResult CrateOp::writeCrate(std::string top_dir, llvm::raw_ostream &o) {
 }
 
 // Write this function as Rust code to os
-void RustFuncOp::writeRust(raw_ostream &os) {
-  RustPrinterStream PS(os);
+void RustFuncOp::writeRust(RustPrinterStream &PS) {
 
   PS << "pub fn " << getName() << "(";
 
@@ -237,9 +240,9 @@ void RustFuncOp::writeRust(raw_ostream &os) {
     if (RustReturnOp op = dyn_cast<RustReturnOp>(operation))
       op.writeRust(PS);
     else {
-      os << "\ncompile_error!(\"Unsupported Op: ";
-      operation.print(os);
-      os << "\");\n";
+      PS.getBodyStream() << "\ncompile_error!(\"Unsupported Op: ";
+      operation.print(PS.getBodyStream());
+      PS.getBodyStream() << "\");\n";
     }
   }
   PS << "}\n";
