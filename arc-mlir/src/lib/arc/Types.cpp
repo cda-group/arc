@@ -71,40 +71,65 @@ bool isBuilderType(Type type) {
 }
 
 //===----------------------------------------------------------------------===//
+// BuilderType
+//===----------------------------------------------------------------------===//
+
+struct BuilderTypeStorage : public TypeStorage {
+  BuilderTypeStorage(Type mergeTy, Type resultTy, unsigned subclassData = 0)
+      : TypeStorage(subclassData), mergeType(mergeTy), resultType(resultTy) {}
+
+  using KeyTy = std::pair<Type, Type>;
+
+  bool operator==(const KeyTy &key) const {
+    return key.first == mergeType && key.second == resultType;
+  }
+
+  Type mergeType;
+  Type resultType;
+};
+
+Type BuilderType::getMergeType() const {
+  return static_cast<ImplType *>(impl)->mergeType;
+}
+
+Type BuilderType::getResultType() const {
+  return static_cast<ImplType *>(impl)->resultType;
+}
+
+//===----------------------------------------------------------------------===//
 // AppenderType
 //===----------------------------------------------------------------------===//
 
-struct AppenderTypeStorage : public TypeStorage {
-  AppenderTypeStorage(Type mergeType) : mergeType(mergeType) {}
+struct AppenderTypeStorage : public BuilderTypeStorage {
+  AppenderTypeStorage(Type mergeTy, RankedTensorType resultTy)
+      : BuilderTypeStorage(mergeTy, resultTy) {}
 
-  Type mergeType;
-
-  using KeyTy = Type;
-
-  bool operator==(const KeyTy &key) const { return key == KeyTy(mergeType); }
+  using KeyTy = std::pair<Type, RankedTensorType>;
 
   static llvm::hash_code hashKey(const KeyTy &key) {
-    return llvm::hash_combine(key);
+    return llvm::hash_combine(key.first, key.second);
   }
 
-  static KeyTy getKey(Type mergeType) { return KeyTy(mergeType); }
+  static KeyTy getKey(Type mergeType, RankedTensorType resultType) {
+    return KeyTy(mergeType, resultType);
+  }
 
   static AppenderTypeStorage *construct(TypeStorageAllocator &allocator,
                                         const KeyTy &key) {
     return new (allocator.allocate<AppenderTypeStorage>())
-        AppenderTypeStorage(key);
+        AppenderTypeStorage(key.first, key.second);
   }
 };
 
-AppenderType AppenderType::get(Type mergeType) {
-  return Base::get(mergeType.getContext(), Appender, mergeType);
+AppenderType AppenderType::get(Type mergeType, RankedTensorType resultType) {
+  return Base::get(mergeType.getContext(), Appender, mergeType, resultType);
 }
 
-AppenderType AppenderType::getChecked(Type mergeType, Location loc) {
-  return Base::getChecked(loc, Appender, mergeType);
+AppenderType AppenderType::getChecked(Type mergeType,
+                                      RankedTensorType resultType,
+                                      Location loc) {
+  return Base::getChecked(loc, Appender, mergeType, resultType);
 }
-
-Type AppenderType::getMergeType() const { return getImpl()->mergeType; }
 
 Type AppenderType::parse(DialectAsmParser &parser) {
   if (parser.parseLess())
@@ -115,15 +140,17 @@ Type AppenderType::parse(DialectAsmParser &parser) {
     return nullptr;
   if (parser.parseGreater())
     return nullptr;
-  return AppenderType::getChecked(mergeType, loc);
+  auto resultType = RankedTensorType::getChecked({}, mergeType, loc);
+  return AppenderType::getChecked(mergeType, resultType, loc);
 }
 
 void AppenderType::print(DialectAsmPrinter &os) const {
   os << "appender" << '<' << getMergeType() << '>';
 }
 
-LogicalResult AppenderType::verifyConstructionInvariants(Location loc,
-                                                         Type mergeType) {
+LogicalResult
+AppenderType::verifyConstructionInvariants(Location loc, Type mergeType,
+                                           RankedTensorType resultType) {
   if (!isValueType(mergeType)) {
     emitOptionalError(loc, "appender merge type must be a value type: found ",
                       mergeType);

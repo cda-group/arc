@@ -50,25 +50,36 @@ bool isBuilderType(Type type);
 // Arc Type Storages
 //===----------------------------------------------------------------------===//
 
+struct BuilderTypeStorage;
 struct AppenderTypeStorage;
 
 //===----------------------------------------------------------------------===//
 // Arc Types
 //===----------------------------------------------------------------------===//
 
+class BuilderType : public Type {
+public:
+  using ImplType = BuilderTypeStorage;
+  using Type::Type;
+
+  Type getMergeType() const;
+  Type getResultType() const;
+};
+
 class AppenderType
-    : public Type::TypeBase<AppenderType, Type, AppenderTypeStorage> {
+    : public Type::TypeBase<AppenderType, BuilderType, AppenderTypeStorage> {
 public:
   using Base::Base;
 
   static bool kindof(unsigned kind) { return kind == Appender; }
-  static AppenderType get(Type mergeType);
-  static AppenderType getChecked(Type mergeType, Location loc);
-  static LogicalResult verifyConstructionInvariants(Location loc,
-                                                    Type mergeType);
+  static AppenderType get(Type mergeType, RankedTensorType resultType);
+  static AppenderType getChecked(Type mergeType, RankedTensorType resultType,
+                                 Location loc);
+  static LogicalResult
+  verifyConstructionInvariants(Location loc, Type mergeType,
+                               RankedTensorType resultType);
   static Type parse(DialectAsmParser &parser);
   void print(DialectAsmPrinter &os) const;
-  Type getMergeType() const;
 };
 } // namespace types
 } // namespace arc
