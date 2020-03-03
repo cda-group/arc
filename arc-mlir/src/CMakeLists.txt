@@ -18,61 +18,37 @@ set(ARCMLIR_MODULES Main.cpp lib/arc/Dialect.cpp lib/arc/Opts.cpp lib/arc/Types.
 
 set(RUSTMLIR_MODULES lib/rust/Dialect.cpp lib/rust/Types.cpp)
 
+get_property(dialect_libs GLOBAL PROPERTY MLIR_DIALECT_LIBS)
+get_property(conversion_libs GLOBAL PROPERTY MLIR_CONVERSION_LIBS)
 set(LIBS
-  LLVMAsmParser
-  LLVMCore
-  LLVMSupport
-  MLIRAffineToStandard
-  MLIRAllDialects
+  ${dialect_libs}
+  ${conversion_libs}
+  MLIRLoopOpsTransforms
+  MLIRLoopAnalysis
   MLIRAnalysis
   MLIRDialect
   MLIREDSC
-  MLIRFxpMathOps
-  MLIRGPU
-  MLIRGPUtoCUDATransforms
-  MLIRGPUtoNVVMTransforms
-  MLIRGPUtoROCDLTransforms
-  MLIRGPUtoSPIRVTransforms
-  MLIRGPUtoVulkanTransforms
-  MLIRIR
-  MLIRLLVMIR
-  MLIRLinalgAnalysis
-  MLIRLinalgEDSC
-  MLIRLinalgOps
-  MLIRLinalgToLLVM
-  MLIRLinalgToSPIRVTransforms
-  MLIRLinalgTransforms
-  MLIRLinalgUtils
-  MLIRLoopAnalysis
-  MLIRLoopOps
-  MLIRLoopOpsTransforms
-  MLIRLoopToStandard
-  MLIRLoopsToGPU
-  MLIRNVVMIR
-  MLIROpenMP
   MLIROptLib
   MLIRParser
   MLIRPass
-  MLIRQuantOps
   MLIRQuantizerFxpMathConfig
   MLIRQuantizerSupport
   MLIRQuantizerTransforms
-  MLIRROCDLIR
   MLIRSPIRV
   MLIRSPIRVTestPasses
   MLIRSPIRVTransforms
-  MLIRStandardToLLVM
-  MLIRStandardToSPIRVTransforms
-  MLIRSupport
+  MLIRTransforms
+  MLIRTransformUtils
   MLIRTestDialect
   MLIRTestIR
   MLIRTestPass
   MLIRTestTransforms
-  MLIRTransformUtils
-  MLIRTransforms
-  MLIRVectorOps
-  MLIRVectorToLLVM
-  MLIRVectorToLoops
+  MLIRSupport
+  MLIRIR
+  MLIROptLib
+  LLVMSupport
+  LLVMCore
+  LLVMAsmParser
 )
 
 add_llvm_executable(arc-mlir ${ARCMLIR_MODULES} ${RUSTMLIR_MODULES})
