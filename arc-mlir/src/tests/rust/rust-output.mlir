@@ -21,5 +21,13 @@
 
 }) {sym_name = "this_is_the_name_of_the_fourth_function", type = () -> !rust<"f64"> } : () -> ()
 
+"rust.func"() ( {
+ ^bb0:
+ %r = "rust.constant"() {value="3.14"} : () -> (!rust<"f64">)
+ %x = "rust.unaryop"(%r) {op="-"} : (!rust<"f64">) -> (!rust<"f64">)
+ "rust.return"(%x) : (!rust<"f64">) -> (!rust<"f64">)
+
+}) {sym_name = "this_is_the_name_of_the_fifth_function", type = () -> !rust<"f64"> } : () -> ()
+
 "rust.crate_end"() : () -> ()
 } ) { sym_name = "this_is_the_name_of_the_crate" }: () -> ()

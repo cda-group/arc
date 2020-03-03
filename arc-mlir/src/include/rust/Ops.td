@@ -143,4 +143,24 @@ def Rust_RustConstantOp : Rust_Op<"constant", [NoSideEffect]> {
   }];
 }
 
+def Rust_RustUnaryOp : Rust_Op<"unaryop", [SameOperandsAndResultType]> {
+  let summary = "a Rust unary operation.";
+  let description = [{
+    A Rust unary operation, the op attribute is the string representation of
+    the operator in Rust syntax.
+  }];
+
+  let arguments = (ins StrAttr : $op, AnyType : $arg);
+  let results = (outs AnyType);
+
+  let extraClassDeclaration = [{
+    StringRef getOperator() {
+      return getAttr("op").dyn_cast<StringAttr>().getValue();
+    }
+
+    // Write this operation as Rust code to the stream
+    void writeRust(RustPrinterStream &);
+  }];
+}
+
 #endif // RUST_OPS

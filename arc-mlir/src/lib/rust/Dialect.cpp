@@ -241,6 +241,8 @@ void RustFuncOp::writeRust(RustPrinterStream &PS) {
       op.writeRust(PS);
     else if (RustConstantOp op = dyn_cast<RustConstantOp>(operation))
       op.writeRust(PS);
+    else if (RustUnaryOp op = dyn_cast<RustUnaryOp>(operation))
+      op.writeRust(PS);
     else {
       PS.getBodyStream() << "\ncompile_error!(\"Unsupported Op: ";
       operation.print(PS.getBodyStream());
@@ -255,6 +257,13 @@ void RustReturnOp::writeRust(RustPrinterStream &PS) {
 }
 
 void RustConstantOp::writeRust(RustPrinterStream &PS) { PS.getConstant(*this); }
+
+void RustUnaryOp::writeRust(RustPrinterStream &PS) {
+  auto r = getResult();
+  types::RustType rt = r.getType().cast<types::RustType>();
+  PS << "let " << r << ":" << rt << " = " << getOperator() << getOperand()
+     << ";\n";
+}
 
 //===----------------------------------------------------------------------===//
 // TableGen'd op method definitions
