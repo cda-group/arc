@@ -72,5 +72,7 @@ raw_ostream &RustType::printAsRust(raw_ostream &os) const {
   return getImpl()->printAsRust(os);
 }
 
+bool RustType::isBool() const { return getRustType().equals("bool"); }
+
 } // namespace types
 } // namespace rust

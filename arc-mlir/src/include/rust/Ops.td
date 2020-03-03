@@ -44,6 +44,7 @@ class Rust_Op<string mnemonic, list<OpTrait> traits = []>
     : Op<Rust_Dialect, mnemonic, traits>;
 
 def AnyRustType : Type<CPred<"$_self.isa<RustType>()">, "any RustType">;
+def BoolRustType : Type<CPred<"$_self.isa<RustType>() && $_self.cast<RustType>().isBool()">, "a Rust boolean type">;
 
 //===----------------------------------------------------------------------===//
 // Rust Operations
@@ -180,6 +181,52 @@ def Rust_RustBinaryOp : Rust_Op<"binaryop", [SameOperandsAndResultType]> {
       return getAttr("op").dyn_cast<StringAttr>().getValue();
     }
 
+    // Write this operation as Rust code to the stream
+    void writeRust(RustPrinterStream &);
+  }];
+}
+
+def Rust_RustBlockResultOp
+    : Rust_Op<"block.result",
+              [HasParent<"RustIfOp">, Terminator, SameOperandsAndResultType]> {
+  let summary = "specifies the value of a block";
+  let description = [{
+    "rust.block.result" is a special terminator operation for the block inside
+    "rust.if". It terminates the region. It should have the same type as the
+    parent if.
+
+    ```mlir
+      "rust.block.result"(%b) : (!rust<"f64">) -> !rust<"f64">
+    ```
+  }];
+  let arguments = (ins AnyRustType : $result);
+  let results = (outs AnyRustType);
+  let extraClassDeclaration = [{
+    // Write this operation as Rust code to the stream
+    void writeRust(RustPrinterStream &);
+  }];
+}
+
+def Rust_RustIfOp
+    : Rust_Op<"if", [SingleBlockImplicitTerminator<"RustBlockResultOp">]> {
+  let summary = "if-then-else operation";
+  let description = [{
+    The "rust.if" operation represents an if-then-else construct for
+    conditionally executing two regions of code. The operand to an if operation
+    is a boolean value. The operation produces a single result. For example:
+
+    ```mlir
+    "rust.if"(%a) ( {
+      "rust.block.result"(%b) : (!rust<"f64">) -> !rust<"f64">
+    },  {
+      "rust.block.result"(%c) : (!rust<"f64">) -> !rust<"f64">
+    }) : (!rust<"bool">) -> !rust<"f64">
+    ```
+  }];
+  let arguments = (ins BoolRustType : $condition);
+  let regions = (region SizedRegion<1>:$thenRegion, SizedRegion<1>:$elseRegion);
+  let results = (outs AnyRustType);
+  let extraClassDeclaration = [{
     // Write this operation as Rust code to the stream
     void writeRust(RustPrinterStream &);
   }];
