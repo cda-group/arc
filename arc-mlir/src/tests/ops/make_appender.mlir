@@ -5,7 +5,7 @@
 module @toplevel {
   func @main() {
     %0 = "arc.make_appender"() : () -> !arc.appender<i32>
-    %r = "arc.result_appender"(%0) : (!arc.appender<i32>) -> tensor<?xi32>
+    %r = "arc.result"(%0) : (!arc.appender<i32>) -> tensor<i32>
     return
   }
 }
@@ -19,7 +19,7 @@ module @toplevel {
     // expected-error@+1 {{'arc.make_appender' op requires zero operands}}
     %0 = "arc.make_appender"(%v) : (i32) -> !arc.appender<i32>
 
-    %r = "arc.result_appender"(%0) : (!arc.appender<i32>) -> tensor<?xi32>
+    %r = "arc.result"(%0) : (!arc.appender<i32>) -> tensor<i32>
     return
   }
 }
@@ -30,7 +30,7 @@ module @toplevel {
   func @main() {
     // SHOULD FAIL
     %0 = "arc.make_appender"() {size = -1} : () -> !arc.appender<i32>
-    %b = "arc.result_appender"(%0) : (!arc.appender<i32>) -> tensor<?xi32>
+    %b = "arc.result"(%0) : (!arc.appender<i32>) -> tensor<i32>
     return
   }
 }

@@ -152,6 +152,32 @@ LogicalResult IfOp::customVerify() {
   return mlir::success();
 }
 
+LogicalResult MergeOp::customVerify() {
+  auto Operation = this->getOperation();
+  auto BuilderTy = Operation->getOperand(0).getType().cast<BuilderType>();
+  auto BuilderMergeTy = BuilderTy.getMergeType();
+  auto MergeTy = Operation->getOperand(1).getType();
+  auto NewBuilderTy = Operation->getResult(0).getType().cast<BuilderType>();
+  if (BuilderMergeTy != MergeTy)
+    return emitOpError("operand type does not match merge type, found ")
+           << MergeTy << " but expected " << BuilderMergeTy;
+  if (BuilderTy != NewBuilderTy)
+    return emitOpError("result type does not match builder type, found: ")
+           << NewBuilderTy << " but expected " << BuilderTy;
+  return mlir::success();
+}
+
+LogicalResult ResultOp::customVerify() {
+  auto Operation = this->getOperation();
+  auto BuilderTy = Operation->getOperand(0).getType().cast<BuilderType>();
+  auto BuilderResultTy = BuilderTy.getResultType();
+  auto ResultTy = Operation->getResult(0).getType().cast<BuilderType>();
+  if (BuilderResultTy != ResultTy)
+    return emitOpError("result type does not match that of builder, found ")
+           << ResultTy << " but expected " << BuilderResultTy;
+  return mlir::success();
+}
+
 //===----------------------------------------------------------------------===//
 // TableGen'd op method definitions
 //===----------------------------------------------------------------------===//
