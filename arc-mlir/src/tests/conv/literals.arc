@@ -2,40 +2,40 @@
 # RUN: arc-to-mlir -i %s | arc-mlir | FileCheck %s
 
 let pos_i8 : i8 = 127i8;
-#CHECK: {{%[^ ]+}} = constant 127 : i8
+#CHECK: {{%[^ ]+}} = constant 127 : si8
 
 let neg_i8 : i8 = -128i8;
-#CHECK: {{%[^ ]+}} = constant -128 : i8
+#CHECK: {{%[^ ]+}} = constant -128 : si8
 
 let pos_i16 : i16 = 32767i16;
-#CHECK: {{%[^ ]+}} = constant 32767 : i16
+#CHECK: {{%[^ ]+}} = constant 32767 : si16
 
 let neg_i16 : i16 = -32768i16;
-#CHECK: {{%[^ ]+}} = constant -32768 : i16
+#CHECK: {{%[^ ]+}} = constant -32768 : si16
 
 let pos_i32 : i32 = 2147483647;
-#CHECK: {{%[^ ]+}} = constant 2147483647 : i32
+#CHECK: {{%[^ ]+}} = constant 2147483647 : si32
 
 let neg_i32 : i32 = -2147483648;
-#CHECK: {{%[^ ]+}} = constant -2147483648 : i32
+#CHECK: {{%[^ ]+}} = constant -2147483648 : si32
 
 let pos_i64 : i64 = 9223372036854775807i64;
-#CHECK: {{%[^ ]+}} = constant 9223372036854775807 : i64
+#CHECK: {{%[^ ]+}} = constant 9223372036854775807 : si64
 
 let neg_i64 : i64 = -9223372036854775808i64;
-#CHECK: {{%[^ ]+}} = constant -9223372036854775808 : i64
+#CHECK: {{%[^ ]+}} = constant -9223372036854775808 : si64
 
 let pos_u8 : u8 = 255u8;
-#CHECK: {{%[^ ]+}} = constant -1 : i8
+#CHECK: {{%[^ ]+}} = constant 255 : ui8
 
 let pos_u16 : u16 = 65535u16;
-#CHECK: {{%[^ ]+}} = constant -1 : i16
+#CHECK: {{%[^ ]+}} = constant -1 : ui16
 
 let pos_u32 : u32 = 4294967295u32;
-#CHECK: {{%[^ ]+}} = constant -1 : i32
+#CHECK: {{%[^ ]+}} = constant -1 : ui32
 
 let pos_u64 : u64 = 18446744073709551615u64;
-#CHECK: {{%[^ ]+}} = constant -1 : i64
+#CHECK: {{%[^ ]+}} = constant -1 : ui64
 
 # As MLIR does not support hex floating point values we only check the
 # f32 to 6 significant digits and f64 to 15.

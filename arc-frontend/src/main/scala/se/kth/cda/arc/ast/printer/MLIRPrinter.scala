@@ -491,14 +491,14 @@ object MLIRPrinter {
   implicit class TypeToMLIR(val self: Type) extends AnyVal {
 
     def toMLIR: String = self match {
-      case I8                                                               => s"i8"
-      case I16                                                              => s"i16"
-      case I32                                                              => s"i32"
-      case I64                                                              => s"i64"
-      case U8                                                               => s"i8"
-      case U16                                                              => s"i16"
-      case U32                                                              => s"i32"
-      case U64                                                              => s"i64"
+      case I8                                                               => s"si8"
+      case I16                                                              => s"si16"
+      case I32                                                              => s"si32"
+      case I64                                                              => s"si64"
+      case U8                                                               => s"ui8"
+      case U16                                                              => s"ui16"
+      case U32                                                              => s"ui32"
+      case U64                                                              => s"ui64"
       case F32                                                              => s"f32"
       case F64                                                              => s"f64"
       case Bool                                                             => s"i1"
