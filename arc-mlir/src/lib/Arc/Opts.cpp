@@ -19,6 +19,7 @@
 // Defines the optimizations of the Arc dialect.
 //
 //===----------------------------------------------------------------------===//
+#include <llvm/ADT/DenseMapInfo.h>
 
 #include "Arc/Arc.h"
 #include <llvm/Support/raw_ostream.h>
@@ -93,7 +94,7 @@ struct ConstantFoldIf : public mlir::OpRewritePattern<arc::IfOp> {
   }
 };
 
-#include "Opts.inc"
+#include "Arc/ArcOpts.h.inc"
 
 } // end anonymous namespace
 

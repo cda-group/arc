@@ -9,8 +9,8 @@ let true_bool : bool = true;
 # Check that the conditional ends up in the right place and that the
 # results in the two branches are correct
 
-#CHECK-DAG: [[A:%[^ ]+]] = constant 65 : i32
-#CHECK-DAG: [[B:%[^ ]+]] = constant 66 : i32
+#CHECK-DAG: [[A:%[^ ]+]] = arc.constant 65 : si32
+#CHECK-DAG: [[B:%[^ ]+]] = arc.constant 66 : si32
 #CHECK-DAG: [[COND:%[^ ]+]] = constant 1 : i1
 
 if(true_bool, a_i32, b_i32)
