@@ -40,6 +40,7 @@ ArcDialect::ArcDialect(mlir::MLIRContext *ctx) : mlir::Dialect("arc", ctx) {
 #include "arc/Ops.cpp.inc"
       >();
   addTypes<AppenderType>();
+  addTypes<UnknownType>();
 }
 
 //===----------------------------------------------------------------------===//
@@ -52,6 +53,8 @@ Type ArcDialect::parseType(DialectAsmParser &parser) const {
     return nullptr;
   if (keyword == "appender")
     return AppenderType::parse(parser);
+  if (keyword == "unknown")
+    return UnknownType::parse(parser);
   parser.emitError(parser.getNameLoc(), "unknown type keyword " + keyword);
   return nullptr;
 }
@@ -66,6 +69,9 @@ void ArcDialect::printType(Type type, DialectAsmPrinter &os) const {
     llvm_unreachable("Unhandled Arc type");
   case Appender:
     type.cast<AppenderType>().print(os);
+    break;
+  case Unknown:
+    type.cast<UnknownType>().print(os);
     break;
   }
 }

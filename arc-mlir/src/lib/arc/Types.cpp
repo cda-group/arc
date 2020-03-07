@@ -163,8 +163,6 @@ AppenderType::verifyConstructionInvariants(Location loc, Type mergeType,
 // UnknownType
 //===----------------------------------------------------------------------===//
 
-static int counter = 0;
-
 struct UnknownTypeStorage : public TypeStorage {
 
   UnknownTypeStorage(int id) : id(id) {}
@@ -188,13 +186,27 @@ struct UnknownTypeStorage : public TypeStorage {
   }
 };
 
-UnknownType UnknownType::get(MLIRContext *ctx) {
-  int id = counter;
+static int counter = 0;
+
+static int freshTypeVariable() const {
   counter += 1;
-  return Base::get(ctx, Unknown, id);
+  return counter;
+}
+
+UnknownType UnknownType::get(MLIRContext *ctx) {
+  return Base::get(ctx, Unknown, freshTypeVariable());
+}
+
+UnknownType UnknownType::getChecked(Location loc) {
+  return Base::getChecked(loc, Unknown, freshTypeVariable());
 }
 
 int UnknownType::getId() const { return getImpl()->id; }
+
+Type AppenderType::parse(DialectAsmParser &parser) {
+  Location loc = parser.getEncodedSourceLoc(parser.getCurrentLocation());
+  return UnknownType::getChecked(loc);
+}
 
 void UnknownType::print(DialectAsmPrinter &os) const { os << "unknown"; }
 

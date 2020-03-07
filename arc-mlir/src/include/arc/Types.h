@@ -91,6 +91,7 @@ public:
 
   static bool kindof(unsigned kind) { return kind == Unknown; }
   static UnknownType get(MLIRContext *ctx);
+  static Type parse(DialectAsmParser &parser);
   void print(DialectAsmPrinter &os) const;
   int getId() const;
 };
