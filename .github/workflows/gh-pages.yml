@@ -19,7 +19,7 @@ jobs:
       - name: Setup graphviz
         uses: kamiazya/setup-graphviz@v1
 
-      - run: dot -Tpng ./docs/src/*.dot -O
+      - run: dot -Tpng ./docs/src/*.dot -O -Gdpi=300
 
       - run: mdbook build ./docs/
 

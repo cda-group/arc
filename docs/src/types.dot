@@ -1,0 +1,77 @@
+digraph types {
+
+  rankdir = LR;
+  graph [
+    fontname="monospace";
+    fontsize = 10;
+    bgcolor=transparent;
+  ];
+
+  node [
+    fontname = "monospace";
+    fontsize = 10;
+    shape = "record";
+    style=filled;
+    color="#03fcd7";
+    weight=100;
+  ]
+
+
+  type           [ color =  white, label = "Type" ];
+  value          [ color =  white, label = "Value" ];
+  scalar         [ color =  white, label = "Scalar" ];
+  collection     [ color =  white, label = "Collection[T:Value]" ];
+  builder        [ color =  white, label = "Builder[M:Value, R:Value]" ];
+
+  struct         [ label = "Struct[T*:Type*]" ];
+  builder_struct [ label = "Struct[T*:Builder*]" ];
+  simd           [ label = "Simd[T:Scalar]" ];
+
+  i32            [ label = "i\{8,16,32,64\}|" ];
+  u32            [ label = "u\{8,16,32,64\}" ];
+  f32            [ label = "f\{32,64\}" ];
+
+  vector         [ label = "Vector[T:Value]" ];
+  dictionary     [ label = "Dictionary[K:Value, V:Value]" ];
+
+  appender       [ label = "Appender[M:Value]" ];
+  merger         [ label = "Merger[M:Value, ⊕]" ];
+  dictmerger     [ label = "DictMerger[K:Value, V:Value, ⊕]" ];
+  vecmerger      [ label = "VecMerger[M:Value, ⊕]" ];
+  groupmerger    [ label = "GroupMerger[K:Value, V:Value]" ];
+
+  subgraph types {
+    type -> builder;
+    type -> value;
+
+    subgraph values {
+
+      value -> scalar;
+      value -> collection;
+      value -> simd;
+      value -> struct;
+
+      subgraph scalars {
+        scalar -> i32;
+        scalar -> u32;
+        scalar -> f32;
+      };
+
+      subgraph collections {
+        collection -> vector;
+        collection -> dictionary;
+      };
+    };
+
+    subgraph builders {
+      builder -> appender;
+      builder -> merger;
+      builder -> dictmerger;
+      builder -> vecmerger;
+      builder -> groupmerger;
+      builder -> builder_struct;
+    };
+  };
+
+}
+
