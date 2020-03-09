@@ -10,6 +10,9 @@
 //
 //===----------------------------------------------------------------------===//
 
+#ifndef ARC_OPT_MAIN_H_
+#define ARC_OPT_MAIN_H_
+
 #include <memory>
 #include <vector>
 
@@ -29,3 +32,5 @@ LogicalResult ArcOptMain(llvm::raw_ostream &os,
                          bool verifyPasses);
 
 } // end namespace mlir
+
+#endif // ARC_OPT_MAIN_H_

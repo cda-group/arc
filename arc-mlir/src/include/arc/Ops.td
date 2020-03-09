@@ -24,7 +24,7 @@
 #define ARC_OPS
 
 include "mlir/IR/OpBase.td"
-include "mlir/Analysis/InferTypeOpInterface.td"
+include "arc/TypeInferenceOpInterface.td"
 
 //===----------------------------------------------------------------------===//
 // Arc Dialect
@@ -39,8 +39,11 @@ def Arc_Dialect : Dialect {
 // Arc Operation Classes
 //===----------------------------------------------------------------------===//
 
-class Arc_Op<string mnemonic, list<OpTrait> traits = []>
-    : Op<Arc_Dialect, mnemonic, traits>;
+class Arc_Op<string mnemonic, list<OpTrait> traits = []> : Op<
+    Arc_Dialect,
+    mnemonic,
+    !listconcat(traits, [TypeInferenceOpInterface])
+>;
 
 /* The structure for these unary operands is stolen from the standard dialect */
 class Arc_UnaryOp<string mnemonic, list<OpTrait> traits = []>
@@ -272,11 +275,7 @@ def MakeAppenderOp : Arc_Op<"make_appender", [NoSideEffect, Linear]> {
   let results = (outs AnyAppender);
 }
 
-def MergeOp : Arc_Op<"merge", [
-  NoSideEffect,
-  Linear,
-  DeclareOpInterfaceMethods<InferTypeOpInterface>
-]> {
+def MergeOp : Arc_Op<"merge", [NoSideEffect, Linear]> {
   let summary = "merge a value into a builder";
   let description = [{
     The "arc.merge" operation takes a builder and a value, and returns a new

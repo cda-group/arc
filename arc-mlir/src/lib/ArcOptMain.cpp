@@ -13,6 +13,8 @@
 //===----------------------------------------------------------------------===//
 
 #include "arc/ArcOptMain.h"
+#include "arc/TypeInferencePass.h"
+
 #include "mlir/Analysis/Passes.h"
 #include "mlir/IR/Attributes.h"
 #include "mlir/IR/Diagnostics.h"
@@ -57,6 +59,17 @@ static LogicalResult performActions(raw_ostream &os, bool verifyDiagnostics,
   // Apply any pass manager command line options.
   PassManager pm(context, verifyPasses);
   applyPassManagerCLOptions(pm);
+
+  // Inline all functions into main and then delete them.
+  pm.addPass(mlir::createInlinerPass());
+  pm.addPass(mlir::createSymbolDCEPass());
+
+  // Now that there is only one function, we can infer the type of each of
+  // the operations.
+  mlir::OpPassManager &optPM = pm.nest<mlir::FuncOp>();
+  optPM.addPass(mlir::arc::createTypeInferencePass());
+  optPM.addPass(mlir::createCanonicalizerPass());
+  optPM.addPass(mlir::createCSEPass());
 
   // Build the provided pipeline.
   if (failed(passPipeline.addToPipeline(pm)))

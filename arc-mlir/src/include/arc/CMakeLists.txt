@@ -7,3 +7,7 @@ mlir_tablegen(Ops.h.inc -gen-op-decls "${TBLGEN_INCDIRS}")
 mlir_tablegen(Ops.cpp.inc -gen-op-defs "${TBLGEN_INCDIRS}")
 add_public_tablegen_target(ArcDialectOpsIncGen)
 
+set(LLVM_TARGET_DEFINITIONS TypeInferenceOpInterface.td)
+mlir_tablegen(TypeInferenceOpInterface.h.inc -gen-op-interface-decls)
+mlir_tablegen(TypeInferenceOpInterface.cpp.inc -gen-op-interface-defs)
+add_public_tablegen_target(ArcDialectTypeInferenceOpInterfaceIncGen)
