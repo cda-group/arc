@@ -72,6 +72,8 @@ def AnyValue : Type<Or<[
 def AnyBuilder : Type<CPred<"$_self.isa<BuilderType>()">, "any builder">;
 def AnyAppender : Type<CPred<"$_self.isa<AppenderType>()">, "any appender">;
 
+def AnyCollection : Type<CPred<"$_self.isa<TensorType>()">, "any collection">;
+
 //===----------------------------------------------------------------------===//
 // Arc Traits
 //===----------------------------------------------------------------------===//
@@ -257,6 +259,63 @@ def IfOp : Arc_Op<"if", [SingleBlockImplicitTerminator<"ArcBlockResultOp">]> {
   let verifier = [{ return customVerify(); }];
   let hasCanonicalizer = 1;
 }
+
+def ArcYieldOp : Arc_Op<"yield", [Terminator, SameOperandsAndResultType]> {
+  let summary = "arc yield and termination operation";
+  let description = [{
+    The "arc.yield" operation yields an SSA value from an arc dialect op region
+    and terminates the region. The type of the yielded value must match the
+    result of the parent operation.
+
+    ```mlir
+      "arc.yield"(%b) : (f32) -> f64
+    ```
+  }];
+
+  let arguments = (ins AnyType:$result);
+  let results = (outs AnyType);
+  let extraClassDeclaration = [{ LogicalResult customVerify(); }];
+  let verifier = [{ return customVerify(); }];
+}
+
+def ForOp : Arc_Op<"for", [
+  Linear,
+  SingleBlockImplicitTerminator<"ArcYieldOp">
+]> {
+  let summary = "functional for operation";
+  let description = [{
+    The "arc.for" operation represents a parallel for-loop, over a collection or
+    range, into a builder. The for-loop takes the following two operands and
+    attribute as input:
+
+    * A builder.
+    * A collection or range.
+    * A lambda function.
+
+    The collection is iterated over, and each element is passed along with the
+    builder as input to the lambda function. The body of the lambda function may
+    update the builder by merging elements into it. The "arc.for.yield" operation
+    is needed to return the updated builder from the lambda. Finally, when
+    iteration finishes, the resulting builder is returned from the for-loop.
+
+    ```mlir
+    %c = constant 1 : i32
+    "arc.for"(%builder, %collection) ({
+      ^bb0(%b0: arc.appender<i32>, %i0: u32, %v0: i32):
+        %v1 = addi %v0, %c : i32
+        %b1 = merge(%b0, %v1) : (appender<i32>, i32) -> (appender<i32>)
+        "arc.for.yield"(%b1) : (appender<i32>) -> (appender<i32>)
+    }) : (tensor<*xi32>, arc.appender<i32>)
+    ```
+  }];
+  let arguments = (ins AnyBuilder:$builder, AnyTensor:$collection);
+  let results = (outs AnyBuilder);
+  let regions = (region SizedRegion<1>:$region);
+
+  let extraClassDeclaration = [{ LogicalResult customVerify(); }];
+  let verifier = [{ return customVerify(); }];
+}
+
 
 def MakeAppenderOp : Arc_Op<"make_appender", [NoSideEffect, Linear]> {
   let summary = "instantiate a new appender";

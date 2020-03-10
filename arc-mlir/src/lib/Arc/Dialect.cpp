@@ -152,6 +152,75 @@ LogicalResult IfOp::customVerify() {
   return mlir::success();
 }
 
+LogicalResult ArcYieldOp::customVerify() {
+  auto Op = this->getOperation();
+  auto ParentOp = Op->getParentOp();
+  auto Results = ParentOp->getResults();
+  auto Operands = Op->getOperands();
+
+  if (isa<IfOp>(ParentOp) || isa<ForOp>(ParentOp)) {
+    if (ParentOp->getNumResults() != Op->getNumOperands())
+      return Op->emitOpError() << "parent of yield must have same number of "
+                                  "results as the yield operands";
+    for (auto e : llvm::zip(Results, Operands)) {
+      if (std::get<0>(e).getType() != std::get<1>(e).getType())
+        return Op->emitOpError()
+               << "types mismatch between yield op and its parent";
+    }
+  } else {
+    return Op->emitOpError()
+           << "yield only terminates If, For or Parallel regions";
+  }
+
+  return success();
+}
+
+LogicalResult ForOp::customVerify() {
+  auto Op = this->getOperation();
+  auto &Func = Op->getRegion(0).front();
+  auto BuilderTy = Op->getOperand(0).getType().cast<BuilderType>();
+  auto NewBuilderTy = Op->getResult(0).getType().cast<BuilderType>();
+
+  if (NewBuilderTy != BuilderTy)
+    return emitOpError("result type does not match builder type, found: ")
+           << NewBuilderTy << " but expected " << BuilderTy;
+
+  auto NumArgs = Func.getNumArguments();
+
+  if (NumArgs != 3)
+    return emitOpError("block takes incorrect number of arguments, found: ")
+           << NumArgs << " but expected " << 3;
+
+  auto CollectionTy = Op->getOperand(1).getType().cast<TensorType>();
+  auto ElemTy = CollectionTy.getElementType();
+
+  auto Arg0 = Func.getArgument(0);
+  auto Arg1 = Func.getArgument(1);
+  auto Arg2 = Func.getArgument(2);
+  auto ArgTy0 = Arg0.getType();
+  auto ArgTy1 = Arg1.getType();
+  auto ArgTy2 = Arg2.getType();
+
+  if (!Arg0.hasOneUse())
+    return emitOpError("block argument #0 must have exactly one use");
+
+  if (ArgTy0 != BuilderTy)
+    return emitOpError(
+               "block argument #0 is different from builder type, found: ")
+           << ArgTy0 << " but expected " << BuilderTy;
+
+  if (!(ArgTy1.isa<IndexType>()))
+    return emitOpError("block argument #1 is not an index type, found: ")
+           << ArgTy1 << " but expected 'index'";
+
+  if (ArgTy2 != ElemTy)
+    return emitOpError("block argument #2 does not match element type of "
+                       "collection, found: ")
+           << ArgTy2 << " but expected " << ElemTy;
+
+  return mlir::success();
+}
+
 LogicalResult MergeOp::customVerify() {
   auto Operation = this->getOperation();
   auto BuilderTy = Operation->getOperand(0).getType().cast<BuilderType>();
