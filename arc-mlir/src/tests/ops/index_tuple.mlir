@@ -36,7 +36,7 @@ module @toplevel {
     %b = constant 1 : i1
     %tuple = "arc.make_tuple"(%a, %b) : (i1, i1) -> tuple<i1,i1>
 
-    // expected-error@+1 {{'arc.index_tuple' op attribute 'index' failed to satisfy constraint: non-negative 64-bit integer attribute}}
+    // expected-error@+1 {{'arc.index_tuple' op attribute 'index' failed to satisfy constraint: 64-bit signless integer attribute whose value is non-negative}}
     %elem = "arc.index_tuple"(%tuple) { index = -5 } : (tuple<i1,i1>) -> i1
     return
   }
