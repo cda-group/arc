@@ -20,7 +20,7 @@
 //
 //===----------------------------------------------------------------------===//
 
-#include "rust/Types.h"
+#include "Rust/Types.h"
 #include <llvm/Support/raw_ostream.h>
 #include <mlir/IR/DialectImplementation.h>
 #include <mlir/IR/StandardTypes.h>

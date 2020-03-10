@@ -24,7 +24,7 @@
 #ifndef RUST_DIALECT_H_
 #define RUST_DIALECT_H_
 
-#include "rust/Types.h"
+#include "Rust/Types.h"
 #include <mlir/IR/Builders.h>
 #include <mlir/IR/Dialect.h>
 #include <mlir/IR/Function.h>
@@ -49,7 +49,7 @@ public:
 /// Include the auto-generated header file containing the declarations of the
 /// rust operations.
 #define GET_OP_CLASSES
-#include "rust/Ops.h.inc"
+#include "Rust/RustDialect.h.inc"
 
 } // namespace rust
 
