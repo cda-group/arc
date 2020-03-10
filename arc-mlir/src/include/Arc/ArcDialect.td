@@ -24,7 +24,7 @@
 #define ARC_OPS
 
 #ifndef OP_BASE
-include "mlir/IR/OpBase.td"
+include "../../mlir/include/mlir/IR/OpBase.td"
 #endif // OP_BASE
 
 //===----------------------------------------------------------------------===//

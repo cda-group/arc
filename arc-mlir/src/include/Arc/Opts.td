@@ -24,11 +24,11 @@
 #define ARC_OPTS
 
 #ifndef STANDARD_OPS
-include "mlir/Dialect/StandardOps/IR/Ops.td"
+include "../../mlir/include/mlir/Dialect/StandardOps/IR/Ops.td"
 #endif // STANDARD_OPS
 
 #ifndef ARC_OPS
-include "arc/Ops.td"
+include "../../include/Arc/ArcDialect.td"
 #endif // ARC_OPS
 
 def AllValuesAreConstants : Constraint<CPred<"AllValuesAreConstant($0)">>;

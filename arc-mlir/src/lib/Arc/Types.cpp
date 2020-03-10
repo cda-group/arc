@@ -20,7 +20,7 @@
 //
 //===----------------------------------------------------------------------===//
 
-#include "arc/Types.h"
+#include "Arc/Types.h"
 #include <llvm/Support/raw_ostream.h>
 #include <mlir/IR/DialectImplementation.h>
 #include <mlir/IR/StandardTypes.h>

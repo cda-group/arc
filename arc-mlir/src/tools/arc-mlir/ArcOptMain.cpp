@@ -12,7 +12,8 @@
 //
 //===----------------------------------------------------------------------===//
 
-#include "arc/ArcOptMain.h"
+#include "Arc/ArcOptMain.h"
+#include "Rust/RustDialect.h"
 #include "mlir/Analysis/Passes.h"
 #include "mlir/IR/Attributes.h"
 #include "mlir/IR/Diagnostics.h"
@@ -24,7 +25,6 @@
 #include "mlir/Pass/PassManager.h"
 #include "mlir/Support/ToolUtilities.h"
 #include "mlir/Transforms/Passes.h"
-#include "rust/Dialect.h"
 #include "llvm/Support/CommandLine.h"
 #include "llvm/Support/FileUtilities.h"
 #include "llvm/Support/Regex.h"

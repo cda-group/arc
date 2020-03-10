@@ -23,7 +23,7 @@
 #ifndef RUST_PRINTER_STREAM_H_
 #define RUST_PRINTER_STREAM_H_
 
-#include "rust/Types.h"
+#include "Rust/Types.h"
 #include <llvm/Support/raw_ostream.h>
 
 using namespace mlir;
