@@ -9,9 +9,9 @@ module @toplevel {
     %c = constant 0.693 : f64
 
     "arc.if"(%a) ( {
-      "arc.block.result"(%b) : (f64) -> f64
+      "arc.yield"(%b) : (f64) -> f64
     },  {
-      "arc.block.result"(%c) : (f64) -> f64
+      "arc.yield"(%c) : (f64) -> f64
     }) : (i1) -> f64
     return
   }
@@ -24,9 +24,8 @@ module @toplevel {
     %a = constant 0 : i1
     %f = constant 3.14 : f64
 
-    // expected-error@+1 {{'arc.block.result' op expects parent op 'arc.if'}}
-    "arc.block.result"(%f) : (f64) -> f64
-    return
+    // expected-error@+1 {{'arc.yield' op yield only terminates 'arc.if' or 'arc.for' regions}}
+    "arc.yield"(%f) : (f64) -> f64
   }
 }
 
@@ -39,10 +38,10 @@ module @toplevel {
     %c = constant 0.693 : f64
 
     "arc.if"(%a) ( {
-    // expected-error@+1 {{'arc.block.result' op requires the same type for all operands and results}}
-      "arc.block.result"(%b) : (f32) -> f64
+    // expected-error@+1 {{'arc.yield' op requires the same type for all operands and results}}
+      "arc.yield"(%b) : (f32) -> f64
     },  {
-      "arc.block.result"(%c) : (f64) -> f64
+      "arc.yield"(%c) : (f64) -> f64
     }) : (i1) -> f64
     return
   }
@@ -109,7 +108,7 @@ module @toplevel {
     %c = constant 0.693 : f64
     // expected-error@+1 {{'arc.if' op region #1 ('elseRegion') failed to verify constraint: region with 1 blocks}}
     "arc.if"(%a) ({
-      "arc.block.result"(%b) : (f64) -> f64
+      "arc.yield"(%b) : (f64) -> f64
     },{}) : (i1) -> f64
     return
   }
@@ -123,13 +122,13 @@ module @toplevel {
     %b = constant 3.14 : f64
     %c = constant 0.693 : f64
 
-    // expected-error@+2 {{'arc.if' op expects regions to end with 'arc.block.result', found 'arc.make_tuple'}}
-    // expected-note@+1 {{in custom textual format, the absence of terminator implies 'arc.block.result'}}
+    // expected-error@+2 {{'arc.if' op expects regions to end with 'arc.yield', found 'arc.make_tuple'}}
+    // expected-note@+1 {{in custom textual format, the absence of terminator implies 'arc.yield'}}
     "arc.if"(%a) ( {
-      "arc.block.result"(%b) : (f64) -> f64
+      "arc.yield"(%b) : (f64) -> f64
       %1 = "arc.make_tuple"(%c, %c) : (f64, f64) -> tuple<f64,f64>
     },  {
-      "arc.block.result"(%c) : (f64) -> f64
+      "arc.yield"(%c) : (f64) -> f64
     }) : (i1) -> f64
     return
   }
@@ -145,9 +144,9 @@ module @toplevel {
 
     // expected-error@+1 {{'arc.if' op result type does not match the type of the parent: expected 'f64' but found 'f32'}}
     "arc.if"(%a) ( {
-      "arc.block.result"(%b) : (f32) -> f32
+      "arc.yield"(%b) : (f32) -> f32
     },  {
-      "arc.block.result"(%c) : (f64) -> f64
+      "arc.yield"(%c) : (f64) -> f64
     }) : (i1) -> f64
     return
   }
@@ -162,9 +161,9 @@ module @toplevel {
     %c = constant 0.693 : f32
     // expected-error@+1 {{'arc.if' op result type does not match the type of the parent: expected 'f64' but found 'f32'}}
     "arc.if"(%a) ( {
-      "arc.block.result"(%b) : (f32) -> f32
+      "arc.yield"(%b) : (f32) -> f32
     },  {
-      "arc.block.result"(%c) : (f32) -> f32
+      "arc.yield"(%c) : (f32) -> f32
     }) : (i1) -> f64
     return
   }

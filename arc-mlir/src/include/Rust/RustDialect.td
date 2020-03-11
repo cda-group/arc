@@ -187,16 +187,16 @@ def Rust_RustBinaryOp : Rust_Op<"binaryop", [SameOperandsAndResultType]> {
 }
 
 def Rust_RustBlockResultOp
-    : Rust_Op<"block.result",
+    : Rust_Op<"yield",
               [HasParent<"RustIfOp">, Terminator, SameOperandsAndResultType]> {
   let summary = "specifies the value of a block";
   let description = [{
-    "rust.block.result" is a special terminator operation for the block inside
+    "rust.yield" is a special terminator operation for the block inside
     "rust.if". It terminates the region. It should have the same type as the
     parent if.
 
     ```mlir
-      "rust.block.result"(%b) : (!rust<"f64">) -> !rust<"f64">
+      "rust.yield"(%b) : (!rust<"f64">) -> !rust<"f64">
     ```
   }];
   let arguments = (ins AnyRustType : $result);
@@ -217,9 +217,9 @@ def Rust_RustIfOp
 
     ```mlir
     "rust.if"(%a) ( {
-      "rust.block.result"(%b) : (!rust<"f64">) -> !rust<"f64">
+      "rust.yield"(%b) : (!rust<"f64">) -> !rust<"f64">
     },  {
-      "rust.block.result"(%c) : (!rust<"f64">) -> !rust<"f64">
+      "rust.yield"(%c) : (!rust<"f64">) -> !rust<"f64">
     }) : (!rust<"bool">) -> !rust<"f64">
     ```
   }];

@@ -135,7 +135,7 @@ LogicalResult IfOp::customVerify() {
   auto Op = this->getOperation();
   auto ResultTy = Op->getResult(0).getType();
   bool FoundErrors = false;
-  auto CheckResultType = [this, ResultTy, &FoundErrors](ArcBlockResultOp R) {
+  auto CheckResultType = [this, ResultTy, &FoundErrors](ArcYieldOp R) {
     if (R.getResult().getType() != ResultTy) {
       FoundErrors = true;
       emitOpError(
@@ -169,7 +169,7 @@ LogicalResult ArcYieldOp::customVerify() {
     }
   } else {
     return Op->emitOpError()
-           << "yield only terminates If, For or Parallel regions";
+           << "yield only terminates 'arc.if' or 'arc.for' regions";
   }
 
   return success();

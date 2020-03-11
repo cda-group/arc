@@ -20,8 +20,8 @@ let false_bool : bool = false;
 if(true_bool, a_i32, if(false_bool, b_i32, c_i32))
 
 #CHECK: {{%[^ ]+}} = "arc.if"([[CONDOUTER]]) (
-#CHECK: {{%[^ ]+}} = "arc.block.result"([[A]])
+#CHECK: {{%[^ ]+}} = "arc.yield"([[A]])
 #CHECK: [[INNERRESULT:%[^ ]+]] = "arc.if"([[CONDINNER]]) (
-#CHECK: {{%[^ ]+}} = "arc.block.result"([[B]])
-#CHECK: {{%[^ ]+}} = "arc.block.result"([[C]])
-#CHECK: {{%[^ ]+}} = "arc.block.result"([[INNERRESULT]])
+#CHECK: {{%[^ ]+}} = "arc.yield"([[B]])
+#CHECK: {{%[^ ]+}} = "arc.yield"([[C]])
+#CHECK: {{%[^ ]+}} = "arc.yield"([[INNERRESULT]])

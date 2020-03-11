@@ -70,7 +70,7 @@ struct ConstantFoldIf : public RewritePattern {
     Region &region = op->getRegion(cond ? 0 : 1);
     Block &block = region.getBlocks().front();
 
-    Operation *block_result =
+    Operation *yield =
         block.getTerminator()->getOperand(0).getDefiningOp();
     Operation *cloned_result = nullptr;
     BlockAndValueMapping mapper;
@@ -79,10 +79,10 @@ struct ConstantFoldIf : public RewritePattern {
     // the blocks.
     for (auto &to_clone : block) {
       if (&to_clone == block.getTerminator()) {
-        if (auto mappedOp = mapper.lookupOrNull(block_result->getResult(0))) {
+        if (auto mappedOp = mapper.lookupOrNull(yield->getResult(0))) {
           cloned_result = mappedOp.getDefiningOp();
         } else {
-          cloned_result = block_result;
+          cloned_result = yield;
         }
         break;
       }
