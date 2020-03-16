@@ -20,7 +20,7 @@
 //
 //===----------------------------------------------------------------------===//
 
-#include "Arc/ArcDialect.h"
+#include "Arc/Arc.h"
 #include <llvm/Support/raw_ostream.h>
 #include <mlir/Dialect/StandardOps/IR/Ops.h>
 #include <mlir/IR/BlockAndValueMapping.h>

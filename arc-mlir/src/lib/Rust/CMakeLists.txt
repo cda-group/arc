@@ -6,7 +6,7 @@ add_mlir_dialect_library(RustDialect
   ${MLIR_MAIN_INCLUDE_DIR}/mlir/RustOps
 
   DEPENDS
-  MLIRRustDialectIncGen
+  MLIRRustIncGen
 )
 
 target_link_libraries(RustDialect

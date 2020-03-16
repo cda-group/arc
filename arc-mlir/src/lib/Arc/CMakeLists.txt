@@ -6,7 +6,7 @@ add_mlir_dialect_library(ArcDialect
   ${MLIR_MAIN_INCLUDE_DIR}/mlir/ArcOps
 
   DEPENDS
-  MLIRArcDialectIncGen
+  MLIRArcIncGen
   ArcDialectOptsIncGen
 )
 

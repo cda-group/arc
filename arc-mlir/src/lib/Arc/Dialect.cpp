@@ -21,7 +21,7 @@
 //
 //===----------------------------------------------------------------------===//
 
-#include "Arc/ArcDialect.h"
+#include "Arc/Arc.h"
 #include <llvm/Support/raw_ostream.h>
 #include <mlir/IR/DialectImplementation.h>
 #include <mlir/IR/StandardTypes.h>
@@ -37,7 +37,7 @@ using namespace types;
 ArcDialect::ArcDialect(mlir::MLIRContext *ctx) : mlir::Dialect("arc", ctx) {
   addOperations<
 #define GET_OP_LIST
-#include "Arc/ArcDialect.cpp.inc"
+#include "Arc/Arc.cpp.inc"
       >();
   addTypes<AppenderType>();
 }
@@ -183,4 +183,4 @@ LogicalResult ResultOp::customVerify() {
 //===----------------------------------------------------------------------===//
 
 #define GET_OP_CLASSES
-#include "Arc/ArcDialect.cpp.inc"
+#include "Arc/Arc.cpp.inc"

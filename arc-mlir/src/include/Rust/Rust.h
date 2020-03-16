@@ -1,4 +1,5 @@
-//===- Dialect definition for the Arc IR ----------------------------------===//
+//===- Dialect definition for the Rust IR
+//----------------------------------===//
 //
 // Copyright 2019 The MLIR Authors.
 // Copyright 2019 KTH Royal Institute of Technology.
@@ -16,38 +17,33 @@
 // limitations under the License.
 // =============================================================================
 //
-// This file implements the IR Dialect for the Arc language.
+// This file implements the IR Dialect for the Rust language.
 //
 //===----------------------------------------------------------------------===//
 
-#ifndef ARC_DIALECT_H_
-#define ARC_DIALECT_H_
+#ifndef RUST_DIALECT_H_
+#define RUST_DIALECT_H_
 
-#include "Arc/Types.h"
+#include "Rust/Types.h"
 #include <mlir/IR/Builders.h>
 #include <mlir/IR/Dialect.h>
 #include <mlir/IR/Function.h>
 #include <mlir/IR/Operation.h>
+#include <mlir/Interfaces/SideEffects.h>
 
 using namespace mlir;
 
-namespace arc {
+namespace rust {
 
-/// This is the definition of the Arc dialect.
-class ArcDialect : public mlir::Dialect {
-public:
-  explicit ArcDialect(mlir::MLIRContext *ctx);
+class RustPrinterStream;
 
-  static llvm::StringRef getDialectNamespace() { return "arc"; }
-  Type parseType(DialectAsmParser &parser) const override;
-  void printType(Type type, DialectAsmPrinter &os) const override;
-};
+#include "Rust/RustDialect.h.inc"
 
 /// Include the auto-generated header file containing the declarations of the
-/// arc operations.
+/// rust operations.
 #define GET_OP_CLASSES
-#include "Arc/ArcDialect.h.inc"
+#include "Rust/Rust.h.inc"
 
-} // end namespace arc
+} // namespace rust
 
-#endif // ARC_DIALECT_H_
+#endif // RUST_DIALECT_H_

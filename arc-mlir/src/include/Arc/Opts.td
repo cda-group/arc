@@ -28,7 +28,7 @@ include "../../mlir/include/mlir/Dialect/StandardOps/IR/Ops.td"
 #endif // STANDARD_OPS
 
 #ifndef ARC_OPS
-include "../../include/Arc/ArcDialect.td"
+include "../../include/Arc/Arc.td"
 #endif // ARC_OPS
 
 def AllValuesAreConstants : Constraint<CPred<"AllValuesAreConstant($0)">>;
