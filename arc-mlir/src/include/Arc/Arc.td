@@ -25,6 +25,7 @@
 
 #ifndef OP_BASE
 include "../../mlir/include/mlir/IR/OpBase.td"
+include "../../mlir/include/mlir/Interfaces/SideEffects.td"
 #endif // OP_BASE
 
 //===----------------------------------------------------------------------===//
@@ -34,6 +35,10 @@ include "../../mlir/include/mlir/IR/OpBase.td"
 def Arc_Dialect : Dialect {
   let name = "arc";
   let cppNamespace = "arc";
+  let extraClassDeclaration = [{
+      Type parseType(DialectAsmParser &parser) const override;
+      void printType(Type type, DialectAsmPrinter &os) const override;
+  }];
 }
 
 //===----------------------------------------------------------------------===//

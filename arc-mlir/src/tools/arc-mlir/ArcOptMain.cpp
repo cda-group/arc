@@ -13,7 +13,7 @@
 //===----------------------------------------------------------------------===//
 
 #include "Arc/ArcOptMain.h"
-#include "Rust/RustDialect.h"
+#include "Rust/Rust.h"
 #include "mlir/Analysis/Passes.h"
 #include "mlir/IR/Attributes.h"
 #include "mlir/IR/Diagnostics.h"

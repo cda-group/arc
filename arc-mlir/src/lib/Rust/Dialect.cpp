@@ -21,7 +21,7 @@
 //
 //===----------------------------------------------------------------------===//
 
-#include "Rust/RustDialect.h"
+#include "Rust/Rust.h"
 #include "Rust/RustPrinterStream.h"
 #include <llvm/Support/FileSystem.h>
 #include <llvm/Support/Path.h>
@@ -40,7 +40,7 @@ using namespace types;
 RustDialect::RustDialect(mlir::MLIRContext *ctx) : mlir::Dialect("rust", ctx) {
   addOperations<
 #define GET_OP_LIST
-#include "Rust/RustDialect.cpp.inc"
+#include "Rust/Rust.cpp.inc"
       >();
   addTypes<RustType>();
 }
@@ -305,4 +305,4 @@ void RustBlockResultOp::writeRust(RustPrinterStream &PS) {
 //===----------------------------------------------------------------------===//
 
 #define GET_OP_CLASSES
-#include "Rust/RustDialect.cpp.inc"
+#include "Rust/Rust.cpp.inc"

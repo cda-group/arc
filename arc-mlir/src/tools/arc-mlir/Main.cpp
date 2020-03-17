@@ -21,9 +21,9 @@
 //
 //===----------------------------------------------------------------------===//
 
-#include "Arc/ArcDialect.h"
+#include "Arc/Arc.h"
 #include "Arc/ArcOptMain.h"
-#include "Rust/RustDialect.h"
+#include "Rust/Rust.h"
 #include <llvm/Support/CommandLine.h>
 #include <llvm/Support/ErrorOr.h>
 #include <llvm/Support/InitLLVM.h>
