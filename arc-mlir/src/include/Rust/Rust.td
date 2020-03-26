@@ -192,6 +192,26 @@ def Rust_RustBinaryOp : Rust_Op<"binaryop", [SameOperandsAndResultType]> {
   }];
 }
 
+def Rust_RustCompOp : Rust_Op<"compop", [SameTypeOperands]> {
+  let summary = "a Rust comparison operation.";
+  let description = [{
+    A Rust comparison operation, the predicate attribute is the string
+    representation of the operator in Rust syntax.
+  }];
+
+  let arguments = (ins StrAttr : $op, AnyRustType : $LHS, AnyRustType : $RHS);
+  let results = (outs BoolRustType);
+
+  let extraClassDeclaration = [{
+    StringRef getOperator() {
+      return getAttr("op").dyn_cast<StringAttr>().getValue();
+    }
+
+    // Write this operation as Rust code to the stream
+    void writeRust(RustPrinterStream &);
+  }];
+}
+
 def Rust_RustBlockResultOp
     : Rust_Op<"block.result",
               [HasParent<"RustIfOp">, Terminator, SameOperandsAndResultType]> {

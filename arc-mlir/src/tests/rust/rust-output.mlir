@@ -52,6 +52,12 @@
 
 }) {sym_name = "this_is_the_name_of_the_seventh_function", type = (!rust<"bool">, !rust<"f64">) -> !rust<"f64"> } : () -> ()
 
+"rust.func"() ( {
+ ^bb0(%a: !rust<"f64">, %b: !rust<"f64">):
+ %x = "rust.compop"(%a, %b) {op="<"} : (!rust<"f64">, !rust<"f64">) -> (!rust<"bool">)
+ "rust.return"(%x) : (!rust<"bool">) -> (!rust<"bool">)
+
+}) {sym_name = "this_is_the_name_of_the_eigth_function", type = (!rust<"f64">, !rust<"f64">) -> !rust<"bool"> } : () -> ()
 
 "rust.crate_end"() : () -> ()
 } ) { sym_name = "this_is_the_name_of_the_crate" }: () -> ()
