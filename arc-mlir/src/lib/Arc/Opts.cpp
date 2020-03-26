@@ -54,20 +54,19 @@ ConstantValuesToDenseAttributes(mlir::OpResult result,
   return DenseElementsAttr::get(st, llvm::makeArrayRef(attribs));
 }
 
-struct ConstantFoldIf : public RewritePattern {
-  ConstantFoldIf(MLIRContext *ctx) : RewritePattern("arc.if", 1, ctx) {}
+struct ConstantFoldIf : public mlir::OpRewritePattern<arc::IfOp> {
+  ConstantFoldIf(MLIRContext *ctx)
+      : OpRewritePattern<arc::IfOp>(ctx, /*benefit=*/1) {}
 
-  PatternMatchResult match(Operation *op) const override {
-    Operation *def = op->getOperand(0).getDefiningOp();
-    if (def && isa<ConstantOp>(def))
-      return matchSuccess();
-    return matchFailure();
-  }
+  mlir::LogicalResult
+  matchAndRewrite(arc::IfOp op, PatternRewriter &rewriter) const override {
+    Operation *def = op.getOperand().getDefiningOp();
 
-  void rewrite(Operation *op, PatternRewriter &rewriter) const override {
-    int64_t cond =
-        cast<ConstantIntOp>(op->getOperand(0).getDefiningOp()).getValue();
-    Region &region = op->getRegion(cond ? 0 : 1);
+    if (!def || !isa<ConstantOp>(def))
+      return failure();
+
+    int64_t cond = cast<mlir::ConstantIntOp>(def).getValue();
+    Region &region = cond ? op.thenRegion() : op.elseRegion();
     Block &block = region.getBlocks().front();
 
     Operation *block_result =
@@ -90,6 +89,7 @@ struct ConstantFoldIf : public RewritePattern {
       rewriter.insert(cloned);
     }
     rewriter.replaceOp(op, cloned_result->getResults());
+    return success();
   }
 };
 
