@@ -43,7 +43,7 @@ object MLIRPrinter {
       val identifiers: SymbolMap = SymbolMap()
 
       out.print("module @toplevel {\n")
-      out.print("func @main() {\n")
+      out.print("func @main() -> i32 {\n")
       val body =
         self match {
           case symbol: Symbol =>
@@ -53,7 +53,7 @@ object MLIRPrinter {
           case expr: Expr =>
             expr.toMLIR(identifiers: SymbolMap)
         }
-      out.print("return\n}\n")
+      out.print(s"return ${body} : i32\n}\n")
       out.print("}\n")
       s"${sb.result()}\n"
     }
