@@ -789,7 +789,7 @@ final case class Translator(parser: ArcParser) {
       Expr(
         kind = ExprKind.Literal.U8(
           raw,
-          value = extractInteger(raw, 7).toInt
+          value = extractInteger(raw).toInt
         ),
         ty = Type.U8,
         ctx
@@ -801,7 +801,7 @@ final case class Translator(parser: ArcParser) {
       Expr(
         kind = ExprKind.Literal.U16(
           raw,
-          value = extractInteger(raw, 15).toInt
+          value = extractInteger(raw).toInt
         ),
         ty = Type.U16,
         ctx
@@ -813,7 +813,7 @@ final case class Translator(parser: ArcParser) {
       Expr(
         kind = ExprKind.Literal.U32(
           raw,
-          value = extractInteger(raw, 31).toInt
+          value = extractInteger(raw).toLong
         ),
         ty = Type.U32,
         ctx
@@ -825,7 +825,7 @@ final case class Translator(parser: ArcParser) {
       Expr(
         kind = ExprKind.Literal.U64(
           raw,
-          value = extractInteger(raw, 63).toLong
+          value = extractInteger(raw)
         ),
         ty = Type.U64,
         ctx
