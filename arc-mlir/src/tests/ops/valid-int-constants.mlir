@@ -3,6 +3,8 @@
 //
 // RUN: arc-mlir %s | FileCheck %s
 // RUN: arc-mlir -mlir-print-op-generic %s | arc-mlir | FileCheck %s
+// RUN: arc-mlir -mlir-print-op-generic %s | arc-mlir --canonicalize | FileCheck %s
+
 module @toplevel {
   func @main() {
     %si8_min = arc.constant -128 : si8
@@ -29,6 +31,20 @@ module @toplevel {
 //CHECK: {{%[^ ]+}} = arc.constant 4294967295 : ui32
     %ui64_max = arc.constant 18446744073709551615 : ui64
 //CHECK: {{%[^ ]+}} = arc.constant 18446744073709551615 : ui64
+
+    "arc.keep"(%si8_min) : (si8) -> ()
+    "arc.keep"(%si8_max) : (si8) -> ()
+    "arc.keep"(%si16_min) : (si16) -> ()
+    "arc.keep"(%si16_max) : (si16) -> ()
+    "arc.keep"(%si32_min) : (si32) -> ()
+    "arc.keep"(%si32_max) : (si32) -> ()
+    "arc.keep"(%si64_min) : (si64) -> ()
+    "arc.keep"(%si64_max) : (si64) -> ()
+    "arc.keep"(%ui8_max) : (ui8) -> ()
+    "arc.keep"(%ui16_max) : (ui16) -> ()
+    "arc.keep"(%ui32_max) : (ui32) -> ()
+    "arc.keep"(%ui64_max) : (ui64) -> ()
+
     return
   }
 }

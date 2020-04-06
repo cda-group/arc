@@ -23,7 +23,9 @@
 
 #include <llvm/ADT/StringSwitch.h>
 #include <llvm/Support/raw_ostream.h>
+#include <mlir/Dialect/CommonFolders.h>
 #include <mlir/IR/DialectImplementation.h>
+#include <mlir/IR/Matchers.h>
 #include <mlir/IR/StandardTypes.h>
 
 #include "Arc/Arc.h"
@@ -115,6 +117,20 @@ static LogicalResult verify(arc::ConstantIntOp constOp) {
   }
 
   return success();
+}
+
+OpFoldResult ConstantIntOp::fold(ArrayRef<Attribute> operands) {
+  assert(operands.empty() && "constant has no operands");
+  return value();
+}
+
+/// Materialize a single constant operation from a given attribute value with
+/// the desired resultant type. Stolen from the standard dialect.
+Operation *ArcDialect::materializeConstant(OpBuilder &builder, Attribute value,
+                                           Type type, Location loc) {
+  if (type.isSignedInteger() || type.isUnsignedInteger())
+    return builder.create<ConstantIntOp>(loc, type, value);
+  return nullptr; // Let the standard dialect handle this
 }
 
 LogicalResult MakeVectorOp::customVerify() {

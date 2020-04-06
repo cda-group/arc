@@ -39,6 +39,7 @@ def Arc_Dialect : Dialect {
       Type parseType(DialectAsmParser &parser) const override;
       void printType(Type type, DialectAsmPrinter &os) const override;
   }];
+  let hasConstantMaterializer = 1;
 }
 
 //===----------------------------------------------------------------------===//
@@ -349,6 +350,7 @@ def Arc_ConstantIntOp : Arc_Op<"constant", [ConstantLike, NoSideEffect]> {
   let parser = [{ return ::parseConstantIntOp(parser, result); }];
   let printer = [{ return ::print(*this, p); }];
   let verifier = [{ return ::verify(*this); }];
+  let hasFolder = 1;
 }
 
 def Arc_CMPI_P_EQ : I64EnumAttrCase<"eq", 0>;
