@@ -470,8 +470,7 @@ def Arc_AddIOp : ArcIntArithmeticOp<"addi", [Commutative]> {
     As std.addi but supporting signed/unsigned values.
   }];
 
-  // TODO: create folder
-  //let hasFolder = 1;
+  let hasFolder = 1;
 }
 
 def ArcAndOp : ArcIntArithmeticOp<"and", [Commutative]> {

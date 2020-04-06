@@ -237,6 +237,23 @@ LogicalResult ResultOp::customVerify() {
   return mlir::success();
 }
 
+OpFoldResult AddIOp::fold(ArrayRef<Attribute> operands) {
+  /// addi(x, 0) -> x
+  if (matchPattern(rhs(), m_Zero()))
+    return lhs();
+
+  bool isUnsigned = operands[0].getType().isUnsignedInteger();
+  bool overflowDetected = false;
+  auto result = constFoldBinaryOp<IntegerAttr>(operands, [&](APInt a, APInt b) {
+    if (overflowDetected)
+      return a;
+    if (isUnsigned)
+      return a.uadd_ov(b, overflowDetected);
+    return a.sadd_ov(b, overflowDetected);
+  });
+  return overflowDetected ? Attribute() : result;
+}
+
 //===----------------------------------------------------------------------===//
 // General helpers for comparison ops, stolen from the standard dialect
 //===----------------------------------------------------------------------===//
@@ -275,8 +292,7 @@ static void printArcBinaryOp(Operation *op, OpAsmPrinter &p) {
     return;
   }
 
-  p << op->getName() << ' '
-    << op->getOperand(0) << ", " << op->getOperand(1);
+  p << op->getName() << ' ' << op->getOperand(0) << ", " << op->getOperand(1);
   p.printOptionalAttrDict(op->getAttrs());
 
   // Now we can output only one type for all operands and the result.
