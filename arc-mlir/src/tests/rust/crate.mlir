@@ -26,7 +26,8 @@
 
 "rust.crate"() ( {
 
-// expected-error@+1 {{'rust.func' op requires a type attribute 'type'}}
+// expected-error@+2 {{'rust.func' op requires a type attribute 'type'}}
+// expected-note@+1 {{see current operation: "rust.func"() (}}
 "rust.func"() ( {
  ^bb0(%arg0: !rust<"f32">):
  "rust.return"(%arg0) : (!rust<"f32">) -> (!rust<"f32">)
@@ -38,7 +39,8 @@
 // -----
 
 "rust.crate"() ( {
-// expected-error@+1 {{'rust.func' op expected 1 arguments to body region, found 2}}
+// expected-error@+2 {{'rust.func' op expected 1 arguments to body region, found 2}}
+// expected-note@+1 {{see current operation: "rust.func"() (}}
 "rust.func"() ( {
  ^bb0(%arg0: !rust<"f32">, %arg1: !rust<"f32">):
  "rust.return"(%arg0) : (!rust<"f32">) -> (!rust<"f32">)
@@ -50,7 +52,8 @@
 // -----
 
 "rust.crate"() ( {
-// expected-error@+1 {{'rust.func' op expected body region argument #0 to be of type '!rust.f64', found '!rust.f32'}}
+// expected-error@+2 {{'rust.func' op expected body region argument #0 to be of type '!rust.f64', found '!rust.f32'}}
+// expected-note@+1 {{see current operation: "rust.func"() (}}
 "rust.func"() ( {
  ^bb0(%arg0: !rust<"f32">):
  "rust.return"(%arg0) : (!rust<"f32">) -> (!rust<"f32">)
@@ -64,7 +67,8 @@
 "rust.crate"() ( {
 "rust.func"() ( {
  ^bb0(%arg0: !rust<"f32">):
-// expected-error@+1 {{'rust.return' op result type does not match the type of the function: expected '!rust.f64' but found '!rust.f32'}}
+// expected-error@+2 {{'rust.return' op result type does not match the type of the function: expected '!rust.f64' but found '!rust.f32'}}
+// expected-note@+1 {{see current operation: %0 = "rust.return"}}
  "rust.return"(%arg0) : (!rust<"f32">) -> (!rust<"f32">)
 }) {sym_name = "the-function-name-1", type = (!rust<"f32">) -> !rust<"f64"> } : () -> ()
 
