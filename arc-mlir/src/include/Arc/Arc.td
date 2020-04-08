@@ -424,8 +424,7 @@ def Arc_SelectOp : Arc_Op<"select", [NoSideEffect, SameOperandsAndResultShape,
       Value getFalseValue() { return false_value(); }
   }];
 
-  // TODO add fiolder
-  //  let hasFolder = 1;
+  let hasFolder = 1;
 
   let assemblyFormat = [{
     $condition `,` $true_value `,` $false_value attr-dict `:` type($result)

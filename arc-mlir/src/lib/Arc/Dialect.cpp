@@ -294,6 +294,24 @@ OpFoldResult AddIOp::fold(ArrayRef<Attribute> operands) {
 }
 
 //===----------------------------------------------------------------------===//
+// SelectOp
+//===----------------------------------------------------------------------===//
+
+// Stolen from standard dialect
+OpFoldResult arc::SelectOp::fold(ArrayRef<Attribute> operands) {
+  auto condition = getCondition();
+
+  // select true, %0, %1 => %0
+  if (matchPattern(condition, m_One()))
+    return getTrueValue();
+
+  // select false, %0, %1 => %1
+  if (matchPattern(condition, m_Zero()))
+    return getFalseValue();
+  return nullptr;
+}
+
+//===----------------------------------------------------------------------===//
 // General helpers for comparison ops, stolen from the standard dialect
 //===----------------------------------------------------------------------===//
 
