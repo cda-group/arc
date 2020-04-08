@@ -397,8 +397,7 @@ def Arc_CmpIOp : Arc_Op<"cmpi",
 
   let verifier = [{ return success(); }];
 
-  // TODO implement folder
-  //let hasFolder = 1;
+  let hasFolder = 1;
 
   let assemblyFormat = "$predicate `,` $lhs `,` $rhs attr-dict `:` type($lhs)";
 }

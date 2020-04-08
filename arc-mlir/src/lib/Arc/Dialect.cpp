@@ -133,6 +133,45 @@ Operation *ArcDialect::materializeConstant(OpBuilder &builder, Attribute value,
   return nullptr; // Let the standard dialect handle this
 }
 
+//===----------------------------------------------------------------------===//
+// CmpIOp
+//===----------------------------------------------------------------------===//
+
+// Compute `lhs` `pred` `rhs`, where `pred` is one of the known integer
+// comparison predicates.
+static bool applyCmpPredicate(Arc_CmpIPredicate predicate, bool isUnsigned,
+                              const APInt &lhs, const APInt &rhs) {
+  switch (predicate) {
+  case Arc_CmpIPredicate::eq:
+    return lhs.eq(rhs);
+  case Arc_CmpIPredicate::ne:
+    return lhs.ne(rhs);
+  case Arc_CmpIPredicate::lt:
+    return isUnsigned ? lhs.ult(rhs) : lhs.slt(rhs);
+  case Arc_CmpIPredicate::le:
+    return isUnsigned ? lhs.ule(rhs) : lhs.sle(rhs);
+  case Arc_CmpIPredicate::gt:
+    return isUnsigned ? lhs.ugt(rhs) : lhs.sgt(rhs);
+  case Arc_CmpIPredicate::ge:
+    return isUnsigned ? lhs.uge(rhs) : lhs.sge(rhs);
+  }
+  llvm_unreachable("unknown comparison predicate");
+}
+
+// Constant folding hook for comparisons.
+OpFoldResult arc::CmpIOp::fold(ArrayRef<Attribute> operands) {
+  assert(operands.size() == 2 && "cmpi takes two arguments");
+
+  auto lhs = operands.front().dyn_cast_or_null<IntegerAttr>();
+  auto rhs = operands.back().dyn_cast_or_null<IntegerAttr>();
+  if (!lhs || !rhs)
+    return {};
+  bool isUnsigned = operands[0].getType().isUnsignedInteger();
+  auto val = applyCmpPredicate(getPredicate(), isUnsigned, lhs.getValue(),
+                               rhs.getValue());
+  return IntegerAttr::get(IntegerType::get(1, getContext()), APInt(1, val));
+}
+
 LogicalResult MakeVectorOp::customVerify() {
   auto Operation = this->getOperation();
   auto NumOperands = Operation->getNumOperands();
