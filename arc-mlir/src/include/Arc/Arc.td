@@ -471,9 +471,9 @@ def Arc_AddIOp : ArcIntArithmeticOp<"addi", [Commutative]> {
   let hasFolder = 1;
 }
 
-def ArcAndOp : ArcIntArithmeticOp<"and", [Commutative]> {
+def Arc_AndOp : ArcIntArithmeticOp<"and", [Commutative]> {
   let summary = "integer binary and";
-  // TODO let hasFolder = 1;
+  let hasFolder = 1;
 }
 
 def Arc_DivIOp : ArcIntArithmeticOp<"divi"> {
@@ -483,7 +483,7 @@ def Arc_DivIOp : ArcIntArithmeticOp<"divi"> {
 
 def Arc_OrOp : ArcIntArithmeticOp<"or", [Commutative]> {
   let summary = "integer binary or";
-  // TODO  let hasFolder = 1;
+  let hasFolder = 1;
 }
 
 def Arc_MulIOp : ArcIntArithmeticOp<"muli", [Commutative]> {
@@ -503,7 +503,7 @@ def Arc_SignedRemIOp : ArcIntArithmeticOp<"remi"> {
 
 def Arc_XOrOp : ArcIntArithmeticOp<"xor", [Commutative]> {
   let summary = "integer binary xor";
-  // TODO let hasFolder = 1;
+  let hasFolder = 1;
 }
 
 #endif // ARC_OPS

@@ -81,6 +81,23 @@ void ArcDialect::printType(Type type, DialectAsmPrinter &os) const {
 //===----------------------------------------------------------------------===//
 
 //===----------------------------------------------------------------------===//
+// AndOp
+//===----------------------------------------------------------------------===//
+
+// Stolen from standard dialect
+OpFoldResult arc::AndOp::fold(ArrayRef<Attribute> operands) {
+  /// and(x, 0) -> 0
+  if (matchPattern(rhs(), m_Zero()))
+    return rhs();
+  /// and(x,x) -> x
+  if (lhs() == rhs())
+    return rhs();
+
+  return constFoldBinaryOp<IntegerAttr>(operands,
+                                        [](APInt a, APInt b) { return a & b; });
+}
+
+//===----------------------------------------------------------------------===//
 // ConstantIntOp
 //===----------------------------------------------------------------------===//
 static ParseResult parseConstantIntOp(OpAsmParser &parser,
@@ -294,6 +311,22 @@ OpFoldResult AddIOp::fold(ArrayRef<Attribute> operands) {
 }
 
 //===----------------------------------------------------------------------===//
+// OrOp
+//===----------------------------------------------------------------------===//
+
+OpFoldResult arc::OrOp::fold(ArrayRef<Attribute> operands) {
+  /// or(x, 0) -> x
+  if (matchPattern(rhs(), m_Zero()))
+    return lhs();
+  /// or(x,x) -> x
+  if (lhs() == rhs())
+    return rhs();
+
+  return constFoldBinaryOp<IntegerAttr>(operands,
+                                        [](APInt a, APInt b) { return a | b; });
+}
+
+//===----------------------------------------------------------------------===//
 // SelectOp
 //===----------------------------------------------------------------------===//
 
@@ -309,6 +342,23 @@ OpFoldResult arc::SelectOp::fold(ArrayRef<Attribute> operands) {
   if (matchPattern(condition, m_Zero()))
     return getFalseValue();
   return nullptr;
+}
+
+//===----------------------------------------------------------------------===//
+// XOrOp
+//===----------------------------------------------------------------------===//
+
+// Stolen from standard dialect
+OpFoldResult arc::XOrOp::fold(ArrayRef<Attribute> operands) {
+  /// xor(x, 0) -> x
+  if (matchPattern(rhs(), m_Zero()))
+    return lhs();
+  /// xor(x,x) -> 0
+  if (lhs() == rhs())
+    return Builder(getContext()).getZeroAttr(getType());
+
+  return constFoldBinaryOp<IntegerAttr>(operands,
+                                        [](APInt a, APInt b) { return a ^ b; });
 }
 
 //===----------------------------------------------------------------------===//
