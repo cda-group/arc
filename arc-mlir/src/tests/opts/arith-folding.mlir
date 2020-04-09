@@ -36,6 +36,8 @@ module @toplevel {
     // CHECK-DAG: [[CSTsi16n221:%[^ ]+]] = arc.constant -221 : si16
     %cst_si16n220 = arc.constant -220: si16
     // CHECK-DAG: [[CSTsi16n220:%[^ ]+]] = arc.constant -220 : si16
+    %cst_si16n3 = arc.constant -3: si16
+    // CHECK-DAG: [[CSTsi16n3:%[^ ]+]] = arc.constant -3 : si16
     %cst_si16n2 = arc.constant -2: si16
     // CHECK-DAG: [[CSTsi16n2:%[^ ]+]] = arc.constant -2 : si16
     %cst_si16n1 = arc.constant -1: si16
@@ -44,6 +46,8 @@ module @toplevel {
     // CHECK-DAG: [[CSTsi160:%[^ ]+]] = arc.constant 0 : si16
     %cst_si161 = arc.constant 1: si16
     // CHECK-DAG: [[CSTsi161:%[^ ]+]] = arc.constant 1 : si16
+    %cst_si163 = arc.constant 3: si16
+    // CHECK-DAG: [[CSTsi163:%[^ ]+]] = arc.constant 3 : si16
     %cst_si16219 = arc.constant 219: si16
     // CHECK-DAG: [[CSTsi16219:%[^ ]+]] = arc.constant 219 : si16
     %cst_si16220 = arc.constant 220: si16
@@ -114,6 +118,8 @@ module @toplevel {
     // CHECK-DAG: [[CSTsi320:%[^ ]+]] = arc.constant 0 : si32
     %cst_si321 = arc.constant 1: si32
     // CHECK-DAG: [[CSTsi321:%[^ ]+]] = arc.constant 1 : si32
+    %cst_si322 = arc.constant 2: si32
+    // CHECK-DAG: [[CSTsi322:%[^ ]+]] = arc.constant 2 : si32
     %cst_si32217176401 = arc.constant 217176401: si32
     // CHECK-DAG: [[CSTsi32217176401:%[^ ]+]] = arc.constant 217176401 : si32
     %cst_si32434299846 = arc.constant 434299846: si32
@@ -186,6 +192,14 @@ module @toplevel {
     // CHECK-DAG: [[CSTsi64n1328271339354574848:%[^ ]+]] = arc.constant -1328271339354574848 : si64
     %cst_si64n413655875805433856 = arc.constant -413655875805433856: si64
     // CHECK-DAG: [[CSTsi64n413655875805433856:%[^ ]+]] = arc.constant -413655875805433856 : si64
+    %cst_si64n6 = arc.constant -6: si64
+    // CHECK-DAG: [[CSTsi64n6:%[^ ]+]] = arc.constant -6 : si64
+    %cst_si64n5 = arc.constant -5: si64
+    // CHECK-DAG: [[CSTsi64n5:%[^ ]+]] = arc.constant -5 : si64
+    %cst_si64n4 = arc.constant -4: si64
+    // CHECK-DAG: [[CSTsi64n4:%[^ ]+]] = arc.constant -4 : si64
+    %cst_si64n3 = arc.constant -3: si64
+    // CHECK-DAG: [[CSTsi64n3:%[^ ]+]] = arc.constant -3 : si64
     %cst_si64n2 = arc.constant -2: si64
     // CHECK-DAG: [[CSTsi64n2:%[^ ]+]] = arc.constant -2 : si64
     %cst_si64n1 = arc.constant -1: si64
@@ -194,6 +208,10 @@ module @toplevel {
     // CHECK-DAG: [[CSTsi640:%[^ ]+]] = arc.constant 0 : si64
     %cst_si641 = arc.constant 1: si64
     // CHECK-DAG: [[CSTsi641:%[^ ]+]] = arc.constant 1 : si64
+    %cst_si645 = arc.constant 5: si64
+    // CHECK-DAG: [[CSTsi645:%[^ ]+]] = arc.constant 5 : si64
+    %cst_si646 = arc.constant 6: si64
+    // CHECK-DAG: [[CSTsi646:%[^ ]+]] = arc.constant 6 : si64
     %cst_si64413655875805433856 = arc.constant 413655875805433856: si64
     // CHECK-DAG: [[CSTsi64413655875805433856:%[^ ]+]] = arc.constant 413655875805433856 : si64
     %cst_si641328271339354574848 = arc.constant 1328271339354574848: si64
@@ -248,6 +266,10 @@ module @toplevel {
     // CHECK-DAG: [[CSTsi8n16:%[^ ]+]] = arc.constant -16 : si8
     %cst_si8n15 = arc.constant -15: si8
     // CHECK-DAG: [[CSTsi8n15:%[^ ]+]] = arc.constant -15 : si8
+    %cst_si8n8 = arc.constant -8: si8
+    // CHECK-DAG: [[CSTsi8n8:%[^ ]+]] = arc.constant -8 : si8
+    %cst_si8n7 = arc.constant -7: si8
+    // CHECK-DAG: [[CSTsi8n7:%[^ ]+]] = arc.constant -7 : si8
     %cst_si8n2 = arc.constant -2: si8
     // CHECK-DAG: [[CSTsi8n2:%[^ ]+]] = arc.constant -2 : si8
     %cst_si8n1 = arc.constant -1: si8
@@ -258,6 +280,8 @@ module @toplevel {
     // CHECK-DAG: [[CSTsi81:%[^ ]+]] = arc.constant 1 : si8
     %cst_si82 = arc.constant 2: si8
     // CHECK-DAG: [[CSTsi82:%[^ ]+]] = arc.constant 2 : si8
+    %cst_si87 = arc.constant 7: si8
+    // CHECK-DAG: [[CSTsi87:%[^ ]+]] = arc.constant 7 : si8
     %cst_si815 = arc.constant 15: si8
     // CHECK-DAG: [[CSTsi815:%[^ ]+]] = arc.constant 15 : si8
     %cst_si816 = arc.constant 16: si8
@@ -282,6 +306,14 @@ module @toplevel {
     // CHECK-DAG: [[CSTui161:%[^ ]+]] = arc.constant 1 : ui16
     %cst_ui162 = arc.constant 2: ui16
     // CHECK-DAG: [[CSTui162:%[^ ]+]] = arc.constant 2 : ui16
+    %cst_ui163 = arc.constant 3: ui16
+    // CHECK-DAG: [[CSTui163:%[^ ]+]] = arc.constant 3 : ui16
+    %cst_ui1610 = arc.constant 10: ui16
+    // CHECK-DAG: [[CSTui1610:%[^ ]+]] = arc.constant 10 : ui16
+    %cst_ui1637 = arc.constant 37: ui16
+    // CHECK-DAG: [[CSTui1637:%[^ ]+]] = arc.constant 37 : ui16
+    %cst_ui1638 = arc.constant 38: ui16
+    // CHECK-DAG: [[CSTui1638:%[^ ]+]] = arc.constant 38 : ui16
     %cst_ui16438 = arc.constant 438: ui16
     // CHECK-DAG: [[CSTui16438:%[^ ]+]] = arc.constant 438 : ui16
     %cst_ui16439 = arc.constant 439: ui16
@@ -386,6 +418,12 @@ module @toplevel {
     // CHECK-DAG: [[CSTui641:%[^ ]+]] = arc.constant 1 : ui64
     %cst_ui642 = arc.constant 2: ui64
     // CHECK-DAG: [[CSTui642:%[^ ]+]] = arc.constant 2 : ui64
+    %cst_ui6457 = arc.constant 57: ui64
+    // CHECK-DAG: [[CSTui6457:%[^ ]+]] = arc.constant 57 : ui64
+    %cst_ui6488 = arc.constant 88: ui64
+    // CHECK-DAG: [[CSTui6488:%[^ ]+]] = arc.constant 88 : ui64
+    %cst_ui6496 = arc.constant 96: ui64
+    // CHECK-DAG: [[CSTui6496:%[^ ]+]] = arc.constant 96 : ui64
     %cst_ui64191084152064409599 = arc.constant 191084152064409599: ui64
     // CHECK-DAG: [[CSTui64191084152064409599:%[^ ]+]] = arc.constant 191084152064409599 : ui64
     %cst_ui64191084152064409600 = arc.constant 191084152064409600: ui64
@@ -440,6 +478,8 @@ module @toplevel {
     // CHECK-DAG: [[CSTui81:%[^ ]+]] = arc.constant 1 : ui8
     %cst_ui82 = arc.constant 2: ui8
     // CHECK-DAG: [[CSTui82:%[^ ]+]] = arc.constant 2 : ui8
+    %cst_ui83 = arc.constant 3: ui8
+    // CHECK-DAG: [[CSTui83:%[^ ]+]] = arc.constant 3 : ui8
     %cst_ui828 = arc.constant 28: ui8
     // CHECK-DAG: [[CSTui828:%[^ ]+]] = arc.constant 28 : ui8
     %cst_ui862 = arc.constant 62: ui8
@@ -2851,6 +2891,2250 @@ module @toplevel {
     // CHECK-DAG: [[RESULT_addi_ui8255_ui8255:%[^ ]+]] = arc.addi [[CSTui8255]], [[CSTui8255]] : ui8
     "arc.keep"(%result_addi_ui8255_ui8255) : (ui8) -> ()
     // CHECK: "arc.keep"([[RESULT_addi_ui8255_ui8255]]) : (ui8) -> ()
+
+    // divi -32768, 10486 -> -3
+    %result_divi_si16n32768_si1610486 = arc.divi %cst_si16n32768, %cst_si1610486 : si16
+    "arc.keep"(%result_divi_si16n32768_si1610486) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi16n3]]) : (si16) -> ()
+
+    // divi -32767, 10486 -> -3
+    %result_divi_si16n32767_si1610486 = arc.divi %cst_si16n32767, %cst_si1610486 : si16
+    "arc.keep"(%result_divi_si16n32767_si1610486) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi16n3]]) : (si16) -> ()
+
+    // divi -32547, 10486 -> -3
+    %result_divi_si16n32547_si1610486 = arc.divi %cst_si16n32547, %cst_si1610486 : si16
+    "arc.keep"(%result_divi_si16n32547_si1610486) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi16n3]]) : (si16) -> ()
+
+    // divi -32768, 16514 -> -1
+    %result_divi_si16n32768_si1616514 = arc.divi %cst_si16n32768, %cst_si1616514 : si16
+    "arc.keep"(%result_divi_si16n32768_si1616514) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi16n1]]) : (si16) -> ()
+
+    // divi -32768, 32766 -> -1
+    %result_divi_si16n32768_si1632766 = arc.divi %cst_si16n32768, %cst_si1632766 : si16
+    "arc.keep"(%result_divi_si16n32768_si1632766) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi16n1]]) : (si16) -> ()
+
+    // divi -32768, 32767 -> -1
+    %result_divi_si16n32768_si1632767 = arc.divi %cst_si16n32768, %cst_si1632767 : si16
+    "arc.keep"(%result_divi_si16n32768_si1632767) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi16n1]]) : (si16) -> ()
+
+    // divi -32767, 16514 -> -1
+    %result_divi_si16n32767_si1616514 = arc.divi %cst_si16n32767, %cst_si1616514 : si16
+    "arc.keep"(%result_divi_si16n32767_si1616514) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi16n1]]) : (si16) -> ()
+
+    // divi -32767, 32766 -> -1
+    %result_divi_si16n32767_si1632766 = arc.divi %cst_si16n32767, %cst_si1632766 : si16
+    "arc.keep"(%result_divi_si16n32767_si1632766) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi16n1]]) : (si16) -> ()
+
+    // divi -32767, 32767 -> -1
+    %result_divi_si16n32767_si1632767 = arc.divi %cst_si16n32767, %cst_si1632767 : si16
+    "arc.keep"(%result_divi_si16n32767_si1632767) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi16n1]]) : (si16) -> ()
+
+    // divi -32547, 16514 -> -1
+    %result_divi_si16n32547_si1616514 = arc.divi %cst_si16n32547, %cst_si1616514 : si16
+    "arc.keep"(%result_divi_si16n32547_si1616514) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi16n1]]) : (si16) -> ()
+
+    // divi 32766, -32547 -> -1
+    %result_divi_si1632766_si16n32547 = arc.divi %cst_si1632766, %cst_si16n32547 : si16
+    "arc.keep"(%result_divi_si1632766_si16n32547) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi16n1]]) : (si16) -> ()
+
+    // divi 32767, -32767 -> -1
+    %result_divi_si1632767_si16n32767 = arc.divi %cst_si1632767, %cst_si16n32767 : si16
+    "arc.keep"(%result_divi_si1632767_si16n32767) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi16n1]]) : (si16) -> ()
+
+    // divi 32767, -32547 -> -1
+    %result_divi_si1632767_si16n32547 = arc.divi %cst_si1632767, %cst_si16n32547 : si16
+    "arc.keep"(%result_divi_si1632767_si16n32547) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi16n1]]) : (si16) -> ()
+
+    // divi -32767, -32768 -> 0
+    %result_divi_si16n32767_si16n32768 = arc.divi %cst_si16n32767, %cst_si16n32768 : si16
+    "arc.keep"(%result_divi_si16n32767_si16n32768) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi160]]) : (si16) -> ()
+
+    // divi -32547, -32768 -> 0
+    %result_divi_si16n32547_si16n32768 = arc.divi %cst_si16n32547, %cst_si16n32768 : si16
+    "arc.keep"(%result_divi_si16n32547_si16n32768) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi160]]) : (si16) -> ()
+
+    // divi -32547, -32767 -> 0
+    %result_divi_si16n32547_si16n32767 = arc.divi %cst_si16n32547, %cst_si16n32767 : si16
+    "arc.keep"(%result_divi_si16n32547_si16n32767) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi160]]) : (si16) -> ()
+
+    // divi -32547, 32766 -> 0
+    %result_divi_si16n32547_si1632766 = arc.divi %cst_si16n32547, %cst_si1632766 : si16
+    "arc.keep"(%result_divi_si16n32547_si1632766) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi160]]) : (si16) -> ()
+
+    // divi -32547, 32767 -> 0
+    %result_divi_si16n32547_si1632767 = arc.divi %cst_si16n32547, %cst_si1632767 : si16
+    "arc.keep"(%result_divi_si16n32547_si1632767) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi160]]) : (si16) -> ()
+
+    // divi 0, -32768 -> 0
+    %result_divi_si160_si16n32768 = arc.divi %cst_si160, %cst_si16n32768 : si16
+    "arc.keep"(%result_divi_si160_si16n32768) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi160]]) : (si16) -> ()
+
+    // divi 0, -32767 -> 0
+    %result_divi_si160_si16n32767 = arc.divi %cst_si160, %cst_si16n32767 : si16
+    "arc.keep"(%result_divi_si160_si16n32767) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi160]]) : (si16) -> ()
+
+    // divi 0, -32547 -> 0
+    %result_divi_si160_si16n32547 = arc.divi %cst_si160, %cst_si16n32547 : si16
+    "arc.keep"(%result_divi_si160_si16n32547) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi160]]) : (si16) -> ()
+
+    // divi 0, 10486 -> 0
+    %result_divi_si160_si1610486 = arc.divi %cst_si160, %cst_si1610486 : si16
+    "arc.keep"(%result_divi_si160_si1610486) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi160]]) : (si16) -> ()
+
+    // divi 0, 16514 -> 0
+    %result_divi_si160_si1616514 = arc.divi %cst_si160, %cst_si1616514 : si16
+    "arc.keep"(%result_divi_si160_si1616514) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi160]]) : (si16) -> ()
+
+    // divi 0, 32766 -> 0
+    %result_divi_si160_si1632766 = arc.divi %cst_si160, %cst_si1632766 : si16
+    "arc.keep"(%result_divi_si160_si1632766) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi160]]) : (si16) -> ()
+
+    // divi 0, 32767 -> 0
+    %result_divi_si160_si1632767 = arc.divi %cst_si160, %cst_si1632767 : si16
+    "arc.keep"(%result_divi_si160_si1632767) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi160]]) : (si16) -> ()
+
+    // divi 10486, -32768 -> 0
+    %result_divi_si1610486_si16n32768 = arc.divi %cst_si1610486, %cst_si16n32768 : si16
+    "arc.keep"(%result_divi_si1610486_si16n32768) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi160]]) : (si16) -> ()
+
+    // divi 10486, -32767 -> 0
+    %result_divi_si1610486_si16n32767 = arc.divi %cst_si1610486, %cst_si16n32767 : si16
+    "arc.keep"(%result_divi_si1610486_si16n32767) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi160]]) : (si16) -> ()
+
+    // divi 10486, -32547 -> 0
+    %result_divi_si1610486_si16n32547 = arc.divi %cst_si1610486, %cst_si16n32547 : si16
+    "arc.keep"(%result_divi_si1610486_si16n32547) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi160]]) : (si16) -> ()
+
+    // divi 10486, 16514 -> 0
+    %result_divi_si1610486_si1616514 = arc.divi %cst_si1610486, %cst_si1616514 : si16
+    "arc.keep"(%result_divi_si1610486_si1616514) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi160]]) : (si16) -> ()
+
+    // divi 10486, 32766 -> 0
+    %result_divi_si1610486_si1632766 = arc.divi %cst_si1610486, %cst_si1632766 : si16
+    "arc.keep"(%result_divi_si1610486_si1632766) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi160]]) : (si16) -> ()
+
+    // divi 10486, 32767 -> 0
+    %result_divi_si1610486_si1632767 = arc.divi %cst_si1610486, %cst_si1632767 : si16
+    "arc.keep"(%result_divi_si1610486_si1632767) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi160]]) : (si16) -> ()
+
+    // divi 16514, -32768 -> 0
+    %result_divi_si1616514_si16n32768 = arc.divi %cst_si1616514, %cst_si16n32768 : si16
+    "arc.keep"(%result_divi_si1616514_si16n32768) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi160]]) : (si16) -> ()
+
+    // divi 16514, -32767 -> 0
+    %result_divi_si1616514_si16n32767 = arc.divi %cst_si1616514, %cst_si16n32767 : si16
+    "arc.keep"(%result_divi_si1616514_si16n32767) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi160]]) : (si16) -> ()
+
+    // divi 16514, -32547 -> 0
+    %result_divi_si1616514_si16n32547 = arc.divi %cst_si1616514, %cst_si16n32547 : si16
+    "arc.keep"(%result_divi_si1616514_si16n32547) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi160]]) : (si16) -> ()
+
+    // divi 16514, 32766 -> 0
+    %result_divi_si1616514_si1632766 = arc.divi %cst_si1616514, %cst_si1632766 : si16
+    "arc.keep"(%result_divi_si1616514_si1632766) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi160]]) : (si16) -> ()
+
+    // divi 16514, 32767 -> 0
+    %result_divi_si1616514_si1632767 = arc.divi %cst_si1616514, %cst_si1632767 : si16
+    "arc.keep"(%result_divi_si1616514_si1632767) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi160]]) : (si16) -> ()
+
+    // divi 32766, -32768 -> 0
+    %result_divi_si1632766_si16n32768 = arc.divi %cst_si1632766, %cst_si16n32768 : si16
+    "arc.keep"(%result_divi_si1632766_si16n32768) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi160]]) : (si16) -> ()
+
+    // divi 32766, -32767 -> 0
+    %result_divi_si1632766_si16n32767 = arc.divi %cst_si1632766, %cst_si16n32767 : si16
+    "arc.keep"(%result_divi_si1632766_si16n32767) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi160]]) : (si16) -> ()
+
+    // divi 32766, 32767 -> 0
+    %result_divi_si1632766_si1632767 = arc.divi %cst_si1632766, %cst_si1632767 : si16
+    "arc.keep"(%result_divi_si1632766_si1632767) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi160]]) : (si16) -> ()
+
+    // divi 32767, -32768 -> 0
+    %result_divi_si1632767_si16n32768 = arc.divi %cst_si1632767, %cst_si16n32768 : si16
+    "arc.keep"(%result_divi_si1632767_si16n32768) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi160]]) : (si16) -> ()
+
+    // divi -32768, -32768 -> 1
+    %result_divi_si16n32768_si16n32768 = arc.divi %cst_si16n32768, %cst_si16n32768 : si16
+    "arc.keep"(%result_divi_si16n32768_si16n32768) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi161]]) : (si16) -> ()
+
+    // divi -32768, -32767 -> 1
+    %result_divi_si16n32768_si16n32767 = arc.divi %cst_si16n32768, %cst_si16n32767 : si16
+    "arc.keep"(%result_divi_si16n32768_si16n32767) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi161]]) : (si16) -> ()
+
+    // divi -32768, -32547 -> 1
+    %result_divi_si16n32768_si16n32547 = arc.divi %cst_si16n32768, %cst_si16n32547 : si16
+    "arc.keep"(%result_divi_si16n32768_si16n32547) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi161]]) : (si16) -> ()
+
+    // divi -32767, -32767 -> 1
+    %result_divi_si16n32767_si16n32767 = arc.divi %cst_si16n32767, %cst_si16n32767 : si16
+    "arc.keep"(%result_divi_si16n32767_si16n32767) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi161]]) : (si16) -> ()
+
+    // divi -32767, -32547 -> 1
+    %result_divi_si16n32767_si16n32547 = arc.divi %cst_si16n32767, %cst_si16n32547 : si16
+    "arc.keep"(%result_divi_si16n32767_si16n32547) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi161]]) : (si16) -> ()
+
+    // divi -32547, -32547 -> 1
+    %result_divi_si16n32547_si16n32547 = arc.divi %cst_si16n32547, %cst_si16n32547 : si16
+    "arc.keep"(%result_divi_si16n32547_si16n32547) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi161]]) : (si16) -> ()
+
+    // divi 10486, 10486 -> 1
+    %result_divi_si1610486_si1610486 = arc.divi %cst_si1610486, %cst_si1610486 : si16
+    "arc.keep"(%result_divi_si1610486_si1610486) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi161]]) : (si16) -> ()
+
+    // divi 16514, 10486 -> 1
+    %result_divi_si1616514_si1610486 = arc.divi %cst_si1616514, %cst_si1610486 : si16
+    "arc.keep"(%result_divi_si1616514_si1610486) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi161]]) : (si16) -> ()
+
+    // divi 16514, 16514 -> 1
+    %result_divi_si1616514_si1616514 = arc.divi %cst_si1616514, %cst_si1616514 : si16
+    "arc.keep"(%result_divi_si1616514_si1616514) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi161]]) : (si16) -> ()
+
+    // divi 32766, 16514 -> 1
+    %result_divi_si1632766_si1616514 = arc.divi %cst_si1632766, %cst_si1616514 : si16
+    "arc.keep"(%result_divi_si1632766_si1616514) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi161]]) : (si16) -> ()
+
+    // divi 32766, 32766 -> 1
+    %result_divi_si1632766_si1632766 = arc.divi %cst_si1632766, %cst_si1632766 : si16
+    "arc.keep"(%result_divi_si1632766_si1632766) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi161]]) : (si16) -> ()
+
+    // divi 32767, 16514 -> 1
+    %result_divi_si1632767_si1616514 = arc.divi %cst_si1632767, %cst_si1616514 : si16
+    "arc.keep"(%result_divi_si1632767_si1616514) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi161]]) : (si16) -> ()
+
+    // divi 32767, 32766 -> 1
+    %result_divi_si1632767_si1632766 = arc.divi %cst_si1632767, %cst_si1632766 : si16
+    "arc.keep"(%result_divi_si1632767_si1632766) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi161]]) : (si16) -> ()
+
+    // divi 32767, 32767 -> 1
+    %result_divi_si1632767_si1632767 = arc.divi %cst_si1632767, %cst_si1632767 : si16
+    "arc.keep"(%result_divi_si1632767_si1632767) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi161]]) : (si16) -> ()
+
+    // divi 32766, 10486 -> 3
+    %result_divi_si1632766_si1610486 = arc.divi %cst_si1632766, %cst_si1610486 : si16
+    "arc.keep"(%result_divi_si1632766_si1610486) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi163]]) : (si16) -> ()
+
+    // divi 32767, 10486 -> 3
+    %result_divi_si1632767_si1610486 = arc.divi %cst_si1632767, %cst_si1610486 : si16
+    "arc.keep"(%result_divi_si1632767_si1610486) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi163]]) : (si16) -> ()
+
+    // divi -32768, 0 -> no-fold
+    %result_divi_si16n32768_si160 = arc.divi %cst_si16n32768, %cst_si160 : si16
+    // CHECK-DAG: [[RESULT_divi_si16n32768_si160:%[^ ]+]] = arc.divi [[CSTsi16n32768]], [[CSTsi160]] : si16
+    "arc.keep"(%result_divi_si16n32768_si160) : (si16) -> ()
+    // CHECK: "arc.keep"([[RESULT_divi_si16n32768_si160]]) : (si16) -> ()
+
+    // divi -32767, 0 -> no-fold
+    %result_divi_si16n32767_si160 = arc.divi %cst_si16n32767, %cst_si160 : si16
+    // CHECK-DAG: [[RESULT_divi_si16n32767_si160:%[^ ]+]] = arc.divi [[CSTsi16n32767]], [[CSTsi160]] : si16
+    "arc.keep"(%result_divi_si16n32767_si160) : (si16) -> ()
+    // CHECK: "arc.keep"([[RESULT_divi_si16n32767_si160]]) : (si16) -> ()
+
+    // divi -32547, 0 -> no-fold
+    %result_divi_si16n32547_si160 = arc.divi %cst_si16n32547, %cst_si160 : si16
+    // CHECK-DAG: [[RESULT_divi_si16n32547_si160:%[^ ]+]] = arc.divi [[CSTsi16n32547]], [[CSTsi160]] : si16
+    "arc.keep"(%result_divi_si16n32547_si160) : (si16) -> ()
+    // CHECK: "arc.keep"([[RESULT_divi_si16n32547_si160]]) : (si16) -> ()
+
+    // divi 0, 0 -> no-fold
+    %result_divi_si160_si160 = arc.divi %cst_si160, %cst_si160 : si16
+    // CHECK-DAG: [[RESULT_divi_si160_si160:%[^ ]+]] = arc.divi [[CSTsi160]], [[CSTsi160]] : si16
+    "arc.keep"(%result_divi_si160_si160) : (si16) -> ()
+    // CHECK: "arc.keep"([[RESULT_divi_si160_si160]]) : (si16) -> ()
+
+    // divi 10486, 0 -> no-fold
+    %result_divi_si1610486_si160 = arc.divi %cst_si1610486, %cst_si160 : si16
+    // CHECK-DAG: [[RESULT_divi_si1610486_si160:%[^ ]+]] = arc.divi [[CSTsi1610486]], [[CSTsi160]] : si16
+    "arc.keep"(%result_divi_si1610486_si160) : (si16) -> ()
+    // CHECK: "arc.keep"([[RESULT_divi_si1610486_si160]]) : (si16) -> ()
+
+    // divi 16514, 0 -> no-fold
+    %result_divi_si1616514_si160 = arc.divi %cst_si1616514, %cst_si160 : si16
+    // CHECK-DAG: [[RESULT_divi_si1616514_si160:%[^ ]+]] = arc.divi [[CSTsi1616514]], [[CSTsi160]] : si16
+    "arc.keep"(%result_divi_si1616514_si160) : (si16) -> ()
+    // CHECK: "arc.keep"([[RESULT_divi_si1616514_si160]]) : (si16) -> ()
+
+    // divi 32766, 0 -> no-fold
+    %result_divi_si1632766_si160 = arc.divi %cst_si1632766, %cst_si160 : si16
+    // CHECK-DAG: [[RESULT_divi_si1632766_si160:%[^ ]+]] = arc.divi [[CSTsi1632766]], [[CSTsi160]] : si16
+    "arc.keep"(%result_divi_si1632766_si160) : (si16) -> ()
+    // CHECK: "arc.keep"([[RESULT_divi_si1632766_si160]]) : (si16) -> ()
+
+    // divi 32767, 0 -> no-fold
+    %result_divi_si1632767_si160 = arc.divi %cst_si1632767, %cst_si160 : si16
+    // CHECK-DAG: [[RESULT_divi_si1632767_si160:%[^ ]+]] = arc.divi [[CSTsi1632767]], [[CSTsi160]] : si16
+    "arc.keep"(%result_divi_si1632767_si160) : (si16) -> ()
+    // CHECK: "arc.keep"([[RESULT_divi_si1632767_si160]]) : (si16) -> ()
+
+    // divi 2147483646, -1035405763 -> -2
+    %result_divi_si322147483646_si32n1035405763 = arc.divi %cst_si322147483646, %cst_si32n1035405763 : si32
+    "arc.keep"(%result_divi_si322147483646_si32n1035405763) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi32n2]]) : (si32) -> ()
+
+    // divi 2147483647, -1035405763 -> -2
+    %result_divi_si322147483647_si32n1035405763 = arc.divi %cst_si322147483647, %cst_si32n1035405763 : si32
+    "arc.keep"(%result_divi_si322147483647_si32n1035405763) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi32n2]]) : (si32) -> ()
+
+    // divi -2147483648, 2147483646 -> -1
+    %result_divi_si32n2147483648_si322147483646 = arc.divi %cst_si32n2147483648, %cst_si322147483646 : si32
+    "arc.keep"(%result_divi_si32n2147483648_si322147483646) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi32n1]]) : (si32) -> ()
+
+    // divi -2147483648, 2147483647 -> -1
+    %result_divi_si32n2147483648_si322147483647 = arc.divi %cst_si32n2147483648, %cst_si322147483647 : si32
+    "arc.keep"(%result_divi_si32n2147483648_si322147483647) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi32n1]]) : (si32) -> ()
+
+    // divi -2147483647, 2147483646 -> -1
+    %result_divi_si32n2147483647_si322147483646 = arc.divi %cst_si32n2147483647, %cst_si322147483646 : si32
+    "arc.keep"(%result_divi_si32n2147483647_si322147483646) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi32n1]]) : (si32) -> ()
+
+    // divi -2147483647, 2147483647 -> -1
+    %result_divi_si32n2147483647_si322147483647 = arc.divi %cst_si32n2147483647, %cst_si322147483647 : si32
+    "arc.keep"(%result_divi_si32n2147483647_si322147483647) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi32n1]]) : (si32) -> ()
+
+    // divi 2147483646, -1713183800 -> -1
+    %result_divi_si322147483646_si32n1713183800 = arc.divi %cst_si322147483646, %cst_si32n1713183800 : si32
+    "arc.keep"(%result_divi_si322147483646_si32n1713183800) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi32n1]]) : (si32) -> ()
+
+    // divi 2147483646, -1252582164 -> -1
+    %result_divi_si322147483646_si32n1252582164 = arc.divi %cst_si322147483646, %cst_si32n1252582164 : si32
+    "arc.keep"(%result_divi_si322147483646_si32n1252582164) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi32n1]]) : (si32) -> ()
+
+    // divi 2147483647, -2147483647 -> -1
+    %result_divi_si322147483647_si32n2147483647 = arc.divi %cst_si322147483647, %cst_si32n2147483647 : si32
+    "arc.keep"(%result_divi_si322147483647_si32n2147483647) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi32n1]]) : (si32) -> ()
+
+    // divi 2147483647, -1713183800 -> -1
+    %result_divi_si322147483647_si32n1713183800 = arc.divi %cst_si322147483647, %cst_si32n1713183800 : si32
+    "arc.keep"(%result_divi_si322147483647_si32n1713183800) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi32n1]]) : (si32) -> ()
+
+    // divi 2147483647, -1252582164 -> -1
+    %result_divi_si322147483647_si32n1252582164 = arc.divi %cst_si322147483647, %cst_si32n1252582164 : si32
+    "arc.keep"(%result_divi_si322147483647_si32n1252582164) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi32n1]]) : (si32) -> ()
+
+    // divi -2147483647, -2147483648 -> 0
+    %result_divi_si32n2147483647_si32n2147483648 = arc.divi %cst_si32n2147483647, %cst_si32n2147483648 : si32
+    "arc.keep"(%result_divi_si32n2147483647_si32n2147483648) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi320]]) : (si32) -> ()
+
+    // divi -1713183800, -2147483648 -> 0
+    %result_divi_si32n1713183800_si32n2147483648 = arc.divi %cst_si32n1713183800, %cst_si32n2147483648 : si32
+    "arc.keep"(%result_divi_si32n1713183800_si32n2147483648) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi320]]) : (si32) -> ()
+
+    // divi -1713183800, -2147483647 -> 0
+    %result_divi_si32n1713183800_si32n2147483647 = arc.divi %cst_si32n1713183800, %cst_si32n2147483647 : si32
+    "arc.keep"(%result_divi_si32n1713183800_si32n2147483647) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi320]]) : (si32) -> ()
+
+    // divi -1713183800, 2147483646 -> 0
+    %result_divi_si32n1713183800_si322147483646 = arc.divi %cst_si32n1713183800, %cst_si322147483646 : si32
+    "arc.keep"(%result_divi_si32n1713183800_si322147483646) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi320]]) : (si32) -> ()
+
+    // divi -1713183800, 2147483647 -> 0
+    %result_divi_si32n1713183800_si322147483647 = arc.divi %cst_si32n1713183800, %cst_si322147483647 : si32
+    "arc.keep"(%result_divi_si32n1713183800_si322147483647) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi320]]) : (si32) -> ()
+
+    // divi -1252582164, -2147483648 -> 0
+    %result_divi_si32n1252582164_si32n2147483648 = arc.divi %cst_si32n1252582164, %cst_si32n2147483648 : si32
+    "arc.keep"(%result_divi_si32n1252582164_si32n2147483648) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi320]]) : (si32) -> ()
+
+    // divi -1252582164, -2147483647 -> 0
+    %result_divi_si32n1252582164_si32n2147483647 = arc.divi %cst_si32n1252582164, %cst_si32n2147483647 : si32
+    "arc.keep"(%result_divi_si32n1252582164_si32n2147483647) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi320]]) : (si32) -> ()
+
+    // divi -1252582164, -1713183800 -> 0
+    %result_divi_si32n1252582164_si32n1713183800 = arc.divi %cst_si32n1252582164, %cst_si32n1713183800 : si32
+    "arc.keep"(%result_divi_si32n1252582164_si32n1713183800) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi320]]) : (si32) -> ()
+
+    // divi -1252582164, 2147483646 -> 0
+    %result_divi_si32n1252582164_si322147483646 = arc.divi %cst_si32n1252582164, %cst_si322147483646 : si32
+    "arc.keep"(%result_divi_si32n1252582164_si322147483646) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi320]]) : (si32) -> ()
+
+    // divi -1252582164, 2147483647 -> 0
+    %result_divi_si32n1252582164_si322147483647 = arc.divi %cst_si32n1252582164, %cst_si322147483647 : si32
+    "arc.keep"(%result_divi_si32n1252582164_si322147483647) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi320]]) : (si32) -> ()
+
+    // divi -1035405763, -2147483648 -> 0
+    %result_divi_si32n1035405763_si32n2147483648 = arc.divi %cst_si32n1035405763, %cst_si32n2147483648 : si32
+    "arc.keep"(%result_divi_si32n1035405763_si32n2147483648) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi320]]) : (si32) -> ()
+
+    // divi -1035405763, -2147483647 -> 0
+    %result_divi_si32n1035405763_si32n2147483647 = arc.divi %cst_si32n1035405763, %cst_si32n2147483647 : si32
+    "arc.keep"(%result_divi_si32n1035405763_si32n2147483647) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi320]]) : (si32) -> ()
+
+    // divi -1035405763, -1713183800 -> 0
+    %result_divi_si32n1035405763_si32n1713183800 = arc.divi %cst_si32n1035405763, %cst_si32n1713183800 : si32
+    "arc.keep"(%result_divi_si32n1035405763_si32n1713183800) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi320]]) : (si32) -> ()
+
+    // divi -1035405763, -1252582164 -> 0
+    %result_divi_si32n1035405763_si32n1252582164 = arc.divi %cst_si32n1035405763, %cst_si32n1252582164 : si32
+    "arc.keep"(%result_divi_si32n1035405763_si32n1252582164) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi320]]) : (si32) -> ()
+
+    // divi -1035405763, 2147483646 -> 0
+    %result_divi_si32n1035405763_si322147483646 = arc.divi %cst_si32n1035405763, %cst_si322147483646 : si32
+    "arc.keep"(%result_divi_si32n1035405763_si322147483646) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi320]]) : (si32) -> ()
+
+    // divi -1035405763, 2147483647 -> 0
+    %result_divi_si32n1035405763_si322147483647 = arc.divi %cst_si32n1035405763, %cst_si322147483647 : si32
+    "arc.keep"(%result_divi_si32n1035405763_si322147483647) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi320]]) : (si32) -> ()
+
+    // divi 0, -2147483648 -> 0
+    %result_divi_si320_si32n2147483648 = arc.divi %cst_si320, %cst_si32n2147483648 : si32
+    "arc.keep"(%result_divi_si320_si32n2147483648) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi320]]) : (si32) -> ()
+
+    // divi 0, -2147483647 -> 0
+    %result_divi_si320_si32n2147483647 = arc.divi %cst_si320, %cst_si32n2147483647 : si32
+    "arc.keep"(%result_divi_si320_si32n2147483647) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi320]]) : (si32) -> ()
+
+    // divi 0, -1713183800 -> 0
+    %result_divi_si320_si32n1713183800 = arc.divi %cst_si320, %cst_si32n1713183800 : si32
+    "arc.keep"(%result_divi_si320_si32n1713183800) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi320]]) : (si32) -> ()
+
+    // divi 0, -1252582164 -> 0
+    %result_divi_si320_si32n1252582164 = arc.divi %cst_si320, %cst_si32n1252582164 : si32
+    "arc.keep"(%result_divi_si320_si32n1252582164) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi320]]) : (si32) -> ()
+
+    // divi 0, -1035405763 -> 0
+    %result_divi_si320_si32n1035405763 = arc.divi %cst_si320, %cst_si32n1035405763 : si32
+    "arc.keep"(%result_divi_si320_si32n1035405763) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi320]]) : (si32) -> ()
+
+    // divi 0, 2147483646 -> 0
+    %result_divi_si320_si322147483646 = arc.divi %cst_si320, %cst_si322147483646 : si32
+    "arc.keep"(%result_divi_si320_si322147483646) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi320]]) : (si32) -> ()
+
+    // divi 0, 2147483647 -> 0
+    %result_divi_si320_si322147483647 = arc.divi %cst_si320, %cst_si322147483647 : si32
+    "arc.keep"(%result_divi_si320_si322147483647) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi320]]) : (si32) -> ()
+
+    // divi 2147483646, -2147483648 -> 0
+    %result_divi_si322147483646_si32n2147483648 = arc.divi %cst_si322147483646, %cst_si32n2147483648 : si32
+    "arc.keep"(%result_divi_si322147483646_si32n2147483648) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi320]]) : (si32) -> ()
+
+    // divi 2147483646, -2147483647 -> 0
+    %result_divi_si322147483646_si32n2147483647 = arc.divi %cst_si322147483646, %cst_si32n2147483647 : si32
+    "arc.keep"(%result_divi_si322147483646_si32n2147483647) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi320]]) : (si32) -> ()
+
+    // divi 2147483646, 2147483647 -> 0
+    %result_divi_si322147483646_si322147483647 = arc.divi %cst_si322147483646, %cst_si322147483647 : si32
+    "arc.keep"(%result_divi_si322147483646_si322147483647) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi320]]) : (si32) -> ()
+
+    // divi 2147483647, -2147483648 -> 0
+    %result_divi_si322147483647_si32n2147483648 = arc.divi %cst_si322147483647, %cst_si32n2147483648 : si32
+    "arc.keep"(%result_divi_si322147483647_si32n2147483648) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi320]]) : (si32) -> ()
+
+    // divi -2147483648, -2147483648 -> 1
+    %result_divi_si32n2147483648_si32n2147483648 = arc.divi %cst_si32n2147483648, %cst_si32n2147483648 : si32
+    "arc.keep"(%result_divi_si32n2147483648_si32n2147483648) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi321]]) : (si32) -> ()
+
+    // divi -2147483648, -2147483647 -> 1
+    %result_divi_si32n2147483648_si32n2147483647 = arc.divi %cst_si32n2147483648, %cst_si32n2147483647 : si32
+    "arc.keep"(%result_divi_si32n2147483648_si32n2147483647) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi321]]) : (si32) -> ()
+
+    // divi -2147483648, -1713183800 -> 1
+    %result_divi_si32n2147483648_si32n1713183800 = arc.divi %cst_si32n2147483648, %cst_si32n1713183800 : si32
+    "arc.keep"(%result_divi_si32n2147483648_si32n1713183800) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi321]]) : (si32) -> ()
+
+    // divi -2147483648, -1252582164 -> 1
+    %result_divi_si32n2147483648_si32n1252582164 = arc.divi %cst_si32n2147483648, %cst_si32n1252582164 : si32
+    "arc.keep"(%result_divi_si32n2147483648_si32n1252582164) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi321]]) : (si32) -> ()
+
+    // divi -2147483647, -2147483647 -> 1
+    %result_divi_si32n2147483647_si32n2147483647 = arc.divi %cst_si32n2147483647, %cst_si32n2147483647 : si32
+    "arc.keep"(%result_divi_si32n2147483647_si32n2147483647) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi321]]) : (si32) -> ()
+
+    // divi -2147483647, -1713183800 -> 1
+    %result_divi_si32n2147483647_si32n1713183800 = arc.divi %cst_si32n2147483647, %cst_si32n1713183800 : si32
+    "arc.keep"(%result_divi_si32n2147483647_si32n1713183800) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi321]]) : (si32) -> ()
+
+    // divi -2147483647, -1252582164 -> 1
+    %result_divi_si32n2147483647_si32n1252582164 = arc.divi %cst_si32n2147483647, %cst_si32n1252582164 : si32
+    "arc.keep"(%result_divi_si32n2147483647_si32n1252582164) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi321]]) : (si32) -> ()
+
+    // divi -1713183800, -1713183800 -> 1
+    %result_divi_si32n1713183800_si32n1713183800 = arc.divi %cst_si32n1713183800, %cst_si32n1713183800 : si32
+    "arc.keep"(%result_divi_si32n1713183800_si32n1713183800) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi321]]) : (si32) -> ()
+
+    // divi -1713183800, -1252582164 -> 1
+    %result_divi_si32n1713183800_si32n1252582164 = arc.divi %cst_si32n1713183800, %cst_si32n1252582164 : si32
+    "arc.keep"(%result_divi_si32n1713183800_si32n1252582164) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi321]]) : (si32) -> ()
+
+    // divi -1713183800, -1035405763 -> 1
+    %result_divi_si32n1713183800_si32n1035405763 = arc.divi %cst_si32n1713183800, %cst_si32n1035405763 : si32
+    "arc.keep"(%result_divi_si32n1713183800_si32n1035405763) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi321]]) : (si32) -> ()
+
+    // divi -1252582164, -1252582164 -> 1
+    %result_divi_si32n1252582164_si32n1252582164 = arc.divi %cst_si32n1252582164, %cst_si32n1252582164 : si32
+    "arc.keep"(%result_divi_si32n1252582164_si32n1252582164) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi321]]) : (si32) -> ()
+
+    // divi -1252582164, -1035405763 -> 1
+    %result_divi_si32n1252582164_si32n1035405763 = arc.divi %cst_si32n1252582164, %cst_si32n1035405763 : si32
+    "arc.keep"(%result_divi_si32n1252582164_si32n1035405763) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi321]]) : (si32) -> ()
+
+    // divi -1035405763, -1035405763 -> 1
+    %result_divi_si32n1035405763_si32n1035405763 = arc.divi %cst_si32n1035405763, %cst_si32n1035405763 : si32
+    "arc.keep"(%result_divi_si32n1035405763_si32n1035405763) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi321]]) : (si32) -> ()
+
+    // divi 2147483646, 2147483646 -> 1
+    %result_divi_si322147483646_si322147483646 = arc.divi %cst_si322147483646, %cst_si322147483646 : si32
+    "arc.keep"(%result_divi_si322147483646_si322147483646) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi321]]) : (si32) -> ()
+
+    // divi 2147483647, 2147483646 -> 1
+    %result_divi_si322147483647_si322147483646 = arc.divi %cst_si322147483647, %cst_si322147483646 : si32
+    "arc.keep"(%result_divi_si322147483647_si322147483646) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi321]]) : (si32) -> ()
+
+    // divi 2147483647, 2147483647 -> 1
+    %result_divi_si322147483647_si322147483647 = arc.divi %cst_si322147483647, %cst_si322147483647 : si32
+    "arc.keep"(%result_divi_si322147483647_si322147483647) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi321]]) : (si32) -> ()
+
+    // divi -2147483648, -1035405763 -> 2
+    %result_divi_si32n2147483648_si32n1035405763 = arc.divi %cst_si32n2147483648, %cst_si32n1035405763 : si32
+    "arc.keep"(%result_divi_si32n2147483648_si32n1035405763) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi322]]) : (si32) -> ()
+
+    // divi -2147483647, -1035405763 -> 2
+    %result_divi_si32n2147483647_si32n1035405763 = arc.divi %cst_si32n2147483647, %cst_si32n1035405763 : si32
+    "arc.keep"(%result_divi_si32n2147483647_si32n1035405763) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi322]]) : (si32) -> ()
+
+    // divi -2147483648, 0 -> no-fold
+    %result_divi_si32n2147483648_si320 = arc.divi %cst_si32n2147483648, %cst_si320 : si32
+    // CHECK-DAG: [[RESULT_divi_si32n2147483648_si320:%[^ ]+]] = arc.divi [[CSTsi32n2147483648]], [[CSTsi320]] : si32
+    "arc.keep"(%result_divi_si32n2147483648_si320) : (si32) -> ()
+    // CHECK: "arc.keep"([[RESULT_divi_si32n2147483648_si320]]) : (si32) -> ()
+
+    // divi -2147483647, 0 -> no-fold
+    %result_divi_si32n2147483647_si320 = arc.divi %cst_si32n2147483647, %cst_si320 : si32
+    // CHECK-DAG: [[RESULT_divi_si32n2147483647_si320:%[^ ]+]] = arc.divi [[CSTsi32n2147483647]], [[CSTsi320]] : si32
+    "arc.keep"(%result_divi_si32n2147483647_si320) : (si32) -> ()
+    // CHECK: "arc.keep"([[RESULT_divi_si32n2147483647_si320]]) : (si32) -> ()
+
+    // divi -1713183800, 0 -> no-fold
+    %result_divi_si32n1713183800_si320 = arc.divi %cst_si32n1713183800, %cst_si320 : si32
+    // CHECK-DAG: [[RESULT_divi_si32n1713183800_si320:%[^ ]+]] = arc.divi [[CSTsi32n1713183800]], [[CSTsi320]] : si32
+    "arc.keep"(%result_divi_si32n1713183800_si320) : (si32) -> ()
+    // CHECK: "arc.keep"([[RESULT_divi_si32n1713183800_si320]]) : (si32) -> ()
+
+    // divi -1252582164, 0 -> no-fold
+    %result_divi_si32n1252582164_si320 = arc.divi %cst_si32n1252582164, %cst_si320 : si32
+    // CHECK-DAG: [[RESULT_divi_si32n1252582164_si320:%[^ ]+]] = arc.divi [[CSTsi32n1252582164]], [[CSTsi320]] : si32
+    "arc.keep"(%result_divi_si32n1252582164_si320) : (si32) -> ()
+    // CHECK: "arc.keep"([[RESULT_divi_si32n1252582164_si320]]) : (si32) -> ()
+
+    // divi -1035405763, 0 -> no-fold
+    %result_divi_si32n1035405763_si320 = arc.divi %cst_si32n1035405763, %cst_si320 : si32
+    // CHECK-DAG: [[RESULT_divi_si32n1035405763_si320:%[^ ]+]] = arc.divi [[CSTsi32n1035405763]], [[CSTsi320]] : si32
+    "arc.keep"(%result_divi_si32n1035405763_si320) : (si32) -> ()
+    // CHECK: "arc.keep"([[RESULT_divi_si32n1035405763_si320]]) : (si32) -> ()
+
+    // divi 0, 0 -> no-fold
+    %result_divi_si320_si320 = arc.divi %cst_si320, %cst_si320 : si32
+    // CHECK-DAG: [[RESULT_divi_si320_si320:%[^ ]+]] = arc.divi [[CSTsi320]], [[CSTsi320]] : si32
+    "arc.keep"(%result_divi_si320_si320) : (si32) -> ()
+    // CHECK: "arc.keep"([[RESULT_divi_si320_si320]]) : (si32) -> ()
+
+    // divi 2147483646, 0 -> no-fold
+    %result_divi_si322147483646_si320 = arc.divi %cst_si322147483646, %cst_si320 : si32
+    // CHECK-DAG: [[RESULT_divi_si322147483646_si320:%[^ ]+]] = arc.divi [[CSTsi322147483646]], [[CSTsi320]] : si32
+    "arc.keep"(%result_divi_si322147483646_si320) : (si32) -> ()
+    // CHECK: "arc.keep"([[RESULT_divi_si322147483646_si320]]) : (si32) -> ()
+
+    // divi 2147483647, 0 -> no-fold
+    %result_divi_si322147483647_si320 = arc.divi %cst_si322147483647, %cst_si320 : si32
+    // CHECK-DAG: [[RESULT_divi_si322147483647_si320:%[^ ]+]] = arc.divi [[CSTsi322147483647]], [[CSTsi320]] : si32
+    "arc.keep"(%result_divi_si322147483647_si320) : (si32) -> ()
+    // CHECK: "arc.keep"([[RESULT_divi_si322147483647_si320]]) : (si32) -> ()
+
+    // divi 9223372036854775806, -1328271339354574848 -> -6
+    %result_divi_si649223372036854775806_si64n1328271339354574848 = arc.divi %cst_si649223372036854775806, %cst_si64n1328271339354574848 : si64
+    "arc.keep"(%result_divi_si649223372036854775806_si64n1328271339354574848) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi64n6]]) : (si64) -> ()
+
+    // divi 9223372036854775807, -1328271339354574848 -> -6
+    %result_divi_si649223372036854775807_si64n1328271339354574848 = arc.divi %cst_si649223372036854775807, %cst_si64n1328271339354574848 : si64
+    "arc.keep"(%result_divi_si649223372036854775807_si64n1328271339354574848) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi64n6]]) : (si64) -> ()
+
+    // divi 9223372036854775806, -1741927215160008704 -> -5
+    %result_divi_si649223372036854775806_si64n1741927215160008704 = arc.divi %cst_si649223372036854775806, %cst_si64n1741927215160008704 : si64
+    "arc.keep"(%result_divi_si649223372036854775806_si64n1741927215160008704) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi64n5]]) : (si64) -> ()
+
+    // divi 9223372036854775807, -1741927215160008704 -> -5
+    %result_divi_si649223372036854775807_si64n1741927215160008704 = arc.divi %cst_si649223372036854775807, %cst_si64n1741927215160008704 : si64
+    "arc.keep"(%result_divi_si649223372036854775807_si64n1741927215160008704) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi64n5]]) : (si64) -> ()
+
+    // divi 5577148965131116544, -1328271339354574848 -> -4
+    %result_divi_si645577148965131116544_si64n1328271339354574848 = arc.divi %cst_si645577148965131116544, %cst_si64n1328271339354574848 : si64
+    "arc.keep"(%result_divi_si645577148965131116544_si64n1328271339354574848) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi64n4]]) : (si64) -> ()
+
+    // divi 5577148965131116544, -1741927215160008704 -> -3
+    %result_divi_si645577148965131116544_si64n1741927215160008704 = arc.divi %cst_si645577148965131116544, %cst_si64n1741927215160008704 : si64
+    "arc.keep"(%result_divi_si645577148965131116544_si64n1741927215160008704) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi64n3]]) : (si64) -> ()
+
+    // divi -9223372036854775808, 5577148965131116544 -> -1
+    %result_divi_si64n9223372036854775808_si645577148965131116544 = arc.divi %cst_si64n9223372036854775808, %cst_si645577148965131116544 : si64
+    "arc.keep"(%result_divi_si64n9223372036854775808_si645577148965131116544) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi64n1]]) : (si64) -> ()
+
+    // divi -9223372036854775808, 9223372036854775806 -> -1
+    %result_divi_si64n9223372036854775808_si649223372036854775806 = arc.divi %cst_si64n9223372036854775808, %cst_si649223372036854775806 : si64
+    "arc.keep"(%result_divi_si64n9223372036854775808_si649223372036854775806) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi64n1]]) : (si64) -> ()
+
+    // divi -9223372036854775808, 9223372036854775807 -> -1
+    %result_divi_si64n9223372036854775808_si649223372036854775807 = arc.divi %cst_si64n9223372036854775808, %cst_si649223372036854775807 : si64
+    "arc.keep"(%result_divi_si64n9223372036854775808_si649223372036854775807) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi64n1]]) : (si64) -> ()
+
+    // divi -9223372036854775807, 5577148965131116544 -> -1
+    %result_divi_si64n9223372036854775807_si645577148965131116544 = arc.divi %cst_si64n9223372036854775807, %cst_si645577148965131116544 : si64
+    "arc.keep"(%result_divi_si64n9223372036854775807_si645577148965131116544) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi64n1]]) : (si64) -> ()
+
+    // divi -9223372036854775807, 9223372036854775806 -> -1
+    %result_divi_si64n9223372036854775807_si649223372036854775806 = arc.divi %cst_si64n9223372036854775807, %cst_si649223372036854775806 : si64
+    "arc.keep"(%result_divi_si64n9223372036854775807_si649223372036854775806) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi64n1]]) : (si64) -> ()
+
+    // divi -9223372036854775807, 9223372036854775807 -> -1
+    %result_divi_si64n9223372036854775807_si649223372036854775807 = arc.divi %cst_si64n9223372036854775807, %cst_si649223372036854775807 : si64
+    "arc.keep"(%result_divi_si64n9223372036854775807_si649223372036854775807) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi64n1]]) : (si64) -> ()
+
+    // divi 9223372036854775807, -9223372036854775807 -> -1
+    %result_divi_si649223372036854775807_si64n9223372036854775807 = arc.divi %cst_si649223372036854775807, %cst_si64n9223372036854775807 : si64
+    "arc.keep"(%result_divi_si649223372036854775807_si64n9223372036854775807) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi64n1]]) : (si64) -> ()
+
+    // divi -9223372036854775807, -9223372036854775808 -> 0
+    %result_divi_si64n9223372036854775807_si64n9223372036854775808 = arc.divi %cst_si64n9223372036854775807, %cst_si64n9223372036854775808 : si64
+    "arc.keep"(%result_divi_si64n9223372036854775807_si64n9223372036854775808) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi640]]) : (si64) -> ()
+
+    // divi -1741927215160008704, -9223372036854775808 -> 0
+    %result_divi_si64n1741927215160008704_si64n9223372036854775808 = arc.divi %cst_si64n1741927215160008704, %cst_si64n9223372036854775808 : si64
+    "arc.keep"(%result_divi_si64n1741927215160008704_si64n9223372036854775808) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi640]]) : (si64) -> ()
+
+    // divi -1741927215160008704, -9223372036854775807 -> 0
+    %result_divi_si64n1741927215160008704_si64n9223372036854775807 = arc.divi %cst_si64n1741927215160008704, %cst_si64n9223372036854775807 : si64
+    "arc.keep"(%result_divi_si64n1741927215160008704_si64n9223372036854775807) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi640]]) : (si64) -> ()
+
+    // divi -1741927215160008704, 5577148965131116544 -> 0
+    %result_divi_si64n1741927215160008704_si645577148965131116544 = arc.divi %cst_si64n1741927215160008704, %cst_si645577148965131116544 : si64
+    "arc.keep"(%result_divi_si64n1741927215160008704_si645577148965131116544) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi640]]) : (si64) -> ()
+
+    // divi -1741927215160008704, 9223372036854775806 -> 0
+    %result_divi_si64n1741927215160008704_si649223372036854775806 = arc.divi %cst_si64n1741927215160008704, %cst_si649223372036854775806 : si64
+    "arc.keep"(%result_divi_si64n1741927215160008704_si649223372036854775806) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi640]]) : (si64) -> ()
+
+    // divi -1741927215160008704, 9223372036854775807 -> 0
+    %result_divi_si64n1741927215160008704_si649223372036854775807 = arc.divi %cst_si64n1741927215160008704, %cst_si649223372036854775807 : si64
+    "arc.keep"(%result_divi_si64n1741927215160008704_si649223372036854775807) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi640]]) : (si64) -> ()
+
+    // divi -1328271339354574848, -9223372036854775808 -> 0
+    %result_divi_si64n1328271339354574848_si64n9223372036854775808 = arc.divi %cst_si64n1328271339354574848, %cst_si64n9223372036854775808 : si64
+    "arc.keep"(%result_divi_si64n1328271339354574848_si64n9223372036854775808) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi640]]) : (si64) -> ()
+
+    // divi -1328271339354574848, -9223372036854775807 -> 0
+    %result_divi_si64n1328271339354574848_si64n9223372036854775807 = arc.divi %cst_si64n1328271339354574848, %cst_si64n9223372036854775807 : si64
+    "arc.keep"(%result_divi_si64n1328271339354574848_si64n9223372036854775807) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi640]]) : (si64) -> ()
+
+    // divi -1328271339354574848, -1741927215160008704 -> 0
+    %result_divi_si64n1328271339354574848_si64n1741927215160008704 = arc.divi %cst_si64n1328271339354574848, %cst_si64n1741927215160008704 : si64
+    "arc.keep"(%result_divi_si64n1328271339354574848_si64n1741927215160008704) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi640]]) : (si64) -> ()
+
+    // divi -1328271339354574848, 5577148965131116544 -> 0
+    %result_divi_si64n1328271339354574848_si645577148965131116544 = arc.divi %cst_si64n1328271339354574848, %cst_si645577148965131116544 : si64
+    "arc.keep"(%result_divi_si64n1328271339354574848_si645577148965131116544) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi640]]) : (si64) -> ()
+
+    // divi -1328271339354574848, 9223372036854775806 -> 0
+    %result_divi_si64n1328271339354574848_si649223372036854775806 = arc.divi %cst_si64n1328271339354574848, %cst_si649223372036854775806 : si64
+    "arc.keep"(%result_divi_si64n1328271339354574848_si649223372036854775806) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi640]]) : (si64) -> ()
+
+    // divi -1328271339354574848, 9223372036854775807 -> 0
+    %result_divi_si64n1328271339354574848_si649223372036854775807 = arc.divi %cst_si64n1328271339354574848, %cst_si649223372036854775807 : si64
+    "arc.keep"(%result_divi_si64n1328271339354574848_si649223372036854775807) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi640]]) : (si64) -> ()
+
+    // divi 0, -9223372036854775808 -> 0
+    %result_divi_si640_si64n9223372036854775808 = arc.divi %cst_si640, %cst_si64n9223372036854775808 : si64
+    "arc.keep"(%result_divi_si640_si64n9223372036854775808) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi640]]) : (si64) -> ()
+
+    // divi 0, -9223372036854775807 -> 0
+    %result_divi_si640_si64n9223372036854775807 = arc.divi %cst_si640, %cst_si64n9223372036854775807 : si64
+    "arc.keep"(%result_divi_si640_si64n9223372036854775807) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi640]]) : (si64) -> ()
+
+    // divi 0, -1741927215160008704 -> 0
+    %result_divi_si640_si64n1741927215160008704 = arc.divi %cst_si640, %cst_si64n1741927215160008704 : si64
+    "arc.keep"(%result_divi_si640_si64n1741927215160008704) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi640]]) : (si64) -> ()
+
+    // divi 0, -1328271339354574848 -> 0
+    %result_divi_si640_si64n1328271339354574848 = arc.divi %cst_si640, %cst_si64n1328271339354574848 : si64
+    "arc.keep"(%result_divi_si640_si64n1328271339354574848) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi640]]) : (si64) -> ()
+
+    // divi 0, 5577148965131116544 -> 0
+    %result_divi_si640_si645577148965131116544 = arc.divi %cst_si640, %cst_si645577148965131116544 : si64
+    "arc.keep"(%result_divi_si640_si645577148965131116544) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi640]]) : (si64) -> ()
+
+    // divi 0, 9223372036854775806 -> 0
+    %result_divi_si640_si649223372036854775806 = arc.divi %cst_si640, %cst_si649223372036854775806 : si64
+    "arc.keep"(%result_divi_si640_si649223372036854775806) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi640]]) : (si64) -> ()
+
+    // divi 0, 9223372036854775807 -> 0
+    %result_divi_si640_si649223372036854775807 = arc.divi %cst_si640, %cst_si649223372036854775807 : si64
+    "arc.keep"(%result_divi_si640_si649223372036854775807) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi640]]) : (si64) -> ()
+
+    // divi 5577148965131116544, -9223372036854775808 -> 0
+    %result_divi_si645577148965131116544_si64n9223372036854775808 = arc.divi %cst_si645577148965131116544, %cst_si64n9223372036854775808 : si64
+    "arc.keep"(%result_divi_si645577148965131116544_si64n9223372036854775808) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi640]]) : (si64) -> ()
+
+    // divi 5577148965131116544, -9223372036854775807 -> 0
+    %result_divi_si645577148965131116544_si64n9223372036854775807 = arc.divi %cst_si645577148965131116544, %cst_si64n9223372036854775807 : si64
+    "arc.keep"(%result_divi_si645577148965131116544_si64n9223372036854775807) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi640]]) : (si64) -> ()
+
+    // divi 5577148965131116544, 9223372036854775806 -> 0
+    %result_divi_si645577148965131116544_si649223372036854775806 = arc.divi %cst_si645577148965131116544, %cst_si649223372036854775806 : si64
+    "arc.keep"(%result_divi_si645577148965131116544_si649223372036854775806) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi640]]) : (si64) -> ()
+
+    // divi 5577148965131116544, 9223372036854775807 -> 0
+    %result_divi_si645577148965131116544_si649223372036854775807 = arc.divi %cst_si645577148965131116544, %cst_si649223372036854775807 : si64
+    "arc.keep"(%result_divi_si645577148965131116544_si649223372036854775807) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi640]]) : (si64) -> ()
+
+    // divi 9223372036854775806, -9223372036854775808 -> 0
+    %result_divi_si649223372036854775806_si64n9223372036854775808 = arc.divi %cst_si649223372036854775806, %cst_si64n9223372036854775808 : si64
+    "arc.keep"(%result_divi_si649223372036854775806_si64n9223372036854775808) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi640]]) : (si64) -> ()
+
+    // divi 9223372036854775806, -9223372036854775807 -> 0
+    %result_divi_si649223372036854775806_si64n9223372036854775807 = arc.divi %cst_si649223372036854775806, %cst_si64n9223372036854775807 : si64
+    "arc.keep"(%result_divi_si649223372036854775806_si64n9223372036854775807) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi640]]) : (si64) -> ()
+
+    // divi 9223372036854775806, 9223372036854775807 -> 0
+    %result_divi_si649223372036854775806_si649223372036854775807 = arc.divi %cst_si649223372036854775806, %cst_si649223372036854775807 : si64
+    "arc.keep"(%result_divi_si649223372036854775806_si649223372036854775807) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi640]]) : (si64) -> ()
+
+    // divi 9223372036854775807, -9223372036854775808 -> 0
+    %result_divi_si649223372036854775807_si64n9223372036854775808 = arc.divi %cst_si649223372036854775807, %cst_si64n9223372036854775808 : si64
+    "arc.keep"(%result_divi_si649223372036854775807_si64n9223372036854775808) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi640]]) : (si64) -> ()
+
+    // divi -9223372036854775808, -9223372036854775808 -> 1
+    %result_divi_si64n9223372036854775808_si64n9223372036854775808 = arc.divi %cst_si64n9223372036854775808, %cst_si64n9223372036854775808 : si64
+    "arc.keep"(%result_divi_si64n9223372036854775808_si64n9223372036854775808) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi641]]) : (si64) -> ()
+
+    // divi -9223372036854775808, -9223372036854775807 -> 1
+    %result_divi_si64n9223372036854775808_si64n9223372036854775807 = arc.divi %cst_si64n9223372036854775808, %cst_si64n9223372036854775807 : si64
+    "arc.keep"(%result_divi_si64n9223372036854775808_si64n9223372036854775807) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi641]]) : (si64) -> ()
+
+    // divi -9223372036854775807, -9223372036854775807 -> 1
+    %result_divi_si64n9223372036854775807_si64n9223372036854775807 = arc.divi %cst_si64n9223372036854775807, %cst_si64n9223372036854775807 : si64
+    "arc.keep"(%result_divi_si64n9223372036854775807_si64n9223372036854775807) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi641]]) : (si64) -> ()
+
+    // divi -1741927215160008704, -1741927215160008704 -> 1
+    %result_divi_si64n1741927215160008704_si64n1741927215160008704 = arc.divi %cst_si64n1741927215160008704, %cst_si64n1741927215160008704 : si64
+    "arc.keep"(%result_divi_si64n1741927215160008704_si64n1741927215160008704) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi641]]) : (si64) -> ()
+
+    // divi -1741927215160008704, -1328271339354574848 -> 1
+    %result_divi_si64n1741927215160008704_si64n1328271339354574848 = arc.divi %cst_si64n1741927215160008704, %cst_si64n1328271339354574848 : si64
+    "arc.keep"(%result_divi_si64n1741927215160008704_si64n1328271339354574848) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi641]]) : (si64) -> ()
+
+    // divi -1328271339354574848, -1328271339354574848 -> 1
+    %result_divi_si64n1328271339354574848_si64n1328271339354574848 = arc.divi %cst_si64n1328271339354574848, %cst_si64n1328271339354574848 : si64
+    "arc.keep"(%result_divi_si64n1328271339354574848_si64n1328271339354574848) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi641]]) : (si64) -> ()
+
+    // divi 5577148965131116544, 5577148965131116544 -> 1
+    %result_divi_si645577148965131116544_si645577148965131116544 = arc.divi %cst_si645577148965131116544, %cst_si645577148965131116544 : si64
+    "arc.keep"(%result_divi_si645577148965131116544_si645577148965131116544) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi641]]) : (si64) -> ()
+
+    // divi 9223372036854775806, 5577148965131116544 -> 1
+    %result_divi_si649223372036854775806_si645577148965131116544 = arc.divi %cst_si649223372036854775806, %cst_si645577148965131116544 : si64
+    "arc.keep"(%result_divi_si649223372036854775806_si645577148965131116544) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi641]]) : (si64) -> ()
+
+    // divi 9223372036854775806, 9223372036854775806 -> 1
+    %result_divi_si649223372036854775806_si649223372036854775806 = arc.divi %cst_si649223372036854775806, %cst_si649223372036854775806 : si64
+    "arc.keep"(%result_divi_si649223372036854775806_si649223372036854775806) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi641]]) : (si64) -> ()
+
+    // divi 9223372036854775807, 5577148965131116544 -> 1
+    %result_divi_si649223372036854775807_si645577148965131116544 = arc.divi %cst_si649223372036854775807, %cst_si645577148965131116544 : si64
+    "arc.keep"(%result_divi_si649223372036854775807_si645577148965131116544) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi641]]) : (si64) -> ()
+
+    // divi 9223372036854775807, 9223372036854775806 -> 1
+    %result_divi_si649223372036854775807_si649223372036854775806 = arc.divi %cst_si649223372036854775807, %cst_si649223372036854775806 : si64
+    "arc.keep"(%result_divi_si649223372036854775807_si649223372036854775806) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi641]]) : (si64) -> ()
+
+    // divi 9223372036854775807, 9223372036854775807 -> 1
+    %result_divi_si649223372036854775807_si649223372036854775807 = arc.divi %cst_si649223372036854775807, %cst_si649223372036854775807 : si64
+    "arc.keep"(%result_divi_si649223372036854775807_si649223372036854775807) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi641]]) : (si64) -> ()
+
+    // divi -9223372036854775808, -1741927215160008704 -> 5
+    %result_divi_si64n9223372036854775808_si64n1741927215160008704 = arc.divi %cst_si64n9223372036854775808, %cst_si64n1741927215160008704 : si64
+    "arc.keep"(%result_divi_si64n9223372036854775808_si64n1741927215160008704) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi645]]) : (si64) -> ()
+
+    // divi -9223372036854775807, -1741927215160008704 -> 5
+    %result_divi_si64n9223372036854775807_si64n1741927215160008704 = arc.divi %cst_si64n9223372036854775807, %cst_si64n1741927215160008704 : si64
+    "arc.keep"(%result_divi_si64n9223372036854775807_si64n1741927215160008704) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi645]]) : (si64) -> ()
+
+    // divi -9223372036854775808, -1328271339354574848 -> 6
+    %result_divi_si64n9223372036854775808_si64n1328271339354574848 = arc.divi %cst_si64n9223372036854775808, %cst_si64n1328271339354574848 : si64
+    "arc.keep"(%result_divi_si64n9223372036854775808_si64n1328271339354574848) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi646]]) : (si64) -> ()
+
+    // divi -9223372036854775807, -1328271339354574848 -> 6
+    %result_divi_si64n9223372036854775807_si64n1328271339354574848 = arc.divi %cst_si64n9223372036854775807, %cst_si64n1328271339354574848 : si64
+    "arc.keep"(%result_divi_si64n9223372036854775807_si64n1328271339354574848) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi646]]) : (si64) -> ()
+
+    // divi -9223372036854775808, 0 -> no-fold
+    %result_divi_si64n9223372036854775808_si640 = arc.divi %cst_si64n9223372036854775808, %cst_si640 : si64
+    // CHECK-DAG: [[RESULT_divi_si64n9223372036854775808_si640:%[^ ]+]] = arc.divi [[CSTsi64n9223372036854775808]], [[CSTsi640]] : si64
+    "arc.keep"(%result_divi_si64n9223372036854775808_si640) : (si64) -> ()
+    // CHECK: "arc.keep"([[RESULT_divi_si64n9223372036854775808_si640]]) : (si64) -> ()
+
+    // divi -9223372036854775807, 0 -> no-fold
+    %result_divi_si64n9223372036854775807_si640 = arc.divi %cst_si64n9223372036854775807, %cst_si640 : si64
+    // CHECK-DAG: [[RESULT_divi_si64n9223372036854775807_si640:%[^ ]+]] = arc.divi [[CSTsi64n9223372036854775807]], [[CSTsi640]] : si64
+    "arc.keep"(%result_divi_si64n9223372036854775807_si640) : (si64) -> ()
+    // CHECK: "arc.keep"([[RESULT_divi_si64n9223372036854775807_si640]]) : (si64) -> ()
+
+    // divi -1741927215160008704, 0 -> no-fold
+    %result_divi_si64n1741927215160008704_si640 = arc.divi %cst_si64n1741927215160008704, %cst_si640 : si64
+    // CHECK-DAG: [[RESULT_divi_si64n1741927215160008704_si640:%[^ ]+]] = arc.divi [[CSTsi64n1741927215160008704]], [[CSTsi640]] : si64
+    "arc.keep"(%result_divi_si64n1741927215160008704_si640) : (si64) -> ()
+    // CHECK: "arc.keep"([[RESULT_divi_si64n1741927215160008704_si640]]) : (si64) -> ()
+
+    // divi -1328271339354574848, 0 -> no-fold
+    %result_divi_si64n1328271339354574848_si640 = arc.divi %cst_si64n1328271339354574848, %cst_si640 : si64
+    // CHECK-DAG: [[RESULT_divi_si64n1328271339354574848_si640:%[^ ]+]] = arc.divi [[CSTsi64n1328271339354574848]], [[CSTsi640]] : si64
+    "arc.keep"(%result_divi_si64n1328271339354574848_si640) : (si64) -> ()
+    // CHECK: "arc.keep"([[RESULT_divi_si64n1328271339354574848_si640]]) : (si64) -> ()
+
+    // divi 0, 0 -> no-fold
+    %result_divi_si640_si640 = arc.divi %cst_si640, %cst_si640 : si64
+    // CHECK-DAG: [[RESULT_divi_si640_si640:%[^ ]+]] = arc.divi [[CSTsi640]], [[CSTsi640]] : si64
+    "arc.keep"(%result_divi_si640_si640) : (si64) -> ()
+    // CHECK: "arc.keep"([[RESULT_divi_si640_si640]]) : (si64) -> ()
+
+    // divi 5577148965131116544, 0 -> no-fold
+    %result_divi_si645577148965131116544_si640 = arc.divi %cst_si645577148965131116544, %cst_si640 : si64
+    // CHECK-DAG: [[RESULT_divi_si645577148965131116544_si640:%[^ ]+]] = arc.divi [[CSTsi645577148965131116544]], [[CSTsi640]] : si64
+    "arc.keep"(%result_divi_si645577148965131116544_si640) : (si64) -> ()
+    // CHECK: "arc.keep"([[RESULT_divi_si645577148965131116544_si640]]) : (si64) -> ()
+
+    // divi 9223372036854775806, 0 -> no-fold
+    %result_divi_si649223372036854775806_si640 = arc.divi %cst_si649223372036854775806, %cst_si640 : si64
+    // CHECK-DAG: [[RESULT_divi_si649223372036854775806_si640:%[^ ]+]] = arc.divi [[CSTsi649223372036854775806]], [[CSTsi640]] : si64
+    "arc.keep"(%result_divi_si649223372036854775806_si640) : (si64) -> ()
+    // CHECK: "arc.keep"([[RESULT_divi_si649223372036854775806_si640]]) : (si64) -> ()
+
+    // divi 9223372036854775807, 0 -> no-fold
+    %result_divi_si649223372036854775807_si640 = arc.divi %cst_si649223372036854775807, %cst_si640 : si64
+    // CHECK-DAG: [[RESULT_divi_si649223372036854775807_si640:%[^ ]+]] = arc.divi [[CSTsi649223372036854775807]], [[CSTsi640]] : si64
+    "arc.keep"(%result_divi_si649223372036854775807_si640) : (si64) -> ()
+    // CHECK: "arc.keep"([[RESULT_divi_si649223372036854775807_si640]]) : (si64) -> ()
+
+    // divi -128, 1 -> -128
+    %result_divi_si8n128_si81 = arc.divi %cst_si8n128, %cst_si81 : si8
+    "arc.keep"(%result_divi_si8n128_si81) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi8n128]]) : (si8) -> ()
+
+    // divi -127, 1 -> -127
+    %result_divi_si8n127_si81 = arc.divi %cst_si8n127, %cst_si81 : si8
+    "arc.keep"(%result_divi_si8n127_si81) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi8n127]]) : (si8) -> ()
+
+    // divi -128, 16 -> -8
+    %result_divi_si8n128_si816 = arc.divi %cst_si8n128, %cst_si816 : si8
+    "arc.keep"(%result_divi_si8n128_si816) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi8n8]]) : (si8) -> ()
+
+    // divi -127, 16 -> -7
+    %result_divi_si8n127_si816 = arc.divi %cst_si8n127, %cst_si816 : si8
+    "arc.keep"(%result_divi_si8n127_si816) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi8n7]]) : (si8) -> ()
+
+    // divi -128, 126 -> -1
+    %result_divi_si8n128_si8126 = arc.divi %cst_si8n128, %cst_si8126 : si8
+    "arc.keep"(%result_divi_si8n128_si8126) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi8n1]]) : (si8) -> ()
+
+    // divi -128, 127 -> -1
+    %result_divi_si8n128_si8127 = arc.divi %cst_si8n128, %cst_si8127 : si8
+    "arc.keep"(%result_divi_si8n128_si8127) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi8n1]]) : (si8) -> ()
+
+    // divi -127, 126 -> -1
+    %result_divi_si8n127_si8126 = arc.divi %cst_si8n127, %cst_si8126 : si8
+    "arc.keep"(%result_divi_si8n127_si8126) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi8n1]]) : (si8) -> ()
+
+    // divi -127, 127 -> -1
+    %result_divi_si8n127_si8127 = arc.divi %cst_si8n127, %cst_si8127 : si8
+    "arc.keep"(%result_divi_si8n127_si8127) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi8n1]]) : (si8) -> ()
+
+    // divi 127, -127 -> -1
+    %result_divi_si8127_si8n127 = arc.divi %cst_si8127, %cst_si8n127 : si8
+    "arc.keep"(%result_divi_si8127_si8n127) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi8n1]]) : (si8) -> ()
+
+    // divi -127, -128 -> 0
+    %result_divi_si8n127_si8n128 = arc.divi %cst_si8n127, %cst_si8n128 : si8
+    "arc.keep"(%result_divi_si8n127_si8n128) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi80]]) : (si8) -> ()
+
+    // divi 0, -128 -> 0
+    %result_divi_si80_si8n128 = arc.divi %cst_si80, %cst_si8n128 : si8
+    "arc.keep"(%result_divi_si80_si8n128) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi80]]) : (si8) -> ()
+
+    // divi 0, -127 -> 0
+    %result_divi_si80_si8n127 = arc.divi %cst_si80, %cst_si8n127 : si8
+    "arc.keep"(%result_divi_si80_si8n127) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi80]]) : (si8) -> ()
+
+    // divi 0, 1 -> 0
+    %result_divi_si80_si81 = arc.divi %cst_si80, %cst_si81 : si8
+    "arc.keep"(%result_divi_si80_si81) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi80]]) : (si8) -> ()
+
+    // divi 0, 16 -> 0
+    %result_divi_si80_si816 = arc.divi %cst_si80, %cst_si816 : si8
+    "arc.keep"(%result_divi_si80_si816) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi80]]) : (si8) -> ()
+
+    // divi 0, 126 -> 0
+    %result_divi_si80_si8126 = arc.divi %cst_si80, %cst_si8126 : si8
+    "arc.keep"(%result_divi_si80_si8126) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi80]]) : (si8) -> ()
+
+    // divi 0, 127 -> 0
+    %result_divi_si80_si8127 = arc.divi %cst_si80, %cst_si8127 : si8
+    "arc.keep"(%result_divi_si80_si8127) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi80]]) : (si8) -> ()
+
+    // divi 1, -128 -> 0
+    %result_divi_si81_si8n128 = arc.divi %cst_si81, %cst_si8n128 : si8
+    "arc.keep"(%result_divi_si81_si8n128) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi80]]) : (si8) -> ()
+
+    // divi 1, -127 -> 0
+    %result_divi_si81_si8n127 = arc.divi %cst_si81, %cst_si8n127 : si8
+    "arc.keep"(%result_divi_si81_si8n127) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi80]]) : (si8) -> ()
+
+    // divi 1, 16 -> 0
+    %result_divi_si81_si816 = arc.divi %cst_si81, %cst_si816 : si8
+    "arc.keep"(%result_divi_si81_si816) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi80]]) : (si8) -> ()
+
+    // divi 1, 126 -> 0
+    %result_divi_si81_si8126 = arc.divi %cst_si81, %cst_si8126 : si8
+    "arc.keep"(%result_divi_si81_si8126) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi80]]) : (si8) -> ()
+
+    // divi 1, 127 -> 0
+    %result_divi_si81_si8127 = arc.divi %cst_si81, %cst_si8127 : si8
+    "arc.keep"(%result_divi_si81_si8127) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi80]]) : (si8) -> ()
+
+    // divi 16, -128 -> 0
+    %result_divi_si816_si8n128 = arc.divi %cst_si816, %cst_si8n128 : si8
+    "arc.keep"(%result_divi_si816_si8n128) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi80]]) : (si8) -> ()
+
+    // divi 16, -127 -> 0
+    %result_divi_si816_si8n127 = arc.divi %cst_si816, %cst_si8n127 : si8
+    "arc.keep"(%result_divi_si816_si8n127) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi80]]) : (si8) -> ()
+
+    // divi 16, 126 -> 0
+    %result_divi_si816_si8126 = arc.divi %cst_si816, %cst_si8126 : si8
+    "arc.keep"(%result_divi_si816_si8126) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi80]]) : (si8) -> ()
+
+    // divi 16, 127 -> 0
+    %result_divi_si816_si8127 = arc.divi %cst_si816, %cst_si8127 : si8
+    "arc.keep"(%result_divi_si816_si8127) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi80]]) : (si8) -> ()
+
+    // divi 126, -128 -> 0
+    %result_divi_si8126_si8n128 = arc.divi %cst_si8126, %cst_si8n128 : si8
+    "arc.keep"(%result_divi_si8126_si8n128) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi80]]) : (si8) -> ()
+
+    // divi 126, -127 -> 0
+    %result_divi_si8126_si8n127 = arc.divi %cst_si8126, %cst_si8n127 : si8
+    "arc.keep"(%result_divi_si8126_si8n127) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi80]]) : (si8) -> ()
+
+    // divi 126, 127 -> 0
+    %result_divi_si8126_si8127 = arc.divi %cst_si8126, %cst_si8127 : si8
+    "arc.keep"(%result_divi_si8126_si8127) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi80]]) : (si8) -> ()
+
+    // divi 127, -128 -> 0
+    %result_divi_si8127_si8n128 = arc.divi %cst_si8127, %cst_si8n128 : si8
+    "arc.keep"(%result_divi_si8127_si8n128) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi80]]) : (si8) -> ()
+
+    // divi -128, -128 -> 1
+    %result_divi_si8n128_si8n128 = arc.divi %cst_si8n128, %cst_si8n128 : si8
+    "arc.keep"(%result_divi_si8n128_si8n128) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi81]]) : (si8) -> ()
+
+    // divi -128, -127 -> 1
+    %result_divi_si8n128_si8n127 = arc.divi %cst_si8n128, %cst_si8n127 : si8
+    "arc.keep"(%result_divi_si8n128_si8n127) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi81]]) : (si8) -> ()
+
+    // divi -127, -127 -> 1
+    %result_divi_si8n127_si8n127 = arc.divi %cst_si8n127, %cst_si8n127 : si8
+    "arc.keep"(%result_divi_si8n127_si8n127) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi81]]) : (si8) -> ()
+
+    // divi 1, 1 -> 1
+    %result_divi_si81_si81 = arc.divi %cst_si81, %cst_si81 : si8
+    "arc.keep"(%result_divi_si81_si81) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi81]]) : (si8) -> ()
+
+    // divi 16, 16 -> 1
+    %result_divi_si816_si816 = arc.divi %cst_si816, %cst_si816 : si8
+    "arc.keep"(%result_divi_si816_si816) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi81]]) : (si8) -> ()
+
+    // divi 126, 126 -> 1
+    %result_divi_si8126_si8126 = arc.divi %cst_si8126, %cst_si8126 : si8
+    "arc.keep"(%result_divi_si8126_si8126) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi81]]) : (si8) -> ()
+
+    // divi 127, 126 -> 1
+    %result_divi_si8127_si8126 = arc.divi %cst_si8127, %cst_si8126 : si8
+    "arc.keep"(%result_divi_si8127_si8126) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi81]]) : (si8) -> ()
+
+    // divi 127, 127 -> 1
+    %result_divi_si8127_si8127 = arc.divi %cst_si8127, %cst_si8127 : si8
+    "arc.keep"(%result_divi_si8127_si8127) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi81]]) : (si8) -> ()
+
+    // divi 126, 16 -> 7
+    %result_divi_si8126_si816 = arc.divi %cst_si8126, %cst_si816 : si8
+    "arc.keep"(%result_divi_si8126_si816) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi87]]) : (si8) -> ()
+
+    // divi 127, 16 -> 7
+    %result_divi_si8127_si816 = arc.divi %cst_si8127, %cst_si816 : si8
+    "arc.keep"(%result_divi_si8127_si816) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi87]]) : (si8) -> ()
+
+    // divi 16, 1 -> 16
+    %result_divi_si816_si81 = arc.divi %cst_si816, %cst_si81 : si8
+    "arc.keep"(%result_divi_si816_si81) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi816]]) : (si8) -> ()
+
+    // divi 126, 1 -> 126
+    %result_divi_si8126_si81 = arc.divi %cst_si8126, %cst_si81 : si8
+    "arc.keep"(%result_divi_si8126_si81) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi8126]]) : (si8) -> ()
+
+    // divi 127, 1 -> 127
+    %result_divi_si8127_si81 = arc.divi %cst_si8127, %cst_si81 : si8
+    "arc.keep"(%result_divi_si8127_si81) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi8127]]) : (si8) -> ()
+
+    // divi -128, 0 -> no-fold
+    %result_divi_si8n128_si80 = arc.divi %cst_si8n128, %cst_si80 : si8
+    // CHECK-DAG: [[RESULT_divi_si8n128_si80:%[^ ]+]] = arc.divi [[CSTsi8n128]], [[CSTsi80]] : si8
+    "arc.keep"(%result_divi_si8n128_si80) : (si8) -> ()
+    // CHECK: "arc.keep"([[RESULT_divi_si8n128_si80]]) : (si8) -> ()
+
+    // divi -127, 0 -> no-fold
+    %result_divi_si8n127_si80 = arc.divi %cst_si8n127, %cst_si80 : si8
+    // CHECK-DAG: [[RESULT_divi_si8n127_si80:%[^ ]+]] = arc.divi [[CSTsi8n127]], [[CSTsi80]] : si8
+    "arc.keep"(%result_divi_si8n127_si80) : (si8) -> ()
+    // CHECK: "arc.keep"([[RESULT_divi_si8n127_si80]]) : (si8) -> ()
+
+    // divi 0, 0 -> no-fold
+    %result_divi_si80_si80 = arc.divi %cst_si80, %cst_si80 : si8
+    // CHECK-DAG: [[RESULT_divi_si80_si80:%[^ ]+]] = arc.divi [[CSTsi80]], [[CSTsi80]] : si8
+    "arc.keep"(%result_divi_si80_si80) : (si8) -> ()
+    // CHECK: "arc.keep"([[RESULT_divi_si80_si80]]) : (si8) -> ()
+
+    // divi 1, 0 -> no-fold
+    %result_divi_si81_si80 = arc.divi %cst_si81, %cst_si80 : si8
+    // CHECK-DAG: [[RESULT_divi_si81_si80:%[^ ]+]] = arc.divi [[CSTsi81]], [[CSTsi80]] : si8
+    "arc.keep"(%result_divi_si81_si80) : (si8) -> ()
+    // CHECK: "arc.keep"([[RESULT_divi_si81_si80]]) : (si8) -> ()
+
+    // divi 16, 0 -> no-fold
+    %result_divi_si816_si80 = arc.divi %cst_si816, %cst_si80 : si8
+    // CHECK-DAG: [[RESULT_divi_si816_si80:%[^ ]+]] = arc.divi [[CSTsi816]], [[CSTsi80]] : si8
+    "arc.keep"(%result_divi_si816_si80) : (si8) -> ()
+    // CHECK: "arc.keep"([[RESULT_divi_si816_si80]]) : (si8) -> ()
+
+    // divi 126, 0 -> no-fold
+    %result_divi_si8126_si80 = arc.divi %cst_si8126, %cst_si80 : si8
+    // CHECK-DAG: [[RESULT_divi_si8126_si80:%[^ ]+]] = arc.divi [[CSTsi8126]], [[CSTsi80]] : si8
+    "arc.keep"(%result_divi_si8126_si80) : (si8) -> ()
+    // CHECK: "arc.keep"([[RESULT_divi_si8126_si80]]) : (si8) -> ()
+
+    // divi 127, 0 -> no-fold
+    %result_divi_si8127_si80 = arc.divi %cst_si8127, %cst_si80 : si8
+    // CHECK-DAG: [[RESULT_divi_si8127_si80:%[^ ]+]] = arc.divi [[CSTsi8127]], [[CSTsi80]] : si8
+    "arc.keep"(%result_divi_si8127_si80) : (si8) -> ()
+    // CHECK: "arc.keep"([[RESULT_divi_si8127_si80]]) : (si8) -> ()
+
+    // divi 0, 1 -> 0
+    %result_divi_ui160_ui161 = arc.divi %cst_ui160, %cst_ui161 : ui16
+    "arc.keep"(%result_divi_ui160_ui161) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui160]]) : (ui16) -> ()
+
+    // divi 0, 1717 -> 0
+    %result_divi_ui160_ui161717 = arc.divi %cst_ui160, %cst_ui161717 : ui16
+    "arc.keep"(%result_divi_ui160_ui161717) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui160]]) : (ui16) -> ()
+
+    // divi 0, 17988 -> 0
+    %result_divi_ui160_ui1617988 = arc.divi %cst_ui160, %cst_ui1617988 : ui16
+    "arc.keep"(%result_divi_ui160_ui1617988) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui160]]) : (ui16) -> ()
+
+    // divi 0, 65096 -> 0
+    %result_divi_ui160_ui1665096 = arc.divi %cst_ui160, %cst_ui1665096 : ui16
+    "arc.keep"(%result_divi_ui160_ui1665096) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui160]]) : (ui16) -> ()
+
+    // divi 0, 65534 -> 0
+    %result_divi_ui160_ui1665534 = arc.divi %cst_ui160, %cst_ui1665534 : ui16
+    "arc.keep"(%result_divi_ui160_ui1665534) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui160]]) : (ui16) -> ()
+
+    // divi 0, 65535 -> 0
+    %result_divi_ui160_ui1665535 = arc.divi %cst_ui160, %cst_ui1665535 : ui16
+    "arc.keep"(%result_divi_ui160_ui1665535) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui160]]) : (ui16) -> ()
+
+    // divi 1, 1717 -> 0
+    %result_divi_ui161_ui161717 = arc.divi %cst_ui161, %cst_ui161717 : ui16
+    "arc.keep"(%result_divi_ui161_ui161717) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui160]]) : (ui16) -> ()
+
+    // divi 1, 17988 -> 0
+    %result_divi_ui161_ui1617988 = arc.divi %cst_ui161, %cst_ui1617988 : ui16
+    "arc.keep"(%result_divi_ui161_ui1617988) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui160]]) : (ui16) -> ()
+
+    // divi 1, 65096 -> 0
+    %result_divi_ui161_ui1665096 = arc.divi %cst_ui161, %cst_ui1665096 : ui16
+    "arc.keep"(%result_divi_ui161_ui1665096) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui160]]) : (ui16) -> ()
+
+    // divi 1, 65534 -> 0
+    %result_divi_ui161_ui1665534 = arc.divi %cst_ui161, %cst_ui1665534 : ui16
+    "arc.keep"(%result_divi_ui161_ui1665534) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui160]]) : (ui16) -> ()
+
+    // divi 1, 65535 -> 0
+    %result_divi_ui161_ui1665535 = arc.divi %cst_ui161, %cst_ui1665535 : ui16
+    "arc.keep"(%result_divi_ui161_ui1665535) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui160]]) : (ui16) -> ()
+
+    // divi 1717, 17988 -> 0
+    %result_divi_ui161717_ui1617988 = arc.divi %cst_ui161717, %cst_ui1617988 : ui16
+    "arc.keep"(%result_divi_ui161717_ui1617988) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui160]]) : (ui16) -> ()
+
+    // divi 1717, 65096 -> 0
+    %result_divi_ui161717_ui1665096 = arc.divi %cst_ui161717, %cst_ui1665096 : ui16
+    "arc.keep"(%result_divi_ui161717_ui1665096) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui160]]) : (ui16) -> ()
+
+    // divi 1717, 65534 -> 0
+    %result_divi_ui161717_ui1665534 = arc.divi %cst_ui161717, %cst_ui1665534 : ui16
+    "arc.keep"(%result_divi_ui161717_ui1665534) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui160]]) : (ui16) -> ()
+
+    // divi 1717, 65535 -> 0
+    %result_divi_ui161717_ui1665535 = arc.divi %cst_ui161717, %cst_ui1665535 : ui16
+    "arc.keep"(%result_divi_ui161717_ui1665535) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui160]]) : (ui16) -> ()
+
+    // divi 17988, 65096 -> 0
+    %result_divi_ui1617988_ui1665096 = arc.divi %cst_ui1617988, %cst_ui1665096 : ui16
+    "arc.keep"(%result_divi_ui1617988_ui1665096) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui160]]) : (ui16) -> ()
+
+    // divi 17988, 65534 -> 0
+    %result_divi_ui1617988_ui1665534 = arc.divi %cst_ui1617988, %cst_ui1665534 : ui16
+    "arc.keep"(%result_divi_ui1617988_ui1665534) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui160]]) : (ui16) -> ()
+
+    // divi 17988, 65535 -> 0
+    %result_divi_ui1617988_ui1665535 = arc.divi %cst_ui1617988, %cst_ui1665535 : ui16
+    "arc.keep"(%result_divi_ui1617988_ui1665535) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui160]]) : (ui16) -> ()
+
+    // divi 65096, 65534 -> 0
+    %result_divi_ui1665096_ui1665534 = arc.divi %cst_ui1665096, %cst_ui1665534 : ui16
+    "arc.keep"(%result_divi_ui1665096_ui1665534) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui160]]) : (ui16) -> ()
+
+    // divi 65096, 65535 -> 0
+    %result_divi_ui1665096_ui1665535 = arc.divi %cst_ui1665096, %cst_ui1665535 : ui16
+    "arc.keep"(%result_divi_ui1665096_ui1665535) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui160]]) : (ui16) -> ()
+
+    // divi 65534, 65535 -> 0
+    %result_divi_ui1665534_ui1665535 = arc.divi %cst_ui1665534, %cst_ui1665535 : ui16
+    "arc.keep"(%result_divi_ui1665534_ui1665535) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui160]]) : (ui16) -> ()
+
+    // divi 1, 1 -> 1
+    %result_divi_ui161_ui161 = arc.divi %cst_ui161, %cst_ui161 : ui16
+    "arc.keep"(%result_divi_ui161_ui161) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui161]]) : (ui16) -> ()
+
+    // divi 1717, 1717 -> 1
+    %result_divi_ui161717_ui161717 = arc.divi %cst_ui161717, %cst_ui161717 : ui16
+    "arc.keep"(%result_divi_ui161717_ui161717) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui161]]) : (ui16) -> ()
+
+    // divi 17988, 17988 -> 1
+    %result_divi_ui1617988_ui1617988 = arc.divi %cst_ui1617988, %cst_ui1617988 : ui16
+    "arc.keep"(%result_divi_ui1617988_ui1617988) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui161]]) : (ui16) -> ()
+
+    // divi 65096, 65096 -> 1
+    %result_divi_ui1665096_ui1665096 = arc.divi %cst_ui1665096, %cst_ui1665096 : ui16
+    "arc.keep"(%result_divi_ui1665096_ui1665096) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui161]]) : (ui16) -> ()
+
+    // divi 65534, 65096 -> 1
+    %result_divi_ui1665534_ui1665096 = arc.divi %cst_ui1665534, %cst_ui1665096 : ui16
+    "arc.keep"(%result_divi_ui1665534_ui1665096) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui161]]) : (ui16) -> ()
+
+    // divi 65534, 65534 -> 1
+    %result_divi_ui1665534_ui1665534 = arc.divi %cst_ui1665534, %cst_ui1665534 : ui16
+    "arc.keep"(%result_divi_ui1665534_ui1665534) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui161]]) : (ui16) -> ()
+
+    // divi 65535, 65096 -> 1
+    %result_divi_ui1665535_ui1665096 = arc.divi %cst_ui1665535, %cst_ui1665096 : ui16
+    "arc.keep"(%result_divi_ui1665535_ui1665096) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui161]]) : (ui16) -> ()
+
+    // divi 65535, 65534 -> 1
+    %result_divi_ui1665535_ui1665534 = arc.divi %cst_ui1665535, %cst_ui1665534 : ui16
+    "arc.keep"(%result_divi_ui1665535_ui1665534) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui161]]) : (ui16) -> ()
+
+    // divi 65535, 65535 -> 1
+    %result_divi_ui1665535_ui1665535 = arc.divi %cst_ui1665535, %cst_ui1665535 : ui16
+    "arc.keep"(%result_divi_ui1665535_ui1665535) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui161]]) : (ui16) -> ()
+
+    // divi 65096, 17988 -> 3
+    %result_divi_ui1665096_ui1617988 = arc.divi %cst_ui1665096, %cst_ui1617988 : ui16
+    "arc.keep"(%result_divi_ui1665096_ui1617988) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui163]]) : (ui16) -> ()
+
+    // divi 65534, 17988 -> 3
+    %result_divi_ui1665534_ui1617988 = arc.divi %cst_ui1665534, %cst_ui1617988 : ui16
+    "arc.keep"(%result_divi_ui1665534_ui1617988) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui163]]) : (ui16) -> ()
+
+    // divi 65535, 17988 -> 3
+    %result_divi_ui1665535_ui1617988 = arc.divi %cst_ui1665535, %cst_ui1617988 : ui16
+    "arc.keep"(%result_divi_ui1665535_ui1617988) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui163]]) : (ui16) -> ()
+
+    // divi 17988, 1717 -> 10
+    %result_divi_ui1617988_ui161717 = arc.divi %cst_ui1617988, %cst_ui161717 : ui16
+    "arc.keep"(%result_divi_ui1617988_ui161717) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui1610]]) : (ui16) -> ()
+
+    // divi 65096, 1717 -> 37
+    %result_divi_ui1665096_ui161717 = arc.divi %cst_ui1665096, %cst_ui161717 : ui16
+    "arc.keep"(%result_divi_ui1665096_ui161717) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui1637]]) : (ui16) -> ()
+
+    // divi 65534, 1717 -> 38
+    %result_divi_ui1665534_ui161717 = arc.divi %cst_ui1665534, %cst_ui161717 : ui16
+    "arc.keep"(%result_divi_ui1665534_ui161717) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui1638]]) : (ui16) -> ()
+
+    // divi 65535, 1717 -> 38
+    %result_divi_ui1665535_ui161717 = arc.divi %cst_ui1665535, %cst_ui161717 : ui16
+    "arc.keep"(%result_divi_ui1665535_ui161717) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui1638]]) : (ui16) -> ()
+
+    // divi 1717, 1 -> 1717
+    %result_divi_ui161717_ui161 = arc.divi %cst_ui161717, %cst_ui161 : ui16
+    "arc.keep"(%result_divi_ui161717_ui161) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui161717]]) : (ui16) -> ()
+
+    // divi 17988, 1 -> 17988
+    %result_divi_ui1617988_ui161 = arc.divi %cst_ui1617988, %cst_ui161 : ui16
+    "arc.keep"(%result_divi_ui1617988_ui161) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui1617988]]) : (ui16) -> ()
+
+    // divi 65096, 1 -> 65096
+    %result_divi_ui1665096_ui161 = arc.divi %cst_ui1665096, %cst_ui161 : ui16
+    "arc.keep"(%result_divi_ui1665096_ui161) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui1665096]]) : (ui16) -> ()
+
+    // divi 65534, 1 -> 65534
+    %result_divi_ui1665534_ui161 = arc.divi %cst_ui1665534, %cst_ui161 : ui16
+    "arc.keep"(%result_divi_ui1665534_ui161) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui1665534]]) : (ui16) -> ()
+
+    // divi 65535, 1 -> 65535
+    %result_divi_ui1665535_ui161 = arc.divi %cst_ui1665535, %cst_ui161 : ui16
+    "arc.keep"(%result_divi_ui1665535_ui161) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui1665535]]) : (ui16) -> ()
+
+    // divi 0, 0 -> no-fold
+    %result_divi_ui160_ui160 = arc.divi %cst_ui160, %cst_ui160 : ui16
+    // CHECK-DAG: [[RESULT_divi_ui160_ui160:%[^ ]+]] = arc.divi [[CSTui160]], [[CSTui160]] : ui16
+    "arc.keep"(%result_divi_ui160_ui160) : (ui16) -> ()
+    // CHECK: "arc.keep"([[RESULT_divi_ui160_ui160]]) : (ui16) -> ()
+
+    // divi 1, 0 -> no-fold
+    %result_divi_ui161_ui160 = arc.divi %cst_ui161, %cst_ui160 : ui16
+    // CHECK-DAG: [[RESULT_divi_ui161_ui160:%[^ ]+]] = arc.divi [[CSTui161]], [[CSTui160]] : ui16
+    "arc.keep"(%result_divi_ui161_ui160) : (ui16) -> ()
+    // CHECK: "arc.keep"([[RESULT_divi_ui161_ui160]]) : (ui16) -> ()
+
+    // divi 1717, 0 -> no-fold
+    %result_divi_ui161717_ui160 = arc.divi %cst_ui161717, %cst_ui160 : ui16
+    // CHECK-DAG: [[RESULT_divi_ui161717_ui160:%[^ ]+]] = arc.divi [[CSTui161717]], [[CSTui160]] : ui16
+    "arc.keep"(%result_divi_ui161717_ui160) : (ui16) -> ()
+    // CHECK: "arc.keep"([[RESULT_divi_ui161717_ui160]]) : (ui16) -> ()
+
+    // divi 17988, 0 -> no-fold
+    %result_divi_ui1617988_ui160 = arc.divi %cst_ui1617988, %cst_ui160 : ui16
+    // CHECK-DAG: [[RESULT_divi_ui1617988_ui160:%[^ ]+]] = arc.divi [[CSTui1617988]], [[CSTui160]] : ui16
+    "arc.keep"(%result_divi_ui1617988_ui160) : (ui16) -> ()
+    // CHECK: "arc.keep"([[RESULT_divi_ui1617988_ui160]]) : (ui16) -> ()
+
+    // divi 65096, 0 -> no-fold
+    %result_divi_ui1665096_ui160 = arc.divi %cst_ui1665096, %cst_ui160 : ui16
+    // CHECK-DAG: [[RESULT_divi_ui1665096_ui160:%[^ ]+]] = arc.divi [[CSTui1665096]], [[CSTui160]] : ui16
+    "arc.keep"(%result_divi_ui1665096_ui160) : (ui16) -> ()
+    // CHECK: "arc.keep"([[RESULT_divi_ui1665096_ui160]]) : (ui16) -> ()
+
+    // divi 65534, 0 -> no-fold
+    %result_divi_ui1665534_ui160 = arc.divi %cst_ui1665534, %cst_ui160 : ui16
+    // CHECK-DAG: [[RESULT_divi_ui1665534_ui160:%[^ ]+]] = arc.divi [[CSTui1665534]], [[CSTui160]] : ui16
+    "arc.keep"(%result_divi_ui1665534_ui160) : (ui16) -> ()
+    // CHECK: "arc.keep"([[RESULT_divi_ui1665534_ui160]]) : (ui16) -> ()
+
+    // divi 65535, 0 -> no-fold
+    %result_divi_ui1665535_ui160 = arc.divi %cst_ui1665535, %cst_ui160 : ui16
+    // CHECK-DAG: [[RESULT_divi_ui1665535_ui160:%[^ ]+]] = arc.divi [[CSTui1665535]], [[CSTui160]] : ui16
+    "arc.keep"(%result_divi_ui1665535_ui160) : (ui16) -> ()
+    // CHECK: "arc.keep"([[RESULT_divi_ui1665535_ui160]]) : (ui16) -> ()
+
+    // divi 0, 1 -> 0
+    %result_divi_ui320_ui321 = arc.divi %cst_ui320, %cst_ui321 : ui32
+    "arc.keep"(%result_divi_ui320_ui321) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui320]]) : (ui32) -> ()
+
+    // divi 0, 2119154652 -> 0
+    %result_divi_ui320_ui322119154652 = arc.divi %cst_ui320, %cst_ui322119154652 : ui32
+    "arc.keep"(%result_divi_ui320_ui322119154652) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui320]]) : (ui32) -> ()
+
+    // divi 0, 3002788344 -> 0
+    %result_divi_ui320_ui323002788344 = arc.divi %cst_ui320, %cst_ui323002788344 : ui32
+    "arc.keep"(%result_divi_ui320_ui323002788344) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui320]]) : (ui32) -> ()
+
+    // divi 0, 3482297128 -> 0
+    %result_divi_ui320_ui323482297128 = arc.divi %cst_ui320, %cst_ui323482297128 : ui32
+    "arc.keep"(%result_divi_ui320_ui323482297128) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui320]]) : (ui32) -> ()
+
+    // divi 0, 4294967294 -> 0
+    %result_divi_ui320_ui324294967294 = arc.divi %cst_ui320, %cst_ui324294967294 : ui32
+    "arc.keep"(%result_divi_ui320_ui324294967294) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui320]]) : (ui32) -> ()
+
+    // divi 0, 4294967295 -> 0
+    %result_divi_ui320_ui324294967295 = arc.divi %cst_ui320, %cst_ui324294967295 : ui32
+    "arc.keep"(%result_divi_ui320_ui324294967295) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui320]]) : (ui32) -> ()
+
+    // divi 1, 2119154652 -> 0
+    %result_divi_ui321_ui322119154652 = arc.divi %cst_ui321, %cst_ui322119154652 : ui32
+    "arc.keep"(%result_divi_ui321_ui322119154652) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui320]]) : (ui32) -> ()
+
+    // divi 1, 3002788344 -> 0
+    %result_divi_ui321_ui323002788344 = arc.divi %cst_ui321, %cst_ui323002788344 : ui32
+    "arc.keep"(%result_divi_ui321_ui323002788344) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui320]]) : (ui32) -> ()
+
+    // divi 1, 3482297128 -> 0
+    %result_divi_ui321_ui323482297128 = arc.divi %cst_ui321, %cst_ui323482297128 : ui32
+    "arc.keep"(%result_divi_ui321_ui323482297128) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui320]]) : (ui32) -> ()
+
+    // divi 1, 4294967294 -> 0
+    %result_divi_ui321_ui324294967294 = arc.divi %cst_ui321, %cst_ui324294967294 : ui32
+    "arc.keep"(%result_divi_ui321_ui324294967294) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui320]]) : (ui32) -> ()
+
+    // divi 1, 4294967295 -> 0
+    %result_divi_ui321_ui324294967295 = arc.divi %cst_ui321, %cst_ui324294967295 : ui32
+    "arc.keep"(%result_divi_ui321_ui324294967295) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui320]]) : (ui32) -> ()
+
+    // divi 2119154652, 3002788344 -> 0
+    %result_divi_ui322119154652_ui323002788344 = arc.divi %cst_ui322119154652, %cst_ui323002788344 : ui32
+    "arc.keep"(%result_divi_ui322119154652_ui323002788344) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui320]]) : (ui32) -> ()
+
+    // divi 2119154652, 3482297128 -> 0
+    %result_divi_ui322119154652_ui323482297128 = arc.divi %cst_ui322119154652, %cst_ui323482297128 : ui32
+    "arc.keep"(%result_divi_ui322119154652_ui323482297128) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui320]]) : (ui32) -> ()
+
+    // divi 2119154652, 4294967294 -> 0
+    %result_divi_ui322119154652_ui324294967294 = arc.divi %cst_ui322119154652, %cst_ui324294967294 : ui32
+    "arc.keep"(%result_divi_ui322119154652_ui324294967294) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui320]]) : (ui32) -> ()
+
+    // divi 2119154652, 4294967295 -> 0
+    %result_divi_ui322119154652_ui324294967295 = arc.divi %cst_ui322119154652, %cst_ui324294967295 : ui32
+    "arc.keep"(%result_divi_ui322119154652_ui324294967295) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui320]]) : (ui32) -> ()
+
+    // divi 3002788344, 3482297128 -> 0
+    %result_divi_ui323002788344_ui323482297128 = arc.divi %cst_ui323002788344, %cst_ui323482297128 : ui32
+    "arc.keep"(%result_divi_ui323002788344_ui323482297128) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui320]]) : (ui32) -> ()
+
+    // divi 3002788344, 4294967294 -> 0
+    %result_divi_ui323002788344_ui324294967294 = arc.divi %cst_ui323002788344, %cst_ui324294967294 : ui32
+    "arc.keep"(%result_divi_ui323002788344_ui324294967294) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui320]]) : (ui32) -> ()
+
+    // divi 3002788344, 4294967295 -> 0
+    %result_divi_ui323002788344_ui324294967295 = arc.divi %cst_ui323002788344, %cst_ui324294967295 : ui32
+    "arc.keep"(%result_divi_ui323002788344_ui324294967295) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui320]]) : (ui32) -> ()
+
+    // divi 3482297128, 4294967294 -> 0
+    %result_divi_ui323482297128_ui324294967294 = arc.divi %cst_ui323482297128, %cst_ui324294967294 : ui32
+    "arc.keep"(%result_divi_ui323482297128_ui324294967294) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui320]]) : (ui32) -> ()
+
+    // divi 3482297128, 4294967295 -> 0
+    %result_divi_ui323482297128_ui324294967295 = arc.divi %cst_ui323482297128, %cst_ui324294967295 : ui32
+    "arc.keep"(%result_divi_ui323482297128_ui324294967295) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui320]]) : (ui32) -> ()
+
+    // divi 4294967294, 4294967295 -> 0
+    %result_divi_ui324294967294_ui324294967295 = arc.divi %cst_ui324294967294, %cst_ui324294967295 : ui32
+    "arc.keep"(%result_divi_ui324294967294_ui324294967295) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui320]]) : (ui32) -> ()
+
+    // divi 1, 1 -> 1
+    %result_divi_ui321_ui321 = arc.divi %cst_ui321, %cst_ui321 : ui32
+    "arc.keep"(%result_divi_ui321_ui321) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui321]]) : (ui32) -> ()
+
+    // divi 2119154652, 2119154652 -> 1
+    %result_divi_ui322119154652_ui322119154652 = arc.divi %cst_ui322119154652, %cst_ui322119154652 : ui32
+    "arc.keep"(%result_divi_ui322119154652_ui322119154652) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui321]]) : (ui32) -> ()
+
+    // divi 3002788344, 2119154652 -> 1
+    %result_divi_ui323002788344_ui322119154652 = arc.divi %cst_ui323002788344, %cst_ui322119154652 : ui32
+    "arc.keep"(%result_divi_ui323002788344_ui322119154652) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui321]]) : (ui32) -> ()
+
+    // divi 3002788344, 3002788344 -> 1
+    %result_divi_ui323002788344_ui323002788344 = arc.divi %cst_ui323002788344, %cst_ui323002788344 : ui32
+    "arc.keep"(%result_divi_ui323002788344_ui323002788344) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui321]]) : (ui32) -> ()
+
+    // divi 3482297128, 2119154652 -> 1
+    %result_divi_ui323482297128_ui322119154652 = arc.divi %cst_ui323482297128, %cst_ui322119154652 : ui32
+    "arc.keep"(%result_divi_ui323482297128_ui322119154652) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui321]]) : (ui32) -> ()
+
+    // divi 3482297128, 3002788344 -> 1
+    %result_divi_ui323482297128_ui323002788344 = arc.divi %cst_ui323482297128, %cst_ui323002788344 : ui32
+    "arc.keep"(%result_divi_ui323482297128_ui323002788344) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui321]]) : (ui32) -> ()
+
+    // divi 3482297128, 3482297128 -> 1
+    %result_divi_ui323482297128_ui323482297128 = arc.divi %cst_ui323482297128, %cst_ui323482297128 : ui32
+    "arc.keep"(%result_divi_ui323482297128_ui323482297128) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui321]]) : (ui32) -> ()
+
+    // divi 4294967294, 3002788344 -> 1
+    %result_divi_ui324294967294_ui323002788344 = arc.divi %cst_ui324294967294, %cst_ui323002788344 : ui32
+    "arc.keep"(%result_divi_ui324294967294_ui323002788344) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui321]]) : (ui32) -> ()
+
+    // divi 4294967294, 3482297128 -> 1
+    %result_divi_ui324294967294_ui323482297128 = arc.divi %cst_ui324294967294, %cst_ui323482297128 : ui32
+    "arc.keep"(%result_divi_ui324294967294_ui323482297128) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui321]]) : (ui32) -> ()
+
+    // divi 4294967294, 4294967294 -> 1
+    %result_divi_ui324294967294_ui324294967294 = arc.divi %cst_ui324294967294, %cst_ui324294967294 : ui32
+    "arc.keep"(%result_divi_ui324294967294_ui324294967294) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui321]]) : (ui32) -> ()
+
+    // divi 4294967295, 3002788344 -> 1
+    %result_divi_ui324294967295_ui323002788344 = arc.divi %cst_ui324294967295, %cst_ui323002788344 : ui32
+    "arc.keep"(%result_divi_ui324294967295_ui323002788344) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui321]]) : (ui32) -> ()
+
+    // divi 4294967295, 3482297128 -> 1
+    %result_divi_ui324294967295_ui323482297128 = arc.divi %cst_ui324294967295, %cst_ui323482297128 : ui32
+    "arc.keep"(%result_divi_ui324294967295_ui323482297128) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui321]]) : (ui32) -> ()
+
+    // divi 4294967295, 4294967294 -> 1
+    %result_divi_ui324294967295_ui324294967294 = arc.divi %cst_ui324294967295, %cst_ui324294967294 : ui32
+    "arc.keep"(%result_divi_ui324294967295_ui324294967294) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui321]]) : (ui32) -> ()
+
+    // divi 4294967295, 4294967295 -> 1
+    %result_divi_ui324294967295_ui324294967295 = arc.divi %cst_ui324294967295, %cst_ui324294967295 : ui32
+    "arc.keep"(%result_divi_ui324294967295_ui324294967295) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui321]]) : (ui32) -> ()
+
+    // divi 4294967294, 2119154652 -> 2
+    %result_divi_ui324294967294_ui322119154652 = arc.divi %cst_ui324294967294, %cst_ui322119154652 : ui32
+    "arc.keep"(%result_divi_ui324294967294_ui322119154652) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui322]]) : (ui32) -> ()
+
+    // divi 4294967295, 2119154652 -> 2
+    %result_divi_ui324294967295_ui322119154652 = arc.divi %cst_ui324294967295, %cst_ui322119154652 : ui32
+    "arc.keep"(%result_divi_ui324294967295_ui322119154652) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui322]]) : (ui32) -> ()
+
+    // divi 2119154652, 1 -> 2119154652
+    %result_divi_ui322119154652_ui321 = arc.divi %cst_ui322119154652, %cst_ui321 : ui32
+    "arc.keep"(%result_divi_ui322119154652_ui321) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui322119154652]]) : (ui32) -> ()
+
+    // divi 3002788344, 1 -> 3002788344
+    %result_divi_ui323002788344_ui321 = arc.divi %cst_ui323002788344, %cst_ui321 : ui32
+    "arc.keep"(%result_divi_ui323002788344_ui321) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui323002788344]]) : (ui32) -> ()
+
+    // divi 3482297128, 1 -> 3482297128
+    %result_divi_ui323482297128_ui321 = arc.divi %cst_ui323482297128, %cst_ui321 : ui32
+    "arc.keep"(%result_divi_ui323482297128_ui321) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui323482297128]]) : (ui32) -> ()
+
+    // divi 4294967294, 1 -> 4294967294
+    %result_divi_ui324294967294_ui321 = arc.divi %cst_ui324294967294, %cst_ui321 : ui32
+    "arc.keep"(%result_divi_ui324294967294_ui321) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui324294967294]]) : (ui32) -> ()
+
+    // divi 4294967295, 1 -> 4294967295
+    %result_divi_ui324294967295_ui321 = arc.divi %cst_ui324294967295, %cst_ui321 : ui32
+    "arc.keep"(%result_divi_ui324294967295_ui321) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui324294967295]]) : (ui32) -> ()
+
+    // divi 0, 0 -> no-fold
+    %result_divi_ui320_ui320 = arc.divi %cst_ui320, %cst_ui320 : ui32
+    // CHECK-DAG: [[RESULT_divi_ui320_ui320:%[^ ]+]] = arc.divi [[CSTui320]], [[CSTui320]] : ui32
+    "arc.keep"(%result_divi_ui320_ui320) : (ui32) -> ()
+    // CHECK: "arc.keep"([[RESULT_divi_ui320_ui320]]) : (ui32) -> ()
+
+    // divi 1, 0 -> no-fold
+    %result_divi_ui321_ui320 = arc.divi %cst_ui321, %cst_ui320 : ui32
+    // CHECK-DAG: [[RESULT_divi_ui321_ui320:%[^ ]+]] = arc.divi [[CSTui321]], [[CSTui320]] : ui32
+    "arc.keep"(%result_divi_ui321_ui320) : (ui32) -> ()
+    // CHECK: "arc.keep"([[RESULT_divi_ui321_ui320]]) : (ui32) -> ()
+
+    // divi 2119154652, 0 -> no-fold
+    %result_divi_ui322119154652_ui320 = arc.divi %cst_ui322119154652, %cst_ui320 : ui32
+    // CHECK-DAG: [[RESULT_divi_ui322119154652_ui320:%[^ ]+]] = arc.divi [[CSTui322119154652]], [[CSTui320]] : ui32
+    "arc.keep"(%result_divi_ui322119154652_ui320) : (ui32) -> ()
+    // CHECK: "arc.keep"([[RESULT_divi_ui322119154652_ui320]]) : (ui32) -> ()
+
+    // divi 3002788344, 0 -> no-fold
+    %result_divi_ui323002788344_ui320 = arc.divi %cst_ui323002788344, %cst_ui320 : ui32
+    // CHECK-DAG: [[RESULT_divi_ui323002788344_ui320:%[^ ]+]] = arc.divi [[CSTui323002788344]], [[CSTui320]] : ui32
+    "arc.keep"(%result_divi_ui323002788344_ui320) : (ui32) -> ()
+    // CHECK: "arc.keep"([[RESULT_divi_ui323002788344_ui320]]) : (ui32) -> ()
+
+    // divi 3482297128, 0 -> no-fold
+    %result_divi_ui323482297128_ui320 = arc.divi %cst_ui323482297128, %cst_ui320 : ui32
+    // CHECK-DAG: [[RESULT_divi_ui323482297128_ui320:%[^ ]+]] = arc.divi [[CSTui323482297128]], [[CSTui320]] : ui32
+    "arc.keep"(%result_divi_ui323482297128_ui320) : (ui32) -> ()
+    // CHECK: "arc.keep"([[RESULT_divi_ui323482297128_ui320]]) : (ui32) -> ()
+
+    // divi 4294967294, 0 -> no-fold
+    %result_divi_ui324294967294_ui320 = arc.divi %cst_ui324294967294, %cst_ui320 : ui32
+    // CHECK-DAG: [[RESULT_divi_ui324294967294_ui320:%[^ ]+]] = arc.divi [[CSTui324294967294]], [[CSTui320]] : ui32
+    "arc.keep"(%result_divi_ui324294967294_ui320) : (ui32) -> ()
+    // CHECK: "arc.keep"([[RESULT_divi_ui324294967294_ui320]]) : (ui32) -> ()
+
+    // divi 4294967295, 0 -> no-fold
+    %result_divi_ui324294967295_ui320 = arc.divi %cst_ui324294967295, %cst_ui320 : ui32
+    // CHECK-DAG: [[RESULT_divi_ui324294967295_ui320:%[^ ]+]] = arc.divi [[CSTui324294967295]], [[CSTui320]] : ui32
+    "arc.keep"(%result_divi_ui324294967295_ui320) : (ui32) -> ()
+    // CHECK: "arc.keep"([[RESULT_divi_ui324294967295_ui320]]) : (ui32) -> ()
+
+    // divi 0, 1 -> 0
+    %result_divi_ui640_ui641 = arc.divi %cst_ui640, %cst_ui641 : ui64
+    "arc.keep"(%result_divi_ui640_ui641) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui640]]) : (ui64) -> ()
+
+    // divi 0, 191084152064409600 -> 0
+    %result_divi_ui640_ui64191084152064409600 = arc.divi %cst_ui640, %cst_ui64191084152064409600 : ui64
+    "arc.keep"(%result_divi_ui640_ui64191084152064409600) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui640]]) : (ui64) -> ()
+
+    // divi 0, 11015955194427482112 -> 0
+    %result_divi_ui640_ui6411015955194427482112 = arc.divi %cst_ui640, %cst_ui6411015955194427482112 : ui64
+    "arc.keep"(%result_divi_ui640_ui6411015955194427482112) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui640]]) : (ui64) -> ()
+
+    // divi 0, 16990600415051759616 -> 0
+    %result_divi_ui640_ui6416990600415051759616 = arc.divi %cst_ui640, %cst_ui6416990600415051759616 : ui64
+    "arc.keep"(%result_divi_ui640_ui6416990600415051759616) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui640]]) : (ui64) -> ()
+
+    // divi 0, 18446744073709551614 -> 0
+    %result_divi_ui640_ui6418446744073709551614 = arc.divi %cst_ui640, %cst_ui6418446744073709551614 : ui64
+    "arc.keep"(%result_divi_ui640_ui6418446744073709551614) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui640]]) : (ui64) -> ()
+
+    // divi 0, 18446744073709551615 -> 0
+    %result_divi_ui640_ui6418446744073709551615 = arc.divi %cst_ui640, %cst_ui6418446744073709551615 : ui64
+    "arc.keep"(%result_divi_ui640_ui6418446744073709551615) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui640]]) : (ui64) -> ()
+
+    // divi 1, 191084152064409600 -> 0
+    %result_divi_ui641_ui64191084152064409600 = arc.divi %cst_ui641, %cst_ui64191084152064409600 : ui64
+    "arc.keep"(%result_divi_ui641_ui64191084152064409600) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui640]]) : (ui64) -> ()
+
+    // divi 1, 11015955194427482112 -> 0
+    %result_divi_ui641_ui6411015955194427482112 = arc.divi %cst_ui641, %cst_ui6411015955194427482112 : ui64
+    "arc.keep"(%result_divi_ui641_ui6411015955194427482112) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui640]]) : (ui64) -> ()
+
+    // divi 1, 16990600415051759616 -> 0
+    %result_divi_ui641_ui6416990600415051759616 = arc.divi %cst_ui641, %cst_ui6416990600415051759616 : ui64
+    "arc.keep"(%result_divi_ui641_ui6416990600415051759616) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui640]]) : (ui64) -> ()
+
+    // divi 1, 18446744073709551614 -> 0
+    %result_divi_ui641_ui6418446744073709551614 = arc.divi %cst_ui641, %cst_ui6418446744073709551614 : ui64
+    "arc.keep"(%result_divi_ui641_ui6418446744073709551614) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui640]]) : (ui64) -> ()
+
+    // divi 1, 18446744073709551615 -> 0
+    %result_divi_ui641_ui6418446744073709551615 = arc.divi %cst_ui641, %cst_ui6418446744073709551615 : ui64
+    "arc.keep"(%result_divi_ui641_ui6418446744073709551615) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui640]]) : (ui64) -> ()
+
+    // divi 191084152064409600, 11015955194427482112 -> 0
+    %result_divi_ui64191084152064409600_ui6411015955194427482112 = arc.divi %cst_ui64191084152064409600, %cst_ui6411015955194427482112 : ui64
+    "arc.keep"(%result_divi_ui64191084152064409600_ui6411015955194427482112) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui640]]) : (ui64) -> ()
+
+    // divi 191084152064409600, 16990600415051759616 -> 0
+    %result_divi_ui64191084152064409600_ui6416990600415051759616 = arc.divi %cst_ui64191084152064409600, %cst_ui6416990600415051759616 : ui64
+    "arc.keep"(%result_divi_ui64191084152064409600_ui6416990600415051759616) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui640]]) : (ui64) -> ()
+
+    // divi 191084152064409600, 18446744073709551614 -> 0
+    %result_divi_ui64191084152064409600_ui6418446744073709551614 = arc.divi %cst_ui64191084152064409600, %cst_ui6418446744073709551614 : ui64
+    "arc.keep"(%result_divi_ui64191084152064409600_ui6418446744073709551614) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui640]]) : (ui64) -> ()
+
+    // divi 191084152064409600, 18446744073709551615 -> 0
+    %result_divi_ui64191084152064409600_ui6418446744073709551615 = arc.divi %cst_ui64191084152064409600, %cst_ui6418446744073709551615 : ui64
+    "arc.keep"(%result_divi_ui64191084152064409600_ui6418446744073709551615) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui640]]) : (ui64) -> ()
+
+    // divi 11015955194427482112, 16990600415051759616 -> 0
+    %result_divi_ui6411015955194427482112_ui6416990600415051759616 = arc.divi %cst_ui6411015955194427482112, %cst_ui6416990600415051759616 : ui64
+    "arc.keep"(%result_divi_ui6411015955194427482112_ui6416990600415051759616) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui640]]) : (ui64) -> ()
+
+    // divi 11015955194427482112, 18446744073709551614 -> 0
+    %result_divi_ui6411015955194427482112_ui6418446744073709551614 = arc.divi %cst_ui6411015955194427482112, %cst_ui6418446744073709551614 : ui64
+    "arc.keep"(%result_divi_ui6411015955194427482112_ui6418446744073709551614) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui640]]) : (ui64) -> ()
+
+    // divi 11015955194427482112, 18446744073709551615 -> 0
+    %result_divi_ui6411015955194427482112_ui6418446744073709551615 = arc.divi %cst_ui6411015955194427482112, %cst_ui6418446744073709551615 : ui64
+    "arc.keep"(%result_divi_ui6411015955194427482112_ui6418446744073709551615) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui640]]) : (ui64) -> ()
+
+    // divi 16990600415051759616, 18446744073709551614 -> 0
+    %result_divi_ui6416990600415051759616_ui6418446744073709551614 = arc.divi %cst_ui6416990600415051759616, %cst_ui6418446744073709551614 : ui64
+    "arc.keep"(%result_divi_ui6416990600415051759616_ui6418446744073709551614) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui640]]) : (ui64) -> ()
+
+    // divi 16990600415051759616, 18446744073709551615 -> 0
+    %result_divi_ui6416990600415051759616_ui6418446744073709551615 = arc.divi %cst_ui6416990600415051759616, %cst_ui6418446744073709551615 : ui64
+    "arc.keep"(%result_divi_ui6416990600415051759616_ui6418446744073709551615) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui640]]) : (ui64) -> ()
+
+    // divi 18446744073709551614, 18446744073709551615 -> 0
+    %result_divi_ui6418446744073709551614_ui6418446744073709551615 = arc.divi %cst_ui6418446744073709551614, %cst_ui6418446744073709551615 : ui64
+    "arc.keep"(%result_divi_ui6418446744073709551614_ui6418446744073709551615) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui640]]) : (ui64) -> ()
+
+    // divi 1, 1 -> 1
+    %result_divi_ui641_ui641 = arc.divi %cst_ui641, %cst_ui641 : ui64
+    "arc.keep"(%result_divi_ui641_ui641) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui641]]) : (ui64) -> ()
+
+    // divi 191084152064409600, 191084152064409600 -> 1
+    %result_divi_ui64191084152064409600_ui64191084152064409600 = arc.divi %cst_ui64191084152064409600, %cst_ui64191084152064409600 : ui64
+    "arc.keep"(%result_divi_ui64191084152064409600_ui64191084152064409600) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui641]]) : (ui64) -> ()
+
+    // divi 11015955194427482112, 11015955194427482112 -> 1
+    %result_divi_ui6411015955194427482112_ui6411015955194427482112 = arc.divi %cst_ui6411015955194427482112, %cst_ui6411015955194427482112 : ui64
+    "arc.keep"(%result_divi_ui6411015955194427482112_ui6411015955194427482112) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui641]]) : (ui64) -> ()
+
+    // divi 16990600415051759616, 11015955194427482112 -> 1
+    %result_divi_ui6416990600415051759616_ui6411015955194427482112 = arc.divi %cst_ui6416990600415051759616, %cst_ui6411015955194427482112 : ui64
+    "arc.keep"(%result_divi_ui6416990600415051759616_ui6411015955194427482112) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui641]]) : (ui64) -> ()
+
+    // divi 16990600415051759616, 16990600415051759616 -> 1
+    %result_divi_ui6416990600415051759616_ui6416990600415051759616 = arc.divi %cst_ui6416990600415051759616, %cst_ui6416990600415051759616 : ui64
+    "arc.keep"(%result_divi_ui6416990600415051759616_ui6416990600415051759616) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui641]]) : (ui64) -> ()
+
+    // divi 18446744073709551614, 11015955194427482112 -> 1
+    %result_divi_ui6418446744073709551614_ui6411015955194427482112 = arc.divi %cst_ui6418446744073709551614, %cst_ui6411015955194427482112 : ui64
+    "arc.keep"(%result_divi_ui6418446744073709551614_ui6411015955194427482112) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui641]]) : (ui64) -> ()
+
+    // divi 18446744073709551614, 16990600415051759616 -> 1
+    %result_divi_ui6418446744073709551614_ui6416990600415051759616 = arc.divi %cst_ui6418446744073709551614, %cst_ui6416990600415051759616 : ui64
+    "arc.keep"(%result_divi_ui6418446744073709551614_ui6416990600415051759616) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui641]]) : (ui64) -> ()
+
+    // divi 18446744073709551614, 18446744073709551614 -> 1
+    %result_divi_ui6418446744073709551614_ui6418446744073709551614 = arc.divi %cst_ui6418446744073709551614, %cst_ui6418446744073709551614 : ui64
+    "arc.keep"(%result_divi_ui6418446744073709551614_ui6418446744073709551614) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui641]]) : (ui64) -> ()
+
+    // divi 18446744073709551615, 11015955194427482112 -> 1
+    %result_divi_ui6418446744073709551615_ui6411015955194427482112 = arc.divi %cst_ui6418446744073709551615, %cst_ui6411015955194427482112 : ui64
+    "arc.keep"(%result_divi_ui6418446744073709551615_ui6411015955194427482112) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui641]]) : (ui64) -> ()
+
+    // divi 18446744073709551615, 16990600415051759616 -> 1
+    %result_divi_ui6418446744073709551615_ui6416990600415051759616 = arc.divi %cst_ui6418446744073709551615, %cst_ui6416990600415051759616 : ui64
+    "arc.keep"(%result_divi_ui6418446744073709551615_ui6416990600415051759616) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui641]]) : (ui64) -> ()
+
+    // divi 18446744073709551615, 18446744073709551614 -> 1
+    %result_divi_ui6418446744073709551615_ui6418446744073709551614 = arc.divi %cst_ui6418446744073709551615, %cst_ui6418446744073709551614 : ui64
+    "arc.keep"(%result_divi_ui6418446744073709551615_ui6418446744073709551614) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui641]]) : (ui64) -> ()
+
+    // divi 18446744073709551615, 18446744073709551615 -> 1
+    %result_divi_ui6418446744073709551615_ui6418446744073709551615 = arc.divi %cst_ui6418446744073709551615, %cst_ui6418446744073709551615 : ui64
+    "arc.keep"(%result_divi_ui6418446744073709551615_ui6418446744073709551615) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui641]]) : (ui64) -> ()
+
+    // divi 11015955194427482112, 191084152064409600 -> 57
+    %result_divi_ui6411015955194427482112_ui64191084152064409600 = arc.divi %cst_ui6411015955194427482112, %cst_ui64191084152064409600 : ui64
+    "arc.keep"(%result_divi_ui6411015955194427482112_ui64191084152064409600) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui6457]]) : (ui64) -> ()
+
+    // divi 16990600415051759616, 191084152064409600 -> 88
+    %result_divi_ui6416990600415051759616_ui64191084152064409600 = arc.divi %cst_ui6416990600415051759616, %cst_ui64191084152064409600 : ui64
+    "arc.keep"(%result_divi_ui6416990600415051759616_ui64191084152064409600) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui6488]]) : (ui64) -> ()
+
+    // divi 18446744073709551614, 191084152064409600 -> 96
+    %result_divi_ui6418446744073709551614_ui64191084152064409600 = arc.divi %cst_ui6418446744073709551614, %cst_ui64191084152064409600 : ui64
+    "arc.keep"(%result_divi_ui6418446744073709551614_ui64191084152064409600) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui6496]]) : (ui64) -> ()
+
+    // divi 18446744073709551615, 191084152064409600 -> 96
+    %result_divi_ui6418446744073709551615_ui64191084152064409600 = arc.divi %cst_ui6418446744073709551615, %cst_ui64191084152064409600 : ui64
+    "arc.keep"(%result_divi_ui6418446744073709551615_ui64191084152064409600) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui6496]]) : (ui64) -> ()
+
+    // divi 191084152064409600, 1 -> 191084152064409600
+    %result_divi_ui64191084152064409600_ui641 = arc.divi %cst_ui64191084152064409600, %cst_ui641 : ui64
+    "arc.keep"(%result_divi_ui64191084152064409600_ui641) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui64191084152064409600]]) : (ui64) -> ()
+
+    // divi 11015955194427482112, 1 -> 11015955194427482112
+    %result_divi_ui6411015955194427482112_ui641 = arc.divi %cst_ui6411015955194427482112, %cst_ui641 : ui64
+    "arc.keep"(%result_divi_ui6411015955194427482112_ui641) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui6411015955194427482112]]) : (ui64) -> ()
+
+    // divi 16990600415051759616, 1 -> 16990600415051759616
+    %result_divi_ui6416990600415051759616_ui641 = arc.divi %cst_ui6416990600415051759616, %cst_ui641 : ui64
+    "arc.keep"(%result_divi_ui6416990600415051759616_ui641) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui6416990600415051759616]]) : (ui64) -> ()
+
+    // divi 18446744073709551614, 1 -> 18446744073709551614
+    %result_divi_ui6418446744073709551614_ui641 = arc.divi %cst_ui6418446744073709551614, %cst_ui641 : ui64
+    "arc.keep"(%result_divi_ui6418446744073709551614_ui641) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui6418446744073709551614]]) : (ui64) -> ()
+
+    // divi 18446744073709551615, 1 -> 18446744073709551615
+    %result_divi_ui6418446744073709551615_ui641 = arc.divi %cst_ui6418446744073709551615, %cst_ui641 : ui64
+    "arc.keep"(%result_divi_ui6418446744073709551615_ui641) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui6418446744073709551615]]) : (ui64) -> ()
+
+    // divi 0, 0 -> no-fold
+    %result_divi_ui640_ui640 = arc.divi %cst_ui640, %cst_ui640 : ui64
+    // CHECK-DAG: [[RESULT_divi_ui640_ui640:%[^ ]+]] = arc.divi [[CSTui640]], [[CSTui640]] : ui64
+    "arc.keep"(%result_divi_ui640_ui640) : (ui64) -> ()
+    // CHECK: "arc.keep"([[RESULT_divi_ui640_ui640]]) : (ui64) -> ()
+
+    // divi 1, 0 -> no-fold
+    %result_divi_ui641_ui640 = arc.divi %cst_ui641, %cst_ui640 : ui64
+    // CHECK-DAG: [[RESULT_divi_ui641_ui640:%[^ ]+]] = arc.divi [[CSTui641]], [[CSTui640]] : ui64
+    "arc.keep"(%result_divi_ui641_ui640) : (ui64) -> ()
+    // CHECK: "arc.keep"([[RESULT_divi_ui641_ui640]]) : (ui64) -> ()
+
+    // divi 191084152064409600, 0 -> no-fold
+    %result_divi_ui64191084152064409600_ui640 = arc.divi %cst_ui64191084152064409600, %cst_ui640 : ui64
+    // CHECK-DAG: [[RESULT_divi_ui64191084152064409600_ui640:%[^ ]+]] = arc.divi [[CSTui64191084152064409600]], [[CSTui640]] : ui64
+    "arc.keep"(%result_divi_ui64191084152064409600_ui640) : (ui64) -> ()
+    // CHECK: "arc.keep"([[RESULT_divi_ui64191084152064409600_ui640]]) : (ui64) -> ()
+
+    // divi 11015955194427482112, 0 -> no-fold
+    %result_divi_ui6411015955194427482112_ui640 = arc.divi %cst_ui6411015955194427482112, %cst_ui640 : ui64
+    // CHECK-DAG: [[RESULT_divi_ui6411015955194427482112_ui640:%[^ ]+]] = arc.divi [[CSTui6411015955194427482112]], [[CSTui640]] : ui64
+    "arc.keep"(%result_divi_ui6411015955194427482112_ui640) : (ui64) -> ()
+    // CHECK: "arc.keep"([[RESULT_divi_ui6411015955194427482112_ui640]]) : (ui64) -> ()
+
+    // divi 16990600415051759616, 0 -> no-fold
+    %result_divi_ui6416990600415051759616_ui640 = arc.divi %cst_ui6416990600415051759616, %cst_ui640 : ui64
+    // CHECK-DAG: [[RESULT_divi_ui6416990600415051759616_ui640:%[^ ]+]] = arc.divi [[CSTui6416990600415051759616]], [[CSTui640]] : ui64
+    "arc.keep"(%result_divi_ui6416990600415051759616_ui640) : (ui64) -> ()
+    // CHECK: "arc.keep"([[RESULT_divi_ui6416990600415051759616_ui640]]) : (ui64) -> ()
+
+    // divi 18446744073709551614, 0 -> no-fold
+    %result_divi_ui6418446744073709551614_ui640 = arc.divi %cst_ui6418446744073709551614, %cst_ui640 : ui64
+    // CHECK-DAG: [[RESULT_divi_ui6418446744073709551614_ui640:%[^ ]+]] = arc.divi [[CSTui6418446744073709551614]], [[CSTui640]] : ui64
+    "arc.keep"(%result_divi_ui6418446744073709551614_ui640) : (ui64) -> ()
+    // CHECK: "arc.keep"([[RESULT_divi_ui6418446744073709551614_ui640]]) : (ui64) -> ()
+
+    // divi 18446744073709551615, 0 -> no-fold
+    %result_divi_ui6418446744073709551615_ui640 = arc.divi %cst_ui6418446744073709551615, %cst_ui640 : ui64
+    // CHECK-DAG: [[RESULT_divi_ui6418446744073709551615_ui640:%[^ ]+]] = arc.divi [[CSTui6418446744073709551615]], [[CSTui640]] : ui64
+    "arc.keep"(%result_divi_ui6418446744073709551615_ui640) : (ui64) -> ()
+    // CHECK: "arc.keep"([[RESULT_divi_ui6418446744073709551615_ui640]]) : (ui64) -> ()
+
+    // divi 0, 1 -> 0
+    %result_divi_ui80_ui81 = arc.divi %cst_ui80, %cst_ui81 : ui8
+    "arc.keep"(%result_divi_ui80_ui81) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui80]]) : (ui8) -> ()
+
+    // divi 0, 72 -> 0
+    %result_divi_ui80_ui872 = arc.divi %cst_ui80, %cst_ui872 : ui8
+    "arc.keep"(%result_divi_ui80_ui872) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui80]]) : (ui8) -> ()
+
+    // divi 0, 100 -> 0
+    %result_divi_ui80_ui8100 = arc.divi %cst_ui80, %cst_ui8100 : ui8
+    "arc.keep"(%result_divi_ui80_ui8100) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui80]]) : (ui8) -> ()
+
+    // divi 0, 162 -> 0
+    %result_divi_ui80_ui8162 = arc.divi %cst_ui80, %cst_ui8162 : ui8
+    "arc.keep"(%result_divi_ui80_ui8162) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui80]]) : (ui8) -> ()
+
+    // divi 0, 254 -> 0
+    %result_divi_ui80_ui8254 = arc.divi %cst_ui80, %cst_ui8254 : ui8
+    "arc.keep"(%result_divi_ui80_ui8254) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui80]]) : (ui8) -> ()
+
+    // divi 0, 255 -> 0
+    %result_divi_ui80_ui8255 = arc.divi %cst_ui80, %cst_ui8255 : ui8
+    "arc.keep"(%result_divi_ui80_ui8255) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui80]]) : (ui8) -> ()
+
+    // divi 1, 72 -> 0
+    %result_divi_ui81_ui872 = arc.divi %cst_ui81, %cst_ui872 : ui8
+    "arc.keep"(%result_divi_ui81_ui872) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui80]]) : (ui8) -> ()
+
+    // divi 1, 100 -> 0
+    %result_divi_ui81_ui8100 = arc.divi %cst_ui81, %cst_ui8100 : ui8
+    "arc.keep"(%result_divi_ui81_ui8100) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui80]]) : (ui8) -> ()
+
+    // divi 1, 162 -> 0
+    %result_divi_ui81_ui8162 = arc.divi %cst_ui81, %cst_ui8162 : ui8
+    "arc.keep"(%result_divi_ui81_ui8162) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui80]]) : (ui8) -> ()
+
+    // divi 1, 254 -> 0
+    %result_divi_ui81_ui8254 = arc.divi %cst_ui81, %cst_ui8254 : ui8
+    "arc.keep"(%result_divi_ui81_ui8254) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui80]]) : (ui8) -> ()
+
+    // divi 1, 255 -> 0
+    %result_divi_ui81_ui8255 = arc.divi %cst_ui81, %cst_ui8255 : ui8
+    "arc.keep"(%result_divi_ui81_ui8255) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui80]]) : (ui8) -> ()
+
+    // divi 72, 100 -> 0
+    %result_divi_ui872_ui8100 = arc.divi %cst_ui872, %cst_ui8100 : ui8
+    "arc.keep"(%result_divi_ui872_ui8100) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui80]]) : (ui8) -> ()
+
+    // divi 72, 162 -> 0
+    %result_divi_ui872_ui8162 = arc.divi %cst_ui872, %cst_ui8162 : ui8
+    "arc.keep"(%result_divi_ui872_ui8162) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui80]]) : (ui8) -> ()
+
+    // divi 72, 254 -> 0
+    %result_divi_ui872_ui8254 = arc.divi %cst_ui872, %cst_ui8254 : ui8
+    "arc.keep"(%result_divi_ui872_ui8254) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui80]]) : (ui8) -> ()
+
+    // divi 72, 255 -> 0
+    %result_divi_ui872_ui8255 = arc.divi %cst_ui872, %cst_ui8255 : ui8
+    "arc.keep"(%result_divi_ui872_ui8255) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui80]]) : (ui8) -> ()
+
+    // divi 100, 162 -> 0
+    %result_divi_ui8100_ui8162 = arc.divi %cst_ui8100, %cst_ui8162 : ui8
+    "arc.keep"(%result_divi_ui8100_ui8162) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui80]]) : (ui8) -> ()
+
+    // divi 100, 254 -> 0
+    %result_divi_ui8100_ui8254 = arc.divi %cst_ui8100, %cst_ui8254 : ui8
+    "arc.keep"(%result_divi_ui8100_ui8254) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui80]]) : (ui8) -> ()
+
+    // divi 100, 255 -> 0
+    %result_divi_ui8100_ui8255 = arc.divi %cst_ui8100, %cst_ui8255 : ui8
+    "arc.keep"(%result_divi_ui8100_ui8255) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui80]]) : (ui8) -> ()
+
+    // divi 162, 254 -> 0
+    %result_divi_ui8162_ui8254 = arc.divi %cst_ui8162, %cst_ui8254 : ui8
+    "arc.keep"(%result_divi_ui8162_ui8254) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui80]]) : (ui8) -> ()
+
+    // divi 162, 255 -> 0
+    %result_divi_ui8162_ui8255 = arc.divi %cst_ui8162, %cst_ui8255 : ui8
+    "arc.keep"(%result_divi_ui8162_ui8255) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui80]]) : (ui8) -> ()
+
+    // divi 254, 255 -> 0
+    %result_divi_ui8254_ui8255 = arc.divi %cst_ui8254, %cst_ui8255 : ui8
+    "arc.keep"(%result_divi_ui8254_ui8255) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui80]]) : (ui8) -> ()
+
+    // divi 1, 1 -> 1
+    %result_divi_ui81_ui81 = arc.divi %cst_ui81, %cst_ui81 : ui8
+    "arc.keep"(%result_divi_ui81_ui81) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui81]]) : (ui8) -> ()
+
+    // divi 72, 72 -> 1
+    %result_divi_ui872_ui872 = arc.divi %cst_ui872, %cst_ui872 : ui8
+    "arc.keep"(%result_divi_ui872_ui872) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui81]]) : (ui8) -> ()
+
+    // divi 100, 72 -> 1
+    %result_divi_ui8100_ui872 = arc.divi %cst_ui8100, %cst_ui872 : ui8
+    "arc.keep"(%result_divi_ui8100_ui872) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui81]]) : (ui8) -> ()
+
+    // divi 100, 100 -> 1
+    %result_divi_ui8100_ui8100 = arc.divi %cst_ui8100, %cst_ui8100 : ui8
+    "arc.keep"(%result_divi_ui8100_ui8100) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui81]]) : (ui8) -> ()
+
+    // divi 162, 100 -> 1
+    %result_divi_ui8162_ui8100 = arc.divi %cst_ui8162, %cst_ui8100 : ui8
+    "arc.keep"(%result_divi_ui8162_ui8100) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui81]]) : (ui8) -> ()
+
+    // divi 162, 162 -> 1
+    %result_divi_ui8162_ui8162 = arc.divi %cst_ui8162, %cst_ui8162 : ui8
+    "arc.keep"(%result_divi_ui8162_ui8162) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui81]]) : (ui8) -> ()
+
+    // divi 254, 162 -> 1
+    %result_divi_ui8254_ui8162 = arc.divi %cst_ui8254, %cst_ui8162 : ui8
+    "arc.keep"(%result_divi_ui8254_ui8162) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui81]]) : (ui8) -> ()
+
+    // divi 254, 254 -> 1
+    %result_divi_ui8254_ui8254 = arc.divi %cst_ui8254, %cst_ui8254 : ui8
+    "arc.keep"(%result_divi_ui8254_ui8254) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui81]]) : (ui8) -> ()
+
+    // divi 255, 162 -> 1
+    %result_divi_ui8255_ui8162 = arc.divi %cst_ui8255, %cst_ui8162 : ui8
+    "arc.keep"(%result_divi_ui8255_ui8162) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui81]]) : (ui8) -> ()
+
+    // divi 255, 254 -> 1
+    %result_divi_ui8255_ui8254 = arc.divi %cst_ui8255, %cst_ui8254 : ui8
+    "arc.keep"(%result_divi_ui8255_ui8254) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui81]]) : (ui8) -> ()
+
+    // divi 255, 255 -> 1
+    %result_divi_ui8255_ui8255 = arc.divi %cst_ui8255, %cst_ui8255 : ui8
+    "arc.keep"(%result_divi_ui8255_ui8255) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui81]]) : (ui8) -> ()
+
+    // divi 162, 72 -> 2
+    %result_divi_ui8162_ui872 = arc.divi %cst_ui8162, %cst_ui872 : ui8
+    "arc.keep"(%result_divi_ui8162_ui872) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui82]]) : (ui8) -> ()
+
+    // divi 254, 100 -> 2
+    %result_divi_ui8254_ui8100 = arc.divi %cst_ui8254, %cst_ui8100 : ui8
+    "arc.keep"(%result_divi_ui8254_ui8100) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui82]]) : (ui8) -> ()
+
+    // divi 255, 100 -> 2
+    %result_divi_ui8255_ui8100 = arc.divi %cst_ui8255, %cst_ui8100 : ui8
+    "arc.keep"(%result_divi_ui8255_ui8100) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui82]]) : (ui8) -> ()
+
+    // divi 254, 72 -> 3
+    %result_divi_ui8254_ui872 = arc.divi %cst_ui8254, %cst_ui872 : ui8
+    "arc.keep"(%result_divi_ui8254_ui872) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui83]]) : (ui8) -> ()
+
+    // divi 255, 72 -> 3
+    %result_divi_ui8255_ui872 = arc.divi %cst_ui8255, %cst_ui872 : ui8
+    "arc.keep"(%result_divi_ui8255_ui872) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui83]]) : (ui8) -> ()
+
+    // divi 72, 1 -> 72
+    %result_divi_ui872_ui81 = arc.divi %cst_ui872, %cst_ui81 : ui8
+    "arc.keep"(%result_divi_ui872_ui81) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui872]]) : (ui8) -> ()
+
+    // divi 100, 1 -> 100
+    %result_divi_ui8100_ui81 = arc.divi %cst_ui8100, %cst_ui81 : ui8
+    "arc.keep"(%result_divi_ui8100_ui81) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui8100]]) : (ui8) -> ()
+
+    // divi 162, 1 -> 162
+    %result_divi_ui8162_ui81 = arc.divi %cst_ui8162, %cst_ui81 : ui8
+    "arc.keep"(%result_divi_ui8162_ui81) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui8162]]) : (ui8) -> ()
+
+    // divi 254, 1 -> 254
+    %result_divi_ui8254_ui81 = arc.divi %cst_ui8254, %cst_ui81 : ui8
+    "arc.keep"(%result_divi_ui8254_ui81) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui8254]]) : (ui8) -> ()
+
+    // divi 255, 1 -> 255
+    %result_divi_ui8255_ui81 = arc.divi %cst_ui8255, %cst_ui81 : ui8
+    "arc.keep"(%result_divi_ui8255_ui81) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui8255]]) : (ui8) -> ()
+
+    // divi 0, 0 -> no-fold
+    %result_divi_ui80_ui80 = arc.divi %cst_ui80, %cst_ui80 : ui8
+    // CHECK-DAG: [[RESULT_divi_ui80_ui80:%[^ ]+]] = arc.divi [[CSTui80]], [[CSTui80]] : ui8
+    "arc.keep"(%result_divi_ui80_ui80) : (ui8) -> ()
+    // CHECK: "arc.keep"([[RESULT_divi_ui80_ui80]]) : (ui8) -> ()
+
+    // divi 1, 0 -> no-fold
+    %result_divi_ui81_ui80 = arc.divi %cst_ui81, %cst_ui80 : ui8
+    // CHECK-DAG: [[RESULT_divi_ui81_ui80:%[^ ]+]] = arc.divi [[CSTui81]], [[CSTui80]] : ui8
+    "arc.keep"(%result_divi_ui81_ui80) : (ui8) -> ()
+    // CHECK: "arc.keep"([[RESULT_divi_ui81_ui80]]) : (ui8) -> ()
+
+    // divi 72, 0 -> no-fold
+    %result_divi_ui872_ui80 = arc.divi %cst_ui872, %cst_ui80 : ui8
+    // CHECK-DAG: [[RESULT_divi_ui872_ui80:%[^ ]+]] = arc.divi [[CSTui872]], [[CSTui80]] : ui8
+    "arc.keep"(%result_divi_ui872_ui80) : (ui8) -> ()
+    // CHECK: "arc.keep"([[RESULT_divi_ui872_ui80]]) : (ui8) -> ()
+
+    // divi 100, 0 -> no-fold
+    %result_divi_ui8100_ui80 = arc.divi %cst_ui8100, %cst_ui80 : ui8
+    // CHECK-DAG: [[RESULT_divi_ui8100_ui80:%[^ ]+]] = arc.divi [[CSTui8100]], [[CSTui80]] : ui8
+    "arc.keep"(%result_divi_ui8100_ui80) : (ui8) -> ()
+    // CHECK: "arc.keep"([[RESULT_divi_ui8100_ui80]]) : (ui8) -> ()
+
+    // divi 162, 0 -> no-fold
+    %result_divi_ui8162_ui80 = arc.divi %cst_ui8162, %cst_ui80 : ui8
+    // CHECK-DAG: [[RESULT_divi_ui8162_ui80:%[^ ]+]] = arc.divi [[CSTui8162]], [[CSTui80]] : ui8
+    "arc.keep"(%result_divi_ui8162_ui80) : (ui8) -> ()
+    // CHECK: "arc.keep"([[RESULT_divi_ui8162_ui80]]) : (ui8) -> ()
+
+    // divi 254, 0 -> no-fold
+    %result_divi_ui8254_ui80 = arc.divi %cst_ui8254, %cst_ui80 : ui8
+    // CHECK-DAG: [[RESULT_divi_ui8254_ui80:%[^ ]+]] = arc.divi [[CSTui8254]], [[CSTui80]] : ui8
+    "arc.keep"(%result_divi_ui8254_ui80) : (ui8) -> ()
+    // CHECK: "arc.keep"([[RESULT_divi_ui8254_ui80]]) : (ui8) -> ()
+
+    // divi 255, 0 -> no-fold
+    %result_divi_ui8255_ui80 = arc.divi %cst_ui8255, %cst_ui80 : ui8
+    // CHECK-DAG: [[RESULT_divi_ui8255_ui80:%[^ ]+]] = arc.divi [[CSTui8255]], [[CSTui80]] : ui8
+    "arc.keep"(%result_divi_ui8255_ui80) : (ui8) -> ()
+    // CHECK: "arc.keep"([[RESULT_divi_ui8255_ui80]]) : (ui8) -> ()
 
     // muli -32768, 0 -> 0
     %result_muli_si16n32768_si160 = arc.muli %cst_si16n32768, %cst_si160 : si16

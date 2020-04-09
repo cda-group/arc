@@ -478,7 +478,7 @@ def Arc_AndOp : ArcIntArithmeticOp<"and", [Commutative]> {
 
 def Arc_DivIOp : ArcIntArithmeticOp<"divi"> {
   let summary = "integer division operation";
-  // TODO  let hasFolder = 1;
+  let hasFolder = 1;
 }
 
 def Arc_OrOp : ArcIntArithmeticOp<"or", [Commutative]> {

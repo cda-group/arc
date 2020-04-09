@@ -189,6 +189,29 @@ OpFoldResult arc::CmpIOp::fold(ArrayRef<Attribute> operands) {
   return IntegerAttr::get(IntegerType::get(1, getContext()), APInt(1, val));
 }
 
+//===----------------------------------------------------------------------===//
+// DivIOp
+//===----------------------------------------------------------------------===//
+// Mostly stolen from standard dialect
+
+OpFoldResult DivIOp::fold(ArrayRef<Attribute> operands) {
+  assert(operands.size() == 2 && "binary operation takes two operands");
+
+  bool isUnsigned = operands[0].getType().isUnsignedInteger();
+  // Don't fold if it would overflow or if it requires a division by zero.
+  bool overflowOrDiv0 = false;
+  auto result = constFoldBinaryOp<IntegerAttr>(operands, [&](APInt a, APInt b) {
+    if (overflowOrDiv0 || !b) {
+      overflowOrDiv0 = true;
+      return a;
+    }
+    if (isUnsigned)
+      return a.udiv(b);
+    return a.sdiv_ov(b, overflowOrDiv0);
+  });
+  return overflowOrDiv0 ? Attribute() : result;
+}
+
 LogicalResult MakeVectorOp::customVerify() {
   auto Operation = this->getOperation();
   auto NumOperands = Operation->getNumOperands();
