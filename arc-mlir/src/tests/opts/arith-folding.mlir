@@ -32,6 +32,12 @@ module @toplevel {
     // CHECK-DAG: [[CSTsi16n10486:%[^ ]+]] = arc.constant -10486 : si16
     %cst_si16n6028 = arc.constant -6028: si16
     // CHECK-DAG: [[CSTsi16n6028:%[^ ]+]] = arc.constant -6028 : si16
+    %cst_si16n1310 = arc.constant -1310: si16
+    // CHECK-DAG: [[CSTsi16n1310:%[^ ]+]] = arc.constant -1310 : si16
+    %cst_si16n1309 = arc.constant -1309: si16
+    // CHECK-DAG: [[CSTsi16n1309:%[^ ]+]] = arc.constant -1309 : si16
+    %cst_si16n1089 = arc.constant -1089: si16
+    // CHECK-DAG: [[CSTsi16n1089:%[^ ]+]] = arc.constant -1089 : si16
     %cst_si16n221 = arc.constant -221: si16
     // CHECK-DAG: [[CSTsi16n221:%[^ ]+]] = arc.constant -221 : si16
     %cst_si16n220 = arc.constant -220: si16
@@ -54,6 +60,10 @@ module @toplevel {
     // CHECK-DAG: [[CSTsi16220:%[^ ]+]] = arc.constant 220 : si16
     %cst_si16221 = arc.constant 221: si16
     // CHECK-DAG: [[CSTsi16221:%[^ ]+]] = arc.constant 221 : si16
+    %cst_si161308 = arc.constant 1308: si16
+    // CHECK-DAG: [[CSTsi161308:%[^ ]+]] = arc.constant 1308 : si16
+    %cst_si161309 = arc.constant 1309: si16
+    // CHECK-DAG: [[CSTsi161309:%[^ ]+]] = arc.constant 1309 : si16
     %cst_si166028 = arc.constant 6028: si16
     // CHECK-DAG: [[CSTsi166028:%[^ ]+]] = arc.constant 6028 : si16
     %cst_si1610486 = arc.constant 10486: si16
@@ -110,6 +120,10 @@ module @toplevel {
     // CHECK-DAG: [[CSTsi32n434299847:%[^ ]+]] = arc.constant -434299847 : si32
     %cst_si32n217176401 = arc.constant -217176401: si32
     // CHECK-DAG: [[CSTsi32n217176401:%[^ ]+]] = arc.constant -217176401 : si32
+    %cst_si32n76672122 = arc.constant -76672122: si32
+    // CHECK-DAG: [[CSTsi32n76672122:%[^ ]+]] = arc.constant -76672122 : si32
+    %cst_si32n76672121 = arc.constant -76672121: si32
+    // CHECK-DAG: [[CSTsi32n76672121:%[^ ]+]] = arc.constant -76672121 : si32
     %cst_si32n2 = arc.constant -2: si32
     // CHECK-DAG: [[CSTsi32n2:%[^ ]+]] = arc.constant -2 : si32
     %cst_si32n1 = arc.constant -1: si32
@@ -120,6 +134,10 @@ module @toplevel {
     // CHECK-DAG: [[CSTsi321:%[^ ]+]] = arc.constant 1 : si32
     %cst_si322 = arc.constant 2: si32
     // CHECK-DAG: [[CSTsi322:%[^ ]+]] = arc.constant 2 : si32
+    %cst_si3276672120 = arc.constant 76672120: si32
+    // CHECK-DAG: [[CSTsi3276672120:%[^ ]+]] = arc.constant 76672120 : si32
+    %cst_si3276672121 = arc.constant 76672121: si32
+    // CHECK-DAG: [[CSTsi3276672121:%[^ ]+]] = arc.constant 76672121 : si32
     %cst_si32217176401 = arc.constant 217176401: si32
     // CHECK-DAG: [[CSTsi32217176401:%[^ ]+]] = arc.constant 217176401 : si32
     %cst_si32434299846 = arc.constant 434299846: si32
@@ -190,6 +208,14 @@ module @toplevel {
     // CHECK-DAG: [[CSTsi64n1741927215160008704:%[^ ]+]] = arc.constant -1741927215160008704 : si64
     %cst_si64n1328271339354574848 = arc.constant -1328271339354574848: si64
     // CHECK-DAG: [[CSTsi64n1328271339354574848:%[^ ]+]] = arc.constant -1328271339354574848 : si64
+    %cst_si64n1253744000727326720 = arc.constant -1253744000727326720: si64
+    // CHECK-DAG: [[CSTsi64n1253744000727326720:%[^ ]+]] = arc.constant -1253744000727326720 : si64
+    %cst_si64n1253744000727326719 = arc.constant -1253744000727326719: si64
+    // CHECK-DAG: [[CSTsi64n1253744000727326719:%[^ ]+]] = arc.constant -1253744000727326719 : si64
+    %cst_si64n513735961054732288 = arc.constant -513735961054732288: si64
+    // CHECK-DAG: [[CSTsi64n513735961054732288:%[^ ]+]] = arc.constant -513735961054732288 : si64
+    %cst_si64n513735961054732287 = arc.constant -513735961054732287: si64
+    // CHECK-DAG: [[CSTsi64n513735961054732287:%[^ ]+]] = arc.constant -513735961054732287 : si64
     %cst_si64n413655875805433856 = arc.constant -413655875805433856: si64
     // CHECK-DAG: [[CSTsi64n413655875805433856:%[^ ]+]] = arc.constant -413655875805433856 : si64
     %cst_si64n6 = arc.constant -6: si64
@@ -212,8 +238,20 @@ module @toplevel {
     // CHECK-DAG: [[CSTsi645:%[^ ]+]] = arc.constant 5 : si64
     %cst_si646 = arc.constant 6: si64
     // CHECK-DAG: [[CSTsi646:%[^ ]+]] = arc.constant 6 : si64
+    %cst_si64264063607712817152 = arc.constant 264063607712817152: si64
+    // CHECK-DAG: [[CSTsi64264063607712817152:%[^ ]+]] = arc.constant 264063607712817152 : si64
+    %cst_si64351367319651090432 = arc.constant 351367319651090432: si64
+    // CHECK-DAG: [[CSTsi64351367319651090432:%[^ ]+]] = arc.constant 351367319651090432 : si64
     %cst_si64413655875805433856 = arc.constant 413655875805433856: si64
     // CHECK-DAG: [[CSTsi64413655875805433856:%[^ ]+]] = arc.constant 413655875805433856 : si64
+    %cst_si64513735961054732286 = arc.constant 513735961054732286: si64
+    // CHECK-DAG: [[CSTsi64513735961054732286:%[^ ]+]] = arc.constant 513735961054732286 : si64
+    %cst_si64513735961054732287 = arc.constant 513735961054732287: si64
+    // CHECK-DAG: [[CSTsi64513735961054732287:%[^ ]+]] = arc.constant 513735961054732287 : si64
+    %cst_si641253744000727326718 = arc.constant 1253744000727326718: si64
+    // CHECK-DAG: [[CSTsi641253744000727326718:%[^ ]+]] = arc.constant 1253744000727326718 : si64
+    %cst_si641253744000727326719 = arc.constant 1253744000727326719: si64
+    // CHECK-DAG: [[CSTsi641253744000727326719:%[^ ]+]] = arc.constant 1253744000727326719 : si64
     %cst_si641328271339354574848 = arc.constant 1328271339354574848: si64
     // CHECK-DAG: [[CSTsi641328271339354574848:%[^ ]+]] = arc.constant 1328271339354574848 : si64
     %cst_si641741927215160008704 = arc.constant 1741927215160008704: si64
@@ -282,6 +320,8 @@ module @toplevel {
     // CHECK-DAG: [[CSTsi82:%[^ ]+]] = arc.constant 2 : si8
     %cst_si87 = arc.constant 7: si8
     // CHECK-DAG: [[CSTsi87:%[^ ]+]] = arc.constant 7 : si8
+    %cst_si814 = arc.constant 14: si8
+    // CHECK-DAG: [[CSTsi814:%[^ ]+]] = arc.constant 14 : si8
     %cst_si815 = arc.constant 15: si8
     // CHECK-DAG: [[CSTsi815:%[^ ]+]] = arc.constant 15 : si8
     %cst_si816 = arc.constant 16: si8
@@ -314,10 +354,18 @@ module @toplevel {
     // CHECK-DAG: [[CSTui1637:%[^ ]+]] = arc.constant 37 : ui16
     %cst_ui1638 = arc.constant 38: ui16
     // CHECK-DAG: [[CSTui1638:%[^ ]+]] = arc.constant 38 : ui16
+    %cst_ui16288 = arc.constant 288: ui16
+    // CHECK-DAG: [[CSTui16288:%[^ ]+]] = arc.constant 288 : ui16
+    %cst_ui16289 = arc.constant 289: ui16
+    // CHECK-DAG: [[CSTui16289:%[^ ]+]] = arc.constant 289 : ui16
     %cst_ui16438 = arc.constant 438: ui16
     // CHECK-DAG: [[CSTui16438:%[^ ]+]] = arc.constant 438 : ui16
     %cst_ui16439 = arc.constant 439: ui16
     // CHECK-DAG: [[CSTui16439:%[^ ]+]] = arc.constant 439 : ui16
+    %cst_ui16818 = arc.constant 818: ui16
+    // CHECK-DAG: [[CSTui16818:%[^ ]+]] = arc.constant 818 : ui16
+    %cst_ui161567 = arc.constant 1567: ui16
+    // CHECK-DAG: [[CSTui161567:%[^ ]+]] = arc.constant 1567 : ui16
     %cst_ui161716 = arc.constant 1716: ui16
     // CHECK-DAG: [[CSTui161716:%[^ ]+]] = arc.constant 1716 : ui16
     %cst_ui161717 = arc.constant 1717: ui16
@@ -326,6 +374,12 @@ module @toplevel {
     // CHECK-DAG: [[CSTui161718:%[^ ]+]] = arc.constant 1718 : ui16
     %cst_ui163434 = arc.constant 3434: ui16
     // CHECK-DAG: [[CSTui163434:%[^ ]+]] = arc.constant 3434 : ui16
+    %cst_ui1611132 = arc.constant 11132: ui16
+    // CHECK-DAG: [[CSTui1611132:%[^ ]+]] = arc.constant 11132 : ui16
+    %cst_ui1611570 = arc.constant 11570: ui16
+    // CHECK-DAG: [[CSTui1611570:%[^ ]+]] = arc.constant 11570 : ui16
+    %cst_ui1611571 = arc.constant 11571: ui16
+    // CHECK-DAG: [[CSTui1611571:%[^ ]+]] = arc.constant 11571 : ui16
     %cst_ui1616271 = arc.constant 16271: ui16
     // CHECK-DAG: [[CSTui1616271:%[^ ]+]] = arc.constant 16271 : ui16
     %cst_ui1617987 = arc.constant 17987: ui16
@@ -368,6 +422,10 @@ module @toplevel {
     // CHECK-DAG: [[CSTui321:%[^ ]+]] = arc.constant 1 : ui32
     %cst_ui322 = arc.constant 2: ui32
     // CHECK-DAG: [[CSTui322:%[^ ]+]] = arc.constant 2 : ui32
+    %cst_ui3256657990 = arc.constant 56657990: ui32
+    // CHECK-DAG: [[CSTui3256657990:%[^ ]+]] = arc.constant 56657990 : ui32
+    %cst_ui3256657991 = arc.constant 56657991: ui32
+    // CHECK-DAG: [[CSTui3256657991:%[^ ]+]] = arc.constant 56657991 : ui32
     %cst_ui32479508784 = arc.constant 479508784: ui32
     // CHECK-DAG: [[CSTui32479508784:%[^ ]+]] = arc.constant 479508784 : ui32
     %cst_ui32812670166 = arc.constant 812670166: ui32
@@ -424,6 +482,14 @@ module @toplevel {
     // CHECK-DAG: [[CSTui6488:%[^ ]+]] = arc.constant 88 : ui64
     %cst_ui6496 = arc.constant 96: ui64
     // CHECK-DAG: [[CSTui6496:%[^ ]+]] = arc.constant 96 : ui64
+    %cst_ui64102665475526230014 = arc.constant 102665475526230014: ui64
+    // CHECK-DAG: [[CSTui64102665475526230014:%[^ ]+]] = arc.constant 102665475526230014 : ui64
+    %cst_ui64102665475526230015 = arc.constant 102665475526230015: ui64
+    // CHECK-DAG: [[CSTui64102665475526230015:%[^ ]+]] = arc.constant 102665475526230015 : ui64
+    %cst_ui64124158526756134912 = arc.constant 124158526756134912: ui64
+    // CHECK-DAG: [[CSTui64124158526756134912:%[^ ]+]] = arc.constant 124158526756134912 : ui64
+    %cst_ui64175195033383714816 = arc.constant 175195033383714816: ui64
+    // CHECK-DAG: [[CSTui64175195033383714816:%[^ ]+]] = arc.constant 175195033383714816 : ui64
     %cst_ui64191084152064409599 = arc.constant 191084152064409599: ui64
     // CHECK-DAG: [[CSTui64191084152064409599:%[^ ]+]] = arc.constant 191084152064409599 : ui64
     %cst_ui64191084152064409600 = arc.constant 191084152064409600: ui64
@@ -480,8 +546,18 @@ module @toplevel {
     // CHECK-DAG: [[CSTui82:%[^ ]+]] = arc.constant 2 : ui8
     %cst_ui83 = arc.constant 3: ui8
     // CHECK-DAG: [[CSTui83:%[^ ]+]] = arc.constant 3 : ui8
+    %cst_ui818 = arc.constant 18: ui8
+    // CHECK-DAG: [[CSTui818:%[^ ]+]] = arc.constant 18 : ui8
     %cst_ui828 = arc.constant 28: ui8
     // CHECK-DAG: [[CSTui828:%[^ ]+]] = arc.constant 28 : ui8
+    %cst_ui838 = arc.constant 38: ui8
+    // CHECK-DAG: [[CSTui838:%[^ ]+]] = arc.constant 38 : ui8
+    %cst_ui839 = arc.constant 39: ui8
+    // CHECK-DAG: [[CSTui839:%[^ ]+]] = arc.constant 39 : ui8
+    %cst_ui854 = arc.constant 54: ui8
+    // CHECK-DAG: [[CSTui854:%[^ ]+]] = arc.constant 54 : ui8
+    %cst_ui855 = arc.constant 55: ui8
+    // CHECK-DAG: [[CSTui855:%[^ ]+]] = arc.constant 55 : ui8
     %cst_ui862 = arc.constant 62: ui8
     // CHECK-DAG: [[CSTui862:%[^ ]+]] = arc.constant 62 : ui8
     %cst_ui871 = arc.constant 71: ui8
@@ -7592,6 +7668,2250 @@ module @toplevel {
     // CHECK-DAG: [[RESULT_muli_ui8255_ui8255:%[^ ]+]] = arc.muli [[CSTui8255]], [[CSTui8255]] : ui8
     "arc.keep"(%result_muli_ui8255_ui8255) : (ui8) -> ()
     // CHECK: "arc.keep"([[RESULT_muli_ui8255_ui8255]]) : (ui8) -> ()
+
+    // remi -32767, -32768 -> -32767
+    %result_remi_si16n32767_si16n32768 = arc.remi %cst_si16n32767, %cst_si16n32768 : si16
+    "arc.keep"(%result_remi_si16n32767_si16n32768) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi16n32767]]) : (si16) -> ()
+
+    // remi -32547, -32768 -> -32547
+    %result_remi_si16n32547_si16n32768 = arc.remi %cst_si16n32547, %cst_si16n32768 : si16
+    "arc.keep"(%result_remi_si16n32547_si16n32768) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi16n32547]]) : (si16) -> ()
+
+    // remi -32547, -32767 -> -32547
+    %result_remi_si16n32547_si16n32767 = arc.remi %cst_si16n32547, %cst_si16n32767 : si16
+    "arc.keep"(%result_remi_si16n32547_si16n32767) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi16n32547]]) : (si16) -> ()
+
+    // remi -32547, 32766 -> -32547
+    %result_remi_si16n32547_si1632766 = arc.remi %cst_si16n32547, %cst_si1632766 : si16
+    "arc.keep"(%result_remi_si16n32547_si1632766) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi16n32547]]) : (si16) -> ()
+
+    // remi -32547, 32767 -> -32547
+    %result_remi_si16n32547_si1632767 = arc.remi %cst_si16n32547, %cst_si1632767 : si16
+    "arc.keep"(%result_remi_si16n32547_si1632767) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi16n32547]]) : (si16) -> ()
+
+    // remi -32768, 16514 -> -16254
+    %result_remi_si16n32768_si1616514 = arc.remi %cst_si16n32768, %cst_si1616514 : si16
+    "arc.keep"(%result_remi_si16n32768_si1616514) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi16n16254]]) : (si16) -> ()
+
+    // remi -32767, 16514 -> -16253
+    %result_remi_si16n32767_si1616514 = arc.remi %cst_si16n32767, %cst_si1616514 : si16
+    "arc.keep"(%result_remi_si16n32767_si1616514) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi16n16253]]) : (si16) -> ()
+
+    // remi -32547, 16514 -> -16033
+    %result_remi_si16n32547_si1616514 = arc.remi %cst_si16n32547, %cst_si1616514 : si16
+    "arc.keep"(%result_remi_si16n32547_si1616514) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi16n16033]]) : (si16) -> ()
+
+    // remi -32768, 10486 -> -1310
+    %result_remi_si16n32768_si1610486 = arc.remi %cst_si16n32768, %cst_si1610486 : si16
+    "arc.keep"(%result_remi_si16n32768_si1610486) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi16n1310]]) : (si16) -> ()
+
+    // remi -32767, 10486 -> -1309
+    %result_remi_si16n32767_si1610486 = arc.remi %cst_si16n32767, %cst_si1610486 : si16
+    "arc.keep"(%result_remi_si16n32767_si1610486) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi16n1309]]) : (si16) -> ()
+
+    // remi -32547, 10486 -> -1089
+    %result_remi_si16n32547_si1610486 = arc.remi %cst_si16n32547, %cst_si1610486 : si16
+    "arc.keep"(%result_remi_si16n32547_si1610486) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi16n1089]]) : (si16) -> ()
+
+    // remi -32768, -32547 -> -221
+    %result_remi_si16n32768_si16n32547 = arc.remi %cst_si16n32768, %cst_si16n32547 : si16
+    "arc.keep"(%result_remi_si16n32768_si16n32547) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi16n221]]) : (si16) -> ()
+
+    // remi -32767, -32547 -> -220
+    %result_remi_si16n32767_si16n32547 = arc.remi %cst_si16n32767, %cst_si16n32547 : si16
+    "arc.keep"(%result_remi_si16n32767_si16n32547) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi16n220]]) : (si16) -> ()
+
+    // remi -32768, 32766 -> -2
+    %result_remi_si16n32768_si1632766 = arc.remi %cst_si16n32768, %cst_si1632766 : si16
+    "arc.keep"(%result_remi_si16n32768_si1632766) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi16n2]]) : (si16) -> ()
+
+    // remi -32768, -32767 -> -1
+    %result_remi_si16n32768_si16n32767 = arc.remi %cst_si16n32768, %cst_si16n32767 : si16
+    "arc.keep"(%result_remi_si16n32768_si16n32767) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi16n1]]) : (si16) -> ()
+
+    // remi -32768, 32767 -> -1
+    %result_remi_si16n32768_si1632767 = arc.remi %cst_si16n32768, %cst_si1632767 : si16
+    "arc.keep"(%result_remi_si16n32768_si1632767) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi16n1]]) : (si16) -> ()
+
+    // remi -32767, 32766 -> -1
+    %result_remi_si16n32767_si1632766 = arc.remi %cst_si16n32767, %cst_si1632766 : si16
+    "arc.keep"(%result_remi_si16n32767_si1632766) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi16n1]]) : (si16) -> ()
+
+    // remi -32768, -32768 -> 0
+    %result_remi_si16n32768_si16n32768 = arc.remi %cst_si16n32768, %cst_si16n32768 : si16
+    "arc.keep"(%result_remi_si16n32768_si16n32768) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi160]]) : (si16) -> ()
+
+    // remi -32767, -32767 -> 0
+    %result_remi_si16n32767_si16n32767 = arc.remi %cst_si16n32767, %cst_si16n32767 : si16
+    "arc.keep"(%result_remi_si16n32767_si16n32767) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi160]]) : (si16) -> ()
+
+    // remi -32767, 32767 -> 0
+    %result_remi_si16n32767_si1632767 = arc.remi %cst_si16n32767, %cst_si1632767 : si16
+    "arc.keep"(%result_remi_si16n32767_si1632767) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi160]]) : (si16) -> ()
+
+    // remi -32547, -32547 -> 0
+    %result_remi_si16n32547_si16n32547 = arc.remi %cst_si16n32547, %cst_si16n32547 : si16
+    "arc.keep"(%result_remi_si16n32547_si16n32547) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi160]]) : (si16) -> ()
+
+    // remi 0, -32768 -> 0
+    %result_remi_si160_si16n32768 = arc.remi %cst_si160, %cst_si16n32768 : si16
+    "arc.keep"(%result_remi_si160_si16n32768) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi160]]) : (si16) -> ()
+
+    // remi 0, -32767 -> 0
+    %result_remi_si160_si16n32767 = arc.remi %cst_si160, %cst_si16n32767 : si16
+    "arc.keep"(%result_remi_si160_si16n32767) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi160]]) : (si16) -> ()
+
+    // remi 0, -32547 -> 0
+    %result_remi_si160_si16n32547 = arc.remi %cst_si160, %cst_si16n32547 : si16
+    "arc.keep"(%result_remi_si160_si16n32547) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi160]]) : (si16) -> ()
+
+    // remi 0, 10486 -> 0
+    %result_remi_si160_si1610486 = arc.remi %cst_si160, %cst_si1610486 : si16
+    "arc.keep"(%result_remi_si160_si1610486) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi160]]) : (si16) -> ()
+
+    // remi 0, 16514 -> 0
+    %result_remi_si160_si1616514 = arc.remi %cst_si160, %cst_si1616514 : si16
+    "arc.keep"(%result_remi_si160_si1616514) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi160]]) : (si16) -> ()
+
+    // remi 0, 32766 -> 0
+    %result_remi_si160_si1632766 = arc.remi %cst_si160, %cst_si1632766 : si16
+    "arc.keep"(%result_remi_si160_si1632766) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi160]]) : (si16) -> ()
+
+    // remi 0, 32767 -> 0
+    %result_remi_si160_si1632767 = arc.remi %cst_si160, %cst_si1632767 : si16
+    "arc.keep"(%result_remi_si160_si1632767) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi160]]) : (si16) -> ()
+
+    // remi 10486, 10486 -> 0
+    %result_remi_si1610486_si1610486 = arc.remi %cst_si1610486, %cst_si1610486 : si16
+    "arc.keep"(%result_remi_si1610486_si1610486) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi160]]) : (si16) -> ()
+
+    // remi 16514, 16514 -> 0
+    %result_remi_si1616514_si1616514 = arc.remi %cst_si1616514, %cst_si1616514 : si16
+    "arc.keep"(%result_remi_si1616514_si1616514) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi160]]) : (si16) -> ()
+
+    // remi 32766, 32766 -> 0
+    %result_remi_si1632766_si1632766 = arc.remi %cst_si1632766, %cst_si1632766 : si16
+    "arc.keep"(%result_remi_si1632766_si1632766) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi160]]) : (si16) -> ()
+
+    // remi 32767, -32767 -> 0
+    %result_remi_si1632767_si16n32767 = arc.remi %cst_si1632767, %cst_si16n32767 : si16
+    "arc.keep"(%result_remi_si1632767_si16n32767) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi160]]) : (si16) -> ()
+
+    // remi 32767, 32767 -> 0
+    %result_remi_si1632767_si1632767 = arc.remi %cst_si1632767, %cst_si1632767 : si16
+    "arc.keep"(%result_remi_si1632767_si1632767) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi160]]) : (si16) -> ()
+
+    // remi 32767, 32766 -> 1
+    %result_remi_si1632767_si1632766 = arc.remi %cst_si1632767, %cst_si1632766 : si16
+    "arc.keep"(%result_remi_si1632767_si1632766) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi161]]) : (si16) -> ()
+
+    // remi 32766, -32547 -> 219
+    %result_remi_si1632766_si16n32547 = arc.remi %cst_si1632766, %cst_si16n32547 : si16
+    "arc.keep"(%result_remi_si1632766_si16n32547) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi16219]]) : (si16) -> ()
+
+    // remi 32767, -32547 -> 220
+    %result_remi_si1632767_si16n32547 = arc.remi %cst_si1632767, %cst_si16n32547 : si16
+    "arc.keep"(%result_remi_si1632767_si16n32547) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi16220]]) : (si16) -> ()
+
+    // remi 32766, 10486 -> 1308
+    %result_remi_si1632766_si1610486 = arc.remi %cst_si1632766, %cst_si1610486 : si16
+    "arc.keep"(%result_remi_si1632766_si1610486) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi161308]]) : (si16) -> ()
+
+    // remi 32767, 10486 -> 1309
+    %result_remi_si1632767_si1610486 = arc.remi %cst_si1632767, %cst_si1610486 : si16
+    "arc.keep"(%result_remi_si1632767_si1610486) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi161309]]) : (si16) -> ()
+
+    // remi 16514, 10486 -> 6028
+    %result_remi_si1616514_si1610486 = arc.remi %cst_si1616514, %cst_si1610486 : si16
+    "arc.keep"(%result_remi_si1616514_si1610486) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi166028]]) : (si16) -> ()
+
+    // remi 10486, -32768 -> 10486
+    %result_remi_si1610486_si16n32768 = arc.remi %cst_si1610486, %cst_si16n32768 : si16
+    "arc.keep"(%result_remi_si1610486_si16n32768) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi1610486]]) : (si16) -> ()
+
+    // remi 10486, -32767 -> 10486
+    %result_remi_si1610486_si16n32767 = arc.remi %cst_si1610486, %cst_si16n32767 : si16
+    "arc.keep"(%result_remi_si1610486_si16n32767) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi1610486]]) : (si16) -> ()
+
+    // remi 10486, -32547 -> 10486
+    %result_remi_si1610486_si16n32547 = arc.remi %cst_si1610486, %cst_si16n32547 : si16
+    "arc.keep"(%result_remi_si1610486_si16n32547) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi1610486]]) : (si16) -> ()
+
+    // remi 10486, 16514 -> 10486
+    %result_remi_si1610486_si1616514 = arc.remi %cst_si1610486, %cst_si1616514 : si16
+    "arc.keep"(%result_remi_si1610486_si1616514) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi1610486]]) : (si16) -> ()
+
+    // remi 10486, 32766 -> 10486
+    %result_remi_si1610486_si1632766 = arc.remi %cst_si1610486, %cst_si1632766 : si16
+    "arc.keep"(%result_remi_si1610486_si1632766) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi1610486]]) : (si16) -> ()
+
+    // remi 10486, 32767 -> 10486
+    %result_remi_si1610486_si1632767 = arc.remi %cst_si1610486, %cst_si1632767 : si16
+    "arc.keep"(%result_remi_si1610486_si1632767) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi1610486]]) : (si16) -> ()
+
+    // remi 32766, 16514 -> 16252
+    %result_remi_si1632766_si1616514 = arc.remi %cst_si1632766, %cst_si1616514 : si16
+    "arc.keep"(%result_remi_si1632766_si1616514) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi1616252]]) : (si16) -> ()
+
+    // remi 32767, 16514 -> 16253
+    %result_remi_si1632767_si1616514 = arc.remi %cst_si1632767, %cst_si1616514 : si16
+    "arc.keep"(%result_remi_si1632767_si1616514) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi1616253]]) : (si16) -> ()
+
+    // remi 16514, -32768 -> 16514
+    %result_remi_si1616514_si16n32768 = arc.remi %cst_si1616514, %cst_si16n32768 : si16
+    "arc.keep"(%result_remi_si1616514_si16n32768) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi1616514]]) : (si16) -> ()
+
+    // remi 16514, -32767 -> 16514
+    %result_remi_si1616514_si16n32767 = arc.remi %cst_si1616514, %cst_si16n32767 : si16
+    "arc.keep"(%result_remi_si1616514_si16n32767) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi1616514]]) : (si16) -> ()
+
+    // remi 16514, -32547 -> 16514
+    %result_remi_si1616514_si16n32547 = arc.remi %cst_si1616514, %cst_si16n32547 : si16
+    "arc.keep"(%result_remi_si1616514_si16n32547) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi1616514]]) : (si16) -> ()
+
+    // remi 16514, 32766 -> 16514
+    %result_remi_si1616514_si1632766 = arc.remi %cst_si1616514, %cst_si1632766 : si16
+    "arc.keep"(%result_remi_si1616514_si1632766) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi1616514]]) : (si16) -> ()
+
+    // remi 16514, 32767 -> 16514
+    %result_remi_si1616514_si1632767 = arc.remi %cst_si1616514, %cst_si1632767 : si16
+    "arc.keep"(%result_remi_si1616514_si1632767) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi1616514]]) : (si16) -> ()
+
+    // remi 32766, -32768 -> 32766
+    %result_remi_si1632766_si16n32768 = arc.remi %cst_si1632766, %cst_si16n32768 : si16
+    "arc.keep"(%result_remi_si1632766_si16n32768) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi1632766]]) : (si16) -> ()
+
+    // remi 32766, -32767 -> 32766
+    %result_remi_si1632766_si16n32767 = arc.remi %cst_si1632766, %cst_si16n32767 : si16
+    "arc.keep"(%result_remi_si1632766_si16n32767) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi1632766]]) : (si16) -> ()
+
+    // remi 32766, 32767 -> 32766
+    %result_remi_si1632766_si1632767 = arc.remi %cst_si1632766, %cst_si1632767 : si16
+    "arc.keep"(%result_remi_si1632766_si1632767) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi1632766]]) : (si16) -> ()
+
+    // remi 32767, -32768 -> 32767
+    %result_remi_si1632767_si16n32768 = arc.remi %cst_si1632767, %cst_si16n32768 : si16
+    "arc.keep"(%result_remi_si1632767_si16n32768) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi1632767]]) : (si16) -> ()
+
+    // remi -32768, 0 -> no-fold
+    %result_remi_si16n32768_si160 = arc.remi %cst_si16n32768, %cst_si160 : si16
+    // CHECK-DAG: [[RESULT_remi_si16n32768_si160:%[^ ]+]] = arc.remi [[CSTsi16n32768]], [[CSTsi160]] : si16
+    "arc.keep"(%result_remi_si16n32768_si160) : (si16) -> ()
+    // CHECK: "arc.keep"([[RESULT_remi_si16n32768_si160]]) : (si16) -> ()
+
+    // remi -32767, 0 -> no-fold
+    %result_remi_si16n32767_si160 = arc.remi %cst_si16n32767, %cst_si160 : si16
+    // CHECK-DAG: [[RESULT_remi_si16n32767_si160:%[^ ]+]] = arc.remi [[CSTsi16n32767]], [[CSTsi160]] : si16
+    "arc.keep"(%result_remi_si16n32767_si160) : (si16) -> ()
+    // CHECK: "arc.keep"([[RESULT_remi_si16n32767_si160]]) : (si16) -> ()
+
+    // remi -32547, 0 -> no-fold
+    %result_remi_si16n32547_si160 = arc.remi %cst_si16n32547, %cst_si160 : si16
+    // CHECK-DAG: [[RESULT_remi_si16n32547_si160:%[^ ]+]] = arc.remi [[CSTsi16n32547]], [[CSTsi160]] : si16
+    "arc.keep"(%result_remi_si16n32547_si160) : (si16) -> ()
+    // CHECK: "arc.keep"([[RESULT_remi_si16n32547_si160]]) : (si16) -> ()
+
+    // remi 0, 0 -> no-fold
+    %result_remi_si160_si160 = arc.remi %cst_si160, %cst_si160 : si16
+    // CHECK-DAG: [[RESULT_remi_si160_si160:%[^ ]+]] = arc.remi [[CSTsi160]], [[CSTsi160]] : si16
+    "arc.keep"(%result_remi_si160_si160) : (si16) -> ()
+    // CHECK: "arc.keep"([[RESULT_remi_si160_si160]]) : (si16) -> ()
+
+    // remi 10486, 0 -> no-fold
+    %result_remi_si1610486_si160 = arc.remi %cst_si1610486, %cst_si160 : si16
+    // CHECK-DAG: [[RESULT_remi_si1610486_si160:%[^ ]+]] = arc.remi [[CSTsi1610486]], [[CSTsi160]] : si16
+    "arc.keep"(%result_remi_si1610486_si160) : (si16) -> ()
+    // CHECK: "arc.keep"([[RESULT_remi_si1610486_si160]]) : (si16) -> ()
+
+    // remi 16514, 0 -> no-fold
+    %result_remi_si1616514_si160 = arc.remi %cst_si1616514, %cst_si160 : si16
+    // CHECK-DAG: [[RESULT_remi_si1616514_si160:%[^ ]+]] = arc.remi [[CSTsi1616514]], [[CSTsi160]] : si16
+    "arc.keep"(%result_remi_si1616514_si160) : (si16) -> ()
+    // CHECK: "arc.keep"([[RESULT_remi_si1616514_si160]]) : (si16) -> ()
+
+    // remi 32766, 0 -> no-fold
+    %result_remi_si1632766_si160 = arc.remi %cst_si1632766, %cst_si160 : si16
+    // CHECK-DAG: [[RESULT_remi_si1632766_si160:%[^ ]+]] = arc.remi [[CSTsi1632766]], [[CSTsi160]] : si16
+    "arc.keep"(%result_remi_si1632766_si160) : (si16) -> ()
+    // CHECK: "arc.keep"([[RESULT_remi_si1632766_si160]]) : (si16) -> ()
+
+    // remi 32767, 0 -> no-fold
+    %result_remi_si1632767_si160 = arc.remi %cst_si1632767, %cst_si160 : si16
+    // CHECK-DAG: [[RESULT_remi_si1632767_si160:%[^ ]+]] = arc.remi [[CSTsi1632767]], [[CSTsi160]] : si16
+    "arc.keep"(%result_remi_si1632767_si160) : (si16) -> ()
+    // CHECK: "arc.keep"([[RESULT_remi_si1632767_si160]]) : (si16) -> ()
+
+    // remi -2147483647, -2147483648 -> -2147483647
+    %result_remi_si32n2147483647_si32n2147483648 = arc.remi %cst_si32n2147483647, %cst_si32n2147483648 : si32
+    "arc.keep"(%result_remi_si32n2147483647_si32n2147483648) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi32n2147483647]]) : (si32) -> ()
+
+    // remi -1713183800, -2147483648 -> -1713183800
+    %result_remi_si32n1713183800_si32n2147483648 = arc.remi %cst_si32n1713183800, %cst_si32n2147483648 : si32
+    "arc.keep"(%result_remi_si32n1713183800_si32n2147483648) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi32n1713183800]]) : (si32) -> ()
+
+    // remi -1713183800, -2147483647 -> -1713183800
+    %result_remi_si32n1713183800_si32n2147483647 = arc.remi %cst_si32n1713183800, %cst_si32n2147483647 : si32
+    "arc.keep"(%result_remi_si32n1713183800_si32n2147483647) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi32n1713183800]]) : (si32) -> ()
+
+    // remi -1713183800, 2147483646 -> -1713183800
+    %result_remi_si32n1713183800_si322147483646 = arc.remi %cst_si32n1713183800, %cst_si322147483646 : si32
+    "arc.keep"(%result_remi_si32n1713183800_si322147483646) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi32n1713183800]]) : (si32) -> ()
+
+    // remi -1713183800, 2147483647 -> -1713183800
+    %result_remi_si32n1713183800_si322147483647 = arc.remi %cst_si32n1713183800, %cst_si322147483647 : si32
+    "arc.keep"(%result_remi_si32n1713183800_si322147483647) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi32n1713183800]]) : (si32) -> ()
+
+    // remi -1252582164, -2147483648 -> -1252582164
+    %result_remi_si32n1252582164_si32n2147483648 = arc.remi %cst_si32n1252582164, %cst_si32n2147483648 : si32
+    "arc.keep"(%result_remi_si32n1252582164_si32n2147483648) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi32n1252582164]]) : (si32) -> ()
+
+    // remi -1252582164, -2147483647 -> -1252582164
+    %result_remi_si32n1252582164_si32n2147483647 = arc.remi %cst_si32n1252582164, %cst_si32n2147483647 : si32
+    "arc.keep"(%result_remi_si32n1252582164_si32n2147483647) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi32n1252582164]]) : (si32) -> ()
+
+    // remi -1252582164, -1713183800 -> -1252582164
+    %result_remi_si32n1252582164_si32n1713183800 = arc.remi %cst_si32n1252582164, %cst_si32n1713183800 : si32
+    "arc.keep"(%result_remi_si32n1252582164_si32n1713183800) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi32n1252582164]]) : (si32) -> ()
+
+    // remi -1252582164, 2147483646 -> -1252582164
+    %result_remi_si32n1252582164_si322147483646 = arc.remi %cst_si32n1252582164, %cst_si322147483646 : si32
+    "arc.keep"(%result_remi_si32n1252582164_si322147483646) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi32n1252582164]]) : (si32) -> ()
+
+    // remi -1252582164, 2147483647 -> -1252582164
+    %result_remi_si32n1252582164_si322147483647 = arc.remi %cst_si32n1252582164, %cst_si322147483647 : si32
+    "arc.keep"(%result_remi_si32n1252582164_si322147483647) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi32n1252582164]]) : (si32) -> ()
+
+    // remi -1035405763, -2147483648 -> -1035405763
+    %result_remi_si32n1035405763_si32n2147483648 = arc.remi %cst_si32n1035405763, %cst_si32n2147483648 : si32
+    "arc.keep"(%result_remi_si32n1035405763_si32n2147483648) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi32n1035405763]]) : (si32) -> ()
+
+    // remi -1035405763, -2147483647 -> -1035405763
+    %result_remi_si32n1035405763_si32n2147483647 = arc.remi %cst_si32n1035405763, %cst_si32n2147483647 : si32
+    "arc.keep"(%result_remi_si32n1035405763_si32n2147483647) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi32n1035405763]]) : (si32) -> ()
+
+    // remi -1035405763, -1713183800 -> -1035405763
+    %result_remi_si32n1035405763_si32n1713183800 = arc.remi %cst_si32n1035405763, %cst_si32n1713183800 : si32
+    "arc.keep"(%result_remi_si32n1035405763_si32n1713183800) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi32n1035405763]]) : (si32) -> ()
+
+    // remi -1035405763, -1252582164 -> -1035405763
+    %result_remi_si32n1035405763_si32n1252582164 = arc.remi %cst_si32n1035405763, %cst_si32n1252582164 : si32
+    "arc.keep"(%result_remi_si32n1035405763_si32n1252582164) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi32n1035405763]]) : (si32) -> ()
+
+    // remi -1035405763, 2147483646 -> -1035405763
+    %result_remi_si32n1035405763_si322147483646 = arc.remi %cst_si32n1035405763, %cst_si322147483646 : si32
+    "arc.keep"(%result_remi_si32n1035405763_si322147483646) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi32n1035405763]]) : (si32) -> ()
+
+    // remi -1035405763, 2147483647 -> -1035405763
+    %result_remi_si32n1035405763_si322147483647 = arc.remi %cst_si32n1035405763, %cst_si322147483647 : si32
+    "arc.keep"(%result_remi_si32n1035405763_si322147483647) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi32n1035405763]]) : (si32) -> ()
+
+    // remi -2147483648, -1252582164 -> -894901484
+    %result_remi_si32n2147483648_si32n1252582164 = arc.remi %cst_si32n2147483648, %cst_si32n1252582164 : si32
+    "arc.keep"(%result_remi_si32n2147483648_si32n1252582164) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi32n894901484]]) : (si32) -> ()
+
+    // remi -2147483647, -1252582164 -> -894901483
+    %result_remi_si32n2147483647_si32n1252582164 = arc.remi %cst_si32n2147483647, %cst_si32n1252582164 : si32
+    "arc.keep"(%result_remi_si32n2147483647_si32n1252582164) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi32n894901483]]) : (si32) -> ()
+
+    // remi -1713183800, -1035405763 -> -677778037
+    %result_remi_si32n1713183800_si32n1035405763 = arc.remi %cst_si32n1713183800, %cst_si32n1035405763 : si32
+    "arc.keep"(%result_remi_si32n1713183800_si32n1035405763) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi32n677778037]]) : (si32) -> ()
+
+    // remi -1713183800, -1252582164 -> -460601636
+    %result_remi_si32n1713183800_si32n1252582164 = arc.remi %cst_si32n1713183800, %cst_si32n1252582164 : si32
+    "arc.keep"(%result_remi_si32n1713183800_si32n1252582164) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi32n460601636]]) : (si32) -> ()
+
+    // remi -2147483648, -1713183800 -> -434299848
+    %result_remi_si32n2147483648_si32n1713183800 = arc.remi %cst_si32n2147483648, %cst_si32n1713183800 : si32
+    "arc.keep"(%result_remi_si32n2147483648_si32n1713183800) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi32n434299848]]) : (si32) -> ()
+
+    // remi -2147483647, -1713183800 -> -434299847
+    %result_remi_si32n2147483647_si32n1713183800 = arc.remi %cst_si32n2147483647, %cst_si32n1713183800 : si32
+    "arc.keep"(%result_remi_si32n2147483647_si32n1713183800) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi32n434299847]]) : (si32) -> ()
+
+    // remi -1252582164, -1035405763 -> -217176401
+    %result_remi_si32n1252582164_si32n1035405763 = arc.remi %cst_si32n1252582164, %cst_si32n1035405763 : si32
+    "arc.keep"(%result_remi_si32n1252582164_si32n1035405763) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi32n217176401]]) : (si32) -> ()
+
+    // remi -2147483648, -1035405763 -> -76672122
+    %result_remi_si32n2147483648_si32n1035405763 = arc.remi %cst_si32n2147483648, %cst_si32n1035405763 : si32
+    "arc.keep"(%result_remi_si32n2147483648_si32n1035405763) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi32n76672122]]) : (si32) -> ()
+
+    // remi -2147483647, -1035405763 -> -76672121
+    %result_remi_si32n2147483647_si32n1035405763 = arc.remi %cst_si32n2147483647, %cst_si32n1035405763 : si32
+    "arc.keep"(%result_remi_si32n2147483647_si32n1035405763) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi32n76672121]]) : (si32) -> ()
+
+    // remi -2147483648, 2147483646 -> -2
+    %result_remi_si32n2147483648_si322147483646 = arc.remi %cst_si32n2147483648, %cst_si322147483646 : si32
+    "arc.keep"(%result_remi_si32n2147483648_si322147483646) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi32n2]]) : (si32) -> ()
+
+    // remi -2147483648, -2147483647 -> -1
+    %result_remi_si32n2147483648_si32n2147483647 = arc.remi %cst_si32n2147483648, %cst_si32n2147483647 : si32
+    "arc.keep"(%result_remi_si32n2147483648_si32n2147483647) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi32n1]]) : (si32) -> ()
+
+    // remi -2147483648, 2147483647 -> -1
+    %result_remi_si32n2147483648_si322147483647 = arc.remi %cst_si32n2147483648, %cst_si322147483647 : si32
+    "arc.keep"(%result_remi_si32n2147483648_si322147483647) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi32n1]]) : (si32) -> ()
+
+    // remi -2147483647, 2147483646 -> -1
+    %result_remi_si32n2147483647_si322147483646 = arc.remi %cst_si32n2147483647, %cst_si322147483646 : si32
+    "arc.keep"(%result_remi_si32n2147483647_si322147483646) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi32n1]]) : (si32) -> ()
+
+    // remi -2147483648, -2147483648 -> 0
+    %result_remi_si32n2147483648_si32n2147483648 = arc.remi %cst_si32n2147483648, %cst_si32n2147483648 : si32
+    "arc.keep"(%result_remi_si32n2147483648_si32n2147483648) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi320]]) : (si32) -> ()
+
+    // remi -2147483647, -2147483647 -> 0
+    %result_remi_si32n2147483647_si32n2147483647 = arc.remi %cst_si32n2147483647, %cst_si32n2147483647 : si32
+    "arc.keep"(%result_remi_si32n2147483647_si32n2147483647) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi320]]) : (si32) -> ()
+
+    // remi -2147483647, 2147483647 -> 0
+    %result_remi_si32n2147483647_si322147483647 = arc.remi %cst_si32n2147483647, %cst_si322147483647 : si32
+    "arc.keep"(%result_remi_si32n2147483647_si322147483647) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi320]]) : (si32) -> ()
+
+    // remi -1713183800, -1713183800 -> 0
+    %result_remi_si32n1713183800_si32n1713183800 = arc.remi %cst_si32n1713183800, %cst_si32n1713183800 : si32
+    "arc.keep"(%result_remi_si32n1713183800_si32n1713183800) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi320]]) : (si32) -> ()
+
+    // remi -1252582164, -1252582164 -> 0
+    %result_remi_si32n1252582164_si32n1252582164 = arc.remi %cst_si32n1252582164, %cst_si32n1252582164 : si32
+    "arc.keep"(%result_remi_si32n1252582164_si32n1252582164) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi320]]) : (si32) -> ()
+
+    // remi -1035405763, -1035405763 -> 0
+    %result_remi_si32n1035405763_si32n1035405763 = arc.remi %cst_si32n1035405763, %cst_si32n1035405763 : si32
+    "arc.keep"(%result_remi_si32n1035405763_si32n1035405763) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi320]]) : (si32) -> ()
+
+    // remi 0, -2147483648 -> 0
+    %result_remi_si320_si32n2147483648 = arc.remi %cst_si320, %cst_si32n2147483648 : si32
+    "arc.keep"(%result_remi_si320_si32n2147483648) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi320]]) : (si32) -> ()
+
+    // remi 0, -2147483647 -> 0
+    %result_remi_si320_si32n2147483647 = arc.remi %cst_si320, %cst_si32n2147483647 : si32
+    "arc.keep"(%result_remi_si320_si32n2147483647) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi320]]) : (si32) -> ()
+
+    // remi 0, -1713183800 -> 0
+    %result_remi_si320_si32n1713183800 = arc.remi %cst_si320, %cst_si32n1713183800 : si32
+    "arc.keep"(%result_remi_si320_si32n1713183800) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi320]]) : (si32) -> ()
+
+    // remi 0, -1252582164 -> 0
+    %result_remi_si320_si32n1252582164 = arc.remi %cst_si320, %cst_si32n1252582164 : si32
+    "arc.keep"(%result_remi_si320_si32n1252582164) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi320]]) : (si32) -> ()
+
+    // remi 0, -1035405763 -> 0
+    %result_remi_si320_si32n1035405763 = arc.remi %cst_si320, %cst_si32n1035405763 : si32
+    "arc.keep"(%result_remi_si320_si32n1035405763) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi320]]) : (si32) -> ()
+
+    // remi 0, 2147483646 -> 0
+    %result_remi_si320_si322147483646 = arc.remi %cst_si320, %cst_si322147483646 : si32
+    "arc.keep"(%result_remi_si320_si322147483646) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi320]]) : (si32) -> ()
+
+    // remi 0, 2147483647 -> 0
+    %result_remi_si320_si322147483647 = arc.remi %cst_si320, %cst_si322147483647 : si32
+    "arc.keep"(%result_remi_si320_si322147483647) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi320]]) : (si32) -> ()
+
+    // remi 2147483646, 2147483646 -> 0
+    %result_remi_si322147483646_si322147483646 = arc.remi %cst_si322147483646, %cst_si322147483646 : si32
+    "arc.keep"(%result_remi_si322147483646_si322147483646) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi320]]) : (si32) -> ()
+
+    // remi 2147483647, -2147483647 -> 0
+    %result_remi_si322147483647_si32n2147483647 = arc.remi %cst_si322147483647, %cst_si32n2147483647 : si32
+    "arc.keep"(%result_remi_si322147483647_si32n2147483647) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi320]]) : (si32) -> ()
+
+    // remi 2147483647, 2147483647 -> 0
+    %result_remi_si322147483647_si322147483647 = arc.remi %cst_si322147483647, %cst_si322147483647 : si32
+    "arc.keep"(%result_remi_si322147483647_si322147483647) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi320]]) : (si32) -> ()
+
+    // remi 2147483647, 2147483646 -> 1
+    %result_remi_si322147483647_si322147483646 = arc.remi %cst_si322147483647, %cst_si322147483646 : si32
+    "arc.keep"(%result_remi_si322147483647_si322147483646) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi321]]) : (si32) -> ()
+
+    // remi 2147483646, -1035405763 -> 76672120
+    %result_remi_si322147483646_si32n1035405763 = arc.remi %cst_si322147483646, %cst_si32n1035405763 : si32
+    "arc.keep"(%result_remi_si322147483646_si32n1035405763) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi3276672120]]) : (si32) -> ()
+
+    // remi 2147483647, -1035405763 -> 76672121
+    %result_remi_si322147483647_si32n1035405763 = arc.remi %cst_si322147483647, %cst_si32n1035405763 : si32
+    "arc.keep"(%result_remi_si322147483647_si32n1035405763) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi3276672121]]) : (si32) -> ()
+
+    // remi 2147483646, -1713183800 -> 434299846
+    %result_remi_si322147483646_si32n1713183800 = arc.remi %cst_si322147483646, %cst_si32n1713183800 : si32
+    "arc.keep"(%result_remi_si322147483646_si32n1713183800) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi32434299846]]) : (si32) -> ()
+
+    // remi 2147483647, -1713183800 -> 434299847
+    %result_remi_si322147483647_si32n1713183800 = arc.remi %cst_si322147483647, %cst_si32n1713183800 : si32
+    "arc.keep"(%result_remi_si322147483647_si32n1713183800) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi32434299847]]) : (si32) -> ()
+
+    // remi 2147483646, -1252582164 -> 894901482
+    %result_remi_si322147483646_si32n1252582164 = arc.remi %cst_si322147483646, %cst_si32n1252582164 : si32
+    "arc.keep"(%result_remi_si322147483646_si32n1252582164) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi32894901482]]) : (si32) -> ()
+
+    // remi 2147483647, -1252582164 -> 894901483
+    %result_remi_si322147483647_si32n1252582164 = arc.remi %cst_si322147483647, %cst_si32n1252582164 : si32
+    "arc.keep"(%result_remi_si322147483647_si32n1252582164) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi32894901483]]) : (si32) -> ()
+
+    // remi 2147483646, -2147483648 -> 2147483646
+    %result_remi_si322147483646_si32n2147483648 = arc.remi %cst_si322147483646, %cst_si32n2147483648 : si32
+    "arc.keep"(%result_remi_si322147483646_si32n2147483648) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi322147483646]]) : (si32) -> ()
+
+    // remi 2147483646, -2147483647 -> 2147483646
+    %result_remi_si322147483646_si32n2147483647 = arc.remi %cst_si322147483646, %cst_si32n2147483647 : si32
+    "arc.keep"(%result_remi_si322147483646_si32n2147483647) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi322147483646]]) : (si32) -> ()
+
+    // remi 2147483646, 2147483647 -> 2147483646
+    %result_remi_si322147483646_si322147483647 = arc.remi %cst_si322147483646, %cst_si322147483647 : si32
+    "arc.keep"(%result_remi_si322147483646_si322147483647) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi322147483646]]) : (si32) -> ()
+
+    // remi 2147483647, -2147483648 -> 2147483647
+    %result_remi_si322147483647_si32n2147483648 = arc.remi %cst_si322147483647, %cst_si32n2147483648 : si32
+    "arc.keep"(%result_remi_si322147483647_si32n2147483648) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi322147483647]]) : (si32) -> ()
+
+    // remi -2147483648, 0 -> no-fold
+    %result_remi_si32n2147483648_si320 = arc.remi %cst_si32n2147483648, %cst_si320 : si32
+    // CHECK-DAG: [[RESULT_remi_si32n2147483648_si320:%[^ ]+]] = arc.remi [[CSTsi32n2147483648]], [[CSTsi320]] : si32
+    "arc.keep"(%result_remi_si32n2147483648_si320) : (si32) -> ()
+    // CHECK: "arc.keep"([[RESULT_remi_si32n2147483648_si320]]) : (si32) -> ()
+
+    // remi -2147483647, 0 -> no-fold
+    %result_remi_si32n2147483647_si320 = arc.remi %cst_si32n2147483647, %cst_si320 : si32
+    // CHECK-DAG: [[RESULT_remi_si32n2147483647_si320:%[^ ]+]] = arc.remi [[CSTsi32n2147483647]], [[CSTsi320]] : si32
+    "arc.keep"(%result_remi_si32n2147483647_si320) : (si32) -> ()
+    // CHECK: "arc.keep"([[RESULT_remi_si32n2147483647_si320]]) : (si32) -> ()
+
+    // remi -1713183800, 0 -> no-fold
+    %result_remi_si32n1713183800_si320 = arc.remi %cst_si32n1713183800, %cst_si320 : si32
+    // CHECK-DAG: [[RESULT_remi_si32n1713183800_si320:%[^ ]+]] = arc.remi [[CSTsi32n1713183800]], [[CSTsi320]] : si32
+    "arc.keep"(%result_remi_si32n1713183800_si320) : (si32) -> ()
+    // CHECK: "arc.keep"([[RESULT_remi_si32n1713183800_si320]]) : (si32) -> ()
+
+    // remi -1252582164, 0 -> no-fold
+    %result_remi_si32n1252582164_si320 = arc.remi %cst_si32n1252582164, %cst_si320 : si32
+    // CHECK-DAG: [[RESULT_remi_si32n1252582164_si320:%[^ ]+]] = arc.remi [[CSTsi32n1252582164]], [[CSTsi320]] : si32
+    "arc.keep"(%result_remi_si32n1252582164_si320) : (si32) -> ()
+    // CHECK: "arc.keep"([[RESULT_remi_si32n1252582164_si320]]) : (si32) -> ()
+
+    // remi -1035405763, 0 -> no-fold
+    %result_remi_si32n1035405763_si320 = arc.remi %cst_si32n1035405763, %cst_si320 : si32
+    // CHECK-DAG: [[RESULT_remi_si32n1035405763_si320:%[^ ]+]] = arc.remi [[CSTsi32n1035405763]], [[CSTsi320]] : si32
+    "arc.keep"(%result_remi_si32n1035405763_si320) : (si32) -> ()
+    // CHECK: "arc.keep"([[RESULT_remi_si32n1035405763_si320]]) : (si32) -> ()
+
+    // remi 0, 0 -> no-fold
+    %result_remi_si320_si320 = arc.remi %cst_si320, %cst_si320 : si32
+    // CHECK-DAG: [[RESULT_remi_si320_si320:%[^ ]+]] = arc.remi [[CSTsi320]], [[CSTsi320]] : si32
+    "arc.keep"(%result_remi_si320_si320) : (si32) -> ()
+    // CHECK: "arc.keep"([[RESULT_remi_si320_si320]]) : (si32) -> ()
+
+    // remi 2147483646, 0 -> no-fold
+    %result_remi_si322147483646_si320 = arc.remi %cst_si322147483646, %cst_si320 : si32
+    // CHECK-DAG: [[RESULT_remi_si322147483646_si320:%[^ ]+]] = arc.remi [[CSTsi322147483646]], [[CSTsi320]] : si32
+    "arc.keep"(%result_remi_si322147483646_si320) : (si32) -> ()
+    // CHECK: "arc.keep"([[RESULT_remi_si322147483646_si320]]) : (si32) -> ()
+
+    // remi 2147483647, 0 -> no-fold
+    %result_remi_si322147483647_si320 = arc.remi %cst_si322147483647, %cst_si320 : si32
+    // CHECK-DAG: [[RESULT_remi_si322147483647_si320:%[^ ]+]] = arc.remi [[CSTsi322147483647]], [[CSTsi320]] : si32
+    "arc.keep"(%result_remi_si322147483647_si320) : (si32) -> ()
+    // CHECK: "arc.keep"([[RESULT_remi_si322147483647_si320]]) : (si32) -> ()
+
+    // remi -9223372036854775807, -9223372036854775808 -> -9223372036854775807
+    %result_remi_si64n9223372036854775807_si64n9223372036854775808 = arc.remi %cst_si64n9223372036854775807, %cst_si64n9223372036854775808 : si64
+    "arc.keep"(%result_remi_si64n9223372036854775807_si64n9223372036854775808) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi64n9223372036854775807]]) : (si64) -> ()
+
+    // remi -9223372036854775808, 5577148965131116544 -> -3646223071723659264
+    %result_remi_si64n9223372036854775808_si645577148965131116544 = arc.remi %cst_si64n9223372036854775808, %cst_si645577148965131116544 : si64
+    "arc.keep"(%result_remi_si64n9223372036854775808_si645577148965131116544) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi64n3646223071723659264]]) : (si64) -> ()
+
+    // remi -9223372036854775807, 5577148965131116544 -> -3646223071723659263
+    %result_remi_si64n9223372036854775807_si645577148965131116544 = arc.remi %cst_si64n9223372036854775807, %cst_si645577148965131116544 : si64
+    "arc.keep"(%result_remi_si64n9223372036854775807_si645577148965131116544) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi64n3646223071723659263]]) : (si64) -> ()
+
+    // remi -1741927215160008704, -9223372036854775808 -> -1741927215160008704
+    %result_remi_si64n1741927215160008704_si64n9223372036854775808 = arc.remi %cst_si64n1741927215160008704, %cst_si64n9223372036854775808 : si64
+    "arc.keep"(%result_remi_si64n1741927215160008704_si64n9223372036854775808) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi64n1741927215160008704]]) : (si64) -> ()
+
+    // remi -1741927215160008704, -9223372036854775807 -> -1741927215160008704
+    %result_remi_si64n1741927215160008704_si64n9223372036854775807 = arc.remi %cst_si64n1741927215160008704, %cst_si64n9223372036854775807 : si64
+    "arc.keep"(%result_remi_si64n1741927215160008704_si64n9223372036854775807) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi64n1741927215160008704]]) : (si64) -> ()
+
+    // remi -1741927215160008704, 5577148965131116544 -> -1741927215160008704
+    %result_remi_si64n1741927215160008704_si645577148965131116544 = arc.remi %cst_si64n1741927215160008704, %cst_si645577148965131116544 : si64
+    "arc.keep"(%result_remi_si64n1741927215160008704_si645577148965131116544) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi64n1741927215160008704]]) : (si64) -> ()
+
+    // remi -1741927215160008704, 9223372036854775806 -> -1741927215160008704
+    %result_remi_si64n1741927215160008704_si649223372036854775806 = arc.remi %cst_si64n1741927215160008704, %cst_si649223372036854775806 : si64
+    "arc.keep"(%result_remi_si64n1741927215160008704_si649223372036854775806) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi64n1741927215160008704]]) : (si64) -> ()
+
+    // remi -1741927215160008704, 9223372036854775807 -> -1741927215160008704
+    %result_remi_si64n1741927215160008704_si649223372036854775807 = arc.remi %cst_si64n1741927215160008704, %cst_si649223372036854775807 : si64
+    "arc.keep"(%result_remi_si64n1741927215160008704_si649223372036854775807) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi64n1741927215160008704]]) : (si64) -> ()
+
+    // remi -1328271339354574848, -9223372036854775808 -> -1328271339354574848
+    %result_remi_si64n1328271339354574848_si64n9223372036854775808 = arc.remi %cst_si64n1328271339354574848, %cst_si64n9223372036854775808 : si64
+    "arc.keep"(%result_remi_si64n1328271339354574848_si64n9223372036854775808) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi64n1328271339354574848]]) : (si64) -> ()
+
+    // remi -1328271339354574848, -9223372036854775807 -> -1328271339354574848
+    %result_remi_si64n1328271339354574848_si64n9223372036854775807 = arc.remi %cst_si64n1328271339354574848, %cst_si64n9223372036854775807 : si64
+    "arc.keep"(%result_remi_si64n1328271339354574848_si64n9223372036854775807) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi64n1328271339354574848]]) : (si64) -> ()
+
+    // remi -1328271339354574848, -1741927215160008704 -> -1328271339354574848
+    %result_remi_si64n1328271339354574848_si64n1741927215160008704 = arc.remi %cst_si64n1328271339354574848, %cst_si64n1741927215160008704 : si64
+    "arc.keep"(%result_remi_si64n1328271339354574848_si64n1741927215160008704) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi64n1328271339354574848]]) : (si64) -> ()
+
+    // remi -1328271339354574848, 5577148965131116544 -> -1328271339354574848
+    %result_remi_si64n1328271339354574848_si645577148965131116544 = arc.remi %cst_si64n1328271339354574848, %cst_si645577148965131116544 : si64
+    "arc.keep"(%result_remi_si64n1328271339354574848_si645577148965131116544) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi64n1328271339354574848]]) : (si64) -> ()
+
+    // remi -1328271339354574848, 9223372036854775806 -> -1328271339354574848
+    %result_remi_si64n1328271339354574848_si649223372036854775806 = arc.remi %cst_si64n1328271339354574848, %cst_si649223372036854775806 : si64
+    "arc.keep"(%result_remi_si64n1328271339354574848_si649223372036854775806) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi64n1328271339354574848]]) : (si64) -> ()
+
+    // remi -1328271339354574848, 9223372036854775807 -> -1328271339354574848
+    %result_remi_si64n1328271339354574848_si649223372036854775807 = arc.remi %cst_si64n1328271339354574848, %cst_si649223372036854775807 : si64
+    "arc.keep"(%result_remi_si64n1328271339354574848_si649223372036854775807) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi64n1328271339354574848]]) : (si64) -> ()
+
+    // remi -9223372036854775808, -1328271339354574848 -> -1253744000727326720
+    %result_remi_si64n9223372036854775808_si64n1328271339354574848 = arc.remi %cst_si64n9223372036854775808, %cst_si64n1328271339354574848 : si64
+    "arc.keep"(%result_remi_si64n9223372036854775808_si64n1328271339354574848) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi64n1253744000727326720]]) : (si64) -> ()
+
+    // remi -9223372036854775807, -1328271339354574848 -> -1253744000727326719
+    %result_remi_si64n9223372036854775807_si64n1328271339354574848 = arc.remi %cst_si64n9223372036854775807, %cst_si64n1328271339354574848 : si64
+    "arc.keep"(%result_remi_si64n9223372036854775807_si64n1328271339354574848) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi64n1253744000727326719]]) : (si64) -> ()
+
+    // remi -9223372036854775808, -1741927215160008704 -> -513735961054732288
+    %result_remi_si64n9223372036854775808_si64n1741927215160008704 = arc.remi %cst_si64n9223372036854775808, %cst_si64n1741927215160008704 : si64
+    "arc.keep"(%result_remi_si64n9223372036854775808_si64n1741927215160008704) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi64n513735961054732288]]) : (si64) -> ()
+
+    // remi -9223372036854775807, -1741927215160008704 -> -513735961054732287
+    %result_remi_si64n9223372036854775807_si64n1741927215160008704 = arc.remi %cst_si64n9223372036854775807, %cst_si64n1741927215160008704 : si64
+    "arc.keep"(%result_remi_si64n9223372036854775807_si64n1741927215160008704) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi64n513735961054732287]]) : (si64) -> ()
+
+    // remi -1741927215160008704, -1328271339354574848 -> -413655875805433856
+    %result_remi_si64n1741927215160008704_si64n1328271339354574848 = arc.remi %cst_si64n1741927215160008704, %cst_si64n1328271339354574848 : si64
+    "arc.keep"(%result_remi_si64n1741927215160008704_si64n1328271339354574848) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi64n413655875805433856]]) : (si64) -> ()
+
+    // remi -9223372036854775808, 9223372036854775806 -> -2
+    %result_remi_si64n9223372036854775808_si649223372036854775806 = arc.remi %cst_si64n9223372036854775808, %cst_si649223372036854775806 : si64
+    "arc.keep"(%result_remi_si64n9223372036854775808_si649223372036854775806) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi64n2]]) : (si64) -> ()
+
+    // remi -9223372036854775808, -9223372036854775807 -> -1
+    %result_remi_si64n9223372036854775808_si64n9223372036854775807 = arc.remi %cst_si64n9223372036854775808, %cst_si64n9223372036854775807 : si64
+    "arc.keep"(%result_remi_si64n9223372036854775808_si64n9223372036854775807) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi64n1]]) : (si64) -> ()
+
+    // remi -9223372036854775808, 9223372036854775807 -> -1
+    %result_remi_si64n9223372036854775808_si649223372036854775807 = arc.remi %cst_si64n9223372036854775808, %cst_si649223372036854775807 : si64
+    "arc.keep"(%result_remi_si64n9223372036854775808_si649223372036854775807) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi64n1]]) : (si64) -> ()
+
+    // remi -9223372036854775807, 9223372036854775806 -> -1
+    %result_remi_si64n9223372036854775807_si649223372036854775806 = arc.remi %cst_si64n9223372036854775807, %cst_si649223372036854775806 : si64
+    "arc.keep"(%result_remi_si64n9223372036854775807_si649223372036854775806) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi64n1]]) : (si64) -> ()
+
+    // remi -9223372036854775808, -9223372036854775808 -> 0
+    %result_remi_si64n9223372036854775808_si64n9223372036854775808 = arc.remi %cst_si64n9223372036854775808, %cst_si64n9223372036854775808 : si64
+    "arc.keep"(%result_remi_si64n9223372036854775808_si64n9223372036854775808) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi640]]) : (si64) -> ()
+
+    // remi -9223372036854775807, -9223372036854775807 -> 0
+    %result_remi_si64n9223372036854775807_si64n9223372036854775807 = arc.remi %cst_si64n9223372036854775807, %cst_si64n9223372036854775807 : si64
+    "arc.keep"(%result_remi_si64n9223372036854775807_si64n9223372036854775807) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi640]]) : (si64) -> ()
+
+    // remi -9223372036854775807, 9223372036854775807 -> 0
+    %result_remi_si64n9223372036854775807_si649223372036854775807 = arc.remi %cst_si64n9223372036854775807, %cst_si649223372036854775807 : si64
+    "arc.keep"(%result_remi_si64n9223372036854775807_si649223372036854775807) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi640]]) : (si64) -> ()
+
+    // remi -1741927215160008704, -1741927215160008704 -> 0
+    %result_remi_si64n1741927215160008704_si64n1741927215160008704 = arc.remi %cst_si64n1741927215160008704, %cst_si64n1741927215160008704 : si64
+    "arc.keep"(%result_remi_si64n1741927215160008704_si64n1741927215160008704) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi640]]) : (si64) -> ()
+
+    // remi -1328271339354574848, -1328271339354574848 -> 0
+    %result_remi_si64n1328271339354574848_si64n1328271339354574848 = arc.remi %cst_si64n1328271339354574848, %cst_si64n1328271339354574848 : si64
+    "arc.keep"(%result_remi_si64n1328271339354574848_si64n1328271339354574848) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi640]]) : (si64) -> ()
+
+    // remi 0, -9223372036854775808 -> 0
+    %result_remi_si640_si64n9223372036854775808 = arc.remi %cst_si640, %cst_si64n9223372036854775808 : si64
+    "arc.keep"(%result_remi_si640_si64n9223372036854775808) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi640]]) : (si64) -> ()
+
+    // remi 0, -9223372036854775807 -> 0
+    %result_remi_si640_si64n9223372036854775807 = arc.remi %cst_si640, %cst_si64n9223372036854775807 : si64
+    "arc.keep"(%result_remi_si640_si64n9223372036854775807) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi640]]) : (si64) -> ()
+
+    // remi 0, -1741927215160008704 -> 0
+    %result_remi_si640_si64n1741927215160008704 = arc.remi %cst_si640, %cst_si64n1741927215160008704 : si64
+    "arc.keep"(%result_remi_si640_si64n1741927215160008704) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi640]]) : (si64) -> ()
+
+    // remi 0, -1328271339354574848 -> 0
+    %result_remi_si640_si64n1328271339354574848 = arc.remi %cst_si640, %cst_si64n1328271339354574848 : si64
+    "arc.keep"(%result_remi_si640_si64n1328271339354574848) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi640]]) : (si64) -> ()
+
+    // remi 0, 5577148965131116544 -> 0
+    %result_remi_si640_si645577148965131116544 = arc.remi %cst_si640, %cst_si645577148965131116544 : si64
+    "arc.keep"(%result_remi_si640_si645577148965131116544) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi640]]) : (si64) -> ()
+
+    // remi 0, 9223372036854775806 -> 0
+    %result_remi_si640_si649223372036854775806 = arc.remi %cst_si640, %cst_si649223372036854775806 : si64
+    "arc.keep"(%result_remi_si640_si649223372036854775806) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi640]]) : (si64) -> ()
+
+    // remi 0, 9223372036854775807 -> 0
+    %result_remi_si640_si649223372036854775807 = arc.remi %cst_si640, %cst_si649223372036854775807 : si64
+    "arc.keep"(%result_remi_si640_si649223372036854775807) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi640]]) : (si64) -> ()
+
+    // remi 5577148965131116544, 5577148965131116544 -> 0
+    %result_remi_si645577148965131116544_si645577148965131116544 = arc.remi %cst_si645577148965131116544, %cst_si645577148965131116544 : si64
+    "arc.keep"(%result_remi_si645577148965131116544_si645577148965131116544) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi640]]) : (si64) -> ()
+
+    // remi 9223372036854775806, 9223372036854775806 -> 0
+    %result_remi_si649223372036854775806_si649223372036854775806 = arc.remi %cst_si649223372036854775806, %cst_si649223372036854775806 : si64
+    "arc.keep"(%result_remi_si649223372036854775806_si649223372036854775806) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi640]]) : (si64) -> ()
+
+    // remi 9223372036854775807, -9223372036854775807 -> 0
+    %result_remi_si649223372036854775807_si64n9223372036854775807 = arc.remi %cst_si649223372036854775807, %cst_si64n9223372036854775807 : si64
+    "arc.keep"(%result_remi_si649223372036854775807_si64n9223372036854775807) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi640]]) : (si64) -> ()
+
+    // remi 9223372036854775807, 9223372036854775807 -> 0
+    %result_remi_si649223372036854775807_si649223372036854775807 = arc.remi %cst_si649223372036854775807, %cst_si649223372036854775807 : si64
+    "arc.keep"(%result_remi_si649223372036854775807_si649223372036854775807) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi640]]) : (si64) -> ()
+
+    // remi 9223372036854775807, 9223372036854775806 -> 1
+    %result_remi_si649223372036854775807_si649223372036854775806 = arc.remi %cst_si649223372036854775807, %cst_si649223372036854775806 : si64
+    "arc.keep"(%result_remi_si649223372036854775807_si649223372036854775806) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi641]]) : (si64) -> ()
+
+    // remi 5577148965131116544, -1328271339354574848 -> 264063607712817152
+    %result_remi_si645577148965131116544_si64n1328271339354574848 = arc.remi %cst_si645577148965131116544, %cst_si64n1328271339354574848 : si64
+    "arc.keep"(%result_remi_si645577148965131116544_si64n1328271339354574848) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi64264063607712817152]]) : (si64) -> ()
+
+    // remi 5577148965131116544, -1741927215160008704 -> 351367319651090432
+    %result_remi_si645577148965131116544_si64n1741927215160008704 = arc.remi %cst_si645577148965131116544, %cst_si64n1741927215160008704 : si64
+    "arc.keep"(%result_remi_si645577148965131116544_si64n1741927215160008704) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi64351367319651090432]]) : (si64) -> ()
+
+    // remi 9223372036854775806, -1741927215160008704 -> 513735961054732286
+    %result_remi_si649223372036854775806_si64n1741927215160008704 = arc.remi %cst_si649223372036854775806, %cst_si64n1741927215160008704 : si64
+    "arc.keep"(%result_remi_si649223372036854775806_si64n1741927215160008704) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi64513735961054732286]]) : (si64) -> ()
+
+    // remi 9223372036854775807, -1741927215160008704 -> 513735961054732287
+    %result_remi_si649223372036854775807_si64n1741927215160008704 = arc.remi %cst_si649223372036854775807, %cst_si64n1741927215160008704 : si64
+    "arc.keep"(%result_remi_si649223372036854775807_si64n1741927215160008704) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi64513735961054732287]]) : (si64) -> ()
+
+    // remi 9223372036854775806, -1328271339354574848 -> 1253744000727326718
+    %result_remi_si649223372036854775806_si64n1328271339354574848 = arc.remi %cst_si649223372036854775806, %cst_si64n1328271339354574848 : si64
+    "arc.keep"(%result_remi_si649223372036854775806_si64n1328271339354574848) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi641253744000727326718]]) : (si64) -> ()
+
+    // remi 9223372036854775807, -1328271339354574848 -> 1253744000727326719
+    %result_remi_si649223372036854775807_si64n1328271339354574848 = arc.remi %cst_si649223372036854775807, %cst_si64n1328271339354574848 : si64
+    "arc.keep"(%result_remi_si649223372036854775807_si64n1328271339354574848) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi641253744000727326719]]) : (si64) -> ()
+
+    // remi 9223372036854775806, 5577148965131116544 -> 3646223071723659262
+    %result_remi_si649223372036854775806_si645577148965131116544 = arc.remi %cst_si649223372036854775806, %cst_si645577148965131116544 : si64
+    "arc.keep"(%result_remi_si649223372036854775806_si645577148965131116544) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi643646223071723659262]]) : (si64) -> ()
+
+    // remi 9223372036854775807, 5577148965131116544 -> 3646223071723659263
+    %result_remi_si649223372036854775807_si645577148965131116544 = arc.remi %cst_si649223372036854775807, %cst_si645577148965131116544 : si64
+    "arc.keep"(%result_remi_si649223372036854775807_si645577148965131116544) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi643646223071723659263]]) : (si64) -> ()
+
+    // remi 5577148965131116544, -9223372036854775808 -> 5577148965131116544
+    %result_remi_si645577148965131116544_si64n9223372036854775808 = arc.remi %cst_si645577148965131116544, %cst_si64n9223372036854775808 : si64
+    "arc.keep"(%result_remi_si645577148965131116544_si64n9223372036854775808) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi645577148965131116544]]) : (si64) -> ()
+
+    // remi 5577148965131116544, -9223372036854775807 -> 5577148965131116544
+    %result_remi_si645577148965131116544_si64n9223372036854775807 = arc.remi %cst_si645577148965131116544, %cst_si64n9223372036854775807 : si64
+    "arc.keep"(%result_remi_si645577148965131116544_si64n9223372036854775807) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi645577148965131116544]]) : (si64) -> ()
+
+    // remi 5577148965131116544, 9223372036854775806 -> 5577148965131116544
+    %result_remi_si645577148965131116544_si649223372036854775806 = arc.remi %cst_si645577148965131116544, %cst_si649223372036854775806 : si64
+    "arc.keep"(%result_remi_si645577148965131116544_si649223372036854775806) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi645577148965131116544]]) : (si64) -> ()
+
+    // remi 5577148965131116544, 9223372036854775807 -> 5577148965131116544
+    %result_remi_si645577148965131116544_si649223372036854775807 = arc.remi %cst_si645577148965131116544, %cst_si649223372036854775807 : si64
+    "arc.keep"(%result_remi_si645577148965131116544_si649223372036854775807) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi645577148965131116544]]) : (si64) -> ()
+
+    // remi 9223372036854775806, -9223372036854775808 -> 9223372036854775806
+    %result_remi_si649223372036854775806_si64n9223372036854775808 = arc.remi %cst_si649223372036854775806, %cst_si64n9223372036854775808 : si64
+    "arc.keep"(%result_remi_si649223372036854775806_si64n9223372036854775808) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi649223372036854775806]]) : (si64) -> ()
+
+    // remi 9223372036854775806, -9223372036854775807 -> 9223372036854775806
+    %result_remi_si649223372036854775806_si64n9223372036854775807 = arc.remi %cst_si649223372036854775806, %cst_si64n9223372036854775807 : si64
+    "arc.keep"(%result_remi_si649223372036854775806_si64n9223372036854775807) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi649223372036854775806]]) : (si64) -> ()
+
+    // remi 9223372036854775806, 9223372036854775807 -> 9223372036854775806
+    %result_remi_si649223372036854775806_si649223372036854775807 = arc.remi %cst_si649223372036854775806, %cst_si649223372036854775807 : si64
+    "arc.keep"(%result_remi_si649223372036854775806_si649223372036854775807) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi649223372036854775806]]) : (si64) -> ()
+
+    // remi 9223372036854775807, -9223372036854775808 -> 9223372036854775807
+    %result_remi_si649223372036854775807_si64n9223372036854775808 = arc.remi %cst_si649223372036854775807, %cst_si64n9223372036854775808 : si64
+    "arc.keep"(%result_remi_si649223372036854775807_si64n9223372036854775808) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi649223372036854775807]]) : (si64) -> ()
+
+    // remi -9223372036854775808, 0 -> no-fold
+    %result_remi_si64n9223372036854775808_si640 = arc.remi %cst_si64n9223372036854775808, %cst_si640 : si64
+    // CHECK-DAG: [[RESULT_remi_si64n9223372036854775808_si640:%[^ ]+]] = arc.remi [[CSTsi64n9223372036854775808]], [[CSTsi640]] : si64
+    "arc.keep"(%result_remi_si64n9223372036854775808_si640) : (si64) -> ()
+    // CHECK: "arc.keep"([[RESULT_remi_si64n9223372036854775808_si640]]) : (si64) -> ()
+
+    // remi -9223372036854775807, 0 -> no-fold
+    %result_remi_si64n9223372036854775807_si640 = arc.remi %cst_si64n9223372036854775807, %cst_si640 : si64
+    // CHECK-DAG: [[RESULT_remi_si64n9223372036854775807_si640:%[^ ]+]] = arc.remi [[CSTsi64n9223372036854775807]], [[CSTsi640]] : si64
+    "arc.keep"(%result_remi_si64n9223372036854775807_si640) : (si64) -> ()
+    // CHECK: "arc.keep"([[RESULT_remi_si64n9223372036854775807_si640]]) : (si64) -> ()
+
+    // remi -1741927215160008704, 0 -> no-fold
+    %result_remi_si64n1741927215160008704_si640 = arc.remi %cst_si64n1741927215160008704, %cst_si640 : si64
+    // CHECK-DAG: [[RESULT_remi_si64n1741927215160008704_si640:%[^ ]+]] = arc.remi [[CSTsi64n1741927215160008704]], [[CSTsi640]] : si64
+    "arc.keep"(%result_remi_si64n1741927215160008704_si640) : (si64) -> ()
+    // CHECK: "arc.keep"([[RESULT_remi_si64n1741927215160008704_si640]]) : (si64) -> ()
+
+    // remi -1328271339354574848, 0 -> no-fold
+    %result_remi_si64n1328271339354574848_si640 = arc.remi %cst_si64n1328271339354574848, %cst_si640 : si64
+    // CHECK-DAG: [[RESULT_remi_si64n1328271339354574848_si640:%[^ ]+]] = arc.remi [[CSTsi64n1328271339354574848]], [[CSTsi640]] : si64
+    "arc.keep"(%result_remi_si64n1328271339354574848_si640) : (si64) -> ()
+    // CHECK: "arc.keep"([[RESULT_remi_si64n1328271339354574848_si640]]) : (si64) -> ()
+
+    // remi 0, 0 -> no-fold
+    %result_remi_si640_si640 = arc.remi %cst_si640, %cst_si640 : si64
+    // CHECK-DAG: [[RESULT_remi_si640_si640:%[^ ]+]] = arc.remi [[CSTsi640]], [[CSTsi640]] : si64
+    "arc.keep"(%result_remi_si640_si640) : (si64) -> ()
+    // CHECK: "arc.keep"([[RESULT_remi_si640_si640]]) : (si64) -> ()
+
+    // remi 5577148965131116544, 0 -> no-fold
+    %result_remi_si645577148965131116544_si640 = arc.remi %cst_si645577148965131116544, %cst_si640 : si64
+    // CHECK-DAG: [[RESULT_remi_si645577148965131116544_si640:%[^ ]+]] = arc.remi [[CSTsi645577148965131116544]], [[CSTsi640]] : si64
+    "arc.keep"(%result_remi_si645577148965131116544_si640) : (si64) -> ()
+    // CHECK: "arc.keep"([[RESULT_remi_si645577148965131116544_si640]]) : (si64) -> ()
+
+    // remi 9223372036854775806, 0 -> no-fold
+    %result_remi_si649223372036854775806_si640 = arc.remi %cst_si649223372036854775806, %cst_si640 : si64
+    // CHECK-DAG: [[RESULT_remi_si649223372036854775806_si640:%[^ ]+]] = arc.remi [[CSTsi649223372036854775806]], [[CSTsi640]] : si64
+    "arc.keep"(%result_remi_si649223372036854775806_si640) : (si64) -> ()
+    // CHECK: "arc.keep"([[RESULT_remi_si649223372036854775806_si640]]) : (si64) -> ()
+
+    // remi 9223372036854775807, 0 -> no-fold
+    %result_remi_si649223372036854775807_si640 = arc.remi %cst_si649223372036854775807, %cst_si640 : si64
+    // CHECK-DAG: [[RESULT_remi_si649223372036854775807_si640:%[^ ]+]] = arc.remi [[CSTsi649223372036854775807]], [[CSTsi640]] : si64
+    "arc.keep"(%result_remi_si649223372036854775807_si640) : (si64) -> ()
+    // CHECK: "arc.keep"([[RESULT_remi_si649223372036854775807_si640]]) : (si64) -> ()
+
+    // remi -127, -128 -> -127
+    %result_remi_si8n127_si8n128 = arc.remi %cst_si8n127, %cst_si8n128 : si8
+    "arc.keep"(%result_remi_si8n127_si8n128) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi8n127]]) : (si8) -> ()
+
+    // remi -127, 16 -> -15
+    %result_remi_si8n127_si816 = arc.remi %cst_si8n127, %cst_si816 : si8
+    "arc.keep"(%result_remi_si8n127_si816) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi8n15]]) : (si8) -> ()
+
+    // remi -128, 126 -> -2
+    %result_remi_si8n128_si8126 = arc.remi %cst_si8n128, %cst_si8126 : si8
+    "arc.keep"(%result_remi_si8n128_si8126) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi8n2]]) : (si8) -> ()
+
+    // remi -128, -127 -> -1
+    %result_remi_si8n128_si8n127 = arc.remi %cst_si8n128, %cst_si8n127 : si8
+    "arc.keep"(%result_remi_si8n128_si8n127) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi8n1]]) : (si8) -> ()
+
+    // remi -128, 127 -> -1
+    %result_remi_si8n128_si8127 = arc.remi %cst_si8n128, %cst_si8127 : si8
+    "arc.keep"(%result_remi_si8n128_si8127) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi8n1]]) : (si8) -> ()
+
+    // remi -127, 126 -> -1
+    %result_remi_si8n127_si8126 = arc.remi %cst_si8n127, %cst_si8126 : si8
+    "arc.keep"(%result_remi_si8n127_si8126) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi8n1]]) : (si8) -> ()
+
+    // remi -128, -128 -> 0
+    %result_remi_si8n128_si8n128 = arc.remi %cst_si8n128, %cst_si8n128 : si8
+    "arc.keep"(%result_remi_si8n128_si8n128) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi80]]) : (si8) -> ()
+
+    // remi -128, 1 -> 0
+    %result_remi_si8n128_si81 = arc.remi %cst_si8n128, %cst_si81 : si8
+    "arc.keep"(%result_remi_si8n128_si81) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi80]]) : (si8) -> ()
+
+    // remi -128, 16 -> 0
+    %result_remi_si8n128_si816 = arc.remi %cst_si8n128, %cst_si816 : si8
+    "arc.keep"(%result_remi_si8n128_si816) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi80]]) : (si8) -> ()
+
+    // remi -127, -127 -> 0
+    %result_remi_si8n127_si8n127 = arc.remi %cst_si8n127, %cst_si8n127 : si8
+    "arc.keep"(%result_remi_si8n127_si8n127) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi80]]) : (si8) -> ()
+
+    // remi -127, 1 -> 0
+    %result_remi_si8n127_si81 = arc.remi %cst_si8n127, %cst_si81 : si8
+    "arc.keep"(%result_remi_si8n127_si81) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi80]]) : (si8) -> ()
+
+    // remi -127, 127 -> 0
+    %result_remi_si8n127_si8127 = arc.remi %cst_si8n127, %cst_si8127 : si8
+    "arc.keep"(%result_remi_si8n127_si8127) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi80]]) : (si8) -> ()
+
+    // remi 0, -128 -> 0
+    %result_remi_si80_si8n128 = arc.remi %cst_si80, %cst_si8n128 : si8
+    "arc.keep"(%result_remi_si80_si8n128) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi80]]) : (si8) -> ()
+
+    // remi 0, -127 -> 0
+    %result_remi_si80_si8n127 = arc.remi %cst_si80, %cst_si8n127 : si8
+    "arc.keep"(%result_remi_si80_si8n127) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi80]]) : (si8) -> ()
+
+    // remi 0, 1 -> 0
+    %result_remi_si80_si81 = arc.remi %cst_si80, %cst_si81 : si8
+    "arc.keep"(%result_remi_si80_si81) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi80]]) : (si8) -> ()
+
+    // remi 0, 16 -> 0
+    %result_remi_si80_si816 = arc.remi %cst_si80, %cst_si816 : si8
+    "arc.keep"(%result_remi_si80_si816) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi80]]) : (si8) -> ()
+
+    // remi 0, 126 -> 0
+    %result_remi_si80_si8126 = arc.remi %cst_si80, %cst_si8126 : si8
+    "arc.keep"(%result_remi_si80_si8126) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi80]]) : (si8) -> ()
+
+    // remi 0, 127 -> 0
+    %result_remi_si80_si8127 = arc.remi %cst_si80, %cst_si8127 : si8
+    "arc.keep"(%result_remi_si80_si8127) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi80]]) : (si8) -> ()
+
+    // remi 1, 1 -> 0
+    %result_remi_si81_si81 = arc.remi %cst_si81, %cst_si81 : si8
+    "arc.keep"(%result_remi_si81_si81) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi80]]) : (si8) -> ()
+
+    // remi 16, 1 -> 0
+    %result_remi_si816_si81 = arc.remi %cst_si816, %cst_si81 : si8
+    "arc.keep"(%result_remi_si816_si81) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi80]]) : (si8) -> ()
+
+    // remi 16, 16 -> 0
+    %result_remi_si816_si816 = arc.remi %cst_si816, %cst_si816 : si8
+    "arc.keep"(%result_remi_si816_si816) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi80]]) : (si8) -> ()
+
+    // remi 126, 1 -> 0
+    %result_remi_si8126_si81 = arc.remi %cst_si8126, %cst_si81 : si8
+    "arc.keep"(%result_remi_si8126_si81) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi80]]) : (si8) -> ()
+
+    // remi 126, 126 -> 0
+    %result_remi_si8126_si8126 = arc.remi %cst_si8126, %cst_si8126 : si8
+    "arc.keep"(%result_remi_si8126_si8126) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi80]]) : (si8) -> ()
+
+    // remi 127, -127 -> 0
+    %result_remi_si8127_si8n127 = arc.remi %cst_si8127, %cst_si8n127 : si8
+    "arc.keep"(%result_remi_si8127_si8n127) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi80]]) : (si8) -> ()
+
+    // remi 127, 1 -> 0
+    %result_remi_si8127_si81 = arc.remi %cst_si8127, %cst_si81 : si8
+    "arc.keep"(%result_remi_si8127_si81) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi80]]) : (si8) -> ()
+
+    // remi 127, 127 -> 0
+    %result_remi_si8127_si8127 = arc.remi %cst_si8127, %cst_si8127 : si8
+    "arc.keep"(%result_remi_si8127_si8127) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi80]]) : (si8) -> ()
+
+    // remi 1, -128 -> 1
+    %result_remi_si81_si8n128 = arc.remi %cst_si81, %cst_si8n128 : si8
+    "arc.keep"(%result_remi_si81_si8n128) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi81]]) : (si8) -> ()
+
+    // remi 1, -127 -> 1
+    %result_remi_si81_si8n127 = arc.remi %cst_si81, %cst_si8n127 : si8
+    "arc.keep"(%result_remi_si81_si8n127) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi81]]) : (si8) -> ()
+
+    // remi 1, 16 -> 1
+    %result_remi_si81_si816 = arc.remi %cst_si81, %cst_si816 : si8
+    "arc.keep"(%result_remi_si81_si816) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi81]]) : (si8) -> ()
+
+    // remi 1, 126 -> 1
+    %result_remi_si81_si8126 = arc.remi %cst_si81, %cst_si8126 : si8
+    "arc.keep"(%result_remi_si81_si8126) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi81]]) : (si8) -> ()
+
+    // remi 1, 127 -> 1
+    %result_remi_si81_si8127 = arc.remi %cst_si81, %cst_si8127 : si8
+    "arc.keep"(%result_remi_si81_si8127) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi81]]) : (si8) -> ()
+
+    // remi 127, 126 -> 1
+    %result_remi_si8127_si8126 = arc.remi %cst_si8127, %cst_si8126 : si8
+    "arc.keep"(%result_remi_si8127_si8126) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi81]]) : (si8) -> ()
+
+    // remi 126, 16 -> 14
+    %result_remi_si8126_si816 = arc.remi %cst_si8126, %cst_si816 : si8
+    "arc.keep"(%result_remi_si8126_si816) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi814]]) : (si8) -> ()
+
+    // remi 127, 16 -> 15
+    %result_remi_si8127_si816 = arc.remi %cst_si8127, %cst_si816 : si8
+    "arc.keep"(%result_remi_si8127_si816) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi815]]) : (si8) -> ()
+
+    // remi 16, -128 -> 16
+    %result_remi_si816_si8n128 = arc.remi %cst_si816, %cst_si8n128 : si8
+    "arc.keep"(%result_remi_si816_si8n128) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi816]]) : (si8) -> ()
+
+    // remi 16, -127 -> 16
+    %result_remi_si816_si8n127 = arc.remi %cst_si816, %cst_si8n127 : si8
+    "arc.keep"(%result_remi_si816_si8n127) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi816]]) : (si8) -> ()
+
+    // remi 16, 126 -> 16
+    %result_remi_si816_si8126 = arc.remi %cst_si816, %cst_si8126 : si8
+    "arc.keep"(%result_remi_si816_si8126) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi816]]) : (si8) -> ()
+
+    // remi 16, 127 -> 16
+    %result_remi_si816_si8127 = arc.remi %cst_si816, %cst_si8127 : si8
+    "arc.keep"(%result_remi_si816_si8127) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi816]]) : (si8) -> ()
+
+    // remi 126, -128 -> 126
+    %result_remi_si8126_si8n128 = arc.remi %cst_si8126, %cst_si8n128 : si8
+    "arc.keep"(%result_remi_si8126_si8n128) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi8126]]) : (si8) -> ()
+
+    // remi 126, -127 -> 126
+    %result_remi_si8126_si8n127 = arc.remi %cst_si8126, %cst_si8n127 : si8
+    "arc.keep"(%result_remi_si8126_si8n127) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi8126]]) : (si8) -> ()
+
+    // remi 126, 127 -> 126
+    %result_remi_si8126_si8127 = arc.remi %cst_si8126, %cst_si8127 : si8
+    "arc.keep"(%result_remi_si8126_si8127) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi8126]]) : (si8) -> ()
+
+    // remi 127, -128 -> 127
+    %result_remi_si8127_si8n128 = arc.remi %cst_si8127, %cst_si8n128 : si8
+    "arc.keep"(%result_remi_si8127_si8n128) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi8127]]) : (si8) -> ()
+
+    // remi -128, 0 -> no-fold
+    %result_remi_si8n128_si80 = arc.remi %cst_si8n128, %cst_si80 : si8
+    // CHECK-DAG: [[RESULT_remi_si8n128_si80:%[^ ]+]] = arc.remi [[CSTsi8n128]], [[CSTsi80]] : si8
+    "arc.keep"(%result_remi_si8n128_si80) : (si8) -> ()
+    // CHECK: "arc.keep"([[RESULT_remi_si8n128_si80]]) : (si8) -> ()
+
+    // remi -127, 0 -> no-fold
+    %result_remi_si8n127_si80 = arc.remi %cst_si8n127, %cst_si80 : si8
+    // CHECK-DAG: [[RESULT_remi_si8n127_si80:%[^ ]+]] = arc.remi [[CSTsi8n127]], [[CSTsi80]] : si8
+    "arc.keep"(%result_remi_si8n127_si80) : (si8) -> ()
+    // CHECK: "arc.keep"([[RESULT_remi_si8n127_si80]]) : (si8) -> ()
+
+    // remi 0, 0 -> no-fold
+    %result_remi_si80_si80 = arc.remi %cst_si80, %cst_si80 : si8
+    // CHECK-DAG: [[RESULT_remi_si80_si80:%[^ ]+]] = arc.remi [[CSTsi80]], [[CSTsi80]] : si8
+    "arc.keep"(%result_remi_si80_si80) : (si8) -> ()
+    // CHECK: "arc.keep"([[RESULT_remi_si80_si80]]) : (si8) -> ()
+
+    // remi 1, 0 -> no-fold
+    %result_remi_si81_si80 = arc.remi %cst_si81, %cst_si80 : si8
+    // CHECK-DAG: [[RESULT_remi_si81_si80:%[^ ]+]] = arc.remi [[CSTsi81]], [[CSTsi80]] : si8
+    "arc.keep"(%result_remi_si81_si80) : (si8) -> ()
+    // CHECK: "arc.keep"([[RESULT_remi_si81_si80]]) : (si8) -> ()
+
+    // remi 16, 0 -> no-fold
+    %result_remi_si816_si80 = arc.remi %cst_si816, %cst_si80 : si8
+    // CHECK-DAG: [[RESULT_remi_si816_si80:%[^ ]+]] = arc.remi [[CSTsi816]], [[CSTsi80]] : si8
+    "arc.keep"(%result_remi_si816_si80) : (si8) -> ()
+    // CHECK: "arc.keep"([[RESULT_remi_si816_si80]]) : (si8) -> ()
+
+    // remi 126, 0 -> no-fold
+    %result_remi_si8126_si80 = arc.remi %cst_si8126, %cst_si80 : si8
+    // CHECK-DAG: [[RESULT_remi_si8126_si80:%[^ ]+]] = arc.remi [[CSTsi8126]], [[CSTsi80]] : si8
+    "arc.keep"(%result_remi_si8126_si80) : (si8) -> ()
+    // CHECK: "arc.keep"([[RESULT_remi_si8126_si80]]) : (si8) -> ()
+
+    // remi 127, 0 -> no-fold
+    %result_remi_si8127_si80 = arc.remi %cst_si8127, %cst_si80 : si8
+    // CHECK-DAG: [[RESULT_remi_si8127_si80:%[^ ]+]] = arc.remi [[CSTsi8127]], [[CSTsi80]] : si8
+    "arc.keep"(%result_remi_si8127_si80) : (si8) -> ()
+    // CHECK: "arc.keep"([[RESULT_remi_si8127_si80]]) : (si8) -> ()
+
+    // remi 0, 1 -> 0
+    %result_remi_ui160_ui161 = arc.remi %cst_ui160, %cst_ui161 : ui16
+    "arc.keep"(%result_remi_ui160_ui161) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui160]]) : (ui16) -> ()
+
+    // remi 0, 1717 -> 0
+    %result_remi_ui160_ui161717 = arc.remi %cst_ui160, %cst_ui161717 : ui16
+    "arc.keep"(%result_remi_ui160_ui161717) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui160]]) : (ui16) -> ()
+
+    // remi 0, 17988 -> 0
+    %result_remi_ui160_ui1617988 = arc.remi %cst_ui160, %cst_ui1617988 : ui16
+    "arc.keep"(%result_remi_ui160_ui1617988) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui160]]) : (ui16) -> ()
+
+    // remi 0, 65096 -> 0
+    %result_remi_ui160_ui1665096 = arc.remi %cst_ui160, %cst_ui1665096 : ui16
+    "arc.keep"(%result_remi_ui160_ui1665096) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui160]]) : (ui16) -> ()
+
+    // remi 0, 65534 -> 0
+    %result_remi_ui160_ui1665534 = arc.remi %cst_ui160, %cst_ui1665534 : ui16
+    "arc.keep"(%result_remi_ui160_ui1665534) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui160]]) : (ui16) -> ()
+
+    // remi 0, 65535 -> 0
+    %result_remi_ui160_ui1665535 = arc.remi %cst_ui160, %cst_ui1665535 : ui16
+    "arc.keep"(%result_remi_ui160_ui1665535) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui160]]) : (ui16) -> ()
+
+    // remi 1, 1 -> 0
+    %result_remi_ui161_ui161 = arc.remi %cst_ui161, %cst_ui161 : ui16
+    "arc.keep"(%result_remi_ui161_ui161) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui160]]) : (ui16) -> ()
+
+    // remi 1717, 1 -> 0
+    %result_remi_ui161717_ui161 = arc.remi %cst_ui161717, %cst_ui161 : ui16
+    "arc.keep"(%result_remi_ui161717_ui161) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui160]]) : (ui16) -> ()
+
+    // remi 1717, 1717 -> 0
+    %result_remi_ui161717_ui161717 = arc.remi %cst_ui161717, %cst_ui161717 : ui16
+    "arc.keep"(%result_remi_ui161717_ui161717) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui160]]) : (ui16) -> ()
+
+    // remi 17988, 1 -> 0
+    %result_remi_ui1617988_ui161 = arc.remi %cst_ui1617988, %cst_ui161 : ui16
+    "arc.keep"(%result_remi_ui1617988_ui161) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui160]]) : (ui16) -> ()
+
+    // remi 17988, 17988 -> 0
+    %result_remi_ui1617988_ui1617988 = arc.remi %cst_ui1617988, %cst_ui1617988 : ui16
+    "arc.keep"(%result_remi_ui1617988_ui1617988) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui160]]) : (ui16) -> ()
+
+    // remi 65096, 1 -> 0
+    %result_remi_ui1665096_ui161 = arc.remi %cst_ui1665096, %cst_ui161 : ui16
+    "arc.keep"(%result_remi_ui1665096_ui161) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui160]]) : (ui16) -> ()
+
+    // remi 65096, 65096 -> 0
+    %result_remi_ui1665096_ui1665096 = arc.remi %cst_ui1665096, %cst_ui1665096 : ui16
+    "arc.keep"(%result_remi_ui1665096_ui1665096) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui160]]) : (ui16) -> ()
+
+    // remi 65534, 1 -> 0
+    %result_remi_ui1665534_ui161 = arc.remi %cst_ui1665534, %cst_ui161 : ui16
+    "arc.keep"(%result_remi_ui1665534_ui161) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui160]]) : (ui16) -> ()
+
+    // remi 65534, 65534 -> 0
+    %result_remi_ui1665534_ui1665534 = arc.remi %cst_ui1665534, %cst_ui1665534 : ui16
+    "arc.keep"(%result_remi_ui1665534_ui1665534) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui160]]) : (ui16) -> ()
+
+    // remi 65535, 1 -> 0
+    %result_remi_ui1665535_ui161 = arc.remi %cst_ui1665535, %cst_ui161 : ui16
+    "arc.keep"(%result_remi_ui1665535_ui161) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui160]]) : (ui16) -> ()
+
+    // remi 65535, 65535 -> 0
+    %result_remi_ui1665535_ui1665535 = arc.remi %cst_ui1665535, %cst_ui1665535 : ui16
+    "arc.keep"(%result_remi_ui1665535_ui1665535) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui160]]) : (ui16) -> ()
+
+    // remi 1, 1717 -> 1
+    %result_remi_ui161_ui161717 = arc.remi %cst_ui161, %cst_ui161717 : ui16
+    "arc.keep"(%result_remi_ui161_ui161717) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui161]]) : (ui16) -> ()
+
+    // remi 1, 17988 -> 1
+    %result_remi_ui161_ui1617988 = arc.remi %cst_ui161, %cst_ui1617988 : ui16
+    "arc.keep"(%result_remi_ui161_ui1617988) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui161]]) : (ui16) -> ()
+
+    // remi 1, 65096 -> 1
+    %result_remi_ui161_ui1665096 = arc.remi %cst_ui161, %cst_ui1665096 : ui16
+    "arc.keep"(%result_remi_ui161_ui1665096) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui161]]) : (ui16) -> ()
+
+    // remi 1, 65534 -> 1
+    %result_remi_ui161_ui1665534 = arc.remi %cst_ui161, %cst_ui1665534 : ui16
+    "arc.keep"(%result_remi_ui161_ui1665534) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui161]]) : (ui16) -> ()
+
+    // remi 1, 65535 -> 1
+    %result_remi_ui161_ui1665535 = arc.remi %cst_ui161, %cst_ui1665535 : ui16
+    "arc.keep"(%result_remi_ui161_ui1665535) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui161]]) : (ui16) -> ()
+
+    // remi 65535, 65534 -> 1
+    %result_remi_ui1665535_ui1665534 = arc.remi %cst_ui1665535, %cst_ui1665534 : ui16
+    "arc.keep"(%result_remi_ui1665535_ui1665534) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui161]]) : (ui16) -> ()
+
+    // remi 65534, 1717 -> 288
+    %result_remi_ui1665534_ui161717 = arc.remi %cst_ui1665534, %cst_ui161717 : ui16
+    "arc.keep"(%result_remi_ui1665534_ui161717) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui16288]]) : (ui16) -> ()
+
+    // remi 65535, 1717 -> 289
+    %result_remi_ui1665535_ui161717 = arc.remi %cst_ui1665535, %cst_ui161717 : ui16
+    "arc.keep"(%result_remi_ui1665535_ui161717) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui16289]]) : (ui16) -> ()
+
+    // remi 65534, 65096 -> 438
+    %result_remi_ui1665534_ui1665096 = arc.remi %cst_ui1665534, %cst_ui1665096 : ui16
+    "arc.keep"(%result_remi_ui1665534_ui1665096) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui16438]]) : (ui16) -> ()
+
+    // remi 65535, 65096 -> 439
+    %result_remi_ui1665535_ui1665096 = arc.remi %cst_ui1665535, %cst_ui1665096 : ui16
+    "arc.keep"(%result_remi_ui1665535_ui1665096) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui16439]]) : (ui16) -> ()
+
+    // remi 17988, 1717 -> 818
+    %result_remi_ui1617988_ui161717 = arc.remi %cst_ui1617988, %cst_ui161717 : ui16
+    "arc.keep"(%result_remi_ui1617988_ui161717) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui16818]]) : (ui16) -> ()
+
+    // remi 65096, 1717 -> 1567
+    %result_remi_ui1665096_ui161717 = arc.remi %cst_ui1665096, %cst_ui161717 : ui16
+    "arc.keep"(%result_remi_ui1665096_ui161717) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui161567]]) : (ui16) -> ()
+
+    // remi 1717, 17988 -> 1717
+    %result_remi_ui161717_ui1617988 = arc.remi %cst_ui161717, %cst_ui1617988 : ui16
+    "arc.keep"(%result_remi_ui161717_ui1617988) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui161717]]) : (ui16) -> ()
+
+    // remi 1717, 65096 -> 1717
+    %result_remi_ui161717_ui1665096 = arc.remi %cst_ui161717, %cst_ui1665096 : ui16
+    "arc.keep"(%result_remi_ui161717_ui1665096) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui161717]]) : (ui16) -> ()
+
+    // remi 1717, 65534 -> 1717
+    %result_remi_ui161717_ui1665534 = arc.remi %cst_ui161717, %cst_ui1665534 : ui16
+    "arc.keep"(%result_remi_ui161717_ui1665534) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui161717]]) : (ui16) -> ()
+
+    // remi 1717, 65535 -> 1717
+    %result_remi_ui161717_ui1665535 = arc.remi %cst_ui161717, %cst_ui1665535 : ui16
+    "arc.keep"(%result_remi_ui161717_ui1665535) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui161717]]) : (ui16) -> ()
+
+    // remi 65096, 17988 -> 11132
+    %result_remi_ui1665096_ui1617988 = arc.remi %cst_ui1665096, %cst_ui1617988 : ui16
+    "arc.keep"(%result_remi_ui1665096_ui1617988) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui1611132]]) : (ui16) -> ()
+
+    // remi 65534, 17988 -> 11570
+    %result_remi_ui1665534_ui1617988 = arc.remi %cst_ui1665534, %cst_ui1617988 : ui16
+    "arc.keep"(%result_remi_ui1665534_ui1617988) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui1611570]]) : (ui16) -> ()
+
+    // remi 65535, 17988 -> 11571
+    %result_remi_ui1665535_ui1617988 = arc.remi %cst_ui1665535, %cst_ui1617988 : ui16
+    "arc.keep"(%result_remi_ui1665535_ui1617988) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui1611571]]) : (ui16) -> ()
+
+    // remi 17988, 65096 -> 17988
+    %result_remi_ui1617988_ui1665096 = arc.remi %cst_ui1617988, %cst_ui1665096 : ui16
+    "arc.keep"(%result_remi_ui1617988_ui1665096) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui1617988]]) : (ui16) -> ()
+
+    // remi 17988, 65534 -> 17988
+    %result_remi_ui1617988_ui1665534 = arc.remi %cst_ui1617988, %cst_ui1665534 : ui16
+    "arc.keep"(%result_remi_ui1617988_ui1665534) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui1617988]]) : (ui16) -> ()
+
+    // remi 17988, 65535 -> 17988
+    %result_remi_ui1617988_ui1665535 = arc.remi %cst_ui1617988, %cst_ui1665535 : ui16
+    "arc.keep"(%result_remi_ui1617988_ui1665535) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui1617988]]) : (ui16) -> ()
+
+    // remi 65096, 65534 -> 65096
+    %result_remi_ui1665096_ui1665534 = arc.remi %cst_ui1665096, %cst_ui1665534 : ui16
+    "arc.keep"(%result_remi_ui1665096_ui1665534) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui1665096]]) : (ui16) -> ()
+
+    // remi 65096, 65535 -> 65096
+    %result_remi_ui1665096_ui1665535 = arc.remi %cst_ui1665096, %cst_ui1665535 : ui16
+    "arc.keep"(%result_remi_ui1665096_ui1665535) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui1665096]]) : (ui16) -> ()
+
+    // remi 65534, 65535 -> 65534
+    %result_remi_ui1665534_ui1665535 = arc.remi %cst_ui1665534, %cst_ui1665535 : ui16
+    "arc.keep"(%result_remi_ui1665534_ui1665535) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui1665534]]) : (ui16) -> ()
+
+    // remi 0, 0 -> no-fold
+    %result_remi_ui160_ui160 = arc.remi %cst_ui160, %cst_ui160 : ui16
+    // CHECK-DAG: [[RESULT_remi_ui160_ui160:%[^ ]+]] = arc.remi [[CSTui160]], [[CSTui160]] : ui16
+    "arc.keep"(%result_remi_ui160_ui160) : (ui16) -> ()
+    // CHECK: "arc.keep"([[RESULT_remi_ui160_ui160]]) : (ui16) -> ()
+
+    // remi 1, 0 -> no-fold
+    %result_remi_ui161_ui160 = arc.remi %cst_ui161, %cst_ui160 : ui16
+    // CHECK-DAG: [[RESULT_remi_ui161_ui160:%[^ ]+]] = arc.remi [[CSTui161]], [[CSTui160]] : ui16
+    "arc.keep"(%result_remi_ui161_ui160) : (ui16) -> ()
+    // CHECK: "arc.keep"([[RESULT_remi_ui161_ui160]]) : (ui16) -> ()
+
+    // remi 1717, 0 -> no-fold
+    %result_remi_ui161717_ui160 = arc.remi %cst_ui161717, %cst_ui160 : ui16
+    // CHECK-DAG: [[RESULT_remi_ui161717_ui160:%[^ ]+]] = arc.remi [[CSTui161717]], [[CSTui160]] : ui16
+    "arc.keep"(%result_remi_ui161717_ui160) : (ui16) -> ()
+    // CHECK: "arc.keep"([[RESULT_remi_ui161717_ui160]]) : (ui16) -> ()
+
+    // remi 17988, 0 -> no-fold
+    %result_remi_ui1617988_ui160 = arc.remi %cst_ui1617988, %cst_ui160 : ui16
+    // CHECK-DAG: [[RESULT_remi_ui1617988_ui160:%[^ ]+]] = arc.remi [[CSTui1617988]], [[CSTui160]] : ui16
+    "arc.keep"(%result_remi_ui1617988_ui160) : (ui16) -> ()
+    // CHECK: "arc.keep"([[RESULT_remi_ui1617988_ui160]]) : (ui16) -> ()
+
+    // remi 65096, 0 -> no-fold
+    %result_remi_ui1665096_ui160 = arc.remi %cst_ui1665096, %cst_ui160 : ui16
+    // CHECK-DAG: [[RESULT_remi_ui1665096_ui160:%[^ ]+]] = arc.remi [[CSTui1665096]], [[CSTui160]] : ui16
+    "arc.keep"(%result_remi_ui1665096_ui160) : (ui16) -> ()
+    // CHECK: "arc.keep"([[RESULT_remi_ui1665096_ui160]]) : (ui16) -> ()
+
+    // remi 65534, 0 -> no-fold
+    %result_remi_ui1665534_ui160 = arc.remi %cst_ui1665534, %cst_ui160 : ui16
+    // CHECK-DAG: [[RESULT_remi_ui1665534_ui160:%[^ ]+]] = arc.remi [[CSTui1665534]], [[CSTui160]] : ui16
+    "arc.keep"(%result_remi_ui1665534_ui160) : (ui16) -> ()
+    // CHECK: "arc.keep"([[RESULT_remi_ui1665534_ui160]]) : (ui16) -> ()
+
+    // remi 65535, 0 -> no-fold
+    %result_remi_ui1665535_ui160 = arc.remi %cst_ui1665535, %cst_ui160 : ui16
+    // CHECK-DAG: [[RESULT_remi_ui1665535_ui160:%[^ ]+]] = arc.remi [[CSTui1665535]], [[CSTui160]] : ui16
+    "arc.keep"(%result_remi_ui1665535_ui160) : (ui16) -> ()
+    // CHECK: "arc.keep"([[RESULT_remi_ui1665535_ui160]]) : (ui16) -> ()
+
+    // remi 0, 1 -> 0
+    %result_remi_ui320_ui321 = arc.remi %cst_ui320, %cst_ui321 : ui32
+    "arc.keep"(%result_remi_ui320_ui321) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui320]]) : (ui32) -> ()
+
+    // remi 0, 2119154652 -> 0
+    %result_remi_ui320_ui322119154652 = arc.remi %cst_ui320, %cst_ui322119154652 : ui32
+    "arc.keep"(%result_remi_ui320_ui322119154652) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui320]]) : (ui32) -> ()
+
+    // remi 0, 3002788344 -> 0
+    %result_remi_ui320_ui323002788344 = arc.remi %cst_ui320, %cst_ui323002788344 : ui32
+    "arc.keep"(%result_remi_ui320_ui323002788344) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui320]]) : (ui32) -> ()
+
+    // remi 0, 3482297128 -> 0
+    %result_remi_ui320_ui323482297128 = arc.remi %cst_ui320, %cst_ui323482297128 : ui32
+    "arc.keep"(%result_remi_ui320_ui323482297128) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui320]]) : (ui32) -> ()
+
+    // remi 0, 4294967294 -> 0
+    %result_remi_ui320_ui324294967294 = arc.remi %cst_ui320, %cst_ui324294967294 : ui32
+    "arc.keep"(%result_remi_ui320_ui324294967294) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui320]]) : (ui32) -> ()
+
+    // remi 0, 4294967295 -> 0
+    %result_remi_ui320_ui324294967295 = arc.remi %cst_ui320, %cst_ui324294967295 : ui32
+    "arc.keep"(%result_remi_ui320_ui324294967295) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui320]]) : (ui32) -> ()
+
+    // remi 1, 1 -> 0
+    %result_remi_ui321_ui321 = arc.remi %cst_ui321, %cst_ui321 : ui32
+    "arc.keep"(%result_remi_ui321_ui321) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui320]]) : (ui32) -> ()
+
+    // remi 2119154652, 1 -> 0
+    %result_remi_ui322119154652_ui321 = arc.remi %cst_ui322119154652, %cst_ui321 : ui32
+    "arc.keep"(%result_remi_ui322119154652_ui321) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui320]]) : (ui32) -> ()
+
+    // remi 2119154652, 2119154652 -> 0
+    %result_remi_ui322119154652_ui322119154652 = arc.remi %cst_ui322119154652, %cst_ui322119154652 : ui32
+    "arc.keep"(%result_remi_ui322119154652_ui322119154652) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui320]]) : (ui32) -> ()
+
+    // remi 3002788344, 1 -> 0
+    %result_remi_ui323002788344_ui321 = arc.remi %cst_ui323002788344, %cst_ui321 : ui32
+    "arc.keep"(%result_remi_ui323002788344_ui321) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui320]]) : (ui32) -> ()
+
+    // remi 3002788344, 3002788344 -> 0
+    %result_remi_ui323002788344_ui323002788344 = arc.remi %cst_ui323002788344, %cst_ui323002788344 : ui32
+    "arc.keep"(%result_remi_ui323002788344_ui323002788344) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui320]]) : (ui32) -> ()
+
+    // remi 3482297128, 1 -> 0
+    %result_remi_ui323482297128_ui321 = arc.remi %cst_ui323482297128, %cst_ui321 : ui32
+    "arc.keep"(%result_remi_ui323482297128_ui321) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui320]]) : (ui32) -> ()
+
+    // remi 3482297128, 3482297128 -> 0
+    %result_remi_ui323482297128_ui323482297128 = arc.remi %cst_ui323482297128, %cst_ui323482297128 : ui32
+    "arc.keep"(%result_remi_ui323482297128_ui323482297128) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui320]]) : (ui32) -> ()
+
+    // remi 4294967294, 1 -> 0
+    %result_remi_ui324294967294_ui321 = arc.remi %cst_ui324294967294, %cst_ui321 : ui32
+    "arc.keep"(%result_remi_ui324294967294_ui321) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui320]]) : (ui32) -> ()
+
+    // remi 4294967294, 4294967294 -> 0
+    %result_remi_ui324294967294_ui324294967294 = arc.remi %cst_ui324294967294, %cst_ui324294967294 : ui32
+    "arc.keep"(%result_remi_ui324294967294_ui324294967294) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui320]]) : (ui32) -> ()
+
+    // remi 4294967295, 1 -> 0
+    %result_remi_ui324294967295_ui321 = arc.remi %cst_ui324294967295, %cst_ui321 : ui32
+    "arc.keep"(%result_remi_ui324294967295_ui321) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui320]]) : (ui32) -> ()
+
+    // remi 4294967295, 4294967295 -> 0
+    %result_remi_ui324294967295_ui324294967295 = arc.remi %cst_ui324294967295, %cst_ui324294967295 : ui32
+    "arc.keep"(%result_remi_ui324294967295_ui324294967295) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui320]]) : (ui32) -> ()
+
+    // remi 1, 2119154652 -> 1
+    %result_remi_ui321_ui322119154652 = arc.remi %cst_ui321, %cst_ui322119154652 : ui32
+    "arc.keep"(%result_remi_ui321_ui322119154652) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui321]]) : (ui32) -> ()
+
+    // remi 1, 3002788344 -> 1
+    %result_remi_ui321_ui323002788344 = arc.remi %cst_ui321, %cst_ui323002788344 : ui32
+    "arc.keep"(%result_remi_ui321_ui323002788344) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui321]]) : (ui32) -> ()
+
+    // remi 1, 3482297128 -> 1
+    %result_remi_ui321_ui323482297128 = arc.remi %cst_ui321, %cst_ui323482297128 : ui32
+    "arc.keep"(%result_remi_ui321_ui323482297128) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui321]]) : (ui32) -> ()
+
+    // remi 1, 4294967294 -> 1
+    %result_remi_ui321_ui324294967294 = arc.remi %cst_ui321, %cst_ui324294967294 : ui32
+    "arc.keep"(%result_remi_ui321_ui324294967294) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui321]]) : (ui32) -> ()
+
+    // remi 1, 4294967295 -> 1
+    %result_remi_ui321_ui324294967295 = arc.remi %cst_ui321, %cst_ui324294967295 : ui32
+    "arc.keep"(%result_remi_ui321_ui324294967295) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui321]]) : (ui32) -> ()
+
+    // remi 4294967295, 4294967294 -> 1
+    %result_remi_ui324294967295_ui324294967294 = arc.remi %cst_ui324294967295, %cst_ui324294967294 : ui32
+    "arc.keep"(%result_remi_ui324294967295_ui324294967294) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui321]]) : (ui32) -> ()
+
+    // remi 4294967294, 2119154652 -> 56657990
+    %result_remi_ui324294967294_ui322119154652 = arc.remi %cst_ui324294967294, %cst_ui322119154652 : ui32
+    "arc.keep"(%result_remi_ui324294967294_ui322119154652) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui3256657990]]) : (ui32) -> ()
+
+    // remi 4294967295, 2119154652 -> 56657991
+    %result_remi_ui324294967295_ui322119154652 = arc.remi %cst_ui324294967295, %cst_ui322119154652 : ui32
+    "arc.keep"(%result_remi_ui324294967295_ui322119154652) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui3256657991]]) : (ui32) -> ()
+
+    // remi 3482297128, 3002788344 -> 479508784
+    %result_remi_ui323482297128_ui323002788344 = arc.remi %cst_ui323482297128, %cst_ui323002788344 : ui32
+    "arc.keep"(%result_remi_ui323482297128_ui323002788344) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui32479508784]]) : (ui32) -> ()
+
+    // remi 4294967294, 3482297128 -> 812670166
+    %result_remi_ui324294967294_ui323482297128 = arc.remi %cst_ui324294967294, %cst_ui323482297128 : ui32
+    "arc.keep"(%result_remi_ui324294967294_ui323482297128) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui32812670166]]) : (ui32) -> ()
+
+    // remi 4294967295, 3482297128 -> 812670167
+    %result_remi_ui324294967295_ui323482297128 = arc.remi %cst_ui324294967295, %cst_ui323482297128 : ui32
+    "arc.keep"(%result_remi_ui324294967295_ui323482297128) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui32812670167]]) : (ui32) -> ()
+
+    // remi 3002788344, 2119154652 -> 883633692
+    %result_remi_ui323002788344_ui322119154652 = arc.remi %cst_ui323002788344, %cst_ui322119154652 : ui32
+    "arc.keep"(%result_remi_ui323002788344_ui322119154652) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui32883633692]]) : (ui32) -> ()
+
+    // remi 4294967294, 3002788344 -> 1292178950
+    %result_remi_ui324294967294_ui323002788344 = arc.remi %cst_ui324294967294, %cst_ui323002788344 : ui32
+    "arc.keep"(%result_remi_ui324294967294_ui323002788344) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui321292178950]]) : (ui32) -> ()
+
+    // remi 4294967295, 3002788344 -> 1292178951
+    %result_remi_ui324294967295_ui323002788344 = arc.remi %cst_ui324294967295, %cst_ui323002788344 : ui32
+    "arc.keep"(%result_remi_ui324294967295_ui323002788344) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui321292178951]]) : (ui32) -> ()
+
+    // remi 3482297128, 2119154652 -> 1363142476
+    %result_remi_ui323482297128_ui322119154652 = arc.remi %cst_ui323482297128, %cst_ui322119154652 : ui32
+    "arc.keep"(%result_remi_ui323482297128_ui322119154652) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui321363142476]]) : (ui32) -> ()
+
+    // remi 2119154652, 3002788344 -> 2119154652
+    %result_remi_ui322119154652_ui323002788344 = arc.remi %cst_ui322119154652, %cst_ui323002788344 : ui32
+    "arc.keep"(%result_remi_ui322119154652_ui323002788344) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui322119154652]]) : (ui32) -> ()
+
+    // remi 2119154652, 3482297128 -> 2119154652
+    %result_remi_ui322119154652_ui323482297128 = arc.remi %cst_ui322119154652, %cst_ui323482297128 : ui32
+    "arc.keep"(%result_remi_ui322119154652_ui323482297128) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui322119154652]]) : (ui32) -> ()
+
+    // remi 2119154652, 4294967294 -> 2119154652
+    %result_remi_ui322119154652_ui324294967294 = arc.remi %cst_ui322119154652, %cst_ui324294967294 : ui32
+    "arc.keep"(%result_remi_ui322119154652_ui324294967294) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui322119154652]]) : (ui32) -> ()
+
+    // remi 2119154652, 4294967295 -> 2119154652
+    %result_remi_ui322119154652_ui324294967295 = arc.remi %cst_ui322119154652, %cst_ui324294967295 : ui32
+    "arc.keep"(%result_remi_ui322119154652_ui324294967295) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui322119154652]]) : (ui32) -> ()
+
+    // remi 3002788344, 3482297128 -> 3002788344
+    %result_remi_ui323002788344_ui323482297128 = arc.remi %cst_ui323002788344, %cst_ui323482297128 : ui32
+    "arc.keep"(%result_remi_ui323002788344_ui323482297128) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui323002788344]]) : (ui32) -> ()
+
+    // remi 3002788344, 4294967294 -> 3002788344
+    %result_remi_ui323002788344_ui324294967294 = arc.remi %cst_ui323002788344, %cst_ui324294967294 : ui32
+    "arc.keep"(%result_remi_ui323002788344_ui324294967294) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui323002788344]]) : (ui32) -> ()
+
+    // remi 3002788344, 4294967295 -> 3002788344
+    %result_remi_ui323002788344_ui324294967295 = arc.remi %cst_ui323002788344, %cst_ui324294967295 : ui32
+    "arc.keep"(%result_remi_ui323002788344_ui324294967295) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui323002788344]]) : (ui32) -> ()
+
+    // remi 3482297128, 4294967294 -> 3482297128
+    %result_remi_ui323482297128_ui324294967294 = arc.remi %cst_ui323482297128, %cst_ui324294967294 : ui32
+    "arc.keep"(%result_remi_ui323482297128_ui324294967294) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui323482297128]]) : (ui32) -> ()
+
+    // remi 3482297128, 4294967295 -> 3482297128
+    %result_remi_ui323482297128_ui324294967295 = arc.remi %cst_ui323482297128, %cst_ui324294967295 : ui32
+    "arc.keep"(%result_remi_ui323482297128_ui324294967295) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui323482297128]]) : (ui32) -> ()
+
+    // remi 4294967294, 4294967295 -> 4294967294
+    %result_remi_ui324294967294_ui324294967295 = arc.remi %cst_ui324294967294, %cst_ui324294967295 : ui32
+    "arc.keep"(%result_remi_ui324294967294_ui324294967295) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui324294967294]]) : (ui32) -> ()
+
+    // remi 0, 0 -> no-fold
+    %result_remi_ui320_ui320 = arc.remi %cst_ui320, %cst_ui320 : ui32
+    // CHECK-DAG: [[RESULT_remi_ui320_ui320:%[^ ]+]] = arc.remi [[CSTui320]], [[CSTui320]] : ui32
+    "arc.keep"(%result_remi_ui320_ui320) : (ui32) -> ()
+    // CHECK: "arc.keep"([[RESULT_remi_ui320_ui320]]) : (ui32) -> ()
+
+    // remi 1, 0 -> no-fold
+    %result_remi_ui321_ui320 = arc.remi %cst_ui321, %cst_ui320 : ui32
+    // CHECK-DAG: [[RESULT_remi_ui321_ui320:%[^ ]+]] = arc.remi [[CSTui321]], [[CSTui320]] : ui32
+    "arc.keep"(%result_remi_ui321_ui320) : (ui32) -> ()
+    // CHECK: "arc.keep"([[RESULT_remi_ui321_ui320]]) : (ui32) -> ()
+
+    // remi 2119154652, 0 -> no-fold
+    %result_remi_ui322119154652_ui320 = arc.remi %cst_ui322119154652, %cst_ui320 : ui32
+    // CHECK-DAG: [[RESULT_remi_ui322119154652_ui320:%[^ ]+]] = arc.remi [[CSTui322119154652]], [[CSTui320]] : ui32
+    "arc.keep"(%result_remi_ui322119154652_ui320) : (ui32) -> ()
+    // CHECK: "arc.keep"([[RESULT_remi_ui322119154652_ui320]]) : (ui32) -> ()
+
+    // remi 3002788344, 0 -> no-fold
+    %result_remi_ui323002788344_ui320 = arc.remi %cst_ui323002788344, %cst_ui320 : ui32
+    // CHECK-DAG: [[RESULT_remi_ui323002788344_ui320:%[^ ]+]] = arc.remi [[CSTui323002788344]], [[CSTui320]] : ui32
+    "arc.keep"(%result_remi_ui323002788344_ui320) : (ui32) -> ()
+    // CHECK: "arc.keep"([[RESULT_remi_ui323002788344_ui320]]) : (ui32) -> ()
+
+    // remi 3482297128, 0 -> no-fold
+    %result_remi_ui323482297128_ui320 = arc.remi %cst_ui323482297128, %cst_ui320 : ui32
+    // CHECK-DAG: [[RESULT_remi_ui323482297128_ui320:%[^ ]+]] = arc.remi [[CSTui323482297128]], [[CSTui320]] : ui32
+    "arc.keep"(%result_remi_ui323482297128_ui320) : (ui32) -> ()
+    // CHECK: "arc.keep"([[RESULT_remi_ui323482297128_ui320]]) : (ui32) -> ()
+
+    // remi 4294967294, 0 -> no-fold
+    %result_remi_ui324294967294_ui320 = arc.remi %cst_ui324294967294, %cst_ui320 : ui32
+    // CHECK-DAG: [[RESULT_remi_ui324294967294_ui320:%[^ ]+]] = arc.remi [[CSTui324294967294]], [[CSTui320]] : ui32
+    "arc.keep"(%result_remi_ui324294967294_ui320) : (ui32) -> ()
+    // CHECK: "arc.keep"([[RESULT_remi_ui324294967294_ui320]]) : (ui32) -> ()
+
+    // remi 4294967295, 0 -> no-fold
+    %result_remi_ui324294967295_ui320 = arc.remi %cst_ui324294967295, %cst_ui320 : ui32
+    // CHECK-DAG: [[RESULT_remi_ui324294967295_ui320:%[^ ]+]] = arc.remi [[CSTui324294967295]], [[CSTui320]] : ui32
+    "arc.keep"(%result_remi_ui324294967295_ui320) : (ui32) -> ()
+    // CHECK: "arc.keep"([[RESULT_remi_ui324294967295_ui320]]) : (ui32) -> ()
+
+    // remi 0, 1 -> 0
+    %result_remi_ui640_ui641 = arc.remi %cst_ui640, %cst_ui641 : ui64
+    "arc.keep"(%result_remi_ui640_ui641) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui640]]) : (ui64) -> ()
+
+    // remi 0, 191084152064409600 -> 0
+    %result_remi_ui640_ui64191084152064409600 = arc.remi %cst_ui640, %cst_ui64191084152064409600 : ui64
+    "arc.keep"(%result_remi_ui640_ui64191084152064409600) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui640]]) : (ui64) -> ()
+
+    // remi 0, 11015955194427482112 -> 0
+    %result_remi_ui640_ui6411015955194427482112 = arc.remi %cst_ui640, %cst_ui6411015955194427482112 : ui64
+    "arc.keep"(%result_remi_ui640_ui6411015955194427482112) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui640]]) : (ui64) -> ()
+
+    // remi 0, 16990600415051759616 -> 0
+    %result_remi_ui640_ui6416990600415051759616 = arc.remi %cst_ui640, %cst_ui6416990600415051759616 : ui64
+    "arc.keep"(%result_remi_ui640_ui6416990600415051759616) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui640]]) : (ui64) -> ()
+
+    // remi 0, 18446744073709551614 -> 0
+    %result_remi_ui640_ui6418446744073709551614 = arc.remi %cst_ui640, %cst_ui6418446744073709551614 : ui64
+    "arc.keep"(%result_remi_ui640_ui6418446744073709551614) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui640]]) : (ui64) -> ()
+
+    // remi 0, 18446744073709551615 -> 0
+    %result_remi_ui640_ui6418446744073709551615 = arc.remi %cst_ui640, %cst_ui6418446744073709551615 : ui64
+    "arc.keep"(%result_remi_ui640_ui6418446744073709551615) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui640]]) : (ui64) -> ()
+
+    // remi 1, 1 -> 0
+    %result_remi_ui641_ui641 = arc.remi %cst_ui641, %cst_ui641 : ui64
+    "arc.keep"(%result_remi_ui641_ui641) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui640]]) : (ui64) -> ()
+
+    // remi 191084152064409600, 1 -> 0
+    %result_remi_ui64191084152064409600_ui641 = arc.remi %cst_ui64191084152064409600, %cst_ui641 : ui64
+    "arc.keep"(%result_remi_ui64191084152064409600_ui641) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui640]]) : (ui64) -> ()
+
+    // remi 191084152064409600, 191084152064409600 -> 0
+    %result_remi_ui64191084152064409600_ui64191084152064409600 = arc.remi %cst_ui64191084152064409600, %cst_ui64191084152064409600 : ui64
+    "arc.keep"(%result_remi_ui64191084152064409600_ui64191084152064409600) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui640]]) : (ui64) -> ()
+
+    // remi 11015955194427482112, 1 -> 0
+    %result_remi_ui6411015955194427482112_ui641 = arc.remi %cst_ui6411015955194427482112, %cst_ui641 : ui64
+    "arc.keep"(%result_remi_ui6411015955194427482112_ui641) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui640]]) : (ui64) -> ()
+
+    // remi 11015955194427482112, 11015955194427482112 -> 0
+    %result_remi_ui6411015955194427482112_ui6411015955194427482112 = arc.remi %cst_ui6411015955194427482112, %cst_ui6411015955194427482112 : ui64
+    "arc.keep"(%result_remi_ui6411015955194427482112_ui6411015955194427482112) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui640]]) : (ui64) -> ()
+
+    // remi 16990600415051759616, 1 -> 0
+    %result_remi_ui6416990600415051759616_ui641 = arc.remi %cst_ui6416990600415051759616, %cst_ui641 : ui64
+    "arc.keep"(%result_remi_ui6416990600415051759616_ui641) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui640]]) : (ui64) -> ()
+
+    // remi 16990600415051759616, 16990600415051759616 -> 0
+    %result_remi_ui6416990600415051759616_ui6416990600415051759616 = arc.remi %cst_ui6416990600415051759616, %cst_ui6416990600415051759616 : ui64
+    "arc.keep"(%result_remi_ui6416990600415051759616_ui6416990600415051759616) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui640]]) : (ui64) -> ()
+
+    // remi 18446744073709551614, 1 -> 0
+    %result_remi_ui6418446744073709551614_ui641 = arc.remi %cst_ui6418446744073709551614, %cst_ui641 : ui64
+    "arc.keep"(%result_remi_ui6418446744073709551614_ui641) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui640]]) : (ui64) -> ()
+
+    // remi 18446744073709551614, 18446744073709551614 -> 0
+    %result_remi_ui6418446744073709551614_ui6418446744073709551614 = arc.remi %cst_ui6418446744073709551614, %cst_ui6418446744073709551614 : ui64
+    "arc.keep"(%result_remi_ui6418446744073709551614_ui6418446744073709551614) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui640]]) : (ui64) -> ()
+
+    // remi 18446744073709551615, 1 -> 0
+    %result_remi_ui6418446744073709551615_ui641 = arc.remi %cst_ui6418446744073709551615, %cst_ui641 : ui64
+    "arc.keep"(%result_remi_ui6418446744073709551615_ui641) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui640]]) : (ui64) -> ()
+
+    // remi 18446744073709551615, 18446744073709551615 -> 0
+    %result_remi_ui6418446744073709551615_ui6418446744073709551615 = arc.remi %cst_ui6418446744073709551615, %cst_ui6418446744073709551615 : ui64
+    "arc.keep"(%result_remi_ui6418446744073709551615_ui6418446744073709551615) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui640]]) : (ui64) -> ()
+
+    // remi 1, 191084152064409600 -> 1
+    %result_remi_ui641_ui64191084152064409600 = arc.remi %cst_ui641, %cst_ui64191084152064409600 : ui64
+    "arc.keep"(%result_remi_ui641_ui64191084152064409600) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui641]]) : (ui64) -> ()
+
+    // remi 1, 11015955194427482112 -> 1
+    %result_remi_ui641_ui6411015955194427482112 = arc.remi %cst_ui641, %cst_ui6411015955194427482112 : ui64
+    "arc.keep"(%result_remi_ui641_ui6411015955194427482112) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui641]]) : (ui64) -> ()
+
+    // remi 1, 16990600415051759616 -> 1
+    %result_remi_ui641_ui6416990600415051759616 = arc.remi %cst_ui641, %cst_ui6416990600415051759616 : ui64
+    "arc.keep"(%result_remi_ui641_ui6416990600415051759616) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui641]]) : (ui64) -> ()
+
+    // remi 1, 18446744073709551614 -> 1
+    %result_remi_ui641_ui6418446744073709551614 = arc.remi %cst_ui641, %cst_ui6418446744073709551614 : ui64
+    "arc.keep"(%result_remi_ui641_ui6418446744073709551614) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui641]]) : (ui64) -> ()
+
+    // remi 1, 18446744073709551615 -> 1
+    %result_remi_ui641_ui6418446744073709551615 = arc.remi %cst_ui641, %cst_ui6418446744073709551615 : ui64
+    "arc.keep"(%result_remi_ui641_ui6418446744073709551615) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui641]]) : (ui64) -> ()
+
+    // remi 18446744073709551615, 18446744073709551614 -> 1
+    %result_remi_ui6418446744073709551615_ui6418446744073709551614 = arc.remi %cst_ui6418446744073709551615, %cst_ui6418446744073709551614 : ui64
+    "arc.keep"(%result_remi_ui6418446744073709551615_ui6418446744073709551614) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui641]]) : (ui64) -> ()
+
+    // remi 18446744073709551614, 191084152064409600 -> 102665475526230014
+    %result_remi_ui6418446744073709551614_ui64191084152064409600 = arc.remi %cst_ui6418446744073709551614, %cst_ui64191084152064409600 : ui64
+    "arc.keep"(%result_remi_ui6418446744073709551614_ui64191084152064409600) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui64102665475526230014]]) : (ui64) -> ()
+
+    // remi 18446744073709551615, 191084152064409600 -> 102665475526230015
+    %result_remi_ui6418446744073709551615_ui64191084152064409600 = arc.remi %cst_ui6418446744073709551615, %cst_ui64191084152064409600 : ui64
+    "arc.keep"(%result_remi_ui6418446744073709551615_ui64191084152064409600) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui64102665475526230015]]) : (ui64) -> ()
+
+    // remi 11015955194427482112, 191084152064409600 -> 124158526756134912
+    %result_remi_ui6411015955194427482112_ui64191084152064409600 = arc.remi %cst_ui6411015955194427482112, %cst_ui64191084152064409600 : ui64
+    "arc.keep"(%result_remi_ui6411015955194427482112_ui64191084152064409600) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui64124158526756134912]]) : (ui64) -> ()
+
+    // remi 16990600415051759616, 191084152064409600 -> 175195033383714816
+    %result_remi_ui6416990600415051759616_ui64191084152064409600 = arc.remi %cst_ui6416990600415051759616, %cst_ui64191084152064409600 : ui64
+    "arc.keep"(%result_remi_ui6416990600415051759616_ui64191084152064409600) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui64175195033383714816]]) : (ui64) -> ()
+
+    // remi 191084152064409600, 11015955194427482112 -> 191084152064409600
+    %result_remi_ui64191084152064409600_ui6411015955194427482112 = arc.remi %cst_ui64191084152064409600, %cst_ui6411015955194427482112 : ui64
+    "arc.keep"(%result_remi_ui64191084152064409600_ui6411015955194427482112) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui64191084152064409600]]) : (ui64) -> ()
+
+    // remi 191084152064409600, 16990600415051759616 -> 191084152064409600
+    %result_remi_ui64191084152064409600_ui6416990600415051759616 = arc.remi %cst_ui64191084152064409600, %cst_ui6416990600415051759616 : ui64
+    "arc.keep"(%result_remi_ui64191084152064409600_ui6416990600415051759616) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui64191084152064409600]]) : (ui64) -> ()
+
+    // remi 191084152064409600, 18446744073709551614 -> 191084152064409600
+    %result_remi_ui64191084152064409600_ui6418446744073709551614 = arc.remi %cst_ui64191084152064409600, %cst_ui6418446744073709551614 : ui64
+    "arc.keep"(%result_remi_ui64191084152064409600_ui6418446744073709551614) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui64191084152064409600]]) : (ui64) -> ()
+
+    // remi 191084152064409600, 18446744073709551615 -> 191084152064409600
+    %result_remi_ui64191084152064409600_ui6418446744073709551615 = arc.remi %cst_ui64191084152064409600, %cst_ui6418446744073709551615 : ui64
+    "arc.keep"(%result_remi_ui64191084152064409600_ui6418446744073709551615) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui64191084152064409600]]) : (ui64) -> ()
+
+    // remi 18446744073709551614, 16990600415051759616 -> 1456143658657791998
+    %result_remi_ui6418446744073709551614_ui6416990600415051759616 = arc.remi %cst_ui6418446744073709551614, %cst_ui6416990600415051759616 : ui64
+    "arc.keep"(%result_remi_ui6418446744073709551614_ui6416990600415051759616) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui641456143658657791998]]) : (ui64) -> ()
+
+    // remi 18446744073709551615, 16990600415051759616 -> 1456143658657791999
+    %result_remi_ui6418446744073709551615_ui6416990600415051759616 = arc.remi %cst_ui6418446744073709551615, %cst_ui6416990600415051759616 : ui64
+    "arc.keep"(%result_remi_ui6418446744073709551615_ui6416990600415051759616) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui641456143658657791999]]) : (ui64) -> ()
+
+    // remi 16990600415051759616, 11015955194427482112 -> 5974645220624277504
+    %result_remi_ui6416990600415051759616_ui6411015955194427482112 = arc.remi %cst_ui6416990600415051759616, %cst_ui6411015955194427482112 : ui64
+    "arc.keep"(%result_remi_ui6416990600415051759616_ui6411015955194427482112) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui645974645220624277504]]) : (ui64) -> ()
+
+    // remi 18446744073709551614, 11015955194427482112 -> 7430788879282069502
+    %result_remi_ui6418446744073709551614_ui6411015955194427482112 = arc.remi %cst_ui6418446744073709551614, %cst_ui6411015955194427482112 : ui64
+    "arc.keep"(%result_remi_ui6418446744073709551614_ui6411015955194427482112) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui647430788879282069502]]) : (ui64) -> ()
+
+    // remi 18446744073709551615, 11015955194427482112 -> 7430788879282069503
+    %result_remi_ui6418446744073709551615_ui6411015955194427482112 = arc.remi %cst_ui6418446744073709551615, %cst_ui6411015955194427482112 : ui64
+    "arc.keep"(%result_remi_ui6418446744073709551615_ui6411015955194427482112) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui647430788879282069503]]) : (ui64) -> ()
+
+    // remi 11015955194427482112, 16990600415051759616 -> 11015955194427482112
+    %result_remi_ui6411015955194427482112_ui6416990600415051759616 = arc.remi %cst_ui6411015955194427482112, %cst_ui6416990600415051759616 : ui64
+    "arc.keep"(%result_remi_ui6411015955194427482112_ui6416990600415051759616) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui6411015955194427482112]]) : (ui64) -> ()
+
+    // remi 11015955194427482112, 18446744073709551614 -> 11015955194427482112
+    %result_remi_ui6411015955194427482112_ui6418446744073709551614 = arc.remi %cst_ui6411015955194427482112, %cst_ui6418446744073709551614 : ui64
+    "arc.keep"(%result_remi_ui6411015955194427482112_ui6418446744073709551614) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui6411015955194427482112]]) : (ui64) -> ()
+
+    // remi 11015955194427482112, 18446744073709551615 -> 11015955194427482112
+    %result_remi_ui6411015955194427482112_ui6418446744073709551615 = arc.remi %cst_ui6411015955194427482112, %cst_ui6418446744073709551615 : ui64
+    "arc.keep"(%result_remi_ui6411015955194427482112_ui6418446744073709551615) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui6411015955194427482112]]) : (ui64) -> ()
+
+    // remi 16990600415051759616, 18446744073709551614 -> 16990600415051759616
+    %result_remi_ui6416990600415051759616_ui6418446744073709551614 = arc.remi %cst_ui6416990600415051759616, %cst_ui6418446744073709551614 : ui64
+    "arc.keep"(%result_remi_ui6416990600415051759616_ui6418446744073709551614) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui6416990600415051759616]]) : (ui64) -> ()
+
+    // remi 16990600415051759616, 18446744073709551615 -> 16990600415051759616
+    %result_remi_ui6416990600415051759616_ui6418446744073709551615 = arc.remi %cst_ui6416990600415051759616, %cst_ui6418446744073709551615 : ui64
+    "arc.keep"(%result_remi_ui6416990600415051759616_ui6418446744073709551615) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui6416990600415051759616]]) : (ui64) -> ()
+
+    // remi 18446744073709551614, 18446744073709551615 -> 18446744073709551614
+    %result_remi_ui6418446744073709551614_ui6418446744073709551615 = arc.remi %cst_ui6418446744073709551614, %cst_ui6418446744073709551615 : ui64
+    "arc.keep"(%result_remi_ui6418446744073709551614_ui6418446744073709551615) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui6418446744073709551614]]) : (ui64) -> ()
+
+    // remi 0, 0 -> no-fold
+    %result_remi_ui640_ui640 = arc.remi %cst_ui640, %cst_ui640 : ui64
+    // CHECK-DAG: [[RESULT_remi_ui640_ui640:%[^ ]+]] = arc.remi [[CSTui640]], [[CSTui640]] : ui64
+    "arc.keep"(%result_remi_ui640_ui640) : (ui64) -> ()
+    // CHECK: "arc.keep"([[RESULT_remi_ui640_ui640]]) : (ui64) -> ()
+
+    // remi 1, 0 -> no-fold
+    %result_remi_ui641_ui640 = arc.remi %cst_ui641, %cst_ui640 : ui64
+    // CHECK-DAG: [[RESULT_remi_ui641_ui640:%[^ ]+]] = arc.remi [[CSTui641]], [[CSTui640]] : ui64
+    "arc.keep"(%result_remi_ui641_ui640) : (ui64) -> ()
+    // CHECK: "arc.keep"([[RESULT_remi_ui641_ui640]]) : (ui64) -> ()
+
+    // remi 191084152064409600, 0 -> no-fold
+    %result_remi_ui64191084152064409600_ui640 = arc.remi %cst_ui64191084152064409600, %cst_ui640 : ui64
+    // CHECK-DAG: [[RESULT_remi_ui64191084152064409600_ui640:%[^ ]+]] = arc.remi [[CSTui64191084152064409600]], [[CSTui640]] : ui64
+    "arc.keep"(%result_remi_ui64191084152064409600_ui640) : (ui64) -> ()
+    // CHECK: "arc.keep"([[RESULT_remi_ui64191084152064409600_ui640]]) : (ui64) -> ()
+
+    // remi 11015955194427482112, 0 -> no-fold
+    %result_remi_ui6411015955194427482112_ui640 = arc.remi %cst_ui6411015955194427482112, %cst_ui640 : ui64
+    // CHECK-DAG: [[RESULT_remi_ui6411015955194427482112_ui640:%[^ ]+]] = arc.remi [[CSTui6411015955194427482112]], [[CSTui640]] : ui64
+    "arc.keep"(%result_remi_ui6411015955194427482112_ui640) : (ui64) -> ()
+    // CHECK: "arc.keep"([[RESULT_remi_ui6411015955194427482112_ui640]]) : (ui64) -> ()
+
+    // remi 16990600415051759616, 0 -> no-fold
+    %result_remi_ui6416990600415051759616_ui640 = arc.remi %cst_ui6416990600415051759616, %cst_ui640 : ui64
+    // CHECK-DAG: [[RESULT_remi_ui6416990600415051759616_ui640:%[^ ]+]] = arc.remi [[CSTui6416990600415051759616]], [[CSTui640]] : ui64
+    "arc.keep"(%result_remi_ui6416990600415051759616_ui640) : (ui64) -> ()
+    // CHECK: "arc.keep"([[RESULT_remi_ui6416990600415051759616_ui640]]) : (ui64) -> ()
+
+    // remi 18446744073709551614, 0 -> no-fold
+    %result_remi_ui6418446744073709551614_ui640 = arc.remi %cst_ui6418446744073709551614, %cst_ui640 : ui64
+    // CHECK-DAG: [[RESULT_remi_ui6418446744073709551614_ui640:%[^ ]+]] = arc.remi [[CSTui6418446744073709551614]], [[CSTui640]] : ui64
+    "arc.keep"(%result_remi_ui6418446744073709551614_ui640) : (ui64) -> ()
+    // CHECK: "arc.keep"([[RESULT_remi_ui6418446744073709551614_ui640]]) : (ui64) -> ()
+
+    // remi 18446744073709551615, 0 -> no-fold
+    %result_remi_ui6418446744073709551615_ui640 = arc.remi %cst_ui6418446744073709551615, %cst_ui640 : ui64
+    // CHECK-DAG: [[RESULT_remi_ui6418446744073709551615_ui640:%[^ ]+]] = arc.remi [[CSTui6418446744073709551615]], [[CSTui640]] : ui64
+    "arc.keep"(%result_remi_ui6418446744073709551615_ui640) : (ui64) -> ()
+    // CHECK: "arc.keep"([[RESULT_remi_ui6418446744073709551615_ui640]]) : (ui64) -> ()
+
+    // remi 0, 1 -> 0
+    %result_remi_ui80_ui81 = arc.remi %cst_ui80, %cst_ui81 : ui8
+    "arc.keep"(%result_remi_ui80_ui81) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui80]]) : (ui8) -> ()
+
+    // remi 0, 72 -> 0
+    %result_remi_ui80_ui872 = arc.remi %cst_ui80, %cst_ui872 : ui8
+    "arc.keep"(%result_remi_ui80_ui872) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui80]]) : (ui8) -> ()
+
+    // remi 0, 100 -> 0
+    %result_remi_ui80_ui8100 = arc.remi %cst_ui80, %cst_ui8100 : ui8
+    "arc.keep"(%result_remi_ui80_ui8100) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui80]]) : (ui8) -> ()
+
+    // remi 0, 162 -> 0
+    %result_remi_ui80_ui8162 = arc.remi %cst_ui80, %cst_ui8162 : ui8
+    "arc.keep"(%result_remi_ui80_ui8162) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui80]]) : (ui8) -> ()
+
+    // remi 0, 254 -> 0
+    %result_remi_ui80_ui8254 = arc.remi %cst_ui80, %cst_ui8254 : ui8
+    "arc.keep"(%result_remi_ui80_ui8254) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui80]]) : (ui8) -> ()
+
+    // remi 0, 255 -> 0
+    %result_remi_ui80_ui8255 = arc.remi %cst_ui80, %cst_ui8255 : ui8
+    "arc.keep"(%result_remi_ui80_ui8255) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui80]]) : (ui8) -> ()
+
+    // remi 1, 1 -> 0
+    %result_remi_ui81_ui81 = arc.remi %cst_ui81, %cst_ui81 : ui8
+    "arc.keep"(%result_remi_ui81_ui81) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui80]]) : (ui8) -> ()
+
+    // remi 72, 1 -> 0
+    %result_remi_ui872_ui81 = arc.remi %cst_ui872, %cst_ui81 : ui8
+    "arc.keep"(%result_remi_ui872_ui81) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui80]]) : (ui8) -> ()
+
+    // remi 72, 72 -> 0
+    %result_remi_ui872_ui872 = arc.remi %cst_ui872, %cst_ui872 : ui8
+    "arc.keep"(%result_remi_ui872_ui872) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui80]]) : (ui8) -> ()
+
+    // remi 100, 1 -> 0
+    %result_remi_ui8100_ui81 = arc.remi %cst_ui8100, %cst_ui81 : ui8
+    "arc.keep"(%result_remi_ui8100_ui81) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui80]]) : (ui8) -> ()
+
+    // remi 100, 100 -> 0
+    %result_remi_ui8100_ui8100 = arc.remi %cst_ui8100, %cst_ui8100 : ui8
+    "arc.keep"(%result_remi_ui8100_ui8100) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui80]]) : (ui8) -> ()
+
+    // remi 162, 1 -> 0
+    %result_remi_ui8162_ui81 = arc.remi %cst_ui8162, %cst_ui81 : ui8
+    "arc.keep"(%result_remi_ui8162_ui81) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui80]]) : (ui8) -> ()
+
+    // remi 162, 162 -> 0
+    %result_remi_ui8162_ui8162 = arc.remi %cst_ui8162, %cst_ui8162 : ui8
+    "arc.keep"(%result_remi_ui8162_ui8162) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui80]]) : (ui8) -> ()
+
+    // remi 254, 1 -> 0
+    %result_remi_ui8254_ui81 = arc.remi %cst_ui8254, %cst_ui81 : ui8
+    "arc.keep"(%result_remi_ui8254_ui81) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui80]]) : (ui8) -> ()
+
+    // remi 254, 254 -> 0
+    %result_remi_ui8254_ui8254 = arc.remi %cst_ui8254, %cst_ui8254 : ui8
+    "arc.keep"(%result_remi_ui8254_ui8254) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui80]]) : (ui8) -> ()
+
+    // remi 255, 1 -> 0
+    %result_remi_ui8255_ui81 = arc.remi %cst_ui8255, %cst_ui81 : ui8
+    "arc.keep"(%result_remi_ui8255_ui81) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui80]]) : (ui8) -> ()
+
+    // remi 255, 255 -> 0
+    %result_remi_ui8255_ui8255 = arc.remi %cst_ui8255, %cst_ui8255 : ui8
+    "arc.keep"(%result_remi_ui8255_ui8255) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui80]]) : (ui8) -> ()
+
+    // remi 1, 72 -> 1
+    %result_remi_ui81_ui872 = arc.remi %cst_ui81, %cst_ui872 : ui8
+    "arc.keep"(%result_remi_ui81_ui872) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui81]]) : (ui8) -> ()
+
+    // remi 1, 100 -> 1
+    %result_remi_ui81_ui8100 = arc.remi %cst_ui81, %cst_ui8100 : ui8
+    "arc.keep"(%result_remi_ui81_ui8100) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui81]]) : (ui8) -> ()
+
+    // remi 1, 162 -> 1
+    %result_remi_ui81_ui8162 = arc.remi %cst_ui81, %cst_ui8162 : ui8
+    "arc.keep"(%result_remi_ui81_ui8162) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui81]]) : (ui8) -> ()
+
+    // remi 1, 254 -> 1
+    %result_remi_ui81_ui8254 = arc.remi %cst_ui81, %cst_ui8254 : ui8
+    "arc.keep"(%result_remi_ui81_ui8254) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui81]]) : (ui8) -> ()
+
+    // remi 1, 255 -> 1
+    %result_remi_ui81_ui8255 = arc.remi %cst_ui81, %cst_ui8255 : ui8
+    "arc.keep"(%result_remi_ui81_ui8255) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui81]]) : (ui8) -> ()
+
+    // remi 255, 254 -> 1
+    %result_remi_ui8255_ui8254 = arc.remi %cst_ui8255, %cst_ui8254 : ui8
+    "arc.keep"(%result_remi_ui8255_ui8254) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui81]]) : (ui8) -> ()
+
+    // remi 162, 72 -> 18
+    %result_remi_ui8162_ui872 = arc.remi %cst_ui8162, %cst_ui872 : ui8
+    "arc.keep"(%result_remi_ui8162_ui872) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui818]]) : (ui8) -> ()
+
+    // remi 100, 72 -> 28
+    %result_remi_ui8100_ui872 = arc.remi %cst_ui8100, %cst_ui872 : ui8
+    "arc.keep"(%result_remi_ui8100_ui872) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui828]]) : (ui8) -> ()
+
+    // remi 254, 72 -> 38
+    %result_remi_ui8254_ui872 = arc.remi %cst_ui8254, %cst_ui872 : ui8
+    "arc.keep"(%result_remi_ui8254_ui872) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui838]]) : (ui8) -> ()
+
+    // remi 255, 72 -> 39
+    %result_remi_ui8255_ui872 = arc.remi %cst_ui8255, %cst_ui872 : ui8
+    "arc.keep"(%result_remi_ui8255_ui872) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui839]]) : (ui8) -> ()
+
+    // remi 254, 100 -> 54
+    %result_remi_ui8254_ui8100 = arc.remi %cst_ui8254, %cst_ui8100 : ui8
+    "arc.keep"(%result_remi_ui8254_ui8100) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui854]]) : (ui8) -> ()
+
+    // remi 255, 100 -> 55
+    %result_remi_ui8255_ui8100 = arc.remi %cst_ui8255, %cst_ui8100 : ui8
+    "arc.keep"(%result_remi_ui8255_ui8100) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui855]]) : (ui8) -> ()
+
+    // remi 162, 100 -> 62
+    %result_remi_ui8162_ui8100 = arc.remi %cst_ui8162, %cst_ui8100 : ui8
+    "arc.keep"(%result_remi_ui8162_ui8100) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui862]]) : (ui8) -> ()
+
+    // remi 72, 100 -> 72
+    %result_remi_ui872_ui8100 = arc.remi %cst_ui872, %cst_ui8100 : ui8
+    "arc.keep"(%result_remi_ui872_ui8100) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui872]]) : (ui8) -> ()
+
+    // remi 72, 162 -> 72
+    %result_remi_ui872_ui8162 = arc.remi %cst_ui872, %cst_ui8162 : ui8
+    "arc.keep"(%result_remi_ui872_ui8162) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui872]]) : (ui8) -> ()
+
+    // remi 72, 254 -> 72
+    %result_remi_ui872_ui8254 = arc.remi %cst_ui872, %cst_ui8254 : ui8
+    "arc.keep"(%result_remi_ui872_ui8254) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui872]]) : (ui8) -> ()
+
+    // remi 72, 255 -> 72
+    %result_remi_ui872_ui8255 = arc.remi %cst_ui872, %cst_ui8255 : ui8
+    "arc.keep"(%result_remi_ui872_ui8255) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui872]]) : (ui8) -> ()
+
+    // remi 254, 162 -> 92
+    %result_remi_ui8254_ui8162 = arc.remi %cst_ui8254, %cst_ui8162 : ui8
+    "arc.keep"(%result_remi_ui8254_ui8162) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui892]]) : (ui8) -> ()
+
+    // remi 255, 162 -> 93
+    %result_remi_ui8255_ui8162 = arc.remi %cst_ui8255, %cst_ui8162 : ui8
+    "arc.keep"(%result_remi_ui8255_ui8162) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui893]]) : (ui8) -> ()
+
+    // remi 100, 162 -> 100
+    %result_remi_ui8100_ui8162 = arc.remi %cst_ui8100, %cst_ui8162 : ui8
+    "arc.keep"(%result_remi_ui8100_ui8162) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui8100]]) : (ui8) -> ()
+
+    // remi 100, 254 -> 100
+    %result_remi_ui8100_ui8254 = arc.remi %cst_ui8100, %cst_ui8254 : ui8
+    "arc.keep"(%result_remi_ui8100_ui8254) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui8100]]) : (ui8) -> ()
+
+    // remi 100, 255 -> 100
+    %result_remi_ui8100_ui8255 = arc.remi %cst_ui8100, %cst_ui8255 : ui8
+    "arc.keep"(%result_remi_ui8100_ui8255) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui8100]]) : (ui8) -> ()
+
+    // remi 162, 254 -> 162
+    %result_remi_ui8162_ui8254 = arc.remi %cst_ui8162, %cst_ui8254 : ui8
+    "arc.keep"(%result_remi_ui8162_ui8254) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui8162]]) : (ui8) -> ()
+
+    // remi 162, 255 -> 162
+    %result_remi_ui8162_ui8255 = arc.remi %cst_ui8162, %cst_ui8255 : ui8
+    "arc.keep"(%result_remi_ui8162_ui8255) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui8162]]) : (ui8) -> ()
+
+    // remi 254, 255 -> 254
+    %result_remi_ui8254_ui8255 = arc.remi %cst_ui8254, %cst_ui8255 : ui8
+    "arc.keep"(%result_remi_ui8254_ui8255) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui8254]]) : (ui8) -> ()
+
+    // remi 0, 0 -> no-fold
+    %result_remi_ui80_ui80 = arc.remi %cst_ui80, %cst_ui80 : ui8
+    // CHECK-DAG: [[RESULT_remi_ui80_ui80:%[^ ]+]] = arc.remi [[CSTui80]], [[CSTui80]] : ui8
+    "arc.keep"(%result_remi_ui80_ui80) : (ui8) -> ()
+    // CHECK: "arc.keep"([[RESULT_remi_ui80_ui80]]) : (ui8) -> ()
+
+    // remi 1, 0 -> no-fold
+    %result_remi_ui81_ui80 = arc.remi %cst_ui81, %cst_ui80 : ui8
+    // CHECK-DAG: [[RESULT_remi_ui81_ui80:%[^ ]+]] = arc.remi [[CSTui81]], [[CSTui80]] : ui8
+    "arc.keep"(%result_remi_ui81_ui80) : (ui8) -> ()
+    // CHECK: "arc.keep"([[RESULT_remi_ui81_ui80]]) : (ui8) -> ()
+
+    // remi 72, 0 -> no-fold
+    %result_remi_ui872_ui80 = arc.remi %cst_ui872, %cst_ui80 : ui8
+    // CHECK-DAG: [[RESULT_remi_ui872_ui80:%[^ ]+]] = arc.remi [[CSTui872]], [[CSTui80]] : ui8
+    "arc.keep"(%result_remi_ui872_ui80) : (ui8) -> ()
+    // CHECK: "arc.keep"([[RESULT_remi_ui872_ui80]]) : (ui8) -> ()
+
+    // remi 100, 0 -> no-fold
+    %result_remi_ui8100_ui80 = arc.remi %cst_ui8100, %cst_ui80 : ui8
+    // CHECK-DAG: [[RESULT_remi_ui8100_ui80:%[^ ]+]] = arc.remi [[CSTui8100]], [[CSTui80]] : ui8
+    "arc.keep"(%result_remi_ui8100_ui80) : (ui8) -> ()
+    // CHECK: "arc.keep"([[RESULT_remi_ui8100_ui80]]) : (ui8) -> ()
+
+    // remi 162, 0 -> no-fold
+    %result_remi_ui8162_ui80 = arc.remi %cst_ui8162, %cst_ui80 : ui8
+    // CHECK-DAG: [[RESULT_remi_ui8162_ui80:%[^ ]+]] = arc.remi [[CSTui8162]], [[CSTui80]] : ui8
+    "arc.keep"(%result_remi_ui8162_ui80) : (ui8) -> ()
+    // CHECK: "arc.keep"([[RESULT_remi_ui8162_ui80]]) : (ui8) -> ()
+
+    // remi 254, 0 -> no-fold
+    %result_remi_ui8254_ui80 = arc.remi %cst_ui8254, %cst_ui80 : ui8
+    // CHECK-DAG: [[RESULT_remi_ui8254_ui80:%[^ ]+]] = arc.remi [[CSTui8254]], [[CSTui80]] : ui8
+    "arc.keep"(%result_remi_ui8254_ui80) : (ui8) -> ()
+    // CHECK: "arc.keep"([[RESULT_remi_ui8254_ui80]]) : (ui8) -> ()
+
+    // remi 255, 0 -> no-fold
+    %result_remi_ui8255_ui80 = arc.remi %cst_ui8255, %cst_ui80 : ui8
+    // CHECK-DAG: [[RESULT_remi_ui8255_ui80:%[^ ]+]] = arc.remi [[CSTui8255]], [[CSTui80]] : ui8
+    "arc.keep"(%result_remi_ui8255_ui80) : (ui8) -> ()
+    // CHECK: "arc.keep"([[RESULT_remi_ui8255_ui80]]) : (ui8) -> ()
 
     // subi -32768, 0 -> -32768
     %result_subi_si16n32768_si160 = arc.subi %cst_si16n32768, %cst_si160 : si16

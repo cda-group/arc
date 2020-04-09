@@ -496,9 +496,9 @@ def Arc_SubIOp : ArcIntArithmeticOp<"subi"> {
   let hasFolder = 1;
 }
 
-def Arc_SignedRemIOp : ArcIntArithmeticOp<"remi"> {
+def Arc_RemIOp : ArcIntArithmeticOp<"remi"> {
   let summary = "integer division remainder operation";
-  // TODO  let hasFolder = 1;
+  let hasFolder = 1;
 }
 
 def Arc_XOrOp : ArcIntArithmeticOp<"xor", [Commutative]> {
