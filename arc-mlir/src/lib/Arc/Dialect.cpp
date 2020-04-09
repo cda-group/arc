@@ -311,6 +311,34 @@ OpFoldResult AddIOp::fold(ArrayRef<Attribute> operands) {
 }
 
 //===----------------------------------------------------------------------===//
+// MulIOp
+//===----------------------------------------------------------------------===//
+// Mostly stolen from the standard dialect
+OpFoldResult MulIOp::fold(ArrayRef<Attribute> operands) {
+  /// muli(x, 0) -> 0
+  if (matchPattern(rhs(), m_Zero()))
+    return rhs();
+  /// muli(x, 1) -> x
+  if (matchPattern(rhs(), m_One()))
+    return getOperand(0);
+
+  bool isUnsigned = operands[0].getType().isUnsignedInteger();
+
+  // Don't fold if it would overflow
+  bool overflow = false;
+  auto result = constFoldBinaryOp<IntegerAttr>(operands, [&](APInt a, APInt b) {
+    if (overflow || !b) {
+      overflow = true;
+      return a;
+    }
+    if (isUnsigned)
+      return a.umul_ov(b, overflow);
+    return a.smul_ov(b, overflow);
+  });
+  return overflow ? Attribute() : result;
+}
+
+//===----------------------------------------------------------------------===//
 // OrOp
 //===----------------------------------------------------------------------===//
 
