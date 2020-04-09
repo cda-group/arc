@@ -493,7 +493,7 @@ def Arc_MulIOp : ArcIntArithmeticOp<"muli", [Commutative]> {
 
 def Arc_SubIOp : ArcIntArithmeticOp<"subi"> {
   let summary = "integer subtraction operation";
-  // TODO let hasFolder = 1;
+  let hasFolder = 1;
 }
 
 def Arc_SignedRemIOp : ArcIntArithmeticOp<"remi"> {

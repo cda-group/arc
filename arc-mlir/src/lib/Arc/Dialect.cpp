@@ -345,6 +345,27 @@ OpFoldResult arc::SelectOp::fold(ArrayRef<Attribute> operands) {
 }
 
 //===----------------------------------------------------------------------===//
+// SubIOp
+//===----------------------------------------------------------------------===//
+// Mostly stolen from the standard dialect
+OpFoldResult SubIOp::fold(ArrayRef<Attribute> operands) {
+  /// addi(x, 0) -> x
+  if (matchPattern(rhs(), m_Zero()))
+    return lhs();
+
+  bool isUnsigned = operands[0].getType().isUnsignedInteger();
+  bool overflowDetected = false;
+  auto result = constFoldBinaryOp<IntegerAttr>(operands, [&](APInt a, APInt b) {
+    if (overflowDetected)
+      return a;
+    if (isUnsigned)
+      return a.usub_ov(b, overflowDetected);
+    return a.ssub_ov(b, overflowDetected);
+  });
+  return overflowDetected ? Attribute() : result;
+}
+
+//===----------------------------------------------------------------------===//
 // XOrOp
 //===----------------------------------------------------------------------===//
 
