@@ -8,8 +8,32 @@ module @toplevel {
     // CHECK-DAG: [[CSTsi16n32767:%[^ ]+]] = arc.constant -32767 : si16
     %cst_si16n32766 = arc.constant -32766: si16
     // CHECK-DAG: [[CSTsi16n32766:%[^ ]+]] = arc.constant -32766 : si16
+    %cst_si16n32765 = arc.constant -32765: si16
+    // CHECK-DAG: [[CSTsi16n32765:%[^ ]+]] = arc.constant -32765 : si16
+    %cst_si16n32764 = arc.constant -32764: si16
+    // CHECK-DAG: [[CSTsi16n32764:%[^ ]+]] = arc.constant -32764 : si16
+    %cst_si16n32763 = arc.constant -32763: si16
+    // CHECK-DAG: [[CSTsi16n32763:%[^ ]+]] = arc.constant -32763 : si16
+    %cst_si16n32762 = arc.constant -32762: si16
+    // CHECK-DAG: [[CSTsi16n32762:%[^ ]+]] = arc.constant -32762 : si16
+    %cst_si16n32551 = arc.constant -32551: si16
+    // CHECK-DAG: [[CSTsi16n32551:%[^ ]+]] = arc.constant -32551 : si16
+    %cst_si16n32550 = arc.constant -32550: si16
+    // CHECK-DAG: [[CSTsi16n32550:%[^ ]+]] = arc.constant -32550 : si16
+    %cst_si16n32549 = arc.constant -32549: si16
+    // CHECK-DAG: [[CSTsi16n32549:%[^ ]+]] = arc.constant -32549 : si16
+    %cst_si16n32548 = arc.constant -32548: si16
+    // CHECK-DAG: [[CSTsi16n32548:%[^ ]+]] = arc.constant -32548 : si16
     %cst_si16n32547 = arc.constant -32547: si16
     // CHECK-DAG: [[CSTsi16n32547:%[^ ]+]] = arc.constant -32547 : si16
+    %cst_si16n32546 = arc.constant -32546: si16
+    // CHECK-DAG: [[CSTsi16n32546:%[^ ]+]] = arc.constant -32546 : si16
+    %cst_si16n32545 = arc.constant -32545: si16
+    // CHECK-DAG: [[CSTsi16n32545:%[^ ]+]] = arc.constant -32545 : si16
+    %cst_si16n32544 = arc.constant -32544: si16
+    // CHECK-DAG: [[CSTsi16n32544:%[^ ]+]] = arc.constant -32544 : si16
+    %cst_si16n32543 = arc.constant -32543: si16
+    // CHECK-DAG: [[CSTsi16n32543:%[^ ]+]] = arc.constant -32543 : si16
     %cst_si16n22282 = arc.constant -22282: si16
     // CHECK-DAG: [[CSTsi16n22282:%[^ ]+]] = arc.constant -22282 : si16
     %cst_si16n22281 = arc.constant -22281: si16
@@ -20,6 +44,20 @@ module @toplevel {
     // CHECK-DAG: [[CSTsi16n22061:%[^ ]+]] = arc.constant -22061 : si16
     %cst_si16n16514 = arc.constant -16514: si16
     // CHECK-DAG: [[CSTsi16n16514:%[^ ]+]] = arc.constant -16514 : si16
+    %cst_si16n16513 = arc.constant -16513: si16
+    // CHECK-DAG: [[CSTsi16n16513:%[^ ]+]] = arc.constant -16513 : si16
+    %cst_si16n16512 = arc.constant -16512: si16
+    // CHECK-DAG: [[CSTsi16n16512:%[^ ]+]] = arc.constant -16512 : si16
+    %cst_si16n16511 = arc.constant -16511: si16
+    // CHECK-DAG: [[CSTsi16n16511:%[^ ]+]] = arc.constant -16511 : si16
+    %cst_si16n16510 = arc.constant -16510: si16
+    // CHECK-DAG: [[CSTsi16n16510:%[^ ]+]] = arc.constant -16510 : si16
+    %cst_si16n16384 = arc.constant -16384: si16
+    // CHECK-DAG: [[CSTsi16n16384:%[^ ]+]] = arc.constant -16384 : si16
+    %cst_si16n16383 = arc.constant -16383: si16
+    // CHECK-DAG: [[CSTsi16n16383:%[^ ]+]] = arc.constant -16383 : si16
+    %cst_si16n16273 = arc.constant -16273: si16
+    // CHECK-DAG: [[CSTsi16n16273:%[^ ]+]] = arc.constant -16273 : si16
     %cst_si16n16254 = arc.constant -16254: si16
     // CHECK-DAG: [[CSTsi16n16254:%[^ ]+]] = arc.constant -16254 : si16
     %cst_si16n16253 = arc.constant -16253: si16
@@ -28,8 +66,26 @@ module @toplevel {
     // CHECK-DAG: [[CSTsi16n16252:%[^ ]+]] = arc.constant -16252 : si16
     %cst_si16n16033 = arc.constant -16033: si16
     // CHECK-DAG: [[CSTsi16n16033:%[^ ]+]] = arc.constant -16033 : si16
+    %cst_si16n10922 = arc.constant -10922: si16
+    // CHECK-DAG: [[CSTsi16n10922:%[^ ]+]] = arc.constant -10922 : si16
+    %cst_si16n10849 = arc.constant -10849: si16
+    // CHECK-DAG: [[CSTsi16n10849:%[^ ]+]] = arc.constant -10849 : si16
     %cst_si16n10486 = arc.constant -10486: si16
     // CHECK-DAG: [[CSTsi16n10486:%[^ ]+]] = arc.constant -10486 : si16
+    %cst_si16n10485 = arc.constant -10485: si16
+    // CHECK-DAG: [[CSTsi16n10485:%[^ ]+]] = arc.constant -10485 : si16
+    %cst_si16n10484 = arc.constant -10484: si16
+    // CHECK-DAG: [[CSTsi16n10484:%[^ ]+]] = arc.constant -10484 : si16
+    %cst_si16n10483 = arc.constant -10483: si16
+    // CHECK-DAG: [[CSTsi16n10483:%[^ ]+]] = arc.constant -10483 : si16
+    %cst_si16n10482 = arc.constant -10482: si16
+    // CHECK-DAG: [[CSTsi16n10482:%[^ ]+]] = arc.constant -10482 : si16
+    %cst_si16n8192 = arc.constant -8192: si16
+    // CHECK-DAG: [[CSTsi16n8192:%[^ ]+]] = arc.constant -8192 : si16
+    %cst_si16n8191 = arc.constant -8191: si16
+    // CHECK-DAG: [[CSTsi16n8191:%[^ ]+]] = arc.constant -8191 : si16
+    %cst_si16n8136 = arc.constant -8136: si16
+    // CHECK-DAG: [[CSTsi16n8136:%[^ ]+]] = arc.constant -8136 : si16
     %cst_si16n6028 = arc.constant -6028: si16
     // CHECK-DAG: [[CSTsi16n6028:%[^ ]+]] = arc.constant -6028 : si16
     %cst_si16n1310 = arc.constant -1310: si16
@@ -42,6 +98,8 @@ module @toplevel {
     // CHECK-DAG: [[CSTsi16n221:%[^ ]+]] = arc.constant -221 : si16
     %cst_si16n220 = arc.constant -220: si16
     // CHECK-DAG: [[CSTsi16n220:%[^ ]+]] = arc.constant -220 : si16
+    %cst_si16n4 = arc.constant -4: si16
+    // CHECK-DAG: [[CSTsi16n4:%[^ ]+]] = arc.constant -4 : si16
     %cst_si16n3 = arc.constant -3: si16
     // CHECK-DAG: [[CSTsi16n3:%[^ ]+]] = arc.constant -3 : si16
     %cst_si16n2 = arc.constant -2: si16
@@ -52,8 +110,26 @@ module @toplevel {
     // CHECK-DAG: [[CSTsi160:%[^ ]+]] = arc.constant 0 : si16
     %cst_si161 = arc.constant 1: si16
     // CHECK-DAG: [[CSTsi161:%[^ ]+]] = arc.constant 1 : si16
+    %cst_si162 = arc.constant 2: si16
+    // CHECK-DAG: [[CSTsi162:%[^ ]+]] = arc.constant 2 : si16
     %cst_si163 = arc.constant 3: si16
     // CHECK-DAG: [[CSTsi163:%[^ ]+]] = arc.constant 3 : si16
+    %cst_si164 = arc.constant 4: si16
+    // CHECK-DAG: [[CSTsi164:%[^ ]+]] = arc.constant 4 : si16
+    %cst_si165 = arc.constant 5: si16
+    // CHECK-DAG: [[CSTsi165:%[^ ]+]] = arc.constant 5 : si16
+    %cst_si166 = arc.constant 6: si16
+    // CHECK-DAG: [[CSTsi166:%[^ ]+]] = arc.constant 6 : si16
+    %cst_si167 = arc.constant 7: si16
+    // CHECK-DAG: [[CSTsi167:%[^ ]+]] = arc.constant 7 : si16
+    %cst_si168 = arc.constant 8: si16
+    // CHECK-DAG: [[CSTsi168:%[^ ]+]] = arc.constant 8 : si16
+    %cst_si169 = arc.constant 9: si16
+    // CHECK-DAG: [[CSTsi169:%[^ ]+]] = arc.constant 9 : si16
+    %cst_si1612 = arc.constant 12: si16
+    // CHECK-DAG: [[CSTsi1612:%[^ ]+]] = arc.constant 12 : si16
+    %cst_si1616 = arc.constant 16: si16
+    // CHECK-DAG: [[CSTsi1616:%[^ ]+]] = arc.constant 16 : si16
     %cst_si16219 = arc.constant 219: si16
     // CHECK-DAG: [[CSTsi16219:%[^ ]+]] = arc.constant 219 : si16
     %cst_si16220 = arc.constant 220: si16
@@ -64,16 +140,66 @@ module @toplevel {
     // CHECK-DAG: [[CSTsi161308:%[^ ]+]] = arc.constant 1308 : si16
     %cst_si161309 = arc.constant 1309: si16
     // CHECK-DAG: [[CSTsi161309:%[^ ]+]] = arc.constant 1309 : si16
+    %cst_si162621 = arc.constant 2621: si16
+    // CHECK-DAG: [[CSTsi162621:%[^ ]+]] = arc.constant 2621 : si16
+    %cst_si163495 = arc.constant 3495: si16
+    // CHECK-DAG: [[CSTsi163495:%[^ ]+]] = arc.constant 3495 : si16
+    %cst_si164128 = arc.constant 4128: si16
+    // CHECK-DAG: [[CSTsi164128:%[^ ]+]] = arc.constant 4128 : si16
+    %cst_si165243 = arc.constant 5243: si16
+    // CHECK-DAG: [[CSTsi165243:%[^ ]+]] = arc.constant 5243 : si16
+    %cst_si165504 = arc.constant 5504: si16
+    // CHECK-DAG: [[CSTsi165504:%[^ ]+]] = arc.constant 5504 : si16
     %cst_si166028 = arc.constant 6028: si16
     // CHECK-DAG: [[CSTsi166028:%[^ ]+]] = arc.constant 6028 : si16
+    %cst_si168191 = arc.constant 8191: si16
+    // CHECK-DAG: [[CSTsi168191:%[^ ]+]] = arc.constant 8191 : si16
+    %cst_si168257 = arc.constant 8257: si16
+    // CHECK-DAG: [[CSTsi168257:%[^ ]+]] = arc.constant 8257 : si16
+    %cst_si1610482 = arc.constant 10482: si16
+    // CHECK-DAG: [[CSTsi1610482:%[^ ]+]] = arc.constant 10482 : si16
+    %cst_si1610483 = arc.constant 10483: si16
+    // CHECK-DAG: [[CSTsi1610483:%[^ ]+]] = arc.constant 10483 : si16
+    %cst_si1610484 = arc.constant 10484: si16
+    // CHECK-DAG: [[CSTsi1610484:%[^ ]+]] = arc.constant 10484 : si16
+    %cst_si1610485 = arc.constant 10485: si16
+    // CHECK-DAG: [[CSTsi1610485:%[^ ]+]] = arc.constant 10485 : si16
     %cst_si1610486 = arc.constant 10486: si16
     // CHECK-DAG: [[CSTsi1610486:%[^ ]+]] = arc.constant 10486 : si16
+    %cst_si1610487 = arc.constant 10487: si16
+    // CHECK-DAG: [[CSTsi1610487:%[^ ]+]] = arc.constant 10487 : si16
+    %cst_si1610488 = arc.constant 10488: si16
+    // CHECK-DAG: [[CSTsi1610488:%[^ ]+]] = arc.constant 10488 : si16
+    %cst_si1610489 = arc.constant 10489: si16
+    // CHECK-DAG: [[CSTsi1610489:%[^ ]+]] = arc.constant 10489 : si16
+    %cst_si1610490 = arc.constant 10490: si16
+    // CHECK-DAG: [[CSTsi1610490:%[^ ]+]] = arc.constant 10490 : si16
+    %cst_si1610922 = arc.constant 10922: si16
+    // CHECK-DAG: [[CSTsi1610922:%[^ ]+]] = arc.constant 10922 : si16
     %cst_si1616252 = arc.constant 16252: si16
     // CHECK-DAG: [[CSTsi1616252:%[^ ]+]] = arc.constant 16252 : si16
     %cst_si1616253 = arc.constant 16253: si16
     // CHECK-DAG: [[CSTsi1616253:%[^ ]+]] = arc.constant 16253 : si16
+    %cst_si1616383 = arc.constant 16383: si16
+    // CHECK-DAG: [[CSTsi1616383:%[^ ]+]] = arc.constant 16383 : si16
+    %cst_si1616510 = arc.constant 16510: si16
+    // CHECK-DAG: [[CSTsi1616510:%[^ ]+]] = arc.constant 16510 : si16
+    %cst_si1616511 = arc.constant 16511: si16
+    // CHECK-DAG: [[CSTsi1616511:%[^ ]+]] = arc.constant 16511 : si16
+    %cst_si1616512 = arc.constant 16512: si16
+    // CHECK-DAG: [[CSTsi1616512:%[^ ]+]] = arc.constant 16512 : si16
+    %cst_si1616513 = arc.constant 16513: si16
+    // CHECK-DAG: [[CSTsi1616513:%[^ ]+]] = arc.constant 16513 : si16
     %cst_si1616514 = arc.constant 16514: si16
     // CHECK-DAG: [[CSTsi1616514:%[^ ]+]] = arc.constant 16514 : si16
+    %cst_si1616515 = arc.constant 16515: si16
+    // CHECK-DAG: [[CSTsi1616515:%[^ ]+]] = arc.constant 16515 : si16
+    %cst_si1616516 = arc.constant 16516: si16
+    // CHECK-DAG: [[CSTsi1616516:%[^ ]+]] = arc.constant 16516 : si16
+    %cst_si1616517 = arc.constant 16517: si16
+    // CHECK-DAG: [[CSTsi1616517:%[^ ]+]] = arc.constant 16517 : si16
+    %cst_si1616518 = arc.constant 16518: si16
+    // CHECK-DAG: [[CSTsi1616518:%[^ ]+]] = arc.constant 16518 : si16
     %cst_si1620972 = arc.constant 20972: si16
     // CHECK-DAG: [[CSTsi1620972:%[^ ]+]] = arc.constant 20972 : si16
     %cst_si1622280 = arc.constant 22280: si16
@@ -82,8 +208,26 @@ module @toplevel {
     // CHECK-DAG: [[CSTsi1622281:%[^ ]+]] = arc.constant 22281 : si16
     %cst_si1627000 = arc.constant 27000: si16
     // CHECK-DAG: [[CSTsi1627000:%[^ ]+]] = arc.constant 27000 : si16
+    %cst_si1631458 = arc.constant 31458: si16
+    // CHECK-DAG: [[CSTsi1631458:%[^ ]+]] = arc.constant 31458 : si16
     %cst_si1632547 = arc.constant 32547: si16
     // CHECK-DAG: [[CSTsi1632547:%[^ ]+]] = arc.constant 32547 : si16
+    %cst_si1632548 = arc.constant 32548: si16
+    // CHECK-DAG: [[CSTsi1632548:%[^ ]+]] = arc.constant 32548 : si16
+    %cst_si1632549 = arc.constant 32549: si16
+    // CHECK-DAG: [[CSTsi1632549:%[^ ]+]] = arc.constant 32549 : si16
+    %cst_si1632550 = arc.constant 32550: si16
+    // CHECK-DAG: [[CSTsi1632550:%[^ ]+]] = arc.constant 32550 : si16
+    %cst_si1632551 = arc.constant 32551: si16
+    // CHECK-DAG: [[CSTsi1632551:%[^ ]+]] = arc.constant 32551 : si16
+    %cst_si1632762 = arc.constant 32762: si16
+    // CHECK-DAG: [[CSTsi1632762:%[^ ]+]] = arc.constant 32762 : si16
+    %cst_si1632763 = arc.constant 32763: si16
+    // CHECK-DAG: [[CSTsi1632763:%[^ ]+]] = arc.constant 32763 : si16
+    %cst_si1632764 = arc.constant 32764: si16
+    // CHECK-DAG: [[CSTsi1632764:%[^ ]+]] = arc.constant 32764 : si16
+    %cst_si1632765 = arc.constant 32765: si16
+    // CHECK-DAG: [[CSTsi1632765:%[^ ]+]] = arc.constant 32765 : si16
     %cst_si1632766 = arc.constant 32766: si16
     // CHECK-DAG: [[CSTsi1632766:%[^ ]+]] = arc.constant 32766 : si16
     %cst_si1632767 = arc.constant 32767: si16
@@ -94,36 +238,124 @@ module @toplevel {
     // CHECK-DAG: [[CSTsi32n2147483647:%[^ ]+]] = arc.constant -2147483647 : si32
     %cst_si32n2147483646 = arc.constant -2147483646: si32
     // CHECK-DAG: [[CSTsi32n2147483646:%[^ ]+]] = arc.constant -2147483646 : si32
+    %cst_si32n2147483645 = arc.constant -2147483645: si32
+    // CHECK-DAG: [[CSTsi32n2147483645:%[^ ]+]] = arc.constant -2147483645 : si32
+    %cst_si32n2147483644 = arc.constant -2147483644: si32
+    // CHECK-DAG: [[CSTsi32n2147483644:%[^ ]+]] = arc.constant -2147483644 : si32
+    %cst_si32n2147483643 = arc.constant -2147483643: si32
+    // CHECK-DAG: [[CSTsi32n2147483643:%[^ ]+]] = arc.constant -2147483643 : si32
+    %cst_si32n2147483642 = arc.constant -2147483642: si32
+    // CHECK-DAG: [[CSTsi32n2147483642:%[^ ]+]] = arc.constant -2147483642 : si32
     %cst_si32n2070811526 = arc.constant -2070811526: si32
     // CHECK-DAG: [[CSTsi32n2070811526:%[^ ]+]] = arc.constant -2070811526 : si32
+    %cst_si32n1713183804 = arc.constant -1713183804: si32
+    // CHECK-DAG: [[CSTsi32n1713183804:%[^ ]+]] = arc.constant -1713183804 : si32
+    %cst_si32n1713183803 = arc.constant -1713183803: si32
+    // CHECK-DAG: [[CSTsi32n1713183803:%[^ ]+]] = arc.constant -1713183803 : si32
+    %cst_si32n1713183802 = arc.constant -1713183802: si32
+    // CHECK-DAG: [[CSTsi32n1713183802:%[^ ]+]] = arc.constant -1713183802 : si32
+    %cst_si32n1713183801 = arc.constant -1713183801: si32
+    // CHECK-DAG: [[CSTsi32n1713183801:%[^ ]+]] = arc.constant -1713183801 : si32
     %cst_si32n1713183800 = arc.constant -1713183800: si32
     // CHECK-DAG: [[CSTsi32n1713183800:%[^ ]+]] = arc.constant -1713183800 : si32
+    %cst_si32n1713183799 = arc.constant -1713183799: si32
+    // CHECK-DAG: [[CSTsi32n1713183799:%[^ ]+]] = arc.constant -1713183799 : si32
+    %cst_si32n1713183798 = arc.constant -1713183798: si32
+    // CHECK-DAG: [[CSTsi32n1713183798:%[^ ]+]] = arc.constant -1713183798 : si32
+    %cst_si32n1713183797 = arc.constant -1713183797: si32
+    // CHECK-DAG: [[CSTsi32n1713183797:%[^ ]+]] = arc.constant -1713183797 : si32
+    %cst_si32n1713183796 = arc.constant -1713183796: si32
+    // CHECK-DAG: [[CSTsi32n1713183796:%[^ ]+]] = arc.constant -1713183796 : si32
+    %cst_si32n1252582168 = arc.constant -1252582168: si32
+    // CHECK-DAG: [[CSTsi32n1252582168:%[^ ]+]] = arc.constant -1252582168 : si32
+    %cst_si32n1252582167 = arc.constant -1252582167: si32
+    // CHECK-DAG: [[CSTsi32n1252582167:%[^ ]+]] = arc.constant -1252582167 : si32
+    %cst_si32n1252582166 = arc.constant -1252582166: si32
+    // CHECK-DAG: [[CSTsi32n1252582166:%[^ ]+]] = arc.constant -1252582166 : si32
+    %cst_si32n1252582165 = arc.constant -1252582165: si32
+    // CHECK-DAG: [[CSTsi32n1252582165:%[^ ]+]] = arc.constant -1252582165 : si32
     %cst_si32n1252582164 = arc.constant -1252582164: si32
     // CHECK-DAG: [[CSTsi32n1252582164:%[^ ]+]] = arc.constant -1252582164 : si32
+    %cst_si32n1252582163 = arc.constant -1252582163: si32
+    // CHECK-DAG: [[CSTsi32n1252582163:%[^ ]+]] = arc.constant -1252582163 : si32
+    %cst_si32n1252582162 = arc.constant -1252582162: si32
+    // CHECK-DAG: [[CSTsi32n1252582162:%[^ ]+]] = arc.constant -1252582162 : si32
+    %cst_si32n1252582161 = arc.constant -1252582161: si32
+    // CHECK-DAG: [[CSTsi32n1252582161:%[^ ]+]] = arc.constant -1252582161 : si32
+    %cst_si32n1252582160 = arc.constant -1252582160: si32
+    // CHECK-DAG: [[CSTsi32n1252582160:%[^ ]+]] = arc.constant -1252582160 : si32
     %cst_si32n1112077885 = arc.constant -1112077885: si32
     // CHECK-DAG: [[CSTsi32n1112077885:%[^ ]+]] = arc.constant -1112077885 : si32
     %cst_si32n1112077884 = arc.constant -1112077884: si32
     // CHECK-DAG: [[CSTsi32n1112077884:%[^ ]+]] = arc.constant -1112077884 : si32
+    %cst_si32n1073741824 = arc.constant -1073741824: si32
+    // CHECK-DAG: [[CSTsi32n1073741824:%[^ ]+]] = arc.constant -1073741824 : si32
+    %cst_si32n1073741823 = arc.constant -1073741823: si32
+    // CHECK-DAG: [[CSTsi32n1073741823:%[^ ]+]] = arc.constant -1073741823 : si32
+    %cst_si32n1035405767 = arc.constant -1035405767: si32
+    // CHECK-DAG: [[CSTsi32n1035405767:%[^ ]+]] = arc.constant -1035405767 : si32
+    %cst_si32n1035405766 = arc.constant -1035405766: si32
+    // CHECK-DAG: [[CSTsi32n1035405766:%[^ ]+]] = arc.constant -1035405766 : si32
+    %cst_si32n1035405765 = arc.constant -1035405765: si32
+    // CHECK-DAG: [[CSTsi32n1035405765:%[^ ]+]] = arc.constant -1035405765 : si32
+    %cst_si32n1035405764 = arc.constant -1035405764: si32
+    // CHECK-DAG: [[CSTsi32n1035405764:%[^ ]+]] = arc.constant -1035405764 : si32
     %cst_si32n1035405763 = arc.constant -1035405763: si32
     // CHECK-DAG: [[CSTsi32n1035405763:%[^ ]+]] = arc.constant -1035405763 : si32
+    %cst_si32n1035405762 = arc.constant -1035405762: si32
+    // CHECK-DAG: [[CSTsi32n1035405762:%[^ ]+]] = arc.constant -1035405762 : si32
+    %cst_si32n1035405761 = arc.constant -1035405761: si32
+    // CHECK-DAG: [[CSTsi32n1035405761:%[^ ]+]] = arc.constant -1035405761 : si32
+    %cst_si32n1035405760 = arc.constant -1035405760: si32
+    // CHECK-DAG: [[CSTsi32n1035405760:%[^ ]+]] = arc.constant -1035405760 : si32
+    %cst_si32n1035405759 = arc.constant -1035405759: si32
+    // CHECK-DAG: [[CSTsi32n1035405759:%[^ ]+]] = arc.constant -1035405759 : si32
     %cst_si32n894901484 = arc.constant -894901484: si32
     // CHECK-DAG: [[CSTsi32n894901484:%[^ ]+]] = arc.constant -894901484 : si32
     %cst_si32n894901483 = arc.constant -894901483: si32
     // CHECK-DAG: [[CSTsi32n894901483:%[^ ]+]] = arc.constant -894901483 : si32
+    %cst_si32n856591900 = arc.constant -856591900: si32
+    // CHECK-DAG: [[CSTsi32n856591900:%[^ ]+]] = arc.constant -856591900 : si32
+    %cst_si32n715827882 = arc.constant -715827882: si32
+    // CHECK-DAG: [[CSTsi32n715827882:%[^ ]+]] = arc.constant -715827882 : si32
     %cst_si32n677778037 = arc.constant -677778037: si32
     // CHECK-DAG: [[CSTsi32n677778037:%[^ ]+]] = arc.constant -677778037 : si32
+    %cst_si32n626291082 = arc.constant -626291082: si32
+    // CHECK-DAG: [[CSTsi32n626291082:%[^ ]+]] = arc.constant -626291082 : si32
+    %cst_si32n571061266 = arc.constant -571061266: si32
+    // CHECK-DAG: [[CSTsi32n571061266:%[^ ]+]] = arc.constant -571061266 : si32
+    %cst_si32n536870912 = arc.constant -536870912: si32
+    // CHECK-DAG: [[CSTsi32n536870912:%[^ ]+]] = arc.constant -536870912 : si32
+    %cst_si32n536870911 = arc.constant -536870911: si32
+    // CHECK-DAG: [[CSTsi32n536870911:%[^ ]+]] = arc.constant -536870911 : si32
+    %cst_si32n517702881 = arc.constant -517702881: si32
+    // CHECK-DAG: [[CSTsi32n517702881:%[^ ]+]] = arc.constant -517702881 : si32
     %cst_si32n460601636 = arc.constant -460601636: si32
     // CHECK-DAG: [[CSTsi32n460601636:%[^ ]+]] = arc.constant -460601636 : si32
     %cst_si32n434299848 = arc.constant -434299848: si32
     // CHECK-DAG: [[CSTsi32n434299848:%[^ ]+]] = arc.constant -434299848 : si32
     %cst_si32n434299847 = arc.constant -434299847: si32
     // CHECK-DAG: [[CSTsi32n434299847:%[^ ]+]] = arc.constant -434299847 : si32
+    %cst_si32n428295950 = arc.constant -428295950: si32
+    // CHECK-DAG: [[CSTsi32n428295950:%[^ ]+]] = arc.constant -428295950 : si32
+    %cst_si32n417527388 = arc.constant -417527388: si32
+    // CHECK-DAG: [[CSTsi32n417527388:%[^ ]+]] = arc.constant -417527388 : si32
+    %cst_si32n345135254 = arc.constant -345135254: si32
+    // CHECK-DAG: [[CSTsi32n345135254:%[^ ]+]] = arc.constant -345135254 : si32
+    %cst_si32n313145541 = arc.constant -313145541: si32
+    // CHECK-DAG: [[CSTsi32n313145541:%[^ ]+]] = arc.constant -313145541 : si32
+    %cst_si32n258851440 = arc.constant -258851440: si32
+    // CHECK-DAG: [[CSTsi32n258851440:%[^ ]+]] = arc.constant -258851440 : si32
     %cst_si32n217176401 = arc.constant -217176401: si32
     // CHECK-DAG: [[CSTsi32n217176401:%[^ ]+]] = arc.constant -217176401 : si32
     %cst_si32n76672122 = arc.constant -76672122: si32
     // CHECK-DAG: [[CSTsi32n76672122:%[^ ]+]] = arc.constant -76672122 : si32
     %cst_si32n76672121 = arc.constant -76672121: si32
     // CHECK-DAG: [[CSTsi32n76672121:%[^ ]+]] = arc.constant -76672121 : si32
+    %cst_si32n4 = arc.constant -4: si32
+    // CHECK-DAG: [[CSTsi32n4:%[^ ]+]] = arc.constant -4 : si32
+    %cst_si32n3 = arc.constant -3: si32
+    // CHECK-DAG: [[CSTsi32n3:%[^ ]+]] = arc.constant -3 : si32
     %cst_si32n2 = arc.constant -2: si32
     // CHECK-DAG: [[CSTsi32n2:%[^ ]+]] = arc.constant -2 : si32
     %cst_si32n1 = arc.constant -1: si32
@@ -134,6 +366,24 @@ module @toplevel {
     // CHECK-DAG: [[CSTsi321:%[^ ]+]] = arc.constant 1 : si32
     %cst_si322 = arc.constant 2: si32
     // CHECK-DAG: [[CSTsi322:%[^ ]+]] = arc.constant 2 : si32
+    %cst_si323 = arc.constant 3: si32
+    // CHECK-DAG: [[CSTsi323:%[^ ]+]] = arc.constant 3 : si32
+    %cst_si324 = arc.constant 4: si32
+    // CHECK-DAG: [[CSTsi324:%[^ ]+]] = arc.constant 4 : si32
+    %cst_si325 = arc.constant 5: si32
+    // CHECK-DAG: [[CSTsi325:%[^ ]+]] = arc.constant 5 : si32
+    %cst_si326 = arc.constant 6: si32
+    // CHECK-DAG: [[CSTsi326:%[^ ]+]] = arc.constant 6 : si32
+    %cst_si327 = arc.constant 7: si32
+    // CHECK-DAG: [[CSTsi327:%[^ ]+]] = arc.constant 7 : si32
+    %cst_si328 = arc.constant 8: si32
+    // CHECK-DAG: [[CSTsi328:%[^ ]+]] = arc.constant 8 : si32
+    %cst_si329 = arc.constant 9: si32
+    // CHECK-DAG: [[CSTsi329:%[^ ]+]] = arc.constant 9 : si32
+    %cst_si3212 = arc.constant 12: si32
+    // CHECK-DAG: [[CSTsi3212:%[^ ]+]] = arc.constant 12 : si32
+    %cst_si3216 = arc.constant 16: si32
+    // CHECK-DAG: [[CSTsi3216:%[^ ]+]] = arc.constant 16 : si32
     %cst_si3276672120 = arc.constant 76672120: si32
     // CHECK-DAG: [[CSTsi3276672120:%[^ ]+]] = arc.constant 76672120 : si32
     %cst_si3276672121 = arc.constant 76672121: si32
@@ -148,8 +398,12 @@ module @toplevel {
     // CHECK-DAG: [[CSTsi32434299848:%[^ ]+]] = arc.constant 434299848 : si32
     %cst_si32460601636 = arc.constant 460601636: si32
     // CHECK-DAG: [[CSTsi32460601636:%[^ ]+]] = arc.constant 460601636 : si32
+    %cst_si32536870911 = arc.constant 536870911: si32
+    // CHECK-DAG: [[CSTsi32536870911:%[^ ]+]] = arc.constant 536870911 : si32
     %cst_si32677778037 = arc.constant 677778037: si32
     // CHECK-DAG: [[CSTsi32677778037:%[^ ]+]] = arc.constant 677778037 : si32
+    %cst_si32715827882 = arc.constant 715827882: si32
+    // CHECK-DAG: [[CSTsi32715827882:%[^ ]+]] = arc.constant 715827882 : si32
     %cst_si32894901482 = arc.constant 894901482: si32
     // CHECK-DAG: [[CSTsi32894901482:%[^ ]+]] = arc.constant 894901482 : si32
     %cst_si32894901483 = arc.constant 894901483: si32
@@ -158,6 +412,16 @@ module @toplevel {
     // CHECK-DAG: [[CSTsi32894901484:%[^ ]+]] = arc.constant 894901484 : si32
     %cst_si321035405763 = arc.constant 1035405763: si32
     // CHECK-DAG: [[CSTsi321035405763:%[^ ]+]] = arc.constant 1035405763 : si32
+    %cst_si321035405764 = arc.constant 1035405764: si32
+    // CHECK-DAG: [[CSTsi321035405764:%[^ ]+]] = arc.constant 1035405764 : si32
+    %cst_si321035405765 = arc.constant 1035405765: si32
+    // CHECK-DAG: [[CSTsi321035405765:%[^ ]+]] = arc.constant 1035405765 : si32
+    %cst_si321035405766 = arc.constant 1035405766: si32
+    // CHECK-DAG: [[CSTsi321035405766:%[^ ]+]] = arc.constant 1035405766 : si32
+    %cst_si321035405767 = arc.constant 1035405767: si32
+    // CHECK-DAG: [[CSTsi321035405767:%[^ ]+]] = arc.constant 1035405767 : si32
+    %cst_si321073741823 = arc.constant 1073741823: si32
+    // CHECK-DAG: [[CSTsi321073741823:%[^ ]+]] = arc.constant 1073741823 : si32
     %cst_si321112077883 = arc.constant 1112077883: si32
     // CHECK-DAG: [[CSTsi321112077883:%[^ ]+]] = arc.constant 1112077883 : si32
     %cst_si321112077884 = arc.constant 1112077884: si32
@@ -166,8 +430,32 @@ module @toplevel {
     // CHECK-DAG: [[CSTsi321112077885:%[^ ]+]] = arc.constant 1112077885 : si32
     %cst_si321252582164 = arc.constant 1252582164: si32
     // CHECK-DAG: [[CSTsi321252582164:%[^ ]+]] = arc.constant 1252582164 : si32
+    %cst_si321252582165 = arc.constant 1252582165: si32
+    // CHECK-DAG: [[CSTsi321252582165:%[^ ]+]] = arc.constant 1252582165 : si32
+    %cst_si321252582166 = arc.constant 1252582166: si32
+    // CHECK-DAG: [[CSTsi321252582166:%[^ ]+]] = arc.constant 1252582166 : si32
+    %cst_si321252582167 = arc.constant 1252582167: si32
+    // CHECK-DAG: [[CSTsi321252582167:%[^ ]+]] = arc.constant 1252582167 : si32
+    %cst_si321252582168 = arc.constant 1252582168: si32
+    // CHECK-DAG: [[CSTsi321252582168:%[^ ]+]] = arc.constant 1252582168 : si32
     %cst_si321713183800 = arc.constant 1713183800: si32
     // CHECK-DAG: [[CSTsi321713183800:%[^ ]+]] = arc.constant 1713183800 : si32
+    %cst_si321713183801 = arc.constant 1713183801: si32
+    // CHECK-DAG: [[CSTsi321713183801:%[^ ]+]] = arc.constant 1713183801 : si32
+    %cst_si321713183802 = arc.constant 1713183802: si32
+    // CHECK-DAG: [[CSTsi321713183802:%[^ ]+]] = arc.constant 1713183802 : si32
+    %cst_si321713183803 = arc.constant 1713183803: si32
+    // CHECK-DAG: [[CSTsi321713183803:%[^ ]+]] = arc.constant 1713183803 : si32
+    %cst_si321713183804 = arc.constant 1713183804: si32
+    // CHECK-DAG: [[CSTsi321713183804:%[^ ]+]] = arc.constant 1713183804 : si32
+    %cst_si322147483642 = arc.constant 2147483642: si32
+    // CHECK-DAG: [[CSTsi322147483642:%[^ ]+]] = arc.constant 2147483642 : si32
+    %cst_si322147483643 = arc.constant 2147483643: si32
+    // CHECK-DAG: [[CSTsi322147483643:%[^ ]+]] = arc.constant 2147483643 : si32
+    %cst_si322147483644 = arc.constant 2147483644: si32
+    // CHECK-DAG: [[CSTsi322147483644:%[^ ]+]] = arc.constant 2147483644 : si32
+    %cst_si322147483645 = arc.constant 2147483645: si32
+    // CHECK-DAG: [[CSTsi322147483645:%[^ ]+]] = arc.constant 2147483645 : si32
     %cst_si322147483646 = arc.constant 2147483646: si32
     // CHECK-DAG: [[CSTsi322147483646:%[^ ]+]] = arc.constant 2147483646 : si32
     %cst_si322147483647 = arc.constant 2147483647: si32
@@ -178,6 +466,14 @@ module @toplevel {
     // CHECK-DAG: [[CSTsi64n9223372036854775807:%[^ ]+]] = arc.constant -9223372036854775807 : si64
     %cst_si64n9223372036854775806 = arc.constant -9223372036854775806: si64
     // CHECK-DAG: [[CSTsi64n9223372036854775806:%[^ ]+]] = arc.constant -9223372036854775806 : si64
+    %cst_si64n9223372036854775805 = arc.constant -9223372036854775805: si64
+    // CHECK-DAG: [[CSTsi64n9223372036854775805:%[^ ]+]] = arc.constant -9223372036854775805 : si64
+    %cst_si64n9223372036854775804 = arc.constant -9223372036854775804: si64
+    // CHECK-DAG: [[CSTsi64n9223372036854775804:%[^ ]+]] = arc.constant -9223372036854775804 : si64
+    %cst_si64n9223372036854775803 = arc.constant -9223372036854775803: si64
+    // CHECK-DAG: [[CSTsi64n9223372036854775803:%[^ ]+]] = arc.constant -9223372036854775803 : si64
+    %cst_si64n9223372036854775802 = arc.constant -9223372036854775802: si64
+    // CHECK-DAG: [[CSTsi64n9223372036854775802:%[^ ]+]] = arc.constant -9223372036854775802 : si64
     %cst_si64n7895100697500200960 = arc.constant -7895100697500200960: si64
     // CHECK-DAG: [[CSTsi64n7895100697500200960:%[^ ]+]] = arc.constant -7895100697500200960 : si64
     %cst_si64n7895100697500200959 = arc.constant -7895100697500200959: si64
@@ -188,10 +484,30 @@ module @toplevel {
     // CHECK-DAG: [[CSTsi64n7481444821694767103:%[^ ]+]] = arc.constant -7481444821694767103 : si64
     %cst_si64n7319076180291125248 = arc.constant -7319076180291125248: si64
     // CHECK-DAG: [[CSTsi64n7319076180291125248:%[^ ]+]] = arc.constant -7319076180291125248 : si64
+    %cst_si64n6967708860640034816 = arc.constant -6967708860640034816: si64
+    // CHECK-DAG: [[CSTsi64n6967708860640034816:%[^ ]+]] = arc.constant -6967708860640034816 : si64
     %cst_si64n6905420304485691392 = arc.constant -6905420304485691392: si64
     // CHECK-DAG: [[CSTsi64n6905420304485691392:%[^ ]+]] = arc.constant -6905420304485691392 : si64
     %cst_si64n5577148965131116544 = arc.constant -5577148965131116544: si64
     // CHECK-DAG: [[CSTsi64n5577148965131116544:%[^ ]+]] = arc.constant -5577148965131116544 : si64
+    %cst_si64n5577148965131116543 = arc.constant -5577148965131116543: si64
+    // CHECK-DAG: [[CSTsi64n5577148965131116543:%[^ ]+]] = arc.constant -5577148965131116543 : si64
+    %cst_si64n5577148965131116542 = arc.constant -5577148965131116542: si64
+    // CHECK-DAG: [[CSTsi64n5577148965131116542:%[^ ]+]] = arc.constant -5577148965131116542 : si64
+    %cst_si64n5577148965131116541 = arc.constant -5577148965131116541: si64
+    // CHECK-DAG: [[CSTsi64n5577148965131116541:%[^ ]+]] = arc.constant -5577148965131116541 : si64
+    %cst_si64n5577148965131116540 = arc.constant -5577148965131116540: si64
+    // CHECK-DAG: [[CSTsi64n5577148965131116540:%[^ ]+]] = arc.constant -5577148965131116540 : si64
+    %cst_si64n5313085357418299392 = arc.constant -5313085357418299392: si64
+    // CHECK-DAG: [[CSTsi64n5313085357418299392:%[^ ]+]] = arc.constant -5313085357418299392 : si64
+    %cst_si64n5225781645480026112 = arc.constant -5225781645480026112: si64
+    // CHECK-DAG: [[CSTsi64n5225781645480026112:%[^ ]+]] = arc.constant -5225781645480026112 : si64
+    %cst_si64n4611686018427387904 = arc.constant -4611686018427387904: si64
+    // CHECK-DAG: [[CSTsi64n4611686018427387904:%[^ ]+]] = arc.constant -4611686018427387904 : si64
+    %cst_si64n4611686018427387903 = arc.constant -4611686018427387903: si64
+    // CHECK-DAG: [[CSTsi64n4611686018427387903:%[^ ]+]] = arc.constant -4611686018427387903 : si64
+    %cst_si64n3984814018063724544 = arc.constant -3984814018063724544: si64
+    // CHECK-DAG: [[CSTsi64n3984814018063724544:%[^ ]+]] = arc.constant -3984814018063724544 : si64
     %cst_si64n3646223071723659264 = arc.constant -3646223071723659264: si64
     // CHECK-DAG: [[CSTsi64n3646223071723659264:%[^ ]+]] = arc.constant -3646223071723659264 : si64
     %cst_si64n3646223071723659263 = arc.constant -3646223071723659263: si64
@@ -200,24 +516,74 @@ module @toplevel {
     // CHECK-DAG: [[CSTsi64n3646223071723659262:%[^ ]+]] = arc.constant -3646223071723659262 : si64
     %cst_si64n3483854430320017408 = arc.constant -3483854430320017408: si64
     // CHECK-DAG: [[CSTsi64n3483854430320017408:%[^ ]+]] = arc.constant -3483854430320017408 : si64
+    %cst_si64n3074457345618258602 = arc.constant -3074457345618258602: si64
+    // CHECK-DAG: [[CSTsi64n3074457345618258602:%[^ ]+]] = arc.constant -3074457345618258602 : si64
     %cst_si64n3070198554514583552 = arc.constant -3070198554514583552: si64
     // CHECK-DAG: [[CSTsi64n3070198554514583552:%[^ ]+]] = arc.constant -3070198554514583552 : si64
     %cst_si64n2656542678709149696 = arc.constant -2656542678709149696: si64
     // CHECK-DAG: [[CSTsi64n2656542678709149696:%[^ ]+]] = arc.constant -2656542678709149696 : si64
+    %cst_si64n2305843009213693952 = arc.constant -2305843009213693952: si64
+    // CHECK-DAG: [[CSTsi64n2305843009213693952:%[^ ]+]] = arc.constant -2305843009213693952 : si64
+    %cst_si64n2305843009213693951 = arc.constant -2305843009213693951: si64
+    // CHECK-DAG: [[CSTsi64n2305843009213693951:%[^ ]+]] = arc.constant -2305843009213693951 : si64
+    %cst_si64n1741927215160008708 = arc.constant -1741927215160008708: si64
+    // CHECK-DAG: [[CSTsi64n1741927215160008708:%[^ ]+]] = arc.constant -1741927215160008708 : si64
+    %cst_si64n1741927215160008707 = arc.constant -1741927215160008707: si64
+    // CHECK-DAG: [[CSTsi64n1741927215160008707:%[^ ]+]] = arc.constant -1741927215160008707 : si64
+    %cst_si64n1741927215160008706 = arc.constant -1741927215160008706: si64
+    // CHECK-DAG: [[CSTsi64n1741927215160008706:%[^ ]+]] = arc.constant -1741927215160008706 : si64
+    %cst_si64n1741927215160008705 = arc.constant -1741927215160008705: si64
+    // CHECK-DAG: [[CSTsi64n1741927215160008705:%[^ ]+]] = arc.constant -1741927215160008705 : si64
     %cst_si64n1741927215160008704 = arc.constant -1741927215160008704: si64
     // CHECK-DAG: [[CSTsi64n1741927215160008704:%[^ ]+]] = arc.constant -1741927215160008704 : si64
+    %cst_si64n1741927215160008703 = arc.constant -1741927215160008703: si64
+    // CHECK-DAG: [[CSTsi64n1741927215160008703:%[^ ]+]] = arc.constant -1741927215160008703 : si64
+    %cst_si64n1741927215160008702 = arc.constant -1741927215160008702: si64
+    // CHECK-DAG: [[CSTsi64n1741927215160008702:%[^ ]+]] = arc.constant -1741927215160008702 : si64
+    %cst_si64n1741927215160008701 = arc.constant -1741927215160008701: si64
+    // CHECK-DAG: [[CSTsi64n1741927215160008701:%[^ ]+]] = arc.constant -1741927215160008701 : si64
+    %cst_si64n1741927215160008700 = arc.constant -1741927215160008700: si64
+    // CHECK-DAG: [[CSTsi64n1741927215160008700:%[^ ]+]] = arc.constant -1741927215160008700 : si64
+    %cst_si64n1328271339354574852 = arc.constant -1328271339354574852: si64
+    // CHECK-DAG: [[CSTsi64n1328271339354574852:%[^ ]+]] = arc.constant -1328271339354574852 : si64
+    %cst_si64n1328271339354574851 = arc.constant -1328271339354574851: si64
+    // CHECK-DAG: [[CSTsi64n1328271339354574851:%[^ ]+]] = arc.constant -1328271339354574851 : si64
+    %cst_si64n1328271339354574850 = arc.constant -1328271339354574850: si64
+    // CHECK-DAG: [[CSTsi64n1328271339354574850:%[^ ]+]] = arc.constant -1328271339354574850 : si64
+    %cst_si64n1328271339354574849 = arc.constant -1328271339354574849: si64
+    // CHECK-DAG: [[CSTsi64n1328271339354574849:%[^ ]+]] = arc.constant -1328271339354574849 : si64
     %cst_si64n1328271339354574848 = arc.constant -1328271339354574848: si64
     // CHECK-DAG: [[CSTsi64n1328271339354574848:%[^ ]+]] = arc.constant -1328271339354574848 : si64
+    %cst_si64n1328271339354574847 = arc.constant -1328271339354574847: si64
+    // CHECK-DAG: [[CSTsi64n1328271339354574847:%[^ ]+]] = arc.constant -1328271339354574847 : si64
+    %cst_si64n1328271339354574846 = arc.constant -1328271339354574846: si64
+    // CHECK-DAG: [[CSTsi64n1328271339354574846:%[^ ]+]] = arc.constant -1328271339354574846 : si64
+    %cst_si64n1328271339354574845 = arc.constant -1328271339354574845: si64
+    // CHECK-DAG: [[CSTsi64n1328271339354574845:%[^ ]+]] = arc.constant -1328271339354574845 : si64
+    %cst_si64n1328271339354574844 = arc.constant -1328271339354574844: si64
+    // CHECK-DAG: [[CSTsi64n1328271339354574844:%[^ ]+]] = arc.constant -1328271339354574844 : si64
     %cst_si64n1253744000727326720 = arc.constant -1253744000727326720: si64
     // CHECK-DAG: [[CSTsi64n1253744000727326720:%[^ ]+]] = arc.constant -1253744000727326720 : si64
     %cst_si64n1253744000727326719 = arc.constant -1253744000727326719: si64
     // CHECK-DAG: [[CSTsi64n1253744000727326719:%[^ ]+]] = arc.constant -1253744000727326719 : si64
+    %cst_si64n870963607580004352 = arc.constant -870963607580004352: si64
+    // CHECK-DAG: [[CSTsi64n870963607580004352:%[^ ]+]] = arc.constant -870963607580004352 : si64
+    %cst_si64n664135669677287424 = arc.constant -664135669677287424: si64
+    // CHECK-DAG: [[CSTsi64n664135669677287424:%[^ ]+]] = arc.constant -664135669677287424 : si64
+    %cst_si64n580642405053336234 = arc.constant -580642405053336234: si64
+    // CHECK-DAG: [[CSTsi64n580642405053336234:%[^ ]+]] = arc.constant -580642405053336234 : si64
     %cst_si64n513735961054732288 = arc.constant -513735961054732288: si64
     // CHECK-DAG: [[CSTsi64n513735961054732288:%[^ ]+]] = arc.constant -513735961054732288 : si64
     %cst_si64n513735961054732287 = arc.constant -513735961054732287: si64
     // CHECK-DAG: [[CSTsi64n513735961054732287:%[^ ]+]] = arc.constant -513735961054732287 : si64
+    %cst_si64n442757113118191616 = arc.constant -442757113118191616: si64
+    // CHECK-DAG: [[CSTsi64n442757113118191616:%[^ ]+]] = arc.constant -442757113118191616 : si64
+    %cst_si64n435481803790002176 = arc.constant -435481803790002176: si64
+    // CHECK-DAG: [[CSTsi64n435481803790002176:%[^ ]+]] = arc.constant -435481803790002176 : si64
     %cst_si64n413655875805433856 = arc.constant -413655875805433856: si64
     // CHECK-DAG: [[CSTsi64n413655875805433856:%[^ ]+]] = arc.constant -413655875805433856 : si64
+    %cst_si64n332067834838643712 = arc.constant -332067834838643712: si64
+    // CHECK-DAG: [[CSTsi64n332067834838643712:%[^ ]+]] = arc.constant -332067834838643712 : si64
     %cst_si64n6 = arc.constant -6: si64
     // CHECK-DAG: [[CSTsi64n6:%[^ ]+]] = arc.constant -6 : si64
     %cst_si64n5 = arc.constant -5: si64
@@ -234,10 +600,26 @@ module @toplevel {
     // CHECK-DAG: [[CSTsi640:%[^ ]+]] = arc.constant 0 : si64
     %cst_si641 = arc.constant 1: si64
     // CHECK-DAG: [[CSTsi641:%[^ ]+]] = arc.constant 1 : si64
+    %cst_si642 = arc.constant 2: si64
+    // CHECK-DAG: [[CSTsi642:%[^ ]+]] = arc.constant 2 : si64
+    %cst_si643 = arc.constant 3: si64
+    // CHECK-DAG: [[CSTsi643:%[^ ]+]] = arc.constant 3 : si64
+    %cst_si644 = arc.constant 4: si64
+    // CHECK-DAG: [[CSTsi644:%[^ ]+]] = arc.constant 4 : si64
     %cst_si645 = arc.constant 5: si64
     // CHECK-DAG: [[CSTsi645:%[^ ]+]] = arc.constant 5 : si64
     %cst_si646 = arc.constant 6: si64
     // CHECK-DAG: [[CSTsi646:%[^ ]+]] = arc.constant 6 : si64
+    %cst_si647 = arc.constant 7: si64
+    // CHECK-DAG: [[CSTsi647:%[^ ]+]] = arc.constant 7 : si64
+    %cst_si648 = arc.constant 8: si64
+    // CHECK-DAG: [[CSTsi648:%[^ ]+]] = arc.constant 8 : si64
+    %cst_si649 = arc.constant 9: si64
+    // CHECK-DAG: [[CSTsi649:%[^ ]+]] = arc.constant 9 : si64
+    %cst_si6412 = arc.constant 12: si64
+    // CHECK-DAG: [[CSTsi6412:%[^ ]+]] = arc.constant 12 : si64
+    %cst_si6416 = arc.constant 16: si64
+    // CHECK-DAG: [[CSTsi6416:%[^ ]+]] = arc.constant 16 : si64
     %cst_si64264063607712817152 = arc.constant 264063607712817152: si64
     // CHECK-DAG: [[CSTsi64264063607712817152:%[^ ]+]] = arc.constant 264063607712817152 : si64
     %cst_si64351367319651090432 = arc.constant 351367319651090432: si64
@@ -254,8 +636,34 @@ module @toplevel {
     // CHECK-DAG: [[CSTsi641253744000727326719:%[^ ]+]] = arc.constant 1253744000727326719 : si64
     %cst_si641328271339354574848 = arc.constant 1328271339354574848: si64
     // CHECK-DAG: [[CSTsi641328271339354574848:%[^ ]+]] = arc.constant 1328271339354574848 : si64
+    %cst_si641328271339354574849 = arc.constant 1328271339354574849: si64
+    // CHECK-DAG: [[CSTsi641328271339354574849:%[^ ]+]] = arc.constant 1328271339354574849 : si64
+    %cst_si641328271339354574850 = arc.constant 1328271339354574850: si64
+    // CHECK-DAG: [[CSTsi641328271339354574850:%[^ ]+]] = arc.constant 1328271339354574850 : si64
+    %cst_si641328271339354574851 = arc.constant 1328271339354574851: si64
+    // CHECK-DAG: [[CSTsi641328271339354574851:%[^ ]+]] = arc.constant 1328271339354574851 : si64
+    %cst_si641328271339354574852 = arc.constant 1328271339354574852: si64
+    // CHECK-DAG: [[CSTsi641328271339354574852:%[^ ]+]] = arc.constant 1328271339354574852 : si64
+    %cst_si641394287241282779136 = arc.constant 1394287241282779136: si64
+    // CHECK-DAG: [[CSTsi641394287241282779136:%[^ ]+]] = arc.constant 1394287241282779136 : si64
     %cst_si641741927215160008704 = arc.constant 1741927215160008704: si64
     // CHECK-DAG: [[CSTsi641741927215160008704:%[^ ]+]] = arc.constant 1741927215160008704 : si64
+    %cst_si641741927215160008705 = arc.constant 1741927215160008705: si64
+    // CHECK-DAG: [[CSTsi641741927215160008705:%[^ ]+]] = arc.constant 1741927215160008705 : si64
+    %cst_si641741927215160008706 = arc.constant 1741927215160008706: si64
+    // CHECK-DAG: [[CSTsi641741927215160008706:%[^ ]+]] = arc.constant 1741927215160008706 : si64
+    %cst_si641741927215160008707 = arc.constant 1741927215160008707: si64
+    // CHECK-DAG: [[CSTsi641741927215160008707:%[^ ]+]] = arc.constant 1741927215160008707 : si64
+    %cst_si641741927215160008708 = arc.constant 1741927215160008708: si64
+    // CHECK-DAG: [[CSTsi641741927215160008708:%[^ ]+]] = arc.constant 1741927215160008708 : si64
+    %cst_si641859049655043705514 = arc.constant 1859049655043705514: si64
+    // CHECK-DAG: [[CSTsi641859049655043705514:%[^ ]+]] = arc.constant 1859049655043705514 : si64
+    %cst_si642305843009213693951 = arc.constant 2305843009213693951: si64
+    // CHECK-DAG: [[CSTsi642305843009213693951:%[^ ]+]] = arc.constant 2305843009213693951 : si64
+    %cst_si642788574482565558272 = arc.constant 2788574482565558272: si64
+    // CHECK-DAG: [[CSTsi642788574482565558272:%[^ ]+]] = arc.constant 2788574482565558272 : si64
+    %cst_si643074457345618258602 = arc.constant 3074457345618258602: si64
+    // CHECK-DAG: [[CSTsi643074457345618258602:%[^ ]+]] = arc.constant 3074457345618258602 : si64
     %cst_si643646223071723659262 = arc.constant 3646223071723659262: si64
     // CHECK-DAG: [[CSTsi643646223071723659262:%[^ ]+]] = arc.constant 3646223071723659262 : si64
     %cst_si643646223071723659263 = arc.constant 3646223071723659263: si64
@@ -264,8 +672,26 @@ module @toplevel {
     // CHECK-DAG: [[CSTsi643835221749971107840:%[^ ]+]] = arc.constant 3835221749971107840 : si64
     %cst_si644248877625776541696 = arc.constant 4248877625776541696: si64
     // CHECK-DAG: [[CSTsi644248877625776541696:%[^ ]+]] = arc.constant 4248877625776541696 : si64
+    %cst_si644611686018427387903 = arc.constant 4611686018427387903: si64
+    // CHECK-DAG: [[CSTsi644611686018427387903:%[^ ]+]] = arc.constant 4611686018427387903 : si64
+    %cst_si645577148965131116540 = arc.constant 5577148965131116540: si64
+    // CHECK-DAG: [[CSTsi645577148965131116540:%[^ ]+]] = arc.constant 5577148965131116540 : si64
+    %cst_si645577148965131116541 = arc.constant 5577148965131116541: si64
+    // CHECK-DAG: [[CSTsi645577148965131116541:%[^ ]+]] = arc.constant 5577148965131116541 : si64
+    %cst_si645577148965131116542 = arc.constant 5577148965131116542: si64
+    // CHECK-DAG: [[CSTsi645577148965131116542:%[^ ]+]] = arc.constant 5577148965131116542 : si64
+    %cst_si645577148965131116543 = arc.constant 5577148965131116543: si64
+    // CHECK-DAG: [[CSTsi645577148965131116543:%[^ ]+]] = arc.constant 5577148965131116543 : si64
     %cst_si645577148965131116544 = arc.constant 5577148965131116544: si64
     // CHECK-DAG: [[CSTsi645577148965131116544:%[^ ]+]] = arc.constant 5577148965131116544 : si64
+    %cst_si645577148965131116545 = arc.constant 5577148965131116545: si64
+    // CHECK-DAG: [[CSTsi645577148965131116545:%[^ ]+]] = arc.constant 5577148965131116545 : si64
+    %cst_si645577148965131116546 = arc.constant 5577148965131116546: si64
+    // CHECK-DAG: [[CSTsi645577148965131116546:%[^ ]+]] = arc.constant 5577148965131116546 : si64
+    %cst_si645577148965131116547 = arc.constant 5577148965131116547: si64
+    // CHECK-DAG: [[CSTsi645577148965131116547:%[^ ]+]] = arc.constant 5577148965131116547 : si64
+    %cst_si645577148965131116548 = arc.constant 5577148965131116548: si64
+    // CHECK-DAG: [[CSTsi645577148965131116548:%[^ ]+]] = arc.constant 5577148965131116548 : si64
     %cst_si646905420304485691392 = arc.constant 6905420304485691392: si64
     // CHECK-DAG: [[CSTsi646905420304485691392:%[^ ]+]] = arc.constant 6905420304485691392 : si64
     %cst_si647319076180291125248 = arc.constant 7319076180291125248: si64
@@ -282,6 +708,14 @@ module @toplevel {
     // CHECK-DAG: [[CSTsi647895100697500200959:%[^ ]+]] = arc.constant 7895100697500200959 : si64
     %cst_si647895100697500200960 = arc.constant 7895100697500200960: si64
     // CHECK-DAG: [[CSTsi647895100697500200960:%[^ ]+]] = arc.constant 7895100697500200960 : si64
+    %cst_si649223372036854775802 = arc.constant 9223372036854775802: si64
+    // CHECK-DAG: [[CSTsi649223372036854775802:%[^ ]+]] = arc.constant 9223372036854775802 : si64
+    %cst_si649223372036854775803 = arc.constant 9223372036854775803: si64
+    // CHECK-DAG: [[CSTsi649223372036854775803:%[^ ]+]] = arc.constant 9223372036854775803 : si64
+    %cst_si649223372036854775804 = arc.constant 9223372036854775804: si64
+    // CHECK-DAG: [[CSTsi649223372036854775804:%[^ ]+]] = arc.constant 9223372036854775804 : si64
+    %cst_si649223372036854775805 = arc.constant 9223372036854775805: si64
+    // CHECK-DAG: [[CSTsi649223372036854775805:%[^ ]+]] = arc.constant 9223372036854775805 : si64
     %cst_si649223372036854775806 = arc.constant 9223372036854775806: si64
     // CHECK-DAG: [[CSTsi649223372036854775806:%[^ ]+]] = arc.constant 9223372036854775806 : si64
     %cst_si649223372036854775807 = arc.constant 9223372036854775807: si64
@@ -294,20 +728,46 @@ module @toplevel {
     // CHECK-DAG: [[CSTsi8n126:%[^ ]+]] = arc.constant -126 : si8
     %cst_si8n125 = arc.constant -125: si8
     // CHECK-DAG: [[CSTsi8n125:%[^ ]+]] = arc.constant -125 : si8
+    %cst_si8n124 = arc.constant -124: si8
+    // CHECK-DAG: [[CSTsi8n124:%[^ ]+]] = arc.constant -124 : si8
+    %cst_si8n123 = arc.constant -123: si8
+    // CHECK-DAG: [[CSTsi8n123:%[^ ]+]] = arc.constant -123 : si8
+    %cst_si8n122 = arc.constant -122: si8
+    // CHECK-DAG: [[CSTsi8n122:%[^ ]+]] = arc.constant -122 : si8
     %cst_si8n112 = arc.constant -112: si8
     // CHECK-DAG: [[CSTsi8n112:%[^ ]+]] = arc.constant -112 : si8
     %cst_si8n111 = arc.constant -111: si8
     // CHECK-DAG: [[CSTsi8n111:%[^ ]+]] = arc.constant -111 : si8
     %cst_si8n110 = arc.constant -110: si8
     // CHECK-DAG: [[CSTsi8n110:%[^ ]+]] = arc.constant -110 : si8
+    %cst_si8n64 = arc.constant -64: si8
+    // CHECK-DAG: [[CSTsi8n64:%[^ ]+]] = arc.constant -64 : si8
+    %cst_si8n63 = arc.constant -63: si8
+    // CHECK-DAG: [[CSTsi8n63:%[^ ]+]] = arc.constant -63 : si8
+    %cst_si8n42 = arc.constant -42: si8
+    // CHECK-DAG: [[CSTsi8n42:%[^ ]+]] = arc.constant -42 : si8
+    %cst_si8n32 = arc.constant -32: si8
+    // CHECK-DAG: [[CSTsi8n32:%[^ ]+]] = arc.constant -32 : si8
+    %cst_si8n31 = arc.constant -31: si8
+    // CHECK-DAG: [[CSTsi8n31:%[^ ]+]] = arc.constant -31 : si8
     %cst_si8n16 = arc.constant -16: si8
     // CHECK-DAG: [[CSTsi8n16:%[^ ]+]] = arc.constant -16 : si8
     %cst_si8n15 = arc.constant -15: si8
     // CHECK-DAG: [[CSTsi8n15:%[^ ]+]] = arc.constant -15 : si8
+    %cst_si8n14 = arc.constant -14: si8
+    // CHECK-DAG: [[CSTsi8n14:%[^ ]+]] = arc.constant -14 : si8
+    %cst_si8n13 = arc.constant -13: si8
+    // CHECK-DAG: [[CSTsi8n13:%[^ ]+]] = arc.constant -13 : si8
+    %cst_si8n12 = arc.constant -12: si8
+    // CHECK-DAG: [[CSTsi8n12:%[^ ]+]] = arc.constant -12 : si8
     %cst_si8n8 = arc.constant -8: si8
     // CHECK-DAG: [[CSTsi8n8:%[^ ]+]] = arc.constant -8 : si8
     %cst_si8n7 = arc.constant -7: si8
     // CHECK-DAG: [[CSTsi8n7:%[^ ]+]] = arc.constant -7 : si8
+    %cst_si8n4 = arc.constant -4: si8
+    // CHECK-DAG: [[CSTsi8n4:%[^ ]+]] = arc.constant -4 : si8
+    %cst_si8n3 = arc.constant -3: si8
+    // CHECK-DAG: [[CSTsi8n3:%[^ ]+]] = arc.constant -3 : si8
     %cst_si8n2 = arc.constant -2: si8
     // CHECK-DAG: [[CSTsi8n2:%[^ ]+]] = arc.constant -2 : si8
     %cst_si8n1 = arc.constant -1: si8
@@ -318,8 +778,24 @@ module @toplevel {
     // CHECK-DAG: [[CSTsi81:%[^ ]+]] = arc.constant 1 : si8
     %cst_si82 = arc.constant 2: si8
     // CHECK-DAG: [[CSTsi82:%[^ ]+]] = arc.constant 2 : si8
+    %cst_si83 = arc.constant 3: si8
+    // CHECK-DAG: [[CSTsi83:%[^ ]+]] = arc.constant 3 : si8
+    %cst_si84 = arc.constant 4: si8
+    // CHECK-DAG: [[CSTsi84:%[^ ]+]] = arc.constant 4 : si8
+    %cst_si85 = arc.constant 5: si8
+    // CHECK-DAG: [[CSTsi85:%[^ ]+]] = arc.constant 5 : si8
+    %cst_si86 = arc.constant 6: si8
+    // CHECK-DAG: [[CSTsi86:%[^ ]+]] = arc.constant 6 : si8
     %cst_si87 = arc.constant 7: si8
     // CHECK-DAG: [[CSTsi87:%[^ ]+]] = arc.constant 7 : si8
+    %cst_si88 = arc.constant 8: si8
+    // CHECK-DAG: [[CSTsi88:%[^ ]+]] = arc.constant 8 : si8
+    %cst_si89 = arc.constant 9: si8
+    // CHECK-DAG: [[CSTsi89:%[^ ]+]] = arc.constant 9 : si8
+    %cst_si812 = arc.constant 12: si8
+    // CHECK-DAG: [[CSTsi812:%[^ ]+]] = arc.constant 12 : si8
+    %cst_si813 = arc.constant 13: si8
+    // CHECK-DAG: [[CSTsi813:%[^ ]+]] = arc.constant 13 : si8
     %cst_si814 = arc.constant 14: si8
     // CHECK-DAG: [[CSTsi814:%[^ ]+]] = arc.constant 14 : si8
     %cst_si815 = arc.constant 15: si8
@@ -328,12 +804,34 @@ module @toplevel {
     // CHECK-DAG: [[CSTsi816:%[^ ]+]] = arc.constant 16 : si8
     %cst_si817 = arc.constant 17: si8
     // CHECK-DAG: [[CSTsi817:%[^ ]+]] = arc.constant 17 : si8
+    %cst_si818 = arc.constant 18: si8
+    // CHECK-DAG: [[CSTsi818:%[^ ]+]] = arc.constant 18 : si8
+    %cst_si819 = arc.constant 19: si8
+    // CHECK-DAG: [[CSTsi819:%[^ ]+]] = arc.constant 19 : si8
+    %cst_si820 = arc.constant 20: si8
+    // CHECK-DAG: [[CSTsi820:%[^ ]+]] = arc.constant 20 : si8
+    %cst_si831 = arc.constant 31: si8
+    // CHECK-DAG: [[CSTsi831:%[^ ]+]] = arc.constant 31 : si8
     %cst_si832 = arc.constant 32: si8
     // CHECK-DAG: [[CSTsi832:%[^ ]+]] = arc.constant 32 : si8
+    %cst_si842 = arc.constant 42: si8
+    // CHECK-DAG: [[CSTsi842:%[^ ]+]] = arc.constant 42 : si8
+    %cst_si848 = arc.constant 48: si8
+    // CHECK-DAG: [[CSTsi848:%[^ ]+]] = arc.constant 48 : si8
+    %cst_si863 = arc.constant 63: si8
+    // CHECK-DAG: [[CSTsi863:%[^ ]+]] = arc.constant 63 : si8
+    %cst_si864 = arc.constant 64: si8
+    // CHECK-DAG: [[CSTsi864:%[^ ]+]] = arc.constant 64 : si8
     %cst_si8110 = arc.constant 110: si8
     // CHECK-DAG: [[CSTsi8110:%[^ ]+]] = arc.constant 110 : si8
     %cst_si8111 = arc.constant 111: si8
     // CHECK-DAG: [[CSTsi8111:%[^ ]+]] = arc.constant 111 : si8
+    %cst_si8122 = arc.constant 122: si8
+    // CHECK-DAG: [[CSTsi8122:%[^ ]+]] = arc.constant 122 : si8
+    %cst_si8123 = arc.constant 123: si8
+    // CHECK-DAG: [[CSTsi8123:%[^ ]+]] = arc.constant 123 : si8
+    %cst_si8124 = arc.constant 124: si8
+    // CHECK-DAG: [[CSTsi8124:%[^ ]+]] = arc.constant 124 : si8
     %cst_si8125 = arc.constant 125: si8
     // CHECK-DAG: [[CSTsi8125:%[^ ]+]] = arc.constant 125 : si8
     %cst_si8126 = arc.constant 126: si8
@@ -348,8 +846,24 @@ module @toplevel {
     // CHECK-DAG: [[CSTui162:%[^ ]+]] = arc.constant 2 : ui16
     %cst_ui163 = arc.constant 3: ui16
     // CHECK-DAG: [[CSTui163:%[^ ]+]] = arc.constant 3 : ui16
+    %cst_ui164 = arc.constant 4: ui16
+    // CHECK-DAG: [[CSTui164:%[^ ]+]] = arc.constant 4 : ui16
+    %cst_ui165 = arc.constant 5: ui16
+    // CHECK-DAG: [[CSTui165:%[^ ]+]] = arc.constant 5 : ui16
+    %cst_ui166 = arc.constant 6: ui16
+    // CHECK-DAG: [[CSTui166:%[^ ]+]] = arc.constant 6 : ui16
+    %cst_ui167 = arc.constant 7: ui16
+    // CHECK-DAG: [[CSTui167:%[^ ]+]] = arc.constant 7 : ui16
+    %cst_ui168 = arc.constant 8: ui16
+    // CHECK-DAG: [[CSTui168:%[^ ]+]] = arc.constant 8 : ui16
+    %cst_ui169 = arc.constant 9: ui16
+    // CHECK-DAG: [[CSTui169:%[^ ]+]] = arc.constant 9 : ui16
     %cst_ui1610 = arc.constant 10: ui16
     // CHECK-DAG: [[CSTui1610:%[^ ]+]] = arc.constant 10 : ui16
+    %cst_ui1612 = arc.constant 12: ui16
+    // CHECK-DAG: [[CSTui1612:%[^ ]+]] = arc.constant 12 : ui16
+    %cst_ui1616 = arc.constant 16: ui16
+    // CHECK-DAG: [[CSTui1616:%[^ ]+]] = arc.constant 16 : ui16
     %cst_ui1637 = arc.constant 37: ui16
     // CHECK-DAG: [[CSTui1637:%[^ ]+]] = arc.constant 37 : ui16
     %cst_ui1638 = arc.constant 38: ui16
@@ -358,22 +872,50 @@ module @toplevel {
     // CHECK-DAG: [[CSTui16288:%[^ ]+]] = arc.constant 288 : ui16
     %cst_ui16289 = arc.constant 289: ui16
     // CHECK-DAG: [[CSTui16289:%[^ ]+]] = arc.constant 289 : ui16
+    %cst_ui16429 = arc.constant 429: ui16
+    // CHECK-DAG: [[CSTui16429:%[^ ]+]] = arc.constant 429 : ui16
     %cst_ui16438 = arc.constant 438: ui16
     // CHECK-DAG: [[CSTui16438:%[^ ]+]] = arc.constant 438 : ui16
     %cst_ui16439 = arc.constant 439: ui16
     // CHECK-DAG: [[CSTui16439:%[^ ]+]] = arc.constant 439 : ui16
+    %cst_ui16572 = arc.constant 572: ui16
+    // CHECK-DAG: [[CSTui16572:%[^ ]+]] = arc.constant 572 : ui16
     %cst_ui16818 = arc.constant 818: ui16
     // CHECK-DAG: [[CSTui16818:%[^ ]+]] = arc.constant 818 : ui16
+    %cst_ui16858 = arc.constant 858: ui16
+    // CHECK-DAG: [[CSTui16858:%[^ ]+]] = arc.constant 858 : ui16
     %cst_ui161567 = arc.constant 1567: ui16
     // CHECK-DAG: [[CSTui161567:%[^ ]+]] = arc.constant 1567 : ui16
+    %cst_ui161713 = arc.constant 1713: ui16
+    // CHECK-DAG: [[CSTui161713:%[^ ]+]] = arc.constant 1713 : ui16
+    %cst_ui161714 = arc.constant 1714: ui16
+    // CHECK-DAG: [[CSTui161714:%[^ ]+]] = arc.constant 1714 : ui16
+    %cst_ui161715 = arc.constant 1715: ui16
+    // CHECK-DAG: [[CSTui161715:%[^ ]+]] = arc.constant 1715 : ui16
     %cst_ui161716 = arc.constant 1716: ui16
     // CHECK-DAG: [[CSTui161716:%[^ ]+]] = arc.constant 1716 : ui16
     %cst_ui161717 = arc.constant 1717: ui16
     // CHECK-DAG: [[CSTui161717:%[^ ]+]] = arc.constant 1717 : ui16
     %cst_ui161718 = arc.constant 1718: ui16
     // CHECK-DAG: [[CSTui161718:%[^ ]+]] = arc.constant 1718 : ui16
+    %cst_ui161719 = arc.constant 1719: ui16
+    // CHECK-DAG: [[CSTui161719:%[^ ]+]] = arc.constant 1719 : ui16
+    %cst_ui161720 = arc.constant 1720: ui16
+    // CHECK-DAG: [[CSTui161720:%[^ ]+]] = arc.constant 1720 : ui16
+    %cst_ui161721 = arc.constant 1721: ui16
+    // CHECK-DAG: [[CSTui161721:%[^ ]+]] = arc.constant 1721 : ui16
     %cst_ui163434 = arc.constant 3434: ui16
     // CHECK-DAG: [[CSTui163434:%[^ ]+]] = arc.constant 3434 : ui16
+    %cst_ui164497 = arc.constant 4497: ui16
+    // CHECK-DAG: [[CSTui164497:%[^ ]+]] = arc.constant 4497 : ui16
+    %cst_ui165151 = arc.constant 5151: ui16
+    // CHECK-DAG: [[CSTui165151:%[^ ]+]] = arc.constant 5151 : ui16
+    %cst_ui165996 = arc.constant 5996: ui16
+    // CHECK-DAG: [[CSTui165996:%[^ ]+]] = arc.constant 5996 : ui16
+    %cst_ui166868 = arc.constant 6868: ui16
+    // CHECK-DAG: [[CSTui166868:%[^ ]+]] = arc.constant 6868 : ui16
+    %cst_ui168994 = arc.constant 8994: ui16
+    // CHECK-DAG: [[CSTui168994:%[^ ]+]] = arc.constant 8994 : ui16
     %cst_ui1611132 = arc.constant 11132: ui16
     // CHECK-DAG: [[CSTui1611132:%[^ ]+]] = arc.constant 11132 : ui16
     %cst_ui1611570 = arc.constant 11570: ui16
@@ -382,14 +924,40 @@ module @toplevel {
     // CHECK-DAG: [[CSTui1611571:%[^ ]+]] = arc.constant 11571 : ui16
     %cst_ui1616271 = arc.constant 16271: ui16
     // CHECK-DAG: [[CSTui1616271:%[^ ]+]] = arc.constant 16271 : ui16
+    %cst_ui1616274 = arc.constant 16274: ui16
+    // CHECK-DAG: [[CSTui1616274:%[^ ]+]] = arc.constant 16274 : ui16
+    %cst_ui1616383 = arc.constant 16383: ui16
+    // CHECK-DAG: [[CSTui1616383:%[^ ]+]] = arc.constant 16383 : ui16
+    %cst_ui1617984 = arc.constant 17984: ui16
+    // CHECK-DAG: [[CSTui1617984:%[^ ]+]] = arc.constant 17984 : ui16
+    %cst_ui1617985 = arc.constant 17985: ui16
+    // CHECK-DAG: [[CSTui1617985:%[^ ]+]] = arc.constant 17985 : ui16
+    %cst_ui1617986 = arc.constant 17986: ui16
+    // CHECK-DAG: [[CSTui1617986:%[^ ]+]] = arc.constant 17986 : ui16
     %cst_ui1617987 = arc.constant 17987: ui16
     // CHECK-DAG: [[CSTui1617987:%[^ ]+]] = arc.constant 17987 : ui16
     %cst_ui1617988 = arc.constant 17988: ui16
     // CHECK-DAG: [[CSTui1617988:%[^ ]+]] = arc.constant 17988 : ui16
     %cst_ui1617989 = arc.constant 17989: ui16
     // CHECK-DAG: [[CSTui1617989:%[^ ]+]] = arc.constant 17989 : ui16
+    %cst_ui1617990 = arc.constant 17990: ui16
+    // CHECK-DAG: [[CSTui1617990:%[^ ]+]] = arc.constant 17990 : ui16
+    %cst_ui1617991 = arc.constant 17991: ui16
+    // CHECK-DAG: [[CSTui1617991:%[^ ]+]] = arc.constant 17991 : ui16
+    %cst_ui1617992 = arc.constant 17992: ui16
+    // CHECK-DAG: [[CSTui1617992:%[^ ]+]] = arc.constant 17992 : ui16
     %cst_ui1619705 = arc.constant 19705: ui16
     // CHECK-DAG: [[CSTui1619705:%[^ ]+]] = arc.constant 19705 : ui16
+    %cst_ui1621698 = arc.constant 21698: ui16
+    // CHECK-DAG: [[CSTui1621698:%[^ ]+]] = arc.constant 21698 : ui16
+    %cst_ui1621844 = arc.constant 21844: ui16
+    // CHECK-DAG: [[CSTui1621844:%[^ ]+]] = arc.constant 21844 : ui16
+    %cst_ui1621845 = arc.constant 21845: ui16
+    // CHECK-DAG: [[CSTui1621845:%[^ ]+]] = arc.constant 21845 : ui16
+    %cst_ui1632548 = arc.constant 32548: ui16
+    // CHECK-DAG: [[CSTui1632548:%[^ ]+]] = arc.constant 32548 : ui16
+    %cst_ui1632767 = arc.constant 32767: ui16
+    // CHECK-DAG: [[CSTui1632767:%[^ ]+]] = arc.constant 32767 : ui16
     %cst_ui1635976 = arc.constant 35976: ui16
     // CHECK-DAG: [[CSTui1635976:%[^ ]+]] = arc.constant 35976 : ui16
     %cst_ui1647108 = arc.constant 47108: ui16
@@ -398,18 +966,38 @@ module @toplevel {
     // CHECK-DAG: [[CSTui1647546:%[^ ]+]] = arc.constant 47546 : ui16
     %cst_ui1647547 = arc.constant 47547: ui16
     // CHECK-DAG: [[CSTui1647547:%[^ ]+]] = arc.constant 47547 : ui16
+    %cst_ui1653964 = arc.constant 53964: ui16
+    // CHECK-DAG: [[CSTui1653964:%[^ ]+]] = arc.constant 53964 : ui16
     %cst_ui1663379 = arc.constant 63379: ui16
     // CHECK-DAG: [[CSTui1663379:%[^ ]+]] = arc.constant 63379 : ui16
     %cst_ui1663817 = arc.constant 63817: ui16
     // CHECK-DAG: [[CSTui1663817:%[^ ]+]] = arc.constant 63817 : ui16
     %cst_ui1663818 = arc.constant 63818: ui16
     // CHECK-DAG: [[CSTui1663818:%[^ ]+]] = arc.constant 63818 : ui16
+    %cst_ui1665092 = arc.constant 65092: ui16
+    // CHECK-DAG: [[CSTui1665092:%[^ ]+]] = arc.constant 65092 : ui16
+    %cst_ui1665093 = arc.constant 65093: ui16
+    // CHECK-DAG: [[CSTui1665093:%[^ ]+]] = arc.constant 65093 : ui16
+    %cst_ui1665094 = arc.constant 65094: ui16
+    // CHECK-DAG: [[CSTui1665094:%[^ ]+]] = arc.constant 65094 : ui16
     %cst_ui1665095 = arc.constant 65095: ui16
     // CHECK-DAG: [[CSTui1665095:%[^ ]+]] = arc.constant 65095 : ui16
     %cst_ui1665096 = arc.constant 65096: ui16
     // CHECK-DAG: [[CSTui1665096:%[^ ]+]] = arc.constant 65096 : ui16
     %cst_ui1665097 = arc.constant 65097: ui16
     // CHECK-DAG: [[CSTui1665097:%[^ ]+]] = arc.constant 65097 : ui16
+    %cst_ui1665098 = arc.constant 65098: ui16
+    // CHECK-DAG: [[CSTui1665098:%[^ ]+]] = arc.constant 65098 : ui16
+    %cst_ui1665099 = arc.constant 65099: ui16
+    // CHECK-DAG: [[CSTui1665099:%[^ ]+]] = arc.constant 65099 : ui16
+    %cst_ui1665100 = arc.constant 65100: ui16
+    // CHECK-DAG: [[CSTui1665100:%[^ ]+]] = arc.constant 65100 : ui16
+    %cst_ui1665530 = arc.constant 65530: ui16
+    // CHECK-DAG: [[CSTui1665530:%[^ ]+]] = arc.constant 65530 : ui16
+    %cst_ui1665531 = arc.constant 65531: ui16
+    // CHECK-DAG: [[CSTui1665531:%[^ ]+]] = arc.constant 65531 : ui16
+    %cst_ui1665532 = arc.constant 65532: ui16
+    // CHECK-DAG: [[CSTui1665532:%[^ ]+]] = arc.constant 65532 : ui16
     %cst_ui1665533 = arc.constant 65533: ui16
     // CHECK-DAG: [[CSTui1665533:%[^ ]+]] = arc.constant 65533 : ui16
     %cst_ui1665534 = arc.constant 65534: ui16
@@ -422,48 +1010,134 @@ module @toplevel {
     // CHECK-DAG: [[CSTui321:%[^ ]+]] = arc.constant 1 : ui32
     %cst_ui322 = arc.constant 2: ui32
     // CHECK-DAG: [[CSTui322:%[^ ]+]] = arc.constant 2 : ui32
+    %cst_ui323 = arc.constant 3: ui32
+    // CHECK-DAG: [[CSTui323:%[^ ]+]] = arc.constant 3 : ui32
+    %cst_ui324 = arc.constant 4: ui32
+    // CHECK-DAG: [[CSTui324:%[^ ]+]] = arc.constant 4 : ui32
+    %cst_ui325 = arc.constant 5: ui32
+    // CHECK-DAG: [[CSTui325:%[^ ]+]] = arc.constant 5 : ui32
+    %cst_ui326 = arc.constant 6: ui32
+    // CHECK-DAG: [[CSTui326:%[^ ]+]] = arc.constant 6 : ui32
+    %cst_ui327 = arc.constant 7: ui32
+    // CHECK-DAG: [[CSTui327:%[^ ]+]] = arc.constant 7 : ui32
+    %cst_ui328 = arc.constant 8: ui32
+    // CHECK-DAG: [[CSTui328:%[^ ]+]] = arc.constant 8 : ui32
+    %cst_ui329 = arc.constant 9: ui32
+    // CHECK-DAG: [[CSTui329:%[^ ]+]] = arc.constant 9 : ui32
+    %cst_ui3212 = arc.constant 12: ui32
+    // CHECK-DAG: [[CSTui3212:%[^ ]+]] = arc.constant 12 : ui32
+    %cst_ui3216 = arc.constant 16: ui32
+    // CHECK-DAG: [[CSTui3216:%[^ ]+]] = arc.constant 16 : ui32
     %cst_ui3256657990 = arc.constant 56657990: ui32
     // CHECK-DAG: [[CSTui3256657990:%[^ ]+]] = arc.constant 56657990 : ui32
     %cst_ui3256657991 = arc.constant 56657991: ui32
     // CHECK-DAG: [[CSTui3256657991:%[^ ]+]] = arc.constant 56657991 : ui32
     %cst_ui32479508784 = arc.constant 479508784: ui32
     // CHECK-DAG: [[CSTui32479508784:%[^ ]+]] = arc.constant 479508784 : ui32
+    %cst_ui32529788663 = arc.constant 529788663: ui32
+    // CHECK-DAG: [[CSTui32529788663:%[^ ]+]] = arc.constant 529788663 : ui32
+    %cst_ui32706384884 = arc.constant 706384884: ui32
+    // CHECK-DAG: [[CSTui32706384884:%[^ ]+]] = arc.constant 706384884 : ui32
+    %cst_ui32750697086 = arc.constant 750697086: ui32
+    // CHECK-DAG: [[CSTui32750697086:%[^ ]+]] = arc.constant 750697086 : ui32
     %cst_ui32812670166 = arc.constant 812670166: ui32
     // CHECK-DAG: [[CSTui32812670166:%[^ ]+]] = arc.constant 812670166 : ui32
     %cst_ui32812670167 = arc.constant 812670167: ui32
     // CHECK-DAG: [[CSTui32812670167:%[^ ]+]] = arc.constant 812670167 : ui32
+    %cst_ui32870574282 = arc.constant 870574282: ui32
+    // CHECK-DAG: [[CSTui32870574282:%[^ ]+]] = arc.constant 870574282 : ui32
     %cst_ui32883633692 = arc.constant 883633692: ui32
     // CHECK-DAG: [[CSTui32883633692:%[^ ]+]] = arc.constant 883633692 : ui32
+    %cst_ui321000929448 = arc.constant 1000929448: ui32
+    // CHECK-DAG: [[CSTui321000929448:%[^ ]+]] = arc.constant 1000929448 : ui32
+    %cst_ui321059577326 = arc.constant 1059577326: ui32
+    // CHECK-DAG: [[CSTui321059577326:%[^ ]+]] = arc.constant 1059577326 : ui32
+    %cst_ui321073741823 = arc.constant 1073741823: ui32
+    // CHECK-DAG: [[CSTui321073741823:%[^ ]+]] = arc.constant 1073741823 : ui32
+    %cst_ui321160765709 = arc.constant 1160765709: ui32
+    // CHECK-DAG: [[CSTui321160765709:%[^ ]+]] = arc.constant 1160765709 : ui32
     %cst_ui321292178950 = arc.constant 1292178950: ui32
     // CHECK-DAG: [[CSTui321292178950:%[^ ]+]] = arc.constant 1292178950 : ui32
     %cst_ui321292178951 = arc.constant 1292178951: ui32
     // CHECK-DAG: [[CSTui321292178951:%[^ ]+]] = arc.constant 1292178951 : ui32
     %cst_ui321363142476 = arc.constant 1363142476: ui32
     // CHECK-DAG: [[CSTui321363142476:%[^ ]+]] = arc.constant 1363142476 : ui32
+    %cst_ui321431655764 = arc.constant 1431655764: ui32
+    // CHECK-DAG: [[CSTui321431655764:%[^ ]+]] = arc.constant 1431655764 : ui32
+    %cst_ui321431655765 = arc.constant 1431655765: ui32
+    // CHECK-DAG: [[CSTui321431655765:%[^ ]+]] = arc.constant 1431655765 : ui32
+    %cst_ui321501394172 = arc.constant 1501394172: ui32
+    // CHECK-DAG: [[CSTui321501394172:%[^ ]+]] = arc.constant 1501394172 : ui32
+    %cst_ui321741148564 = arc.constant 1741148564: ui32
+    // CHECK-DAG: [[CSTui321741148564:%[^ ]+]] = arc.constant 1741148564 : ui32
+    %cst_ui322119154648 = arc.constant 2119154648: ui32
+    // CHECK-DAG: [[CSTui322119154648:%[^ ]+]] = arc.constant 2119154648 : ui32
+    %cst_ui322119154649 = arc.constant 2119154649: ui32
+    // CHECK-DAG: [[CSTui322119154649:%[^ ]+]] = arc.constant 2119154649 : ui32
+    %cst_ui322119154650 = arc.constant 2119154650: ui32
+    // CHECK-DAG: [[CSTui322119154650:%[^ ]+]] = arc.constant 2119154650 : ui32
     %cst_ui322119154651 = arc.constant 2119154651: ui32
     // CHECK-DAG: [[CSTui322119154651:%[^ ]+]] = arc.constant 2119154651 : ui32
     %cst_ui322119154652 = arc.constant 2119154652: ui32
     // CHECK-DAG: [[CSTui322119154652:%[^ ]+]] = arc.constant 2119154652 : ui32
     %cst_ui322119154653 = arc.constant 2119154653: ui32
     // CHECK-DAG: [[CSTui322119154653:%[^ ]+]] = arc.constant 2119154653 : ui32
+    %cst_ui322119154654 = arc.constant 2119154654: ui32
+    // CHECK-DAG: [[CSTui322119154654:%[^ ]+]] = arc.constant 2119154654 : ui32
+    %cst_ui322119154655 = arc.constant 2119154655: ui32
+    // CHECK-DAG: [[CSTui322119154655:%[^ ]+]] = arc.constant 2119154655 : ui32
+    %cst_ui322119154656 = arc.constant 2119154656: ui32
+    // CHECK-DAG: [[CSTui322119154656:%[^ ]+]] = arc.constant 2119154656 : ui32
+    %cst_ui322147483647 = arc.constant 2147483647: ui32
+    // CHECK-DAG: [[CSTui322147483647:%[^ ]+]] = arc.constant 2147483647 : ui32
     %cst_ui322175812642 = arc.constant 2175812642: ui32
     // CHECK-DAG: [[CSTui322175812642:%[^ ]+]] = arc.constant 2175812642 : ui32
     %cst_ui322175812643 = arc.constant 2175812643: ui32
     // CHECK-DAG: [[CSTui322175812643:%[^ ]+]] = arc.constant 2175812643 : ui32
+    %cst_ui323002788340 = arc.constant 3002788340: ui32
+    // CHECK-DAG: [[CSTui323002788340:%[^ ]+]] = arc.constant 3002788340 : ui32
+    %cst_ui323002788341 = arc.constant 3002788341: ui32
+    // CHECK-DAG: [[CSTui323002788341:%[^ ]+]] = arc.constant 3002788341 : ui32
+    %cst_ui323002788342 = arc.constant 3002788342: ui32
+    // CHECK-DAG: [[CSTui323002788342:%[^ ]+]] = arc.constant 3002788342 : ui32
     %cst_ui323002788343 = arc.constant 3002788343: ui32
     // CHECK-DAG: [[CSTui323002788343:%[^ ]+]] = arc.constant 3002788343 : ui32
     %cst_ui323002788344 = arc.constant 3002788344: ui32
     // CHECK-DAG: [[CSTui323002788344:%[^ ]+]] = arc.constant 3002788344 : ui32
     %cst_ui323002788345 = arc.constant 3002788345: ui32
     // CHECK-DAG: [[CSTui323002788345:%[^ ]+]] = arc.constant 3002788345 : ui32
+    %cst_ui323002788346 = arc.constant 3002788346: ui32
+    // CHECK-DAG: [[CSTui323002788346:%[^ ]+]] = arc.constant 3002788346 : ui32
+    %cst_ui323002788347 = arc.constant 3002788347: ui32
+    // CHECK-DAG: [[CSTui323002788347:%[^ ]+]] = arc.constant 3002788347 : ui32
+    %cst_ui323002788348 = arc.constant 3002788348: ui32
+    // CHECK-DAG: [[CSTui323002788348:%[^ ]+]] = arc.constant 3002788348 : ui32
+    %cst_ui323482297124 = arc.constant 3482297124: ui32
+    // CHECK-DAG: [[CSTui323482297124:%[^ ]+]] = arc.constant 3482297124 : ui32
+    %cst_ui323482297125 = arc.constant 3482297125: ui32
+    // CHECK-DAG: [[CSTui323482297125:%[^ ]+]] = arc.constant 3482297125 : ui32
+    %cst_ui323482297126 = arc.constant 3482297126: ui32
+    // CHECK-DAG: [[CSTui323482297126:%[^ ]+]] = arc.constant 3482297126 : ui32
     %cst_ui323482297127 = arc.constant 3482297127: ui32
     // CHECK-DAG: [[CSTui323482297127:%[^ ]+]] = arc.constant 3482297127 : ui32
     %cst_ui323482297128 = arc.constant 3482297128: ui32
     // CHECK-DAG: [[CSTui323482297128:%[^ ]+]] = arc.constant 3482297128 : ui32
     %cst_ui323482297129 = arc.constant 3482297129: ui32
     // CHECK-DAG: [[CSTui323482297129:%[^ ]+]] = arc.constant 3482297129 : ui32
+    %cst_ui323482297130 = arc.constant 3482297130: ui32
+    // CHECK-DAG: [[CSTui323482297130:%[^ ]+]] = arc.constant 3482297130 : ui32
+    %cst_ui323482297131 = arc.constant 3482297131: ui32
+    // CHECK-DAG: [[CSTui323482297131:%[^ ]+]] = arc.constant 3482297131 : ui32
+    %cst_ui323482297132 = arc.constant 3482297132: ui32
+    // CHECK-DAG: [[CSTui323482297132:%[^ ]+]] = arc.constant 3482297132 : ui32
     %cst_ui324238309304 = arc.constant 4238309304: ui32
     // CHECK-DAG: [[CSTui324238309304:%[^ ]+]] = arc.constant 4238309304 : ui32
+    %cst_ui324294967290 = arc.constant 4294967290: ui32
+    // CHECK-DAG: [[CSTui324294967290:%[^ ]+]] = arc.constant 4294967290 : ui32
+    %cst_ui324294967291 = arc.constant 4294967291: ui32
+    // CHECK-DAG: [[CSTui324294967291:%[^ ]+]] = arc.constant 4294967291 : ui32
+    %cst_ui324294967292 = arc.constant 4294967292: ui32
+    // CHECK-DAG: [[CSTui324294967292:%[^ ]+]] = arc.constant 4294967292 : ui32
     %cst_ui324294967293 = arc.constant 4294967293: ui32
     // CHECK-DAG: [[CSTui324294967293:%[^ ]+]] = arc.constant 4294967293 : ui32
     %cst_ui324294967294 = arc.constant 4294967294: ui32
@@ -476,12 +1150,36 @@ module @toplevel {
     // CHECK-DAG: [[CSTui641:%[^ ]+]] = arc.constant 1 : ui64
     %cst_ui642 = arc.constant 2: ui64
     // CHECK-DAG: [[CSTui642:%[^ ]+]] = arc.constant 2 : ui64
+    %cst_ui643 = arc.constant 3: ui64
+    // CHECK-DAG: [[CSTui643:%[^ ]+]] = arc.constant 3 : ui64
+    %cst_ui644 = arc.constant 4: ui64
+    // CHECK-DAG: [[CSTui644:%[^ ]+]] = arc.constant 4 : ui64
+    %cst_ui645 = arc.constant 5: ui64
+    // CHECK-DAG: [[CSTui645:%[^ ]+]] = arc.constant 5 : ui64
+    %cst_ui646 = arc.constant 6: ui64
+    // CHECK-DAG: [[CSTui646:%[^ ]+]] = arc.constant 6 : ui64
+    %cst_ui647 = arc.constant 7: ui64
+    // CHECK-DAG: [[CSTui647:%[^ ]+]] = arc.constant 7 : ui64
+    %cst_ui648 = arc.constant 8: ui64
+    // CHECK-DAG: [[CSTui648:%[^ ]+]] = arc.constant 8 : ui64
+    %cst_ui649 = arc.constant 9: ui64
+    // CHECK-DAG: [[CSTui649:%[^ ]+]] = arc.constant 9 : ui64
+    %cst_ui6412 = arc.constant 12: ui64
+    // CHECK-DAG: [[CSTui6412:%[^ ]+]] = arc.constant 12 : ui64
+    %cst_ui6416 = arc.constant 16: ui64
+    // CHECK-DAG: [[CSTui6416:%[^ ]+]] = arc.constant 16 : ui64
     %cst_ui6457 = arc.constant 57: ui64
     // CHECK-DAG: [[CSTui6457:%[^ ]+]] = arc.constant 57 : ui64
     %cst_ui6488 = arc.constant 88: ui64
     // CHECK-DAG: [[CSTui6488:%[^ ]+]] = arc.constant 88 : ui64
     %cst_ui6496 = arc.constant 96: ui64
     // CHECK-DAG: [[CSTui6496:%[^ ]+]] = arc.constant 96 : ui64
+    %cst_ui6447771038016102400 = arc.constant 47771038016102400: ui64
+    // CHECK-DAG: [[CSTui6447771038016102400:%[^ ]+]] = arc.constant 47771038016102400 : ui64
+    %cst_ui6463694717354803200 = arc.constant 63694717354803200: ui64
+    // CHECK-DAG: [[CSTui6463694717354803200:%[^ ]+]] = arc.constant 63694717354803200 : ui64
+    %cst_ui6495542076032204800 = arc.constant 95542076032204800: ui64
+    // CHECK-DAG: [[CSTui6495542076032204800:%[^ ]+]] = arc.constant 95542076032204800 : ui64
     %cst_ui64102665475526230014 = arc.constant 102665475526230014: ui64
     // CHECK-DAG: [[CSTui64102665475526230014:%[^ ]+]] = arc.constant 102665475526230014 : ui64
     %cst_ui64102665475526230015 = arc.constant 102665475526230015: ui64
@@ -490,48 +1188,114 @@ module @toplevel {
     // CHECK-DAG: [[CSTui64124158526756134912:%[^ ]+]] = arc.constant 124158526756134912 : ui64
     %cst_ui64175195033383714816 = arc.constant 175195033383714816: ui64
     // CHECK-DAG: [[CSTui64175195033383714816:%[^ ]+]] = arc.constant 175195033383714816 : ui64
+    %cst_ui64191084152064409596 = arc.constant 191084152064409596: ui64
+    // CHECK-DAG: [[CSTui64191084152064409596:%[^ ]+]] = arc.constant 191084152064409596 : ui64
+    %cst_ui64191084152064409597 = arc.constant 191084152064409597: ui64
+    // CHECK-DAG: [[CSTui64191084152064409597:%[^ ]+]] = arc.constant 191084152064409597 : ui64
+    %cst_ui64191084152064409598 = arc.constant 191084152064409598: ui64
+    // CHECK-DAG: [[CSTui64191084152064409598:%[^ ]+]] = arc.constant 191084152064409598 : ui64
     %cst_ui64191084152064409599 = arc.constant 191084152064409599: ui64
     // CHECK-DAG: [[CSTui64191084152064409599:%[^ ]+]] = arc.constant 191084152064409599 : ui64
     %cst_ui64191084152064409600 = arc.constant 191084152064409600: ui64
     // CHECK-DAG: [[CSTui64191084152064409600:%[^ ]+]] = arc.constant 191084152064409600 : ui64
     %cst_ui64191084152064409601 = arc.constant 191084152064409601: ui64
     // CHECK-DAG: [[CSTui64191084152064409601:%[^ ]+]] = arc.constant 191084152064409601 : ui64
+    %cst_ui64191084152064409602 = arc.constant 191084152064409602: ui64
+    // CHECK-DAG: [[CSTui64191084152064409602:%[^ ]+]] = arc.constant 191084152064409602 : ui64
+    %cst_ui64191084152064409603 = arc.constant 191084152064409603: ui64
+    // CHECK-DAG: [[CSTui64191084152064409603:%[^ ]+]] = arc.constant 191084152064409603 : ui64
+    %cst_ui64191084152064409604 = arc.constant 191084152064409604: ui64
+    // CHECK-DAG: [[CSTui64191084152064409604:%[^ ]+]] = arc.constant 191084152064409604 : ui64
     %cst_ui64382168304128819200 = arc.constant 382168304128819200: ui64
     // CHECK-DAG: [[CSTui64382168304128819200:%[^ ]+]] = arc.constant 382168304128819200 : ui64
+    %cst_ui64573252456193228800 = arc.constant 573252456193228800: ui64
+    // CHECK-DAG: [[CSTui64573252456193228800:%[^ ]+]] = arc.constant 573252456193228800 : ui64
+    %cst_ui64764336608257638400 = arc.constant 764336608257638400: ui64
+    // CHECK-DAG: [[CSTui64764336608257638400:%[^ ]+]] = arc.constant 764336608257638400 : ui64
     %cst_ui641456143658657791998 = arc.constant 1456143658657791998: ui64
     // CHECK-DAG: [[CSTui641456143658657791998:%[^ ]+]] = arc.constant 1456143658657791998 : ui64
     %cst_ui641456143658657791999 = arc.constant 1456143658657791999: ui64
     // CHECK-DAG: [[CSTui641456143658657791999:%[^ ]+]] = arc.constant 1456143658657791999 : ui64
+    %cst_ui642753988798606870528 = arc.constant 2753988798606870528: ui64
+    // CHECK-DAG: [[CSTui642753988798606870528:%[^ ]+]] = arc.constant 2753988798606870528 : ui64
+    %cst_ui643671985064809160704 = arc.constant 3671985064809160704: ui64
+    // CHECK-DAG: [[CSTui643671985064809160704:%[^ ]+]] = arc.constant 3671985064809160704 : ui64
+    %cst_ui644247650103762939904 = arc.constant 4247650103762939904: ui64
+    // CHECK-DAG: [[CSTui644247650103762939904:%[^ ]+]] = arc.constant 4247650103762939904 : ui64
+    %cst_ui644611686018427387903 = arc.constant 4611686018427387903: ui64
+    // CHECK-DAG: [[CSTui644611686018427387903:%[^ ]+]] = arc.constant 4611686018427387903 : ui64
+    %cst_ui645507977597213741056 = arc.constant 5507977597213741056: ui64
+    // CHECK-DAG: [[CSTui645507977597213741056:%[^ ]+]] = arc.constant 5507977597213741056 : ui64
+    %cst_ui645663533471683919872 = arc.constant 5663533471683919872: ui64
+    // CHECK-DAG: [[CSTui645663533471683919872:%[^ ]+]] = arc.constant 5663533471683919872 : ui64
     %cst_ui645974645220624277504 = arc.constant 5974645220624277504: ui64
     // CHECK-DAG: [[CSTui645974645220624277504:%[^ ]+]] = arc.constant 5974645220624277504 : ui64
+    %cst_ui646148914691236517204 = arc.constant 6148914691236517204: ui64
+    // CHECK-DAG: [[CSTui646148914691236517204:%[^ ]+]] = arc.constant 6148914691236517204 : ui64
+    %cst_ui646148914691236517205 = arc.constant 6148914691236517205: ui64
+    // CHECK-DAG: [[CSTui646148914691236517205:%[^ ]+]] = arc.constant 6148914691236517205 : ui64
     %cst_ui647430788879282069502 = arc.constant 7430788879282069502: ui64
     // CHECK-DAG: [[CSTui647430788879282069502:%[^ ]+]] = arc.constant 7430788879282069502 : ui64
     %cst_ui647430788879282069503 = arc.constant 7430788879282069503: ui64
     // CHECK-DAG: [[CSTui647430788879282069503:%[^ ]+]] = arc.constant 7430788879282069503 : ui64
+    %cst_ui648495300207525879808 = arc.constant 8495300207525879808: ui64
+    // CHECK-DAG: [[CSTui648495300207525879808:%[^ ]+]] = arc.constant 8495300207525879808 : ui64
+    %cst_ui649223372036854775807 = arc.constant 9223372036854775807: ui64
+    // CHECK-DAG: [[CSTui649223372036854775807:%[^ ]+]] = arc.constant 9223372036854775807 : ui64
     %cst_ui6410824871042363072512 = arc.constant 10824871042363072512: ui64
     // CHECK-DAG: [[CSTui6410824871042363072512:%[^ ]+]] = arc.constant 10824871042363072512 : ui64
+    %cst_ui6411015955194427482108 = arc.constant 11015955194427482108: ui64
+    // CHECK-DAG: [[CSTui6411015955194427482108:%[^ ]+]] = arc.constant 11015955194427482108 : ui64
+    %cst_ui6411015955194427482109 = arc.constant 11015955194427482109: ui64
+    // CHECK-DAG: [[CSTui6411015955194427482109:%[^ ]+]] = arc.constant 11015955194427482109 : ui64
+    %cst_ui6411015955194427482110 = arc.constant 11015955194427482110: ui64
+    // CHECK-DAG: [[CSTui6411015955194427482110:%[^ ]+]] = arc.constant 11015955194427482110 : ui64
     %cst_ui6411015955194427482111 = arc.constant 11015955194427482111: ui64
     // CHECK-DAG: [[CSTui6411015955194427482111:%[^ ]+]] = arc.constant 11015955194427482111 : ui64
     %cst_ui6411015955194427482112 = arc.constant 11015955194427482112: ui64
     // CHECK-DAG: [[CSTui6411015955194427482112:%[^ ]+]] = arc.constant 11015955194427482112 : ui64
     %cst_ui6411015955194427482113 = arc.constant 11015955194427482113: ui64
     // CHECK-DAG: [[CSTui6411015955194427482113:%[^ ]+]] = arc.constant 11015955194427482113 : ui64
+    %cst_ui6411015955194427482114 = arc.constant 11015955194427482114: ui64
+    // CHECK-DAG: [[CSTui6411015955194427482114:%[^ ]+]] = arc.constant 11015955194427482114 : ui64
+    %cst_ui6411015955194427482115 = arc.constant 11015955194427482115: ui64
+    // CHECK-DAG: [[CSTui6411015955194427482115:%[^ ]+]] = arc.constant 11015955194427482115 : ui64
+    %cst_ui6411015955194427482116 = arc.constant 11015955194427482116: ui64
+    // CHECK-DAG: [[CSTui6411015955194427482116:%[^ ]+]] = arc.constant 11015955194427482116 : ui64
     %cst_ui6411207039346491891712 = arc.constant 11207039346491891712: ui64
     // CHECK-DAG: [[CSTui6411207039346491891712:%[^ ]+]] = arc.constant 11207039346491891712 : ui64
     %cst_ui6416799516262987350016 = arc.constant 16799516262987350016: ui64
     // CHECK-DAG: [[CSTui6416799516262987350016:%[^ ]+]] = arc.constant 16799516262987350016 : ui64
+    %cst_ui6416990600415051759612 = arc.constant 16990600415051759612: ui64
+    // CHECK-DAG: [[CSTui6416990600415051759612:%[^ ]+]] = arc.constant 16990600415051759612 : ui64
+    %cst_ui6416990600415051759613 = arc.constant 16990600415051759613: ui64
+    // CHECK-DAG: [[CSTui6416990600415051759613:%[^ ]+]] = arc.constant 16990600415051759613 : ui64
+    %cst_ui6416990600415051759614 = arc.constant 16990600415051759614: ui64
+    // CHECK-DAG: [[CSTui6416990600415051759614:%[^ ]+]] = arc.constant 16990600415051759614 : ui64
     %cst_ui6416990600415051759615 = arc.constant 16990600415051759615: ui64
     // CHECK-DAG: [[CSTui6416990600415051759615:%[^ ]+]] = arc.constant 16990600415051759615 : ui64
     %cst_ui6416990600415051759616 = arc.constant 16990600415051759616: ui64
     // CHECK-DAG: [[CSTui6416990600415051759616:%[^ ]+]] = arc.constant 16990600415051759616 : ui64
     %cst_ui6416990600415051759617 = arc.constant 16990600415051759617: ui64
     // CHECK-DAG: [[CSTui6416990600415051759617:%[^ ]+]] = arc.constant 16990600415051759617 : ui64
+    %cst_ui6416990600415051759618 = arc.constant 16990600415051759618: ui64
+    // CHECK-DAG: [[CSTui6416990600415051759618:%[^ ]+]] = arc.constant 16990600415051759618 : ui64
+    %cst_ui6416990600415051759619 = arc.constant 16990600415051759619: ui64
+    // CHECK-DAG: [[CSTui6416990600415051759619:%[^ ]+]] = arc.constant 16990600415051759619 : ui64
+    %cst_ui6416990600415051759620 = arc.constant 16990600415051759620: ui64
+    // CHECK-DAG: [[CSTui6416990600415051759620:%[^ ]+]] = arc.constant 16990600415051759620 : ui64
     %cst_ui6417181684567116169216 = arc.constant 17181684567116169216: ui64
     // CHECK-DAG: [[CSTui6417181684567116169216:%[^ ]+]] = arc.constant 17181684567116169216 : ui64
     %cst_ui6418255659921645142014 = arc.constant 18255659921645142014: ui64
     // CHECK-DAG: [[CSTui6418255659921645142014:%[^ ]+]] = arc.constant 18255659921645142014 : ui64
     %cst_ui6418255659921645142015 = arc.constant 18255659921645142015: ui64
     // CHECK-DAG: [[CSTui6418255659921645142015:%[^ ]+]] = arc.constant 18255659921645142015 : ui64
+    %cst_ui6418446744073709551610 = arc.constant 18446744073709551610: ui64
+    // CHECK-DAG: [[CSTui6418446744073709551610:%[^ ]+]] = arc.constant 18446744073709551610 : ui64
+    %cst_ui6418446744073709551611 = arc.constant 18446744073709551611: ui64
+    // CHECK-DAG: [[CSTui6418446744073709551611:%[^ ]+]] = arc.constant 18446744073709551611 : ui64
+    %cst_ui6418446744073709551612 = arc.constant 18446744073709551612: ui64
+    // CHECK-DAG: [[CSTui6418446744073709551612:%[^ ]+]] = arc.constant 18446744073709551612 : ui64
     %cst_ui6418446744073709551613 = arc.constant 18446744073709551613: ui64
     // CHECK-DAG: [[CSTui6418446744073709551613:%[^ ]+]] = arc.constant 18446744073709551613 : ui64
     %cst_ui6418446744073709551614 = arc.constant 18446744073709551614: ui64
@@ -546,50 +1310,124 @@ module @toplevel {
     // CHECK-DAG: [[CSTui82:%[^ ]+]] = arc.constant 2 : ui8
     %cst_ui83 = arc.constant 3: ui8
     // CHECK-DAG: [[CSTui83:%[^ ]+]] = arc.constant 3 : ui8
+    %cst_ui84 = arc.constant 4: ui8
+    // CHECK-DAG: [[CSTui84:%[^ ]+]] = arc.constant 4 : ui8
+    %cst_ui85 = arc.constant 5: ui8
+    // CHECK-DAG: [[CSTui85:%[^ ]+]] = arc.constant 5 : ui8
+    %cst_ui86 = arc.constant 6: ui8
+    // CHECK-DAG: [[CSTui86:%[^ ]+]] = arc.constant 6 : ui8
+    %cst_ui87 = arc.constant 7: ui8
+    // CHECK-DAG: [[CSTui87:%[^ ]+]] = arc.constant 7 : ui8
+    %cst_ui88 = arc.constant 8: ui8
+    // CHECK-DAG: [[CSTui88:%[^ ]+]] = arc.constant 8 : ui8
+    %cst_ui89 = arc.constant 9: ui8
+    // CHECK-DAG: [[CSTui89:%[^ ]+]] = arc.constant 9 : ui8
+    %cst_ui812 = arc.constant 12: ui8
+    // CHECK-DAG: [[CSTui812:%[^ ]+]] = arc.constant 12 : ui8
+    %cst_ui816 = arc.constant 16: ui8
+    // CHECK-DAG: [[CSTui816:%[^ ]+]] = arc.constant 16 : ui8
     %cst_ui818 = arc.constant 18: ui8
     // CHECK-DAG: [[CSTui818:%[^ ]+]] = arc.constant 18 : ui8
+    %cst_ui824 = arc.constant 24: ui8
+    // CHECK-DAG: [[CSTui824:%[^ ]+]] = arc.constant 24 : ui8
+    %cst_ui825 = arc.constant 25: ui8
+    // CHECK-DAG: [[CSTui825:%[^ ]+]] = arc.constant 25 : ui8
     %cst_ui828 = arc.constant 28: ui8
     // CHECK-DAG: [[CSTui828:%[^ ]+]] = arc.constant 28 : ui8
+    %cst_ui833 = arc.constant 33: ui8
+    // CHECK-DAG: [[CSTui833:%[^ ]+]] = arc.constant 33 : ui8
+    %cst_ui836 = arc.constant 36: ui8
+    // CHECK-DAG: [[CSTui836:%[^ ]+]] = arc.constant 36 : ui8
     %cst_ui838 = arc.constant 38: ui8
     // CHECK-DAG: [[CSTui838:%[^ ]+]] = arc.constant 38 : ui8
     %cst_ui839 = arc.constant 39: ui8
     // CHECK-DAG: [[CSTui839:%[^ ]+]] = arc.constant 39 : ui8
+    %cst_ui840 = arc.constant 40: ui8
+    // CHECK-DAG: [[CSTui840:%[^ ]+]] = arc.constant 40 : ui8
+    %cst_ui850 = arc.constant 50: ui8
+    // CHECK-DAG: [[CSTui850:%[^ ]+]] = arc.constant 50 : ui8
     %cst_ui854 = arc.constant 54: ui8
     // CHECK-DAG: [[CSTui854:%[^ ]+]] = arc.constant 54 : ui8
     %cst_ui855 = arc.constant 55: ui8
     // CHECK-DAG: [[CSTui855:%[^ ]+]] = arc.constant 55 : ui8
     %cst_ui862 = arc.constant 62: ui8
     // CHECK-DAG: [[CSTui862:%[^ ]+]] = arc.constant 62 : ui8
+    %cst_ui863 = arc.constant 63: ui8
+    // CHECK-DAG: [[CSTui863:%[^ ]+]] = arc.constant 63 : ui8
+    %cst_ui868 = arc.constant 68: ui8
+    // CHECK-DAG: [[CSTui868:%[^ ]+]] = arc.constant 68 : ui8
+    %cst_ui869 = arc.constant 69: ui8
+    // CHECK-DAG: [[CSTui869:%[^ ]+]] = arc.constant 69 : ui8
+    %cst_ui870 = arc.constant 70: ui8
+    // CHECK-DAG: [[CSTui870:%[^ ]+]] = arc.constant 70 : ui8
     %cst_ui871 = arc.constant 71: ui8
     // CHECK-DAG: [[CSTui871:%[^ ]+]] = arc.constant 71 : ui8
     %cst_ui872 = arc.constant 72: ui8
     // CHECK-DAG: [[CSTui872:%[^ ]+]] = arc.constant 72 : ui8
     %cst_ui873 = arc.constant 73: ui8
     // CHECK-DAG: [[CSTui873:%[^ ]+]] = arc.constant 73 : ui8
+    %cst_ui874 = arc.constant 74: ui8
+    // CHECK-DAG: [[CSTui874:%[^ ]+]] = arc.constant 74 : ui8
+    %cst_ui875 = arc.constant 75: ui8
+    // CHECK-DAG: [[CSTui875:%[^ ]+]] = arc.constant 75 : ui8
+    %cst_ui876 = arc.constant 76: ui8
+    // CHECK-DAG: [[CSTui876:%[^ ]+]] = arc.constant 76 : ui8
+    %cst_ui881 = arc.constant 81: ui8
+    // CHECK-DAG: [[CSTui881:%[^ ]+]] = arc.constant 81 : ui8
+    %cst_ui884 = arc.constant 84: ui8
+    // CHECK-DAG: [[CSTui884:%[^ ]+]] = arc.constant 84 : ui8
+    %cst_ui885 = arc.constant 85: ui8
+    // CHECK-DAG: [[CSTui885:%[^ ]+]] = arc.constant 85 : ui8
     %cst_ui890 = arc.constant 90: ui8
     // CHECK-DAG: [[CSTui890:%[^ ]+]] = arc.constant 90 : ui8
     %cst_ui892 = arc.constant 92: ui8
     // CHECK-DAG: [[CSTui892:%[^ ]+]] = arc.constant 92 : ui8
     %cst_ui893 = arc.constant 93: ui8
     // CHECK-DAG: [[CSTui893:%[^ ]+]] = arc.constant 93 : ui8
+    %cst_ui896 = arc.constant 96: ui8
+    // CHECK-DAG: [[CSTui896:%[^ ]+]] = arc.constant 96 : ui8
+    %cst_ui897 = arc.constant 97: ui8
+    // CHECK-DAG: [[CSTui897:%[^ ]+]] = arc.constant 97 : ui8
+    %cst_ui898 = arc.constant 98: ui8
+    // CHECK-DAG: [[CSTui898:%[^ ]+]] = arc.constant 98 : ui8
     %cst_ui899 = arc.constant 99: ui8
     // CHECK-DAG: [[CSTui899:%[^ ]+]] = arc.constant 99 : ui8
     %cst_ui8100 = arc.constant 100: ui8
     // CHECK-DAG: [[CSTui8100:%[^ ]+]] = arc.constant 100 : ui8
     %cst_ui8101 = arc.constant 101: ui8
     // CHECK-DAG: [[CSTui8101:%[^ ]+]] = arc.constant 101 : ui8
+    %cst_ui8102 = arc.constant 102: ui8
+    // CHECK-DAG: [[CSTui8102:%[^ ]+]] = arc.constant 102 : ui8
+    %cst_ui8103 = arc.constant 103: ui8
+    // CHECK-DAG: [[CSTui8103:%[^ ]+]] = arc.constant 103 : ui8
+    %cst_ui8104 = arc.constant 104: ui8
+    // CHECK-DAG: [[CSTui8104:%[^ ]+]] = arc.constant 104 : ui8
+    %cst_ui8127 = arc.constant 127: ui8
+    // CHECK-DAG: [[CSTui8127:%[^ ]+]] = arc.constant 127 : ui8
     %cst_ui8144 = arc.constant 144: ui8
     // CHECK-DAG: [[CSTui8144:%[^ ]+]] = arc.constant 144 : ui8
     %cst_ui8154 = arc.constant 154: ui8
     // CHECK-DAG: [[CSTui8154:%[^ ]+]] = arc.constant 154 : ui8
     %cst_ui8155 = arc.constant 155: ui8
     // CHECK-DAG: [[CSTui8155:%[^ ]+]] = arc.constant 155 : ui8
+    %cst_ui8158 = arc.constant 158: ui8
+    // CHECK-DAG: [[CSTui8158:%[^ ]+]] = arc.constant 158 : ui8
+    %cst_ui8159 = arc.constant 159: ui8
+    // CHECK-DAG: [[CSTui8159:%[^ ]+]] = arc.constant 159 : ui8
+    %cst_ui8160 = arc.constant 160: ui8
+    // CHECK-DAG: [[CSTui8160:%[^ ]+]] = arc.constant 160 : ui8
     %cst_ui8161 = arc.constant 161: ui8
     // CHECK-DAG: [[CSTui8161:%[^ ]+]] = arc.constant 161 : ui8
     %cst_ui8162 = arc.constant 162: ui8
     // CHECK-DAG: [[CSTui8162:%[^ ]+]] = arc.constant 162 : ui8
     %cst_ui8163 = arc.constant 163: ui8
     // CHECK-DAG: [[CSTui8163:%[^ ]+]] = arc.constant 163 : ui8
+    %cst_ui8164 = arc.constant 164: ui8
+    // CHECK-DAG: [[CSTui8164:%[^ ]+]] = arc.constant 164 : ui8
+    %cst_ui8165 = arc.constant 165: ui8
+    // CHECK-DAG: [[CSTui8165:%[^ ]+]] = arc.constant 165 : ui8
+    %cst_ui8166 = arc.constant 166: ui8
+    // CHECK-DAG: [[CSTui8166:%[^ ]+]] = arc.constant 166 : ui8
     %cst_ui8172 = arc.constant 172: ui8
     // CHECK-DAG: [[CSTui8172:%[^ ]+]] = arc.constant 172 : ui8
     %cst_ui8182 = arc.constant 182: ui8
@@ -598,8 +1436,16 @@ module @toplevel {
     // CHECK-DAG: [[CSTui8183:%[^ ]+]] = arc.constant 183 : ui8
     %cst_ui8200 = arc.constant 200: ui8
     // CHECK-DAG: [[CSTui8200:%[^ ]+]] = arc.constant 200 : ui8
+    %cst_ui8216 = arc.constant 216: ui8
+    // CHECK-DAG: [[CSTui8216:%[^ ]+]] = arc.constant 216 : ui8
     %cst_ui8234 = arc.constant 234: ui8
     // CHECK-DAG: [[CSTui8234:%[^ ]+]] = arc.constant 234 : ui8
+    %cst_ui8250 = arc.constant 250: ui8
+    // CHECK-DAG: [[CSTui8250:%[^ ]+]] = arc.constant 250 : ui8
+    %cst_ui8251 = arc.constant 251: ui8
+    // CHECK-DAG: [[CSTui8251:%[^ ]+]] = arc.constant 251 : ui8
+    %cst_ui8252 = arc.constant 252: ui8
+    // CHECK-DAG: [[CSTui8252:%[^ ]+]] = arc.constant 252 : ui8
     %cst_ui8253 = arc.constant 253: ui8
     // CHECK-DAG: [[CSTui8253:%[^ ]+]] = arc.constant 253 : ui8
     %cst_ui8254 = arc.constant 254: ui8
@@ -616,6 +1462,11 @@ module @toplevel {
     "arc.keep"(%result_addi_si160_si16n32768) : (si16) -> ()
     // CHECK: "arc.keep"([[CSTsi16n32768]]) : (si16) -> ()
 
+    // addi -32768, 1 -> -32767
+    %result_addi_si16n32768_si161 = arc.addi %cst_si16n32768, %cst_si161 : si16
+    "arc.keep"(%result_addi_si16n32768_si161) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi16n32767]]) : (si16) -> ()
+
     // addi -32767, 0 -> -32767
     %result_addi_si16n32767_si160 = arc.addi %cst_si16n32767, %cst_si160 : si16
     "arc.keep"(%result_addi_si16n32767_si160) : (si16) -> ()
@@ -626,6 +1477,81 @@ module @toplevel {
     "arc.keep"(%result_addi_si160_si16n32767) : (si16) -> ()
     // CHECK: "arc.keep"([[CSTsi16n32767]]) : (si16) -> ()
 
+    // addi 1, -32768 -> -32767
+    %result_addi_si161_si16n32768 = arc.addi %cst_si161, %cst_si16n32768 : si16
+    "arc.keep"(%result_addi_si161_si16n32768) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi16n32767]]) : (si16) -> ()
+
+    // addi -32768, 2 -> -32766
+    %result_addi_si16n32768_si162 = arc.addi %cst_si16n32768, %cst_si162 : si16
+    "arc.keep"(%result_addi_si16n32768_si162) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi16n32766]]) : (si16) -> ()
+
+    // addi -32767, 1 -> -32766
+    %result_addi_si16n32767_si161 = arc.addi %cst_si16n32767, %cst_si161 : si16
+    "arc.keep"(%result_addi_si16n32767_si161) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi16n32766]]) : (si16) -> ()
+
+    // addi 1, -32767 -> -32766
+    %result_addi_si161_si16n32767 = arc.addi %cst_si161, %cst_si16n32767 : si16
+    "arc.keep"(%result_addi_si161_si16n32767) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi16n32766]]) : (si16) -> ()
+
+    // addi 2, -32768 -> -32766
+    %result_addi_si162_si16n32768 = arc.addi %cst_si162, %cst_si16n32768 : si16
+    "arc.keep"(%result_addi_si162_si16n32768) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi16n32766]]) : (si16) -> ()
+
+    // addi -32768, 3 -> -32765
+    %result_addi_si16n32768_si163 = arc.addi %cst_si16n32768, %cst_si163 : si16
+    "arc.keep"(%result_addi_si16n32768_si163) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi16n32765]]) : (si16) -> ()
+
+    // addi -32767, 2 -> -32765
+    %result_addi_si16n32767_si162 = arc.addi %cst_si16n32767, %cst_si162 : si16
+    "arc.keep"(%result_addi_si16n32767_si162) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi16n32765]]) : (si16) -> ()
+
+    // addi 2, -32767 -> -32765
+    %result_addi_si162_si16n32767 = arc.addi %cst_si162, %cst_si16n32767 : si16
+    "arc.keep"(%result_addi_si162_si16n32767) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi16n32765]]) : (si16) -> ()
+
+    // addi 3, -32768 -> -32765
+    %result_addi_si163_si16n32768 = arc.addi %cst_si163, %cst_si16n32768 : si16
+    "arc.keep"(%result_addi_si163_si16n32768) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi16n32765]]) : (si16) -> ()
+
+    // addi -32768, 4 -> -32764
+    %result_addi_si16n32768_si164 = arc.addi %cst_si16n32768, %cst_si164 : si16
+    "arc.keep"(%result_addi_si16n32768_si164) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi16n32764]]) : (si16) -> ()
+
+    // addi -32767, 3 -> -32764
+    %result_addi_si16n32767_si163 = arc.addi %cst_si16n32767, %cst_si163 : si16
+    "arc.keep"(%result_addi_si16n32767_si163) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi16n32764]]) : (si16) -> ()
+
+    // addi 3, -32767 -> -32764
+    %result_addi_si163_si16n32767 = arc.addi %cst_si163, %cst_si16n32767 : si16
+    "arc.keep"(%result_addi_si163_si16n32767) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi16n32764]]) : (si16) -> ()
+
+    // addi 4, -32768 -> -32764
+    %result_addi_si164_si16n32768 = arc.addi %cst_si164, %cst_si16n32768 : si16
+    "arc.keep"(%result_addi_si164_si16n32768) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi16n32764]]) : (si16) -> ()
+
+    // addi -32767, 4 -> -32763
+    %result_addi_si16n32767_si164 = arc.addi %cst_si16n32767, %cst_si164 : si16
+    "arc.keep"(%result_addi_si16n32767_si164) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi16n32763]]) : (si16) -> ()
+
+    // addi 4, -32767 -> -32763
+    %result_addi_si164_si16n32767 = arc.addi %cst_si164, %cst_si16n32767 : si16
+    "arc.keep"(%result_addi_si164_si16n32767) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi16n32763]]) : (si16) -> ()
+
     // addi -32547, 0 -> -32547
     %result_addi_si16n32547_si160 = arc.addi %cst_si16n32547, %cst_si160 : si16
     "arc.keep"(%result_addi_si16n32547_si160) : (si16) -> ()
@@ -635,6 +1561,46 @@ module @toplevel {
     %result_addi_si160_si16n32547 = arc.addi %cst_si160, %cst_si16n32547 : si16
     "arc.keep"(%result_addi_si160_si16n32547) : (si16) -> ()
     // CHECK: "arc.keep"([[CSTsi16n32547]]) : (si16) -> ()
+
+    // addi -32547, 1 -> -32546
+    %result_addi_si16n32547_si161 = arc.addi %cst_si16n32547, %cst_si161 : si16
+    "arc.keep"(%result_addi_si16n32547_si161) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi16n32546]]) : (si16) -> ()
+
+    // addi 1, -32547 -> -32546
+    %result_addi_si161_si16n32547 = arc.addi %cst_si161, %cst_si16n32547 : si16
+    "arc.keep"(%result_addi_si161_si16n32547) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi16n32546]]) : (si16) -> ()
+
+    // addi -32547, 2 -> -32545
+    %result_addi_si16n32547_si162 = arc.addi %cst_si16n32547, %cst_si162 : si16
+    "arc.keep"(%result_addi_si16n32547_si162) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi16n32545]]) : (si16) -> ()
+
+    // addi 2, -32547 -> -32545
+    %result_addi_si162_si16n32547 = arc.addi %cst_si162, %cst_si16n32547 : si16
+    "arc.keep"(%result_addi_si162_si16n32547) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi16n32545]]) : (si16) -> ()
+
+    // addi -32547, 3 -> -32544
+    %result_addi_si16n32547_si163 = arc.addi %cst_si16n32547, %cst_si163 : si16
+    "arc.keep"(%result_addi_si16n32547_si163) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi16n32544]]) : (si16) -> ()
+
+    // addi 3, -32547 -> -32544
+    %result_addi_si163_si16n32547 = arc.addi %cst_si163, %cst_si16n32547 : si16
+    "arc.keep"(%result_addi_si163_si16n32547) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi16n32544]]) : (si16) -> ()
+
+    // addi -32547, 4 -> -32543
+    %result_addi_si16n32547_si164 = arc.addi %cst_si16n32547, %cst_si164 : si16
+    "arc.keep"(%result_addi_si16n32547_si164) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi16n32543]]) : (si16) -> ()
+
+    // addi 4, -32547 -> -32543
+    %result_addi_si164_si16n32547 = arc.addi %cst_si164, %cst_si16n32547 : si16
+    "arc.keep"(%result_addi_si164_si16n32547) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi16n32543]]) : (si16) -> ()
 
     // addi -32768, 10486 -> -22282
     %result_addi_si16n32768_si1610486 = arc.addi %cst_si16n32768, %cst_si1610486 : si16
@@ -741,6 +1707,126 @@ module @toplevel {
     "arc.keep"(%result_addi_si1632767_si16n32767) : (si16) -> ()
     // CHECK: "arc.keep"([[CSTsi160]]) : (si16) -> ()
 
+    // addi 0, 1 -> 1
+    %result_addi_si160_si161 = arc.addi %cst_si160, %cst_si161 : si16
+    "arc.keep"(%result_addi_si160_si161) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi161]]) : (si16) -> ()
+
+    // addi 1, 0 -> 1
+    %result_addi_si161_si160 = arc.addi %cst_si161, %cst_si160 : si16
+    "arc.keep"(%result_addi_si161_si160) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi161]]) : (si16) -> ()
+
+    // addi 0, 2 -> 2
+    %result_addi_si160_si162 = arc.addi %cst_si160, %cst_si162 : si16
+    "arc.keep"(%result_addi_si160_si162) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi162]]) : (si16) -> ()
+
+    // addi 1, 1 -> 2
+    %result_addi_si161_si161 = arc.addi %cst_si161, %cst_si161 : si16
+    "arc.keep"(%result_addi_si161_si161) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi162]]) : (si16) -> ()
+
+    // addi 2, 0 -> 2
+    %result_addi_si162_si160 = arc.addi %cst_si162, %cst_si160 : si16
+    "arc.keep"(%result_addi_si162_si160) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi162]]) : (si16) -> ()
+
+    // addi 0, 3 -> 3
+    %result_addi_si160_si163 = arc.addi %cst_si160, %cst_si163 : si16
+    "arc.keep"(%result_addi_si160_si163) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi163]]) : (si16) -> ()
+
+    // addi 1, 2 -> 3
+    %result_addi_si161_si162 = arc.addi %cst_si161, %cst_si162 : si16
+    "arc.keep"(%result_addi_si161_si162) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi163]]) : (si16) -> ()
+
+    // addi 2, 1 -> 3
+    %result_addi_si162_si161 = arc.addi %cst_si162, %cst_si161 : si16
+    "arc.keep"(%result_addi_si162_si161) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi163]]) : (si16) -> ()
+
+    // addi 3, 0 -> 3
+    %result_addi_si163_si160 = arc.addi %cst_si163, %cst_si160 : si16
+    "arc.keep"(%result_addi_si163_si160) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi163]]) : (si16) -> ()
+
+    // addi 0, 4 -> 4
+    %result_addi_si160_si164 = arc.addi %cst_si160, %cst_si164 : si16
+    "arc.keep"(%result_addi_si160_si164) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi164]]) : (si16) -> ()
+
+    // addi 1, 3 -> 4
+    %result_addi_si161_si163 = arc.addi %cst_si161, %cst_si163 : si16
+    "arc.keep"(%result_addi_si161_si163) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi164]]) : (si16) -> ()
+
+    // addi 2, 2 -> 4
+    %result_addi_si162_si162 = arc.addi %cst_si162, %cst_si162 : si16
+    "arc.keep"(%result_addi_si162_si162) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi164]]) : (si16) -> ()
+
+    // addi 3, 1 -> 4
+    %result_addi_si163_si161 = arc.addi %cst_si163, %cst_si161 : si16
+    "arc.keep"(%result_addi_si163_si161) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi164]]) : (si16) -> ()
+
+    // addi 4, 0 -> 4
+    %result_addi_si164_si160 = arc.addi %cst_si164, %cst_si160 : si16
+    "arc.keep"(%result_addi_si164_si160) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi164]]) : (si16) -> ()
+
+    // addi 1, 4 -> 5
+    %result_addi_si161_si164 = arc.addi %cst_si161, %cst_si164 : si16
+    "arc.keep"(%result_addi_si161_si164) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi165]]) : (si16) -> ()
+
+    // addi 2, 3 -> 5
+    %result_addi_si162_si163 = arc.addi %cst_si162, %cst_si163 : si16
+    "arc.keep"(%result_addi_si162_si163) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi165]]) : (si16) -> ()
+
+    // addi 3, 2 -> 5
+    %result_addi_si163_si162 = arc.addi %cst_si163, %cst_si162 : si16
+    "arc.keep"(%result_addi_si163_si162) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi165]]) : (si16) -> ()
+
+    // addi 4, 1 -> 5
+    %result_addi_si164_si161 = arc.addi %cst_si164, %cst_si161 : si16
+    "arc.keep"(%result_addi_si164_si161) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi165]]) : (si16) -> ()
+
+    // addi 2, 4 -> 6
+    %result_addi_si162_si164 = arc.addi %cst_si162, %cst_si164 : si16
+    "arc.keep"(%result_addi_si162_si164) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi166]]) : (si16) -> ()
+
+    // addi 3, 3 -> 6
+    %result_addi_si163_si163 = arc.addi %cst_si163, %cst_si163 : si16
+    "arc.keep"(%result_addi_si163_si163) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi166]]) : (si16) -> ()
+
+    // addi 4, 2 -> 6
+    %result_addi_si164_si162 = arc.addi %cst_si164, %cst_si162 : si16
+    "arc.keep"(%result_addi_si164_si162) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi166]]) : (si16) -> ()
+
+    // addi 3, 4 -> 7
+    %result_addi_si163_si164 = arc.addi %cst_si163, %cst_si164 : si16
+    "arc.keep"(%result_addi_si163_si164) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi167]]) : (si16) -> ()
+
+    // addi 4, 3 -> 7
+    %result_addi_si164_si163 = arc.addi %cst_si164, %cst_si163 : si16
+    "arc.keep"(%result_addi_si164_si163) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi167]]) : (si16) -> ()
+
+    // addi 4, 4 -> 8
+    %result_addi_si164_si164 = arc.addi %cst_si164, %cst_si164 : si16
+    "arc.keep"(%result_addi_si164_si164) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi168]]) : (si16) -> ()
+
     // addi -32547, 32766 -> 219
     %result_addi_si16n32547_si1632766 = arc.addi %cst_si16n32547, %cst_si1632766 : si16
     "arc.keep"(%result_addi_si16n32547_si1632766) : (si16) -> ()
@@ -771,6 +1857,46 @@ module @toplevel {
     "arc.keep"(%result_addi_si1610486_si160) : (si16) -> ()
     // CHECK: "arc.keep"([[CSTsi1610486]]) : (si16) -> ()
 
+    // addi 1, 10486 -> 10487
+    %result_addi_si161_si1610486 = arc.addi %cst_si161, %cst_si1610486 : si16
+    "arc.keep"(%result_addi_si161_si1610486) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi1610487]]) : (si16) -> ()
+
+    // addi 10486, 1 -> 10487
+    %result_addi_si1610486_si161 = arc.addi %cst_si1610486, %cst_si161 : si16
+    "arc.keep"(%result_addi_si1610486_si161) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi1610487]]) : (si16) -> ()
+
+    // addi 2, 10486 -> 10488
+    %result_addi_si162_si1610486 = arc.addi %cst_si162, %cst_si1610486 : si16
+    "arc.keep"(%result_addi_si162_si1610486) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi1610488]]) : (si16) -> ()
+
+    // addi 10486, 2 -> 10488
+    %result_addi_si1610486_si162 = arc.addi %cst_si1610486, %cst_si162 : si16
+    "arc.keep"(%result_addi_si1610486_si162) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi1610488]]) : (si16) -> ()
+
+    // addi 3, 10486 -> 10489
+    %result_addi_si163_si1610486 = arc.addi %cst_si163, %cst_si1610486 : si16
+    "arc.keep"(%result_addi_si163_si1610486) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi1610489]]) : (si16) -> ()
+
+    // addi 10486, 3 -> 10489
+    %result_addi_si1610486_si163 = arc.addi %cst_si1610486, %cst_si163 : si16
+    "arc.keep"(%result_addi_si1610486_si163) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi1610489]]) : (si16) -> ()
+
+    // addi 4, 10486 -> 10490
+    %result_addi_si164_si1610486 = arc.addi %cst_si164, %cst_si1610486 : si16
+    "arc.keep"(%result_addi_si164_si1610486) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi1610490]]) : (si16) -> ()
+
+    // addi 10486, 4 -> 10490
+    %result_addi_si1610486_si164 = arc.addi %cst_si1610486, %cst_si164 : si16
+    "arc.keep"(%result_addi_si1610486_si164) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi1610490]]) : (si16) -> ()
+
     // addi 0, 16514 -> 16514
     %result_addi_si160_si1616514 = arc.addi %cst_si160, %cst_si1616514 : si16
     "arc.keep"(%result_addi_si160_si1616514) : (si16) -> ()
@@ -780,6 +1906,46 @@ module @toplevel {
     %result_addi_si1616514_si160 = arc.addi %cst_si1616514, %cst_si160 : si16
     "arc.keep"(%result_addi_si1616514_si160) : (si16) -> ()
     // CHECK: "arc.keep"([[CSTsi1616514]]) : (si16) -> ()
+
+    // addi 1, 16514 -> 16515
+    %result_addi_si161_si1616514 = arc.addi %cst_si161, %cst_si1616514 : si16
+    "arc.keep"(%result_addi_si161_si1616514) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi1616515]]) : (si16) -> ()
+
+    // addi 16514, 1 -> 16515
+    %result_addi_si1616514_si161 = arc.addi %cst_si1616514, %cst_si161 : si16
+    "arc.keep"(%result_addi_si1616514_si161) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi1616515]]) : (si16) -> ()
+
+    // addi 2, 16514 -> 16516
+    %result_addi_si162_si1616514 = arc.addi %cst_si162, %cst_si1616514 : si16
+    "arc.keep"(%result_addi_si162_si1616514) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi1616516]]) : (si16) -> ()
+
+    // addi 16514, 2 -> 16516
+    %result_addi_si1616514_si162 = arc.addi %cst_si1616514, %cst_si162 : si16
+    "arc.keep"(%result_addi_si1616514_si162) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi1616516]]) : (si16) -> ()
+
+    // addi 3, 16514 -> 16517
+    %result_addi_si163_si1616514 = arc.addi %cst_si163, %cst_si1616514 : si16
+    "arc.keep"(%result_addi_si163_si1616514) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi1616517]]) : (si16) -> ()
+
+    // addi 16514, 3 -> 16517
+    %result_addi_si1616514_si163 = arc.addi %cst_si1616514, %cst_si163 : si16
+    "arc.keep"(%result_addi_si1616514_si163) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi1616517]]) : (si16) -> ()
+
+    // addi 4, 16514 -> 16518
+    %result_addi_si164_si1616514 = arc.addi %cst_si164, %cst_si1616514 : si16
+    "arc.keep"(%result_addi_si164_si1616514) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi1616518]]) : (si16) -> ()
+
+    // addi 16514, 4 -> 16518
+    %result_addi_si1616514_si164 = arc.addi %cst_si1616514, %cst_si164 : si16
+    "arc.keep"(%result_addi_si1616514_si164) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi1616518]]) : (si16) -> ()
 
     // addi 10486, 10486 -> 20972
     %result_addi_si1610486_si1610486 = arc.addi %cst_si1610486, %cst_si1610486 : si16
@@ -809,6 +1975,16 @@ module @toplevel {
     // addi 0, 32767 -> 32767
     %result_addi_si160_si1632767 = arc.addi %cst_si160, %cst_si1632767 : si16
     "arc.keep"(%result_addi_si160_si1632767) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi1632767]]) : (si16) -> ()
+
+    // addi 1, 32766 -> 32767
+    %result_addi_si161_si1632766 = arc.addi %cst_si161, %cst_si1632766 : si16
+    "arc.keep"(%result_addi_si161_si1632766) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi1632767]]) : (si16) -> ()
+
+    // addi 32766, 1 -> 32767
+    %result_addi_si1632766_si161 = arc.addi %cst_si1632766, %cst_si161 : si16
+    "arc.keep"(%result_addi_si1632766_si161) : (si16) -> ()
     // CHECK: "arc.keep"([[CSTsi1632767]]) : (si16) -> ()
 
     // addi 32767, 0 -> 32767
@@ -870,6 +2046,48 @@ module @toplevel {
     "arc.keep"(%result_addi_si16n32547_si16n32547) : (si16) -> ()
     // CHECK: "arc.keep"([[RESULT_addi_si16n32547_si16n32547]]) : (si16) -> ()
 
+    // addi 1, 32767 -> no-fold
+    %result_addi_si161_si1632767 = arc.addi %cst_si161, %cst_si1632767 : si16
+    // CHECK-DAG: [[RESULT_addi_si161_si1632767:%[^ ]+]] = arc.addi [[CSTsi161]], [[CSTsi1632767]] : si16
+    "arc.keep"(%result_addi_si161_si1632767) : (si16) -> ()
+    // CHECK: "arc.keep"([[RESULT_addi_si161_si1632767]]) : (si16) -> ()
+
+    // addi 2, 32766 -> no-fold
+    %result_addi_si162_si1632766 = arc.addi %cst_si162, %cst_si1632766 : si16
+    // CHECK-DAG: [[RESULT_addi_si162_si1632766:%[^ ]+]] = arc.addi [[CSTsi162]], [[CSTsi1632766]] : si16
+    "arc.keep"(%result_addi_si162_si1632766) : (si16) -> ()
+    // CHECK: "arc.keep"([[RESULT_addi_si162_si1632766]]) : (si16) -> ()
+
+    // addi 2, 32767 -> no-fold
+    %result_addi_si162_si1632767 = arc.addi %cst_si162, %cst_si1632767 : si16
+    // CHECK-DAG: [[RESULT_addi_si162_si1632767:%[^ ]+]] = arc.addi [[CSTsi162]], [[CSTsi1632767]] : si16
+    "arc.keep"(%result_addi_si162_si1632767) : (si16) -> ()
+    // CHECK: "arc.keep"([[RESULT_addi_si162_si1632767]]) : (si16) -> ()
+
+    // addi 3, 32766 -> no-fold
+    %result_addi_si163_si1632766 = arc.addi %cst_si163, %cst_si1632766 : si16
+    // CHECK-DAG: [[RESULT_addi_si163_si1632766:%[^ ]+]] = arc.addi [[CSTsi163]], [[CSTsi1632766]] : si16
+    "arc.keep"(%result_addi_si163_si1632766) : (si16) -> ()
+    // CHECK: "arc.keep"([[RESULT_addi_si163_si1632766]]) : (si16) -> ()
+
+    // addi 3, 32767 -> no-fold
+    %result_addi_si163_si1632767 = arc.addi %cst_si163, %cst_si1632767 : si16
+    // CHECK-DAG: [[RESULT_addi_si163_si1632767:%[^ ]+]] = arc.addi [[CSTsi163]], [[CSTsi1632767]] : si16
+    "arc.keep"(%result_addi_si163_si1632767) : (si16) -> ()
+    // CHECK: "arc.keep"([[RESULT_addi_si163_si1632767]]) : (si16) -> ()
+
+    // addi 4, 32766 -> no-fold
+    %result_addi_si164_si1632766 = arc.addi %cst_si164, %cst_si1632766 : si16
+    // CHECK-DAG: [[RESULT_addi_si164_si1632766:%[^ ]+]] = arc.addi [[CSTsi164]], [[CSTsi1632766]] : si16
+    "arc.keep"(%result_addi_si164_si1632766) : (si16) -> ()
+    // CHECK: "arc.keep"([[RESULT_addi_si164_si1632766]]) : (si16) -> ()
+
+    // addi 4, 32767 -> no-fold
+    %result_addi_si164_si1632767 = arc.addi %cst_si164, %cst_si1632767 : si16
+    // CHECK-DAG: [[RESULT_addi_si164_si1632767:%[^ ]+]] = arc.addi [[CSTsi164]], [[CSTsi1632767]] : si16
+    "arc.keep"(%result_addi_si164_si1632767) : (si16) -> ()
+    // CHECK: "arc.keep"([[RESULT_addi_si164_si1632767]]) : (si16) -> ()
+
     // addi 10486, 32766 -> no-fold
     %result_addi_si1610486_si1632766 = arc.addi %cst_si1610486, %cst_si1632766 : si16
     // CHECK-DAG: [[RESULT_addi_si1610486_si1632766:%[^ ]+]] = arc.addi [[CSTsi1610486]], [[CSTsi1632766]] : si16
@@ -900,6 +2118,24 @@ module @toplevel {
     "arc.keep"(%result_addi_si1616514_si1632767) : (si16) -> ()
     // CHECK: "arc.keep"([[RESULT_addi_si1616514_si1632767]]) : (si16) -> ()
 
+    // addi 32766, 2 -> no-fold
+    %result_addi_si1632766_si162 = arc.addi %cst_si1632766, %cst_si162 : si16
+    // CHECK-DAG: [[RESULT_addi_si1632766_si162:%[^ ]+]] = arc.addi [[CSTsi1632766]], [[CSTsi162]] : si16
+    "arc.keep"(%result_addi_si1632766_si162) : (si16) -> ()
+    // CHECK: "arc.keep"([[RESULT_addi_si1632766_si162]]) : (si16) -> ()
+
+    // addi 32766, 3 -> no-fold
+    %result_addi_si1632766_si163 = arc.addi %cst_si1632766, %cst_si163 : si16
+    // CHECK-DAG: [[RESULT_addi_si1632766_si163:%[^ ]+]] = arc.addi [[CSTsi1632766]], [[CSTsi163]] : si16
+    "arc.keep"(%result_addi_si1632766_si163) : (si16) -> ()
+    // CHECK: "arc.keep"([[RESULT_addi_si1632766_si163]]) : (si16) -> ()
+
+    // addi 32766, 4 -> no-fold
+    %result_addi_si1632766_si164 = arc.addi %cst_si1632766, %cst_si164 : si16
+    // CHECK-DAG: [[RESULT_addi_si1632766_si164:%[^ ]+]] = arc.addi [[CSTsi1632766]], [[CSTsi164]] : si16
+    "arc.keep"(%result_addi_si1632766_si164) : (si16) -> ()
+    // CHECK: "arc.keep"([[RESULT_addi_si1632766_si164]]) : (si16) -> ()
+
     // addi 32766, 10486 -> no-fold
     %result_addi_si1632766_si1610486 = arc.addi %cst_si1632766, %cst_si1610486 : si16
     // CHECK-DAG: [[RESULT_addi_si1632766_si1610486:%[^ ]+]] = arc.addi [[CSTsi1632766]], [[CSTsi1610486]] : si16
@@ -923,6 +2159,30 @@ module @toplevel {
     // CHECK-DAG: [[RESULT_addi_si1632766_si1632767:%[^ ]+]] = arc.addi [[CSTsi1632766]], [[CSTsi1632767]] : si16
     "arc.keep"(%result_addi_si1632766_si1632767) : (si16) -> ()
     // CHECK: "arc.keep"([[RESULT_addi_si1632766_si1632767]]) : (si16) -> ()
+
+    // addi 32767, 1 -> no-fold
+    %result_addi_si1632767_si161 = arc.addi %cst_si1632767, %cst_si161 : si16
+    // CHECK-DAG: [[RESULT_addi_si1632767_si161:%[^ ]+]] = arc.addi [[CSTsi1632767]], [[CSTsi161]] : si16
+    "arc.keep"(%result_addi_si1632767_si161) : (si16) -> ()
+    // CHECK: "arc.keep"([[RESULT_addi_si1632767_si161]]) : (si16) -> ()
+
+    // addi 32767, 2 -> no-fold
+    %result_addi_si1632767_si162 = arc.addi %cst_si1632767, %cst_si162 : si16
+    // CHECK-DAG: [[RESULT_addi_si1632767_si162:%[^ ]+]] = arc.addi [[CSTsi1632767]], [[CSTsi162]] : si16
+    "arc.keep"(%result_addi_si1632767_si162) : (si16) -> ()
+    // CHECK: "arc.keep"([[RESULT_addi_si1632767_si162]]) : (si16) -> ()
+
+    // addi 32767, 3 -> no-fold
+    %result_addi_si1632767_si163 = arc.addi %cst_si1632767, %cst_si163 : si16
+    // CHECK-DAG: [[RESULT_addi_si1632767_si163:%[^ ]+]] = arc.addi [[CSTsi1632767]], [[CSTsi163]] : si16
+    "arc.keep"(%result_addi_si1632767_si163) : (si16) -> ()
+    // CHECK: "arc.keep"([[RESULT_addi_si1632767_si163]]) : (si16) -> ()
+
+    // addi 32767, 4 -> no-fold
+    %result_addi_si1632767_si164 = arc.addi %cst_si1632767, %cst_si164 : si16
+    // CHECK-DAG: [[RESULT_addi_si1632767_si164:%[^ ]+]] = arc.addi [[CSTsi1632767]], [[CSTsi164]] : si16
+    "arc.keep"(%result_addi_si1632767_si164) : (si16) -> ()
+    // CHECK: "arc.keep"([[RESULT_addi_si1632767_si164]]) : (si16) -> ()
 
     // addi 32767, 10486 -> no-fold
     %result_addi_si1632767_si1610486 = arc.addi %cst_si1632767, %cst_si1610486 : si16
@@ -958,6 +2218,11 @@ module @toplevel {
     "arc.keep"(%result_addi_si320_si32n2147483648) : (si32) -> ()
     // CHECK: "arc.keep"([[CSTsi32n2147483648]]) : (si32) -> ()
 
+    // addi -2147483648, 1 -> -2147483647
+    %result_addi_si32n2147483648_si321 = arc.addi %cst_si32n2147483648, %cst_si321 : si32
+    "arc.keep"(%result_addi_si32n2147483648_si321) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi32n2147483647]]) : (si32) -> ()
+
     // addi -2147483647, 0 -> -2147483647
     %result_addi_si32n2147483647_si320 = arc.addi %cst_si32n2147483647, %cst_si320 : si32
     "arc.keep"(%result_addi_si32n2147483647_si320) : (si32) -> ()
@@ -967,6 +2232,81 @@ module @toplevel {
     %result_addi_si320_si32n2147483647 = arc.addi %cst_si320, %cst_si32n2147483647 : si32
     "arc.keep"(%result_addi_si320_si32n2147483647) : (si32) -> ()
     // CHECK: "arc.keep"([[CSTsi32n2147483647]]) : (si32) -> ()
+
+    // addi 1, -2147483648 -> -2147483647
+    %result_addi_si321_si32n2147483648 = arc.addi %cst_si321, %cst_si32n2147483648 : si32
+    "arc.keep"(%result_addi_si321_si32n2147483648) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi32n2147483647]]) : (si32) -> ()
+
+    // addi -2147483648, 2 -> -2147483646
+    %result_addi_si32n2147483648_si322 = arc.addi %cst_si32n2147483648, %cst_si322 : si32
+    "arc.keep"(%result_addi_si32n2147483648_si322) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi32n2147483646]]) : (si32) -> ()
+
+    // addi -2147483647, 1 -> -2147483646
+    %result_addi_si32n2147483647_si321 = arc.addi %cst_si32n2147483647, %cst_si321 : si32
+    "arc.keep"(%result_addi_si32n2147483647_si321) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi32n2147483646]]) : (si32) -> ()
+
+    // addi 1, -2147483647 -> -2147483646
+    %result_addi_si321_si32n2147483647 = arc.addi %cst_si321, %cst_si32n2147483647 : si32
+    "arc.keep"(%result_addi_si321_si32n2147483647) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi32n2147483646]]) : (si32) -> ()
+
+    // addi 2, -2147483648 -> -2147483646
+    %result_addi_si322_si32n2147483648 = arc.addi %cst_si322, %cst_si32n2147483648 : si32
+    "arc.keep"(%result_addi_si322_si32n2147483648) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi32n2147483646]]) : (si32) -> ()
+
+    // addi -2147483648, 3 -> -2147483645
+    %result_addi_si32n2147483648_si323 = arc.addi %cst_si32n2147483648, %cst_si323 : si32
+    "arc.keep"(%result_addi_si32n2147483648_si323) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi32n2147483645]]) : (si32) -> ()
+
+    // addi -2147483647, 2 -> -2147483645
+    %result_addi_si32n2147483647_si322 = arc.addi %cst_si32n2147483647, %cst_si322 : si32
+    "arc.keep"(%result_addi_si32n2147483647_si322) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi32n2147483645]]) : (si32) -> ()
+
+    // addi 2, -2147483647 -> -2147483645
+    %result_addi_si322_si32n2147483647 = arc.addi %cst_si322, %cst_si32n2147483647 : si32
+    "arc.keep"(%result_addi_si322_si32n2147483647) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi32n2147483645]]) : (si32) -> ()
+
+    // addi 3, -2147483648 -> -2147483645
+    %result_addi_si323_si32n2147483648 = arc.addi %cst_si323, %cst_si32n2147483648 : si32
+    "arc.keep"(%result_addi_si323_si32n2147483648) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi32n2147483645]]) : (si32) -> ()
+
+    // addi -2147483648, 4 -> -2147483644
+    %result_addi_si32n2147483648_si324 = arc.addi %cst_si32n2147483648, %cst_si324 : si32
+    "arc.keep"(%result_addi_si32n2147483648_si324) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi32n2147483644]]) : (si32) -> ()
+
+    // addi -2147483647, 3 -> -2147483644
+    %result_addi_si32n2147483647_si323 = arc.addi %cst_si32n2147483647, %cst_si323 : si32
+    "arc.keep"(%result_addi_si32n2147483647_si323) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi32n2147483644]]) : (si32) -> ()
+
+    // addi 3, -2147483647 -> -2147483644
+    %result_addi_si323_si32n2147483647 = arc.addi %cst_si323, %cst_si32n2147483647 : si32
+    "arc.keep"(%result_addi_si323_si32n2147483647) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi32n2147483644]]) : (si32) -> ()
+
+    // addi 4, -2147483648 -> -2147483644
+    %result_addi_si324_si32n2147483648 = arc.addi %cst_si324, %cst_si32n2147483648 : si32
+    "arc.keep"(%result_addi_si324_si32n2147483648) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi32n2147483644]]) : (si32) -> ()
+
+    // addi -2147483647, 4 -> -2147483643
+    %result_addi_si32n2147483647_si324 = arc.addi %cst_si32n2147483647, %cst_si324 : si32
+    "arc.keep"(%result_addi_si32n2147483647_si324) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi32n2147483643]]) : (si32) -> ()
+
+    // addi 4, -2147483647 -> -2147483643
+    %result_addi_si324_si32n2147483647 = arc.addi %cst_si324, %cst_si32n2147483647 : si32
+    "arc.keep"(%result_addi_si324_si32n2147483647) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi32n2147483643]]) : (si32) -> ()
 
     // addi -1035405763, -1035405763 -> -2070811526
     %result_addi_si32n1035405763_si32n1035405763 = arc.addi %cst_si32n1035405763, %cst_si32n1035405763 : si32
@@ -983,6 +2323,46 @@ module @toplevel {
     "arc.keep"(%result_addi_si320_si32n1713183800) : (si32) -> ()
     // CHECK: "arc.keep"([[CSTsi32n1713183800]]) : (si32) -> ()
 
+    // addi -1713183800, 1 -> -1713183799
+    %result_addi_si32n1713183800_si321 = arc.addi %cst_si32n1713183800, %cst_si321 : si32
+    "arc.keep"(%result_addi_si32n1713183800_si321) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi32n1713183799]]) : (si32) -> ()
+
+    // addi 1, -1713183800 -> -1713183799
+    %result_addi_si321_si32n1713183800 = arc.addi %cst_si321, %cst_si32n1713183800 : si32
+    "arc.keep"(%result_addi_si321_si32n1713183800) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi32n1713183799]]) : (si32) -> ()
+
+    // addi -1713183800, 2 -> -1713183798
+    %result_addi_si32n1713183800_si322 = arc.addi %cst_si32n1713183800, %cst_si322 : si32
+    "arc.keep"(%result_addi_si32n1713183800_si322) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi32n1713183798]]) : (si32) -> ()
+
+    // addi 2, -1713183800 -> -1713183798
+    %result_addi_si322_si32n1713183800 = arc.addi %cst_si322, %cst_si32n1713183800 : si32
+    "arc.keep"(%result_addi_si322_si32n1713183800) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi32n1713183798]]) : (si32) -> ()
+
+    // addi -1713183800, 3 -> -1713183797
+    %result_addi_si32n1713183800_si323 = arc.addi %cst_si32n1713183800, %cst_si323 : si32
+    "arc.keep"(%result_addi_si32n1713183800_si323) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi32n1713183797]]) : (si32) -> ()
+
+    // addi 3, -1713183800 -> -1713183797
+    %result_addi_si323_si32n1713183800 = arc.addi %cst_si323, %cst_si32n1713183800 : si32
+    "arc.keep"(%result_addi_si323_si32n1713183800) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi32n1713183797]]) : (si32) -> ()
+
+    // addi -1713183800, 4 -> -1713183796
+    %result_addi_si32n1713183800_si324 = arc.addi %cst_si32n1713183800, %cst_si324 : si32
+    "arc.keep"(%result_addi_si32n1713183800_si324) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi32n1713183796]]) : (si32) -> ()
+
+    // addi 4, -1713183800 -> -1713183796
+    %result_addi_si324_si32n1713183800 = arc.addi %cst_si324, %cst_si32n1713183800 : si32
+    "arc.keep"(%result_addi_si324_si32n1713183800) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi32n1713183796]]) : (si32) -> ()
+
     // addi -1252582164, 0 -> -1252582164
     %result_addi_si32n1252582164_si320 = arc.addi %cst_si32n1252582164, %cst_si320 : si32
     "arc.keep"(%result_addi_si32n1252582164_si320) : (si32) -> ()
@@ -993,6 +2373,46 @@ module @toplevel {
     "arc.keep"(%result_addi_si320_si32n1252582164) : (si32) -> ()
     // CHECK: "arc.keep"([[CSTsi32n1252582164]]) : (si32) -> ()
 
+    // addi -1252582164, 1 -> -1252582163
+    %result_addi_si32n1252582164_si321 = arc.addi %cst_si32n1252582164, %cst_si321 : si32
+    "arc.keep"(%result_addi_si32n1252582164_si321) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi32n1252582163]]) : (si32) -> ()
+
+    // addi 1, -1252582164 -> -1252582163
+    %result_addi_si321_si32n1252582164 = arc.addi %cst_si321, %cst_si32n1252582164 : si32
+    "arc.keep"(%result_addi_si321_si32n1252582164) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi32n1252582163]]) : (si32) -> ()
+
+    // addi -1252582164, 2 -> -1252582162
+    %result_addi_si32n1252582164_si322 = arc.addi %cst_si32n1252582164, %cst_si322 : si32
+    "arc.keep"(%result_addi_si32n1252582164_si322) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi32n1252582162]]) : (si32) -> ()
+
+    // addi 2, -1252582164 -> -1252582162
+    %result_addi_si322_si32n1252582164 = arc.addi %cst_si322, %cst_si32n1252582164 : si32
+    "arc.keep"(%result_addi_si322_si32n1252582164) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi32n1252582162]]) : (si32) -> ()
+
+    // addi -1252582164, 3 -> -1252582161
+    %result_addi_si32n1252582164_si323 = arc.addi %cst_si32n1252582164, %cst_si323 : si32
+    "arc.keep"(%result_addi_si32n1252582164_si323) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi32n1252582161]]) : (si32) -> ()
+
+    // addi 3, -1252582164 -> -1252582161
+    %result_addi_si323_si32n1252582164 = arc.addi %cst_si323, %cst_si32n1252582164 : si32
+    "arc.keep"(%result_addi_si323_si32n1252582164) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi32n1252582161]]) : (si32) -> ()
+
+    // addi -1252582164, 4 -> -1252582160
+    %result_addi_si32n1252582164_si324 = arc.addi %cst_si32n1252582164, %cst_si324 : si32
+    "arc.keep"(%result_addi_si32n1252582164_si324) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi32n1252582160]]) : (si32) -> ()
+
+    // addi 4, -1252582164 -> -1252582160
+    %result_addi_si324_si32n1252582164 = arc.addi %cst_si324, %cst_si32n1252582164 : si32
+    "arc.keep"(%result_addi_si324_si32n1252582164) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi32n1252582160]]) : (si32) -> ()
+
     // addi -1035405763, 0 -> -1035405763
     %result_addi_si32n1035405763_si320 = arc.addi %cst_si32n1035405763, %cst_si320 : si32
     "arc.keep"(%result_addi_si32n1035405763_si320) : (si32) -> ()
@@ -1002,6 +2422,46 @@ module @toplevel {
     %result_addi_si320_si32n1035405763 = arc.addi %cst_si320, %cst_si32n1035405763 : si32
     "arc.keep"(%result_addi_si320_si32n1035405763) : (si32) -> ()
     // CHECK: "arc.keep"([[CSTsi32n1035405763]]) : (si32) -> ()
+
+    // addi -1035405763, 1 -> -1035405762
+    %result_addi_si32n1035405763_si321 = arc.addi %cst_si32n1035405763, %cst_si321 : si32
+    "arc.keep"(%result_addi_si32n1035405763_si321) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi32n1035405762]]) : (si32) -> ()
+
+    // addi 1, -1035405763 -> -1035405762
+    %result_addi_si321_si32n1035405763 = arc.addi %cst_si321, %cst_si32n1035405763 : si32
+    "arc.keep"(%result_addi_si321_si32n1035405763) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi32n1035405762]]) : (si32) -> ()
+
+    // addi -1035405763, 2 -> -1035405761
+    %result_addi_si32n1035405763_si322 = arc.addi %cst_si32n1035405763, %cst_si322 : si32
+    "arc.keep"(%result_addi_si32n1035405763_si322) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi32n1035405761]]) : (si32) -> ()
+
+    // addi 2, -1035405763 -> -1035405761
+    %result_addi_si322_si32n1035405763 = arc.addi %cst_si322, %cst_si32n1035405763 : si32
+    "arc.keep"(%result_addi_si322_si32n1035405763) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi32n1035405761]]) : (si32) -> ()
+
+    // addi -1035405763, 3 -> -1035405760
+    %result_addi_si32n1035405763_si323 = arc.addi %cst_si32n1035405763, %cst_si323 : si32
+    "arc.keep"(%result_addi_si32n1035405763_si323) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi32n1035405760]]) : (si32) -> ()
+
+    // addi 3, -1035405763 -> -1035405760
+    %result_addi_si323_si32n1035405763 = arc.addi %cst_si323, %cst_si32n1035405763 : si32
+    "arc.keep"(%result_addi_si323_si32n1035405763) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi32n1035405760]]) : (si32) -> ()
+
+    // addi -1035405763, 4 -> -1035405759
+    %result_addi_si32n1035405763_si324 = arc.addi %cst_si32n1035405763, %cst_si324 : si32
+    "arc.keep"(%result_addi_si32n1035405763_si324) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi32n1035405759]]) : (si32) -> ()
+
+    // addi 4, -1035405763 -> -1035405759
+    %result_addi_si324_si32n1035405763 = arc.addi %cst_si324, %cst_si32n1035405763 : si32
+    "arc.keep"(%result_addi_si324_si32n1035405763) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi32n1035405759]]) : (si32) -> ()
 
     // addi -2147483648, 2147483646 -> -2
     %result_addi_si32n2147483648_si322147483646 = arc.addi %cst_si32n2147483648, %cst_si322147483646 : si32
@@ -1047,6 +2507,126 @@ module @toplevel {
     %result_addi_si322147483647_si32n2147483647 = arc.addi %cst_si322147483647, %cst_si32n2147483647 : si32
     "arc.keep"(%result_addi_si322147483647_si32n2147483647) : (si32) -> ()
     // CHECK: "arc.keep"([[CSTsi320]]) : (si32) -> ()
+
+    // addi 0, 1 -> 1
+    %result_addi_si320_si321 = arc.addi %cst_si320, %cst_si321 : si32
+    "arc.keep"(%result_addi_si320_si321) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi321]]) : (si32) -> ()
+
+    // addi 1, 0 -> 1
+    %result_addi_si321_si320 = arc.addi %cst_si321, %cst_si320 : si32
+    "arc.keep"(%result_addi_si321_si320) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi321]]) : (si32) -> ()
+
+    // addi 0, 2 -> 2
+    %result_addi_si320_si322 = arc.addi %cst_si320, %cst_si322 : si32
+    "arc.keep"(%result_addi_si320_si322) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi322]]) : (si32) -> ()
+
+    // addi 1, 1 -> 2
+    %result_addi_si321_si321 = arc.addi %cst_si321, %cst_si321 : si32
+    "arc.keep"(%result_addi_si321_si321) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi322]]) : (si32) -> ()
+
+    // addi 2, 0 -> 2
+    %result_addi_si322_si320 = arc.addi %cst_si322, %cst_si320 : si32
+    "arc.keep"(%result_addi_si322_si320) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi322]]) : (si32) -> ()
+
+    // addi 0, 3 -> 3
+    %result_addi_si320_si323 = arc.addi %cst_si320, %cst_si323 : si32
+    "arc.keep"(%result_addi_si320_si323) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi323]]) : (si32) -> ()
+
+    // addi 1, 2 -> 3
+    %result_addi_si321_si322 = arc.addi %cst_si321, %cst_si322 : si32
+    "arc.keep"(%result_addi_si321_si322) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi323]]) : (si32) -> ()
+
+    // addi 2, 1 -> 3
+    %result_addi_si322_si321 = arc.addi %cst_si322, %cst_si321 : si32
+    "arc.keep"(%result_addi_si322_si321) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi323]]) : (si32) -> ()
+
+    // addi 3, 0 -> 3
+    %result_addi_si323_si320 = arc.addi %cst_si323, %cst_si320 : si32
+    "arc.keep"(%result_addi_si323_si320) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi323]]) : (si32) -> ()
+
+    // addi 0, 4 -> 4
+    %result_addi_si320_si324 = arc.addi %cst_si320, %cst_si324 : si32
+    "arc.keep"(%result_addi_si320_si324) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi324]]) : (si32) -> ()
+
+    // addi 1, 3 -> 4
+    %result_addi_si321_si323 = arc.addi %cst_si321, %cst_si323 : si32
+    "arc.keep"(%result_addi_si321_si323) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi324]]) : (si32) -> ()
+
+    // addi 2, 2 -> 4
+    %result_addi_si322_si322 = arc.addi %cst_si322, %cst_si322 : si32
+    "arc.keep"(%result_addi_si322_si322) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi324]]) : (si32) -> ()
+
+    // addi 3, 1 -> 4
+    %result_addi_si323_si321 = arc.addi %cst_si323, %cst_si321 : si32
+    "arc.keep"(%result_addi_si323_si321) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi324]]) : (si32) -> ()
+
+    // addi 4, 0 -> 4
+    %result_addi_si324_si320 = arc.addi %cst_si324, %cst_si320 : si32
+    "arc.keep"(%result_addi_si324_si320) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi324]]) : (si32) -> ()
+
+    // addi 1, 4 -> 5
+    %result_addi_si321_si324 = arc.addi %cst_si321, %cst_si324 : si32
+    "arc.keep"(%result_addi_si321_si324) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi325]]) : (si32) -> ()
+
+    // addi 2, 3 -> 5
+    %result_addi_si322_si323 = arc.addi %cst_si322, %cst_si323 : si32
+    "arc.keep"(%result_addi_si322_si323) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi325]]) : (si32) -> ()
+
+    // addi 3, 2 -> 5
+    %result_addi_si323_si322 = arc.addi %cst_si323, %cst_si322 : si32
+    "arc.keep"(%result_addi_si323_si322) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi325]]) : (si32) -> ()
+
+    // addi 4, 1 -> 5
+    %result_addi_si324_si321 = arc.addi %cst_si324, %cst_si321 : si32
+    "arc.keep"(%result_addi_si324_si321) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi325]]) : (si32) -> ()
+
+    // addi 2, 4 -> 6
+    %result_addi_si322_si324 = arc.addi %cst_si322, %cst_si324 : si32
+    "arc.keep"(%result_addi_si322_si324) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi326]]) : (si32) -> ()
+
+    // addi 3, 3 -> 6
+    %result_addi_si323_si323 = arc.addi %cst_si323, %cst_si323 : si32
+    "arc.keep"(%result_addi_si323_si323) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi326]]) : (si32) -> ()
+
+    // addi 4, 2 -> 6
+    %result_addi_si324_si322 = arc.addi %cst_si324, %cst_si322 : si32
+    "arc.keep"(%result_addi_si324_si322) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi326]]) : (si32) -> ()
+
+    // addi 3, 4 -> 7
+    %result_addi_si323_si324 = arc.addi %cst_si323, %cst_si324 : si32
+    "arc.keep"(%result_addi_si323_si324) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi327]]) : (si32) -> ()
+
+    // addi 4, 3 -> 7
+    %result_addi_si324_si323 = arc.addi %cst_si324, %cst_si323 : si32
+    "arc.keep"(%result_addi_si324_si323) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi327]]) : (si32) -> ()
+
+    // addi 4, 4 -> 8
+    %result_addi_si324_si324 = arc.addi %cst_si324, %cst_si324 : si32
+    "arc.keep"(%result_addi_si324_si324) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi328]]) : (si32) -> ()
 
     // addi -1713183800, 2147483646 -> 434299846
     %result_addi_si32n1713183800_si322147483646 = arc.addi %cst_si32n1713183800, %cst_si322147483646 : si32
@@ -1121,6 +2701,16 @@ module @toplevel {
     // addi 0, 2147483647 -> 2147483647
     %result_addi_si320_si322147483647 = arc.addi %cst_si320, %cst_si322147483647 : si32
     "arc.keep"(%result_addi_si320_si322147483647) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi322147483647]]) : (si32) -> ()
+
+    // addi 1, 2147483646 -> 2147483647
+    %result_addi_si321_si322147483646 = arc.addi %cst_si321, %cst_si322147483646 : si32
+    "arc.keep"(%result_addi_si321_si322147483646) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi322147483647]]) : (si32) -> ()
+
+    // addi 2147483646, 1 -> 2147483647
+    %result_addi_si322147483646_si321 = arc.addi %cst_si322147483646, %cst_si321 : si32
+    "arc.keep"(%result_addi_si322147483646_si321) : (si32) -> ()
     // CHECK: "arc.keep"([[CSTsi322147483647]]) : (si32) -> ()
 
     // addi 2147483647, 0 -> 2147483647
@@ -1272,6 +2862,66 @@ module @toplevel {
     "arc.keep"(%result_addi_si32n1035405763_si32n1252582164) : (si32) -> ()
     // CHECK: "arc.keep"([[RESULT_addi_si32n1035405763_si32n1252582164]]) : (si32) -> ()
 
+    // addi 1, 2147483647 -> no-fold
+    %result_addi_si321_si322147483647 = arc.addi %cst_si321, %cst_si322147483647 : si32
+    // CHECK-DAG: [[RESULT_addi_si321_si322147483647:%[^ ]+]] = arc.addi [[CSTsi321]], [[CSTsi322147483647]] : si32
+    "arc.keep"(%result_addi_si321_si322147483647) : (si32) -> ()
+    // CHECK: "arc.keep"([[RESULT_addi_si321_si322147483647]]) : (si32) -> ()
+
+    // addi 2, 2147483646 -> no-fold
+    %result_addi_si322_si322147483646 = arc.addi %cst_si322, %cst_si322147483646 : si32
+    // CHECK-DAG: [[RESULT_addi_si322_si322147483646:%[^ ]+]] = arc.addi [[CSTsi322]], [[CSTsi322147483646]] : si32
+    "arc.keep"(%result_addi_si322_si322147483646) : (si32) -> ()
+    // CHECK: "arc.keep"([[RESULT_addi_si322_si322147483646]]) : (si32) -> ()
+
+    // addi 2, 2147483647 -> no-fold
+    %result_addi_si322_si322147483647 = arc.addi %cst_si322, %cst_si322147483647 : si32
+    // CHECK-DAG: [[RESULT_addi_si322_si322147483647:%[^ ]+]] = arc.addi [[CSTsi322]], [[CSTsi322147483647]] : si32
+    "arc.keep"(%result_addi_si322_si322147483647) : (si32) -> ()
+    // CHECK: "arc.keep"([[RESULT_addi_si322_si322147483647]]) : (si32) -> ()
+
+    // addi 3, 2147483646 -> no-fold
+    %result_addi_si323_si322147483646 = arc.addi %cst_si323, %cst_si322147483646 : si32
+    // CHECK-DAG: [[RESULT_addi_si323_si322147483646:%[^ ]+]] = arc.addi [[CSTsi323]], [[CSTsi322147483646]] : si32
+    "arc.keep"(%result_addi_si323_si322147483646) : (si32) -> ()
+    // CHECK: "arc.keep"([[RESULT_addi_si323_si322147483646]]) : (si32) -> ()
+
+    // addi 3, 2147483647 -> no-fold
+    %result_addi_si323_si322147483647 = arc.addi %cst_si323, %cst_si322147483647 : si32
+    // CHECK-DAG: [[RESULT_addi_si323_si322147483647:%[^ ]+]] = arc.addi [[CSTsi323]], [[CSTsi322147483647]] : si32
+    "arc.keep"(%result_addi_si323_si322147483647) : (si32) -> ()
+    // CHECK: "arc.keep"([[RESULT_addi_si323_si322147483647]]) : (si32) -> ()
+
+    // addi 4, 2147483646 -> no-fold
+    %result_addi_si324_si322147483646 = arc.addi %cst_si324, %cst_si322147483646 : si32
+    // CHECK-DAG: [[RESULT_addi_si324_si322147483646:%[^ ]+]] = arc.addi [[CSTsi324]], [[CSTsi322147483646]] : si32
+    "arc.keep"(%result_addi_si324_si322147483646) : (si32) -> ()
+    // CHECK: "arc.keep"([[RESULT_addi_si324_si322147483646]]) : (si32) -> ()
+
+    // addi 4, 2147483647 -> no-fold
+    %result_addi_si324_si322147483647 = arc.addi %cst_si324, %cst_si322147483647 : si32
+    // CHECK-DAG: [[RESULT_addi_si324_si322147483647:%[^ ]+]] = arc.addi [[CSTsi324]], [[CSTsi322147483647]] : si32
+    "arc.keep"(%result_addi_si324_si322147483647) : (si32) -> ()
+    // CHECK: "arc.keep"([[RESULT_addi_si324_si322147483647]]) : (si32) -> ()
+
+    // addi 2147483646, 2 -> no-fold
+    %result_addi_si322147483646_si322 = arc.addi %cst_si322147483646, %cst_si322 : si32
+    // CHECK-DAG: [[RESULT_addi_si322147483646_si322:%[^ ]+]] = arc.addi [[CSTsi322147483646]], [[CSTsi322]] : si32
+    "arc.keep"(%result_addi_si322147483646_si322) : (si32) -> ()
+    // CHECK: "arc.keep"([[RESULT_addi_si322147483646_si322]]) : (si32) -> ()
+
+    // addi 2147483646, 3 -> no-fold
+    %result_addi_si322147483646_si323 = arc.addi %cst_si322147483646, %cst_si323 : si32
+    // CHECK-DAG: [[RESULT_addi_si322147483646_si323:%[^ ]+]] = arc.addi [[CSTsi322147483646]], [[CSTsi323]] : si32
+    "arc.keep"(%result_addi_si322147483646_si323) : (si32) -> ()
+    // CHECK: "arc.keep"([[RESULT_addi_si322147483646_si323]]) : (si32) -> ()
+
+    // addi 2147483646, 4 -> no-fold
+    %result_addi_si322147483646_si324 = arc.addi %cst_si322147483646, %cst_si324 : si32
+    // CHECK-DAG: [[RESULT_addi_si322147483646_si324:%[^ ]+]] = arc.addi [[CSTsi322147483646]], [[CSTsi324]] : si32
+    "arc.keep"(%result_addi_si322147483646_si324) : (si32) -> ()
+    // CHECK: "arc.keep"([[RESULT_addi_si322147483646_si324]]) : (si32) -> ()
+
     // addi 2147483646, 2147483646 -> no-fold
     %result_addi_si322147483646_si322147483646 = arc.addi %cst_si322147483646, %cst_si322147483646 : si32
     // CHECK-DAG: [[RESULT_addi_si322147483646_si322147483646:%[^ ]+]] = arc.addi [[CSTsi322147483646]], [[CSTsi322147483646]] : si32
@@ -1283,6 +2933,30 @@ module @toplevel {
     // CHECK-DAG: [[RESULT_addi_si322147483646_si322147483647:%[^ ]+]] = arc.addi [[CSTsi322147483646]], [[CSTsi322147483647]] : si32
     "arc.keep"(%result_addi_si322147483646_si322147483647) : (si32) -> ()
     // CHECK: "arc.keep"([[RESULT_addi_si322147483646_si322147483647]]) : (si32) -> ()
+
+    // addi 2147483647, 1 -> no-fold
+    %result_addi_si322147483647_si321 = arc.addi %cst_si322147483647, %cst_si321 : si32
+    // CHECK-DAG: [[RESULT_addi_si322147483647_si321:%[^ ]+]] = arc.addi [[CSTsi322147483647]], [[CSTsi321]] : si32
+    "arc.keep"(%result_addi_si322147483647_si321) : (si32) -> ()
+    // CHECK: "arc.keep"([[RESULT_addi_si322147483647_si321]]) : (si32) -> ()
+
+    // addi 2147483647, 2 -> no-fold
+    %result_addi_si322147483647_si322 = arc.addi %cst_si322147483647, %cst_si322 : si32
+    // CHECK-DAG: [[RESULT_addi_si322147483647_si322:%[^ ]+]] = arc.addi [[CSTsi322147483647]], [[CSTsi322]] : si32
+    "arc.keep"(%result_addi_si322147483647_si322) : (si32) -> ()
+    // CHECK: "arc.keep"([[RESULT_addi_si322147483647_si322]]) : (si32) -> ()
+
+    // addi 2147483647, 3 -> no-fold
+    %result_addi_si322147483647_si323 = arc.addi %cst_si322147483647, %cst_si323 : si32
+    // CHECK-DAG: [[RESULT_addi_si322147483647_si323:%[^ ]+]] = arc.addi [[CSTsi322147483647]], [[CSTsi323]] : si32
+    "arc.keep"(%result_addi_si322147483647_si323) : (si32) -> ()
+    // CHECK: "arc.keep"([[RESULT_addi_si322147483647_si323]]) : (si32) -> ()
+
+    // addi 2147483647, 4 -> no-fold
+    %result_addi_si322147483647_si324 = arc.addi %cst_si322147483647, %cst_si324 : si32
+    // CHECK-DAG: [[RESULT_addi_si322147483647_si324:%[^ ]+]] = arc.addi [[CSTsi322147483647]], [[CSTsi324]] : si32
+    "arc.keep"(%result_addi_si322147483647_si324) : (si32) -> ()
+    // CHECK: "arc.keep"([[RESULT_addi_si322147483647_si324]]) : (si32) -> ()
 
     // addi 2147483647, 2147483646 -> no-fold
     %result_addi_si322147483647_si322147483646 = arc.addi %cst_si322147483647, %cst_si322147483646 : si32
@@ -1306,6 +2980,11 @@ module @toplevel {
     "arc.keep"(%result_addi_si640_si64n9223372036854775808) : (si64) -> ()
     // CHECK: "arc.keep"([[CSTsi64n9223372036854775808]]) : (si64) -> ()
 
+    // addi -9223372036854775808, 1 -> -9223372036854775807
+    %result_addi_si64n9223372036854775808_si641 = arc.addi %cst_si64n9223372036854775808, %cst_si641 : si64
+    "arc.keep"(%result_addi_si64n9223372036854775808_si641) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi64n9223372036854775807]]) : (si64) -> ()
+
     // addi -9223372036854775807, 0 -> -9223372036854775807
     %result_addi_si64n9223372036854775807_si640 = arc.addi %cst_si64n9223372036854775807, %cst_si640 : si64
     "arc.keep"(%result_addi_si64n9223372036854775807_si640) : (si64) -> ()
@@ -1315,6 +2994,81 @@ module @toplevel {
     %result_addi_si640_si64n9223372036854775807 = arc.addi %cst_si640, %cst_si64n9223372036854775807 : si64
     "arc.keep"(%result_addi_si640_si64n9223372036854775807) : (si64) -> ()
     // CHECK: "arc.keep"([[CSTsi64n9223372036854775807]]) : (si64) -> ()
+
+    // addi 1, -9223372036854775808 -> -9223372036854775807
+    %result_addi_si641_si64n9223372036854775808 = arc.addi %cst_si641, %cst_si64n9223372036854775808 : si64
+    "arc.keep"(%result_addi_si641_si64n9223372036854775808) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi64n9223372036854775807]]) : (si64) -> ()
+
+    // addi -9223372036854775808, 2 -> -9223372036854775806
+    %result_addi_si64n9223372036854775808_si642 = arc.addi %cst_si64n9223372036854775808, %cst_si642 : si64
+    "arc.keep"(%result_addi_si64n9223372036854775808_si642) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi64n9223372036854775806]]) : (si64) -> ()
+
+    // addi -9223372036854775807, 1 -> -9223372036854775806
+    %result_addi_si64n9223372036854775807_si641 = arc.addi %cst_si64n9223372036854775807, %cst_si641 : si64
+    "arc.keep"(%result_addi_si64n9223372036854775807_si641) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi64n9223372036854775806]]) : (si64) -> ()
+
+    // addi 1, -9223372036854775807 -> -9223372036854775806
+    %result_addi_si641_si64n9223372036854775807 = arc.addi %cst_si641, %cst_si64n9223372036854775807 : si64
+    "arc.keep"(%result_addi_si641_si64n9223372036854775807) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi64n9223372036854775806]]) : (si64) -> ()
+
+    // addi 2, -9223372036854775808 -> -9223372036854775806
+    %result_addi_si642_si64n9223372036854775808 = arc.addi %cst_si642, %cst_si64n9223372036854775808 : si64
+    "arc.keep"(%result_addi_si642_si64n9223372036854775808) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi64n9223372036854775806]]) : (si64) -> ()
+
+    // addi -9223372036854775808, 3 -> -9223372036854775805
+    %result_addi_si64n9223372036854775808_si643 = arc.addi %cst_si64n9223372036854775808, %cst_si643 : si64
+    "arc.keep"(%result_addi_si64n9223372036854775808_si643) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi64n9223372036854775805]]) : (si64) -> ()
+
+    // addi -9223372036854775807, 2 -> -9223372036854775805
+    %result_addi_si64n9223372036854775807_si642 = arc.addi %cst_si64n9223372036854775807, %cst_si642 : si64
+    "arc.keep"(%result_addi_si64n9223372036854775807_si642) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi64n9223372036854775805]]) : (si64) -> ()
+
+    // addi 2, -9223372036854775807 -> -9223372036854775805
+    %result_addi_si642_si64n9223372036854775807 = arc.addi %cst_si642, %cst_si64n9223372036854775807 : si64
+    "arc.keep"(%result_addi_si642_si64n9223372036854775807) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi64n9223372036854775805]]) : (si64) -> ()
+
+    // addi 3, -9223372036854775808 -> -9223372036854775805
+    %result_addi_si643_si64n9223372036854775808 = arc.addi %cst_si643, %cst_si64n9223372036854775808 : si64
+    "arc.keep"(%result_addi_si643_si64n9223372036854775808) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi64n9223372036854775805]]) : (si64) -> ()
+
+    // addi -9223372036854775808, 4 -> -9223372036854775804
+    %result_addi_si64n9223372036854775808_si644 = arc.addi %cst_si64n9223372036854775808, %cst_si644 : si64
+    "arc.keep"(%result_addi_si64n9223372036854775808_si644) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi64n9223372036854775804]]) : (si64) -> ()
+
+    // addi -9223372036854775807, 3 -> -9223372036854775804
+    %result_addi_si64n9223372036854775807_si643 = arc.addi %cst_si64n9223372036854775807, %cst_si643 : si64
+    "arc.keep"(%result_addi_si64n9223372036854775807_si643) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi64n9223372036854775804]]) : (si64) -> ()
+
+    // addi 3, -9223372036854775807 -> -9223372036854775804
+    %result_addi_si643_si64n9223372036854775807 = arc.addi %cst_si643, %cst_si64n9223372036854775807 : si64
+    "arc.keep"(%result_addi_si643_si64n9223372036854775807) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi64n9223372036854775804]]) : (si64) -> ()
+
+    // addi 4, -9223372036854775808 -> -9223372036854775804
+    %result_addi_si644_si64n9223372036854775808 = arc.addi %cst_si644, %cst_si64n9223372036854775808 : si64
+    "arc.keep"(%result_addi_si644_si64n9223372036854775808) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi64n9223372036854775804]]) : (si64) -> ()
+
+    // addi -9223372036854775807, 4 -> -9223372036854775803
+    %result_addi_si64n9223372036854775807_si644 = arc.addi %cst_si64n9223372036854775807, %cst_si644 : si64
+    "arc.keep"(%result_addi_si64n9223372036854775807_si644) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi64n9223372036854775803]]) : (si64) -> ()
+
+    // addi 4, -9223372036854775807 -> -9223372036854775803
+    %result_addi_si644_si64n9223372036854775807 = arc.addi %cst_si644, %cst_si64n9223372036854775807 : si64
+    "arc.keep"(%result_addi_si644_si64n9223372036854775807) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi64n9223372036854775803]]) : (si64) -> ()
 
     // addi -9223372036854775808, 5577148965131116544 -> -3646223071723659264
     %result_addi_si64n9223372036854775808_si645577148965131116544 = arc.addi %cst_si64n9223372036854775808, %cst_si645577148965131116544 : si64
@@ -1366,6 +3120,46 @@ module @toplevel {
     "arc.keep"(%result_addi_si640_si64n1741927215160008704) : (si64) -> ()
     // CHECK: "arc.keep"([[CSTsi64n1741927215160008704]]) : (si64) -> ()
 
+    // addi -1741927215160008704, 1 -> -1741927215160008703
+    %result_addi_si64n1741927215160008704_si641 = arc.addi %cst_si64n1741927215160008704, %cst_si641 : si64
+    "arc.keep"(%result_addi_si64n1741927215160008704_si641) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi64n1741927215160008703]]) : (si64) -> ()
+
+    // addi 1, -1741927215160008704 -> -1741927215160008703
+    %result_addi_si641_si64n1741927215160008704 = arc.addi %cst_si641, %cst_si64n1741927215160008704 : si64
+    "arc.keep"(%result_addi_si641_si64n1741927215160008704) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi64n1741927215160008703]]) : (si64) -> ()
+
+    // addi -1741927215160008704, 2 -> -1741927215160008702
+    %result_addi_si64n1741927215160008704_si642 = arc.addi %cst_si64n1741927215160008704, %cst_si642 : si64
+    "arc.keep"(%result_addi_si64n1741927215160008704_si642) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi64n1741927215160008702]]) : (si64) -> ()
+
+    // addi 2, -1741927215160008704 -> -1741927215160008702
+    %result_addi_si642_si64n1741927215160008704 = arc.addi %cst_si642, %cst_si64n1741927215160008704 : si64
+    "arc.keep"(%result_addi_si642_si64n1741927215160008704) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi64n1741927215160008702]]) : (si64) -> ()
+
+    // addi -1741927215160008704, 3 -> -1741927215160008701
+    %result_addi_si64n1741927215160008704_si643 = arc.addi %cst_si64n1741927215160008704, %cst_si643 : si64
+    "arc.keep"(%result_addi_si64n1741927215160008704_si643) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi64n1741927215160008701]]) : (si64) -> ()
+
+    // addi 3, -1741927215160008704 -> -1741927215160008701
+    %result_addi_si643_si64n1741927215160008704 = arc.addi %cst_si643, %cst_si64n1741927215160008704 : si64
+    "arc.keep"(%result_addi_si643_si64n1741927215160008704) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi64n1741927215160008701]]) : (si64) -> ()
+
+    // addi -1741927215160008704, 4 -> -1741927215160008700
+    %result_addi_si64n1741927215160008704_si644 = arc.addi %cst_si64n1741927215160008704, %cst_si644 : si64
+    "arc.keep"(%result_addi_si64n1741927215160008704_si644) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi64n1741927215160008700]]) : (si64) -> ()
+
+    // addi 4, -1741927215160008704 -> -1741927215160008700
+    %result_addi_si644_si64n1741927215160008704 = arc.addi %cst_si644, %cst_si64n1741927215160008704 : si64
+    "arc.keep"(%result_addi_si644_si64n1741927215160008704) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi64n1741927215160008700]]) : (si64) -> ()
+
     // addi -1328271339354574848, 0 -> -1328271339354574848
     %result_addi_si64n1328271339354574848_si640 = arc.addi %cst_si64n1328271339354574848, %cst_si640 : si64
     "arc.keep"(%result_addi_si64n1328271339354574848_si640) : (si64) -> ()
@@ -1375,6 +3169,46 @@ module @toplevel {
     %result_addi_si640_si64n1328271339354574848 = arc.addi %cst_si640, %cst_si64n1328271339354574848 : si64
     "arc.keep"(%result_addi_si640_si64n1328271339354574848) : (si64) -> ()
     // CHECK: "arc.keep"([[CSTsi64n1328271339354574848]]) : (si64) -> ()
+
+    // addi -1328271339354574848, 1 -> -1328271339354574847
+    %result_addi_si64n1328271339354574848_si641 = arc.addi %cst_si64n1328271339354574848, %cst_si641 : si64
+    "arc.keep"(%result_addi_si64n1328271339354574848_si641) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi64n1328271339354574847]]) : (si64) -> ()
+
+    // addi 1, -1328271339354574848 -> -1328271339354574847
+    %result_addi_si641_si64n1328271339354574848 = arc.addi %cst_si641, %cst_si64n1328271339354574848 : si64
+    "arc.keep"(%result_addi_si641_si64n1328271339354574848) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi64n1328271339354574847]]) : (si64) -> ()
+
+    // addi -1328271339354574848, 2 -> -1328271339354574846
+    %result_addi_si64n1328271339354574848_si642 = arc.addi %cst_si64n1328271339354574848, %cst_si642 : si64
+    "arc.keep"(%result_addi_si64n1328271339354574848_si642) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi64n1328271339354574846]]) : (si64) -> ()
+
+    // addi 2, -1328271339354574848 -> -1328271339354574846
+    %result_addi_si642_si64n1328271339354574848 = arc.addi %cst_si642, %cst_si64n1328271339354574848 : si64
+    "arc.keep"(%result_addi_si642_si64n1328271339354574848) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi64n1328271339354574846]]) : (si64) -> ()
+
+    // addi -1328271339354574848, 3 -> -1328271339354574845
+    %result_addi_si64n1328271339354574848_si643 = arc.addi %cst_si64n1328271339354574848, %cst_si643 : si64
+    "arc.keep"(%result_addi_si64n1328271339354574848_si643) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi64n1328271339354574845]]) : (si64) -> ()
+
+    // addi 3, -1328271339354574848 -> -1328271339354574845
+    %result_addi_si643_si64n1328271339354574848 = arc.addi %cst_si643, %cst_si64n1328271339354574848 : si64
+    "arc.keep"(%result_addi_si643_si64n1328271339354574848) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi64n1328271339354574845]]) : (si64) -> ()
+
+    // addi -1328271339354574848, 4 -> -1328271339354574844
+    %result_addi_si64n1328271339354574848_si644 = arc.addi %cst_si64n1328271339354574848, %cst_si644 : si64
+    "arc.keep"(%result_addi_si64n1328271339354574848_si644) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi64n1328271339354574844]]) : (si64) -> ()
+
+    // addi 4, -1328271339354574848 -> -1328271339354574844
+    %result_addi_si644_si64n1328271339354574848 = arc.addi %cst_si644, %cst_si64n1328271339354574848 : si64
+    "arc.keep"(%result_addi_si644_si64n1328271339354574848) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi64n1328271339354574844]]) : (si64) -> ()
 
     // addi -9223372036854775808, 9223372036854775806 -> -2
     %result_addi_si64n9223372036854775808_si649223372036854775806 = arc.addi %cst_si64n9223372036854775808, %cst_si649223372036854775806 : si64
@@ -1421,6 +3255,126 @@ module @toplevel {
     "arc.keep"(%result_addi_si649223372036854775807_si64n9223372036854775807) : (si64) -> ()
     // CHECK: "arc.keep"([[CSTsi640]]) : (si64) -> ()
 
+    // addi 0, 1 -> 1
+    %result_addi_si640_si641 = arc.addi %cst_si640, %cst_si641 : si64
+    "arc.keep"(%result_addi_si640_si641) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi641]]) : (si64) -> ()
+
+    // addi 1, 0 -> 1
+    %result_addi_si641_si640 = arc.addi %cst_si641, %cst_si640 : si64
+    "arc.keep"(%result_addi_si641_si640) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi641]]) : (si64) -> ()
+
+    // addi 0, 2 -> 2
+    %result_addi_si640_si642 = arc.addi %cst_si640, %cst_si642 : si64
+    "arc.keep"(%result_addi_si640_si642) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi642]]) : (si64) -> ()
+
+    // addi 1, 1 -> 2
+    %result_addi_si641_si641 = arc.addi %cst_si641, %cst_si641 : si64
+    "arc.keep"(%result_addi_si641_si641) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi642]]) : (si64) -> ()
+
+    // addi 2, 0 -> 2
+    %result_addi_si642_si640 = arc.addi %cst_si642, %cst_si640 : si64
+    "arc.keep"(%result_addi_si642_si640) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi642]]) : (si64) -> ()
+
+    // addi 0, 3 -> 3
+    %result_addi_si640_si643 = arc.addi %cst_si640, %cst_si643 : si64
+    "arc.keep"(%result_addi_si640_si643) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi643]]) : (si64) -> ()
+
+    // addi 1, 2 -> 3
+    %result_addi_si641_si642 = arc.addi %cst_si641, %cst_si642 : si64
+    "arc.keep"(%result_addi_si641_si642) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi643]]) : (si64) -> ()
+
+    // addi 2, 1 -> 3
+    %result_addi_si642_si641 = arc.addi %cst_si642, %cst_si641 : si64
+    "arc.keep"(%result_addi_si642_si641) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi643]]) : (si64) -> ()
+
+    // addi 3, 0 -> 3
+    %result_addi_si643_si640 = arc.addi %cst_si643, %cst_si640 : si64
+    "arc.keep"(%result_addi_si643_si640) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi643]]) : (si64) -> ()
+
+    // addi 0, 4 -> 4
+    %result_addi_si640_si644 = arc.addi %cst_si640, %cst_si644 : si64
+    "arc.keep"(%result_addi_si640_si644) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi644]]) : (si64) -> ()
+
+    // addi 1, 3 -> 4
+    %result_addi_si641_si643 = arc.addi %cst_si641, %cst_si643 : si64
+    "arc.keep"(%result_addi_si641_si643) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi644]]) : (si64) -> ()
+
+    // addi 2, 2 -> 4
+    %result_addi_si642_si642 = arc.addi %cst_si642, %cst_si642 : si64
+    "arc.keep"(%result_addi_si642_si642) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi644]]) : (si64) -> ()
+
+    // addi 3, 1 -> 4
+    %result_addi_si643_si641 = arc.addi %cst_si643, %cst_si641 : si64
+    "arc.keep"(%result_addi_si643_si641) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi644]]) : (si64) -> ()
+
+    // addi 4, 0 -> 4
+    %result_addi_si644_si640 = arc.addi %cst_si644, %cst_si640 : si64
+    "arc.keep"(%result_addi_si644_si640) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi644]]) : (si64) -> ()
+
+    // addi 1, 4 -> 5
+    %result_addi_si641_si644 = arc.addi %cst_si641, %cst_si644 : si64
+    "arc.keep"(%result_addi_si641_si644) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi645]]) : (si64) -> ()
+
+    // addi 2, 3 -> 5
+    %result_addi_si642_si643 = arc.addi %cst_si642, %cst_si643 : si64
+    "arc.keep"(%result_addi_si642_si643) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi645]]) : (si64) -> ()
+
+    // addi 3, 2 -> 5
+    %result_addi_si643_si642 = arc.addi %cst_si643, %cst_si642 : si64
+    "arc.keep"(%result_addi_si643_si642) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi645]]) : (si64) -> ()
+
+    // addi 4, 1 -> 5
+    %result_addi_si644_si641 = arc.addi %cst_si644, %cst_si641 : si64
+    "arc.keep"(%result_addi_si644_si641) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi645]]) : (si64) -> ()
+
+    // addi 2, 4 -> 6
+    %result_addi_si642_si644 = arc.addi %cst_si642, %cst_si644 : si64
+    "arc.keep"(%result_addi_si642_si644) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi646]]) : (si64) -> ()
+
+    // addi 3, 3 -> 6
+    %result_addi_si643_si643 = arc.addi %cst_si643, %cst_si643 : si64
+    "arc.keep"(%result_addi_si643_si643) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi646]]) : (si64) -> ()
+
+    // addi 4, 2 -> 6
+    %result_addi_si644_si642 = arc.addi %cst_si644, %cst_si642 : si64
+    "arc.keep"(%result_addi_si644_si642) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi646]]) : (si64) -> ()
+
+    // addi 3, 4 -> 7
+    %result_addi_si643_si644 = arc.addi %cst_si643, %cst_si644 : si64
+    "arc.keep"(%result_addi_si643_si644) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi647]]) : (si64) -> ()
+
+    // addi 4, 3 -> 7
+    %result_addi_si644_si643 = arc.addi %cst_si644, %cst_si643 : si64
+    "arc.keep"(%result_addi_si644_si643) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi647]]) : (si64) -> ()
+
+    // addi 4, 4 -> 8
+    %result_addi_si644_si644 = arc.addi %cst_si644, %cst_si644 : si64
+    "arc.keep"(%result_addi_si644_si644) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi648]]) : (si64) -> ()
+
     // addi -1741927215160008704, 5577148965131116544 -> 3835221749971107840
     %result_addi_si64n1741927215160008704_si645577148965131116544 = arc.addi %cst_si64n1741927215160008704, %cst_si645577148965131116544 : si64
     "arc.keep"(%result_addi_si64n1741927215160008704_si645577148965131116544) : (si64) -> ()
@@ -1450,6 +3404,46 @@ module @toplevel {
     %result_addi_si645577148965131116544_si640 = arc.addi %cst_si645577148965131116544, %cst_si640 : si64
     "arc.keep"(%result_addi_si645577148965131116544_si640) : (si64) -> ()
     // CHECK: "arc.keep"([[CSTsi645577148965131116544]]) : (si64) -> ()
+
+    // addi 1, 5577148965131116544 -> 5577148965131116545
+    %result_addi_si641_si645577148965131116544 = arc.addi %cst_si641, %cst_si645577148965131116544 : si64
+    "arc.keep"(%result_addi_si641_si645577148965131116544) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi645577148965131116545]]) : (si64) -> ()
+
+    // addi 5577148965131116544, 1 -> 5577148965131116545
+    %result_addi_si645577148965131116544_si641 = arc.addi %cst_si645577148965131116544, %cst_si641 : si64
+    "arc.keep"(%result_addi_si645577148965131116544_si641) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi645577148965131116545]]) : (si64) -> ()
+
+    // addi 2, 5577148965131116544 -> 5577148965131116546
+    %result_addi_si642_si645577148965131116544 = arc.addi %cst_si642, %cst_si645577148965131116544 : si64
+    "arc.keep"(%result_addi_si642_si645577148965131116544) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi645577148965131116546]]) : (si64) -> ()
+
+    // addi 5577148965131116544, 2 -> 5577148965131116546
+    %result_addi_si645577148965131116544_si642 = arc.addi %cst_si645577148965131116544, %cst_si642 : si64
+    "arc.keep"(%result_addi_si645577148965131116544_si642) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi645577148965131116546]]) : (si64) -> ()
+
+    // addi 3, 5577148965131116544 -> 5577148965131116547
+    %result_addi_si643_si645577148965131116544 = arc.addi %cst_si643, %cst_si645577148965131116544 : si64
+    "arc.keep"(%result_addi_si643_si645577148965131116544) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi645577148965131116547]]) : (si64) -> ()
+
+    // addi 5577148965131116544, 3 -> 5577148965131116547
+    %result_addi_si645577148965131116544_si643 = arc.addi %cst_si645577148965131116544, %cst_si643 : si64
+    "arc.keep"(%result_addi_si645577148965131116544_si643) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi645577148965131116547]]) : (si64) -> ()
+
+    // addi 4, 5577148965131116544 -> 5577148965131116548
+    %result_addi_si644_si645577148965131116544 = arc.addi %cst_si644, %cst_si645577148965131116544 : si64
+    "arc.keep"(%result_addi_si644_si645577148965131116544) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi645577148965131116548]]) : (si64) -> ()
+
+    // addi 5577148965131116544, 4 -> 5577148965131116548
+    %result_addi_si645577148965131116544_si644 = arc.addi %cst_si645577148965131116544, %cst_si644 : si64
+    "arc.keep"(%result_addi_si645577148965131116544_si644) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi645577148965131116548]]) : (si64) -> ()
 
     // addi -1741927215160008704, 9223372036854775806 -> 7481444821694767102
     %result_addi_si64n1741927215160008704_si649223372036854775806 = arc.addi %cst_si64n1741927215160008704, %cst_si649223372036854775806 : si64
@@ -1504,6 +3498,16 @@ module @toplevel {
     // addi 0, 9223372036854775807 -> 9223372036854775807
     %result_addi_si640_si649223372036854775807 = arc.addi %cst_si640, %cst_si649223372036854775807 : si64
     "arc.keep"(%result_addi_si640_si649223372036854775807) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi649223372036854775807]]) : (si64) -> ()
+
+    // addi 1, 9223372036854775806 -> 9223372036854775807
+    %result_addi_si641_si649223372036854775806 = arc.addi %cst_si641, %cst_si649223372036854775806 : si64
+    "arc.keep"(%result_addi_si641_si649223372036854775806) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi649223372036854775807]]) : (si64) -> ()
+
+    // addi 9223372036854775806, 1 -> 9223372036854775807
+    %result_addi_si649223372036854775806_si641 = arc.addi %cst_si649223372036854775806, %cst_si641 : si64
+    "arc.keep"(%result_addi_si649223372036854775806_si641) : (si64) -> ()
     // CHECK: "arc.keep"([[CSTsi649223372036854775807]]) : (si64) -> ()
 
     // addi 9223372036854775807, 0 -> 9223372036854775807
@@ -1583,6 +3587,48 @@ module @toplevel {
     "arc.keep"(%result_addi_si64n1328271339354574848_si64n9223372036854775807) : (si64) -> ()
     // CHECK: "arc.keep"([[RESULT_addi_si64n1328271339354574848_si64n9223372036854775807]]) : (si64) -> ()
 
+    // addi 1, 9223372036854775807 -> no-fold
+    %result_addi_si641_si649223372036854775807 = arc.addi %cst_si641, %cst_si649223372036854775807 : si64
+    // CHECK-DAG: [[RESULT_addi_si641_si649223372036854775807:%[^ ]+]] = arc.addi [[CSTsi641]], [[CSTsi649223372036854775807]] : si64
+    "arc.keep"(%result_addi_si641_si649223372036854775807) : (si64) -> ()
+    // CHECK: "arc.keep"([[RESULT_addi_si641_si649223372036854775807]]) : (si64) -> ()
+
+    // addi 2, 9223372036854775806 -> no-fold
+    %result_addi_si642_si649223372036854775806 = arc.addi %cst_si642, %cst_si649223372036854775806 : si64
+    // CHECK-DAG: [[RESULT_addi_si642_si649223372036854775806:%[^ ]+]] = arc.addi [[CSTsi642]], [[CSTsi649223372036854775806]] : si64
+    "arc.keep"(%result_addi_si642_si649223372036854775806) : (si64) -> ()
+    // CHECK: "arc.keep"([[RESULT_addi_si642_si649223372036854775806]]) : (si64) -> ()
+
+    // addi 2, 9223372036854775807 -> no-fold
+    %result_addi_si642_si649223372036854775807 = arc.addi %cst_si642, %cst_si649223372036854775807 : si64
+    // CHECK-DAG: [[RESULT_addi_si642_si649223372036854775807:%[^ ]+]] = arc.addi [[CSTsi642]], [[CSTsi649223372036854775807]] : si64
+    "arc.keep"(%result_addi_si642_si649223372036854775807) : (si64) -> ()
+    // CHECK: "arc.keep"([[RESULT_addi_si642_si649223372036854775807]]) : (si64) -> ()
+
+    // addi 3, 9223372036854775806 -> no-fold
+    %result_addi_si643_si649223372036854775806 = arc.addi %cst_si643, %cst_si649223372036854775806 : si64
+    // CHECK-DAG: [[RESULT_addi_si643_si649223372036854775806:%[^ ]+]] = arc.addi [[CSTsi643]], [[CSTsi649223372036854775806]] : si64
+    "arc.keep"(%result_addi_si643_si649223372036854775806) : (si64) -> ()
+    // CHECK: "arc.keep"([[RESULT_addi_si643_si649223372036854775806]]) : (si64) -> ()
+
+    // addi 3, 9223372036854775807 -> no-fold
+    %result_addi_si643_si649223372036854775807 = arc.addi %cst_si643, %cst_si649223372036854775807 : si64
+    // CHECK-DAG: [[RESULT_addi_si643_si649223372036854775807:%[^ ]+]] = arc.addi [[CSTsi643]], [[CSTsi649223372036854775807]] : si64
+    "arc.keep"(%result_addi_si643_si649223372036854775807) : (si64) -> ()
+    // CHECK: "arc.keep"([[RESULT_addi_si643_si649223372036854775807]]) : (si64) -> ()
+
+    // addi 4, 9223372036854775806 -> no-fold
+    %result_addi_si644_si649223372036854775806 = arc.addi %cst_si644, %cst_si649223372036854775806 : si64
+    // CHECK-DAG: [[RESULT_addi_si644_si649223372036854775806:%[^ ]+]] = arc.addi [[CSTsi644]], [[CSTsi649223372036854775806]] : si64
+    "arc.keep"(%result_addi_si644_si649223372036854775806) : (si64) -> ()
+    // CHECK: "arc.keep"([[RESULT_addi_si644_si649223372036854775806]]) : (si64) -> ()
+
+    // addi 4, 9223372036854775807 -> no-fold
+    %result_addi_si644_si649223372036854775807 = arc.addi %cst_si644, %cst_si649223372036854775807 : si64
+    // CHECK-DAG: [[RESULT_addi_si644_si649223372036854775807:%[^ ]+]] = arc.addi [[CSTsi644]], [[CSTsi649223372036854775807]] : si64
+    "arc.keep"(%result_addi_si644_si649223372036854775807) : (si64) -> ()
+    // CHECK: "arc.keep"([[RESULT_addi_si644_si649223372036854775807]]) : (si64) -> ()
+
     // addi 5577148965131116544, 5577148965131116544 -> no-fold
     %result_addi_si645577148965131116544_si645577148965131116544 = arc.addi %cst_si645577148965131116544, %cst_si645577148965131116544 : si64
     // CHECK-DAG: [[RESULT_addi_si645577148965131116544_si645577148965131116544:%[^ ]+]] = arc.addi [[CSTsi645577148965131116544]], [[CSTsi645577148965131116544]] : si64
@@ -1601,6 +3647,24 @@ module @toplevel {
     "arc.keep"(%result_addi_si645577148965131116544_si649223372036854775807) : (si64) -> ()
     // CHECK: "arc.keep"([[RESULT_addi_si645577148965131116544_si649223372036854775807]]) : (si64) -> ()
 
+    // addi 9223372036854775806, 2 -> no-fold
+    %result_addi_si649223372036854775806_si642 = arc.addi %cst_si649223372036854775806, %cst_si642 : si64
+    // CHECK-DAG: [[RESULT_addi_si649223372036854775806_si642:%[^ ]+]] = arc.addi [[CSTsi649223372036854775806]], [[CSTsi642]] : si64
+    "arc.keep"(%result_addi_si649223372036854775806_si642) : (si64) -> ()
+    // CHECK: "arc.keep"([[RESULT_addi_si649223372036854775806_si642]]) : (si64) -> ()
+
+    // addi 9223372036854775806, 3 -> no-fold
+    %result_addi_si649223372036854775806_si643 = arc.addi %cst_si649223372036854775806, %cst_si643 : si64
+    // CHECK-DAG: [[RESULT_addi_si649223372036854775806_si643:%[^ ]+]] = arc.addi [[CSTsi649223372036854775806]], [[CSTsi643]] : si64
+    "arc.keep"(%result_addi_si649223372036854775806_si643) : (si64) -> ()
+    // CHECK: "arc.keep"([[RESULT_addi_si649223372036854775806_si643]]) : (si64) -> ()
+
+    // addi 9223372036854775806, 4 -> no-fold
+    %result_addi_si649223372036854775806_si644 = arc.addi %cst_si649223372036854775806, %cst_si644 : si64
+    // CHECK-DAG: [[RESULT_addi_si649223372036854775806_si644:%[^ ]+]] = arc.addi [[CSTsi649223372036854775806]], [[CSTsi644]] : si64
+    "arc.keep"(%result_addi_si649223372036854775806_si644) : (si64) -> ()
+    // CHECK: "arc.keep"([[RESULT_addi_si649223372036854775806_si644]]) : (si64) -> ()
+
     // addi 9223372036854775806, 5577148965131116544 -> no-fold
     %result_addi_si649223372036854775806_si645577148965131116544 = arc.addi %cst_si649223372036854775806, %cst_si645577148965131116544 : si64
     // CHECK-DAG: [[RESULT_addi_si649223372036854775806_si645577148965131116544:%[^ ]+]] = arc.addi [[CSTsi649223372036854775806]], [[CSTsi645577148965131116544]] : si64
@@ -1618,6 +3682,30 @@ module @toplevel {
     // CHECK-DAG: [[RESULT_addi_si649223372036854775806_si649223372036854775807:%[^ ]+]] = arc.addi [[CSTsi649223372036854775806]], [[CSTsi649223372036854775807]] : si64
     "arc.keep"(%result_addi_si649223372036854775806_si649223372036854775807) : (si64) -> ()
     // CHECK: "arc.keep"([[RESULT_addi_si649223372036854775806_si649223372036854775807]]) : (si64) -> ()
+
+    // addi 9223372036854775807, 1 -> no-fold
+    %result_addi_si649223372036854775807_si641 = arc.addi %cst_si649223372036854775807, %cst_si641 : si64
+    // CHECK-DAG: [[RESULT_addi_si649223372036854775807_si641:%[^ ]+]] = arc.addi [[CSTsi649223372036854775807]], [[CSTsi641]] : si64
+    "arc.keep"(%result_addi_si649223372036854775807_si641) : (si64) -> ()
+    // CHECK: "arc.keep"([[RESULT_addi_si649223372036854775807_si641]]) : (si64) -> ()
+
+    // addi 9223372036854775807, 2 -> no-fold
+    %result_addi_si649223372036854775807_si642 = arc.addi %cst_si649223372036854775807, %cst_si642 : si64
+    // CHECK-DAG: [[RESULT_addi_si649223372036854775807_si642:%[^ ]+]] = arc.addi [[CSTsi649223372036854775807]], [[CSTsi642]] : si64
+    "arc.keep"(%result_addi_si649223372036854775807_si642) : (si64) -> ()
+    // CHECK: "arc.keep"([[RESULT_addi_si649223372036854775807_si642]]) : (si64) -> ()
+
+    // addi 9223372036854775807, 3 -> no-fold
+    %result_addi_si649223372036854775807_si643 = arc.addi %cst_si649223372036854775807, %cst_si643 : si64
+    // CHECK-DAG: [[RESULT_addi_si649223372036854775807_si643:%[^ ]+]] = arc.addi [[CSTsi649223372036854775807]], [[CSTsi643]] : si64
+    "arc.keep"(%result_addi_si649223372036854775807_si643) : (si64) -> ()
+    // CHECK: "arc.keep"([[RESULT_addi_si649223372036854775807_si643]]) : (si64) -> ()
+
+    // addi 9223372036854775807, 4 -> no-fold
+    %result_addi_si649223372036854775807_si644 = arc.addi %cst_si649223372036854775807, %cst_si644 : si64
+    // CHECK-DAG: [[RESULT_addi_si649223372036854775807_si644:%[^ ]+]] = arc.addi [[CSTsi649223372036854775807]], [[CSTsi644]] : si64
+    "arc.keep"(%result_addi_si649223372036854775807_si644) : (si64) -> ()
+    // CHECK: "arc.keep"([[RESULT_addi_si649223372036854775807_si644]]) : (si64) -> ()
 
     // addi 9223372036854775807, 5577148965131116544 -> no-fold
     %result_addi_si649223372036854775807_si645577148965131116544 = arc.addi %cst_si649223372036854775807, %cst_si645577148965131116544 : si64
@@ -1667,6 +3755,11 @@ module @toplevel {
     "arc.keep"(%result_addi_si81_si8n128) : (si8) -> ()
     // CHECK: "arc.keep"([[CSTsi8n127]]) : (si8) -> ()
 
+    // addi -128, 2 -> -126
+    %result_addi_si8n128_si82 = arc.addi %cst_si8n128, %cst_si82 : si8
+    "arc.keep"(%result_addi_si8n128_si82) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi8n126]]) : (si8) -> ()
+
     // addi -127, 1 -> -126
     %result_addi_si8n127_si81 = arc.addi %cst_si8n127, %cst_si81 : si8
     "arc.keep"(%result_addi_si8n127_si81) : (si8) -> ()
@@ -1676,6 +3769,61 @@ module @toplevel {
     %result_addi_si81_si8n127 = arc.addi %cst_si81, %cst_si8n127 : si8
     "arc.keep"(%result_addi_si81_si8n127) : (si8) -> ()
     // CHECK: "arc.keep"([[CSTsi8n126]]) : (si8) -> ()
+
+    // addi 2, -128 -> -126
+    %result_addi_si82_si8n128 = arc.addi %cst_si82, %cst_si8n128 : si8
+    "arc.keep"(%result_addi_si82_si8n128) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi8n126]]) : (si8) -> ()
+
+    // addi -128, 3 -> -125
+    %result_addi_si8n128_si83 = arc.addi %cst_si8n128, %cst_si83 : si8
+    "arc.keep"(%result_addi_si8n128_si83) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi8n125]]) : (si8) -> ()
+
+    // addi -127, 2 -> -125
+    %result_addi_si8n127_si82 = arc.addi %cst_si8n127, %cst_si82 : si8
+    "arc.keep"(%result_addi_si8n127_si82) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi8n125]]) : (si8) -> ()
+
+    // addi 2, -127 -> -125
+    %result_addi_si82_si8n127 = arc.addi %cst_si82, %cst_si8n127 : si8
+    "arc.keep"(%result_addi_si82_si8n127) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi8n125]]) : (si8) -> ()
+
+    // addi 3, -128 -> -125
+    %result_addi_si83_si8n128 = arc.addi %cst_si83, %cst_si8n128 : si8
+    "arc.keep"(%result_addi_si83_si8n128) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi8n125]]) : (si8) -> ()
+
+    // addi -128, 4 -> -124
+    %result_addi_si8n128_si84 = arc.addi %cst_si8n128, %cst_si84 : si8
+    "arc.keep"(%result_addi_si8n128_si84) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi8n124]]) : (si8) -> ()
+
+    // addi -127, 3 -> -124
+    %result_addi_si8n127_si83 = arc.addi %cst_si8n127, %cst_si83 : si8
+    "arc.keep"(%result_addi_si8n127_si83) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi8n124]]) : (si8) -> ()
+
+    // addi 3, -127 -> -124
+    %result_addi_si83_si8n127 = arc.addi %cst_si83, %cst_si8n127 : si8
+    "arc.keep"(%result_addi_si83_si8n127) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi8n124]]) : (si8) -> ()
+
+    // addi 4, -128 -> -124
+    %result_addi_si84_si8n128 = arc.addi %cst_si84, %cst_si8n128 : si8
+    "arc.keep"(%result_addi_si84_si8n128) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi8n124]]) : (si8) -> ()
+
+    // addi -127, 4 -> -123
+    %result_addi_si8n127_si84 = arc.addi %cst_si8n127, %cst_si84 : si8
+    "arc.keep"(%result_addi_si8n127_si84) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi8n123]]) : (si8) -> ()
+
+    // addi 4, -127 -> -123
+    %result_addi_si84_si8n127 = arc.addi %cst_si84, %cst_si8n127 : si8
+    "arc.keep"(%result_addi_si84_si8n127) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi8n123]]) : (si8) -> ()
 
     // addi -128, 16 -> -112
     %result_addi_si8n128_si816 = arc.addi %cst_si8n128, %cst_si816 : si8
@@ -1752,10 +3900,115 @@ module @toplevel {
     "arc.keep"(%result_addi_si81_si80) : (si8) -> ()
     // CHECK: "arc.keep"([[CSTsi81]]) : (si8) -> ()
 
+    // addi 0, 2 -> 2
+    %result_addi_si80_si82 = arc.addi %cst_si80, %cst_si82 : si8
+    "arc.keep"(%result_addi_si80_si82) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi82]]) : (si8) -> ()
+
     // addi 1, 1 -> 2
     %result_addi_si81_si81 = arc.addi %cst_si81, %cst_si81 : si8
     "arc.keep"(%result_addi_si81_si81) : (si8) -> ()
     // CHECK: "arc.keep"([[CSTsi82]]) : (si8) -> ()
+
+    // addi 2, 0 -> 2
+    %result_addi_si82_si80 = arc.addi %cst_si82, %cst_si80 : si8
+    "arc.keep"(%result_addi_si82_si80) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi82]]) : (si8) -> ()
+
+    // addi 0, 3 -> 3
+    %result_addi_si80_si83 = arc.addi %cst_si80, %cst_si83 : si8
+    "arc.keep"(%result_addi_si80_si83) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi83]]) : (si8) -> ()
+
+    // addi 1, 2 -> 3
+    %result_addi_si81_si82 = arc.addi %cst_si81, %cst_si82 : si8
+    "arc.keep"(%result_addi_si81_si82) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi83]]) : (si8) -> ()
+
+    // addi 2, 1 -> 3
+    %result_addi_si82_si81 = arc.addi %cst_si82, %cst_si81 : si8
+    "arc.keep"(%result_addi_si82_si81) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi83]]) : (si8) -> ()
+
+    // addi 3, 0 -> 3
+    %result_addi_si83_si80 = arc.addi %cst_si83, %cst_si80 : si8
+    "arc.keep"(%result_addi_si83_si80) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi83]]) : (si8) -> ()
+
+    // addi 0, 4 -> 4
+    %result_addi_si80_si84 = arc.addi %cst_si80, %cst_si84 : si8
+    "arc.keep"(%result_addi_si80_si84) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi84]]) : (si8) -> ()
+
+    // addi 1, 3 -> 4
+    %result_addi_si81_si83 = arc.addi %cst_si81, %cst_si83 : si8
+    "arc.keep"(%result_addi_si81_si83) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi84]]) : (si8) -> ()
+
+    // addi 2, 2 -> 4
+    %result_addi_si82_si82 = arc.addi %cst_si82, %cst_si82 : si8
+    "arc.keep"(%result_addi_si82_si82) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi84]]) : (si8) -> ()
+
+    // addi 3, 1 -> 4
+    %result_addi_si83_si81 = arc.addi %cst_si83, %cst_si81 : si8
+    "arc.keep"(%result_addi_si83_si81) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi84]]) : (si8) -> ()
+
+    // addi 4, 0 -> 4
+    %result_addi_si84_si80 = arc.addi %cst_si84, %cst_si80 : si8
+    "arc.keep"(%result_addi_si84_si80) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi84]]) : (si8) -> ()
+
+    // addi 1, 4 -> 5
+    %result_addi_si81_si84 = arc.addi %cst_si81, %cst_si84 : si8
+    "arc.keep"(%result_addi_si81_si84) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi85]]) : (si8) -> ()
+
+    // addi 2, 3 -> 5
+    %result_addi_si82_si83 = arc.addi %cst_si82, %cst_si83 : si8
+    "arc.keep"(%result_addi_si82_si83) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi85]]) : (si8) -> ()
+
+    // addi 3, 2 -> 5
+    %result_addi_si83_si82 = arc.addi %cst_si83, %cst_si82 : si8
+    "arc.keep"(%result_addi_si83_si82) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi85]]) : (si8) -> ()
+
+    // addi 4, 1 -> 5
+    %result_addi_si84_si81 = arc.addi %cst_si84, %cst_si81 : si8
+    "arc.keep"(%result_addi_si84_si81) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi85]]) : (si8) -> ()
+
+    // addi 2, 4 -> 6
+    %result_addi_si82_si84 = arc.addi %cst_si82, %cst_si84 : si8
+    "arc.keep"(%result_addi_si82_si84) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi86]]) : (si8) -> ()
+
+    // addi 3, 3 -> 6
+    %result_addi_si83_si83 = arc.addi %cst_si83, %cst_si83 : si8
+    "arc.keep"(%result_addi_si83_si83) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi86]]) : (si8) -> ()
+
+    // addi 4, 2 -> 6
+    %result_addi_si84_si82 = arc.addi %cst_si84, %cst_si82 : si8
+    "arc.keep"(%result_addi_si84_si82) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi86]]) : (si8) -> ()
+
+    // addi 3, 4 -> 7
+    %result_addi_si83_si84 = arc.addi %cst_si83, %cst_si84 : si8
+    "arc.keep"(%result_addi_si83_si84) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi87]]) : (si8) -> ()
+
+    // addi 4, 3 -> 7
+    %result_addi_si84_si83 = arc.addi %cst_si84, %cst_si83 : si8
+    "arc.keep"(%result_addi_si84_si83) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi87]]) : (si8) -> ()
+
+    // addi 4, 4 -> 8
+    %result_addi_si84_si84 = arc.addi %cst_si84, %cst_si84 : si8
+    "arc.keep"(%result_addi_si84_si84) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi88]]) : (si8) -> ()
 
     // addi 0, 16 -> 16
     %result_addi_si80_si816 = arc.addi %cst_si80, %cst_si816 : si8
@@ -1776,6 +4029,36 @@ module @toplevel {
     %result_addi_si816_si81 = arc.addi %cst_si816, %cst_si81 : si8
     "arc.keep"(%result_addi_si816_si81) : (si8) -> ()
     // CHECK: "arc.keep"([[CSTsi817]]) : (si8) -> ()
+
+    // addi 2, 16 -> 18
+    %result_addi_si82_si816 = arc.addi %cst_si82, %cst_si816 : si8
+    "arc.keep"(%result_addi_si82_si816) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi818]]) : (si8) -> ()
+
+    // addi 16, 2 -> 18
+    %result_addi_si816_si82 = arc.addi %cst_si816, %cst_si82 : si8
+    "arc.keep"(%result_addi_si816_si82) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi818]]) : (si8) -> ()
+
+    // addi 3, 16 -> 19
+    %result_addi_si83_si816 = arc.addi %cst_si83, %cst_si816 : si8
+    "arc.keep"(%result_addi_si83_si816) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi819]]) : (si8) -> ()
+
+    // addi 16, 3 -> 19
+    %result_addi_si816_si83 = arc.addi %cst_si816, %cst_si83 : si8
+    "arc.keep"(%result_addi_si816_si83) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi819]]) : (si8) -> ()
+
+    // addi 4, 16 -> 20
+    %result_addi_si84_si816 = arc.addi %cst_si84, %cst_si816 : si8
+    "arc.keep"(%result_addi_si84_si816) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi820]]) : (si8) -> ()
+
+    // addi 16, 4 -> 20
+    %result_addi_si816_si84 = arc.addi %cst_si816, %cst_si84 : si8
+    "arc.keep"(%result_addi_si816_si84) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi820]]) : (si8) -> ()
 
     // addi 16, 16 -> 32
     %result_addi_si816_si816 = arc.addi %cst_si816, %cst_si816 : si8
@@ -1842,6 +4125,42 @@ module @toplevel {
     "arc.keep"(%result_addi_si81_si8127) : (si8) -> ()
     // CHECK: "arc.keep"([[RESULT_addi_si81_si8127]]) : (si8) -> ()
 
+    // addi 2, 126 -> no-fold
+    %result_addi_si82_si8126 = arc.addi %cst_si82, %cst_si8126 : si8
+    // CHECK-DAG: [[RESULT_addi_si82_si8126:%[^ ]+]] = arc.addi [[CSTsi82]], [[CSTsi8126]] : si8
+    "arc.keep"(%result_addi_si82_si8126) : (si8) -> ()
+    // CHECK: "arc.keep"([[RESULT_addi_si82_si8126]]) : (si8) -> ()
+
+    // addi 2, 127 -> no-fold
+    %result_addi_si82_si8127 = arc.addi %cst_si82, %cst_si8127 : si8
+    // CHECK-DAG: [[RESULT_addi_si82_si8127:%[^ ]+]] = arc.addi [[CSTsi82]], [[CSTsi8127]] : si8
+    "arc.keep"(%result_addi_si82_si8127) : (si8) -> ()
+    // CHECK: "arc.keep"([[RESULT_addi_si82_si8127]]) : (si8) -> ()
+
+    // addi 3, 126 -> no-fold
+    %result_addi_si83_si8126 = arc.addi %cst_si83, %cst_si8126 : si8
+    // CHECK-DAG: [[RESULT_addi_si83_si8126:%[^ ]+]] = arc.addi [[CSTsi83]], [[CSTsi8126]] : si8
+    "arc.keep"(%result_addi_si83_si8126) : (si8) -> ()
+    // CHECK: "arc.keep"([[RESULT_addi_si83_si8126]]) : (si8) -> ()
+
+    // addi 3, 127 -> no-fold
+    %result_addi_si83_si8127 = arc.addi %cst_si83, %cst_si8127 : si8
+    // CHECK-DAG: [[RESULT_addi_si83_si8127:%[^ ]+]] = arc.addi [[CSTsi83]], [[CSTsi8127]] : si8
+    "arc.keep"(%result_addi_si83_si8127) : (si8) -> ()
+    // CHECK: "arc.keep"([[RESULT_addi_si83_si8127]]) : (si8) -> ()
+
+    // addi 4, 126 -> no-fold
+    %result_addi_si84_si8126 = arc.addi %cst_si84, %cst_si8126 : si8
+    // CHECK-DAG: [[RESULT_addi_si84_si8126:%[^ ]+]] = arc.addi [[CSTsi84]], [[CSTsi8126]] : si8
+    "arc.keep"(%result_addi_si84_si8126) : (si8) -> ()
+    // CHECK: "arc.keep"([[RESULT_addi_si84_si8126]]) : (si8) -> ()
+
+    // addi 4, 127 -> no-fold
+    %result_addi_si84_si8127 = arc.addi %cst_si84, %cst_si8127 : si8
+    // CHECK-DAG: [[RESULT_addi_si84_si8127:%[^ ]+]] = arc.addi [[CSTsi84]], [[CSTsi8127]] : si8
+    "arc.keep"(%result_addi_si84_si8127) : (si8) -> ()
+    // CHECK: "arc.keep"([[RESULT_addi_si84_si8127]]) : (si8) -> ()
+
     // addi 16, 126 -> no-fold
     %result_addi_si816_si8126 = arc.addi %cst_si816, %cst_si8126 : si8
     // CHECK-DAG: [[RESULT_addi_si816_si8126:%[^ ]+]] = arc.addi [[CSTsi816]], [[CSTsi8126]] : si8
@@ -1853,6 +4172,24 @@ module @toplevel {
     // CHECK-DAG: [[RESULT_addi_si816_si8127:%[^ ]+]] = arc.addi [[CSTsi816]], [[CSTsi8127]] : si8
     "arc.keep"(%result_addi_si816_si8127) : (si8) -> ()
     // CHECK: "arc.keep"([[RESULT_addi_si816_si8127]]) : (si8) -> ()
+
+    // addi 126, 2 -> no-fold
+    %result_addi_si8126_si82 = arc.addi %cst_si8126, %cst_si82 : si8
+    // CHECK-DAG: [[RESULT_addi_si8126_si82:%[^ ]+]] = arc.addi [[CSTsi8126]], [[CSTsi82]] : si8
+    "arc.keep"(%result_addi_si8126_si82) : (si8) -> ()
+    // CHECK: "arc.keep"([[RESULT_addi_si8126_si82]]) : (si8) -> ()
+
+    // addi 126, 3 -> no-fold
+    %result_addi_si8126_si83 = arc.addi %cst_si8126, %cst_si83 : si8
+    // CHECK-DAG: [[RESULT_addi_si8126_si83:%[^ ]+]] = arc.addi [[CSTsi8126]], [[CSTsi83]] : si8
+    "arc.keep"(%result_addi_si8126_si83) : (si8) -> ()
+    // CHECK: "arc.keep"([[RESULT_addi_si8126_si83]]) : (si8) -> ()
+
+    // addi 126, 4 -> no-fold
+    %result_addi_si8126_si84 = arc.addi %cst_si8126, %cst_si84 : si8
+    // CHECK-DAG: [[RESULT_addi_si8126_si84:%[^ ]+]] = arc.addi [[CSTsi8126]], [[CSTsi84]] : si8
+    "arc.keep"(%result_addi_si8126_si84) : (si8) -> ()
+    // CHECK: "arc.keep"([[RESULT_addi_si8126_si84]]) : (si8) -> ()
 
     // addi 126, 16 -> no-fold
     %result_addi_si8126_si816 = arc.addi %cst_si8126, %cst_si816 : si8
@@ -1877,6 +4214,24 @@ module @toplevel {
     // CHECK-DAG: [[RESULT_addi_si8127_si81:%[^ ]+]] = arc.addi [[CSTsi8127]], [[CSTsi81]] : si8
     "arc.keep"(%result_addi_si8127_si81) : (si8) -> ()
     // CHECK: "arc.keep"([[RESULT_addi_si8127_si81]]) : (si8) -> ()
+
+    // addi 127, 2 -> no-fold
+    %result_addi_si8127_si82 = arc.addi %cst_si8127, %cst_si82 : si8
+    // CHECK-DAG: [[RESULT_addi_si8127_si82:%[^ ]+]] = arc.addi [[CSTsi8127]], [[CSTsi82]] : si8
+    "arc.keep"(%result_addi_si8127_si82) : (si8) -> ()
+    // CHECK: "arc.keep"([[RESULT_addi_si8127_si82]]) : (si8) -> ()
+
+    // addi 127, 3 -> no-fold
+    %result_addi_si8127_si83 = arc.addi %cst_si8127, %cst_si83 : si8
+    // CHECK-DAG: [[RESULT_addi_si8127_si83:%[^ ]+]] = arc.addi [[CSTsi8127]], [[CSTsi83]] : si8
+    "arc.keep"(%result_addi_si8127_si83) : (si8) -> ()
+    // CHECK: "arc.keep"([[RESULT_addi_si8127_si83]]) : (si8) -> ()
+
+    // addi 127, 4 -> no-fold
+    %result_addi_si8127_si84 = arc.addi %cst_si8127, %cst_si84 : si8
+    // CHECK-DAG: [[RESULT_addi_si8127_si84:%[^ ]+]] = arc.addi [[CSTsi8127]], [[CSTsi84]] : si8
+    "arc.keep"(%result_addi_si8127_si84) : (si8) -> ()
+    // CHECK: "arc.keep"([[RESULT_addi_si8127_si84]]) : (si8) -> ()
 
     // addi 127, 16 -> no-fold
     %result_addi_si8127_si816 = arc.addi %cst_si8127, %cst_si816 : si8
@@ -1911,10 +4266,115 @@ module @toplevel {
     "arc.keep"(%result_addi_ui161_ui160) : (ui16) -> ()
     // CHECK: "arc.keep"([[CSTui161]]) : (ui16) -> ()
 
+    // addi 0, 2 -> 2
+    %result_addi_ui160_ui162 = arc.addi %cst_ui160, %cst_ui162 : ui16
+    "arc.keep"(%result_addi_ui160_ui162) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui162]]) : (ui16) -> ()
+
     // addi 1, 1 -> 2
     %result_addi_ui161_ui161 = arc.addi %cst_ui161, %cst_ui161 : ui16
     "arc.keep"(%result_addi_ui161_ui161) : (ui16) -> ()
     // CHECK: "arc.keep"([[CSTui162]]) : (ui16) -> ()
+
+    // addi 2, 0 -> 2
+    %result_addi_ui162_ui160 = arc.addi %cst_ui162, %cst_ui160 : ui16
+    "arc.keep"(%result_addi_ui162_ui160) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui162]]) : (ui16) -> ()
+
+    // addi 0, 3 -> 3
+    %result_addi_ui160_ui163 = arc.addi %cst_ui160, %cst_ui163 : ui16
+    "arc.keep"(%result_addi_ui160_ui163) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui163]]) : (ui16) -> ()
+
+    // addi 1, 2 -> 3
+    %result_addi_ui161_ui162 = arc.addi %cst_ui161, %cst_ui162 : ui16
+    "arc.keep"(%result_addi_ui161_ui162) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui163]]) : (ui16) -> ()
+
+    // addi 2, 1 -> 3
+    %result_addi_ui162_ui161 = arc.addi %cst_ui162, %cst_ui161 : ui16
+    "arc.keep"(%result_addi_ui162_ui161) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui163]]) : (ui16) -> ()
+
+    // addi 3, 0 -> 3
+    %result_addi_ui163_ui160 = arc.addi %cst_ui163, %cst_ui160 : ui16
+    "arc.keep"(%result_addi_ui163_ui160) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui163]]) : (ui16) -> ()
+
+    // addi 0, 4 -> 4
+    %result_addi_ui160_ui164 = arc.addi %cst_ui160, %cst_ui164 : ui16
+    "arc.keep"(%result_addi_ui160_ui164) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui164]]) : (ui16) -> ()
+
+    // addi 1, 3 -> 4
+    %result_addi_ui161_ui163 = arc.addi %cst_ui161, %cst_ui163 : ui16
+    "arc.keep"(%result_addi_ui161_ui163) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui164]]) : (ui16) -> ()
+
+    // addi 2, 2 -> 4
+    %result_addi_ui162_ui162 = arc.addi %cst_ui162, %cst_ui162 : ui16
+    "arc.keep"(%result_addi_ui162_ui162) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui164]]) : (ui16) -> ()
+
+    // addi 3, 1 -> 4
+    %result_addi_ui163_ui161 = arc.addi %cst_ui163, %cst_ui161 : ui16
+    "arc.keep"(%result_addi_ui163_ui161) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui164]]) : (ui16) -> ()
+
+    // addi 4, 0 -> 4
+    %result_addi_ui164_ui160 = arc.addi %cst_ui164, %cst_ui160 : ui16
+    "arc.keep"(%result_addi_ui164_ui160) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui164]]) : (ui16) -> ()
+
+    // addi 1, 4 -> 5
+    %result_addi_ui161_ui164 = arc.addi %cst_ui161, %cst_ui164 : ui16
+    "arc.keep"(%result_addi_ui161_ui164) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui165]]) : (ui16) -> ()
+
+    // addi 2, 3 -> 5
+    %result_addi_ui162_ui163 = arc.addi %cst_ui162, %cst_ui163 : ui16
+    "arc.keep"(%result_addi_ui162_ui163) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui165]]) : (ui16) -> ()
+
+    // addi 3, 2 -> 5
+    %result_addi_ui163_ui162 = arc.addi %cst_ui163, %cst_ui162 : ui16
+    "arc.keep"(%result_addi_ui163_ui162) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui165]]) : (ui16) -> ()
+
+    // addi 4, 1 -> 5
+    %result_addi_ui164_ui161 = arc.addi %cst_ui164, %cst_ui161 : ui16
+    "arc.keep"(%result_addi_ui164_ui161) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui165]]) : (ui16) -> ()
+
+    // addi 2, 4 -> 6
+    %result_addi_ui162_ui164 = arc.addi %cst_ui162, %cst_ui164 : ui16
+    "arc.keep"(%result_addi_ui162_ui164) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui166]]) : (ui16) -> ()
+
+    // addi 3, 3 -> 6
+    %result_addi_ui163_ui163 = arc.addi %cst_ui163, %cst_ui163 : ui16
+    "arc.keep"(%result_addi_ui163_ui163) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui166]]) : (ui16) -> ()
+
+    // addi 4, 2 -> 6
+    %result_addi_ui164_ui162 = arc.addi %cst_ui164, %cst_ui162 : ui16
+    "arc.keep"(%result_addi_ui164_ui162) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui166]]) : (ui16) -> ()
+
+    // addi 3, 4 -> 7
+    %result_addi_ui163_ui164 = arc.addi %cst_ui163, %cst_ui164 : ui16
+    "arc.keep"(%result_addi_ui163_ui164) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui167]]) : (ui16) -> ()
+
+    // addi 4, 3 -> 7
+    %result_addi_ui164_ui163 = arc.addi %cst_ui164, %cst_ui163 : ui16
+    "arc.keep"(%result_addi_ui164_ui163) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui167]]) : (ui16) -> ()
+
+    // addi 4, 4 -> 8
+    %result_addi_ui164_ui164 = arc.addi %cst_ui164, %cst_ui164 : ui16
+    "arc.keep"(%result_addi_ui164_ui164) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui168]]) : (ui16) -> ()
 
     // addi 0, 1717 -> 1717
     %result_addi_ui160_ui161717 = arc.addi %cst_ui160, %cst_ui161717 : ui16
@@ -1935,6 +4395,36 @@ module @toplevel {
     %result_addi_ui161717_ui161 = arc.addi %cst_ui161717, %cst_ui161 : ui16
     "arc.keep"(%result_addi_ui161717_ui161) : (ui16) -> ()
     // CHECK: "arc.keep"([[CSTui161718]]) : (ui16) -> ()
+
+    // addi 2, 1717 -> 1719
+    %result_addi_ui162_ui161717 = arc.addi %cst_ui162, %cst_ui161717 : ui16
+    "arc.keep"(%result_addi_ui162_ui161717) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui161719]]) : (ui16) -> ()
+
+    // addi 1717, 2 -> 1719
+    %result_addi_ui161717_ui162 = arc.addi %cst_ui161717, %cst_ui162 : ui16
+    "arc.keep"(%result_addi_ui161717_ui162) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui161719]]) : (ui16) -> ()
+
+    // addi 3, 1717 -> 1720
+    %result_addi_ui163_ui161717 = arc.addi %cst_ui163, %cst_ui161717 : ui16
+    "arc.keep"(%result_addi_ui163_ui161717) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui161720]]) : (ui16) -> ()
+
+    // addi 1717, 3 -> 1720
+    %result_addi_ui161717_ui163 = arc.addi %cst_ui161717, %cst_ui163 : ui16
+    "arc.keep"(%result_addi_ui161717_ui163) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui161720]]) : (ui16) -> ()
+
+    // addi 4, 1717 -> 1721
+    %result_addi_ui164_ui161717 = arc.addi %cst_ui164, %cst_ui161717 : ui16
+    "arc.keep"(%result_addi_ui164_ui161717) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui161721]]) : (ui16) -> ()
+
+    // addi 1717, 4 -> 1721
+    %result_addi_ui161717_ui164 = arc.addi %cst_ui161717, %cst_ui164 : ui16
+    "arc.keep"(%result_addi_ui161717_ui164) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui161721]]) : (ui16) -> ()
 
     // addi 1717, 1717 -> 3434
     %result_addi_ui161717_ui161717 = arc.addi %cst_ui161717, %cst_ui161717 : ui16
@@ -1960,6 +4450,36 @@ module @toplevel {
     %result_addi_ui1617988_ui161 = arc.addi %cst_ui1617988, %cst_ui161 : ui16
     "arc.keep"(%result_addi_ui1617988_ui161) : (ui16) -> ()
     // CHECK: "arc.keep"([[CSTui1617989]]) : (ui16) -> ()
+
+    // addi 2, 17988 -> 17990
+    %result_addi_ui162_ui1617988 = arc.addi %cst_ui162, %cst_ui1617988 : ui16
+    "arc.keep"(%result_addi_ui162_ui1617988) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui1617990]]) : (ui16) -> ()
+
+    // addi 17988, 2 -> 17990
+    %result_addi_ui1617988_ui162 = arc.addi %cst_ui1617988, %cst_ui162 : ui16
+    "arc.keep"(%result_addi_ui1617988_ui162) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui1617990]]) : (ui16) -> ()
+
+    // addi 3, 17988 -> 17991
+    %result_addi_ui163_ui1617988 = arc.addi %cst_ui163, %cst_ui1617988 : ui16
+    "arc.keep"(%result_addi_ui163_ui1617988) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui1617991]]) : (ui16) -> ()
+
+    // addi 17988, 3 -> 17991
+    %result_addi_ui1617988_ui163 = arc.addi %cst_ui1617988, %cst_ui163 : ui16
+    "arc.keep"(%result_addi_ui1617988_ui163) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui1617991]]) : (ui16) -> ()
+
+    // addi 4, 17988 -> 17992
+    %result_addi_ui164_ui1617988 = arc.addi %cst_ui164, %cst_ui1617988 : ui16
+    "arc.keep"(%result_addi_ui164_ui1617988) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui1617992]]) : (ui16) -> ()
+
+    // addi 17988, 4 -> 17992
+    %result_addi_ui1617988_ui164 = arc.addi %cst_ui1617988, %cst_ui164 : ui16
+    "arc.keep"(%result_addi_ui1617988_ui164) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui1617992]]) : (ui16) -> ()
 
     // addi 1717, 17988 -> 19705
     %result_addi_ui161717_ui1617988 = arc.addi %cst_ui161717, %cst_ui1617988 : ui16
@@ -1996,6 +4516,36 @@ module @toplevel {
     "arc.keep"(%result_addi_ui1665096_ui161) : (ui16) -> ()
     // CHECK: "arc.keep"([[CSTui1665097]]) : (ui16) -> ()
 
+    // addi 2, 65096 -> 65098
+    %result_addi_ui162_ui1665096 = arc.addi %cst_ui162, %cst_ui1665096 : ui16
+    "arc.keep"(%result_addi_ui162_ui1665096) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui1665098]]) : (ui16) -> ()
+
+    // addi 65096, 2 -> 65098
+    %result_addi_ui1665096_ui162 = arc.addi %cst_ui1665096, %cst_ui162 : ui16
+    "arc.keep"(%result_addi_ui1665096_ui162) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui1665098]]) : (ui16) -> ()
+
+    // addi 3, 65096 -> 65099
+    %result_addi_ui163_ui1665096 = arc.addi %cst_ui163, %cst_ui1665096 : ui16
+    "arc.keep"(%result_addi_ui163_ui1665096) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui1665099]]) : (ui16) -> ()
+
+    // addi 65096, 3 -> 65099
+    %result_addi_ui1665096_ui163 = arc.addi %cst_ui1665096, %cst_ui163 : ui16
+    "arc.keep"(%result_addi_ui1665096_ui163) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui1665099]]) : (ui16) -> ()
+
+    // addi 4, 65096 -> 65100
+    %result_addi_ui164_ui1665096 = arc.addi %cst_ui164, %cst_ui1665096 : ui16
+    "arc.keep"(%result_addi_ui164_ui1665096) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui1665100]]) : (ui16) -> ()
+
+    // addi 65096, 4 -> 65100
+    %result_addi_ui1665096_ui164 = arc.addi %cst_ui1665096, %cst_ui164 : ui16
+    "arc.keep"(%result_addi_ui1665096_ui164) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui1665100]]) : (ui16) -> ()
+
     // addi 0, 65534 -> 65534
     %result_addi_ui160_ui1665534 = arc.addi %cst_ui160, %cst_ui1665534 : ui16
     "arc.keep"(%result_addi_ui160_ui1665534) : (ui16) -> ()
@@ -2031,6 +4581,42 @@ module @toplevel {
     // CHECK-DAG: [[RESULT_addi_ui161_ui1665535:%[^ ]+]] = arc.addi [[CSTui161]], [[CSTui1665535]] : ui16
     "arc.keep"(%result_addi_ui161_ui1665535) : (ui16) -> ()
     // CHECK: "arc.keep"([[RESULT_addi_ui161_ui1665535]]) : (ui16) -> ()
+
+    // addi 2, 65534 -> no-fold
+    %result_addi_ui162_ui1665534 = arc.addi %cst_ui162, %cst_ui1665534 : ui16
+    // CHECK-DAG: [[RESULT_addi_ui162_ui1665534:%[^ ]+]] = arc.addi [[CSTui162]], [[CSTui1665534]] : ui16
+    "arc.keep"(%result_addi_ui162_ui1665534) : (ui16) -> ()
+    // CHECK: "arc.keep"([[RESULT_addi_ui162_ui1665534]]) : (ui16) -> ()
+
+    // addi 2, 65535 -> no-fold
+    %result_addi_ui162_ui1665535 = arc.addi %cst_ui162, %cst_ui1665535 : ui16
+    // CHECK-DAG: [[RESULT_addi_ui162_ui1665535:%[^ ]+]] = arc.addi [[CSTui162]], [[CSTui1665535]] : ui16
+    "arc.keep"(%result_addi_ui162_ui1665535) : (ui16) -> ()
+    // CHECK: "arc.keep"([[RESULT_addi_ui162_ui1665535]]) : (ui16) -> ()
+
+    // addi 3, 65534 -> no-fold
+    %result_addi_ui163_ui1665534 = arc.addi %cst_ui163, %cst_ui1665534 : ui16
+    // CHECK-DAG: [[RESULT_addi_ui163_ui1665534:%[^ ]+]] = arc.addi [[CSTui163]], [[CSTui1665534]] : ui16
+    "arc.keep"(%result_addi_ui163_ui1665534) : (ui16) -> ()
+    // CHECK: "arc.keep"([[RESULT_addi_ui163_ui1665534]]) : (ui16) -> ()
+
+    // addi 3, 65535 -> no-fold
+    %result_addi_ui163_ui1665535 = arc.addi %cst_ui163, %cst_ui1665535 : ui16
+    // CHECK-DAG: [[RESULT_addi_ui163_ui1665535:%[^ ]+]] = arc.addi [[CSTui163]], [[CSTui1665535]] : ui16
+    "arc.keep"(%result_addi_ui163_ui1665535) : (ui16) -> ()
+    // CHECK: "arc.keep"([[RESULT_addi_ui163_ui1665535]]) : (ui16) -> ()
+
+    // addi 4, 65534 -> no-fold
+    %result_addi_ui164_ui1665534 = arc.addi %cst_ui164, %cst_ui1665534 : ui16
+    // CHECK-DAG: [[RESULT_addi_ui164_ui1665534:%[^ ]+]] = arc.addi [[CSTui164]], [[CSTui1665534]] : ui16
+    "arc.keep"(%result_addi_ui164_ui1665534) : (ui16) -> ()
+    // CHECK: "arc.keep"([[RESULT_addi_ui164_ui1665534]]) : (ui16) -> ()
+
+    // addi 4, 65535 -> no-fold
+    %result_addi_ui164_ui1665535 = arc.addi %cst_ui164, %cst_ui1665535 : ui16
+    // CHECK-DAG: [[RESULT_addi_ui164_ui1665535:%[^ ]+]] = arc.addi [[CSTui164]], [[CSTui1665535]] : ui16
+    "arc.keep"(%result_addi_ui164_ui1665535) : (ui16) -> ()
+    // CHECK: "arc.keep"([[RESULT_addi_ui164_ui1665535]]) : (ui16) -> ()
 
     // addi 1717, 65096 -> no-fold
     %result_addi_ui161717_ui1665096 = arc.addi %cst_ui161717, %cst_ui1665096 : ui16
@@ -2098,6 +4684,24 @@ module @toplevel {
     "arc.keep"(%result_addi_ui1665096_ui1665535) : (ui16) -> ()
     // CHECK: "arc.keep"([[RESULT_addi_ui1665096_ui1665535]]) : (ui16) -> ()
 
+    // addi 65534, 2 -> no-fold
+    %result_addi_ui1665534_ui162 = arc.addi %cst_ui1665534, %cst_ui162 : ui16
+    // CHECK-DAG: [[RESULT_addi_ui1665534_ui162:%[^ ]+]] = arc.addi [[CSTui1665534]], [[CSTui162]] : ui16
+    "arc.keep"(%result_addi_ui1665534_ui162) : (ui16) -> ()
+    // CHECK: "arc.keep"([[RESULT_addi_ui1665534_ui162]]) : (ui16) -> ()
+
+    // addi 65534, 3 -> no-fold
+    %result_addi_ui1665534_ui163 = arc.addi %cst_ui1665534, %cst_ui163 : ui16
+    // CHECK-DAG: [[RESULT_addi_ui1665534_ui163:%[^ ]+]] = arc.addi [[CSTui1665534]], [[CSTui163]] : ui16
+    "arc.keep"(%result_addi_ui1665534_ui163) : (ui16) -> ()
+    // CHECK: "arc.keep"([[RESULT_addi_ui1665534_ui163]]) : (ui16) -> ()
+
+    // addi 65534, 4 -> no-fold
+    %result_addi_ui1665534_ui164 = arc.addi %cst_ui1665534, %cst_ui164 : ui16
+    // CHECK-DAG: [[RESULT_addi_ui1665534_ui164:%[^ ]+]] = arc.addi [[CSTui1665534]], [[CSTui164]] : ui16
+    "arc.keep"(%result_addi_ui1665534_ui164) : (ui16) -> ()
+    // CHECK: "arc.keep"([[RESULT_addi_ui1665534_ui164]]) : (ui16) -> ()
+
     // addi 65534, 1717 -> no-fold
     %result_addi_ui1665534_ui161717 = arc.addi %cst_ui1665534, %cst_ui161717 : ui16
     // CHECK-DAG: [[RESULT_addi_ui1665534_ui161717:%[^ ]+]] = arc.addi [[CSTui1665534]], [[CSTui161717]] : ui16
@@ -2133,6 +4737,24 @@ module @toplevel {
     // CHECK-DAG: [[RESULT_addi_ui1665535_ui161:%[^ ]+]] = arc.addi [[CSTui1665535]], [[CSTui161]] : ui16
     "arc.keep"(%result_addi_ui1665535_ui161) : (ui16) -> ()
     // CHECK: "arc.keep"([[RESULT_addi_ui1665535_ui161]]) : (ui16) -> ()
+
+    // addi 65535, 2 -> no-fold
+    %result_addi_ui1665535_ui162 = arc.addi %cst_ui1665535, %cst_ui162 : ui16
+    // CHECK-DAG: [[RESULT_addi_ui1665535_ui162:%[^ ]+]] = arc.addi [[CSTui1665535]], [[CSTui162]] : ui16
+    "arc.keep"(%result_addi_ui1665535_ui162) : (ui16) -> ()
+    // CHECK: "arc.keep"([[RESULT_addi_ui1665535_ui162]]) : (ui16) -> ()
+
+    // addi 65535, 3 -> no-fold
+    %result_addi_ui1665535_ui163 = arc.addi %cst_ui1665535, %cst_ui163 : ui16
+    // CHECK-DAG: [[RESULT_addi_ui1665535_ui163:%[^ ]+]] = arc.addi [[CSTui1665535]], [[CSTui163]] : ui16
+    "arc.keep"(%result_addi_ui1665535_ui163) : (ui16) -> ()
+    // CHECK: "arc.keep"([[RESULT_addi_ui1665535_ui163]]) : (ui16) -> ()
+
+    // addi 65535, 4 -> no-fold
+    %result_addi_ui1665535_ui164 = arc.addi %cst_ui1665535, %cst_ui164 : ui16
+    // CHECK-DAG: [[RESULT_addi_ui1665535_ui164:%[^ ]+]] = arc.addi [[CSTui1665535]], [[CSTui164]] : ui16
+    "arc.keep"(%result_addi_ui1665535_ui164) : (ui16) -> ()
+    // CHECK: "arc.keep"([[RESULT_addi_ui1665535_ui164]]) : (ui16) -> ()
 
     // addi 65535, 1717 -> no-fold
     %result_addi_ui1665535_ui161717 = arc.addi %cst_ui1665535, %cst_ui161717 : ui16
@@ -2179,10 +4801,115 @@ module @toplevel {
     "arc.keep"(%result_addi_ui321_ui320) : (ui32) -> ()
     // CHECK: "arc.keep"([[CSTui321]]) : (ui32) -> ()
 
+    // addi 0, 2 -> 2
+    %result_addi_ui320_ui322 = arc.addi %cst_ui320, %cst_ui322 : ui32
+    "arc.keep"(%result_addi_ui320_ui322) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui322]]) : (ui32) -> ()
+
     // addi 1, 1 -> 2
     %result_addi_ui321_ui321 = arc.addi %cst_ui321, %cst_ui321 : ui32
     "arc.keep"(%result_addi_ui321_ui321) : (ui32) -> ()
     // CHECK: "arc.keep"([[CSTui322]]) : (ui32) -> ()
+
+    // addi 2, 0 -> 2
+    %result_addi_ui322_ui320 = arc.addi %cst_ui322, %cst_ui320 : ui32
+    "arc.keep"(%result_addi_ui322_ui320) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui322]]) : (ui32) -> ()
+
+    // addi 0, 3 -> 3
+    %result_addi_ui320_ui323 = arc.addi %cst_ui320, %cst_ui323 : ui32
+    "arc.keep"(%result_addi_ui320_ui323) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui323]]) : (ui32) -> ()
+
+    // addi 1, 2 -> 3
+    %result_addi_ui321_ui322 = arc.addi %cst_ui321, %cst_ui322 : ui32
+    "arc.keep"(%result_addi_ui321_ui322) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui323]]) : (ui32) -> ()
+
+    // addi 2, 1 -> 3
+    %result_addi_ui322_ui321 = arc.addi %cst_ui322, %cst_ui321 : ui32
+    "arc.keep"(%result_addi_ui322_ui321) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui323]]) : (ui32) -> ()
+
+    // addi 3, 0 -> 3
+    %result_addi_ui323_ui320 = arc.addi %cst_ui323, %cst_ui320 : ui32
+    "arc.keep"(%result_addi_ui323_ui320) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui323]]) : (ui32) -> ()
+
+    // addi 0, 4 -> 4
+    %result_addi_ui320_ui324 = arc.addi %cst_ui320, %cst_ui324 : ui32
+    "arc.keep"(%result_addi_ui320_ui324) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui324]]) : (ui32) -> ()
+
+    // addi 1, 3 -> 4
+    %result_addi_ui321_ui323 = arc.addi %cst_ui321, %cst_ui323 : ui32
+    "arc.keep"(%result_addi_ui321_ui323) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui324]]) : (ui32) -> ()
+
+    // addi 2, 2 -> 4
+    %result_addi_ui322_ui322 = arc.addi %cst_ui322, %cst_ui322 : ui32
+    "arc.keep"(%result_addi_ui322_ui322) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui324]]) : (ui32) -> ()
+
+    // addi 3, 1 -> 4
+    %result_addi_ui323_ui321 = arc.addi %cst_ui323, %cst_ui321 : ui32
+    "arc.keep"(%result_addi_ui323_ui321) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui324]]) : (ui32) -> ()
+
+    // addi 4, 0 -> 4
+    %result_addi_ui324_ui320 = arc.addi %cst_ui324, %cst_ui320 : ui32
+    "arc.keep"(%result_addi_ui324_ui320) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui324]]) : (ui32) -> ()
+
+    // addi 1, 4 -> 5
+    %result_addi_ui321_ui324 = arc.addi %cst_ui321, %cst_ui324 : ui32
+    "arc.keep"(%result_addi_ui321_ui324) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui325]]) : (ui32) -> ()
+
+    // addi 2, 3 -> 5
+    %result_addi_ui322_ui323 = arc.addi %cst_ui322, %cst_ui323 : ui32
+    "arc.keep"(%result_addi_ui322_ui323) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui325]]) : (ui32) -> ()
+
+    // addi 3, 2 -> 5
+    %result_addi_ui323_ui322 = arc.addi %cst_ui323, %cst_ui322 : ui32
+    "arc.keep"(%result_addi_ui323_ui322) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui325]]) : (ui32) -> ()
+
+    // addi 4, 1 -> 5
+    %result_addi_ui324_ui321 = arc.addi %cst_ui324, %cst_ui321 : ui32
+    "arc.keep"(%result_addi_ui324_ui321) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui325]]) : (ui32) -> ()
+
+    // addi 2, 4 -> 6
+    %result_addi_ui322_ui324 = arc.addi %cst_ui322, %cst_ui324 : ui32
+    "arc.keep"(%result_addi_ui322_ui324) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui326]]) : (ui32) -> ()
+
+    // addi 3, 3 -> 6
+    %result_addi_ui323_ui323 = arc.addi %cst_ui323, %cst_ui323 : ui32
+    "arc.keep"(%result_addi_ui323_ui323) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui326]]) : (ui32) -> ()
+
+    // addi 4, 2 -> 6
+    %result_addi_ui324_ui322 = arc.addi %cst_ui324, %cst_ui322 : ui32
+    "arc.keep"(%result_addi_ui324_ui322) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui326]]) : (ui32) -> ()
+
+    // addi 3, 4 -> 7
+    %result_addi_ui323_ui324 = arc.addi %cst_ui323, %cst_ui324 : ui32
+    "arc.keep"(%result_addi_ui323_ui324) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui327]]) : (ui32) -> ()
+
+    // addi 4, 3 -> 7
+    %result_addi_ui324_ui323 = arc.addi %cst_ui324, %cst_ui323 : ui32
+    "arc.keep"(%result_addi_ui324_ui323) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui327]]) : (ui32) -> ()
+
+    // addi 4, 4 -> 8
+    %result_addi_ui324_ui324 = arc.addi %cst_ui324, %cst_ui324 : ui32
+    "arc.keep"(%result_addi_ui324_ui324) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui328]]) : (ui32) -> ()
 
     // addi 0, 2119154652 -> 2119154652
     %result_addi_ui320_ui322119154652 = arc.addi %cst_ui320, %cst_ui322119154652 : ui32
@@ -2204,6 +4931,36 @@ module @toplevel {
     "arc.keep"(%result_addi_ui322119154652_ui321) : (ui32) -> ()
     // CHECK: "arc.keep"([[CSTui322119154653]]) : (ui32) -> ()
 
+    // addi 2, 2119154652 -> 2119154654
+    %result_addi_ui322_ui322119154652 = arc.addi %cst_ui322, %cst_ui322119154652 : ui32
+    "arc.keep"(%result_addi_ui322_ui322119154652) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui322119154654]]) : (ui32) -> ()
+
+    // addi 2119154652, 2 -> 2119154654
+    %result_addi_ui322119154652_ui322 = arc.addi %cst_ui322119154652, %cst_ui322 : ui32
+    "arc.keep"(%result_addi_ui322119154652_ui322) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui322119154654]]) : (ui32) -> ()
+
+    // addi 3, 2119154652 -> 2119154655
+    %result_addi_ui323_ui322119154652 = arc.addi %cst_ui323, %cst_ui322119154652 : ui32
+    "arc.keep"(%result_addi_ui323_ui322119154652) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui322119154655]]) : (ui32) -> ()
+
+    // addi 2119154652, 3 -> 2119154655
+    %result_addi_ui322119154652_ui323 = arc.addi %cst_ui322119154652, %cst_ui323 : ui32
+    "arc.keep"(%result_addi_ui322119154652_ui323) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui322119154655]]) : (ui32) -> ()
+
+    // addi 4, 2119154652 -> 2119154656
+    %result_addi_ui324_ui322119154652 = arc.addi %cst_ui324, %cst_ui322119154652 : ui32
+    "arc.keep"(%result_addi_ui324_ui322119154652) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui322119154656]]) : (ui32) -> ()
+
+    // addi 2119154652, 4 -> 2119154656
+    %result_addi_ui322119154652_ui324 = arc.addi %cst_ui322119154652, %cst_ui324 : ui32
+    "arc.keep"(%result_addi_ui322119154652_ui324) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui322119154656]]) : (ui32) -> ()
+
     // addi 0, 3002788344 -> 3002788344
     %result_addi_ui320_ui323002788344 = arc.addi %cst_ui320, %cst_ui323002788344 : ui32
     "arc.keep"(%result_addi_ui320_ui323002788344) : (ui32) -> ()
@@ -2224,6 +4981,36 @@ module @toplevel {
     "arc.keep"(%result_addi_ui323002788344_ui321) : (ui32) -> ()
     // CHECK: "arc.keep"([[CSTui323002788345]]) : (ui32) -> ()
 
+    // addi 2, 3002788344 -> 3002788346
+    %result_addi_ui322_ui323002788344 = arc.addi %cst_ui322, %cst_ui323002788344 : ui32
+    "arc.keep"(%result_addi_ui322_ui323002788344) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui323002788346]]) : (ui32) -> ()
+
+    // addi 3002788344, 2 -> 3002788346
+    %result_addi_ui323002788344_ui322 = arc.addi %cst_ui323002788344, %cst_ui322 : ui32
+    "arc.keep"(%result_addi_ui323002788344_ui322) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui323002788346]]) : (ui32) -> ()
+
+    // addi 3, 3002788344 -> 3002788347
+    %result_addi_ui323_ui323002788344 = arc.addi %cst_ui323, %cst_ui323002788344 : ui32
+    "arc.keep"(%result_addi_ui323_ui323002788344) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui323002788347]]) : (ui32) -> ()
+
+    // addi 3002788344, 3 -> 3002788347
+    %result_addi_ui323002788344_ui323 = arc.addi %cst_ui323002788344, %cst_ui323 : ui32
+    "arc.keep"(%result_addi_ui323002788344_ui323) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui323002788347]]) : (ui32) -> ()
+
+    // addi 4, 3002788344 -> 3002788348
+    %result_addi_ui324_ui323002788344 = arc.addi %cst_ui324, %cst_ui323002788344 : ui32
+    "arc.keep"(%result_addi_ui324_ui323002788344) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui323002788348]]) : (ui32) -> ()
+
+    // addi 3002788344, 4 -> 3002788348
+    %result_addi_ui323002788344_ui324 = arc.addi %cst_ui323002788344, %cst_ui324 : ui32
+    "arc.keep"(%result_addi_ui323002788344_ui324) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui323002788348]]) : (ui32) -> ()
+
     // addi 0, 3482297128 -> 3482297128
     %result_addi_ui320_ui323482297128 = arc.addi %cst_ui320, %cst_ui323482297128 : ui32
     "arc.keep"(%result_addi_ui320_ui323482297128) : (ui32) -> ()
@@ -2243,6 +5030,36 @@ module @toplevel {
     %result_addi_ui323482297128_ui321 = arc.addi %cst_ui323482297128, %cst_ui321 : ui32
     "arc.keep"(%result_addi_ui323482297128_ui321) : (ui32) -> ()
     // CHECK: "arc.keep"([[CSTui323482297129]]) : (ui32) -> ()
+
+    // addi 2, 3482297128 -> 3482297130
+    %result_addi_ui322_ui323482297128 = arc.addi %cst_ui322, %cst_ui323482297128 : ui32
+    "arc.keep"(%result_addi_ui322_ui323482297128) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui323482297130]]) : (ui32) -> ()
+
+    // addi 3482297128, 2 -> 3482297130
+    %result_addi_ui323482297128_ui322 = arc.addi %cst_ui323482297128, %cst_ui322 : ui32
+    "arc.keep"(%result_addi_ui323482297128_ui322) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui323482297130]]) : (ui32) -> ()
+
+    // addi 3, 3482297128 -> 3482297131
+    %result_addi_ui323_ui323482297128 = arc.addi %cst_ui323, %cst_ui323482297128 : ui32
+    "arc.keep"(%result_addi_ui323_ui323482297128) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui323482297131]]) : (ui32) -> ()
+
+    // addi 3482297128, 3 -> 3482297131
+    %result_addi_ui323482297128_ui323 = arc.addi %cst_ui323482297128, %cst_ui323 : ui32
+    "arc.keep"(%result_addi_ui323482297128_ui323) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui323482297131]]) : (ui32) -> ()
+
+    // addi 4, 3482297128 -> 3482297132
+    %result_addi_ui324_ui323482297128 = arc.addi %cst_ui324, %cst_ui323482297128 : ui32
+    "arc.keep"(%result_addi_ui324_ui323482297128) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui323482297132]]) : (ui32) -> ()
+
+    // addi 3482297128, 4 -> 3482297132
+    %result_addi_ui323482297128_ui324 = arc.addi %cst_ui323482297128, %cst_ui324 : ui32
+    "arc.keep"(%result_addi_ui323482297128_ui324) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui323482297132]]) : (ui32) -> ()
 
     // addi 2119154652, 2119154652 -> 4238309304
     %result_addi_ui322119154652_ui322119154652 = arc.addi %cst_ui322119154652, %cst_ui322119154652 : ui32
@@ -2284,6 +5101,42 @@ module @toplevel {
     // CHECK-DAG: [[RESULT_addi_ui321_ui324294967295:%[^ ]+]] = arc.addi [[CSTui321]], [[CSTui324294967295]] : ui32
     "arc.keep"(%result_addi_ui321_ui324294967295) : (ui32) -> ()
     // CHECK: "arc.keep"([[RESULT_addi_ui321_ui324294967295]]) : (ui32) -> ()
+
+    // addi 2, 4294967294 -> no-fold
+    %result_addi_ui322_ui324294967294 = arc.addi %cst_ui322, %cst_ui324294967294 : ui32
+    // CHECK-DAG: [[RESULT_addi_ui322_ui324294967294:%[^ ]+]] = arc.addi [[CSTui322]], [[CSTui324294967294]] : ui32
+    "arc.keep"(%result_addi_ui322_ui324294967294) : (ui32) -> ()
+    // CHECK: "arc.keep"([[RESULT_addi_ui322_ui324294967294]]) : (ui32) -> ()
+
+    // addi 2, 4294967295 -> no-fold
+    %result_addi_ui322_ui324294967295 = arc.addi %cst_ui322, %cst_ui324294967295 : ui32
+    // CHECK-DAG: [[RESULT_addi_ui322_ui324294967295:%[^ ]+]] = arc.addi [[CSTui322]], [[CSTui324294967295]] : ui32
+    "arc.keep"(%result_addi_ui322_ui324294967295) : (ui32) -> ()
+    // CHECK: "arc.keep"([[RESULT_addi_ui322_ui324294967295]]) : (ui32) -> ()
+
+    // addi 3, 4294967294 -> no-fold
+    %result_addi_ui323_ui324294967294 = arc.addi %cst_ui323, %cst_ui324294967294 : ui32
+    // CHECK-DAG: [[RESULT_addi_ui323_ui324294967294:%[^ ]+]] = arc.addi [[CSTui323]], [[CSTui324294967294]] : ui32
+    "arc.keep"(%result_addi_ui323_ui324294967294) : (ui32) -> ()
+    // CHECK: "arc.keep"([[RESULT_addi_ui323_ui324294967294]]) : (ui32) -> ()
+
+    // addi 3, 4294967295 -> no-fold
+    %result_addi_ui323_ui324294967295 = arc.addi %cst_ui323, %cst_ui324294967295 : ui32
+    // CHECK-DAG: [[RESULT_addi_ui323_ui324294967295:%[^ ]+]] = arc.addi [[CSTui323]], [[CSTui324294967295]] : ui32
+    "arc.keep"(%result_addi_ui323_ui324294967295) : (ui32) -> ()
+    // CHECK: "arc.keep"([[RESULT_addi_ui323_ui324294967295]]) : (ui32) -> ()
+
+    // addi 4, 4294967294 -> no-fold
+    %result_addi_ui324_ui324294967294 = arc.addi %cst_ui324, %cst_ui324294967294 : ui32
+    // CHECK-DAG: [[RESULT_addi_ui324_ui324294967294:%[^ ]+]] = arc.addi [[CSTui324]], [[CSTui324294967294]] : ui32
+    "arc.keep"(%result_addi_ui324_ui324294967294) : (ui32) -> ()
+    // CHECK: "arc.keep"([[RESULT_addi_ui324_ui324294967294]]) : (ui32) -> ()
+
+    // addi 4, 4294967295 -> no-fold
+    %result_addi_ui324_ui324294967295 = arc.addi %cst_ui324, %cst_ui324294967295 : ui32
+    // CHECK-DAG: [[RESULT_addi_ui324_ui324294967295:%[^ ]+]] = arc.addi [[CSTui324]], [[CSTui324294967295]] : ui32
+    "arc.keep"(%result_addi_ui324_ui324294967295) : (ui32) -> ()
+    // CHECK: "arc.keep"([[RESULT_addi_ui324_ui324294967295]]) : (ui32) -> ()
 
     // addi 2119154652, 3002788344 -> no-fold
     %result_addi_ui322119154652_ui323002788344 = arc.addi %cst_ui322119154652, %cst_ui323002788344 : ui32
@@ -2369,6 +5222,24 @@ module @toplevel {
     "arc.keep"(%result_addi_ui323482297128_ui324294967295) : (ui32) -> ()
     // CHECK: "arc.keep"([[RESULT_addi_ui323482297128_ui324294967295]]) : (ui32) -> ()
 
+    // addi 4294967294, 2 -> no-fold
+    %result_addi_ui324294967294_ui322 = arc.addi %cst_ui324294967294, %cst_ui322 : ui32
+    // CHECK-DAG: [[RESULT_addi_ui324294967294_ui322:%[^ ]+]] = arc.addi [[CSTui324294967294]], [[CSTui322]] : ui32
+    "arc.keep"(%result_addi_ui324294967294_ui322) : (ui32) -> ()
+    // CHECK: "arc.keep"([[RESULT_addi_ui324294967294_ui322]]) : (ui32) -> ()
+
+    // addi 4294967294, 3 -> no-fold
+    %result_addi_ui324294967294_ui323 = arc.addi %cst_ui324294967294, %cst_ui323 : ui32
+    // CHECK-DAG: [[RESULT_addi_ui324294967294_ui323:%[^ ]+]] = arc.addi [[CSTui324294967294]], [[CSTui323]] : ui32
+    "arc.keep"(%result_addi_ui324294967294_ui323) : (ui32) -> ()
+    // CHECK: "arc.keep"([[RESULT_addi_ui324294967294_ui323]]) : (ui32) -> ()
+
+    // addi 4294967294, 4 -> no-fold
+    %result_addi_ui324294967294_ui324 = arc.addi %cst_ui324294967294, %cst_ui324 : ui32
+    // CHECK-DAG: [[RESULT_addi_ui324294967294_ui324:%[^ ]+]] = arc.addi [[CSTui324294967294]], [[CSTui324]] : ui32
+    "arc.keep"(%result_addi_ui324294967294_ui324) : (ui32) -> ()
+    // CHECK: "arc.keep"([[RESULT_addi_ui324294967294_ui324]]) : (ui32) -> ()
+
     // addi 4294967294, 2119154652 -> no-fold
     %result_addi_ui324294967294_ui322119154652 = arc.addi %cst_ui324294967294, %cst_ui322119154652 : ui32
     // CHECK-DAG: [[RESULT_addi_ui324294967294_ui322119154652:%[^ ]+]] = arc.addi [[CSTui324294967294]], [[CSTui322119154652]] : ui32
@@ -2404,6 +5275,24 @@ module @toplevel {
     // CHECK-DAG: [[RESULT_addi_ui324294967295_ui321:%[^ ]+]] = arc.addi [[CSTui324294967295]], [[CSTui321]] : ui32
     "arc.keep"(%result_addi_ui324294967295_ui321) : (ui32) -> ()
     // CHECK: "arc.keep"([[RESULT_addi_ui324294967295_ui321]]) : (ui32) -> ()
+
+    // addi 4294967295, 2 -> no-fold
+    %result_addi_ui324294967295_ui322 = arc.addi %cst_ui324294967295, %cst_ui322 : ui32
+    // CHECK-DAG: [[RESULT_addi_ui324294967295_ui322:%[^ ]+]] = arc.addi [[CSTui324294967295]], [[CSTui322]] : ui32
+    "arc.keep"(%result_addi_ui324294967295_ui322) : (ui32) -> ()
+    // CHECK: "arc.keep"([[RESULT_addi_ui324294967295_ui322]]) : (ui32) -> ()
+
+    // addi 4294967295, 3 -> no-fold
+    %result_addi_ui324294967295_ui323 = arc.addi %cst_ui324294967295, %cst_ui323 : ui32
+    // CHECK-DAG: [[RESULT_addi_ui324294967295_ui323:%[^ ]+]] = arc.addi [[CSTui324294967295]], [[CSTui323]] : ui32
+    "arc.keep"(%result_addi_ui324294967295_ui323) : (ui32) -> ()
+    // CHECK: "arc.keep"([[RESULT_addi_ui324294967295_ui323]]) : (ui32) -> ()
+
+    // addi 4294967295, 4 -> no-fold
+    %result_addi_ui324294967295_ui324 = arc.addi %cst_ui324294967295, %cst_ui324 : ui32
+    // CHECK-DAG: [[RESULT_addi_ui324294967295_ui324:%[^ ]+]] = arc.addi [[CSTui324294967295]], [[CSTui324]] : ui32
+    "arc.keep"(%result_addi_ui324294967295_ui324) : (ui32) -> ()
+    // CHECK: "arc.keep"([[RESULT_addi_ui324294967295_ui324]]) : (ui32) -> ()
 
     // addi 4294967295, 2119154652 -> no-fold
     %result_addi_ui324294967295_ui322119154652 = arc.addi %cst_ui324294967295, %cst_ui322119154652 : ui32
@@ -2450,10 +5339,115 @@ module @toplevel {
     "arc.keep"(%result_addi_ui641_ui640) : (ui64) -> ()
     // CHECK: "arc.keep"([[CSTui641]]) : (ui64) -> ()
 
+    // addi 0, 2 -> 2
+    %result_addi_ui640_ui642 = arc.addi %cst_ui640, %cst_ui642 : ui64
+    "arc.keep"(%result_addi_ui640_ui642) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui642]]) : (ui64) -> ()
+
     // addi 1, 1 -> 2
     %result_addi_ui641_ui641 = arc.addi %cst_ui641, %cst_ui641 : ui64
     "arc.keep"(%result_addi_ui641_ui641) : (ui64) -> ()
     // CHECK: "arc.keep"([[CSTui642]]) : (ui64) -> ()
+
+    // addi 2, 0 -> 2
+    %result_addi_ui642_ui640 = arc.addi %cst_ui642, %cst_ui640 : ui64
+    "arc.keep"(%result_addi_ui642_ui640) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui642]]) : (ui64) -> ()
+
+    // addi 0, 3 -> 3
+    %result_addi_ui640_ui643 = arc.addi %cst_ui640, %cst_ui643 : ui64
+    "arc.keep"(%result_addi_ui640_ui643) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui643]]) : (ui64) -> ()
+
+    // addi 1, 2 -> 3
+    %result_addi_ui641_ui642 = arc.addi %cst_ui641, %cst_ui642 : ui64
+    "arc.keep"(%result_addi_ui641_ui642) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui643]]) : (ui64) -> ()
+
+    // addi 2, 1 -> 3
+    %result_addi_ui642_ui641 = arc.addi %cst_ui642, %cst_ui641 : ui64
+    "arc.keep"(%result_addi_ui642_ui641) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui643]]) : (ui64) -> ()
+
+    // addi 3, 0 -> 3
+    %result_addi_ui643_ui640 = arc.addi %cst_ui643, %cst_ui640 : ui64
+    "arc.keep"(%result_addi_ui643_ui640) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui643]]) : (ui64) -> ()
+
+    // addi 0, 4 -> 4
+    %result_addi_ui640_ui644 = arc.addi %cst_ui640, %cst_ui644 : ui64
+    "arc.keep"(%result_addi_ui640_ui644) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui644]]) : (ui64) -> ()
+
+    // addi 1, 3 -> 4
+    %result_addi_ui641_ui643 = arc.addi %cst_ui641, %cst_ui643 : ui64
+    "arc.keep"(%result_addi_ui641_ui643) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui644]]) : (ui64) -> ()
+
+    // addi 2, 2 -> 4
+    %result_addi_ui642_ui642 = arc.addi %cst_ui642, %cst_ui642 : ui64
+    "arc.keep"(%result_addi_ui642_ui642) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui644]]) : (ui64) -> ()
+
+    // addi 3, 1 -> 4
+    %result_addi_ui643_ui641 = arc.addi %cst_ui643, %cst_ui641 : ui64
+    "arc.keep"(%result_addi_ui643_ui641) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui644]]) : (ui64) -> ()
+
+    // addi 4, 0 -> 4
+    %result_addi_ui644_ui640 = arc.addi %cst_ui644, %cst_ui640 : ui64
+    "arc.keep"(%result_addi_ui644_ui640) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui644]]) : (ui64) -> ()
+
+    // addi 1, 4 -> 5
+    %result_addi_ui641_ui644 = arc.addi %cst_ui641, %cst_ui644 : ui64
+    "arc.keep"(%result_addi_ui641_ui644) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui645]]) : (ui64) -> ()
+
+    // addi 2, 3 -> 5
+    %result_addi_ui642_ui643 = arc.addi %cst_ui642, %cst_ui643 : ui64
+    "arc.keep"(%result_addi_ui642_ui643) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui645]]) : (ui64) -> ()
+
+    // addi 3, 2 -> 5
+    %result_addi_ui643_ui642 = arc.addi %cst_ui643, %cst_ui642 : ui64
+    "arc.keep"(%result_addi_ui643_ui642) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui645]]) : (ui64) -> ()
+
+    // addi 4, 1 -> 5
+    %result_addi_ui644_ui641 = arc.addi %cst_ui644, %cst_ui641 : ui64
+    "arc.keep"(%result_addi_ui644_ui641) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui645]]) : (ui64) -> ()
+
+    // addi 2, 4 -> 6
+    %result_addi_ui642_ui644 = arc.addi %cst_ui642, %cst_ui644 : ui64
+    "arc.keep"(%result_addi_ui642_ui644) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui646]]) : (ui64) -> ()
+
+    // addi 3, 3 -> 6
+    %result_addi_ui643_ui643 = arc.addi %cst_ui643, %cst_ui643 : ui64
+    "arc.keep"(%result_addi_ui643_ui643) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui646]]) : (ui64) -> ()
+
+    // addi 4, 2 -> 6
+    %result_addi_ui644_ui642 = arc.addi %cst_ui644, %cst_ui642 : ui64
+    "arc.keep"(%result_addi_ui644_ui642) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui646]]) : (ui64) -> ()
+
+    // addi 3, 4 -> 7
+    %result_addi_ui643_ui644 = arc.addi %cst_ui643, %cst_ui644 : ui64
+    "arc.keep"(%result_addi_ui643_ui644) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui647]]) : (ui64) -> ()
+
+    // addi 4, 3 -> 7
+    %result_addi_ui644_ui643 = arc.addi %cst_ui644, %cst_ui643 : ui64
+    "arc.keep"(%result_addi_ui644_ui643) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui647]]) : (ui64) -> ()
+
+    // addi 4, 4 -> 8
+    %result_addi_ui644_ui644 = arc.addi %cst_ui644, %cst_ui644 : ui64
+    "arc.keep"(%result_addi_ui644_ui644) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui648]]) : (ui64) -> ()
 
     // addi 0, 191084152064409600 -> 191084152064409600
     %result_addi_ui640_ui64191084152064409600 = arc.addi %cst_ui640, %cst_ui64191084152064409600 : ui64
@@ -2474,6 +5468,36 @@ module @toplevel {
     %result_addi_ui64191084152064409600_ui641 = arc.addi %cst_ui64191084152064409600, %cst_ui641 : ui64
     "arc.keep"(%result_addi_ui64191084152064409600_ui641) : (ui64) -> ()
     // CHECK: "arc.keep"([[CSTui64191084152064409601]]) : (ui64) -> ()
+
+    // addi 2, 191084152064409600 -> 191084152064409602
+    %result_addi_ui642_ui64191084152064409600 = arc.addi %cst_ui642, %cst_ui64191084152064409600 : ui64
+    "arc.keep"(%result_addi_ui642_ui64191084152064409600) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui64191084152064409602]]) : (ui64) -> ()
+
+    // addi 191084152064409600, 2 -> 191084152064409602
+    %result_addi_ui64191084152064409600_ui642 = arc.addi %cst_ui64191084152064409600, %cst_ui642 : ui64
+    "arc.keep"(%result_addi_ui64191084152064409600_ui642) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui64191084152064409602]]) : (ui64) -> ()
+
+    // addi 3, 191084152064409600 -> 191084152064409603
+    %result_addi_ui643_ui64191084152064409600 = arc.addi %cst_ui643, %cst_ui64191084152064409600 : ui64
+    "arc.keep"(%result_addi_ui643_ui64191084152064409600) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui64191084152064409603]]) : (ui64) -> ()
+
+    // addi 191084152064409600, 3 -> 191084152064409603
+    %result_addi_ui64191084152064409600_ui643 = arc.addi %cst_ui64191084152064409600, %cst_ui643 : ui64
+    "arc.keep"(%result_addi_ui64191084152064409600_ui643) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui64191084152064409603]]) : (ui64) -> ()
+
+    // addi 4, 191084152064409600 -> 191084152064409604
+    %result_addi_ui644_ui64191084152064409600 = arc.addi %cst_ui644, %cst_ui64191084152064409600 : ui64
+    "arc.keep"(%result_addi_ui644_ui64191084152064409600) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui64191084152064409604]]) : (ui64) -> ()
+
+    // addi 191084152064409600, 4 -> 191084152064409604
+    %result_addi_ui64191084152064409600_ui644 = arc.addi %cst_ui64191084152064409600, %cst_ui644 : ui64
+    "arc.keep"(%result_addi_ui64191084152064409600_ui644) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui64191084152064409604]]) : (ui64) -> ()
 
     // addi 191084152064409600, 191084152064409600 -> 382168304128819200
     %result_addi_ui64191084152064409600_ui64191084152064409600 = arc.addi %cst_ui64191084152064409600, %cst_ui64191084152064409600 : ui64
@@ -2499,6 +5523,36 @@ module @toplevel {
     %result_addi_ui6411015955194427482112_ui641 = arc.addi %cst_ui6411015955194427482112, %cst_ui641 : ui64
     "arc.keep"(%result_addi_ui6411015955194427482112_ui641) : (ui64) -> ()
     // CHECK: "arc.keep"([[CSTui6411015955194427482113]]) : (ui64) -> ()
+
+    // addi 2, 11015955194427482112 -> 11015955194427482114
+    %result_addi_ui642_ui6411015955194427482112 = arc.addi %cst_ui642, %cst_ui6411015955194427482112 : ui64
+    "arc.keep"(%result_addi_ui642_ui6411015955194427482112) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui6411015955194427482114]]) : (ui64) -> ()
+
+    // addi 11015955194427482112, 2 -> 11015955194427482114
+    %result_addi_ui6411015955194427482112_ui642 = arc.addi %cst_ui6411015955194427482112, %cst_ui642 : ui64
+    "arc.keep"(%result_addi_ui6411015955194427482112_ui642) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui6411015955194427482114]]) : (ui64) -> ()
+
+    // addi 3, 11015955194427482112 -> 11015955194427482115
+    %result_addi_ui643_ui6411015955194427482112 = arc.addi %cst_ui643, %cst_ui6411015955194427482112 : ui64
+    "arc.keep"(%result_addi_ui643_ui6411015955194427482112) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui6411015955194427482115]]) : (ui64) -> ()
+
+    // addi 11015955194427482112, 3 -> 11015955194427482115
+    %result_addi_ui6411015955194427482112_ui643 = arc.addi %cst_ui6411015955194427482112, %cst_ui643 : ui64
+    "arc.keep"(%result_addi_ui6411015955194427482112_ui643) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui6411015955194427482115]]) : (ui64) -> ()
+
+    // addi 4, 11015955194427482112 -> 11015955194427482116
+    %result_addi_ui644_ui6411015955194427482112 = arc.addi %cst_ui644, %cst_ui6411015955194427482112 : ui64
+    "arc.keep"(%result_addi_ui644_ui6411015955194427482112) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui6411015955194427482116]]) : (ui64) -> ()
+
+    // addi 11015955194427482112, 4 -> 11015955194427482116
+    %result_addi_ui6411015955194427482112_ui644 = arc.addi %cst_ui6411015955194427482112, %cst_ui644 : ui64
+    "arc.keep"(%result_addi_ui6411015955194427482112_ui644) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui6411015955194427482116]]) : (ui64) -> ()
 
     // addi 191084152064409600, 11015955194427482112 -> 11207039346491891712
     %result_addi_ui64191084152064409600_ui6411015955194427482112 = arc.addi %cst_ui64191084152064409600, %cst_ui6411015955194427482112 : ui64
@@ -2529,6 +5583,36 @@ module @toplevel {
     %result_addi_ui6416990600415051759616_ui641 = arc.addi %cst_ui6416990600415051759616, %cst_ui641 : ui64
     "arc.keep"(%result_addi_ui6416990600415051759616_ui641) : (ui64) -> ()
     // CHECK: "arc.keep"([[CSTui6416990600415051759617]]) : (ui64) -> ()
+
+    // addi 2, 16990600415051759616 -> 16990600415051759618
+    %result_addi_ui642_ui6416990600415051759616 = arc.addi %cst_ui642, %cst_ui6416990600415051759616 : ui64
+    "arc.keep"(%result_addi_ui642_ui6416990600415051759616) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui6416990600415051759618]]) : (ui64) -> ()
+
+    // addi 16990600415051759616, 2 -> 16990600415051759618
+    %result_addi_ui6416990600415051759616_ui642 = arc.addi %cst_ui6416990600415051759616, %cst_ui642 : ui64
+    "arc.keep"(%result_addi_ui6416990600415051759616_ui642) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui6416990600415051759618]]) : (ui64) -> ()
+
+    // addi 3, 16990600415051759616 -> 16990600415051759619
+    %result_addi_ui643_ui6416990600415051759616 = arc.addi %cst_ui643, %cst_ui6416990600415051759616 : ui64
+    "arc.keep"(%result_addi_ui643_ui6416990600415051759616) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui6416990600415051759619]]) : (ui64) -> ()
+
+    // addi 16990600415051759616, 3 -> 16990600415051759619
+    %result_addi_ui6416990600415051759616_ui643 = arc.addi %cst_ui6416990600415051759616, %cst_ui643 : ui64
+    "arc.keep"(%result_addi_ui6416990600415051759616_ui643) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui6416990600415051759619]]) : (ui64) -> ()
+
+    // addi 4, 16990600415051759616 -> 16990600415051759620
+    %result_addi_ui644_ui6416990600415051759616 = arc.addi %cst_ui644, %cst_ui6416990600415051759616 : ui64
+    "arc.keep"(%result_addi_ui644_ui6416990600415051759616) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui6416990600415051759620]]) : (ui64) -> ()
+
+    // addi 16990600415051759616, 4 -> 16990600415051759620
+    %result_addi_ui6416990600415051759616_ui644 = arc.addi %cst_ui6416990600415051759616, %cst_ui644 : ui64
+    "arc.keep"(%result_addi_ui6416990600415051759616_ui644) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui6416990600415051759620]]) : (ui64) -> ()
 
     // addi 191084152064409600, 16990600415051759616 -> 17181684567116169216
     %result_addi_ui64191084152064409600_ui6416990600415051759616 = arc.addi %cst_ui64191084152064409600, %cst_ui6416990600415051759616 : ui64
@@ -2575,6 +5659,42 @@ module @toplevel {
     // CHECK-DAG: [[RESULT_addi_ui641_ui6418446744073709551615:%[^ ]+]] = arc.addi [[CSTui641]], [[CSTui6418446744073709551615]] : ui64
     "arc.keep"(%result_addi_ui641_ui6418446744073709551615) : (ui64) -> ()
     // CHECK: "arc.keep"([[RESULT_addi_ui641_ui6418446744073709551615]]) : (ui64) -> ()
+
+    // addi 2, 18446744073709551614 -> no-fold
+    %result_addi_ui642_ui6418446744073709551614 = arc.addi %cst_ui642, %cst_ui6418446744073709551614 : ui64
+    // CHECK-DAG: [[RESULT_addi_ui642_ui6418446744073709551614:%[^ ]+]] = arc.addi [[CSTui642]], [[CSTui6418446744073709551614]] : ui64
+    "arc.keep"(%result_addi_ui642_ui6418446744073709551614) : (ui64) -> ()
+    // CHECK: "arc.keep"([[RESULT_addi_ui642_ui6418446744073709551614]]) : (ui64) -> ()
+
+    // addi 2, 18446744073709551615 -> no-fold
+    %result_addi_ui642_ui6418446744073709551615 = arc.addi %cst_ui642, %cst_ui6418446744073709551615 : ui64
+    // CHECK-DAG: [[RESULT_addi_ui642_ui6418446744073709551615:%[^ ]+]] = arc.addi [[CSTui642]], [[CSTui6418446744073709551615]] : ui64
+    "arc.keep"(%result_addi_ui642_ui6418446744073709551615) : (ui64) -> ()
+    // CHECK: "arc.keep"([[RESULT_addi_ui642_ui6418446744073709551615]]) : (ui64) -> ()
+
+    // addi 3, 18446744073709551614 -> no-fold
+    %result_addi_ui643_ui6418446744073709551614 = arc.addi %cst_ui643, %cst_ui6418446744073709551614 : ui64
+    // CHECK-DAG: [[RESULT_addi_ui643_ui6418446744073709551614:%[^ ]+]] = arc.addi [[CSTui643]], [[CSTui6418446744073709551614]] : ui64
+    "arc.keep"(%result_addi_ui643_ui6418446744073709551614) : (ui64) -> ()
+    // CHECK: "arc.keep"([[RESULT_addi_ui643_ui6418446744073709551614]]) : (ui64) -> ()
+
+    // addi 3, 18446744073709551615 -> no-fold
+    %result_addi_ui643_ui6418446744073709551615 = arc.addi %cst_ui643, %cst_ui6418446744073709551615 : ui64
+    // CHECK-DAG: [[RESULT_addi_ui643_ui6418446744073709551615:%[^ ]+]] = arc.addi [[CSTui643]], [[CSTui6418446744073709551615]] : ui64
+    "arc.keep"(%result_addi_ui643_ui6418446744073709551615) : (ui64) -> ()
+    // CHECK: "arc.keep"([[RESULT_addi_ui643_ui6418446744073709551615]]) : (ui64) -> ()
+
+    // addi 4, 18446744073709551614 -> no-fold
+    %result_addi_ui644_ui6418446744073709551614 = arc.addi %cst_ui644, %cst_ui6418446744073709551614 : ui64
+    // CHECK-DAG: [[RESULT_addi_ui644_ui6418446744073709551614:%[^ ]+]] = arc.addi [[CSTui644]], [[CSTui6418446744073709551614]] : ui64
+    "arc.keep"(%result_addi_ui644_ui6418446744073709551614) : (ui64) -> ()
+    // CHECK: "arc.keep"([[RESULT_addi_ui644_ui6418446744073709551614]]) : (ui64) -> ()
+
+    // addi 4, 18446744073709551615 -> no-fold
+    %result_addi_ui644_ui6418446744073709551615 = arc.addi %cst_ui644, %cst_ui6418446744073709551615 : ui64
+    // CHECK-DAG: [[RESULT_addi_ui644_ui6418446744073709551615:%[^ ]+]] = arc.addi [[CSTui644]], [[CSTui6418446744073709551615]] : ui64
+    "arc.keep"(%result_addi_ui644_ui6418446744073709551615) : (ui64) -> ()
+    // CHECK: "arc.keep"([[RESULT_addi_ui644_ui6418446744073709551615]]) : (ui64) -> ()
 
     // addi 191084152064409600, 18446744073709551614 -> no-fold
     %result_addi_ui64191084152064409600_ui6418446744073709551614 = arc.addi %cst_ui64191084152064409600, %cst_ui6418446744073709551614 : ui64
@@ -2636,6 +5756,24 @@ module @toplevel {
     "arc.keep"(%result_addi_ui6416990600415051759616_ui6418446744073709551615) : (ui64) -> ()
     // CHECK: "arc.keep"([[RESULT_addi_ui6416990600415051759616_ui6418446744073709551615]]) : (ui64) -> ()
 
+    // addi 18446744073709551614, 2 -> no-fold
+    %result_addi_ui6418446744073709551614_ui642 = arc.addi %cst_ui6418446744073709551614, %cst_ui642 : ui64
+    // CHECK-DAG: [[RESULT_addi_ui6418446744073709551614_ui642:%[^ ]+]] = arc.addi [[CSTui6418446744073709551614]], [[CSTui642]] : ui64
+    "arc.keep"(%result_addi_ui6418446744073709551614_ui642) : (ui64) -> ()
+    // CHECK: "arc.keep"([[RESULT_addi_ui6418446744073709551614_ui642]]) : (ui64) -> ()
+
+    // addi 18446744073709551614, 3 -> no-fold
+    %result_addi_ui6418446744073709551614_ui643 = arc.addi %cst_ui6418446744073709551614, %cst_ui643 : ui64
+    // CHECK-DAG: [[RESULT_addi_ui6418446744073709551614_ui643:%[^ ]+]] = arc.addi [[CSTui6418446744073709551614]], [[CSTui643]] : ui64
+    "arc.keep"(%result_addi_ui6418446744073709551614_ui643) : (ui64) -> ()
+    // CHECK: "arc.keep"([[RESULT_addi_ui6418446744073709551614_ui643]]) : (ui64) -> ()
+
+    // addi 18446744073709551614, 4 -> no-fold
+    %result_addi_ui6418446744073709551614_ui644 = arc.addi %cst_ui6418446744073709551614, %cst_ui644 : ui64
+    // CHECK-DAG: [[RESULT_addi_ui6418446744073709551614_ui644:%[^ ]+]] = arc.addi [[CSTui6418446744073709551614]], [[CSTui644]] : ui64
+    "arc.keep"(%result_addi_ui6418446744073709551614_ui644) : (ui64) -> ()
+    // CHECK: "arc.keep"([[RESULT_addi_ui6418446744073709551614_ui644]]) : (ui64) -> ()
+
     // addi 18446744073709551614, 191084152064409600 -> no-fold
     %result_addi_ui6418446744073709551614_ui64191084152064409600 = arc.addi %cst_ui6418446744073709551614, %cst_ui64191084152064409600 : ui64
     // CHECK-DAG: [[RESULT_addi_ui6418446744073709551614_ui64191084152064409600:%[^ ]+]] = arc.addi [[CSTui6418446744073709551614]], [[CSTui64191084152064409600]] : ui64
@@ -2671,6 +5809,24 @@ module @toplevel {
     // CHECK-DAG: [[RESULT_addi_ui6418446744073709551615_ui641:%[^ ]+]] = arc.addi [[CSTui6418446744073709551615]], [[CSTui641]] : ui64
     "arc.keep"(%result_addi_ui6418446744073709551615_ui641) : (ui64) -> ()
     // CHECK: "arc.keep"([[RESULT_addi_ui6418446744073709551615_ui641]]) : (ui64) -> ()
+
+    // addi 18446744073709551615, 2 -> no-fold
+    %result_addi_ui6418446744073709551615_ui642 = arc.addi %cst_ui6418446744073709551615, %cst_ui642 : ui64
+    // CHECK-DAG: [[RESULT_addi_ui6418446744073709551615_ui642:%[^ ]+]] = arc.addi [[CSTui6418446744073709551615]], [[CSTui642]] : ui64
+    "arc.keep"(%result_addi_ui6418446744073709551615_ui642) : (ui64) -> ()
+    // CHECK: "arc.keep"([[RESULT_addi_ui6418446744073709551615_ui642]]) : (ui64) -> ()
+
+    // addi 18446744073709551615, 3 -> no-fold
+    %result_addi_ui6418446744073709551615_ui643 = arc.addi %cst_ui6418446744073709551615, %cst_ui643 : ui64
+    // CHECK-DAG: [[RESULT_addi_ui6418446744073709551615_ui643:%[^ ]+]] = arc.addi [[CSTui6418446744073709551615]], [[CSTui643]] : ui64
+    "arc.keep"(%result_addi_ui6418446744073709551615_ui643) : (ui64) -> ()
+    // CHECK: "arc.keep"([[RESULT_addi_ui6418446744073709551615_ui643]]) : (ui64) -> ()
+
+    // addi 18446744073709551615, 4 -> no-fold
+    %result_addi_ui6418446744073709551615_ui644 = arc.addi %cst_ui6418446744073709551615, %cst_ui644 : ui64
+    // CHECK-DAG: [[RESULT_addi_ui6418446744073709551615_ui644:%[^ ]+]] = arc.addi [[CSTui6418446744073709551615]], [[CSTui644]] : ui64
+    "arc.keep"(%result_addi_ui6418446744073709551615_ui644) : (ui64) -> ()
+    // CHECK: "arc.keep"([[RESULT_addi_ui6418446744073709551615_ui644]]) : (ui64) -> ()
 
     // addi 18446744073709551615, 191084152064409600 -> no-fold
     %result_addi_ui6418446744073709551615_ui64191084152064409600 = arc.addi %cst_ui6418446744073709551615, %cst_ui64191084152064409600 : ui64
@@ -2717,10 +5873,115 @@ module @toplevel {
     "arc.keep"(%result_addi_ui81_ui80) : (ui8) -> ()
     // CHECK: "arc.keep"([[CSTui81]]) : (ui8) -> ()
 
+    // addi 0, 2 -> 2
+    %result_addi_ui80_ui82 = arc.addi %cst_ui80, %cst_ui82 : ui8
+    "arc.keep"(%result_addi_ui80_ui82) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui82]]) : (ui8) -> ()
+
     // addi 1, 1 -> 2
     %result_addi_ui81_ui81 = arc.addi %cst_ui81, %cst_ui81 : ui8
     "arc.keep"(%result_addi_ui81_ui81) : (ui8) -> ()
     // CHECK: "arc.keep"([[CSTui82]]) : (ui8) -> ()
+
+    // addi 2, 0 -> 2
+    %result_addi_ui82_ui80 = arc.addi %cst_ui82, %cst_ui80 : ui8
+    "arc.keep"(%result_addi_ui82_ui80) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui82]]) : (ui8) -> ()
+
+    // addi 0, 3 -> 3
+    %result_addi_ui80_ui83 = arc.addi %cst_ui80, %cst_ui83 : ui8
+    "arc.keep"(%result_addi_ui80_ui83) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui83]]) : (ui8) -> ()
+
+    // addi 1, 2 -> 3
+    %result_addi_ui81_ui82 = arc.addi %cst_ui81, %cst_ui82 : ui8
+    "arc.keep"(%result_addi_ui81_ui82) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui83]]) : (ui8) -> ()
+
+    // addi 2, 1 -> 3
+    %result_addi_ui82_ui81 = arc.addi %cst_ui82, %cst_ui81 : ui8
+    "arc.keep"(%result_addi_ui82_ui81) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui83]]) : (ui8) -> ()
+
+    // addi 3, 0 -> 3
+    %result_addi_ui83_ui80 = arc.addi %cst_ui83, %cst_ui80 : ui8
+    "arc.keep"(%result_addi_ui83_ui80) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui83]]) : (ui8) -> ()
+
+    // addi 0, 4 -> 4
+    %result_addi_ui80_ui84 = arc.addi %cst_ui80, %cst_ui84 : ui8
+    "arc.keep"(%result_addi_ui80_ui84) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui84]]) : (ui8) -> ()
+
+    // addi 1, 3 -> 4
+    %result_addi_ui81_ui83 = arc.addi %cst_ui81, %cst_ui83 : ui8
+    "arc.keep"(%result_addi_ui81_ui83) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui84]]) : (ui8) -> ()
+
+    // addi 2, 2 -> 4
+    %result_addi_ui82_ui82 = arc.addi %cst_ui82, %cst_ui82 : ui8
+    "arc.keep"(%result_addi_ui82_ui82) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui84]]) : (ui8) -> ()
+
+    // addi 3, 1 -> 4
+    %result_addi_ui83_ui81 = arc.addi %cst_ui83, %cst_ui81 : ui8
+    "arc.keep"(%result_addi_ui83_ui81) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui84]]) : (ui8) -> ()
+
+    // addi 4, 0 -> 4
+    %result_addi_ui84_ui80 = arc.addi %cst_ui84, %cst_ui80 : ui8
+    "arc.keep"(%result_addi_ui84_ui80) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui84]]) : (ui8) -> ()
+
+    // addi 1, 4 -> 5
+    %result_addi_ui81_ui84 = arc.addi %cst_ui81, %cst_ui84 : ui8
+    "arc.keep"(%result_addi_ui81_ui84) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui85]]) : (ui8) -> ()
+
+    // addi 2, 3 -> 5
+    %result_addi_ui82_ui83 = arc.addi %cst_ui82, %cst_ui83 : ui8
+    "arc.keep"(%result_addi_ui82_ui83) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui85]]) : (ui8) -> ()
+
+    // addi 3, 2 -> 5
+    %result_addi_ui83_ui82 = arc.addi %cst_ui83, %cst_ui82 : ui8
+    "arc.keep"(%result_addi_ui83_ui82) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui85]]) : (ui8) -> ()
+
+    // addi 4, 1 -> 5
+    %result_addi_ui84_ui81 = arc.addi %cst_ui84, %cst_ui81 : ui8
+    "arc.keep"(%result_addi_ui84_ui81) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui85]]) : (ui8) -> ()
+
+    // addi 2, 4 -> 6
+    %result_addi_ui82_ui84 = arc.addi %cst_ui82, %cst_ui84 : ui8
+    "arc.keep"(%result_addi_ui82_ui84) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui86]]) : (ui8) -> ()
+
+    // addi 3, 3 -> 6
+    %result_addi_ui83_ui83 = arc.addi %cst_ui83, %cst_ui83 : ui8
+    "arc.keep"(%result_addi_ui83_ui83) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui86]]) : (ui8) -> ()
+
+    // addi 4, 2 -> 6
+    %result_addi_ui84_ui82 = arc.addi %cst_ui84, %cst_ui82 : ui8
+    "arc.keep"(%result_addi_ui84_ui82) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui86]]) : (ui8) -> ()
+
+    // addi 3, 4 -> 7
+    %result_addi_ui83_ui84 = arc.addi %cst_ui83, %cst_ui84 : ui8
+    "arc.keep"(%result_addi_ui83_ui84) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui87]]) : (ui8) -> ()
+
+    // addi 4, 3 -> 7
+    %result_addi_ui84_ui83 = arc.addi %cst_ui84, %cst_ui83 : ui8
+    "arc.keep"(%result_addi_ui84_ui83) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui87]]) : (ui8) -> ()
+
+    // addi 4, 4 -> 8
+    %result_addi_ui84_ui84 = arc.addi %cst_ui84, %cst_ui84 : ui8
+    "arc.keep"(%result_addi_ui84_ui84) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui88]]) : (ui8) -> ()
 
     // addi 0, 72 -> 72
     %result_addi_ui80_ui872 = arc.addi %cst_ui80, %cst_ui872 : ui8
@@ -2742,6 +6003,36 @@ module @toplevel {
     "arc.keep"(%result_addi_ui872_ui81) : (ui8) -> ()
     // CHECK: "arc.keep"([[CSTui873]]) : (ui8) -> ()
 
+    // addi 2, 72 -> 74
+    %result_addi_ui82_ui872 = arc.addi %cst_ui82, %cst_ui872 : ui8
+    "arc.keep"(%result_addi_ui82_ui872) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui874]]) : (ui8) -> ()
+
+    // addi 72, 2 -> 74
+    %result_addi_ui872_ui82 = arc.addi %cst_ui872, %cst_ui82 : ui8
+    "arc.keep"(%result_addi_ui872_ui82) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui874]]) : (ui8) -> ()
+
+    // addi 3, 72 -> 75
+    %result_addi_ui83_ui872 = arc.addi %cst_ui83, %cst_ui872 : ui8
+    "arc.keep"(%result_addi_ui83_ui872) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui875]]) : (ui8) -> ()
+
+    // addi 72, 3 -> 75
+    %result_addi_ui872_ui83 = arc.addi %cst_ui872, %cst_ui83 : ui8
+    "arc.keep"(%result_addi_ui872_ui83) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui875]]) : (ui8) -> ()
+
+    // addi 4, 72 -> 76
+    %result_addi_ui84_ui872 = arc.addi %cst_ui84, %cst_ui872 : ui8
+    "arc.keep"(%result_addi_ui84_ui872) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui876]]) : (ui8) -> ()
+
+    // addi 72, 4 -> 76
+    %result_addi_ui872_ui84 = arc.addi %cst_ui872, %cst_ui84 : ui8
+    "arc.keep"(%result_addi_ui872_ui84) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui876]]) : (ui8) -> ()
+
     // addi 0, 100 -> 100
     %result_addi_ui80_ui8100 = arc.addi %cst_ui80, %cst_ui8100 : ui8
     "arc.keep"(%result_addi_ui80_ui8100) : (ui8) -> ()
@@ -2761,6 +6052,36 @@ module @toplevel {
     %result_addi_ui8100_ui81 = arc.addi %cst_ui8100, %cst_ui81 : ui8
     "arc.keep"(%result_addi_ui8100_ui81) : (ui8) -> ()
     // CHECK: "arc.keep"([[CSTui8101]]) : (ui8) -> ()
+
+    // addi 2, 100 -> 102
+    %result_addi_ui82_ui8100 = arc.addi %cst_ui82, %cst_ui8100 : ui8
+    "arc.keep"(%result_addi_ui82_ui8100) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui8102]]) : (ui8) -> ()
+
+    // addi 100, 2 -> 102
+    %result_addi_ui8100_ui82 = arc.addi %cst_ui8100, %cst_ui82 : ui8
+    "arc.keep"(%result_addi_ui8100_ui82) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui8102]]) : (ui8) -> ()
+
+    // addi 3, 100 -> 103
+    %result_addi_ui83_ui8100 = arc.addi %cst_ui83, %cst_ui8100 : ui8
+    "arc.keep"(%result_addi_ui83_ui8100) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui8103]]) : (ui8) -> ()
+
+    // addi 100, 3 -> 103
+    %result_addi_ui8100_ui83 = arc.addi %cst_ui8100, %cst_ui83 : ui8
+    "arc.keep"(%result_addi_ui8100_ui83) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui8103]]) : (ui8) -> ()
+
+    // addi 4, 100 -> 104
+    %result_addi_ui84_ui8100 = arc.addi %cst_ui84, %cst_ui8100 : ui8
+    "arc.keep"(%result_addi_ui84_ui8100) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui8104]]) : (ui8) -> ()
+
+    // addi 100, 4 -> 104
+    %result_addi_ui8100_ui84 = arc.addi %cst_ui8100, %cst_ui84 : ui8
+    "arc.keep"(%result_addi_ui8100_ui84) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui8104]]) : (ui8) -> ()
 
     // addi 72, 72 -> 144
     %result_addi_ui872_ui872 = arc.addi %cst_ui872, %cst_ui872 : ui8
@@ -2786,6 +6107,36 @@ module @toplevel {
     %result_addi_ui8162_ui81 = arc.addi %cst_ui8162, %cst_ui81 : ui8
     "arc.keep"(%result_addi_ui8162_ui81) : (ui8) -> ()
     // CHECK: "arc.keep"([[CSTui8163]]) : (ui8) -> ()
+
+    // addi 2, 162 -> 164
+    %result_addi_ui82_ui8162 = arc.addi %cst_ui82, %cst_ui8162 : ui8
+    "arc.keep"(%result_addi_ui82_ui8162) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui8164]]) : (ui8) -> ()
+
+    // addi 162, 2 -> 164
+    %result_addi_ui8162_ui82 = arc.addi %cst_ui8162, %cst_ui82 : ui8
+    "arc.keep"(%result_addi_ui8162_ui82) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui8164]]) : (ui8) -> ()
+
+    // addi 3, 162 -> 165
+    %result_addi_ui83_ui8162 = arc.addi %cst_ui83, %cst_ui8162 : ui8
+    "arc.keep"(%result_addi_ui83_ui8162) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui8165]]) : (ui8) -> ()
+
+    // addi 162, 3 -> 165
+    %result_addi_ui8162_ui83 = arc.addi %cst_ui8162, %cst_ui83 : ui8
+    "arc.keep"(%result_addi_ui8162_ui83) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui8165]]) : (ui8) -> ()
+
+    // addi 4, 162 -> 166
+    %result_addi_ui84_ui8162 = arc.addi %cst_ui84, %cst_ui8162 : ui8
+    "arc.keep"(%result_addi_ui84_ui8162) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui8166]]) : (ui8) -> ()
+
+    // addi 162, 4 -> 166
+    %result_addi_ui8162_ui84 = arc.addi %cst_ui8162, %cst_ui84 : ui8
+    "arc.keep"(%result_addi_ui8162_ui84) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui8166]]) : (ui8) -> ()
 
     // addi 72, 100 -> 172
     %result_addi_ui872_ui8100 = arc.addi %cst_ui872, %cst_ui8100 : ui8
@@ -2848,6 +6199,42 @@ module @toplevel {
     "arc.keep"(%result_addi_ui81_ui8255) : (ui8) -> ()
     // CHECK: "arc.keep"([[RESULT_addi_ui81_ui8255]]) : (ui8) -> ()
 
+    // addi 2, 254 -> no-fold
+    %result_addi_ui82_ui8254 = arc.addi %cst_ui82, %cst_ui8254 : ui8
+    // CHECK-DAG: [[RESULT_addi_ui82_ui8254:%[^ ]+]] = arc.addi [[CSTui82]], [[CSTui8254]] : ui8
+    "arc.keep"(%result_addi_ui82_ui8254) : (ui8) -> ()
+    // CHECK: "arc.keep"([[RESULT_addi_ui82_ui8254]]) : (ui8) -> ()
+
+    // addi 2, 255 -> no-fold
+    %result_addi_ui82_ui8255 = arc.addi %cst_ui82, %cst_ui8255 : ui8
+    // CHECK-DAG: [[RESULT_addi_ui82_ui8255:%[^ ]+]] = arc.addi [[CSTui82]], [[CSTui8255]] : ui8
+    "arc.keep"(%result_addi_ui82_ui8255) : (ui8) -> ()
+    // CHECK: "arc.keep"([[RESULT_addi_ui82_ui8255]]) : (ui8) -> ()
+
+    // addi 3, 254 -> no-fold
+    %result_addi_ui83_ui8254 = arc.addi %cst_ui83, %cst_ui8254 : ui8
+    // CHECK-DAG: [[RESULT_addi_ui83_ui8254:%[^ ]+]] = arc.addi [[CSTui83]], [[CSTui8254]] : ui8
+    "arc.keep"(%result_addi_ui83_ui8254) : (ui8) -> ()
+    // CHECK: "arc.keep"([[RESULT_addi_ui83_ui8254]]) : (ui8) -> ()
+
+    // addi 3, 255 -> no-fold
+    %result_addi_ui83_ui8255 = arc.addi %cst_ui83, %cst_ui8255 : ui8
+    // CHECK-DAG: [[RESULT_addi_ui83_ui8255:%[^ ]+]] = arc.addi [[CSTui83]], [[CSTui8255]] : ui8
+    "arc.keep"(%result_addi_ui83_ui8255) : (ui8) -> ()
+    // CHECK: "arc.keep"([[RESULT_addi_ui83_ui8255]]) : (ui8) -> ()
+
+    // addi 4, 254 -> no-fold
+    %result_addi_ui84_ui8254 = arc.addi %cst_ui84, %cst_ui8254 : ui8
+    // CHECK-DAG: [[RESULT_addi_ui84_ui8254:%[^ ]+]] = arc.addi [[CSTui84]], [[CSTui8254]] : ui8
+    "arc.keep"(%result_addi_ui84_ui8254) : (ui8) -> ()
+    // CHECK: "arc.keep"([[RESULT_addi_ui84_ui8254]]) : (ui8) -> ()
+
+    // addi 4, 255 -> no-fold
+    %result_addi_ui84_ui8255 = arc.addi %cst_ui84, %cst_ui8255 : ui8
+    // CHECK-DAG: [[RESULT_addi_ui84_ui8255:%[^ ]+]] = arc.addi [[CSTui84]], [[CSTui8255]] : ui8
+    "arc.keep"(%result_addi_ui84_ui8255) : (ui8) -> ()
+    // CHECK: "arc.keep"([[RESULT_addi_ui84_ui8255]]) : (ui8) -> ()
+
     // addi 72, 254 -> no-fold
     %result_addi_ui872_ui8254 = arc.addi %cst_ui872, %cst_ui8254 : ui8
     // CHECK-DAG: [[RESULT_addi_ui872_ui8254:%[^ ]+]] = arc.addi [[CSTui872]], [[CSTui8254]] : ui8
@@ -2902,6 +6289,24 @@ module @toplevel {
     "arc.keep"(%result_addi_ui8162_ui8255) : (ui8) -> ()
     // CHECK: "arc.keep"([[RESULT_addi_ui8162_ui8255]]) : (ui8) -> ()
 
+    // addi 254, 2 -> no-fold
+    %result_addi_ui8254_ui82 = arc.addi %cst_ui8254, %cst_ui82 : ui8
+    // CHECK-DAG: [[RESULT_addi_ui8254_ui82:%[^ ]+]] = arc.addi [[CSTui8254]], [[CSTui82]] : ui8
+    "arc.keep"(%result_addi_ui8254_ui82) : (ui8) -> ()
+    // CHECK: "arc.keep"([[RESULT_addi_ui8254_ui82]]) : (ui8) -> ()
+
+    // addi 254, 3 -> no-fold
+    %result_addi_ui8254_ui83 = arc.addi %cst_ui8254, %cst_ui83 : ui8
+    // CHECK-DAG: [[RESULT_addi_ui8254_ui83:%[^ ]+]] = arc.addi [[CSTui8254]], [[CSTui83]] : ui8
+    "arc.keep"(%result_addi_ui8254_ui83) : (ui8) -> ()
+    // CHECK: "arc.keep"([[RESULT_addi_ui8254_ui83]]) : (ui8) -> ()
+
+    // addi 254, 4 -> no-fold
+    %result_addi_ui8254_ui84 = arc.addi %cst_ui8254, %cst_ui84 : ui8
+    // CHECK-DAG: [[RESULT_addi_ui8254_ui84:%[^ ]+]] = arc.addi [[CSTui8254]], [[CSTui84]] : ui8
+    "arc.keep"(%result_addi_ui8254_ui84) : (ui8) -> ()
+    // CHECK: "arc.keep"([[RESULT_addi_ui8254_ui84]]) : (ui8) -> ()
+
     // addi 254, 72 -> no-fold
     %result_addi_ui8254_ui872 = arc.addi %cst_ui8254, %cst_ui872 : ui8
     // CHECK-DAG: [[RESULT_addi_ui8254_ui872:%[^ ]+]] = arc.addi [[CSTui8254]], [[CSTui872]] : ui8
@@ -2938,6 +6343,24 @@ module @toplevel {
     "arc.keep"(%result_addi_ui8255_ui81) : (ui8) -> ()
     // CHECK: "arc.keep"([[RESULT_addi_ui8255_ui81]]) : (ui8) -> ()
 
+    // addi 255, 2 -> no-fold
+    %result_addi_ui8255_ui82 = arc.addi %cst_ui8255, %cst_ui82 : ui8
+    // CHECK-DAG: [[RESULT_addi_ui8255_ui82:%[^ ]+]] = arc.addi [[CSTui8255]], [[CSTui82]] : ui8
+    "arc.keep"(%result_addi_ui8255_ui82) : (ui8) -> ()
+    // CHECK: "arc.keep"([[RESULT_addi_ui8255_ui82]]) : (ui8) -> ()
+
+    // addi 255, 3 -> no-fold
+    %result_addi_ui8255_ui83 = arc.addi %cst_ui8255, %cst_ui83 : ui8
+    // CHECK-DAG: [[RESULT_addi_ui8255_ui83:%[^ ]+]] = arc.addi [[CSTui8255]], [[CSTui83]] : ui8
+    "arc.keep"(%result_addi_ui8255_ui83) : (ui8) -> ()
+    // CHECK: "arc.keep"([[RESULT_addi_ui8255_ui83]]) : (ui8) -> ()
+
+    // addi 255, 4 -> no-fold
+    %result_addi_ui8255_ui84 = arc.addi %cst_ui8255, %cst_ui84 : ui8
+    // CHECK-DAG: [[RESULT_addi_ui8255_ui84:%[^ ]+]] = arc.addi [[CSTui8255]], [[CSTui84]] : ui8
+    "arc.keep"(%result_addi_ui8255_ui84) : (ui8) -> ()
+    // CHECK: "arc.keep"([[RESULT_addi_ui8255_ui84]]) : (ui8) -> ()
+
     // addi 255, 72 -> no-fold
     %result_addi_ui8255_ui872 = arc.addi %cst_ui8255, %cst_ui872 : ui8
     // CHECK-DAG: [[RESULT_addi_ui8255_ui872:%[^ ]+]] = arc.addi [[CSTui8255]], [[CSTui872]] : ui8
@@ -2967,6 +6390,66 @@ module @toplevel {
     // CHECK-DAG: [[RESULT_addi_ui8255_ui8255:%[^ ]+]] = arc.addi [[CSTui8255]], [[CSTui8255]] : ui8
     "arc.keep"(%result_addi_ui8255_ui8255) : (ui8) -> ()
     // CHECK: "arc.keep"([[RESULT_addi_ui8255_ui8255]]) : (ui8) -> ()
+
+    // divi -32768, 1 -> -32768
+    %result_divi_si16n32768_si161 = arc.divi %cst_si16n32768, %cst_si161 : si16
+    "arc.keep"(%result_divi_si16n32768_si161) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi16n32768]]) : (si16) -> ()
+
+    // divi -32767, 1 -> -32767
+    %result_divi_si16n32767_si161 = arc.divi %cst_si16n32767, %cst_si161 : si16
+    "arc.keep"(%result_divi_si16n32767_si161) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi16n32767]]) : (si16) -> ()
+
+    // divi -32547, 1 -> -32547
+    %result_divi_si16n32547_si161 = arc.divi %cst_si16n32547, %cst_si161 : si16
+    "arc.keep"(%result_divi_si16n32547_si161) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi16n32547]]) : (si16) -> ()
+
+    // divi -32768, 2 -> -16384
+    %result_divi_si16n32768_si162 = arc.divi %cst_si16n32768, %cst_si162 : si16
+    "arc.keep"(%result_divi_si16n32768_si162) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi16n16384]]) : (si16) -> ()
+
+    // divi -32767, 2 -> -16383
+    %result_divi_si16n32767_si162 = arc.divi %cst_si16n32767, %cst_si162 : si16
+    "arc.keep"(%result_divi_si16n32767_si162) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi16n16383]]) : (si16) -> ()
+
+    // divi -32547, 2 -> -16273
+    %result_divi_si16n32547_si162 = arc.divi %cst_si16n32547, %cst_si162 : si16
+    "arc.keep"(%result_divi_si16n32547_si162) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi16n16273]]) : (si16) -> ()
+
+    // divi -32768, 3 -> -10922
+    %result_divi_si16n32768_si163 = arc.divi %cst_si16n32768, %cst_si163 : si16
+    "arc.keep"(%result_divi_si16n32768_si163) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi16n10922]]) : (si16) -> ()
+
+    // divi -32767, 3 -> -10922
+    %result_divi_si16n32767_si163 = arc.divi %cst_si16n32767, %cst_si163 : si16
+    "arc.keep"(%result_divi_si16n32767_si163) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi16n10922]]) : (si16) -> ()
+
+    // divi -32547, 3 -> -10849
+    %result_divi_si16n32547_si163 = arc.divi %cst_si16n32547, %cst_si163 : si16
+    "arc.keep"(%result_divi_si16n32547_si163) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi16n10849]]) : (si16) -> ()
+
+    // divi -32768, 4 -> -8192
+    %result_divi_si16n32768_si164 = arc.divi %cst_si16n32768, %cst_si164 : si16
+    "arc.keep"(%result_divi_si16n32768_si164) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi16n8192]]) : (si16) -> ()
+
+    // divi -32767, 4 -> -8191
+    %result_divi_si16n32767_si164 = arc.divi %cst_si16n32767, %cst_si164 : si16
+    "arc.keep"(%result_divi_si16n32767_si164) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi16n8191]]) : (si16) -> ()
+
+    // divi -32547, 4 -> -8136
+    %result_divi_si16n32547_si164 = arc.divi %cst_si16n32547, %cst_si164 : si16
+    "arc.keep"(%result_divi_si16n32547_si164) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi16n8136]]) : (si16) -> ()
 
     // divi -32768, 10486 -> -3
     %result_divi_si16n32768_si1610486 = arc.divi %cst_si16n32768, %cst_si1610486 : si16
@@ -3073,6 +6556,26 @@ module @toplevel {
     "arc.keep"(%result_divi_si160_si16n32547) : (si16) -> ()
     // CHECK: "arc.keep"([[CSTsi160]]) : (si16) -> ()
 
+    // divi 0, 1 -> 0
+    %result_divi_si160_si161 = arc.divi %cst_si160, %cst_si161 : si16
+    "arc.keep"(%result_divi_si160_si161) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi160]]) : (si16) -> ()
+
+    // divi 0, 2 -> 0
+    %result_divi_si160_si162 = arc.divi %cst_si160, %cst_si162 : si16
+    "arc.keep"(%result_divi_si160_si162) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi160]]) : (si16) -> ()
+
+    // divi 0, 3 -> 0
+    %result_divi_si160_si163 = arc.divi %cst_si160, %cst_si163 : si16
+    "arc.keep"(%result_divi_si160_si163) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi160]]) : (si16) -> ()
+
+    // divi 0, 4 -> 0
+    %result_divi_si160_si164 = arc.divi %cst_si160, %cst_si164 : si16
+    "arc.keep"(%result_divi_si160_si164) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi160]]) : (si16) -> ()
+
     // divi 0, 10486 -> 0
     %result_divi_si160_si1610486 = arc.divi %cst_si160, %cst_si1610486 : si16
     "arc.keep"(%result_divi_si160_si1610486) : (si16) -> ()
@@ -3091,6 +6594,176 @@ module @toplevel {
     // divi 0, 32767 -> 0
     %result_divi_si160_si1632767 = arc.divi %cst_si160, %cst_si1632767 : si16
     "arc.keep"(%result_divi_si160_si1632767) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi160]]) : (si16) -> ()
+
+    // divi 1, -32768 -> 0
+    %result_divi_si161_si16n32768 = arc.divi %cst_si161, %cst_si16n32768 : si16
+    "arc.keep"(%result_divi_si161_si16n32768) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi160]]) : (si16) -> ()
+
+    // divi 1, -32767 -> 0
+    %result_divi_si161_si16n32767 = arc.divi %cst_si161, %cst_si16n32767 : si16
+    "arc.keep"(%result_divi_si161_si16n32767) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi160]]) : (si16) -> ()
+
+    // divi 1, -32547 -> 0
+    %result_divi_si161_si16n32547 = arc.divi %cst_si161, %cst_si16n32547 : si16
+    "arc.keep"(%result_divi_si161_si16n32547) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi160]]) : (si16) -> ()
+
+    // divi 1, 2 -> 0
+    %result_divi_si161_si162 = arc.divi %cst_si161, %cst_si162 : si16
+    "arc.keep"(%result_divi_si161_si162) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi160]]) : (si16) -> ()
+
+    // divi 1, 3 -> 0
+    %result_divi_si161_si163 = arc.divi %cst_si161, %cst_si163 : si16
+    "arc.keep"(%result_divi_si161_si163) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi160]]) : (si16) -> ()
+
+    // divi 1, 4 -> 0
+    %result_divi_si161_si164 = arc.divi %cst_si161, %cst_si164 : si16
+    "arc.keep"(%result_divi_si161_si164) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi160]]) : (si16) -> ()
+
+    // divi 1, 10486 -> 0
+    %result_divi_si161_si1610486 = arc.divi %cst_si161, %cst_si1610486 : si16
+    "arc.keep"(%result_divi_si161_si1610486) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi160]]) : (si16) -> ()
+
+    // divi 1, 16514 -> 0
+    %result_divi_si161_si1616514 = arc.divi %cst_si161, %cst_si1616514 : si16
+    "arc.keep"(%result_divi_si161_si1616514) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi160]]) : (si16) -> ()
+
+    // divi 1, 32766 -> 0
+    %result_divi_si161_si1632766 = arc.divi %cst_si161, %cst_si1632766 : si16
+    "arc.keep"(%result_divi_si161_si1632766) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi160]]) : (si16) -> ()
+
+    // divi 1, 32767 -> 0
+    %result_divi_si161_si1632767 = arc.divi %cst_si161, %cst_si1632767 : si16
+    "arc.keep"(%result_divi_si161_si1632767) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi160]]) : (si16) -> ()
+
+    // divi 2, -32768 -> 0
+    %result_divi_si162_si16n32768 = arc.divi %cst_si162, %cst_si16n32768 : si16
+    "arc.keep"(%result_divi_si162_si16n32768) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi160]]) : (si16) -> ()
+
+    // divi 2, -32767 -> 0
+    %result_divi_si162_si16n32767 = arc.divi %cst_si162, %cst_si16n32767 : si16
+    "arc.keep"(%result_divi_si162_si16n32767) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi160]]) : (si16) -> ()
+
+    // divi 2, -32547 -> 0
+    %result_divi_si162_si16n32547 = arc.divi %cst_si162, %cst_si16n32547 : si16
+    "arc.keep"(%result_divi_si162_si16n32547) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi160]]) : (si16) -> ()
+
+    // divi 2, 3 -> 0
+    %result_divi_si162_si163 = arc.divi %cst_si162, %cst_si163 : si16
+    "arc.keep"(%result_divi_si162_si163) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi160]]) : (si16) -> ()
+
+    // divi 2, 4 -> 0
+    %result_divi_si162_si164 = arc.divi %cst_si162, %cst_si164 : si16
+    "arc.keep"(%result_divi_si162_si164) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi160]]) : (si16) -> ()
+
+    // divi 2, 10486 -> 0
+    %result_divi_si162_si1610486 = arc.divi %cst_si162, %cst_si1610486 : si16
+    "arc.keep"(%result_divi_si162_si1610486) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi160]]) : (si16) -> ()
+
+    // divi 2, 16514 -> 0
+    %result_divi_si162_si1616514 = arc.divi %cst_si162, %cst_si1616514 : si16
+    "arc.keep"(%result_divi_si162_si1616514) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi160]]) : (si16) -> ()
+
+    // divi 2, 32766 -> 0
+    %result_divi_si162_si1632766 = arc.divi %cst_si162, %cst_si1632766 : si16
+    "arc.keep"(%result_divi_si162_si1632766) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi160]]) : (si16) -> ()
+
+    // divi 2, 32767 -> 0
+    %result_divi_si162_si1632767 = arc.divi %cst_si162, %cst_si1632767 : si16
+    "arc.keep"(%result_divi_si162_si1632767) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi160]]) : (si16) -> ()
+
+    // divi 3, -32768 -> 0
+    %result_divi_si163_si16n32768 = arc.divi %cst_si163, %cst_si16n32768 : si16
+    "arc.keep"(%result_divi_si163_si16n32768) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi160]]) : (si16) -> ()
+
+    // divi 3, -32767 -> 0
+    %result_divi_si163_si16n32767 = arc.divi %cst_si163, %cst_si16n32767 : si16
+    "arc.keep"(%result_divi_si163_si16n32767) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi160]]) : (si16) -> ()
+
+    // divi 3, -32547 -> 0
+    %result_divi_si163_si16n32547 = arc.divi %cst_si163, %cst_si16n32547 : si16
+    "arc.keep"(%result_divi_si163_si16n32547) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi160]]) : (si16) -> ()
+
+    // divi 3, 4 -> 0
+    %result_divi_si163_si164 = arc.divi %cst_si163, %cst_si164 : si16
+    "arc.keep"(%result_divi_si163_si164) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi160]]) : (si16) -> ()
+
+    // divi 3, 10486 -> 0
+    %result_divi_si163_si1610486 = arc.divi %cst_si163, %cst_si1610486 : si16
+    "arc.keep"(%result_divi_si163_si1610486) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi160]]) : (si16) -> ()
+
+    // divi 3, 16514 -> 0
+    %result_divi_si163_si1616514 = arc.divi %cst_si163, %cst_si1616514 : si16
+    "arc.keep"(%result_divi_si163_si1616514) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi160]]) : (si16) -> ()
+
+    // divi 3, 32766 -> 0
+    %result_divi_si163_si1632766 = arc.divi %cst_si163, %cst_si1632766 : si16
+    "arc.keep"(%result_divi_si163_si1632766) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi160]]) : (si16) -> ()
+
+    // divi 3, 32767 -> 0
+    %result_divi_si163_si1632767 = arc.divi %cst_si163, %cst_si1632767 : si16
+    "arc.keep"(%result_divi_si163_si1632767) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi160]]) : (si16) -> ()
+
+    // divi 4, -32768 -> 0
+    %result_divi_si164_si16n32768 = arc.divi %cst_si164, %cst_si16n32768 : si16
+    "arc.keep"(%result_divi_si164_si16n32768) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi160]]) : (si16) -> ()
+
+    // divi 4, -32767 -> 0
+    %result_divi_si164_si16n32767 = arc.divi %cst_si164, %cst_si16n32767 : si16
+    "arc.keep"(%result_divi_si164_si16n32767) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi160]]) : (si16) -> ()
+
+    // divi 4, -32547 -> 0
+    %result_divi_si164_si16n32547 = arc.divi %cst_si164, %cst_si16n32547 : si16
+    "arc.keep"(%result_divi_si164_si16n32547) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi160]]) : (si16) -> ()
+
+    // divi 4, 10486 -> 0
+    %result_divi_si164_si1610486 = arc.divi %cst_si164, %cst_si1610486 : si16
+    "arc.keep"(%result_divi_si164_si1610486) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi160]]) : (si16) -> ()
+
+    // divi 4, 16514 -> 0
+    %result_divi_si164_si1616514 = arc.divi %cst_si164, %cst_si1616514 : si16
+    "arc.keep"(%result_divi_si164_si1616514) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi160]]) : (si16) -> ()
+
+    // divi 4, 32766 -> 0
+    %result_divi_si164_si1632766 = arc.divi %cst_si164, %cst_si1632766 : si16
+    "arc.keep"(%result_divi_si164_si1632766) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi160]]) : (si16) -> ()
+
+    // divi 4, 32767 -> 0
+    %result_divi_si164_si1632767 = arc.divi %cst_si164, %cst_si1632767 : si16
+    "arc.keep"(%result_divi_si164_si1632767) : (si16) -> ()
     // CHECK: "arc.keep"([[CSTsi160]]) : (si16) -> ()
 
     // divi 10486, -32768 -> 0
@@ -3198,6 +6871,36 @@ module @toplevel {
     "arc.keep"(%result_divi_si16n32547_si16n32547) : (si16) -> ()
     // CHECK: "arc.keep"([[CSTsi161]]) : (si16) -> ()
 
+    // divi 1, 1 -> 1
+    %result_divi_si161_si161 = arc.divi %cst_si161, %cst_si161 : si16
+    "arc.keep"(%result_divi_si161_si161) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi161]]) : (si16) -> ()
+
+    // divi 2, 2 -> 1
+    %result_divi_si162_si162 = arc.divi %cst_si162, %cst_si162 : si16
+    "arc.keep"(%result_divi_si162_si162) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi161]]) : (si16) -> ()
+
+    // divi 3, 2 -> 1
+    %result_divi_si163_si162 = arc.divi %cst_si163, %cst_si162 : si16
+    "arc.keep"(%result_divi_si163_si162) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi161]]) : (si16) -> ()
+
+    // divi 3, 3 -> 1
+    %result_divi_si163_si163 = arc.divi %cst_si163, %cst_si163 : si16
+    "arc.keep"(%result_divi_si163_si163) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi161]]) : (si16) -> ()
+
+    // divi 4, 3 -> 1
+    %result_divi_si164_si163 = arc.divi %cst_si164, %cst_si163 : si16
+    "arc.keep"(%result_divi_si164_si163) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi161]]) : (si16) -> ()
+
+    // divi 4, 4 -> 1
+    %result_divi_si164_si164 = arc.divi %cst_si164, %cst_si164 : si16
+    "arc.keep"(%result_divi_si164_si164) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi161]]) : (si16) -> ()
+
     // divi 10486, 10486 -> 1
     %result_divi_si1610486_si1610486 = arc.divi %cst_si1610486, %cst_si1610486 : si16
     "arc.keep"(%result_divi_si1610486_si1610486) : (si16) -> ()
@@ -3238,6 +6941,21 @@ module @toplevel {
     "arc.keep"(%result_divi_si1632767_si1632767) : (si16) -> ()
     // CHECK: "arc.keep"([[CSTsi161]]) : (si16) -> ()
 
+    // divi 2, 1 -> 2
+    %result_divi_si162_si161 = arc.divi %cst_si162, %cst_si161 : si16
+    "arc.keep"(%result_divi_si162_si161) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi162]]) : (si16) -> ()
+
+    // divi 4, 2 -> 2
+    %result_divi_si164_si162 = arc.divi %cst_si164, %cst_si162 : si16
+    "arc.keep"(%result_divi_si164_si162) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi162]]) : (si16) -> ()
+
+    // divi 3, 1 -> 3
+    %result_divi_si163_si161 = arc.divi %cst_si163, %cst_si161 : si16
+    "arc.keep"(%result_divi_si163_si161) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi163]]) : (si16) -> ()
+
     // divi 32766, 10486 -> 3
     %result_divi_si1632766_si1610486 = arc.divi %cst_si1632766, %cst_si1610486 : si16
     "arc.keep"(%result_divi_si1632766_si1610486) : (si16) -> ()
@@ -3247,6 +6965,91 @@ module @toplevel {
     %result_divi_si1632767_si1610486 = arc.divi %cst_si1632767, %cst_si1610486 : si16
     "arc.keep"(%result_divi_si1632767_si1610486) : (si16) -> ()
     // CHECK: "arc.keep"([[CSTsi163]]) : (si16) -> ()
+
+    // divi 4, 1 -> 4
+    %result_divi_si164_si161 = arc.divi %cst_si164, %cst_si161 : si16
+    "arc.keep"(%result_divi_si164_si161) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi164]]) : (si16) -> ()
+
+    // divi 10486, 4 -> 2621
+    %result_divi_si1610486_si164 = arc.divi %cst_si1610486, %cst_si164 : si16
+    "arc.keep"(%result_divi_si1610486_si164) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi162621]]) : (si16) -> ()
+
+    // divi 10486, 3 -> 3495
+    %result_divi_si1610486_si163 = arc.divi %cst_si1610486, %cst_si163 : si16
+    "arc.keep"(%result_divi_si1610486_si163) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi163495]]) : (si16) -> ()
+
+    // divi 16514, 4 -> 4128
+    %result_divi_si1616514_si164 = arc.divi %cst_si1616514, %cst_si164 : si16
+    "arc.keep"(%result_divi_si1616514_si164) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi164128]]) : (si16) -> ()
+
+    // divi 10486, 2 -> 5243
+    %result_divi_si1610486_si162 = arc.divi %cst_si1610486, %cst_si162 : si16
+    "arc.keep"(%result_divi_si1610486_si162) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi165243]]) : (si16) -> ()
+
+    // divi 16514, 3 -> 5504
+    %result_divi_si1616514_si163 = arc.divi %cst_si1616514, %cst_si163 : si16
+    "arc.keep"(%result_divi_si1616514_si163) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi165504]]) : (si16) -> ()
+
+    // divi 32766, 4 -> 8191
+    %result_divi_si1632766_si164 = arc.divi %cst_si1632766, %cst_si164 : si16
+    "arc.keep"(%result_divi_si1632766_si164) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi168191]]) : (si16) -> ()
+
+    // divi 32767, 4 -> 8191
+    %result_divi_si1632767_si164 = arc.divi %cst_si1632767, %cst_si164 : si16
+    "arc.keep"(%result_divi_si1632767_si164) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi168191]]) : (si16) -> ()
+
+    // divi 16514, 2 -> 8257
+    %result_divi_si1616514_si162 = arc.divi %cst_si1616514, %cst_si162 : si16
+    "arc.keep"(%result_divi_si1616514_si162) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi168257]]) : (si16) -> ()
+
+    // divi 10486, 1 -> 10486
+    %result_divi_si1610486_si161 = arc.divi %cst_si1610486, %cst_si161 : si16
+    "arc.keep"(%result_divi_si1610486_si161) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi1610486]]) : (si16) -> ()
+
+    // divi 32766, 3 -> 10922
+    %result_divi_si1632766_si163 = arc.divi %cst_si1632766, %cst_si163 : si16
+    "arc.keep"(%result_divi_si1632766_si163) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi1610922]]) : (si16) -> ()
+
+    // divi 32767, 3 -> 10922
+    %result_divi_si1632767_si163 = arc.divi %cst_si1632767, %cst_si163 : si16
+    "arc.keep"(%result_divi_si1632767_si163) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi1610922]]) : (si16) -> ()
+
+    // divi 32766, 2 -> 16383
+    %result_divi_si1632766_si162 = arc.divi %cst_si1632766, %cst_si162 : si16
+    "arc.keep"(%result_divi_si1632766_si162) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi1616383]]) : (si16) -> ()
+
+    // divi 32767, 2 -> 16383
+    %result_divi_si1632767_si162 = arc.divi %cst_si1632767, %cst_si162 : si16
+    "arc.keep"(%result_divi_si1632767_si162) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi1616383]]) : (si16) -> ()
+
+    // divi 16514, 1 -> 16514
+    %result_divi_si1616514_si161 = arc.divi %cst_si1616514, %cst_si161 : si16
+    "arc.keep"(%result_divi_si1616514_si161) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi1616514]]) : (si16) -> ()
+
+    // divi 32766, 1 -> 32766
+    %result_divi_si1632766_si161 = arc.divi %cst_si1632766, %cst_si161 : si16
+    "arc.keep"(%result_divi_si1632766_si161) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi1632766]]) : (si16) -> ()
+
+    // divi 32767, 1 -> 32767
+    %result_divi_si1632767_si161 = arc.divi %cst_si1632767, %cst_si161 : si16
+    "arc.keep"(%result_divi_si1632767_si161) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi1632767]]) : (si16) -> ()
 
     // divi -32768, 0 -> no-fold
     %result_divi_si16n32768_si160 = arc.divi %cst_si16n32768, %cst_si160 : si16
@@ -3272,6 +7075,30 @@ module @toplevel {
     "arc.keep"(%result_divi_si160_si160) : (si16) -> ()
     // CHECK: "arc.keep"([[RESULT_divi_si160_si160]]) : (si16) -> ()
 
+    // divi 1, 0 -> no-fold
+    %result_divi_si161_si160 = arc.divi %cst_si161, %cst_si160 : si16
+    // CHECK-DAG: [[RESULT_divi_si161_si160:%[^ ]+]] = arc.divi [[CSTsi161]], [[CSTsi160]] : si16
+    "arc.keep"(%result_divi_si161_si160) : (si16) -> ()
+    // CHECK: "arc.keep"([[RESULT_divi_si161_si160]]) : (si16) -> ()
+
+    // divi 2, 0 -> no-fold
+    %result_divi_si162_si160 = arc.divi %cst_si162, %cst_si160 : si16
+    // CHECK-DAG: [[RESULT_divi_si162_si160:%[^ ]+]] = arc.divi [[CSTsi162]], [[CSTsi160]] : si16
+    "arc.keep"(%result_divi_si162_si160) : (si16) -> ()
+    // CHECK: "arc.keep"([[RESULT_divi_si162_si160]]) : (si16) -> ()
+
+    // divi 3, 0 -> no-fold
+    %result_divi_si163_si160 = arc.divi %cst_si163, %cst_si160 : si16
+    // CHECK-DAG: [[RESULT_divi_si163_si160:%[^ ]+]] = arc.divi [[CSTsi163]], [[CSTsi160]] : si16
+    "arc.keep"(%result_divi_si163_si160) : (si16) -> ()
+    // CHECK: "arc.keep"([[RESULT_divi_si163_si160]]) : (si16) -> ()
+
+    // divi 4, 0 -> no-fold
+    %result_divi_si164_si160 = arc.divi %cst_si164, %cst_si160 : si16
+    // CHECK-DAG: [[RESULT_divi_si164_si160:%[^ ]+]] = arc.divi [[CSTsi164]], [[CSTsi160]] : si16
+    "arc.keep"(%result_divi_si164_si160) : (si16) -> ()
+    // CHECK: "arc.keep"([[RESULT_divi_si164_si160]]) : (si16) -> ()
+
     // divi 10486, 0 -> no-fold
     %result_divi_si1610486_si160 = arc.divi %cst_si1610486, %cst_si160 : si16
     // CHECK-DAG: [[RESULT_divi_si1610486_si160:%[^ ]+]] = arc.divi [[CSTsi1610486]], [[CSTsi160]] : si16
@@ -3295,6 +7122,106 @@ module @toplevel {
     // CHECK-DAG: [[RESULT_divi_si1632767_si160:%[^ ]+]] = arc.divi [[CSTsi1632767]], [[CSTsi160]] : si16
     "arc.keep"(%result_divi_si1632767_si160) : (si16) -> ()
     // CHECK: "arc.keep"([[RESULT_divi_si1632767_si160]]) : (si16) -> ()
+
+    // divi -2147483648, 1 -> -2147483648
+    %result_divi_si32n2147483648_si321 = arc.divi %cst_si32n2147483648, %cst_si321 : si32
+    "arc.keep"(%result_divi_si32n2147483648_si321) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi32n2147483648]]) : (si32) -> ()
+
+    // divi -2147483647, 1 -> -2147483647
+    %result_divi_si32n2147483647_si321 = arc.divi %cst_si32n2147483647, %cst_si321 : si32
+    "arc.keep"(%result_divi_si32n2147483647_si321) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi32n2147483647]]) : (si32) -> ()
+
+    // divi -1713183800, 1 -> -1713183800
+    %result_divi_si32n1713183800_si321 = arc.divi %cst_si32n1713183800, %cst_si321 : si32
+    "arc.keep"(%result_divi_si32n1713183800_si321) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi32n1713183800]]) : (si32) -> ()
+
+    // divi -1252582164, 1 -> -1252582164
+    %result_divi_si32n1252582164_si321 = arc.divi %cst_si32n1252582164, %cst_si321 : si32
+    "arc.keep"(%result_divi_si32n1252582164_si321) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi32n1252582164]]) : (si32) -> ()
+
+    // divi -2147483648, 2 -> -1073741824
+    %result_divi_si32n2147483648_si322 = arc.divi %cst_si32n2147483648, %cst_si322 : si32
+    "arc.keep"(%result_divi_si32n2147483648_si322) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi32n1073741824]]) : (si32) -> ()
+
+    // divi -2147483647, 2 -> -1073741823
+    %result_divi_si32n2147483647_si322 = arc.divi %cst_si32n2147483647, %cst_si322 : si32
+    "arc.keep"(%result_divi_si32n2147483647_si322) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi32n1073741823]]) : (si32) -> ()
+
+    // divi -1035405763, 1 -> -1035405763
+    %result_divi_si32n1035405763_si321 = arc.divi %cst_si32n1035405763, %cst_si321 : si32
+    "arc.keep"(%result_divi_si32n1035405763_si321) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi32n1035405763]]) : (si32) -> ()
+
+    // divi -1713183800, 2 -> -856591900
+    %result_divi_si32n1713183800_si322 = arc.divi %cst_si32n1713183800, %cst_si322 : si32
+    "arc.keep"(%result_divi_si32n1713183800_si322) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi32n856591900]]) : (si32) -> ()
+
+    // divi -2147483648, 3 -> -715827882
+    %result_divi_si32n2147483648_si323 = arc.divi %cst_si32n2147483648, %cst_si323 : si32
+    "arc.keep"(%result_divi_si32n2147483648_si323) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi32n715827882]]) : (si32) -> ()
+
+    // divi -2147483647, 3 -> -715827882
+    %result_divi_si32n2147483647_si323 = arc.divi %cst_si32n2147483647, %cst_si323 : si32
+    "arc.keep"(%result_divi_si32n2147483647_si323) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi32n715827882]]) : (si32) -> ()
+
+    // divi -1252582164, 2 -> -626291082
+    %result_divi_si32n1252582164_si322 = arc.divi %cst_si32n1252582164, %cst_si322 : si32
+    "arc.keep"(%result_divi_si32n1252582164_si322) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi32n626291082]]) : (si32) -> ()
+
+    // divi -1713183800, 3 -> -571061266
+    %result_divi_si32n1713183800_si323 = arc.divi %cst_si32n1713183800, %cst_si323 : si32
+    "arc.keep"(%result_divi_si32n1713183800_si323) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi32n571061266]]) : (si32) -> ()
+
+    // divi -2147483648, 4 -> -536870912
+    %result_divi_si32n2147483648_si324 = arc.divi %cst_si32n2147483648, %cst_si324 : si32
+    "arc.keep"(%result_divi_si32n2147483648_si324) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi32n536870912]]) : (si32) -> ()
+
+    // divi -2147483647, 4 -> -536870911
+    %result_divi_si32n2147483647_si324 = arc.divi %cst_si32n2147483647, %cst_si324 : si32
+    "arc.keep"(%result_divi_si32n2147483647_si324) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi32n536870911]]) : (si32) -> ()
+
+    // divi -1035405763, 2 -> -517702881
+    %result_divi_si32n1035405763_si322 = arc.divi %cst_si32n1035405763, %cst_si322 : si32
+    "arc.keep"(%result_divi_si32n1035405763_si322) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi32n517702881]]) : (si32) -> ()
+
+    // divi -1713183800, 4 -> -428295950
+    %result_divi_si32n1713183800_si324 = arc.divi %cst_si32n1713183800, %cst_si324 : si32
+    "arc.keep"(%result_divi_si32n1713183800_si324) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi32n428295950]]) : (si32) -> ()
+
+    // divi -1252582164, 3 -> -417527388
+    %result_divi_si32n1252582164_si323 = arc.divi %cst_si32n1252582164, %cst_si323 : si32
+    "arc.keep"(%result_divi_si32n1252582164_si323) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi32n417527388]]) : (si32) -> ()
+
+    // divi -1035405763, 3 -> -345135254
+    %result_divi_si32n1035405763_si323 = arc.divi %cst_si32n1035405763, %cst_si323 : si32
+    "arc.keep"(%result_divi_si32n1035405763_si323) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi32n345135254]]) : (si32) -> ()
+
+    // divi -1252582164, 4 -> -313145541
+    %result_divi_si32n1252582164_si324 = arc.divi %cst_si32n1252582164, %cst_si324 : si32
+    "arc.keep"(%result_divi_si32n1252582164_si324) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi32n313145541]]) : (si32) -> ()
+
+    // divi -1035405763, 4 -> -258851440
+    %result_divi_si32n1035405763_si324 = arc.divi %cst_si32n1035405763, %cst_si324 : si32
+    "arc.keep"(%result_divi_si32n1035405763_si324) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi32n258851440]]) : (si32) -> ()
 
     // divi 2147483646, -1035405763 -> -2
     %result_divi_si322147483646_si32n1035405763 = arc.divi %cst_si322147483646, %cst_si32n1035405763 : si32
@@ -3456,6 +7383,26 @@ module @toplevel {
     "arc.keep"(%result_divi_si320_si32n1035405763) : (si32) -> ()
     // CHECK: "arc.keep"([[CSTsi320]]) : (si32) -> ()
 
+    // divi 0, 1 -> 0
+    %result_divi_si320_si321 = arc.divi %cst_si320, %cst_si321 : si32
+    "arc.keep"(%result_divi_si320_si321) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi320]]) : (si32) -> ()
+
+    // divi 0, 2 -> 0
+    %result_divi_si320_si322 = arc.divi %cst_si320, %cst_si322 : si32
+    "arc.keep"(%result_divi_si320_si322) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi320]]) : (si32) -> ()
+
+    // divi 0, 3 -> 0
+    %result_divi_si320_si323 = arc.divi %cst_si320, %cst_si323 : si32
+    "arc.keep"(%result_divi_si320_si323) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi320]]) : (si32) -> ()
+
+    // divi 0, 4 -> 0
+    %result_divi_si320_si324 = arc.divi %cst_si320, %cst_si324 : si32
+    "arc.keep"(%result_divi_si320_si324) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi320]]) : (si32) -> ()
+
     // divi 0, 2147483646 -> 0
     %result_divi_si320_si322147483646 = arc.divi %cst_si320, %cst_si322147483646 : si32
     "arc.keep"(%result_divi_si320_si322147483646) : (si32) -> ()
@@ -3464,6 +7411,176 @@ module @toplevel {
     // divi 0, 2147483647 -> 0
     %result_divi_si320_si322147483647 = arc.divi %cst_si320, %cst_si322147483647 : si32
     "arc.keep"(%result_divi_si320_si322147483647) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi320]]) : (si32) -> ()
+
+    // divi 1, -2147483648 -> 0
+    %result_divi_si321_si32n2147483648 = arc.divi %cst_si321, %cst_si32n2147483648 : si32
+    "arc.keep"(%result_divi_si321_si32n2147483648) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi320]]) : (si32) -> ()
+
+    // divi 1, -2147483647 -> 0
+    %result_divi_si321_si32n2147483647 = arc.divi %cst_si321, %cst_si32n2147483647 : si32
+    "arc.keep"(%result_divi_si321_si32n2147483647) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi320]]) : (si32) -> ()
+
+    // divi 1, -1713183800 -> 0
+    %result_divi_si321_si32n1713183800 = arc.divi %cst_si321, %cst_si32n1713183800 : si32
+    "arc.keep"(%result_divi_si321_si32n1713183800) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi320]]) : (si32) -> ()
+
+    // divi 1, -1252582164 -> 0
+    %result_divi_si321_si32n1252582164 = arc.divi %cst_si321, %cst_si32n1252582164 : si32
+    "arc.keep"(%result_divi_si321_si32n1252582164) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi320]]) : (si32) -> ()
+
+    // divi 1, -1035405763 -> 0
+    %result_divi_si321_si32n1035405763 = arc.divi %cst_si321, %cst_si32n1035405763 : si32
+    "arc.keep"(%result_divi_si321_si32n1035405763) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi320]]) : (si32) -> ()
+
+    // divi 1, 2 -> 0
+    %result_divi_si321_si322 = arc.divi %cst_si321, %cst_si322 : si32
+    "arc.keep"(%result_divi_si321_si322) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi320]]) : (si32) -> ()
+
+    // divi 1, 3 -> 0
+    %result_divi_si321_si323 = arc.divi %cst_si321, %cst_si323 : si32
+    "arc.keep"(%result_divi_si321_si323) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi320]]) : (si32) -> ()
+
+    // divi 1, 4 -> 0
+    %result_divi_si321_si324 = arc.divi %cst_si321, %cst_si324 : si32
+    "arc.keep"(%result_divi_si321_si324) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi320]]) : (si32) -> ()
+
+    // divi 1, 2147483646 -> 0
+    %result_divi_si321_si322147483646 = arc.divi %cst_si321, %cst_si322147483646 : si32
+    "arc.keep"(%result_divi_si321_si322147483646) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi320]]) : (si32) -> ()
+
+    // divi 1, 2147483647 -> 0
+    %result_divi_si321_si322147483647 = arc.divi %cst_si321, %cst_si322147483647 : si32
+    "arc.keep"(%result_divi_si321_si322147483647) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi320]]) : (si32) -> ()
+
+    // divi 2, -2147483648 -> 0
+    %result_divi_si322_si32n2147483648 = arc.divi %cst_si322, %cst_si32n2147483648 : si32
+    "arc.keep"(%result_divi_si322_si32n2147483648) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi320]]) : (si32) -> ()
+
+    // divi 2, -2147483647 -> 0
+    %result_divi_si322_si32n2147483647 = arc.divi %cst_si322, %cst_si32n2147483647 : si32
+    "arc.keep"(%result_divi_si322_si32n2147483647) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi320]]) : (si32) -> ()
+
+    // divi 2, -1713183800 -> 0
+    %result_divi_si322_si32n1713183800 = arc.divi %cst_si322, %cst_si32n1713183800 : si32
+    "arc.keep"(%result_divi_si322_si32n1713183800) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi320]]) : (si32) -> ()
+
+    // divi 2, -1252582164 -> 0
+    %result_divi_si322_si32n1252582164 = arc.divi %cst_si322, %cst_si32n1252582164 : si32
+    "arc.keep"(%result_divi_si322_si32n1252582164) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi320]]) : (si32) -> ()
+
+    // divi 2, -1035405763 -> 0
+    %result_divi_si322_si32n1035405763 = arc.divi %cst_si322, %cst_si32n1035405763 : si32
+    "arc.keep"(%result_divi_si322_si32n1035405763) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi320]]) : (si32) -> ()
+
+    // divi 2, 3 -> 0
+    %result_divi_si322_si323 = arc.divi %cst_si322, %cst_si323 : si32
+    "arc.keep"(%result_divi_si322_si323) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi320]]) : (si32) -> ()
+
+    // divi 2, 4 -> 0
+    %result_divi_si322_si324 = arc.divi %cst_si322, %cst_si324 : si32
+    "arc.keep"(%result_divi_si322_si324) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi320]]) : (si32) -> ()
+
+    // divi 2, 2147483646 -> 0
+    %result_divi_si322_si322147483646 = arc.divi %cst_si322, %cst_si322147483646 : si32
+    "arc.keep"(%result_divi_si322_si322147483646) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi320]]) : (si32) -> ()
+
+    // divi 2, 2147483647 -> 0
+    %result_divi_si322_si322147483647 = arc.divi %cst_si322, %cst_si322147483647 : si32
+    "arc.keep"(%result_divi_si322_si322147483647) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi320]]) : (si32) -> ()
+
+    // divi 3, -2147483648 -> 0
+    %result_divi_si323_si32n2147483648 = arc.divi %cst_si323, %cst_si32n2147483648 : si32
+    "arc.keep"(%result_divi_si323_si32n2147483648) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi320]]) : (si32) -> ()
+
+    // divi 3, -2147483647 -> 0
+    %result_divi_si323_si32n2147483647 = arc.divi %cst_si323, %cst_si32n2147483647 : si32
+    "arc.keep"(%result_divi_si323_si32n2147483647) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi320]]) : (si32) -> ()
+
+    // divi 3, -1713183800 -> 0
+    %result_divi_si323_si32n1713183800 = arc.divi %cst_si323, %cst_si32n1713183800 : si32
+    "arc.keep"(%result_divi_si323_si32n1713183800) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi320]]) : (si32) -> ()
+
+    // divi 3, -1252582164 -> 0
+    %result_divi_si323_si32n1252582164 = arc.divi %cst_si323, %cst_si32n1252582164 : si32
+    "arc.keep"(%result_divi_si323_si32n1252582164) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi320]]) : (si32) -> ()
+
+    // divi 3, -1035405763 -> 0
+    %result_divi_si323_si32n1035405763 = arc.divi %cst_si323, %cst_si32n1035405763 : si32
+    "arc.keep"(%result_divi_si323_si32n1035405763) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi320]]) : (si32) -> ()
+
+    // divi 3, 4 -> 0
+    %result_divi_si323_si324 = arc.divi %cst_si323, %cst_si324 : si32
+    "arc.keep"(%result_divi_si323_si324) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi320]]) : (si32) -> ()
+
+    // divi 3, 2147483646 -> 0
+    %result_divi_si323_si322147483646 = arc.divi %cst_si323, %cst_si322147483646 : si32
+    "arc.keep"(%result_divi_si323_si322147483646) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi320]]) : (si32) -> ()
+
+    // divi 3, 2147483647 -> 0
+    %result_divi_si323_si322147483647 = arc.divi %cst_si323, %cst_si322147483647 : si32
+    "arc.keep"(%result_divi_si323_si322147483647) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi320]]) : (si32) -> ()
+
+    // divi 4, -2147483648 -> 0
+    %result_divi_si324_si32n2147483648 = arc.divi %cst_si324, %cst_si32n2147483648 : si32
+    "arc.keep"(%result_divi_si324_si32n2147483648) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi320]]) : (si32) -> ()
+
+    // divi 4, -2147483647 -> 0
+    %result_divi_si324_si32n2147483647 = arc.divi %cst_si324, %cst_si32n2147483647 : si32
+    "arc.keep"(%result_divi_si324_si32n2147483647) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi320]]) : (si32) -> ()
+
+    // divi 4, -1713183800 -> 0
+    %result_divi_si324_si32n1713183800 = arc.divi %cst_si324, %cst_si32n1713183800 : si32
+    "arc.keep"(%result_divi_si324_si32n1713183800) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi320]]) : (si32) -> ()
+
+    // divi 4, -1252582164 -> 0
+    %result_divi_si324_si32n1252582164 = arc.divi %cst_si324, %cst_si32n1252582164 : si32
+    "arc.keep"(%result_divi_si324_si32n1252582164) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi320]]) : (si32) -> ()
+
+    // divi 4, -1035405763 -> 0
+    %result_divi_si324_si32n1035405763 = arc.divi %cst_si324, %cst_si32n1035405763 : si32
+    "arc.keep"(%result_divi_si324_si32n1035405763) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi320]]) : (si32) -> ()
+
+    // divi 4, 2147483646 -> 0
+    %result_divi_si324_si322147483646 = arc.divi %cst_si324, %cst_si322147483646 : si32
+    "arc.keep"(%result_divi_si324_si322147483646) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi320]]) : (si32) -> ()
+
+    // divi 4, 2147483647 -> 0
+    %result_divi_si324_si322147483647 = arc.divi %cst_si324, %cst_si322147483647 : si32
+    "arc.keep"(%result_divi_si324_si322147483647) : (si32) -> ()
     // CHECK: "arc.keep"([[CSTsi320]]) : (si32) -> ()
 
     // divi 2147483646, -2147483648 -> 0
@@ -3551,6 +7668,36 @@ module @toplevel {
     "arc.keep"(%result_divi_si32n1035405763_si32n1035405763) : (si32) -> ()
     // CHECK: "arc.keep"([[CSTsi321]]) : (si32) -> ()
 
+    // divi 1, 1 -> 1
+    %result_divi_si321_si321 = arc.divi %cst_si321, %cst_si321 : si32
+    "arc.keep"(%result_divi_si321_si321) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi321]]) : (si32) -> ()
+
+    // divi 2, 2 -> 1
+    %result_divi_si322_si322 = arc.divi %cst_si322, %cst_si322 : si32
+    "arc.keep"(%result_divi_si322_si322) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi321]]) : (si32) -> ()
+
+    // divi 3, 2 -> 1
+    %result_divi_si323_si322 = arc.divi %cst_si323, %cst_si322 : si32
+    "arc.keep"(%result_divi_si323_si322) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi321]]) : (si32) -> ()
+
+    // divi 3, 3 -> 1
+    %result_divi_si323_si323 = arc.divi %cst_si323, %cst_si323 : si32
+    "arc.keep"(%result_divi_si323_si323) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi321]]) : (si32) -> ()
+
+    // divi 4, 3 -> 1
+    %result_divi_si324_si323 = arc.divi %cst_si324, %cst_si323 : si32
+    "arc.keep"(%result_divi_si324_si323) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi321]]) : (si32) -> ()
+
+    // divi 4, 4 -> 1
+    %result_divi_si324_si324 = arc.divi %cst_si324, %cst_si324 : si32
+    "arc.keep"(%result_divi_si324_si324) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi321]]) : (si32) -> ()
+
     // divi 2147483646, 2147483646 -> 1
     %result_divi_si322147483646_si322147483646 = arc.divi %cst_si322147483646, %cst_si322147483646 : si32
     "arc.keep"(%result_divi_si322147483646_si322147483646) : (si32) -> ()
@@ -3575,6 +7722,66 @@ module @toplevel {
     %result_divi_si32n2147483647_si32n1035405763 = arc.divi %cst_si32n2147483647, %cst_si32n1035405763 : si32
     "arc.keep"(%result_divi_si32n2147483647_si32n1035405763) : (si32) -> ()
     // CHECK: "arc.keep"([[CSTsi322]]) : (si32) -> ()
+
+    // divi 2, 1 -> 2
+    %result_divi_si322_si321 = arc.divi %cst_si322, %cst_si321 : si32
+    "arc.keep"(%result_divi_si322_si321) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi322]]) : (si32) -> ()
+
+    // divi 4, 2 -> 2
+    %result_divi_si324_si322 = arc.divi %cst_si324, %cst_si322 : si32
+    "arc.keep"(%result_divi_si324_si322) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi322]]) : (si32) -> ()
+
+    // divi 3, 1 -> 3
+    %result_divi_si323_si321 = arc.divi %cst_si323, %cst_si321 : si32
+    "arc.keep"(%result_divi_si323_si321) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi323]]) : (si32) -> ()
+
+    // divi 4, 1 -> 4
+    %result_divi_si324_si321 = arc.divi %cst_si324, %cst_si321 : si32
+    "arc.keep"(%result_divi_si324_si321) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi324]]) : (si32) -> ()
+
+    // divi 2147483646, 4 -> 536870911
+    %result_divi_si322147483646_si324 = arc.divi %cst_si322147483646, %cst_si324 : si32
+    "arc.keep"(%result_divi_si322147483646_si324) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi32536870911]]) : (si32) -> ()
+
+    // divi 2147483647, 4 -> 536870911
+    %result_divi_si322147483647_si324 = arc.divi %cst_si322147483647, %cst_si324 : si32
+    "arc.keep"(%result_divi_si322147483647_si324) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi32536870911]]) : (si32) -> ()
+
+    // divi 2147483646, 3 -> 715827882
+    %result_divi_si322147483646_si323 = arc.divi %cst_si322147483646, %cst_si323 : si32
+    "arc.keep"(%result_divi_si322147483646_si323) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi32715827882]]) : (si32) -> ()
+
+    // divi 2147483647, 3 -> 715827882
+    %result_divi_si322147483647_si323 = arc.divi %cst_si322147483647, %cst_si323 : si32
+    "arc.keep"(%result_divi_si322147483647_si323) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi32715827882]]) : (si32) -> ()
+
+    // divi 2147483646, 2 -> 1073741823
+    %result_divi_si322147483646_si322 = arc.divi %cst_si322147483646, %cst_si322 : si32
+    "arc.keep"(%result_divi_si322147483646_si322) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi321073741823]]) : (si32) -> ()
+
+    // divi 2147483647, 2 -> 1073741823
+    %result_divi_si322147483647_si322 = arc.divi %cst_si322147483647, %cst_si322 : si32
+    "arc.keep"(%result_divi_si322147483647_si322) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi321073741823]]) : (si32) -> ()
+
+    // divi 2147483646, 1 -> 2147483646
+    %result_divi_si322147483646_si321 = arc.divi %cst_si322147483646, %cst_si321 : si32
+    "arc.keep"(%result_divi_si322147483646_si321) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi322147483646]]) : (si32) -> ()
+
+    // divi 2147483647, 1 -> 2147483647
+    %result_divi_si322147483647_si321 = arc.divi %cst_si322147483647, %cst_si321 : si32
+    "arc.keep"(%result_divi_si322147483647_si321) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi322147483647]]) : (si32) -> ()
 
     // divi -2147483648, 0 -> no-fold
     %result_divi_si32n2147483648_si320 = arc.divi %cst_si32n2147483648, %cst_si320 : si32
@@ -3612,6 +7819,30 @@ module @toplevel {
     "arc.keep"(%result_divi_si320_si320) : (si32) -> ()
     // CHECK: "arc.keep"([[RESULT_divi_si320_si320]]) : (si32) -> ()
 
+    // divi 1, 0 -> no-fold
+    %result_divi_si321_si320 = arc.divi %cst_si321, %cst_si320 : si32
+    // CHECK-DAG: [[RESULT_divi_si321_si320:%[^ ]+]] = arc.divi [[CSTsi321]], [[CSTsi320]] : si32
+    "arc.keep"(%result_divi_si321_si320) : (si32) -> ()
+    // CHECK: "arc.keep"([[RESULT_divi_si321_si320]]) : (si32) -> ()
+
+    // divi 2, 0 -> no-fold
+    %result_divi_si322_si320 = arc.divi %cst_si322, %cst_si320 : si32
+    // CHECK-DAG: [[RESULT_divi_si322_si320:%[^ ]+]] = arc.divi [[CSTsi322]], [[CSTsi320]] : si32
+    "arc.keep"(%result_divi_si322_si320) : (si32) -> ()
+    // CHECK: "arc.keep"([[RESULT_divi_si322_si320]]) : (si32) -> ()
+
+    // divi 3, 0 -> no-fold
+    %result_divi_si323_si320 = arc.divi %cst_si323, %cst_si320 : si32
+    // CHECK-DAG: [[RESULT_divi_si323_si320:%[^ ]+]] = arc.divi [[CSTsi323]], [[CSTsi320]] : si32
+    "arc.keep"(%result_divi_si323_si320) : (si32) -> ()
+    // CHECK: "arc.keep"([[RESULT_divi_si323_si320]]) : (si32) -> ()
+
+    // divi 4, 0 -> no-fold
+    %result_divi_si324_si320 = arc.divi %cst_si324, %cst_si320 : si32
+    // CHECK-DAG: [[RESULT_divi_si324_si320:%[^ ]+]] = arc.divi [[CSTsi324]], [[CSTsi320]] : si32
+    "arc.keep"(%result_divi_si324_si320) : (si32) -> ()
+    // CHECK: "arc.keep"([[RESULT_divi_si324_si320]]) : (si32) -> ()
+
     // divi 2147483646, 0 -> no-fold
     %result_divi_si322147483646_si320 = arc.divi %cst_si322147483646, %cst_si320 : si32
     // CHECK-DAG: [[RESULT_divi_si322147483646_si320:%[^ ]+]] = arc.divi [[CSTsi322147483646]], [[CSTsi320]] : si32
@@ -3623,6 +7854,86 @@ module @toplevel {
     // CHECK-DAG: [[RESULT_divi_si322147483647_si320:%[^ ]+]] = arc.divi [[CSTsi322147483647]], [[CSTsi320]] : si32
     "arc.keep"(%result_divi_si322147483647_si320) : (si32) -> ()
     // CHECK: "arc.keep"([[RESULT_divi_si322147483647_si320]]) : (si32) -> ()
+
+    // divi -9223372036854775808, 1 -> -9223372036854775808
+    %result_divi_si64n9223372036854775808_si641 = arc.divi %cst_si64n9223372036854775808, %cst_si641 : si64
+    "arc.keep"(%result_divi_si64n9223372036854775808_si641) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi64n9223372036854775808]]) : (si64) -> ()
+
+    // divi -9223372036854775807, 1 -> -9223372036854775807
+    %result_divi_si64n9223372036854775807_si641 = arc.divi %cst_si64n9223372036854775807, %cst_si641 : si64
+    "arc.keep"(%result_divi_si64n9223372036854775807_si641) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi64n9223372036854775807]]) : (si64) -> ()
+
+    // divi -9223372036854775808, 2 -> -4611686018427387904
+    %result_divi_si64n9223372036854775808_si642 = arc.divi %cst_si64n9223372036854775808, %cst_si642 : si64
+    "arc.keep"(%result_divi_si64n9223372036854775808_si642) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi64n4611686018427387904]]) : (si64) -> ()
+
+    // divi -9223372036854775807, 2 -> -4611686018427387903
+    %result_divi_si64n9223372036854775807_si642 = arc.divi %cst_si64n9223372036854775807, %cst_si642 : si64
+    "arc.keep"(%result_divi_si64n9223372036854775807_si642) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi64n4611686018427387903]]) : (si64) -> ()
+
+    // divi -9223372036854775808, 3 -> -3074457345618258602
+    %result_divi_si64n9223372036854775808_si643 = arc.divi %cst_si64n9223372036854775808, %cst_si643 : si64
+    "arc.keep"(%result_divi_si64n9223372036854775808_si643) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi64n3074457345618258602]]) : (si64) -> ()
+
+    // divi -9223372036854775807, 3 -> -3074457345618258602
+    %result_divi_si64n9223372036854775807_si643 = arc.divi %cst_si64n9223372036854775807, %cst_si643 : si64
+    "arc.keep"(%result_divi_si64n9223372036854775807_si643) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi64n3074457345618258602]]) : (si64) -> ()
+
+    // divi -9223372036854775808, 4 -> -2305843009213693952
+    %result_divi_si64n9223372036854775808_si644 = arc.divi %cst_si64n9223372036854775808, %cst_si644 : si64
+    "arc.keep"(%result_divi_si64n9223372036854775808_si644) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi64n2305843009213693952]]) : (si64) -> ()
+
+    // divi -9223372036854775807, 4 -> -2305843009213693951
+    %result_divi_si64n9223372036854775807_si644 = arc.divi %cst_si64n9223372036854775807, %cst_si644 : si64
+    "arc.keep"(%result_divi_si64n9223372036854775807_si644) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi64n2305843009213693951]]) : (si64) -> ()
+
+    // divi -1741927215160008704, 1 -> -1741927215160008704
+    %result_divi_si64n1741927215160008704_si641 = arc.divi %cst_si64n1741927215160008704, %cst_si641 : si64
+    "arc.keep"(%result_divi_si64n1741927215160008704_si641) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi64n1741927215160008704]]) : (si64) -> ()
+
+    // divi -1328271339354574848, 1 -> -1328271339354574848
+    %result_divi_si64n1328271339354574848_si641 = arc.divi %cst_si64n1328271339354574848, %cst_si641 : si64
+    "arc.keep"(%result_divi_si64n1328271339354574848_si641) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi64n1328271339354574848]]) : (si64) -> ()
+
+    // divi -1741927215160008704, 2 -> -870963607580004352
+    %result_divi_si64n1741927215160008704_si642 = arc.divi %cst_si64n1741927215160008704, %cst_si642 : si64
+    "arc.keep"(%result_divi_si64n1741927215160008704_si642) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi64n870963607580004352]]) : (si64) -> ()
+
+    // divi -1328271339354574848, 2 -> -664135669677287424
+    %result_divi_si64n1328271339354574848_si642 = arc.divi %cst_si64n1328271339354574848, %cst_si642 : si64
+    "arc.keep"(%result_divi_si64n1328271339354574848_si642) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi64n664135669677287424]]) : (si64) -> ()
+
+    // divi -1741927215160008704, 3 -> -580642405053336234
+    %result_divi_si64n1741927215160008704_si643 = arc.divi %cst_si64n1741927215160008704, %cst_si643 : si64
+    "arc.keep"(%result_divi_si64n1741927215160008704_si643) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi64n580642405053336234]]) : (si64) -> ()
+
+    // divi -1328271339354574848, 3 -> -442757113118191616
+    %result_divi_si64n1328271339354574848_si643 = arc.divi %cst_si64n1328271339354574848, %cst_si643 : si64
+    "arc.keep"(%result_divi_si64n1328271339354574848_si643) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi64n442757113118191616]]) : (si64) -> ()
+
+    // divi -1741927215160008704, 4 -> -435481803790002176
+    %result_divi_si64n1741927215160008704_si644 = arc.divi %cst_si64n1741927215160008704, %cst_si644 : si64
+    "arc.keep"(%result_divi_si64n1741927215160008704_si644) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi64n435481803790002176]]) : (si64) -> ()
+
+    // divi -1328271339354574848, 4 -> -332067834838643712
+    %result_divi_si64n1328271339354574848_si644 = arc.divi %cst_si64n1328271339354574848, %cst_si644 : si64
+    "arc.keep"(%result_divi_si64n1328271339354574848_si644) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi64n332067834838643712]]) : (si64) -> ()
 
     // divi 9223372036854775806, -1328271339354574848 -> -6
     %result_divi_si649223372036854775806_si64n1328271339354574848 = arc.divi %cst_si649223372036854775806, %cst_si64n1328271339354574848 : si64
@@ -3769,6 +8080,26 @@ module @toplevel {
     "arc.keep"(%result_divi_si640_si64n1328271339354574848) : (si64) -> ()
     // CHECK: "arc.keep"([[CSTsi640]]) : (si64) -> ()
 
+    // divi 0, 1 -> 0
+    %result_divi_si640_si641 = arc.divi %cst_si640, %cst_si641 : si64
+    "arc.keep"(%result_divi_si640_si641) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi640]]) : (si64) -> ()
+
+    // divi 0, 2 -> 0
+    %result_divi_si640_si642 = arc.divi %cst_si640, %cst_si642 : si64
+    "arc.keep"(%result_divi_si640_si642) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi640]]) : (si64) -> ()
+
+    // divi 0, 3 -> 0
+    %result_divi_si640_si643 = arc.divi %cst_si640, %cst_si643 : si64
+    "arc.keep"(%result_divi_si640_si643) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi640]]) : (si64) -> ()
+
+    // divi 0, 4 -> 0
+    %result_divi_si640_si644 = arc.divi %cst_si640, %cst_si644 : si64
+    "arc.keep"(%result_divi_si640_si644) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi640]]) : (si64) -> ()
+
     // divi 0, 5577148965131116544 -> 0
     %result_divi_si640_si645577148965131116544 = arc.divi %cst_si640, %cst_si645577148965131116544 : si64
     "arc.keep"(%result_divi_si640_si645577148965131116544) : (si64) -> ()
@@ -3782,6 +8113,176 @@ module @toplevel {
     // divi 0, 9223372036854775807 -> 0
     %result_divi_si640_si649223372036854775807 = arc.divi %cst_si640, %cst_si649223372036854775807 : si64
     "arc.keep"(%result_divi_si640_si649223372036854775807) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi640]]) : (si64) -> ()
+
+    // divi 1, -9223372036854775808 -> 0
+    %result_divi_si641_si64n9223372036854775808 = arc.divi %cst_si641, %cst_si64n9223372036854775808 : si64
+    "arc.keep"(%result_divi_si641_si64n9223372036854775808) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi640]]) : (si64) -> ()
+
+    // divi 1, -9223372036854775807 -> 0
+    %result_divi_si641_si64n9223372036854775807 = arc.divi %cst_si641, %cst_si64n9223372036854775807 : si64
+    "arc.keep"(%result_divi_si641_si64n9223372036854775807) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi640]]) : (si64) -> ()
+
+    // divi 1, -1741927215160008704 -> 0
+    %result_divi_si641_si64n1741927215160008704 = arc.divi %cst_si641, %cst_si64n1741927215160008704 : si64
+    "arc.keep"(%result_divi_si641_si64n1741927215160008704) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi640]]) : (si64) -> ()
+
+    // divi 1, -1328271339354574848 -> 0
+    %result_divi_si641_si64n1328271339354574848 = arc.divi %cst_si641, %cst_si64n1328271339354574848 : si64
+    "arc.keep"(%result_divi_si641_si64n1328271339354574848) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi640]]) : (si64) -> ()
+
+    // divi 1, 2 -> 0
+    %result_divi_si641_si642 = arc.divi %cst_si641, %cst_si642 : si64
+    "arc.keep"(%result_divi_si641_si642) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi640]]) : (si64) -> ()
+
+    // divi 1, 3 -> 0
+    %result_divi_si641_si643 = arc.divi %cst_si641, %cst_si643 : si64
+    "arc.keep"(%result_divi_si641_si643) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi640]]) : (si64) -> ()
+
+    // divi 1, 4 -> 0
+    %result_divi_si641_si644 = arc.divi %cst_si641, %cst_si644 : si64
+    "arc.keep"(%result_divi_si641_si644) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi640]]) : (si64) -> ()
+
+    // divi 1, 5577148965131116544 -> 0
+    %result_divi_si641_si645577148965131116544 = arc.divi %cst_si641, %cst_si645577148965131116544 : si64
+    "arc.keep"(%result_divi_si641_si645577148965131116544) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi640]]) : (si64) -> ()
+
+    // divi 1, 9223372036854775806 -> 0
+    %result_divi_si641_si649223372036854775806 = arc.divi %cst_si641, %cst_si649223372036854775806 : si64
+    "arc.keep"(%result_divi_si641_si649223372036854775806) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi640]]) : (si64) -> ()
+
+    // divi 1, 9223372036854775807 -> 0
+    %result_divi_si641_si649223372036854775807 = arc.divi %cst_si641, %cst_si649223372036854775807 : si64
+    "arc.keep"(%result_divi_si641_si649223372036854775807) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi640]]) : (si64) -> ()
+
+    // divi 2, -9223372036854775808 -> 0
+    %result_divi_si642_si64n9223372036854775808 = arc.divi %cst_si642, %cst_si64n9223372036854775808 : si64
+    "arc.keep"(%result_divi_si642_si64n9223372036854775808) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi640]]) : (si64) -> ()
+
+    // divi 2, -9223372036854775807 -> 0
+    %result_divi_si642_si64n9223372036854775807 = arc.divi %cst_si642, %cst_si64n9223372036854775807 : si64
+    "arc.keep"(%result_divi_si642_si64n9223372036854775807) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi640]]) : (si64) -> ()
+
+    // divi 2, -1741927215160008704 -> 0
+    %result_divi_si642_si64n1741927215160008704 = arc.divi %cst_si642, %cst_si64n1741927215160008704 : si64
+    "arc.keep"(%result_divi_si642_si64n1741927215160008704) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi640]]) : (si64) -> ()
+
+    // divi 2, -1328271339354574848 -> 0
+    %result_divi_si642_si64n1328271339354574848 = arc.divi %cst_si642, %cst_si64n1328271339354574848 : si64
+    "arc.keep"(%result_divi_si642_si64n1328271339354574848) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi640]]) : (si64) -> ()
+
+    // divi 2, 3 -> 0
+    %result_divi_si642_si643 = arc.divi %cst_si642, %cst_si643 : si64
+    "arc.keep"(%result_divi_si642_si643) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi640]]) : (si64) -> ()
+
+    // divi 2, 4 -> 0
+    %result_divi_si642_si644 = arc.divi %cst_si642, %cst_si644 : si64
+    "arc.keep"(%result_divi_si642_si644) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi640]]) : (si64) -> ()
+
+    // divi 2, 5577148965131116544 -> 0
+    %result_divi_si642_si645577148965131116544 = arc.divi %cst_si642, %cst_si645577148965131116544 : si64
+    "arc.keep"(%result_divi_si642_si645577148965131116544) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi640]]) : (si64) -> ()
+
+    // divi 2, 9223372036854775806 -> 0
+    %result_divi_si642_si649223372036854775806 = arc.divi %cst_si642, %cst_si649223372036854775806 : si64
+    "arc.keep"(%result_divi_si642_si649223372036854775806) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi640]]) : (si64) -> ()
+
+    // divi 2, 9223372036854775807 -> 0
+    %result_divi_si642_si649223372036854775807 = arc.divi %cst_si642, %cst_si649223372036854775807 : si64
+    "arc.keep"(%result_divi_si642_si649223372036854775807) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi640]]) : (si64) -> ()
+
+    // divi 3, -9223372036854775808 -> 0
+    %result_divi_si643_si64n9223372036854775808 = arc.divi %cst_si643, %cst_si64n9223372036854775808 : si64
+    "arc.keep"(%result_divi_si643_si64n9223372036854775808) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi640]]) : (si64) -> ()
+
+    // divi 3, -9223372036854775807 -> 0
+    %result_divi_si643_si64n9223372036854775807 = arc.divi %cst_si643, %cst_si64n9223372036854775807 : si64
+    "arc.keep"(%result_divi_si643_si64n9223372036854775807) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi640]]) : (si64) -> ()
+
+    // divi 3, -1741927215160008704 -> 0
+    %result_divi_si643_si64n1741927215160008704 = arc.divi %cst_si643, %cst_si64n1741927215160008704 : si64
+    "arc.keep"(%result_divi_si643_si64n1741927215160008704) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi640]]) : (si64) -> ()
+
+    // divi 3, -1328271339354574848 -> 0
+    %result_divi_si643_si64n1328271339354574848 = arc.divi %cst_si643, %cst_si64n1328271339354574848 : si64
+    "arc.keep"(%result_divi_si643_si64n1328271339354574848) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi640]]) : (si64) -> ()
+
+    // divi 3, 4 -> 0
+    %result_divi_si643_si644 = arc.divi %cst_si643, %cst_si644 : si64
+    "arc.keep"(%result_divi_si643_si644) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi640]]) : (si64) -> ()
+
+    // divi 3, 5577148965131116544 -> 0
+    %result_divi_si643_si645577148965131116544 = arc.divi %cst_si643, %cst_si645577148965131116544 : si64
+    "arc.keep"(%result_divi_si643_si645577148965131116544) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi640]]) : (si64) -> ()
+
+    // divi 3, 9223372036854775806 -> 0
+    %result_divi_si643_si649223372036854775806 = arc.divi %cst_si643, %cst_si649223372036854775806 : si64
+    "arc.keep"(%result_divi_si643_si649223372036854775806) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi640]]) : (si64) -> ()
+
+    // divi 3, 9223372036854775807 -> 0
+    %result_divi_si643_si649223372036854775807 = arc.divi %cst_si643, %cst_si649223372036854775807 : si64
+    "arc.keep"(%result_divi_si643_si649223372036854775807) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi640]]) : (si64) -> ()
+
+    // divi 4, -9223372036854775808 -> 0
+    %result_divi_si644_si64n9223372036854775808 = arc.divi %cst_si644, %cst_si64n9223372036854775808 : si64
+    "arc.keep"(%result_divi_si644_si64n9223372036854775808) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi640]]) : (si64) -> ()
+
+    // divi 4, -9223372036854775807 -> 0
+    %result_divi_si644_si64n9223372036854775807 = arc.divi %cst_si644, %cst_si64n9223372036854775807 : si64
+    "arc.keep"(%result_divi_si644_si64n9223372036854775807) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi640]]) : (si64) -> ()
+
+    // divi 4, -1741927215160008704 -> 0
+    %result_divi_si644_si64n1741927215160008704 = arc.divi %cst_si644, %cst_si64n1741927215160008704 : si64
+    "arc.keep"(%result_divi_si644_si64n1741927215160008704) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi640]]) : (si64) -> ()
+
+    // divi 4, -1328271339354574848 -> 0
+    %result_divi_si644_si64n1328271339354574848 = arc.divi %cst_si644, %cst_si64n1328271339354574848 : si64
+    "arc.keep"(%result_divi_si644_si64n1328271339354574848) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi640]]) : (si64) -> ()
+
+    // divi 4, 5577148965131116544 -> 0
+    %result_divi_si644_si645577148965131116544 = arc.divi %cst_si644, %cst_si645577148965131116544 : si64
+    "arc.keep"(%result_divi_si644_si645577148965131116544) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi640]]) : (si64) -> ()
+
+    // divi 4, 9223372036854775806 -> 0
+    %result_divi_si644_si649223372036854775806 = arc.divi %cst_si644, %cst_si649223372036854775806 : si64
+    "arc.keep"(%result_divi_si644_si649223372036854775806) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi640]]) : (si64) -> ()
+
+    // divi 4, 9223372036854775807 -> 0
+    %result_divi_si644_si649223372036854775807 = arc.divi %cst_si644, %cst_si649223372036854775807 : si64
+    "arc.keep"(%result_divi_si644_si649223372036854775807) : (si64) -> ()
     // CHECK: "arc.keep"([[CSTsi640]]) : (si64) -> ()
 
     // divi 5577148965131116544, -9223372036854775808 -> 0
@@ -3854,6 +8355,36 @@ module @toplevel {
     "arc.keep"(%result_divi_si64n1328271339354574848_si64n1328271339354574848) : (si64) -> ()
     // CHECK: "arc.keep"([[CSTsi641]]) : (si64) -> ()
 
+    // divi 1, 1 -> 1
+    %result_divi_si641_si641 = arc.divi %cst_si641, %cst_si641 : si64
+    "arc.keep"(%result_divi_si641_si641) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi641]]) : (si64) -> ()
+
+    // divi 2, 2 -> 1
+    %result_divi_si642_si642 = arc.divi %cst_si642, %cst_si642 : si64
+    "arc.keep"(%result_divi_si642_si642) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi641]]) : (si64) -> ()
+
+    // divi 3, 2 -> 1
+    %result_divi_si643_si642 = arc.divi %cst_si643, %cst_si642 : si64
+    "arc.keep"(%result_divi_si643_si642) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi641]]) : (si64) -> ()
+
+    // divi 3, 3 -> 1
+    %result_divi_si643_si643 = arc.divi %cst_si643, %cst_si643 : si64
+    "arc.keep"(%result_divi_si643_si643) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi641]]) : (si64) -> ()
+
+    // divi 4, 3 -> 1
+    %result_divi_si644_si643 = arc.divi %cst_si644, %cst_si643 : si64
+    "arc.keep"(%result_divi_si644_si643) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi641]]) : (si64) -> ()
+
+    // divi 4, 4 -> 1
+    %result_divi_si644_si644 = arc.divi %cst_si644, %cst_si644 : si64
+    "arc.keep"(%result_divi_si644_si644) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi641]]) : (si64) -> ()
+
     // divi 5577148965131116544, 5577148965131116544 -> 1
     %result_divi_si645577148965131116544_si645577148965131116544 = arc.divi %cst_si645577148965131116544, %cst_si645577148965131116544 : si64
     "arc.keep"(%result_divi_si645577148965131116544_si645577148965131116544) : (si64) -> ()
@@ -3884,6 +8415,26 @@ module @toplevel {
     "arc.keep"(%result_divi_si649223372036854775807_si649223372036854775807) : (si64) -> ()
     // CHECK: "arc.keep"([[CSTsi641]]) : (si64) -> ()
 
+    // divi 2, 1 -> 2
+    %result_divi_si642_si641 = arc.divi %cst_si642, %cst_si641 : si64
+    "arc.keep"(%result_divi_si642_si641) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi642]]) : (si64) -> ()
+
+    // divi 4, 2 -> 2
+    %result_divi_si644_si642 = arc.divi %cst_si644, %cst_si642 : si64
+    "arc.keep"(%result_divi_si644_si642) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi642]]) : (si64) -> ()
+
+    // divi 3, 1 -> 3
+    %result_divi_si643_si641 = arc.divi %cst_si643, %cst_si641 : si64
+    "arc.keep"(%result_divi_si643_si641) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi643]]) : (si64) -> ()
+
+    // divi 4, 1 -> 4
+    %result_divi_si644_si641 = arc.divi %cst_si644, %cst_si641 : si64
+    "arc.keep"(%result_divi_si644_si641) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi644]]) : (si64) -> ()
+
     // divi -9223372036854775808, -1741927215160008704 -> 5
     %result_divi_si64n9223372036854775808_si64n1741927215160008704 = arc.divi %cst_si64n9223372036854775808, %cst_si64n1741927215160008704 : si64
     "arc.keep"(%result_divi_si64n9223372036854775808_si64n1741927215160008704) : (si64) -> ()
@@ -3903,6 +8454,66 @@ module @toplevel {
     %result_divi_si64n9223372036854775807_si64n1328271339354574848 = arc.divi %cst_si64n9223372036854775807, %cst_si64n1328271339354574848 : si64
     "arc.keep"(%result_divi_si64n9223372036854775807_si64n1328271339354574848) : (si64) -> ()
     // CHECK: "arc.keep"([[CSTsi646]]) : (si64) -> ()
+
+    // divi 5577148965131116544, 4 -> 1394287241282779136
+    %result_divi_si645577148965131116544_si644 = arc.divi %cst_si645577148965131116544, %cst_si644 : si64
+    "arc.keep"(%result_divi_si645577148965131116544_si644) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi641394287241282779136]]) : (si64) -> ()
+
+    // divi 5577148965131116544, 3 -> 1859049655043705514
+    %result_divi_si645577148965131116544_si643 = arc.divi %cst_si645577148965131116544, %cst_si643 : si64
+    "arc.keep"(%result_divi_si645577148965131116544_si643) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi641859049655043705514]]) : (si64) -> ()
+
+    // divi 9223372036854775806, 4 -> 2305843009213693951
+    %result_divi_si649223372036854775806_si644 = arc.divi %cst_si649223372036854775806, %cst_si644 : si64
+    "arc.keep"(%result_divi_si649223372036854775806_si644) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi642305843009213693951]]) : (si64) -> ()
+
+    // divi 9223372036854775807, 4 -> 2305843009213693951
+    %result_divi_si649223372036854775807_si644 = arc.divi %cst_si649223372036854775807, %cst_si644 : si64
+    "arc.keep"(%result_divi_si649223372036854775807_si644) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi642305843009213693951]]) : (si64) -> ()
+
+    // divi 5577148965131116544, 2 -> 2788574482565558272
+    %result_divi_si645577148965131116544_si642 = arc.divi %cst_si645577148965131116544, %cst_si642 : si64
+    "arc.keep"(%result_divi_si645577148965131116544_si642) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi642788574482565558272]]) : (si64) -> ()
+
+    // divi 9223372036854775806, 3 -> 3074457345618258602
+    %result_divi_si649223372036854775806_si643 = arc.divi %cst_si649223372036854775806, %cst_si643 : si64
+    "arc.keep"(%result_divi_si649223372036854775806_si643) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi643074457345618258602]]) : (si64) -> ()
+
+    // divi 9223372036854775807, 3 -> 3074457345618258602
+    %result_divi_si649223372036854775807_si643 = arc.divi %cst_si649223372036854775807, %cst_si643 : si64
+    "arc.keep"(%result_divi_si649223372036854775807_si643) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi643074457345618258602]]) : (si64) -> ()
+
+    // divi 9223372036854775806, 2 -> 4611686018427387903
+    %result_divi_si649223372036854775806_si642 = arc.divi %cst_si649223372036854775806, %cst_si642 : si64
+    "arc.keep"(%result_divi_si649223372036854775806_si642) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi644611686018427387903]]) : (si64) -> ()
+
+    // divi 9223372036854775807, 2 -> 4611686018427387903
+    %result_divi_si649223372036854775807_si642 = arc.divi %cst_si649223372036854775807, %cst_si642 : si64
+    "arc.keep"(%result_divi_si649223372036854775807_si642) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi644611686018427387903]]) : (si64) -> ()
+
+    // divi 5577148965131116544, 1 -> 5577148965131116544
+    %result_divi_si645577148965131116544_si641 = arc.divi %cst_si645577148965131116544, %cst_si641 : si64
+    "arc.keep"(%result_divi_si645577148965131116544_si641) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi645577148965131116544]]) : (si64) -> ()
+
+    // divi 9223372036854775806, 1 -> 9223372036854775806
+    %result_divi_si649223372036854775806_si641 = arc.divi %cst_si649223372036854775806, %cst_si641 : si64
+    "arc.keep"(%result_divi_si649223372036854775806_si641) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi649223372036854775806]]) : (si64) -> ()
+
+    // divi 9223372036854775807, 1 -> 9223372036854775807
+    %result_divi_si649223372036854775807_si641 = arc.divi %cst_si649223372036854775807, %cst_si641 : si64
+    "arc.keep"(%result_divi_si649223372036854775807_si641) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi649223372036854775807]]) : (si64) -> ()
 
     // divi -9223372036854775808, 0 -> no-fold
     %result_divi_si64n9223372036854775808_si640 = arc.divi %cst_si64n9223372036854775808, %cst_si640 : si64
@@ -3934,6 +8545,30 @@ module @toplevel {
     "arc.keep"(%result_divi_si640_si640) : (si64) -> ()
     // CHECK: "arc.keep"([[RESULT_divi_si640_si640]]) : (si64) -> ()
 
+    // divi 1, 0 -> no-fold
+    %result_divi_si641_si640 = arc.divi %cst_si641, %cst_si640 : si64
+    // CHECK-DAG: [[RESULT_divi_si641_si640:%[^ ]+]] = arc.divi [[CSTsi641]], [[CSTsi640]] : si64
+    "arc.keep"(%result_divi_si641_si640) : (si64) -> ()
+    // CHECK: "arc.keep"([[RESULT_divi_si641_si640]]) : (si64) -> ()
+
+    // divi 2, 0 -> no-fold
+    %result_divi_si642_si640 = arc.divi %cst_si642, %cst_si640 : si64
+    // CHECK-DAG: [[RESULT_divi_si642_si640:%[^ ]+]] = arc.divi [[CSTsi642]], [[CSTsi640]] : si64
+    "arc.keep"(%result_divi_si642_si640) : (si64) -> ()
+    // CHECK: "arc.keep"([[RESULT_divi_si642_si640]]) : (si64) -> ()
+
+    // divi 3, 0 -> no-fold
+    %result_divi_si643_si640 = arc.divi %cst_si643, %cst_si640 : si64
+    // CHECK-DAG: [[RESULT_divi_si643_si640:%[^ ]+]] = arc.divi [[CSTsi643]], [[CSTsi640]] : si64
+    "arc.keep"(%result_divi_si643_si640) : (si64) -> ()
+    // CHECK: "arc.keep"([[RESULT_divi_si643_si640]]) : (si64) -> ()
+
+    // divi 4, 0 -> no-fold
+    %result_divi_si644_si640 = arc.divi %cst_si644, %cst_si640 : si64
+    // CHECK-DAG: [[RESULT_divi_si644_si640:%[^ ]+]] = arc.divi [[CSTsi644]], [[CSTsi640]] : si64
+    "arc.keep"(%result_divi_si644_si640) : (si64) -> ()
+    // CHECK: "arc.keep"([[RESULT_divi_si644_si640]]) : (si64) -> ()
+
     // divi 5577148965131116544, 0 -> no-fold
     %result_divi_si645577148965131116544_si640 = arc.divi %cst_si645577148965131116544, %cst_si640 : si64
     // CHECK-DAG: [[RESULT_divi_si645577148965131116544_si640:%[^ ]+]] = arc.divi [[CSTsi645577148965131116544]], [[CSTsi640]] : si64
@@ -3961,6 +8596,36 @@ module @toplevel {
     %result_divi_si8n127_si81 = arc.divi %cst_si8n127, %cst_si81 : si8
     "arc.keep"(%result_divi_si8n127_si81) : (si8) -> ()
     // CHECK: "arc.keep"([[CSTsi8n127]]) : (si8) -> ()
+
+    // divi -128, 2 -> -64
+    %result_divi_si8n128_si82 = arc.divi %cst_si8n128, %cst_si82 : si8
+    "arc.keep"(%result_divi_si8n128_si82) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi8n64]]) : (si8) -> ()
+
+    // divi -127, 2 -> -63
+    %result_divi_si8n127_si82 = arc.divi %cst_si8n127, %cst_si82 : si8
+    "arc.keep"(%result_divi_si8n127_si82) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi8n63]]) : (si8) -> ()
+
+    // divi -128, 3 -> -42
+    %result_divi_si8n128_si83 = arc.divi %cst_si8n128, %cst_si83 : si8
+    "arc.keep"(%result_divi_si8n128_si83) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi8n42]]) : (si8) -> ()
+
+    // divi -127, 3 -> -42
+    %result_divi_si8n127_si83 = arc.divi %cst_si8n127, %cst_si83 : si8
+    "arc.keep"(%result_divi_si8n127_si83) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi8n42]]) : (si8) -> ()
+
+    // divi -128, 4 -> -32
+    %result_divi_si8n128_si84 = arc.divi %cst_si8n128, %cst_si84 : si8
+    "arc.keep"(%result_divi_si8n128_si84) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi8n32]]) : (si8) -> ()
+
+    // divi -127, 4 -> -31
+    %result_divi_si8n127_si84 = arc.divi %cst_si8n127, %cst_si84 : si8
+    "arc.keep"(%result_divi_si8n127_si84) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi8n31]]) : (si8) -> ()
 
     // divi -128, 16 -> -8
     %result_divi_si8n128_si816 = arc.divi %cst_si8n128, %cst_si816 : si8
@@ -4017,6 +8682,21 @@ module @toplevel {
     "arc.keep"(%result_divi_si80_si81) : (si8) -> ()
     // CHECK: "arc.keep"([[CSTsi80]]) : (si8) -> ()
 
+    // divi 0, 2 -> 0
+    %result_divi_si80_si82 = arc.divi %cst_si80, %cst_si82 : si8
+    "arc.keep"(%result_divi_si80_si82) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi80]]) : (si8) -> ()
+
+    // divi 0, 3 -> 0
+    %result_divi_si80_si83 = arc.divi %cst_si80, %cst_si83 : si8
+    "arc.keep"(%result_divi_si80_si83) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi80]]) : (si8) -> ()
+
+    // divi 0, 4 -> 0
+    %result_divi_si80_si84 = arc.divi %cst_si80, %cst_si84 : si8
+    "arc.keep"(%result_divi_si80_si84) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi80]]) : (si8) -> ()
+
     // divi 0, 16 -> 0
     %result_divi_si80_si816 = arc.divi %cst_si80, %cst_si816 : si8
     "arc.keep"(%result_divi_si80_si816) : (si8) -> ()
@@ -4042,6 +8722,21 @@ module @toplevel {
     "arc.keep"(%result_divi_si81_si8n127) : (si8) -> ()
     // CHECK: "arc.keep"([[CSTsi80]]) : (si8) -> ()
 
+    // divi 1, 2 -> 0
+    %result_divi_si81_si82 = arc.divi %cst_si81, %cst_si82 : si8
+    "arc.keep"(%result_divi_si81_si82) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi80]]) : (si8) -> ()
+
+    // divi 1, 3 -> 0
+    %result_divi_si81_si83 = arc.divi %cst_si81, %cst_si83 : si8
+    "arc.keep"(%result_divi_si81_si83) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi80]]) : (si8) -> ()
+
+    // divi 1, 4 -> 0
+    %result_divi_si81_si84 = arc.divi %cst_si81, %cst_si84 : si8
+    "arc.keep"(%result_divi_si81_si84) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi80]]) : (si8) -> ()
+
     // divi 1, 16 -> 0
     %result_divi_si81_si816 = arc.divi %cst_si81, %cst_si816 : si8
     "arc.keep"(%result_divi_si81_si816) : (si8) -> ()
@@ -4055,6 +8750,96 @@ module @toplevel {
     // divi 1, 127 -> 0
     %result_divi_si81_si8127 = arc.divi %cst_si81, %cst_si8127 : si8
     "arc.keep"(%result_divi_si81_si8127) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi80]]) : (si8) -> ()
+
+    // divi 2, -128 -> 0
+    %result_divi_si82_si8n128 = arc.divi %cst_si82, %cst_si8n128 : si8
+    "arc.keep"(%result_divi_si82_si8n128) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi80]]) : (si8) -> ()
+
+    // divi 2, -127 -> 0
+    %result_divi_si82_si8n127 = arc.divi %cst_si82, %cst_si8n127 : si8
+    "arc.keep"(%result_divi_si82_si8n127) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi80]]) : (si8) -> ()
+
+    // divi 2, 3 -> 0
+    %result_divi_si82_si83 = arc.divi %cst_si82, %cst_si83 : si8
+    "arc.keep"(%result_divi_si82_si83) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi80]]) : (si8) -> ()
+
+    // divi 2, 4 -> 0
+    %result_divi_si82_si84 = arc.divi %cst_si82, %cst_si84 : si8
+    "arc.keep"(%result_divi_si82_si84) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi80]]) : (si8) -> ()
+
+    // divi 2, 16 -> 0
+    %result_divi_si82_si816 = arc.divi %cst_si82, %cst_si816 : si8
+    "arc.keep"(%result_divi_si82_si816) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi80]]) : (si8) -> ()
+
+    // divi 2, 126 -> 0
+    %result_divi_si82_si8126 = arc.divi %cst_si82, %cst_si8126 : si8
+    "arc.keep"(%result_divi_si82_si8126) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi80]]) : (si8) -> ()
+
+    // divi 2, 127 -> 0
+    %result_divi_si82_si8127 = arc.divi %cst_si82, %cst_si8127 : si8
+    "arc.keep"(%result_divi_si82_si8127) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi80]]) : (si8) -> ()
+
+    // divi 3, -128 -> 0
+    %result_divi_si83_si8n128 = arc.divi %cst_si83, %cst_si8n128 : si8
+    "arc.keep"(%result_divi_si83_si8n128) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi80]]) : (si8) -> ()
+
+    // divi 3, -127 -> 0
+    %result_divi_si83_si8n127 = arc.divi %cst_si83, %cst_si8n127 : si8
+    "arc.keep"(%result_divi_si83_si8n127) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi80]]) : (si8) -> ()
+
+    // divi 3, 4 -> 0
+    %result_divi_si83_si84 = arc.divi %cst_si83, %cst_si84 : si8
+    "arc.keep"(%result_divi_si83_si84) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi80]]) : (si8) -> ()
+
+    // divi 3, 16 -> 0
+    %result_divi_si83_si816 = arc.divi %cst_si83, %cst_si816 : si8
+    "arc.keep"(%result_divi_si83_si816) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi80]]) : (si8) -> ()
+
+    // divi 3, 126 -> 0
+    %result_divi_si83_si8126 = arc.divi %cst_si83, %cst_si8126 : si8
+    "arc.keep"(%result_divi_si83_si8126) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi80]]) : (si8) -> ()
+
+    // divi 3, 127 -> 0
+    %result_divi_si83_si8127 = arc.divi %cst_si83, %cst_si8127 : si8
+    "arc.keep"(%result_divi_si83_si8127) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi80]]) : (si8) -> ()
+
+    // divi 4, -128 -> 0
+    %result_divi_si84_si8n128 = arc.divi %cst_si84, %cst_si8n128 : si8
+    "arc.keep"(%result_divi_si84_si8n128) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi80]]) : (si8) -> ()
+
+    // divi 4, -127 -> 0
+    %result_divi_si84_si8n127 = arc.divi %cst_si84, %cst_si8n127 : si8
+    "arc.keep"(%result_divi_si84_si8n127) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi80]]) : (si8) -> ()
+
+    // divi 4, 16 -> 0
+    %result_divi_si84_si816 = arc.divi %cst_si84, %cst_si816 : si8
+    "arc.keep"(%result_divi_si84_si816) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi80]]) : (si8) -> ()
+
+    // divi 4, 126 -> 0
+    %result_divi_si84_si8126 = arc.divi %cst_si84, %cst_si8126 : si8
+    "arc.keep"(%result_divi_si84_si8126) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi80]]) : (si8) -> ()
+
+    // divi 4, 127 -> 0
+    %result_divi_si84_si8127 = arc.divi %cst_si84, %cst_si8127 : si8
+    "arc.keep"(%result_divi_si84_si8127) : (si8) -> ()
     // CHECK: "arc.keep"([[CSTsi80]]) : (si8) -> ()
 
     // divi 16, -128 -> 0
@@ -4117,6 +8902,31 @@ module @toplevel {
     "arc.keep"(%result_divi_si81_si81) : (si8) -> ()
     // CHECK: "arc.keep"([[CSTsi81]]) : (si8) -> ()
 
+    // divi 2, 2 -> 1
+    %result_divi_si82_si82 = arc.divi %cst_si82, %cst_si82 : si8
+    "arc.keep"(%result_divi_si82_si82) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi81]]) : (si8) -> ()
+
+    // divi 3, 2 -> 1
+    %result_divi_si83_si82 = arc.divi %cst_si83, %cst_si82 : si8
+    "arc.keep"(%result_divi_si83_si82) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi81]]) : (si8) -> ()
+
+    // divi 3, 3 -> 1
+    %result_divi_si83_si83 = arc.divi %cst_si83, %cst_si83 : si8
+    "arc.keep"(%result_divi_si83_si83) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi81]]) : (si8) -> ()
+
+    // divi 4, 3 -> 1
+    %result_divi_si84_si83 = arc.divi %cst_si84, %cst_si83 : si8
+    "arc.keep"(%result_divi_si84_si83) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi81]]) : (si8) -> ()
+
+    // divi 4, 4 -> 1
+    %result_divi_si84_si84 = arc.divi %cst_si84, %cst_si84 : si8
+    "arc.keep"(%result_divi_si84_si84) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi81]]) : (si8) -> ()
+
     // divi 16, 16 -> 1
     %result_divi_si816_si816 = arc.divi %cst_si816, %cst_si816 : si8
     "arc.keep"(%result_divi_si816_si816) : (si8) -> ()
@@ -4137,6 +8947,36 @@ module @toplevel {
     "arc.keep"(%result_divi_si8127_si8127) : (si8) -> ()
     // CHECK: "arc.keep"([[CSTsi81]]) : (si8) -> ()
 
+    // divi 2, 1 -> 2
+    %result_divi_si82_si81 = arc.divi %cst_si82, %cst_si81 : si8
+    "arc.keep"(%result_divi_si82_si81) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi82]]) : (si8) -> ()
+
+    // divi 4, 2 -> 2
+    %result_divi_si84_si82 = arc.divi %cst_si84, %cst_si82 : si8
+    "arc.keep"(%result_divi_si84_si82) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi82]]) : (si8) -> ()
+
+    // divi 3, 1 -> 3
+    %result_divi_si83_si81 = arc.divi %cst_si83, %cst_si81 : si8
+    "arc.keep"(%result_divi_si83_si81) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi83]]) : (si8) -> ()
+
+    // divi 4, 1 -> 4
+    %result_divi_si84_si81 = arc.divi %cst_si84, %cst_si81 : si8
+    "arc.keep"(%result_divi_si84_si81) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi84]]) : (si8) -> ()
+
+    // divi 16, 4 -> 4
+    %result_divi_si816_si84 = arc.divi %cst_si816, %cst_si84 : si8
+    "arc.keep"(%result_divi_si816_si84) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi84]]) : (si8) -> ()
+
+    // divi 16, 3 -> 5
+    %result_divi_si816_si83 = arc.divi %cst_si816, %cst_si83 : si8
+    "arc.keep"(%result_divi_si816_si83) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi85]]) : (si8) -> ()
+
     // divi 126, 16 -> 7
     %result_divi_si8126_si816 = arc.divi %cst_si8126, %cst_si816 : si8
     "arc.keep"(%result_divi_si8126_si816) : (si8) -> ()
@@ -4147,10 +8987,45 @@ module @toplevel {
     "arc.keep"(%result_divi_si8127_si816) : (si8) -> ()
     // CHECK: "arc.keep"([[CSTsi87]]) : (si8) -> ()
 
+    // divi 16, 2 -> 8
+    %result_divi_si816_si82 = arc.divi %cst_si816, %cst_si82 : si8
+    "arc.keep"(%result_divi_si816_si82) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi88]]) : (si8) -> ()
+
     // divi 16, 1 -> 16
     %result_divi_si816_si81 = arc.divi %cst_si816, %cst_si81 : si8
     "arc.keep"(%result_divi_si816_si81) : (si8) -> ()
     // CHECK: "arc.keep"([[CSTsi816]]) : (si8) -> ()
+
+    // divi 126, 4 -> 31
+    %result_divi_si8126_si84 = arc.divi %cst_si8126, %cst_si84 : si8
+    "arc.keep"(%result_divi_si8126_si84) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi831]]) : (si8) -> ()
+
+    // divi 127, 4 -> 31
+    %result_divi_si8127_si84 = arc.divi %cst_si8127, %cst_si84 : si8
+    "arc.keep"(%result_divi_si8127_si84) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi831]]) : (si8) -> ()
+
+    // divi 126, 3 -> 42
+    %result_divi_si8126_si83 = arc.divi %cst_si8126, %cst_si83 : si8
+    "arc.keep"(%result_divi_si8126_si83) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi842]]) : (si8) -> ()
+
+    // divi 127, 3 -> 42
+    %result_divi_si8127_si83 = arc.divi %cst_si8127, %cst_si83 : si8
+    "arc.keep"(%result_divi_si8127_si83) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi842]]) : (si8) -> ()
+
+    // divi 126, 2 -> 63
+    %result_divi_si8126_si82 = arc.divi %cst_si8126, %cst_si82 : si8
+    "arc.keep"(%result_divi_si8126_si82) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi863]]) : (si8) -> ()
+
+    // divi 127, 2 -> 63
+    %result_divi_si8127_si82 = arc.divi %cst_si8127, %cst_si82 : si8
+    "arc.keep"(%result_divi_si8127_si82) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi863]]) : (si8) -> ()
 
     // divi 126, 1 -> 126
     %result_divi_si8126_si81 = arc.divi %cst_si8126, %cst_si81 : si8
@@ -4186,6 +9061,24 @@ module @toplevel {
     "arc.keep"(%result_divi_si81_si80) : (si8) -> ()
     // CHECK: "arc.keep"([[RESULT_divi_si81_si80]]) : (si8) -> ()
 
+    // divi 2, 0 -> no-fold
+    %result_divi_si82_si80 = arc.divi %cst_si82, %cst_si80 : si8
+    // CHECK-DAG: [[RESULT_divi_si82_si80:%[^ ]+]] = arc.divi [[CSTsi82]], [[CSTsi80]] : si8
+    "arc.keep"(%result_divi_si82_si80) : (si8) -> ()
+    // CHECK: "arc.keep"([[RESULT_divi_si82_si80]]) : (si8) -> ()
+
+    // divi 3, 0 -> no-fold
+    %result_divi_si83_si80 = arc.divi %cst_si83, %cst_si80 : si8
+    // CHECK-DAG: [[RESULT_divi_si83_si80:%[^ ]+]] = arc.divi [[CSTsi83]], [[CSTsi80]] : si8
+    "arc.keep"(%result_divi_si83_si80) : (si8) -> ()
+    // CHECK: "arc.keep"([[RESULT_divi_si83_si80]]) : (si8) -> ()
+
+    // divi 4, 0 -> no-fold
+    %result_divi_si84_si80 = arc.divi %cst_si84, %cst_si80 : si8
+    // CHECK-DAG: [[RESULT_divi_si84_si80:%[^ ]+]] = arc.divi [[CSTsi84]], [[CSTsi80]] : si8
+    "arc.keep"(%result_divi_si84_si80) : (si8) -> ()
+    // CHECK: "arc.keep"([[RESULT_divi_si84_si80]]) : (si8) -> ()
+
     // divi 16, 0 -> no-fold
     %result_divi_si816_si80 = arc.divi %cst_si816, %cst_si80 : si8
     // CHECK-DAG: [[RESULT_divi_si816_si80:%[^ ]+]] = arc.divi [[CSTsi816]], [[CSTsi80]] : si8
@@ -4207,6 +9100,21 @@ module @toplevel {
     // divi 0, 1 -> 0
     %result_divi_ui160_ui161 = arc.divi %cst_ui160, %cst_ui161 : ui16
     "arc.keep"(%result_divi_ui160_ui161) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui160]]) : (ui16) -> ()
+
+    // divi 0, 2 -> 0
+    %result_divi_ui160_ui162 = arc.divi %cst_ui160, %cst_ui162 : ui16
+    "arc.keep"(%result_divi_ui160_ui162) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui160]]) : (ui16) -> ()
+
+    // divi 0, 3 -> 0
+    %result_divi_ui160_ui163 = arc.divi %cst_ui160, %cst_ui163 : ui16
+    "arc.keep"(%result_divi_ui160_ui163) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui160]]) : (ui16) -> ()
+
+    // divi 0, 4 -> 0
+    %result_divi_ui160_ui164 = arc.divi %cst_ui160, %cst_ui164 : ui16
+    "arc.keep"(%result_divi_ui160_ui164) : (ui16) -> ()
     // CHECK: "arc.keep"([[CSTui160]]) : (ui16) -> ()
 
     // divi 0, 1717 -> 0
@@ -4234,6 +9142,21 @@ module @toplevel {
     "arc.keep"(%result_divi_ui160_ui1665535) : (ui16) -> ()
     // CHECK: "arc.keep"([[CSTui160]]) : (ui16) -> ()
 
+    // divi 1, 2 -> 0
+    %result_divi_ui161_ui162 = arc.divi %cst_ui161, %cst_ui162 : ui16
+    "arc.keep"(%result_divi_ui161_ui162) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui160]]) : (ui16) -> ()
+
+    // divi 1, 3 -> 0
+    %result_divi_ui161_ui163 = arc.divi %cst_ui161, %cst_ui163 : ui16
+    "arc.keep"(%result_divi_ui161_ui163) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui160]]) : (ui16) -> ()
+
+    // divi 1, 4 -> 0
+    %result_divi_ui161_ui164 = arc.divi %cst_ui161, %cst_ui164 : ui16
+    "arc.keep"(%result_divi_ui161_ui164) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui160]]) : (ui16) -> ()
+
     // divi 1, 1717 -> 0
     %result_divi_ui161_ui161717 = arc.divi %cst_ui161, %cst_ui161717 : ui16
     "arc.keep"(%result_divi_ui161_ui161717) : (ui16) -> ()
@@ -4257,6 +9180,96 @@ module @toplevel {
     // divi 1, 65535 -> 0
     %result_divi_ui161_ui1665535 = arc.divi %cst_ui161, %cst_ui1665535 : ui16
     "arc.keep"(%result_divi_ui161_ui1665535) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui160]]) : (ui16) -> ()
+
+    // divi 2, 3 -> 0
+    %result_divi_ui162_ui163 = arc.divi %cst_ui162, %cst_ui163 : ui16
+    "arc.keep"(%result_divi_ui162_ui163) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui160]]) : (ui16) -> ()
+
+    // divi 2, 4 -> 0
+    %result_divi_ui162_ui164 = arc.divi %cst_ui162, %cst_ui164 : ui16
+    "arc.keep"(%result_divi_ui162_ui164) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui160]]) : (ui16) -> ()
+
+    // divi 2, 1717 -> 0
+    %result_divi_ui162_ui161717 = arc.divi %cst_ui162, %cst_ui161717 : ui16
+    "arc.keep"(%result_divi_ui162_ui161717) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui160]]) : (ui16) -> ()
+
+    // divi 2, 17988 -> 0
+    %result_divi_ui162_ui1617988 = arc.divi %cst_ui162, %cst_ui1617988 : ui16
+    "arc.keep"(%result_divi_ui162_ui1617988) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui160]]) : (ui16) -> ()
+
+    // divi 2, 65096 -> 0
+    %result_divi_ui162_ui1665096 = arc.divi %cst_ui162, %cst_ui1665096 : ui16
+    "arc.keep"(%result_divi_ui162_ui1665096) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui160]]) : (ui16) -> ()
+
+    // divi 2, 65534 -> 0
+    %result_divi_ui162_ui1665534 = arc.divi %cst_ui162, %cst_ui1665534 : ui16
+    "arc.keep"(%result_divi_ui162_ui1665534) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui160]]) : (ui16) -> ()
+
+    // divi 2, 65535 -> 0
+    %result_divi_ui162_ui1665535 = arc.divi %cst_ui162, %cst_ui1665535 : ui16
+    "arc.keep"(%result_divi_ui162_ui1665535) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui160]]) : (ui16) -> ()
+
+    // divi 3, 4 -> 0
+    %result_divi_ui163_ui164 = arc.divi %cst_ui163, %cst_ui164 : ui16
+    "arc.keep"(%result_divi_ui163_ui164) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui160]]) : (ui16) -> ()
+
+    // divi 3, 1717 -> 0
+    %result_divi_ui163_ui161717 = arc.divi %cst_ui163, %cst_ui161717 : ui16
+    "arc.keep"(%result_divi_ui163_ui161717) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui160]]) : (ui16) -> ()
+
+    // divi 3, 17988 -> 0
+    %result_divi_ui163_ui1617988 = arc.divi %cst_ui163, %cst_ui1617988 : ui16
+    "arc.keep"(%result_divi_ui163_ui1617988) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui160]]) : (ui16) -> ()
+
+    // divi 3, 65096 -> 0
+    %result_divi_ui163_ui1665096 = arc.divi %cst_ui163, %cst_ui1665096 : ui16
+    "arc.keep"(%result_divi_ui163_ui1665096) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui160]]) : (ui16) -> ()
+
+    // divi 3, 65534 -> 0
+    %result_divi_ui163_ui1665534 = arc.divi %cst_ui163, %cst_ui1665534 : ui16
+    "arc.keep"(%result_divi_ui163_ui1665534) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui160]]) : (ui16) -> ()
+
+    // divi 3, 65535 -> 0
+    %result_divi_ui163_ui1665535 = arc.divi %cst_ui163, %cst_ui1665535 : ui16
+    "arc.keep"(%result_divi_ui163_ui1665535) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui160]]) : (ui16) -> ()
+
+    // divi 4, 1717 -> 0
+    %result_divi_ui164_ui161717 = arc.divi %cst_ui164, %cst_ui161717 : ui16
+    "arc.keep"(%result_divi_ui164_ui161717) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui160]]) : (ui16) -> ()
+
+    // divi 4, 17988 -> 0
+    %result_divi_ui164_ui1617988 = arc.divi %cst_ui164, %cst_ui1617988 : ui16
+    "arc.keep"(%result_divi_ui164_ui1617988) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui160]]) : (ui16) -> ()
+
+    // divi 4, 65096 -> 0
+    %result_divi_ui164_ui1665096 = arc.divi %cst_ui164, %cst_ui1665096 : ui16
+    "arc.keep"(%result_divi_ui164_ui1665096) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui160]]) : (ui16) -> ()
+
+    // divi 4, 65534 -> 0
+    %result_divi_ui164_ui1665534 = arc.divi %cst_ui164, %cst_ui1665534 : ui16
+    "arc.keep"(%result_divi_ui164_ui1665534) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui160]]) : (ui16) -> ()
+
+    // divi 4, 65535 -> 0
+    %result_divi_ui164_ui1665535 = arc.divi %cst_ui164, %cst_ui1665535 : ui16
+    "arc.keep"(%result_divi_ui164_ui1665535) : (ui16) -> ()
     // CHECK: "arc.keep"([[CSTui160]]) : (ui16) -> ()
 
     // divi 1717, 17988 -> 0
@@ -4314,6 +9327,31 @@ module @toplevel {
     "arc.keep"(%result_divi_ui161_ui161) : (ui16) -> ()
     // CHECK: "arc.keep"([[CSTui161]]) : (ui16) -> ()
 
+    // divi 2, 2 -> 1
+    %result_divi_ui162_ui162 = arc.divi %cst_ui162, %cst_ui162 : ui16
+    "arc.keep"(%result_divi_ui162_ui162) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui161]]) : (ui16) -> ()
+
+    // divi 3, 2 -> 1
+    %result_divi_ui163_ui162 = arc.divi %cst_ui163, %cst_ui162 : ui16
+    "arc.keep"(%result_divi_ui163_ui162) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui161]]) : (ui16) -> ()
+
+    // divi 3, 3 -> 1
+    %result_divi_ui163_ui163 = arc.divi %cst_ui163, %cst_ui163 : ui16
+    "arc.keep"(%result_divi_ui163_ui163) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui161]]) : (ui16) -> ()
+
+    // divi 4, 3 -> 1
+    %result_divi_ui164_ui163 = arc.divi %cst_ui164, %cst_ui163 : ui16
+    "arc.keep"(%result_divi_ui164_ui163) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui161]]) : (ui16) -> ()
+
+    // divi 4, 4 -> 1
+    %result_divi_ui164_ui164 = arc.divi %cst_ui164, %cst_ui164 : ui16
+    "arc.keep"(%result_divi_ui164_ui164) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui161]]) : (ui16) -> ()
+
     // divi 1717, 1717 -> 1
     %result_divi_ui161717_ui161717 = arc.divi %cst_ui161717, %cst_ui161717 : ui16
     "arc.keep"(%result_divi_ui161717_ui161717) : (ui16) -> ()
@@ -4354,6 +9392,21 @@ module @toplevel {
     "arc.keep"(%result_divi_ui1665535_ui1665535) : (ui16) -> ()
     // CHECK: "arc.keep"([[CSTui161]]) : (ui16) -> ()
 
+    // divi 2, 1 -> 2
+    %result_divi_ui162_ui161 = arc.divi %cst_ui162, %cst_ui161 : ui16
+    "arc.keep"(%result_divi_ui162_ui161) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui162]]) : (ui16) -> ()
+
+    // divi 4, 2 -> 2
+    %result_divi_ui164_ui162 = arc.divi %cst_ui164, %cst_ui162 : ui16
+    "arc.keep"(%result_divi_ui164_ui162) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui162]]) : (ui16) -> ()
+
+    // divi 3, 1 -> 3
+    %result_divi_ui163_ui161 = arc.divi %cst_ui163, %cst_ui161 : ui16
+    "arc.keep"(%result_divi_ui163_ui161) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui163]]) : (ui16) -> ()
+
     // divi 65096, 17988 -> 3
     %result_divi_ui1665096_ui1617988 = arc.divi %cst_ui1665096, %cst_ui1617988 : ui16
     "arc.keep"(%result_divi_ui1665096_ui1617988) : (ui16) -> ()
@@ -4368,6 +9421,11 @@ module @toplevel {
     %result_divi_ui1665535_ui1617988 = arc.divi %cst_ui1665535, %cst_ui1617988 : ui16
     "arc.keep"(%result_divi_ui1665535_ui1617988) : (ui16) -> ()
     // CHECK: "arc.keep"([[CSTui163]]) : (ui16) -> ()
+
+    // divi 4, 1 -> 4
+    %result_divi_ui164_ui161 = arc.divi %cst_ui164, %cst_ui161 : ui16
+    "arc.keep"(%result_divi_ui164_ui161) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui164]]) : (ui16) -> ()
 
     // divi 17988, 1717 -> 10
     %result_divi_ui1617988_ui161717 = arc.divi %cst_ui1617988, %cst_ui161717 : ui16
@@ -4389,15 +9447,90 @@ module @toplevel {
     "arc.keep"(%result_divi_ui1665535_ui161717) : (ui16) -> ()
     // CHECK: "arc.keep"([[CSTui1638]]) : (ui16) -> ()
 
+    // divi 1717, 4 -> 429
+    %result_divi_ui161717_ui164 = arc.divi %cst_ui161717, %cst_ui164 : ui16
+    "arc.keep"(%result_divi_ui161717_ui164) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui16429]]) : (ui16) -> ()
+
+    // divi 1717, 3 -> 572
+    %result_divi_ui161717_ui163 = arc.divi %cst_ui161717, %cst_ui163 : ui16
+    "arc.keep"(%result_divi_ui161717_ui163) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui16572]]) : (ui16) -> ()
+
+    // divi 1717, 2 -> 858
+    %result_divi_ui161717_ui162 = arc.divi %cst_ui161717, %cst_ui162 : ui16
+    "arc.keep"(%result_divi_ui161717_ui162) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui16858]]) : (ui16) -> ()
+
     // divi 1717, 1 -> 1717
     %result_divi_ui161717_ui161 = arc.divi %cst_ui161717, %cst_ui161 : ui16
     "arc.keep"(%result_divi_ui161717_ui161) : (ui16) -> ()
     // CHECK: "arc.keep"([[CSTui161717]]) : (ui16) -> ()
 
+    // divi 17988, 4 -> 4497
+    %result_divi_ui1617988_ui164 = arc.divi %cst_ui1617988, %cst_ui164 : ui16
+    "arc.keep"(%result_divi_ui1617988_ui164) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui164497]]) : (ui16) -> ()
+
+    // divi 17988, 3 -> 5996
+    %result_divi_ui1617988_ui163 = arc.divi %cst_ui1617988, %cst_ui163 : ui16
+    "arc.keep"(%result_divi_ui1617988_ui163) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui165996]]) : (ui16) -> ()
+
+    // divi 17988, 2 -> 8994
+    %result_divi_ui1617988_ui162 = arc.divi %cst_ui1617988, %cst_ui162 : ui16
+    "arc.keep"(%result_divi_ui1617988_ui162) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui168994]]) : (ui16) -> ()
+
+    // divi 65096, 4 -> 16274
+    %result_divi_ui1665096_ui164 = arc.divi %cst_ui1665096, %cst_ui164 : ui16
+    "arc.keep"(%result_divi_ui1665096_ui164) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui1616274]]) : (ui16) -> ()
+
+    // divi 65534, 4 -> 16383
+    %result_divi_ui1665534_ui164 = arc.divi %cst_ui1665534, %cst_ui164 : ui16
+    "arc.keep"(%result_divi_ui1665534_ui164) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui1616383]]) : (ui16) -> ()
+
+    // divi 65535, 4 -> 16383
+    %result_divi_ui1665535_ui164 = arc.divi %cst_ui1665535, %cst_ui164 : ui16
+    "arc.keep"(%result_divi_ui1665535_ui164) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui1616383]]) : (ui16) -> ()
+
     // divi 17988, 1 -> 17988
     %result_divi_ui1617988_ui161 = arc.divi %cst_ui1617988, %cst_ui161 : ui16
     "arc.keep"(%result_divi_ui1617988_ui161) : (ui16) -> ()
     // CHECK: "arc.keep"([[CSTui1617988]]) : (ui16) -> ()
+
+    // divi 65096, 3 -> 21698
+    %result_divi_ui1665096_ui163 = arc.divi %cst_ui1665096, %cst_ui163 : ui16
+    "arc.keep"(%result_divi_ui1665096_ui163) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui1621698]]) : (ui16) -> ()
+
+    // divi 65534, 3 -> 21844
+    %result_divi_ui1665534_ui163 = arc.divi %cst_ui1665534, %cst_ui163 : ui16
+    "arc.keep"(%result_divi_ui1665534_ui163) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui1621844]]) : (ui16) -> ()
+
+    // divi 65535, 3 -> 21845
+    %result_divi_ui1665535_ui163 = arc.divi %cst_ui1665535, %cst_ui163 : ui16
+    "arc.keep"(%result_divi_ui1665535_ui163) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui1621845]]) : (ui16) -> ()
+
+    // divi 65096, 2 -> 32548
+    %result_divi_ui1665096_ui162 = arc.divi %cst_ui1665096, %cst_ui162 : ui16
+    "arc.keep"(%result_divi_ui1665096_ui162) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui1632548]]) : (ui16) -> ()
+
+    // divi 65534, 2 -> 32767
+    %result_divi_ui1665534_ui162 = arc.divi %cst_ui1665534, %cst_ui162 : ui16
+    "arc.keep"(%result_divi_ui1665534_ui162) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui1632767]]) : (ui16) -> ()
+
+    // divi 65535, 2 -> 32767
+    %result_divi_ui1665535_ui162 = arc.divi %cst_ui1665535, %cst_ui162 : ui16
+    "arc.keep"(%result_divi_ui1665535_ui162) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui1632767]]) : (ui16) -> ()
 
     // divi 65096, 1 -> 65096
     %result_divi_ui1665096_ui161 = arc.divi %cst_ui1665096, %cst_ui161 : ui16
@@ -4425,6 +9558,24 @@ module @toplevel {
     // CHECK-DAG: [[RESULT_divi_ui161_ui160:%[^ ]+]] = arc.divi [[CSTui161]], [[CSTui160]] : ui16
     "arc.keep"(%result_divi_ui161_ui160) : (ui16) -> ()
     // CHECK: "arc.keep"([[RESULT_divi_ui161_ui160]]) : (ui16) -> ()
+
+    // divi 2, 0 -> no-fold
+    %result_divi_ui162_ui160 = arc.divi %cst_ui162, %cst_ui160 : ui16
+    // CHECK-DAG: [[RESULT_divi_ui162_ui160:%[^ ]+]] = arc.divi [[CSTui162]], [[CSTui160]] : ui16
+    "arc.keep"(%result_divi_ui162_ui160) : (ui16) -> ()
+    // CHECK: "arc.keep"([[RESULT_divi_ui162_ui160]]) : (ui16) -> ()
+
+    // divi 3, 0 -> no-fold
+    %result_divi_ui163_ui160 = arc.divi %cst_ui163, %cst_ui160 : ui16
+    // CHECK-DAG: [[RESULT_divi_ui163_ui160:%[^ ]+]] = arc.divi [[CSTui163]], [[CSTui160]] : ui16
+    "arc.keep"(%result_divi_ui163_ui160) : (ui16) -> ()
+    // CHECK: "arc.keep"([[RESULT_divi_ui163_ui160]]) : (ui16) -> ()
+
+    // divi 4, 0 -> no-fold
+    %result_divi_ui164_ui160 = arc.divi %cst_ui164, %cst_ui160 : ui16
+    // CHECK-DAG: [[RESULT_divi_ui164_ui160:%[^ ]+]] = arc.divi [[CSTui164]], [[CSTui160]] : ui16
+    "arc.keep"(%result_divi_ui164_ui160) : (ui16) -> ()
+    // CHECK: "arc.keep"([[RESULT_divi_ui164_ui160]]) : (ui16) -> ()
 
     // divi 1717, 0 -> no-fold
     %result_divi_ui161717_ui160 = arc.divi %cst_ui161717, %cst_ui160 : ui16
@@ -4461,6 +9612,21 @@ module @toplevel {
     "arc.keep"(%result_divi_ui320_ui321) : (ui32) -> ()
     // CHECK: "arc.keep"([[CSTui320]]) : (ui32) -> ()
 
+    // divi 0, 2 -> 0
+    %result_divi_ui320_ui322 = arc.divi %cst_ui320, %cst_ui322 : ui32
+    "arc.keep"(%result_divi_ui320_ui322) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui320]]) : (ui32) -> ()
+
+    // divi 0, 3 -> 0
+    %result_divi_ui320_ui323 = arc.divi %cst_ui320, %cst_ui323 : ui32
+    "arc.keep"(%result_divi_ui320_ui323) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui320]]) : (ui32) -> ()
+
+    // divi 0, 4 -> 0
+    %result_divi_ui320_ui324 = arc.divi %cst_ui320, %cst_ui324 : ui32
+    "arc.keep"(%result_divi_ui320_ui324) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui320]]) : (ui32) -> ()
+
     // divi 0, 2119154652 -> 0
     %result_divi_ui320_ui322119154652 = arc.divi %cst_ui320, %cst_ui322119154652 : ui32
     "arc.keep"(%result_divi_ui320_ui322119154652) : (ui32) -> ()
@@ -4486,6 +9652,21 @@ module @toplevel {
     "arc.keep"(%result_divi_ui320_ui324294967295) : (ui32) -> ()
     // CHECK: "arc.keep"([[CSTui320]]) : (ui32) -> ()
 
+    // divi 1, 2 -> 0
+    %result_divi_ui321_ui322 = arc.divi %cst_ui321, %cst_ui322 : ui32
+    "arc.keep"(%result_divi_ui321_ui322) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui320]]) : (ui32) -> ()
+
+    // divi 1, 3 -> 0
+    %result_divi_ui321_ui323 = arc.divi %cst_ui321, %cst_ui323 : ui32
+    "arc.keep"(%result_divi_ui321_ui323) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui320]]) : (ui32) -> ()
+
+    // divi 1, 4 -> 0
+    %result_divi_ui321_ui324 = arc.divi %cst_ui321, %cst_ui324 : ui32
+    "arc.keep"(%result_divi_ui321_ui324) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui320]]) : (ui32) -> ()
+
     // divi 1, 2119154652 -> 0
     %result_divi_ui321_ui322119154652 = arc.divi %cst_ui321, %cst_ui322119154652 : ui32
     "arc.keep"(%result_divi_ui321_ui322119154652) : (ui32) -> ()
@@ -4509,6 +9690,96 @@ module @toplevel {
     // divi 1, 4294967295 -> 0
     %result_divi_ui321_ui324294967295 = arc.divi %cst_ui321, %cst_ui324294967295 : ui32
     "arc.keep"(%result_divi_ui321_ui324294967295) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui320]]) : (ui32) -> ()
+
+    // divi 2, 3 -> 0
+    %result_divi_ui322_ui323 = arc.divi %cst_ui322, %cst_ui323 : ui32
+    "arc.keep"(%result_divi_ui322_ui323) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui320]]) : (ui32) -> ()
+
+    // divi 2, 4 -> 0
+    %result_divi_ui322_ui324 = arc.divi %cst_ui322, %cst_ui324 : ui32
+    "arc.keep"(%result_divi_ui322_ui324) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui320]]) : (ui32) -> ()
+
+    // divi 2, 2119154652 -> 0
+    %result_divi_ui322_ui322119154652 = arc.divi %cst_ui322, %cst_ui322119154652 : ui32
+    "arc.keep"(%result_divi_ui322_ui322119154652) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui320]]) : (ui32) -> ()
+
+    // divi 2, 3002788344 -> 0
+    %result_divi_ui322_ui323002788344 = arc.divi %cst_ui322, %cst_ui323002788344 : ui32
+    "arc.keep"(%result_divi_ui322_ui323002788344) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui320]]) : (ui32) -> ()
+
+    // divi 2, 3482297128 -> 0
+    %result_divi_ui322_ui323482297128 = arc.divi %cst_ui322, %cst_ui323482297128 : ui32
+    "arc.keep"(%result_divi_ui322_ui323482297128) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui320]]) : (ui32) -> ()
+
+    // divi 2, 4294967294 -> 0
+    %result_divi_ui322_ui324294967294 = arc.divi %cst_ui322, %cst_ui324294967294 : ui32
+    "arc.keep"(%result_divi_ui322_ui324294967294) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui320]]) : (ui32) -> ()
+
+    // divi 2, 4294967295 -> 0
+    %result_divi_ui322_ui324294967295 = arc.divi %cst_ui322, %cst_ui324294967295 : ui32
+    "arc.keep"(%result_divi_ui322_ui324294967295) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui320]]) : (ui32) -> ()
+
+    // divi 3, 4 -> 0
+    %result_divi_ui323_ui324 = arc.divi %cst_ui323, %cst_ui324 : ui32
+    "arc.keep"(%result_divi_ui323_ui324) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui320]]) : (ui32) -> ()
+
+    // divi 3, 2119154652 -> 0
+    %result_divi_ui323_ui322119154652 = arc.divi %cst_ui323, %cst_ui322119154652 : ui32
+    "arc.keep"(%result_divi_ui323_ui322119154652) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui320]]) : (ui32) -> ()
+
+    // divi 3, 3002788344 -> 0
+    %result_divi_ui323_ui323002788344 = arc.divi %cst_ui323, %cst_ui323002788344 : ui32
+    "arc.keep"(%result_divi_ui323_ui323002788344) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui320]]) : (ui32) -> ()
+
+    // divi 3, 3482297128 -> 0
+    %result_divi_ui323_ui323482297128 = arc.divi %cst_ui323, %cst_ui323482297128 : ui32
+    "arc.keep"(%result_divi_ui323_ui323482297128) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui320]]) : (ui32) -> ()
+
+    // divi 3, 4294967294 -> 0
+    %result_divi_ui323_ui324294967294 = arc.divi %cst_ui323, %cst_ui324294967294 : ui32
+    "arc.keep"(%result_divi_ui323_ui324294967294) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui320]]) : (ui32) -> ()
+
+    // divi 3, 4294967295 -> 0
+    %result_divi_ui323_ui324294967295 = arc.divi %cst_ui323, %cst_ui324294967295 : ui32
+    "arc.keep"(%result_divi_ui323_ui324294967295) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui320]]) : (ui32) -> ()
+
+    // divi 4, 2119154652 -> 0
+    %result_divi_ui324_ui322119154652 = arc.divi %cst_ui324, %cst_ui322119154652 : ui32
+    "arc.keep"(%result_divi_ui324_ui322119154652) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui320]]) : (ui32) -> ()
+
+    // divi 4, 3002788344 -> 0
+    %result_divi_ui324_ui323002788344 = arc.divi %cst_ui324, %cst_ui323002788344 : ui32
+    "arc.keep"(%result_divi_ui324_ui323002788344) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui320]]) : (ui32) -> ()
+
+    // divi 4, 3482297128 -> 0
+    %result_divi_ui324_ui323482297128 = arc.divi %cst_ui324, %cst_ui323482297128 : ui32
+    "arc.keep"(%result_divi_ui324_ui323482297128) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui320]]) : (ui32) -> ()
+
+    // divi 4, 4294967294 -> 0
+    %result_divi_ui324_ui324294967294 = arc.divi %cst_ui324, %cst_ui324294967294 : ui32
+    "arc.keep"(%result_divi_ui324_ui324294967294) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui320]]) : (ui32) -> ()
+
+    // divi 4, 4294967295 -> 0
+    %result_divi_ui324_ui324294967295 = arc.divi %cst_ui324, %cst_ui324294967295 : ui32
+    "arc.keep"(%result_divi_ui324_ui324294967295) : (ui32) -> ()
     // CHECK: "arc.keep"([[CSTui320]]) : (ui32) -> ()
 
     // divi 2119154652, 3002788344 -> 0
@@ -4564,6 +9835,31 @@ module @toplevel {
     // divi 1, 1 -> 1
     %result_divi_ui321_ui321 = arc.divi %cst_ui321, %cst_ui321 : ui32
     "arc.keep"(%result_divi_ui321_ui321) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui321]]) : (ui32) -> ()
+
+    // divi 2, 2 -> 1
+    %result_divi_ui322_ui322 = arc.divi %cst_ui322, %cst_ui322 : ui32
+    "arc.keep"(%result_divi_ui322_ui322) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui321]]) : (ui32) -> ()
+
+    // divi 3, 2 -> 1
+    %result_divi_ui323_ui322 = arc.divi %cst_ui323, %cst_ui322 : ui32
+    "arc.keep"(%result_divi_ui323_ui322) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui321]]) : (ui32) -> ()
+
+    // divi 3, 3 -> 1
+    %result_divi_ui323_ui323 = arc.divi %cst_ui323, %cst_ui323 : ui32
+    "arc.keep"(%result_divi_ui323_ui323) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui321]]) : (ui32) -> ()
+
+    // divi 4, 3 -> 1
+    %result_divi_ui324_ui323 = arc.divi %cst_ui324, %cst_ui323 : ui32
+    "arc.keep"(%result_divi_ui324_ui323) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui321]]) : (ui32) -> ()
+
+    // divi 4, 4 -> 1
+    %result_divi_ui324_ui324 = arc.divi %cst_ui324, %cst_ui324 : ui32
+    "arc.keep"(%result_divi_ui324_ui324) : (ui32) -> ()
     // CHECK: "arc.keep"([[CSTui321]]) : (ui32) -> ()
 
     // divi 2119154652, 2119154652 -> 1
@@ -4631,6 +9927,16 @@ module @toplevel {
     "arc.keep"(%result_divi_ui324294967295_ui324294967295) : (ui32) -> ()
     // CHECK: "arc.keep"([[CSTui321]]) : (ui32) -> ()
 
+    // divi 2, 1 -> 2
+    %result_divi_ui322_ui321 = arc.divi %cst_ui322, %cst_ui321 : ui32
+    "arc.keep"(%result_divi_ui322_ui321) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui322]]) : (ui32) -> ()
+
+    // divi 4, 2 -> 2
+    %result_divi_ui324_ui322 = arc.divi %cst_ui324, %cst_ui322 : ui32
+    "arc.keep"(%result_divi_ui324_ui322) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui322]]) : (ui32) -> ()
+
     // divi 4294967294, 2119154652 -> 2
     %result_divi_ui324294967294_ui322119154652 = arc.divi %cst_ui324294967294, %cst_ui322119154652 : ui32
     "arc.keep"(%result_divi_ui324294967294_ui322119154652) : (ui32) -> ()
@@ -4641,10 +9947,95 @@ module @toplevel {
     "arc.keep"(%result_divi_ui324294967295_ui322119154652) : (ui32) -> ()
     // CHECK: "arc.keep"([[CSTui322]]) : (ui32) -> ()
 
+    // divi 3, 1 -> 3
+    %result_divi_ui323_ui321 = arc.divi %cst_ui323, %cst_ui321 : ui32
+    "arc.keep"(%result_divi_ui323_ui321) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui323]]) : (ui32) -> ()
+
+    // divi 4, 1 -> 4
+    %result_divi_ui324_ui321 = arc.divi %cst_ui324, %cst_ui321 : ui32
+    "arc.keep"(%result_divi_ui324_ui321) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui324]]) : (ui32) -> ()
+
+    // divi 2119154652, 4 -> 529788663
+    %result_divi_ui322119154652_ui324 = arc.divi %cst_ui322119154652, %cst_ui324 : ui32
+    "arc.keep"(%result_divi_ui322119154652_ui324) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui32529788663]]) : (ui32) -> ()
+
+    // divi 2119154652, 3 -> 706384884
+    %result_divi_ui322119154652_ui323 = arc.divi %cst_ui322119154652, %cst_ui323 : ui32
+    "arc.keep"(%result_divi_ui322119154652_ui323) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui32706384884]]) : (ui32) -> ()
+
+    // divi 3002788344, 4 -> 750697086
+    %result_divi_ui323002788344_ui324 = arc.divi %cst_ui323002788344, %cst_ui324 : ui32
+    "arc.keep"(%result_divi_ui323002788344_ui324) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui32750697086]]) : (ui32) -> ()
+
+    // divi 3482297128, 4 -> 870574282
+    %result_divi_ui323482297128_ui324 = arc.divi %cst_ui323482297128, %cst_ui324 : ui32
+    "arc.keep"(%result_divi_ui323482297128_ui324) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui32870574282]]) : (ui32) -> ()
+
+    // divi 3002788344, 3 -> 1000929448
+    %result_divi_ui323002788344_ui323 = arc.divi %cst_ui323002788344, %cst_ui323 : ui32
+    "arc.keep"(%result_divi_ui323002788344_ui323) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui321000929448]]) : (ui32) -> ()
+
+    // divi 2119154652, 2 -> 1059577326
+    %result_divi_ui322119154652_ui322 = arc.divi %cst_ui322119154652, %cst_ui322 : ui32
+    "arc.keep"(%result_divi_ui322119154652_ui322) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui321059577326]]) : (ui32) -> ()
+
+    // divi 4294967294, 4 -> 1073741823
+    %result_divi_ui324294967294_ui324 = arc.divi %cst_ui324294967294, %cst_ui324 : ui32
+    "arc.keep"(%result_divi_ui324294967294_ui324) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui321073741823]]) : (ui32) -> ()
+
+    // divi 4294967295, 4 -> 1073741823
+    %result_divi_ui324294967295_ui324 = arc.divi %cst_ui324294967295, %cst_ui324 : ui32
+    "arc.keep"(%result_divi_ui324294967295_ui324) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui321073741823]]) : (ui32) -> ()
+
+    // divi 3482297128, 3 -> 1160765709
+    %result_divi_ui323482297128_ui323 = arc.divi %cst_ui323482297128, %cst_ui323 : ui32
+    "arc.keep"(%result_divi_ui323482297128_ui323) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui321160765709]]) : (ui32) -> ()
+
+    // divi 4294967294, 3 -> 1431655764
+    %result_divi_ui324294967294_ui323 = arc.divi %cst_ui324294967294, %cst_ui323 : ui32
+    "arc.keep"(%result_divi_ui324294967294_ui323) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui321431655764]]) : (ui32) -> ()
+
+    // divi 4294967295, 3 -> 1431655765
+    %result_divi_ui324294967295_ui323 = arc.divi %cst_ui324294967295, %cst_ui323 : ui32
+    "arc.keep"(%result_divi_ui324294967295_ui323) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui321431655765]]) : (ui32) -> ()
+
+    // divi 3002788344, 2 -> 1501394172
+    %result_divi_ui323002788344_ui322 = arc.divi %cst_ui323002788344, %cst_ui322 : ui32
+    "arc.keep"(%result_divi_ui323002788344_ui322) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui321501394172]]) : (ui32) -> ()
+
+    // divi 3482297128, 2 -> 1741148564
+    %result_divi_ui323482297128_ui322 = arc.divi %cst_ui323482297128, %cst_ui322 : ui32
+    "arc.keep"(%result_divi_ui323482297128_ui322) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui321741148564]]) : (ui32) -> ()
+
     // divi 2119154652, 1 -> 2119154652
     %result_divi_ui322119154652_ui321 = arc.divi %cst_ui322119154652, %cst_ui321 : ui32
     "arc.keep"(%result_divi_ui322119154652_ui321) : (ui32) -> ()
     // CHECK: "arc.keep"([[CSTui322119154652]]) : (ui32) -> ()
+
+    // divi 4294967294, 2 -> 2147483647
+    %result_divi_ui324294967294_ui322 = arc.divi %cst_ui324294967294, %cst_ui322 : ui32
+    "arc.keep"(%result_divi_ui324294967294_ui322) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui322147483647]]) : (ui32) -> ()
+
+    // divi 4294967295, 2 -> 2147483647
+    %result_divi_ui324294967295_ui322 = arc.divi %cst_ui324294967295, %cst_ui322 : ui32
+    "arc.keep"(%result_divi_ui324294967295_ui322) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui322147483647]]) : (ui32) -> ()
 
     // divi 3002788344, 1 -> 3002788344
     %result_divi_ui323002788344_ui321 = arc.divi %cst_ui323002788344, %cst_ui321 : ui32
@@ -4677,6 +10068,24 @@ module @toplevel {
     // CHECK-DAG: [[RESULT_divi_ui321_ui320:%[^ ]+]] = arc.divi [[CSTui321]], [[CSTui320]] : ui32
     "arc.keep"(%result_divi_ui321_ui320) : (ui32) -> ()
     // CHECK: "arc.keep"([[RESULT_divi_ui321_ui320]]) : (ui32) -> ()
+
+    // divi 2, 0 -> no-fold
+    %result_divi_ui322_ui320 = arc.divi %cst_ui322, %cst_ui320 : ui32
+    // CHECK-DAG: [[RESULT_divi_ui322_ui320:%[^ ]+]] = arc.divi [[CSTui322]], [[CSTui320]] : ui32
+    "arc.keep"(%result_divi_ui322_ui320) : (ui32) -> ()
+    // CHECK: "arc.keep"([[RESULT_divi_ui322_ui320]]) : (ui32) -> ()
+
+    // divi 3, 0 -> no-fold
+    %result_divi_ui323_ui320 = arc.divi %cst_ui323, %cst_ui320 : ui32
+    // CHECK-DAG: [[RESULT_divi_ui323_ui320:%[^ ]+]] = arc.divi [[CSTui323]], [[CSTui320]] : ui32
+    "arc.keep"(%result_divi_ui323_ui320) : (ui32) -> ()
+    // CHECK: "arc.keep"([[RESULT_divi_ui323_ui320]]) : (ui32) -> ()
+
+    // divi 4, 0 -> no-fold
+    %result_divi_ui324_ui320 = arc.divi %cst_ui324, %cst_ui320 : ui32
+    // CHECK-DAG: [[RESULT_divi_ui324_ui320:%[^ ]+]] = arc.divi [[CSTui324]], [[CSTui320]] : ui32
+    "arc.keep"(%result_divi_ui324_ui320) : (ui32) -> ()
+    // CHECK: "arc.keep"([[RESULT_divi_ui324_ui320]]) : (ui32) -> ()
 
     // divi 2119154652, 0 -> no-fold
     %result_divi_ui322119154652_ui320 = arc.divi %cst_ui322119154652, %cst_ui320 : ui32
@@ -4713,6 +10122,21 @@ module @toplevel {
     "arc.keep"(%result_divi_ui640_ui641) : (ui64) -> ()
     // CHECK: "arc.keep"([[CSTui640]]) : (ui64) -> ()
 
+    // divi 0, 2 -> 0
+    %result_divi_ui640_ui642 = arc.divi %cst_ui640, %cst_ui642 : ui64
+    "arc.keep"(%result_divi_ui640_ui642) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui640]]) : (ui64) -> ()
+
+    // divi 0, 3 -> 0
+    %result_divi_ui640_ui643 = arc.divi %cst_ui640, %cst_ui643 : ui64
+    "arc.keep"(%result_divi_ui640_ui643) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui640]]) : (ui64) -> ()
+
+    // divi 0, 4 -> 0
+    %result_divi_ui640_ui644 = arc.divi %cst_ui640, %cst_ui644 : ui64
+    "arc.keep"(%result_divi_ui640_ui644) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui640]]) : (ui64) -> ()
+
     // divi 0, 191084152064409600 -> 0
     %result_divi_ui640_ui64191084152064409600 = arc.divi %cst_ui640, %cst_ui64191084152064409600 : ui64
     "arc.keep"(%result_divi_ui640_ui64191084152064409600) : (ui64) -> ()
@@ -4738,6 +10162,21 @@ module @toplevel {
     "arc.keep"(%result_divi_ui640_ui6418446744073709551615) : (ui64) -> ()
     // CHECK: "arc.keep"([[CSTui640]]) : (ui64) -> ()
 
+    // divi 1, 2 -> 0
+    %result_divi_ui641_ui642 = arc.divi %cst_ui641, %cst_ui642 : ui64
+    "arc.keep"(%result_divi_ui641_ui642) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui640]]) : (ui64) -> ()
+
+    // divi 1, 3 -> 0
+    %result_divi_ui641_ui643 = arc.divi %cst_ui641, %cst_ui643 : ui64
+    "arc.keep"(%result_divi_ui641_ui643) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui640]]) : (ui64) -> ()
+
+    // divi 1, 4 -> 0
+    %result_divi_ui641_ui644 = arc.divi %cst_ui641, %cst_ui644 : ui64
+    "arc.keep"(%result_divi_ui641_ui644) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui640]]) : (ui64) -> ()
+
     // divi 1, 191084152064409600 -> 0
     %result_divi_ui641_ui64191084152064409600 = arc.divi %cst_ui641, %cst_ui64191084152064409600 : ui64
     "arc.keep"(%result_divi_ui641_ui64191084152064409600) : (ui64) -> ()
@@ -4761,6 +10200,96 @@ module @toplevel {
     // divi 1, 18446744073709551615 -> 0
     %result_divi_ui641_ui6418446744073709551615 = arc.divi %cst_ui641, %cst_ui6418446744073709551615 : ui64
     "arc.keep"(%result_divi_ui641_ui6418446744073709551615) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui640]]) : (ui64) -> ()
+
+    // divi 2, 3 -> 0
+    %result_divi_ui642_ui643 = arc.divi %cst_ui642, %cst_ui643 : ui64
+    "arc.keep"(%result_divi_ui642_ui643) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui640]]) : (ui64) -> ()
+
+    // divi 2, 4 -> 0
+    %result_divi_ui642_ui644 = arc.divi %cst_ui642, %cst_ui644 : ui64
+    "arc.keep"(%result_divi_ui642_ui644) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui640]]) : (ui64) -> ()
+
+    // divi 2, 191084152064409600 -> 0
+    %result_divi_ui642_ui64191084152064409600 = arc.divi %cst_ui642, %cst_ui64191084152064409600 : ui64
+    "arc.keep"(%result_divi_ui642_ui64191084152064409600) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui640]]) : (ui64) -> ()
+
+    // divi 2, 11015955194427482112 -> 0
+    %result_divi_ui642_ui6411015955194427482112 = arc.divi %cst_ui642, %cst_ui6411015955194427482112 : ui64
+    "arc.keep"(%result_divi_ui642_ui6411015955194427482112) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui640]]) : (ui64) -> ()
+
+    // divi 2, 16990600415051759616 -> 0
+    %result_divi_ui642_ui6416990600415051759616 = arc.divi %cst_ui642, %cst_ui6416990600415051759616 : ui64
+    "arc.keep"(%result_divi_ui642_ui6416990600415051759616) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui640]]) : (ui64) -> ()
+
+    // divi 2, 18446744073709551614 -> 0
+    %result_divi_ui642_ui6418446744073709551614 = arc.divi %cst_ui642, %cst_ui6418446744073709551614 : ui64
+    "arc.keep"(%result_divi_ui642_ui6418446744073709551614) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui640]]) : (ui64) -> ()
+
+    // divi 2, 18446744073709551615 -> 0
+    %result_divi_ui642_ui6418446744073709551615 = arc.divi %cst_ui642, %cst_ui6418446744073709551615 : ui64
+    "arc.keep"(%result_divi_ui642_ui6418446744073709551615) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui640]]) : (ui64) -> ()
+
+    // divi 3, 4 -> 0
+    %result_divi_ui643_ui644 = arc.divi %cst_ui643, %cst_ui644 : ui64
+    "arc.keep"(%result_divi_ui643_ui644) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui640]]) : (ui64) -> ()
+
+    // divi 3, 191084152064409600 -> 0
+    %result_divi_ui643_ui64191084152064409600 = arc.divi %cst_ui643, %cst_ui64191084152064409600 : ui64
+    "arc.keep"(%result_divi_ui643_ui64191084152064409600) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui640]]) : (ui64) -> ()
+
+    // divi 3, 11015955194427482112 -> 0
+    %result_divi_ui643_ui6411015955194427482112 = arc.divi %cst_ui643, %cst_ui6411015955194427482112 : ui64
+    "arc.keep"(%result_divi_ui643_ui6411015955194427482112) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui640]]) : (ui64) -> ()
+
+    // divi 3, 16990600415051759616 -> 0
+    %result_divi_ui643_ui6416990600415051759616 = arc.divi %cst_ui643, %cst_ui6416990600415051759616 : ui64
+    "arc.keep"(%result_divi_ui643_ui6416990600415051759616) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui640]]) : (ui64) -> ()
+
+    // divi 3, 18446744073709551614 -> 0
+    %result_divi_ui643_ui6418446744073709551614 = arc.divi %cst_ui643, %cst_ui6418446744073709551614 : ui64
+    "arc.keep"(%result_divi_ui643_ui6418446744073709551614) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui640]]) : (ui64) -> ()
+
+    // divi 3, 18446744073709551615 -> 0
+    %result_divi_ui643_ui6418446744073709551615 = arc.divi %cst_ui643, %cst_ui6418446744073709551615 : ui64
+    "arc.keep"(%result_divi_ui643_ui6418446744073709551615) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui640]]) : (ui64) -> ()
+
+    // divi 4, 191084152064409600 -> 0
+    %result_divi_ui644_ui64191084152064409600 = arc.divi %cst_ui644, %cst_ui64191084152064409600 : ui64
+    "arc.keep"(%result_divi_ui644_ui64191084152064409600) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui640]]) : (ui64) -> ()
+
+    // divi 4, 11015955194427482112 -> 0
+    %result_divi_ui644_ui6411015955194427482112 = arc.divi %cst_ui644, %cst_ui6411015955194427482112 : ui64
+    "arc.keep"(%result_divi_ui644_ui6411015955194427482112) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui640]]) : (ui64) -> ()
+
+    // divi 4, 16990600415051759616 -> 0
+    %result_divi_ui644_ui6416990600415051759616 = arc.divi %cst_ui644, %cst_ui6416990600415051759616 : ui64
+    "arc.keep"(%result_divi_ui644_ui6416990600415051759616) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui640]]) : (ui64) -> ()
+
+    // divi 4, 18446744073709551614 -> 0
+    %result_divi_ui644_ui6418446744073709551614 = arc.divi %cst_ui644, %cst_ui6418446744073709551614 : ui64
+    "arc.keep"(%result_divi_ui644_ui6418446744073709551614) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui640]]) : (ui64) -> ()
+
+    // divi 4, 18446744073709551615 -> 0
+    %result_divi_ui644_ui6418446744073709551615 = arc.divi %cst_ui644, %cst_ui6418446744073709551615 : ui64
+    "arc.keep"(%result_divi_ui644_ui6418446744073709551615) : (ui64) -> ()
     // CHECK: "arc.keep"([[CSTui640]]) : (ui64) -> ()
 
     // divi 191084152064409600, 11015955194427482112 -> 0
@@ -4818,6 +10347,31 @@ module @toplevel {
     "arc.keep"(%result_divi_ui641_ui641) : (ui64) -> ()
     // CHECK: "arc.keep"([[CSTui641]]) : (ui64) -> ()
 
+    // divi 2, 2 -> 1
+    %result_divi_ui642_ui642 = arc.divi %cst_ui642, %cst_ui642 : ui64
+    "arc.keep"(%result_divi_ui642_ui642) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui641]]) : (ui64) -> ()
+
+    // divi 3, 2 -> 1
+    %result_divi_ui643_ui642 = arc.divi %cst_ui643, %cst_ui642 : ui64
+    "arc.keep"(%result_divi_ui643_ui642) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui641]]) : (ui64) -> ()
+
+    // divi 3, 3 -> 1
+    %result_divi_ui643_ui643 = arc.divi %cst_ui643, %cst_ui643 : ui64
+    "arc.keep"(%result_divi_ui643_ui643) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui641]]) : (ui64) -> ()
+
+    // divi 4, 3 -> 1
+    %result_divi_ui644_ui643 = arc.divi %cst_ui644, %cst_ui643 : ui64
+    "arc.keep"(%result_divi_ui644_ui643) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui641]]) : (ui64) -> ()
+
+    // divi 4, 4 -> 1
+    %result_divi_ui644_ui644 = arc.divi %cst_ui644, %cst_ui644 : ui64
+    "arc.keep"(%result_divi_ui644_ui644) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui641]]) : (ui64) -> ()
+
     // divi 191084152064409600, 191084152064409600 -> 1
     %result_divi_ui64191084152064409600_ui64191084152064409600 = arc.divi %cst_ui64191084152064409600, %cst_ui64191084152064409600 : ui64
     "arc.keep"(%result_divi_ui64191084152064409600_ui64191084152064409600) : (ui64) -> ()
@@ -4873,6 +10427,26 @@ module @toplevel {
     "arc.keep"(%result_divi_ui6418446744073709551615_ui6418446744073709551615) : (ui64) -> ()
     // CHECK: "arc.keep"([[CSTui641]]) : (ui64) -> ()
 
+    // divi 2, 1 -> 2
+    %result_divi_ui642_ui641 = arc.divi %cst_ui642, %cst_ui641 : ui64
+    "arc.keep"(%result_divi_ui642_ui641) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui642]]) : (ui64) -> ()
+
+    // divi 4, 2 -> 2
+    %result_divi_ui644_ui642 = arc.divi %cst_ui644, %cst_ui642 : ui64
+    "arc.keep"(%result_divi_ui644_ui642) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui642]]) : (ui64) -> ()
+
+    // divi 3, 1 -> 3
+    %result_divi_ui643_ui641 = arc.divi %cst_ui643, %cst_ui641 : ui64
+    "arc.keep"(%result_divi_ui643_ui641) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui643]]) : (ui64) -> ()
+
+    // divi 4, 1 -> 4
+    %result_divi_ui644_ui641 = arc.divi %cst_ui644, %cst_ui641 : ui64
+    "arc.keep"(%result_divi_ui644_ui641) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui644]]) : (ui64) -> ()
+
     // divi 11015955194427482112, 191084152064409600 -> 57
     %result_divi_ui6411015955194427482112_ui64191084152064409600 = arc.divi %cst_ui6411015955194427482112, %cst_ui64191084152064409600 : ui64
     "arc.keep"(%result_divi_ui6411015955194427482112_ui64191084152064409600) : (ui64) -> ()
@@ -4893,10 +10467,85 @@ module @toplevel {
     "arc.keep"(%result_divi_ui6418446744073709551615_ui64191084152064409600) : (ui64) -> ()
     // CHECK: "arc.keep"([[CSTui6496]]) : (ui64) -> ()
 
+    // divi 191084152064409600, 4 -> 47771038016102400
+    %result_divi_ui64191084152064409600_ui644 = arc.divi %cst_ui64191084152064409600, %cst_ui644 : ui64
+    "arc.keep"(%result_divi_ui64191084152064409600_ui644) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui6447771038016102400]]) : (ui64) -> ()
+
+    // divi 191084152064409600, 3 -> 63694717354803200
+    %result_divi_ui64191084152064409600_ui643 = arc.divi %cst_ui64191084152064409600, %cst_ui643 : ui64
+    "arc.keep"(%result_divi_ui64191084152064409600_ui643) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui6463694717354803200]]) : (ui64) -> ()
+
+    // divi 191084152064409600, 2 -> 95542076032204800
+    %result_divi_ui64191084152064409600_ui642 = arc.divi %cst_ui64191084152064409600, %cst_ui642 : ui64
+    "arc.keep"(%result_divi_ui64191084152064409600_ui642) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui6495542076032204800]]) : (ui64) -> ()
+
     // divi 191084152064409600, 1 -> 191084152064409600
     %result_divi_ui64191084152064409600_ui641 = arc.divi %cst_ui64191084152064409600, %cst_ui641 : ui64
     "arc.keep"(%result_divi_ui64191084152064409600_ui641) : (ui64) -> ()
     // CHECK: "arc.keep"([[CSTui64191084152064409600]]) : (ui64) -> ()
+
+    // divi 11015955194427482112, 4 -> 2753988798606870528
+    %result_divi_ui6411015955194427482112_ui644 = arc.divi %cst_ui6411015955194427482112, %cst_ui644 : ui64
+    "arc.keep"(%result_divi_ui6411015955194427482112_ui644) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui642753988798606870528]]) : (ui64) -> ()
+
+    // divi 11015955194427482112, 3 -> 3671985064809160704
+    %result_divi_ui6411015955194427482112_ui643 = arc.divi %cst_ui6411015955194427482112, %cst_ui643 : ui64
+    "arc.keep"(%result_divi_ui6411015955194427482112_ui643) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui643671985064809160704]]) : (ui64) -> ()
+
+    // divi 16990600415051759616, 4 -> 4247650103762939904
+    %result_divi_ui6416990600415051759616_ui644 = arc.divi %cst_ui6416990600415051759616, %cst_ui644 : ui64
+    "arc.keep"(%result_divi_ui6416990600415051759616_ui644) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui644247650103762939904]]) : (ui64) -> ()
+
+    // divi 18446744073709551614, 4 -> 4611686018427387903
+    %result_divi_ui6418446744073709551614_ui644 = arc.divi %cst_ui6418446744073709551614, %cst_ui644 : ui64
+    "arc.keep"(%result_divi_ui6418446744073709551614_ui644) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui644611686018427387903]]) : (ui64) -> ()
+
+    // divi 18446744073709551615, 4 -> 4611686018427387903
+    %result_divi_ui6418446744073709551615_ui644 = arc.divi %cst_ui6418446744073709551615, %cst_ui644 : ui64
+    "arc.keep"(%result_divi_ui6418446744073709551615_ui644) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui644611686018427387903]]) : (ui64) -> ()
+
+    // divi 11015955194427482112, 2 -> 5507977597213741056
+    %result_divi_ui6411015955194427482112_ui642 = arc.divi %cst_ui6411015955194427482112, %cst_ui642 : ui64
+    "arc.keep"(%result_divi_ui6411015955194427482112_ui642) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui645507977597213741056]]) : (ui64) -> ()
+
+    // divi 16990600415051759616, 3 -> 5663533471683919872
+    %result_divi_ui6416990600415051759616_ui643 = arc.divi %cst_ui6416990600415051759616, %cst_ui643 : ui64
+    "arc.keep"(%result_divi_ui6416990600415051759616_ui643) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui645663533471683919872]]) : (ui64) -> ()
+
+    // divi 18446744073709551614, 3 -> 6148914691236517204
+    %result_divi_ui6418446744073709551614_ui643 = arc.divi %cst_ui6418446744073709551614, %cst_ui643 : ui64
+    "arc.keep"(%result_divi_ui6418446744073709551614_ui643) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui646148914691236517204]]) : (ui64) -> ()
+
+    // divi 18446744073709551615, 3 -> 6148914691236517205
+    %result_divi_ui6418446744073709551615_ui643 = arc.divi %cst_ui6418446744073709551615, %cst_ui643 : ui64
+    "arc.keep"(%result_divi_ui6418446744073709551615_ui643) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui646148914691236517205]]) : (ui64) -> ()
+
+    // divi 16990600415051759616, 2 -> 8495300207525879808
+    %result_divi_ui6416990600415051759616_ui642 = arc.divi %cst_ui6416990600415051759616, %cst_ui642 : ui64
+    "arc.keep"(%result_divi_ui6416990600415051759616_ui642) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui648495300207525879808]]) : (ui64) -> ()
+
+    // divi 18446744073709551614, 2 -> 9223372036854775807
+    %result_divi_ui6418446744073709551614_ui642 = arc.divi %cst_ui6418446744073709551614, %cst_ui642 : ui64
+    "arc.keep"(%result_divi_ui6418446744073709551614_ui642) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui649223372036854775807]]) : (ui64) -> ()
+
+    // divi 18446744073709551615, 2 -> 9223372036854775807
+    %result_divi_ui6418446744073709551615_ui642 = arc.divi %cst_ui6418446744073709551615, %cst_ui642 : ui64
+    "arc.keep"(%result_divi_ui6418446744073709551615_ui642) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui649223372036854775807]]) : (ui64) -> ()
 
     // divi 11015955194427482112, 1 -> 11015955194427482112
     %result_divi_ui6411015955194427482112_ui641 = arc.divi %cst_ui6411015955194427482112, %cst_ui641 : ui64
@@ -4929,6 +10578,24 @@ module @toplevel {
     // CHECK-DAG: [[RESULT_divi_ui641_ui640:%[^ ]+]] = arc.divi [[CSTui641]], [[CSTui640]] : ui64
     "arc.keep"(%result_divi_ui641_ui640) : (ui64) -> ()
     // CHECK: "arc.keep"([[RESULT_divi_ui641_ui640]]) : (ui64) -> ()
+
+    // divi 2, 0 -> no-fold
+    %result_divi_ui642_ui640 = arc.divi %cst_ui642, %cst_ui640 : ui64
+    // CHECK-DAG: [[RESULT_divi_ui642_ui640:%[^ ]+]] = arc.divi [[CSTui642]], [[CSTui640]] : ui64
+    "arc.keep"(%result_divi_ui642_ui640) : (ui64) -> ()
+    // CHECK: "arc.keep"([[RESULT_divi_ui642_ui640]]) : (ui64) -> ()
+
+    // divi 3, 0 -> no-fold
+    %result_divi_ui643_ui640 = arc.divi %cst_ui643, %cst_ui640 : ui64
+    // CHECK-DAG: [[RESULT_divi_ui643_ui640:%[^ ]+]] = arc.divi [[CSTui643]], [[CSTui640]] : ui64
+    "arc.keep"(%result_divi_ui643_ui640) : (ui64) -> ()
+    // CHECK: "arc.keep"([[RESULT_divi_ui643_ui640]]) : (ui64) -> ()
+
+    // divi 4, 0 -> no-fold
+    %result_divi_ui644_ui640 = arc.divi %cst_ui644, %cst_ui640 : ui64
+    // CHECK-DAG: [[RESULT_divi_ui644_ui640:%[^ ]+]] = arc.divi [[CSTui644]], [[CSTui640]] : ui64
+    "arc.keep"(%result_divi_ui644_ui640) : (ui64) -> ()
+    // CHECK: "arc.keep"([[RESULT_divi_ui644_ui640]]) : (ui64) -> ()
 
     // divi 191084152064409600, 0 -> no-fold
     %result_divi_ui64191084152064409600_ui640 = arc.divi %cst_ui64191084152064409600, %cst_ui640 : ui64
@@ -4965,6 +10632,21 @@ module @toplevel {
     "arc.keep"(%result_divi_ui80_ui81) : (ui8) -> ()
     // CHECK: "arc.keep"([[CSTui80]]) : (ui8) -> ()
 
+    // divi 0, 2 -> 0
+    %result_divi_ui80_ui82 = arc.divi %cst_ui80, %cst_ui82 : ui8
+    "arc.keep"(%result_divi_ui80_ui82) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui80]]) : (ui8) -> ()
+
+    // divi 0, 3 -> 0
+    %result_divi_ui80_ui83 = arc.divi %cst_ui80, %cst_ui83 : ui8
+    "arc.keep"(%result_divi_ui80_ui83) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui80]]) : (ui8) -> ()
+
+    // divi 0, 4 -> 0
+    %result_divi_ui80_ui84 = arc.divi %cst_ui80, %cst_ui84 : ui8
+    "arc.keep"(%result_divi_ui80_ui84) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui80]]) : (ui8) -> ()
+
     // divi 0, 72 -> 0
     %result_divi_ui80_ui872 = arc.divi %cst_ui80, %cst_ui872 : ui8
     "arc.keep"(%result_divi_ui80_ui872) : (ui8) -> ()
@@ -4990,6 +10672,21 @@ module @toplevel {
     "arc.keep"(%result_divi_ui80_ui8255) : (ui8) -> ()
     // CHECK: "arc.keep"([[CSTui80]]) : (ui8) -> ()
 
+    // divi 1, 2 -> 0
+    %result_divi_ui81_ui82 = arc.divi %cst_ui81, %cst_ui82 : ui8
+    "arc.keep"(%result_divi_ui81_ui82) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui80]]) : (ui8) -> ()
+
+    // divi 1, 3 -> 0
+    %result_divi_ui81_ui83 = arc.divi %cst_ui81, %cst_ui83 : ui8
+    "arc.keep"(%result_divi_ui81_ui83) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui80]]) : (ui8) -> ()
+
+    // divi 1, 4 -> 0
+    %result_divi_ui81_ui84 = arc.divi %cst_ui81, %cst_ui84 : ui8
+    "arc.keep"(%result_divi_ui81_ui84) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui80]]) : (ui8) -> ()
+
     // divi 1, 72 -> 0
     %result_divi_ui81_ui872 = arc.divi %cst_ui81, %cst_ui872 : ui8
     "arc.keep"(%result_divi_ui81_ui872) : (ui8) -> ()
@@ -5013,6 +10710,96 @@ module @toplevel {
     // divi 1, 255 -> 0
     %result_divi_ui81_ui8255 = arc.divi %cst_ui81, %cst_ui8255 : ui8
     "arc.keep"(%result_divi_ui81_ui8255) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui80]]) : (ui8) -> ()
+
+    // divi 2, 3 -> 0
+    %result_divi_ui82_ui83 = arc.divi %cst_ui82, %cst_ui83 : ui8
+    "arc.keep"(%result_divi_ui82_ui83) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui80]]) : (ui8) -> ()
+
+    // divi 2, 4 -> 0
+    %result_divi_ui82_ui84 = arc.divi %cst_ui82, %cst_ui84 : ui8
+    "arc.keep"(%result_divi_ui82_ui84) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui80]]) : (ui8) -> ()
+
+    // divi 2, 72 -> 0
+    %result_divi_ui82_ui872 = arc.divi %cst_ui82, %cst_ui872 : ui8
+    "arc.keep"(%result_divi_ui82_ui872) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui80]]) : (ui8) -> ()
+
+    // divi 2, 100 -> 0
+    %result_divi_ui82_ui8100 = arc.divi %cst_ui82, %cst_ui8100 : ui8
+    "arc.keep"(%result_divi_ui82_ui8100) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui80]]) : (ui8) -> ()
+
+    // divi 2, 162 -> 0
+    %result_divi_ui82_ui8162 = arc.divi %cst_ui82, %cst_ui8162 : ui8
+    "arc.keep"(%result_divi_ui82_ui8162) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui80]]) : (ui8) -> ()
+
+    // divi 2, 254 -> 0
+    %result_divi_ui82_ui8254 = arc.divi %cst_ui82, %cst_ui8254 : ui8
+    "arc.keep"(%result_divi_ui82_ui8254) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui80]]) : (ui8) -> ()
+
+    // divi 2, 255 -> 0
+    %result_divi_ui82_ui8255 = arc.divi %cst_ui82, %cst_ui8255 : ui8
+    "arc.keep"(%result_divi_ui82_ui8255) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui80]]) : (ui8) -> ()
+
+    // divi 3, 4 -> 0
+    %result_divi_ui83_ui84 = arc.divi %cst_ui83, %cst_ui84 : ui8
+    "arc.keep"(%result_divi_ui83_ui84) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui80]]) : (ui8) -> ()
+
+    // divi 3, 72 -> 0
+    %result_divi_ui83_ui872 = arc.divi %cst_ui83, %cst_ui872 : ui8
+    "arc.keep"(%result_divi_ui83_ui872) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui80]]) : (ui8) -> ()
+
+    // divi 3, 100 -> 0
+    %result_divi_ui83_ui8100 = arc.divi %cst_ui83, %cst_ui8100 : ui8
+    "arc.keep"(%result_divi_ui83_ui8100) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui80]]) : (ui8) -> ()
+
+    // divi 3, 162 -> 0
+    %result_divi_ui83_ui8162 = arc.divi %cst_ui83, %cst_ui8162 : ui8
+    "arc.keep"(%result_divi_ui83_ui8162) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui80]]) : (ui8) -> ()
+
+    // divi 3, 254 -> 0
+    %result_divi_ui83_ui8254 = arc.divi %cst_ui83, %cst_ui8254 : ui8
+    "arc.keep"(%result_divi_ui83_ui8254) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui80]]) : (ui8) -> ()
+
+    // divi 3, 255 -> 0
+    %result_divi_ui83_ui8255 = arc.divi %cst_ui83, %cst_ui8255 : ui8
+    "arc.keep"(%result_divi_ui83_ui8255) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui80]]) : (ui8) -> ()
+
+    // divi 4, 72 -> 0
+    %result_divi_ui84_ui872 = arc.divi %cst_ui84, %cst_ui872 : ui8
+    "arc.keep"(%result_divi_ui84_ui872) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui80]]) : (ui8) -> ()
+
+    // divi 4, 100 -> 0
+    %result_divi_ui84_ui8100 = arc.divi %cst_ui84, %cst_ui8100 : ui8
+    "arc.keep"(%result_divi_ui84_ui8100) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui80]]) : (ui8) -> ()
+
+    // divi 4, 162 -> 0
+    %result_divi_ui84_ui8162 = arc.divi %cst_ui84, %cst_ui8162 : ui8
+    "arc.keep"(%result_divi_ui84_ui8162) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui80]]) : (ui8) -> ()
+
+    // divi 4, 254 -> 0
+    %result_divi_ui84_ui8254 = arc.divi %cst_ui84, %cst_ui8254 : ui8
+    "arc.keep"(%result_divi_ui84_ui8254) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui80]]) : (ui8) -> ()
+
+    // divi 4, 255 -> 0
+    %result_divi_ui84_ui8255 = arc.divi %cst_ui84, %cst_ui8255 : ui8
+    "arc.keep"(%result_divi_ui84_ui8255) : (ui8) -> ()
     // CHECK: "arc.keep"([[CSTui80]]) : (ui8) -> ()
 
     // divi 72, 100 -> 0
@@ -5070,6 +10857,31 @@ module @toplevel {
     "arc.keep"(%result_divi_ui81_ui81) : (ui8) -> ()
     // CHECK: "arc.keep"([[CSTui81]]) : (ui8) -> ()
 
+    // divi 2, 2 -> 1
+    %result_divi_ui82_ui82 = arc.divi %cst_ui82, %cst_ui82 : ui8
+    "arc.keep"(%result_divi_ui82_ui82) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui81]]) : (ui8) -> ()
+
+    // divi 3, 2 -> 1
+    %result_divi_ui83_ui82 = arc.divi %cst_ui83, %cst_ui82 : ui8
+    "arc.keep"(%result_divi_ui83_ui82) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui81]]) : (ui8) -> ()
+
+    // divi 3, 3 -> 1
+    %result_divi_ui83_ui83 = arc.divi %cst_ui83, %cst_ui83 : ui8
+    "arc.keep"(%result_divi_ui83_ui83) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui81]]) : (ui8) -> ()
+
+    // divi 4, 3 -> 1
+    %result_divi_ui84_ui83 = arc.divi %cst_ui84, %cst_ui83 : ui8
+    "arc.keep"(%result_divi_ui84_ui83) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui81]]) : (ui8) -> ()
+
+    // divi 4, 4 -> 1
+    %result_divi_ui84_ui84 = arc.divi %cst_ui84, %cst_ui84 : ui8
+    "arc.keep"(%result_divi_ui84_ui84) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui81]]) : (ui8) -> ()
+
     // divi 72, 72 -> 1
     %result_divi_ui872_ui872 = arc.divi %cst_ui872, %cst_ui872 : ui8
     "arc.keep"(%result_divi_ui872_ui872) : (ui8) -> ()
@@ -5120,6 +10932,16 @@ module @toplevel {
     "arc.keep"(%result_divi_ui8255_ui8255) : (ui8) -> ()
     // CHECK: "arc.keep"([[CSTui81]]) : (ui8) -> ()
 
+    // divi 2, 1 -> 2
+    %result_divi_ui82_ui81 = arc.divi %cst_ui82, %cst_ui81 : ui8
+    "arc.keep"(%result_divi_ui82_ui81) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui82]]) : (ui8) -> ()
+
+    // divi 4, 2 -> 2
+    %result_divi_ui84_ui82 = arc.divi %cst_ui84, %cst_ui82 : ui8
+    "arc.keep"(%result_divi_ui84_ui82) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui82]]) : (ui8) -> ()
+
     // divi 162, 72 -> 2
     %result_divi_ui8162_ui872 = arc.divi %cst_ui8162, %cst_ui872 : ui8
     "arc.keep"(%result_divi_ui8162_ui872) : (ui8) -> ()
@@ -5135,6 +10957,11 @@ module @toplevel {
     "arc.keep"(%result_divi_ui8255_ui8100) : (ui8) -> ()
     // CHECK: "arc.keep"([[CSTui82]]) : (ui8) -> ()
 
+    // divi 3, 1 -> 3
+    %result_divi_ui83_ui81 = arc.divi %cst_ui83, %cst_ui81 : ui8
+    "arc.keep"(%result_divi_ui83_ui81) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui83]]) : (ui8) -> ()
+
     // divi 254, 72 -> 3
     %result_divi_ui8254_ui872 = arc.divi %cst_ui8254, %cst_ui872 : ui8
     "arc.keep"(%result_divi_ui8254_ui872) : (ui8) -> ()
@@ -5145,15 +10972,95 @@ module @toplevel {
     "arc.keep"(%result_divi_ui8255_ui872) : (ui8) -> ()
     // CHECK: "arc.keep"([[CSTui83]]) : (ui8) -> ()
 
+    // divi 4, 1 -> 4
+    %result_divi_ui84_ui81 = arc.divi %cst_ui84, %cst_ui81 : ui8
+    "arc.keep"(%result_divi_ui84_ui81) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui84]]) : (ui8) -> ()
+
+    // divi 72, 4 -> 18
+    %result_divi_ui872_ui84 = arc.divi %cst_ui872, %cst_ui84 : ui8
+    "arc.keep"(%result_divi_ui872_ui84) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui818]]) : (ui8) -> ()
+
+    // divi 72, 3 -> 24
+    %result_divi_ui872_ui83 = arc.divi %cst_ui872, %cst_ui83 : ui8
+    "arc.keep"(%result_divi_ui872_ui83) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui824]]) : (ui8) -> ()
+
+    // divi 100, 4 -> 25
+    %result_divi_ui8100_ui84 = arc.divi %cst_ui8100, %cst_ui84 : ui8
+    "arc.keep"(%result_divi_ui8100_ui84) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui825]]) : (ui8) -> ()
+
+    // divi 100, 3 -> 33
+    %result_divi_ui8100_ui83 = arc.divi %cst_ui8100, %cst_ui83 : ui8
+    "arc.keep"(%result_divi_ui8100_ui83) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui833]]) : (ui8) -> ()
+
+    // divi 72, 2 -> 36
+    %result_divi_ui872_ui82 = arc.divi %cst_ui872, %cst_ui82 : ui8
+    "arc.keep"(%result_divi_ui872_ui82) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui836]]) : (ui8) -> ()
+
+    // divi 162, 4 -> 40
+    %result_divi_ui8162_ui84 = arc.divi %cst_ui8162, %cst_ui84 : ui8
+    "arc.keep"(%result_divi_ui8162_ui84) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui840]]) : (ui8) -> ()
+
+    // divi 100, 2 -> 50
+    %result_divi_ui8100_ui82 = arc.divi %cst_ui8100, %cst_ui82 : ui8
+    "arc.keep"(%result_divi_ui8100_ui82) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui850]]) : (ui8) -> ()
+
+    // divi 162, 3 -> 54
+    %result_divi_ui8162_ui83 = arc.divi %cst_ui8162, %cst_ui83 : ui8
+    "arc.keep"(%result_divi_ui8162_ui83) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui854]]) : (ui8) -> ()
+
+    // divi 254, 4 -> 63
+    %result_divi_ui8254_ui84 = arc.divi %cst_ui8254, %cst_ui84 : ui8
+    "arc.keep"(%result_divi_ui8254_ui84) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui863]]) : (ui8) -> ()
+
+    // divi 255, 4 -> 63
+    %result_divi_ui8255_ui84 = arc.divi %cst_ui8255, %cst_ui84 : ui8
+    "arc.keep"(%result_divi_ui8255_ui84) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui863]]) : (ui8) -> ()
+
     // divi 72, 1 -> 72
     %result_divi_ui872_ui81 = arc.divi %cst_ui872, %cst_ui81 : ui8
     "arc.keep"(%result_divi_ui872_ui81) : (ui8) -> ()
     // CHECK: "arc.keep"([[CSTui872]]) : (ui8) -> ()
 
+    // divi 162, 2 -> 81
+    %result_divi_ui8162_ui82 = arc.divi %cst_ui8162, %cst_ui82 : ui8
+    "arc.keep"(%result_divi_ui8162_ui82) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui881]]) : (ui8) -> ()
+
+    // divi 254, 3 -> 84
+    %result_divi_ui8254_ui83 = arc.divi %cst_ui8254, %cst_ui83 : ui8
+    "arc.keep"(%result_divi_ui8254_ui83) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui884]]) : (ui8) -> ()
+
+    // divi 255, 3 -> 85
+    %result_divi_ui8255_ui83 = arc.divi %cst_ui8255, %cst_ui83 : ui8
+    "arc.keep"(%result_divi_ui8255_ui83) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui885]]) : (ui8) -> ()
+
     // divi 100, 1 -> 100
     %result_divi_ui8100_ui81 = arc.divi %cst_ui8100, %cst_ui81 : ui8
     "arc.keep"(%result_divi_ui8100_ui81) : (ui8) -> ()
     // CHECK: "arc.keep"([[CSTui8100]]) : (ui8) -> ()
+
+    // divi 254, 2 -> 127
+    %result_divi_ui8254_ui82 = arc.divi %cst_ui8254, %cst_ui82 : ui8
+    "arc.keep"(%result_divi_ui8254_ui82) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui8127]]) : (ui8) -> ()
+
+    // divi 255, 2 -> 127
+    %result_divi_ui8255_ui82 = arc.divi %cst_ui8255, %cst_ui82 : ui8
+    "arc.keep"(%result_divi_ui8255_ui82) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui8127]]) : (ui8) -> ()
 
     // divi 162, 1 -> 162
     %result_divi_ui8162_ui81 = arc.divi %cst_ui8162, %cst_ui81 : ui8
@@ -5181,6 +11088,24 @@ module @toplevel {
     // CHECK-DAG: [[RESULT_divi_ui81_ui80:%[^ ]+]] = arc.divi [[CSTui81]], [[CSTui80]] : ui8
     "arc.keep"(%result_divi_ui81_ui80) : (ui8) -> ()
     // CHECK: "arc.keep"([[RESULT_divi_ui81_ui80]]) : (ui8) -> ()
+
+    // divi 2, 0 -> no-fold
+    %result_divi_ui82_ui80 = arc.divi %cst_ui82, %cst_ui80 : ui8
+    // CHECK-DAG: [[RESULT_divi_ui82_ui80:%[^ ]+]] = arc.divi [[CSTui82]], [[CSTui80]] : ui8
+    "arc.keep"(%result_divi_ui82_ui80) : (ui8) -> ()
+    // CHECK: "arc.keep"([[RESULT_divi_ui82_ui80]]) : (ui8) -> ()
+
+    // divi 3, 0 -> no-fold
+    %result_divi_ui83_ui80 = arc.divi %cst_ui83, %cst_ui80 : ui8
+    // CHECK-DAG: [[RESULT_divi_ui83_ui80:%[^ ]+]] = arc.divi [[CSTui83]], [[CSTui80]] : ui8
+    "arc.keep"(%result_divi_ui83_ui80) : (ui8) -> ()
+    // CHECK: "arc.keep"([[RESULT_divi_ui83_ui80]]) : (ui8) -> ()
+
+    // divi 4, 0 -> no-fold
+    %result_divi_ui84_ui80 = arc.divi %cst_ui84, %cst_ui80 : ui8
+    // CHECK-DAG: [[RESULT_divi_ui84_ui80:%[^ ]+]] = arc.divi [[CSTui84]], [[CSTui80]] : ui8
+    "arc.keep"(%result_divi_ui84_ui80) : (ui8) -> ()
+    // CHECK: "arc.keep"([[RESULT_divi_ui84_ui80]]) : (ui8) -> ()
 
     // divi 72, 0 -> no-fold
     %result_divi_ui872_ui80 = arc.divi %cst_ui872, %cst_ui80 : ui8
@@ -5211,6 +11136,36 @@ module @toplevel {
     // CHECK-DAG: [[RESULT_divi_ui8255_ui80:%[^ ]+]] = arc.divi [[CSTui8255]], [[CSTui80]] : ui8
     "arc.keep"(%result_divi_ui8255_ui80) : (ui8) -> ()
     // CHECK: "arc.keep"([[RESULT_divi_ui8255_ui80]]) : (ui8) -> ()
+
+    // muli -32768, 1 -> -32768
+    %result_muli_si16n32768_si161 = arc.muli %cst_si16n32768, %cst_si161 : si16
+    "arc.keep"(%result_muli_si16n32768_si161) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi16n32768]]) : (si16) -> ()
+
+    // muli 1, -32768 -> -32768
+    %result_muli_si161_si16n32768 = arc.muli %cst_si161, %cst_si16n32768 : si16
+    "arc.keep"(%result_muli_si161_si16n32768) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi16n32768]]) : (si16) -> ()
+
+    // muli -32767, 1 -> -32767
+    %result_muli_si16n32767_si161 = arc.muli %cst_si16n32767, %cst_si161 : si16
+    "arc.keep"(%result_muli_si16n32767_si161) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi16n32767]]) : (si16) -> ()
+
+    // muli 1, -32767 -> -32767
+    %result_muli_si161_si16n32767 = arc.muli %cst_si161, %cst_si16n32767 : si16
+    "arc.keep"(%result_muli_si161_si16n32767) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi16n32767]]) : (si16) -> ()
+
+    // muli -32547, 1 -> -32547
+    %result_muli_si16n32547_si161 = arc.muli %cst_si16n32547, %cst_si161 : si16
+    "arc.keep"(%result_muli_si16n32547_si161) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi16n32547]]) : (si16) -> ()
+
+    // muli 1, -32547 -> -32547
+    %result_muli_si161_si16n32547 = arc.muli %cst_si161, %cst_si16n32547 : si16
+    "arc.keep"(%result_muli_si161_si16n32547) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi16n32547]]) : (si16) -> ()
 
     // muli -32768, 0 -> 0
     %result_muli_si16n32768_si160 = arc.muli %cst_si16n32768, %cst_si160 : si16
@@ -5247,6 +11202,26 @@ module @toplevel {
     "arc.keep"(%result_muli_si160_si160) : (si16) -> ()
     // CHECK: "arc.keep"([[CSTsi160]]) : (si16) -> ()
 
+    // muli 0, 1 -> 0
+    %result_muli_si160_si161 = arc.muli %cst_si160, %cst_si161 : si16
+    "arc.keep"(%result_muli_si160_si161) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi160]]) : (si16) -> ()
+
+    // muli 0, 2 -> 0
+    %result_muli_si160_si162 = arc.muli %cst_si160, %cst_si162 : si16
+    "arc.keep"(%result_muli_si160_si162) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi160]]) : (si16) -> ()
+
+    // muli 0, 3 -> 0
+    %result_muli_si160_si163 = arc.muli %cst_si160, %cst_si163 : si16
+    "arc.keep"(%result_muli_si160_si163) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi160]]) : (si16) -> ()
+
+    // muli 0, 4 -> 0
+    %result_muli_si160_si164 = arc.muli %cst_si160, %cst_si164 : si16
+    "arc.keep"(%result_muli_si160_si164) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi160]]) : (si16) -> ()
+
     // muli 0, 10486 -> 0
     %result_muli_si160_si1610486 = arc.muli %cst_si160, %cst_si1610486 : si16
     "arc.keep"(%result_muli_si160_si1610486) : (si16) -> ()
@@ -5265,6 +11240,26 @@ module @toplevel {
     // muli 0, 32767 -> 0
     %result_muli_si160_si1632767 = arc.muli %cst_si160, %cst_si1632767 : si16
     "arc.keep"(%result_muli_si160_si1632767) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi160]]) : (si16) -> ()
+
+    // muli 1, 0 -> 0
+    %result_muli_si161_si160 = arc.muli %cst_si161, %cst_si160 : si16
+    "arc.keep"(%result_muli_si161_si160) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi160]]) : (si16) -> ()
+
+    // muli 2, 0 -> 0
+    %result_muli_si162_si160 = arc.muli %cst_si162, %cst_si160 : si16
+    "arc.keep"(%result_muli_si162_si160) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi160]]) : (si16) -> ()
+
+    // muli 3, 0 -> 0
+    %result_muli_si163_si160 = arc.muli %cst_si163, %cst_si160 : si16
+    "arc.keep"(%result_muli_si163_si160) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi160]]) : (si16) -> ()
+
+    // muli 4, 0 -> 0
+    %result_muli_si164_si160 = arc.muli %cst_si164, %cst_si160 : si16
+    "arc.keep"(%result_muli_si164_si160) : (si16) -> ()
     // CHECK: "arc.keep"([[CSTsi160]]) : (si16) -> ()
 
     // muli 10486, 0 -> 0
@@ -5287,6 +11282,146 @@ module @toplevel {
     "arc.keep"(%result_muli_si1632767_si160) : (si16) -> ()
     // CHECK: "arc.keep"([[CSTsi160]]) : (si16) -> ()
 
+    // muli 1, 1 -> 1
+    %result_muli_si161_si161 = arc.muli %cst_si161, %cst_si161 : si16
+    "arc.keep"(%result_muli_si161_si161) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi161]]) : (si16) -> ()
+
+    // muli 1, 2 -> 2
+    %result_muli_si161_si162 = arc.muli %cst_si161, %cst_si162 : si16
+    "arc.keep"(%result_muli_si161_si162) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi162]]) : (si16) -> ()
+
+    // muli 2, 1 -> 2
+    %result_muli_si162_si161 = arc.muli %cst_si162, %cst_si161 : si16
+    "arc.keep"(%result_muli_si162_si161) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi162]]) : (si16) -> ()
+
+    // muli 1, 3 -> 3
+    %result_muli_si161_si163 = arc.muli %cst_si161, %cst_si163 : si16
+    "arc.keep"(%result_muli_si161_si163) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi163]]) : (si16) -> ()
+
+    // muli 3, 1 -> 3
+    %result_muli_si163_si161 = arc.muli %cst_si163, %cst_si161 : si16
+    "arc.keep"(%result_muli_si163_si161) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi163]]) : (si16) -> ()
+
+    // muli 1, 4 -> 4
+    %result_muli_si161_si164 = arc.muli %cst_si161, %cst_si164 : si16
+    "arc.keep"(%result_muli_si161_si164) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi164]]) : (si16) -> ()
+
+    // muli 2, 2 -> 4
+    %result_muli_si162_si162 = arc.muli %cst_si162, %cst_si162 : si16
+    "arc.keep"(%result_muli_si162_si162) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi164]]) : (si16) -> ()
+
+    // muli 4, 1 -> 4
+    %result_muli_si164_si161 = arc.muli %cst_si164, %cst_si161 : si16
+    "arc.keep"(%result_muli_si164_si161) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi164]]) : (si16) -> ()
+
+    // muli 2, 3 -> 6
+    %result_muli_si162_si163 = arc.muli %cst_si162, %cst_si163 : si16
+    "arc.keep"(%result_muli_si162_si163) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi166]]) : (si16) -> ()
+
+    // muli 3, 2 -> 6
+    %result_muli_si163_si162 = arc.muli %cst_si163, %cst_si162 : si16
+    "arc.keep"(%result_muli_si163_si162) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi166]]) : (si16) -> ()
+
+    // muli 2, 4 -> 8
+    %result_muli_si162_si164 = arc.muli %cst_si162, %cst_si164 : si16
+    "arc.keep"(%result_muli_si162_si164) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi168]]) : (si16) -> ()
+
+    // muli 4, 2 -> 8
+    %result_muli_si164_si162 = arc.muli %cst_si164, %cst_si162 : si16
+    "arc.keep"(%result_muli_si164_si162) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi168]]) : (si16) -> ()
+
+    // muli 3, 3 -> 9
+    %result_muli_si163_si163 = arc.muli %cst_si163, %cst_si163 : si16
+    "arc.keep"(%result_muli_si163_si163) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi169]]) : (si16) -> ()
+
+    // muli 3, 4 -> 12
+    %result_muli_si163_si164 = arc.muli %cst_si163, %cst_si164 : si16
+    "arc.keep"(%result_muli_si163_si164) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi1612]]) : (si16) -> ()
+
+    // muli 4, 3 -> 12
+    %result_muli_si164_si163 = arc.muli %cst_si164, %cst_si163 : si16
+    "arc.keep"(%result_muli_si164_si163) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi1612]]) : (si16) -> ()
+
+    // muli 4, 4 -> 16
+    %result_muli_si164_si164 = arc.muli %cst_si164, %cst_si164 : si16
+    "arc.keep"(%result_muli_si164_si164) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi1616]]) : (si16) -> ()
+
+    // muli 1, 10486 -> 10486
+    %result_muli_si161_si1610486 = arc.muli %cst_si161, %cst_si1610486 : si16
+    "arc.keep"(%result_muli_si161_si1610486) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi1610486]]) : (si16) -> ()
+
+    // muli 10486, 1 -> 10486
+    %result_muli_si1610486_si161 = arc.muli %cst_si1610486, %cst_si161 : si16
+    "arc.keep"(%result_muli_si1610486_si161) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi1610486]]) : (si16) -> ()
+
+    // muli 1, 16514 -> 16514
+    %result_muli_si161_si1616514 = arc.muli %cst_si161, %cst_si1616514 : si16
+    "arc.keep"(%result_muli_si161_si1616514) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi1616514]]) : (si16) -> ()
+
+    // muli 16514, 1 -> 16514
+    %result_muli_si1616514_si161 = arc.muli %cst_si1616514, %cst_si161 : si16
+    "arc.keep"(%result_muli_si1616514_si161) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi1616514]]) : (si16) -> ()
+
+    // muli 2, 10486 -> 20972
+    %result_muli_si162_si1610486 = arc.muli %cst_si162, %cst_si1610486 : si16
+    "arc.keep"(%result_muli_si162_si1610486) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi1620972]]) : (si16) -> ()
+
+    // muli 10486, 2 -> 20972
+    %result_muli_si1610486_si162 = arc.muli %cst_si1610486, %cst_si162 : si16
+    "arc.keep"(%result_muli_si1610486_si162) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi1620972]]) : (si16) -> ()
+
+    // muli 3, 10486 -> 31458
+    %result_muli_si163_si1610486 = arc.muli %cst_si163, %cst_si1610486 : si16
+    "arc.keep"(%result_muli_si163_si1610486) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi1631458]]) : (si16) -> ()
+
+    // muli 10486, 3 -> 31458
+    %result_muli_si1610486_si163 = arc.muli %cst_si1610486, %cst_si163 : si16
+    "arc.keep"(%result_muli_si1610486_si163) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi1631458]]) : (si16) -> ()
+
+    // muli 1, 32766 -> 32766
+    %result_muli_si161_si1632766 = arc.muli %cst_si161, %cst_si1632766 : si16
+    "arc.keep"(%result_muli_si161_si1632766) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi1632766]]) : (si16) -> ()
+
+    // muli 32766, 1 -> 32766
+    %result_muli_si1632766_si161 = arc.muli %cst_si1632766, %cst_si161 : si16
+    "arc.keep"(%result_muli_si1632766_si161) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi1632766]]) : (si16) -> ()
+
+    // muli 1, 32767 -> 32767
+    %result_muli_si161_si1632767 = arc.muli %cst_si161, %cst_si1632767 : si16
+    "arc.keep"(%result_muli_si161_si1632767) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi1632767]]) : (si16) -> ()
+
+    // muli 32767, 1 -> 32767
+    %result_muli_si1632767_si161 = arc.muli %cst_si1632767, %cst_si161 : si16
+    "arc.keep"(%result_muli_si1632767_si161) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi1632767]]) : (si16) -> ()
+
     // muli -32768, -32768 -> no-fold
     %result_muli_si16n32768_si16n32768 = arc.muli %cst_si16n32768, %cst_si16n32768 : si16
     // CHECK-DAG: [[RESULT_muli_si16n32768_si16n32768:%[^ ]+]] = arc.muli [[CSTsi16n32768]], [[CSTsi16n32768]] : si16
@@ -5304,6 +11439,24 @@ module @toplevel {
     // CHECK-DAG: [[RESULT_muli_si16n32768_si16n32547:%[^ ]+]] = arc.muli [[CSTsi16n32768]], [[CSTsi16n32547]] : si16
     "arc.keep"(%result_muli_si16n32768_si16n32547) : (si16) -> ()
     // CHECK: "arc.keep"([[RESULT_muli_si16n32768_si16n32547]]) : (si16) -> ()
+
+    // muli -32768, 2 -> no-fold
+    %result_muli_si16n32768_si162 = arc.muli %cst_si16n32768, %cst_si162 : si16
+    // CHECK-DAG: [[RESULT_muli_si16n32768_si162:%[^ ]+]] = arc.muli [[CSTsi16n32768]], [[CSTsi162]] : si16
+    "arc.keep"(%result_muli_si16n32768_si162) : (si16) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_si16n32768_si162]]) : (si16) -> ()
+
+    // muli -32768, 3 -> no-fold
+    %result_muli_si16n32768_si163 = arc.muli %cst_si16n32768, %cst_si163 : si16
+    // CHECK-DAG: [[RESULT_muli_si16n32768_si163:%[^ ]+]] = arc.muli [[CSTsi16n32768]], [[CSTsi163]] : si16
+    "arc.keep"(%result_muli_si16n32768_si163) : (si16) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_si16n32768_si163]]) : (si16) -> ()
+
+    // muli -32768, 4 -> no-fold
+    %result_muli_si16n32768_si164 = arc.muli %cst_si16n32768, %cst_si164 : si16
+    // CHECK-DAG: [[RESULT_muli_si16n32768_si164:%[^ ]+]] = arc.muli [[CSTsi16n32768]], [[CSTsi164]] : si16
+    "arc.keep"(%result_muli_si16n32768_si164) : (si16) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_si16n32768_si164]]) : (si16) -> ()
 
     // muli -32768, 10486 -> no-fold
     %result_muli_si16n32768_si1610486 = arc.muli %cst_si16n32768, %cst_si1610486 : si16
@@ -5347,6 +11500,24 @@ module @toplevel {
     "arc.keep"(%result_muli_si16n32767_si16n32547) : (si16) -> ()
     // CHECK: "arc.keep"([[RESULT_muli_si16n32767_si16n32547]]) : (si16) -> ()
 
+    // muli -32767, 2 -> no-fold
+    %result_muli_si16n32767_si162 = arc.muli %cst_si16n32767, %cst_si162 : si16
+    // CHECK-DAG: [[RESULT_muli_si16n32767_si162:%[^ ]+]] = arc.muli [[CSTsi16n32767]], [[CSTsi162]] : si16
+    "arc.keep"(%result_muli_si16n32767_si162) : (si16) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_si16n32767_si162]]) : (si16) -> ()
+
+    // muli -32767, 3 -> no-fold
+    %result_muli_si16n32767_si163 = arc.muli %cst_si16n32767, %cst_si163 : si16
+    // CHECK-DAG: [[RESULT_muli_si16n32767_si163:%[^ ]+]] = arc.muli [[CSTsi16n32767]], [[CSTsi163]] : si16
+    "arc.keep"(%result_muli_si16n32767_si163) : (si16) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_si16n32767_si163]]) : (si16) -> ()
+
+    // muli -32767, 4 -> no-fold
+    %result_muli_si16n32767_si164 = arc.muli %cst_si16n32767, %cst_si164 : si16
+    // CHECK-DAG: [[RESULT_muli_si16n32767_si164:%[^ ]+]] = arc.muli [[CSTsi16n32767]], [[CSTsi164]] : si16
+    "arc.keep"(%result_muli_si16n32767_si164) : (si16) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_si16n32767_si164]]) : (si16) -> ()
+
     // muli -32767, 10486 -> no-fold
     %result_muli_si16n32767_si1610486 = arc.muli %cst_si16n32767, %cst_si1610486 : si16
     // CHECK-DAG: [[RESULT_muli_si16n32767_si1610486:%[^ ]+]] = arc.muli [[CSTsi16n32767]], [[CSTsi1610486]] : si16
@@ -5389,6 +11560,24 @@ module @toplevel {
     "arc.keep"(%result_muli_si16n32547_si16n32547) : (si16) -> ()
     // CHECK: "arc.keep"([[RESULT_muli_si16n32547_si16n32547]]) : (si16) -> ()
 
+    // muli -32547, 2 -> no-fold
+    %result_muli_si16n32547_si162 = arc.muli %cst_si16n32547, %cst_si162 : si16
+    // CHECK-DAG: [[RESULT_muli_si16n32547_si162:%[^ ]+]] = arc.muli [[CSTsi16n32547]], [[CSTsi162]] : si16
+    "arc.keep"(%result_muli_si16n32547_si162) : (si16) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_si16n32547_si162]]) : (si16) -> ()
+
+    // muli -32547, 3 -> no-fold
+    %result_muli_si16n32547_si163 = arc.muli %cst_si16n32547, %cst_si163 : si16
+    // CHECK-DAG: [[RESULT_muli_si16n32547_si163:%[^ ]+]] = arc.muli [[CSTsi16n32547]], [[CSTsi163]] : si16
+    "arc.keep"(%result_muli_si16n32547_si163) : (si16) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_si16n32547_si163]]) : (si16) -> ()
+
+    // muli -32547, 4 -> no-fold
+    %result_muli_si16n32547_si164 = arc.muli %cst_si16n32547, %cst_si164 : si16
+    // CHECK-DAG: [[RESULT_muli_si16n32547_si164:%[^ ]+]] = arc.muli [[CSTsi16n32547]], [[CSTsi164]] : si16
+    "arc.keep"(%result_muli_si16n32547_si164) : (si16) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_si16n32547_si164]]) : (si16) -> ()
+
     // muli -32547, 10486 -> no-fold
     %result_muli_si16n32547_si1610486 = arc.muli %cst_si16n32547, %cst_si1610486 : si16
     // CHECK-DAG: [[RESULT_muli_si16n32547_si1610486:%[^ ]+]] = arc.muli [[CSTsi16n32547]], [[CSTsi1610486]] : si16
@@ -5413,6 +11602,120 @@ module @toplevel {
     "arc.keep"(%result_muli_si16n32547_si1632767) : (si16) -> ()
     // CHECK: "arc.keep"([[RESULT_muli_si16n32547_si1632767]]) : (si16) -> ()
 
+    // muli 2, -32768 -> no-fold
+    %result_muli_si162_si16n32768 = arc.muli %cst_si162, %cst_si16n32768 : si16
+    // CHECK-DAG: [[RESULT_muli_si162_si16n32768:%[^ ]+]] = arc.muli [[CSTsi162]], [[CSTsi16n32768]] : si16
+    "arc.keep"(%result_muli_si162_si16n32768) : (si16) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_si162_si16n32768]]) : (si16) -> ()
+
+    // muli 2, -32767 -> no-fold
+    %result_muli_si162_si16n32767 = arc.muli %cst_si162, %cst_si16n32767 : si16
+    // CHECK-DAG: [[RESULT_muli_si162_si16n32767:%[^ ]+]] = arc.muli [[CSTsi162]], [[CSTsi16n32767]] : si16
+    "arc.keep"(%result_muli_si162_si16n32767) : (si16) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_si162_si16n32767]]) : (si16) -> ()
+
+    // muli 2, -32547 -> no-fold
+    %result_muli_si162_si16n32547 = arc.muli %cst_si162, %cst_si16n32547 : si16
+    // CHECK-DAG: [[RESULT_muli_si162_si16n32547:%[^ ]+]] = arc.muli [[CSTsi162]], [[CSTsi16n32547]] : si16
+    "arc.keep"(%result_muli_si162_si16n32547) : (si16) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_si162_si16n32547]]) : (si16) -> ()
+
+    // muli 2, 16514 -> no-fold
+    %result_muli_si162_si1616514 = arc.muli %cst_si162, %cst_si1616514 : si16
+    // CHECK-DAG: [[RESULT_muli_si162_si1616514:%[^ ]+]] = arc.muli [[CSTsi162]], [[CSTsi1616514]] : si16
+    "arc.keep"(%result_muli_si162_si1616514) : (si16) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_si162_si1616514]]) : (si16) -> ()
+
+    // muli 2, 32766 -> no-fold
+    %result_muli_si162_si1632766 = arc.muli %cst_si162, %cst_si1632766 : si16
+    // CHECK-DAG: [[RESULT_muli_si162_si1632766:%[^ ]+]] = arc.muli [[CSTsi162]], [[CSTsi1632766]] : si16
+    "arc.keep"(%result_muli_si162_si1632766) : (si16) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_si162_si1632766]]) : (si16) -> ()
+
+    // muli 2, 32767 -> no-fold
+    %result_muli_si162_si1632767 = arc.muli %cst_si162, %cst_si1632767 : si16
+    // CHECK-DAG: [[RESULT_muli_si162_si1632767:%[^ ]+]] = arc.muli [[CSTsi162]], [[CSTsi1632767]] : si16
+    "arc.keep"(%result_muli_si162_si1632767) : (si16) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_si162_si1632767]]) : (si16) -> ()
+
+    // muli 3, -32768 -> no-fold
+    %result_muli_si163_si16n32768 = arc.muli %cst_si163, %cst_si16n32768 : si16
+    // CHECK-DAG: [[RESULT_muli_si163_si16n32768:%[^ ]+]] = arc.muli [[CSTsi163]], [[CSTsi16n32768]] : si16
+    "arc.keep"(%result_muli_si163_si16n32768) : (si16) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_si163_si16n32768]]) : (si16) -> ()
+
+    // muli 3, -32767 -> no-fold
+    %result_muli_si163_si16n32767 = arc.muli %cst_si163, %cst_si16n32767 : si16
+    // CHECK-DAG: [[RESULT_muli_si163_si16n32767:%[^ ]+]] = arc.muli [[CSTsi163]], [[CSTsi16n32767]] : si16
+    "arc.keep"(%result_muli_si163_si16n32767) : (si16) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_si163_si16n32767]]) : (si16) -> ()
+
+    // muli 3, -32547 -> no-fold
+    %result_muli_si163_si16n32547 = arc.muli %cst_si163, %cst_si16n32547 : si16
+    // CHECK-DAG: [[RESULT_muli_si163_si16n32547:%[^ ]+]] = arc.muli [[CSTsi163]], [[CSTsi16n32547]] : si16
+    "arc.keep"(%result_muli_si163_si16n32547) : (si16) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_si163_si16n32547]]) : (si16) -> ()
+
+    // muli 3, 16514 -> no-fold
+    %result_muli_si163_si1616514 = arc.muli %cst_si163, %cst_si1616514 : si16
+    // CHECK-DAG: [[RESULT_muli_si163_si1616514:%[^ ]+]] = arc.muli [[CSTsi163]], [[CSTsi1616514]] : si16
+    "arc.keep"(%result_muli_si163_si1616514) : (si16) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_si163_si1616514]]) : (si16) -> ()
+
+    // muli 3, 32766 -> no-fold
+    %result_muli_si163_si1632766 = arc.muli %cst_si163, %cst_si1632766 : si16
+    // CHECK-DAG: [[RESULT_muli_si163_si1632766:%[^ ]+]] = arc.muli [[CSTsi163]], [[CSTsi1632766]] : si16
+    "arc.keep"(%result_muli_si163_si1632766) : (si16) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_si163_si1632766]]) : (si16) -> ()
+
+    // muli 3, 32767 -> no-fold
+    %result_muli_si163_si1632767 = arc.muli %cst_si163, %cst_si1632767 : si16
+    // CHECK-DAG: [[RESULT_muli_si163_si1632767:%[^ ]+]] = arc.muli [[CSTsi163]], [[CSTsi1632767]] : si16
+    "arc.keep"(%result_muli_si163_si1632767) : (si16) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_si163_si1632767]]) : (si16) -> ()
+
+    // muli 4, -32768 -> no-fold
+    %result_muli_si164_si16n32768 = arc.muli %cst_si164, %cst_si16n32768 : si16
+    // CHECK-DAG: [[RESULT_muli_si164_si16n32768:%[^ ]+]] = arc.muli [[CSTsi164]], [[CSTsi16n32768]] : si16
+    "arc.keep"(%result_muli_si164_si16n32768) : (si16) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_si164_si16n32768]]) : (si16) -> ()
+
+    // muli 4, -32767 -> no-fold
+    %result_muli_si164_si16n32767 = arc.muli %cst_si164, %cst_si16n32767 : si16
+    // CHECK-DAG: [[RESULT_muli_si164_si16n32767:%[^ ]+]] = arc.muli [[CSTsi164]], [[CSTsi16n32767]] : si16
+    "arc.keep"(%result_muli_si164_si16n32767) : (si16) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_si164_si16n32767]]) : (si16) -> ()
+
+    // muli 4, -32547 -> no-fold
+    %result_muli_si164_si16n32547 = arc.muli %cst_si164, %cst_si16n32547 : si16
+    // CHECK-DAG: [[RESULT_muli_si164_si16n32547:%[^ ]+]] = arc.muli [[CSTsi164]], [[CSTsi16n32547]] : si16
+    "arc.keep"(%result_muli_si164_si16n32547) : (si16) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_si164_si16n32547]]) : (si16) -> ()
+
+    // muli 4, 10486 -> no-fold
+    %result_muli_si164_si1610486 = arc.muli %cst_si164, %cst_si1610486 : si16
+    // CHECK-DAG: [[RESULT_muli_si164_si1610486:%[^ ]+]] = arc.muli [[CSTsi164]], [[CSTsi1610486]] : si16
+    "arc.keep"(%result_muli_si164_si1610486) : (si16) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_si164_si1610486]]) : (si16) -> ()
+
+    // muli 4, 16514 -> no-fold
+    %result_muli_si164_si1616514 = arc.muli %cst_si164, %cst_si1616514 : si16
+    // CHECK-DAG: [[RESULT_muli_si164_si1616514:%[^ ]+]] = arc.muli [[CSTsi164]], [[CSTsi1616514]] : si16
+    "arc.keep"(%result_muli_si164_si1616514) : (si16) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_si164_si1616514]]) : (si16) -> ()
+
+    // muli 4, 32766 -> no-fold
+    %result_muli_si164_si1632766 = arc.muli %cst_si164, %cst_si1632766 : si16
+    // CHECK-DAG: [[RESULT_muli_si164_si1632766:%[^ ]+]] = arc.muli [[CSTsi164]], [[CSTsi1632766]] : si16
+    "arc.keep"(%result_muli_si164_si1632766) : (si16) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_si164_si1632766]]) : (si16) -> ()
+
+    // muli 4, 32767 -> no-fold
+    %result_muli_si164_si1632767 = arc.muli %cst_si164, %cst_si1632767 : si16
+    // CHECK-DAG: [[RESULT_muli_si164_si1632767:%[^ ]+]] = arc.muli [[CSTsi164]], [[CSTsi1632767]] : si16
+    "arc.keep"(%result_muli_si164_si1632767) : (si16) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_si164_si1632767]]) : (si16) -> ()
+
     // muli 10486, -32768 -> no-fold
     %result_muli_si1610486_si16n32768 = arc.muli %cst_si1610486, %cst_si16n32768 : si16
     // CHECK-DAG: [[RESULT_muli_si1610486_si16n32768:%[^ ]+]] = arc.muli [[CSTsi1610486]], [[CSTsi16n32768]] : si16
@@ -5430,6 +11733,12 @@ module @toplevel {
     // CHECK-DAG: [[RESULT_muli_si1610486_si16n32547:%[^ ]+]] = arc.muli [[CSTsi1610486]], [[CSTsi16n32547]] : si16
     "arc.keep"(%result_muli_si1610486_si16n32547) : (si16) -> ()
     // CHECK: "arc.keep"([[RESULT_muli_si1610486_si16n32547]]) : (si16) -> ()
+
+    // muli 10486, 4 -> no-fold
+    %result_muli_si1610486_si164 = arc.muli %cst_si1610486, %cst_si164 : si16
+    // CHECK-DAG: [[RESULT_muli_si1610486_si164:%[^ ]+]] = arc.muli [[CSTsi1610486]], [[CSTsi164]] : si16
+    "arc.keep"(%result_muli_si1610486_si164) : (si16) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_si1610486_si164]]) : (si16) -> ()
 
     // muli 10486, 10486 -> no-fold
     %result_muli_si1610486_si1610486 = arc.muli %cst_si1610486, %cst_si1610486 : si16
@@ -5473,6 +11782,24 @@ module @toplevel {
     "arc.keep"(%result_muli_si1616514_si16n32547) : (si16) -> ()
     // CHECK: "arc.keep"([[RESULT_muli_si1616514_si16n32547]]) : (si16) -> ()
 
+    // muli 16514, 2 -> no-fold
+    %result_muli_si1616514_si162 = arc.muli %cst_si1616514, %cst_si162 : si16
+    // CHECK-DAG: [[RESULT_muli_si1616514_si162:%[^ ]+]] = arc.muli [[CSTsi1616514]], [[CSTsi162]] : si16
+    "arc.keep"(%result_muli_si1616514_si162) : (si16) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_si1616514_si162]]) : (si16) -> ()
+
+    // muli 16514, 3 -> no-fold
+    %result_muli_si1616514_si163 = arc.muli %cst_si1616514, %cst_si163 : si16
+    // CHECK-DAG: [[RESULT_muli_si1616514_si163:%[^ ]+]] = arc.muli [[CSTsi1616514]], [[CSTsi163]] : si16
+    "arc.keep"(%result_muli_si1616514_si163) : (si16) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_si1616514_si163]]) : (si16) -> ()
+
+    // muli 16514, 4 -> no-fold
+    %result_muli_si1616514_si164 = arc.muli %cst_si1616514, %cst_si164 : si16
+    // CHECK-DAG: [[RESULT_muli_si1616514_si164:%[^ ]+]] = arc.muli [[CSTsi1616514]], [[CSTsi164]] : si16
+    "arc.keep"(%result_muli_si1616514_si164) : (si16) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_si1616514_si164]]) : (si16) -> ()
+
     // muli 16514, 10486 -> no-fold
     %result_muli_si1616514_si1610486 = arc.muli %cst_si1616514, %cst_si1610486 : si16
     // CHECK-DAG: [[RESULT_muli_si1616514_si1610486:%[^ ]+]] = arc.muli [[CSTsi1616514]], [[CSTsi1610486]] : si16
@@ -5514,6 +11841,24 @@ module @toplevel {
     // CHECK-DAG: [[RESULT_muli_si1632766_si16n32547:%[^ ]+]] = arc.muli [[CSTsi1632766]], [[CSTsi16n32547]] : si16
     "arc.keep"(%result_muli_si1632766_si16n32547) : (si16) -> ()
     // CHECK: "arc.keep"([[RESULT_muli_si1632766_si16n32547]]) : (si16) -> ()
+
+    // muli 32766, 2 -> no-fold
+    %result_muli_si1632766_si162 = arc.muli %cst_si1632766, %cst_si162 : si16
+    // CHECK-DAG: [[RESULT_muli_si1632766_si162:%[^ ]+]] = arc.muli [[CSTsi1632766]], [[CSTsi162]] : si16
+    "arc.keep"(%result_muli_si1632766_si162) : (si16) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_si1632766_si162]]) : (si16) -> ()
+
+    // muli 32766, 3 -> no-fold
+    %result_muli_si1632766_si163 = arc.muli %cst_si1632766, %cst_si163 : si16
+    // CHECK-DAG: [[RESULT_muli_si1632766_si163:%[^ ]+]] = arc.muli [[CSTsi1632766]], [[CSTsi163]] : si16
+    "arc.keep"(%result_muli_si1632766_si163) : (si16) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_si1632766_si163]]) : (si16) -> ()
+
+    // muli 32766, 4 -> no-fold
+    %result_muli_si1632766_si164 = arc.muli %cst_si1632766, %cst_si164 : si16
+    // CHECK-DAG: [[RESULT_muli_si1632766_si164:%[^ ]+]] = arc.muli [[CSTsi1632766]], [[CSTsi164]] : si16
+    "arc.keep"(%result_muli_si1632766_si164) : (si16) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_si1632766_si164]]) : (si16) -> ()
 
     // muli 32766, 10486 -> no-fold
     %result_muli_si1632766_si1610486 = arc.muli %cst_si1632766, %cst_si1610486 : si16
@@ -5557,6 +11902,24 @@ module @toplevel {
     "arc.keep"(%result_muli_si1632767_si16n32547) : (si16) -> ()
     // CHECK: "arc.keep"([[RESULT_muli_si1632767_si16n32547]]) : (si16) -> ()
 
+    // muli 32767, 2 -> no-fold
+    %result_muli_si1632767_si162 = arc.muli %cst_si1632767, %cst_si162 : si16
+    // CHECK-DAG: [[RESULT_muli_si1632767_si162:%[^ ]+]] = arc.muli [[CSTsi1632767]], [[CSTsi162]] : si16
+    "arc.keep"(%result_muli_si1632767_si162) : (si16) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_si1632767_si162]]) : (si16) -> ()
+
+    // muli 32767, 3 -> no-fold
+    %result_muli_si1632767_si163 = arc.muli %cst_si1632767, %cst_si163 : si16
+    // CHECK-DAG: [[RESULT_muli_si1632767_si163:%[^ ]+]] = arc.muli [[CSTsi1632767]], [[CSTsi163]] : si16
+    "arc.keep"(%result_muli_si1632767_si163) : (si16) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_si1632767_si163]]) : (si16) -> ()
+
+    // muli 32767, 4 -> no-fold
+    %result_muli_si1632767_si164 = arc.muli %cst_si1632767, %cst_si164 : si16
+    // CHECK-DAG: [[RESULT_muli_si1632767_si164:%[^ ]+]] = arc.muli [[CSTsi1632767]], [[CSTsi164]] : si16
+    "arc.keep"(%result_muli_si1632767_si164) : (si16) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_si1632767_si164]]) : (si16) -> ()
+
     // muli 32767, 10486 -> no-fold
     %result_muli_si1632767_si1610486 = arc.muli %cst_si1632767, %cst_si1610486 : si16
     // CHECK-DAG: [[RESULT_muli_si1632767_si1610486:%[^ ]+]] = arc.muli [[CSTsi1632767]], [[CSTsi1610486]] : si16
@@ -5580,6 +11943,66 @@ module @toplevel {
     // CHECK-DAG: [[RESULT_muli_si1632767_si1632767:%[^ ]+]] = arc.muli [[CSTsi1632767]], [[CSTsi1632767]] : si16
     "arc.keep"(%result_muli_si1632767_si1632767) : (si16) -> ()
     // CHECK: "arc.keep"([[RESULT_muli_si1632767_si1632767]]) : (si16) -> ()
+
+    // muli -2147483648, 1 -> -2147483648
+    %result_muli_si32n2147483648_si321 = arc.muli %cst_si32n2147483648, %cst_si321 : si32
+    "arc.keep"(%result_muli_si32n2147483648_si321) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi32n2147483648]]) : (si32) -> ()
+
+    // muli 1, -2147483648 -> -2147483648
+    %result_muli_si321_si32n2147483648 = arc.muli %cst_si321, %cst_si32n2147483648 : si32
+    "arc.keep"(%result_muli_si321_si32n2147483648) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi32n2147483648]]) : (si32) -> ()
+
+    // muli -2147483647, 1 -> -2147483647
+    %result_muli_si32n2147483647_si321 = arc.muli %cst_si32n2147483647, %cst_si321 : si32
+    "arc.keep"(%result_muli_si32n2147483647_si321) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi32n2147483647]]) : (si32) -> ()
+
+    // muli 1, -2147483647 -> -2147483647
+    %result_muli_si321_si32n2147483647 = arc.muli %cst_si321, %cst_si32n2147483647 : si32
+    "arc.keep"(%result_muli_si321_si32n2147483647) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi32n2147483647]]) : (si32) -> ()
+
+    // muli -1035405763, 2 -> -2070811526
+    %result_muli_si32n1035405763_si322 = arc.muli %cst_si32n1035405763, %cst_si322 : si32
+    "arc.keep"(%result_muli_si32n1035405763_si322) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi32n2070811526]]) : (si32) -> ()
+
+    // muli 2, -1035405763 -> -2070811526
+    %result_muli_si322_si32n1035405763 = arc.muli %cst_si322, %cst_si32n1035405763 : si32
+    "arc.keep"(%result_muli_si322_si32n1035405763) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi32n2070811526]]) : (si32) -> ()
+
+    // muli -1713183800, 1 -> -1713183800
+    %result_muli_si32n1713183800_si321 = arc.muli %cst_si32n1713183800, %cst_si321 : si32
+    "arc.keep"(%result_muli_si32n1713183800_si321) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi32n1713183800]]) : (si32) -> ()
+
+    // muli 1, -1713183800 -> -1713183800
+    %result_muli_si321_si32n1713183800 = arc.muli %cst_si321, %cst_si32n1713183800 : si32
+    "arc.keep"(%result_muli_si321_si32n1713183800) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi32n1713183800]]) : (si32) -> ()
+
+    // muli -1252582164, 1 -> -1252582164
+    %result_muli_si32n1252582164_si321 = arc.muli %cst_si32n1252582164, %cst_si321 : si32
+    "arc.keep"(%result_muli_si32n1252582164_si321) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi32n1252582164]]) : (si32) -> ()
+
+    // muli 1, -1252582164 -> -1252582164
+    %result_muli_si321_si32n1252582164 = arc.muli %cst_si321, %cst_si32n1252582164 : si32
+    "arc.keep"(%result_muli_si321_si32n1252582164) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi32n1252582164]]) : (si32) -> ()
+
+    // muli -1035405763, 1 -> -1035405763
+    %result_muli_si32n1035405763_si321 = arc.muli %cst_si32n1035405763, %cst_si321 : si32
+    "arc.keep"(%result_muli_si32n1035405763_si321) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi32n1035405763]]) : (si32) -> ()
+
+    // muli 1, -1035405763 -> -1035405763
+    %result_muli_si321_si32n1035405763 = arc.muli %cst_si321, %cst_si32n1035405763 : si32
+    "arc.keep"(%result_muli_si321_si32n1035405763) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi32n1035405763]]) : (si32) -> ()
 
     // muli -2147483648, 0 -> 0
     %result_muli_si32n2147483648_si320 = arc.muli %cst_si32n2147483648, %cst_si320 : si32
@@ -5636,6 +12059,26 @@ module @toplevel {
     "arc.keep"(%result_muli_si320_si320) : (si32) -> ()
     // CHECK: "arc.keep"([[CSTsi320]]) : (si32) -> ()
 
+    // muli 0, 1 -> 0
+    %result_muli_si320_si321 = arc.muli %cst_si320, %cst_si321 : si32
+    "arc.keep"(%result_muli_si320_si321) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi320]]) : (si32) -> ()
+
+    // muli 0, 2 -> 0
+    %result_muli_si320_si322 = arc.muli %cst_si320, %cst_si322 : si32
+    "arc.keep"(%result_muli_si320_si322) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi320]]) : (si32) -> ()
+
+    // muli 0, 3 -> 0
+    %result_muli_si320_si323 = arc.muli %cst_si320, %cst_si323 : si32
+    "arc.keep"(%result_muli_si320_si323) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi320]]) : (si32) -> ()
+
+    // muli 0, 4 -> 0
+    %result_muli_si320_si324 = arc.muli %cst_si320, %cst_si324 : si32
+    "arc.keep"(%result_muli_si320_si324) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi320]]) : (si32) -> ()
+
     // muli 0, 2147483646 -> 0
     %result_muli_si320_si322147483646 = arc.muli %cst_si320, %cst_si322147483646 : si32
     "arc.keep"(%result_muli_si320_si322147483646) : (si32) -> ()
@@ -5644,6 +12087,26 @@ module @toplevel {
     // muli 0, 2147483647 -> 0
     %result_muli_si320_si322147483647 = arc.muli %cst_si320, %cst_si322147483647 : si32
     "arc.keep"(%result_muli_si320_si322147483647) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi320]]) : (si32) -> ()
+
+    // muli 1, 0 -> 0
+    %result_muli_si321_si320 = arc.muli %cst_si321, %cst_si320 : si32
+    "arc.keep"(%result_muli_si321_si320) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi320]]) : (si32) -> ()
+
+    // muli 2, 0 -> 0
+    %result_muli_si322_si320 = arc.muli %cst_si322, %cst_si320 : si32
+    "arc.keep"(%result_muli_si322_si320) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi320]]) : (si32) -> ()
+
+    // muli 3, 0 -> 0
+    %result_muli_si323_si320 = arc.muli %cst_si323, %cst_si320 : si32
+    "arc.keep"(%result_muli_si323_si320) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi320]]) : (si32) -> ()
+
+    // muli 4, 0 -> 0
+    %result_muli_si324_si320 = arc.muli %cst_si324, %cst_si320 : si32
+    "arc.keep"(%result_muli_si324_si320) : (si32) -> ()
     // CHECK: "arc.keep"([[CSTsi320]]) : (si32) -> ()
 
     // muli 2147483646, 0 -> 0
@@ -5655,6 +12118,106 @@ module @toplevel {
     %result_muli_si322147483647_si320 = arc.muli %cst_si322147483647, %cst_si320 : si32
     "arc.keep"(%result_muli_si322147483647_si320) : (si32) -> ()
     // CHECK: "arc.keep"([[CSTsi320]]) : (si32) -> ()
+
+    // muli 1, 1 -> 1
+    %result_muli_si321_si321 = arc.muli %cst_si321, %cst_si321 : si32
+    "arc.keep"(%result_muli_si321_si321) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi321]]) : (si32) -> ()
+
+    // muli 1, 2 -> 2
+    %result_muli_si321_si322 = arc.muli %cst_si321, %cst_si322 : si32
+    "arc.keep"(%result_muli_si321_si322) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi322]]) : (si32) -> ()
+
+    // muli 2, 1 -> 2
+    %result_muli_si322_si321 = arc.muli %cst_si322, %cst_si321 : si32
+    "arc.keep"(%result_muli_si322_si321) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi322]]) : (si32) -> ()
+
+    // muli 1, 3 -> 3
+    %result_muli_si321_si323 = arc.muli %cst_si321, %cst_si323 : si32
+    "arc.keep"(%result_muli_si321_si323) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi323]]) : (si32) -> ()
+
+    // muli 3, 1 -> 3
+    %result_muli_si323_si321 = arc.muli %cst_si323, %cst_si321 : si32
+    "arc.keep"(%result_muli_si323_si321) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi323]]) : (si32) -> ()
+
+    // muli 1, 4 -> 4
+    %result_muli_si321_si324 = arc.muli %cst_si321, %cst_si324 : si32
+    "arc.keep"(%result_muli_si321_si324) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi324]]) : (si32) -> ()
+
+    // muli 2, 2 -> 4
+    %result_muli_si322_si322 = arc.muli %cst_si322, %cst_si322 : si32
+    "arc.keep"(%result_muli_si322_si322) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi324]]) : (si32) -> ()
+
+    // muli 4, 1 -> 4
+    %result_muli_si324_si321 = arc.muli %cst_si324, %cst_si321 : si32
+    "arc.keep"(%result_muli_si324_si321) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi324]]) : (si32) -> ()
+
+    // muli 2, 3 -> 6
+    %result_muli_si322_si323 = arc.muli %cst_si322, %cst_si323 : si32
+    "arc.keep"(%result_muli_si322_si323) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi326]]) : (si32) -> ()
+
+    // muli 3, 2 -> 6
+    %result_muli_si323_si322 = arc.muli %cst_si323, %cst_si322 : si32
+    "arc.keep"(%result_muli_si323_si322) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi326]]) : (si32) -> ()
+
+    // muli 2, 4 -> 8
+    %result_muli_si322_si324 = arc.muli %cst_si322, %cst_si324 : si32
+    "arc.keep"(%result_muli_si322_si324) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi328]]) : (si32) -> ()
+
+    // muli 4, 2 -> 8
+    %result_muli_si324_si322 = arc.muli %cst_si324, %cst_si322 : si32
+    "arc.keep"(%result_muli_si324_si322) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi328]]) : (si32) -> ()
+
+    // muli 3, 3 -> 9
+    %result_muli_si323_si323 = arc.muli %cst_si323, %cst_si323 : si32
+    "arc.keep"(%result_muli_si323_si323) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi329]]) : (si32) -> ()
+
+    // muli 3, 4 -> 12
+    %result_muli_si323_si324 = arc.muli %cst_si323, %cst_si324 : si32
+    "arc.keep"(%result_muli_si323_si324) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi3212]]) : (si32) -> ()
+
+    // muli 4, 3 -> 12
+    %result_muli_si324_si323 = arc.muli %cst_si324, %cst_si323 : si32
+    "arc.keep"(%result_muli_si324_si323) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi3212]]) : (si32) -> ()
+
+    // muli 4, 4 -> 16
+    %result_muli_si324_si324 = arc.muli %cst_si324, %cst_si324 : si32
+    "arc.keep"(%result_muli_si324_si324) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi3216]]) : (si32) -> ()
+
+    // muli 1, 2147483646 -> 2147483646
+    %result_muli_si321_si322147483646 = arc.muli %cst_si321, %cst_si322147483646 : si32
+    "arc.keep"(%result_muli_si321_si322147483646) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi322147483646]]) : (si32) -> ()
+
+    // muli 2147483646, 1 -> 2147483646
+    %result_muli_si322147483646_si321 = arc.muli %cst_si322147483646, %cst_si321 : si32
+    "arc.keep"(%result_muli_si322147483646_si321) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi322147483646]]) : (si32) -> ()
+
+    // muli 1, 2147483647 -> 2147483647
+    %result_muli_si321_si322147483647 = arc.muli %cst_si321, %cst_si322147483647 : si32
+    "arc.keep"(%result_muli_si321_si322147483647) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi322147483647]]) : (si32) -> ()
+
+    // muli 2147483647, 1 -> 2147483647
+    %result_muli_si322147483647_si321 = arc.muli %cst_si322147483647, %cst_si321 : si32
+    "arc.keep"(%result_muli_si322147483647_si321) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi322147483647]]) : (si32) -> ()
 
     // muli -2147483648, -2147483648 -> no-fold
     %result_muli_si32n2147483648_si32n2147483648 = arc.muli %cst_si32n2147483648, %cst_si32n2147483648 : si32
@@ -5685,6 +12248,24 @@ module @toplevel {
     // CHECK-DAG: [[RESULT_muli_si32n2147483648_si32n1035405763:%[^ ]+]] = arc.muli [[CSTsi32n2147483648]], [[CSTsi32n1035405763]] : si32
     "arc.keep"(%result_muli_si32n2147483648_si32n1035405763) : (si32) -> ()
     // CHECK: "arc.keep"([[RESULT_muli_si32n2147483648_si32n1035405763]]) : (si32) -> ()
+
+    // muli -2147483648, 2 -> no-fold
+    %result_muli_si32n2147483648_si322 = arc.muli %cst_si32n2147483648, %cst_si322 : si32
+    // CHECK-DAG: [[RESULT_muli_si32n2147483648_si322:%[^ ]+]] = arc.muli [[CSTsi32n2147483648]], [[CSTsi322]] : si32
+    "arc.keep"(%result_muli_si32n2147483648_si322) : (si32) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_si32n2147483648_si322]]) : (si32) -> ()
+
+    // muli -2147483648, 3 -> no-fold
+    %result_muli_si32n2147483648_si323 = arc.muli %cst_si32n2147483648, %cst_si323 : si32
+    // CHECK-DAG: [[RESULT_muli_si32n2147483648_si323:%[^ ]+]] = arc.muli [[CSTsi32n2147483648]], [[CSTsi323]] : si32
+    "arc.keep"(%result_muli_si32n2147483648_si323) : (si32) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_si32n2147483648_si323]]) : (si32) -> ()
+
+    // muli -2147483648, 4 -> no-fold
+    %result_muli_si32n2147483648_si324 = arc.muli %cst_si32n2147483648, %cst_si324 : si32
+    // CHECK-DAG: [[RESULT_muli_si32n2147483648_si324:%[^ ]+]] = arc.muli [[CSTsi32n2147483648]], [[CSTsi324]] : si32
+    "arc.keep"(%result_muli_si32n2147483648_si324) : (si32) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_si32n2147483648_si324]]) : (si32) -> ()
 
     // muli -2147483648, 2147483646 -> no-fold
     %result_muli_si32n2147483648_si322147483646 = arc.muli %cst_si32n2147483648, %cst_si322147483646 : si32
@@ -5728,6 +12309,24 @@ module @toplevel {
     "arc.keep"(%result_muli_si32n2147483647_si32n1035405763) : (si32) -> ()
     // CHECK: "arc.keep"([[RESULT_muli_si32n2147483647_si32n1035405763]]) : (si32) -> ()
 
+    // muli -2147483647, 2 -> no-fold
+    %result_muli_si32n2147483647_si322 = arc.muli %cst_si32n2147483647, %cst_si322 : si32
+    // CHECK-DAG: [[RESULT_muli_si32n2147483647_si322:%[^ ]+]] = arc.muli [[CSTsi32n2147483647]], [[CSTsi322]] : si32
+    "arc.keep"(%result_muli_si32n2147483647_si322) : (si32) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_si32n2147483647_si322]]) : (si32) -> ()
+
+    // muli -2147483647, 3 -> no-fold
+    %result_muli_si32n2147483647_si323 = arc.muli %cst_si32n2147483647, %cst_si323 : si32
+    // CHECK-DAG: [[RESULT_muli_si32n2147483647_si323:%[^ ]+]] = arc.muli [[CSTsi32n2147483647]], [[CSTsi323]] : si32
+    "arc.keep"(%result_muli_si32n2147483647_si323) : (si32) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_si32n2147483647_si323]]) : (si32) -> ()
+
+    // muli -2147483647, 4 -> no-fold
+    %result_muli_si32n2147483647_si324 = arc.muli %cst_si32n2147483647, %cst_si324 : si32
+    // CHECK-DAG: [[RESULT_muli_si32n2147483647_si324:%[^ ]+]] = arc.muli [[CSTsi32n2147483647]], [[CSTsi324]] : si32
+    "arc.keep"(%result_muli_si32n2147483647_si324) : (si32) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_si32n2147483647_si324]]) : (si32) -> ()
+
     // muli -2147483647, 2147483646 -> no-fold
     %result_muli_si32n2147483647_si322147483646 = arc.muli %cst_si32n2147483647, %cst_si322147483646 : si32
     // CHECK-DAG: [[RESULT_muli_si32n2147483647_si322147483646:%[^ ]+]] = arc.muli [[CSTsi32n2147483647]], [[CSTsi322147483646]] : si32
@@ -5769,6 +12368,24 @@ module @toplevel {
     // CHECK-DAG: [[RESULT_muli_si32n1713183800_si32n1035405763:%[^ ]+]] = arc.muli [[CSTsi32n1713183800]], [[CSTsi32n1035405763]] : si32
     "arc.keep"(%result_muli_si32n1713183800_si32n1035405763) : (si32) -> ()
     // CHECK: "arc.keep"([[RESULT_muli_si32n1713183800_si32n1035405763]]) : (si32) -> ()
+
+    // muli -1713183800, 2 -> no-fold
+    %result_muli_si32n1713183800_si322 = arc.muli %cst_si32n1713183800, %cst_si322 : si32
+    // CHECK-DAG: [[RESULT_muli_si32n1713183800_si322:%[^ ]+]] = arc.muli [[CSTsi32n1713183800]], [[CSTsi322]] : si32
+    "arc.keep"(%result_muli_si32n1713183800_si322) : (si32) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_si32n1713183800_si322]]) : (si32) -> ()
+
+    // muli -1713183800, 3 -> no-fold
+    %result_muli_si32n1713183800_si323 = arc.muli %cst_si32n1713183800, %cst_si323 : si32
+    // CHECK-DAG: [[RESULT_muli_si32n1713183800_si323:%[^ ]+]] = arc.muli [[CSTsi32n1713183800]], [[CSTsi323]] : si32
+    "arc.keep"(%result_muli_si32n1713183800_si323) : (si32) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_si32n1713183800_si323]]) : (si32) -> ()
+
+    // muli -1713183800, 4 -> no-fold
+    %result_muli_si32n1713183800_si324 = arc.muli %cst_si32n1713183800, %cst_si324 : si32
+    // CHECK-DAG: [[RESULT_muli_si32n1713183800_si324:%[^ ]+]] = arc.muli [[CSTsi32n1713183800]], [[CSTsi324]] : si32
+    "arc.keep"(%result_muli_si32n1713183800_si324) : (si32) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_si32n1713183800_si324]]) : (si32) -> ()
 
     // muli -1713183800, 2147483646 -> no-fold
     %result_muli_si32n1713183800_si322147483646 = arc.muli %cst_si32n1713183800, %cst_si322147483646 : si32
@@ -5812,6 +12429,24 @@ module @toplevel {
     "arc.keep"(%result_muli_si32n1252582164_si32n1035405763) : (si32) -> ()
     // CHECK: "arc.keep"([[RESULT_muli_si32n1252582164_si32n1035405763]]) : (si32) -> ()
 
+    // muli -1252582164, 2 -> no-fold
+    %result_muli_si32n1252582164_si322 = arc.muli %cst_si32n1252582164, %cst_si322 : si32
+    // CHECK-DAG: [[RESULT_muli_si32n1252582164_si322:%[^ ]+]] = arc.muli [[CSTsi32n1252582164]], [[CSTsi322]] : si32
+    "arc.keep"(%result_muli_si32n1252582164_si322) : (si32) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_si32n1252582164_si322]]) : (si32) -> ()
+
+    // muli -1252582164, 3 -> no-fold
+    %result_muli_si32n1252582164_si323 = arc.muli %cst_si32n1252582164, %cst_si323 : si32
+    // CHECK-DAG: [[RESULT_muli_si32n1252582164_si323:%[^ ]+]] = arc.muli [[CSTsi32n1252582164]], [[CSTsi323]] : si32
+    "arc.keep"(%result_muli_si32n1252582164_si323) : (si32) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_si32n1252582164_si323]]) : (si32) -> ()
+
+    // muli -1252582164, 4 -> no-fold
+    %result_muli_si32n1252582164_si324 = arc.muli %cst_si32n1252582164, %cst_si324 : si32
+    // CHECK-DAG: [[RESULT_muli_si32n1252582164_si324:%[^ ]+]] = arc.muli [[CSTsi32n1252582164]], [[CSTsi324]] : si32
+    "arc.keep"(%result_muli_si32n1252582164_si324) : (si32) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_si32n1252582164_si324]]) : (si32) -> ()
+
     // muli -1252582164, 2147483646 -> no-fold
     %result_muli_si32n1252582164_si322147483646 = arc.muli %cst_si32n1252582164, %cst_si322147483646 : si32
     // CHECK-DAG: [[RESULT_muli_si32n1252582164_si322147483646:%[^ ]+]] = arc.muli [[CSTsi32n1252582164]], [[CSTsi322147483646]] : si32
@@ -5854,6 +12489,18 @@ module @toplevel {
     "arc.keep"(%result_muli_si32n1035405763_si32n1035405763) : (si32) -> ()
     // CHECK: "arc.keep"([[RESULT_muli_si32n1035405763_si32n1035405763]]) : (si32) -> ()
 
+    // muli -1035405763, 3 -> no-fold
+    %result_muli_si32n1035405763_si323 = arc.muli %cst_si32n1035405763, %cst_si323 : si32
+    // CHECK-DAG: [[RESULT_muli_si32n1035405763_si323:%[^ ]+]] = arc.muli [[CSTsi32n1035405763]], [[CSTsi323]] : si32
+    "arc.keep"(%result_muli_si32n1035405763_si323) : (si32) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_si32n1035405763_si323]]) : (si32) -> ()
+
+    // muli -1035405763, 4 -> no-fold
+    %result_muli_si32n1035405763_si324 = arc.muli %cst_si32n1035405763, %cst_si324 : si32
+    // CHECK-DAG: [[RESULT_muli_si32n1035405763_si324:%[^ ]+]] = arc.muli [[CSTsi32n1035405763]], [[CSTsi324]] : si32
+    "arc.keep"(%result_muli_si32n1035405763_si324) : (si32) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_si32n1035405763_si324]]) : (si32) -> ()
+
     // muli -1035405763, 2147483646 -> no-fold
     %result_muli_si32n1035405763_si322147483646 = arc.muli %cst_si32n1035405763, %cst_si322147483646 : si32
     // CHECK-DAG: [[RESULT_muli_si32n1035405763_si322147483646:%[^ ]+]] = arc.muli [[CSTsi32n1035405763]], [[CSTsi322147483646]] : si32
@@ -5865,6 +12512,126 @@ module @toplevel {
     // CHECK-DAG: [[RESULT_muli_si32n1035405763_si322147483647:%[^ ]+]] = arc.muli [[CSTsi32n1035405763]], [[CSTsi322147483647]] : si32
     "arc.keep"(%result_muli_si32n1035405763_si322147483647) : (si32) -> ()
     // CHECK: "arc.keep"([[RESULT_muli_si32n1035405763_si322147483647]]) : (si32) -> ()
+
+    // muli 2, -2147483648 -> no-fold
+    %result_muli_si322_si32n2147483648 = arc.muli %cst_si322, %cst_si32n2147483648 : si32
+    // CHECK-DAG: [[RESULT_muli_si322_si32n2147483648:%[^ ]+]] = arc.muli [[CSTsi322]], [[CSTsi32n2147483648]] : si32
+    "arc.keep"(%result_muli_si322_si32n2147483648) : (si32) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_si322_si32n2147483648]]) : (si32) -> ()
+
+    // muli 2, -2147483647 -> no-fold
+    %result_muli_si322_si32n2147483647 = arc.muli %cst_si322, %cst_si32n2147483647 : si32
+    // CHECK-DAG: [[RESULT_muli_si322_si32n2147483647:%[^ ]+]] = arc.muli [[CSTsi322]], [[CSTsi32n2147483647]] : si32
+    "arc.keep"(%result_muli_si322_si32n2147483647) : (si32) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_si322_si32n2147483647]]) : (si32) -> ()
+
+    // muli 2, -1713183800 -> no-fold
+    %result_muli_si322_si32n1713183800 = arc.muli %cst_si322, %cst_si32n1713183800 : si32
+    // CHECK-DAG: [[RESULT_muli_si322_si32n1713183800:%[^ ]+]] = arc.muli [[CSTsi322]], [[CSTsi32n1713183800]] : si32
+    "arc.keep"(%result_muli_si322_si32n1713183800) : (si32) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_si322_si32n1713183800]]) : (si32) -> ()
+
+    // muli 2, -1252582164 -> no-fold
+    %result_muli_si322_si32n1252582164 = arc.muli %cst_si322, %cst_si32n1252582164 : si32
+    // CHECK-DAG: [[RESULT_muli_si322_si32n1252582164:%[^ ]+]] = arc.muli [[CSTsi322]], [[CSTsi32n1252582164]] : si32
+    "arc.keep"(%result_muli_si322_si32n1252582164) : (si32) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_si322_si32n1252582164]]) : (si32) -> ()
+
+    // muli 2, 2147483646 -> no-fold
+    %result_muli_si322_si322147483646 = arc.muli %cst_si322, %cst_si322147483646 : si32
+    // CHECK-DAG: [[RESULT_muli_si322_si322147483646:%[^ ]+]] = arc.muli [[CSTsi322]], [[CSTsi322147483646]] : si32
+    "arc.keep"(%result_muli_si322_si322147483646) : (si32) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_si322_si322147483646]]) : (si32) -> ()
+
+    // muli 2, 2147483647 -> no-fold
+    %result_muli_si322_si322147483647 = arc.muli %cst_si322, %cst_si322147483647 : si32
+    // CHECK-DAG: [[RESULT_muli_si322_si322147483647:%[^ ]+]] = arc.muli [[CSTsi322]], [[CSTsi322147483647]] : si32
+    "arc.keep"(%result_muli_si322_si322147483647) : (si32) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_si322_si322147483647]]) : (si32) -> ()
+
+    // muli 3, -2147483648 -> no-fold
+    %result_muli_si323_si32n2147483648 = arc.muli %cst_si323, %cst_si32n2147483648 : si32
+    // CHECK-DAG: [[RESULT_muli_si323_si32n2147483648:%[^ ]+]] = arc.muli [[CSTsi323]], [[CSTsi32n2147483648]] : si32
+    "arc.keep"(%result_muli_si323_si32n2147483648) : (si32) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_si323_si32n2147483648]]) : (si32) -> ()
+
+    // muli 3, -2147483647 -> no-fold
+    %result_muli_si323_si32n2147483647 = arc.muli %cst_si323, %cst_si32n2147483647 : si32
+    // CHECK-DAG: [[RESULT_muli_si323_si32n2147483647:%[^ ]+]] = arc.muli [[CSTsi323]], [[CSTsi32n2147483647]] : si32
+    "arc.keep"(%result_muli_si323_si32n2147483647) : (si32) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_si323_si32n2147483647]]) : (si32) -> ()
+
+    // muli 3, -1713183800 -> no-fold
+    %result_muli_si323_si32n1713183800 = arc.muli %cst_si323, %cst_si32n1713183800 : si32
+    // CHECK-DAG: [[RESULT_muli_si323_si32n1713183800:%[^ ]+]] = arc.muli [[CSTsi323]], [[CSTsi32n1713183800]] : si32
+    "arc.keep"(%result_muli_si323_si32n1713183800) : (si32) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_si323_si32n1713183800]]) : (si32) -> ()
+
+    // muli 3, -1252582164 -> no-fold
+    %result_muli_si323_si32n1252582164 = arc.muli %cst_si323, %cst_si32n1252582164 : si32
+    // CHECK-DAG: [[RESULT_muli_si323_si32n1252582164:%[^ ]+]] = arc.muli [[CSTsi323]], [[CSTsi32n1252582164]] : si32
+    "arc.keep"(%result_muli_si323_si32n1252582164) : (si32) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_si323_si32n1252582164]]) : (si32) -> ()
+
+    // muli 3, -1035405763 -> no-fold
+    %result_muli_si323_si32n1035405763 = arc.muli %cst_si323, %cst_si32n1035405763 : si32
+    // CHECK-DAG: [[RESULT_muli_si323_si32n1035405763:%[^ ]+]] = arc.muli [[CSTsi323]], [[CSTsi32n1035405763]] : si32
+    "arc.keep"(%result_muli_si323_si32n1035405763) : (si32) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_si323_si32n1035405763]]) : (si32) -> ()
+
+    // muli 3, 2147483646 -> no-fold
+    %result_muli_si323_si322147483646 = arc.muli %cst_si323, %cst_si322147483646 : si32
+    // CHECK-DAG: [[RESULT_muli_si323_si322147483646:%[^ ]+]] = arc.muli [[CSTsi323]], [[CSTsi322147483646]] : si32
+    "arc.keep"(%result_muli_si323_si322147483646) : (si32) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_si323_si322147483646]]) : (si32) -> ()
+
+    // muli 3, 2147483647 -> no-fold
+    %result_muli_si323_si322147483647 = arc.muli %cst_si323, %cst_si322147483647 : si32
+    // CHECK-DAG: [[RESULT_muli_si323_si322147483647:%[^ ]+]] = arc.muli [[CSTsi323]], [[CSTsi322147483647]] : si32
+    "arc.keep"(%result_muli_si323_si322147483647) : (si32) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_si323_si322147483647]]) : (si32) -> ()
+
+    // muli 4, -2147483648 -> no-fold
+    %result_muli_si324_si32n2147483648 = arc.muli %cst_si324, %cst_si32n2147483648 : si32
+    // CHECK-DAG: [[RESULT_muli_si324_si32n2147483648:%[^ ]+]] = arc.muli [[CSTsi324]], [[CSTsi32n2147483648]] : si32
+    "arc.keep"(%result_muli_si324_si32n2147483648) : (si32) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_si324_si32n2147483648]]) : (si32) -> ()
+
+    // muli 4, -2147483647 -> no-fold
+    %result_muli_si324_si32n2147483647 = arc.muli %cst_si324, %cst_si32n2147483647 : si32
+    // CHECK-DAG: [[RESULT_muli_si324_si32n2147483647:%[^ ]+]] = arc.muli [[CSTsi324]], [[CSTsi32n2147483647]] : si32
+    "arc.keep"(%result_muli_si324_si32n2147483647) : (si32) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_si324_si32n2147483647]]) : (si32) -> ()
+
+    // muli 4, -1713183800 -> no-fold
+    %result_muli_si324_si32n1713183800 = arc.muli %cst_si324, %cst_si32n1713183800 : si32
+    // CHECK-DAG: [[RESULT_muli_si324_si32n1713183800:%[^ ]+]] = arc.muli [[CSTsi324]], [[CSTsi32n1713183800]] : si32
+    "arc.keep"(%result_muli_si324_si32n1713183800) : (si32) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_si324_si32n1713183800]]) : (si32) -> ()
+
+    // muli 4, -1252582164 -> no-fold
+    %result_muli_si324_si32n1252582164 = arc.muli %cst_si324, %cst_si32n1252582164 : si32
+    // CHECK-DAG: [[RESULT_muli_si324_si32n1252582164:%[^ ]+]] = arc.muli [[CSTsi324]], [[CSTsi32n1252582164]] : si32
+    "arc.keep"(%result_muli_si324_si32n1252582164) : (si32) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_si324_si32n1252582164]]) : (si32) -> ()
+
+    // muli 4, -1035405763 -> no-fold
+    %result_muli_si324_si32n1035405763 = arc.muli %cst_si324, %cst_si32n1035405763 : si32
+    // CHECK-DAG: [[RESULT_muli_si324_si32n1035405763:%[^ ]+]] = arc.muli [[CSTsi324]], [[CSTsi32n1035405763]] : si32
+    "arc.keep"(%result_muli_si324_si32n1035405763) : (si32) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_si324_si32n1035405763]]) : (si32) -> ()
+
+    // muli 4, 2147483646 -> no-fold
+    %result_muli_si324_si322147483646 = arc.muli %cst_si324, %cst_si322147483646 : si32
+    // CHECK-DAG: [[RESULT_muli_si324_si322147483646:%[^ ]+]] = arc.muli [[CSTsi324]], [[CSTsi322147483646]] : si32
+    "arc.keep"(%result_muli_si324_si322147483646) : (si32) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_si324_si322147483646]]) : (si32) -> ()
+
+    // muli 4, 2147483647 -> no-fold
+    %result_muli_si324_si322147483647 = arc.muli %cst_si324, %cst_si322147483647 : si32
+    // CHECK-DAG: [[RESULT_muli_si324_si322147483647:%[^ ]+]] = arc.muli [[CSTsi324]], [[CSTsi322147483647]] : si32
+    "arc.keep"(%result_muli_si324_si322147483647) : (si32) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_si324_si322147483647]]) : (si32) -> ()
 
     // muli 2147483646, -2147483648 -> no-fold
     %result_muli_si322147483646_si32n2147483648 = arc.muli %cst_si322147483646, %cst_si32n2147483648 : si32
@@ -5895,6 +12662,24 @@ module @toplevel {
     // CHECK-DAG: [[RESULT_muli_si322147483646_si32n1035405763:%[^ ]+]] = arc.muli [[CSTsi322147483646]], [[CSTsi32n1035405763]] : si32
     "arc.keep"(%result_muli_si322147483646_si32n1035405763) : (si32) -> ()
     // CHECK: "arc.keep"([[RESULT_muli_si322147483646_si32n1035405763]]) : (si32) -> ()
+
+    // muli 2147483646, 2 -> no-fold
+    %result_muli_si322147483646_si322 = arc.muli %cst_si322147483646, %cst_si322 : si32
+    // CHECK-DAG: [[RESULT_muli_si322147483646_si322:%[^ ]+]] = arc.muli [[CSTsi322147483646]], [[CSTsi322]] : si32
+    "arc.keep"(%result_muli_si322147483646_si322) : (si32) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_si322147483646_si322]]) : (si32) -> ()
+
+    // muli 2147483646, 3 -> no-fold
+    %result_muli_si322147483646_si323 = arc.muli %cst_si322147483646, %cst_si323 : si32
+    // CHECK-DAG: [[RESULT_muli_si322147483646_si323:%[^ ]+]] = arc.muli [[CSTsi322147483646]], [[CSTsi323]] : si32
+    "arc.keep"(%result_muli_si322147483646_si323) : (si32) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_si322147483646_si323]]) : (si32) -> ()
+
+    // muli 2147483646, 4 -> no-fold
+    %result_muli_si322147483646_si324 = arc.muli %cst_si322147483646, %cst_si324 : si32
+    // CHECK-DAG: [[RESULT_muli_si322147483646_si324:%[^ ]+]] = arc.muli [[CSTsi322147483646]], [[CSTsi324]] : si32
+    "arc.keep"(%result_muli_si322147483646_si324) : (si32) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_si322147483646_si324]]) : (si32) -> ()
 
     // muli 2147483646, 2147483646 -> no-fold
     %result_muli_si322147483646_si322147483646 = arc.muli %cst_si322147483646, %cst_si322147483646 : si32
@@ -5938,6 +12723,24 @@ module @toplevel {
     "arc.keep"(%result_muli_si322147483647_si32n1035405763) : (si32) -> ()
     // CHECK: "arc.keep"([[RESULT_muli_si322147483647_si32n1035405763]]) : (si32) -> ()
 
+    // muli 2147483647, 2 -> no-fold
+    %result_muli_si322147483647_si322 = arc.muli %cst_si322147483647, %cst_si322 : si32
+    // CHECK-DAG: [[RESULT_muli_si322147483647_si322:%[^ ]+]] = arc.muli [[CSTsi322147483647]], [[CSTsi322]] : si32
+    "arc.keep"(%result_muli_si322147483647_si322) : (si32) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_si322147483647_si322]]) : (si32) -> ()
+
+    // muli 2147483647, 3 -> no-fold
+    %result_muli_si322147483647_si323 = arc.muli %cst_si322147483647, %cst_si323 : si32
+    // CHECK-DAG: [[RESULT_muli_si322147483647_si323:%[^ ]+]] = arc.muli [[CSTsi322147483647]], [[CSTsi323]] : si32
+    "arc.keep"(%result_muli_si322147483647_si323) : (si32) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_si322147483647_si323]]) : (si32) -> ()
+
+    // muli 2147483647, 4 -> no-fold
+    %result_muli_si322147483647_si324 = arc.muli %cst_si322147483647, %cst_si324 : si32
+    // CHECK-DAG: [[RESULT_muli_si322147483647_si324:%[^ ]+]] = arc.muli [[CSTsi322147483647]], [[CSTsi324]] : si32
+    "arc.keep"(%result_muli_si322147483647_si324) : (si32) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_si322147483647_si324]]) : (si32) -> ()
+
     // muli 2147483647, 2147483646 -> no-fold
     %result_muli_si322147483647_si322147483646 = arc.muli %cst_si322147483647, %cst_si322147483646 : si32
     // CHECK-DAG: [[RESULT_muli_si322147483647_si322147483646:%[^ ]+]] = arc.muli [[CSTsi322147483647]], [[CSTsi322147483646]] : si32
@@ -5949,6 +12752,106 @@ module @toplevel {
     // CHECK-DAG: [[RESULT_muli_si322147483647_si322147483647:%[^ ]+]] = arc.muli [[CSTsi322147483647]], [[CSTsi322147483647]] : si32
     "arc.keep"(%result_muli_si322147483647_si322147483647) : (si32) -> ()
     // CHECK: "arc.keep"([[RESULT_muli_si322147483647_si322147483647]]) : (si32) -> ()
+
+    // muli -9223372036854775808, 1 -> -9223372036854775808
+    %result_muli_si64n9223372036854775808_si641 = arc.muli %cst_si64n9223372036854775808, %cst_si641 : si64
+    "arc.keep"(%result_muli_si64n9223372036854775808_si641) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi64n9223372036854775808]]) : (si64) -> ()
+
+    // muli 1, -9223372036854775808 -> -9223372036854775808
+    %result_muli_si641_si64n9223372036854775808 = arc.muli %cst_si641, %cst_si64n9223372036854775808 : si64
+    "arc.keep"(%result_muli_si641_si64n9223372036854775808) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi64n9223372036854775808]]) : (si64) -> ()
+
+    // muli -9223372036854775807, 1 -> -9223372036854775807
+    %result_muli_si64n9223372036854775807_si641 = arc.muli %cst_si64n9223372036854775807, %cst_si641 : si64
+    "arc.keep"(%result_muli_si64n9223372036854775807_si641) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi64n9223372036854775807]]) : (si64) -> ()
+
+    // muli 1, -9223372036854775807 -> -9223372036854775807
+    %result_muli_si641_si64n9223372036854775807 = arc.muli %cst_si641, %cst_si64n9223372036854775807 : si64
+    "arc.keep"(%result_muli_si641_si64n9223372036854775807) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi64n9223372036854775807]]) : (si64) -> ()
+
+    // muli -1741927215160008704, 4 -> -6967708860640034816
+    %result_muli_si64n1741927215160008704_si644 = arc.muli %cst_si64n1741927215160008704, %cst_si644 : si64
+    "arc.keep"(%result_muli_si64n1741927215160008704_si644) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi64n6967708860640034816]]) : (si64) -> ()
+
+    // muli 4, -1741927215160008704 -> -6967708860640034816
+    %result_muli_si644_si64n1741927215160008704 = arc.muli %cst_si644, %cst_si64n1741927215160008704 : si64
+    "arc.keep"(%result_muli_si644_si64n1741927215160008704) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi64n6967708860640034816]]) : (si64) -> ()
+
+    // muli -1328271339354574848, 4 -> -5313085357418299392
+    %result_muli_si64n1328271339354574848_si644 = arc.muli %cst_si64n1328271339354574848, %cst_si644 : si64
+    "arc.keep"(%result_muli_si64n1328271339354574848_si644) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi64n5313085357418299392]]) : (si64) -> ()
+
+    // muli 4, -1328271339354574848 -> -5313085357418299392
+    %result_muli_si644_si64n1328271339354574848 = arc.muli %cst_si644, %cst_si64n1328271339354574848 : si64
+    "arc.keep"(%result_muli_si644_si64n1328271339354574848) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi64n5313085357418299392]]) : (si64) -> ()
+
+    // muli -1741927215160008704, 3 -> -5225781645480026112
+    %result_muli_si64n1741927215160008704_si643 = arc.muli %cst_si64n1741927215160008704, %cst_si643 : si64
+    "arc.keep"(%result_muli_si64n1741927215160008704_si643) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi64n5225781645480026112]]) : (si64) -> ()
+
+    // muli 3, -1741927215160008704 -> -5225781645480026112
+    %result_muli_si643_si64n1741927215160008704 = arc.muli %cst_si643, %cst_si64n1741927215160008704 : si64
+    "arc.keep"(%result_muli_si643_si64n1741927215160008704) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi64n5225781645480026112]]) : (si64) -> ()
+
+    // muli -1328271339354574848, 3 -> -3984814018063724544
+    %result_muli_si64n1328271339354574848_si643 = arc.muli %cst_si64n1328271339354574848, %cst_si643 : si64
+    "arc.keep"(%result_muli_si64n1328271339354574848_si643) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi64n3984814018063724544]]) : (si64) -> ()
+
+    // muli 3, -1328271339354574848 -> -3984814018063724544
+    %result_muli_si643_si64n1328271339354574848 = arc.muli %cst_si643, %cst_si64n1328271339354574848 : si64
+    "arc.keep"(%result_muli_si643_si64n1328271339354574848) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi64n3984814018063724544]]) : (si64) -> ()
+
+    // muli -1741927215160008704, 2 -> -3483854430320017408
+    %result_muli_si64n1741927215160008704_si642 = arc.muli %cst_si64n1741927215160008704, %cst_si642 : si64
+    "arc.keep"(%result_muli_si64n1741927215160008704_si642) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi64n3483854430320017408]]) : (si64) -> ()
+
+    // muli 2, -1741927215160008704 -> -3483854430320017408
+    %result_muli_si642_si64n1741927215160008704 = arc.muli %cst_si642, %cst_si64n1741927215160008704 : si64
+    "arc.keep"(%result_muli_si642_si64n1741927215160008704) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi64n3483854430320017408]]) : (si64) -> ()
+
+    // muli -1328271339354574848, 2 -> -2656542678709149696
+    %result_muli_si64n1328271339354574848_si642 = arc.muli %cst_si64n1328271339354574848, %cst_si642 : si64
+    "arc.keep"(%result_muli_si64n1328271339354574848_si642) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi64n2656542678709149696]]) : (si64) -> ()
+
+    // muli 2, -1328271339354574848 -> -2656542678709149696
+    %result_muli_si642_si64n1328271339354574848 = arc.muli %cst_si642, %cst_si64n1328271339354574848 : si64
+    "arc.keep"(%result_muli_si642_si64n1328271339354574848) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi64n2656542678709149696]]) : (si64) -> ()
+
+    // muli -1741927215160008704, 1 -> -1741927215160008704
+    %result_muli_si64n1741927215160008704_si641 = arc.muli %cst_si64n1741927215160008704, %cst_si641 : si64
+    "arc.keep"(%result_muli_si64n1741927215160008704_si641) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi64n1741927215160008704]]) : (si64) -> ()
+
+    // muli 1, -1741927215160008704 -> -1741927215160008704
+    %result_muli_si641_si64n1741927215160008704 = arc.muli %cst_si641, %cst_si64n1741927215160008704 : si64
+    "arc.keep"(%result_muli_si641_si64n1741927215160008704) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi64n1741927215160008704]]) : (si64) -> ()
+
+    // muli -1328271339354574848, 1 -> -1328271339354574848
+    %result_muli_si64n1328271339354574848_si641 = arc.muli %cst_si64n1328271339354574848, %cst_si641 : si64
+    "arc.keep"(%result_muli_si64n1328271339354574848_si641) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi64n1328271339354574848]]) : (si64) -> ()
+
+    // muli 1, -1328271339354574848 -> -1328271339354574848
+    %result_muli_si641_si64n1328271339354574848 = arc.muli %cst_si641, %cst_si64n1328271339354574848 : si64
+    "arc.keep"(%result_muli_si641_si64n1328271339354574848) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi64n1328271339354574848]]) : (si64) -> ()
 
     // muli -9223372036854775808, 0 -> 0
     %result_muli_si64n9223372036854775808_si640 = arc.muli %cst_si64n9223372036854775808, %cst_si640 : si64
@@ -5995,6 +12898,26 @@ module @toplevel {
     "arc.keep"(%result_muli_si640_si640) : (si64) -> ()
     // CHECK: "arc.keep"([[CSTsi640]]) : (si64) -> ()
 
+    // muli 0, 1 -> 0
+    %result_muli_si640_si641 = arc.muli %cst_si640, %cst_si641 : si64
+    "arc.keep"(%result_muli_si640_si641) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi640]]) : (si64) -> ()
+
+    // muli 0, 2 -> 0
+    %result_muli_si640_si642 = arc.muli %cst_si640, %cst_si642 : si64
+    "arc.keep"(%result_muli_si640_si642) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi640]]) : (si64) -> ()
+
+    // muli 0, 3 -> 0
+    %result_muli_si640_si643 = arc.muli %cst_si640, %cst_si643 : si64
+    "arc.keep"(%result_muli_si640_si643) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi640]]) : (si64) -> ()
+
+    // muli 0, 4 -> 0
+    %result_muli_si640_si644 = arc.muli %cst_si640, %cst_si644 : si64
+    "arc.keep"(%result_muli_si640_si644) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi640]]) : (si64) -> ()
+
     // muli 0, 5577148965131116544 -> 0
     %result_muli_si640_si645577148965131116544 = arc.muli %cst_si640, %cst_si645577148965131116544 : si64
     "arc.keep"(%result_muli_si640_si645577148965131116544) : (si64) -> ()
@@ -6008,6 +12931,26 @@ module @toplevel {
     // muli 0, 9223372036854775807 -> 0
     %result_muli_si640_si649223372036854775807 = arc.muli %cst_si640, %cst_si649223372036854775807 : si64
     "arc.keep"(%result_muli_si640_si649223372036854775807) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi640]]) : (si64) -> ()
+
+    // muli 1, 0 -> 0
+    %result_muli_si641_si640 = arc.muli %cst_si641, %cst_si640 : si64
+    "arc.keep"(%result_muli_si641_si640) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi640]]) : (si64) -> ()
+
+    // muli 2, 0 -> 0
+    %result_muli_si642_si640 = arc.muli %cst_si642, %cst_si640 : si64
+    "arc.keep"(%result_muli_si642_si640) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi640]]) : (si64) -> ()
+
+    // muli 3, 0 -> 0
+    %result_muli_si643_si640 = arc.muli %cst_si643, %cst_si640 : si64
+    "arc.keep"(%result_muli_si643_si640) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi640]]) : (si64) -> ()
+
+    // muli 4, 0 -> 0
+    %result_muli_si644_si640 = arc.muli %cst_si644, %cst_si640 : si64
+    "arc.keep"(%result_muli_si644_si640) : (si64) -> ()
     // CHECK: "arc.keep"([[CSTsi640]]) : (si64) -> ()
 
     // muli 5577148965131116544, 0 -> 0
@@ -6024,6 +12967,116 @@ module @toplevel {
     %result_muli_si649223372036854775807_si640 = arc.muli %cst_si649223372036854775807, %cst_si640 : si64
     "arc.keep"(%result_muli_si649223372036854775807_si640) : (si64) -> ()
     // CHECK: "arc.keep"([[CSTsi640]]) : (si64) -> ()
+
+    // muli 1, 1 -> 1
+    %result_muli_si641_si641 = arc.muli %cst_si641, %cst_si641 : si64
+    "arc.keep"(%result_muli_si641_si641) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi641]]) : (si64) -> ()
+
+    // muli 1, 2 -> 2
+    %result_muli_si641_si642 = arc.muli %cst_si641, %cst_si642 : si64
+    "arc.keep"(%result_muli_si641_si642) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi642]]) : (si64) -> ()
+
+    // muli 2, 1 -> 2
+    %result_muli_si642_si641 = arc.muli %cst_si642, %cst_si641 : si64
+    "arc.keep"(%result_muli_si642_si641) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi642]]) : (si64) -> ()
+
+    // muli 1, 3 -> 3
+    %result_muli_si641_si643 = arc.muli %cst_si641, %cst_si643 : si64
+    "arc.keep"(%result_muli_si641_si643) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi643]]) : (si64) -> ()
+
+    // muli 3, 1 -> 3
+    %result_muli_si643_si641 = arc.muli %cst_si643, %cst_si641 : si64
+    "arc.keep"(%result_muli_si643_si641) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi643]]) : (si64) -> ()
+
+    // muli 1, 4 -> 4
+    %result_muli_si641_si644 = arc.muli %cst_si641, %cst_si644 : si64
+    "arc.keep"(%result_muli_si641_si644) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi644]]) : (si64) -> ()
+
+    // muli 2, 2 -> 4
+    %result_muli_si642_si642 = arc.muli %cst_si642, %cst_si642 : si64
+    "arc.keep"(%result_muli_si642_si642) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi644]]) : (si64) -> ()
+
+    // muli 4, 1 -> 4
+    %result_muli_si644_si641 = arc.muli %cst_si644, %cst_si641 : si64
+    "arc.keep"(%result_muli_si644_si641) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi644]]) : (si64) -> ()
+
+    // muli 2, 3 -> 6
+    %result_muli_si642_si643 = arc.muli %cst_si642, %cst_si643 : si64
+    "arc.keep"(%result_muli_si642_si643) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi646]]) : (si64) -> ()
+
+    // muli 3, 2 -> 6
+    %result_muli_si643_si642 = arc.muli %cst_si643, %cst_si642 : si64
+    "arc.keep"(%result_muli_si643_si642) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi646]]) : (si64) -> ()
+
+    // muli 2, 4 -> 8
+    %result_muli_si642_si644 = arc.muli %cst_si642, %cst_si644 : si64
+    "arc.keep"(%result_muli_si642_si644) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi648]]) : (si64) -> ()
+
+    // muli 4, 2 -> 8
+    %result_muli_si644_si642 = arc.muli %cst_si644, %cst_si642 : si64
+    "arc.keep"(%result_muli_si644_si642) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi648]]) : (si64) -> ()
+
+    // muli 3, 3 -> 9
+    %result_muli_si643_si643 = arc.muli %cst_si643, %cst_si643 : si64
+    "arc.keep"(%result_muli_si643_si643) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi649]]) : (si64) -> ()
+
+    // muli 3, 4 -> 12
+    %result_muli_si643_si644 = arc.muli %cst_si643, %cst_si644 : si64
+    "arc.keep"(%result_muli_si643_si644) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi6412]]) : (si64) -> ()
+
+    // muli 4, 3 -> 12
+    %result_muli_si644_si643 = arc.muli %cst_si644, %cst_si643 : si64
+    "arc.keep"(%result_muli_si644_si643) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi6412]]) : (si64) -> ()
+
+    // muli 4, 4 -> 16
+    %result_muli_si644_si644 = arc.muli %cst_si644, %cst_si644 : si64
+    "arc.keep"(%result_muli_si644_si644) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi6416]]) : (si64) -> ()
+
+    // muli 1, 5577148965131116544 -> 5577148965131116544
+    %result_muli_si641_si645577148965131116544 = arc.muli %cst_si641, %cst_si645577148965131116544 : si64
+    "arc.keep"(%result_muli_si641_si645577148965131116544) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi645577148965131116544]]) : (si64) -> ()
+
+    // muli 5577148965131116544, 1 -> 5577148965131116544
+    %result_muli_si645577148965131116544_si641 = arc.muli %cst_si645577148965131116544, %cst_si641 : si64
+    "arc.keep"(%result_muli_si645577148965131116544_si641) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi645577148965131116544]]) : (si64) -> ()
+
+    // muli 1, 9223372036854775806 -> 9223372036854775806
+    %result_muli_si641_si649223372036854775806 = arc.muli %cst_si641, %cst_si649223372036854775806 : si64
+    "arc.keep"(%result_muli_si641_si649223372036854775806) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi649223372036854775806]]) : (si64) -> ()
+
+    // muli 9223372036854775806, 1 -> 9223372036854775806
+    %result_muli_si649223372036854775806_si641 = arc.muli %cst_si649223372036854775806, %cst_si641 : si64
+    "arc.keep"(%result_muli_si649223372036854775806_si641) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi649223372036854775806]]) : (si64) -> ()
+
+    // muli 1, 9223372036854775807 -> 9223372036854775807
+    %result_muli_si641_si649223372036854775807 = arc.muli %cst_si641, %cst_si649223372036854775807 : si64
+    "arc.keep"(%result_muli_si641_si649223372036854775807) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi649223372036854775807]]) : (si64) -> ()
+
+    // muli 9223372036854775807, 1 -> 9223372036854775807
+    %result_muli_si649223372036854775807_si641 = arc.muli %cst_si649223372036854775807, %cst_si641 : si64
+    "arc.keep"(%result_muli_si649223372036854775807_si641) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi649223372036854775807]]) : (si64) -> ()
 
     // muli -9223372036854775808, -9223372036854775808 -> no-fold
     %result_muli_si64n9223372036854775808_si64n9223372036854775808 = arc.muli %cst_si64n9223372036854775808, %cst_si64n9223372036854775808 : si64
@@ -6048,6 +13101,24 @@ module @toplevel {
     // CHECK-DAG: [[RESULT_muli_si64n9223372036854775808_si64n1328271339354574848:%[^ ]+]] = arc.muli [[CSTsi64n9223372036854775808]], [[CSTsi64n1328271339354574848]] : si64
     "arc.keep"(%result_muli_si64n9223372036854775808_si64n1328271339354574848) : (si64) -> ()
     // CHECK: "arc.keep"([[RESULT_muli_si64n9223372036854775808_si64n1328271339354574848]]) : (si64) -> ()
+
+    // muli -9223372036854775808, 2 -> no-fold
+    %result_muli_si64n9223372036854775808_si642 = arc.muli %cst_si64n9223372036854775808, %cst_si642 : si64
+    // CHECK-DAG: [[RESULT_muli_si64n9223372036854775808_si642:%[^ ]+]] = arc.muli [[CSTsi64n9223372036854775808]], [[CSTsi642]] : si64
+    "arc.keep"(%result_muli_si64n9223372036854775808_si642) : (si64) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_si64n9223372036854775808_si642]]) : (si64) -> ()
+
+    // muli -9223372036854775808, 3 -> no-fold
+    %result_muli_si64n9223372036854775808_si643 = arc.muli %cst_si64n9223372036854775808, %cst_si643 : si64
+    // CHECK-DAG: [[RESULT_muli_si64n9223372036854775808_si643:%[^ ]+]] = arc.muli [[CSTsi64n9223372036854775808]], [[CSTsi643]] : si64
+    "arc.keep"(%result_muli_si64n9223372036854775808_si643) : (si64) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_si64n9223372036854775808_si643]]) : (si64) -> ()
+
+    // muli -9223372036854775808, 4 -> no-fold
+    %result_muli_si64n9223372036854775808_si644 = arc.muli %cst_si64n9223372036854775808, %cst_si644 : si64
+    // CHECK-DAG: [[RESULT_muli_si64n9223372036854775808_si644:%[^ ]+]] = arc.muli [[CSTsi64n9223372036854775808]], [[CSTsi644]] : si64
+    "arc.keep"(%result_muli_si64n9223372036854775808_si644) : (si64) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_si64n9223372036854775808_si644]]) : (si64) -> ()
 
     // muli -9223372036854775808, 5577148965131116544 -> no-fold
     %result_muli_si64n9223372036854775808_si645577148965131116544 = arc.muli %cst_si64n9223372036854775808, %cst_si645577148965131116544 : si64
@@ -6090,6 +13161,24 @@ module @toplevel {
     // CHECK-DAG: [[RESULT_muli_si64n9223372036854775807_si64n1328271339354574848:%[^ ]+]] = arc.muli [[CSTsi64n9223372036854775807]], [[CSTsi64n1328271339354574848]] : si64
     "arc.keep"(%result_muli_si64n9223372036854775807_si64n1328271339354574848) : (si64) -> ()
     // CHECK: "arc.keep"([[RESULT_muli_si64n9223372036854775807_si64n1328271339354574848]]) : (si64) -> ()
+
+    // muli -9223372036854775807, 2 -> no-fold
+    %result_muli_si64n9223372036854775807_si642 = arc.muli %cst_si64n9223372036854775807, %cst_si642 : si64
+    // CHECK-DAG: [[RESULT_muli_si64n9223372036854775807_si642:%[^ ]+]] = arc.muli [[CSTsi64n9223372036854775807]], [[CSTsi642]] : si64
+    "arc.keep"(%result_muli_si64n9223372036854775807_si642) : (si64) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_si64n9223372036854775807_si642]]) : (si64) -> ()
+
+    // muli -9223372036854775807, 3 -> no-fold
+    %result_muli_si64n9223372036854775807_si643 = arc.muli %cst_si64n9223372036854775807, %cst_si643 : si64
+    // CHECK-DAG: [[RESULT_muli_si64n9223372036854775807_si643:%[^ ]+]] = arc.muli [[CSTsi64n9223372036854775807]], [[CSTsi643]] : si64
+    "arc.keep"(%result_muli_si64n9223372036854775807_si643) : (si64) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_si64n9223372036854775807_si643]]) : (si64) -> ()
+
+    // muli -9223372036854775807, 4 -> no-fold
+    %result_muli_si64n9223372036854775807_si644 = arc.muli %cst_si64n9223372036854775807, %cst_si644 : si64
+    // CHECK-DAG: [[RESULT_muli_si64n9223372036854775807_si644:%[^ ]+]] = arc.muli [[CSTsi64n9223372036854775807]], [[CSTsi644]] : si64
+    "arc.keep"(%result_muli_si64n9223372036854775807_si644) : (si64) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_si64n9223372036854775807_si644]]) : (si64) -> ()
 
     // muli -9223372036854775807, 5577148965131116544 -> no-fold
     %result_muli_si64n9223372036854775807_si645577148965131116544 = arc.muli %cst_si64n9223372036854775807, %cst_si645577148965131116544 : si64
@@ -6193,6 +13282,96 @@ module @toplevel {
     "arc.keep"(%result_muli_si64n1328271339354574848_si649223372036854775807) : (si64) -> ()
     // CHECK: "arc.keep"([[RESULT_muli_si64n1328271339354574848_si649223372036854775807]]) : (si64) -> ()
 
+    // muli 2, -9223372036854775808 -> no-fold
+    %result_muli_si642_si64n9223372036854775808 = arc.muli %cst_si642, %cst_si64n9223372036854775808 : si64
+    // CHECK-DAG: [[RESULT_muli_si642_si64n9223372036854775808:%[^ ]+]] = arc.muli [[CSTsi642]], [[CSTsi64n9223372036854775808]] : si64
+    "arc.keep"(%result_muli_si642_si64n9223372036854775808) : (si64) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_si642_si64n9223372036854775808]]) : (si64) -> ()
+
+    // muli 2, -9223372036854775807 -> no-fold
+    %result_muli_si642_si64n9223372036854775807 = arc.muli %cst_si642, %cst_si64n9223372036854775807 : si64
+    // CHECK-DAG: [[RESULT_muli_si642_si64n9223372036854775807:%[^ ]+]] = arc.muli [[CSTsi642]], [[CSTsi64n9223372036854775807]] : si64
+    "arc.keep"(%result_muli_si642_si64n9223372036854775807) : (si64) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_si642_si64n9223372036854775807]]) : (si64) -> ()
+
+    // muli 2, 5577148965131116544 -> no-fold
+    %result_muli_si642_si645577148965131116544 = arc.muli %cst_si642, %cst_si645577148965131116544 : si64
+    // CHECK-DAG: [[RESULT_muli_si642_si645577148965131116544:%[^ ]+]] = arc.muli [[CSTsi642]], [[CSTsi645577148965131116544]] : si64
+    "arc.keep"(%result_muli_si642_si645577148965131116544) : (si64) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_si642_si645577148965131116544]]) : (si64) -> ()
+
+    // muli 2, 9223372036854775806 -> no-fold
+    %result_muli_si642_si649223372036854775806 = arc.muli %cst_si642, %cst_si649223372036854775806 : si64
+    // CHECK-DAG: [[RESULT_muli_si642_si649223372036854775806:%[^ ]+]] = arc.muli [[CSTsi642]], [[CSTsi649223372036854775806]] : si64
+    "arc.keep"(%result_muli_si642_si649223372036854775806) : (si64) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_si642_si649223372036854775806]]) : (si64) -> ()
+
+    // muli 2, 9223372036854775807 -> no-fold
+    %result_muli_si642_si649223372036854775807 = arc.muli %cst_si642, %cst_si649223372036854775807 : si64
+    // CHECK-DAG: [[RESULT_muli_si642_si649223372036854775807:%[^ ]+]] = arc.muli [[CSTsi642]], [[CSTsi649223372036854775807]] : si64
+    "arc.keep"(%result_muli_si642_si649223372036854775807) : (si64) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_si642_si649223372036854775807]]) : (si64) -> ()
+
+    // muli 3, -9223372036854775808 -> no-fold
+    %result_muli_si643_si64n9223372036854775808 = arc.muli %cst_si643, %cst_si64n9223372036854775808 : si64
+    // CHECK-DAG: [[RESULT_muli_si643_si64n9223372036854775808:%[^ ]+]] = arc.muli [[CSTsi643]], [[CSTsi64n9223372036854775808]] : si64
+    "arc.keep"(%result_muli_si643_si64n9223372036854775808) : (si64) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_si643_si64n9223372036854775808]]) : (si64) -> ()
+
+    // muli 3, -9223372036854775807 -> no-fold
+    %result_muli_si643_si64n9223372036854775807 = arc.muli %cst_si643, %cst_si64n9223372036854775807 : si64
+    // CHECK-DAG: [[RESULT_muli_si643_si64n9223372036854775807:%[^ ]+]] = arc.muli [[CSTsi643]], [[CSTsi64n9223372036854775807]] : si64
+    "arc.keep"(%result_muli_si643_si64n9223372036854775807) : (si64) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_si643_si64n9223372036854775807]]) : (si64) -> ()
+
+    // muli 3, 5577148965131116544 -> no-fold
+    %result_muli_si643_si645577148965131116544 = arc.muli %cst_si643, %cst_si645577148965131116544 : si64
+    // CHECK-DAG: [[RESULT_muli_si643_si645577148965131116544:%[^ ]+]] = arc.muli [[CSTsi643]], [[CSTsi645577148965131116544]] : si64
+    "arc.keep"(%result_muli_si643_si645577148965131116544) : (si64) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_si643_si645577148965131116544]]) : (si64) -> ()
+
+    // muli 3, 9223372036854775806 -> no-fold
+    %result_muli_si643_si649223372036854775806 = arc.muli %cst_si643, %cst_si649223372036854775806 : si64
+    // CHECK-DAG: [[RESULT_muli_si643_si649223372036854775806:%[^ ]+]] = arc.muli [[CSTsi643]], [[CSTsi649223372036854775806]] : si64
+    "arc.keep"(%result_muli_si643_si649223372036854775806) : (si64) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_si643_si649223372036854775806]]) : (si64) -> ()
+
+    // muli 3, 9223372036854775807 -> no-fold
+    %result_muli_si643_si649223372036854775807 = arc.muli %cst_si643, %cst_si649223372036854775807 : si64
+    // CHECK-DAG: [[RESULT_muli_si643_si649223372036854775807:%[^ ]+]] = arc.muli [[CSTsi643]], [[CSTsi649223372036854775807]] : si64
+    "arc.keep"(%result_muli_si643_si649223372036854775807) : (si64) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_si643_si649223372036854775807]]) : (si64) -> ()
+
+    // muli 4, -9223372036854775808 -> no-fold
+    %result_muli_si644_si64n9223372036854775808 = arc.muli %cst_si644, %cst_si64n9223372036854775808 : si64
+    // CHECK-DAG: [[RESULT_muli_si644_si64n9223372036854775808:%[^ ]+]] = arc.muli [[CSTsi644]], [[CSTsi64n9223372036854775808]] : si64
+    "arc.keep"(%result_muli_si644_si64n9223372036854775808) : (si64) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_si644_si64n9223372036854775808]]) : (si64) -> ()
+
+    // muli 4, -9223372036854775807 -> no-fold
+    %result_muli_si644_si64n9223372036854775807 = arc.muli %cst_si644, %cst_si64n9223372036854775807 : si64
+    // CHECK-DAG: [[RESULT_muli_si644_si64n9223372036854775807:%[^ ]+]] = arc.muli [[CSTsi644]], [[CSTsi64n9223372036854775807]] : si64
+    "arc.keep"(%result_muli_si644_si64n9223372036854775807) : (si64) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_si644_si64n9223372036854775807]]) : (si64) -> ()
+
+    // muli 4, 5577148965131116544 -> no-fold
+    %result_muli_si644_si645577148965131116544 = arc.muli %cst_si644, %cst_si645577148965131116544 : si64
+    // CHECK-DAG: [[RESULT_muli_si644_si645577148965131116544:%[^ ]+]] = arc.muli [[CSTsi644]], [[CSTsi645577148965131116544]] : si64
+    "arc.keep"(%result_muli_si644_si645577148965131116544) : (si64) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_si644_si645577148965131116544]]) : (si64) -> ()
+
+    // muli 4, 9223372036854775806 -> no-fold
+    %result_muli_si644_si649223372036854775806 = arc.muli %cst_si644, %cst_si649223372036854775806 : si64
+    // CHECK-DAG: [[RESULT_muli_si644_si649223372036854775806:%[^ ]+]] = arc.muli [[CSTsi644]], [[CSTsi649223372036854775806]] : si64
+    "arc.keep"(%result_muli_si644_si649223372036854775806) : (si64) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_si644_si649223372036854775806]]) : (si64) -> ()
+
+    // muli 4, 9223372036854775807 -> no-fold
+    %result_muli_si644_si649223372036854775807 = arc.muli %cst_si644, %cst_si649223372036854775807 : si64
+    // CHECK-DAG: [[RESULT_muli_si644_si649223372036854775807:%[^ ]+]] = arc.muli [[CSTsi644]], [[CSTsi649223372036854775807]] : si64
+    "arc.keep"(%result_muli_si644_si649223372036854775807) : (si64) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_si644_si649223372036854775807]]) : (si64) -> ()
+
     // muli 5577148965131116544, -9223372036854775808 -> no-fold
     %result_muli_si645577148965131116544_si64n9223372036854775808 = arc.muli %cst_si645577148965131116544, %cst_si64n9223372036854775808 : si64
     // CHECK-DAG: [[RESULT_muli_si645577148965131116544_si64n9223372036854775808:%[^ ]+]] = arc.muli [[CSTsi645577148965131116544]], [[CSTsi64n9223372036854775808]] : si64
@@ -6216,6 +13395,24 @@ module @toplevel {
     // CHECK-DAG: [[RESULT_muli_si645577148965131116544_si64n1328271339354574848:%[^ ]+]] = arc.muli [[CSTsi645577148965131116544]], [[CSTsi64n1328271339354574848]] : si64
     "arc.keep"(%result_muli_si645577148965131116544_si64n1328271339354574848) : (si64) -> ()
     // CHECK: "arc.keep"([[RESULT_muli_si645577148965131116544_si64n1328271339354574848]]) : (si64) -> ()
+
+    // muli 5577148965131116544, 2 -> no-fold
+    %result_muli_si645577148965131116544_si642 = arc.muli %cst_si645577148965131116544, %cst_si642 : si64
+    // CHECK-DAG: [[RESULT_muli_si645577148965131116544_si642:%[^ ]+]] = arc.muli [[CSTsi645577148965131116544]], [[CSTsi642]] : si64
+    "arc.keep"(%result_muli_si645577148965131116544_si642) : (si64) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_si645577148965131116544_si642]]) : (si64) -> ()
+
+    // muli 5577148965131116544, 3 -> no-fold
+    %result_muli_si645577148965131116544_si643 = arc.muli %cst_si645577148965131116544, %cst_si643 : si64
+    // CHECK-DAG: [[RESULT_muli_si645577148965131116544_si643:%[^ ]+]] = arc.muli [[CSTsi645577148965131116544]], [[CSTsi643]] : si64
+    "arc.keep"(%result_muli_si645577148965131116544_si643) : (si64) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_si645577148965131116544_si643]]) : (si64) -> ()
+
+    // muli 5577148965131116544, 4 -> no-fold
+    %result_muli_si645577148965131116544_si644 = arc.muli %cst_si645577148965131116544, %cst_si644 : si64
+    // CHECK-DAG: [[RESULT_muli_si645577148965131116544_si644:%[^ ]+]] = arc.muli [[CSTsi645577148965131116544]], [[CSTsi644]] : si64
+    "arc.keep"(%result_muli_si645577148965131116544_si644) : (si64) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_si645577148965131116544_si644]]) : (si64) -> ()
 
     // muli 5577148965131116544, 5577148965131116544 -> no-fold
     %result_muli_si645577148965131116544_si645577148965131116544 = arc.muli %cst_si645577148965131116544, %cst_si645577148965131116544 : si64
@@ -6259,6 +13456,24 @@ module @toplevel {
     "arc.keep"(%result_muli_si649223372036854775806_si64n1328271339354574848) : (si64) -> ()
     // CHECK: "arc.keep"([[RESULT_muli_si649223372036854775806_si64n1328271339354574848]]) : (si64) -> ()
 
+    // muli 9223372036854775806, 2 -> no-fold
+    %result_muli_si649223372036854775806_si642 = arc.muli %cst_si649223372036854775806, %cst_si642 : si64
+    // CHECK-DAG: [[RESULT_muli_si649223372036854775806_si642:%[^ ]+]] = arc.muli [[CSTsi649223372036854775806]], [[CSTsi642]] : si64
+    "arc.keep"(%result_muli_si649223372036854775806_si642) : (si64) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_si649223372036854775806_si642]]) : (si64) -> ()
+
+    // muli 9223372036854775806, 3 -> no-fold
+    %result_muli_si649223372036854775806_si643 = arc.muli %cst_si649223372036854775806, %cst_si643 : si64
+    // CHECK-DAG: [[RESULT_muli_si649223372036854775806_si643:%[^ ]+]] = arc.muli [[CSTsi649223372036854775806]], [[CSTsi643]] : si64
+    "arc.keep"(%result_muli_si649223372036854775806_si643) : (si64) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_si649223372036854775806_si643]]) : (si64) -> ()
+
+    // muli 9223372036854775806, 4 -> no-fold
+    %result_muli_si649223372036854775806_si644 = arc.muli %cst_si649223372036854775806, %cst_si644 : si64
+    // CHECK-DAG: [[RESULT_muli_si649223372036854775806_si644:%[^ ]+]] = arc.muli [[CSTsi649223372036854775806]], [[CSTsi644]] : si64
+    "arc.keep"(%result_muli_si649223372036854775806_si644) : (si64) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_si649223372036854775806_si644]]) : (si64) -> ()
+
     // muli 9223372036854775806, 5577148965131116544 -> no-fold
     %result_muli_si649223372036854775806_si645577148965131116544 = arc.muli %cst_si649223372036854775806, %cst_si645577148965131116544 : si64
     // CHECK-DAG: [[RESULT_muli_si649223372036854775806_si645577148965131116544:%[^ ]+]] = arc.muli [[CSTsi649223372036854775806]], [[CSTsi645577148965131116544]] : si64
@@ -6300,6 +13515,24 @@ module @toplevel {
     // CHECK-DAG: [[RESULT_muli_si649223372036854775807_si64n1328271339354574848:%[^ ]+]] = arc.muli [[CSTsi649223372036854775807]], [[CSTsi64n1328271339354574848]] : si64
     "arc.keep"(%result_muli_si649223372036854775807_si64n1328271339354574848) : (si64) -> ()
     // CHECK: "arc.keep"([[RESULT_muli_si649223372036854775807_si64n1328271339354574848]]) : (si64) -> ()
+
+    // muli 9223372036854775807, 2 -> no-fold
+    %result_muli_si649223372036854775807_si642 = arc.muli %cst_si649223372036854775807, %cst_si642 : si64
+    // CHECK-DAG: [[RESULT_muli_si649223372036854775807_si642:%[^ ]+]] = arc.muli [[CSTsi649223372036854775807]], [[CSTsi642]] : si64
+    "arc.keep"(%result_muli_si649223372036854775807_si642) : (si64) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_si649223372036854775807_si642]]) : (si64) -> ()
+
+    // muli 9223372036854775807, 3 -> no-fold
+    %result_muli_si649223372036854775807_si643 = arc.muli %cst_si649223372036854775807, %cst_si643 : si64
+    // CHECK-DAG: [[RESULT_muli_si649223372036854775807_si643:%[^ ]+]] = arc.muli [[CSTsi649223372036854775807]], [[CSTsi643]] : si64
+    "arc.keep"(%result_muli_si649223372036854775807_si643) : (si64) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_si649223372036854775807_si643]]) : (si64) -> ()
+
+    // muli 9223372036854775807, 4 -> no-fold
+    %result_muli_si649223372036854775807_si644 = arc.muli %cst_si649223372036854775807, %cst_si644 : si64
+    // CHECK-DAG: [[RESULT_muli_si649223372036854775807_si644:%[^ ]+]] = arc.muli [[CSTsi649223372036854775807]], [[CSTsi644]] : si64
+    "arc.keep"(%result_muli_si649223372036854775807_si644) : (si64) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_si649223372036854775807_si644]]) : (si64) -> ()
 
     // muli 9223372036854775807, 5577148965131116544 -> no-fold
     %result_muli_si649223372036854775807_si645577148965131116544 = arc.muli %cst_si649223372036854775807, %cst_si645577148965131116544 : si64
@@ -6369,6 +13602,21 @@ module @toplevel {
     "arc.keep"(%result_muli_si80_si81) : (si8) -> ()
     // CHECK: "arc.keep"([[CSTsi80]]) : (si8) -> ()
 
+    // muli 0, 2 -> 0
+    %result_muli_si80_si82 = arc.muli %cst_si80, %cst_si82 : si8
+    "arc.keep"(%result_muli_si80_si82) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi80]]) : (si8) -> ()
+
+    // muli 0, 3 -> 0
+    %result_muli_si80_si83 = arc.muli %cst_si80, %cst_si83 : si8
+    "arc.keep"(%result_muli_si80_si83) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi80]]) : (si8) -> ()
+
+    // muli 0, 4 -> 0
+    %result_muli_si80_si84 = arc.muli %cst_si80, %cst_si84 : si8
+    "arc.keep"(%result_muli_si80_si84) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi80]]) : (si8) -> ()
+
     // muli 0, 16 -> 0
     %result_muli_si80_si816 = arc.muli %cst_si80, %cst_si816 : si8
     "arc.keep"(%result_muli_si80_si816) : (si8) -> ()
@@ -6387,6 +13635,21 @@ module @toplevel {
     // muli 1, 0 -> 0
     %result_muli_si81_si80 = arc.muli %cst_si81, %cst_si80 : si8
     "arc.keep"(%result_muli_si81_si80) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi80]]) : (si8) -> ()
+
+    // muli 2, 0 -> 0
+    %result_muli_si82_si80 = arc.muli %cst_si82, %cst_si80 : si8
+    "arc.keep"(%result_muli_si82_si80) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi80]]) : (si8) -> ()
+
+    // muli 3, 0 -> 0
+    %result_muli_si83_si80 = arc.muli %cst_si83, %cst_si80 : si8
+    "arc.keep"(%result_muli_si83_si80) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi80]]) : (si8) -> ()
+
+    // muli 4, 0 -> 0
+    %result_muli_si84_si80 = arc.muli %cst_si84, %cst_si80 : si8
+    "arc.keep"(%result_muli_si84_si80) : (si8) -> ()
     // CHECK: "arc.keep"([[CSTsi80]]) : (si8) -> ()
 
     // muli 16, 0 -> 0
@@ -6409,15 +13672,120 @@ module @toplevel {
     "arc.keep"(%result_muli_si81_si81) : (si8) -> ()
     // CHECK: "arc.keep"([[CSTsi81]]) : (si8) -> ()
 
+    // muli 1, 2 -> 2
+    %result_muli_si81_si82 = arc.muli %cst_si81, %cst_si82 : si8
+    "arc.keep"(%result_muli_si81_si82) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi82]]) : (si8) -> ()
+
+    // muli 2, 1 -> 2
+    %result_muli_si82_si81 = arc.muli %cst_si82, %cst_si81 : si8
+    "arc.keep"(%result_muli_si82_si81) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi82]]) : (si8) -> ()
+
+    // muli 1, 3 -> 3
+    %result_muli_si81_si83 = arc.muli %cst_si81, %cst_si83 : si8
+    "arc.keep"(%result_muli_si81_si83) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi83]]) : (si8) -> ()
+
+    // muli 3, 1 -> 3
+    %result_muli_si83_si81 = arc.muli %cst_si83, %cst_si81 : si8
+    "arc.keep"(%result_muli_si83_si81) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi83]]) : (si8) -> ()
+
+    // muli 1, 4 -> 4
+    %result_muli_si81_si84 = arc.muli %cst_si81, %cst_si84 : si8
+    "arc.keep"(%result_muli_si81_si84) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi84]]) : (si8) -> ()
+
+    // muli 2, 2 -> 4
+    %result_muli_si82_si82 = arc.muli %cst_si82, %cst_si82 : si8
+    "arc.keep"(%result_muli_si82_si82) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi84]]) : (si8) -> ()
+
+    // muli 4, 1 -> 4
+    %result_muli_si84_si81 = arc.muli %cst_si84, %cst_si81 : si8
+    "arc.keep"(%result_muli_si84_si81) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi84]]) : (si8) -> ()
+
+    // muli 2, 3 -> 6
+    %result_muli_si82_si83 = arc.muli %cst_si82, %cst_si83 : si8
+    "arc.keep"(%result_muli_si82_si83) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi86]]) : (si8) -> ()
+
+    // muli 3, 2 -> 6
+    %result_muli_si83_si82 = arc.muli %cst_si83, %cst_si82 : si8
+    "arc.keep"(%result_muli_si83_si82) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi86]]) : (si8) -> ()
+
+    // muli 2, 4 -> 8
+    %result_muli_si82_si84 = arc.muli %cst_si82, %cst_si84 : si8
+    "arc.keep"(%result_muli_si82_si84) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi88]]) : (si8) -> ()
+
+    // muli 4, 2 -> 8
+    %result_muli_si84_si82 = arc.muli %cst_si84, %cst_si82 : si8
+    "arc.keep"(%result_muli_si84_si82) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi88]]) : (si8) -> ()
+
+    // muli 3, 3 -> 9
+    %result_muli_si83_si83 = arc.muli %cst_si83, %cst_si83 : si8
+    "arc.keep"(%result_muli_si83_si83) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi89]]) : (si8) -> ()
+
+    // muli 3, 4 -> 12
+    %result_muli_si83_si84 = arc.muli %cst_si83, %cst_si84 : si8
+    "arc.keep"(%result_muli_si83_si84) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi812]]) : (si8) -> ()
+
+    // muli 4, 3 -> 12
+    %result_muli_si84_si83 = arc.muli %cst_si84, %cst_si83 : si8
+    "arc.keep"(%result_muli_si84_si83) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi812]]) : (si8) -> ()
+
     // muli 1, 16 -> 16
     %result_muli_si81_si816 = arc.muli %cst_si81, %cst_si816 : si8
     "arc.keep"(%result_muli_si81_si816) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi816]]) : (si8) -> ()
+
+    // muli 4, 4 -> 16
+    %result_muli_si84_si84 = arc.muli %cst_si84, %cst_si84 : si8
+    "arc.keep"(%result_muli_si84_si84) : (si8) -> ()
     // CHECK: "arc.keep"([[CSTsi816]]) : (si8) -> ()
 
     // muli 16, 1 -> 16
     %result_muli_si816_si81 = arc.muli %cst_si816, %cst_si81 : si8
     "arc.keep"(%result_muli_si816_si81) : (si8) -> ()
     // CHECK: "arc.keep"([[CSTsi816]]) : (si8) -> ()
+
+    // muli 2, 16 -> 32
+    %result_muli_si82_si816 = arc.muli %cst_si82, %cst_si816 : si8
+    "arc.keep"(%result_muli_si82_si816) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi832]]) : (si8) -> ()
+
+    // muli 16, 2 -> 32
+    %result_muli_si816_si82 = arc.muli %cst_si816, %cst_si82 : si8
+    "arc.keep"(%result_muli_si816_si82) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi832]]) : (si8) -> ()
+
+    // muli 3, 16 -> 48
+    %result_muli_si83_si816 = arc.muli %cst_si83, %cst_si816 : si8
+    "arc.keep"(%result_muli_si83_si816) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi848]]) : (si8) -> ()
+
+    // muli 16, 3 -> 48
+    %result_muli_si816_si83 = arc.muli %cst_si816, %cst_si83 : si8
+    "arc.keep"(%result_muli_si816_si83) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi848]]) : (si8) -> ()
+
+    // muli 4, 16 -> 64
+    %result_muli_si84_si816 = arc.muli %cst_si84, %cst_si816 : si8
+    "arc.keep"(%result_muli_si84_si816) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi864]]) : (si8) -> ()
+
+    // muli 16, 4 -> 64
+    %result_muli_si816_si84 = arc.muli %cst_si816, %cst_si84 : si8
+    "arc.keep"(%result_muli_si816_si84) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi864]]) : (si8) -> ()
 
     // muli 1, 126 -> 126
     %result_muli_si81_si8126 = arc.muli %cst_si81, %cst_si8126 : si8
@@ -6451,6 +13819,24 @@ module @toplevel {
     "arc.keep"(%result_muli_si8n128_si8n127) : (si8) -> ()
     // CHECK: "arc.keep"([[RESULT_muli_si8n128_si8n127]]) : (si8) -> ()
 
+    // muli -128, 2 -> no-fold
+    %result_muli_si8n128_si82 = arc.muli %cst_si8n128, %cst_si82 : si8
+    // CHECK-DAG: [[RESULT_muli_si8n128_si82:%[^ ]+]] = arc.muli [[CSTsi8n128]], [[CSTsi82]] : si8
+    "arc.keep"(%result_muli_si8n128_si82) : (si8) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_si8n128_si82]]) : (si8) -> ()
+
+    // muli -128, 3 -> no-fold
+    %result_muli_si8n128_si83 = arc.muli %cst_si8n128, %cst_si83 : si8
+    // CHECK-DAG: [[RESULT_muli_si8n128_si83:%[^ ]+]] = arc.muli [[CSTsi8n128]], [[CSTsi83]] : si8
+    "arc.keep"(%result_muli_si8n128_si83) : (si8) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_si8n128_si83]]) : (si8) -> ()
+
+    // muli -128, 4 -> no-fold
+    %result_muli_si8n128_si84 = arc.muli %cst_si8n128, %cst_si84 : si8
+    // CHECK-DAG: [[RESULT_muli_si8n128_si84:%[^ ]+]] = arc.muli [[CSTsi8n128]], [[CSTsi84]] : si8
+    "arc.keep"(%result_muli_si8n128_si84) : (si8) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_si8n128_si84]]) : (si8) -> ()
+
     // muli -128, 16 -> no-fold
     %result_muli_si8n128_si816 = arc.muli %cst_si8n128, %cst_si816 : si8
     // CHECK-DAG: [[RESULT_muli_si8n128_si816:%[^ ]+]] = arc.muli [[CSTsi8n128]], [[CSTsi816]] : si8
@@ -6481,6 +13867,24 @@ module @toplevel {
     "arc.keep"(%result_muli_si8n127_si8n127) : (si8) -> ()
     // CHECK: "arc.keep"([[RESULT_muli_si8n127_si8n127]]) : (si8) -> ()
 
+    // muli -127, 2 -> no-fold
+    %result_muli_si8n127_si82 = arc.muli %cst_si8n127, %cst_si82 : si8
+    // CHECK-DAG: [[RESULT_muli_si8n127_si82:%[^ ]+]] = arc.muli [[CSTsi8n127]], [[CSTsi82]] : si8
+    "arc.keep"(%result_muli_si8n127_si82) : (si8) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_si8n127_si82]]) : (si8) -> ()
+
+    // muli -127, 3 -> no-fold
+    %result_muli_si8n127_si83 = arc.muli %cst_si8n127, %cst_si83 : si8
+    // CHECK-DAG: [[RESULT_muli_si8n127_si83:%[^ ]+]] = arc.muli [[CSTsi8n127]], [[CSTsi83]] : si8
+    "arc.keep"(%result_muli_si8n127_si83) : (si8) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_si8n127_si83]]) : (si8) -> ()
+
+    // muli -127, 4 -> no-fold
+    %result_muli_si8n127_si84 = arc.muli %cst_si8n127, %cst_si84 : si8
+    // CHECK-DAG: [[RESULT_muli_si8n127_si84:%[^ ]+]] = arc.muli [[CSTsi8n127]], [[CSTsi84]] : si8
+    "arc.keep"(%result_muli_si8n127_si84) : (si8) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_si8n127_si84]]) : (si8) -> ()
+
     // muli -127, 16 -> no-fold
     %result_muli_si8n127_si816 = arc.muli %cst_si8n127, %cst_si816 : si8
     // CHECK-DAG: [[RESULT_muli_si8n127_si816:%[^ ]+]] = arc.muli [[CSTsi8n127]], [[CSTsi816]] : si8
@@ -6498,6 +13902,78 @@ module @toplevel {
     // CHECK-DAG: [[RESULT_muli_si8n127_si8127:%[^ ]+]] = arc.muli [[CSTsi8n127]], [[CSTsi8127]] : si8
     "arc.keep"(%result_muli_si8n127_si8127) : (si8) -> ()
     // CHECK: "arc.keep"([[RESULT_muli_si8n127_si8127]]) : (si8) -> ()
+
+    // muli 2, -128 -> no-fold
+    %result_muli_si82_si8n128 = arc.muli %cst_si82, %cst_si8n128 : si8
+    // CHECK-DAG: [[RESULT_muli_si82_si8n128:%[^ ]+]] = arc.muli [[CSTsi82]], [[CSTsi8n128]] : si8
+    "arc.keep"(%result_muli_si82_si8n128) : (si8) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_si82_si8n128]]) : (si8) -> ()
+
+    // muli 2, -127 -> no-fold
+    %result_muli_si82_si8n127 = arc.muli %cst_si82, %cst_si8n127 : si8
+    // CHECK-DAG: [[RESULT_muli_si82_si8n127:%[^ ]+]] = arc.muli [[CSTsi82]], [[CSTsi8n127]] : si8
+    "arc.keep"(%result_muli_si82_si8n127) : (si8) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_si82_si8n127]]) : (si8) -> ()
+
+    // muli 2, 126 -> no-fold
+    %result_muli_si82_si8126 = arc.muli %cst_si82, %cst_si8126 : si8
+    // CHECK-DAG: [[RESULT_muli_si82_si8126:%[^ ]+]] = arc.muli [[CSTsi82]], [[CSTsi8126]] : si8
+    "arc.keep"(%result_muli_si82_si8126) : (si8) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_si82_si8126]]) : (si8) -> ()
+
+    // muli 2, 127 -> no-fold
+    %result_muli_si82_si8127 = arc.muli %cst_si82, %cst_si8127 : si8
+    // CHECK-DAG: [[RESULT_muli_si82_si8127:%[^ ]+]] = arc.muli [[CSTsi82]], [[CSTsi8127]] : si8
+    "arc.keep"(%result_muli_si82_si8127) : (si8) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_si82_si8127]]) : (si8) -> ()
+
+    // muli 3, -128 -> no-fold
+    %result_muli_si83_si8n128 = arc.muli %cst_si83, %cst_si8n128 : si8
+    // CHECK-DAG: [[RESULT_muli_si83_si8n128:%[^ ]+]] = arc.muli [[CSTsi83]], [[CSTsi8n128]] : si8
+    "arc.keep"(%result_muli_si83_si8n128) : (si8) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_si83_si8n128]]) : (si8) -> ()
+
+    // muli 3, -127 -> no-fold
+    %result_muli_si83_si8n127 = arc.muli %cst_si83, %cst_si8n127 : si8
+    // CHECK-DAG: [[RESULT_muli_si83_si8n127:%[^ ]+]] = arc.muli [[CSTsi83]], [[CSTsi8n127]] : si8
+    "arc.keep"(%result_muli_si83_si8n127) : (si8) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_si83_si8n127]]) : (si8) -> ()
+
+    // muli 3, 126 -> no-fold
+    %result_muli_si83_si8126 = arc.muli %cst_si83, %cst_si8126 : si8
+    // CHECK-DAG: [[RESULT_muli_si83_si8126:%[^ ]+]] = arc.muli [[CSTsi83]], [[CSTsi8126]] : si8
+    "arc.keep"(%result_muli_si83_si8126) : (si8) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_si83_si8126]]) : (si8) -> ()
+
+    // muli 3, 127 -> no-fold
+    %result_muli_si83_si8127 = arc.muli %cst_si83, %cst_si8127 : si8
+    // CHECK-DAG: [[RESULT_muli_si83_si8127:%[^ ]+]] = arc.muli [[CSTsi83]], [[CSTsi8127]] : si8
+    "arc.keep"(%result_muli_si83_si8127) : (si8) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_si83_si8127]]) : (si8) -> ()
+
+    // muli 4, -128 -> no-fold
+    %result_muli_si84_si8n128 = arc.muli %cst_si84, %cst_si8n128 : si8
+    // CHECK-DAG: [[RESULT_muli_si84_si8n128:%[^ ]+]] = arc.muli [[CSTsi84]], [[CSTsi8n128]] : si8
+    "arc.keep"(%result_muli_si84_si8n128) : (si8) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_si84_si8n128]]) : (si8) -> ()
+
+    // muli 4, -127 -> no-fold
+    %result_muli_si84_si8n127 = arc.muli %cst_si84, %cst_si8n127 : si8
+    // CHECK-DAG: [[RESULT_muli_si84_si8n127:%[^ ]+]] = arc.muli [[CSTsi84]], [[CSTsi8n127]] : si8
+    "arc.keep"(%result_muli_si84_si8n127) : (si8) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_si84_si8n127]]) : (si8) -> ()
+
+    // muli 4, 126 -> no-fold
+    %result_muli_si84_si8126 = arc.muli %cst_si84, %cst_si8126 : si8
+    // CHECK-DAG: [[RESULT_muli_si84_si8126:%[^ ]+]] = arc.muli [[CSTsi84]], [[CSTsi8126]] : si8
+    "arc.keep"(%result_muli_si84_si8126) : (si8) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_si84_si8126]]) : (si8) -> ()
+
+    // muli 4, 127 -> no-fold
+    %result_muli_si84_si8127 = arc.muli %cst_si84, %cst_si8127 : si8
+    // CHECK-DAG: [[RESULT_muli_si84_si8127:%[^ ]+]] = arc.muli [[CSTsi84]], [[CSTsi8127]] : si8
+    "arc.keep"(%result_muli_si84_si8127) : (si8) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_si84_si8127]]) : (si8) -> ()
 
     // muli 16, -128 -> no-fold
     %result_muli_si816_si8n128 = arc.muli %cst_si816, %cst_si8n128 : si8
@@ -6541,6 +14017,24 @@ module @toplevel {
     "arc.keep"(%result_muli_si8126_si8n127) : (si8) -> ()
     // CHECK: "arc.keep"([[RESULT_muli_si8126_si8n127]]) : (si8) -> ()
 
+    // muli 126, 2 -> no-fold
+    %result_muli_si8126_si82 = arc.muli %cst_si8126, %cst_si82 : si8
+    // CHECK-DAG: [[RESULT_muli_si8126_si82:%[^ ]+]] = arc.muli [[CSTsi8126]], [[CSTsi82]] : si8
+    "arc.keep"(%result_muli_si8126_si82) : (si8) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_si8126_si82]]) : (si8) -> ()
+
+    // muli 126, 3 -> no-fold
+    %result_muli_si8126_si83 = arc.muli %cst_si8126, %cst_si83 : si8
+    // CHECK-DAG: [[RESULT_muli_si8126_si83:%[^ ]+]] = arc.muli [[CSTsi8126]], [[CSTsi83]] : si8
+    "arc.keep"(%result_muli_si8126_si83) : (si8) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_si8126_si83]]) : (si8) -> ()
+
+    // muli 126, 4 -> no-fold
+    %result_muli_si8126_si84 = arc.muli %cst_si8126, %cst_si84 : si8
+    // CHECK-DAG: [[RESULT_muli_si8126_si84:%[^ ]+]] = arc.muli [[CSTsi8126]], [[CSTsi84]] : si8
+    "arc.keep"(%result_muli_si8126_si84) : (si8) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_si8126_si84]]) : (si8) -> ()
+
     // muli 126, 16 -> no-fold
     %result_muli_si8126_si816 = arc.muli %cst_si8126, %cst_si816 : si8
     // CHECK-DAG: [[RESULT_muli_si8126_si816:%[^ ]+]] = arc.muli [[CSTsi8126]], [[CSTsi816]] : si8
@@ -6571,6 +14065,24 @@ module @toplevel {
     "arc.keep"(%result_muli_si8127_si8n127) : (si8) -> ()
     // CHECK: "arc.keep"([[RESULT_muli_si8127_si8n127]]) : (si8) -> ()
 
+    // muli 127, 2 -> no-fold
+    %result_muli_si8127_si82 = arc.muli %cst_si8127, %cst_si82 : si8
+    // CHECK-DAG: [[RESULT_muli_si8127_si82:%[^ ]+]] = arc.muli [[CSTsi8127]], [[CSTsi82]] : si8
+    "arc.keep"(%result_muli_si8127_si82) : (si8) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_si8127_si82]]) : (si8) -> ()
+
+    // muli 127, 3 -> no-fold
+    %result_muli_si8127_si83 = arc.muli %cst_si8127, %cst_si83 : si8
+    // CHECK-DAG: [[RESULT_muli_si8127_si83:%[^ ]+]] = arc.muli [[CSTsi8127]], [[CSTsi83]] : si8
+    "arc.keep"(%result_muli_si8127_si83) : (si8) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_si8127_si83]]) : (si8) -> ()
+
+    // muli 127, 4 -> no-fold
+    %result_muli_si8127_si84 = arc.muli %cst_si8127, %cst_si84 : si8
+    // CHECK-DAG: [[RESULT_muli_si8127_si84:%[^ ]+]] = arc.muli [[CSTsi8127]], [[CSTsi84]] : si8
+    "arc.keep"(%result_muli_si8127_si84) : (si8) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_si8127_si84]]) : (si8) -> ()
+
     // muli 127, 16 -> no-fold
     %result_muli_si8127_si816 = arc.muli %cst_si8127, %cst_si816 : si8
     // CHECK-DAG: [[RESULT_muli_si8127_si816:%[^ ]+]] = arc.muli [[CSTsi8127]], [[CSTsi816]] : si8
@@ -6597,6 +14109,21 @@ module @toplevel {
     // muli 0, 1 -> 0
     %result_muli_ui160_ui161 = arc.muli %cst_ui160, %cst_ui161 : ui16
     "arc.keep"(%result_muli_ui160_ui161) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui160]]) : (ui16) -> ()
+
+    // muli 0, 2 -> 0
+    %result_muli_ui160_ui162 = arc.muli %cst_ui160, %cst_ui162 : ui16
+    "arc.keep"(%result_muli_ui160_ui162) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui160]]) : (ui16) -> ()
+
+    // muli 0, 3 -> 0
+    %result_muli_ui160_ui163 = arc.muli %cst_ui160, %cst_ui163 : ui16
+    "arc.keep"(%result_muli_ui160_ui163) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui160]]) : (ui16) -> ()
+
+    // muli 0, 4 -> 0
+    %result_muli_ui160_ui164 = arc.muli %cst_ui160, %cst_ui164 : ui16
+    "arc.keep"(%result_muli_ui160_ui164) : (ui16) -> ()
     // CHECK: "arc.keep"([[CSTui160]]) : (ui16) -> ()
 
     // muli 0, 1717 -> 0
@@ -6629,6 +14156,21 @@ module @toplevel {
     "arc.keep"(%result_muli_ui161_ui160) : (ui16) -> ()
     // CHECK: "arc.keep"([[CSTui160]]) : (ui16) -> ()
 
+    // muli 2, 0 -> 0
+    %result_muli_ui162_ui160 = arc.muli %cst_ui162, %cst_ui160 : ui16
+    "arc.keep"(%result_muli_ui162_ui160) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui160]]) : (ui16) -> ()
+
+    // muli 3, 0 -> 0
+    %result_muli_ui163_ui160 = arc.muli %cst_ui163, %cst_ui160 : ui16
+    "arc.keep"(%result_muli_ui163_ui160) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui160]]) : (ui16) -> ()
+
+    // muli 4, 0 -> 0
+    %result_muli_ui164_ui160 = arc.muli %cst_ui164, %cst_ui160 : ui16
+    "arc.keep"(%result_muli_ui164_ui160) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui160]]) : (ui16) -> ()
+
     // muli 1717, 0 -> 0
     %result_muli_ui161717_ui160 = arc.muli %cst_ui161717, %cst_ui160 : ui16
     "arc.keep"(%result_muli_ui161717_ui160) : (ui16) -> ()
@@ -6659,6 +14201,81 @@ module @toplevel {
     "arc.keep"(%result_muli_ui161_ui161) : (ui16) -> ()
     // CHECK: "arc.keep"([[CSTui161]]) : (ui16) -> ()
 
+    // muli 1, 2 -> 2
+    %result_muli_ui161_ui162 = arc.muli %cst_ui161, %cst_ui162 : ui16
+    "arc.keep"(%result_muli_ui161_ui162) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui162]]) : (ui16) -> ()
+
+    // muli 2, 1 -> 2
+    %result_muli_ui162_ui161 = arc.muli %cst_ui162, %cst_ui161 : ui16
+    "arc.keep"(%result_muli_ui162_ui161) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui162]]) : (ui16) -> ()
+
+    // muli 1, 3 -> 3
+    %result_muli_ui161_ui163 = arc.muli %cst_ui161, %cst_ui163 : ui16
+    "arc.keep"(%result_muli_ui161_ui163) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui163]]) : (ui16) -> ()
+
+    // muli 3, 1 -> 3
+    %result_muli_ui163_ui161 = arc.muli %cst_ui163, %cst_ui161 : ui16
+    "arc.keep"(%result_muli_ui163_ui161) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui163]]) : (ui16) -> ()
+
+    // muli 1, 4 -> 4
+    %result_muli_ui161_ui164 = arc.muli %cst_ui161, %cst_ui164 : ui16
+    "arc.keep"(%result_muli_ui161_ui164) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui164]]) : (ui16) -> ()
+
+    // muli 2, 2 -> 4
+    %result_muli_ui162_ui162 = arc.muli %cst_ui162, %cst_ui162 : ui16
+    "arc.keep"(%result_muli_ui162_ui162) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui164]]) : (ui16) -> ()
+
+    // muli 4, 1 -> 4
+    %result_muli_ui164_ui161 = arc.muli %cst_ui164, %cst_ui161 : ui16
+    "arc.keep"(%result_muli_ui164_ui161) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui164]]) : (ui16) -> ()
+
+    // muli 2, 3 -> 6
+    %result_muli_ui162_ui163 = arc.muli %cst_ui162, %cst_ui163 : ui16
+    "arc.keep"(%result_muli_ui162_ui163) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui166]]) : (ui16) -> ()
+
+    // muli 3, 2 -> 6
+    %result_muli_ui163_ui162 = arc.muli %cst_ui163, %cst_ui162 : ui16
+    "arc.keep"(%result_muli_ui163_ui162) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui166]]) : (ui16) -> ()
+
+    // muli 2, 4 -> 8
+    %result_muli_ui162_ui164 = arc.muli %cst_ui162, %cst_ui164 : ui16
+    "arc.keep"(%result_muli_ui162_ui164) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui168]]) : (ui16) -> ()
+
+    // muli 4, 2 -> 8
+    %result_muli_ui164_ui162 = arc.muli %cst_ui164, %cst_ui162 : ui16
+    "arc.keep"(%result_muli_ui164_ui162) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui168]]) : (ui16) -> ()
+
+    // muli 3, 3 -> 9
+    %result_muli_ui163_ui163 = arc.muli %cst_ui163, %cst_ui163 : ui16
+    "arc.keep"(%result_muli_ui163_ui163) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui169]]) : (ui16) -> ()
+
+    // muli 3, 4 -> 12
+    %result_muli_ui163_ui164 = arc.muli %cst_ui163, %cst_ui164 : ui16
+    "arc.keep"(%result_muli_ui163_ui164) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui1612]]) : (ui16) -> ()
+
+    // muli 4, 3 -> 12
+    %result_muli_ui164_ui163 = arc.muli %cst_ui164, %cst_ui163 : ui16
+    "arc.keep"(%result_muli_ui164_ui163) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui1612]]) : (ui16) -> ()
+
+    // muli 4, 4 -> 16
+    %result_muli_ui164_ui164 = arc.muli %cst_ui164, %cst_ui164 : ui16
+    "arc.keep"(%result_muli_ui164_ui164) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui1616]]) : (ui16) -> ()
+
     // muli 1, 1717 -> 1717
     %result_muli_ui161_ui161717 = arc.muli %cst_ui161, %cst_ui161717 : ui16
     "arc.keep"(%result_muli_ui161_ui161717) : (ui16) -> ()
@@ -6669,6 +14286,36 @@ module @toplevel {
     "arc.keep"(%result_muli_ui161717_ui161) : (ui16) -> ()
     // CHECK: "arc.keep"([[CSTui161717]]) : (ui16) -> ()
 
+    // muli 2, 1717 -> 3434
+    %result_muli_ui162_ui161717 = arc.muli %cst_ui162, %cst_ui161717 : ui16
+    "arc.keep"(%result_muli_ui162_ui161717) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui163434]]) : (ui16) -> ()
+
+    // muli 1717, 2 -> 3434
+    %result_muli_ui161717_ui162 = arc.muli %cst_ui161717, %cst_ui162 : ui16
+    "arc.keep"(%result_muli_ui161717_ui162) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui163434]]) : (ui16) -> ()
+
+    // muli 3, 1717 -> 5151
+    %result_muli_ui163_ui161717 = arc.muli %cst_ui163, %cst_ui161717 : ui16
+    "arc.keep"(%result_muli_ui163_ui161717) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui165151]]) : (ui16) -> ()
+
+    // muli 1717, 3 -> 5151
+    %result_muli_ui161717_ui163 = arc.muli %cst_ui161717, %cst_ui163 : ui16
+    "arc.keep"(%result_muli_ui161717_ui163) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui165151]]) : (ui16) -> ()
+
+    // muli 4, 1717 -> 6868
+    %result_muli_ui164_ui161717 = arc.muli %cst_ui164, %cst_ui161717 : ui16
+    "arc.keep"(%result_muli_ui164_ui161717) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui166868]]) : (ui16) -> ()
+
+    // muli 1717, 4 -> 6868
+    %result_muli_ui161717_ui164 = arc.muli %cst_ui161717, %cst_ui164 : ui16
+    "arc.keep"(%result_muli_ui161717_ui164) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui166868]]) : (ui16) -> ()
+
     // muli 1, 17988 -> 17988
     %result_muli_ui161_ui1617988 = arc.muli %cst_ui161, %cst_ui1617988 : ui16
     "arc.keep"(%result_muli_ui161_ui1617988) : (ui16) -> ()
@@ -6678,6 +14325,26 @@ module @toplevel {
     %result_muli_ui1617988_ui161 = arc.muli %cst_ui1617988, %cst_ui161 : ui16
     "arc.keep"(%result_muli_ui1617988_ui161) : (ui16) -> ()
     // CHECK: "arc.keep"([[CSTui1617988]]) : (ui16) -> ()
+
+    // muli 2, 17988 -> 35976
+    %result_muli_ui162_ui1617988 = arc.muli %cst_ui162, %cst_ui1617988 : ui16
+    "arc.keep"(%result_muli_ui162_ui1617988) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui1635976]]) : (ui16) -> ()
+
+    // muli 17988, 2 -> 35976
+    %result_muli_ui1617988_ui162 = arc.muli %cst_ui1617988, %cst_ui162 : ui16
+    "arc.keep"(%result_muli_ui1617988_ui162) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui1635976]]) : (ui16) -> ()
+
+    // muli 3, 17988 -> 53964
+    %result_muli_ui163_ui1617988 = arc.muli %cst_ui163, %cst_ui1617988 : ui16
+    "arc.keep"(%result_muli_ui163_ui1617988) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui1653964]]) : (ui16) -> ()
+
+    // muli 17988, 3 -> 53964
+    %result_muli_ui1617988_ui163 = arc.muli %cst_ui1617988, %cst_ui163 : ui16
+    "arc.keep"(%result_muli_ui1617988_ui163) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui1653964]]) : (ui16) -> ()
 
     // muli 1, 65096 -> 65096
     %result_muli_ui161_ui1665096 = arc.muli %cst_ui161, %cst_ui1665096 : ui16
@@ -6709,6 +14376,66 @@ module @toplevel {
     "arc.keep"(%result_muli_ui1665535_ui161) : (ui16) -> ()
     // CHECK: "arc.keep"([[CSTui1665535]]) : (ui16) -> ()
 
+    // muli 2, 65096 -> no-fold
+    %result_muli_ui162_ui1665096 = arc.muli %cst_ui162, %cst_ui1665096 : ui16
+    // CHECK-DAG: [[RESULT_muli_ui162_ui1665096:%[^ ]+]] = arc.muli [[CSTui162]], [[CSTui1665096]] : ui16
+    "arc.keep"(%result_muli_ui162_ui1665096) : (ui16) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_ui162_ui1665096]]) : (ui16) -> ()
+
+    // muli 2, 65534 -> no-fold
+    %result_muli_ui162_ui1665534 = arc.muli %cst_ui162, %cst_ui1665534 : ui16
+    // CHECK-DAG: [[RESULT_muli_ui162_ui1665534:%[^ ]+]] = arc.muli [[CSTui162]], [[CSTui1665534]] : ui16
+    "arc.keep"(%result_muli_ui162_ui1665534) : (ui16) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_ui162_ui1665534]]) : (ui16) -> ()
+
+    // muli 2, 65535 -> no-fold
+    %result_muli_ui162_ui1665535 = arc.muli %cst_ui162, %cst_ui1665535 : ui16
+    // CHECK-DAG: [[RESULT_muli_ui162_ui1665535:%[^ ]+]] = arc.muli [[CSTui162]], [[CSTui1665535]] : ui16
+    "arc.keep"(%result_muli_ui162_ui1665535) : (ui16) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_ui162_ui1665535]]) : (ui16) -> ()
+
+    // muli 3, 65096 -> no-fold
+    %result_muli_ui163_ui1665096 = arc.muli %cst_ui163, %cst_ui1665096 : ui16
+    // CHECK-DAG: [[RESULT_muli_ui163_ui1665096:%[^ ]+]] = arc.muli [[CSTui163]], [[CSTui1665096]] : ui16
+    "arc.keep"(%result_muli_ui163_ui1665096) : (ui16) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_ui163_ui1665096]]) : (ui16) -> ()
+
+    // muli 3, 65534 -> no-fold
+    %result_muli_ui163_ui1665534 = arc.muli %cst_ui163, %cst_ui1665534 : ui16
+    // CHECK-DAG: [[RESULT_muli_ui163_ui1665534:%[^ ]+]] = arc.muli [[CSTui163]], [[CSTui1665534]] : ui16
+    "arc.keep"(%result_muli_ui163_ui1665534) : (ui16) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_ui163_ui1665534]]) : (ui16) -> ()
+
+    // muli 3, 65535 -> no-fold
+    %result_muli_ui163_ui1665535 = arc.muli %cst_ui163, %cst_ui1665535 : ui16
+    // CHECK-DAG: [[RESULT_muli_ui163_ui1665535:%[^ ]+]] = arc.muli [[CSTui163]], [[CSTui1665535]] : ui16
+    "arc.keep"(%result_muli_ui163_ui1665535) : (ui16) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_ui163_ui1665535]]) : (ui16) -> ()
+
+    // muli 4, 17988 -> no-fold
+    %result_muli_ui164_ui1617988 = arc.muli %cst_ui164, %cst_ui1617988 : ui16
+    // CHECK-DAG: [[RESULT_muli_ui164_ui1617988:%[^ ]+]] = arc.muli [[CSTui164]], [[CSTui1617988]] : ui16
+    "arc.keep"(%result_muli_ui164_ui1617988) : (ui16) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_ui164_ui1617988]]) : (ui16) -> ()
+
+    // muli 4, 65096 -> no-fold
+    %result_muli_ui164_ui1665096 = arc.muli %cst_ui164, %cst_ui1665096 : ui16
+    // CHECK-DAG: [[RESULT_muli_ui164_ui1665096:%[^ ]+]] = arc.muli [[CSTui164]], [[CSTui1665096]] : ui16
+    "arc.keep"(%result_muli_ui164_ui1665096) : (ui16) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_ui164_ui1665096]]) : (ui16) -> ()
+
+    // muli 4, 65534 -> no-fold
+    %result_muli_ui164_ui1665534 = arc.muli %cst_ui164, %cst_ui1665534 : ui16
+    // CHECK-DAG: [[RESULT_muli_ui164_ui1665534:%[^ ]+]] = arc.muli [[CSTui164]], [[CSTui1665534]] : ui16
+    "arc.keep"(%result_muli_ui164_ui1665534) : (ui16) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_ui164_ui1665534]]) : (ui16) -> ()
+
+    // muli 4, 65535 -> no-fold
+    %result_muli_ui164_ui1665535 = arc.muli %cst_ui164, %cst_ui1665535 : ui16
+    // CHECK-DAG: [[RESULT_muli_ui164_ui1665535:%[^ ]+]] = arc.muli [[CSTui164]], [[CSTui1665535]] : ui16
+    "arc.keep"(%result_muli_ui164_ui1665535) : (ui16) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_ui164_ui1665535]]) : (ui16) -> ()
+
     // muli 1717, 1717 -> no-fold
     %result_muli_ui161717_ui161717 = arc.muli %cst_ui161717, %cst_ui161717 : ui16
     // CHECK-DAG: [[RESULT_muli_ui161717_ui161717:%[^ ]+]] = arc.muli [[CSTui161717]], [[CSTui161717]] : ui16
@@ -6738,6 +14465,12 @@ module @toplevel {
     // CHECK-DAG: [[RESULT_muli_ui161717_ui1665535:%[^ ]+]] = arc.muli [[CSTui161717]], [[CSTui1665535]] : ui16
     "arc.keep"(%result_muli_ui161717_ui1665535) : (ui16) -> ()
     // CHECK: "arc.keep"([[RESULT_muli_ui161717_ui1665535]]) : (ui16) -> ()
+
+    // muli 17988, 4 -> no-fold
+    %result_muli_ui1617988_ui164 = arc.muli %cst_ui1617988, %cst_ui164 : ui16
+    // CHECK-DAG: [[RESULT_muli_ui1617988_ui164:%[^ ]+]] = arc.muli [[CSTui1617988]], [[CSTui164]] : ui16
+    "arc.keep"(%result_muli_ui1617988_ui164) : (ui16) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_ui1617988_ui164]]) : (ui16) -> ()
 
     // muli 17988, 1717 -> no-fold
     %result_muli_ui1617988_ui161717 = arc.muli %cst_ui1617988, %cst_ui161717 : ui16
@@ -6769,6 +14502,24 @@ module @toplevel {
     "arc.keep"(%result_muli_ui1617988_ui1665535) : (ui16) -> ()
     // CHECK: "arc.keep"([[RESULT_muli_ui1617988_ui1665535]]) : (ui16) -> ()
 
+    // muli 65096, 2 -> no-fold
+    %result_muli_ui1665096_ui162 = arc.muli %cst_ui1665096, %cst_ui162 : ui16
+    // CHECK-DAG: [[RESULT_muli_ui1665096_ui162:%[^ ]+]] = arc.muli [[CSTui1665096]], [[CSTui162]] : ui16
+    "arc.keep"(%result_muli_ui1665096_ui162) : (ui16) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_ui1665096_ui162]]) : (ui16) -> ()
+
+    // muli 65096, 3 -> no-fold
+    %result_muli_ui1665096_ui163 = arc.muli %cst_ui1665096, %cst_ui163 : ui16
+    // CHECK-DAG: [[RESULT_muli_ui1665096_ui163:%[^ ]+]] = arc.muli [[CSTui1665096]], [[CSTui163]] : ui16
+    "arc.keep"(%result_muli_ui1665096_ui163) : (ui16) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_ui1665096_ui163]]) : (ui16) -> ()
+
+    // muli 65096, 4 -> no-fold
+    %result_muli_ui1665096_ui164 = arc.muli %cst_ui1665096, %cst_ui164 : ui16
+    // CHECK-DAG: [[RESULT_muli_ui1665096_ui164:%[^ ]+]] = arc.muli [[CSTui1665096]], [[CSTui164]] : ui16
+    "arc.keep"(%result_muli_ui1665096_ui164) : (ui16) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_ui1665096_ui164]]) : (ui16) -> ()
+
     // muli 65096, 1717 -> no-fold
     %result_muli_ui1665096_ui161717 = arc.muli %cst_ui1665096, %cst_ui161717 : ui16
     // CHECK-DAG: [[RESULT_muli_ui1665096_ui161717:%[^ ]+]] = arc.muli [[CSTui1665096]], [[CSTui161717]] : ui16
@@ -6799,6 +14550,24 @@ module @toplevel {
     "arc.keep"(%result_muli_ui1665096_ui1665535) : (ui16) -> ()
     // CHECK: "arc.keep"([[RESULT_muli_ui1665096_ui1665535]]) : (ui16) -> ()
 
+    // muli 65534, 2 -> no-fold
+    %result_muli_ui1665534_ui162 = arc.muli %cst_ui1665534, %cst_ui162 : ui16
+    // CHECK-DAG: [[RESULT_muli_ui1665534_ui162:%[^ ]+]] = arc.muli [[CSTui1665534]], [[CSTui162]] : ui16
+    "arc.keep"(%result_muli_ui1665534_ui162) : (ui16) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_ui1665534_ui162]]) : (ui16) -> ()
+
+    // muli 65534, 3 -> no-fold
+    %result_muli_ui1665534_ui163 = arc.muli %cst_ui1665534, %cst_ui163 : ui16
+    // CHECK-DAG: [[RESULT_muli_ui1665534_ui163:%[^ ]+]] = arc.muli [[CSTui1665534]], [[CSTui163]] : ui16
+    "arc.keep"(%result_muli_ui1665534_ui163) : (ui16) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_ui1665534_ui163]]) : (ui16) -> ()
+
+    // muli 65534, 4 -> no-fold
+    %result_muli_ui1665534_ui164 = arc.muli %cst_ui1665534, %cst_ui164 : ui16
+    // CHECK-DAG: [[RESULT_muli_ui1665534_ui164:%[^ ]+]] = arc.muli [[CSTui1665534]], [[CSTui164]] : ui16
+    "arc.keep"(%result_muli_ui1665534_ui164) : (ui16) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_ui1665534_ui164]]) : (ui16) -> ()
+
     // muli 65534, 1717 -> no-fold
     %result_muli_ui1665534_ui161717 = arc.muli %cst_ui1665534, %cst_ui161717 : ui16
     // CHECK-DAG: [[RESULT_muli_ui1665534_ui161717:%[^ ]+]] = arc.muli [[CSTui1665534]], [[CSTui161717]] : ui16
@@ -6828,6 +14597,24 @@ module @toplevel {
     // CHECK-DAG: [[RESULT_muli_ui1665534_ui1665535:%[^ ]+]] = arc.muli [[CSTui1665534]], [[CSTui1665535]] : ui16
     "arc.keep"(%result_muli_ui1665534_ui1665535) : (ui16) -> ()
     // CHECK: "arc.keep"([[RESULT_muli_ui1665534_ui1665535]]) : (ui16) -> ()
+
+    // muli 65535, 2 -> no-fold
+    %result_muli_ui1665535_ui162 = arc.muli %cst_ui1665535, %cst_ui162 : ui16
+    // CHECK-DAG: [[RESULT_muli_ui1665535_ui162:%[^ ]+]] = arc.muli [[CSTui1665535]], [[CSTui162]] : ui16
+    "arc.keep"(%result_muli_ui1665535_ui162) : (ui16) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_ui1665535_ui162]]) : (ui16) -> ()
+
+    // muli 65535, 3 -> no-fold
+    %result_muli_ui1665535_ui163 = arc.muli %cst_ui1665535, %cst_ui163 : ui16
+    // CHECK-DAG: [[RESULT_muli_ui1665535_ui163:%[^ ]+]] = arc.muli [[CSTui1665535]], [[CSTui163]] : ui16
+    "arc.keep"(%result_muli_ui1665535_ui163) : (ui16) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_ui1665535_ui163]]) : (ui16) -> ()
+
+    // muli 65535, 4 -> no-fold
+    %result_muli_ui1665535_ui164 = arc.muli %cst_ui1665535, %cst_ui164 : ui16
+    // CHECK-DAG: [[RESULT_muli_ui1665535_ui164:%[^ ]+]] = arc.muli [[CSTui1665535]], [[CSTui164]] : ui16
+    "arc.keep"(%result_muli_ui1665535_ui164) : (ui16) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_ui1665535_ui164]]) : (ui16) -> ()
 
     // muli 65535, 1717 -> no-fold
     %result_muli_ui1665535_ui161717 = arc.muli %cst_ui1665535, %cst_ui161717 : ui16
@@ -6869,6 +14656,21 @@ module @toplevel {
     "arc.keep"(%result_muli_ui320_ui321) : (ui32) -> ()
     // CHECK: "arc.keep"([[CSTui320]]) : (ui32) -> ()
 
+    // muli 0, 2 -> 0
+    %result_muli_ui320_ui322 = arc.muli %cst_ui320, %cst_ui322 : ui32
+    "arc.keep"(%result_muli_ui320_ui322) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui320]]) : (ui32) -> ()
+
+    // muli 0, 3 -> 0
+    %result_muli_ui320_ui323 = arc.muli %cst_ui320, %cst_ui323 : ui32
+    "arc.keep"(%result_muli_ui320_ui323) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui320]]) : (ui32) -> ()
+
+    // muli 0, 4 -> 0
+    %result_muli_ui320_ui324 = arc.muli %cst_ui320, %cst_ui324 : ui32
+    "arc.keep"(%result_muli_ui320_ui324) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui320]]) : (ui32) -> ()
+
     // muli 0, 2119154652 -> 0
     %result_muli_ui320_ui322119154652 = arc.muli %cst_ui320, %cst_ui322119154652 : ui32
     "arc.keep"(%result_muli_ui320_ui322119154652) : (ui32) -> ()
@@ -6897,6 +14699,21 @@ module @toplevel {
     // muli 1, 0 -> 0
     %result_muli_ui321_ui320 = arc.muli %cst_ui321, %cst_ui320 : ui32
     "arc.keep"(%result_muli_ui321_ui320) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui320]]) : (ui32) -> ()
+
+    // muli 2, 0 -> 0
+    %result_muli_ui322_ui320 = arc.muli %cst_ui322, %cst_ui320 : ui32
+    "arc.keep"(%result_muli_ui322_ui320) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui320]]) : (ui32) -> ()
+
+    // muli 3, 0 -> 0
+    %result_muli_ui323_ui320 = arc.muli %cst_ui323, %cst_ui320 : ui32
+    "arc.keep"(%result_muli_ui323_ui320) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui320]]) : (ui32) -> ()
+
+    // muli 4, 0 -> 0
+    %result_muli_ui324_ui320 = arc.muli %cst_ui324, %cst_ui320 : ui32
+    "arc.keep"(%result_muli_ui324_ui320) : (ui32) -> ()
     // CHECK: "arc.keep"([[CSTui320]]) : (ui32) -> ()
 
     // muli 2119154652, 0 -> 0
@@ -6929,6 +14746,81 @@ module @toplevel {
     "arc.keep"(%result_muli_ui321_ui321) : (ui32) -> ()
     // CHECK: "arc.keep"([[CSTui321]]) : (ui32) -> ()
 
+    // muli 1, 2 -> 2
+    %result_muli_ui321_ui322 = arc.muli %cst_ui321, %cst_ui322 : ui32
+    "arc.keep"(%result_muli_ui321_ui322) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui322]]) : (ui32) -> ()
+
+    // muli 2, 1 -> 2
+    %result_muli_ui322_ui321 = arc.muli %cst_ui322, %cst_ui321 : ui32
+    "arc.keep"(%result_muli_ui322_ui321) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui322]]) : (ui32) -> ()
+
+    // muli 1, 3 -> 3
+    %result_muli_ui321_ui323 = arc.muli %cst_ui321, %cst_ui323 : ui32
+    "arc.keep"(%result_muli_ui321_ui323) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui323]]) : (ui32) -> ()
+
+    // muli 3, 1 -> 3
+    %result_muli_ui323_ui321 = arc.muli %cst_ui323, %cst_ui321 : ui32
+    "arc.keep"(%result_muli_ui323_ui321) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui323]]) : (ui32) -> ()
+
+    // muli 1, 4 -> 4
+    %result_muli_ui321_ui324 = arc.muli %cst_ui321, %cst_ui324 : ui32
+    "arc.keep"(%result_muli_ui321_ui324) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui324]]) : (ui32) -> ()
+
+    // muli 2, 2 -> 4
+    %result_muli_ui322_ui322 = arc.muli %cst_ui322, %cst_ui322 : ui32
+    "arc.keep"(%result_muli_ui322_ui322) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui324]]) : (ui32) -> ()
+
+    // muli 4, 1 -> 4
+    %result_muli_ui324_ui321 = arc.muli %cst_ui324, %cst_ui321 : ui32
+    "arc.keep"(%result_muli_ui324_ui321) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui324]]) : (ui32) -> ()
+
+    // muli 2, 3 -> 6
+    %result_muli_ui322_ui323 = arc.muli %cst_ui322, %cst_ui323 : ui32
+    "arc.keep"(%result_muli_ui322_ui323) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui326]]) : (ui32) -> ()
+
+    // muli 3, 2 -> 6
+    %result_muli_ui323_ui322 = arc.muli %cst_ui323, %cst_ui322 : ui32
+    "arc.keep"(%result_muli_ui323_ui322) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui326]]) : (ui32) -> ()
+
+    // muli 2, 4 -> 8
+    %result_muli_ui322_ui324 = arc.muli %cst_ui322, %cst_ui324 : ui32
+    "arc.keep"(%result_muli_ui322_ui324) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui328]]) : (ui32) -> ()
+
+    // muli 4, 2 -> 8
+    %result_muli_ui324_ui322 = arc.muli %cst_ui324, %cst_ui322 : ui32
+    "arc.keep"(%result_muli_ui324_ui322) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui328]]) : (ui32) -> ()
+
+    // muli 3, 3 -> 9
+    %result_muli_ui323_ui323 = arc.muli %cst_ui323, %cst_ui323 : ui32
+    "arc.keep"(%result_muli_ui323_ui323) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui329]]) : (ui32) -> ()
+
+    // muli 3, 4 -> 12
+    %result_muli_ui323_ui324 = arc.muli %cst_ui323, %cst_ui324 : ui32
+    "arc.keep"(%result_muli_ui323_ui324) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui3212]]) : (ui32) -> ()
+
+    // muli 4, 3 -> 12
+    %result_muli_ui324_ui323 = arc.muli %cst_ui324, %cst_ui323 : ui32
+    "arc.keep"(%result_muli_ui324_ui323) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui3212]]) : (ui32) -> ()
+
+    // muli 4, 4 -> 16
+    %result_muli_ui324_ui324 = arc.muli %cst_ui324, %cst_ui324 : ui32
+    "arc.keep"(%result_muli_ui324_ui324) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui3216]]) : (ui32) -> ()
+
     // muli 1, 2119154652 -> 2119154652
     %result_muli_ui321_ui322119154652 = arc.muli %cst_ui321, %cst_ui322119154652 : ui32
     "arc.keep"(%result_muli_ui321_ui322119154652) : (ui32) -> ()
@@ -6959,6 +14851,16 @@ module @toplevel {
     "arc.keep"(%result_muli_ui323482297128_ui321) : (ui32) -> ()
     // CHECK: "arc.keep"([[CSTui323482297128]]) : (ui32) -> ()
 
+    // muli 2, 2119154652 -> 4238309304
+    %result_muli_ui322_ui322119154652 = arc.muli %cst_ui322, %cst_ui322119154652 : ui32
+    "arc.keep"(%result_muli_ui322_ui322119154652) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui324238309304]]) : (ui32) -> ()
+
+    // muli 2119154652, 2 -> 4238309304
+    %result_muli_ui322119154652_ui322 = arc.muli %cst_ui322119154652, %cst_ui322 : ui32
+    "arc.keep"(%result_muli_ui322119154652_ui322) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui324238309304]]) : (ui32) -> ()
+
     // muli 1, 4294967294 -> 4294967294
     %result_muli_ui321_ui324294967294 = arc.muli %cst_ui321, %cst_ui324294967294 : ui32
     "arc.keep"(%result_muli_ui321_ui324294967294) : (ui32) -> ()
@@ -6978,6 +14880,102 @@ module @toplevel {
     %result_muli_ui324294967295_ui321 = arc.muli %cst_ui324294967295, %cst_ui321 : ui32
     "arc.keep"(%result_muli_ui324294967295_ui321) : (ui32) -> ()
     // CHECK: "arc.keep"([[CSTui324294967295]]) : (ui32) -> ()
+
+    // muli 2, 3002788344 -> no-fold
+    %result_muli_ui322_ui323002788344 = arc.muli %cst_ui322, %cst_ui323002788344 : ui32
+    // CHECK-DAG: [[RESULT_muli_ui322_ui323002788344:%[^ ]+]] = arc.muli [[CSTui322]], [[CSTui323002788344]] : ui32
+    "arc.keep"(%result_muli_ui322_ui323002788344) : (ui32) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_ui322_ui323002788344]]) : (ui32) -> ()
+
+    // muli 2, 3482297128 -> no-fold
+    %result_muli_ui322_ui323482297128 = arc.muli %cst_ui322, %cst_ui323482297128 : ui32
+    // CHECK-DAG: [[RESULT_muli_ui322_ui323482297128:%[^ ]+]] = arc.muli [[CSTui322]], [[CSTui323482297128]] : ui32
+    "arc.keep"(%result_muli_ui322_ui323482297128) : (ui32) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_ui322_ui323482297128]]) : (ui32) -> ()
+
+    // muli 2, 4294967294 -> no-fold
+    %result_muli_ui322_ui324294967294 = arc.muli %cst_ui322, %cst_ui324294967294 : ui32
+    // CHECK-DAG: [[RESULT_muli_ui322_ui324294967294:%[^ ]+]] = arc.muli [[CSTui322]], [[CSTui324294967294]] : ui32
+    "arc.keep"(%result_muli_ui322_ui324294967294) : (ui32) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_ui322_ui324294967294]]) : (ui32) -> ()
+
+    // muli 2, 4294967295 -> no-fold
+    %result_muli_ui322_ui324294967295 = arc.muli %cst_ui322, %cst_ui324294967295 : ui32
+    // CHECK-DAG: [[RESULT_muli_ui322_ui324294967295:%[^ ]+]] = arc.muli [[CSTui322]], [[CSTui324294967295]] : ui32
+    "arc.keep"(%result_muli_ui322_ui324294967295) : (ui32) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_ui322_ui324294967295]]) : (ui32) -> ()
+
+    // muli 3, 2119154652 -> no-fold
+    %result_muli_ui323_ui322119154652 = arc.muli %cst_ui323, %cst_ui322119154652 : ui32
+    // CHECK-DAG: [[RESULT_muli_ui323_ui322119154652:%[^ ]+]] = arc.muli [[CSTui323]], [[CSTui322119154652]] : ui32
+    "arc.keep"(%result_muli_ui323_ui322119154652) : (ui32) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_ui323_ui322119154652]]) : (ui32) -> ()
+
+    // muli 3, 3002788344 -> no-fold
+    %result_muli_ui323_ui323002788344 = arc.muli %cst_ui323, %cst_ui323002788344 : ui32
+    // CHECK-DAG: [[RESULT_muli_ui323_ui323002788344:%[^ ]+]] = arc.muli [[CSTui323]], [[CSTui323002788344]] : ui32
+    "arc.keep"(%result_muli_ui323_ui323002788344) : (ui32) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_ui323_ui323002788344]]) : (ui32) -> ()
+
+    // muli 3, 3482297128 -> no-fold
+    %result_muli_ui323_ui323482297128 = arc.muli %cst_ui323, %cst_ui323482297128 : ui32
+    // CHECK-DAG: [[RESULT_muli_ui323_ui323482297128:%[^ ]+]] = arc.muli [[CSTui323]], [[CSTui323482297128]] : ui32
+    "arc.keep"(%result_muli_ui323_ui323482297128) : (ui32) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_ui323_ui323482297128]]) : (ui32) -> ()
+
+    // muli 3, 4294967294 -> no-fold
+    %result_muli_ui323_ui324294967294 = arc.muli %cst_ui323, %cst_ui324294967294 : ui32
+    // CHECK-DAG: [[RESULT_muli_ui323_ui324294967294:%[^ ]+]] = arc.muli [[CSTui323]], [[CSTui324294967294]] : ui32
+    "arc.keep"(%result_muli_ui323_ui324294967294) : (ui32) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_ui323_ui324294967294]]) : (ui32) -> ()
+
+    // muli 3, 4294967295 -> no-fold
+    %result_muli_ui323_ui324294967295 = arc.muli %cst_ui323, %cst_ui324294967295 : ui32
+    // CHECK-DAG: [[RESULT_muli_ui323_ui324294967295:%[^ ]+]] = arc.muli [[CSTui323]], [[CSTui324294967295]] : ui32
+    "arc.keep"(%result_muli_ui323_ui324294967295) : (ui32) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_ui323_ui324294967295]]) : (ui32) -> ()
+
+    // muli 4, 2119154652 -> no-fold
+    %result_muli_ui324_ui322119154652 = arc.muli %cst_ui324, %cst_ui322119154652 : ui32
+    // CHECK-DAG: [[RESULT_muli_ui324_ui322119154652:%[^ ]+]] = arc.muli [[CSTui324]], [[CSTui322119154652]] : ui32
+    "arc.keep"(%result_muli_ui324_ui322119154652) : (ui32) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_ui324_ui322119154652]]) : (ui32) -> ()
+
+    // muli 4, 3002788344 -> no-fold
+    %result_muli_ui324_ui323002788344 = arc.muli %cst_ui324, %cst_ui323002788344 : ui32
+    // CHECK-DAG: [[RESULT_muli_ui324_ui323002788344:%[^ ]+]] = arc.muli [[CSTui324]], [[CSTui323002788344]] : ui32
+    "arc.keep"(%result_muli_ui324_ui323002788344) : (ui32) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_ui324_ui323002788344]]) : (ui32) -> ()
+
+    // muli 4, 3482297128 -> no-fold
+    %result_muli_ui324_ui323482297128 = arc.muli %cst_ui324, %cst_ui323482297128 : ui32
+    // CHECK-DAG: [[RESULT_muli_ui324_ui323482297128:%[^ ]+]] = arc.muli [[CSTui324]], [[CSTui323482297128]] : ui32
+    "arc.keep"(%result_muli_ui324_ui323482297128) : (ui32) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_ui324_ui323482297128]]) : (ui32) -> ()
+
+    // muli 4, 4294967294 -> no-fold
+    %result_muli_ui324_ui324294967294 = arc.muli %cst_ui324, %cst_ui324294967294 : ui32
+    // CHECK-DAG: [[RESULT_muli_ui324_ui324294967294:%[^ ]+]] = arc.muli [[CSTui324]], [[CSTui324294967294]] : ui32
+    "arc.keep"(%result_muli_ui324_ui324294967294) : (ui32) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_ui324_ui324294967294]]) : (ui32) -> ()
+
+    // muli 4, 4294967295 -> no-fold
+    %result_muli_ui324_ui324294967295 = arc.muli %cst_ui324, %cst_ui324294967295 : ui32
+    // CHECK-DAG: [[RESULT_muli_ui324_ui324294967295:%[^ ]+]] = arc.muli [[CSTui324]], [[CSTui324294967295]] : ui32
+    "arc.keep"(%result_muli_ui324_ui324294967295) : (ui32) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_ui324_ui324294967295]]) : (ui32) -> ()
+
+    // muli 2119154652, 3 -> no-fold
+    %result_muli_ui322119154652_ui323 = arc.muli %cst_ui322119154652, %cst_ui323 : ui32
+    // CHECK-DAG: [[RESULT_muli_ui322119154652_ui323:%[^ ]+]] = arc.muli [[CSTui322119154652]], [[CSTui323]] : ui32
+    "arc.keep"(%result_muli_ui322119154652_ui323) : (ui32) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_ui322119154652_ui323]]) : (ui32) -> ()
+
+    // muli 2119154652, 4 -> no-fold
+    %result_muli_ui322119154652_ui324 = arc.muli %cst_ui322119154652, %cst_ui324 : ui32
+    // CHECK-DAG: [[RESULT_muli_ui322119154652_ui324:%[^ ]+]] = arc.muli [[CSTui322119154652]], [[CSTui324]] : ui32
+    "arc.keep"(%result_muli_ui322119154652_ui324) : (ui32) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_ui322119154652_ui324]]) : (ui32) -> ()
 
     // muli 2119154652, 2119154652 -> no-fold
     %result_muli_ui322119154652_ui322119154652 = arc.muli %cst_ui322119154652, %cst_ui322119154652 : ui32
@@ -7009,6 +15007,24 @@ module @toplevel {
     "arc.keep"(%result_muli_ui322119154652_ui324294967295) : (ui32) -> ()
     // CHECK: "arc.keep"([[RESULT_muli_ui322119154652_ui324294967295]]) : (ui32) -> ()
 
+    // muli 3002788344, 2 -> no-fold
+    %result_muli_ui323002788344_ui322 = arc.muli %cst_ui323002788344, %cst_ui322 : ui32
+    // CHECK-DAG: [[RESULT_muli_ui323002788344_ui322:%[^ ]+]] = arc.muli [[CSTui323002788344]], [[CSTui322]] : ui32
+    "arc.keep"(%result_muli_ui323002788344_ui322) : (ui32) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_ui323002788344_ui322]]) : (ui32) -> ()
+
+    // muli 3002788344, 3 -> no-fold
+    %result_muli_ui323002788344_ui323 = arc.muli %cst_ui323002788344, %cst_ui323 : ui32
+    // CHECK-DAG: [[RESULT_muli_ui323002788344_ui323:%[^ ]+]] = arc.muli [[CSTui323002788344]], [[CSTui323]] : ui32
+    "arc.keep"(%result_muli_ui323002788344_ui323) : (ui32) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_ui323002788344_ui323]]) : (ui32) -> ()
+
+    // muli 3002788344, 4 -> no-fold
+    %result_muli_ui323002788344_ui324 = arc.muli %cst_ui323002788344, %cst_ui324 : ui32
+    // CHECK-DAG: [[RESULT_muli_ui323002788344_ui324:%[^ ]+]] = arc.muli [[CSTui323002788344]], [[CSTui324]] : ui32
+    "arc.keep"(%result_muli_ui323002788344_ui324) : (ui32) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_ui323002788344_ui324]]) : (ui32) -> ()
+
     // muli 3002788344, 2119154652 -> no-fold
     %result_muli_ui323002788344_ui322119154652 = arc.muli %cst_ui323002788344, %cst_ui322119154652 : ui32
     // CHECK-DAG: [[RESULT_muli_ui323002788344_ui322119154652:%[^ ]+]] = arc.muli [[CSTui323002788344]], [[CSTui322119154652]] : ui32
@@ -7038,6 +15054,24 @@ module @toplevel {
     // CHECK-DAG: [[RESULT_muli_ui323002788344_ui324294967295:%[^ ]+]] = arc.muli [[CSTui323002788344]], [[CSTui324294967295]] : ui32
     "arc.keep"(%result_muli_ui323002788344_ui324294967295) : (ui32) -> ()
     // CHECK: "arc.keep"([[RESULT_muli_ui323002788344_ui324294967295]]) : (ui32) -> ()
+
+    // muli 3482297128, 2 -> no-fold
+    %result_muli_ui323482297128_ui322 = arc.muli %cst_ui323482297128, %cst_ui322 : ui32
+    // CHECK-DAG: [[RESULT_muli_ui323482297128_ui322:%[^ ]+]] = arc.muli [[CSTui323482297128]], [[CSTui322]] : ui32
+    "arc.keep"(%result_muli_ui323482297128_ui322) : (ui32) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_ui323482297128_ui322]]) : (ui32) -> ()
+
+    // muli 3482297128, 3 -> no-fold
+    %result_muli_ui323482297128_ui323 = arc.muli %cst_ui323482297128, %cst_ui323 : ui32
+    // CHECK-DAG: [[RESULT_muli_ui323482297128_ui323:%[^ ]+]] = arc.muli [[CSTui323482297128]], [[CSTui323]] : ui32
+    "arc.keep"(%result_muli_ui323482297128_ui323) : (ui32) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_ui323482297128_ui323]]) : (ui32) -> ()
+
+    // muli 3482297128, 4 -> no-fold
+    %result_muli_ui323482297128_ui324 = arc.muli %cst_ui323482297128, %cst_ui324 : ui32
+    // CHECK-DAG: [[RESULT_muli_ui323482297128_ui324:%[^ ]+]] = arc.muli [[CSTui323482297128]], [[CSTui324]] : ui32
+    "arc.keep"(%result_muli_ui323482297128_ui324) : (ui32) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_ui323482297128_ui324]]) : (ui32) -> ()
 
     // muli 3482297128, 2119154652 -> no-fold
     %result_muli_ui323482297128_ui322119154652 = arc.muli %cst_ui323482297128, %cst_ui322119154652 : ui32
@@ -7069,6 +15103,24 @@ module @toplevel {
     "arc.keep"(%result_muli_ui323482297128_ui324294967295) : (ui32) -> ()
     // CHECK: "arc.keep"([[RESULT_muli_ui323482297128_ui324294967295]]) : (ui32) -> ()
 
+    // muli 4294967294, 2 -> no-fold
+    %result_muli_ui324294967294_ui322 = arc.muli %cst_ui324294967294, %cst_ui322 : ui32
+    // CHECK-DAG: [[RESULT_muli_ui324294967294_ui322:%[^ ]+]] = arc.muli [[CSTui324294967294]], [[CSTui322]] : ui32
+    "arc.keep"(%result_muli_ui324294967294_ui322) : (ui32) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_ui324294967294_ui322]]) : (ui32) -> ()
+
+    // muli 4294967294, 3 -> no-fold
+    %result_muli_ui324294967294_ui323 = arc.muli %cst_ui324294967294, %cst_ui323 : ui32
+    // CHECK-DAG: [[RESULT_muli_ui324294967294_ui323:%[^ ]+]] = arc.muli [[CSTui324294967294]], [[CSTui323]] : ui32
+    "arc.keep"(%result_muli_ui324294967294_ui323) : (ui32) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_ui324294967294_ui323]]) : (ui32) -> ()
+
+    // muli 4294967294, 4 -> no-fold
+    %result_muli_ui324294967294_ui324 = arc.muli %cst_ui324294967294, %cst_ui324 : ui32
+    // CHECK-DAG: [[RESULT_muli_ui324294967294_ui324:%[^ ]+]] = arc.muli [[CSTui324294967294]], [[CSTui324]] : ui32
+    "arc.keep"(%result_muli_ui324294967294_ui324) : (ui32) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_ui324294967294_ui324]]) : (ui32) -> ()
+
     // muli 4294967294, 2119154652 -> no-fold
     %result_muli_ui324294967294_ui322119154652 = arc.muli %cst_ui324294967294, %cst_ui322119154652 : ui32
     // CHECK-DAG: [[RESULT_muli_ui324294967294_ui322119154652:%[^ ]+]] = arc.muli [[CSTui324294967294]], [[CSTui322119154652]] : ui32
@@ -7098,6 +15150,24 @@ module @toplevel {
     // CHECK-DAG: [[RESULT_muli_ui324294967294_ui324294967295:%[^ ]+]] = arc.muli [[CSTui324294967294]], [[CSTui324294967295]] : ui32
     "arc.keep"(%result_muli_ui324294967294_ui324294967295) : (ui32) -> ()
     // CHECK: "arc.keep"([[RESULT_muli_ui324294967294_ui324294967295]]) : (ui32) -> ()
+
+    // muli 4294967295, 2 -> no-fold
+    %result_muli_ui324294967295_ui322 = arc.muli %cst_ui324294967295, %cst_ui322 : ui32
+    // CHECK-DAG: [[RESULT_muli_ui324294967295_ui322:%[^ ]+]] = arc.muli [[CSTui324294967295]], [[CSTui322]] : ui32
+    "arc.keep"(%result_muli_ui324294967295_ui322) : (ui32) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_ui324294967295_ui322]]) : (ui32) -> ()
+
+    // muli 4294967295, 3 -> no-fold
+    %result_muli_ui324294967295_ui323 = arc.muli %cst_ui324294967295, %cst_ui323 : ui32
+    // CHECK-DAG: [[RESULT_muli_ui324294967295_ui323:%[^ ]+]] = arc.muli [[CSTui324294967295]], [[CSTui323]] : ui32
+    "arc.keep"(%result_muli_ui324294967295_ui323) : (ui32) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_ui324294967295_ui323]]) : (ui32) -> ()
+
+    // muli 4294967295, 4 -> no-fold
+    %result_muli_ui324294967295_ui324 = arc.muli %cst_ui324294967295, %cst_ui324 : ui32
+    // CHECK-DAG: [[RESULT_muli_ui324294967295_ui324:%[^ ]+]] = arc.muli [[CSTui324294967295]], [[CSTui324]] : ui32
+    "arc.keep"(%result_muli_ui324294967295_ui324) : (ui32) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_ui324294967295_ui324]]) : (ui32) -> ()
 
     // muli 4294967295, 2119154652 -> no-fold
     %result_muli_ui324294967295_ui322119154652 = arc.muli %cst_ui324294967295, %cst_ui322119154652 : ui32
@@ -7139,6 +15209,21 @@ module @toplevel {
     "arc.keep"(%result_muli_ui640_ui641) : (ui64) -> ()
     // CHECK: "arc.keep"([[CSTui640]]) : (ui64) -> ()
 
+    // muli 0, 2 -> 0
+    %result_muli_ui640_ui642 = arc.muli %cst_ui640, %cst_ui642 : ui64
+    "arc.keep"(%result_muli_ui640_ui642) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui640]]) : (ui64) -> ()
+
+    // muli 0, 3 -> 0
+    %result_muli_ui640_ui643 = arc.muli %cst_ui640, %cst_ui643 : ui64
+    "arc.keep"(%result_muli_ui640_ui643) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui640]]) : (ui64) -> ()
+
+    // muli 0, 4 -> 0
+    %result_muli_ui640_ui644 = arc.muli %cst_ui640, %cst_ui644 : ui64
+    "arc.keep"(%result_muli_ui640_ui644) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui640]]) : (ui64) -> ()
+
     // muli 0, 191084152064409600 -> 0
     %result_muli_ui640_ui64191084152064409600 = arc.muli %cst_ui640, %cst_ui64191084152064409600 : ui64
     "arc.keep"(%result_muli_ui640_ui64191084152064409600) : (ui64) -> ()
@@ -7167,6 +15252,21 @@ module @toplevel {
     // muli 1, 0 -> 0
     %result_muli_ui641_ui640 = arc.muli %cst_ui641, %cst_ui640 : ui64
     "arc.keep"(%result_muli_ui641_ui640) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui640]]) : (ui64) -> ()
+
+    // muli 2, 0 -> 0
+    %result_muli_ui642_ui640 = arc.muli %cst_ui642, %cst_ui640 : ui64
+    "arc.keep"(%result_muli_ui642_ui640) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui640]]) : (ui64) -> ()
+
+    // muli 3, 0 -> 0
+    %result_muli_ui643_ui640 = arc.muli %cst_ui643, %cst_ui640 : ui64
+    "arc.keep"(%result_muli_ui643_ui640) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui640]]) : (ui64) -> ()
+
+    // muli 4, 0 -> 0
+    %result_muli_ui644_ui640 = arc.muli %cst_ui644, %cst_ui640 : ui64
+    "arc.keep"(%result_muli_ui644_ui640) : (ui64) -> ()
     // CHECK: "arc.keep"([[CSTui640]]) : (ui64) -> ()
 
     // muli 191084152064409600, 0 -> 0
@@ -7199,6 +15299,81 @@ module @toplevel {
     "arc.keep"(%result_muli_ui641_ui641) : (ui64) -> ()
     // CHECK: "arc.keep"([[CSTui641]]) : (ui64) -> ()
 
+    // muli 1, 2 -> 2
+    %result_muli_ui641_ui642 = arc.muli %cst_ui641, %cst_ui642 : ui64
+    "arc.keep"(%result_muli_ui641_ui642) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui642]]) : (ui64) -> ()
+
+    // muli 2, 1 -> 2
+    %result_muli_ui642_ui641 = arc.muli %cst_ui642, %cst_ui641 : ui64
+    "arc.keep"(%result_muli_ui642_ui641) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui642]]) : (ui64) -> ()
+
+    // muli 1, 3 -> 3
+    %result_muli_ui641_ui643 = arc.muli %cst_ui641, %cst_ui643 : ui64
+    "arc.keep"(%result_muli_ui641_ui643) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui643]]) : (ui64) -> ()
+
+    // muli 3, 1 -> 3
+    %result_muli_ui643_ui641 = arc.muli %cst_ui643, %cst_ui641 : ui64
+    "arc.keep"(%result_muli_ui643_ui641) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui643]]) : (ui64) -> ()
+
+    // muli 1, 4 -> 4
+    %result_muli_ui641_ui644 = arc.muli %cst_ui641, %cst_ui644 : ui64
+    "arc.keep"(%result_muli_ui641_ui644) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui644]]) : (ui64) -> ()
+
+    // muli 2, 2 -> 4
+    %result_muli_ui642_ui642 = arc.muli %cst_ui642, %cst_ui642 : ui64
+    "arc.keep"(%result_muli_ui642_ui642) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui644]]) : (ui64) -> ()
+
+    // muli 4, 1 -> 4
+    %result_muli_ui644_ui641 = arc.muli %cst_ui644, %cst_ui641 : ui64
+    "arc.keep"(%result_muli_ui644_ui641) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui644]]) : (ui64) -> ()
+
+    // muli 2, 3 -> 6
+    %result_muli_ui642_ui643 = arc.muli %cst_ui642, %cst_ui643 : ui64
+    "arc.keep"(%result_muli_ui642_ui643) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui646]]) : (ui64) -> ()
+
+    // muli 3, 2 -> 6
+    %result_muli_ui643_ui642 = arc.muli %cst_ui643, %cst_ui642 : ui64
+    "arc.keep"(%result_muli_ui643_ui642) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui646]]) : (ui64) -> ()
+
+    // muli 2, 4 -> 8
+    %result_muli_ui642_ui644 = arc.muli %cst_ui642, %cst_ui644 : ui64
+    "arc.keep"(%result_muli_ui642_ui644) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui648]]) : (ui64) -> ()
+
+    // muli 4, 2 -> 8
+    %result_muli_ui644_ui642 = arc.muli %cst_ui644, %cst_ui642 : ui64
+    "arc.keep"(%result_muli_ui644_ui642) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui648]]) : (ui64) -> ()
+
+    // muli 3, 3 -> 9
+    %result_muli_ui643_ui643 = arc.muli %cst_ui643, %cst_ui643 : ui64
+    "arc.keep"(%result_muli_ui643_ui643) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui649]]) : (ui64) -> ()
+
+    // muli 3, 4 -> 12
+    %result_muli_ui643_ui644 = arc.muli %cst_ui643, %cst_ui644 : ui64
+    "arc.keep"(%result_muli_ui643_ui644) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui6412]]) : (ui64) -> ()
+
+    // muli 4, 3 -> 12
+    %result_muli_ui644_ui643 = arc.muli %cst_ui644, %cst_ui643 : ui64
+    "arc.keep"(%result_muli_ui644_ui643) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui6412]]) : (ui64) -> ()
+
+    // muli 4, 4 -> 16
+    %result_muli_ui644_ui644 = arc.muli %cst_ui644, %cst_ui644 : ui64
+    "arc.keep"(%result_muli_ui644_ui644) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui6416]]) : (ui64) -> ()
+
     // muli 1, 191084152064409600 -> 191084152064409600
     %result_muli_ui641_ui64191084152064409600 = arc.muli %cst_ui641, %cst_ui64191084152064409600 : ui64
     "arc.keep"(%result_muli_ui641_ui64191084152064409600) : (ui64) -> ()
@@ -7208,6 +15383,36 @@ module @toplevel {
     %result_muli_ui64191084152064409600_ui641 = arc.muli %cst_ui64191084152064409600, %cst_ui641 : ui64
     "arc.keep"(%result_muli_ui64191084152064409600_ui641) : (ui64) -> ()
     // CHECK: "arc.keep"([[CSTui64191084152064409600]]) : (ui64) -> ()
+
+    // muli 2, 191084152064409600 -> 382168304128819200
+    %result_muli_ui642_ui64191084152064409600 = arc.muli %cst_ui642, %cst_ui64191084152064409600 : ui64
+    "arc.keep"(%result_muli_ui642_ui64191084152064409600) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui64382168304128819200]]) : (ui64) -> ()
+
+    // muli 191084152064409600, 2 -> 382168304128819200
+    %result_muli_ui64191084152064409600_ui642 = arc.muli %cst_ui64191084152064409600, %cst_ui642 : ui64
+    "arc.keep"(%result_muli_ui64191084152064409600_ui642) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui64382168304128819200]]) : (ui64) -> ()
+
+    // muli 3, 191084152064409600 -> 573252456193228800
+    %result_muli_ui643_ui64191084152064409600 = arc.muli %cst_ui643, %cst_ui64191084152064409600 : ui64
+    "arc.keep"(%result_muli_ui643_ui64191084152064409600) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui64573252456193228800]]) : (ui64) -> ()
+
+    // muli 191084152064409600, 3 -> 573252456193228800
+    %result_muli_ui64191084152064409600_ui643 = arc.muli %cst_ui64191084152064409600, %cst_ui643 : ui64
+    "arc.keep"(%result_muli_ui64191084152064409600_ui643) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui64573252456193228800]]) : (ui64) -> ()
+
+    // muli 4, 191084152064409600 -> 764336608257638400
+    %result_muli_ui644_ui64191084152064409600 = arc.muli %cst_ui644, %cst_ui64191084152064409600 : ui64
+    "arc.keep"(%result_muli_ui644_ui64191084152064409600) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui64764336608257638400]]) : (ui64) -> ()
+
+    // muli 191084152064409600, 4 -> 764336608257638400
+    %result_muli_ui64191084152064409600_ui644 = arc.muli %cst_ui64191084152064409600, %cst_ui644 : ui64
+    "arc.keep"(%result_muli_ui64191084152064409600_ui644) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui64764336608257638400]]) : (ui64) -> ()
 
     // muli 1, 11015955194427482112 -> 11015955194427482112
     %result_muli_ui641_ui6411015955194427482112 = arc.muli %cst_ui641, %cst_ui6411015955194427482112 : ui64
@@ -7249,6 +15454,78 @@ module @toplevel {
     "arc.keep"(%result_muli_ui6418446744073709551615_ui641) : (ui64) -> ()
     // CHECK: "arc.keep"([[CSTui6418446744073709551615]]) : (ui64) -> ()
 
+    // muli 2, 11015955194427482112 -> no-fold
+    %result_muli_ui642_ui6411015955194427482112 = arc.muli %cst_ui642, %cst_ui6411015955194427482112 : ui64
+    // CHECK-DAG: [[RESULT_muli_ui642_ui6411015955194427482112:%[^ ]+]] = arc.muli [[CSTui642]], [[CSTui6411015955194427482112]] : ui64
+    "arc.keep"(%result_muli_ui642_ui6411015955194427482112) : (ui64) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_ui642_ui6411015955194427482112]]) : (ui64) -> ()
+
+    // muli 2, 16990600415051759616 -> no-fold
+    %result_muli_ui642_ui6416990600415051759616 = arc.muli %cst_ui642, %cst_ui6416990600415051759616 : ui64
+    // CHECK-DAG: [[RESULT_muli_ui642_ui6416990600415051759616:%[^ ]+]] = arc.muli [[CSTui642]], [[CSTui6416990600415051759616]] : ui64
+    "arc.keep"(%result_muli_ui642_ui6416990600415051759616) : (ui64) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_ui642_ui6416990600415051759616]]) : (ui64) -> ()
+
+    // muli 2, 18446744073709551614 -> no-fold
+    %result_muli_ui642_ui6418446744073709551614 = arc.muli %cst_ui642, %cst_ui6418446744073709551614 : ui64
+    // CHECK-DAG: [[RESULT_muli_ui642_ui6418446744073709551614:%[^ ]+]] = arc.muli [[CSTui642]], [[CSTui6418446744073709551614]] : ui64
+    "arc.keep"(%result_muli_ui642_ui6418446744073709551614) : (ui64) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_ui642_ui6418446744073709551614]]) : (ui64) -> ()
+
+    // muli 2, 18446744073709551615 -> no-fold
+    %result_muli_ui642_ui6418446744073709551615 = arc.muli %cst_ui642, %cst_ui6418446744073709551615 : ui64
+    // CHECK-DAG: [[RESULT_muli_ui642_ui6418446744073709551615:%[^ ]+]] = arc.muli [[CSTui642]], [[CSTui6418446744073709551615]] : ui64
+    "arc.keep"(%result_muli_ui642_ui6418446744073709551615) : (ui64) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_ui642_ui6418446744073709551615]]) : (ui64) -> ()
+
+    // muli 3, 11015955194427482112 -> no-fold
+    %result_muli_ui643_ui6411015955194427482112 = arc.muli %cst_ui643, %cst_ui6411015955194427482112 : ui64
+    // CHECK-DAG: [[RESULT_muli_ui643_ui6411015955194427482112:%[^ ]+]] = arc.muli [[CSTui643]], [[CSTui6411015955194427482112]] : ui64
+    "arc.keep"(%result_muli_ui643_ui6411015955194427482112) : (ui64) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_ui643_ui6411015955194427482112]]) : (ui64) -> ()
+
+    // muli 3, 16990600415051759616 -> no-fold
+    %result_muli_ui643_ui6416990600415051759616 = arc.muli %cst_ui643, %cst_ui6416990600415051759616 : ui64
+    // CHECK-DAG: [[RESULT_muli_ui643_ui6416990600415051759616:%[^ ]+]] = arc.muli [[CSTui643]], [[CSTui6416990600415051759616]] : ui64
+    "arc.keep"(%result_muli_ui643_ui6416990600415051759616) : (ui64) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_ui643_ui6416990600415051759616]]) : (ui64) -> ()
+
+    // muli 3, 18446744073709551614 -> no-fold
+    %result_muli_ui643_ui6418446744073709551614 = arc.muli %cst_ui643, %cst_ui6418446744073709551614 : ui64
+    // CHECK-DAG: [[RESULT_muli_ui643_ui6418446744073709551614:%[^ ]+]] = arc.muli [[CSTui643]], [[CSTui6418446744073709551614]] : ui64
+    "arc.keep"(%result_muli_ui643_ui6418446744073709551614) : (ui64) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_ui643_ui6418446744073709551614]]) : (ui64) -> ()
+
+    // muli 3, 18446744073709551615 -> no-fold
+    %result_muli_ui643_ui6418446744073709551615 = arc.muli %cst_ui643, %cst_ui6418446744073709551615 : ui64
+    // CHECK-DAG: [[RESULT_muli_ui643_ui6418446744073709551615:%[^ ]+]] = arc.muli [[CSTui643]], [[CSTui6418446744073709551615]] : ui64
+    "arc.keep"(%result_muli_ui643_ui6418446744073709551615) : (ui64) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_ui643_ui6418446744073709551615]]) : (ui64) -> ()
+
+    // muli 4, 11015955194427482112 -> no-fold
+    %result_muli_ui644_ui6411015955194427482112 = arc.muli %cst_ui644, %cst_ui6411015955194427482112 : ui64
+    // CHECK-DAG: [[RESULT_muli_ui644_ui6411015955194427482112:%[^ ]+]] = arc.muli [[CSTui644]], [[CSTui6411015955194427482112]] : ui64
+    "arc.keep"(%result_muli_ui644_ui6411015955194427482112) : (ui64) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_ui644_ui6411015955194427482112]]) : (ui64) -> ()
+
+    // muli 4, 16990600415051759616 -> no-fold
+    %result_muli_ui644_ui6416990600415051759616 = arc.muli %cst_ui644, %cst_ui6416990600415051759616 : ui64
+    // CHECK-DAG: [[RESULT_muli_ui644_ui6416990600415051759616:%[^ ]+]] = arc.muli [[CSTui644]], [[CSTui6416990600415051759616]] : ui64
+    "arc.keep"(%result_muli_ui644_ui6416990600415051759616) : (ui64) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_ui644_ui6416990600415051759616]]) : (ui64) -> ()
+
+    // muli 4, 18446744073709551614 -> no-fold
+    %result_muli_ui644_ui6418446744073709551614 = arc.muli %cst_ui644, %cst_ui6418446744073709551614 : ui64
+    // CHECK-DAG: [[RESULT_muli_ui644_ui6418446744073709551614:%[^ ]+]] = arc.muli [[CSTui644]], [[CSTui6418446744073709551614]] : ui64
+    "arc.keep"(%result_muli_ui644_ui6418446744073709551614) : (ui64) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_ui644_ui6418446744073709551614]]) : (ui64) -> ()
+
+    // muli 4, 18446744073709551615 -> no-fold
+    %result_muli_ui644_ui6418446744073709551615 = arc.muli %cst_ui644, %cst_ui6418446744073709551615 : ui64
+    // CHECK-DAG: [[RESULT_muli_ui644_ui6418446744073709551615:%[^ ]+]] = arc.muli [[CSTui644]], [[CSTui6418446744073709551615]] : ui64
+    "arc.keep"(%result_muli_ui644_ui6418446744073709551615) : (ui64) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_ui644_ui6418446744073709551615]]) : (ui64) -> ()
+
     // muli 191084152064409600, 191084152064409600 -> no-fold
     %result_muli_ui64191084152064409600_ui64191084152064409600 = arc.muli %cst_ui64191084152064409600, %cst_ui64191084152064409600 : ui64
     // CHECK-DAG: [[RESULT_muli_ui64191084152064409600_ui64191084152064409600:%[^ ]+]] = arc.muli [[CSTui64191084152064409600]], [[CSTui64191084152064409600]] : ui64
@@ -7278,6 +15555,24 @@ module @toplevel {
     // CHECK-DAG: [[RESULT_muli_ui64191084152064409600_ui6418446744073709551615:%[^ ]+]] = arc.muli [[CSTui64191084152064409600]], [[CSTui6418446744073709551615]] : ui64
     "arc.keep"(%result_muli_ui64191084152064409600_ui6418446744073709551615) : (ui64) -> ()
     // CHECK: "arc.keep"([[RESULT_muli_ui64191084152064409600_ui6418446744073709551615]]) : (ui64) -> ()
+
+    // muli 11015955194427482112, 2 -> no-fold
+    %result_muli_ui6411015955194427482112_ui642 = arc.muli %cst_ui6411015955194427482112, %cst_ui642 : ui64
+    // CHECK-DAG: [[RESULT_muli_ui6411015955194427482112_ui642:%[^ ]+]] = arc.muli [[CSTui6411015955194427482112]], [[CSTui642]] : ui64
+    "arc.keep"(%result_muli_ui6411015955194427482112_ui642) : (ui64) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_ui6411015955194427482112_ui642]]) : (ui64) -> ()
+
+    // muli 11015955194427482112, 3 -> no-fold
+    %result_muli_ui6411015955194427482112_ui643 = arc.muli %cst_ui6411015955194427482112, %cst_ui643 : ui64
+    // CHECK-DAG: [[RESULT_muli_ui6411015955194427482112_ui643:%[^ ]+]] = arc.muli [[CSTui6411015955194427482112]], [[CSTui643]] : ui64
+    "arc.keep"(%result_muli_ui6411015955194427482112_ui643) : (ui64) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_ui6411015955194427482112_ui643]]) : (ui64) -> ()
+
+    // muli 11015955194427482112, 4 -> no-fold
+    %result_muli_ui6411015955194427482112_ui644 = arc.muli %cst_ui6411015955194427482112, %cst_ui644 : ui64
+    // CHECK-DAG: [[RESULT_muli_ui6411015955194427482112_ui644:%[^ ]+]] = arc.muli [[CSTui6411015955194427482112]], [[CSTui644]] : ui64
+    "arc.keep"(%result_muli_ui6411015955194427482112_ui644) : (ui64) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_ui6411015955194427482112_ui644]]) : (ui64) -> ()
 
     // muli 11015955194427482112, 191084152064409600 -> no-fold
     %result_muli_ui6411015955194427482112_ui64191084152064409600 = arc.muli %cst_ui6411015955194427482112, %cst_ui64191084152064409600 : ui64
@@ -7309,6 +15604,24 @@ module @toplevel {
     "arc.keep"(%result_muli_ui6411015955194427482112_ui6418446744073709551615) : (ui64) -> ()
     // CHECK: "arc.keep"([[RESULT_muli_ui6411015955194427482112_ui6418446744073709551615]]) : (ui64) -> ()
 
+    // muli 16990600415051759616, 2 -> no-fold
+    %result_muli_ui6416990600415051759616_ui642 = arc.muli %cst_ui6416990600415051759616, %cst_ui642 : ui64
+    // CHECK-DAG: [[RESULT_muli_ui6416990600415051759616_ui642:%[^ ]+]] = arc.muli [[CSTui6416990600415051759616]], [[CSTui642]] : ui64
+    "arc.keep"(%result_muli_ui6416990600415051759616_ui642) : (ui64) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_ui6416990600415051759616_ui642]]) : (ui64) -> ()
+
+    // muli 16990600415051759616, 3 -> no-fold
+    %result_muli_ui6416990600415051759616_ui643 = arc.muli %cst_ui6416990600415051759616, %cst_ui643 : ui64
+    // CHECK-DAG: [[RESULT_muli_ui6416990600415051759616_ui643:%[^ ]+]] = arc.muli [[CSTui6416990600415051759616]], [[CSTui643]] : ui64
+    "arc.keep"(%result_muli_ui6416990600415051759616_ui643) : (ui64) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_ui6416990600415051759616_ui643]]) : (ui64) -> ()
+
+    // muli 16990600415051759616, 4 -> no-fold
+    %result_muli_ui6416990600415051759616_ui644 = arc.muli %cst_ui6416990600415051759616, %cst_ui644 : ui64
+    // CHECK-DAG: [[RESULT_muli_ui6416990600415051759616_ui644:%[^ ]+]] = arc.muli [[CSTui6416990600415051759616]], [[CSTui644]] : ui64
+    "arc.keep"(%result_muli_ui6416990600415051759616_ui644) : (ui64) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_ui6416990600415051759616_ui644]]) : (ui64) -> ()
+
     // muli 16990600415051759616, 191084152064409600 -> no-fold
     %result_muli_ui6416990600415051759616_ui64191084152064409600 = arc.muli %cst_ui6416990600415051759616, %cst_ui64191084152064409600 : ui64
     // CHECK-DAG: [[RESULT_muli_ui6416990600415051759616_ui64191084152064409600:%[^ ]+]] = arc.muli [[CSTui6416990600415051759616]], [[CSTui64191084152064409600]] : ui64
@@ -7339,6 +15652,24 @@ module @toplevel {
     "arc.keep"(%result_muli_ui6416990600415051759616_ui6418446744073709551615) : (ui64) -> ()
     // CHECK: "arc.keep"([[RESULT_muli_ui6416990600415051759616_ui6418446744073709551615]]) : (ui64) -> ()
 
+    // muli 18446744073709551614, 2 -> no-fold
+    %result_muli_ui6418446744073709551614_ui642 = arc.muli %cst_ui6418446744073709551614, %cst_ui642 : ui64
+    // CHECK-DAG: [[RESULT_muli_ui6418446744073709551614_ui642:%[^ ]+]] = arc.muli [[CSTui6418446744073709551614]], [[CSTui642]] : ui64
+    "arc.keep"(%result_muli_ui6418446744073709551614_ui642) : (ui64) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_ui6418446744073709551614_ui642]]) : (ui64) -> ()
+
+    // muli 18446744073709551614, 3 -> no-fold
+    %result_muli_ui6418446744073709551614_ui643 = arc.muli %cst_ui6418446744073709551614, %cst_ui643 : ui64
+    // CHECK-DAG: [[RESULT_muli_ui6418446744073709551614_ui643:%[^ ]+]] = arc.muli [[CSTui6418446744073709551614]], [[CSTui643]] : ui64
+    "arc.keep"(%result_muli_ui6418446744073709551614_ui643) : (ui64) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_ui6418446744073709551614_ui643]]) : (ui64) -> ()
+
+    // muli 18446744073709551614, 4 -> no-fold
+    %result_muli_ui6418446744073709551614_ui644 = arc.muli %cst_ui6418446744073709551614, %cst_ui644 : ui64
+    // CHECK-DAG: [[RESULT_muli_ui6418446744073709551614_ui644:%[^ ]+]] = arc.muli [[CSTui6418446744073709551614]], [[CSTui644]] : ui64
+    "arc.keep"(%result_muli_ui6418446744073709551614_ui644) : (ui64) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_ui6418446744073709551614_ui644]]) : (ui64) -> ()
+
     // muli 18446744073709551614, 191084152064409600 -> no-fold
     %result_muli_ui6418446744073709551614_ui64191084152064409600 = arc.muli %cst_ui6418446744073709551614, %cst_ui64191084152064409600 : ui64
     // CHECK-DAG: [[RESULT_muli_ui6418446744073709551614_ui64191084152064409600:%[^ ]+]] = arc.muli [[CSTui6418446744073709551614]], [[CSTui64191084152064409600]] : ui64
@@ -7368,6 +15699,24 @@ module @toplevel {
     // CHECK-DAG: [[RESULT_muli_ui6418446744073709551614_ui6418446744073709551615:%[^ ]+]] = arc.muli [[CSTui6418446744073709551614]], [[CSTui6418446744073709551615]] : ui64
     "arc.keep"(%result_muli_ui6418446744073709551614_ui6418446744073709551615) : (ui64) -> ()
     // CHECK: "arc.keep"([[RESULT_muli_ui6418446744073709551614_ui6418446744073709551615]]) : (ui64) -> ()
+
+    // muli 18446744073709551615, 2 -> no-fold
+    %result_muli_ui6418446744073709551615_ui642 = arc.muli %cst_ui6418446744073709551615, %cst_ui642 : ui64
+    // CHECK-DAG: [[RESULT_muli_ui6418446744073709551615_ui642:%[^ ]+]] = arc.muli [[CSTui6418446744073709551615]], [[CSTui642]] : ui64
+    "arc.keep"(%result_muli_ui6418446744073709551615_ui642) : (ui64) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_ui6418446744073709551615_ui642]]) : (ui64) -> ()
+
+    // muli 18446744073709551615, 3 -> no-fold
+    %result_muli_ui6418446744073709551615_ui643 = arc.muli %cst_ui6418446744073709551615, %cst_ui643 : ui64
+    // CHECK-DAG: [[RESULT_muli_ui6418446744073709551615_ui643:%[^ ]+]] = arc.muli [[CSTui6418446744073709551615]], [[CSTui643]] : ui64
+    "arc.keep"(%result_muli_ui6418446744073709551615_ui643) : (ui64) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_ui6418446744073709551615_ui643]]) : (ui64) -> ()
+
+    // muli 18446744073709551615, 4 -> no-fold
+    %result_muli_ui6418446744073709551615_ui644 = arc.muli %cst_ui6418446744073709551615, %cst_ui644 : ui64
+    // CHECK-DAG: [[RESULT_muli_ui6418446744073709551615_ui644:%[^ ]+]] = arc.muli [[CSTui6418446744073709551615]], [[CSTui644]] : ui64
+    "arc.keep"(%result_muli_ui6418446744073709551615_ui644) : (ui64) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_ui6418446744073709551615_ui644]]) : (ui64) -> ()
 
     // muli 18446744073709551615, 191084152064409600 -> no-fold
     %result_muli_ui6418446744073709551615_ui64191084152064409600 = arc.muli %cst_ui6418446744073709551615, %cst_ui64191084152064409600 : ui64
@@ -7409,6 +15758,21 @@ module @toplevel {
     "arc.keep"(%result_muli_ui80_ui81) : (ui8) -> ()
     // CHECK: "arc.keep"([[CSTui80]]) : (ui8) -> ()
 
+    // muli 0, 2 -> 0
+    %result_muli_ui80_ui82 = arc.muli %cst_ui80, %cst_ui82 : ui8
+    "arc.keep"(%result_muli_ui80_ui82) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui80]]) : (ui8) -> ()
+
+    // muli 0, 3 -> 0
+    %result_muli_ui80_ui83 = arc.muli %cst_ui80, %cst_ui83 : ui8
+    "arc.keep"(%result_muli_ui80_ui83) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui80]]) : (ui8) -> ()
+
+    // muli 0, 4 -> 0
+    %result_muli_ui80_ui84 = arc.muli %cst_ui80, %cst_ui84 : ui8
+    "arc.keep"(%result_muli_ui80_ui84) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui80]]) : (ui8) -> ()
+
     // muli 0, 72 -> 0
     %result_muli_ui80_ui872 = arc.muli %cst_ui80, %cst_ui872 : ui8
     "arc.keep"(%result_muli_ui80_ui872) : (ui8) -> ()
@@ -7437,6 +15801,21 @@ module @toplevel {
     // muli 1, 0 -> 0
     %result_muli_ui81_ui80 = arc.muli %cst_ui81, %cst_ui80 : ui8
     "arc.keep"(%result_muli_ui81_ui80) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui80]]) : (ui8) -> ()
+
+    // muli 2, 0 -> 0
+    %result_muli_ui82_ui80 = arc.muli %cst_ui82, %cst_ui80 : ui8
+    "arc.keep"(%result_muli_ui82_ui80) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui80]]) : (ui8) -> ()
+
+    // muli 3, 0 -> 0
+    %result_muli_ui83_ui80 = arc.muli %cst_ui83, %cst_ui80 : ui8
+    "arc.keep"(%result_muli_ui83_ui80) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui80]]) : (ui8) -> ()
+
+    // muli 4, 0 -> 0
+    %result_muli_ui84_ui80 = arc.muli %cst_ui84, %cst_ui80 : ui8
+    "arc.keep"(%result_muli_ui84_ui80) : (ui8) -> ()
     // CHECK: "arc.keep"([[CSTui80]]) : (ui8) -> ()
 
     // muli 72, 0 -> 0
@@ -7469,6 +15848,81 @@ module @toplevel {
     "arc.keep"(%result_muli_ui81_ui81) : (ui8) -> ()
     // CHECK: "arc.keep"([[CSTui81]]) : (ui8) -> ()
 
+    // muli 1, 2 -> 2
+    %result_muli_ui81_ui82 = arc.muli %cst_ui81, %cst_ui82 : ui8
+    "arc.keep"(%result_muli_ui81_ui82) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui82]]) : (ui8) -> ()
+
+    // muli 2, 1 -> 2
+    %result_muli_ui82_ui81 = arc.muli %cst_ui82, %cst_ui81 : ui8
+    "arc.keep"(%result_muli_ui82_ui81) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui82]]) : (ui8) -> ()
+
+    // muli 1, 3 -> 3
+    %result_muli_ui81_ui83 = arc.muli %cst_ui81, %cst_ui83 : ui8
+    "arc.keep"(%result_muli_ui81_ui83) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui83]]) : (ui8) -> ()
+
+    // muli 3, 1 -> 3
+    %result_muli_ui83_ui81 = arc.muli %cst_ui83, %cst_ui81 : ui8
+    "arc.keep"(%result_muli_ui83_ui81) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui83]]) : (ui8) -> ()
+
+    // muli 1, 4 -> 4
+    %result_muli_ui81_ui84 = arc.muli %cst_ui81, %cst_ui84 : ui8
+    "arc.keep"(%result_muli_ui81_ui84) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui84]]) : (ui8) -> ()
+
+    // muli 2, 2 -> 4
+    %result_muli_ui82_ui82 = arc.muli %cst_ui82, %cst_ui82 : ui8
+    "arc.keep"(%result_muli_ui82_ui82) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui84]]) : (ui8) -> ()
+
+    // muli 4, 1 -> 4
+    %result_muli_ui84_ui81 = arc.muli %cst_ui84, %cst_ui81 : ui8
+    "arc.keep"(%result_muli_ui84_ui81) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui84]]) : (ui8) -> ()
+
+    // muli 2, 3 -> 6
+    %result_muli_ui82_ui83 = arc.muli %cst_ui82, %cst_ui83 : ui8
+    "arc.keep"(%result_muli_ui82_ui83) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui86]]) : (ui8) -> ()
+
+    // muli 3, 2 -> 6
+    %result_muli_ui83_ui82 = arc.muli %cst_ui83, %cst_ui82 : ui8
+    "arc.keep"(%result_muli_ui83_ui82) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui86]]) : (ui8) -> ()
+
+    // muli 2, 4 -> 8
+    %result_muli_ui82_ui84 = arc.muli %cst_ui82, %cst_ui84 : ui8
+    "arc.keep"(%result_muli_ui82_ui84) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui88]]) : (ui8) -> ()
+
+    // muli 4, 2 -> 8
+    %result_muli_ui84_ui82 = arc.muli %cst_ui84, %cst_ui82 : ui8
+    "arc.keep"(%result_muli_ui84_ui82) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui88]]) : (ui8) -> ()
+
+    // muli 3, 3 -> 9
+    %result_muli_ui83_ui83 = arc.muli %cst_ui83, %cst_ui83 : ui8
+    "arc.keep"(%result_muli_ui83_ui83) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui89]]) : (ui8) -> ()
+
+    // muli 3, 4 -> 12
+    %result_muli_ui83_ui84 = arc.muli %cst_ui83, %cst_ui84 : ui8
+    "arc.keep"(%result_muli_ui83_ui84) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui812]]) : (ui8) -> ()
+
+    // muli 4, 3 -> 12
+    %result_muli_ui84_ui83 = arc.muli %cst_ui84, %cst_ui83 : ui8
+    "arc.keep"(%result_muli_ui84_ui83) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui812]]) : (ui8) -> ()
+
+    // muli 4, 4 -> 16
+    %result_muli_ui84_ui84 = arc.muli %cst_ui84, %cst_ui84 : ui8
+    "arc.keep"(%result_muli_ui84_ui84) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui816]]) : (ui8) -> ()
+
     // muli 1, 72 -> 72
     %result_muli_ui81_ui872 = arc.muli %cst_ui81, %cst_ui872 : ui8
     "arc.keep"(%result_muli_ui81_ui872) : (ui8) -> ()
@@ -7489,6 +15943,16 @@ module @toplevel {
     "arc.keep"(%result_muli_ui8100_ui81) : (ui8) -> ()
     // CHECK: "arc.keep"([[CSTui8100]]) : (ui8) -> ()
 
+    // muli 2, 72 -> 144
+    %result_muli_ui82_ui872 = arc.muli %cst_ui82, %cst_ui872 : ui8
+    "arc.keep"(%result_muli_ui82_ui872) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui8144]]) : (ui8) -> ()
+
+    // muli 72, 2 -> 144
+    %result_muli_ui872_ui82 = arc.muli %cst_ui872, %cst_ui82 : ui8
+    "arc.keep"(%result_muli_ui872_ui82) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui8144]]) : (ui8) -> ()
+
     // muli 1, 162 -> 162
     %result_muli_ui81_ui8162 = arc.muli %cst_ui81, %cst_ui8162 : ui8
     "arc.keep"(%result_muli_ui81_ui8162) : (ui8) -> ()
@@ -7498,6 +15962,26 @@ module @toplevel {
     %result_muli_ui8162_ui81 = arc.muli %cst_ui8162, %cst_ui81 : ui8
     "arc.keep"(%result_muli_ui8162_ui81) : (ui8) -> ()
     // CHECK: "arc.keep"([[CSTui8162]]) : (ui8) -> ()
+
+    // muli 2, 100 -> 200
+    %result_muli_ui82_ui8100 = arc.muli %cst_ui82, %cst_ui8100 : ui8
+    "arc.keep"(%result_muli_ui82_ui8100) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui8200]]) : (ui8) -> ()
+
+    // muli 100, 2 -> 200
+    %result_muli_ui8100_ui82 = arc.muli %cst_ui8100, %cst_ui82 : ui8
+    "arc.keep"(%result_muli_ui8100_ui82) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui8200]]) : (ui8) -> ()
+
+    // muli 3, 72 -> 216
+    %result_muli_ui83_ui872 = arc.muli %cst_ui83, %cst_ui872 : ui8
+    "arc.keep"(%result_muli_ui83_ui872) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui8216]]) : (ui8) -> ()
+
+    // muli 72, 3 -> 216
+    %result_muli_ui872_ui83 = arc.muli %cst_ui872, %cst_ui83 : ui8
+    "arc.keep"(%result_muli_ui872_ui83) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui8216]]) : (ui8) -> ()
 
     // muli 1, 254 -> 254
     %result_muli_ui81_ui8254 = arc.muli %cst_ui81, %cst_ui8254 : ui8
@@ -7518,6 +16002,84 @@ module @toplevel {
     %result_muli_ui8255_ui81 = arc.muli %cst_ui8255, %cst_ui81 : ui8
     "arc.keep"(%result_muli_ui8255_ui81) : (ui8) -> ()
     // CHECK: "arc.keep"([[CSTui8255]]) : (ui8) -> ()
+
+    // muli 2, 162 -> no-fold
+    %result_muli_ui82_ui8162 = arc.muli %cst_ui82, %cst_ui8162 : ui8
+    // CHECK-DAG: [[RESULT_muli_ui82_ui8162:%[^ ]+]] = arc.muli [[CSTui82]], [[CSTui8162]] : ui8
+    "arc.keep"(%result_muli_ui82_ui8162) : (ui8) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_ui82_ui8162]]) : (ui8) -> ()
+
+    // muli 2, 254 -> no-fold
+    %result_muli_ui82_ui8254 = arc.muli %cst_ui82, %cst_ui8254 : ui8
+    // CHECK-DAG: [[RESULT_muli_ui82_ui8254:%[^ ]+]] = arc.muli [[CSTui82]], [[CSTui8254]] : ui8
+    "arc.keep"(%result_muli_ui82_ui8254) : (ui8) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_ui82_ui8254]]) : (ui8) -> ()
+
+    // muli 2, 255 -> no-fold
+    %result_muli_ui82_ui8255 = arc.muli %cst_ui82, %cst_ui8255 : ui8
+    // CHECK-DAG: [[RESULT_muli_ui82_ui8255:%[^ ]+]] = arc.muli [[CSTui82]], [[CSTui8255]] : ui8
+    "arc.keep"(%result_muli_ui82_ui8255) : (ui8) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_ui82_ui8255]]) : (ui8) -> ()
+
+    // muli 3, 100 -> no-fold
+    %result_muli_ui83_ui8100 = arc.muli %cst_ui83, %cst_ui8100 : ui8
+    // CHECK-DAG: [[RESULT_muli_ui83_ui8100:%[^ ]+]] = arc.muli [[CSTui83]], [[CSTui8100]] : ui8
+    "arc.keep"(%result_muli_ui83_ui8100) : (ui8) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_ui83_ui8100]]) : (ui8) -> ()
+
+    // muli 3, 162 -> no-fold
+    %result_muli_ui83_ui8162 = arc.muli %cst_ui83, %cst_ui8162 : ui8
+    // CHECK-DAG: [[RESULT_muli_ui83_ui8162:%[^ ]+]] = arc.muli [[CSTui83]], [[CSTui8162]] : ui8
+    "arc.keep"(%result_muli_ui83_ui8162) : (ui8) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_ui83_ui8162]]) : (ui8) -> ()
+
+    // muli 3, 254 -> no-fold
+    %result_muli_ui83_ui8254 = arc.muli %cst_ui83, %cst_ui8254 : ui8
+    // CHECK-DAG: [[RESULT_muli_ui83_ui8254:%[^ ]+]] = arc.muli [[CSTui83]], [[CSTui8254]] : ui8
+    "arc.keep"(%result_muli_ui83_ui8254) : (ui8) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_ui83_ui8254]]) : (ui8) -> ()
+
+    // muli 3, 255 -> no-fold
+    %result_muli_ui83_ui8255 = arc.muli %cst_ui83, %cst_ui8255 : ui8
+    // CHECK-DAG: [[RESULT_muli_ui83_ui8255:%[^ ]+]] = arc.muli [[CSTui83]], [[CSTui8255]] : ui8
+    "arc.keep"(%result_muli_ui83_ui8255) : (ui8) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_ui83_ui8255]]) : (ui8) -> ()
+
+    // muli 4, 72 -> no-fold
+    %result_muli_ui84_ui872 = arc.muli %cst_ui84, %cst_ui872 : ui8
+    // CHECK-DAG: [[RESULT_muli_ui84_ui872:%[^ ]+]] = arc.muli [[CSTui84]], [[CSTui872]] : ui8
+    "arc.keep"(%result_muli_ui84_ui872) : (ui8) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_ui84_ui872]]) : (ui8) -> ()
+
+    // muli 4, 100 -> no-fold
+    %result_muli_ui84_ui8100 = arc.muli %cst_ui84, %cst_ui8100 : ui8
+    // CHECK-DAG: [[RESULT_muli_ui84_ui8100:%[^ ]+]] = arc.muli [[CSTui84]], [[CSTui8100]] : ui8
+    "arc.keep"(%result_muli_ui84_ui8100) : (ui8) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_ui84_ui8100]]) : (ui8) -> ()
+
+    // muli 4, 162 -> no-fold
+    %result_muli_ui84_ui8162 = arc.muli %cst_ui84, %cst_ui8162 : ui8
+    // CHECK-DAG: [[RESULT_muli_ui84_ui8162:%[^ ]+]] = arc.muli [[CSTui84]], [[CSTui8162]] : ui8
+    "arc.keep"(%result_muli_ui84_ui8162) : (ui8) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_ui84_ui8162]]) : (ui8) -> ()
+
+    // muli 4, 254 -> no-fold
+    %result_muli_ui84_ui8254 = arc.muli %cst_ui84, %cst_ui8254 : ui8
+    // CHECK-DAG: [[RESULT_muli_ui84_ui8254:%[^ ]+]] = arc.muli [[CSTui84]], [[CSTui8254]] : ui8
+    "arc.keep"(%result_muli_ui84_ui8254) : (ui8) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_ui84_ui8254]]) : (ui8) -> ()
+
+    // muli 4, 255 -> no-fold
+    %result_muli_ui84_ui8255 = arc.muli %cst_ui84, %cst_ui8255 : ui8
+    // CHECK-DAG: [[RESULT_muli_ui84_ui8255:%[^ ]+]] = arc.muli [[CSTui84]], [[CSTui8255]] : ui8
+    "arc.keep"(%result_muli_ui84_ui8255) : (ui8) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_ui84_ui8255]]) : (ui8) -> ()
+
+    // muli 72, 4 -> no-fold
+    %result_muli_ui872_ui84 = arc.muli %cst_ui872, %cst_ui84 : ui8
+    // CHECK-DAG: [[RESULT_muli_ui872_ui84:%[^ ]+]] = arc.muli [[CSTui872]], [[CSTui84]] : ui8
+    "arc.keep"(%result_muli_ui872_ui84) : (ui8) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_ui872_ui84]]) : (ui8) -> ()
 
     // muli 72, 72 -> no-fold
     %result_muli_ui872_ui872 = arc.muli %cst_ui872, %cst_ui872 : ui8
@@ -7549,6 +16111,18 @@ module @toplevel {
     "arc.keep"(%result_muli_ui872_ui8255) : (ui8) -> ()
     // CHECK: "arc.keep"([[RESULT_muli_ui872_ui8255]]) : (ui8) -> ()
 
+    // muli 100, 3 -> no-fold
+    %result_muli_ui8100_ui83 = arc.muli %cst_ui8100, %cst_ui83 : ui8
+    // CHECK-DAG: [[RESULT_muli_ui8100_ui83:%[^ ]+]] = arc.muli [[CSTui8100]], [[CSTui83]] : ui8
+    "arc.keep"(%result_muli_ui8100_ui83) : (ui8) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_ui8100_ui83]]) : (ui8) -> ()
+
+    // muli 100, 4 -> no-fold
+    %result_muli_ui8100_ui84 = arc.muli %cst_ui8100, %cst_ui84 : ui8
+    // CHECK-DAG: [[RESULT_muli_ui8100_ui84:%[^ ]+]] = arc.muli [[CSTui8100]], [[CSTui84]] : ui8
+    "arc.keep"(%result_muli_ui8100_ui84) : (ui8) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_ui8100_ui84]]) : (ui8) -> ()
+
     // muli 100, 72 -> no-fold
     %result_muli_ui8100_ui872 = arc.muli %cst_ui8100, %cst_ui872 : ui8
     // CHECK-DAG: [[RESULT_muli_ui8100_ui872:%[^ ]+]] = arc.muli [[CSTui8100]], [[CSTui872]] : ui8
@@ -7578,6 +16152,24 @@ module @toplevel {
     // CHECK-DAG: [[RESULT_muli_ui8100_ui8255:%[^ ]+]] = arc.muli [[CSTui8100]], [[CSTui8255]] : ui8
     "arc.keep"(%result_muli_ui8100_ui8255) : (ui8) -> ()
     // CHECK: "arc.keep"([[RESULT_muli_ui8100_ui8255]]) : (ui8) -> ()
+
+    // muli 162, 2 -> no-fold
+    %result_muli_ui8162_ui82 = arc.muli %cst_ui8162, %cst_ui82 : ui8
+    // CHECK-DAG: [[RESULT_muli_ui8162_ui82:%[^ ]+]] = arc.muli [[CSTui8162]], [[CSTui82]] : ui8
+    "arc.keep"(%result_muli_ui8162_ui82) : (ui8) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_ui8162_ui82]]) : (ui8) -> ()
+
+    // muli 162, 3 -> no-fold
+    %result_muli_ui8162_ui83 = arc.muli %cst_ui8162, %cst_ui83 : ui8
+    // CHECK-DAG: [[RESULT_muli_ui8162_ui83:%[^ ]+]] = arc.muli [[CSTui8162]], [[CSTui83]] : ui8
+    "arc.keep"(%result_muli_ui8162_ui83) : (ui8) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_ui8162_ui83]]) : (ui8) -> ()
+
+    // muli 162, 4 -> no-fold
+    %result_muli_ui8162_ui84 = arc.muli %cst_ui8162, %cst_ui84 : ui8
+    // CHECK-DAG: [[RESULT_muli_ui8162_ui84:%[^ ]+]] = arc.muli [[CSTui8162]], [[CSTui84]] : ui8
+    "arc.keep"(%result_muli_ui8162_ui84) : (ui8) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_ui8162_ui84]]) : (ui8) -> ()
 
     // muli 162, 72 -> no-fold
     %result_muli_ui8162_ui872 = arc.muli %cst_ui8162, %cst_ui872 : ui8
@@ -7609,6 +16201,24 @@ module @toplevel {
     "arc.keep"(%result_muli_ui8162_ui8255) : (ui8) -> ()
     // CHECK: "arc.keep"([[RESULT_muli_ui8162_ui8255]]) : (ui8) -> ()
 
+    // muli 254, 2 -> no-fold
+    %result_muli_ui8254_ui82 = arc.muli %cst_ui8254, %cst_ui82 : ui8
+    // CHECK-DAG: [[RESULT_muli_ui8254_ui82:%[^ ]+]] = arc.muli [[CSTui8254]], [[CSTui82]] : ui8
+    "arc.keep"(%result_muli_ui8254_ui82) : (ui8) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_ui8254_ui82]]) : (ui8) -> ()
+
+    // muli 254, 3 -> no-fold
+    %result_muli_ui8254_ui83 = arc.muli %cst_ui8254, %cst_ui83 : ui8
+    // CHECK-DAG: [[RESULT_muli_ui8254_ui83:%[^ ]+]] = arc.muli [[CSTui8254]], [[CSTui83]] : ui8
+    "arc.keep"(%result_muli_ui8254_ui83) : (ui8) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_ui8254_ui83]]) : (ui8) -> ()
+
+    // muli 254, 4 -> no-fold
+    %result_muli_ui8254_ui84 = arc.muli %cst_ui8254, %cst_ui84 : ui8
+    // CHECK-DAG: [[RESULT_muli_ui8254_ui84:%[^ ]+]] = arc.muli [[CSTui8254]], [[CSTui84]] : ui8
+    "arc.keep"(%result_muli_ui8254_ui84) : (ui8) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_ui8254_ui84]]) : (ui8) -> ()
+
     // muli 254, 72 -> no-fold
     %result_muli_ui8254_ui872 = arc.muli %cst_ui8254, %cst_ui872 : ui8
     // CHECK-DAG: [[RESULT_muli_ui8254_ui872:%[^ ]+]] = arc.muli [[CSTui8254]], [[CSTui872]] : ui8
@@ -7638,6 +16248,24 @@ module @toplevel {
     // CHECK-DAG: [[RESULT_muli_ui8254_ui8255:%[^ ]+]] = arc.muli [[CSTui8254]], [[CSTui8255]] : ui8
     "arc.keep"(%result_muli_ui8254_ui8255) : (ui8) -> ()
     // CHECK: "arc.keep"([[RESULT_muli_ui8254_ui8255]]) : (ui8) -> ()
+
+    // muli 255, 2 -> no-fold
+    %result_muli_ui8255_ui82 = arc.muli %cst_ui8255, %cst_ui82 : ui8
+    // CHECK-DAG: [[RESULT_muli_ui8255_ui82:%[^ ]+]] = arc.muli [[CSTui8255]], [[CSTui82]] : ui8
+    "arc.keep"(%result_muli_ui8255_ui82) : (ui8) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_ui8255_ui82]]) : (ui8) -> ()
+
+    // muli 255, 3 -> no-fold
+    %result_muli_ui8255_ui83 = arc.muli %cst_ui8255, %cst_ui83 : ui8
+    // CHECK-DAG: [[RESULT_muli_ui8255_ui83:%[^ ]+]] = arc.muli [[CSTui8255]], [[CSTui83]] : ui8
+    "arc.keep"(%result_muli_ui8255_ui83) : (ui8) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_ui8255_ui83]]) : (ui8) -> ()
+
+    // muli 255, 4 -> no-fold
+    %result_muli_ui8255_ui84 = arc.muli %cst_ui8255, %cst_ui84 : ui8
+    // CHECK-DAG: [[RESULT_muli_ui8255_ui84:%[^ ]+]] = arc.muli [[CSTui8255]], [[CSTui84]] : ui8
+    "arc.keep"(%result_muli_ui8255_ui84) : (ui8) -> ()
+    // CHECK: "arc.keep"([[RESULT_muli_ui8255_ui84]]) : (ui8) -> ()
 
     // muli 255, 72 -> no-fold
     %result_muli_ui8255_ui872 = arc.muli %cst_ui8255, %cst_ui872 : ui8
@@ -7734,6 +16362,21 @@ module @toplevel {
     "arc.keep"(%result_remi_si16n32767_si16n32547) : (si16) -> ()
     // CHECK: "arc.keep"([[CSTsi16n220]]) : (si16) -> ()
 
+    // remi -32767, 4 -> -3
+    %result_remi_si16n32767_si164 = arc.remi %cst_si16n32767, %cst_si164 : si16
+    "arc.keep"(%result_remi_si16n32767_si164) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi16n3]]) : (si16) -> ()
+
+    // remi -32547, 4 -> -3
+    %result_remi_si16n32547_si164 = arc.remi %cst_si16n32547, %cst_si164 : si16
+    "arc.keep"(%result_remi_si16n32547_si164) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi16n3]]) : (si16) -> ()
+
+    // remi -32768, 3 -> -2
+    %result_remi_si16n32768_si163 = arc.remi %cst_si16n32768, %cst_si163 : si16
+    "arc.keep"(%result_remi_si16n32768_si163) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi16n2]]) : (si16) -> ()
+
     // remi -32768, 32766 -> -2
     %result_remi_si16n32768_si1632766 = arc.remi %cst_si16n32768, %cst_si1632766 : si16
     "arc.keep"(%result_remi_si16n32768_si1632766) : (si16) -> ()
@@ -7749,9 +16392,24 @@ module @toplevel {
     "arc.keep"(%result_remi_si16n32768_si1632767) : (si16) -> ()
     // CHECK: "arc.keep"([[CSTsi16n1]]) : (si16) -> ()
 
+    // remi -32767, 2 -> -1
+    %result_remi_si16n32767_si162 = arc.remi %cst_si16n32767, %cst_si162 : si16
+    "arc.keep"(%result_remi_si16n32767_si162) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi16n1]]) : (si16) -> ()
+
+    // remi -32767, 3 -> -1
+    %result_remi_si16n32767_si163 = arc.remi %cst_si16n32767, %cst_si163 : si16
+    "arc.keep"(%result_remi_si16n32767_si163) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi16n1]]) : (si16) -> ()
+
     // remi -32767, 32766 -> -1
     %result_remi_si16n32767_si1632766 = arc.remi %cst_si16n32767, %cst_si1632766 : si16
     "arc.keep"(%result_remi_si16n32767_si1632766) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi16n1]]) : (si16) -> ()
+
+    // remi -32547, 2 -> -1
+    %result_remi_si16n32547_si162 = arc.remi %cst_si16n32547, %cst_si162 : si16
+    "arc.keep"(%result_remi_si16n32547_si162) : (si16) -> ()
     // CHECK: "arc.keep"([[CSTsi16n1]]) : (si16) -> ()
 
     // remi -32768, -32768 -> 0
@@ -7759,9 +16417,29 @@ module @toplevel {
     "arc.keep"(%result_remi_si16n32768_si16n32768) : (si16) -> ()
     // CHECK: "arc.keep"([[CSTsi160]]) : (si16) -> ()
 
+    // remi -32768, 1 -> 0
+    %result_remi_si16n32768_si161 = arc.remi %cst_si16n32768, %cst_si161 : si16
+    "arc.keep"(%result_remi_si16n32768_si161) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi160]]) : (si16) -> ()
+
+    // remi -32768, 2 -> 0
+    %result_remi_si16n32768_si162 = arc.remi %cst_si16n32768, %cst_si162 : si16
+    "arc.keep"(%result_remi_si16n32768_si162) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi160]]) : (si16) -> ()
+
+    // remi -32768, 4 -> 0
+    %result_remi_si16n32768_si164 = arc.remi %cst_si16n32768, %cst_si164 : si16
+    "arc.keep"(%result_remi_si16n32768_si164) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi160]]) : (si16) -> ()
+
     // remi -32767, -32767 -> 0
     %result_remi_si16n32767_si16n32767 = arc.remi %cst_si16n32767, %cst_si16n32767 : si16
     "arc.keep"(%result_remi_si16n32767_si16n32767) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi160]]) : (si16) -> ()
+
+    // remi -32767, 1 -> 0
+    %result_remi_si16n32767_si161 = arc.remi %cst_si16n32767, %cst_si161 : si16
+    "arc.keep"(%result_remi_si16n32767_si161) : (si16) -> ()
     // CHECK: "arc.keep"([[CSTsi160]]) : (si16) -> ()
 
     // remi -32767, 32767 -> 0
@@ -7772,6 +16450,16 @@ module @toplevel {
     // remi -32547, -32547 -> 0
     %result_remi_si16n32547_si16n32547 = arc.remi %cst_si16n32547, %cst_si16n32547 : si16
     "arc.keep"(%result_remi_si16n32547_si16n32547) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi160]]) : (si16) -> ()
+
+    // remi -32547, 1 -> 0
+    %result_remi_si16n32547_si161 = arc.remi %cst_si16n32547, %cst_si161 : si16
+    "arc.keep"(%result_remi_si16n32547_si161) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi160]]) : (si16) -> ()
+
+    // remi -32547, 3 -> 0
+    %result_remi_si16n32547_si163 = arc.remi %cst_si16n32547, %cst_si163 : si16
+    "arc.keep"(%result_remi_si16n32547_si163) : (si16) -> ()
     // CHECK: "arc.keep"([[CSTsi160]]) : (si16) -> ()
 
     // remi 0, -32768 -> 0
@@ -7787,6 +16475,26 @@ module @toplevel {
     // remi 0, -32547 -> 0
     %result_remi_si160_si16n32547 = arc.remi %cst_si160, %cst_si16n32547 : si16
     "arc.keep"(%result_remi_si160_si16n32547) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi160]]) : (si16) -> ()
+
+    // remi 0, 1 -> 0
+    %result_remi_si160_si161 = arc.remi %cst_si160, %cst_si161 : si16
+    "arc.keep"(%result_remi_si160_si161) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi160]]) : (si16) -> ()
+
+    // remi 0, 2 -> 0
+    %result_remi_si160_si162 = arc.remi %cst_si160, %cst_si162 : si16
+    "arc.keep"(%result_remi_si160_si162) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi160]]) : (si16) -> ()
+
+    // remi 0, 3 -> 0
+    %result_remi_si160_si163 = arc.remi %cst_si160, %cst_si163 : si16
+    "arc.keep"(%result_remi_si160_si163) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi160]]) : (si16) -> ()
+
+    // remi 0, 4 -> 0
+    %result_remi_si160_si164 = arc.remi %cst_si160, %cst_si164 : si16
+    "arc.keep"(%result_remi_si160_si164) : (si16) -> ()
     // CHECK: "arc.keep"([[CSTsi160]]) : (si16) -> ()
 
     // remi 0, 10486 -> 0
@@ -7809,14 +16517,89 @@ module @toplevel {
     "arc.keep"(%result_remi_si160_si1632767) : (si16) -> ()
     // CHECK: "arc.keep"([[CSTsi160]]) : (si16) -> ()
 
+    // remi 1, 1 -> 0
+    %result_remi_si161_si161 = arc.remi %cst_si161, %cst_si161 : si16
+    "arc.keep"(%result_remi_si161_si161) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi160]]) : (si16) -> ()
+
+    // remi 2, 1 -> 0
+    %result_remi_si162_si161 = arc.remi %cst_si162, %cst_si161 : si16
+    "arc.keep"(%result_remi_si162_si161) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi160]]) : (si16) -> ()
+
+    // remi 2, 2 -> 0
+    %result_remi_si162_si162 = arc.remi %cst_si162, %cst_si162 : si16
+    "arc.keep"(%result_remi_si162_si162) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi160]]) : (si16) -> ()
+
+    // remi 3, 1 -> 0
+    %result_remi_si163_si161 = arc.remi %cst_si163, %cst_si161 : si16
+    "arc.keep"(%result_remi_si163_si161) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi160]]) : (si16) -> ()
+
+    // remi 3, 3 -> 0
+    %result_remi_si163_si163 = arc.remi %cst_si163, %cst_si163 : si16
+    "arc.keep"(%result_remi_si163_si163) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi160]]) : (si16) -> ()
+
+    // remi 4, 1 -> 0
+    %result_remi_si164_si161 = arc.remi %cst_si164, %cst_si161 : si16
+    "arc.keep"(%result_remi_si164_si161) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi160]]) : (si16) -> ()
+
+    // remi 4, 2 -> 0
+    %result_remi_si164_si162 = arc.remi %cst_si164, %cst_si162 : si16
+    "arc.keep"(%result_remi_si164_si162) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi160]]) : (si16) -> ()
+
+    // remi 4, 4 -> 0
+    %result_remi_si164_si164 = arc.remi %cst_si164, %cst_si164 : si16
+    "arc.keep"(%result_remi_si164_si164) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi160]]) : (si16) -> ()
+
+    // remi 10486, 1 -> 0
+    %result_remi_si1610486_si161 = arc.remi %cst_si1610486, %cst_si161 : si16
+    "arc.keep"(%result_remi_si1610486_si161) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi160]]) : (si16) -> ()
+
+    // remi 10486, 2 -> 0
+    %result_remi_si1610486_si162 = arc.remi %cst_si1610486, %cst_si162 : si16
+    "arc.keep"(%result_remi_si1610486_si162) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi160]]) : (si16) -> ()
+
     // remi 10486, 10486 -> 0
     %result_remi_si1610486_si1610486 = arc.remi %cst_si1610486, %cst_si1610486 : si16
     "arc.keep"(%result_remi_si1610486_si1610486) : (si16) -> ()
     // CHECK: "arc.keep"([[CSTsi160]]) : (si16) -> ()
 
+    // remi 16514, 1 -> 0
+    %result_remi_si1616514_si161 = arc.remi %cst_si1616514, %cst_si161 : si16
+    "arc.keep"(%result_remi_si1616514_si161) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi160]]) : (si16) -> ()
+
+    // remi 16514, 2 -> 0
+    %result_remi_si1616514_si162 = arc.remi %cst_si1616514, %cst_si162 : si16
+    "arc.keep"(%result_remi_si1616514_si162) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi160]]) : (si16) -> ()
+
     // remi 16514, 16514 -> 0
     %result_remi_si1616514_si1616514 = arc.remi %cst_si1616514, %cst_si1616514 : si16
     "arc.keep"(%result_remi_si1616514_si1616514) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi160]]) : (si16) -> ()
+
+    // remi 32766, 1 -> 0
+    %result_remi_si1632766_si161 = arc.remi %cst_si1632766, %cst_si161 : si16
+    "arc.keep"(%result_remi_si1632766_si161) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi160]]) : (si16) -> ()
+
+    // remi 32766, 2 -> 0
+    %result_remi_si1632766_si162 = arc.remi %cst_si1632766, %cst_si162 : si16
+    "arc.keep"(%result_remi_si1632766_si162) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi160]]) : (si16) -> ()
+
+    // remi 32766, 3 -> 0
+    %result_remi_si1632766_si163 = arc.remi %cst_si1632766, %cst_si163 : si16
+    "arc.keep"(%result_remi_si1632766_si163) : (si16) -> ()
     // CHECK: "arc.keep"([[CSTsi160]]) : (si16) -> ()
 
     // remi 32766, 32766 -> 0
@@ -7829,15 +16612,240 @@ module @toplevel {
     "arc.keep"(%result_remi_si1632767_si16n32767) : (si16) -> ()
     // CHECK: "arc.keep"([[CSTsi160]]) : (si16) -> ()
 
+    // remi 32767, 1 -> 0
+    %result_remi_si1632767_si161 = arc.remi %cst_si1632767, %cst_si161 : si16
+    "arc.keep"(%result_remi_si1632767_si161) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi160]]) : (si16) -> ()
+
     // remi 32767, 32767 -> 0
     %result_remi_si1632767_si1632767 = arc.remi %cst_si1632767, %cst_si1632767 : si16
     "arc.keep"(%result_remi_si1632767_si1632767) : (si16) -> ()
     // CHECK: "arc.keep"([[CSTsi160]]) : (si16) -> ()
 
+    // remi 1, -32768 -> 1
+    %result_remi_si161_si16n32768 = arc.remi %cst_si161, %cst_si16n32768 : si16
+    "arc.keep"(%result_remi_si161_si16n32768) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi161]]) : (si16) -> ()
+
+    // remi 1, -32767 -> 1
+    %result_remi_si161_si16n32767 = arc.remi %cst_si161, %cst_si16n32767 : si16
+    "arc.keep"(%result_remi_si161_si16n32767) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi161]]) : (si16) -> ()
+
+    // remi 1, -32547 -> 1
+    %result_remi_si161_si16n32547 = arc.remi %cst_si161, %cst_si16n32547 : si16
+    "arc.keep"(%result_remi_si161_si16n32547) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi161]]) : (si16) -> ()
+
+    // remi 1, 2 -> 1
+    %result_remi_si161_si162 = arc.remi %cst_si161, %cst_si162 : si16
+    "arc.keep"(%result_remi_si161_si162) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi161]]) : (si16) -> ()
+
+    // remi 1, 3 -> 1
+    %result_remi_si161_si163 = arc.remi %cst_si161, %cst_si163 : si16
+    "arc.keep"(%result_remi_si161_si163) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi161]]) : (si16) -> ()
+
+    // remi 1, 4 -> 1
+    %result_remi_si161_si164 = arc.remi %cst_si161, %cst_si164 : si16
+    "arc.keep"(%result_remi_si161_si164) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi161]]) : (si16) -> ()
+
+    // remi 1, 10486 -> 1
+    %result_remi_si161_si1610486 = arc.remi %cst_si161, %cst_si1610486 : si16
+    "arc.keep"(%result_remi_si161_si1610486) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi161]]) : (si16) -> ()
+
+    // remi 1, 16514 -> 1
+    %result_remi_si161_si1616514 = arc.remi %cst_si161, %cst_si1616514 : si16
+    "arc.keep"(%result_remi_si161_si1616514) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi161]]) : (si16) -> ()
+
+    // remi 1, 32766 -> 1
+    %result_remi_si161_si1632766 = arc.remi %cst_si161, %cst_si1632766 : si16
+    "arc.keep"(%result_remi_si161_si1632766) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi161]]) : (si16) -> ()
+
+    // remi 1, 32767 -> 1
+    %result_remi_si161_si1632767 = arc.remi %cst_si161, %cst_si1632767 : si16
+    "arc.keep"(%result_remi_si161_si1632767) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi161]]) : (si16) -> ()
+
+    // remi 3, 2 -> 1
+    %result_remi_si163_si162 = arc.remi %cst_si163, %cst_si162 : si16
+    "arc.keep"(%result_remi_si163_si162) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi161]]) : (si16) -> ()
+
+    // remi 4, 3 -> 1
+    %result_remi_si164_si163 = arc.remi %cst_si164, %cst_si163 : si16
+    "arc.keep"(%result_remi_si164_si163) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi161]]) : (si16) -> ()
+
+    // remi 10486, 3 -> 1
+    %result_remi_si1610486_si163 = arc.remi %cst_si1610486, %cst_si163 : si16
+    "arc.keep"(%result_remi_si1610486_si163) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi161]]) : (si16) -> ()
+
+    // remi 32767, 2 -> 1
+    %result_remi_si1632767_si162 = arc.remi %cst_si1632767, %cst_si162 : si16
+    "arc.keep"(%result_remi_si1632767_si162) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi161]]) : (si16) -> ()
+
+    // remi 32767, 3 -> 1
+    %result_remi_si1632767_si163 = arc.remi %cst_si1632767, %cst_si163 : si16
+    "arc.keep"(%result_remi_si1632767_si163) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi161]]) : (si16) -> ()
+
     // remi 32767, 32766 -> 1
     %result_remi_si1632767_si1632766 = arc.remi %cst_si1632767, %cst_si1632766 : si16
     "arc.keep"(%result_remi_si1632767_si1632766) : (si16) -> ()
     // CHECK: "arc.keep"([[CSTsi161]]) : (si16) -> ()
+
+    // remi 2, -32768 -> 2
+    %result_remi_si162_si16n32768 = arc.remi %cst_si162, %cst_si16n32768 : si16
+    "arc.keep"(%result_remi_si162_si16n32768) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi162]]) : (si16) -> ()
+
+    // remi 2, -32767 -> 2
+    %result_remi_si162_si16n32767 = arc.remi %cst_si162, %cst_si16n32767 : si16
+    "arc.keep"(%result_remi_si162_si16n32767) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi162]]) : (si16) -> ()
+
+    // remi 2, -32547 -> 2
+    %result_remi_si162_si16n32547 = arc.remi %cst_si162, %cst_si16n32547 : si16
+    "arc.keep"(%result_remi_si162_si16n32547) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi162]]) : (si16) -> ()
+
+    // remi 2, 3 -> 2
+    %result_remi_si162_si163 = arc.remi %cst_si162, %cst_si163 : si16
+    "arc.keep"(%result_remi_si162_si163) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi162]]) : (si16) -> ()
+
+    // remi 2, 4 -> 2
+    %result_remi_si162_si164 = arc.remi %cst_si162, %cst_si164 : si16
+    "arc.keep"(%result_remi_si162_si164) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi162]]) : (si16) -> ()
+
+    // remi 2, 10486 -> 2
+    %result_remi_si162_si1610486 = arc.remi %cst_si162, %cst_si1610486 : si16
+    "arc.keep"(%result_remi_si162_si1610486) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi162]]) : (si16) -> ()
+
+    // remi 2, 16514 -> 2
+    %result_remi_si162_si1616514 = arc.remi %cst_si162, %cst_si1616514 : si16
+    "arc.keep"(%result_remi_si162_si1616514) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi162]]) : (si16) -> ()
+
+    // remi 2, 32766 -> 2
+    %result_remi_si162_si1632766 = arc.remi %cst_si162, %cst_si1632766 : si16
+    "arc.keep"(%result_remi_si162_si1632766) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi162]]) : (si16) -> ()
+
+    // remi 2, 32767 -> 2
+    %result_remi_si162_si1632767 = arc.remi %cst_si162, %cst_si1632767 : si16
+    "arc.keep"(%result_remi_si162_si1632767) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi162]]) : (si16) -> ()
+
+    // remi 10486, 4 -> 2
+    %result_remi_si1610486_si164 = arc.remi %cst_si1610486, %cst_si164 : si16
+    "arc.keep"(%result_remi_si1610486_si164) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi162]]) : (si16) -> ()
+
+    // remi 16514, 3 -> 2
+    %result_remi_si1616514_si163 = arc.remi %cst_si1616514, %cst_si163 : si16
+    "arc.keep"(%result_remi_si1616514_si163) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi162]]) : (si16) -> ()
+
+    // remi 16514, 4 -> 2
+    %result_remi_si1616514_si164 = arc.remi %cst_si1616514, %cst_si164 : si16
+    "arc.keep"(%result_remi_si1616514_si164) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi162]]) : (si16) -> ()
+
+    // remi 32766, 4 -> 2
+    %result_remi_si1632766_si164 = arc.remi %cst_si1632766, %cst_si164 : si16
+    "arc.keep"(%result_remi_si1632766_si164) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi162]]) : (si16) -> ()
+
+    // remi 3, -32768 -> 3
+    %result_remi_si163_si16n32768 = arc.remi %cst_si163, %cst_si16n32768 : si16
+    "arc.keep"(%result_remi_si163_si16n32768) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi163]]) : (si16) -> ()
+
+    // remi 3, -32767 -> 3
+    %result_remi_si163_si16n32767 = arc.remi %cst_si163, %cst_si16n32767 : si16
+    "arc.keep"(%result_remi_si163_si16n32767) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi163]]) : (si16) -> ()
+
+    // remi 3, -32547 -> 3
+    %result_remi_si163_si16n32547 = arc.remi %cst_si163, %cst_si16n32547 : si16
+    "arc.keep"(%result_remi_si163_si16n32547) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi163]]) : (si16) -> ()
+
+    // remi 3, 4 -> 3
+    %result_remi_si163_si164 = arc.remi %cst_si163, %cst_si164 : si16
+    "arc.keep"(%result_remi_si163_si164) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi163]]) : (si16) -> ()
+
+    // remi 3, 10486 -> 3
+    %result_remi_si163_si1610486 = arc.remi %cst_si163, %cst_si1610486 : si16
+    "arc.keep"(%result_remi_si163_si1610486) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi163]]) : (si16) -> ()
+
+    // remi 3, 16514 -> 3
+    %result_remi_si163_si1616514 = arc.remi %cst_si163, %cst_si1616514 : si16
+    "arc.keep"(%result_remi_si163_si1616514) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi163]]) : (si16) -> ()
+
+    // remi 3, 32766 -> 3
+    %result_remi_si163_si1632766 = arc.remi %cst_si163, %cst_si1632766 : si16
+    "arc.keep"(%result_remi_si163_si1632766) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi163]]) : (si16) -> ()
+
+    // remi 3, 32767 -> 3
+    %result_remi_si163_si1632767 = arc.remi %cst_si163, %cst_si1632767 : si16
+    "arc.keep"(%result_remi_si163_si1632767) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi163]]) : (si16) -> ()
+
+    // remi 32767, 4 -> 3
+    %result_remi_si1632767_si164 = arc.remi %cst_si1632767, %cst_si164 : si16
+    "arc.keep"(%result_remi_si1632767_si164) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi163]]) : (si16) -> ()
+
+    // remi 4, -32768 -> 4
+    %result_remi_si164_si16n32768 = arc.remi %cst_si164, %cst_si16n32768 : si16
+    "arc.keep"(%result_remi_si164_si16n32768) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi164]]) : (si16) -> ()
+
+    // remi 4, -32767 -> 4
+    %result_remi_si164_si16n32767 = arc.remi %cst_si164, %cst_si16n32767 : si16
+    "arc.keep"(%result_remi_si164_si16n32767) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi164]]) : (si16) -> ()
+
+    // remi 4, -32547 -> 4
+    %result_remi_si164_si16n32547 = arc.remi %cst_si164, %cst_si16n32547 : si16
+    "arc.keep"(%result_remi_si164_si16n32547) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi164]]) : (si16) -> ()
+
+    // remi 4, 10486 -> 4
+    %result_remi_si164_si1610486 = arc.remi %cst_si164, %cst_si1610486 : si16
+    "arc.keep"(%result_remi_si164_si1610486) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi164]]) : (si16) -> ()
+
+    // remi 4, 16514 -> 4
+    %result_remi_si164_si1616514 = arc.remi %cst_si164, %cst_si1616514 : si16
+    "arc.keep"(%result_remi_si164_si1616514) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi164]]) : (si16) -> ()
+
+    // remi 4, 32766 -> 4
+    %result_remi_si164_si1632766 = arc.remi %cst_si164, %cst_si1632766 : si16
+    "arc.keep"(%result_remi_si164_si1632766) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi164]]) : (si16) -> ()
+
+    // remi 4, 32767 -> 4
+    %result_remi_si164_si1632767 = arc.remi %cst_si164, %cst_si1632767 : si16
+    "arc.keep"(%result_remi_si164_si1632767) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi164]]) : (si16) -> ()
 
     // remi 32766, -32547 -> 219
     %result_remi_si1632766_si16n32547 = arc.remi %cst_si1632766, %cst_si16n32547 : si16
@@ -7972,6 +16980,30 @@ module @toplevel {
     // CHECK-DAG: [[RESULT_remi_si160_si160:%[^ ]+]] = arc.remi [[CSTsi160]], [[CSTsi160]] : si16
     "arc.keep"(%result_remi_si160_si160) : (si16) -> ()
     // CHECK: "arc.keep"([[RESULT_remi_si160_si160]]) : (si16) -> ()
+
+    // remi 1, 0 -> no-fold
+    %result_remi_si161_si160 = arc.remi %cst_si161, %cst_si160 : si16
+    // CHECK-DAG: [[RESULT_remi_si161_si160:%[^ ]+]] = arc.remi [[CSTsi161]], [[CSTsi160]] : si16
+    "arc.keep"(%result_remi_si161_si160) : (si16) -> ()
+    // CHECK: "arc.keep"([[RESULT_remi_si161_si160]]) : (si16) -> ()
+
+    // remi 2, 0 -> no-fold
+    %result_remi_si162_si160 = arc.remi %cst_si162, %cst_si160 : si16
+    // CHECK-DAG: [[RESULT_remi_si162_si160:%[^ ]+]] = arc.remi [[CSTsi162]], [[CSTsi160]] : si16
+    "arc.keep"(%result_remi_si162_si160) : (si16) -> ()
+    // CHECK: "arc.keep"([[RESULT_remi_si162_si160]]) : (si16) -> ()
+
+    // remi 3, 0 -> no-fold
+    %result_remi_si163_si160 = arc.remi %cst_si163, %cst_si160 : si16
+    // CHECK-DAG: [[RESULT_remi_si163_si160:%[^ ]+]] = arc.remi [[CSTsi163]], [[CSTsi160]] : si16
+    "arc.keep"(%result_remi_si163_si160) : (si16) -> ()
+    // CHECK: "arc.keep"([[RESULT_remi_si163_si160]]) : (si16) -> ()
+
+    // remi 4, 0 -> no-fold
+    %result_remi_si164_si160 = arc.remi %cst_si164, %cst_si160 : si16
+    // CHECK-DAG: [[RESULT_remi_si164_si160:%[^ ]+]] = arc.remi [[CSTsi164]], [[CSTsi160]] : si16
+    "arc.keep"(%result_remi_si164_si160) : (si16) -> ()
+    // CHECK: "arc.keep"([[RESULT_remi_si164_si160]]) : (si16) -> ()
 
     // remi 10486, 0 -> no-fold
     %result_remi_si1610486_si160 = arc.remi %cst_si1610486, %cst_si160 : si16
@@ -8122,9 +17154,29 @@ module @toplevel {
     "arc.keep"(%result_remi_si32n2147483647_si32n1035405763) : (si32) -> ()
     // CHECK: "arc.keep"([[CSTsi32n76672121]]) : (si32) -> ()
 
+    // remi -2147483647, 4 -> -3
+    %result_remi_si32n2147483647_si324 = arc.remi %cst_si32n2147483647, %cst_si324 : si32
+    "arc.keep"(%result_remi_si32n2147483647_si324) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi32n3]]) : (si32) -> ()
+
+    // remi -1035405763, 4 -> -3
+    %result_remi_si32n1035405763_si324 = arc.remi %cst_si32n1035405763, %cst_si324 : si32
+    "arc.keep"(%result_remi_si32n1035405763_si324) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi32n3]]) : (si32) -> ()
+
+    // remi -2147483648, 3 -> -2
+    %result_remi_si32n2147483648_si323 = arc.remi %cst_si32n2147483648, %cst_si323 : si32
+    "arc.keep"(%result_remi_si32n2147483648_si323) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi32n2]]) : (si32) -> ()
+
     // remi -2147483648, 2147483646 -> -2
     %result_remi_si32n2147483648_si322147483646 = arc.remi %cst_si32n2147483648, %cst_si322147483646 : si32
     "arc.keep"(%result_remi_si32n2147483648_si322147483646) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi32n2]]) : (si32) -> ()
+
+    // remi -1713183800, 3 -> -2
+    %result_remi_si32n1713183800_si323 = arc.remi %cst_si32n1713183800, %cst_si323 : si32
+    "arc.keep"(%result_remi_si32n1713183800_si323) : (si32) -> ()
     // CHECK: "arc.keep"([[CSTsi32n2]]) : (si32) -> ()
 
     // remi -2147483648, -2147483647 -> -1
@@ -8137,9 +17189,29 @@ module @toplevel {
     "arc.keep"(%result_remi_si32n2147483648_si322147483647) : (si32) -> ()
     // CHECK: "arc.keep"([[CSTsi32n1]]) : (si32) -> ()
 
+    // remi -2147483647, 2 -> -1
+    %result_remi_si32n2147483647_si322 = arc.remi %cst_si32n2147483647, %cst_si322 : si32
+    "arc.keep"(%result_remi_si32n2147483647_si322) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi32n1]]) : (si32) -> ()
+
+    // remi -2147483647, 3 -> -1
+    %result_remi_si32n2147483647_si323 = arc.remi %cst_si32n2147483647, %cst_si323 : si32
+    "arc.keep"(%result_remi_si32n2147483647_si323) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi32n1]]) : (si32) -> ()
+
     // remi -2147483647, 2147483646 -> -1
     %result_remi_si32n2147483647_si322147483646 = arc.remi %cst_si32n2147483647, %cst_si322147483646 : si32
     "arc.keep"(%result_remi_si32n2147483647_si322147483646) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi32n1]]) : (si32) -> ()
+
+    // remi -1035405763, 2 -> -1
+    %result_remi_si32n1035405763_si322 = arc.remi %cst_si32n1035405763, %cst_si322 : si32
+    "arc.keep"(%result_remi_si32n1035405763_si322) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi32n1]]) : (si32) -> ()
+
+    // remi -1035405763, 3 -> -1
+    %result_remi_si32n1035405763_si323 = arc.remi %cst_si32n1035405763, %cst_si323 : si32
+    "arc.keep"(%result_remi_si32n1035405763_si323) : (si32) -> ()
     // CHECK: "arc.keep"([[CSTsi32n1]]) : (si32) -> ()
 
     // remi -2147483648, -2147483648 -> 0
@@ -8147,9 +17219,29 @@ module @toplevel {
     "arc.keep"(%result_remi_si32n2147483648_si32n2147483648) : (si32) -> ()
     // CHECK: "arc.keep"([[CSTsi320]]) : (si32) -> ()
 
+    // remi -2147483648, 1 -> 0
+    %result_remi_si32n2147483648_si321 = arc.remi %cst_si32n2147483648, %cst_si321 : si32
+    "arc.keep"(%result_remi_si32n2147483648_si321) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi320]]) : (si32) -> ()
+
+    // remi -2147483648, 2 -> 0
+    %result_remi_si32n2147483648_si322 = arc.remi %cst_si32n2147483648, %cst_si322 : si32
+    "arc.keep"(%result_remi_si32n2147483648_si322) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi320]]) : (si32) -> ()
+
+    // remi -2147483648, 4 -> 0
+    %result_remi_si32n2147483648_si324 = arc.remi %cst_si32n2147483648, %cst_si324 : si32
+    "arc.keep"(%result_remi_si32n2147483648_si324) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi320]]) : (si32) -> ()
+
     // remi -2147483647, -2147483647 -> 0
     %result_remi_si32n2147483647_si32n2147483647 = arc.remi %cst_si32n2147483647, %cst_si32n2147483647 : si32
     "arc.keep"(%result_remi_si32n2147483647_si32n2147483647) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi320]]) : (si32) -> ()
+
+    // remi -2147483647, 1 -> 0
+    %result_remi_si32n2147483647_si321 = arc.remi %cst_si32n2147483647, %cst_si321 : si32
+    "arc.keep"(%result_remi_si32n2147483647_si321) : (si32) -> ()
     // CHECK: "arc.keep"([[CSTsi320]]) : (si32) -> ()
 
     // remi -2147483647, 2147483647 -> 0
@@ -8162,14 +17254,54 @@ module @toplevel {
     "arc.keep"(%result_remi_si32n1713183800_si32n1713183800) : (si32) -> ()
     // CHECK: "arc.keep"([[CSTsi320]]) : (si32) -> ()
 
+    // remi -1713183800, 1 -> 0
+    %result_remi_si32n1713183800_si321 = arc.remi %cst_si32n1713183800, %cst_si321 : si32
+    "arc.keep"(%result_remi_si32n1713183800_si321) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi320]]) : (si32) -> ()
+
+    // remi -1713183800, 2 -> 0
+    %result_remi_si32n1713183800_si322 = arc.remi %cst_si32n1713183800, %cst_si322 : si32
+    "arc.keep"(%result_remi_si32n1713183800_si322) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi320]]) : (si32) -> ()
+
+    // remi -1713183800, 4 -> 0
+    %result_remi_si32n1713183800_si324 = arc.remi %cst_si32n1713183800, %cst_si324 : si32
+    "arc.keep"(%result_remi_si32n1713183800_si324) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi320]]) : (si32) -> ()
+
     // remi -1252582164, -1252582164 -> 0
     %result_remi_si32n1252582164_si32n1252582164 = arc.remi %cst_si32n1252582164, %cst_si32n1252582164 : si32
     "arc.keep"(%result_remi_si32n1252582164_si32n1252582164) : (si32) -> ()
     // CHECK: "arc.keep"([[CSTsi320]]) : (si32) -> ()
 
+    // remi -1252582164, 1 -> 0
+    %result_remi_si32n1252582164_si321 = arc.remi %cst_si32n1252582164, %cst_si321 : si32
+    "arc.keep"(%result_remi_si32n1252582164_si321) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi320]]) : (si32) -> ()
+
+    // remi -1252582164, 2 -> 0
+    %result_remi_si32n1252582164_si322 = arc.remi %cst_si32n1252582164, %cst_si322 : si32
+    "arc.keep"(%result_remi_si32n1252582164_si322) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi320]]) : (si32) -> ()
+
+    // remi -1252582164, 3 -> 0
+    %result_remi_si32n1252582164_si323 = arc.remi %cst_si32n1252582164, %cst_si323 : si32
+    "arc.keep"(%result_remi_si32n1252582164_si323) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi320]]) : (si32) -> ()
+
+    // remi -1252582164, 4 -> 0
+    %result_remi_si32n1252582164_si324 = arc.remi %cst_si32n1252582164, %cst_si324 : si32
+    "arc.keep"(%result_remi_si32n1252582164_si324) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi320]]) : (si32) -> ()
+
     // remi -1035405763, -1035405763 -> 0
     %result_remi_si32n1035405763_si32n1035405763 = arc.remi %cst_si32n1035405763, %cst_si32n1035405763 : si32
     "arc.keep"(%result_remi_si32n1035405763_si32n1035405763) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi320]]) : (si32) -> ()
+
+    // remi -1035405763, 1 -> 0
+    %result_remi_si32n1035405763_si321 = arc.remi %cst_si32n1035405763, %cst_si321 : si32
+    "arc.keep"(%result_remi_si32n1035405763_si321) : (si32) -> ()
     // CHECK: "arc.keep"([[CSTsi320]]) : (si32) -> ()
 
     // remi 0, -2147483648 -> 0
@@ -8197,6 +17329,26 @@ module @toplevel {
     "arc.keep"(%result_remi_si320_si32n1035405763) : (si32) -> ()
     // CHECK: "arc.keep"([[CSTsi320]]) : (si32) -> ()
 
+    // remi 0, 1 -> 0
+    %result_remi_si320_si321 = arc.remi %cst_si320, %cst_si321 : si32
+    "arc.keep"(%result_remi_si320_si321) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi320]]) : (si32) -> ()
+
+    // remi 0, 2 -> 0
+    %result_remi_si320_si322 = arc.remi %cst_si320, %cst_si322 : si32
+    "arc.keep"(%result_remi_si320_si322) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi320]]) : (si32) -> ()
+
+    // remi 0, 3 -> 0
+    %result_remi_si320_si323 = arc.remi %cst_si320, %cst_si323 : si32
+    "arc.keep"(%result_remi_si320_si323) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi320]]) : (si32) -> ()
+
+    // remi 0, 4 -> 0
+    %result_remi_si320_si324 = arc.remi %cst_si320, %cst_si324 : si32
+    "arc.keep"(%result_remi_si320_si324) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi320]]) : (si32) -> ()
+
     // remi 0, 2147483646 -> 0
     %result_remi_si320_si322147483646 = arc.remi %cst_si320, %cst_si322147483646 : si32
     "arc.keep"(%result_remi_si320_si322147483646) : (si32) -> ()
@@ -8205,6 +17357,61 @@ module @toplevel {
     // remi 0, 2147483647 -> 0
     %result_remi_si320_si322147483647 = arc.remi %cst_si320, %cst_si322147483647 : si32
     "arc.keep"(%result_remi_si320_si322147483647) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi320]]) : (si32) -> ()
+
+    // remi 1, 1 -> 0
+    %result_remi_si321_si321 = arc.remi %cst_si321, %cst_si321 : si32
+    "arc.keep"(%result_remi_si321_si321) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi320]]) : (si32) -> ()
+
+    // remi 2, 1 -> 0
+    %result_remi_si322_si321 = arc.remi %cst_si322, %cst_si321 : si32
+    "arc.keep"(%result_remi_si322_si321) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi320]]) : (si32) -> ()
+
+    // remi 2, 2 -> 0
+    %result_remi_si322_si322 = arc.remi %cst_si322, %cst_si322 : si32
+    "arc.keep"(%result_remi_si322_si322) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi320]]) : (si32) -> ()
+
+    // remi 3, 1 -> 0
+    %result_remi_si323_si321 = arc.remi %cst_si323, %cst_si321 : si32
+    "arc.keep"(%result_remi_si323_si321) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi320]]) : (si32) -> ()
+
+    // remi 3, 3 -> 0
+    %result_remi_si323_si323 = arc.remi %cst_si323, %cst_si323 : si32
+    "arc.keep"(%result_remi_si323_si323) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi320]]) : (si32) -> ()
+
+    // remi 4, 1 -> 0
+    %result_remi_si324_si321 = arc.remi %cst_si324, %cst_si321 : si32
+    "arc.keep"(%result_remi_si324_si321) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi320]]) : (si32) -> ()
+
+    // remi 4, 2 -> 0
+    %result_remi_si324_si322 = arc.remi %cst_si324, %cst_si322 : si32
+    "arc.keep"(%result_remi_si324_si322) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi320]]) : (si32) -> ()
+
+    // remi 4, 4 -> 0
+    %result_remi_si324_si324 = arc.remi %cst_si324, %cst_si324 : si32
+    "arc.keep"(%result_remi_si324_si324) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi320]]) : (si32) -> ()
+
+    // remi 2147483646, 1 -> 0
+    %result_remi_si322147483646_si321 = arc.remi %cst_si322147483646, %cst_si321 : si32
+    "arc.keep"(%result_remi_si322147483646_si321) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi320]]) : (si32) -> ()
+
+    // remi 2147483646, 2 -> 0
+    %result_remi_si322147483646_si322 = arc.remi %cst_si322147483646, %cst_si322 : si32
+    "arc.keep"(%result_remi_si322147483646_si322) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi320]]) : (si32) -> ()
+
+    // remi 2147483646, 3 -> 0
+    %result_remi_si322147483646_si323 = arc.remi %cst_si322147483646, %cst_si323 : si32
+    "arc.keep"(%result_remi_si322147483646_si323) : (si32) -> ()
     // CHECK: "arc.keep"([[CSTsi320]]) : (si32) -> ()
 
     // remi 2147483646, 2147483646 -> 0
@@ -8217,15 +17424,220 @@ module @toplevel {
     "arc.keep"(%result_remi_si322147483647_si32n2147483647) : (si32) -> ()
     // CHECK: "arc.keep"([[CSTsi320]]) : (si32) -> ()
 
+    // remi 2147483647, 1 -> 0
+    %result_remi_si322147483647_si321 = arc.remi %cst_si322147483647, %cst_si321 : si32
+    "arc.keep"(%result_remi_si322147483647_si321) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi320]]) : (si32) -> ()
+
     // remi 2147483647, 2147483647 -> 0
     %result_remi_si322147483647_si322147483647 = arc.remi %cst_si322147483647, %cst_si322147483647 : si32
     "arc.keep"(%result_remi_si322147483647_si322147483647) : (si32) -> ()
     // CHECK: "arc.keep"([[CSTsi320]]) : (si32) -> ()
 
+    // remi 1, -2147483648 -> 1
+    %result_remi_si321_si32n2147483648 = arc.remi %cst_si321, %cst_si32n2147483648 : si32
+    "arc.keep"(%result_remi_si321_si32n2147483648) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi321]]) : (si32) -> ()
+
+    // remi 1, -2147483647 -> 1
+    %result_remi_si321_si32n2147483647 = arc.remi %cst_si321, %cst_si32n2147483647 : si32
+    "arc.keep"(%result_remi_si321_si32n2147483647) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi321]]) : (si32) -> ()
+
+    // remi 1, -1713183800 -> 1
+    %result_remi_si321_si32n1713183800 = arc.remi %cst_si321, %cst_si32n1713183800 : si32
+    "arc.keep"(%result_remi_si321_si32n1713183800) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi321]]) : (si32) -> ()
+
+    // remi 1, -1252582164 -> 1
+    %result_remi_si321_si32n1252582164 = arc.remi %cst_si321, %cst_si32n1252582164 : si32
+    "arc.keep"(%result_remi_si321_si32n1252582164) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi321]]) : (si32) -> ()
+
+    // remi 1, -1035405763 -> 1
+    %result_remi_si321_si32n1035405763 = arc.remi %cst_si321, %cst_si32n1035405763 : si32
+    "arc.keep"(%result_remi_si321_si32n1035405763) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi321]]) : (si32) -> ()
+
+    // remi 1, 2 -> 1
+    %result_remi_si321_si322 = arc.remi %cst_si321, %cst_si322 : si32
+    "arc.keep"(%result_remi_si321_si322) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi321]]) : (si32) -> ()
+
+    // remi 1, 3 -> 1
+    %result_remi_si321_si323 = arc.remi %cst_si321, %cst_si323 : si32
+    "arc.keep"(%result_remi_si321_si323) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi321]]) : (si32) -> ()
+
+    // remi 1, 4 -> 1
+    %result_remi_si321_si324 = arc.remi %cst_si321, %cst_si324 : si32
+    "arc.keep"(%result_remi_si321_si324) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi321]]) : (si32) -> ()
+
+    // remi 1, 2147483646 -> 1
+    %result_remi_si321_si322147483646 = arc.remi %cst_si321, %cst_si322147483646 : si32
+    "arc.keep"(%result_remi_si321_si322147483646) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi321]]) : (si32) -> ()
+
+    // remi 1, 2147483647 -> 1
+    %result_remi_si321_si322147483647 = arc.remi %cst_si321, %cst_si322147483647 : si32
+    "arc.keep"(%result_remi_si321_si322147483647) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi321]]) : (si32) -> ()
+
+    // remi 3, 2 -> 1
+    %result_remi_si323_si322 = arc.remi %cst_si323, %cst_si322 : si32
+    "arc.keep"(%result_remi_si323_si322) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi321]]) : (si32) -> ()
+
+    // remi 4, 3 -> 1
+    %result_remi_si324_si323 = arc.remi %cst_si324, %cst_si323 : si32
+    "arc.keep"(%result_remi_si324_si323) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi321]]) : (si32) -> ()
+
+    // remi 2147483647, 2 -> 1
+    %result_remi_si322147483647_si322 = arc.remi %cst_si322147483647, %cst_si322 : si32
+    "arc.keep"(%result_remi_si322147483647_si322) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi321]]) : (si32) -> ()
+
+    // remi 2147483647, 3 -> 1
+    %result_remi_si322147483647_si323 = arc.remi %cst_si322147483647, %cst_si323 : si32
+    "arc.keep"(%result_remi_si322147483647_si323) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi321]]) : (si32) -> ()
+
     // remi 2147483647, 2147483646 -> 1
     %result_remi_si322147483647_si322147483646 = arc.remi %cst_si322147483647, %cst_si322147483646 : si32
     "arc.keep"(%result_remi_si322147483647_si322147483646) : (si32) -> ()
     // CHECK: "arc.keep"([[CSTsi321]]) : (si32) -> ()
+
+    // remi 2, -2147483648 -> 2
+    %result_remi_si322_si32n2147483648 = arc.remi %cst_si322, %cst_si32n2147483648 : si32
+    "arc.keep"(%result_remi_si322_si32n2147483648) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi322]]) : (si32) -> ()
+
+    // remi 2, -2147483647 -> 2
+    %result_remi_si322_si32n2147483647 = arc.remi %cst_si322, %cst_si32n2147483647 : si32
+    "arc.keep"(%result_remi_si322_si32n2147483647) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi322]]) : (si32) -> ()
+
+    // remi 2, -1713183800 -> 2
+    %result_remi_si322_si32n1713183800 = arc.remi %cst_si322, %cst_si32n1713183800 : si32
+    "arc.keep"(%result_remi_si322_si32n1713183800) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi322]]) : (si32) -> ()
+
+    // remi 2, -1252582164 -> 2
+    %result_remi_si322_si32n1252582164 = arc.remi %cst_si322, %cst_si32n1252582164 : si32
+    "arc.keep"(%result_remi_si322_si32n1252582164) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi322]]) : (si32) -> ()
+
+    // remi 2, -1035405763 -> 2
+    %result_remi_si322_si32n1035405763 = arc.remi %cst_si322, %cst_si32n1035405763 : si32
+    "arc.keep"(%result_remi_si322_si32n1035405763) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi322]]) : (si32) -> ()
+
+    // remi 2, 3 -> 2
+    %result_remi_si322_si323 = arc.remi %cst_si322, %cst_si323 : si32
+    "arc.keep"(%result_remi_si322_si323) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi322]]) : (si32) -> ()
+
+    // remi 2, 4 -> 2
+    %result_remi_si322_si324 = arc.remi %cst_si322, %cst_si324 : si32
+    "arc.keep"(%result_remi_si322_si324) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi322]]) : (si32) -> ()
+
+    // remi 2, 2147483646 -> 2
+    %result_remi_si322_si322147483646 = arc.remi %cst_si322, %cst_si322147483646 : si32
+    "arc.keep"(%result_remi_si322_si322147483646) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi322]]) : (si32) -> ()
+
+    // remi 2, 2147483647 -> 2
+    %result_remi_si322_si322147483647 = arc.remi %cst_si322, %cst_si322147483647 : si32
+    "arc.keep"(%result_remi_si322_si322147483647) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi322]]) : (si32) -> ()
+
+    // remi 2147483646, 4 -> 2
+    %result_remi_si322147483646_si324 = arc.remi %cst_si322147483646, %cst_si324 : si32
+    "arc.keep"(%result_remi_si322147483646_si324) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi322]]) : (si32) -> ()
+
+    // remi 3, -2147483648 -> 3
+    %result_remi_si323_si32n2147483648 = arc.remi %cst_si323, %cst_si32n2147483648 : si32
+    "arc.keep"(%result_remi_si323_si32n2147483648) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi323]]) : (si32) -> ()
+
+    // remi 3, -2147483647 -> 3
+    %result_remi_si323_si32n2147483647 = arc.remi %cst_si323, %cst_si32n2147483647 : si32
+    "arc.keep"(%result_remi_si323_si32n2147483647) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi323]]) : (si32) -> ()
+
+    // remi 3, -1713183800 -> 3
+    %result_remi_si323_si32n1713183800 = arc.remi %cst_si323, %cst_si32n1713183800 : si32
+    "arc.keep"(%result_remi_si323_si32n1713183800) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi323]]) : (si32) -> ()
+
+    // remi 3, -1252582164 -> 3
+    %result_remi_si323_si32n1252582164 = arc.remi %cst_si323, %cst_si32n1252582164 : si32
+    "arc.keep"(%result_remi_si323_si32n1252582164) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi323]]) : (si32) -> ()
+
+    // remi 3, -1035405763 -> 3
+    %result_remi_si323_si32n1035405763 = arc.remi %cst_si323, %cst_si32n1035405763 : si32
+    "arc.keep"(%result_remi_si323_si32n1035405763) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi323]]) : (si32) -> ()
+
+    // remi 3, 4 -> 3
+    %result_remi_si323_si324 = arc.remi %cst_si323, %cst_si324 : si32
+    "arc.keep"(%result_remi_si323_si324) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi323]]) : (si32) -> ()
+
+    // remi 3, 2147483646 -> 3
+    %result_remi_si323_si322147483646 = arc.remi %cst_si323, %cst_si322147483646 : si32
+    "arc.keep"(%result_remi_si323_si322147483646) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi323]]) : (si32) -> ()
+
+    // remi 3, 2147483647 -> 3
+    %result_remi_si323_si322147483647 = arc.remi %cst_si323, %cst_si322147483647 : si32
+    "arc.keep"(%result_remi_si323_si322147483647) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi323]]) : (si32) -> ()
+
+    // remi 2147483647, 4 -> 3
+    %result_remi_si322147483647_si324 = arc.remi %cst_si322147483647, %cst_si324 : si32
+    "arc.keep"(%result_remi_si322147483647_si324) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi323]]) : (si32) -> ()
+
+    // remi 4, -2147483648 -> 4
+    %result_remi_si324_si32n2147483648 = arc.remi %cst_si324, %cst_si32n2147483648 : si32
+    "arc.keep"(%result_remi_si324_si32n2147483648) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi324]]) : (si32) -> ()
+
+    // remi 4, -2147483647 -> 4
+    %result_remi_si324_si32n2147483647 = arc.remi %cst_si324, %cst_si32n2147483647 : si32
+    "arc.keep"(%result_remi_si324_si32n2147483647) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi324]]) : (si32) -> ()
+
+    // remi 4, -1713183800 -> 4
+    %result_remi_si324_si32n1713183800 = arc.remi %cst_si324, %cst_si32n1713183800 : si32
+    "arc.keep"(%result_remi_si324_si32n1713183800) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi324]]) : (si32) -> ()
+
+    // remi 4, -1252582164 -> 4
+    %result_remi_si324_si32n1252582164 = arc.remi %cst_si324, %cst_si32n1252582164 : si32
+    "arc.keep"(%result_remi_si324_si32n1252582164) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi324]]) : (si32) -> ()
+
+    // remi 4, -1035405763 -> 4
+    %result_remi_si324_si32n1035405763 = arc.remi %cst_si324, %cst_si32n1035405763 : si32
+    "arc.keep"(%result_remi_si324_si32n1035405763) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi324]]) : (si32) -> ()
+
+    // remi 4, 2147483646 -> 4
+    %result_remi_si324_si322147483646 = arc.remi %cst_si324, %cst_si322147483646 : si32
+    "arc.keep"(%result_remi_si324_si322147483646) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi324]]) : (si32) -> ()
+
+    // remi 4, 2147483647 -> 4
+    %result_remi_si324_si322147483647 = arc.remi %cst_si324, %cst_si322147483647 : si32
+    "arc.keep"(%result_remi_si324_si322147483647) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi324]]) : (si32) -> ()
 
     // remi 2147483646, -1035405763 -> 76672120
     %result_remi_si322147483646_si32n1035405763 = arc.remi %cst_si322147483646, %cst_si32n1035405763 : si32
@@ -8312,6 +17724,30 @@ module @toplevel {
     // CHECK-DAG: [[RESULT_remi_si320_si320:%[^ ]+]] = arc.remi [[CSTsi320]], [[CSTsi320]] : si32
     "arc.keep"(%result_remi_si320_si320) : (si32) -> ()
     // CHECK: "arc.keep"([[RESULT_remi_si320_si320]]) : (si32) -> ()
+
+    // remi 1, 0 -> no-fold
+    %result_remi_si321_si320 = arc.remi %cst_si321, %cst_si320 : si32
+    // CHECK-DAG: [[RESULT_remi_si321_si320:%[^ ]+]] = arc.remi [[CSTsi321]], [[CSTsi320]] : si32
+    "arc.keep"(%result_remi_si321_si320) : (si32) -> ()
+    // CHECK: "arc.keep"([[RESULT_remi_si321_si320]]) : (si32) -> ()
+
+    // remi 2, 0 -> no-fold
+    %result_remi_si322_si320 = arc.remi %cst_si322, %cst_si320 : si32
+    // CHECK-DAG: [[RESULT_remi_si322_si320:%[^ ]+]] = arc.remi [[CSTsi322]], [[CSTsi320]] : si32
+    "arc.keep"(%result_remi_si322_si320) : (si32) -> ()
+    // CHECK: "arc.keep"([[RESULT_remi_si322_si320]]) : (si32) -> ()
+
+    // remi 3, 0 -> no-fold
+    %result_remi_si323_si320 = arc.remi %cst_si323, %cst_si320 : si32
+    // CHECK-DAG: [[RESULT_remi_si323_si320:%[^ ]+]] = arc.remi [[CSTsi323]], [[CSTsi320]] : si32
+    "arc.keep"(%result_remi_si323_si320) : (si32) -> ()
+    // CHECK: "arc.keep"([[RESULT_remi_si323_si320]]) : (si32) -> ()
+
+    // remi 4, 0 -> no-fold
+    %result_remi_si324_si320 = arc.remi %cst_si324, %cst_si320 : si32
+    // CHECK-DAG: [[RESULT_remi_si324_si320:%[^ ]+]] = arc.remi [[CSTsi324]], [[CSTsi320]] : si32
+    "arc.keep"(%result_remi_si324_si320) : (si32) -> ()
+    // CHECK: "arc.keep"([[RESULT_remi_si324_si320]]) : (si32) -> ()
 
     // remi 2147483646, 0 -> no-fold
     %result_remi_si322147483646_si320 = arc.remi %cst_si322147483646, %cst_si320 : si32
@@ -8420,9 +17856,24 @@ module @toplevel {
     "arc.keep"(%result_remi_si64n1741927215160008704_si64n1328271339354574848) : (si64) -> ()
     // CHECK: "arc.keep"([[CSTsi64n413655875805433856]]) : (si64) -> ()
 
+    // remi -9223372036854775807, 4 -> -3
+    %result_remi_si64n9223372036854775807_si644 = arc.remi %cst_si64n9223372036854775807, %cst_si644 : si64
+    "arc.keep"(%result_remi_si64n9223372036854775807_si644) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi64n3]]) : (si64) -> ()
+
+    // remi -9223372036854775808, 3 -> -2
+    %result_remi_si64n9223372036854775808_si643 = arc.remi %cst_si64n9223372036854775808, %cst_si643 : si64
+    "arc.keep"(%result_remi_si64n9223372036854775808_si643) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi64n2]]) : (si64) -> ()
+
     // remi -9223372036854775808, 9223372036854775806 -> -2
     %result_remi_si64n9223372036854775808_si649223372036854775806 = arc.remi %cst_si64n9223372036854775808, %cst_si649223372036854775806 : si64
     "arc.keep"(%result_remi_si64n9223372036854775808_si649223372036854775806) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi64n2]]) : (si64) -> ()
+
+    // remi -1741927215160008704, 3 -> -2
+    %result_remi_si64n1741927215160008704_si643 = arc.remi %cst_si64n1741927215160008704, %cst_si643 : si64
+    "arc.keep"(%result_remi_si64n1741927215160008704_si643) : (si64) -> ()
     // CHECK: "arc.keep"([[CSTsi64n2]]) : (si64) -> ()
 
     // remi -9223372036854775808, -9223372036854775807 -> -1
@@ -8435,6 +17886,16 @@ module @toplevel {
     "arc.keep"(%result_remi_si64n9223372036854775808_si649223372036854775807) : (si64) -> ()
     // CHECK: "arc.keep"([[CSTsi64n1]]) : (si64) -> ()
 
+    // remi -9223372036854775807, 2 -> -1
+    %result_remi_si64n9223372036854775807_si642 = arc.remi %cst_si64n9223372036854775807, %cst_si642 : si64
+    "arc.keep"(%result_remi_si64n9223372036854775807_si642) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi64n1]]) : (si64) -> ()
+
+    // remi -9223372036854775807, 3 -> -1
+    %result_remi_si64n9223372036854775807_si643 = arc.remi %cst_si64n9223372036854775807, %cst_si643 : si64
+    "arc.keep"(%result_remi_si64n9223372036854775807_si643) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi64n1]]) : (si64) -> ()
+
     // remi -9223372036854775807, 9223372036854775806 -> -1
     %result_remi_si64n9223372036854775807_si649223372036854775806 = arc.remi %cst_si64n9223372036854775807, %cst_si649223372036854775806 : si64
     "arc.keep"(%result_remi_si64n9223372036854775807_si649223372036854775806) : (si64) -> ()
@@ -8445,9 +17906,29 @@ module @toplevel {
     "arc.keep"(%result_remi_si64n9223372036854775808_si64n9223372036854775808) : (si64) -> ()
     // CHECK: "arc.keep"([[CSTsi640]]) : (si64) -> ()
 
+    // remi -9223372036854775808, 1 -> 0
+    %result_remi_si64n9223372036854775808_si641 = arc.remi %cst_si64n9223372036854775808, %cst_si641 : si64
+    "arc.keep"(%result_remi_si64n9223372036854775808_si641) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi640]]) : (si64) -> ()
+
+    // remi -9223372036854775808, 2 -> 0
+    %result_remi_si64n9223372036854775808_si642 = arc.remi %cst_si64n9223372036854775808, %cst_si642 : si64
+    "arc.keep"(%result_remi_si64n9223372036854775808_si642) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi640]]) : (si64) -> ()
+
+    // remi -9223372036854775808, 4 -> 0
+    %result_remi_si64n9223372036854775808_si644 = arc.remi %cst_si64n9223372036854775808, %cst_si644 : si64
+    "arc.keep"(%result_remi_si64n9223372036854775808_si644) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi640]]) : (si64) -> ()
+
     // remi -9223372036854775807, -9223372036854775807 -> 0
     %result_remi_si64n9223372036854775807_si64n9223372036854775807 = arc.remi %cst_si64n9223372036854775807, %cst_si64n9223372036854775807 : si64
     "arc.keep"(%result_remi_si64n9223372036854775807_si64n9223372036854775807) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi640]]) : (si64) -> ()
+
+    // remi -9223372036854775807, 1 -> 0
+    %result_remi_si64n9223372036854775807_si641 = arc.remi %cst_si64n9223372036854775807, %cst_si641 : si64
+    "arc.keep"(%result_remi_si64n9223372036854775807_si641) : (si64) -> ()
     // CHECK: "arc.keep"([[CSTsi640]]) : (si64) -> ()
 
     // remi -9223372036854775807, 9223372036854775807 -> 0
@@ -8460,9 +17941,44 @@ module @toplevel {
     "arc.keep"(%result_remi_si64n1741927215160008704_si64n1741927215160008704) : (si64) -> ()
     // CHECK: "arc.keep"([[CSTsi640]]) : (si64) -> ()
 
+    // remi -1741927215160008704, 1 -> 0
+    %result_remi_si64n1741927215160008704_si641 = arc.remi %cst_si64n1741927215160008704, %cst_si641 : si64
+    "arc.keep"(%result_remi_si64n1741927215160008704_si641) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi640]]) : (si64) -> ()
+
+    // remi -1741927215160008704, 2 -> 0
+    %result_remi_si64n1741927215160008704_si642 = arc.remi %cst_si64n1741927215160008704, %cst_si642 : si64
+    "arc.keep"(%result_remi_si64n1741927215160008704_si642) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi640]]) : (si64) -> ()
+
+    // remi -1741927215160008704, 4 -> 0
+    %result_remi_si64n1741927215160008704_si644 = arc.remi %cst_si64n1741927215160008704, %cst_si644 : si64
+    "arc.keep"(%result_remi_si64n1741927215160008704_si644) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi640]]) : (si64) -> ()
+
     // remi -1328271339354574848, -1328271339354574848 -> 0
     %result_remi_si64n1328271339354574848_si64n1328271339354574848 = arc.remi %cst_si64n1328271339354574848, %cst_si64n1328271339354574848 : si64
     "arc.keep"(%result_remi_si64n1328271339354574848_si64n1328271339354574848) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi640]]) : (si64) -> ()
+
+    // remi -1328271339354574848, 1 -> 0
+    %result_remi_si64n1328271339354574848_si641 = arc.remi %cst_si64n1328271339354574848, %cst_si641 : si64
+    "arc.keep"(%result_remi_si64n1328271339354574848_si641) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi640]]) : (si64) -> ()
+
+    // remi -1328271339354574848, 2 -> 0
+    %result_remi_si64n1328271339354574848_si642 = arc.remi %cst_si64n1328271339354574848, %cst_si642 : si64
+    "arc.keep"(%result_remi_si64n1328271339354574848_si642) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi640]]) : (si64) -> ()
+
+    // remi -1328271339354574848, 3 -> 0
+    %result_remi_si64n1328271339354574848_si643 = arc.remi %cst_si64n1328271339354574848, %cst_si643 : si64
+    "arc.keep"(%result_remi_si64n1328271339354574848_si643) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi640]]) : (si64) -> ()
+
+    // remi -1328271339354574848, 4 -> 0
+    %result_remi_si64n1328271339354574848_si644 = arc.remi %cst_si64n1328271339354574848, %cst_si644 : si64
+    "arc.keep"(%result_remi_si64n1328271339354574848_si644) : (si64) -> ()
     // CHECK: "arc.keep"([[CSTsi640]]) : (si64) -> ()
 
     // remi 0, -9223372036854775808 -> 0
@@ -8485,6 +18001,26 @@ module @toplevel {
     "arc.keep"(%result_remi_si640_si64n1328271339354574848) : (si64) -> ()
     // CHECK: "arc.keep"([[CSTsi640]]) : (si64) -> ()
 
+    // remi 0, 1 -> 0
+    %result_remi_si640_si641 = arc.remi %cst_si640, %cst_si641 : si64
+    "arc.keep"(%result_remi_si640_si641) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi640]]) : (si64) -> ()
+
+    // remi 0, 2 -> 0
+    %result_remi_si640_si642 = arc.remi %cst_si640, %cst_si642 : si64
+    "arc.keep"(%result_remi_si640_si642) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi640]]) : (si64) -> ()
+
+    // remi 0, 3 -> 0
+    %result_remi_si640_si643 = arc.remi %cst_si640, %cst_si643 : si64
+    "arc.keep"(%result_remi_si640_si643) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi640]]) : (si64) -> ()
+
+    // remi 0, 4 -> 0
+    %result_remi_si640_si644 = arc.remi %cst_si640, %cst_si644 : si64
+    "arc.keep"(%result_remi_si640_si644) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi640]]) : (si64) -> ()
+
     // remi 0, 5577148965131116544 -> 0
     %result_remi_si640_si645577148965131116544 = arc.remi %cst_si640, %cst_si645577148965131116544 : si64
     "arc.keep"(%result_remi_si640_si645577148965131116544) : (si64) -> ()
@@ -8500,9 +18036,79 @@ module @toplevel {
     "arc.keep"(%result_remi_si640_si649223372036854775807) : (si64) -> ()
     // CHECK: "arc.keep"([[CSTsi640]]) : (si64) -> ()
 
+    // remi 1, 1 -> 0
+    %result_remi_si641_si641 = arc.remi %cst_si641, %cst_si641 : si64
+    "arc.keep"(%result_remi_si641_si641) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi640]]) : (si64) -> ()
+
+    // remi 2, 1 -> 0
+    %result_remi_si642_si641 = arc.remi %cst_si642, %cst_si641 : si64
+    "arc.keep"(%result_remi_si642_si641) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi640]]) : (si64) -> ()
+
+    // remi 2, 2 -> 0
+    %result_remi_si642_si642 = arc.remi %cst_si642, %cst_si642 : si64
+    "arc.keep"(%result_remi_si642_si642) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi640]]) : (si64) -> ()
+
+    // remi 3, 1 -> 0
+    %result_remi_si643_si641 = arc.remi %cst_si643, %cst_si641 : si64
+    "arc.keep"(%result_remi_si643_si641) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi640]]) : (si64) -> ()
+
+    // remi 3, 3 -> 0
+    %result_remi_si643_si643 = arc.remi %cst_si643, %cst_si643 : si64
+    "arc.keep"(%result_remi_si643_si643) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi640]]) : (si64) -> ()
+
+    // remi 4, 1 -> 0
+    %result_remi_si644_si641 = arc.remi %cst_si644, %cst_si641 : si64
+    "arc.keep"(%result_remi_si644_si641) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi640]]) : (si64) -> ()
+
+    // remi 4, 2 -> 0
+    %result_remi_si644_si642 = arc.remi %cst_si644, %cst_si642 : si64
+    "arc.keep"(%result_remi_si644_si642) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi640]]) : (si64) -> ()
+
+    // remi 4, 4 -> 0
+    %result_remi_si644_si644 = arc.remi %cst_si644, %cst_si644 : si64
+    "arc.keep"(%result_remi_si644_si644) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi640]]) : (si64) -> ()
+
+    // remi 5577148965131116544, 1 -> 0
+    %result_remi_si645577148965131116544_si641 = arc.remi %cst_si645577148965131116544, %cst_si641 : si64
+    "arc.keep"(%result_remi_si645577148965131116544_si641) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi640]]) : (si64) -> ()
+
+    // remi 5577148965131116544, 2 -> 0
+    %result_remi_si645577148965131116544_si642 = arc.remi %cst_si645577148965131116544, %cst_si642 : si64
+    "arc.keep"(%result_remi_si645577148965131116544_si642) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi640]]) : (si64) -> ()
+
+    // remi 5577148965131116544, 4 -> 0
+    %result_remi_si645577148965131116544_si644 = arc.remi %cst_si645577148965131116544, %cst_si644 : si64
+    "arc.keep"(%result_remi_si645577148965131116544_si644) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi640]]) : (si64) -> ()
+
     // remi 5577148965131116544, 5577148965131116544 -> 0
     %result_remi_si645577148965131116544_si645577148965131116544 = arc.remi %cst_si645577148965131116544, %cst_si645577148965131116544 : si64
     "arc.keep"(%result_remi_si645577148965131116544_si645577148965131116544) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi640]]) : (si64) -> ()
+
+    // remi 9223372036854775806, 1 -> 0
+    %result_remi_si649223372036854775806_si641 = arc.remi %cst_si649223372036854775806, %cst_si641 : si64
+    "arc.keep"(%result_remi_si649223372036854775806_si641) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi640]]) : (si64) -> ()
+
+    // remi 9223372036854775806, 2 -> 0
+    %result_remi_si649223372036854775806_si642 = arc.remi %cst_si649223372036854775806, %cst_si642 : si64
+    "arc.keep"(%result_remi_si649223372036854775806_si642) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi640]]) : (si64) -> ()
+
+    // remi 9223372036854775806, 3 -> 0
+    %result_remi_si649223372036854775806_si643 = arc.remi %cst_si649223372036854775806, %cst_si643 : si64
+    "arc.keep"(%result_remi_si649223372036854775806_si643) : (si64) -> ()
     // CHECK: "arc.keep"([[CSTsi640]]) : (si64) -> ()
 
     // remi 9223372036854775806, 9223372036854775806 -> 0
@@ -8515,15 +18121,225 @@ module @toplevel {
     "arc.keep"(%result_remi_si649223372036854775807_si64n9223372036854775807) : (si64) -> ()
     // CHECK: "arc.keep"([[CSTsi640]]) : (si64) -> ()
 
+    // remi 9223372036854775807, 1 -> 0
+    %result_remi_si649223372036854775807_si641 = arc.remi %cst_si649223372036854775807, %cst_si641 : si64
+    "arc.keep"(%result_remi_si649223372036854775807_si641) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi640]]) : (si64) -> ()
+
     // remi 9223372036854775807, 9223372036854775807 -> 0
     %result_remi_si649223372036854775807_si649223372036854775807 = arc.remi %cst_si649223372036854775807, %cst_si649223372036854775807 : si64
     "arc.keep"(%result_remi_si649223372036854775807_si649223372036854775807) : (si64) -> ()
     // CHECK: "arc.keep"([[CSTsi640]]) : (si64) -> ()
 
+    // remi 1, -9223372036854775808 -> 1
+    %result_remi_si641_si64n9223372036854775808 = arc.remi %cst_si641, %cst_si64n9223372036854775808 : si64
+    "arc.keep"(%result_remi_si641_si64n9223372036854775808) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi641]]) : (si64) -> ()
+
+    // remi 1, -9223372036854775807 -> 1
+    %result_remi_si641_si64n9223372036854775807 = arc.remi %cst_si641, %cst_si64n9223372036854775807 : si64
+    "arc.keep"(%result_remi_si641_si64n9223372036854775807) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi641]]) : (si64) -> ()
+
+    // remi 1, -1741927215160008704 -> 1
+    %result_remi_si641_si64n1741927215160008704 = arc.remi %cst_si641, %cst_si64n1741927215160008704 : si64
+    "arc.keep"(%result_remi_si641_si64n1741927215160008704) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi641]]) : (si64) -> ()
+
+    // remi 1, -1328271339354574848 -> 1
+    %result_remi_si641_si64n1328271339354574848 = arc.remi %cst_si641, %cst_si64n1328271339354574848 : si64
+    "arc.keep"(%result_remi_si641_si64n1328271339354574848) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi641]]) : (si64) -> ()
+
+    // remi 1, 2 -> 1
+    %result_remi_si641_si642 = arc.remi %cst_si641, %cst_si642 : si64
+    "arc.keep"(%result_remi_si641_si642) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi641]]) : (si64) -> ()
+
+    // remi 1, 3 -> 1
+    %result_remi_si641_si643 = arc.remi %cst_si641, %cst_si643 : si64
+    "arc.keep"(%result_remi_si641_si643) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi641]]) : (si64) -> ()
+
+    // remi 1, 4 -> 1
+    %result_remi_si641_si644 = arc.remi %cst_si641, %cst_si644 : si64
+    "arc.keep"(%result_remi_si641_si644) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi641]]) : (si64) -> ()
+
+    // remi 1, 5577148965131116544 -> 1
+    %result_remi_si641_si645577148965131116544 = arc.remi %cst_si641, %cst_si645577148965131116544 : si64
+    "arc.keep"(%result_remi_si641_si645577148965131116544) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi641]]) : (si64) -> ()
+
+    // remi 1, 9223372036854775806 -> 1
+    %result_remi_si641_si649223372036854775806 = arc.remi %cst_si641, %cst_si649223372036854775806 : si64
+    "arc.keep"(%result_remi_si641_si649223372036854775806) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi641]]) : (si64) -> ()
+
+    // remi 1, 9223372036854775807 -> 1
+    %result_remi_si641_si649223372036854775807 = arc.remi %cst_si641, %cst_si649223372036854775807 : si64
+    "arc.keep"(%result_remi_si641_si649223372036854775807) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi641]]) : (si64) -> ()
+
+    // remi 3, 2 -> 1
+    %result_remi_si643_si642 = arc.remi %cst_si643, %cst_si642 : si64
+    "arc.keep"(%result_remi_si643_si642) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi641]]) : (si64) -> ()
+
+    // remi 4, 3 -> 1
+    %result_remi_si644_si643 = arc.remi %cst_si644, %cst_si643 : si64
+    "arc.keep"(%result_remi_si644_si643) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi641]]) : (si64) -> ()
+
+    // remi 9223372036854775807, 2 -> 1
+    %result_remi_si649223372036854775807_si642 = arc.remi %cst_si649223372036854775807, %cst_si642 : si64
+    "arc.keep"(%result_remi_si649223372036854775807_si642) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi641]]) : (si64) -> ()
+
+    // remi 9223372036854775807, 3 -> 1
+    %result_remi_si649223372036854775807_si643 = arc.remi %cst_si649223372036854775807, %cst_si643 : si64
+    "arc.keep"(%result_remi_si649223372036854775807_si643) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi641]]) : (si64) -> ()
+
     // remi 9223372036854775807, 9223372036854775806 -> 1
     %result_remi_si649223372036854775807_si649223372036854775806 = arc.remi %cst_si649223372036854775807, %cst_si649223372036854775806 : si64
     "arc.keep"(%result_remi_si649223372036854775807_si649223372036854775806) : (si64) -> ()
     // CHECK: "arc.keep"([[CSTsi641]]) : (si64) -> ()
+
+    // remi 2, -9223372036854775808 -> 2
+    %result_remi_si642_si64n9223372036854775808 = arc.remi %cst_si642, %cst_si64n9223372036854775808 : si64
+    "arc.keep"(%result_remi_si642_si64n9223372036854775808) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi642]]) : (si64) -> ()
+
+    // remi 2, -9223372036854775807 -> 2
+    %result_remi_si642_si64n9223372036854775807 = arc.remi %cst_si642, %cst_si64n9223372036854775807 : si64
+    "arc.keep"(%result_remi_si642_si64n9223372036854775807) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi642]]) : (si64) -> ()
+
+    // remi 2, -1741927215160008704 -> 2
+    %result_remi_si642_si64n1741927215160008704 = arc.remi %cst_si642, %cst_si64n1741927215160008704 : si64
+    "arc.keep"(%result_remi_si642_si64n1741927215160008704) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi642]]) : (si64) -> ()
+
+    // remi 2, -1328271339354574848 -> 2
+    %result_remi_si642_si64n1328271339354574848 = arc.remi %cst_si642, %cst_si64n1328271339354574848 : si64
+    "arc.keep"(%result_remi_si642_si64n1328271339354574848) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi642]]) : (si64) -> ()
+
+    // remi 2, 3 -> 2
+    %result_remi_si642_si643 = arc.remi %cst_si642, %cst_si643 : si64
+    "arc.keep"(%result_remi_si642_si643) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi642]]) : (si64) -> ()
+
+    // remi 2, 4 -> 2
+    %result_remi_si642_si644 = arc.remi %cst_si642, %cst_si644 : si64
+    "arc.keep"(%result_remi_si642_si644) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi642]]) : (si64) -> ()
+
+    // remi 2, 5577148965131116544 -> 2
+    %result_remi_si642_si645577148965131116544 = arc.remi %cst_si642, %cst_si645577148965131116544 : si64
+    "arc.keep"(%result_remi_si642_si645577148965131116544) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi642]]) : (si64) -> ()
+
+    // remi 2, 9223372036854775806 -> 2
+    %result_remi_si642_si649223372036854775806 = arc.remi %cst_si642, %cst_si649223372036854775806 : si64
+    "arc.keep"(%result_remi_si642_si649223372036854775806) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi642]]) : (si64) -> ()
+
+    // remi 2, 9223372036854775807 -> 2
+    %result_remi_si642_si649223372036854775807 = arc.remi %cst_si642, %cst_si649223372036854775807 : si64
+    "arc.keep"(%result_remi_si642_si649223372036854775807) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi642]]) : (si64) -> ()
+
+    // remi 5577148965131116544, 3 -> 2
+    %result_remi_si645577148965131116544_si643 = arc.remi %cst_si645577148965131116544, %cst_si643 : si64
+    "arc.keep"(%result_remi_si645577148965131116544_si643) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi642]]) : (si64) -> ()
+
+    // remi 9223372036854775806, 4 -> 2
+    %result_remi_si649223372036854775806_si644 = arc.remi %cst_si649223372036854775806, %cst_si644 : si64
+    "arc.keep"(%result_remi_si649223372036854775806_si644) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi642]]) : (si64) -> ()
+
+    // remi 3, -9223372036854775808 -> 3
+    %result_remi_si643_si64n9223372036854775808 = arc.remi %cst_si643, %cst_si64n9223372036854775808 : si64
+    "arc.keep"(%result_remi_si643_si64n9223372036854775808) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi643]]) : (si64) -> ()
+
+    // remi 3, -9223372036854775807 -> 3
+    %result_remi_si643_si64n9223372036854775807 = arc.remi %cst_si643, %cst_si64n9223372036854775807 : si64
+    "arc.keep"(%result_remi_si643_si64n9223372036854775807) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi643]]) : (si64) -> ()
+
+    // remi 3, -1741927215160008704 -> 3
+    %result_remi_si643_si64n1741927215160008704 = arc.remi %cst_si643, %cst_si64n1741927215160008704 : si64
+    "arc.keep"(%result_remi_si643_si64n1741927215160008704) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi643]]) : (si64) -> ()
+
+    // remi 3, -1328271339354574848 -> 3
+    %result_remi_si643_si64n1328271339354574848 = arc.remi %cst_si643, %cst_si64n1328271339354574848 : si64
+    "arc.keep"(%result_remi_si643_si64n1328271339354574848) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi643]]) : (si64) -> ()
+
+    // remi 3, 4 -> 3
+    %result_remi_si643_si644 = arc.remi %cst_si643, %cst_si644 : si64
+    "arc.keep"(%result_remi_si643_si644) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi643]]) : (si64) -> ()
+
+    // remi 3, 5577148965131116544 -> 3
+    %result_remi_si643_si645577148965131116544 = arc.remi %cst_si643, %cst_si645577148965131116544 : si64
+    "arc.keep"(%result_remi_si643_si645577148965131116544) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi643]]) : (si64) -> ()
+
+    // remi 3, 9223372036854775806 -> 3
+    %result_remi_si643_si649223372036854775806 = arc.remi %cst_si643, %cst_si649223372036854775806 : si64
+    "arc.keep"(%result_remi_si643_si649223372036854775806) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi643]]) : (si64) -> ()
+
+    // remi 3, 9223372036854775807 -> 3
+    %result_remi_si643_si649223372036854775807 = arc.remi %cst_si643, %cst_si649223372036854775807 : si64
+    "arc.keep"(%result_remi_si643_si649223372036854775807) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi643]]) : (si64) -> ()
+
+    // remi 9223372036854775807, 4 -> 3
+    %result_remi_si649223372036854775807_si644 = arc.remi %cst_si649223372036854775807, %cst_si644 : si64
+    "arc.keep"(%result_remi_si649223372036854775807_si644) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi643]]) : (si64) -> ()
+
+    // remi 4, -9223372036854775808 -> 4
+    %result_remi_si644_si64n9223372036854775808 = arc.remi %cst_si644, %cst_si64n9223372036854775808 : si64
+    "arc.keep"(%result_remi_si644_si64n9223372036854775808) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi644]]) : (si64) -> ()
+
+    // remi 4, -9223372036854775807 -> 4
+    %result_remi_si644_si64n9223372036854775807 = arc.remi %cst_si644, %cst_si64n9223372036854775807 : si64
+    "arc.keep"(%result_remi_si644_si64n9223372036854775807) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi644]]) : (si64) -> ()
+
+    // remi 4, -1741927215160008704 -> 4
+    %result_remi_si644_si64n1741927215160008704 = arc.remi %cst_si644, %cst_si64n1741927215160008704 : si64
+    "arc.keep"(%result_remi_si644_si64n1741927215160008704) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi644]]) : (si64) -> ()
+
+    // remi 4, -1328271339354574848 -> 4
+    %result_remi_si644_si64n1328271339354574848 = arc.remi %cst_si644, %cst_si64n1328271339354574848 : si64
+    "arc.keep"(%result_remi_si644_si64n1328271339354574848) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi644]]) : (si64) -> ()
+
+    // remi 4, 5577148965131116544 -> 4
+    %result_remi_si644_si645577148965131116544 = arc.remi %cst_si644, %cst_si645577148965131116544 : si64
+    "arc.keep"(%result_remi_si644_si645577148965131116544) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi644]]) : (si64) -> ()
+
+    // remi 4, 9223372036854775806 -> 4
+    %result_remi_si644_si649223372036854775806 = arc.remi %cst_si644, %cst_si649223372036854775806 : si64
+    "arc.keep"(%result_remi_si644_si649223372036854775806) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi644]]) : (si64) -> ()
+
+    // remi 4, 9223372036854775807 -> 4
+    %result_remi_si644_si649223372036854775807 = arc.remi %cst_si644, %cst_si649223372036854775807 : si64
+    "arc.keep"(%result_remi_si644_si649223372036854775807) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi644]]) : (si64) -> ()
 
     // remi 5577148965131116544, -1328271339354574848 -> 264063607712817152
     %result_remi_si645577148965131116544_si64n1328271339354574848 = arc.remi %cst_si645577148965131116544, %cst_si64n1328271339354574848 : si64
@@ -8635,6 +18451,30 @@ module @toplevel {
     "arc.keep"(%result_remi_si640_si640) : (si64) -> ()
     // CHECK: "arc.keep"([[RESULT_remi_si640_si640]]) : (si64) -> ()
 
+    // remi 1, 0 -> no-fold
+    %result_remi_si641_si640 = arc.remi %cst_si641, %cst_si640 : si64
+    // CHECK-DAG: [[RESULT_remi_si641_si640:%[^ ]+]] = arc.remi [[CSTsi641]], [[CSTsi640]] : si64
+    "arc.keep"(%result_remi_si641_si640) : (si64) -> ()
+    // CHECK: "arc.keep"([[RESULT_remi_si641_si640]]) : (si64) -> ()
+
+    // remi 2, 0 -> no-fold
+    %result_remi_si642_si640 = arc.remi %cst_si642, %cst_si640 : si64
+    // CHECK-DAG: [[RESULT_remi_si642_si640:%[^ ]+]] = arc.remi [[CSTsi642]], [[CSTsi640]] : si64
+    "arc.keep"(%result_remi_si642_si640) : (si64) -> ()
+    // CHECK: "arc.keep"([[RESULT_remi_si642_si640]]) : (si64) -> ()
+
+    // remi 3, 0 -> no-fold
+    %result_remi_si643_si640 = arc.remi %cst_si643, %cst_si640 : si64
+    // CHECK-DAG: [[RESULT_remi_si643_si640:%[^ ]+]] = arc.remi [[CSTsi643]], [[CSTsi640]] : si64
+    "arc.keep"(%result_remi_si643_si640) : (si64) -> ()
+    // CHECK: "arc.keep"([[RESULT_remi_si643_si640]]) : (si64) -> ()
+
+    // remi 4, 0 -> no-fold
+    %result_remi_si644_si640 = arc.remi %cst_si644, %cst_si640 : si64
+    // CHECK-DAG: [[RESULT_remi_si644_si640:%[^ ]+]] = arc.remi [[CSTsi644]], [[CSTsi640]] : si64
+    "arc.keep"(%result_remi_si644_si640) : (si64) -> ()
+    // CHECK: "arc.keep"([[RESULT_remi_si644_si640]]) : (si64) -> ()
+
     // remi 5577148965131116544, 0 -> no-fold
     %result_remi_si645577148965131116544_si640 = arc.remi %cst_si645577148965131116544, %cst_si640 : si64
     // CHECK-DAG: [[RESULT_remi_si645577148965131116544_si640:%[^ ]+]] = arc.remi [[CSTsi645577148965131116544]], [[CSTsi640]] : si64
@@ -8663,6 +18503,16 @@ module @toplevel {
     "arc.keep"(%result_remi_si8n127_si816) : (si8) -> ()
     // CHECK: "arc.keep"([[CSTsi8n15]]) : (si8) -> ()
 
+    // remi -127, 4 -> -3
+    %result_remi_si8n127_si84 = arc.remi %cst_si8n127, %cst_si84 : si8
+    "arc.keep"(%result_remi_si8n127_si84) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi8n3]]) : (si8) -> ()
+
+    // remi -128, 3 -> -2
+    %result_remi_si8n128_si83 = arc.remi %cst_si8n128, %cst_si83 : si8
+    "arc.keep"(%result_remi_si8n128_si83) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi8n2]]) : (si8) -> ()
+
     // remi -128, 126 -> -2
     %result_remi_si8n128_si8126 = arc.remi %cst_si8n128, %cst_si8126 : si8
     "arc.keep"(%result_remi_si8n128_si8126) : (si8) -> ()
@@ -8678,6 +18528,16 @@ module @toplevel {
     "arc.keep"(%result_remi_si8n128_si8127) : (si8) -> ()
     // CHECK: "arc.keep"([[CSTsi8n1]]) : (si8) -> ()
 
+    // remi -127, 2 -> -1
+    %result_remi_si8n127_si82 = arc.remi %cst_si8n127, %cst_si82 : si8
+    "arc.keep"(%result_remi_si8n127_si82) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi8n1]]) : (si8) -> ()
+
+    // remi -127, 3 -> -1
+    %result_remi_si8n127_si83 = arc.remi %cst_si8n127, %cst_si83 : si8
+    "arc.keep"(%result_remi_si8n127_si83) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi8n1]]) : (si8) -> ()
+
     // remi -127, 126 -> -1
     %result_remi_si8n127_si8126 = arc.remi %cst_si8n127, %cst_si8126 : si8
     "arc.keep"(%result_remi_si8n127_si8126) : (si8) -> ()
@@ -8691,6 +18551,16 @@ module @toplevel {
     // remi -128, 1 -> 0
     %result_remi_si8n128_si81 = arc.remi %cst_si8n128, %cst_si81 : si8
     "arc.keep"(%result_remi_si8n128_si81) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi80]]) : (si8) -> ()
+
+    // remi -128, 2 -> 0
+    %result_remi_si8n128_si82 = arc.remi %cst_si8n128, %cst_si82 : si8
+    "arc.keep"(%result_remi_si8n128_si82) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi80]]) : (si8) -> ()
+
+    // remi -128, 4 -> 0
+    %result_remi_si8n128_si84 = arc.remi %cst_si8n128, %cst_si84 : si8
+    "arc.keep"(%result_remi_si8n128_si84) : (si8) -> ()
     // CHECK: "arc.keep"([[CSTsi80]]) : (si8) -> ()
 
     // remi -128, 16 -> 0
@@ -8728,6 +18598,21 @@ module @toplevel {
     "arc.keep"(%result_remi_si80_si81) : (si8) -> ()
     // CHECK: "arc.keep"([[CSTsi80]]) : (si8) -> ()
 
+    // remi 0, 2 -> 0
+    %result_remi_si80_si82 = arc.remi %cst_si80, %cst_si82 : si8
+    "arc.keep"(%result_remi_si80_si82) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi80]]) : (si8) -> ()
+
+    // remi 0, 3 -> 0
+    %result_remi_si80_si83 = arc.remi %cst_si80, %cst_si83 : si8
+    "arc.keep"(%result_remi_si80_si83) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi80]]) : (si8) -> ()
+
+    // remi 0, 4 -> 0
+    %result_remi_si80_si84 = arc.remi %cst_si80, %cst_si84 : si8
+    "arc.keep"(%result_remi_si80_si84) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi80]]) : (si8) -> ()
+
     // remi 0, 16 -> 0
     %result_remi_si80_si816 = arc.remi %cst_si80, %cst_si816 : si8
     "arc.keep"(%result_remi_si80_si816) : (si8) -> ()
@@ -8748,9 +18633,54 @@ module @toplevel {
     "arc.keep"(%result_remi_si81_si81) : (si8) -> ()
     // CHECK: "arc.keep"([[CSTsi80]]) : (si8) -> ()
 
+    // remi 2, 1 -> 0
+    %result_remi_si82_si81 = arc.remi %cst_si82, %cst_si81 : si8
+    "arc.keep"(%result_remi_si82_si81) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi80]]) : (si8) -> ()
+
+    // remi 2, 2 -> 0
+    %result_remi_si82_si82 = arc.remi %cst_si82, %cst_si82 : si8
+    "arc.keep"(%result_remi_si82_si82) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi80]]) : (si8) -> ()
+
+    // remi 3, 1 -> 0
+    %result_remi_si83_si81 = arc.remi %cst_si83, %cst_si81 : si8
+    "arc.keep"(%result_remi_si83_si81) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi80]]) : (si8) -> ()
+
+    // remi 3, 3 -> 0
+    %result_remi_si83_si83 = arc.remi %cst_si83, %cst_si83 : si8
+    "arc.keep"(%result_remi_si83_si83) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi80]]) : (si8) -> ()
+
+    // remi 4, 1 -> 0
+    %result_remi_si84_si81 = arc.remi %cst_si84, %cst_si81 : si8
+    "arc.keep"(%result_remi_si84_si81) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi80]]) : (si8) -> ()
+
+    // remi 4, 2 -> 0
+    %result_remi_si84_si82 = arc.remi %cst_si84, %cst_si82 : si8
+    "arc.keep"(%result_remi_si84_si82) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi80]]) : (si8) -> ()
+
+    // remi 4, 4 -> 0
+    %result_remi_si84_si84 = arc.remi %cst_si84, %cst_si84 : si8
+    "arc.keep"(%result_remi_si84_si84) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi80]]) : (si8) -> ()
+
     // remi 16, 1 -> 0
     %result_remi_si816_si81 = arc.remi %cst_si816, %cst_si81 : si8
     "arc.keep"(%result_remi_si816_si81) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi80]]) : (si8) -> ()
+
+    // remi 16, 2 -> 0
+    %result_remi_si816_si82 = arc.remi %cst_si816, %cst_si82 : si8
+    "arc.keep"(%result_remi_si816_si82) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi80]]) : (si8) -> ()
+
+    // remi 16, 4 -> 0
+    %result_remi_si816_si84 = arc.remi %cst_si816, %cst_si84 : si8
+    "arc.keep"(%result_remi_si816_si84) : (si8) -> ()
     // CHECK: "arc.keep"([[CSTsi80]]) : (si8) -> ()
 
     // remi 16, 16 -> 0
@@ -8761,6 +18691,16 @@ module @toplevel {
     // remi 126, 1 -> 0
     %result_remi_si8126_si81 = arc.remi %cst_si8126, %cst_si81 : si8
     "arc.keep"(%result_remi_si8126_si81) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi80]]) : (si8) -> ()
+
+    // remi 126, 2 -> 0
+    %result_remi_si8126_si82 = arc.remi %cst_si8126, %cst_si82 : si8
+    "arc.keep"(%result_remi_si8126_si82) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi80]]) : (si8) -> ()
+
+    // remi 126, 3 -> 0
+    %result_remi_si8126_si83 = arc.remi %cst_si8126, %cst_si83 : si8
+    "arc.keep"(%result_remi_si8126_si83) : (si8) -> ()
     // CHECK: "arc.keep"([[CSTsi80]]) : (si8) -> ()
 
     // remi 126, 126 -> 0
@@ -8793,6 +18733,21 @@ module @toplevel {
     "arc.keep"(%result_remi_si81_si8n127) : (si8) -> ()
     // CHECK: "arc.keep"([[CSTsi81]]) : (si8) -> ()
 
+    // remi 1, 2 -> 1
+    %result_remi_si81_si82 = arc.remi %cst_si81, %cst_si82 : si8
+    "arc.keep"(%result_remi_si81_si82) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi81]]) : (si8) -> ()
+
+    // remi 1, 3 -> 1
+    %result_remi_si81_si83 = arc.remi %cst_si81, %cst_si83 : si8
+    "arc.keep"(%result_remi_si81_si83) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi81]]) : (si8) -> ()
+
+    // remi 1, 4 -> 1
+    %result_remi_si81_si84 = arc.remi %cst_si81, %cst_si84 : si8
+    "arc.keep"(%result_remi_si81_si84) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi81]]) : (si8) -> ()
+
     // remi 1, 16 -> 1
     %result_remi_si81_si816 = arc.remi %cst_si81, %cst_si816 : si8
     "arc.keep"(%result_remi_si81_si816) : (si8) -> ()
@@ -8808,10 +18763,135 @@ module @toplevel {
     "arc.keep"(%result_remi_si81_si8127) : (si8) -> ()
     // CHECK: "arc.keep"([[CSTsi81]]) : (si8) -> ()
 
+    // remi 3, 2 -> 1
+    %result_remi_si83_si82 = arc.remi %cst_si83, %cst_si82 : si8
+    "arc.keep"(%result_remi_si83_si82) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi81]]) : (si8) -> ()
+
+    // remi 4, 3 -> 1
+    %result_remi_si84_si83 = arc.remi %cst_si84, %cst_si83 : si8
+    "arc.keep"(%result_remi_si84_si83) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi81]]) : (si8) -> ()
+
+    // remi 16, 3 -> 1
+    %result_remi_si816_si83 = arc.remi %cst_si816, %cst_si83 : si8
+    "arc.keep"(%result_remi_si816_si83) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi81]]) : (si8) -> ()
+
+    // remi 127, 2 -> 1
+    %result_remi_si8127_si82 = arc.remi %cst_si8127, %cst_si82 : si8
+    "arc.keep"(%result_remi_si8127_si82) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi81]]) : (si8) -> ()
+
+    // remi 127, 3 -> 1
+    %result_remi_si8127_si83 = arc.remi %cst_si8127, %cst_si83 : si8
+    "arc.keep"(%result_remi_si8127_si83) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi81]]) : (si8) -> ()
+
     // remi 127, 126 -> 1
     %result_remi_si8127_si8126 = arc.remi %cst_si8127, %cst_si8126 : si8
     "arc.keep"(%result_remi_si8127_si8126) : (si8) -> ()
     // CHECK: "arc.keep"([[CSTsi81]]) : (si8) -> ()
+
+    // remi 2, -128 -> 2
+    %result_remi_si82_si8n128 = arc.remi %cst_si82, %cst_si8n128 : si8
+    "arc.keep"(%result_remi_si82_si8n128) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi82]]) : (si8) -> ()
+
+    // remi 2, -127 -> 2
+    %result_remi_si82_si8n127 = arc.remi %cst_si82, %cst_si8n127 : si8
+    "arc.keep"(%result_remi_si82_si8n127) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi82]]) : (si8) -> ()
+
+    // remi 2, 3 -> 2
+    %result_remi_si82_si83 = arc.remi %cst_si82, %cst_si83 : si8
+    "arc.keep"(%result_remi_si82_si83) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi82]]) : (si8) -> ()
+
+    // remi 2, 4 -> 2
+    %result_remi_si82_si84 = arc.remi %cst_si82, %cst_si84 : si8
+    "arc.keep"(%result_remi_si82_si84) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi82]]) : (si8) -> ()
+
+    // remi 2, 16 -> 2
+    %result_remi_si82_si816 = arc.remi %cst_si82, %cst_si816 : si8
+    "arc.keep"(%result_remi_si82_si816) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi82]]) : (si8) -> ()
+
+    // remi 2, 126 -> 2
+    %result_remi_si82_si8126 = arc.remi %cst_si82, %cst_si8126 : si8
+    "arc.keep"(%result_remi_si82_si8126) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi82]]) : (si8) -> ()
+
+    // remi 2, 127 -> 2
+    %result_remi_si82_si8127 = arc.remi %cst_si82, %cst_si8127 : si8
+    "arc.keep"(%result_remi_si82_si8127) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi82]]) : (si8) -> ()
+
+    // remi 126, 4 -> 2
+    %result_remi_si8126_si84 = arc.remi %cst_si8126, %cst_si84 : si8
+    "arc.keep"(%result_remi_si8126_si84) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi82]]) : (si8) -> ()
+
+    // remi 3, -128 -> 3
+    %result_remi_si83_si8n128 = arc.remi %cst_si83, %cst_si8n128 : si8
+    "arc.keep"(%result_remi_si83_si8n128) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi83]]) : (si8) -> ()
+
+    // remi 3, -127 -> 3
+    %result_remi_si83_si8n127 = arc.remi %cst_si83, %cst_si8n127 : si8
+    "arc.keep"(%result_remi_si83_si8n127) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi83]]) : (si8) -> ()
+
+    // remi 3, 4 -> 3
+    %result_remi_si83_si84 = arc.remi %cst_si83, %cst_si84 : si8
+    "arc.keep"(%result_remi_si83_si84) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi83]]) : (si8) -> ()
+
+    // remi 3, 16 -> 3
+    %result_remi_si83_si816 = arc.remi %cst_si83, %cst_si816 : si8
+    "arc.keep"(%result_remi_si83_si816) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi83]]) : (si8) -> ()
+
+    // remi 3, 126 -> 3
+    %result_remi_si83_si8126 = arc.remi %cst_si83, %cst_si8126 : si8
+    "arc.keep"(%result_remi_si83_si8126) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi83]]) : (si8) -> ()
+
+    // remi 3, 127 -> 3
+    %result_remi_si83_si8127 = arc.remi %cst_si83, %cst_si8127 : si8
+    "arc.keep"(%result_remi_si83_si8127) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi83]]) : (si8) -> ()
+
+    // remi 127, 4 -> 3
+    %result_remi_si8127_si84 = arc.remi %cst_si8127, %cst_si84 : si8
+    "arc.keep"(%result_remi_si8127_si84) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi83]]) : (si8) -> ()
+
+    // remi 4, -128 -> 4
+    %result_remi_si84_si8n128 = arc.remi %cst_si84, %cst_si8n128 : si8
+    "arc.keep"(%result_remi_si84_si8n128) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi84]]) : (si8) -> ()
+
+    // remi 4, -127 -> 4
+    %result_remi_si84_si8n127 = arc.remi %cst_si84, %cst_si8n127 : si8
+    "arc.keep"(%result_remi_si84_si8n127) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi84]]) : (si8) -> ()
+
+    // remi 4, 16 -> 4
+    %result_remi_si84_si816 = arc.remi %cst_si84, %cst_si816 : si8
+    "arc.keep"(%result_remi_si84_si816) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi84]]) : (si8) -> ()
+
+    // remi 4, 126 -> 4
+    %result_remi_si84_si8126 = arc.remi %cst_si84, %cst_si8126 : si8
+    "arc.keep"(%result_remi_si84_si8126) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi84]]) : (si8) -> ()
+
+    // remi 4, 127 -> 4
+    %result_remi_si84_si8127 = arc.remi %cst_si84, %cst_si8127 : si8
+    "arc.keep"(%result_remi_si84_si8127) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi84]]) : (si8) -> ()
 
     // remi 126, 16 -> 14
     %result_remi_si8126_si816 = arc.remi %cst_si8126, %cst_si816 : si8
@@ -8887,6 +18967,24 @@ module @toplevel {
     "arc.keep"(%result_remi_si81_si80) : (si8) -> ()
     // CHECK: "arc.keep"([[RESULT_remi_si81_si80]]) : (si8) -> ()
 
+    // remi 2, 0 -> no-fold
+    %result_remi_si82_si80 = arc.remi %cst_si82, %cst_si80 : si8
+    // CHECK-DAG: [[RESULT_remi_si82_si80:%[^ ]+]] = arc.remi [[CSTsi82]], [[CSTsi80]] : si8
+    "arc.keep"(%result_remi_si82_si80) : (si8) -> ()
+    // CHECK: "arc.keep"([[RESULT_remi_si82_si80]]) : (si8) -> ()
+
+    // remi 3, 0 -> no-fold
+    %result_remi_si83_si80 = arc.remi %cst_si83, %cst_si80 : si8
+    // CHECK-DAG: [[RESULT_remi_si83_si80:%[^ ]+]] = arc.remi [[CSTsi83]], [[CSTsi80]] : si8
+    "arc.keep"(%result_remi_si83_si80) : (si8) -> ()
+    // CHECK: "arc.keep"([[RESULT_remi_si83_si80]]) : (si8) -> ()
+
+    // remi 4, 0 -> no-fold
+    %result_remi_si84_si80 = arc.remi %cst_si84, %cst_si80 : si8
+    // CHECK-DAG: [[RESULT_remi_si84_si80:%[^ ]+]] = arc.remi [[CSTsi84]], [[CSTsi80]] : si8
+    "arc.keep"(%result_remi_si84_si80) : (si8) -> ()
+    // CHECK: "arc.keep"([[RESULT_remi_si84_si80]]) : (si8) -> ()
+
     // remi 16, 0 -> no-fold
     %result_remi_si816_si80 = arc.remi %cst_si816, %cst_si80 : si8
     // CHECK-DAG: [[RESULT_remi_si816_si80:%[^ ]+]] = arc.remi [[CSTsi816]], [[CSTsi80]] : si8
@@ -8908,6 +19006,21 @@ module @toplevel {
     // remi 0, 1 -> 0
     %result_remi_ui160_ui161 = arc.remi %cst_ui160, %cst_ui161 : ui16
     "arc.keep"(%result_remi_ui160_ui161) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui160]]) : (ui16) -> ()
+
+    // remi 0, 2 -> 0
+    %result_remi_ui160_ui162 = arc.remi %cst_ui160, %cst_ui162 : ui16
+    "arc.keep"(%result_remi_ui160_ui162) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui160]]) : (ui16) -> ()
+
+    // remi 0, 3 -> 0
+    %result_remi_ui160_ui163 = arc.remi %cst_ui160, %cst_ui163 : ui16
+    "arc.keep"(%result_remi_ui160_ui163) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui160]]) : (ui16) -> ()
+
+    // remi 0, 4 -> 0
+    %result_remi_ui160_ui164 = arc.remi %cst_ui160, %cst_ui164 : ui16
+    "arc.keep"(%result_remi_ui160_ui164) : (ui16) -> ()
     // CHECK: "arc.keep"([[CSTui160]]) : (ui16) -> ()
 
     // remi 0, 1717 -> 0
@@ -8940,6 +19053,41 @@ module @toplevel {
     "arc.keep"(%result_remi_ui161_ui161) : (ui16) -> ()
     // CHECK: "arc.keep"([[CSTui160]]) : (ui16) -> ()
 
+    // remi 2, 1 -> 0
+    %result_remi_ui162_ui161 = arc.remi %cst_ui162, %cst_ui161 : ui16
+    "arc.keep"(%result_remi_ui162_ui161) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui160]]) : (ui16) -> ()
+
+    // remi 2, 2 -> 0
+    %result_remi_ui162_ui162 = arc.remi %cst_ui162, %cst_ui162 : ui16
+    "arc.keep"(%result_remi_ui162_ui162) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui160]]) : (ui16) -> ()
+
+    // remi 3, 1 -> 0
+    %result_remi_ui163_ui161 = arc.remi %cst_ui163, %cst_ui161 : ui16
+    "arc.keep"(%result_remi_ui163_ui161) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui160]]) : (ui16) -> ()
+
+    // remi 3, 3 -> 0
+    %result_remi_ui163_ui163 = arc.remi %cst_ui163, %cst_ui163 : ui16
+    "arc.keep"(%result_remi_ui163_ui163) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui160]]) : (ui16) -> ()
+
+    // remi 4, 1 -> 0
+    %result_remi_ui164_ui161 = arc.remi %cst_ui164, %cst_ui161 : ui16
+    "arc.keep"(%result_remi_ui164_ui161) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui160]]) : (ui16) -> ()
+
+    // remi 4, 2 -> 0
+    %result_remi_ui164_ui162 = arc.remi %cst_ui164, %cst_ui162 : ui16
+    "arc.keep"(%result_remi_ui164_ui162) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui160]]) : (ui16) -> ()
+
+    // remi 4, 4 -> 0
+    %result_remi_ui164_ui164 = arc.remi %cst_ui164, %cst_ui164 : ui16
+    "arc.keep"(%result_remi_ui164_ui164) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui160]]) : (ui16) -> ()
+
     // remi 1717, 1 -> 0
     %result_remi_ui161717_ui161 = arc.remi %cst_ui161717, %cst_ui161 : ui16
     "arc.keep"(%result_remi_ui161717_ui161) : (ui16) -> ()
@@ -8955,6 +19103,21 @@ module @toplevel {
     "arc.keep"(%result_remi_ui1617988_ui161) : (ui16) -> ()
     // CHECK: "arc.keep"([[CSTui160]]) : (ui16) -> ()
 
+    // remi 17988, 2 -> 0
+    %result_remi_ui1617988_ui162 = arc.remi %cst_ui1617988, %cst_ui162 : ui16
+    "arc.keep"(%result_remi_ui1617988_ui162) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui160]]) : (ui16) -> ()
+
+    // remi 17988, 3 -> 0
+    %result_remi_ui1617988_ui163 = arc.remi %cst_ui1617988, %cst_ui163 : ui16
+    "arc.keep"(%result_remi_ui1617988_ui163) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui160]]) : (ui16) -> ()
+
+    // remi 17988, 4 -> 0
+    %result_remi_ui1617988_ui164 = arc.remi %cst_ui1617988, %cst_ui164 : ui16
+    "arc.keep"(%result_remi_ui1617988_ui164) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui160]]) : (ui16) -> ()
+
     // remi 17988, 17988 -> 0
     %result_remi_ui1617988_ui1617988 = arc.remi %cst_ui1617988, %cst_ui1617988 : ui16
     "arc.keep"(%result_remi_ui1617988_ui1617988) : (ui16) -> ()
@@ -8963,6 +19126,16 @@ module @toplevel {
     // remi 65096, 1 -> 0
     %result_remi_ui1665096_ui161 = arc.remi %cst_ui1665096, %cst_ui161 : ui16
     "arc.keep"(%result_remi_ui1665096_ui161) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui160]]) : (ui16) -> ()
+
+    // remi 65096, 2 -> 0
+    %result_remi_ui1665096_ui162 = arc.remi %cst_ui1665096, %cst_ui162 : ui16
+    "arc.keep"(%result_remi_ui1665096_ui162) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui160]]) : (ui16) -> ()
+
+    // remi 65096, 4 -> 0
+    %result_remi_ui1665096_ui164 = arc.remi %cst_ui1665096, %cst_ui164 : ui16
+    "arc.keep"(%result_remi_ui1665096_ui164) : (ui16) -> ()
     // CHECK: "arc.keep"([[CSTui160]]) : (ui16) -> ()
 
     // remi 65096, 65096 -> 0
@@ -8975,6 +19148,11 @@ module @toplevel {
     "arc.keep"(%result_remi_ui1665534_ui161) : (ui16) -> ()
     // CHECK: "arc.keep"([[CSTui160]]) : (ui16) -> ()
 
+    // remi 65534, 2 -> 0
+    %result_remi_ui1665534_ui162 = arc.remi %cst_ui1665534, %cst_ui162 : ui16
+    "arc.keep"(%result_remi_ui1665534_ui162) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui160]]) : (ui16) -> ()
+
     // remi 65534, 65534 -> 0
     %result_remi_ui1665534_ui1665534 = arc.remi %cst_ui1665534, %cst_ui1665534 : ui16
     "arc.keep"(%result_remi_ui1665534_ui1665534) : (ui16) -> ()
@@ -8985,10 +19163,30 @@ module @toplevel {
     "arc.keep"(%result_remi_ui1665535_ui161) : (ui16) -> ()
     // CHECK: "arc.keep"([[CSTui160]]) : (ui16) -> ()
 
+    // remi 65535, 3 -> 0
+    %result_remi_ui1665535_ui163 = arc.remi %cst_ui1665535, %cst_ui163 : ui16
+    "arc.keep"(%result_remi_ui1665535_ui163) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui160]]) : (ui16) -> ()
+
     // remi 65535, 65535 -> 0
     %result_remi_ui1665535_ui1665535 = arc.remi %cst_ui1665535, %cst_ui1665535 : ui16
     "arc.keep"(%result_remi_ui1665535_ui1665535) : (ui16) -> ()
     // CHECK: "arc.keep"([[CSTui160]]) : (ui16) -> ()
+
+    // remi 1, 2 -> 1
+    %result_remi_ui161_ui162 = arc.remi %cst_ui161, %cst_ui162 : ui16
+    "arc.keep"(%result_remi_ui161_ui162) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui161]]) : (ui16) -> ()
+
+    // remi 1, 3 -> 1
+    %result_remi_ui161_ui163 = arc.remi %cst_ui161, %cst_ui163 : ui16
+    "arc.keep"(%result_remi_ui161_ui163) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui161]]) : (ui16) -> ()
+
+    // remi 1, 4 -> 1
+    %result_remi_ui161_ui164 = arc.remi %cst_ui161, %cst_ui164 : ui16
+    "arc.keep"(%result_remi_ui161_ui164) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui161]]) : (ui16) -> ()
 
     // remi 1, 1717 -> 1
     %result_remi_ui161_ui161717 = arc.remi %cst_ui161, %cst_ui161717 : ui16
@@ -9015,10 +19213,150 @@ module @toplevel {
     "arc.keep"(%result_remi_ui161_ui1665535) : (ui16) -> ()
     // CHECK: "arc.keep"([[CSTui161]]) : (ui16) -> ()
 
+    // remi 3, 2 -> 1
+    %result_remi_ui163_ui162 = arc.remi %cst_ui163, %cst_ui162 : ui16
+    "arc.keep"(%result_remi_ui163_ui162) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui161]]) : (ui16) -> ()
+
+    // remi 4, 3 -> 1
+    %result_remi_ui164_ui163 = arc.remi %cst_ui164, %cst_ui163 : ui16
+    "arc.keep"(%result_remi_ui164_ui163) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui161]]) : (ui16) -> ()
+
+    // remi 1717, 2 -> 1
+    %result_remi_ui161717_ui162 = arc.remi %cst_ui161717, %cst_ui162 : ui16
+    "arc.keep"(%result_remi_ui161717_ui162) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui161]]) : (ui16) -> ()
+
+    // remi 1717, 3 -> 1
+    %result_remi_ui161717_ui163 = arc.remi %cst_ui161717, %cst_ui163 : ui16
+    "arc.keep"(%result_remi_ui161717_ui163) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui161]]) : (ui16) -> ()
+
+    // remi 1717, 4 -> 1
+    %result_remi_ui161717_ui164 = arc.remi %cst_ui161717, %cst_ui164 : ui16
+    "arc.keep"(%result_remi_ui161717_ui164) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui161]]) : (ui16) -> ()
+
+    // remi 65535, 2 -> 1
+    %result_remi_ui1665535_ui162 = arc.remi %cst_ui1665535, %cst_ui162 : ui16
+    "arc.keep"(%result_remi_ui1665535_ui162) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui161]]) : (ui16) -> ()
+
     // remi 65535, 65534 -> 1
     %result_remi_ui1665535_ui1665534 = arc.remi %cst_ui1665535, %cst_ui1665534 : ui16
     "arc.keep"(%result_remi_ui1665535_ui1665534) : (ui16) -> ()
     // CHECK: "arc.keep"([[CSTui161]]) : (ui16) -> ()
+
+    // remi 2, 3 -> 2
+    %result_remi_ui162_ui163 = arc.remi %cst_ui162, %cst_ui163 : ui16
+    "arc.keep"(%result_remi_ui162_ui163) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui162]]) : (ui16) -> ()
+
+    // remi 2, 4 -> 2
+    %result_remi_ui162_ui164 = arc.remi %cst_ui162, %cst_ui164 : ui16
+    "arc.keep"(%result_remi_ui162_ui164) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui162]]) : (ui16) -> ()
+
+    // remi 2, 1717 -> 2
+    %result_remi_ui162_ui161717 = arc.remi %cst_ui162, %cst_ui161717 : ui16
+    "arc.keep"(%result_remi_ui162_ui161717) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui162]]) : (ui16) -> ()
+
+    // remi 2, 17988 -> 2
+    %result_remi_ui162_ui1617988 = arc.remi %cst_ui162, %cst_ui1617988 : ui16
+    "arc.keep"(%result_remi_ui162_ui1617988) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui162]]) : (ui16) -> ()
+
+    // remi 2, 65096 -> 2
+    %result_remi_ui162_ui1665096 = arc.remi %cst_ui162, %cst_ui1665096 : ui16
+    "arc.keep"(%result_remi_ui162_ui1665096) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui162]]) : (ui16) -> ()
+
+    // remi 2, 65534 -> 2
+    %result_remi_ui162_ui1665534 = arc.remi %cst_ui162, %cst_ui1665534 : ui16
+    "arc.keep"(%result_remi_ui162_ui1665534) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui162]]) : (ui16) -> ()
+
+    // remi 2, 65535 -> 2
+    %result_remi_ui162_ui1665535 = arc.remi %cst_ui162, %cst_ui1665535 : ui16
+    "arc.keep"(%result_remi_ui162_ui1665535) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui162]]) : (ui16) -> ()
+
+    // remi 65096, 3 -> 2
+    %result_remi_ui1665096_ui163 = arc.remi %cst_ui1665096, %cst_ui163 : ui16
+    "arc.keep"(%result_remi_ui1665096_ui163) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui162]]) : (ui16) -> ()
+
+    // remi 65534, 3 -> 2
+    %result_remi_ui1665534_ui163 = arc.remi %cst_ui1665534, %cst_ui163 : ui16
+    "arc.keep"(%result_remi_ui1665534_ui163) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui162]]) : (ui16) -> ()
+
+    // remi 65534, 4 -> 2
+    %result_remi_ui1665534_ui164 = arc.remi %cst_ui1665534, %cst_ui164 : ui16
+    "arc.keep"(%result_remi_ui1665534_ui164) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui162]]) : (ui16) -> ()
+
+    // remi 3, 4 -> 3
+    %result_remi_ui163_ui164 = arc.remi %cst_ui163, %cst_ui164 : ui16
+    "arc.keep"(%result_remi_ui163_ui164) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui163]]) : (ui16) -> ()
+
+    // remi 3, 1717 -> 3
+    %result_remi_ui163_ui161717 = arc.remi %cst_ui163, %cst_ui161717 : ui16
+    "arc.keep"(%result_remi_ui163_ui161717) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui163]]) : (ui16) -> ()
+
+    // remi 3, 17988 -> 3
+    %result_remi_ui163_ui1617988 = arc.remi %cst_ui163, %cst_ui1617988 : ui16
+    "arc.keep"(%result_remi_ui163_ui1617988) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui163]]) : (ui16) -> ()
+
+    // remi 3, 65096 -> 3
+    %result_remi_ui163_ui1665096 = arc.remi %cst_ui163, %cst_ui1665096 : ui16
+    "arc.keep"(%result_remi_ui163_ui1665096) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui163]]) : (ui16) -> ()
+
+    // remi 3, 65534 -> 3
+    %result_remi_ui163_ui1665534 = arc.remi %cst_ui163, %cst_ui1665534 : ui16
+    "arc.keep"(%result_remi_ui163_ui1665534) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui163]]) : (ui16) -> ()
+
+    // remi 3, 65535 -> 3
+    %result_remi_ui163_ui1665535 = arc.remi %cst_ui163, %cst_ui1665535 : ui16
+    "arc.keep"(%result_remi_ui163_ui1665535) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui163]]) : (ui16) -> ()
+
+    // remi 65535, 4 -> 3
+    %result_remi_ui1665535_ui164 = arc.remi %cst_ui1665535, %cst_ui164 : ui16
+    "arc.keep"(%result_remi_ui1665535_ui164) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui163]]) : (ui16) -> ()
+
+    // remi 4, 1717 -> 4
+    %result_remi_ui164_ui161717 = arc.remi %cst_ui164, %cst_ui161717 : ui16
+    "arc.keep"(%result_remi_ui164_ui161717) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui164]]) : (ui16) -> ()
+
+    // remi 4, 17988 -> 4
+    %result_remi_ui164_ui1617988 = arc.remi %cst_ui164, %cst_ui1617988 : ui16
+    "arc.keep"(%result_remi_ui164_ui1617988) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui164]]) : (ui16) -> ()
+
+    // remi 4, 65096 -> 4
+    %result_remi_ui164_ui1665096 = arc.remi %cst_ui164, %cst_ui1665096 : ui16
+    "arc.keep"(%result_remi_ui164_ui1665096) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui164]]) : (ui16) -> ()
+
+    // remi 4, 65534 -> 4
+    %result_remi_ui164_ui1665534 = arc.remi %cst_ui164, %cst_ui1665534 : ui16
+    "arc.keep"(%result_remi_ui164_ui1665534) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui164]]) : (ui16) -> ()
+
+    // remi 4, 65535 -> 4
+    %result_remi_ui164_ui1665535 = arc.remi %cst_ui164, %cst_ui1665535 : ui16
+    "arc.keep"(%result_remi_ui164_ui1665535) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui164]]) : (ui16) -> ()
 
     // remi 65534, 1717 -> 288
     %result_remi_ui1665534_ui161717 = arc.remi %cst_ui1665534, %cst_ui161717 : ui16
@@ -9127,6 +19465,24 @@ module @toplevel {
     "arc.keep"(%result_remi_ui161_ui160) : (ui16) -> ()
     // CHECK: "arc.keep"([[RESULT_remi_ui161_ui160]]) : (ui16) -> ()
 
+    // remi 2, 0 -> no-fold
+    %result_remi_ui162_ui160 = arc.remi %cst_ui162, %cst_ui160 : ui16
+    // CHECK-DAG: [[RESULT_remi_ui162_ui160:%[^ ]+]] = arc.remi [[CSTui162]], [[CSTui160]] : ui16
+    "arc.keep"(%result_remi_ui162_ui160) : (ui16) -> ()
+    // CHECK: "arc.keep"([[RESULT_remi_ui162_ui160]]) : (ui16) -> ()
+
+    // remi 3, 0 -> no-fold
+    %result_remi_ui163_ui160 = arc.remi %cst_ui163, %cst_ui160 : ui16
+    // CHECK-DAG: [[RESULT_remi_ui163_ui160:%[^ ]+]] = arc.remi [[CSTui163]], [[CSTui160]] : ui16
+    "arc.keep"(%result_remi_ui163_ui160) : (ui16) -> ()
+    // CHECK: "arc.keep"([[RESULT_remi_ui163_ui160]]) : (ui16) -> ()
+
+    // remi 4, 0 -> no-fold
+    %result_remi_ui164_ui160 = arc.remi %cst_ui164, %cst_ui160 : ui16
+    // CHECK-DAG: [[RESULT_remi_ui164_ui160:%[^ ]+]] = arc.remi [[CSTui164]], [[CSTui160]] : ui16
+    "arc.keep"(%result_remi_ui164_ui160) : (ui16) -> ()
+    // CHECK: "arc.keep"([[RESULT_remi_ui164_ui160]]) : (ui16) -> ()
+
     // remi 1717, 0 -> no-fold
     %result_remi_ui161717_ui160 = arc.remi %cst_ui161717, %cst_ui160 : ui16
     // CHECK-DAG: [[RESULT_remi_ui161717_ui160:%[^ ]+]] = arc.remi [[CSTui161717]], [[CSTui160]] : ui16
@@ -9162,6 +19518,21 @@ module @toplevel {
     "arc.keep"(%result_remi_ui320_ui321) : (ui32) -> ()
     // CHECK: "arc.keep"([[CSTui320]]) : (ui32) -> ()
 
+    // remi 0, 2 -> 0
+    %result_remi_ui320_ui322 = arc.remi %cst_ui320, %cst_ui322 : ui32
+    "arc.keep"(%result_remi_ui320_ui322) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui320]]) : (ui32) -> ()
+
+    // remi 0, 3 -> 0
+    %result_remi_ui320_ui323 = arc.remi %cst_ui320, %cst_ui323 : ui32
+    "arc.keep"(%result_remi_ui320_ui323) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui320]]) : (ui32) -> ()
+
+    // remi 0, 4 -> 0
+    %result_remi_ui320_ui324 = arc.remi %cst_ui320, %cst_ui324 : ui32
+    "arc.keep"(%result_remi_ui320_ui324) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui320]]) : (ui32) -> ()
+
     // remi 0, 2119154652 -> 0
     %result_remi_ui320_ui322119154652 = arc.remi %cst_ui320, %cst_ui322119154652 : ui32
     "arc.keep"(%result_remi_ui320_ui322119154652) : (ui32) -> ()
@@ -9192,9 +19563,59 @@ module @toplevel {
     "arc.keep"(%result_remi_ui321_ui321) : (ui32) -> ()
     // CHECK: "arc.keep"([[CSTui320]]) : (ui32) -> ()
 
+    // remi 2, 1 -> 0
+    %result_remi_ui322_ui321 = arc.remi %cst_ui322, %cst_ui321 : ui32
+    "arc.keep"(%result_remi_ui322_ui321) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui320]]) : (ui32) -> ()
+
+    // remi 2, 2 -> 0
+    %result_remi_ui322_ui322 = arc.remi %cst_ui322, %cst_ui322 : ui32
+    "arc.keep"(%result_remi_ui322_ui322) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui320]]) : (ui32) -> ()
+
+    // remi 3, 1 -> 0
+    %result_remi_ui323_ui321 = arc.remi %cst_ui323, %cst_ui321 : ui32
+    "arc.keep"(%result_remi_ui323_ui321) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui320]]) : (ui32) -> ()
+
+    // remi 3, 3 -> 0
+    %result_remi_ui323_ui323 = arc.remi %cst_ui323, %cst_ui323 : ui32
+    "arc.keep"(%result_remi_ui323_ui323) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui320]]) : (ui32) -> ()
+
+    // remi 4, 1 -> 0
+    %result_remi_ui324_ui321 = arc.remi %cst_ui324, %cst_ui321 : ui32
+    "arc.keep"(%result_remi_ui324_ui321) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui320]]) : (ui32) -> ()
+
+    // remi 4, 2 -> 0
+    %result_remi_ui324_ui322 = arc.remi %cst_ui324, %cst_ui322 : ui32
+    "arc.keep"(%result_remi_ui324_ui322) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui320]]) : (ui32) -> ()
+
+    // remi 4, 4 -> 0
+    %result_remi_ui324_ui324 = arc.remi %cst_ui324, %cst_ui324 : ui32
+    "arc.keep"(%result_remi_ui324_ui324) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui320]]) : (ui32) -> ()
+
     // remi 2119154652, 1 -> 0
     %result_remi_ui322119154652_ui321 = arc.remi %cst_ui322119154652, %cst_ui321 : ui32
     "arc.keep"(%result_remi_ui322119154652_ui321) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui320]]) : (ui32) -> ()
+
+    // remi 2119154652, 2 -> 0
+    %result_remi_ui322119154652_ui322 = arc.remi %cst_ui322119154652, %cst_ui322 : ui32
+    "arc.keep"(%result_remi_ui322119154652_ui322) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui320]]) : (ui32) -> ()
+
+    // remi 2119154652, 3 -> 0
+    %result_remi_ui322119154652_ui323 = arc.remi %cst_ui322119154652, %cst_ui323 : ui32
+    "arc.keep"(%result_remi_ui322119154652_ui323) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui320]]) : (ui32) -> ()
+
+    // remi 2119154652, 4 -> 0
+    %result_remi_ui322119154652_ui324 = arc.remi %cst_ui322119154652, %cst_ui324 : ui32
+    "arc.keep"(%result_remi_ui322119154652_ui324) : (ui32) -> ()
     // CHECK: "arc.keep"([[CSTui320]]) : (ui32) -> ()
 
     // remi 2119154652, 2119154652 -> 0
@@ -9207,6 +19628,21 @@ module @toplevel {
     "arc.keep"(%result_remi_ui323002788344_ui321) : (ui32) -> ()
     // CHECK: "arc.keep"([[CSTui320]]) : (ui32) -> ()
 
+    // remi 3002788344, 2 -> 0
+    %result_remi_ui323002788344_ui322 = arc.remi %cst_ui323002788344, %cst_ui322 : ui32
+    "arc.keep"(%result_remi_ui323002788344_ui322) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui320]]) : (ui32) -> ()
+
+    // remi 3002788344, 3 -> 0
+    %result_remi_ui323002788344_ui323 = arc.remi %cst_ui323002788344, %cst_ui323 : ui32
+    "arc.keep"(%result_remi_ui323002788344_ui323) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui320]]) : (ui32) -> ()
+
+    // remi 3002788344, 4 -> 0
+    %result_remi_ui323002788344_ui324 = arc.remi %cst_ui323002788344, %cst_ui324 : ui32
+    "arc.keep"(%result_remi_ui323002788344_ui324) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui320]]) : (ui32) -> ()
+
     // remi 3002788344, 3002788344 -> 0
     %result_remi_ui323002788344_ui323002788344 = arc.remi %cst_ui323002788344, %cst_ui323002788344 : ui32
     "arc.keep"(%result_remi_ui323002788344_ui323002788344) : (ui32) -> ()
@@ -9215,6 +19651,16 @@ module @toplevel {
     // remi 3482297128, 1 -> 0
     %result_remi_ui323482297128_ui321 = arc.remi %cst_ui323482297128, %cst_ui321 : ui32
     "arc.keep"(%result_remi_ui323482297128_ui321) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui320]]) : (ui32) -> ()
+
+    // remi 3482297128, 2 -> 0
+    %result_remi_ui323482297128_ui322 = arc.remi %cst_ui323482297128, %cst_ui322 : ui32
+    "arc.keep"(%result_remi_ui323482297128_ui322) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui320]]) : (ui32) -> ()
+
+    // remi 3482297128, 4 -> 0
+    %result_remi_ui323482297128_ui324 = arc.remi %cst_ui323482297128, %cst_ui324 : ui32
+    "arc.keep"(%result_remi_ui323482297128_ui324) : (ui32) -> ()
     // CHECK: "arc.keep"([[CSTui320]]) : (ui32) -> ()
 
     // remi 3482297128, 3482297128 -> 0
@@ -9227,6 +19673,11 @@ module @toplevel {
     "arc.keep"(%result_remi_ui324294967294_ui321) : (ui32) -> ()
     // CHECK: "arc.keep"([[CSTui320]]) : (ui32) -> ()
 
+    // remi 4294967294, 2 -> 0
+    %result_remi_ui324294967294_ui322 = arc.remi %cst_ui324294967294, %cst_ui322 : ui32
+    "arc.keep"(%result_remi_ui324294967294_ui322) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui320]]) : (ui32) -> ()
+
     // remi 4294967294, 4294967294 -> 0
     %result_remi_ui324294967294_ui324294967294 = arc.remi %cst_ui324294967294, %cst_ui324294967294 : ui32
     "arc.keep"(%result_remi_ui324294967294_ui324294967294) : (ui32) -> ()
@@ -9237,10 +19688,30 @@ module @toplevel {
     "arc.keep"(%result_remi_ui324294967295_ui321) : (ui32) -> ()
     // CHECK: "arc.keep"([[CSTui320]]) : (ui32) -> ()
 
+    // remi 4294967295, 3 -> 0
+    %result_remi_ui324294967295_ui323 = arc.remi %cst_ui324294967295, %cst_ui323 : ui32
+    "arc.keep"(%result_remi_ui324294967295_ui323) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui320]]) : (ui32) -> ()
+
     // remi 4294967295, 4294967295 -> 0
     %result_remi_ui324294967295_ui324294967295 = arc.remi %cst_ui324294967295, %cst_ui324294967295 : ui32
     "arc.keep"(%result_remi_ui324294967295_ui324294967295) : (ui32) -> ()
     // CHECK: "arc.keep"([[CSTui320]]) : (ui32) -> ()
+
+    // remi 1, 2 -> 1
+    %result_remi_ui321_ui322 = arc.remi %cst_ui321, %cst_ui322 : ui32
+    "arc.keep"(%result_remi_ui321_ui322) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui321]]) : (ui32) -> ()
+
+    // remi 1, 3 -> 1
+    %result_remi_ui321_ui323 = arc.remi %cst_ui321, %cst_ui323 : ui32
+    "arc.keep"(%result_remi_ui321_ui323) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui321]]) : (ui32) -> ()
+
+    // remi 1, 4 -> 1
+    %result_remi_ui321_ui324 = arc.remi %cst_ui321, %cst_ui324 : ui32
+    "arc.keep"(%result_remi_ui321_ui324) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui321]]) : (ui32) -> ()
 
     // remi 1, 2119154652 -> 1
     %result_remi_ui321_ui322119154652 = arc.remi %cst_ui321, %cst_ui322119154652 : ui32
@@ -9267,10 +19738,135 @@ module @toplevel {
     "arc.keep"(%result_remi_ui321_ui324294967295) : (ui32) -> ()
     // CHECK: "arc.keep"([[CSTui321]]) : (ui32) -> ()
 
+    // remi 3, 2 -> 1
+    %result_remi_ui323_ui322 = arc.remi %cst_ui323, %cst_ui322 : ui32
+    "arc.keep"(%result_remi_ui323_ui322) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui321]]) : (ui32) -> ()
+
+    // remi 4, 3 -> 1
+    %result_remi_ui324_ui323 = arc.remi %cst_ui324, %cst_ui323 : ui32
+    "arc.keep"(%result_remi_ui324_ui323) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui321]]) : (ui32) -> ()
+
+    // remi 3482297128, 3 -> 1
+    %result_remi_ui323482297128_ui323 = arc.remi %cst_ui323482297128, %cst_ui323 : ui32
+    "arc.keep"(%result_remi_ui323482297128_ui323) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui321]]) : (ui32) -> ()
+
+    // remi 4294967295, 2 -> 1
+    %result_remi_ui324294967295_ui322 = arc.remi %cst_ui324294967295, %cst_ui322 : ui32
+    "arc.keep"(%result_remi_ui324294967295_ui322) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui321]]) : (ui32) -> ()
+
     // remi 4294967295, 4294967294 -> 1
     %result_remi_ui324294967295_ui324294967294 = arc.remi %cst_ui324294967295, %cst_ui324294967294 : ui32
     "arc.keep"(%result_remi_ui324294967295_ui324294967294) : (ui32) -> ()
     // CHECK: "arc.keep"([[CSTui321]]) : (ui32) -> ()
+
+    // remi 2, 3 -> 2
+    %result_remi_ui322_ui323 = arc.remi %cst_ui322, %cst_ui323 : ui32
+    "arc.keep"(%result_remi_ui322_ui323) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui322]]) : (ui32) -> ()
+
+    // remi 2, 4 -> 2
+    %result_remi_ui322_ui324 = arc.remi %cst_ui322, %cst_ui324 : ui32
+    "arc.keep"(%result_remi_ui322_ui324) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui322]]) : (ui32) -> ()
+
+    // remi 2, 2119154652 -> 2
+    %result_remi_ui322_ui322119154652 = arc.remi %cst_ui322, %cst_ui322119154652 : ui32
+    "arc.keep"(%result_remi_ui322_ui322119154652) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui322]]) : (ui32) -> ()
+
+    // remi 2, 3002788344 -> 2
+    %result_remi_ui322_ui323002788344 = arc.remi %cst_ui322, %cst_ui323002788344 : ui32
+    "arc.keep"(%result_remi_ui322_ui323002788344) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui322]]) : (ui32) -> ()
+
+    // remi 2, 3482297128 -> 2
+    %result_remi_ui322_ui323482297128 = arc.remi %cst_ui322, %cst_ui323482297128 : ui32
+    "arc.keep"(%result_remi_ui322_ui323482297128) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui322]]) : (ui32) -> ()
+
+    // remi 2, 4294967294 -> 2
+    %result_remi_ui322_ui324294967294 = arc.remi %cst_ui322, %cst_ui324294967294 : ui32
+    "arc.keep"(%result_remi_ui322_ui324294967294) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui322]]) : (ui32) -> ()
+
+    // remi 2, 4294967295 -> 2
+    %result_remi_ui322_ui324294967295 = arc.remi %cst_ui322, %cst_ui324294967295 : ui32
+    "arc.keep"(%result_remi_ui322_ui324294967295) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui322]]) : (ui32) -> ()
+
+    // remi 4294967294, 3 -> 2
+    %result_remi_ui324294967294_ui323 = arc.remi %cst_ui324294967294, %cst_ui323 : ui32
+    "arc.keep"(%result_remi_ui324294967294_ui323) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui322]]) : (ui32) -> ()
+
+    // remi 4294967294, 4 -> 2
+    %result_remi_ui324294967294_ui324 = arc.remi %cst_ui324294967294, %cst_ui324 : ui32
+    "arc.keep"(%result_remi_ui324294967294_ui324) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui322]]) : (ui32) -> ()
+
+    // remi 3, 4 -> 3
+    %result_remi_ui323_ui324 = arc.remi %cst_ui323, %cst_ui324 : ui32
+    "arc.keep"(%result_remi_ui323_ui324) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui323]]) : (ui32) -> ()
+
+    // remi 3, 2119154652 -> 3
+    %result_remi_ui323_ui322119154652 = arc.remi %cst_ui323, %cst_ui322119154652 : ui32
+    "arc.keep"(%result_remi_ui323_ui322119154652) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui323]]) : (ui32) -> ()
+
+    // remi 3, 3002788344 -> 3
+    %result_remi_ui323_ui323002788344 = arc.remi %cst_ui323, %cst_ui323002788344 : ui32
+    "arc.keep"(%result_remi_ui323_ui323002788344) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui323]]) : (ui32) -> ()
+
+    // remi 3, 3482297128 -> 3
+    %result_remi_ui323_ui323482297128 = arc.remi %cst_ui323, %cst_ui323482297128 : ui32
+    "arc.keep"(%result_remi_ui323_ui323482297128) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui323]]) : (ui32) -> ()
+
+    // remi 3, 4294967294 -> 3
+    %result_remi_ui323_ui324294967294 = arc.remi %cst_ui323, %cst_ui324294967294 : ui32
+    "arc.keep"(%result_remi_ui323_ui324294967294) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui323]]) : (ui32) -> ()
+
+    // remi 3, 4294967295 -> 3
+    %result_remi_ui323_ui324294967295 = arc.remi %cst_ui323, %cst_ui324294967295 : ui32
+    "arc.keep"(%result_remi_ui323_ui324294967295) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui323]]) : (ui32) -> ()
+
+    // remi 4294967295, 4 -> 3
+    %result_remi_ui324294967295_ui324 = arc.remi %cst_ui324294967295, %cst_ui324 : ui32
+    "arc.keep"(%result_remi_ui324294967295_ui324) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui323]]) : (ui32) -> ()
+
+    // remi 4, 2119154652 -> 4
+    %result_remi_ui324_ui322119154652 = arc.remi %cst_ui324, %cst_ui322119154652 : ui32
+    "arc.keep"(%result_remi_ui324_ui322119154652) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui324]]) : (ui32) -> ()
+
+    // remi 4, 3002788344 -> 4
+    %result_remi_ui324_ui323002788344 = arc.remi %cst_ui324, %cst_ui323002788344 : ui32
+    "arc.keep"(%result_remi_ui324_ui323002788344) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui324]]) : (ui32) -> ()
+
+    // remi 4, 3482297128 -> 4
+    %result_remi_ui324_ui323482297128 = arc.remi %cst_ui324, %cst_ui323482297128 : ui32
+    "arc.keep"(%result_remi_ui324_ui323482297128) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui324]]) : (ui32) -> ()
+
+    // remi 4, 4294967294 -> 4
+    %result_remi_ui324_ui324294967294 = arc.remi %cst_ui324, %cst_ui324294967294 : ui32
+    "arc.keep"(%result_remi_ui324_ui324294967294) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui324]]) : (ui32) -> ()
+
+    // remi 4, 4294967295 -> 4
+    %result_remi_ui324_ui324294967295 = arc.remi %cst_ui324, %cst_ui324294967295 : ui32
+    "arc.keep"(%result_remi_ui324_ui324294967295) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui324]]) : (ui32) -> ()
 
     // remi 4294967294, 2119154652 -> 56657990
     %result_remi_ui324294967294_ui322119154652 = arc.remi %cst_ui324294967294, %cst_ui322119154652 : ui32
@@ -9379,6 +19975,24 @@ module @toplevel {
     "arc.keep"(%result_remi_ui321_ui320) : (ui32) -> ()
     // CHECK: "arc.keep"([[RESULT_remi_ui321_ui320]]) : (ui32) -> ()
 
+    // remi 2, 0 -> no-fold
+    %result_remi_ui322_ui320 = arc.remi %cst_ui322, %cst_ui320 : ui32
+    // CHECK-DAG: [[RESULT_remi_ui322_ui320:%[^ ]+]] = arc.remi [[CSTui322]], [[CSTui320]] : ui32
+    "arc.keep"(%result_remi_ui322_ui320) : (ui32) -> ()
+    // CHECK: "arc.keep"([[RESULT_remi_ui322_ui320]]) : (ui32) -> ()
+
+    // remi 3, 0 -> no-fold
+    %result_remi_ui323_ui320 = arc.remi %cst_ui323, %cst_ui320 : ui32
+    // CHECK-DAG: [[RESULT_remi_ui323_ui320:%[^ ]+]] = arc.remi [[CSTui323]], [[CSTui320]] : ui32
+    "arc.keep"(%result_remi_ui323_ui320) : (ui32) -> ()
+    // CHECK: "arc.keep"([[RESULT_remi_ui323_ui320]]) : (ui32) -> ()
+
+    // remi 4, 0 -> no-fold
+    %result_remi_ui324_ui320 = arc.remi %cst_ui324, %cst_ui320 : ui32
+    // CHECK-DAG: [[RESULT_remi_ui324_ui320:%[^ ]+]] = arc.remi [[CSTui324]], [[CSTui320]] : ui32
+    "arc.keep"(%result_remi_ui324_ui320) : (ui32) -> ()
+    // CHECK: "arc.keep"([[RESULT_remi_ui324_ui320]]) : (ui32) -> ()
+
     // remi 2119154652, 0 -> no-fold
     %result_remi_ui322119154652_ui320 = arc.remi %cst_ui322119154652, %cst_ui320 : ui32
     // CHECK-DAG: [[RESULT_remi_ui322119154652_ui320:%[^ ]+]] = arc.remi [[CSTui322119154652]], [[CSTui320]] : ui32
@@ -9414,6 +20028,21 @@ module @toplevel {
     "arc.keep"(%result_remi_ui640_ui641) : (ui64) -> ()
     // CHECK: "arc.keep"([[CSTui640]]) : (ui64) -> ()
 
+    // remi 0, 2 -> 0
+    %result_remi_ui640_ui642 = arc.remi %cst_ui640, %cst_ui642 : ui64
+    "arc.keep"(%result_remi_ui640_ui642) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui640]]) : (ui64) -> ()
+
+    // remi 0, 3 -> 0
+    %result_remi_ui640_ui643 = arc.remi %cst_ui640, %cst_ui643 : ui64
+    "arc.keep"(%result_remi_ui640_ui643) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui640]]) : (ui64) -> ()
+
+    // remi 0, 4 -> 0
+    %result_remi_ui640_ui644 = arc.remi %cst_ui640, %cst_ui644 : ui64
+    "arc.keep"(%result_remi_ui640_ui644) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui640]]) : (ui64) -> ()
+
     // remi 0, 191084152064409600 -> 0
     %result_remi_ui640_ui64191084152064409600 = arc.remi %cst_ui640, %cst_ui64191084152064409600 : ui64
     "arc.keep"(%result_remi_ui640_ui64191084152064409600) : (ui64) -> ()
@@ -9444,9 +20073,59 @@ module @toplevel {
     "arc.keep"(%result_remi_ui641_ui641) : (ui64) -> ()
     // CHECK: "arc.keep"([[CSTui640]]) : (ui64) -> ()
 
+    // remi 2, 1 -> 0
+    %result_remi_ui642_ui641 = arc.remi %cst_ui642, %cst_ui641 : ui64
+    "arc.keep"(%result_remi_ui642_ui641) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui640]]) : (ui64) -> ()
+
+    // remi 2, 2 -> 0
+    %result_remi_ui642_ui642 = arc.remi %cst_ui642, %cst_ui642 : ui64
+    "arc.keep"(%result_remi_ui642_ui642) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui640]]) : (ui64) -> ()
+
+    // remi 3, 1 -> 0
+    %result_remi_ui643_ui641 = arc.remi %cst_ui643, %cst_ui641 : ui64
+    "arc.keep"(%result_remi_ui643_ui641) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui640]]) : (ui64) -> ()
+
+    // remi 3, 3 -> 0
+    %result_remi_ui643_ui643 = arc.remi %cst_ui643, %cst_ui643 : ui64
+    "arc.keep"(%result_remi_ui643_ui643) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui640]]) : (ui64) -> ()
+
+    // remi 4, 1 -> 0
+    %result_remi_ui644_ui641 = arc.remi %cst_ui644, %cst_ui641 : ui64
+    "arc.keep"(%result_remi_ui644_ui641) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui640]]) : (ui64) -> ()
+
+    // remi 4, 2 -> 0
+    %result_remi_ui644_ui642 = arc.remi %cst_ui644, %cst_ui642 : ui64
+    "arc.keep"(%result_remi_ui644_ui642) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui640]]) : (ui64) -> ()
+
+    // remi 4, 4 -> 0
+    %result_remi_ui644_ui644 = arc.remi %cst_ui644, %cst_ui644 : ui64
+    "arc.keep"(%result_remi_ui644_ui644) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui640]]) : (ui64) -> ()
+
     // remi 191084152064409600, 1 -> 0
     %result_remi_ui64191084152064409600_ui641 = arc.remi %cst_ui64191084152064409600, %cst_ui641 : ui64
     "arc.keep"(%result_remi_ui64191084152064409600_ui641) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui640]]) : (ui64) -> ()
+
+    // remi 191084152064409600, 2 -> 0
+    %result_remi_ui64191084152064409600_ui642 = arc.remi %cst_ui64191084152064409600, %cst_ui642 : ui64
+    "arc.keep"(%result_remi_ui64191084152064409600_ui642) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui640]]) : (ui64) -> ()
+
+    // remi 191084152064409600, 3 -> 0
+    %result_remi_ui64191084152064409600_ui643 = arc.remi %cst_ui64191084152064409600, %cst_ui643 : ui64
+    "arc.keep"(%result_remi_ui64191084152064409600_ui643) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui640]]) : (ui64) -> ()
+
+    // remi 191084152064409600, 4 -> 0
+    %result_remi_ui64191084152064409600_ui644 = arc.remi %cst_ui64191084152064409600, %cst_ui644 : ui64
+    "arc.keep"(%result_remi_ui64191084152064409600_ui644) : (ui64) -> ()
     // CHECK: "arc.keep"([[CSTui640]]) : (ui64) -> ()
 
     // remi 191084152064409600, 191084152064409600 -> 0
@@ -9459,6 +20138,21 @@ module @toplevel {
     "arc.keep"(%result_remi_ui6411015955194427482112_ui641) : (ui64) -> ()
     // CHECK: "arc.keep"([[CSTui640]]) : (ui64) -> ()
 
+    // remi 11015955194427482112, 2 -> 0
+    %result_remi_ui6411015955194427482112_ui642 = arc.remi %cst_ui6411015955194427482112, %cst_ui642 : ui64
+    "arc.keep"(%result_remi_ui6411015955194427482112_ui642) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui640]]) : (ui64) -> ()
+
+    // remi 11015955194427482112, 3 -> 0
+    %result_remi_ui6411015955194427482112_ui643 = arc.remi %cst_ui6411015955194427482112, %cst_ui643 : ui64
+    "arc.keep"(%result_remi_ui6411015955194427482112_ui643) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui640]]) : (ui64) -> ()
+
+    // remi 11015955194427482112, 4 -> 0
+    %result_remi_ui6411015955194427482112_ui644 = arc.remi %cst_ui6411015955194427482112, %cst_ui644 : ui64
+    "arc.keep"(%result_remi_ui6411015955194427482112_ui644) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui640]]) : (ui64) -> ()
+
     // remi 11015955194427482112, 11015955194427482112 -> 0
     %result_remi_ui6411015955194427482112_ui6411015955194427482112 = arc.remi %cst_ui6411015955194427482112, %cst_ui6411015955194427482112 : ui64
     "arc.keep"(%result_remi_ui6411015955194427482112_ui6411015955194427482112) : (ui64) -> ()
@@ -9467,6 +20161,21 @@ module @toplevel {
     // remi 16990600415051759616, 1 -> 0
     %result_remi_ui6416990600415051759616_ui641 = arc.remi %cst_ui6416990600415051759616, %cst_ui641 : ui64
     "arc.keep"(%result_remi_ui6416990600415051759616_ui641) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui640]]) : (ui64) -> ()
+
+    // remi 16990600415051759616, 2 -> 0
+    %result_remi_ui6416990600415051759616_ui642 = arc.remi %cst_ui6416990600415051759616, %cst_ui642 : ui64
+    "arc.keep"(%result_remi_ui6416990600415051759616_ui642) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui640]]) : (ui64) -> ()
+
+    // remi 16990600415051759616, 3 -> 0
+    %result_remi_ui6416990600415051759616_ui643 = arc.remi %cst_ui6416990600415051759616, %cst_ui643 : ui64
+    "arc.keep"(%result_remi_ui6416990600415051759616_ui643) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui640]]) : (ui64) -> ()
+
+    // remi 16990600415051759616, 4 -> 0
+    %result_remi_ui6416990600415051759616_ui644 = arc.remi %cst_ui6416990600415051759616, %cst_ui644 : ui64
+    "arc.keep"(%result_remi_ui6416990600415051759616_ui644) : (ui64) -> ()
     // CHECK: "arc.keep"([[CSTui640]]) : (ui64) -> ()
 
     // remi 16990600415051759616, 16990600415051759616 -> 0
@@ -9479,6 +20188,11 @@ module @toplevel {
     "arc.keep"(%result_remi_ui6418446744073709551614_ui641) : (ui64) -> ()
     // CHECK: "arc.keep"([[CSTui640]]) : (ui64) -> ()
 
+    // remi 18446744073709551614, 2 -> 0
+    %result_remi_ui6418446744073709551614_ui642 = arc.remi %cst_ui6418446744073709551614, %cst_ui642 : ui64
+    "arc.keep"(%result_remi_ui6418446744073709551614_ui642) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui640]]) : (ui64) -> ()
+
     // remi 18446744073709551614, 18446744073709551614 -> 0
     %result_remi_ui6418446744073709551614_ui6418446744073709551614 = arc.remi %cst_ui6418446744073709551614, %cst_ui6418446744073709551614 : ui64
     "arc.keep"(%result_remi_ui6418446744073709551614_ui6418446744073709551614) : (ui64) -> ()
@@ -9489,10 +20203,30 @@ module @toplevel {
     "arc.keep"(%result_remi_ui6418446744073709551615_ui641) : (ui64) -> ()
     // CHECK: "arc.keep"([[CSTui640]]) : (ui64) -> ()
 
+    // remi 18446744073709551615, 3 -> 0
+    %result_remi_ui6418446744073709551615_ui643 = arc.remi %cst_ui6418446744073709551615, %cst_ui643 : ui64
+    "arc.keep"(%result_remi_ui6418446744073709551615_ui643) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui640]]) : (ui64) -> ()
+
     // remi 18446744073709551615, 18446744073709551615 -> 0
     %result_remi_ui6418446744073709551615_ui6418446744073709551615 = arc.remi %cst_ui6418446744073709551615, %cst_ui6418446744073709551615 : ui64
     "arc.keep"(%result_remi_ui6418446744073709551615_ui6418446744073709551615) : (ui64) -> ()
     // CHECK: "arc.keep"([[CSTui640]]) : (ui64) -> ()
+
+    // remi 1, 2 -> 1
+    %result_remi_ui641_ui642 = arc.remi %cst_ui641, %cst_ui642 : ui64
+    "arc.keep"(%result_remi_ui641_ui642) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui641]]) : (ui64) -> ()
+
+    // remi 1, 3 -> 1
+    %result_remi_ui641_ui643 = arc.remi %cst_ui641, %cst_ui643 : ui64
+    "arc.keep"(%result_remi_ui641_ui643) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui641]]) : (ui64) -> ()
+
+    // remi 1, 4 -> 1
+    %result_remi_ui641_ui644 = arc.remi %cst_ui641, %cst_ui644 : ui64
+    "arc.keep"(%result_remi_ui641_ui644) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui641]]) : (ui64) -> ()
 
     // remi 1, 191084152064409600 -> 1
     %result_remi_ui641_ui64191084152064409600 = arc.remi %cst_ui641, %cst_ui64191084152064409600 : ui64
@@ -9519,10 +20253,130 @@ module @toplevel {
     "arc.keep"(%result_remi_ui641_ui6418446744073709551615) : (ui64) -> ()
     // CHECK: "arc.keep"([[CSTui641]]) : (ui64) -> ()
 
+    // remi 3, 2 -> 1
+    %result_remi_ui643_ui642 = arc.remi %cst_ui643, %cst_ui642 : ui64
+    "arc.keep"(%result_remi_ui643_ui642) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui641]]) : (ui64) -> ()
+
+    // remi 4, 3 -> 1
+    %result_remi_ui644_ui643 = arc.remi %cst_ui644, %cst_ui643 : ui64
+    "arc.keep"(%result_remi_ui644_ui643) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui641]]) : (ui64) -> ()
+
+    // remi 18446744073709551615, 2 -> 1
+    %result_remi_ui6418446744073709551615_ui642 = arc.remi %cst_ui6418446744073709551615, %cst_ui642 : ui64
+    "arc.keep"(%result_remi_ui6418446744073709551615_ui642) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui641]]) : (ui64) -> ()
+
     // remi 18446744073709551615, 18446744073709551614 -> 1
     %result_remi_ui6418446744073709551615_ui6418446744073709551614 = arc.remi %cst_ui6418446744073709551615, %cst_ui6418446744073709551614 : ui64
     "arc.keep"(%result_remi_ui6418446744073709551615_ui6418446744073709551614) : (ui64) -> ()
     // CHECK: "arc.keep"([[CSTui641]]) : (ui64) -> ()
+
+    // remi 2, 3 -> 2
+    %result_remi_ui642_ui643 = arc.remi %cst_ui642, %cst_ui643 : ui64
+    "arc.keep"(%result_remi_ui642_ui643) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui642]]) : (ui64) -> ()
+
+    // remi 2, 4 -> 2
+    %result_remi_ui642_ui644 = arc.remi %cst_ui642, %cst_ui644 : ui64
+    "arc.keep"(%result_remi_ui642_ui644) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui642]]) : (ui64) -> ()
+
+    // remi 2, 191084152064409600 -> 2
+    %result_remi_ui642_ui64191084152064409600 = arc.remi %cst_ui642, %cst_ui64191084152064409600 : ui64
+    "arc.keep"(%result_remi_ui642_ui64191084152064409600) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui642]]) : (ui64) -> ()
+
+    // remi 2, 11015955194427482112 -> 2
+    %result_remi_ui642_ui6411015955194427482112 = arc.remi %cst_ui642, %cst_ui6411015955194427482112 : ui64
+    "arc.keep"(%result_remi_ui642_ui6411015955194427482112) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui642]]) : (ui64) -> ()
+
+    // remi 2, 16990600415051759616 -> 2
+    %result_remi_ui642_ui6416990600415051759616 = arc.remi %cst_ui642, %cst_ui6416990600415051759616 : ui64
+    "arc.keep"(%result_remi_ui642_ui6416990600415051759616) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui642]]) : (ui64) -> ()
+
+    // remi 2, 18446744073709551614 -> 2
+    %result_remi_ui642_ui6418446744073709551614 = arc.remi %cst_ui642, %cst_ui6418446744073709551614 : ui64
+    "arc.keep"(%result_remi_ui642_ui6418446744073709551614) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui642]]) : (ui64) -> ()
+
+    // remi 2, 18446744073709551615 -> 2
+    %result_remi_ui642_ui6418446744073709551615 = arc.remi %cst_ui642, %cst_ui6418446744073709551615 : ui64
+    "arc.keep"(%result_remi_ui642_ui6418446744073709551615) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui642]]) : (ui64) -> ()
+
+    // remi 18446744073709551614, 3 -> 2
+    %result_remi_ui6418446744073709551614_ui643 = arc.remi %cst_ui6418446744073709551614, %cst_ui643 : ui64
+    "arc.keep"(%result_remi_ui6418446744073709551614_ui643) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui642]]) : (ui64) -> ()
+
+    // remi 18446744073709551614, 4 -> 2
+    %result_remi_ui6418446744073709551614_ui644 = arc.remi %cst_ui6418446744073709551614, %cst_ui644 : ui64
+    "arc.keep"(%result_remi_ui6418446744073709551614_ui644) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui642]]) : (ui64) -> ()
+
+    // remi 3, 4 -> 3
+    %result_remi_ui643_ui644 = arc.remi %cst_ui643, %cst_ui644 : ui64
+    "arc.keep"(%result_remi_ui643_ui644) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui643]]) : (ui64) -> ()
+
+    // remi 3, 191084152064409600 -> 3
+    %result_remi_ui643_ui64191084152064409600 = arc.remi %cst_ui643, %cst_ui64191084152064409600 : ui64
+    "arc.keep"(%result_remi_ui643_ui64191084152064409600) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui643]]) : (ui64) -> ()
+
+    // remi 3, 11015955194427482112 -> 3
+    %result_remi_ui643_ui6411015955194427482112 = arc.remi %cst_ui643, %cst_ui6411015955194427482112 : ui64
+    "arc.keep"(%result_remi_ui643_ui6411015955194427482112) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui643]]) : (ui64) -> ()
+
+    // remi 3, 16990600415051759616 -> 3
+    %result_remi_ui643_ui6416990600415051759616 = arc.remi %cst_ui643, %cst_ui6416990600415051759616 : ui64
+    "arc.keep"(%result_remi_ui643_ui6416990600415051759616) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui643]]) : (ui64) -> ()
+
+    // remi 3, 18446744073709551614 -> 3
+    %result_remi_ui643_ui6418446744073709551614 = arc.remi %cst_ui643, %cst_ui6418446744073709551614 : ui64
+    "arc.keep"(%result_remi_ui643_ui6418446744073709551614) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui643]]) : (ui64) -> ()
+
+    // remi 3, 18446744073709551615 -> 3
+    %result_remi_ui643_ui6418446744073709551615 = arc.remi %cst_ui643, %cst_ui6418446744073709551615 : ui64
+    "arc.keep"(%result_remi_ui643_ui6418446744073709551615) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui643]]) : (ui64) -> ()
+
+    // remi 18446744073709551615, 4 -> 3
+    %result_remi_ui6418446744073709551615_ui644 = arc.remi %cst_ui6418446744073709551615, %cst_ui644 : ui64
+    "arc.keep"(%result_remi_ui6418446744073709551615_ui644) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui643]]) : (ui64) -> ()
+
+    // remi 4, 191084152064409600 -> 4
+    %result_remi_ui644_ui64191084152064409600 = arc.remi %cst_ui644, %cst_ui64191084152064409600 : ui64
+    "arc.keep"(%result_remi_ui644_ui64191084152064409600) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui644]]) : (ui64) -> ()
+
+    // remi 4, 11015955194427482112 -> 4
+    %result_remi_ui644_ui6411015955194427482112 = arc.remi %cst_ui644, %cst_ui6411015955194427482112 : ui64
+    "arc.keep"(%result_remi_ui644_ui6411015955194427482112) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui644]]) : (ui64) -> ()
+
+    // remi 4, 16990600415051759616 -> 4
+    %result_remi_ui644_ui6416990600415051759616 = arc.remi %cst_ui644, %cst_ui6416990600415051759616 : ui64
+    "arc.keep"(%result_remi_ui644_ui6416990600415051759616) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui644]]) : (ui64) -> ()
+
+    // remi 4, 18446744073709551614 -> 4
+    %result_remi_ui644_ui6418446744073709551614 = arc.remi %cst_ui644, %cst_ui6418446744073709551614 : ui64
+    "arc.keep"(%result_remi_ui644_ui6418446744073709551614) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui644]]) : (ui64) -> ()
+
+    // remi 4, 18446744073709551615 -> 4
+    %result_remi_ui644_ui6418446744073709551615 = arc.remi %cst_ui644, %cst_ui6418446744073709551615 : ui64
+    "arc.keep"(%result_remi_ui644_ui6418446744073709551615) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui644]]) : (ui64) -> ()
 
     // remi 18446744073709551614, 191084152064409600 -> 102665475526230014
     %result_remi_ui6418446744073709551614_ui64191084152064409600 = arc.remi %cst_ui6418446744073709551614, %cst_ui64191084152064409600 : ui64
@@ -9631,6 +20485,24 @@ module @toplevel {
     "arc.keep"(%result_remi_ui641_ui640) : (ui64) -> ()
     // CHECK: "arc.keep"([[RESULT_remi_ui641_ui640]]) : (ui64) -> ()
 
+    // remi 2, 0 -> no-fold
+    %result_remi_ui642_ui640 = arc.remi %cst_ui642, %cst_ui640 : ui64
+    // CHECK-DAG: [[RESULT_remi_ui642_ui640:%[^ ]+]] = arc.remi [[CSTui642]], [[CSTui640]] : ui64
+    "arc.keep"(%result_remi_ui642_ui640) : (ui64) -> ()
+    // CHECK: "arc.keep"([[RESULT_remi_ui642_ui640]]) : (ui64) -> ()
+
+    // remi 3, 0 -> no-fold
+    %result_remi_ui643_ui640 = arc.remi %cst_ui643, %cst_ui640 : ui64
+    // CHECK-DAG: [[RESULT_remi_ui643_ui640:%[^ ]+]] = arc.remi [[CSTui643]], [[CSTui640]] : ui64
+    "arc.keep"(%result_remi_ui643_ui640) : (ui64) -> ()
+    // CHECK: "arc.keep"([[RESULT_remi_ui643_ui640]]) : (ui64) -> ()
+
+    // remi 4, 0 -> no-fold
+    %result_remi_ui644_ui640 = arc.remi %cst_ui644, %cst_ui640 : ui64
+    // CHECK-DAG: [[RESULT_remi_ui644_ui640:%[^ ]+]] = arc.remi [[CSTui644]], [[CSTui640]] : ui64
+    "arc.keep"(%result_remi_ui644_ui640) : (ui64) -> ()
+    // CHECK: "arc.keep"([[RESULT_remi_ui644_ui640]]) : (ui64) -> ()
+
     // remi 191084152064409600, 0 -> no-fold
     %result_remi_ui64191084152064409600_ui640 = arc.remi %cst_ui64191084152064409600, %cst_ui640 : ui64
     // CHECK-DAG: [[RESULT_remi_ui64191084152064409600_ui640:%[^ ]+]] = arc.remi [[CSTui64191084152064409600]], [[CSTui640]] : ui64
@@ -9666,6 +20538,21 @@ module @toplevel {
     "arc.keep"(%result_remi_ui80_ui81) : (ui8) -> ()
     // CHECK: "arc.keep"([[CSTui80]]) : (ui8) -> ()
 
+    // remi 0, 2 -> 0
+    %result_remi_ui80_ui82 = arc.remi %cst_ui80, %cst_ui82 : ui8
+    "arc.keep"(%result_remi_ui80_ui82) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui80]]) : (ui8) -> ()
+
+    // remi 0, 3 -> 0
+    %result_remi_ui80_ui83 = arc.remi %cst_ui80, %cst_ui83 : ui8
+    "arc.keep"(%result_remi_ui80_ui83) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui80]]) : (ui8) -> ()
+
+    // remi 0, 4 -> 0
+    %result_remi_ui80_ui84 = arc.remi %cst_ui80, %cst_ui84 : ui8
+    "arc.keep"(%result_remi_ui80_ui84) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui80]]) : (ui8) -> ()
+
     // remi 0, 72 -> 0
     %result_remi_ui80_ui872 = arc.remi %cst_ui80, %cst_ui872 : ui8
     "arc.keep"(%result_remi_ui80_ui872) : (ui8) -> ()
@@ -9696,9 +20583,59 @@ module @toplevel {
     "arc.keep"(%result_remi_ui81_ui81) : (ui8) -> ()
     // CHECK: "arc.keep"([[CSTui80]]) : (ui8) -> ()
 
+    // remi 2, 1 -> 0
+    %result_remi_ui82_ui81 = arc.remi %cst_ui82, %cst_ui81 : ui8
+    "arc.keep"(%result_remi_ui82_ui81) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui80]]) : (ui8) -> ()
+
+    // remi 2, 2 -> 0
+    %result_remi_ui82_ui82 = arc.remi %cst_ui82, %cst_ui82 : ui8
+    "arc.keep"(%result_remi_ui82_ui82) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui80]]) : (ui8) -> ()
+
+    // remi 3, 1 -> 0
+    %result_remi_ui83_ui81 = arc.remi %cst_ui83, %cst_ui81 : ui8
+    "arc.keep"(%result_remi_ui83_ui81) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui80]]) : (ui8) -> ()
+
+    // remi 3, 3 -> 0
+    %result_remi_ui83_ui83 = arc.remi %cst_ui83, %cst_ui83 : ui8
+    "arc.keep"(%result_remi_ui83_ui83) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui80]]) : (ui8) -> ()
+
+    // remi 4, 1 -> 0
+    %result_remi_ui84_ui81 = arc.remi %cst_ui84, %cst_ui81 : ui8
+    "arc.keep"(%result_remi_ui84_ui81) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui80]]) : (ui8) -> ()
+
+    // remi 4, 2 -> 0
+    %result_remi_ui84_ui82 = arc.remi %cst_ui84, %cst_ui82 : ui8
+    "arc.keep"(%result_remi_ui84_ui82) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui80]]) : (ui8) -> ()
+
+    // remi 4, 4 -> 0
+    %result_remi_ui84_ui84 = arc.remi %cst_ui84, %cst_ui84 : ui8
+    "arc.keep"(%result_remi_ui84_ui84) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui80]]) : (ui8) -> ()
+
     // remi 72, 1 -> 0
     %result_remi_ui872_ui81 = arc.remi %cst_ui872, %cst_ui81 : ui8
     "arc.keep"(%result_remi_ui872_ui81) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui80]]) : (ui8) -> ()
+
+    // remi 72, 2 -> 0
+    %result_remi_ui872_ui82 = arc.remi %cst_ui872, %cst_ui82 : ui8
+    "arc.keep"(%result_remi_ui872_ui82) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui80]]) : (ui8) -> ()
+
+    // remi 72, 3 -> 0
+    %result_remi_ui872_ui83 = arc.remi %cst_ui872, %cst_ui83 : ui8
+    "arc.keep"(%result_remi_ui872_ui83) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui80]]) : (ui8) -> ()
+
+    // remi 72, 4 -> 0
+    %result_remi_ui872_ui84 = arc.remi %cst_ui872, %cst_ui84 : ui8
+    "arc.keep"(%result_remi_ui872_ui84) : (ui8) -> ()
     // CHECK: "arc.keep"([[CSTui80]]) : (ui8) -> ()
 
     // remi 72, 72 -> 0
@@ -9711,6 +20648,16 @@ module @toplevel {
     "arc.keep"(%result_remi_ui8100_ui81) : (ui8) -> ()
     // CHECK: "arc.keep"([[CSTui80]]) : (ui8) -> ()
 
+    // remi 100, 2 -> 0
+    %result_remi_ui8100_ui82 = arc.remi %cst_ui8100, %cst_ui82 : ui8
+    "arc.keep"(%result_remi_ui8100_ui82) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui80]]) : (ui8) -> ()
+
+    // remi 100, 4 -> 0
+    %result_remi_ui8100_ui84 = arc.remi %cst_ui8100, %cst_ui84 : ui8
+    "arc.keep"(%result_remi_ui8100_ui84) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui80]]) : (ui8) -> ()
+
     // remi 100, 100 -> 0
     %result_remi_ui8100_ui8100 = arc.remi %cst_ui8100, %cst_ui8100 : ui8
     "arc.keep"(%result_remi_ui8100_ui8100) : (ui8) -> ()
@@ -9719,6 +20666,16 @@ module @toplevel {
     // remi 162, 1 -> 0
     %result_remi_ui8162_ui81 = arc.remi %cst_ui8162, %cst_ui81 : ui8
     "arc.keep"(%result_remi_ui8162_ui81) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui80]]) : (ui8) -> ()
+
+    // remi 162, 2 -> 0
+    %result_remi_ui8162_ui82 = arc.remi %cst_ui8162, %cst_ui82 : ui8
+    "arc.keep"(%result_remi_ui8162_ui82) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui80]]) : (ui8) -> ()
+
+    // remi 162, 3 -> 0
+    %result_remi_ui8162_ui83 = arc.remi %cst_ui8162, %cst_ui83 : ui8
+    "arc.keep"(%result_remi_ui8162_ui83) : (ui8) -> ()
     // CHECK: "arc.keep"([[CSTui80]]) : (ui8) -> ()
 
     // remi 162, 162 -> 0
@@ -9731,6 +20688,11 @@ module @toplevel {
     "arc.keep"(%result_remi_ui8254_ui81) : (ui8) -> ()
     // CHECK: "arc.keep"([[CSTui80]]) : (ui8) -> ()
 
+    // remi 254, 2 -> 0
+    %result_remi_ui8254_ui82 = arc.remi %cst_ui8254, %cst_ui82 : ui8
+    "arc.keep"(%result_remi_ui8254_ui82) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui80]]) : (ui8) -> ()
+
     // remi 254, 254 -> 0
     %result_remi_ui8254_ui8254 = arc.remi %cst_ui8254, %cst_ui8254 : ui8
     "arc.keep"(%result_remi_ui8254_ui8254) : (ui8) -> ()
@@ -9741,10 +20703,30 @@ module @toplevel {
     "arc.keep"(%result_remi_ui8255_ui81) : (ui8) -> ()
     // CHECK: "arc.keep"([[CSTui80]]) : (ui8) -> ()
 
+    // remi 255, 3 -> 0
+    %result_remi_ui8255_ui83 = arc.remi %cst_ui8255, %cst_ui83 : ui8
+    "arc.keep"(%result_remi_ui8255_ui83) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui80]]) : (ui8) -> ()
+
     // remi 255, 255 -> 0
     %result_remi_ui8255_ui8255 = arc.remi %cst_ui8255, %cst_ui8255 : ui8
     "arc.keep"(%result_remi_ui8255_ui8255) : (ui8) -> ()
     // CHECK: "arc.keep"([[CSTui80]]) : (ui8) -> ()
+
+    // remi 1, 2 -> 1
+    %result_remi_ui81_ui82 = arc.remi %cst_ui81, %cst_ui82 : ui8
+    "arc.keep"(%result_remi_ui81_ui82) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui81]]) : (ui8) -> ()
+
+    // remi 1, 3 -> 1
+    %result_remi_ui81_ui83 = arc.remi %cst_ui81, %cst_ui83 : ui8
+    "arc.keep"(%result_remi_ui81_ui83) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui81]]) : (ui8) -> ()
+
+    // remi 1, 4 -> 1
+    %result_remi_ui81_ui84 = arc.remi %cst_ui81, %cst_ui84 : ui8
+    "arc.keep"(%result_remi_ui81_ui84) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui81]]) : (ui8) -> ()
 
     // remi 1, 72 -> 1
     %result_remi_ui81_ui872 = arc.remi %cst_ui81, %cst_ui872 : ui8
@@ -9771,10 +20753,140 @@ module @toplevel {
     "arc.keep"(%result_remi_ui81_ui8255) : (ui8) -> ()
     // CHECK: "arc.keep"([[CSTui81]]) : (ui8) -> ()
 
+    // remi 3, 2 -> 1
+    %result_remi_ui83_ui82 = arc.remi %cst_ui83, %cst_ui82 : ui8
+    "arc.keep"(%result_remi_ui83_ui82) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui81]]) : (ui8) -> ()
+
+    // remi 4, 3 -> 1
+    %result_remi_ui84_ui83 = arc.remi %cst_ui84, %cst_ui83 : ui8
+    "arc.keep"(%result_remi_ui84_ui83) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui81]]) : (ui8) -> ()
+
+    // remi 100, 3 -> 1
+    %result_remi_ui8100_ui83 = arc.remi %cst_ui8100, %cst_ui83 : ui8
+    "arc.keep"(%result_remi_ui8100_ui83) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui81]]) : (ui8) -> ()
+
+    // remi 255, 2 -> 1
+    %result_remi_ui8255_ui82 = arc.remi %cst_ui8255, %cst_ui82 : ui8
+    "arc.keep"(%result_remi_ui8255_ui82) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui81]]) : (ui8) -> ()
+
     // remi 255, 254 -> 1
     %result_remi_ui8255_ui8254 = arc.remi %cst_ui8255, %cst_ui8254 : ui8
     "arc.keep"(%result_remi_ui8255_ui8254) : (ui8) -> ()
     // CHECK: "arc.keep"([[CSTui81]]) : (ui8) -> ()
+
+    // remi 2, 3 -> 2
+    %result_remi_ui82_ui83 = arc.remi %cst_ui82, %cst_ui83 : ui8
+    "arc.keep"(%result_remi_ui82_ui83) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui82]]) : (ui8) -> ()
+
+    // remi 2, 4 -> 2
+    %result_remi_ui82_ui84 = arc.remi %cst_ui82, %cst_ui84 : ui8
+    "arc.keep"(%result_remi_ui82_ui84) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui82]]) : (ui8) -> ()
+
+    // remi 2, 72 -> 2
+    %result_remi_ui82_ui872 = arc.remi %cst_ui82, %cst_ui872 : ui8
+    "arc.keep"(%result_remi_ui82_ui872) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui82]]) : (ui8) -> ()
+
+    // remi 2, 100 -> 2
+    %result_remi_ui82_ui8100 = arc.remi %cst_ui82, %cst_ui8100 : ui8
+    "arc.keep"(%result_remi_ui82_ui8100) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui82]]) : (ui8) -> ()
+
+    // remi 2, 162 -> 2
+    %result_remi_ui82_ui8162 = arc.remi %cst_ui82, %cst_ui8162 : ui8
+    "arc.keep"(%result_remi_ui82_ui8162) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui82]]) : (ui8) -> ()
+
+    // remi 2, 254 -> 2
+    %result_remi_ui82_ui8254 = arc.remi %cst_ui82, %cst_ui8254 : ui8
+    "arc.keep"(%result_remi_ui82_ui8254) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui82]]) : (ui8) -> ()
+
+    // remi 2, 255 -> 2
+    %result_remi_ui82_ui8255 = arc.remi %cst_ui82, %cst_ui8255 : ui8
+    "arc.keep"(%result_remi_ui82_ui8255) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui82]]) : (ui8) -> ()
+
+    // remi 162, 4 -> 2
+    %result_remi_ui8162_ui84 = arc.remi %cst_ui8162, %cst_ui84 : ui8
+    "arc.keep"(%result_remi_ui8162_ui84) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui82]]) : (ui8) -> ()
+
+    // remi 254, 3 -> 2
+    %result_remi_ui8254_ui83 = arc.remi %cst_ui8254, %cst_ui83 : ui8
+    "arc.keep"(%result_remi_ui8254_ui83) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui82]]) : (ui8) -> ()
+
+    // remi 254, 4 -> 2
+    %result_remi_ui8254_ui84 = arc.remi %cst_ui8254, %cst_ui84 : ui8
+    "arc.keep"(%result_remi_ui8254_ui84) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui82]]) : (ui8) -> ()
+
+    // remi 3, 4 -> 3
+    %result_remi_ui83_ui84 = arc.remi %cst_ui83, %cst_ui84 : ui8
+    "arc.keep"(%result_remi_ui83_ui84) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui83]]) : (ui8) -> ()
+
+    // remi 3, 72 -> 3
+    %result_remi_ui83_ui872 = arc.remi %cst_ui83, %cst_ui872 : ui8
+    "arc.keep"(%result_remi_ui83_ui872) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui83]]) : (ui8) -> ()
+
+    // remi 3, 100 -> 3
+    %result_remi_ui83_ui8100 = arc.remi %cst_ui83, %cst_ui8100 : ui8
+    "arc.keep"(%result_remi_ui83_ui8100) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui83]]) : (ui8) -> ()
+
+    // remi 3, 162 -> 3
+    %result_remi_ui83_ui8162 = arc.remi %cst_ui83, %cst_ui8162 : ui8
+    "arc.keep"(%result_remi_ui83_ui8162) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui83]]) : (ui8) -> ()
+
+    // remi 3, 254 -> 3
+    %result_remi_ui83_ui8254 = arc.remi %cst_ui83, %cst_ui8254 : ui8
+    "arc.keep"(%result_remi_ui83_ui8254) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui83]]) : (ui8) -> ()
+
+    // remi 3, 255 -> 3
+    %result_remi_ui83_ui8255 = arc.remi %cst_ui83, %cst_ui8255 : ui8
+    "arc.keep"(%result_remi_ui83_ui8255) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui83]]) : (ui8) -> ()
+
+    // remi 255, 4 -> 3
+    %result_remi_ui8255_ui84 = arc.remi %cst_ui8255, %cst_ui84 : ui8
+    "arc.keep"(%result_remi_ui8255_ui84) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui83]]) : (ui8) -> ()
+
+    // remi 4, 72 -> 4
+    %result_remi_ui84_ui872 = arc.remi %cst_ui84, %cst_ui872 : ui8
+    "arc.keep"(%result_remi_ui84_ui872) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui84]]) : (ui8) -> ()
+
+    // remi 4, 100 -> 4
+    %result_remi_ui84_ui8100 = arc.remi %cst_ui84, %cst_ui8100 : ui8
+    "arc.keep"(%result_remi_ui84_ui8100) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui84]]) : (ui8) -> ()
+
+    // remi 4, 162 -> 4
+    %result_remi_ui84_ui8162 = arc.remi %cst_ui84, %cst_ui8162 : ui8
+    "arc.keep"(%result_remi_ui84_ui8162) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui84]]) : (ui8) -> ()
+
+    // remi 4, 254 -> 4
+    %result_remi_ui84_ui8254 = arc.remi %cst_ui84, %cst_ui8254 : ui8
+    "arc.keep"(%result_remi_ui84_ui8254) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui84]]) : (ui8) -> ()
+
+    // remi 4, 255 -> 4
+    %result_remi_ui84_ui8255 = arc.remi %cst_ui84, %cst_ui8255 : ui8
+    "arc.keep"(%result_remi_ui84_ui8255) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui84]]) : (ui8) -> ()
 
     // remi 162, 72 -> 18
     %result_remi_ui8162_ui872 = arc.remi %cst_ui8162, %cst_ui872 : ui8
@@ -9883,6 +20995,24 @@ module @toplevel {
     "arc.keep"(%result_remi_ui81_ui80) : (ui8) -> ()
     // CHECK: "arc.keep"([[RESULT_remi_ui81_ui80]]) : (ui8) -> ()
 
+    // remi 2, 0 -> no-fold
+    %result_remi_ui82_ui80 = arc.remi %cst_ui82, %cst_ui80 : ui8
+    // CHECK-DAG: [[RESULT_remi_ui82_ui80:%[^ ]+]] = arc.remi [[CSTui82]], [[CSTui80]] : ui8
+    "arc.keep"(%result_remi_ui82_ui80) : (ui8) -> ()
+    // CHECK: "arc.keep"([[RESULT_remi_ui82_ui80]]) : (ui8) -> ()
+
+    // remi 3, 0 -> no-fold
+    %result_remi_ui83_ui80 = arc.remi %cst_ui83, %cst_ui80 : ui8
+    // CHECK-DAG: [[RESULT_remi_ui83_ui80:%[^ ]+]] = arc.remi [[CSTui83]], [[CSTui80]] : ui8
+    "arc.keep"(%result_remi_ui83_ui80) : (ui8) -> ()
+    // CHECK: "arc.keep"([[RESULT_remi_ui83_ui80]]) : (ui8) -> ()
+
+    // remi 4, 0 -> no-fold
+    %result_remi_ui84_ui80 = arc.remi %cst_ui84, %cst_ui80 : ui8
+    // CHECK-DAG: [[RESULT_remi_ui84_ui80:%[^ ]+]] = arc.remi [[CSTui84]], [[CSTui80]] : ui8
+    "arc.keep"(%result_remi_ui84_ui80) : (ui8) -> ()
+    // CHECK: "arc.keep"([[RESULT_remi_ui84_ui80]]) : (ui8) -> ()
+
     // remi 72, 0 -> no-fold
     %result_remi_ui872_ui80 = arc.remi %cst_ui872, %cst_ui80 : ui8
     // CHECK-DAG: [[RESULT_remi_ui872_ui80:%[^ ]+]] = arc.remi [[CSTui872]], [[CSTui80]] : ui8
@@ -9918,6 +21048,11 @@ module @toplevel {
     "arc.keep"(%result_subi_si16n32768_si160) : (si16) -> ()
     // CHECK: "arc.keep"([[CSTsi16n32768]]) : (si16) -> ()
 
+    // subi -32767, 1 -> -32768
+    %result_subi_si16n32767_si161 = arc.subi %cst_si16n32767, %cst_si161 : si16
+    "arc.keep"(%result_subi_si16n32767_si161) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi16n32768]]) : (si16) -> ()
+
     // subi -32767, 0 -> -32767
     %result_subi_si16n32767_si160 = arc.subi %cst_si16n32767, %cst_si160 : si16
     "arc.keep"(%result_subi_si16n32767_si160) : (si16) -> ()
@@ -9932,6 +21067,66 @@ module @toplevel {
     %result_subi_si160_si1632766 = arc.subi %cst_si160, %cst_si1632766 : si16
     "arc.keep"(%result_subi_si160_si1632766) : (si16) -> ()
     // CHECK: "arc.keep"([[CSTsi16n32766]]) : (si16) -> ()
+
+    // subi 1, 32767 -> -32766
+    %result_subi_si161_si1632767 = arc.subi %cst_si161, %cst_si1632767 : si16
+    "arc.keep"(%result_subi_si161_si1632767) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi16n32766]]) : (si16) -> ()
+
+    // subi 1, 32766 -> -32765
+    %result_subi_si161_si1632766 = arc.subi %cst_si161, %cst_si1632766 : si16
+    "arc.keep"(%result_subi_si161_si1632766) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi16n32765]]) : (si16) -> ()
+
+    // subi 2, 32767 -> -32765
+    %result_subi_si162_si1632767 = arc.subi %cst_si162, %cst_si1632767 : si16
+    "arc.keep"(%result_subi_si162_si1632767) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi16n32765]]) : (si16) -> ()
+
+    // subi 2, 32766 -> -32764
+    %result_subi_si162_si1632766 = arc.subi %cst_si162, %cst_si1632766 : si16
+    "arc.keep"(%result_subi_si162_si1632766) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi16n32764]]) : (si16) -> ()
+
+    // subi 3, 32767 -> -32764
+    %result_subi_si163_si1632767 = arc.subi %cst_si163, %cst_si1632767 : si16
+    "arc.keep"(%result_subi_si163_si1632767) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi16n32764]]) : (si16) -> ()
+
+    // subi 3, 32766 -> -32763
+    %result_subi_si163_si1632766 = arc.subi %cst_si163, %cst_si1632766 : si16
+    "arc.keep"(%result_subi_si163_si1632766) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi16n32763]]) : (si16) -> ()
+
+    // subi 4, 32767 -> -32763
+    %result_subi_si164_si1632767 = arc.subi %cst_si164, %cst_si1632767 : si16
+    "arc.keep"(%result_subi_si164_si1632767) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi16n32763]]) : (si16) -> ()
+
+    // subi 4, 32766 -> -32762
+    %result_subi_si164_si1632766 = arc.subi %cst_si164, %cst_si1632766 : si16
+    "arc.keep"(%result_subi_si164_si1632766) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi16n32762]]) : (si16) -> ()
+
+    // subi -32547, 4 -> -32551
+    %result_subi_si16n32547_si164 = arc.subi %cst_si16n32547, %cst_si164 : si16
+    "arc.keep"(%result_subi_si16n32547_si164) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi16n32551]]) : (si16) -> ()
+
+    // subi -32547, 3 -> -32550
+    %result_subi_si16n32547_si163 = arc.subi %cst_si16n32547, %cst_si163 : si16
+    "arc.keep"(%result_subi_si16n32547_si163) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi16n32550]]) : (si16) -> ()
+
+    // subi -32547, 2 -> -32549
+    %result_subi_si16n32547_si162 = arc.subi %cst_si16n32547, %cst_si162 : si16
+    "arc.keep"(%result_subi_si16n32547_si162) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi16n32549]]) : (si16) -> ()
+
+    // subi -32547, 1 -> -32548
+    %result_subi_si16n32547_si161 = arc.subi %cst_si16n32547, %cst_si161 : si16
+    "arc.keep"(%result_subi_si16n32547_si161) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi16n32548]]) : (si16) -> ()
 
     // subi -32547, 0 -> -32547
     %result_subi_si16n32547_si160 = arc.subi %cst_si16n32547, %cst_si160 : si16
@@ -9953,6 +21148,26 @@ module @toplevel {
     "arc.keep"(%result_subi_si160_si1616514) : (si16) -> ()
     // CHECK: "arc.keep"([[CSTsi16n16514]]) : (si16) -> ()
 
+    // subi 1, 16514 -> -16513
+    %result_subi_si161_si1616514 = arc.subi %cst_si161, %cst_si1616514 : si16
+    "arc.keep"(%result_subi_si161_si1616514) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi16n16513]]) : (si16) -> ()
+
+    // subi 2, 16514 -> -16512
+    %result_subi_si162_si1616514 = arc.subi %cst_si162, %cst_si1616514 : si16
+    "arc.keep"(%result_subi_si162_si1616514) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi16n16512]]) : (si16) -> ()
+
+    // subi 3, 16514 -> -16511
+    %result_subi_si163_si1616514 = arc.subi %cst_si163, %cst_si1616514 : si16
+    "arc.keep"(%result_subi_si163_si1616514) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi16n16511]]) : (si16) -> ()
+
+    // subi 4, 16514 -> -16510
+    %result_subi_si164_si1616514 = arc.subi %cst_si164, %cst_si1616514 : si16
+    "arc.keep"(%result_subi_si164_si1616514) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi16n16510]]) : (si16) -> ()
+
     // subi 16514, 32767 -> -16253
     %result_subi_si1616514_si1632767 = arc.subi %cst_si1616514, %cst_si1632767 : si16
     "arc.keep"(%result_subi_si1616514_si1632767) : (si16) -> ()
@@ -9967,6 +21182,26 @@ module @toplevel {
     %result_subi_si160_si1610486 = arc.subi %cst_si160, %cst_si1610486 : si16
     "arc.keep"(%result_subi_si160_si1610486) : (si16) -> ()
     // CHECK: "arc.keep"([[CSTsi16n10486]]) : (si16) -> ()
+
+    // subi 1, 10486 -> -10485
+    %result_subi_si161_si1610486 = arc.subi %cst_si161, %cst_si1610486 : si16
+    "arc.keep"(%result_subi_si161_si1610486) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi16n10485]]) : (si16) -> ()
+
+    // subi 2, 10486 -> -10484
+    %result_subi_si162_si1610486 = arc.subi %cst_si162, %cst_si1610486 : si16
+    "arc.keep"(%result_subi_si162_si1610486) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi16n10484]]) : (si16) -> ()
+
+    // subi 3, 10486 -> -10483
+    %result_subi_si163_si1610486 = arc.subi %cst_si163, %cst_si1610486 : si16
+    "arc.keep"(%result_subi_si163_si1610486) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi16n10483]]) : (si16) -> ()
+
+    // subi 4, 10486 -> -10482
+    %result_subi_si164_si1610486 = arc.subi %cst_si164, %cst_si1610486 : si16
+    "arc.keep"(%result_subi_si164_si1610486) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi16n10482]]) : (si16) -> ()
 
     // subi 10486, 16514 -> -6028
     %result_subi_si1610486_si1616514 = arc.subi %cst_si1610486, %cst_si1616514 : si16
@@ -9983,9 +21218,59 @@ module @toplevel {
     "arc.keep"(%result_subi_si16n32767_si16n32547) : (si16) -> ()
     // CHECK: "arc.keep"([[CSTsi16n220]]) : (si16) -> ()
 
+    // subi 0, 4 -> -4
+    %result_subi_si160_si164 = arc.subi %cst_si160, %cst_si164 : si16
+    "arc.keep"(%result_subi_si160_si164) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi16n4]]) : (si16) -> ()
+
+    // subi 0, 3 -> -3
+    %result_subi_si160_si163 = arc.subi %cst_si160, %cst_si163 : si16
+    "arc.keep"(%result_subi_si160_si163) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi16n3]]) : (si16) -> ()
+
+    // subi 1, 4 -> -3
+    %result_subi_si161_si164 = arc.subi %cst_si161, %cst_si164 : si16
+    "arc.keep"(%result_subi_si161_si164) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi16n3]]) : (si16) -> ()
+
+    // subi 0, 2 -> -2
+    %result_subi_si160_si162 = arc.subi %cst_si160, %cst_si162 : si16
+    "arc.keep"(%result_subi_si160_si162) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi16n2]]) : (si16) -> ()
+
+    // subi 1, 3 -> -2
+    %result_subi_si161_si163 = arc.subi %cst_si161, %cst_si163 : si16
+    "arc.keep"(%result_subi_si161_si163) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi16n2]]) : (si16) -> ()
+
+    // subi 2, 4 -> -2
+    %result_subi_si162_si164 = arc.subi %cst_si162, %cst_si164 : si16
+    "arc.keep"(%result_subi_si162_si164) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi16n2]]) : (si16) -> ()
+
     // subi -32768, -32767 -> -1
     %result_subi_si16n32768_si16n32767 = arc.subi %cst_si16n32768, %cst_si16n32767 : si16
     "arc.keep"(%result_subi_si16n32768_si16n32767) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi16n1]]) : (si16) -> ()
+
+    // subi 0, 1 -> -1
+    %result_subi_si160_si161 = arc.subi %cst_si160, %cst_si161 : si16
+    "arc.keep"(%result_subi_si160_si161) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi16n1]]) : (si16) -> ()
+
+    // subi 1, 2 -> -1
+    %result_subi_si161_si162 = arc.subi %cst_si161, %cst_si162 : si16
+    "arc.keep"(%result_subi_si161_si162) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi16n1]]) : (si16) -> ()
+
+    // subi 2, 3 -> -1
+    %result_subi_si162_si163 = arc.subi %cst_si162, %cst_si163 : si16
+    "arc.keep"(%result_subi_si162_si163) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi16n1]]) : (si16) -> ()
+
+    // subi 3, 4 -> -1
+    %result_subi_si163_si164 = arc.subi %cst_si163, %cst_si164 : si16
+    "arc.keep"(%result_subi_si163_si164) : (si16) -> ()
     // CHECK: "arc.keep"([[CSTsi16n1]]) : (si16) -> ()
 
     // subi 32766, 32767 -> -1
@@ -10013,6 +21298,26 @@ module @toplevel {
     "arc.keep"(%result_subi_si160_si160) : (si16) -> ()
     // CHECK: "arc.keep"([[CSTsi160]]) : (si16) -> ()
 
+    // subi 1, 1 -> 0
+    %result_subi_si161_si161 = arc.subi %cst_si161, %cst_si161 : si16
+    "arc.keep"(%result_subi_si161_si161) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi160]]) : (si16) -> ()
+
+    // subi 2, 2 -> 0
+    %result_subi_si162_si162 = arc.subi %cst_si162, %cst_si162 : si16
+    "arc.keep"(%result_subi_si162_si162) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi160]]) : (si16) -> ()
+
+    // subi 3, 3 -> 0
+    %result_subi_si163_si163 = arc.subi %cst_si163, %cst_si163 : si16
+    "arc.keep"(%result_subi_si163_si163) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi160]]) : (si16) -> ()
+
+    // subi 4, 4 -> 0
+    %result_subi_si164_si164 = arc.subi %cst_si164, %cst_si164 : si16
+    "arc.keep"(%result_subi_si164_si164) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi160]]) : (si16) -> ()
+
     // subi 10486, 10486 -> 0
     %result_subi_si1610486_si1610486 = arc.subi %cst_si1610486, %cst_si1610486 : si16
     "arc.keep"(%result_subi_si1610486_si1610486) : (si16) -> ()
@@ -10038,10 +21343,60 @@ module @toplevel {
     "arc.keep"(%result_subi_si16n32767_si16n32768) : (si16) -> ()
     // CHECK: "arc.keep"([[CSTsi161]]) : (si16) -> ()
 
+    // subi 1, 0 -> 1
+    %result_subi_si161_si160 = arc.subi %cst_si161, %cst_si160 : si16
+    "arc.keep"(%result_subi_si161_si160) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi161]]) : (si16) -> ()
+
+    // subi 2, 1 -> 1
+    %result_subi_si162_si161 = arc.subi %cst_si162, %cst_si161 : si16
+    "arc.keep"(%result_subi_si162_si161) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi161]]) : (si16) -> ()
+
+    // subi 3, 2 -> 1
+    %result_subi_si163_si162 = arc.subi %cst_si163, %cst_si162 : si16
+    "arc.keep"(%result_subi_si163_si162) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi161]]) : (si16) -> ()
+
+    // subi 4, 3 -> 1
+    %result_subi_si164_si163 = arc.subi %cst_si164, %cst_si163 : si16
+    "arc.keep"(%result_subi_si164_si163) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi161]]) : (si16) -> ()
+
     // subi 32767, 32766 -> 1
     %result_subi_si1632767_si1632766 = arc.subi %cst_si1632767, %cst_si1632766 : si16
     "arc.keep"(%result_subi_si1632767_si1632766) : (si16) -> ()
     // CHECK: "arc.keep"([[CSTsi161]]) : (si16) -> ()
+
+    // subi 2, 0 -> 2
+    %result_subi_si162_si160 = arc.subi %cst_si162, %cst_si160 : si16
+    "arc.keep"(%result_subi_si162_si160) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi162]]) : (si16) -> ()
+
+    // subi 3, 1 -> 2
+    %result_subi_si163_si161 = arc.subi %cst_si163, %cst_si161 : si16
+    "arc.keep"(%result_subi_si163_si161) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi162]]) : (si16) -> ()
+
+    // subi 4, 2 -> 2
+    %result_subi_si164_si162 = arc.subi %cst_si164, %cst_si162 : si16
+    "arc.keep"(%result_subi_si164_si162) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi162]]) : (si16) -> ()
+
+    // subi 3, 0 -> 3
+    %result_subi_si163_si160 = arc.subi %cst_si163, %cst_si160 : si16
+    "arc.keep"(%result_subi_si163_si160) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi163]]) : (si16) -> ()
+
+    // subi 4, 1 -> 3
+    %result_subi_si164_si161 = arc.subi %cst_si164, %cst_si161 : si16
+    "arc.keep"(%result_subi_si164_si161) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi163]]) : (si16) -> ()
+
+    // subi 4, 0 -> 4
+    %result_subi_si164_si160 = arc.subi %cst_si164, %cst_si160 : si16
+    "arc.keep"(%result_subi_si164_si160) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi164]]) : (si16) -> ()
 
     // subi -32547, -32767 -> 220
     %result_subi_si16n32547_si16n32767 = arc.subi %cst_si16n32547, %cst_si16n32767 : si16
@@ -10058,6 +21413,26 @@ module @toplevel {
     "arc.keep"(%result_subi_si1616514_si1610486) : (si16) -> ()
     // CHECK: "arc.keep"([[CSTsi166028]]) : (si16) -> ()
 
+    // subi 10486, 4 -> 10482
+    %result_subi_si1610486_si164 = arc.subi %cst_si1610486, %cst_si164 : si16
+    "arc.keep"(%result_subi_si1610486_si164) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi1610482]]) : (si16) -> ()
+
+    // subi 10486, 3 -> 10483
+    %result_subi_si1610486_si163 = arc.subi %cst_si1610486, %cst_si163 : si16
+    "arc.keep"(%result_subi_si1610486_si163) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi1610483]]) : (si16) -> ()
+
+    // subi 10486, 2 -> 10484
+    %result_subi_si1610486_si162 = arc.subi %cst_si1610486, %cst_si162 : si16
+    "arc.keep"(%result_subi_si1610486_si162) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi1610484]]) : (si16) -> ()
+
+    // subi 10486, 1 -> 10485
+    %result_subi_si1610486_si161 = arc.subi %cst_si1610486, %cst_si161 : si16
+    "arc.keep"(%result_subi_si1610486_si161) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi1610485]]) : (si16) -> ()
+
     // subi 10486, 0 -> 10486
     %result_subi_si1610486_si160 = arc.subi %cst_si1610486, %cst_si160 : si16
     "arc.keep"(%result_subi_si1610486_si160) : (si16) -> ()
@@ -10072,6 +21447,26 @@ module @toplevel {
     %result_subi_si1632767_si1616514 = arc.subi %cst_si1632767, %cst_si1616514 : si16
     "arc.keep"(%result_subi_si1632767_si1616514) : (si16) -> ()
     // CHECK: "arc.keep"([[CSTsi1616253]]) : (si16) -> ()
+
+    // subi 16514, 4 -> 16510
+    %result_subi_si1616514_si164 = arc.subi %cst_si1616514, %cst_si164 : si16
+    "arc.keep"(%result_subi_si1616514_si164) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi1616510]]) : (si16) -> ()
+
+    // subi 16514, 3 -> 16511
+    %result_subi_si1616514_si163 = arc.subi %cst_si1616514, %cst_si163 : si16
+    "arc.keep"(%result_subi_si1616514_si163) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi1616511]]) : (si16) -> ()
+
+    // subi 16514, 2 -> 16512
+    %result_subi_si1616514_si162 = arc.subi %cst_si1616514, %cst_si162 : si16
+    "arc.keep"(%result_subi_si1616514_si162) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi1616512]]) : (si16) -> ()
+
+    // subi 16514, 1 -> 16513
+    %result_subi_si1616514_si161 = arc.subi %cst_si1616514, %cst_si161 : si16
+    "arc.keep"(%result_subi_si1616514_si161) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi1616513]]) : (si16) -> ()
 
     // subi 16514, 0 -> 16514
     %result_subi_si1616514_si160 = arc.subi %cst_si1616514, %cst_si160 : si16
@@ -10093,9 +21488,69 @@ module @toplevel {
     "arc.keep"(%result_subi_si160_si16n32547) : (si16) -> ()
     // CHECK: "arc.keep"([[CSTsi1632547]]) : (si16) -> ()
 
+    // subi 1, -32547 -> 32548
+    %result_subi_si161_si16n32547 = arc.subi %cst_si161, %cst_si16n32547 : si16
+    "arc.keep"(%result_subi_si161_si16n32547) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi1632548]]) : (si16) -> ()
+
+    // subi 2, -32547 -> 32549
+    %result_subi_si162_si16n32547 = arc.subi %cst_si162, %cst_si16n32547 : si16
+    "arc.keep"(%result_subi_si162_si16n32547) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi1632549]]) : (si16) -> ()
+
+    // subi 3, -32547 -> 32550
+    %result_subi_si163_si16n32547 = arc.subi %cst_si163, %cst_si16n32547 : si16
+    "arc.keep"(%result_subi_si163_si16n32547) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi1632550]]) : (si16) -> ()
+
+    // subi 4, -32547 -> 32551
+    %result_subi_si164_si16n32547 = arc.subi %cst_si164, %cst_si16n32547 : si16
+    "arc.keep"(%result_subi_si164_si16n32547) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi1632551]]) : (si16) -> ()
+
+    // subi 32766, 4 -> 32762
+    %result_subi_si1632766_si164 = arc.subi %cst_si1632766, %cst_si164 : si16
+    "arc.keep"(%result_subi_si1632766_si164) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi1632762]]) : (si16) -> ()
+
+    // subi 32766, 3 -> 32763
+    %result_subi_si1632766_si163 = arc.subi %cst_si1632766, %cst_si163 : si16
+    "arc.keep"(%result_subi_si1632766_si163) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi1632763]]) : (si16) -> ()
+
+    // subi 32767, 4 -> 32763
+    %result_subi_si1632767_si164 = arc.subi %cst_si1632767, %cst_si164 : si16
+    "arc.keep"(%result_subi_si1632767_si164) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi1632763]]) : (si16) -> ()
+
+    // subi 32766, 2 -> 32764
+    %result_subi_si1632766_si162 = arc.subi %cst_si1632766, %cst_si162 : si16
+    "arc.keep"(%result_subi_si1632766_si162) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi1632764]]) : (si16) -> ()
+
+    // subi 32767, 3 -> 32764
+    %result_subi_si1632767_si163 = arc.subi %cst_si1632767, %cst_si163 : si16
+    "arc.keep"(%result_subi_si1632767_si163) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi1632764]]) : (si16) -> ()
+
+    // subi 32766, 1 -> 32765
+    %result_subi_si1632766_si161 = arc.subi %cst_si1632766, %cst_si161 : si16
+    "arc.keep"(%result_subi_si1632766_si161) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi1632765]]) : (si16) -> ()
+
+    // subi 32767, 2 -> 32765
+    %result_subi_si1632767_si162 = arc.subi %cst_si1632767, %cst_si162 : si16
+    "arc.keep"(%result_subi_si1632767_si162) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi1632765]]) : (si16) -> ()
+
     // subi 32766, 0 -> 32766
     %result_subi_si1632766_si160 = arc.subi %cst_si1632766, %cst_si160 : si16
     "arc.keep"(%result_subi_si1632766_si160) : (si16) -> ()
+    // CHECK: "arc.keep"([[CSTsi1632766]]) : (si16) -> ()
+
+    // subi 32767, 1 -> 32766
+    %result_subi_si1632767_si161 = arc.subi %cst_si1632767, %cst_si161 : si16
+    "arc.keep"(%result_subi_si1632767_si161) : (si16) -> ()
     // CHECK: "arc.keep"([[CSTsi1632766]]) : (si16) -> ()
 
     // subi 0, -32767 -> 32767
@@ -10107,6 +21562,30 @@ module @toplevel {
     %result_subi_si1632767_si160 = arc.subi %cst_si1632767, %cst_si160 : si16
     "arc.keep"(%result_subi_si1632767_si160) : (si16) -> ()
     // CHECK: "arc.keep"([[CSTsi1632767]]) : (si16) -> ()
+
+    // subi -32768, 1 -> no-fold
+    %result_subi_si16n32768_si161 = arc.subi %cst_si16n32768, %cst_si161 : si16
+    // CHECK-DAG: [[RESULT_subi_si16n32768_si161:%[^ ]+]] = arc.subi [[CSTsi16n32768]], [[CSTsi161]] : si16
+    "arc.keep"(%result_subi_si16n32768_si161) : (si16) -> ()
+    // CHECK: "arc.keep"([[RESULT_subi_si16n32768_si161]]) : (si16) -> ()
+
+    // subi -32768, 2 -> no-fold
+    %result_subi_si16n32768_si162 = arc.subi %cst_si16n32768, %cst_si162 : si16
+    // CHECK-DAG: [[RESULT_subi_si16n32768_si162:%[^ ]+]] = arc.subi [[CSTsi16n32768]], [[CSTsi162]] : si16
+    "arc.keep"(%result_subi_si16n32768_si162) : (si16) -> ()
+    // CHECK: "arc.keep"([[RESULT_subi_si16n32768_si162]]) : (si16) -> ()
+
+    // subi -32768, 3 -> no-fold
+    %result_subi_si16n32768_si163 = arc.subi %cst_si16n32768, %cst_si163 : si16
+    // CHECK-DAG: [[RESULT_subi_si16n32768_si163:%[^ ]+]] = arc.subi [[CSTsi16n32768]], [[CSTsi163]] : si16
+    "arc.keep"(%result_subi_si16n32768_si163) : (si16) -> ()
+    // CHECK: "arc.keep"([[RESULT_subi_si16n32768_si163]]) : (si16) -> ()
+
+    // subi -32768, 4 -> no-fold
+    %result_subi_si16n32768_si164 = arc.subi %cst_si16n32768, %cst_si164 : si16
+    // CHECK-DAG: [[RESULT_subi_si16n32768_si164:%[^ ]+]] = arc.subi [[CSTsi16n32768]], [[CSTsi164]] : si16
+    "arc.keep"(%result_subi_si16n32768_si164) : (si16) -> ()
+    // CHECK: "arc.keep"([[RESULT_subi_si16n32768_si164]]) : (si16) -> ()
 
     // subi -32768, 10486 -> no-fold
     %result_subi_si16n32768_si1610486 = arc.subi %cst_si16n32768, %cst_si1610486 : si16
@@ -10131,6 +21610,24 @@ module @toplevel {
     // CHECK-DAG: [[RESULT_subi_si16n32768_si1632767:%[^ ]+]] = arc.subi [[CSTsi16n32768]], [[CSTsi1632767]] : si16
     "arc.keep"(%result_subi_si16n32768_si1632767) : (si16) -> ()
     // CHECK: "arc.keep"([[RESULT_subi_si16n32768_si1632767]]) : (si16) -> ()
+
+    // subi -32767, 2 -> no-fold
+    %result_subi_si16n32767_si162 = arc.subi %cst_si16n32767, %cst_si162 : si16
+    // CHECK-DAG: [[RESULT_subi_si16n32767_si162:%[^ ]+]] = arc.subi [[CSTsi16n32767]], [[CSTsi162]] : si16
+    "arc.keep"(%result_subi_si16n32767_si162) : (si16) -> ()
+    // CHECK: "arc.keep"([[RESULT_subi_si16n32767_si162]]) : (si16) -> ()
+
+    // subi -32767, 3 -> no-fold
+    %result_subi_si16n32767_si163 = arc.subi %cst_si16n32767, %cst_si163 : si16
+    // CHECK-DAG: [[RESULT_subi_si16n32767_si163:%[^ ]+]] = arc.subi [[CSTsi16n32767]], [[CSTsi163]] : si16
+    "arc.keep"(%result_subi_si16n32767_si163) : (si16) -> ()
+    // CHECK: "arc.keep"([[RESULT_subi_si16n32767_si163]]) : (si16) -> ()
+
+    // subi -32767, 4 -> no-fold
+    %result_subi_si16n32767_si164 = arc.subi %cst_si16n32767, %cst_si164 : si16
+    // CHECK-DAG: [[RESULT_subi_si16n32767_si164:%[^ ]+]] = arc.subi [[CSTsi16n32767]], [[CSTsi164]] : si16
+    "arc.keep"(%result_subi_si16n32767_si164) : (si16) -> ()
+    // CHECK: "arc.keep"([[RESULT_subi_si16n32767_si164]]) : (si16) -> ()
 
     // subi -32767, 10486 -> no-fold
     %result_subi_si16n32767_si1610486 = arc.subi %cst_si16n32767, %cst_si1610486 : si16
@@ -10185,6 +21682,54 @@ module @toplevel {
     // CHECK-DAG: [[RESULT_subi_si160_si16n32768:%[^ ]+]] = arc.subi [[CSTsi160]], [[CSTsi16n32768]] : si16
     "arc.keep"(%result_subi_si160_si16n32768) : (si16) -> ()
     // CHECK: "arc.keep"([[RESULT_subi_si160_si16n32768]]) : (si16) -> ()
+
+    // subi 1, -32768 -> no-fold
+    %result_subi_si161_si16n32768 = arc.subi %cst_si161, %cst_si16n32768 : si16
+    // CHECK-DAG: [[RESULT_subi_si161_si16n32768:%[^ ]+]] = arc.subi [[CSTsi161]], [[CSTsi16n32768]] : si16
+    "arc.keep"(%result_subi_si161_si16n32768) : (si16) -> ()
+    // CHECK: "arc.keep"([[RESULT_subi_si161_si16n32768]]) : (si16) -> ()
+
+    // subi 1, -32767 -> no-fold
+    %result_subi_si161_si16n32767 = arc.subi %cst_si161, %cst_si16n32767 : si16
+    // CHECK-DAG: [[RESULT_subi_si161_si16n32767:%[^ ]+]] = arc.subi [[CSTsi161]], [[CSTsi16n32767]] : si16
+    "arc.keep"(%result_subi_si161_si16n32767) : (si16) -> ()
+    // CHECK: "arc.keep"([[RESULT_subi_si161_si16n32767]]) : (si16) -> ()
+
+    // subi 2, -32768 -> no-fold
+    %result_subi_si162_si16n32768 = arc.subi %cst_si162, %cst_si16n32768 : si16
+    // CHECK-DAG: [[RESULT_subi_si162_si16n32768:%[^ ]+]] = arc.subi [[CSTsi162]], [[CSTsi16n32768]] : si16
+    "arc.keep"(%result_subi_si162_si16n32768) : (si16) -> ()
+    // CHECK: "arc.keep"([[RESULT_subi_si162_si16n32768]]) : (si16) -> ()
+
+    // subi 2, -32767 -> no-fold
+    %result_subi_si162_si16n32767 = arc.subi %cst_si162, %cst_si16n32767 : si16
+    // CHECK-DAG: [[RESULT_subi_si162_si16n32767:%[^ ]+]] = arc.subi [[CSTsi162]], [[CSTsi16n32767]] : si16
+    "arc.keep"(%result_subi_si162_si16n32767) : (si16) -> ()
+    // CHECK: "arc.keep"([[RESULT_subi_si162_si16n32767]]) : (si16) -> ()
+
+    // subi 3, -32768 -> no-fold
+    %result_subi_si163_si16n32768 = arc.subi %cst_si163, %cst_si16n32768 : si16
+    // CHECK-DAG: [[RESULT_subi_si163_si16n32768:%[^ ]+]] = arc.subi [[CSTsi163]], [[CSTsi16n32768]] : si16
+    "arc.keep"(%result_subi_si163_si16n32768) : (si16) -> ()
+    // CHECK: "arc.keep"([[RESULT_subi_si163_si16n32768]]) : (si16) -> ()
+
+    // subi 3, -32767 -> no-fold
+    %result_subi_si163_si16n32767 = arc.subi %cst_si163, %cst_si16n32767 : si16
+    // CHECK-DAG: [[RESULT_subi_si163_si16n32767:%[^ ]+]] = arc.subi [[CSTsi163]], [[CSTsi16n32767]] : si16
+    "arc.keep"(%result_subi_si163_si16n32767) : (si16) -> ()
+    // CHECK: "arc.keep"([[RESULT_subi_si163_si16n32767]]) : (si16) -> ()
+
+    // subi 4, -32768 -> no-fold
+    %result_subi_si164_si16n32768 = arc.subi %cst_si164, %cst_si16n32768 : si16
+    // CHECK-DAG: [[RESULT_subi_si164_si16n32768:%[^ ]+]] = arc.subi [[CSTsi164]], [[CSTsi16n32768]] : si16
+    "arc.keep"(%result_subi_si164_si16n32768) : (si16) -> ()
+    // CHECK: "arc.keep"([[RESULT_subi_si164_si16n32768]]) : (si16) -> ()
+
+    // subi 4, -32767 -> no-fold
+    %result_subi_si164_si16n32767 = arc.subi %cst_si164, %cst_si16n32767 : si16
+    // CHECK-DAG: [[RESULT_subi_si164_si16n32767:%[^ ]+]] = arc.subi [[CSTsi164]], [[CSTsi16n32767]] : si16
+    "arc.keep"(%result_subi_si164_si16n32767) : (si16) -> ()
+    // CHECK: "arc.keep"([[RESULT_subi_si164_si16n32767]]) : (si16) -> ()
 
     // subi 10486, -32768 -> no-fold
     %result_subi_si1610486_si16n32768 = arc.subi %cst_si1610486, %cst_si16n32768 : si16
@@ -10263,6 +21808,11 @@ module @toplevel {
     "arc.keep"(%result_subi_si32n2147483648_si320) : (si32) -> ()
     // CHECK: "arc.keep"([[CSTsi32n2147483648]]) : (si32) -> ()
 
+    // subi -2147483647, 1 -> -2147483648
+    %result_subi_si32n2147483647_si321 = arc.subi %cst_si32n2147483647, %cst_si321 : si32
+    "arc.keep"(%result_subi_si32n2147483647_si321) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi32n2147483648]]) : (si32) -> ()
+
     // subi -2147483647, 0 -> -2147483647
     %result_subi_si32n2147483647_si320 = arc.subi %cst_si32n2147483647, %cst_si320 : si32
     "arc.keep"(%result_subi_si32n2147483647_si320) : (si32) -> ()
@@ -10278,10 +21828,90 @@ module @toplevel {
     "arc.keep"(%result_subi_si320_si322147483646) : (si32) -> ()
     // CHECK: "arc.keep"([[CSTsi32n2147483646]]) : (si32) -> ()
 
+    // subi 1, 2147483647 -> -2147483646
+    %result_subi_si321_si322147483647 = arc.subi %cst_si321, %cst_si322147483647 : si32
+    "arc.keep"(%result_subi_si321_si322147483647) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi32n2147483646]]) : (si32) -> ()
+
+    // subi 1, 2147483646 -> -2147483645
+    %result_subi_si321_si322147483646 = arc.subi %cst_si321, %cst_si322147483646 : si32
+    "arc.keep"(%result_subi_si321_si322147483646) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi32n2147483645]]) : (si32) -> ()
+
+    // subi 2, 2147483647 -> -2147483645
+    %result_subi_si322_si322147483647 = arc.subi %cst_si322, %cst_si322147483647 : si32
+    "arc.keep"(%result_subi_si322_si322147483647) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi32n2147483645]]) : (si32) -> ()
+
+    // subi 2, 2147483646 -> -2147483644
+    %result_subi_si322_si322147483646 = arc.subi %cst_si322, %cst_si322147483646 : si32
+    "arc.keep"(%result_subi_si322_si322147483646) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi32n2147483644]]) : (si32) -> ()
+
+    // subi 3, 2147483647 -> -2147483644
+    %result_subi_si323_si322147483647 = arc.subi %cst_si323, %cst_si322147483647 : si32
+    "arc.keep"(%result_subi_si323_si322147483647) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi32n2147483644]]) : (si32) -> ()
+
+    // subi 3, 2147483646 -> -2147483643
+    %result_subi_si323_si322147483646 = arc.subi %cst_si323, %cst_si322147483646 : si32
+    "arc.keep"(%result_subi_si323_si322147483646) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi32n2147483643]]) : (si32) -> ()
+
+    // subi 4, 2147483647 -> -2147483643
+    %result_subi_si324_si322147483647 = arc.subi %cst_si324, %cst_si322147483647 : si32
+    "arc.keep"(%result_subi_si324_si322147483647) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi32n2147483643]]) : (si32) -> ()
+
+    // subi 4, 2147483646 -> -2147483642
+    %result_subi_si324_si322147483646 = arc.subi %cst_si324, %cst_si322147483646 : si32
+    "arc.keep"(%result_subi_si324_si322147483646) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi32n2147483642]]) : (si32) -> ()
+
+    // subi -1713183800, 4 -> -1713183804
+    %result_subi_si32n1713183800_si324 = arc.subi %cst_si32n1713183800, %cst_si324 : si32
+    "arc.keep"(%result_subi_si32n1713183800_si324) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi32n1713183804]]) : (si32) -> ()
+
+    // subi -1713183800, 3 -> -1713183803
+    %result_subi_si32n1713183800_si323 = arc.subi %cst_si32n1713183800, %cst_si323 : si32
+    "arc.keep"(%result_subi_si32n1713183800_si323) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi32n1713183803]]) : (si32) -> ()
+
+    // subi -1713183800, 2 -> -1713183802
+    %result_subi_si32n1713183800_si322 = arc.subi %cst_si32n1713183800, %cst_si322 : si32
+    "arc.keep"(%result_subi_si32n1713183800_si322) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi32n1713183802]]) : (si32) -> ()
+
+    // subi -1713183800, 1 -> -1713183801
+    %result_subi_si32n1713183800_si321 = arc.subi %cst_si32n1713183800, %cst_si321 : si32
+    "arc.keep"(%result_subi_si32n1713183800_si321) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi32n1713183801]]) : (si32) -> ()
+
     // subi -1713183800, 0 -> -1713183800
     %result_subi_si32n1713183800_si320 = arc.subi %cst_si32n1713183800, %cst_si320 : si32
     "arc.keep"(%result_subi_si32n1713183800_si320) : (si32) -> ()
     // CHECK: "arc.keep"([[CSTsi32n1713183800]]) : (si32) -> ()
+
+    // subi -1252582164, 4 -> -1252582168
+    %result_subi_si32n1252582164_si324 = arc.subi %cst_si32n1252582164, %cst_si324 : si32
+    "arc.keep"(%result_subi_si32n1252582164_si324) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi32n1252582168]]) : (si32) -> ()
+
+    // subi -1252582164, 3 -> -1252582167
+    %result_subi_si32n1252582164_si323 = arc.subi %cst_si32n1252582164, %cst_si323 : si32
+    "arc.keep"(%result_subi_si32n1252582164_si323) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi32n1252582167]]) : (si32) -> ()
+
+    // subi -1252582164, 2 -> -1252582166
+    %result_subi_si32n1252582164_si322 = arc.subi %cst_si32n1252582164, %cst_si322 : si32
+    "arc.keep"(%result_subi_si32n1252582164_si322) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi32n1252582166]]) : (si32) -> ()
+
+    // subi -1252582164, 1 -> -1252582165
+    %result_subi_si32n1252582164_si321 = arc.subi %cst_si32n1252582164, %cst_si321 : si32
+    "arc.keep"(%result_subi_si32n1252582164_si321) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi32n1252582165]]) : (si32) -> ()
 
     // subi -1252582164, 0 -> -1252582164
     %result_subi_si32n1252582164_si320 = arc.subi %cst_si32n1252582164, %cst_si320 : si32
@@ -10297,6 +21927,26 @@ module @toplevel {
     %result_subi_si32n2147483647_si32n1035405763 = arc.subi %cst_si32n2147483647, %cst_si32n1035405763 : si32
     "arc.keep"(%result_subi_si32n2147483647_si32n1035405763) : (si32) -> ()
     // CHECK: "arc.keep"([[CSTsi32n1112077884]]) : (si32) -> ()
+
+    // subi -1035405763, 4 -> -1035405767
+    %result_subi_si32n1035405763_si324 = arc.subi %cst_si32n1035405763, %cst_si324 : si32
+    "arc.keep"(%result_subi_si32n1035405763_si324) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi32n1035405767]]) : (si32) -> ()
+
+    // subi -1035405763, 3 -> -1035405766
+    %result_subi_si32n1035405763_si323 = arc.subi %cst_si32n1035405763, %cst_si323 : si32
+    "arc.keep"(%result_subi_si32n1035405763_si323) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi32n1035405766]]) : (si32) -> ()
+
+    // subi -1035405763, 2 -> -1035405765
+    %result_subi_si32n1035405763_si322 = arc.subi %cst_si32n1035405763, %cst_si322 : si32
+    "arc.keep"(%result_subi_si32n1035405763_si322) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi32n1035405765]]) : (si32) -> ()
+
+    // subi -1035405763, 1 -> -1035405764
+    %result_subi_si32n1035405763_si321 = arc.subi %cst_si32n1035405763, %cst_si321 : si32
+    "arc.keep"(%result_subi_si32n1035405763_si321) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi32n1035405764]]) : (si32) -> ()
 
     // subi -1035405763, 0 -> -1035405763
     %result_subi_si32n1035405763_si320 = arc.subi %cst_si32n1035405763, %cst_si320 : si32
@@ -10338,9 +21988,59 @@ module @toplevel {
     "arc.keep"(%result_subi_si32n1252582164_si32n1035405763) : (si32) -> ()
     // CHECK: "arc.keep"([[CSTsi32n217176401]]) : (si32) -> ()
 
+    // subi 0, 4 -> -4
+    %result_subi_si320_si324 = arc.subi %cst_si320, %cst_si324 : si32
+    "arc.keep"(%result_subi_si320_si324) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi32n4]]) : (si32) -> ()
+
+    // subi 0, 3 -> -3
+    %result_subi_si320_si323 = arc.subi %cst_si320, %cst_si323 : si32
+    "arc.keep"(%result_subi_si320_si323) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi32n3]]) : (si32) -> ()
+
+    // subi 1, 4 -> -3
+    %result_subi_si321_si324 = arc.subi %cst_si321, %cst_si324 : si32
+    "arc.keep"(%result_subi_si321_si324) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi32n3]]) : (si32) -> ()
+
+    // subi 0, 2 -> -2
+    %result_subi_si320_si322 = arc.subi %cst_si320, %cst_si322 : si32
+    "arc.keep"(%result_subi_si320_si322) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi32n2]]) : (si32) -> ()
+
+    // subi 1, 3 -> -2
+    %result_subi_si321_si323 = arc.subi %cst_si321, %cst_si323 : si32
+    "arc.keep"(%result_subi_si321_si323) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi32n2]]) : (si32) -> ()
+
+    // subi 2, 4 -> -2
+    %result_subi_si322_si324 = arc.subi %cst_si322, %cst_si324 : si32
+    "arc.keep"(%result_subi_si322_si324) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi32n2]]) : (si32) -> ()
+
     // subi -2147483648, -2147483647 -> -1
     %result_subi_si32n2147483648_si32n2147483647 = arc.subi %cst_si32n2147483648, %cst_si32n2147483647 : si32
     "arc.keep"(%result_subi_si32n2147483648_si32n2147483647) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi32n1]]) : (si32) -> ()
+
+    // subi 0, 1 -> -1
+    %result_subi_si320_si321 = arc.subi %cst_si320, %cst_si321 : si32
+    "arc.keep"(%result_subi_si320_si321) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi32n1]]) : (si32) -> ()
+
+    // subi 1, 2 -> -1
+    %result_subi_si321_si322 = arc.subi %cst_si321, %cst_si322 : si32
+    "arc.keep"(%result_subi_si321_si322) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi32n1]]) : (si32) -> ()
+
+    // subi 2, 3 -> -1
+    %result_subi_si322_si323 = arc.subi %cst_si322, %cst_si323 : si32
+    "arc.keep"(%result_subi_si322_si323) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi32n1]]) : (si32) -> ()
+
+    // subi 3, 4 -> -1
+    %result_subi_si323_si324 = arc.subi %cst_si323, %cst_si324 : si32
+    "arc.keep"(%result_subi_si323_si324) : (si32) -> ()
     // CHECK: "arc.keep"([[CSTsi32n1]]) : (si32) -> ()
 
     // subi 2147483646, 2147483647 -> -1
@@ -10378,6 +22078,26 @@ module @toplevel {
     "arc.keep"(%result_subi_si320_si320) : (si32) -> ()
     // CHECK: "arc.keep"([[CSTsi320]]) : (si32) -> ()
 
+    // subi 1, 1 -> 0
+    %result_subi_si321_si321 = arc.subi %cst_si321, %cst_si321 : si32
+    "arc.keep"(%result_subi_si321_si321) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi320]]) : (si32) -> ()
+
+    // subi 2, 2 -> 0
+    %result_subi_si322_si322 = arc.subi %cst_si322, %cst_si322 : si32
+    "arc.keep"(%result_subi_si322_si322) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi320]]) : (si32) -> ()
+
+    // subi 3, 3 -> 0
+    %result_subi_si323_si323 = arc.subi %cst_si323, %cst_si323 : si32
+    "arc.keep"(%result_subi_si323_si323) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi320]]) : (si32) -> ()
+
+    // subi 4, 4 -> 0
+    %result_subi_si324_si324 = arc.subi %cst_si324, %cst_si324 : si32
+    "arc.keep"(%result_subi_si324_si324) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi320]]) : (si32) -> ()
+
     // subi 2147483646, 2147483646 -> 0
     %result_subi_si322147483646_si322147483646 = arc.subi %cst_si322147483646, %cst_si322147483646 : si32
     "arc.keep"(%result_subi_si322147483646_si322147483646) : (si32) -> ()
@@ -10393,10 +22113,60 @@ module @toplevel {
     "arc.keep"(%result_subi_si32n2147483647_si32n2147483648) : (si32) -> ()
     // CHECK: "arc.keep"([[CSTsi321]]) : (si32) -> ()
 
+    // subi 1, 0 -> 1
+    %result_subi_si321_si320 = arc.subi %cst_si321, %cst_si320 : si32
+    "arc.keep"(%result_subi_si321_si320) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi321]]) : (si32) -> ()
+
+    // subi 2, 1 -> 1
+    %result_subi_si322_si321 = arc.subi %cst_si322, %cst_si321 : si32
+    "arc.keep"(%result_subi_si322_si321) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi321]]) : (si32) -> ()
+
+    // subi 3, 2 -> 1
+    %result_subi_si323_si322 = arc.subi %cst_si323, %cst_si322 : si32
+    "arc.keep"(%result_subi_si323_si322) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi321]]) : (si32) -> ()
+
+    // subi 4, 3 -> 1
+    %result_subi_si324_si323 = arc.subi %cst_si324, %cst_si323 : si32
+    "arc.keep"(%result_subi_si324_si323) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi321]]) : (si32) -> ()
+
     // subi 2147483647, 2147483646 -> 1
     %result_subi_si322147483647_si322147483646 = arc.subi %cst_si322147483647, %cst_si322147483646 : si32
     "arc.keep"(%result_subi_si322147483647_si322147483646) : (si32) -> ()
     // CHECK: "arc.keep"([[CSTsi321]]) : (si32) -> ()
+
+    // subi 2, 0 -> 2
+    %result_subi_si322_si320 = arc.subi %cst_si322, %cst_si320 : si32
+    "arc.keep"(%result_subi_si322_si320) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi322]]) : (si32) -> ()
+
+    // subi 3, 1 -> 2
+    %result_subi_si323_si321 = arc.subi %cst_si323, %cst_si321 : si32
+    "arc.keep"(%result_subi_si323_si321) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi322]]) : (si32) -> ()
+
+    // subi 4, 2 -> 2
+    %result_subi_si324_si322 = arc.subi %cst_si324, %cst_si322 : si32
+    "arc.keep"(%result_subi_si324_si322) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi322]]) : (si32) -> ()
+
+    // subi 3, 0 -> 3
+    %result_subi_si323_si320 = arc.subi %cst_si323, %cst_si320 : si32
+    "arc.keep"(%result_subi_si323_si320) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi323]]) : (si32) -> ()
+
+    // subi 4, 1 -> 3
+    %result_subi_si324_si321 = arc.subi %cst_si324, %cst_si321 : si32
+    "arc.keep"(%result_subi_si324_si321) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi323]]) : (si32) -> ()
+
+    // subi 4, 0 -> 4
+    %result_subi_si324_si320 = arc.subi %cst_si324, %cst_si320 : si32
+    "arc.keep"(%result_subi_si324_si320) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi324]]) : (si32) -> ()
 
     // subi -1035405763, -1252582164 -> 217176401
     %result_subi_si32n1035405763_si32n1252582164 = arc.subi %cst_si32n1035405763, %cst_si32n1252582164 : si32
@@ -10438,6 +22208,26 @@ module @toplevel {
     "arc.keep"(%result_subi_si320_si32n1035405763) : (si32) -> ()
     // CHECK: "arc.keep"([[CSTsi321035405763]]) : (si32) -> ()
 
+    // subi 1, -1035405763 -> 1035405764
+    %result_subi_si321_si32n1035405763 = arc.subi %cst_si321, %cst_si32n1035405763 : si32
+    "arc.keep"(%result_subi_si321_si32n1035405763) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi321035405764]]) : (si32) -> ()
+
+    // subi 2, -1035405763 -> 1035405765
+    %result_subi_si322_si32n1035405763 = arc.subi %cst_si322, %cst_si32n1035405763 : si32
+    "arc.keep"(%result_subi_si322_si32n1035405763) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi321035405765]]) : (si32) -> ()
+
+    // subi 3, -1035405763 -> 1035405766
+    %result_subi_si323_si32n1035405763 = arc.subi %cst_si323, %cst_si32n1035405763 : si32
+    "arc.keep"(%result_subi_si323_si32n1035405763) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi321035405766]]) : (si32) -> ()
+
+    // subi 4, -1035405763 -> 1035405767
+    %result_subi_si324_si32n1035405763 = arc.subi %cst_si324, %cst_si32n1035405763 : si32
+    "arc.keep"(%result_subi_si324_si32n1035405763) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi321035405767]]) : (si32) -> ()
+
     // subi -1035405763, -2147483647 -> 1112077884
     %result_subi_si32n1035405763_si32n2147483647 = arc.subi %cst_si32n1035405763, %cst_si32n2147483647 : si32
     "arc.keep"(%result_subi_si32n1035405763_si32n2147483647) : (si32) -> ()
@@ -10453,14 +22243,94 @@ module @toplevel {
     "arc.keep"(%result_subi_si320_si32n1252582164) : (si32) -> ()
     // CHECK: "arc.keep"([[CSTsi321252582164]]) : (si32) -> ()
 
+    // subi 1, -1252582164 -> 1252582165
+    %result_subi_si321_si32n1252582164 = arc.subi %cst_si321, %cst_si32n1252582164 : si32
+    "arc.keep"(%result_subi_si321_si32n1252582164) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi321252582165]]) : (si32) -> ()
+
+    // subi 2, -1252582164 -> 1252582166
+    %result_subi_si322_si32n1252582164 = arc.subi %cst_si322, %cst_si32n1252582164 : si32
+    "arc.keep"(%result_subi_si322_si32n1252582164) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi321252582166]]) : (si32) -> ()
+
+    // subi 3, -1252582164 -> 1252582167
+    %result_subi_si323_si32n1252582164 = arc.subi %cst_si323, %cst_si32n1252582164 : si32
+    "arc.keep"(%result_subi_si323_si32n1252582164) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi321252582167]]) : (si32) -> ()
+
+    // subi 4, -1252582164 -> 1252582168
+    %result_subi_si324_si32n1252582164 = arc.subi %cst_si324, %cst_si32n1252582164 : si32
+    "arc.keep"(%result_subi_si324_si32n1252582164) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi321252582168]]) : (si32) -> ()
+
     // subi 0, -1713183800 -> 1713183800
     %result_subi_si320_si32n1713183800 = arc.subi %cst_si320, %cst_si32n1713183800 : si32
     "arc.keep"(%result_subi_si320_si32n1713183800) : (si32) -> ()
     // CHECK: "arc.keep"([[CSTsi321713183800]]) : (si32) -> ()
 
+    // subi 1, -1713183800 -> 1713183801
+    %result_subi_si321_si32n1713183800 = arc.subi %cst_si321, %cst_si32n1713183800 : si32
+    "arc.keep"(%result_subi_si321_si32n1713183800) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi321713183801]]) : (si32) -> ()
+
+    // subi 2, -1713183800 -> 1713183802
+    %result_subi_si322_si32n1713183800 = arc.subi %cst_si322, %cst_si32n1713183800 : si32
+    "arc.keep"(%result_subi_si322_si32n1713183800) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi321713183802]]) : (si32) -> ()
+
+    // subi 3, -1713183800 -> 1713183803
+    %result_subi_si323_si32n1713183800 = arc.subi %cst_si323, %cst_si32n1713183800 : si32
+    "arc.keep"(%result_subi_si323_si32n1713183800) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi321713183803]]) : (si32) -> ()
+
+    // subi 4, -1713183800 -> 1713183804
+    %result_subi_si324_si32n1713183800 = arc.subi %cst_si324, %cst_si32n1713183800 : si32
+    "arc.keep"(%result_subi_si324_si32n1713183800) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi321713183804]]) : (si32) -> ()
+
+    // subi 2147483646, 4 -> 2147483642
+    %result_subi_si322147483646_si324 = arc.subi %cst_si322147483646, %cst_si324 : si32
+    "arc.keep"(%result_subi_si322147483646_si324) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi322147483642]]) : (si32) -> ()
+
+    // subi 2147483646, 3 -> 2147483643
+    %result_subi_si322147483646_si323 = arc.subi %cst_si322147483646, %cst_si323 : si32
+    "arc.keep"(%result_subi_si322147483646_si323) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi322147483643]]) : (si32) -> ()
+
+    // subi 2147483647, 4 -> 2147483643
+    %result_subi_si322147483647_si324 = arc.subi %cst_si322147483647, %cst_si324 : si32
+    "arc.keep"(%result_subi_si322147483647_si324) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi322147483643]]) : (si32) -> ()
+
+    // subi 2147483646, 2 -> 2147483644
+    %result_subi_si322147483646_si322 = arc.subi %cst_si322147483646, %cst_si322 : si32
+    "arc.keep"(%result_subi_si322147483646_si322) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi322147483644]]) : (si32) -> ()
+
+    // subi 2147483647, 3 -> 2147483644
+    %result_subi_si322147483647_si323 = arc.subi %cst_si322147483647, %cst_si323 : si32
+    "arc.keep"(%result_subi_si322147483647_si323) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi322147483644]]) : (si32) -> ()
+
+    // subi 2147483646, 1 -> 2147483645
+    %result_subi_si322147483646_si321 = arc.subi %cst_si322147483646, %cst_si321 : si32
+    "arc.keep"(%result_subi_si322147483646_si321) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi322147483645]]) : (si32) -> ()
+
+    // subi 2147483647, 2 -> 2147483645
+    %result_subi_si322147483647_si322 = arc.subi %cst_si322147483647, %cst_si322 : si32
+    "arc.keep"(%result_subi_si322147483647_si322) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi322147483645]]) : (si32) -> ()
+
     // subi 2147483646, 0 -> 2147483646
     %result_subi_si322147483646_si320 = arc.subi %cst_si322147483646, %cst_si320 : si32
     "arc.keep"(%result_subi_si322147483646_si320) : (si32) -> ()
+    // CHECK: "arc.keep"([[CSTsi322147483646]]) : (si32) -> ()
+
+    // subi 2147483647, 1 -> 2147483646
+    %result_subi_si322147483647_si321 = arc.subi %cst_si322147483647, %cst_si321 : si32
+    "arc.keep"(%result_subi_si322147483647_si321) : (si32) -> ()
     // CHECK: "arc.keep"([[CSTsi322147483646]]) : (si32) -> ()
 
     // subi 0, -2147483647 -> 2147483647
@@ -10473,6 +22343,30 @@ module @toplevel {
     "arc.keep"(%result_subi_si322147483647_si320) : (si32) -> ()
     // CHECK: "arc.keep"([[CSTsi322147483647]]) : (si32) -> ()
 
+    // subi -2147483648, 1 -> no-fold
+    %result_subi_si32n2147483648_si321 = arc.subi %cst_si32n2147483648, %cst_si321 : si32
+    // CHECK-DAG: [[RESULT_subi_si32n2147483648_si321:%[^ ]+]] = arc.subi [[CSTsi32n2147483648]], [[CSTsi321]] : si32
+    "arc.keep"(%result_subi_si32n2147483648_si321) : (si32) -> ()
+    // CHECK: "arc.keep"([[RESULT_subi_si32n2147483648_si321]]) : (si32) -> ()
+
+    // subi -2147483648, 2 -> no-fold
+    %result_subi_si32n2147483648_si322 = arc.subi %cst_si32n2147483648, %cst_si322 : si32
+    // CHECK-DAG: [[RESULT_subi_si32n2147483648_si322:%[^ ]+]] = arc.subi [[CSTsi32n2147483648]], [[CSTsi322]] : si32
+    "arc.keep"(%result_subi_si32n2147483648_si322) : (si32) -> ()
+    // CHECK: "arc.keep"([[RESULT_subi_si32n2147483648_si322]]) : (si32) -> ()
+
+    // subi -2147483648, 3 -> no-fold
+    %result_subi_si32n2147483648_si323 = arc.subi %cst_si32n2147483648, %cst_si323 : si32
+    // CHECK-DAG: [[RESULT_subi_si32n2147483648_si323:%[^ ]+]] = arc.subi [[CSTsi32n2147483648]], [[CSTsi323]] : si32
+    "arc.keep"(%result_subi_si32n2147483648_si323) : (si32) -> ()
+    // CHECK: "arc.keep"([[RESULT_subi_si32n2147483648_si323]]) : (si32) -> ()
+
+    // subi -2147483648, 4 -> no-fold
+    %result_subi_si32n2147483648_si324 = arc.subi %cst_si32n2147483648, %cst_si324 : si32
+    // CHECK-DAG: [[RESULT_subi_si32n2147483648_si324:%[^ ]+]] = arc.subi [[CSTsi32n2147483648]], [[CSTsi324]] : si32
+    "arc.keep"(%result_subi_si32n2147483648_si324) : (si32) -> ()
+    // CHECK: "arc.keep"([[RESULT_subi_si32n2147483648_si324]]) : (si32) -> ()
+
     // subi -2147483648, 2147483646 -> no-fold
     %result_subi_si32n2147483648_si322147483646 = arc.subi %cst_si32n2147483648, %cst_si322147483646 : si32
     // CHECK-DAG: [[RESULT_subi_si32n2147483648_si322147483646:%[^ ]+]] = arc.subi [[CSTsi32n2147483648]], [[CSTsi322147483646]] : si32
@@ -10484,6 +22378,24 @@ module @toplevel {
     // CHECK-DAG: [[RESULT_subi_si32n2147483648_si322147483647:%[^ ]+]] = arc.subi [[CSTsi32n2147483648]], [[CSTsi322147483647]] : si32
     "arc.keep"(%result_subi_si32n2147483648_si322147483647) : (si32) -> ()
     // CHECK: "arc.keep"([[RESULT_subi_si32n2147483648_si322147483647]]) : (si32) -> ()
+
+    // subi -2147483647, 2 -> no-fold
+    %result_subi_si32n2147483647_si322 = arc.subi %cst_si32n2147483647, %cst_si322 : si32
+    // CHECK-DAG: [[RESULT_subi_si32n2147483647_si322:%[^ ]+]] = arc.subi [[CSTsi32n2147483647]], [[CSTsi322]] : si32
+    "arc.keep"(%result_subi_si32n2147483647_si322) : (si32) -> ()
+    // CHECK: "arc.keep"([[RESULT_subi_si32n2147483647_si322]]) : (si32) -> ()
+
+    // subi -2147483647, 3 -> no-fold
+    %result_subi_si32n2147483647_si323 = arc.subi %cst_si32n2147483647, %cst_si323 : si32
+    // CHECK-DAG: [[RESULT_subi_si32n2147483647_si323:%[^ ]+]] = arc.subi [[CSTsi32n2147483647]], [[CSTsi323]] : si32
+    "arc.keep"(%result_subi_si32n2147483647_si323) : (si32) -> ()
+    // CHECK: "arc.keep"([[RESULT_subi_si32n2147483647_si323]]) : (si32) -> ()
+
+    // subi -2147483647, 4 -> no-fold
+    %result_subi_si32n2147483647_si324 = arc.subi %cst_si32n2147483647, %cst_si324 : si32
+    // CHECK-DAG: [[RESULT_subi_si32n2147483647_si324:%[^ ]+]] = arc.subi [[CSTsi32n2147483647]], [[CSTsi324]] : si32
+    "arc.keep"(%result_subi_si32n2147483647_si324) : (si32) -> ()
+    // CHECK: "arc.keep"([[RESULT_subi_si32n2147483647_si324]]) : (si32) -> ()
 
     // subi -2147483647, 2147483646 -> no-fold
     %result_subi_si32n2147483647_si322147483646 = arc.subi %cst_si32n2147483647, %cst_si322147483646 : si32
@@ -10538,6 +22450,54 @@ module @toplevel {
     // CHECK-DAG: [[RESULT_subi_si320_si32n2147483648:%[^ ]+]] = arc.subi [[CSTsi320]], [[CSTsi32n2147483648]] : si32
     "arc.keep"(%result_subi_si320_si32n2147483648) : (si32) -> ()
     // CHECK: "arc.keep"([[RESULT_subi_si320_si32n2147483648]]) : (si32) -> ()
+
+    // subi 1, -2147483648 -> no-fold
+    %result_subi_si321_si32n2147483648 = arc.subi %cst_si321, %cst_si32n2147483648 : si32
+    // CHECK-DAG: [[RESULT_subi_si321_si32n2147483648:%[^ ]+]] = arc.subi [[CSTsi321]], [[CSTsi32n2147483648]] : si32
+    "arc.keep"(%result_subi_si321_si32n2147483648) : (si32) -> ()
+    // CHECK: "arc.keep"([[RESULT_subi_si321_si32n2147483648]]) : (si32) -> ()
+
+    // subi 1, -2147483647 -> no-fold
+    %result_subi_si321_si32n2147483647 = arc.subi %cst_si321, %cst_si32n2147483647 : si32
+    // CHECK-DAG: [[RESULT_subi_si321_si32n2147483647:%[^ ]+]] = arc.subi [[CSTsi321]], [[CSTsi32n2147483647]] : si32
+    "arc.keep"(%result_subi_si321_si32n2147483647) : (si32) -> ()
+    // CHECK: "arc.keep"([[RESULT_subi_si321_si32n2147483647]]) : (si32) -> ()
+
+    // subi 2, -2147483648 -> no-fold
+    %result_subi_si322_si32n2147483648 = arc.subi %cst_si322, %cst_si32n2147483648 : si32
+    // CHECK-DAG: [[RESULT_subi_si322_si32n2147483648:%[^ ]+]] = arc.subi [[CSTsi322]], [[CSTsi32n2147483648]] : si32
+    "arc.keep"(%result_subi_si322_si32n2147483648) : (si32) -> ()
+    // CHECK: "arc.keep"([[RESULT_subi_si322_si32n2147483648]]) : (si32) -> ()
+
+    // subi 2, -2147483647 -> no-fold
+    %result_subi_si322_si32n2147483647 = arc.subi %cst_si322, %cst_si32n2147483647 : si32
+    // CHECK-DAG: [[RESULT_subi_si322_si32n2147483647:%[^ ]+]] = arc.subi [[CSTsi322]], [[CSTsi32n2147483647]] : si32
+    "arc.keep"(%result_subi_si322_si32n2147483647) : (si32) -> ()
+    // CHECK: "arc.keep"([[RESULT_subi_si322_si32n2147483647]]) : (si32) -> ()
+
+    // subi 3, -2147483648 -> no-fold
+    %result_subi_si323_si32n2147483648 = arc.subi %cst_si323, %cst_si32n2147483648 : si32
+    // CHECK-DAG: [[RESULT_subi_si323_si32n2147483648:%[^ ]+]] = arc.subi [[CSTsi323]], [[CSTsi32n2147483648]] : si32
+    "arc.keep"(%result_subi_si323_si32n2147483648) : (si32) -> ()
+    // CHECK: "arc.keep"([[RESULT_subi_si323_si32n2147483648]]) : (si32) -> ()
+
+    // subi 3, -2147483647 -> no-fold
+    %result_subi_si323_si32n2147483647 = arc.subi %cst_si323, %cst_si32n2147483647 : si32
+    // CHECK-DAG: [[RESULT_subi_si323_si32n2147483647:%[^ ]+]] = arc.subi [[CSTsi323]], [[CSTsi32n2147483647]] : si32
+    "arc.keep"(%result_subi_si323_si32n2147483647) : (si32) -> ()
+    // CHECK: "arc.keep"([[RESULT_subi_si323_si32n2147483647]]) : (si32) -> ()
+
+    // subi 4, -2147483648 -> no-fold
+    %result_subi_si324_si32n2147483648 = arc.subi %cst_si324, %cst_si32n2147483648 : si32
+    // CHECK-DAG: [[RESULT_subi_si324_si32n2147483648:%[^ ]+]] = arc.subi [[CSTsi324]], [[CSTsi32n2147483648]] : si32
+    "arc.keep"(%result_subi_si324_si32n2147483648) : (si32) -> ()
+    // CHECK: "arc.keep"([[RESULT_subi_si324_si32n2147483648]]) : (si32) -> ()
+
+    // subi 4, -2147483647 -> no-fold
+    %result_subi_si324_si32n2147483647 = arc.subi %cst_si324, %cst_si32n2147483647 : si32
+    // CHECK-DAG: [[RESULT_subi_si324_si32n2147483647:%[^ ]+]] = arc.subi [[CSTsi324]], [[CSTsi32n2147483647]] : si32
+    "arc.keep"(%result_subi_si324_si32n2147483647) : (si32) -> ()
+    // CHECK: "arc.keep"([[RESULT_subi_si324_si32n2147483647]]) : (si32) -> ()
 
     // subi 2147483646, -2147483648 -> no-fold
     %result_subi_si322147483646_si32n2147483648 = arc.subi %cst_si322147483646, %cst_si32n2147483648 : si32
@@ -10604,6 +22564,11 @@ module @toplevel {
     "arc.keep"(%result_subi_si64n9223372036854775808_si640) : (si64) -> ()
     // CHECK: "arc.keep"([[CSTsi64n9223372036854775808]]) : (si64) -> ()
 
+    // subi -9223372036854775807, 1 -> -9223372036854775808
+    %result_subi_si64n9223372036854775807_si641 = arc.subi %cst_si64n9223372036854775807, %cst_si641 : si64
+    "arc.keep"(%result_subi_si64n9223372036854775807_si641) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi64n9223372036854775808]]) : (si64) -> ()
+
     // subi -9223372036854775807, 0 -> -9223372036854775807
     %result_subi_si64n9223372036854775807_si640 = arc.subi %cst_si64n9223372036854775807, %cst_si640 : si64
     "arc.keep"(%result_subi_si64n9223372036854775807_si640) : (si64) -> ()
@@ -10618,6 +22583,46 @@ module @toplevel {
     %result_subi_si640_si649223372036854775806 = arc.subi %cst_si640, %cst_si649223372036854775806 : si64
     "arc.keep"(%result_subi_si640_si649223372036854775806) : (si64) -> ()
     // CHECK: "arc.keep"([[CSTsi64n9223372036854775806]]) : (si64) -> ()
+
+    // subi 1, 9223372036854775807 -> -9223372036854775806
+    %result_subi_si641_si649223372036854775807 = arc.subi %cst_si641, %cst_si649223372036854775807 : si64
+    "arc.keep"(%result_subi_si641_si649223372036854775807) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi64n9223372036854775806]]) : (si64) -> ()
+
+    // subi 1, 9223372036854775806 -> -9223372036854775805
+    %result_subi_si641_si649223372036854775806 = arc.subi %cst_si641, %cst_si649223372036854775806 : si64
+    "arc.keep"(%result_subi_si641_si649223372036854775806) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi64n9223372036854775805]]) : (si64) -> ()
+
+    // subi 2, 9223372036854775807 -> -9223372036854775805
+    %result_subi_si642_si649223372036854775807 = arc.subi %cst_si642, %cst_si649223372036854775807 : si64
+    "arc.keep"(%result_subi_si642_si649223372036854775807) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi64n9223372036854775805]]) : (si64) -> ()
+
+    // subi 2, 9223372036854775806 -> -9223372036854775804
+    %result_subi_si642_si649223372036854775806 = arc.subi %cst_si642, %cst_si649223372036854775806 : si64
+    "arc.keep"(%result_subi_si642_si649223372036854775806) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi64n9223372036854775804]]) : (si64) -> ()
+
+    // subi 3, 9223372036854775807 -> -9223372036854775804
+    %result_subi_si643_si649223372036854775807 = arc.subi %cst_si643, %cst_si649223372036854775807 : si64
+    "arc.keep"(%result_subi_si643_si649223372036854775807) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi64n9223372036854775804]]) : (si64) -> ()
+
+    // subi 3, 9223372036854775806 -> -9223372036854775803
+    %result_subi_si643_si649223372036854775806 = arc.subi %cst_si643, %cst_si649223372036854775806 : si64
+    "arc.keep"(%result_subi_si643_si649223372036854775806) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi64n9223372036854775803]]) : (si64) -> ()
+
+    // subi 4, 9223372036854775807 -> -9223372036854775803
+    %result_subi_si644_si649223372036854775807 = arc.subi %cst_si644, %cst_si649223372036854775807 : si64
+    "arc.keep"(%result_subi_si644_si649223372036854775807) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi64n9223372036854775803]]) : (si64) -> ()
+
+    // subi 4, 9223372036854775806 -> -9223372036854775802
+    %result_subi_si644_si649223372036854775806 = arc.subi %cst_si644, %cst_si649223372036854775806 : si64
+    "arc.keep"(%result_subi_si644_si649223372036854775806) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi64n9223372036854775802]]) : (si64) -> ()
 
     // subi -9223372036854775808, -1328271339354574848 -> -7895100697500200960
     %result_subi_si64n9223372036854775808_si64n1328271339354574848 = arc.subi %cst_si64n9223372036854775808, %cst_si64n1328271339354574848 : si64
@@ -10654,6 +22659,26 @@ module @toplevel {
     "arc.keep"(%result_subi_si640_si645577148965131116544) : (si64) -> ()
     // CHECK: "arc.keep"([[CSTsi64n5577148965131116544]]) : (si64) -> ()
 
+    // subi 1, 5577148965131116544 -> -5577148965131116543
+    %result_subi_si641_si645577148965131116544 = arc.subi %cst_si641, %cst_si645577148965131116544 : si64
+    "arc.keep"(%result_subi_si641_si645577148965131116544) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi64n5577148965131116543]]) : (si64) -> ()
+
+    // subi 2, 5577148965131116544 -> -5577148965131116542
+    %result_subi_si642_si645577148965131116544 = arc.subi %cst_si642, %cst_si645577148965131116544 : si64
+    "arc.keep"(%result_subi_si642_si645577148965131116544) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi64n5577148965131116542]]) : (si64) -> ()
+
+    // subi 3, 5577148965131116544 -> -5577148965131116541
+    %result_subi_si643_si645577148965131116544 = arc.subi %cst_si643, %cst_si645577148965131116544 : si64
+    "arc.keep"(%result_subi_si643_si645577148965131116544) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi64n5577148965131116541]]) : (si64) -> ()
+
+    // subi 4, 5577148965131116544 -> -5577148965131116540
+    %result_subi_si644_si645577148965131116544 = arc.subi %cst_si644, %cst_si645577148965131116544 : si64
+    "arc.keep"(%result_subi_si644_si645577148965131116544) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi64n5577148965131116540]]) : (si64) -> ()
+
     // subi 5577148965131116544, 9223372036854775807 -> -3646223071723659263
     %result_subi_si645577148965131116544_si649223372036854775807 = arc.subi %cst_si645577148965131116544, %cst_si649223372036854775807 : si64
     "arc.keep"(%result_subi_si645577148965131116544_si649223372036854775807) : (si64) -> ()
@@ -10664,10 +22689,50 @@ module @toplevel {
     "arc.keep"(%result_subi_si645577148965131116544_si649223372036854775806) : (si64) -> ()
     // CHECK: "arc.keep"([[CSTsi64n3646223071723659262]]) : (si64) -> ()
 
+    // subi -1741927215160008704, 4 -> -1741927215160008708
+    %result_subi_si64n1741927215160008704_si644 = arc.subi %cst_si64n1741927215160008704, %cst_si644 : si64
+    "arc.keep"(%result_subi_si64n1741927215160008704_si644) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi64n1741927215160008708]]) : (si64) -> ()
+
+    // subi -1741927215160008704, 3 -> -1741927215160008707
+    %result_subi_si64n1741927215160008704_si643 = arc.subi %cst_si64n1741927215160008704, %cst_si643 : si64
+    "arc.keep"(%result_subi_si64n1741927215160008704_si643) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi64n1741927215160008707]]) : (si64) -> ()
+
+    // subi -1741927215160008704, 2 -> -1741927215160008706
+    %result_subi_si64n1741927215160008704_si642 = arc.subi %cst_si64n1741927215160008704, %cst_si642 : si64
+    "arc.keep"(%result_subi_si64n1741927215160008704_si642) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi64n1741927215160008706]]) : (si64) -> ()
+
+    // subi -1741927215160008704, 1 -> -1741927215160008705
+    %result_subi_si64n1741927215160008704_si641 = arc.subi %cst_si64n1741927215160008704, %cst_si641 : si64
+    "arc.keep"(%result_subi_si64n1741927215160008704_si641) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi64n1741927215160008705]]) : (si64) -> ()
+
     // subi -1741927215160008704, 0 -> -1741927215160008704
     %result_subi_si64n1741927215160008704_si640 = arc.subi %cst_si64n1741927215160008704, %cst_si640 : si64
     "arc.keep"(%result_subi_si64n1741927215160008704_si640) : (si64) -> ()
     // CHECK: "arc.keep"([[CSTsi64n1741927215160008704]]) : (si64) -> ()
+
+    // subi -1328271339354574848, 4 -> -1328271339354574852
+    %result_subi_si64n1328271339354574848_si644 = arc.subi %cst_si64n1328271339354574848, %cst_si644 : si64
+    "arc.keep"(%result_subi_si64n1328271339354574848_si644) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi64n1328271339354574852]]) : (si64) -> ()
+
+    // subi -1328271339354574848, 3 -> -1328271339354574851
+    %result_subi_si64n1328271339354574848_si643 = arc.subi %cst_si64n1328271339354574848, %cst_si643 : si64
+    "arc.keep"(%result_subi_si64n1328271339354574848_si643) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi64n1328271339354574851]]) : (si64) -> ()
+
+    // subi -1328271339354574848, 2 -> -1328271339354574850
+    %result_subi_si64n1328271339354574848_si642 = arc.subi %cst_si64n1328271339354574848, %cst_si642 : si64
+    "arc.keep"(%result_subi_si64n1328271339354574848_si642) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi64n1328271339354574850]]) : (si64) -> ()
+
+    // subi -1328271339354574848, 1 -> -1328271339354574849
+    %result_subi_si64n1328271339354574848_si641 = arc.subi %cst_si64n1328271339354574848, %cst_si641 : si64
+    "arc.keep"(%result_subi_si64n1328271339354574848_si641) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi64n1328271339354574849]]) : (si64) -> ()
 
     // subi -1328271339354574848, 0 -> -1328271339354574848
     %result_subi_si64n1328271339354574848_si640 = arc.subi %cst_si64n1328271339354574848, %cst_si640 : si64
@@ -10679,9 +22744,59 @@ module @toplevel {
     "arc.keep"(%result_subi_si64n1741927215160008704_si64n1328271339354574848) : (si64) -> ()
     // CHECK: "arc.keep"([[CSTsi64n413655875805433856]]) : (si64) -> ()
 
+    // subi 0, 4 -> -4
+    %result_subi_si640_si644 = arc.subi %cst_si640, %cst_si644 : si64
+    "arc.keep"(%result_subi_si640_si644) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi64n4]]) : (si64) -> ()
+
+    // subi 0, 3 -> -3
+    %result_subi_si640_si643 = arc.subi %cst_si640, %cst_si643 : si64
+    "arc.keep"(%result_subi_si640_si643) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi64n3]]) : (si64) -> ()
+
+    // subi 1, 4 -> -3
+    %result_subi_si641_si644 = arc.subi %cst_si641, %cst_si644 : si64
+    "arc.keep"(%result_subi_si641_si644) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi64n3]]) : (si64) -> ()
+
+    // subi 0, 2 -> -2
+    %result_subi_si640_si642 = arc.subi %cst_si640, %cst_si642 : si64
+    "arc.keep"(%result_subi_si640_si642) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi64n2]]) : (si64) -> ()
+
+    // subi 1, 3 -> -2
+    %result_subi_si641_si643 = arc.subi %cst_si641, %cst_si643 : si64
+    "arc.keep"(%result_subi_si641_si643) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi64n2]]) : (si64) -> ()
+
+    // subi 2, 4 -> -2
+    %result_subi_si642_si644 = arc.subi %cst_si642, %cst_si644 : si64
+    "arc.keep"(%result_subi_si642_si644) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi64n2]]) : (si64) -> ()
+
     // subi -9223372036854775808, -9223372036854775807 -> -1
     %result_subi_si64n9223372036854775808_si64n9223372036854775807 = arc.subi %cst_si64n9223372036854775808, %cst_si64n9223372036854775807 : si64
     "arc.keep"(%result_subi_si64n9223372036854775808_si64n9223372036854775807) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi64n1]]) : (si64) -> ()
+
+    // subi 0, 1 -> -1
+    %result_subi_si640_si641 = arc.subi %cst_si640, %cst_si641 : si64
+    "arc.keep"(%result_subi_si640_si641) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi64n1]]) : (si64) -> ()
+
+    // subi 1, 2 -> -1
+    %result_subi_si641_si642 = arc.subi %cst_si641, %cst_si642 : si64
+    "arc.keep"(%result_subi_si641_si642) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi64n1]]) : (si64) -> ()
+
+    // subi 2, 3 -> -1
+    %result_subi_si642_si643 = arc.subi %cst_si642, %cst_si643 : si64
+    "arc.keep"(%result_subi_si642_si643) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi64n1]]) : (si64) -> ()
+
+    // subi 3, 4 -> -1
+    %result_subi_si643_si644 = arc.subi %cst_si643, %cst_si644 : si64
+    "arc.keep"(%result_subi_si643_si644) : (si64) -> ()
     // CHECK: "arc.keep"([[CSTsi64n1]]) : (si64) -> ()
 
     // subi 9223372036854775806, 9223372036854775807 -> -1
@@ -10714,6 +22829,26 @@ module @toplevel {
     "arc.keep"(%result_subi_si640_si640) : (si64) -> ()
     // CHECK: "arc.keep"([[CSTsi640]]) : (si64) -> ()
 
+    // subi 1, 1 -> 0
+    %result_subi_si641_si641 = arc.subi %cst_si641, %cst_si641 : si64
+    "arc.keep"(%result_subi_si641_si641) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi640]]) : (si64) -> ()
+
+    // subi 2, 2 -> 0
+    %result_subi_si642_si642 = arc.subi %cst_si642, %cst_si642 : si64
+    "arc.keep"(%result_subi_si642_si642) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi640]]) : (si64) -> ()
+
+    // subi 3, 3 -> 0
+    %result_subi_si643_si643 = arc.subi %cst_si643, %cst_si643 : si64
+    "arc.keep"(%result_subi_si643_si643) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi640]]) : (si64) -> ()
+
+    // subi 4, 4 -> 0
+    %result_subi_si644_si644 = arc.subi %cst_si644, %cst_si644 : si64
+    "arc.keep"(%result_subi_si644_si644) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi640]]) : (si64) -> ()
+
     // subi 5577148965131116544, 5577148965131116544 -> 0
     %result_subi_si645577148965131116544_si645577148965131116544 = arc.subi %cst_si645577148965131116544, %cst_si645577148965131116544 : si64
     "arc.keep"(%result_subi_si645577148965131116544_si645577148965131116544) : (si64) -> ()
@@ -10734,10 +22869,60 @@ module @toplevel {
     "arc.keep"(%result_subi_si64n9223372036854775807_si64n9223372036854775808) : (si64) -> ()
     // CHECK: "arc.keep"([[CSTsi641]]) : (si64) -> ()
 
+    // subi 1, 0 -> 1
+    %result_subi_si641_si640 = arc.subi %cst_si641, %cst_si640 : si64
+    "arc.keep"(%result_subi_si641_si640) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi641]]) : (si64) -> ()
+
+    // subi 2, 1 -> 1
+    %result_subi_si642_si641 = arc.subi %cst_si642, %cst_si641 : si64
+    "arc.keep"(%result_subi_si642_si641) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi641]]) : (si64) -> ()
+
+    // subi 3, 2 -> 1
+    %result_subi_si643_si642 = arc.subi %cst_si643, %cst_si642 : si64
+    "arc.keep"(%result_subi_si643_si642) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi641]]) : (si64) -> ()
+
+    // subi 4, 3 -> 1
+    %result_subi_si644_si643 = arc.subi %cst_si644, %cst_si643 : si64
+    "arc.keep"(%result_subi_si644_si643) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi641]]) : (si64) -> ()
+
     // subi 9223372036854775807, 9223372036854775806 -> 1
     %result_subi_si649223372036854775807_si649223372036854775806 = arc.subi %cst_si649223372036854775807, %cst_si649223372036854775806 : si64
     "arc.keep"(%result_subi_si649223372036854775807_si649223372036854775806) : (si64) -> ()
     // CHECK: "arc.keep"([[CSTsi641]]) : (si64) -> ()
+
+    // subi 2, 0 -> 2
+    %result_subi_si642_si640 = arc.subi %cst_si642, %cst_si640 : si64
+    "arc.keep"(%result_subi_si642_si640) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi642]]) : (si64) -> ()
+
+    // subi 3, 1 -> 2
+    %result_subi_si643_si641 = arc.subi %cst_si643, %cst_si641 : si64
+    "arc.keep"(%result_subi_si643_si641) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi642]]) : (si64) -> ()
+
+    // subi 4, 2 -> 2
+    %result_subi_si644_si642 = arc.subi %cst_si644, %cst_si642 : si64
+    "arc.keep"(%result_subi_si644_si642) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi642]]) : (si64) -> ()
+
+    // subi 3, 0 -> 3
+    %result_subi_si643_si640 = arc.subi %cst_si643, %cst_si640 : si64
+    "arc.keep"(%result_subi_si643_si640) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi643]]) : (si64) -> ()
+
+    // subi 4, 1 -> 3
+    %result_subi_si644_si641 = arc.subi %cst_si644, %cst_si641 : si64
+    "arc.keep"(%result_subi_si644_si641) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi643]]) : (si64) -> ()
+
+    // subi 4, 0 -> 4
+    %result_subi_si644_si640 = arc.subi %cst_si644, %cst_si640 : si64
+    "arc.keep"(%result_subi_si644_si640) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi644]]) : (si64) -> ()
 
     // subi -1328271339354574848, -1741927215160008704 -> 413655875805433856
     %result_subi_si64n1328271339354574848_si64n1741927215160008704 = arc.subi %cst_si64n1328271339354574848, %cst_si64n1741927215160008704 : si64
@@ -10749,10 +22934,50 @@ module @toplevel {
     "arc.keep"(%result_subi_si640_si64n1328271339354574848) : (si64) -> ()
     // CHECK: "arc.keep"([[CSTsi641328271339354574848]]) : (si64) -> ()
 
+    // subi 1, -1328271339354574848 -> 1328271339354574849
+    %result_subi_si641_si64n1328271339354574848 = arc.subi %cst_si641, %cst_si64n1328271339354574848 : si64
+    "arc.keep"(%result_subi_si641_si64n1328271339354574848) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi641328271339354574849]]) : (si64) -> ()
+
+    // subi 2, -1328271339354574848 -> 1328271339354574850
+    %result_subi_si642_si64n1328271339354574848 = arc.subi %cst_si642, %cst_si64n1328271339354574848 : si64
+    "arc.keep"(%result_subi_si642_si64n1328271339354574848) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi641328271339354574850]]) : (si64) -> ()
+
+    // subi 3, -1328271339354574848 -> 1328271339354574851
+    %result_subi_si643_si64n1328271339354574848 = arc.subi %cst_si643, %cst_si64n1328271339354574848 : si64
+    "arc.keep"(%result_subi_si643_si64n1328271339354574848) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi641328271339354574851]]) : (si64) -> ()
+
+    // subi 4, -1328271339354574848 -> 1328271339354574852
+    %result_subi_si644_si64n1328271339354574848 = arc.subi %cst_si644, %cst_si64n1328271339354574848 : si64
+    "arc.keep"(%result_subi_si644_si64n1328271339354574848) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi641328271339354574852]]) : (si64) -> ()
+
     // subi 0, -1741927215160008704 -> 1741927215160008704
     %result_subi_si640_si64n1741927215160008704 = arc.subi %cst_si640, %cst_si64n1741927215160008704 : si64
     "arc.keep"(%result_subi_si640_si64n1741927215160008704) : (si64) -> ()
     // CHECK: "arc.keep"([[CSTsi641741927215160008704]]) : (si64) -> ()
+
+    // subi 1, -1741927215160008704 -> 1741927215160008705
+    %result_subi_si641_si64n1741927215160008704 = arc.subi %cst_si641, %cst_si64n1741927215160008704 : si64
+    "arc.keep"(%result_subi_si641_si64n1741927215160008704) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi641741927215160008705]]) : (si64) -> ()
+
+    // subi 2, -1741927215160008704 -> 1741927215160008706
+    %result_subi_si642_si64n1741927215160008704 = arc.subi %cst_si642, %cst_si64n1741927215160008704 : si64
+    "arc.keep"(%result_subi_si642_si64n1741927215160008704) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi641741927215160008706]]) : (si64) -> ()
+
+    // subi 3, -1741927215160008704 -> 1741927215160008707
+    %result_subi_si643_si64n1741927215160008704 = arc.subi %cst_si643, %cst_si64n1741927215160008704 : si64
+    "arc.keep"(%result_subi_si643_si64n1741927215160008704) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi641741927215160008707]]) : (si64) -> ()
+
+    // subi 4, -1741927215160008704 -> 1741927215160008708
+    %result_subi_si644_si64n1741927215160008704 = arc.subi %cst_si644, %cst_si64n1741927215160008704 : si64
+    "arc.keep"(%result_subi_si644_si64n1741927215160008704) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi641741927215160008708]]) : (si64) -> ()
 
     // subi 9223372036854775806, 5577148965131116544 -> 3646223071723659262
     %result_subi_si649223372036854775806_si645577148965131116544 = arc.subi %cst_si649223372036854775806, %cst_si645577148965131116544 : si64
@@ -10763,6 +22988,26 @@ module @toplevel {
     %result_subi_si649223372036854775807_si645577148965131116544 = arc.subi %cst_si649223372036854775807, %cst_si645577148965131116544 : si64
     "arc.keep"(%result_subi_si649223372036854775807_si645577148965131116544) : (si64) -> ()
     // CHECK: "arc.keep"([[CSTsi643646223071723659263]]) : (si64) -> ()
+
+    // subi 5577148965131116544, 4 -> 5577148965131116540
+    %result_subi_si645577148965131116544_si644 = arc.subi %cst_si645577148965131116544, %cst_si644 : si64
+    "arc.keep"(%result_subi_si645577148965131116544_si644) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi645577148965131116540]]) : (si64) -> ()
+
+    // subi 5577148965131116544, 3 -> 5577148965131116541
+    %result_subi_si645577148965131116544_si643 = arc.subi %cst_si645577148965131116544, %cst_si643 : si64
+    "arc.keep"(%result_subi_si645577148965131116544_si643) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi645577148965131116541]]) : (si64) -> ()
+
+    // subi 5577148965131116544, 2 -> 5577148965131116542
+    %result_subi_si645577148965131116544_si642 = arc.subi %cst_si645577148965131116544, %cst_si642 : si64
+    "arc.keep"(%result_subi_si645577148965131116544_si642) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi645577148965131116542]]) : (si64) -> ()
+
+    // subi 5577148965131116544, 1 -> 5577148965131116543
+    %result_subi_si645577148965131116544_si641 = arc.subi %cst_si645577148965131116544, %cst_si641 : si64
+    "arc.keep"(%result_subi_si645577148965131116544_si641) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi645577148965131116543]]) : (si64) -> ()
 
     // subi 5577148965131116544, 0 -> 5577148965131116544
     %result_subi_si645577148965131116544_si640 = arc.subi %cst_si645577148965131116544, %cst_si640 : si64
@@ -10799,9 +23044,49 @@ module @toplevel {
     "arc.keep"(%result_subi_si64n1328271339354574848_si64n9223372036854775808) : (si64) -> ()
     // CHECK: "arc.keep"([[CSTsi647895100697500200960]]) : (si64) -> ()
 
+    // subi 9223372036854775806, 4 -> 9223372036854775802
+    %result_subi_si649223372036854775806_si644 = arc.subi %cst_si649223372036854775806, %cst_si644 : si64
+    "arc.keep"(%result_subi_si649223372036854775806_si644) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi649223372036854775802]]) : (si64) -> ()
+
+    // subi 9223372036854775806, 3 -> 9223372036854775803
+    %result_subi_si649223372036854775806_si643 = arc.subi %cst_si649223372036854775806, %cst_si643 : si64
+    "arc.keep"(%result_subi_si649223372036854775806_si643) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi649223372036854775803]]) : (si64) -> ()
+
+    // subi 9223372036854775807, 4 -> 9223372036854775803
+    %result_subi_si649223372036854775807_si644 = arc.subi %cst_si649223372036854775807, %cst_si644 : si64
+    "arc.keep"(%result_subi_si649223372036854775807_si644) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi649223372036854775803]]) : (si64) -> ()
+
+    // subi 9223372036854775806, 2 -> 9223372036854775804
+    %result_subi_si649223372036854775806_si642 = arc.subi %cst_si649223372036854775806, %cst_si642 : si64
+    "arc.keep"(%result_subi_si649223372036854775806_si642) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi649223372036854775804]]) : (si64) -> ()
+
+    // subi 9223372036854775807, 3 -> 9223372036854775804
+    %result_subi_si649223372036854775807_si643 = arc.subi %cst_si649223372036854775807, %cst_si643 : si64
+    "arc.keep"(%result_subi_si649223372036854775807_si643) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi649223372036854775804]]) : (si64) -> ()
+
+    // subi 9223372036854775806, 1 -> 9223372036854775805
+    %result_subi_si649223372036854775806_si641 = arc.subi %cst_si649223372036854775806, %cst_si641 : si64
+    "arc.keep"(%result_subi_si649223372036854775806_si641) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi649223372036854775805]]) : (si64) -> ()
+
+    // subi 9223372036854775807, 2 -> 9223372036854775805
+    %result_subi_si649223372036854775807_si642 = arc.subi %cst_si649223372036854775807, %cst_si642 : si64
+    "arc.keep"(%result_subi_si649223372036854775807_si642) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi649223372036854775805]]) : (si64) -> ()
+
     // subi 9223372036854775806, 0 -> 9223372036854775806
     %result_subi_si649223372036854775806_si640 = arc.subi %cst_si649223372036854775806, %cst_si640 : si64
     "arc.keep"(%result_subi_si649223372036854775806_si640) : (si64) -> ()
+    // CHECK: "arc.keep"([[CSTsi649223372036854775806]]) : (si64) -> ()
+
+    // subi 9223372036854775807, 1 -> 9223372036854775806
+    %result_subi_si649223372036854775807_si641 = arc.subi %cst_si649223372036854775807, %cst_si641 : si64
+    "arc.keep"(%result_subi_si649223372036854775807_si641) : (si64) -> ()
     // CHECK: "arc.keep"([[CSTsi649223372036854775806]]) : (si64) -> ()
 
     // subi 0, -9223372036854775807 -> 9223372036854775807
@@ -10813,6 +23098,30 @@ module @toplevel {
     %result_subi_si649223372036854775807_si640 = arc.subi %cst_si649223372036854775807, %cst_si640 : si64
     "arc.keep"(%result_subi_si649223372036854775807_si640) : (si64) -> ()
     // CHECK: "arc.keep"([[CSTsi649223372036854775807]]) : (si64) -> ()
+
+    // subi -9223372036854775808, 1 -> no-fold
+    %result_subi_si64n9223372036854775808_si641 = arc.subi %cst_si64n9223372036854775808, %cst_si641 : si64
+    // CHECK-DAG: [[RESULT_subi_si64n9223372036854775808_si641:%[^ ]+]] = arc.subi [[CSTsi64n9223372036854775808]], [[CSTsi641]] : si64
+    "arc.keep"(%result_subi_si64n9223372036854775808_si641) : (si64) -> ()
+    // CHECK: "arc.keep"([[RESULT_subi_si64n9223372036854775808_si641]]) : (si64) -> ()
+
+    // subi -9223372036854775808, 2 -> no-fold
+    %result_subi_si64n9223372036854775808_si642 = arc.subi %cst_si64n9223372036854775808, %cst_si642 : si64
+    // CHECK-DAG: [[RESULT_subi_si64n9223372036854775808_si642:%[^ ]+]] = arc.subi [[CSTsi64n9223372036854775808]], [[CSTsi642]] : si64
+    "arc.keep"(%result_subi_si64n9223372036854775808_si642) : (si64) -> ()
+    // CHECK: "arc.keep"([[RESULT_subi_si64n9223372036854775808_si642]]) : (si64) -> ()
+
+    // subi -9223372036854775808, 3 -> no-fold
+    %result_subi_si64n9223372036854775808_si643 = arc.subi %cst_si64n9223372036854775808, %cst_si643 : si64
+    // CHECK-DAG: [[RESULT_subi_si64n9223372036854775808_si643:%[^ ]+]] = arc.subi [[CSTsi64n9223372036854775808]], [[CSTsi643]] : si64
+    "arc.keep"(%result_subi_si64n9223372036854775808_si643) : (si64) -> ()
+    // CHECK: "arc.keep"([[RESULT_subi_si64n9223372036854775808_si643]]) : (si64) -> ()
+
+    // subi -9223372036854775808, 4 -> no-fold
+    %result_subi_si64n9223372036854775808_si644 = arc.subi %cst_si64n9223372036854775808, %cst_si644 : si64
+    // CHECK-DAG: [[RESULT_subi_si64n9223372036854775808_si644:%[^ ]+]] = arc.subi [[CSTsi64n9223372036854775808]], [[CSTsi644]] : si64
+    "arc.keep"(%result_subi_si64n9223372036854775808_si644) : (si64) -> ()
+    // CHECK: "arc.keep"([[RESULT_subi_si64n9223372036854775808_si644]]) : (si64) -> ()
 
     // subi -9223372036854775808, 5577148965131116544 -> no-fold
     %result_subi_si64n9223372036854775808_si645577148965131116544 = arc.subi %cst_si64n9223372036854775808, %cst_si645577148965131116544 : si64
@@ -10831,6 +23140,24 @@ module @toplevel {
     // CHECK-DAG: [[RESULT_subi_si64n9223372036854775808_si649223372036854775807:%[^ ]+]] = arc.subi [[CSTsi64n9223372036854775808]], [[CSTsi649223372036854775807]] : si64
     "arc.keep"(%result_subi_si64n9223372036854775808_si649223372036854775807) : (si64) -> ()
     // CHECK: "arc.keep"([[RESULT_subi_si64n9223372036854775808_si649223372036854775807]]) : (si64) -> ()
+
+    // subi -9223372036854775807, 2 -> no-fold
+    %result_subi_si64n9223372036854775807_si642 = arc.subi %cst_si64n9223372036854775807, %cst_si642 : si64
+    // CHECK-DAG: [[RESULT_subi_si64n9223372036854775807_si642:%[^ ]+]] = arc.subi [[CSTsi64n9223372036854775807]], [[CSTsi642]] : si64
+    "arc.keep"(%result_subi_si64n9223372036854775807_si642) : (si64) -> ()
+    // CHECK: "arc.keep"([[RESULT_subi_si64n9223372036854775807_si642]]) : (si64) -> ()
+
+    // subi -9223372036854775807, 3 -> no-fold
+    %result_subi_si64n9223372036854775807_si643 = arc.subi %cst_si64n9223372036854775807, %cst_si643 : si64
+    // CHECK-DAG: [[RESULT_subi_si64n9223372036854775807_si643:%[^ ]+]] = arc.subi [[CSTsi64n9223372036854775807]], [[CSTsi643]] : si64
+    "arc.keep"(%result_subi_si64n9223372036854775807_si643) : (si64) -> ()
+    // CHECK: "arc.keep"([[RESULT_subi_si64n9223372036854775807_si643]]) : (si64) -> ()
+
+    // subi -9223372036854775807, 4 -> no-fold
+    %result_subi_si64n9223372036854775807_si644 = arc.subi %cst_si64n9223372036854775807, %cst_si644 : si64
+    // CHECK-DAG: [[RESULT_subi_si64n9223372036854775807_si644:%[^ ]+]] = arc.subi [[CSTsi64n9223372036854775807]], [[CSTsi644]] : si64
+    "arc.keep"(%result_subi_si64n9223372036854775807_si644) : (si64) -> ()
+    // CHECK: "arc.keep"([[RESULT_subi_si64n9223372036854775807_si644]]) : (si64) -> ()
 
     // subi -9223372036854775807, 5577148965131116544 -> no-fold
     %result_subi_si64n9223372036854775807_si645577148965131116544 = arc.subi %cst_si64n9223372036854775807, %cst_si645577148965131116544 : si64
@@ -10879,6 +23206,54 @@ module @toplevel {
     // CHECK-DAG: [[RESULT_subi_si640_si64n9223372036854775808:%[^ ]+]] = arc.subi [[CSTsi640]], [[CSTsi64n9223372036854775808]] : si64
     "arc.keep"(%result_subi_si640_si64n9223372036854775808) : (si64) -> ()
     // CHECK: "arc.keep"([[RESULT_subi_si640_si64n9223372036854775808]]) : (si64) -> ()
+
+    // subi 1, -9223372036854775808 -> no-fold
+    %result_subi_si641_si64n9223372036854775808 = arc.subi %cst_si641, %cst_si64n9223372036854775808 : si64
+    // CHECK-DAG: [[RESULT_subi_si641_si64n9223372036854775808:%[^ ]+]] = arc.subi [[CSTsi641]], [[CSTsi64n9223372036854775808]] : si64
+    "arc.keep"(%result_subi_si641_si64n9223372036854775808) : (si64) -> ()
+    // CHECK: "arc.keep"([[RESULT_subi_si641_si64n9223372036854775808]]) : (si64) -> ()
+
+    // subi 1, -9223372036854775807 -> no-fold
+    %result_subi_si641_si64n9223372036854775807 = arc.subi %cst_si641, %cst_si64n9223372036854775807 : si64
+    // CHECK-DAG: [[RESULT_subi_si641_si64n9223372036854775807:%[^ ]+]] = arc.subi [[CSTsi641]], [[CSTsi64n9223372036854775807]] : si64
+    "arc.keep"(%result_subi_si641_si64n9223372036854775807) : (si64) -> ()
+    // CHECK: "arc.keep"([[RESULT_subi_si641_si64n9223372036854775807]]) : (si64) -> ()
+
+    // subi 2, -9223372036854775808 -> no-fold
+    %result_subi_si642_si64n9223372036854775808 = arc.subi %cst_si642, %cst_si64n9223372036854775808 : si64
+    // CHECK-DAG: [[RESULT_subi_si642_si64n9223372036854775808:%[^ ]+]] = arc.subi [[CSTsi642]], [[CSTsi64n9223372036854775808]] : si64
+    "arc.keep"(%result_subi_si642_si64n9223372036854775808) : (si64) -> ()
+    // CHECK: "arc.keep"([[RESULT_subi_si642_si64n9223372036854775808]]) : (si64) -> ()
+
+    // subi 2, -9223372036854775807 -> no-fold
+    %result_subi_si642_si64n9223372036854775807 = arc.subi %cst_si642, %cst_si64n9223372036854775807 : si64
+    // CHECK-DAG: [[RESULT_subi_si642_si64n9223372036854775807:%[^ ]+]] = arc.subi [[CSTsi642]], [[CSTsi64n9223372036854775807]] : si64
+    "arc.keep"(%result_subi_si642_si64n9223372036854775807) : (si64) -> ()
+    // CHECK: "arc.keep"([[RESULT_subi_si642_si64n9223372036854775807]]) : (si64) -> ()
+
+    // subi 3, -9223372036854775808 -> no-fold
+    %result_subi_si643_si64n9223372036854775808 = arc.subi %cst_si643, %cst_si64n9223372036854775808 : si64
+    // CHECK-DAG: [[RESULT_subi_si643_si64n9223372036854775808:%[^ ]+]] = arc.subi [[CSTsi643]], [[CSTsi64n9223372036854775808]] : si64
+    "arc.keep"(%result_subi_si643_si64n9223372036854775808) : (si64) -> ()
+    // CHECK: "arc.keep"([[RESULT_subi_si643_si64n9223372036854775808]]) : (si64) -> ()
+
+    // subi 3, -9223372036854775807 -> no-fold
+    %result_subi_si643_si64n9223372036854775807 = arc.subi %cst_si643, %cst_si64n9223372036854775807 : si64
+    // CHECK-DAG: [[RESULT_subi_si643_si64n9223372036854775807:%[^ ]+]] = arc.subi [[CSTsi643]], [[CSTsi64n9223372036854775807]] : si64
+    "arc.keep"(%result_subi_si643_si64n9223372036854775807) : (si64) -> ()
+    // CHECK: "arc.keep"([[RESULT_subi_si643_si64n9223372036854775807]]) : (si64) -> ()
+
+    // subi 4, -9223372036854775808 -> no-fold
+    %result_subi_si644_si64n9223372036854775808 = arc.subi %cst_si644, %cst_si64n9223372036854775808 : si64
+    // CHECK-DAG: [[RESULT_subi_si644_si64n9223372036854775808:%[^ ]+]] = arc.subi [[CSTsi644]], [[CSTsi64n9223372036854775808]] : si64
+    "arc.keep"(%result_subi_si644_si64n9223372036854775808) : (si64) -> ()
+    // CHECK: "arc.keep"([[RESULT_subi_si644_si64n9223372036854775808]]) : (si64) -> ()
+
+    // subi 4, -9223372036854775807 -> no-fold
+    %result_subi_si644_si64n9223372036854775807 = arc.subi %cst_si644, %cst_si64n9223372036854775807 : si64
+    // CHECK-DAG: [[RESULT_subi_si644_si64n9223372036854775807:%[^ ]+]] = arc.subi [[CSTsi644]], [[CSTsi64n9223372036854775807]] : si64
+    "arc.keep"(%result_subi_si644_si64n9223372036854775807) : (si64) -> ()
+    // CHECK: "arc.keep"([[RESULT_subi_si644_si64n9223372036854775807]]) : (si64) -> ()
 
     // subi 5577148965131116544, -9223372036854775808 -> no-fold
     %result_subi_si645577148965131116544_si64n9223372036854775808 = arc.subi %cst_si645577148965131116544, %cst_si64n9223372036854775808 : si64
@@ -10975,6 +23350,36 @@ module @toplevel {
     "arc.keep"(%result_subi_si81_si8126) : (si8) -> ()
     // CHECK: "arc.keep"([[CSTsi8n125]]) : (si8) -> ()
 
+    // subi 2, 127 -> -125
+    %result_subi_si82_si8127 = arc.subi %cst_si82, %cst_si8127 : si8
+    "arc.keep"(%result_subi_si82_si8127) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi8n125]]) : (si8) -> ()
+
+    // subi 2, 126 -> -124
+    %result_subi_si82_si8126 = arc.subi %cst_si82, %cst_si8126 : si8
+    "arc.keep"(%result_subi_si82_si8126) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi8n124]]) : (si8) -> ()
+
+    // subi 3, 127 -> -124
+    %result_subi_si83_si8127 = arc.subi %cst_si83, %cst_si8127 : si8
+    "arc.keep"(%result_subi_si83_si8127) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi8n124]]) : (si8) -> ()
+
+    // subi 3, 126 -> -123
+    %result_subi_si83_si8126 = arc.subi %cst_si83, %cst_si8126 : si8
+    "arc.keep"(%result_subi_si83_si8126) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi8n123]]) : (si8) -> ()
+
+    // subi 4, 127 -> -123
+    %result_subi_si84_si8127 = arc.subi %cst_si84, %cst_si8127 : si8
+    "arc.keep"(%result_subi_si84_si8127) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi8n123]]) : (si8) -> ()
+
+    // subi 4, 126 -> -122
+    %result_subi_si84_si8126 = arc.subi %cst_si84, %cst_si8126 : si8
+    "arc.keep"(%result_subi_si84_si8126) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi8n122]]) : (si8) -> ()
+
     // subi 16, 127 -> -111
     %result_subi_si816_si8127 = arc.subi %cst_si816, %cst_si8127 : si8
     "arc.keep"(%result_subi_si816_si8127) : (si8) -> ()
@@ -10995,6 +23400,51 @@ module @toplevel {
     "arc.keep"(%result_subi_si81_si816) : (si8) -> ()
     // CHECK: "arc.keep"([[CSTsi8n15]]) : (si8) -> ()
 
+    // subi 2, 16 -> -14
+    %result_subi_si82_si816 = arc.subi %cst_si82, %cst_si816 : si8
+    "arc.keep"(%result_subi_si82_si816) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi8n14]]) : (si8) -> ()
+
+    // subi 3, 16 -> -13
+    %result_subi_si83_si816 = arc.subi %cst_si83, %cst_si816 : si8
+    "arc.keep"(%result_subi_si83_si816) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi8n13]]) : (si8) -> ()
+
+    // subi 4, 16 -> -12
+    %result_subi_si84_si816 = arc.subi %cst_si84, %cst_si816 : si8
+    "arc.keep"(%result_subi_si84_si816) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi8n12]]) : (si8) -> ()
+
+    // subi 0, 4 -> -4
+    %result_subi_si80_si84 = arc.subi %cst_si80, %cst_si84 : si8
+    "arc.keep"(%result_subi_si80_si84) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi8n4]]) : (si8) -> ()
+
+    // subi 0, 3 -> -3
+    %result_subi_si80_si83 = arc.subi %cst_si80, %cst_si83 : si8
+    "arc.keep"(%result_subi_si80_si83) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi8n3]]) : (si8) -> ()
+
+    // subi 1, 4 -> -3
+    %result_subi_si81_si84 = arc.subi %cst_si81, %cst_si84 : si8
+    "arc.keep"(%result_subi_si81_si84) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi8n3]]) : (si8) -> ()
+
+    // subi 0, 2 -> -2
+    %result_subi_si80_si82 = arc.subi %cst_si80, %cst_si82 : si8
+    "arc.keep"(%result_subi_si80_si82) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi8n2]]) : (si8) -> ()
+
+    // subi 1, 3 -> -2
+    %result_subi_si81_si83 = arc.subi %cst_si81, %cst_si83 : si8
+    "arc.keep"(%result_subi_si81_si83) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi8n2]]) : (si8) -> ()
+
+    // subi 2, 4 -> -2
+    %result_subi_si82_si84 = arc.subi %cst_si82, %cst_si84 : si8
+    "arc.keep"(%result_subi_si82_si84) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi8n2]]) : (si8) -> ()
+
     // subi -128, -127 -> -1
     %result_subi_si8n128_si8n127 = arc.subi %cst_si8n128, %cst_si8n127 : si8
     "arc.keep"(%result_subi_si8n128_si8n127) : (si8) -> ()
@@ -11003,6 +23453,21 @@ module @toplevel {
     // subi 0, 1 -> -1
     %result_subi_si80_si81 = arc.subi %cst_si80, %cst_si81 : si8
     "arc.keep"(%result_subi_si80_si81) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi8n1]]) : (si8) -> ()
+
+    // subi 1, 2 -> -1
+    %result_subi_si81_si82 = arc.subi %cst_si81, %cst_si82 : si8
+    "arc.keep"(%result_subi_si81_si82) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi8n1]]) : (si8) -> ()
+
+    // subi 2, 3 -> -1
+    %result_subi_si82_si83 = arc.subi %cst_si82, %cst_si83 : si8
+    "arc.keep"(%result_subi_si82_si83) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi8n1]]) : (si8) -> ()
+
+    // subi 3, 4 -> -1
+    %result_subi_si83_si84 = arc.subi %cst_si83, %cst_si84 : si8
+    "arc.keep"(%result_subi_si83_si84) : (si8) -> ()
     // CHECK: "arc.keep"([[CSTsi8n1]]) : (si8) -> ()
 
     // subi 126, 127 -> -1
@@ -11030,6 +23495,21 @@ module @toplevel {
     "arc.keep"(%result_subi_si81_si81) : (si8) -> ()
     // CHECK: "arc.keep"([[CSTsi80]]) : (si8) -> ()
 
+    // subi 2, 2 -> 0
+    %result_subi_si82_si82 = arc.subi %cst_si82, %cst_si82 : si8
+    "arc.keep"(%result_subi_si82_si82) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi80]]) : (si8) -> ()
+
+    // subi 3, 3 -> 0
+    %result_subi_si83_si83 = arc.subi %cst_si83, %cst_si83 : si8
+    "arc.keep"(%result_subi_si83_si83) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi80]]) : (si8) -> ()
+
+    // subi 4, 4 -> 0
+    %result_subi_si84_si84 = arc.subi %cst_si84, %cst_si84 : si8
+    "arc.keep"(%result_subi_si84_si84) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi80]]) : (si8) -> ()
+
     // subi 16, 16 -> 0
     %result_subi_si816_si816 = arc.subi %cst_si816, %cst_si816 : si8
     "arc.keep"(%result_subi_si816_si816) : (si8) -> ()
@@ -11055,10 +23535,70 @@ module @toplevel {
     "arc.keep"(%result_subi_si81_si80) : (si8) -> ()
     // CHECK: "arc.keep"([[CSTsi81]]) : (si8) -> ()
 
+    // subi 2, 1 -> 1
+    %result_subi_si82_si81 = arc.subi %cst_si82, %cst_si81 : si8
+    "arc.keep"(%result_subi_si82_si81) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi81]]) : (si8) -> ()
+
+    // subi 3, 2 -> 1
+    %result_subi_si83_si82 = arc.subi %cst_si83, %cst_si82 : si8
+    "arc.keep"(%result_subi_si83_si82) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi81]]) : (si8) -> ()
+
+    // subi 4, 3 -> 1
+    %result_subi_si84_si83 = arc.subi %cst_si84, %cst_si83 : si8
+    "arc.keep"(%result_subi_si84_si83) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi81]]) : (si8) -> ()
+
     // subi 127, 126 -> 1
     %result_subi_si8127_si8126 = arc.subi %cst_si8127, %cst_si8126 : si8
     "arc.keep"(%result_subi_si8127_si8126) : (si8) -> ()
     // CHECK: "arc.keep"([[CSTsi81]]) : (si8) -> ()
+
+    // subi 2, 0 -> 2
+    %result_subi_si82_si80 = arc.subi %cst_si82, %cst_si80 : si8
+    "arc.keep"(%result_subi_si82_si80) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi82]]) : (si8) -> ()
+
+    // subi 3, 1 -> 2
+    %result_subi_si83_si81 = arc.subi %cst_si83, %cst_si81 : si8
+    "arc.keep"(%result_subi_si83_si81) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi82]]) : (si8) -> ()
+
+    // subi 4, 2 -> 2
+    %result_subi_si84_si82 = arc.subi %cst_si84, %cst_si82 : si8
+    "arc.keep"(%result_subi_si84_si82) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi82]]) : (si8) -> ()
+
+    // subi 3, 0 -> 3
+    %result_subi_si83_si80 = arc.subi %cst_si83, %cst_si80 : si8
+    "arc.keep"(%result_subi_si83_si80) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi83]]) : (si8) -> ()
+
+    // subi 4, 1 -> 3
+    %result_subi_si84_si81 = arc.subi %cst_si84, %cst_si81 : si8
+    "arc.keep"(%result_subi_si84_si81) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi83]]) : (si8) -> ()
+
+    // subi 4, 0 -> 4
+    %result_subi_si84_si80 = arc.subi %cst_si84, %cst_si80 : si8
+    "arc.keep"(%result_subi_si84_si80) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi84]]) : (si8) -> ()
+
+    // subi 16, 4 -> 12
+    %result_subi_si816_si84 = arc.subi %cst_si816, %cst_si84 : si8
+    "arc.keep"(%result_subi_si816_si84) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi812]]) : (si8) -> ()
+
+    // subi 16, 3 -> 13
+    %result_subi_si816_si83 = arc.subi %cst_si816, %cst_si83 : si8
+    "arc.keep"(%result_subi_si816_si83) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi813]]) : (si8) -> ()
+
+    // subi 16, 2 -> 14
+    %result_subi_si816_si82 = arc.subi %cst_si816, %cst_si82 : si8
+    "arc.keep"(%result_subi_si816_si82) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi814]]) : (si8) -> ()
 
     // subi 16, 1 -> 15
     %result_subi_si816_si81 = arc.subi %cst_si816, %cst_si81 : si8
@@ -11080,9 +23620,39 @@ module @toplevel {
     "arc.keep"(%result_subi_si8127_si816) : (si8) -> ()
     // CHECK: "arc.keep"([[CSTsi8111]]) : (si8) -> ()
 
+    // subi 126, 4 -> 122
+    %result_subi_si8126_si84 = arc.subi %cst_si8126, %cst_si84 : si8
+    "arc.keep"(%result_subi_si8126_si84) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi8122]]) : (si8) -> ()
+
+    // subi 126, 3 -> 123
+    %result_subi_si8126_si83 = arc.subi %cst_si8126, %cst_si83 : si8
+    "arc.keep"(%result_subi_si8126_si83) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi8123]]) : (si8) -> ()
+
+    // subi 127, 4 -> 123
+    %result_subi_si8127_si84 = arc.subi %cst_si8127, %cst_si84 : si8
+    "arc.keep"(%result_subi_si8127_si84) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi8123]]) : (si8) -> ()
+
+    // subi 126, 2 -> 124
+    %result_subi_si8126_si82 = arc.subi %cst_si8126, %cst_si82 : si8
+    "arc.keep"(%result_subi_si8126_si82) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi8124]]) : (si8) -> ()
+
+    // subi 127, 3 -> 124
+    %result_subi_si8127_si83 = arc.subi %cst_si8127, %cst_si83 : si8
+    "arc.keep"(%result_subi_si8127_si83) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi8124]]) : (si8) -> ()
+
     // subi 126, 1 -> 125
     %result_subi_si8126_si81 = arc.subi %cst_si8126, %cst_si81 : si8
     "arc.keep"(%result_subi_si8126_si81) : (si8) -> ()
+    // CHECK: "arc.keep"([[CSTsi8125]]) : (si8) -> ()
+
+    // subi 127, 2 -> 125
+    %result_subi_si8127_si82 = arc.subi %cst_si8127, %cst_si82 : si8
+    "arc.keep"(%result_subi_si8127_si82) : (si8) -> ()
     // CHECK: "arc.keep"([[CSTsi8125]]) : (si8) -> ()
 
     // subi 126, 0 -> 126
@@ -11111,6 +23681,24 @@ module @toplevel {
     "arc.keep"(%result_subi_si8n128_si81) : (si8) -> ()
     // CHECK: "arc.keep"([[RESULT_subi_si8n128_si81]]) : (si8) -> ()
 
+    // subi -128, 2 -> no-fold
+    %result_subi_si8n128_si82 = arc.subi %cst_si8n128, %cst_si82 : si8
+    // CHECK-DAG: [[RESULT_subi_si8n128_si82:%[^ ]+]] = arc.subi [[CSTsi8n128]], [[CSTsi82]] : si8
+    "arc.keep"(%result_subi_si8n128_si82) : (si8) -> ()
+    // CHECK: "arc.keep"([[RESULT_subi_si8n128_si82]]) : (si8) -> ()
+
+    // subi -128, 3 -> no-fold
+    %result_subi_si8n128_si83 = arc.subi %cst_si8n128, %cst_si83 : si8
+    // CHECK-DAG: [[RESULT_subi_si8n128_si83:%[^ ]+]] = arc.subi [[CSTsi8n128]], [[CSTsi83]] : si8
+    "arc.keep"(%result_subi_si8n128_si83) : (si8) -> ()
+    // CHECK: "arc.keep"([[RESULT_subi_si8n128_si83]]) : (si8) -> ()
+
+    // subi -128, 4 -> no-fold
+    %result_subi_si8n128_si84 = arc.subi %cst_si8n128, %cst_si84 : si8
+    // CHECK-DAG: [[RESULT_subi_si8n128_si84:%[^ ]+]] = arc.subi [[CSTsi8n128]], [[CSTsi84]] : si8
+    "arc.keep"(%result_subi_si8n128_si84) : (si8) -> ()
+    // CHECK: "arc.keep"([[RESULT_subi_si8n128_si84]]) : (si8) -> ()
+
     // subi -128, 16 -> no-fold
     %result_subi_si8n128_si816 = arc.subi %cst_si8n128, %cst_si816 : si8
     // CHECK-DAG: [[RESULT_subi_si8n128_si816:%[^ ]+]] = arc.subi [[CSTsi8n128]], [[CSTsi816]] : si8
@@ -11128,6 +23716,24 @@ module @toplevel {
     // CHECK-DAG: [[RESULT_subi_si8n128_si8127:%[^ ]+]] = arc.subi [[CSTsi8n128]], [[CSTsi8127]] : si8
     "arc.keep"(%result_subi_si8n128_si8127) : (si8) -> ()
     // CHECK: "arc.keep"([[RESULT_subi_si8n128_si8127]]) : (si8) -> ()
+
+    // subi -127, 2 -> no-fold
+    %result_subi_si8n127_si82 = arc.subi %cst_si8n127, %cst_si82 : si8
+    // CHECK-DAG: [[RESULT_subi_si8n127_si82:%[^ ]+]] = arc.subi [[CSTsi8n127]], [[CSTsi82]] : si8
+    "arc.keep"(%result_subi_si8n127_si82) : (si8) -> ()
+    // CHECK: "arc.keep"([[RESULT_subi_si8n127_si82]]) : (si8) -> ()
+
+    // subi -127, 3 -> no-fold
+    %result_subi_si8n127_si83 = arc.subi %cst_si8n127, %cst_si83 : si8
+    // CHECK-DAG: [[RESULT_subi_si8n127_si83:%[^ ]+]] = arc.subi [[CSTsi8n127]], [[CSTsi83]] : si8
+    "arc.keep"(%result_subi_si8n127_si83) : (si8) -> ()
+    // CHECK: "arc.keep"([[RESULT_subi_si8n127_si83]]) : (si8) -> ()
+
+    // subi -127, 4 -> no-fold
+    %result_subi_si8n127_si84 = arc.subi %cst_si8n127, %cst_si84 : si8
+    // CHECK-DAG: [[RESULT_subi_si8n127_si84:%[^ ]+]] = arc.subi [[CSTsi8n127]], [[CSTsi84]] : si8
+    "arc.keep"(%result_subi_si8n127_si84) : (si8) -> ()
+    // CHECK: "arc.keep"([[RESULT_subi_si8n127_si84]]) : (si8) -> ()
 
     // subi -127, 16 -> no-fold
     %result_subi_si8n127_si816 = arc.subi %cst_si8n127, %cst_si816 : si8
@@ -11164,6 +23770,42 @@ module @toplevel {
     // CHECK-DAG: [[RESULT_subi_si81_si8n127:%[^ ]+]] = arc.subi [[CSTsi81]], [[CSTsi8n127]] : si8
     "arc.keep"(%result_subi_si81_si8n127) : (si8) -> ()
     // CHECK: "arc.keep"([[RESULT_subi_si81_si8n127]]) : (si8) -> ()
+
+    // subi 2, -128 -> no-fold
+    %result_subi_si82_si8n128 = arc.subi %cst_si82, %cst_si8n128 : si8
+    // CHECK-DAG: [[RESULT_subi_si82_si8n128:%[^ ]+]] = arc.subi [[CSTsi82]], [[CSTsi8n128]] : si8
+    "arc.keep"(%result_subi_si82_si8n128) : (si8) -> ()
+    // CHECK: "arc.keep"([[RESULT_subi_si82_si8n128]]) : (si8) -> ()
+
+    // subi 2, -127 -> no-fold
+    %result_subi_si82_si8n127 = arc.subi %cst_si82, %cst_si8n127 : si8
+    // CHECK-DAG: [[RESULT_subi_si82_si8n127:%[^ ]+]] = arc.subi [[CSTsi82]], [[CSTsi8n127]] : si8
+    "arc.keep"(%result_subi_si82_si8n127) : (si8) -> ()
+    // CHECK: "arc.keep"([[RESULT_subi_si82_si8n127]]) : (si8) -> ()
+
+    // subi 3, -128 -> no-fold
+    %result_subi_si83_si8n128 = arc.subi %cst_si83, %cst_si8n128 : si8
+    // CHECK-DAG: [[RESULT_subi_si83_si8n128:%[^ ]+]] = arc.subi [[CSTsi83]], [[CSTsi8n128]] : si8
+    "arc.keep"(%result_subi_si83_si8n128) : (si8) -> ()
+    // CHECK: "arc.keep"([[RESULT_subi_si83_si8n128]]) : (si8) -> ()
+
+    // subi 3, -127 -> no-fold
+    %result_subi_si83_si8n127 = arc.subi %cst_si83, %cst_si8n127 : si8
+    // CHECK-DAG: [[RESULT_subi_si83_si8n127:%[^ ]+]] = arc.subi [[CSTsi83]], [[CSTsi8n127]] : si8
+    "arc.keep"(%result_subi_si83_si8n127) : (si8) -> ()
+    // CHECK: "arc.keep"([[RESULT_subi_si83_si8n127]]) : (si8) -> ()
+
+    // subi 4, -128 -> no-fold
+    %result_subi_si84_si8n128 = arc.subi %cst_si84, %cst_si8n128 : si8
+    // CHECK-DAG: [[RESULT_subi_si84_si8n128:%[^ ]+]] = arc.subi [[CSTsi84]], [[CSTsi8n128]] : si8
+    "arc.keep"(%result_subi_si84_si8n128) : (si8) -> ()
+    // CHECK: "arc.keep"([[RESULT_subi_si84_si8n128]]) : (si8) -> ()
+
+    // subi 4, -127 -> no-fold
+    %result_subi_si84_si8n127 = arc.subi %cst_si84, %cst_si8n127 : si8
+    // CHECK-DAG: [[RESULT_subi_si84_si8n127:%[^ ]+]] = arc.subi [[CSTsi84]], [[CSTsi8n127]] : si8
+    "arc.keep"(%result_subi_si84_si8n127) : (si8) -> ()
+    // CHECK: "arc.keep"([[RESULT_subi_si84_si8n127]]) : (si8) -> ()
 
     // subi 16, -128 -> no-fold
     %result_subi_si816_si8n128 = arc.subi %cst_si816, %cst_si8n128 : si8
@@ -11211,6 +23853,21 @@ module @toplevel {
     "arc.keep"(%result_subi_ui161_ui161) : (ui16) -> ()
     // CHECK: "arc.keep"([[CSTui160]]) : (ui16) -> ()
 
+    // subi 2, 2 -> 0
+    %result_subi_ui162_ui162 = arc.subi %cst_ui162, %cst_ui162 : ui16
+    "arc.keep"(%result_subi_ui162_ui162) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui160]]) : (ui16) -> ()
+
+    // subi 3, 3 -> 0
+    %result_subi_ui163_ui163 = arc.subi %cst_ui163, %cst_ui163 : ui16
+    "arc.keep"(%result_subi_ui163_ui163) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui160]]) : (ui16) -> ()
+
+    // subi 4, 4 -> 0
+    %result_subi_ui164_ui164 = arc.subi %cst_ui164, %cst_ui164 : ui16
+    "arc.keep"(%result_subi_ui164_ui164) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui160]]) : (ui16) -> ()
+
     // subi 1717, 1717 -> 0
     %result_subi_ui161717_ui161717 = arc.subi %cst_ui161717, %cst_ui161717 : ui16
     "arc.keep"(%result_subi_ui161717_ui161717) : (ui16) -> ()
@@ -11241,10 +23898,55 @@ module @toplevel {
     "arc.keep"(%result_subi_ui161_ui160) : (ui16) -> ()
     // CHECK: "arc.keep"([[CSTui161]]) : (ui16) -> ()
 
+    // subi 2, 1 -> 1
+    %result_subi_ui162_ui161 = arc.subi %cst_ui162, %cst_ui161 : ui16
+    "arc.keep"(%result_subi_ui162_ui161) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui161]]) : (ui16) -> ()
+
+    // subi 3, 2 -> 1
+    %result_subi_ui163_ui162 = arc.subi %cst_ui163, %cst_ui162 : ui16
+    "arc.keep"(%result_subi_ui163_ui162) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui161]]) : (ui16) -> ()
+
+    // subi 4, 3 -> 1
+    %result_subi_ui164_ui163 = arc.subi %cst_ui164, %cst_ui163 : ui16
+    "arc.keep"(%result_subi_ui164_ui163) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui161]]) : (ui16) -> ()
+
     // subi 65535, 65534 -> 1
     %result_subi_ui1665535_ui1665534 = arc.subi %cst_ui1665535, %cst_ui1665534 : ui16
     "arc.keep"(%result_subi_ui1665535_ui1665534) : (ui16) -> ()
     // CHECK: "arc.keep"([[CSTui161]]) : (ui16) -> ()
+
+    // subi 2, 0 -> 2
+    %result_subi_ui162_ui160 = arc.subi %cst_ui162, %cst_ui160 : ui16
+    "arc.keep"(%result_subi_ui162_ui160) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui162]]) : (ui16) -> ()
+
+    // subi 3, 1 -> 2
+    %result_subi_ui163_ui161 = arc.subi %cst_ui163, %cst_ui161 : ui16
+    "arc.keep"(%result_subi_ui163_ui161) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui162]]) : (ui16) -> ()
+
+    // subi 4, 2 -> 2
+    %result_subi_ui164_ui162 = arc.subi %cst_ui164, %cst_ui162 : ui16
+    "arc.keep"(%result_subi_ui164_ui162) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui162]]) : (ui16) -> ()
+
+    // subi 3, 0 -> 3
+    %result_subi_ui163_ui160 = arc.subi %cst_ui163, %cst_ui160 : ui16
+    "arc.keep"(%result_subi_ui163_ui160) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui163]]) : (ui16) -> ()
+
+    // subi 4, 1 -> 3
+    %result_subi_ui164_ui161 = arc.subi %cst_ui164, %cst_ui161 : ui16
+    "arc.keep"(%result_subi_ui164_ui161) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui163]]) : (ui16) -> ()
+
+    // subi 4, 0 -> 4
+    %result_subi_ui164_ui160 = arc.subi %cst_ui164, %cst_ui160 : ui16
+    "arc.keep"(%result_subi_ui164_ui160) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui164]]) : (ui16) -> ()
 
     // subi 65534, 65096 -> 438
     %result_subi_ui1665534_ui1665096 = arc.subi %cst_ui1665534, %cst_ui1665096 : ui16
@@ -11255,6 +23957,21 @@ module @toplevel {
     %result_subi_ui1665535_ui1665096 = arc.subi %cst_ui1665535, %cst_ui1665096 : ui16
     "arc.keep"(%result_subi_ui1665535_ui1665096) : (ui16) -> ()
     // CHECK: "arc.keep"([[CSTui16439]]) : (ui16) -> ()
+
+    // subi 1717, 4 -> 1713
+    %result_subi_ui161717_ui164 = arc.subi %cst_ui161717, %cst_ui164 : ui16
+    "arc.keep"(%result_subi_ui161717_ui164) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui161713]]) : (ui16) -> ()
+
+    // subi 1717, 3 -> 1714
+    %result_subi_ui161717_ui163 = arc.subi %cst_ui161717, %cst_ui163 : ui16
+    "arc.keep"(%result_subi_ui161717_ui163) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui161714]]) : (ui16) -> ()
+
+    // subi 1717, 2 -> 1715
+    %result_subi_ui161717_ui162 = arc.subi %cst_ui161717, %cst_ui162 : ui16
+    "arc.keep"(%result_subi_ui161717_ui162) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui161715]]) : (ui16) -> ()
 
     // subi 1717, 1 -> 1716
     %result_subi_ui161717_ui161 = arc.subi %cst_ui161717, %cst_ui161 : ui16
@@ -11270,6 +23987,21 @@ module @toplevel {
     %result_subi_ui1617988_ui161717 = arc.subi %cst_ui1617988, %cst_ui161717 : ui16
     "arc.keep"(%result_subi_ui1617988_ui161717) : (ui16) -> ()
     // CHECK: "arc.keep"([[CSTui1616271]]) : (ui16) -> ()
+
+    // subi 17988, 4 -> 17984
+    %result_subi_ui1617988_ui164 = arc.subi %cst_ui1617988, %cst_ui164 : ui16
+    "arc.keep"(%result_subi_ui1617988_ui164) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui1617984]]) : (ui16) -> ()
+
+    // subi 17988, 3 -> 17985
+    %result_subi_ui1617988_ui163 = arc.subi %cst_ui1617988, %cst_ui163 : ui16
+    "arc.keep"(%result_subi_ui1617988_ui163) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui1617985]]) : (ui16) -> ()
+
+    // subi 17988, 2 -> 17986
+    %result_subi_ui1617988_ui162 = arc.subi %cst_ui1617988, %cst_ui162 : ui16
+    "arc.keep"(%result_subi_ui1617988_ui162) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui1617986]]) : (ui16) -> ()
 
     // subi 17988, 1 -> 17987
     %result_subi_ui1617988_ui161 = arc.subi %cst_ui1617988, %cst_ui161 : ui16
@@ -11311,6 +24043,21 @@ module @toplevel {
     "arc.keep"(%result_subi_ui1665535_ui161717) : (ui16) -> ()
     // CHECK: "arc.keep"([[CSTui1663818]]) : (ui16) -> ()
 
+    // subi 65096, 4 -> 65092
+    %result_subi_ui1665096_ui164 = arc.subi %cst_ui1665096, %cst_ui164 : ui16
+    "arc.keep"(%result_subi_ui1665096_ui164) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui1665092]]) : (ui16) -> ()
+
+    // subi 65096, 3 -> 65093
+    %result_subi_ui1665096_ui163 = arc.subi %cst_ui1665096, %cst_ui163 : ui16
+    "arc.keep"(%result_subi_ui1665096_ui163) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui1665093]]) : (ui16) -> ()
+
+    // subi 65096, 2 -> 65094
+    %result_subi_ui1665096_ui162 = arc.subi %cst_ui1665096, %cst_ui162 : ui16
+    "arc.keep"(%result_subi_ui1665096_ui162) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui1665094]]) : (ui16) -> ()
+
     // subi 65096, 1 -> 65095
     %result_subi_ui1665096_ui161 = arc.subi %cst_ui1665096, %cst_ui161 : ui16
     "arc.keep"(%result_subi_ui1665096_ui161) : (ui16) -> ()
@@ -11321,9 +24068,39 @@ module @toplevel {
     "arc.keep"(%result_subi_ui1665096_ui160) : (ui16) -> ()
     // CHECK: "arc.keep"([[CSTui1665096]]) : (ui16) -> ()
 
+    // subi 65534, 4 -> 65530
+    %result_subi_ui1665534_ui164 = arc.subi %cst_ui1665534, %cst_ui164 : ui16
+    "arc.keep"(%result_subi_ui1665534_ui164) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui1665530]]) : (ui16) -> ()
+
+    // subi 65534, 3 -> 65531
+    %result_subi_ui1665534_ui163 = arc.subi %cst_ui1665534, %cst_ui163 : ui16
+    "arc.keep"(%result_subi_ui1665534_ui163) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui1665531]]) : (ui16) -> ()
+
+    // subi 65535, 4 -> 65531
+    %result_subi_ui1665535_ui164 = arc.subi %cst_ui1665535, %cst_ui164 : ui16
+    "arc.keep"(%result_subi_ui1665535_ui164) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui1665531]]) : (ui16) -> ()
+
+    // subi 65534, 2 -> 65532
+    %result_subi_ui1665534_ui162 = arc.subi %cst_ui1665534, %cst_ui162 : ui16
+    "arc.keep"(%result_subi_ui1665534_ui162) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui1665532]]) : (ui16) -> ()
+
+    // subi 65535, 3 -> 65532
+    %result_subi_ui1665535_ui163 = arc.subi %cst_ui1665535, %cst_ui163 : ui16
+    "arc.keep"(%result_subi_ui1665535_ui163) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui1665532]]) : (ui16) -> ()
+
     // subi 65534, 1 -> 65533
     %result_subi_ui1665534_ui161 = arc.subi %cst_ui1665534, %cst_ui161 : ui16
     "arc.keep"(%result_subi_ui1665534_ui161) : (ui16) -> ()
+    // CHECK: "arc.keep"([[CSTui1665533]]) : (ui16) -> ()
+
+    // subi 65535, 2 -> 65533
+    %result_subi_ui1665535_ui162 = arc.subi %cst_ui1665535, %cst_ui162 : ui16
+    "arc.keep"(%result_subi_ui1665535_ui162) : (ui16) -> ()
     // CHECK: "arc.keep"([[CSTui1665533]]) : (ui16) -> ()
 
     // subi 65534, 0 -> 65534
@@ -11346,6 +24123,24 @@ module @toplevel {
     // CHECK-DAG: [[RESULT_subi_ui160_ui161:%[^ ]+]] = arc.subi [[CSTui160]], [[CSTui161]] : ui16
     "arc.keep"(%result_subi_ui160_ui161) : (ui16) -> ()
     // CHECK: "arc.keep"([[RESULT_subi_ui160_ui161]]) : (ui16) -> ()
+
+    // subi 0, 2 -> no-fold
+    %result_subi_ui160_ui162 = arc.subi %cst_ui160, %cst_ui162 : ui16
+    // CHECK-DAG: [[RESULT_subi_ui160_ui162:%[^ ]+]] = arc.subi [[CSTui160]], [[CSTui162]] : ui16
+    "arc.keep"(%result_subi_ui160_ui162) : (ui16) -> ()
+    // CHECK: "arc.keep"([[RESULT_subi_ui160_ui162]]) : (ui16) -> ()
+
+    // subi 0, 3 -> no-fold
+    %result_subi_ui160_ui163 = arc.subi %cst_ui160, %cst_ui163 : ui16
+    // CHECK-DAG: [[RESULT_subi_ui160_ui163:%[^ ]+]] = arc.subi [[CSTui160]], [[CSTui163]] : ui16
+    "arc.keep"(%result_subi_ui160_ui163) : (ui16) -> ()
+    // CHECK: "arc.keep"([[RESULT_subi_ui160_ui163]]) : (ui16) -> ()
+
+    // subi 0, 4 -> no-fold
+    %result_subi_ui160_ui164 = arc.subi %cst_ui160, %cst_ui164 : ui16
+    // CHECK-DAG: [[RESULT_subi_ui160_ui164:%[^ ]+]] = arc.subi [[CSTui160]], [[CSTui164]] : ui16
+    "arc.keep"(%result_subi_ui160_ui164) : (ui16) -> ()
+    // CHECK: "arc.keep"([[RESULT_subi_ui160_ui164]]) : (ui16) -> ()
 
     // subi 0, 1717 -> no-fold
     %result_subi_ui160_ui161717 = arc.subi %cst_ui160, %cst_ui161717 : ui16
@@ -11377,6 +24172,24 @@ module @toplevel {
     "arc.keep"(%result_subi_ui160_ui1665535) : (ui16) -> ()
     // CHECK: "arc.keep"([[RESULT_subi_ui160_ui1665535]]) : (ui16) -> ()
 
+    // subi 1, 2 -> no-fold
+    %result_subi_ui161_ui162 = arc.subi %cst_ui161, %cst_ui162 : ui16
+    // CHECK-DAG: [[RESULT_subi_ui161_ui162:%[^ ]+]] = arc.subi [[CSTui161]], [[CSTui162]] : ui16
+    "arc.keep"(%result_subi_ui161_ui162) : (ui16) -> ()
+    // CHECK: "arc.keep"([[RESULT_subi_ui161_ui162]]) : (ui16) -> ()
+
+    // subi 1, 3 -> no-fold
+    %result_subi_ui161_ui163 = arc.subi %cst_ui161, %cst_ui163 : ui16
+    // CHECK-DAG: [[RESULT_subi_ui161_ui163:%[^ ]+]] = arc.subi [[CSTui161]], [[CSTui163]] : ui16
+    "arc.keep"(%result_subi_ui161_ui163) : (ui16) -> ()
+    // CHECK: "arc.keep"([[RESULT_subi_ui161_ui163]]) : (ui16) -> ()
+
+    // subi 1, 4 -> no-fold
+    %result_subi_ui161_ui164 = arc.subi %cst_ui161, %cst_ui164 : ui16
+    // CHECK-DAG: [[RESULT_subi_ui161_ui164:%[^ ]+]] = arc.subi [[CSTui161]], [[CSTui164]] : ui16
+    "arc.keep"(%result_subi_ui161_ui164) : (ui16) -> ()
+    // CHECK: "arc.keep"([[RESULT_subi_ui161_ui164]]) : (ui16) -> ()
+
     // subi 1, 1717 -> no-fold
     %result_subi_ui161_ui161717 = arc.subi %cst_ui161, %cst_ui161717 : ui16
     // CHECK-DAG: [[RESULT_subi_ui161_ui161717:%[^ ]+]] = arc.subi [[CSTui161]], [[CSTui161717]] : ui16
@@ -11406,6 +24219,114 @@ module @toplevel {
     // CHECK-DAG: [[RESULT_subi_ui161_ui1665535:%[^ ]+]] = arc.subi [[CSTui161]], [[CSTui1665535]] : ui16
     "arc.keep"(%result_subi_ui161_ui1665535) : (ui16) -> ()
     // CHECK: "arc.keep"([[RESULT_subi_ui161_ui1665535]]) : (ui16) -> ()
+
+    // subi 2, 3 -> no-fold
+    %result_subi_ui162_ui163 = arc.subi %cst_ui162, %cst_ui163 : ui16
+    // CHECK-DAG: [[RESULT_subi_ui162_ui163:%[^ ]+]] = arc.subi [[CSTui162]], [[CSTui163]] : ui16
+    "arc.keep"(%result_subi_ui162_ui163) : (ui16) -> ()
+    // CHECK: "arc.keep"([[RESULT_subi_ui162_ui163]]) : (ui16) -> ()
+
+    // subi 2, 4 -> no-fold
+    %result_subi_ui162_ui164 = arc.subi %cst_ui162, %cst_ui164 : ui16
+    // CHECK-DAG: [[RESULT_subi_ui162_ui164:%[^ ]+]] = arc.subi [[CSTui162]], [[CSTui164]] : ui16
+    "arc.keep"(%result_subi_ui162_ui164) : (ui16) -> ()
+    // CHECK: "arc.keep"([[RESULT_subi_ui162_ui164]]) : (ui16) -> ()
+
+    // subi 2, 1717 -> no-fold
+    %result_subi_ui162_ui161717 = arc.subi %cst_ui162, %cst_ui161717 : ui16
+    // CHECK-DAG: [[RESULT_subi_ui162_ui161717:%[^ ]+]] = arc.subi [[CSTui162]], [[CSTui161717]] : ui16
+    "arc.keep"(%result_subi_ui162_ui161717) : (ui16) -> ()
+    // CHECK: "arc.keep"([[RESULT_subi_ui162_ui161717]]) : (ui16) -> ()
+
+    // subi 2, 17988 -> no-fold
+    %result_subi_ui162_ui1617988 = arc.subi %cst_ui162, %cst_ui1617988 : ui16
+    // CHECK-DAG: [[RESULT_subi_ui162_ui1617988:%[^ ]+]] = arc.subi [[CSTui162]], [[CSTui1617988]] : ui16
+    "arc.keep"(%result_subi_ui162_ui1617988) : (ui16) -> ()
+    // CHECK: "arc.keep"([[RESULT_subi_ui162_ui1617988]]) : (ui16) -> ()
+
+    // subi 2, 65096 -> no-fold
+    %result_subi_ui162_ui1665096 = arc.subi %cst_ui162, %cst_ui1665096 : ui16
+    // CHECK-DAG: [[RESULT_subi_ui162_ui1665096:%[^ ]+]] = arc.subi [[CSTui162]], [[CSTui1665096]] : ui16
+    "arc.keep"(%result_subi_ui162_ui1665096) : (ui16) -> ()
+    // CHECK: "arc.keep"([[RESULT_subi_ui162_ui1665096]]) : (ui16) -> ()
+
+    // subi 2, 65534 -> no-fold
+    %result_subi_ui162_ui1665534 = arc.subi %cst_ui162, %cst_ui1665534 : ui16
+    // CHECK-DAG: [[RESULT_subi_ui162_ui1665534:%[^ ]+]] = arc.subi [[CSTui162]], [[CSTui1665534]] : ui16
+    "arc.keep"(%result_subi_ui162_ui1665534) : (ui16) -> ()
+    // CHECK: "arc.keep"([[RESULT_subi_ui162_ui1665534]]) : (ui16) -> ()
+
+    // subi 2, 65535 -> no-fold
+    %result_subi_ui162_ui1665535 = arc.subi %cst_ui162, %cst_ui1665535 : ui16
+    // CHECK-DAG: [[RESULT_subi_ui162_ui1665535:%[^ ]+]] = arc.subi [[CSTui162]], [[CSTui1665535]] : ui16
+    "arc.keep"(%result_subi_ui162_ui1665535) : (ui16) -> ()
+    // CHECK: "arc.keep"([[RESULT_subi_ui162_ui1665535]]) : (ui16) -> ()
+
+    // subi 3, 4 -> no-fold
+    %result_subi_ui163_ui164 = arc.subi %cst_ui163, %cst_ui164 : ui16
+    // CHECK-DAG: [[RESULT_subi_ui163_ui164:%[^ ]+]] = arc.subi [[CSTui163]], [[CSTui164]] : ui16
+    "arc.keep"(%result_subi_ui163_ui164) : (ui16) -> ()
+    // CHECK: "arc.keep"([[RESULT_subi_ui163_ui164]]) : (ui16) -> ()
+
+    // subi 3, 1717 -> no-fold
+    %result_subi_ui163_ui161717 = arc.subi %cst_ui163, %cst_ui161717 : ui16
+    // CHECK-DAG: [[RESULT_subi_ui163_ui161717:%[^ ]+]] = arc.subi [[CSTui163]], [[CSTui161717]] : ui16
+    "arc.keep"(%result_subi_ui163_ui161717) : (ui16) -> ()
+    // CHECK: "arc.keep"([[RESULT_subi_ui163_ui161717]]) : (ui16) -> ()
+
+    // subi 3, 17988 -> no-fold
+    %result_subi_ui163_ui1617988 = arc.subi %cst_ui163, %cst_ui1617988 : ui16
+    // CHECK-DAG: [[RESULT_subi_ui163_ui1617988:%[^ ]+]] = arc.subi [[CSTui163]], [[CSTui1617988]] : ui16
+    "arc.keep"(%result_subi_ui163_ui1617988) : (ui16) -> ()
+    // CHECK: "arc.keep"([[RESULT_subi_ui163_ui1617988]]) : (ui16) -> ()
+
+    // subi 3, 65096 -> no-fold
+    %result_subi_ui163_ui1665096 = arc.subi %cst_ui163, %cst_ui1665096 : ui16
+    // CHECK-DAG: [[RESULT_subi_ui163_ui1665096:%[^ ]+]] = arc.subi [[CSTui163]], [[CSTui1665096]] : ui16
+    "arc.keep"(%result_subi_ui163_ui1665096) : (ui16) -> ()
+    // CHECK: "arc.keep"([[RESULT_subi_ui163_ui1665096]]) : (ui16) -> ()
+
+    // subi 3, 65534 -> no-fold
+    %result_subi_ui163_ui1665534 = arc.subi %cst_ui163, %cst_ui1665534 : ui16
+    // CHECK-DAG: [[RESULT_subi_ui163_ui1665534:%[^ ]+]] = arc.subi [[CSTui163]], [[CSTui1665534]] : ui16
+    "arc.keep"(%result_subi_ui163_ui1665534) : (ui16) -> ()
+    // CHECK: "arc.keep"([[RESULT_subi_ui163_ui1665534]]) : (ui16) -> ()
+
+    // subi 3, 65535 -> no-fold
+    %result_subi_ui163_ui1665535 = arc.subi %cst_ui163, %cst_ui1665535 : ui16
+    // CHECK-DAG: [[RESULT_subi_ui163_ui1665535:%[^ ]+]] = arc.subi [[CSTui163]], [[CSTui1665535]] : ui16
+    "arc.keep"(%result_subi_ui163_ui1665535) : (ui16) -> ()
+    // CHECK: "arc.keep"([[RESULT_subi_ui163_ui1665535]]) : (ui16) -> ()
+
+    // subi 4, 1717 -> no-fold
+    %result_subi_ui164_ui161717 = arc.subi %cst_ui164, %cst_ui161717 : ui16
+    // CHECK-DAG: [[RESULT_subi_ui164_ui161717:%[^ ]+]] = arc.subi [[CSTui164]], [[CSTui161717]] : ui16
+    "arc.keep"(%result_subi_ui164_ui161717) : (ui16) -> ()
+    // CHECK: "arc.keep"([[RESULT_subi_ui164_ui161717]]) : (ui16) -> ()
+
+    // subi 4, 17988 -> no-fold
+    %result_subi_ui164_ui1617988 = arc.subi %cst_ui164, %cst_ui1617988 : ui16
+    // CHECK-DAG: [[RESULT_subi_ui164_ui1617988:%[^ ]+]] = arc.subi [[CSTui164]], [[CSTui1617988]] : ui16
+    "arc.keep"(%result_subi_ui164_ui1617988) : (ui16) -> ()
+    // CHECK: "arc.keep"([[RESULT_subi_ui164_ui1617988]]) : (ui16) -> ()
+
+    // subi 4, 65096 -> no-fold
+    %result_subi_ui164_ui1665096 = arc.subi %cst_ui164, %cst_ui1665096 : ui16
+    // CHECK-DAG: [[RESULT_subi_ui164_ui1665096:%[^ ]+]] = arc.subi [[CSTui164]], [[CSTui1665096]] : ui16
+    "arc.keep"(%result_subi_ui164_ui1665096) : (ui16) -> ()
+    // CHECK: "arc.keep"([[RESULT_subi_ui164_ui1665096]]) : (ui16) -> ()
+
+    // subi 4, 65534 -> no-fold
+    %result_subi_ui164_ui1665534 = arc.subi %cst_ui164, %cst_ui1665534 : ui16
+    // CHECK-DAG: [[RESULT_subi_ui164_ui1665534:%[^ ]+]] = arc.subi [[CSTui164]], [[CSTui1665534]] : ui16
+    "arc.keep"(%result_subi_ui164_ui1665534) : (ui16) -> ()
+    // CHECK: "arc.keep"([[RESULT_subi_ui164_ui1665534]]) : (ui16) -> ()
+
+    // subi 4, 65535 -> no-fold
+    %result_subi_ui164_ui1665535 = arc.subi %cst_ui164, %cst_ui1665535 : ui16
+    // CHECK-DAG: [[RESULT_subi_ui164_ui1665535:%[^ ]+]] = arc.subi [[CSTui164]], [[CSTui1665535]] : ui16
+    "arc.keep"(%result_subi_ui164_ui1665535) : (ui16) -> ()
+    // CHECK: "arc.keep"([[RESULT_subi_ui164_ui1665535]]) : (ui16) -> ()
 
     // subi 1717, 17988 -> no-fold
     %result_subi_ui161717_ui1617988 = arc.subi %cst_ui161717, %cst_ui1617988 : ui16
@@ -11477,6 +24398,21 @@ module @toplevel {
     "arc.keep"(%result_subi_ui321_ui321) : (ui32) -> ()
     // CHECK: "arc.keep"([[CSTui320]]) : (ui32) -> ()
 
+    // subi 2, 2 -> 0
+    %result_subi_ui322_ui322 = arc.subi %cst_ui322, %cst_ui322 : ui32
+    "arc.keep"(%result_subi_ui322_ui322) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui320]]) : (ui32) -> ()
+
+    // subi 3, 3 -> 0
+    %result_subi_ui323_ui323 = arc.subi %cst_ui323, %cst_ui323 : ui32
+    "arc.keep"(%result_subi_ui323_ui323) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui320]]) : (ui32) -> ()
+
+    // subi 4, 4 -> 0
+    %result_subi_ui324_ui324 = arc.subi %cst_ui324, %cst_ui324 : ui32
+    "arc.keep"(%result_subi_ui324_ui324) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui320]]) : (ui32) -> ()
+
     // subi 2119154652, 2119154652 -> 0
     %result_subi_ui322119154652_ui322119154652 = arc.subi %cst_ui322119154652, %cst_ui322119154652 : ui32
     "arc.keep"(%result_subi_ui322119154652_ui322119154652) : (ui32) -> ()
@@ -11507,10 +24443,55 @@ module @toplevel {
     "arc.keep"(%result_subi_ui321_ui320) : (ui32) -> ()
     // CHECK: "arc.keep"([[CSTui321]]) : (ui32) -> ()
 
+    // subi 2, 1 -> 1
+    %result_subi_ui322_ui321 = arc.subi %cst_ui322, %cst_ui321 : ui32
+    "arc.keep"(%result_subi_ui322_ui321) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui321]]) : (ui32) -> ()
+
+    // subi 3, 2 -> 1
+    %result_subi_ui323_ui322 = arc.subi %cst_ui323, %cst_ui322 : ui32
+    "arc.keep"(%result_subi_ui323_ui322) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui321]]) : (ui32) -> ()
+
+    // subi 4, 3 -> 1
+    %result_subi_ui324_ui323 = arc.subi %cst_ui324, %cst_ui323 : ui32
+    "arc.keep"(%result_subi_ui324_ui323) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui321]]) : (ui32) -> ()
+
     // subi 4294967295, 4294967294 -> 1
     %result_subi_ui324294967295_ui324294967294 = arc.subi %cst_ui324294967295, %cst_ui324294967294 : ui32
     "arc.keep"(%result_subi_ui324294967295_ui324294967294) : (ui32) -> ()
     // CHECK: "arc.keep"([[CSTui321]]) : (ui32) -> ()
+
+    // subi 2, 0 -> 2
+    %result_subi_ui322_ui320 = arc.subi %cst_ui322, %cst_ui320 : ui32
+    "arc.keep"(%result_subi_ui322_ui320) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui322]]) : (ui32) -> ()
+
+    // subi 3, 1 -> 2
+    %result_subi_ui323_ui321 = arc.subi %cst_ui323, %cst_ui321 : ui32
+    "arc.keep"(%result_subi_ui323_ui321) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui322]]) : (ui32) -> ()
+
+    // subi 4, 2 -> 2
+    %result_subi_ui324_ui322 = arc.subi %cst_ui324, %cst_ui322 : ui32
+    "arc.keep"(%result_subi_ui324_ui322) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui322]]) : (ui32) -> ()
+
+    // subi 3, 0 -> 3
+    %result_subi_ui323_ui320 = arc.subi %cst_ui323, %cst_ui320 : ui32
+    "arc.keep"(%result_subi_ui323_ui320) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui323]]) : (ui32) -> ()
+
+    // subi 4, 1 -> 3
+    %result_subi_ui324_ui321 = arc.subi %cst_ui324, %cst_ui321 : ui32
+    "arc.keep"(%result_subi_ui324_ui321) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui323]]) : (ui32) -> ()
+
+    // subi 4, 0 -> 4
+    %result_subi_ui324_ui320 = arc.subi %cst_ui324, %cst_ui320 : ui32
+    "arc.keep"(%result_subi_ui324_ui320) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui324]]) : (ui32) -> ()
 
     // subi 3482297128, 3002788344 -> 479508784
     %result_subi_ui323482297128_ui323002788344 = arc.subi %cst_ui323482297128, %cst_ui323002788344 : ui32
@@ -11547,6 +24528,21 @@ module @toplevel {
     "arc.keep"(%result_subi_ui323482297128_ui322119154652) : (ui32) -> ()
     // CHECK: "arc.keep"([[CSTui321363142476]]) : (ui32) -> ()
 
+    // subi 2119154652, 4 -> 2119154648
+    %result_subi_ui322119154652_ui324 = arc.subi %cst_ui322119154652, %cst_ui324 : ui32
+    "arc.keep"(%result_subi_ui322119154652_ui324) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui322119154648]]) : (ui32) -> ()
+
+    // subi 2119154652, 3 -> 2119154649
+    %result_subi_ui322119154652_ui323 = arc.subi %cst_ui322119154652, %cst_ui323 : ui32
+    "arc.keep"(%result_subi_ui322119154652_ui323) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui322119154649]]) : (ui32) -> ()
+
+    // subi 2119154652, 2 -> 2119154650
+    %result_subi_ui322119154652_ui322 = arc.subi %cst_ui322119154652, %cst_ui322 : ui32
+    "arc.keep"(%result_subi_ui322119154652_ui322) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui322119154650]]) : (ui32) -> ()
+
     // subi 2119154652, 1 -> 2119154651
     %result_subi_ui322119154652_ui321 = arc.subi %cst_ui322119154652, %cst_ui321 : ui32
     "arc.keep"(%result_subi_ui322119154652_ui321) : (ui32) -> ()
@@ -11567,6 +24563,21 @@ module @toplevel {
     "arc.keep"(%result_subi_ui324294967295_ui322119154652) : (ui32) -> ()
     // CHECK: "arc.keep"([[CSTui322175812643]]) : (ui32) -> ()
 
+    // subi 3002788344, 4 -> 3002788340
+    %result_subi_ui323002788344_ui324 = arc.subi %cst_ui323002788344, %cst_ui324 : ui32
+    "arc.keep"(%result_subi_ui323002788344_ui324) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui323002788340]]) : (ui32) -> ()
+
+    // subi 3002788344, 3 -> 3002788341
+    %result_subi_ui323002788344_ui323 = arc.subi %cst_ui323002788344, %cst_ui323 : ui32
+    "arc.keep"(%result_subi_ui323002788344_ui323) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui323002788341]]) : (ui32) -> ()
+
+    // subi 3002788344, 2 -> 3002788342
+    %result_subi_ui323002788344_ui322 = arc.subi %cst_ui323002788344, %cst_ui322 : ui32
+    "arc.keep"(%result_subi_ui323002788344_ui322) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui323002788342]]) : (ui32) -> ()
+
     // subi 3002788344, 1 -> 3002788343
     %result_subi_ui323002788344_ui321 = arc.subi %cst_ui323002788344, %cst_ui321 : ui32
     "arc.keep"(%result_subi_ui323002788344_ui321) : (ui32) -> ()
@@ -11576,6 +24587,21 @@ module @toplevel {
     %result_subi_ui323002788344_ui320 = arc.subi %cst_ui323002788344, %cst_ui320 : ui32
     "arc.keep"(%result_subi_ui323002788344_ui320) : (ui32) -> ()
     // CHECK: "arc.keep"([[CSTui323002788344]]) : (ui32) -> ()
+
+    // subi 3482297128, 4 -> 3482297124
+    %result_subi_ui323482297128_ui324 = arc.subi %cst_ui323482297128, %cst_ui324 : ui32
+    "arc.keep"(%result_subi_ui323482297128_ui324) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui323482297124]]) : (ui32) -> ()
+
+    // subi 3482297128, 3 -> 3482297125
+    %result_subi_ui323482297128_ui323 = arc.subi %cst_ui323482297128, %cst_ui323 : ui32
+    "arc.keep"(%result_subi_ui323482297128_ui323) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui323482297125]]) : (ui32) -> ()
+
+    // subi 3482297128, 2 -> 3482297126
+    %result_subi_ui323482297128_ui322 = arc.subi %cst_ui323482297128, %cst_ui322 : ui32
+    "arc.keep"(%result_subi_ui323482297128_ui322) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui323482297126]]) : (ui32) -> ()
 
     // subi 3482297128, 1 -> 3482297127
     %result_subi_ui323482297128_ui321 = arc.subi %cst_ui323482297128, %cst_ui321 : ui32
@@ -11587,9 +24613,39 @@ module @toplevel {
     "arc.keep"(%result_subi_ui323482297128_ui320) : (ui32) -> ()
     // CHECK: "arc.keep"([[CSTui323482297128]]) : (ui32) -> ()
 
+    // subi 4294967294, 4 -> 4294967290
+    %result_subi_ui324294967294_ui324 = arc.subi %cst_ui324294967294, %cst_ui324 : ui32
+    "arc.keep"(%result_subi_ui324294967294_ui324) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui324294967290]]) : (ui32) -> ()
+
+    // subi 4294967294, 3 -> 4294967291
+    %result_subi_ui324294967294_ui323 = arc.subi %cst_ui324294967294, %cst_ui323 : ui32
+    "arc.keep"(%result_subi_ui324294967294_ui323) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui324294967291]]) : (ui32) -> ()
+
+    // subi 4294967295, 4 -> 4294967291
+    %result_subi_ui324294967295_ui324 = arc.subi %cst_ui324294967295, %cst_ui324 : ui32
+    "arc.keep"(%result_subi_ui324294967295_ui324) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui324294967291]]) : (ui32) -> ()
+
+    // subi 4294967294, 2 -> 4294967292
+    %result_subi_ui324294967294_ui322 = arc.subi %cst_ui324294967294, %cst_ui322 : ui32
+    "arc.keep"(%result_subi_ui324294967294_ui322) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui324294967292]]) : (ui32) -> ()
+
+    // subi 4294967295, 3 -> 4294967292
+    %result_subi_ui324294967295_ui323 = arc.subi %cst_ui324294967295, %cst_ui323 : ui32
+    "arc.keep"(%result_subi_ui324294967295_ui323) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui324294967292]]) : (ui32) -> ()
+
     // subi 4294967294, 1 -> 4294967293
     %result_subi_ui324294967294_ui321 = arc.subi %cst_ui324294967294, %cst_ui321 : ui32
     "arc.keep"(%result_subi_ui324294967294_ui321) : (ui32) -> ()
+    // CHECK: "arc.keep"([[CSTui324294967293]]) : (ui32) -> ()
+
+    // subi 4294967295, 2 -> 4294967293
+    %result_subi_ui324294967295_ui322 = arc.subi %cst_ui324294967295, %cst_ui322 : ui32
+    "arc.keep"(%result_subi_ui324294967295_ui322) : (ui32) -> ()
     // CHECK: "arc.keep"([[CSTui324294967293]]) : (ui32) -> ()
 
     // subi 4294967294, 0 -> 4294967294
@@ -11612,6 +24668,24 @@ module @toplevel {
     // CHECK-DAG: [[RESULT_subi_ui320_ui321:%[^ ]+]] = arc.subi [[CSTui320]], [[CSTui321]] : ui32
     "arc.keep"(%result_subi_ui320_ui321) : (ui32) -> ()
     // CHECK: "arc.keep"([[RESULT_subi_ui320_ui321]]) : (ui32) -> ()
+
+    // subi 0, 2 -> no-fold
+    %result_subi_ui320_ui322 = arc.subi %cst_ui320, %cst_ui322 : ui32
+    // CHECK-DAG: [[RESULT_subi_ui320_ui322:%[^ ]+]] = arc.subi [[CSTui320]], [[CSTui322]] : ui32
+    "arc.keep"(%result_subi_ui320_ui322) : (ui32) -> ()
+    // CHECK: "arc.keep"([[RESULT_subi_ui320_ui322]]) : (ui32) -> ()
+
+    // subi 0, 3 -> no-fold
+    %result_subi_ui320_ui323 = arc.subi %cst_ui320, %cst_ui323 : ui32
+    // CHECK-DAG: [[RESULT_subi_ui320_ui323:%[^ ]+]] = arc.subi [[CSTui320]], [[CSTui323]] : ui32
+    "arc.keep"(%result_subi_ui320_ui323) : (ui32) -> ()
+    // CHECK: "arc.keep"([[RESULT_subi_ui320_ui323]]) : (ui32) -> ()
+
+    // subi 0, 4 -> no-fold
+    %result_subi_ui320_ui324 = arc.subi %cst_ui320, %cst_ui324 : ui32
+    // CHECK-DAG: [[RESULT_subi_ui320_ui324:%[^ ]+]] = arc.subi [[CSTui320]], [[CSTui324]] : ui32
+    "arc.keep"(%result_subi_ui320_ui324) : (ui32) -> ()
+    // CHECK: "arc.keep"([[RESULT_subi_ui320_ui324]]) : (ui32) -> ()
 
     // subi 0, 2119154652 -> no-fold
     %result_subi_ui320_ui322119154652 = arc.subi %cst_ui320, %cst_ui322119154652 : ui32
@@ -11643,6 +24717,24 @@ module @toplevel {
     "arc.keep"(%result_subi_ui320_ui324294967295) : (ui32) -> ()
     // CHECK: "arc.keep"([[RESULT_subi_ui320_ui324294967295]]) : (ui32) -> ()
 
+    // subi 1, 2 -> no-fold
+    %result_subi_ui321_ui322 = arc.subi %cst_ui321, %cst_ui322 : ui32
+    // CHECK-DAG: [[RESULT_subi_ui321_ui322:%[^ ]+]] = arc.subi [[CSTui321]], [[CSTui322]] : ui32
+    "arc.keep"(%result_subi_ui321_ui322) : (ui32) -> ()
+    // CHECK: "arc.keep"([[RESULT_subi_ui321_ui322]]) : (ui32) -> ()
+
+    // subi 1, 3 -> no-fold
+    %result_subi_ui321_ui323 = arc.subi %cst_ui321, %cst_ui323 : ui32
+    // CHECK-DAG: [[RESULT_subi_ui321_ui323:%[^ ]+]] = arc.subi [[CSTui321]], [[CSTui323]] : ui32
+    "arc.keep"(%result_subi_ui321_ui323) : (ui32) -> ()
+    // CHECK: "arc.keep"([[RESULT_subi_ui321_ui323]]) : (ui32) -> ()
+
+    // subi 1, 4 -> no-fold
+    %result_subi_ui321_ui324 = arc.subi %cst_ui321, %cst_ui324 : ui32
+    // CHECK-DAG: [[RESULT_subi_ui321_ui324:%[^ ]+]] = arc.subi [[CSTui321]], [[CSTui324]] : ui32
+    "arc.keep"(%result_subi_ui321_ui324) : (ui32) -> ()
+    // CHECK: "arc.keep"([[RESULT_subi_ui321_ui324]]) : (ui32) -> ()
+
     // subi 1, 2119154652 -> no-fold
     %result_subi_ui321_ui322119154652 = arc.subi %cst_ui321, %cst_ui322119154652 : ui32
     // CHECK-DAG: [[RESULT_subi_ui321_ui322119154652:%[^ ]+]] = arc.subi [[CSTui321]], [[CSTui322119154652]] : ui32
@@ -11672,6 +24764,114 @@ module @toplevel {
     // CHECK-DAG: [[RESULT_subi_ui321_ui324294967295:%[^ ]+]] = arc.subi [[CSTui321]], [[CSTui324294967295]] : ui32
     "arc.keep"(%result_subi_ui321_ui324294967295) : (ui32) -> ()
     // CHECK: "arc.keep"([[RESULT_subi_ui321_ui324294967295]]) : (ui32) -> ()
+
+    // subi 2, 3 -> no-fold
+    %result_subi_ui322_ui323 = arc.subi %cst_ui322, %cst_ui323 : ui32
+    // CHECK-DAG: [[RESULT_subi_ui322_ui323:%[^ ]+]] = arc.subi [[CSTui322]], [[CSTui323]] : ui32
+    "arc.keep"(%result_subi_ui322_ui323) : (ui32) -> ()
+    // CHECK: "arc.keep"([[RESULT_subi_ui322_ui323]]) : (ui32) -> ()
+
+    // subi 2, 4 -> no-fold
+    %result_subi_ui322_ui324 = arc.subi %cst_ui322, %cst_ui324 : ui32
+    // CHECK-DAG: [[RESULT_subi_ui322_ui324:%[^ ]+]] = arc.subi [[CSTui322]], [[CSTui324]] : ui32
+    "arc.keep"(%result_subi_ui322_ui324) : (ui32) -> ()
+    // CHECK: "arc.keep"([[RESULT_subi_ui322_ui324]]) : (ui32) -> ()
+
+    // subi 2, 2119154652 -> no-fold
+    %result_subi_ui322_ui322119154652 = arc.subi %cst_ui322, %cst_ui322119154652 : ui32
+    // CHECK-DAG: [[RESULT_subi_ui322_ui322119154652:%[^ ]+]] = arc.subi [[CSTui322]], [[CSTui322119154652]] : ui32
+    "arc.keep"(%result_subi_ui322_ui322119154652) : (ui32) -> ()
+    // CHECK: "arc.keep"([[RESULT_subi_ui322_ui322119154652]]) : (ui32) -> ()
+
+    // subi 2, 3002788344 -> no-fold
+    %result_subi_ui322_ui323002788344 = arc.subi %cst_ui322, %cst_ui323002788344 : ui32
+    // CHECK-DAG: [[RESULT_subi_ui322_ui323002788344:%[^ ]+]] = arc.subi [[CSTui322]], [[CSTui323002788344]] : ui32
+    "arc.keep"(%result_subi_ui322_ui323002788344) : (ui32) -> ()
+    // CHECK: "arc.keep"([[RESULT_subi_ui322_ui323002788344]]) : (ui32) -> ()
+
+    // subi 2, 3482297128 -> no-fold
+    %result_subi_ui322_ui323482297128 = arc.subi %cst_ui322, %cst_ui323482297128 : ui32
+    // CHECK-DAG: [[RESULT_subi_ui322_ui323482297128:%[^ ]+]] = arc.subi [[CSTui322]], [[CSTui323482297128]] : ui32
+    "arc.keep"(%result_subi_ui322_ui323482297128) : (ui32) -> ()
+    // CHECK: "arc.keep"([[RESULT_subi_ui322_ui323482297128]]) : (ui32) -> ()
+
+    // subi 2, 4294967294 -> no-fold
+    %result_subi_ui322_ui324294967294 = arc.subi %cst_ui322, %cst_ui324294967294 : ui32
+    // CHECK-DAG: [[RESULT_subi_ui322_ui324294967294:%[^ ]+]] = arc.subi [[CSTui322]], [[CSTui324294967294]] : ui32
+    "arc.keep"(%result_subi_ui322_ui324294967294) : (ui32) -> ()
+    // CHECK: "arc.keep"([[RESULT_subi_ui322_ui324294967294]]) : (ui32) -> ()
+
+    // subi 2, 4294967295 -> no-fold
+    %result_subi_ui322_ui324294967295 = arc.subi %cst_ui322, %cst_ui324294967295 : ui32
+    // CHECK-DAG: [[RESULT_subi_ui322_ui324294967295:%[^ ]+]] = arc.subi [[CSTui322]], [[CSTui324294967295]] : ui32
+    "arc.keep"(%result_subi_ui322_ui324294967295) : (ui32) -> ()
+    // CHECK: "arc.keep"([[RESULT_subi_ui322_ui324294967295]]) : (ui32) -> ()
+
+    // subi 3, 4 -> no-fold
+    %result_subi_ui323_ui324 = arc.subi %cst_ui323, %cst_ui324 : ui32
+    // CHECK-DAG: [[RESULT_subi_ui323_ui324:%[^ ]+]] = arc.subi [[CSTui323]], [[CSTui324]] : ui32
+    "arc.keep"(%result_subi_ui323_ui324) : (ui32) -> ()
+    // CHECK: "arc.keep"([[RESULT_subi_ui323_ui324]]) : (ui32) -> ()
+
+    // subi 3, 2119154652 -> no-fold
+    %result_subi_ui323_ui322119154652 = arc.subi %cst_ui323, %cst_ui322119154652 : ui32
+    // CHECK-DAG: [[RESULT_subi_ui323_ui322119154652:%[^ ]+]] = arc.subi [[CSTui323]], [[CSTui322119154652]] : ui32
+    "arc.keep"(%result_subi_ui323_ui322119154652) : (ui32) -> ()
+    // CHECK: "arc.keep"([[RESULT_subi_ui323_ui322119154652]]) : (ui32) -> ()
+
+    // subi 3, 3002788344 -> no-fold
+    %result_subi_ui323_ui323002788344 = arc.subi %cst_ui323, %cst_ui323002788344 : ui32
+    // CHECK-DAG: [[RESULT_subi_ui323_ui323002788344:%[^ ]+]] = arc.subi [[CSTui323]], [[CSTui323002788344]] : ui32
+    "arc.keep"(%result_subi_ui323_ui323002788344) : (ui32) -> ()
+    // CHECK: "arc.keep"([[RESULT_subi_ui323_ui323002788344]]) : (ui32) -> ()
+
+    // subi 3, 3482297128 -> no-fold
+    %result_subi_ui323_ui323482297128 = arc.subi %cst_ui323, %cst_ui323482297128 : ui32
+    // CHECK-DAG: [[RESULT_subi_ui323_ui323482297128:%[^ ]+]] = arc.subi [[CSTui323]], [[CSTui323482297128]] : ui32
+    "arc.keep"(%result_subi_ui323_ui323482297128) : (ui32) -> ()
+    // CHECK: "arc.keep"([[RESULT_subi_ui323_ui323482297128]]) : (ui32) -> ()
+
+    // subi 3, 4294967294 -> no-fold
+    %result_subi_ui323_ui324294967294 = arc.subi %cst_ui323, %cst_ui324294967294 : ui32
+    // CHECK-DAG: [[RESULT_subi_ui323_ui324294967294:%[^ ]+]] = arc.subi [[CSTui323]], [[CSTui324294967294]] : ui32
+    "arc.keep"(%result_subi_ui323_ui324294967294) : (ui32) -> ()
+    // CHECK: "arc.keep"([[RESULT_subi_ui323_ui324294967294]]) : (ui32) -> ()
+
+    // subi 3, 4294967295 -> no-fold
+    %result_subi_ui323_ui324294967295 = arc.subi %cst_ui323, %cst_ui324294967295 : ui32
+    // CHECK-DAG: [[RESULT_subi_ui323_ui324294967295:%[^ ]+]] = arc.subi [[CSTui323]], [[CSTui324294967295]] : ui32
+    "arc.keep"(%result_subi_ui323_ui324294967295) : (ui32) -> ()
+    // CHECK: "arc.keep"([[RESULT_subi_ui323_ui324294967295]]) : (ui32) -> ()
+
+    // subi 4, 2119154652 -> no-fold
+    %result_subi_ui324_ui322119154652 = arc.subi %cst_ui324, %cst_ui322119154652 : ui32
+    // CHECK-DAG: [[RESULT_subi_ui324_ui322119154652:%[^ ]+]] = arc.subi [[CSTui324]], [[CSTui322119154652]] : ui32
+    "arc.keep"(%result_subi_ui324_ui322119154652) : (ui32) -> ()
+    // CHECK: "arc.keep"([[RESULT_subi_ui324_ui322119154652]]) : (ui32) -> ()
+
+    // subi 4, 3002788344 -> no-fold
+    %result_subi_ui324_ui323002788344 = arc.subi %cst_ui324, %cst_ui323002788344 : ui32
+    // CHECK-DAG: [[RESULT_subi_ui324_ui323002788344:%[^ ]+]] = arc.subi [[CSTui324]], [[CSTui323002788344]] : ui32
+    "arc.keep"(%result_subi_ui324_ui323002788344) : (ui32) -> ()
+    // CHECK: "arc.keep"([[RESULT_subi_ui324_ui323002788344]]) : (ui32) -> ()
+
+    // subi 4, 3482297128 -> no-fold
+    %result_subi_ui324_ui323482297128 = arc.subi %cst_ui324, %cst_ui323482297128 : ui32
+    // CHECK-DAG: [[RESULT_subi_ui324_ui323482297128:%[^ ]+]] = arc.subi [[CSTui324]], [[CSTui323482297128]] : ui32
+    "arc.keep"(%result_subi_ui324_ui323482297128) : (ui32) -> ()
+    // CHECK: "arc.keep"([[RESULT_subi_ui324_ui323482297128]]) : (ui32) -> ()
+
+    // subi 4, 4294967294 -> no-fold
+    %result_subi_ui324_ui324294967294 = arc.subi %cst_ui324, %cst_ui324294967294 : ui32
+    // CHECK-DAG: [[RESULT_subi_ui324_ui324294967294:%[^ ]+]] = arc.subi [[CSTui324]], [[CSTui324294967294]] : ui32
+    "arc.keep"(%result_subi_ui324_ui324294967294) : (ui32) -> ()
+    // CHECK: "arc.keep"([[RESULT_subi_ui324_ui324294967294]]) : (ui32) -> ()
+
+    // subi 4, 4294967295 -> no-fold
+    %result_subi_ui324_ui324294967295 = arc.subi %cst_ui324, %cst_ui324294967295 : ui32
+    // CHECK-DAG: [[RESULT_subi_ui324_ui324294967295:%[^ ]+]] = arc.subi [[CSTui324]], [[CSTui324294967295]] : ui32
+    "arc.keep"(%result_subi_ui324_ui324294967295) : (ui32) -> ()
+    // CHECK: "arc.keep"([[RESULT_subi_ui324_ui324294967295]]) : (ui32) -> ()
 
     // subi 2119154652, 3002788344 -> no-fold
     %result_subi_ui322119154652_ui323002788344 = arc.subi %cst_ui322119154652, %cst_ui323002788344 : ui32
@@ -11743,6 +24943,21 @@ module @toplevel {
     "arc.keep"(%result_subi_ui641_ui641) : (ui64) -> ()
     // CHECK: "arc.keep"([[CSTui640]]) : (ui64) -> ()
 
+    // subi 2, 2 -> 0
+    %result_subi_ui642_ui642 = arc.subi %cst_ui642, %cst_ui642 : ui64
+    "arc.keep"(%result_subi_ui642_ui642) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui640]]) : (ui64) -> ()
+
+    // subi 3, 3 -> 0
+    %result_subi_ui643_ui643 = arc.subi %cst_ui643, %cst_ui643 : ui64
+    "arc.keep"(%result_subi_ui643_ui643) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui640]]) : (ui64) -> ()
+
+    // subi 4, 4 -> 0
+    %result_subi_ui644_ui644 = arc.subi %cst_ui644, %cst_ui644 : ui64
+    "arc.keep"(%result_subi_ui644_ui644) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui640]]) : (ui64) -> ()
+
     // subi 191084152064409600, 191084152064409600 -> 0
     %result_subi_ui64191084152064409600_ui64191084152064409600 = arc.subi %cst_ui64191084152064409600, %cst_ui64191084152064409600 : ui64
     "arc.keep"(%result_subi_ui64191084152064409600_ui64191084152064409600) : (ui64) -> ()
@@ -11773,10 +24988,70 @@ module @toplevel {
     "arc.keep"(%result_subi_ui641_ui640) : (ui64) -> ()
     // CHECK: "arc.keep"([[CSTui641]]) : (ui64) -> ()
 
+    // subi 2, 1 -> 1
+    %result_subi_ui642_ui641 = arc.subi %cst_ui642, %cst_ui641 : ui64
+    "arc.keep"(%result_subi_ui642_ui641) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui641]]) : (ui64) -> ()
+
+    // subi 3, 2 -> 1
+    %result_subi_ui643_ui642 = arc.subi %cst_ui643, %cst_ui642 : ui64
+    "arc.keep"(%result_subi_ui643_ui642) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui641]]) : (ui64) -> ()
+
+    // subi 4, 3 -> 1
+    %result_subi_ui644_ui643 = arc.subi %cst_ui644, %cst_ui643 : ui64
+    "arc.keep"(%result_subi_ui644_ui643) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui641]]) : (ui64) -> ()
+
     // subi 18446744073709551615, 18446744073709551614 -> 1
     %result_subi_ui6418446744073709551615_ui6418446744073709551614 = arc.subi %cst_ui6418446744073709551615, %cst_ui6418446744073709551614 : ui64
     "arc.keep"(%result_subi_ui6418446744073709551615_ui6418446744073709551614) : (ui64) -> ()
     // CHECK: "arc.keep"([[CSTui641]]) : (ui64) -> ()
+
+    // subi 2, 0 -> 2
+    %result_subi_ui642_ui640 = arc.subi %cst_ui642, %cst_ui640 : ui64
+    "arc.keep"(%result_subi_ui642_ui640) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui642]]) : (ui64) -> ()
+
+    // subi 3, 1 -> 2
+    %result_subi_ui643_ui641 = arc.subi %cst_ui643, %cst_ui641 : ui64
+    "arc.keep"(%result_subi_ui643_ui641) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui642]]) : (ui64) -> ()
+
+    // subi 4, 2 -> 2
+    %result_subi_ui644_ui642 = arc.subi %cst_ui644, %cst_ui642 : ui64
+    "arc.keep"(%result_subi_ui644_ui642) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui642]]) : (ui64) -> ()
+
+    // subi 3, 0 -> 3
+    %result_subi_ui643_ui640 = arc.subi %cst_ui643, %cst_ui640 : ui64
+    "arc.keep"(%result_subi_ui643_ui640) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui643]]) : (ui64) -> ()
+
+    // subi 4, 1 -> 3
+    %result_subi_ui644_ui641 = arc.subi %cst_ui644, %cst_ui641 : ui64
+    "arc.keep"(%result_subi_ui644_ui641) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui643]]) : (ui64) -> ()
+
+    // subi 4, 0 -> 4
+    %result_subi_ui644_ui640 = arc.subi %cst_ui644, %cst_ui640 : ui64
+    "arc.keep"(%result_subi_ui644_ui640) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui644]]) : (ui64) -> ()
+
+    // subi 191084152064409600, 4 -> 191084152064409596
+    %result_subi_ui64191084152064409600_ui644 = arc.subi %cst_ui64191084152064409600, %cst_ui644 : ui64
+    "arc.keep"(%result_subi_ui64191084152064409600_ui644) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui64191084152064409596]]) : (ui64) -> ()
+
+    // subi 191084152064409600, 3 -> 191084152064409597
+    %result_subi_ui64191084152064409600_ui643 = arc.subi %cst_ui64191084152064409600, %cst_ui643 : ui64
+    "arc.keep"(%result_subi_ui64191084152064409600_ui643) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui64191084152064409597]]) : (ui64) -> ()
+
+    // subi 191084152064409600, 2 -> 191084152064409598
+    %result_subi_ui64191084152064409600_ui642 = arc.subi %cst_ui64191084152064409600, %cst_ui642 : ui64
+    "arc.keep"(%result_subi_ui64191084152064409600_ui642) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui64191084152064409598]]) : (ui64) -> ()
 
     // subi 191084152064409600, 1 -> 191084152064409599
     %result_subi_ui64191084152064409600_ui641 = arc.subi %cst_ui64191084152064409600, %cst_ui641 : ui64
@@ -11818,6 +25093,21 @@ module @toplevel {
     "arc.keep"(%result_subi_ui6411015955194427482112_ui64191084152064409600) : (ui64) -> ()
     // CHECK: "arc.keep"([[CSTui6410824871042363072512]]) : (ui64) -> ()
 
+    // subi 11015955194427482112, 4 -> 11015955194427482108
+    %result_subi_ui6411015955194427482112_ui644 = arc.subi %cst_ui6411015955194427482112, %cst_ui644 : ui64
+    "arc.keep"(%result_subi_ui6411015955194427482112_ui644) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui6411015955194427482108]]) : (ui64) -> ()
+
+    // subi 11015955194427482112, 3 -> 11015955194427482109
+    %result_subi_ui6411015955194427482112_ui643 = arc.subi %cst_ui6411015955194427482112, %cst_ui643 : ui64
+    "arc.keep"(%result_subi_ui6411015955194427482112_ui643) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui6411015955194427482109]]) : (ui64) -> ()
+
+    // subi 11015955194427482112, 2 -> 11015955194427482110
+    %result_subi_ui6411015955194427482112_ui642 = arc.subi %cst_ui6411015955194427482112, %cst_ui642 : ui64
+    "arc.keep"(%result_subi_ui6411015955194427482112_ui642) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui6411015955194427482110]]) : (ui64) -> ()
+
     // subi 11015955194427482112, 1 -> 11015955194427482111
     %result_subi_ui6411015955194427482112_ui641 = arc.subi %cst_ui6411015955194427482112, %cst_ui641 : ui64
     "arc.keep"(%result_subi_ui6411015955194427482112_ui641) : (ui64) -> ()
@@ -11832,6 +25122,21 @@ module @toplevel {
     %result_subi_ui6416990600415051759616_ui64191084152064409600 = arc.subi %cst_ui6416990600415051759616, %cst_ui64191084152064409600 : ui64
     "arc.keep"(%result_subi_ui6416990600415051759616_ui64191084152064409600) : (ui64) -> ()
     // CHECK: "arc.keep"([[CSTui6416799516262987350016]]) : (ui64) -> ()
+
+    // subi 16990600415051759616, 4 -> 16990600415051759612
+    %result_subi_ui6416990600415051759616_ui644 = arc.subi %cst_ui6416990600415051759616, %cst_ui644 : ui64
+    "arc.keep"(%result_subi_ui6416990600415051759616_ui644) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui6416990600415051759612]]) : (ui64) -> ()
+
+    // subi 16990600415051759616, 3 -> 16990600415051759613
+    %result_subi_ui6416990600415051759616_ui643 = arc.subi %cst_ui6416990600415051759616, %cst_ui643 : ui64
+    "arc.keep"(%result_subi_ui6416990600415051759616_ui643) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui6416990600415051759613]]) : (ui64) -> ()
+
+    // subi 16990600415051759616, 2 -> 16990600415051759614
+    %result_subi_ui6416990600415051759616_ui642 = arc.subi %cst_ui6416990600415051759616, %cst_ui642 : ui64
+    "arc.keep"(%result_subi_ui6416990600415051759616_ui642) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui6416990600415051759614]]) : (ui64) -> ()
 
     // subi 16990600415051759616, 1 -> 16990600415051759615
     %result_subi_ui6416990600415051759616_ui641 = arc.subi %cst_ui6416990600415051759616, %cst_ui641 : ui64
@@ -11853,9 +25158,39 @@ module @toplevel {
     "arc.keep"(%result_subi_ui6418446744073709551615_ui64191084152064409600) : (ui64) -> ()
     // CHECK: "arc.keep"([[CSTui6418255659921645142015]]) : (ui64) -> ()
 
+    // subi 18446744073709551614, 4 -> 18446744073709551610
+    %result_subi_ui6418446744073709551614_ui644 = arc.subi %cst_ui6418446744073709551614, %cst_ui644 : ui64
+    "arc.keep"(%result_subi_ui6418446744073709551614_ui644) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui6418446744073709551610]]) : (ui64) -> ()
+
+    // subi 18446744073709551614, 3 -> 18446744073709551611
+    %result_subi_ui6418446744073709551614_ui643 = arc.subi %cst_ui6418446744073709551614, %cst_ui643 : ui64
+    "arc.keep"(%result_subi_ui6418446744073709551614_ui643) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui6418446744073709551611]]) : (ui64) -> ()
+
+    // subi 18446744073709551615, 4 -> 18446744073709551611
+    %result_subi_ui6418446744073709551615_ui644 = arc.subi %cst_ui6418446744073709551615, %cst_ui644 : ui64
+    "arc.keep"(%result_subi_ui6418446744073709551615_ui644) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui6418446744073709551611]]) : (ui64) -> ()
+
+    // subi 18446744073709551614, 2 -> 18446744073709551612
+    %result_subi_ui6418446744073709551614_ui642 = arc.subi %cst_ui6418446744073709551614, %cst_ui642 : ui64
+    "arc.keep"(%result_subi_ui6418446744073709551614_ui642) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui6418446744073709551612]]) : (ui64) -> ()
+
+    // subi 18446744073709551615, 3 -> 18446744073709551612
+    %result_subi_ui6418446744073709551615_ui643 = arc.subi %cst_ui6418446744073709551615, %cst_ui643 : ui64
+    "arc.keep"(%result_subi_ui6418446744073709551615_ui643) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui6418446744073709551612]]) : (ui64) -> ()
+
     // subi 18446744073709551614, 1 -> 18446744073709551613
     %result_subi_ui6418446744073709551614_ui641 = arc.subi %cst_ui6418446744073709551614, %cst_ui641 : ui64
     "arc.keep"(%result_subi_ui6418446744073709551614_ui641) : (ui64) -> ()
+    // CHECK: "arc.keep"([[CSTui6418446744073709551613]]) : (ui64) -> ()
+
+    // subi 18446744073709551615, 2 -> 18446744073709551613
+    %result_subi_ui6418446744073709551615_ui642 = arc.subi %cst_ui6418446744073709551615, %cst_ui642 : ui64
+    "arc.keep"(%result_subi_ui6418446744073709551615_ui642) : (ui64) -> ()
     // CHECK: "arc.keep"([[CSTui6418446744073709551613]]) : (ui64) -> ()
 
     // subi 18446744073709551614, 0 -> 18446744073709551614
@@ -11878,6 +25213,24 @@ module @toplevel {
     // CHECK-DAG: [[RESULT_subi_ui640_ui641:%[^ ]+]] = arc.subi [[CSTui640]], [[CSTui641]] : ui64
     "arc.keep"(%result_subi_ui640_ui641) : (ui64) -> ()
     // CHECK: "arc.keep"([[RESULT_subi_ui640_ui641]]) : (ui64) -> ()
+
+    // subi 0, 2 -> no-fold
+    %result_subi_ui640_ui642 = arc.subi %cst_ui640, %cst_ui642 : ui64
+    // CHECK-DAG: [[RESULT_subi_ui640_ui642:%[^ ]+]] = arc.subi [[CSTui640]], [[CSTui642]] : ui64
+    "arc.keep"(%result_subi_ui640_ui642) : (ui64) -> ()
+    // CHECK: "arc.keep"([[RESULT_subi_ui640_ui642]]) : (ui64) -> ()
+
+    // subi 0, 3 -> no-fold
+    %result_subi_ui640_ui643 = arc.subi %cst_ui640, %cst_ui643 : ui64
+    // CHECK-DAG: [[RESULT_subi_ui640_ui643:%[^ ]+]] = arc.subi [[CSTui640]], [[CSTui643]] : ui64
+    "arc.keep"(%result_subi_ui640_ui643) : (ui64) -> ()
+    // CHECK: "arc.keep"([[RESULT_subi_ui640_ui643]]) : (ui64) -> ()
+
+    // subi 0, 4 -> no-fold
+    %result_subi_ui640_ui644 = arc.subi %cst_ui640, %cst_ui644 : ui64
+    // CHECK-DAG: [[RESULT_subi_ui640_ui644:%[^ ]+]] = arc.subi [[CSTui640]], [[CSTui644]] : ui64
+    "arc.keep"(%result_subi_ui640_ui644) : (ui64) -> ()
+    // CHECK: "arc.keep"([[RESULT_subi_ui640_ui644]]) : (ui64) -> ()
 
     // subi 0, 191084152064409600 -> no-fold
     %result_subi_ui640_ui64191084152064409600 = arc.subi %cst_ui640, %cst_ui64191084152064409600 : ui64
@@ -11909,6 +25262,24 @@ module @toplevel {
     "arc.keep"(%result_subi_ui640_ui6418446744073709551615) : (ui64) -> ()
     // CHECK: "arc.keep"([[RESULT_subi_ui640_ui6418446744073709551615]]) : (ui64) -> ()
 
+    // subi 1, 2 -> no-fold
+    %result_subi_ui641_ui642 = arc.subi %cst_ui641, %cst_ui642 : ui64
+    // CHECK-DAG: [[RESULT_subi_ui641_ui642:%[^ ]+]] = arc.subi [[CSTui641]], [[CSTui642]] : ui64
+    "arc.keep"(%result_subi_ui641_ui642) : (ui64) -> ()
+    // CHECK: "arc.keep"([[RESULT_subi_ui641_ui642]]) : (ui64) -> ()
+
+    // subi 1, 3 -> no-fold
+    %result_subi_ui641_ui643 = arc.subi %cst_ui641, %cst_ui643 : ui64
+    // CHECK-DAG: [[RESULT_subi_ui641_ui643:%[^ ]+]] = arc.subi [[CSTui641]], [[CSTui643]] : ui64
+    "arc.keep"(%result_subi_ui641_ui643) : (ui64) -> ()
+    // CHECK: "arc.keep"([[RESULT_subi_ui641_ui643]]) : (ui64) -> ()
+
+    // subi 1, 4 -> no-fold
+    %result_subi_ui641_ui644 = arc.subi %cst_ui641, %cst_ui644 : ui64
+    // CHECK-DAG: [[RESULT_subi_ui641_ui644:%[^ ]+]] = arc.subi [[CSTui641]], [[CSTui644]] : ui64
+    "arc.keep"(%result_subi_ui641_ui644) : (ui64) -> ()
+    // CHECK: "arc.keep"([[RESULT_subi_ui641_ui644]]) : (ui64) -> ()
+
     // subi 1, 191084152064409600 -> no-fold
     %result_subi_ui641_ui64191084152064409600 = arc.subi %cst_ui641, %cst_ui64191084152064409600 : ui64
     // CHECK-DAG: [[RESULT_subi_ui641_ui64191084152064409600:%[^ ]+]] = arc.subi [[CSTui641]], [[CSTui64191084152064409600]] : ui64
@@ -11938,6 +25309,114 @@ module @toplevel {
     // CHECK-DAG: [[RESULT_subi_ui641_ui6418446744073709551615:%[^ ]+]] = arc.subi [[CSTui641]], [[CSTui6418446744073709551615]] : ui64
     "arc.keep"(%result_subi_ui641_ui6418446744073709551615) : (ui64) -> ()
     // CHECK: "arc.keep"([[RESULT_subi_ui641_ui6418446744073709551615]]) : (ui64) -> ()
+
+    // subi 2, 3 -> no-fold
+    %result_subi_ui642_ui643 = arc.subi %cst_ui642, %cst_ui643 : ui64
+    // CHECK-DAG: [[RESULT_subi_ui642_ui643:%[^ ]+]] = arc.subi [[CSTui642]], [[CSTui643]] : ui64
+    "arc.keep"(%result_subi_ui642_ui643) : (ui64) -> ()
+    // CHECK: "arc.keep"([[RESULT_subi_ui642_ui643]]) : (ui64) -> ()
+
+    // subi 2, 4 -> no-fold
+    %result_subi_ui642_ui644 = arc.subi %cst_ui642, %cst_ui644 : ui64
+    // CHECK-DAG: [[RESULT_subi_ui642_ui644:%[^ ]+]] = arc.subi [[CSTui642]], [[CSTui644]] : ui64
+    "arc.keep"(%result_subi_ui642_ui644) : (ui64) -> ()
+    // CHECK: "arc.keep"([[RESULT_subi_ui642_ui644]]) : (ui64) -> ()
+
+    // subi 2, 191084152064409600 -> no-fold
+    %result_subi_ui642_ui64191084152064409600 = arc.subi %cst_ui642, %cst_ui64191084152064409600 : ui64
+    // CHECK-DAG: [[RESULT_subi_ui642_ui64191084152064409600:%[^ ]+]] = arc.subi [[CSTui642]], [[CSTui64191084152064409600]] : ui64
+    "arc.keep"(%result_subi_ui642_ui64191084152064409600) : (ui64) -> ()
+    // CHECK: "arc.keep"([[RESULT_subi_ui642_ui64191084152064409600]]) : (ui64) -> ()
+
+    // subi 2, 11015955194427482112 -> no-fold
+    %result_subi_ui642_ui6411015955194427482112 = arc.subi %cst_ui642, %cst_ui6411015955194427482112 : ui64
+    // CHECK-DAG: [[RESULT_subi_ui642_ui6411015955194427482112:%[^ ]+]] = arc.subi [[CSTui642]], [[CSTui6411015955194427482112]] : ui64
+    "arc.keep"(%result_subi_ui642_ui6411015955194427482112) : (ui64) -> ()
+    // CHECK: "arc.keep"([[RESULT_subi_ui642_ui6411015955194427482112]]) : (ui64) -> ()
+
+    // subi 2, 16990600415051759616 -> no-fold
+    %result_subi_ui642_ui6416990600415051759616 = arc.subi %cst_ui642, %cst_ui6416990600415051759616 : ui64
+    // CHECK-DAG: [[RESULT_subi_ui642_ui6416990600415051759616:%[^ ]+]] = arc.subi [[CSTui642]], [[CSTui6416990600415051759616]] : ui64
+    "arc.keep"(%result_subi_ui642_ui6416990600415051759616) : (ui64) -> ()
+    // CHECK: "arc.keep"([[RESULT_subi_ui642_ui6416990600415051759616]]) : (ui64) -> ()
+
+    // subi 2, 18446744073709551614 -> no-fold
+    %result_subi_ui642_ui6418446744073709551614 = arc.subi %cst_ui642, %cst_ui6418446744073709551614 : ui64
+    // CHECK-DAG: [[RESULT_subi_ui642_ui6418446744073709551614:%[^ ]+]] = arc.subi [[CSTui642]], [[CSTui6418446744073709551614]] : ui64
+    "arc.keep"(%result_subi_ui642_ui6418446744073709551614) : (ui64) -> ()
+    // CHECK: "arc.keep"([[RESULT_subi_ui642_ui6418446744073709551614]]) : (ui64) -> ()
+
+    // subi 2, 18446744073709551615 -> no-fold
+    %result_subi_ui642_ui6418446744073709551615 = arc.subi %cst_ui642, %cst_ui6418446744073709551615 : ui64
+    // CHECK-DAG: [[RESULT_subi_ui642_ui6418446744073709551615:%[^ ]+]] = arc.subi [[CSTui642]], [[CSTui6418446744073709551615]] : ui64
+    "arc.keep"(%result_subi_ui642_ui6418446744073709551615) : (ui64) -> ()
+    // CHECK: "arc.keep"([[RESULT_subi_ui642_ui6418446744073709551615]]) : (ui64) -> ()
+
+    // subi 3, 4 -> no-fold
+    %result_subi_ui643_ui644 = arc.subi %cst_ui643, %cst_ui644 : ui64
+    // CHECK-DAG: [[RESULT_subi_ui643_ui644:%[^ ]+]] = arc.subi [[CSTui643]], [[CSTui644]] : ui64
+    "arc.keep"(%result_subi_ui643_ui644) : (ui64) -> ()
+    // CHECK: "arc.keep"([[RESULT_subi_ui643_ui644]]) : (ui64) -> ()
+
+    // subi 3, 191084152064409600 -> no-fold
+    %result_subi_ui643_ui64191084152064409600 = arc.subi %cst_ui643, %cst_ui64191084152064409600 : ui64
+    // CHECK-DAG: [[RESULT_subi_ui643_ui64191084152064409600:%[^ ]+]] = arc.subi [[CSTui643]], [[CSTui64191084152064409600]] : ui64
+    "arc.keep"(%result_subi_ui643_ui64191084152064409600) : (ui64) -> ()
+    // CHECK: "arc.keep"([[RESULT_subi_ui643_ui64191084152064409600]]) : (ui64) -> ()
+
+    // subi 3, 11015955194427482112 -> no-fold
+    %result_subi_ui643_ui6411015955194427482112 = arc.subi %cst_ui643, %cst_ui6411015955194427482112 : ui64
+    // CHECK-DAG: [[RESULT_subi_ui643_ui6411015955194427482112:%[^ ]+]] = arc.subi [[CSTui643]], [[CSTui6411015955194427482112]] : ui64
+    "arc.keep"(%result_subi_ui643_ui6411015955194427482112) : (ui64) -> ()
+    // CHECK: "arc.keep"([[RESULT_subi_ui643_ui6411015955194427482112]]) : (ui64) -> ()
+
+    // subi 3, 16990600415051759616 -> no-fold
+    %result_subi_ui643_ui6416990600415051759616 = arc.subi %cst_ui643, %cst_ui6416990600415051759616 : ui64
+    // CHECK-DAG: [[RESULT_subi_ui643_ui6416990600415051759616:%[^ ]+]] = arc.subi [[CSTui643]], [[CSTui6416990600415051759616]] : ui64
+    "arc.keep"(%result_subi_ui643_ui6416990600415051759616) : (ui64) -> ()
+    // CHECK: "arc.keep"([[RESULT_subi_ui643_ui6416990600415051759616]]) : (ui64) -> ()
+
+    // subi 3, 18446744073709551614 -> no-fold
+    %result_subi_ui643_ui6418446744073709551614 = arc.subi %cst_ui643, %cst_ui6418446744073709551614 : ui64
+    // CHECK-DAG: [[RESULT_subi_ui643_ui6418446744073709551614:%[^ ]+]] = arc.subi [[CSTui643]], [[CSTui6418446744073709551614]] : ui64
+    "arc.keep"(%result_subi_ui643_ui6418446744073709551614) : (ui64) -> ()
+    // CHECK: "arc.keep"([[RESULT_subi_ui643_ui6418446744073709551614]]) : (ui64) -> ()
+
+    // subi 3, 18446744073709551615 -> no-fold
+    %result_subi_ui643_ui6418446744073709551615 = arc.subi %cst_ui643, %cst_ui6418446744073709551615 : ui64
+    // CHECK-DAG: [[RESULT_subi_ui643_ui6418446744073709551615:%[^ ]+]] = arc.subi [[CSTui643]], [[CSTui6418446744073709551615]] : ui64
+    "arc.keep"(%result_subi_ui643_ui6418446744073709551615) : (ui64) -> ()
+    // CHECK: "arc.keep"([[RESULT_subi_ui643_ui6418446744073709551615]]) : (ui64) -> ()
+
+    // subi 4, 191084152064409600 -> no-fold
+    %result_subi_ui644_ui64191084152064409600 = arc.subi %cst_ui644, %cst_ui64191084152064409600 : ui64
+    // CHECK-DAG: [[RESULT_subi_ui644_ui64191084152064409600:%[^ ]+]] = arc.subi [[CSTui644]], [[CSTui64191084152064409600]] : ui64
+    "arc.keep"(%result_subi_ui644_ui64191084152064409600) : (ui64) -> ()
+    // CHECK: "arc.keep"([[RESULT_subi_ui644_ui64191084152064409600]]) : (ui64) -> ()
+
+    // subi 4, 11015955194427482112 -> no-fold
+    %result_subi_ui644_ui6411015955194427482112 = arc.subi %cst_ui644, %cst_ui6411015955194427482112 : ui64
+    // CHECK-DAG: [[RESULT_subi_ui644_ui6411015955194427482112:%[^ ]+]] = arc.subi [[CSTui644]], [[CSTui6411015955194427482112]] : ui64
+    "arc.keep"(%result_subi_ui644_ui6411015955194427482112) : (ui64) -> ()
+    // CHECK: "arc.keep"([[RESULT_subi_ui644_ui6411015955194427482112]]) : (ui64) -> ()
+
+    // subi 4, 16990600415051759616 -> no-fold
+    %result_subi_ui644_ui6416990600415051759616 = arc.subi %cst_ui644, %cst_ui6416990600415051759616 : ui64
+    // CHECK-DAG: [[RESULT_subi_ui644_ui6416990600415051759616:%[^ ]+]] = arc.subi [[CSTui644]], [[CSTui6416990600415051759616]] : ui64
+    "arc.keep"(%result_subi_ui644_ui6416990600415051759616) : (ui64) -> ()
+    // CHECK: "arc.keep"([[RESULT_subi_ui644_ui6416990600415051759616]]) : (ui64) -> ()
+
+    // subi 4, 18446744073709551614 -> no-fold
+    %result_subi_ui644_ui6418446744073709551614 = arc.subi %cst_ui644, %cst_ui6418446744073709551614 : ui64
+    // CHECK-DAG: [[RESULT_subi_ui644_ui6418446744073709551614:%[^ ]+]] = arc.subi [[CSTui644]], [[CSTui6418446744073709551614]] : ui64
+    "arc.keep"(%result_subi_ui644_ui6418446744073709551614) : (ui64) -> ()
+    // CHECK: "arc.keep"([[RESULT_subi_ui644_ui6418446744073709551614]]) : (ui64) -> ()
+
+    // subi 4, 18446744073709551615 -> no-fold
+    %result_subi_ui644_ui6418446744073709551615 = arc.subi %cst_ui644, %cst_ui6418446744073709551615 : ui64
+    // CHECK-DAG: [[RESULT_subi_ui644_ui6418446744073709551615:%[^ ]+]] = arc.subi [[CSTui644]], [[CSTui6418446744073709551615]] : ui64
+    "arc.keep"(%result_subi_ui644_ui6418446744073709551615) : (ui64) -> ()
+    // CHECK: "arc.keep"([[RESULT_subi_ui644_ui6418446744073709551615]]) : (ui64) -> ()
 
     // subi 191084152064409600, 11015955194427482112 -> no-fold
     %result_subi_ui64191084152064409600_ui6411015955194427482112 = arc.subi %cst_ui64191084152064409600, %cst_ui6411015955194427482112 : ui64
@@ -12009,6 +25488,21 @@ module @toplevel {
     "arc.keep"(%result_subi_ui81_ui81) : (ui8) -> ()
     // CHECK: "arc.keep"([[CSTui80]]) : (ui8) -> ()
 
+    // subi 2, 2 -> 0
+    %result_subi_ui82_ui82 = arc.subi %cst_ui82, %cst_ui82 : ui8
+    "arc.keep"(%result_subi_ui82_ui82) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui80]]) : (ui8) -> ()
+
+    // subi 3, 3 -> 0
+    %result_subi_ui83_ui83 = arc.subi %cst_ui83, %cst_ui83 : ui8
+    "arc.keep"(%result_subi_ui83_ui83) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui80]]) : (ui8) -> ()
+
+    // subi 4, 4 -> 0
+    %result_subi_ui84_ui84 = arc.subi %cst_ui84, %cst_ui84 : ui8
+    "arc.keep"(%result_subi_ui84_ui84) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui80]]) : (ui8) -> ()
+
     // subi 72, 72 -> 0
     %result_subi_ui872_ui872 = arc.subi %cst_ui872, %cst_ui872 : ui8
     "arc.keep"(%result_subi_ui872_ui872) : (ui8) -> ()
@@ -12039,10 +25533,55 @@ module @toplevel {
     "arc.keep"(%result_subi_ui81_ui80) : (ui8) -> ()
     // CHECK: "arc.keep"([[CSTui81]]) : (ui8) -> ()
 
+    // subi 2, 1 -> 1
+    %result_subi_ui82_ui81 = arc.subi %cst_ui82, %cst_ui81 : ui8
+    "arc.keep"(%result_subi_ui82_ui81) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui81]]) : (ui8) -> ()
+
+    // subi 3, 2 -> 1
+    %result_subi_ui83_ui82 = arc.subi %cst_ui83, %cst_ui82 : ui8
+    "arc.keep"(%result_subi_ui83_ui82) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui81]]) : (ui8) -> ()
+
+    // subi 4, 3 -> 1
+    %result_subi_ui84_ui83 = arc.subi %cst_ui84, %cst_ui83 : ui8
+    "arc.keep"(%result_subi_ui84_ui83) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui81]]) : (ui8) -> ()
+
     // subi 255, 254 -> 1
     %result_subi_ui8255_ui8254 = arc.subi %cst_ui8255, %cst_ui8254 : ui8
     "arc.keep"(%result_subi_ui8255_ui8254) : (ui8) -> ()
     // CHECK: "arc.keep"([[CSTui81]]) : (ui8) -> ()
+
+    // subi 2, 0 -> 2
+    %result_subi_ui82_ui80 = arc.subi %cst_ui82, %cst_ui80 : ui8
+    "arc.keep"(%result_subi_ui82_ui80) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui82]]) : (ui8) -> ()
+
+    // subi 3, 1 -> 2
+    %result_subi_ui83_ui81 = arc.subi %cst_ui83, %cst_ui81 : ui8
+    "arc.keep"(%result_subi_ui83_ui81) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui82]]) : (ui8) -> ()
+
+    // subi 4, 2 -> 2
+    %result_subi_ui84_ui82 = arc.subi %cst_ui84, %cst_ui82 : ui8
+    "arc.keep"(%result_subi_ui84_ui82) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui82]]) : (ui8) -> ()
+
+    // subi 3, 0 -> 3
+    %result_subi_ui83_ui80 = arc.subi %cst_ui83, %cst_ui80 : ui8
+    "arc.keep"(%result_subi_ui83_ui80) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui83]]) : (ui8) -> ()
+
+    // subi 4, 1 -> 3
+    %result_subi_ui84_ui81 = arc.subi %cst_ui84, %cst_ui81 : ui8
+    "arc.keep"(%result_subi_ui84_ui81) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui83]]) : (ui8) -> ()
+
+    // subi 4, 0 -> 4
+    %result_subi_ui84_ui80 = arc.subi %cst_ui84, %cst_ui80 : ui8
+    "arc.keep"(%result_subi_ui84_ui80) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui84]]) : (ui8) -> ()
 
     // subi 100, 72 -> 28
     %result_subi_ui8100_ui872 = arc.subi %cst_ui8100, %cst_ui872 : ui8
@@ -12053,6 +25592,21 @@ module @toplevel {
     %result_subi_ui8162_ui8100 = arc.subi %cst_ui8162, %cst_ui8100 : ui8
     "arc.keep"(%result_subi_ui8162_ui8100) : (ui8) -> ()
     // CHECK: "arc.keep"([[CSTui862]]) : (ui8) -> ()
+
+    // subi 72, 4 -> 68
+    %result_subi_ui872_ui84 = arc.subi %cst_ui872, %cst_ui84 : ui8
+    "arc.keep"(%result_subi_ui872_ui84) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui868]]) : (ui8) -> ()
+
+    // subi 72, 3 -> 69
+    %result_subi_ui872_ui83 = arc.subi %cst_ui872, %cst_ui83 : ui8
+    "arc.keep"(%result_subi_ui872_ui83) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui869]]) : (ui8) -> ()
+
+    // subi 72, 2 -> 70
+    %result_subi_ui872_ui82 = arc.subi %cst_ui872, %cst_ui82 : ui8
+    "arc.keep"(%result_subi_ui872_ui82) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui870]]) : (ui8) -> ()
 
     // subi 72, 1 -> 71
     %result_subi_ui872_ui81 = arc.subi %cst_ui872, %cst_ui81 : ui8
@@ -12079,6 +25633,21 @@ module @toplevel {
     "arc.keep"(%result_subi_ui8255_ui8162) : (ui8) -> ()
     // CHECK: "arc.keep"([[CSTui893]]) : (ui8) -> ()
 
+    // subi 100, 4 -> 96
+    %result_subi_ui8100_ui84 = arc.subi %cst_ui8100, %cst_ui84 : ui8
+    "arc.keep"(%result_subi_ui8100_ui84) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui896]]) : (ui8) -> ()
+
+    // subi 100, 3 -> 97
+    %result_subi_ui8100_ui83 = arc.subi %cst_ui8100, %cst_ui83 : ui8
+    "arc.keep"(%result_subi_ui8100_ui83) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui897]]) : (ui8) -> ()
+
+    // subi 100, 2 -> 98
+    %result_subi_ui8100_ui82 = arc.subi %cst_ui8100, %cst_ui82 : ui8
+    "arc.keep"(%result_subi_ui8100_ui82) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui898]]) : (ui8) -> ()
+
     // subi 100, 1 -> 99
     %result_subi_ui8100_ui81 = arc.subi %cst_ui8100, %cst_ui81 : ui8
     "arc.keep"(%result_subi_ui8100_ui81) : (ui8) -> ()
@@ -12098,6 +25667,21 @@ module @toplevel {
     %result_subi_ui8255_ui8100 = arc.subi %cst_ui8255, %cst_ui8100 : ui8
     "arc.keep"(%result_subi_ui8255_ui8100) : (ui8) -> ()
     // CHECK: "arc.keep"([[CSTui8155]]) : (ui8) -> ()
+
+    // subi 162, 4 -> 158
+    %result_subi_ui8162_ui84 = arc.subi %cst_ui8162, %cst_ui84 : ui8
+    "arc.keep"(%result_subi_ui8162_ui84) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui8158]]) : (ui8) -> ()
+
+    // subi 162, 3 -> 159
+    %result_subi_ui8162_ui83 = arc.subi %cst_ui8162, %cst_ui83 : ui8
+    "arc.keep"(%result_subi_ui8162_ui83) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui8159]]) : (ui8) -> ()
+
+    // subi 162, 2 -> 160
+    %result_subi_ui8162_ui82 = arc.subi %cst_ui8162, %cst_ui82 : ui8
+    "arc.keep"(%result_subi_ui8162_ui82) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui8160]]) : (ui8) -> ()
 
     // subi 162, 1 -> 161
     %result_subi_ui8162_ui81 = arc.subi %cst_ui8162, %cst_ui81 : ui8
@@ -12119,9 +25703,39 @@ module @toplevel {
     "arc.keep"(%result_subi_ui8255_ui872) : (ui8) -> ()
     // CHECK: "arc.keep"([[CSTui8183]]) : (ui8) -> ()
 
+    // subi 254, 4 -> 250
+    %result_subi_ui8254_ui84 = arc.subi %cst_ui8254, %cst_ui84 : ui8
+    "arc.keep"(%result_subi_ui8254_ui84) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui8250]]) : (ui8) -> ()
+
+    // subi 254, 3 -> 251
+    %result_subi_ui8254_ui83 = arc.subi %cst_ui8254, %cst_ui83 : ui8
+    "arc.keep"(%result_subi_ui8254_ui83) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui8251]]) : (ui8) -> ()
+
+    // subi 255, 4 -> 251
+    %result_subi_ui8255_ui84 = arc.subi %cst_ui8255, %cst_ui84 : ui8
+    "arc.keep"(%result_subi_ui8255_ui84) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui8251]]) : (ui8) -> ()
+
+    // subi 254, 2 -> 252
+    %result_subi_ui8254_ui82 = arc.subi %cst_ui8254, %cst_ui82 : ui8
+    "arc.keep"(%result_subi_ui8254_ui82) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui8252]]) : (ui8) -> ()
+
+    // subi 255, 3 -> 252
+    %result_subi_ui8255_ui83 = arc.subi %cst_ui8255, %cst_ui83 : ui8
+    "arc.keep"(%result_subi_ui8255_ui83) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui8252]]) : (ui8) -> ()
+
     // subi 254, 1 -> 253
     %result_subi_ui8254_ui81 = arc.subi %cst_ui8254, %cst_ui81 : ui8
     "arc.keep"(%result_subi_ui8254_ui81) : (ui8) -> ()
+    // CHECK: "arc.keep"([[CSTui8253]]) : (ui8) -> ()
+
+    // subi 255, 2 -> 253
+    %result_subi_ui8255_ui82 = arc.subi %cst_ui8255, %cst_ui82 : ui8
+    "arc.keep"(%result_subi_ui8255_ui82) : (ui8) -> ()
     // CHECK: "arc.keep"([[CSTui8253]]) : (ui8) -> ()
 
     // subi 254, 0 -> 254
@@ -12144,6 +25758,24 @@ module @toplevel {
     // CHECK-DAG: [[RESULT_subi_ui80_ui81:%[^ ]+]] = arc.subi [[CSTui80]], [[CSTui81]] : ui8
     "arc.keep"(%result_subi_ui80_ui81) : (ui8) -> ()
     // CHECK: "arc.keep"([[RESULT_subi_ui80_ui81]]) : (ui8) -> ()
+
+    // subi 0, 2 -> no-fold
+    %result_subi_ui80_ui82 = arc.subi %cst_ui80, %cst_ui82 : ui8
+    // CHECK-DAG: [[RESULT_subi_ui80_ui82:%[^ ]+]] = arc.subi [[CSTui80]], [[CSTui82]] : ui8
+    "arc.keep"(%result_subi_ui80_ui82) : (ui8) -> ()
+    // CHECK: "arc.keep"([[RESULT_subi_ui80_ui82]]) : (ui8) -> ()
+
+    // subi 0, 3 -> no-fold
+    %result_subi_ui80_ui83 = arc.subi %cst_ui80, %cst_ui83 : ui8
+    // CHECK-DAG: [[RESULT_subi_ui80_ui83:%[^ ]+]] = arc.subi [[CSTui80]], [[CSTui83]] : ui8
+    "arc.keep"(%result_subi_ui80_ui83) : (ui8) -> ()
+    // CHECK: "arc.keep"([[RESULT_subi_ui80_ui83]]) : (ui8) -> ()
+
+    // subi 0, 4 -> no-fold
+    %result_subi_ui80_ui84 = arc.subi %cst_ui80, %cst_ui84 : ui8
+    // CHECK-DAG: [[RESULT_subi_ui80_ui84:%[^ ]+]] = arc.subi [[CSTui80]], [[CSTui84]] : ui8
+    "arc.keep"(%result_subi_ui80_ui84) : (ui8) -> ()
+    // CHECK: "arc.keep"([[RESULT_subi_ui80_ui84]]) : (ui8) -> ()
 
     // subi 0, 72 -> no-fold
     %result_subi_ui80_ui872 = arc.subi %cst_ui80, %cst_ui872 : ui8
@@ -12175,6 +25807,24 @@ module @toplevel {
     "arc.keep"(%result_subi_ui80_ui8255) : (ui8) -> ()
     // CHECK: "arc.keep"([[RESULT_subi_ui80_ui8255]]) : (ui8) -> ()
 
+    // subi 1, 2 -> no-fold
+    %result_subi_ui81_ui82 = arc.subi %cst_ui81, %cst_ui82 : ui8
+    // CHECK-DAG: [[RESULT_subi_ui81_ui82:%[^ ]+]] = arc.subi [[CSTui81]], [[CSTui82]] : ui8
+    "arc.keep"(%result_subi_ui81_ui82) : (ui8) -> ()
+    // CHECK: "arc.keep"([[RESULT_subi_ui81_ui82]]) : (ui8) -> ()
+
+    // subi 1, 3 -> no-fold
+    %result_subi_ui81_ui83 = arc.subi %cst_ui81, %cst_ui83 : ui8
+    // CHECK-DAG: [[RESULT_subi_ui81_ui83:%[^ ]+]] = arc.subi [[CSTui81]], [[CSTui83]] : ui8
+    "arc.keep"(%result_subi_ui81_ui83) : (ui8) -> ()
+    // CHECK: "arc.keep"([[RESULT_subi_ui81_ui83]]) : (ui8) -> ()
+
+    // subi 1, 4 -> no-fold
+    %result_subi_ui81_ui84 = arc.subi %cst_ui81, %cst_ui84 : ui8
+    // CHECK-DAG: [[RESULT_subi_ui81_ui84:%[^ ]+]] = arc.subi [[CSTui81]], [[CSTui84]] : ui8
+    "arc.keep"(%result_subi_ui81_ui84) : (ui8) -> ()
+    // CHECK: "arc.keep"([[RESULT_subi_ui81_ui84]]) : (ui8) -> ()
+
     // subi 1, 72 -> no-fold
     %result_subi_ui81_ui872 = arc.subi %cst_ui81, %cst_ui872 : ui8
     // CHECK-DAG: [[RESULT_subi_ui81_ui872:%[^ ]+]] = arc.subi [[CSTui81]], [[CSTui872]] : ui8
@@ -12204,6 +25854,114 @@ module @toplevel {
     // CHECK-DAG: [[RESULT_subi_ui81_ui8255:%[^ ]+]] = arc.subi [[CSTui81]], [[CSTui8255]] : ui8
     "arc.keep"(%result_subi_ui81_ui8255) : (ui8) -> ()
     // CHECK: "arc.keep"([[RESULT_subi_ui81_ui8255]]) : (ui8) -> ()
+
+    // subi 2, 3 -> no-fold
+    %result_subi_ui82_ui83 = arc.subi %cst_ui82, %cst_ui83 : ui8
+    // CHECK-DAG: [[RESULT_subi_ui82_ui83:%[^ ]+]] = arc.subi [[CSTui82]], [[CSTui83]] : ui8
+    "arc.keep"(%result_subi_ui82_ui83) : (ui8) -> ()
+    // CHECK: "arc.keep"([[RESULT_subi_ui82_ui83]]) : (ui8) -> ()
+
+    // subi 2, 4 -> no-fold
+    %result_subi_ui82_ui84 = arc.subi %cst_ui82, %cst_ui84 : ui8
+    // CHECK-DAG: [[RESULT_subi_ui82_ui84:%[^ ]+]] = arc.subi [[CSTui82]], [[CSTui84]] : ui8
+    "arc.keep"(%result_subi_ui82_ui84) : (ui8) -> ()
+    // CHECK: "arc.keep"([[RESULT_subi_ui82_ui84]]) : (ui8) -> ()
+
+    // subi 2, 72 -> no-fold
+    %result_subi_ui82_ui872 = arc.subi %cst_ui82, %cst_ui872 : ui8
+    // CHECK-DAG: [[RESULT_subi_ui82_ui872:%[^ ]+]] = arc.subi [[CSTui82]], [[CSTui872]] : ui8
+    "arc.keep"(%result_subi_ui82_ui872) : (ui8) -> ()
+    // CHECK: "arc.keep"([[RESULT_subi_ui82_ui872]]) : (ui8) -> ()
+
+    // subi 2, 100 -> no-fold
+    %result_subi_ui82_ui8100 = arc.subi %cst_ui82, %cst_ui8100 : ui8
+    // CHECK-DAG: [[RESULT_subi_ui82_ui8100:%[^ ]+]] = arc.subi [[CSTui82]], [[CSTui8100]] : ui8
+    "arc.keep"(%result_subi_ui82_ui8100) : (ui8) -> ()
+    // CHECK: "arc.keep"([[RESULT_subi_ui82_ui8100]]) : (ui8) -> ()
+
+    // subi 2, 162 -> no-fold
+    %result_subi_ui82_ui8162 = arc.subi %cst_ui82, %cst_ui8162 : ui8
+    // CHECK-DAG: [[RESULT_subi_ui82_ui8162:%[^ ]+]] = arc.subi [[CSTui82]], [[CSTui8162]] : ui8
+    "arc.keep"(%result_subi_ui82_ui8162) : (ui8) -> ()
+    // CHECK: "arc.keep"([[RESULT_subi_ui82_ui8162]]) : (ui8) -> ()
+
+    // subi 2, 254 -> no-fold
+    %result_subi_ui82_ui8254 = arc.subi %cst_ui82, %cst_ui8254 : ui8
+    // CHECK-DAG: [[RESULT_subi_ui82_ui8254:%[^ ]+]] = arc.subi [[CSTui82]], [[CSTui8254]] : ui8
+    "arc.keep"(%result_subi_ui82_ui8254) : (ui8) -> ()
+    // CHECK: "arc.keep"([[RESULT_subi_ui82_ui8254]]) : (ui8) -> ()
+
+    // subi 2, 255 -> no-fold
+    %result_subi_ui82_ui8255 = arc.subi %cst_ui82, %cst_ui8255 : ui8
+    // CHECK-DAG: [[RESULT_subi_ui82_ui8255:%[^ ]+]] = arc.subi [[CSTui82]], [[CSTui8255]] : ui8
+    "arc.keep"(%result_subi_ui82_ui8255) : (ui8) -> ()
+    // CHECK: "arc.keep"([[RESULT_subi_ui82_ui8255]]) : (ui8) -> ()
+
+    // subi 3, 4 -> no-fold
+    %result_subi_ui83_ui84 = arc.subi %cst_ui83, %cst_ui84 : ui8
+    // CHECK-DAG: [[RESULT_subi_ui83_ui84:%[^ ]+]] = arc.subi [[CSTui83]], [[CSTui84]] : ui8
+    "arc.keep"(%result_subi_ui83_ui84) : (ui8) -> ()
+    // CHECK: "arc.keep"([[RESULT_subi_ui83_ui84]]) : (ui8) -> ()
+
+    // subi 3, 72 -> no-fold
+    %result_subi_ui83_ui872 = arc.subi %cst_ui83, %cst_ui872 : ui8
+    // CHECK-DAG: [[RESULT_subi_ui83_ui872:%[^ ]+]] = arc.subi [[CSTui83]], [[CSTui872]] : ui8
+    "arc.keep"(%result_subi_ui83_ui872) : (ui8) -> ()
+    // CHECK: "arc.keep"([[RESULT_subi_ui83_ui872]]) : (ui8) -> ()
+
+    // subi 3, 100 -> no-fold
+    %result_subi_ui83_ui8100 = arc.subi %cst_ui83, %cst_ui8100 : ui8
+    // CHECK-DAG: [[RESULT_subi_ui83_ui8100:%[^ ]+]] = arc.subi [[CSTui83]], [[CSTui8100]] : ui8
+    "arc.keep"(%result_subi_ui83_ui8100) : (ui8) -> ()
+    // CHECK: "arc.keep"([[RESULT_subi_ui83_ui8100]]) : (ui8) -> ()
+
+    // subi 3, 162 -> no-fold
+    %result_subi_ui83_ui8162 = arc.subi %cst_ui83, %cst_ui8162 : ui8
+    // CHECK-DAG: [[RESULT_subi_ui83_ui8162:%[^ ]+]] = arc.subi [[CSTui83]], [[CSTui8162]] : ui8
+    "arc.keep"(%result_subi_ui83_ui8162) : (ui8) -> ()
+    // CHECK: "arc.keep"([[RESULT_subi_ui83_ui8162]]) : (ui8) -> ()
+
+    // subi 3, 254 -> no-fold
+    %result_subi_ui83_ui8254 = arc.subi %cst_ui83, %cst_ui8254 : ui8
+    // CHECK-DAG: [[RESULT_subi_ui83_ui8254:%[^ ]+]] = arc.subi [[CSTui83]], [[CSTui8254]] : ui8
+    "arc.keep"(%result_subi_ui83_ui8254) : (ui8) -> ()
+    // CHECK: "arc.keep"([[RESULT_subi_ui83_ui8254]]) : (ui8) -> ()
+
+    // subi 3, 255 -> no-fold
+    %result_subi_ui83_ui8255 = arc.subi %cst_ui83, %cst_ui8255 : ui8
+    // CHECK-DAG: [[RESULT_subi_ui83_ui8255:%[^ ]+]] = arc.subi [[CSTui83]], [[CSTui8255]] : ui8
+    "arc.keep"(%result_subi_ui83_ui8255) : (ui8) -> ()
+    // CHECK: "arc.keep"([[RESULT_subi_ui83_ui8255]]) : (ui8) -> ()
+
+    // subi 4, 72 -> no-fold
+    %result_subi_ui84_ui872 = arc.subi %cst_ui84, %cst_ui872 : ui8
+    // CHECK-DAG: [[RESULT_subi_ui84_ui872:%[^ ]+]] = arc.subi [[CSTui84]], [[CSTui872]] : ui8
+    "arc.keep"(%result_subi_ui84_ui872) : (ui8) -> ()
+    // CHECK: "arc.keep"([[RESULT_subi_ui84_ui872]]) : (ui8) -> ()
+
+    // subi 4, 100 -> no-fold
+    %result_subi_ui84_ui8100 = arc.subi %cst_ui84, %cst_ui8100 : ui8
+    // CHECK-DAG: [[RESULT_subi_ui84_ui8100:%[^ ]+]] = arc.subi [[CSTui84]], [[CSTui8100]] : ui8
+    "arc.keep"(%result_subi_ui84_ui8100) : (ui8) -> ()
+    // CHECK: "arc.keep"([[RESULT_subi_ui84_ui8100]]) : (ui8) -> ()
+
+    // subi 4, 162 -> no-fold
+    %result_subi_ui84_ui8162 = arc.subi %cst_ui84, %cst_ui8162 : ui8
+    // CHECK-DAG: [[RESULT_subi_ui84_ui8162:%[^ ]+]] = arc.subi [[CSTui84]], [[CSTui8162]] : ui8
+    "arc.keep"(%result_subi_ui84_ui8162) : (ui8) -> ()
+    // CHECK: "arc.keep"([[RESULT_subi_ui84_ui8162]]) : (ui8) -> ()
+
+    // subi 4, 254 -> no-fold
+    %result_subi_ui84_ui8254 = arc.subi %cst_ui84, %cst_ui8254 : ui8
+    // CHECK-DAG: [[RESULT_subi_ui84_ui8254:%[^ ]+]] = arc.subi [[CSTui84]], [[CSTui8254]] : ui8
+    "arc.keep"(%result_subi_ui84_ui8254) : (ui8) -> ()
+    // CHECK: "arc.keep"([[RESULT_subi_ui84_ui8254]]) : (ui8) -> ()
+
+    // subi 4, 255 -> no-fold
+    %result_subi_ui84_ui8255 = arc.subi %cst_ui84, %cst_ui8255 : ui8
+    // CHECK-DAG: [[RESULT_subi_ui84_ui8255:%[^ ]+]] = arc.subi [[CSTui84]], [[CSTui8255]] : ui8
+    "arc.keep"(%result_subi_ui84_ui8255) : (ui8) -> ()
+    // CHECK: "arc.keep"([[RESULT_subi_ui84_ui8255]]) : (ui8) -> ()
 
     // subi 72, 100 -> no-fold
     %result_subi_ui872_ui8100 = arc.subi %cst_ui872, %cst_ui8100 : ui8
