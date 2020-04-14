@@ -11,9 +11,9 @@ let false_bool : bool = false;
 # Check that the conditionals end up in the right places and that the
 # results in the branches are in the correct order
 
-#CHECK-DAG: [[A:%[^ ]+]] = constant 65 : i32
-#CHECK-DAG: [[B:%[^ ]+]] = constant 66 : i32
-#CHECK-DAG: [[C:%[^ ]+]] = constant 67 : i32
+#CHECK-DAG: [[A:%[^ ]+]] = arc.constant 65 : si32
+#CHECK-DAG: [[B:%[^ ]+]] = arc.constant 66 : si32
+#CHECK-DAG: [[C:%[^ ]+]] = arc.constant 67 : si32
 #CHECK-DAG: [[CONDOUTER:%[^ ]+]] = constant 1 : i1
 #CHECK-DAG: [[CONDINNER:%[^ ]+]] = constant 0 : i1
 

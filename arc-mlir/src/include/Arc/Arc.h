@@ -23,23 +23,25 @@
 #ifndef ARC_DIALECT_H_
 #define ARC_DIALECT_H_
 
-#include "Arc/Types.h"
 #include <mlir/IR/Builders.h>
 #include <mlir/IR/Dialect.h>
 #include <mlir/IR/Function.h>
 #include <mlir/IR/Operation.h>
 #include <mlir/Interfaces/SideEffects.h>
 
+#include "Arc/Types.h"
+
 using namespace mlir;
 
-namespace arc {
+#include "Arc/ArcOpsEnums.h.inc"
 
-#include "Arc/ArcDialect.h.inc"
+namespace arc {
 
 /// Include the auto-generated header file containing the declarations of the
 /// arc operations.
 #define GET_OP_CLASSES
 #include "Arc/Arc.h.inc"
+#include "Arc/ArcDialect.h.inc"
 
 } // end namespace arc
 

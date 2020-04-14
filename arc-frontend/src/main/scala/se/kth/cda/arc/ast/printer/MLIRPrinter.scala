@@ -43,7 +43,7 @@ object MLIRPrinter {
       val identifiers: SymbolMap = SymbolMap()
 
       out.print("module @toplevel {\n")
-      out.print("func @main() -> i32 {\n")
+      out.print("func @main() -> si32 {\n")
       val body =
         self match {
           case symbol: Symbol =>
@@ -53,7 +53,7 @@ object MLIRPrinter {
           case expr: Expr =>
             expr.toMLIR(identifiers: SymbolMap)
         }
-      out.print(s"return ${body} : i32\n}\n")
+      out.print(s"return ${body} : si32\n}\n")
       out.print("}\n")
       s"${sb.result()}\n"
     }
@@ -79,14 +79,14 @@ object MLIRPrinter {
     def expandLtCmp(lhs: String, rhs: String, ty: Type): String = {
       val tmp = newTmp
       val cmpOp = ty match {
-        case I8  => """cmpi "slt""""
-        case I16 => """cmpi "slt""""
-        case I32 => """cmpi "slt""""
-        case I64 => """cmpi "slt""""
-        case U8  => """cmpi "ult""""
-        case U16 => """cmpi "ult""""
-        case U32 => """cmpi "ult""""
-        case U64 => """cmpi "ult""""
+        case I8  => """arc.cmpi "lt""""
+        case I16 => """arc.cmpi "lt""""
+        case I32 => """arc.cmpi "lt""""
+        case I64 => """arc.cmpi "lt""""
+        case U8  => """arc.cmpi "lt""""
+        case U16 => """arc.cmpi "lt""""
+        case U32 => """arc.cmpi "lt""""
+        case U64 => """arc.cmpi "lt""""
         case F32 => """cmpf "olt""""
         case F64 => """cmpf "olt""""
         case _   => "/* Unsupported type: ${ty} */"
@@ -95,26 +95,34 @@ object MLIRPrinter {
       tmp
     }
 
+    def expandSelect(ty: Type): String = {
+      ty match {
+        case F32 => "select"
+        case F64 => "select"
+        case _   => "arc.select"
+      }
+    }
+
     def expandMin(result: String, lhs: String, rhs: String, ty: Type): Type = {
-      out.print(s"${result} = select ${expandLtCmp(lhs, rhs, ty)}, ${lhs}, ${rhs} : ${ty.toMLIR}\n")
+      out.print(s"${result} = ${expandSelect(ty)} ${expandLtCmp(lhs, rhs, ty)}, ${lhs}, ${rhs} : ${ty.toMLIR}\n")
       ty
     }
 
     def expandMax(result: String, lhs: String, rhs: String, ty: Type): Type = {
-      out.print(s"${result} = select ${expandLtCmp(lhs, rhs, ty)}, ${rhs}, ${lhs} : ${ty.toMLIR}\n")
+      out.print(s"${result} = ${expandSelect(ty)} ${expandLtCmp(lhs, rhs, ty)}, ${rhs}, ${lhs} : ${ty.toMLIR}\n")
       ty
     }
 
     def getMulOperand(ty: Type): String = {
       ty match {
-        case I8  => "muli"
-        case I16 => "muli"
-        case I32 => "muli"
-        case I64 => "muli"
-        case U8  => "muli"
-        case U16 => "muli"
-        case U32 => "muli"
-        case U64 => "muli"
+        case I8  => "arc.muli"
+        case I16 => "arc.muli"
+        case I32 => "arc.muli"
+        case I64 => "arc.muli"
+        case U8  => "arc.muli"
+        case U16 => "arc.muli"
+        case U32 => "arc.muli"
+        case U64 => "arc.muli"
         case F32 => "mulf"
         case F64 => "mulf"
       }
@@ -135,135 +143,135 @@ object MLIRPrinter {
       val tmp = newTmp
 
       val (operator: String, typeTag: Type) = (kind, ty, lhs.ty) match {
-        case (BinOpKind.Add, I8, _)      => ("addi", ty)
-        case (BinOpKind.Add, I16, _)     => ("addi", ty)
-        case (BinOpKind.Add, I32, _)     => ("addi", ty)
-        case (BinOpKind.Add, I64, _)     => ("addi", ty)
-        case (BinOpKind.Add, U8, _)      => ("addi", ty)
-        case (BinOpKind.Add, U16, _)     => ("addi", ty)
-        case (BinOpKind.Add, U32, _)     => ("addi", ty)
-        case (BinOpKind.Add, U64, _)     => ("addi", ty)
+        case (BinOpKind.Add, I8, _)      => ("arc.addi", ty)
+        case (BinOpKind.Add, I16, _)     => ("arc.addi", ty)
+        case (BinOpKind.Add, I32, _)     => ("arc.addi", ty)
+        case (BinOpKind.Add, I64, _)     => ("arc.addi", ty)
+        case (BinOpKind.Add, U8, _)      => ("arc.addi", ty)
+        case (BinOpKind.Add, U16, _)     => ("arc.addi", ty)
+        case (BinOpKind.Add, U32, _)     => ("arc.addi", ty)
+        case (BinOpKind.Add, U64, _)     => ("arc.addi", ty)
         case (BinOpKind.Add, F32, _)     => ("addf", ty)
         case (BinOpKind.Add, F64, _)     => ("addf", ty)
-        case (BinOpKind.Sub, I8, _)      => ("subi", ty)
-        case (BinOpKind.Sub, I16, _)     => ("subi", ty)
-        case (BinOpKind.Sub, I32, _)     => ("subi", ty)
-        case (BinOpKind.Sub, I64, _)     => ("subi", ty)
-        case (BinOpKind.Sub, U8, _)      => ("subi", ty)
-        case (BinOpKind.Sub, U16, _)     => ("subi", ty)
-        case (BinOpKind.Sub, U32, _)     => ("subi", ty)
-        case (BinOpKind.Sub, U64, _)     => ("subi", ty)
+        case (BinOpKind.Sub, I8, _)      => ("arc.subi", ty)
+        case (BinOpKind.Sub, I16, _)     => ("arc.subi", ty)
+        case (BinOpKind.Sub, I32, _)     => ("arc.subi", ty)
+        case (BinOpKind.Sub, I64, _)     => ("arc.subi", ty)
+        case (BinOpKind.Sub, U8, _)      => ("arc.subi", ty)
+        case (BinOpKind.Sub, U16, _)     => ("arc.subi", ty)
+        case (BinOpKind.Sub, U32, _)     => ("arc.subi", ty)
+        case (BinOpKind.Sub, U64, _)     => ("arc.subi", ty)
         case (BinOpKind.Sub, F32, _)     => ("subf", ty)
         case (BinOpKind.Sub, F64, _)     => ("subf", ty)
         case (BinOpKind.Mul, _, _)       => (getMulOperand(ty), ty)
-        case (BinOpKind.Div, I8, _)      => ("divi_signed", ty)
-        case (BinOpKind.Div, I16, _)     => ("divi_signed", ty)
-        case (BinOpKind.Div, I32, _)     => ("divi_signed", ty)
-        case (BinOpKind.Div, I64, _)     => ("divi_signed", ty)
-        case (BinOpKind.Div, U8, _)      => ("divi_unsigned", ty)
-        case (BinOpKind.Div, U16, _)     => ("divi_unsigned", ty)
-        case (BinOpKind.Div, U32, _)     => ("divi_unsigned", ty)
-        case (BinOpKind.Div, U64, _)     => ("divi_unsigned", ty)
+        case (BinOpKind.Div, I8, _)      => ("arc.divi", ty)
+        case (BinOpKind.Div, I16, _)     => ("arc.divi", ty)
+        case (BinOpKind.Div, I32, _)     => ("arc.divi", ty)
+        case (BinOpKind.Div, I64, _)     => ("arc.divi", ty)
+        case (BinOpKind.Div, U8, _)      => ("arc.divi", ty)
+        case (BinOpKind.Div, U16, _)     => ("arc.divi", ty)
+        case (BinOpKind.Div, U32, _)     => ("arc.divi", ty)
+        case (BinOpKind.Div, U64, _)     => ("arc.divi", ty)
         case (BinOpKind.Div, F32, _)     => ("divf", ty)
         case (BinOpKind.Div, F64, _)     => ("divf", ty)
-        case (BinOpKind.Mod, I8, _)      => ("remi_signed", ty)
-        case (BinOpKind.Mod, I16, _)     => ("remi_signed", ty)
-        case (BinOpKind.Mod, I32, _)     => ("remi_signed", ty)
-        case (BinOpKind.Mod, I64, _)     => ("remi_signed", ty)
-        case (BinOpKind.Mod, U8, _)      => ("remi_unsigned", ty)
-        case (BinOpKind.Mod, U16, _)     => ("remi_unsigned", ty)
-        case (BinOpKind.Mod, U32, _)     => ("remi_unsigned", ty)
-        case (BinOpKind.Mod, U64, _)     => ("remi_unsigned", ty)
+        case (BinOpKind.Mod, I8, _)      => ("arc.remi", ty)
+        case (BinOpKind.Mod, I16, _)     => ("arc.remi", ty)
+        case (BinOpKind.Mod, I32, _)     => ("arc.remi", ty)
+        case (BinOpKind.Mod, I64, _)     => ("arc.remi", ty)
+        case (BinOpKind.Mod, U8, _)      => ("arc.remi", ty)
+        case (BinOpKind.Mod, U16, _)     => ("arc.remi", ty)
+        case (BinOpKind.Mod, U32, _)     => ("arc.remi", ty)
+        case (BinOpKind.Mod, U64, _)     => ("arc.remi", ty)
         case (BinOpKind.Mod, F32, _)     => ("remf", ty)
         case (BinOpKind.Mod, F64, _)     => ("remf", ty)
-        case (BinOpKind.Lt, Bool, I8)    => ("""cmpi "slt", """, lhs.ty)
-        case (BinOpKind.Lt, Bool, I16)   => ("""cmpi "slt", """, lhs.ty)
-        case (BinOpKind.Lt, Bool, I32)   => ("""cmpi "slt", """, lhs.ty)
-        case (BinOpKind.Lt, Bool, I64)   => ("""cmpi "slt", """, lhs.ty)
-        case (BinOpKind.Lt, Bool, U8)    => ("""cmpi "ult", """, lhs.ty)
-        case (BinOpKind.Lt, Bool, U16)   => ("""cmpi "ult", """, lhs.ty)
-        case (BinOpKind.Lt, Bool, U32)   => ("""cmpi "ult", """, lhs.ty)
-        case (BinOpKind.Lt, Bool, U64)   => ("""cmpi "ult", """, lhs.ty)
+        case (BinOpKind.Lt, Bool, I8)    => ("""arc.cmpi "lt", """, lhs.ty)
+        case (BinOpKind.Lt, Bool, I16)   => ("""arc.cmpi "lt", """, lhs.ty)
+        case (BinOpKind.Lt, Bool, I32)   => ("""arc.cmpi "lt", """, lhs.ty)
+        case (BinOpKind.Lt, Bool, I64)   => ("""arc.cmpi "lt", """, lhs.ty)
+        case (BinOpKind.Lt, Bool, U8)    => ("""arc.cmpi "lt", """, lhs.ty)
+        case (BinOpKind.Lt, Bool, U16)   => ("""arc.cmpi "lt", """, lhs.ty)
+        case (BinOpKind.Lt, Bool, U32)   => ("""arc.cmpi "lt", """, lhs.ty)
+        case (BinOpKind.Lt, Bool, U64)   => ("""arc.cmpi "lt", """, lhs.ty)
         case (BinOpKind.Lt, Bool, F32)   => ("""cmpf "olt", """, lhs.ty)
         case (BinOpKind.Lt, Bool, F64)   => ("""cmpf "olt", """, lhs.ty)
-        case (BinOpKind.LEq, Bool, I8)   => ("""cmpi "sle", """, lhs.ty)
-        case (BinOpKind.LEq, Bool, I16)  => ("""cmpi "sle", """, lhs.ty)
-        case (BinOpKind.LEq, Bool, I32)  => ("""cmpi "sle", """, lhs.ty)
-        case (BinOpKind.LEq, Bool, I64)  => ("""cmpi "sle", """, lhs.ty)
-        case (BinOpKind.LEq, Bool, U8)   => ("""cmpi "ule", """, lhs.ty)
-        case (BinOpKind.LEq, Bool, U16)  => ("""cmpi "ule", """, lhs.ty)
-        case (BinOpKind.LEq, Bool, U32)  => ("""cmpi "ule", """, lhs.ty)
-        case (BinOpKind.LEq, Bool, U64)  => ("""cmpi "ule", """, lhs.ty)
+        case (BinOpKind.LEq, Bool, I8)   => ("""arc.cmpi "le", """, lhs.ty)
+        case (BinOpKind.LEq, Bool, I16)  => ("""arc.cmpi "le", """, lhs.ty)
+        case (BinOpKind.LEq, Bool, I32)  => ("""arc.cmpi "le", """, lhs.ty)
+        case (BinOpKind.LEq, Bool, I64)  => ("""arc.cmpi "le", """, lhs.ty)
+        case (BinOpKind.LEq, Bool, U8)   => ("""arc.cmpi "le", """, lhs.ty)
+        case (BinOpKind.LEq, Bool, U16)  => ("""arc.cmpi "le", """, lhs.ty)
+        case (BinOpKind.LEq, Bool, U32)  => ("""arc.cmpi "le", """, lhs.ty)
+        case (BinOpKind.LEq, Bool, U64)  => ("""arc.cmpi "le", """, lhs.ty)
         case (BinOpKind.LEq, Bool, F32)  => ("""cmpf "ole", """, lhs.ty)
         case (BinOpKind.LEq, Bool, F64)  => ("""cmpf "ole", """, lhs.ty)
-        case (BinOpKind.Gt, Bool, I8)    => ("""cmpi "sgt", """, lhs.ty)
-        case (BinOpKind.Gt, Bool, I16)   => ("""cmpi "sgt", """, lhs.ty)
-        case (BinOpKind.Gt, Bool, I32)   => ("""cmpi "sgt", """, lhs.ty)
-        case (BinOpKind.Gt, Bool, I64)   => ("""cmpi "sgt", """, lhs.ty)
-        case (BinOpKind.Gt, Bool, U8)    => ("""cmpi "ugt", """, lhs.ty)
-        case (BinOpKind.Gt, Bool, U16)   => ("""cmpi "ugt", """, lhs.ty)
-        case (BinOpKind.Gt, Bool, U32)   => ("""cmpi "ugt", """, lhs.ty)
-        case (BinOpKind.Gt, Bool, U64)   => ("""cmpi "ugt", """, lhs.ty)
+        case (BinOpKind.Gt, Bool, I8)    => ("""arc.cmpi "gt", """, lhs.ty)
+        case (BinOpKind.Gt, Bool, I16)   => ("""arc.cmpi "gt", """, lhs.ty)
+        case (BinOpKind.Gt, Bool, I32)   => ("""arc.cmpi "gt", """, lhs.ty)
+        case (BinOpKind.Gt, Bool, I64)   => ("""arc.cmpi "gt", """, lhs.ty)
+        case (BinOpKind.Gt, Bool, U8)    => ("""arc.cmpi "gt", """, lhs.ty)
+        case (BinOpKind.Gt, Bool, U16)   => ("""arc.cmpi "gt", """, lhs.ty)
+        case (BinOpKind.Gt, Bool, U32)   => ("""arc.cmpi "gt", """, lhs.ty)
+        case (BinOpKind.Gt, Bool, U64)   => ("""arc.cmpi "gt", """, lhs.ty)
         case (BinOpKind.Gt, Bool, F32)   => ("""cmpf "ogt", """, lhs.ty)
         case (BinOpKind.Gt, Bool, F64)   => ("""cmpf "ogt", """, lhs.ty)
-        case (BinOpKind.GEq, Bool, I8)   => ("""cmpi "sge", """, lhs.ty)
-        case (BinOpKind.GEq, Bool, I16)  => ("""cmpi "sge", """, lhs.ty)
-        case (BinOpKind.GEq, Bool, I32)  => ("""cmpi "sge", """, lhs.ty)
-        case (BinOpKind.GEq, Bool, I64)  => ("""cmpi "sge", """, lhs.ty)
-        case (BinOpKind.GEq, Bool, U8)   => ("""cmpi "uge", """, lhs.ty)
-        case (BinOpKind.GEq, Bool, U16)  => ("""cmpi "uge", """, lhs.ty)
-        case (BinOpKind.GEq, Bool, U32)  => ("""cmpi "uge", """, lhs.ty)
-        case (BinOpKind.GEq, Bool, U64)  => ("""cmpi "uge", """, lhs.ty)
+        case (BinOpKind.GEq, Bool, I8)   => ("""arc.cmpi "ge", """, lhs.ty)
+        case (BinOpKind.GEq, Bool, I16)  => ("""arc.cmpi "ge", """, lhs.ty)
+        case (BinOpKind.GEq, Bool, I32)  => ("""arc.cmpi "ge", """, lhs.ty)
+        case (BinOpKind.GEq, Bool, I64)  => ("""arc.cmpi "ge", """, lhs.ty)
+        case (BinOpKind.GEq, Bool, U8)   => ("""arc.cmpi "ge", """, lhs.ty)
+        case (BinOpKind.GEq, Bool, U16)  => ("""arc.cmpi "ge", """, lhs.ty)
+        case (BinOpKind.GEq, Bool, U32)  => ("""arc.cmpi "ge", """, lhs.ty)
+        case (BinOpKind.GEq, Bool, U64)  => ("""arc.cmpi "ge", """, lhs.ty)
         case (BinOpKind.GEq, Bool, F32)  => ("""cmpf "oge", """, lhs.ty)
         case (BinOpKind.GEq, Bool, F64)  => ("""cmpf "oge", """, lhs.ty)
         case (BinOpKind.Eq, Bool, Bool)  => ("""cmpi "eq", """, lhs.ty)
-        case (BinOpKind.Eq, Bool, I8)    => ("""cmpi "eq", """, lhs.ty)
-        case (BinOpKind.Eq, Bool, I16)   => ("""cmpi "eq", """, lhs.ty)
-        case (BinOpKind.Eq, Bool, I32)   => ("""cmpi "eq", """, lhs.ty)
-        case (BinOpKind.Eq, Bool, I64)   => ("""cmpi "eq", """, lhs.ty)
-        case (BinOpKind.Eq, Bool, U8)    => ("""cmpi "eq", """, lhs.ty)
-        case (BinOpKind.Eq, Bool, U16)   => ("""cmpi "eq", """, lhs.ty)
-        case (BinOpKind.Eq, Bool, U32)   => ("""cmpi "eq", """, lhs.ty)
-        case (BinOpKind.Eq, Bool, U64)   => ("""cmpi "eq", """, lhs.ty)
+        case (BinOpKind.Eq, Bool, I8)    => ("""arc.cmpi "eq", """, lhs.ty)
+        case (BinOpKind.Eq, Bool, I16)   => ("""arc.cmpi "eq", """, lhs.ty)
+        case (BinOpKind.Eq, Bool, I32)   => ("""arc.cmpi "eq", """, lhs.ty)
+        case (BinOpKind.Eq, Bool, I64)   => ("""arc.cmpi "eq", """, lhs.ty)
+        case (BinOpKind.Eq, Bool, U8)    => ("""arc.cmpi "eq", """, lhs.ty)
+        case (BinOpKind.Eq, Bool, U16)   => ("""arc.cmpi "eq", """, lhs.ty)
+        case (BinOpKind.Eq, Bool, U32)   => ("""arc.cmpi "eq", """, lhs.ty)
+        case (BinOpKind.Eq, Bool, U64)   => ("""arc.cmpi "eq", """, lhs.ty)
         case (BinOpKind.Eq, Bool, F32)   => ("""cmpf "oeq", """, lhs.ty)
         case (BinOpKind.Eq, Bool, F64)   => ("""cmpf "oeq", """, lhs.ty)
         case (BinOpKind.NEq, Bool, Bool) => ("""cmpi "ne", """, lhs.ty)
-        case (BinOpKind.NEq, Bool, I8)   => ("""cmpi "ne", """, lhs.ty)
-        case (BinOpKind.NEq, Bool, I16)  => ("""cmpi "ne", """, lhs.ty)
-        case (BinOpKind.NEq, Bool, I32)  => ("""cmpi "ne", """, lhs.ty)
-        case (BinOpKind.NEq, Bool, I64)  => ("""cmpi "ne", """, lhs.ty)
-        case (BinOpKind.NEq, Bool, U8)   => ("""cmpi "ne", """, lhs.ty)
-        case (BinOpKind.NEq, Bool, U16)  => ("""cmpi "ne", """, lhs.ty)
-        case (BinOpKind.NEq, Bool, U32)  => ("""cmpi "ne", """, lhs.ty)
-        case (BinOpKind.NEq, Bool, U64)  => ("""cmpi "ne", """, lhs.ty)
+        case (BinOpKind.NEq, Bool, I8)   => ("""arc.cmpi "ne", """, lhs.ty)
+        case (BinOpKind.NEq, Bool, I16)  => ("""arc.cmpi "ne", """, lhs.ty)
+        case (BinOpKind.NEq, Bool, I32)  => ("""arc.cmpi "ne", """, lhs.ty)
+        case (BinOpKind.NEq, Bool, I64)  => ("""arc.cmpi "ne", """, lhs.ty)
+        case (BinOpKind.NEq, Bool, U8)   => ("""arc.cmpi "ne", """, lhs.ty)
+        case (BinOpKind.NEq, Bool, U16)  => ("""arc.cmpi "ne", """, lhs.ty)
+        case (BinOpKind.NEq, Bool, U32)  => ("""arc.cmpi "ne", """, lhs.ty)
+        case (BinOpKind.NEq, Bool, U64)  => ("""arc.cmpi "ne", """, lhs.ty)
         case (BinOpKind.NEq, Bool, F32)  => ("""cmpf "one", """, lhs.ty)
         case (BinOpKind.NEq, Bool, F64)  => ("""cmpf "one", """, lhs.ty)
         case (BinOpKind.And, Bool, Bool) => ("and", lhs.ty)
         case (BinOpKind.Or, Bool, Bool)  => ("or", lhs.ty)
-        case (BinOpKind.BwAnd, I8, _)    => ("and", ty)
-        case (BinOpKind.BwAnd, I16, _)   => ("and", ty)
-        case (BinOpKind.BwAnd, I32, _)   => ("and", ty)
-        case (BinOpKind.BwAnd, I64, _)   => ("and", ty)
-        case (BinOpKind.BwAnd, U8, _)    => ("and", ty)
-        case (BinOpKind.BwAnd, U16, _)   => ("and", ty)
-        case (BinOpKind.BwAnd, U32, _)   => ("and", ty)
-        case (BinOpKind.BwAnd, U64, _)   => ("and", ty)
-        case (BinOpKind.BwOr, I8, _)     => ("or", ty)
-        case (BinOpKind.BwOr, I16, _)    => ("or", ty)
-        case (BinOpKind.BwOr, I32, _)    => ("or", ty)
-        case (BinOpKind.BwOr, I64, _)    => ("or", ty)
-        case (BinOpKind.BwOr, U8, _)     => ("or", ty)
-        case (BinOpKind.BwOr, U16, _)    => ("or", ty)
-        case (BinOpKind.BwOr, U32, _)    => ("or", ty)
-        case (BinOpKind.BwOr, U64, _)    => ("or", ty)
-        case (BinOpKind.BwXor, I8, _)    => ("xor", ty)
-        case (BinOpKind.BwXor, I16, _)   => ("xor", ty)
-        case (BinOpKind.BwXor, I32, _)   => ("xor", ty)
-        case (BinOpKind.BwXor, I64, _)   => ("xor", ty)
-        case (BinOpKind.BwXor, U8, _)    => ("xor", ty)
-        case (BinOpKind.BwXor, U16, _)   => ("xor", ty)
-        case (BinOpKind.BwXor, U32, _)   => ("xor", ty)
-        case (BinOpKind.BwXor, U64, _)   => ("xor", ty)
+        case (BinOpKind.BwAnd, I8, _)    => ("arc.and", ty)
+        case (BinOpKind.BwAnd, I16, _)   => ("arc.and", ty)
+        case (BinOpKind.BwAnd, I32, _)   => ("arc.and", ty)
+        case (BinOpKind.BwAnd, I64, _)   => ("arc.and", ty)
+        case (BinOpKind.BwAnd, U8, _)    => ("arc.and", ty)
+        case (BinOpKind.BwAnd, U16, _)   => ("arc.and", ty)
+        case (BinOpKind.BwAnd, U32, _)   => ("arc.and", ty)
+        case (BinOpKind.BwAnd, U64, _)   => ("arc.and", ty)
+        case (BinOpKind.BwOr, I8, _)     => ("arc.or", ty)
+        case (BinOpKind.BwOr, I16, _)    => ("arc.or", ty)
+        case (BinOpKind.BwOr, I32, _)    => ("arc.or", ty)
+        case (BinOpKind.BwOr, I64, _)    => ("arc.or", ty)
+        case (BinOpKind.BwOr, U8, _)     => ("arc.or", ty)
+        case (BinOpKind.BwOr, U16, _)    => ("arc.or", ty)
+        case (BinOpKind.BwOr, U32, _)    => ("arc.or", ty)
+        case (BinOpKind.BwOr, U64, _)    => ("arc.or", ty)
+        case (BinOpKind.BwXor, I8, _)    => ("arc.xor", ty)
+        case (BinOpKind.BwXor, I16, _)   => ("arc.xor", ty)
+        case (BinOpKind.BwXor, I32, _)   => ("arc.xor", ty)
+        case (BinOpKind.BwXor, I64, _)   => ("arc.xor", ty)
+        case (BinOpKind.BwXor, U8, _)    => ("arc.xor", ty)
+        case (BinOpKind.BwXor, U16, _)   => ("arc.xor", ty)
+        case (BinOpKind.BwXor, U32, _)   => ("arc.xor", ty)
+        case (BinOpKind.BwXor, U64, _)   => ("arc.xor", ty)
         case (BinOpKind.Min, _, _)       => ("", expandMin(tmp, lhsValue, rhsValue, lhs.ty))
         case (BinOpKind.Max, _, _)       => ("", expandMax(tmp, lhsValue, rhsValue, lhs.ty))
         case (BinOpKind.Pow, _, _)       => ("", expandPow(tmp, lhsValue, rhsValue, lhs.ty))
@@ -366,35 +374,35 @@ object MLIRPrinter {
       self.kind match {
         case Literal.I8(raw, value) => {
           val tmp = newTmp
-          out.print(s"${tmp} = constant ${value} : ${self.ty.toMLIR}\n"); s"${tmp}"
+          out.print(s"${tmp} = arc.constant ${value} : ${self.ty.toMLIR}\n"); s"${tmp}"
         }
         case Literal.I16(raw, value) => {
           val tmp = newTmp
-          out.print(s"${tmp} = constant ${value} : ${self.ty.toMLIR}\n"); s"${tmp}"
+          out.print(s"${tmp} = arc.constant ${value} : ${self.ty.toMLIR}\n"); s"${tmp}"
         }
         case Literal.I32(raw, value) => {
           val tmp = newTmp
-          out.print(s"${tmp} = constant ${value} : ${self.ty.toMLIR}\n"); s"${tmp}"
+          out.print(s"${tmp} = arc.constant ${value} : ${self.ty.toMLIR}\n"); s"${tmp}"
         }
         case Literal.I64(raw, value) => {
           val tmp = newTmp
-          out.print(s"${tmp} = constant ${value} : ${self.ty.toMLIR}\n"); s"${tmp}"
+          out.print(s"${tmp} = arc.constant ${value} : ${self.ty.toMLIR}\n"); s"${tmp}"
         }
         case Literal.U8(raw, value) => {
           val tmp = newTmp
-          out.print(s"${tmp} = constant ${value} : ${self.ty.toMLIR}\n"); s"${tmp}"
+          out.print(s"${tmp} = arc.constant ${value} : ${self.ty.toMLIR}\n"); s"${tmp}"
         }
         case Literal.U16(raw, value) => {
           val tmp = newTmp
-          out.print(s"${tmp} = constant ${value} : ${self.ty.toMLIR}\n"); s"${tmp}"
+          out.print(s"${tmp} = arc.constant ${value} : ${self.ty.toMLIR}\n"); s"${tmp}"
         }
         case Literal.U32(raw, value) => {
           val tmp = newTmp
-          out.print(s"${tmp} = constant ${value} : ${self.ty.toMLIR}\n"); s"${tmp}"
+          out.print(s"${tmp} = arc.constant ${value} : ${self.ty.toMLIR}\n"); s"${tmp}"
         }
         case Literal.U64(raw, value) => {
           val tmp = newTmp
-          out.print(s"${tmp} = constant ${value} : ${self.ty.toMLIR}\n"); s"${tmp}"
+          out.print(s"${tmp} = arc.constant ${value} : ${self.ty.toMLIR}\n"); s"${tmp}"
         }
         case Literal.F32(raw, _) => {
           val tmp = newTmp
@@ -439,20 +447,20 @@ object MLIRPrinter {
         case Sort(data, keyFunc)                 => s""
         case Drain(source, sink)                 => s""
         case Negate(Expr(Literal.I8(_, value), _, _, _)) => {
-          val tmp = newTmp; out.print(s"${tmp} = constant -${value} : ${self.ty.toMLIR}\n"); s"${tmp}"
+          val tmp = newTmp; out.print(s"${tmp} = arc.constant -${value} : ${self.ty.toMLIR}\n"); s"${tmp}"
         }
         case Negate(Expr(Literal.I16(_, value), _, _, _)) => {
-          val tmp = newTmp; out.print(s"${tmp} = constant -${value} : ${self.ty.toMLIR}\n"); s"${tmp}"
+          val tmp = newTmp; out.print(s"${tmp} = arc.constant -${value} : ${self.ty.toMLIR}\n"); s"${tmp}"
         }
         /* The AST represents negative literals as a Scala signed integer, as
            an i32 can be -2147483648, and 2147483648 cannot be
            represented, we use the raw string. We do the same for
            i64 */
         case Negate(Expr(Literal.I32(raw, _), _, _, _)) => {
-          val tmp = newTmp; out.print(s"${tmp} = constant -${raw} : ${self.ty.toMLIR}\n"); s"${tmp}"
+          val tmp = newTmp; out.print(s"${tmp} = arc.constant -${raw} : ${self.ty.toMLIR}\n"); s"${tmp}"
         }
         case Negate(Expr(Literal.I64(raw, _), _, _, _)) => { // We have to drop the L/l suffix
-          val tmp = newTmp; out.print(s"${tmp} = constant -${raw.dropRight(3)} : ${self.ty.toMLIR}\n"); s"${tmp}"
+          val tmp = newTmp; out.print(s"${tmp} = arc.constant -${raw.dropRight(3)} : ${self.ty.toMLIR}\n"); s"${tmp}"
         }
         case Negate(Expr(Literal.F32(raw, _), _, _, _)) => {
           val tmp = newTmp; out.print(s"${tmp} = constant -${raw.dropRight(3)} : ${self.ty.toMLIR}\n"); s"${tmp}"
@@ -491,14 +499,14 @@ object MLIRPrinter {
   implicit class TypeToMLIR(val self: Type) extends AnyVal {
 
     def toMLIR: String = self match {
-      case I8                                                               => s"i8"
-      case I16                                                              => s"i16"
-      case I32                                                              => s"i32"
-      case I64                                                              => s"i64"
-      case U8                                                               => s"i8"
-      case U16                                                              => s"i16"
-      case U32                                                              => s"i32"
-      case U64                                                              => s"i64"
+      case I8                                                               => s"si8"
+      case I16                                                              => s"si16"
+      case I32                                                              => s"si32"
+      case I64                                                              => s"si64"
+      case U8                                                               => s"ui8"
+      case U16                                                              => s"ui16"
+      case U32                                                              => s"ui32"
+      case U64                                                              => s"ui64"
       case F32                                                              => s"f32"
       case F64                                                              => s"f64"
       case Bool                                                             => s"i1"

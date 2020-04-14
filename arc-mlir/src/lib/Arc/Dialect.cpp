@@ -21,14 +21,20 @@
 //
 //===----------------------------------------------------------------------===//
 
-#include "Arc/Arc.h"
+#include <llvm/ADT/StringSwitch.h>
 #include <llvm/Support/raw_ostream.h>
+#include <mlir/Dialect/CommonFolders.h>
 #include <mlir/IR/DialectImplementation.h>
+#include <mlir/IR/Matchers.h>
 #include <mlir/IR/StandardTypes.h>
+
+#include "Arc/Arc.h"
 
 using namespace mlir;
 using namespace arc;
 using namespace types;
+
+#include "Arc/ArcOpsEnums.cpp.inc"
 
 //===----------------------------------------------------------------------===//
 // ArcDialect
@@ -73,6 +79,59 @@ void ArcDialect::printType(Type type, DialectAsmPrinter &os) const {
 //===----------------------------------------------------------------------===//
 // Arc Operations
 //===----------------------------------------------------------------------===//
+
+//===----------------------------------------------------------------------===//
+// ConstantIntOp
+//===----------------------------------------------------------------------===//
+static ParseResult parseConstantIntOp(OpAsmParser &parser,
+                                      OperationState &state) {
+  Attribute value;
+  if (parser.parseAttribute(value, "value", state.attributes))
+    return failure();
+
+  Type type = value.getType();
+  return parser.addTypeToList(type, state.types);
+}
+
+static void print(arc::ConstantIntOp constOp, OpAsmPrinter &printer) {
+  printer << arc::ConstantIntOp::getOperationName() << ' ' << constOp.value();
+}
+
+static LogicalResult verify(arc::ConstantIntOp constOp) {
+  auto opType = constOp.getType();
+  auto value = constOp.value();
+  auto valueType = value.getType();
+
+  // ODS already generates checks to make sure the result type is
+  // valid. We just need to additionally check that the value's
+  // attribute type is consistent with the result type.
+  switch (value.getKind()) {
+  case StandardAttributes::Integer: {
+    if (valueType != opType)
+      return constOp.emitOpError("result type (")
+             << opType << ") does not match value type (" << valueType << ")";
+    return success();
+  } break;
+  default:
+    return constOp.emitOpError("cannot have value of type ") << valueType;
+  }
+
+  return success();
+}
+
+OpFoldResult ConstantIntOp::fold(ArrayRef<Attribute> operands) {
+  assert(operands.empty() && "constant has no operands");
+  return value();
+}
+
+/// Materialize a single constant operation from a given attribute value with
+/// the desired resultant type. Stolen from the standard dialect.
+Operation *ArcDialect::materializeConstant(OpBuilder &builder, Attribute value,
+                                           Type type, Location loc) {
+  if (type.isSignedInteger() || type.isUnsignedInteger())
+    return builder.create<ConstantIntOp>(loc, type, value);
+  return nullptr; // Let the standard dialect handle this
+}
 
 LogicalResult MakeVectorOp::customVerify() {
   auto Operation = this->getOperation();
@@ -176,6 +235,68 @@ LogicalResult ResultOp::customVerify() {
     return emitOpError("result type does not match that of builder, found ")
            << ResultTy << " but expected " << BuilderResultTy;
   return mlir::success();
+}
+
+OpFoldResult AddIOp::fold(ArrayRef<Attribute> operands) {
+  /// addi(x, 0) -> x
+  if (matchPattern(rhs(), m_Zero()))
+    return lhs();
+
+  bool isUnsigned = operands[0].getType().isUnsignedInteger();
+  bool overflowDetected = false;
+  auto result = constFoldBinaryOp<IntegerAttr>(operands, [&](APInt a, APInt b) {
+    if (overflowDetected)
+      return a;
+    if (isUnsigned)
+      return a.uadd_ov(b, overflowDetected);
+    return a.sadd_ov(b, overflowDetected);
+  });
+  return overflowDetected ? Attribute() : result;
+}
+
+//===----------------------------------------------------------------------===//
+// General helpers for comparison ops, stolen from the standard dialect
+//===----------------------------------------------------------------------===//
+
+// Return the type of the same shape (scalar, vector or tensor) containing i1.
+static Type getCheckedI1SameShape(Type type) {
+  auto i1Type = IntegerType::get(1, type.getContext());
+  if (type.isIntOrIndexOrFloat())
+    return i1Type;
+  if (auto tensorType = type.dyn_cast<RankedTensorType>())
+    return RankedTensorType::get(tensorType.getShape(), i1Type);
+  if (type.isa<UnrankedTensorType>())
+    return UnrankedTensorType::get(i1Type);
+  if (auto vectorType = type.dyn_cast<VectorType>())
+    return VectorType::get(vectorType.getShape(), i1Type);
+  return Type();
+}
+
+static Type getI1SameShape(Type type) {
+  Type res = getCheckedI1SameShape(type);
+  assert(res && "expected type with valid i1 shape");
+  return res;
+}
+
+/// Stolen from the standard dialect.
+static void printArcBinaryOp(Operation *op, OpAsmPrinter &p) {
+  assert(op->getNumOperands() == 2 && "binary op should have two operands");
+  assert(op->getNumResults() == 1 && "binary op should have one result");
+
+  // If not all the operand and result types are the same, just use the
+  // generic assembly form to avoid omitting information in printing.
+  auto resultType = op->getResult(0).getType();
+  if (op->getOperand(0).getType() != resultType ||
+      op->getOperand(1).getType() != resultType) {
+    p.printGenericOp(op);
+    return;
+  }
+
+  p << op->getName() << ' ' << op->getOperand(0) << ", " << op->getOperand(1);
+  p.printOptionalAttrDict(op->getAttrs());
+
+  // Now we can output only one type for all operands and the result.
+  p << " : " << op->getResult(0).getType();
 }
 
 //===----------------------------------------------------------------------===//
