@@ -81,6 +81,23 @@ void ArcDialect::printType(Type type, DialectAsmPrinter &os) const {
 //===----------------------------------------------------------------------===//
 
 //===----------------------------------------------------------------------===//
+// AndOp
+//===----------------------------------------------------------------------===//
+
+// Stolen from standard dialect
+OpFoldResult arc::AndOp::fold(ArrayRef<Attribute> operands) {
+  /// and(x, 0) -> 0
+  if (matchPattern(rhs(), m_Zero()))
+    return rhs();
+  /// and(x,x) -> x
+  if (lhs() == rhs())
+    return rhs();
+
+  return constFoldBinaryOp<IntegerAttr>(operands,
+                                        [](APInt a, APInt b) { return a & b; });
+}
+
+//===----------------------------------------------------------------------===//
 // ConstantIntOp
 //===----------------------------------------------------------------------===//
 static ParseResult parseConstantIntOp(OpAsmParser &parser,
@@ -131,6 +148,68 @@ Operation *ArcDialect::materializeConstant(OpBuilder &builder, Attribute value,
   if (type.isSignedInteger() || type.isUnsignedInteger())
     return builder.create<ConstantIntOp>(loc, type, value);
   return nullptr; // Let the standard dialect handle this
+}
+
+//===----------------------------------------------------------------------===//
+// CmpIOp
+//===----------------------------------------------------------------------===//
+
+// Compute `lhs` `pred` `rhs`, where `pred` is one of the known integer
+// comparison predicates.
+static bool applyCmpPredicate(Arc_CmpIPredicate predicate, bool isUnsigned,
+                              const APInt &lhs, const APInt &rhs) {
+  switch (predicate) {
+  case Arc_CmpIPredicate::eq:
+    return lhs.eq(rhs);
+  case Arc_CmpIPredicate::ne:
+    return lhs.ne(rhs);
+  case Arc_CmpIPredicate::lt:
+    return isUnsigned ? lhs.ult(rhs) : lhs.slt(rhs);
+  case Arc_CmpIPredicate::le:
+    return isUnsigned ? lhs.ule(rhs) : lhs.sle(rhs);
+  case Arc_CmpIPredicate::gt:
+    return isUnsigned ? lhs.ugt(rhs) : lhs.sgt(rhs);
+  case Arc_CmpIPredicate::ge:
+    return isUnsigned ? lhs.uge(rhs) : lhs.sge(rhs);
+  }
+  llvm_unreachable("unknown comparison predicate");
+}
+
+// Constant folding hook for comparisons.
+OpFoldResult arc::CmpIOp::fold(ArrayRef<Attribute> operands) {
+  assert(operands.size() == 2 && "cmpi takes two arguments");
+
+  auto lhs = operands.front().dyn_cast_or_null<IntegerAttr>();
+  auto rhs = operands.back().dyn_cast_or_null<IntegerAttr>();
+  if (!lhs || !rhs)
+    return {};
+  bool isUnsigned = operands[0].getType().isUnsignedInteger();
+  auto val = applyCmpPredicate(getPredicate(), isUnsigned, lhs.getValue(),
+                               rhs.getValue());
+  return IntegerAttr::get(IntegerType::get(1, getContext()), APInt(1, val));
+}
+
+//===----------------------------------------------------------------------===//
+// DivIOp
+//===----------------------------------------------------------------------===//
+// Mostly stolen from standard dialect
+
+OpFoldResult DivIOp::fold(ArrayRef<Attribute> operands) {
+  assert(operands.size() == 2 && "binary operation takes two operands");
+
+  bool isUnsigned = operands[0].getType().isUnsignedInteger();
+  // Don't fold if it would overflow or if it requires a division by zero.
+  bool overflowOrDiv0 = false;
+  auto result = constFoldBinaryOp<IntegerAttr>(operands, [&](APInt a, APInt b) {
+    if (overflowOrDiv0 || !b) {
+      overflowOrDiv0 = true;
+      return a;
+    }
+    if (isUnsigned)
+      return a.udiv(b);
+    return a.sdiv_ov(b, overflowOrDiv0);
+  });
+  return overflowOrDiv0 ? Attribute() : result;
 }
 
 LogicalResult MakeVectorOp::customVerify() {
@@ -252,6 +331,135 @@ OpFoldResult AddIOp::fold(ArrayRef<Attribute> operands) {
     return a.sadd_ov(b, overflowDetected);
   });
   return overflowDetected ? Attribute() : result;
+}
+
+//===----------------------------------------------------------------------===//
+// MulIOp
+//===----------------------------------------------------------------------===//
+// Mostly stolen from the standard dialect
+OpFoldResult MulIOp::fold(ArrayRef<Attribute> operands) {
+  /// muli(x, 0) -> 0
+  if (matchPattern(rhs(), m_Zero()))
+    return rhs();
+  /// muli(x, 1) -> x
+  if (matchPattern(rhs(), m_One()))
+    return getOperand(0);
+
+  bool isUnsigned = operands[0].getType().isUnsignedInteger();
+
+  // Don't fold if it would overflow
+  bool overflow = false;
+  auto result = constFoldBinaryOp<IntegerAttr>(operands, [&](APInt a, APInt b) {
+    if (overflow || !b) {
+      overflow = true;
+      return a;
+    }
+    if (isUnsigned)
+      return a.umul_ov(b, overflow);
+    return a.smul_ov(b, overflow);
+  });
+  return overflow ? Attribute() : result;
+}
+
+//===----------------------------------------------------------------------===//
+// OrOp
+//===----------------------------------------------------------------------===//
+
+OpFoldResult arc::OrOp::fold(ArrayRef<Attribute> operands) {
+  /// or(x, 0) -> x
+  if (matchPattern(rhs(), m_Zero()))
+    return lhs();
+  /// or(x,x) -> x
+  if (lhs() == rhs())
+    return rhs();
+
+  return constFoldBinaryOp<IntegerAttr>(operands,
+                                        [](APInt a, APInt b) { return a | b; });
+}
+
+//===----------------------------------------------------------------------===//
+// RemIOp
+//===----------------------------------------------------------------------===//
+// Mostly stolen from standard dialect
+OpFoldResult RemIOp::fold(ArrayRef<Attribute> operands) {
+  assert(operands.size() == 2 && "remi_unsigned takes two operands");
+
+  auto rhs = operands.back().dyn_cast_or_null<IntegerAttr>();
+  if (!rhs)
+    return {};
+  auto rhsValue = rhs.getValue();
+
+  // x % 1 = 0
+  if (rhsValue.isOneValue())
+    return IntegerAttr::get(rhs.getType(), APInt(rhsValue.getBitWidth(), 0));
+
+  // Don't fold if it requires division by zero.
+  if (rhsValue.isNullValue())
+    return {};
+
+  auto lhs = operands.front().dyn_cast_or_null<IntegerAttr>();
+  if (!lhs)
+    return {};
+  bool isUnsigned = operands[0].getType().isUnsignedInteger();
+  return IntegerAttr::get(lhs.getType(), isUnsigned
+                                             ? lhs.getValue().urem(rhsValue)
+                                             : lhs.getValue().srem(rhsValue));
+}
+
+//===----------------------------------------------------------------------===//
+// SelectOp
+//===----------------------------------------------------------------------===//
+
+// Stolen from standard dialect
+OpFoldResult arc::SelectOp::fold(ArrayRef<Attribute> operands) {
+  auto condition = getCondition();
+
+  // select true, %0, %1 => %0
+  if (matchPattern(condition, m_One()))
+    return getTrueValue();
+
+  // select false, %0, %1 => %1
+  if (matchPattern(condition, m_Zero()))
+    return getFalseValue();
+  return nullptr;
+}
+
+//===----------------------------------------------------------------------===//
+// SubIOp
+//===----------------------------------------------------------------------===//
+// Mostly stolen from the standard dialect
+OpFoldResult SubIOp::fold(ArrayRef<Attribute> operands) {
+  /// addi(x, 0) -> x
+  if (matchPattern(rhs(), m_Zero()))
+    return lhs();
+
+  bool isUnsigned = operands[0].getType().isUnsignedInteger();
+  bool overflowDetected = false;
+  auto result = constFoldBinaryOp<IntegerAttr>(operands, [&](APInt a, APInt b) {
+    if (overflowDetected)
+      return a;
+    if (isUnsigned)
+      return a.usub_ov(b, overflowDetected);
+    return a.ssub_ov(b, overflowDetected);
+  });
+  return overflowDetected ? Attribute() : result;
+}
+
+//===----------------------------------------------------------------------===//
+// XOrOp
+//===----------------------------------------------------------------------===//
+
+// Stolen from standard dialect
+OpFoldResult arc::XOrOp::fold(ArrayRef<Attribute> operands) {
+  /// xor(x, 0) -> x
+  if (matchPattern(rhs(), m_Zero()))
+    return lhs();
+  /// xor(x,x) -> 0
+  if (lhs() == rhs())
+    return Builder(getContext()).getZeroAttr(getType());
+
+  return constFoldBinaryOp<IntegerAttr>(operands,
+                                        [](APInt a, APInt b) { return a ^ b; });
 }
 
 //===----------------------------------------------------------------------===//

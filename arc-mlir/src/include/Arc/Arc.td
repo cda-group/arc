@@ -397,8 +397,7 @@ def Arc_CmpIOp : Arc_Op<"cmpi",
 
   let verifier = [{ return success(); }];
 
-  // TODO implement folder
-  //let hasFolder = 1;
+  let hasFolder = 1;
 
   let assemblyFormat = "$predicate `,` $lhs `,` $rhs attr-dict `:` type($lhs)";
 }
@@ -425,8 +424,7 @@ def Arc_SelectOp : Arc_Op<"select", [NoSideEffect, SameOperandsAndResultShape,
       Value getFalseValue() { return false_value(); }
   }];
 
-  // TODO add fiolder
-  //  let hasFolder = 1;
+  let hasFolder = 1;
 
   let assemblyFormat = [{
     $condition `,` $true_value `,` $false_value attr-dict `:` type($result)
@@ -473,39 +471,39 @@ def Arc_AddIOp : ArcIntArithmeticOp<"addi", [Commutative]> {
   let hasFolder = 1;
 }
 
-def ArcAndOp : ArcIntArithmeticOp<"and", [Commutative]> {
+def Arc_AndOp : ArcIntArithmeticOp<"and", [Commutative]> {
   let summary = "integer binary and";
-  // TODO let hasFolder = 1;
+  let hasFolder = 1;
 }
 
 def Arc_DivIOp : ArcIntArithmeticOp<"divi"> {
   let summary = "integer division operation";
-  // TODO  let hasFolder = 1;
+  let hasFolder = 1;
 }
 
 def Arc_OrOp : ArcIntArithmeticOp<"or", [Commutative]> {
   let summary = "integer binary or";
-  // TODO  let hasFolder = 1;
+  let hasFolder = 1;
 }
 
 def Arc_MulIOp : ArcIntArithmeticOp<"muli", [Commutative]> {
   let summary = "integer multiplication operation";
-  // TODO let hasFolder = 1;
+  let hasFolder = 1;
 }
 
 def Arc_SubIOp : ArcIntArithmeticOp<"subi"> {
   let summary = "integer subtraction operation";
-  // TODO let hasFolder = 1;
+  let hasFolder = 1;
 }
 
-def Arc_SignedRemIOp : ArcIntArithmeticOp<"remi"> {
+def Arc_RemIOp : ArcIntArithmeticOp<"remi"> {
   let summary = "integer division remainder operation";
-  // TODO  let hasFolder = 1;
+  let hasFolder = 1;
 }
 
 def Arc_XOrOp : ArcIntArithmeticOp<"xor", [Commutative]> {
   let summary = "integer binary xor";
-  // TODO let hasFolder = 1;
+  let hasFolder = 1;
 }
 
 #endif // ARC_OPS
