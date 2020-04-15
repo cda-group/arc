@@ -19,5 +19,9 @@ set(TBLGEN_INCDIRS "-I${CMAKE_CURRENT_SOURCE_DIR}/../../../llvm-project/mlir/inc
 mlir_tablegen(ArcOpts.h.inc -gen-rewriters ${TBLGEN_INCDIRS} "-I${CMAKE_CURRENT_SOURCE_DIR}/include")
 add_public_tablegen_target(ArcDialectOptsIncGen)
 
+set(LLVM_TARGET_DEFINITIONS Passes.td)
+mlir_tablegen(Passes.h.inc -gen-pass-decls)
+add_public_tablegen_target(ArcDialectPassIncGen)
+
 
 add_mlir_dialect(Arc arc Arc)
