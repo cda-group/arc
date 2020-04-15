@@ -56,33 +56,6 @@ def BoolRustType : Type<CPred<"$_self.isa<RustType>() && $_self.cast<RustType>()
 // Rust Operations
 //===----------------------------------------------------------------------===//
 
-def Rust_CrateOp : Rust_Op<"crate", [
-  IsolatedFromAbove, SymbolTable, Symbol,
-  SingleBlockImplicitTerminator<"CrateEndOp">
-]> {
-  let summary = "top-level rust crate";
-  let description = [{}];
-  let arguments = (ins);
-  let regions = (region SizedRegion<1> : $body);
-  let results = (outs);
-  let extraClassDeclaration = [{
-    LogicalResult customVerify();
-    LogicalResult writeCrate(std::string, raw_ostream & os);
-  }];
-  let verifier = [{ return customVerify(); }];
-}
-
-def Rust_CrateEndOp : Rust_Op<"crate_end", [
-  Terminator, HasParent<"CrateOp">
-]> {
-  let summary = "A pseudo op that marks the end of a rust.crate.";
-  let description = [{
-    This op terminates the only block inside the only region of a `rust.crate`.
-  }];
-
-  let parser = [{ return success(); }];
-}
-
 def Rust_RustFuncOp : Rust_Op<"func", [FunctionLike, IsolatedFromAbove, Symbol]> {
   let summary = "A function";
 

@@ -44,6 +44,9 @@ class RustPrinterStream;
 #define GET_OP_CLASSES
 #include "Rust/Rust.h.inc"
 
+LogicalResult writeModuleAsCrate(ModuleOp module, std::string top_dir,
+                                 llvm::raw_ostream &o);
+
 } // namespace rust
 
 #endif // RUST_DIALECT_H_
