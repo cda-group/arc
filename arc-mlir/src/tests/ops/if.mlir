@@ -41,7 +41,7 @@ module @toplevel {
 
     "arc.if"(%a) ( {
     // expected-error@+2 {{'arc.block.result' op requires the same type for all operands and results}}
-    // expected-note@+1 {{see current operation: %0 = "arc.block.result"}}
+    // expected-note@+1 {{see current operation}}
       "arc.block.result"(%b) : (f32) -> f64
     },  {
       "arc.block.result"(%c) : (f64) -> f64

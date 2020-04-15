@@ -4,20 +4,15 @@ get_property(conversion_libs GLOBAL PROPERTY MLIR_CONVERSION_LIBS)
 set(LIBS
   ${dialect_libs}
   ${conversion_libs}
-  MLIRLoopOpsTransforms
   MLIRLoopAnalysis
+  MLIRAffineTransformsTestPasses
   MLIRAnalysis
   MLIRDialect
   MLIREDSC
   MLIROptLib
   MLIRParser
   MLIRPass
-  MLIRQuantizerFxpMathConfig
-  MLIRQuantizerSupport
-  MLIRQuantizerTransforms
-  MLIRSPIRV
   MLIRSPIRVTestPasses
-  MLIRSPIRVTransforms
   MLIRTransforms
   MLIRTransformUtils
   MLIRTestDialect

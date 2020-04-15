@@ -33,6 +33,7 @@
 #include <llvm/Support/raw_ostream.h>
 #include <memory>
 #include <mlir/Analysis/Verifier.h>
+#include <mlir/IR/AsmState.h>
 #include <mlir/IR/MLIRContext.h>
 #include <mlir/IR/Module.h>
 #include <mlir/InitAllDialects.h>
@@ -80,7 +81,9 @@ int main(int argc, char **argv) {
   mlir::registerDialect<ArcDialect>();
   mlir::registerDialect<rust::RustDialect>();
 
-  // Register any pass manager command line options.
+  // Register any command line options.
+  registerAsmPrinterCLOptions();
+  registerMLIRContextCLOptions();
   registerPassManagerCLOptions();
   PassPipelineCLParser passPipeline("", "Compiler passes to run");
 

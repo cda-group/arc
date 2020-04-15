@@ -20,7 +20,7 @@ module @toplevel {
     %0 = "arc.make_appender"() : () -> !arc.appender<i32>
 
     // expected-error@+2 {{'arc.merge' op operand type does not match merge type, found 'i64' but expected 'i32'}}
-    // expected-note@+1 {{see current operation: %0 = "arc.merge"}}
+    // expected-note@+1 {{see current operation:}}
     %1 = "arc.merge"(%0, %v) : (!arc.appender<i32>, i64) -> !arc.appender<i32>
 
     %r = "arc.result"(%1) : (!arc.appender<i32>) -> tensor<i32>
@@ -36,7 +36,7 @@ module @toplevel {
     %v = constant 5 : i32
 
     // expected-error@+2 {{'arc.merge' op result type does not match builder type, found: '!arc.appender<i64>' but expected '!arc.appender<i32>'}}
-    // expected-note@+1 {{see current operation: %0 = "arc.merge"}}
+    // expected-note@+1 {{see current operation:}}
     %1 = "arc.merge"(%0, %v) : (!arc.appender<i32>, i32) -> !arc.appender<i64>
 
     %c = "arc.result"(%1) : (!arc.appender<i64>) -> tensor<i64>
