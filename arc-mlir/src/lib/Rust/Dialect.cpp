@@ -44,6 +44,9 @@ RustDialect::RustDialect(mlir::MLIRContext *ctx) : mlir::Dialect("rust", ctx) {
 #include "Rust/Rust.cpp.inc"
       >();
   addTypes<RustType>();
+
+  floatTy = RustType::get(ctx, "f32");
+  doubleTy = RustType::get(ctx, "f64");
 }
 
 //===----------------------------------------------------------------------===//

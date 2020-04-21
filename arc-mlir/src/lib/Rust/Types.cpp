@@ -21,6 +21,7 @@
 //===----------------------------------------------------------------------===//
 
 #include "Rust/Types.h"
+#include "Rust/Rust.h"
 #include <llvm/Support/raw_ostream.h>
 #include <mlir/IR/DialectImplementation.h>
 #include <mlir/IR/StandardTypes.h>
@@ -73,6 +74,12 @@ raw_ostream &RustType::printAsRust(raw_ostream &os) const {
 }
 
 bool RustType::isBool() const { return getRustType().equals("bool"); }
+
+RustType RustType::getFloatTy(RustDialect *dialect) { return dialect->floatTy; }
+
+RustType RustType::getDoubleTy(RustDialect *dialect) {
+  return dialect->doubleTy;
+}
 
 } // namespace types
 } // namespace rust

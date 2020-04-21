@@ -29,6 +29,9 @@
 using namespace mlir;
 
 namespace rust {
+
+class RustDialect;
+
 namespace types {
 
 //===----------------------------------------------------------------------===//
@@ -59,6 +62,9 @@ public:
   raw_ostream &printAsRust(raw_ostream &os) const;
   StringRef getRustType() const;
   bool isBool() const;
+
+  static RustType getFloatTy(RustDialect *dialect);
+  static RustType getDoubleTy(RustDialect *dialect);
 };
 } // namespace types
 } // namespace rust
