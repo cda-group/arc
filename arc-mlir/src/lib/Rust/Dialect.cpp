@@ -137,7 +137,8 @@ RustPrinterStream &operator<<(RustPrinterStream &os, const RustType &t) {
 }
 } // namespace rust
 
-static bool writeToml(StringRef filename, StringRef crateName) {
+static bool writeToml(StringRef filename, StringRef crateName,
+                      RustPrinterStream &PS) {
   std::error_code EC;
   llvm::raw_fd_ostream out(filename, EC, llvm::sys::fs::CD_CreateAlways,
                            llvm::sys::fs::FA_Write, llvm::sys::fs::OF_Text);
@@ -155,7 +156,7 @@ static bool writeToml(StringRef filename, StringRef crateName) {
       << "edition = \"2018\"\n"
       << "\n"
       << "[dependencies]\n";
-
+  PS.writeTomlDependencies(out);
   out.close();
   return true;
 }
@@ -182,9 +183,6 @@ LogicalResult rust::writeModuleAsCrate(ModuleOp module, std::string top_dir,
                  << EC.message() << ".\n";
     return failure();
   }
-
-  if (!writeToml(toml_filename, crateName))
-    return failure();
 
   llvm::raw_fd_ostream out(rs_filename, EC, llvm::sys::fs::CD_CreateAlways,
                            llvm::sys::fs::FA_Write, llvm::sys::fs::OF_Text);
@@ -215,6 +213,9 @@ LogicalResult rust::writeModuleAsCrate(ModuleOp module, std::string top_dir,
 
   out.close();
 
+  if (!writeToml(toml_filename, crateName, PS))
+    return failure();
+
   return success();
 }
 
@@ -234,6 +235,8 @@ static RustPrinterStream &writeRust(Operation &operation,
     op.writeRust(PS);
   else if (RustBlockResultOp op = dyn_cast<RustBlockResultOp>(operation))
     op.writeRust(PS);
+  else if (RustDependencyOp op = dyn_cast<RustDependencyOp>(operation))
+    PS.registerDependency(op);
   else {
     operation.emitError("Unsupported operation");
   }

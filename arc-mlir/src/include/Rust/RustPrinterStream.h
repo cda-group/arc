@@ -23,8 +23,12 @@
 #ifndef RUST_PRINTER_STREAM_H_
 #define RUST_PRINTER_STREAM_H_
 
+#include "Rust/Rust.h"
 #include "Rust/Types.h"
+#include "mlir/IR/Attributes.h"
 #include <llvm/Support/raw_ostream.h>
+
+#include <map>
 
 using namespace mlir;
 
@@ -42,6 +46,8 @@ class RustPrinterStream {
   // IDs.
   int NextID, NextConstID;
   DenseMap<Value, int> Value2ID;
+
+  std::map<std::string, std::string> CrateDependencies;
 
 public:
   RustPrinterStream(llvm::raw_ostream &os)
@@ -100,6 +106,18 @@ public:
   RustPrinterStream &print(T t) {
     Body << t;
     return *this;
+  }
+
+  void registerDependency(RustDependencyOp dep) {
+    std::string key = dep.getCrate().cast<StringAttr>().getValue().str();
+    std::string value = dep.getVersion().cast<StringAttr>().getValue().str();
+    CrateDependencies[key] = value;
+  }
+
+  void writeTomlDependencies(llvm::raw_ostream &out) {
+    for (auto i : CrateDependencies)
+      out << i.first << " = "
+          << "\"" << i.second << "\"\n";
   }
 };
 

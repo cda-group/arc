@@ -232,4 +232,19 @@ def Rust_RustIfOp
   }];
 }
 
+def Rust_RustDependencyOp : Rust_Op<"dependency", [NoSideEffect]> {
+  let summary = "Specify a dependency on a crate.";
+  let description = [{
+    This is used to specify a dependency on an external crate.
+  }];
+
+  let arguments = (ins StrAttr : $crate, StrAttr : $version);
+  let results = (outs);
+
+  let extraClassDeclaration = [{
+    Attribute getCrate() { return getAttr("crate"); }
+    Attribute getVersion() { return getAttr("version"); }
+  }];
+}
+
 #endif // RUST_OPS
