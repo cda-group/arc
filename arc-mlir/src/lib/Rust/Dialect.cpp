@@ -235,9 +235,7 @@ static RustPrinterStream &writeRust(Operation &operation,
   else if (RustBlockResultOp op = dyn_cast<RustBlockResultOp>(operation))
     op.writeRust(PS);
   else {
-    PS.getBodyStream() << "\ncompile_error!(\"Unsupported Op: ";
-    operation.print(PS.getBodyStream());
-    PS.getBodyStream() << "\");\n";
+    operation.emitError("Unsupported operation");
   }
   return PS;
 }
