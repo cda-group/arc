@@ -83,10 +83,18 @@ RustType RustType::getDoubleTy(RustDialect *dialect) {
 
 RustType RustType::getIntegerTy(RustDialect *dialect, IntegerType ty) {
   switch (ty.getWidth()) {
-  case 1: return dialect->boolTy;
+  case 1:
+    return dialect->boolTy;
+  case 8:
+    return ty.isUnsigned() ? dialect->u8Ty : dialect->i8Ty;
+  case 16:
+    return ty.isUnsigned() ? dialect->u16Ty : dialect->i16Ty;
+  case 32:
+    return ty.isUnsigned() ? dialect->u32Ty : dialect->i32Ty;
+  case 64:
+    return ty.isUnsigned() ? dialect->u64Ty : dialect->i64Ty;
   default:
-    return emitError(UnknownLoc::get(dialect->getContext()),
-                     "unhandled type"),
+    return emitError(UnknownLoc::get(dialect->getContext()), "unhandled type"),
            nullptr;
   }
 }

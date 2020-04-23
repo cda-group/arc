@@ -151,6 +151,60 @@ private:
   }
 };
 
+struct ConstantIntOpLowering : public ConversionPattern {
+
+  ConstantIntOpLowering(MLIRContext *ctx, RustTypeConverter &typeConverter)
+      : ConversionPattern(arc::ConstantIntOp::getOperationName(), 1, ctx),
+        TypeConverter(typeConverter) {}
+
+  LogicalResult
+  matchAndRewrite(Operation *op, ArrayRef<Value> operands,
+                  ConversionPatternRewriter &rewriter) const final {
+    arc::ConstantIntOp cOp = cast<arc::ConstantIntOp>(op);
+    Attribute attr = cOp.getValue();
+    switch (attr.getKind()) {
+    case StandardAttributes::Integer:
+      return convertInteger(cOp, rewriter);
+    default:
+      op->emitError("unhandled constant type");
+      return failure();
+    }
+  };
+
+private:
+  RustTypeConverter &TypeConverter;
+
+  LogicalResult returnResult(Operation *op, Type ty, StringRef value,
+                             ConversionPatternRewriter &rewriter) const {
+    rewriter.replaceOpWithNewOp<rust::RustConstantOp>(op, ty, value);
+    return success();
+  }
+
+  LogicalResult convertInteger(arc::ConstantIntOp op,
+                               ConversionPatternRewriter &rewriter) const {
+    IntegerAttr attr = op.getValue().cast<IntegerAttr>();
+    IntegerType ty = attr.getType().cast<IntegerType>();
+    Type rustTy = TypeConverter.convertType(ty);
+    APInt v = attr.getValue();
+
+    unsigned width = ty.getIntOrFloatBitWidth();
+    switch (width) {
+    case 8:
+    case 16:
+    case 32:
+    case 64:
+      if (ty.isSignless()) {
+        op.emitError("signless integers are not supported");
+        return failure();
+      }
+      return returnResult(op, rustTy, v.toString(10, ty.isSigned()), rewriter);
+    default:
+      op.emitError("unhandled constant integer width");
+      return failure();
+    }
+  }
+};
+
 RustTypeConverter::RustTypeConverter(MLIRContext *ctx)
     : Ctx(ctx), Dialect(ctx->getRegisteredDialect<rust::RustDialect>()) {
   addConversion([&](FloatType type) { return convertFloatType(type); });
@@ -238,6 +292,7 @@ void ArcToRustLoweringPass::runOnFunction() {
   patterns.insert<ReturnOpLowering>(&getContext());
   patterns.insert<FuncOpLowering>(&getContext(), typeConverter);
   patterns.insert<StdConstantOpLowering>(&getContext(), typeConverter);
+  patterns.insert<ConstantIntOpLowering>(&getContext(), typeConverter);
 
   if (failed(
           applyFullConversion(getFunction(), target, patterns, &typeConverter)))
