@@ -6,4 +6,8 @@ module @toplevel {
     %b = constant 3.14 : f64
     return %b : f64
   }
+  func @returnf32() -> f32 {
+    %b = constant 0.69315 : f32
+    return %b : f32
+  }
 }

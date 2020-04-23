@@ -3,5 +3,6 @@ mod tests {
   #[test]
   fn it_works() {
     assert_eq!(crate::returnf64(), hexf64!("0x1.91eb851eb851fp1"));
+    assert_eq!(crate::returnf32(), hexf32!("0x1.62e48ep-1"));
   }
 }
