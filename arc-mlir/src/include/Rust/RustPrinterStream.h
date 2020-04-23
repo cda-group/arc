@@ -48,6 +48,7 @@ class RustPrinterStream {
   DenseMap<Value, int> Value2ID;
 
   std::map<std::string, std::string> CrateDependencies;
+  std::map<std::string, std::string> CrateDirectives;
 
 public:
   RustPrinterStream(llvm::raw_ostream &os)
@@ -55,6 +56,8 @@ public:
         NextConstID(0){};
 
   void flush() {
+    for (auto i : CrateDirectives)
+      OS << i.second << "\n";
     OS << Constants.str();
     OS << Body.str();
   }
@@ -118,6 +121,12 @@ public:
     for (auto i : CrateDependencies)
       out << i.first << " = "
           << "\"" << i.second << "\"\n";
+  }
+
+  void registerDirective(RustModuleDirectiveOp dep) {
+    std::string key = dep.getKey().cast<StringAttr>().getValue().str();
+    std::string str = dep.getStr().cast<StringAttr>().getValue().str();
+    CrateDirectives[key] = str;
   }
 };
 

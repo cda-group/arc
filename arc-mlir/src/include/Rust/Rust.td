@@ -247,4 +247,20 @@ def Rust_RustDependencyOp : Rust_Op<"dependency", [NoSideEffect]> {
   }];
 }
 
+def Rust_RustModuleDirectiveOp : Rust_Op<"module_directive", [NoSideEffect]> {
+  let summary = "Rust-level module directives.";
+  let description = [{
+    The specified string will be output at the top of the Rust output file.
+    Strings with the same key will be de-duplicated.
+  }];
+
+  let arguments = (ins StrAttr : $key, StrAttr : $str);
+  let results = (outs);
+
+  let extraClassDeclaration = [{
+    Attribute getKey() { return getAttr("key"); }
+    Attribute getStr() { return getAttr("str"); }
+  }];
+}
+
 #endif // RUST_OPS
