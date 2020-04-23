@@ -10,4 +10,12 @@ module @toplevel {
     %b = constant 0.69315 : f32
     return %b : f32
   }
+  func @return_true() -> i1 {
+    %b = constant 1 : i1
+    return %b : i1
+  }
+  func @return_false() -> i1 {
+    %b = constant 0 : i1
+    return %b : i1
+  }
 }

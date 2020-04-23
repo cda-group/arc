@@ -38,7 +38,7 @@ def Rust_Dialect : Dialect {
   let extraClassDeclaration = [{
       Type parseType(DialectAsmParser &parser) const override;
       void printType(Type type, DialectAsmPrinter &os) const override;
-      types::RustType floatTy, doubleTy;
+      types::RustType floatTy, doubleTy, boolTy;
   }];
 
 }

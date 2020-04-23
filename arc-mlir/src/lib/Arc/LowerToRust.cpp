@@ -15,6 +15,7 @@
 #include "Arc/Passes.h"
 #include "Rust/Rust.h"
 #include "mlir/IR/MLIRContext.h"
+#include "mlir/IR/StandardTypes.h"
 #include "mlir/Support/LLVM.h"
 #include "mlir/Support/LogicalResult.h"
 #include <mlir/Dialect/StandardOps/IR/Ops.h>
@@ -60,6 +61,7 @@ public:
 protected:
   Type convertFloatType(FloatType type);
   Type convertFunctionType(FunctionType type);
+  Type convertIntegerType(IntegerType type);
 };
 
 struct ReturnOpLowering : public ConversionPattern {
@@ -92,6 +94,8 @@ struct StdConstantOpLowering : public ConversionPattern {
     switch (attr.getKind()) {
     case StandardAttributes::Float:
       return convertFloat(cOp, rewriter);
+    case StandardAttributes::Integer:
+      return convertInteger(cOp, rewriter);
     default:
       op->emitError("unhandled constant type");
       return failure();
@@ -127,12 +131,31 @@ private:
         ArcToRustLoweringPass::hexfCrate, directive, op.getContext(), rewriter);
     return returnResult(op, rustTy, str.str(), rewriter);
   }
+
+  LogicalResult convertInteger(mlir::ConstantOp op,
+                               ConversionPatternRewriter &rewriter) const {
+    IntegerAttr attr = op.getValue().cast<IntegerAttr>();
+    IntegerType ty = attr.getType().cast<IntegerType>();
+    Type rustTy = TypeConverter.convertType(ty);
+    APInt v = attr.getValue();
+
+    unsigned width = ty.getIntOrFloatBitWidth();
+    switch (width) {
+    case 1:
+      return returnResult(op, rustTy, v.isNullValue() ? "false" : "true",
+                          rewriter);
+    default:
+      op.emitError("unhandled constant integer width");
+      return failure();
+    }
+  }
 };
 
 RustTypeConverter::RustTypeConverter(MLIRContext *ctx)
     : Ctx(ctx), Dialect(ctx->getRegisteredDialect<rust::RustDialect>()) {
   addConversion([&](FloatType type) { return convertFloatType(type); });
   addConversion([&](FunctionType type) { return convertFunctionType(type); });
+  addConversion([&](IntegerType type) { return convertIntegerType(type); });
 
   // RustType is legal, so add a pass-through conversion.
   addConversion([](rust::types::RustType type) { return type; });
@@ -144,6 +167,9 @@ Type RustTypeConverter::convertFloatType(FloatType type) {
     return rust::types::RustType::getFloatTy(Dialect);
   case mlir::StandardTypes::F64:
     return rust::types::RustType::getDoubleTy(Dialect);
+  case mlir::StandardTypes::Integer:
+    return rust::types::RustType::getIntegerTy(Dialect,
+                                               type.cast<IntegerType>());
   default:
     return emitError(UnknownLoc::get(Ctx), "unsupported type"), Type();
   }
@@ -159,6 +185,16 @@ Type RustTypeConverter::convertFunctionType(FunctionType type) {
     emitError(UnknownLoc::get(Ctx), "failed to convert function result types");
 
   return FunctionType::get(inputs, results, Ctx);
+}
+
+Type RustTypeConverter::convertIntegerType(IntegerType type) {
+  switch (type.getKind()) {
+  case mlir::StandardTypes::Integer:
+    return rust::types::RustType::getIntegerTy(Dialect,
+                                               type.cast<IntegerType>());
+  default:
+    return emitError(UnknownLoc::get(Ctx), "unsupported type"), Type();
+  }
 }
 
 struct FuncOpLowering : public ConversionPattern {

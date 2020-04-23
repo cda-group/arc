@@ -47,6 +47,7 @@ RustDialect::RustDialect(mlir::MLIRContext *ctx) : mlir::Dialect("rust", ctx) {
 
   floatTy = RustType::get(ctx, "f32");
   doubleTy = RustType::get(ctx, "f64");
+  boolTy = RustType::get(ctx, "bool");
 }
 
 //===----------------------------------------------------------------------===//

@@ -65,6 +65,7 @@ public:
 
   static RustType getFloatTy(RustDialect *dialect);
   static RustType getDoubleTy(RustDialect *dialect);
+  static RustType getIntegerTy(RustDialect *dialect, IntegerType ty);
 };
 } // namespace types
 } // namespace rust

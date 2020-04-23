@@ -81,5 +81,14 @@ RustType RustType::getDoubleTy(RustDialect *dialect) {
   return dialect->doubleTy;
 }
 
+RustType RustType::getIntegerTy(RustDialect *dialect, IntegerType ty) {
+  switch (ty.getWidth()) {
+  case 1: return dialect->boolTy;
+  default:
+    return emitError(UnknownLoc::get(dialect->getContext()),
+                     "unhandled type"),
+           nullptr;
+  }
+}
 } // namespace types
 } // namespace rust
