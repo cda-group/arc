@@ -23,8 +23,12 @@
 #ifndef RUST_PRINTER_STREAM_H_
 #define RUST_PRINTER_STREAM_H_
 
+#include "Rust/Rust.h"
 #include "Rust/Types.h"
+#include "mlir/IR/Attributes.h"
 #include <llvm/Support/raw_ostream.h>
+
+#include <map>
 
 using namespace mlir;
 
@@ -43,12 +47,17 @@ class RustPrinterStream {
   int NextID, NextConstID;
   DenseMap<Value, int> Value2ID;
 
+  std::map<std::string, std::string> CrateDependencies;
+  std::map<std::string, std::string> CrateDirectives;
+
 public:
   RustPrinterStream(llvm::raw_ostream &os)
       : OS(os), Constants(ConstantsStr), Body(BodyStr), NextID(0),
         NextConstID(0){};
 
   void flush() {
+    for (auto i : CrateDirectives)
+      OS << i.second << "\n";
     OS << Constants.str();
     OS << Body.str();
   }
@@ -100,6 +109,24 @@ public:
   RustPrinterStream &print(T t) {
     Body << t;
     return *this;
+  }
+
+  void registerDependency(RustDependencyOp dep) {
+    std::string key = dep.getCrate().cast<StringAttr>().getValue().str();
+    std::string value = dep.getVersion().cast<StringAttr>().getValue().str();
+    CrateDependencies[key] = value;
+  }
+
+  void writeTomlDependencies(llvm::raw_ostream &out) {
+    for (auto i : CrateDependencies)
+      out << i.first << " = "
+          << "\"" << i.second << "\"\n";
+  }
+
+  void registerDirective(RustModuleDirectiveOp dep) {
+    std::string key = dep.getKey().cast<StringAttr>().getValue().str();
+    std::string str = dep.getStr().cast<StringAttr>().getValue().str();
+    CrateDirectives[key] = str;
   }
 };
 

@@ -9,6 +9,7 @@ add_mlir_dialect_library(ArcDialect
   MLIRArcIncGen
   ArcDialectOptsIncGen
   ArcDialectOpsEnumsIncGen
+  ArcDialectPassIncGen
 )
 
 target_link_libraries(ArcDialect

@@ -38,6 +38,7 @@ def Rust_Dialect : Dialect {
   let extraClassDeclaration = [{
       Type parseType(DialectAsmParser &parser) const override;
       void printType(Type type, DialectAsmPrinter &os) const override;
+      types::RustType floatTy, doubleTy;
   }];
 
 }
@@ -55,33 +56,6 @@ def BoolRustType : Type<CPred<"$_self.isa<RustType>() && $_self.cast<RustType>()
 //===----------------------------------------------------------------------===//
 // Rust Operations
 //===----------------------------------------------------------------------===//
-
-def Rust_CrateOp : Rust_Op<"crate", [
-  IsolatedFromAbove, SymbolTable, Symbol,
-  SingleBlockImplicitTerminator<"CrateEndOp">
-]> {
-  let summary = "top-level rust crate";
-  let description = [{}];
-  let arguments = (ins);
-  let regions = (region SizedRegion<1> : $body);
-  let results = (outs);
-  let extraClassDeclaration = [{
-    LogicalResult customVerify();
-    LogicalResult writeCrate(std::string, raw_ostream & os);
-  }];
-  let verifier = [{ return customVerify(); }];
-}
-
-def Rust_CrateEndOp : Rust_Op<"crate_end", [
-  Terminator, HasParent<"CrateOp">
-]> {
-  let summary = "A pseudo op that marks the end of a rust.crate.";
-  let description = [{
-    This op terminates the only block inside the only region of a `rust.crate`.
-  }];
-
-  let parser = [{ return success(); }];
-}
 
 def Rust_RustFuncOp : Rust_Op<"func", [FunctionLike, IsolatedFromAbove, Symbol]> {
   let summary = "A function";
@@ -255,6 +229,37 @@ def Rust_RustIfOp
   let extraClassDeclaration = [{
     // Write this operation as Rust code to the stream
     void writeRust(RustPrinterStream &);
+  }];
+}
+
+def Rust_RustDependencyOp : Rust_Op<"dependency", [NoSideEffect]> {
+  let summary = "Specify a dependency on a crate.";
+  let description = [{
+    This is used to specify a dependency on an external crate.
+  }];
+
+  let arguments = (ins StrAttr : $crate, StrAttr : $version);
+  let results = (outs);
+
+  let extraClassDeclaration = [{
+    Attribute getCrate() { return getAttr("crate"); }
+    Attribute getVersion() { return getAttr("version"); }
+  }];
+}
+
+def Rust_RustModuleDirectiveOp : Rust_Op<"module_directive", [NoSideEffect]> {
+  let summary = "Rust-level module directives.";
+  let description = [{
+    The specified string will be output at the top of the Rust output file.
+    Strings with the same key will be de-duplicated.
+  }];
+
+  let arguments = (ins StrAttr : $key, StrAttr : $str);
+  let results = (outs);
+
+  let extraClassDeclaration = [{
+    Attribute getKey() { return getAttr("key"); }
+    Attribute getStr() { return getAttr("str"); }
   }];
 }
 

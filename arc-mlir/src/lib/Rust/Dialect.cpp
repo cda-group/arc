@@ -27,6 +27,7 @@
 #include <llvm/Support/Path.h>
 #include <llvm/Support/raw_ostream.h>
 #include <mlir/IR/DialectImplementation.h>
+#include <mlir/IR/Module.h>
 #include <mlir/IR/StandardTypes.h>
 
 using namespace mlir;
@@ -43,6 +44,9 @@ RustDialect::RustDialect(mlir::MLIRContext *ctx) : mlir::Dialect("rust", ctx) {
 #include "Rust/Rust.cpp.inc"
       >();
   addTypes<RustType>();
+
+  floatTy = RustType::get(ctx, "f32");
+  doubleTy = RustType::get(ctx, "f64");
 }
 
 //===----------------------------------------------------------------------===//
@@ -74,8 +78,6 @@ void RustDialect::printType(Type type, DialectAsmPrinter &os) const {
 //===----------------------------------------------------------------------===//
 // Rust Operations
 //===----------------------------------------------------------------------===//
-
-LogicalResult CrateOp::customVerify() { return mlir::success(); }
 
 /// Hook for FunctionLike verifier.
 LogicalResult RustFuncOp::verifyType() {
@@ -135,7 +137,8 @@ RustPrinterStream &operator<<(RustPrinterStream &os, const RustType &t) {
 }
 } // namespace rust
 
-static bool writeToml(StringRef filename, StringRef crateName) {
+static bool writeToml(StringRef filename, StringRef crateName,
+                      RustPrinterStream &PS) {
   std::error_code EC;
   llvm::raw_fd_ostream out(filename, EC, llvm::sys::fs::CD_CreateAlways,
                            llvm::sys::fs::FA_Write, llvm::sys::fs::OF_Text);
@@ -153,16 +156,18 @@ static bool writeToml(StringRef filename, StringRef crateName) {
       << "edition = \"2018\"\n"
       << "\n"
       << "[dependencies]\n";
-
+  PS.writeTomlDependencies(out);
   out.close();
   return true;
 }
 
-LogicalResult CrateOp::writeCrate(std::string top_dir, llvm::raw_ostream &o) {
-  llvm::errs() << "writing crate \"" << getName() << "\" to " << top_dir
+LogicalResult rust::writeModuleAsCrate(ModuleOp module, std::string top_dir,
+                                       llvm::raw_ostream &o) {
+  llvm::errs() << "writing crate \"" << module.getName() << "\" to " << top_dir
                << "\n";
+  StringRef crateName = module.getName().getValueOr("unknown");
   SmallString<128> crate_dir(top_dir);
-  llvm::sys::path::append(crate_dir, getName());
+  llvm::sys::path::append(crate_dir, crateName);
   SmallString<128> src_dir(crate_dir);
   llvm::sys::path::append(src_dir, "src");
 
@@ -179,9 +184,6 @@ LogicalResult CrateOp::writeCrate(std::string top_dir, llvm::raw_ostream &o) {
     return failure();
   }
 
-  if (!writeToml(toml_filename, getName()))
-    return failure();
-
   llvm::raw_fd_ostream out(rs_filename, EC, llvm::sys::fs::CD_CreateAlways,
                            llvm::sys::fs::FA_Write, llvm::sys::fs::OF_Text);
 
@@ -193,7 +195,7 @@ LogicalResult CrateOp::writeCrate(std::string top_dir, llvm::raw_ostream &o) {
 
   RustPrinterStream PS(out);
 
-  for (Operation &operation : this->body().front())
+  for (Operation &operation : module)
     if (RustFuncOp op = dyn_cast<RustFuncOp>(operation))
       op.writeRust(PS);
 
@@ -210,6 +212,9 @@ LogicalResult CrateOp::writeCrate(std::string top_dir, llvm::raw_ostream &o) {
       << "}\n";
 
   out.close();
+
+  if (!writeToml(toml_filename, crateName, PS))
+    return failure();
 
   return success();
 }
@@ -230,10 +235,12 @@ static RustPrinterStream &writeRust(Operation &operation,
     op.writeRust(PS);
   else if (RustBlockResultOp op = dyn_cast<RustBlockResultOp>(operation))
     op.writeRust(PS);
+  else if (RustDependencyOp op = dyn_cast<RustDependencyOp>(operation))
+    PS.registerDependency(op);
+  else if (RustModuleDirectiveOp op = dyn_cast<RustModuleDirectiveOp>(operation))
+    PS.registerDirective(op);
   else {
-    PS.getBodyStream() << "\ncompile_error!(\"Unsupported Op: ";
-    operation.print(PS.getBodyStream());
-    PS.getBodyStream() << "\");\n";
+    operation.emitError("Unsupported operation");
   }
   return PS;
 }

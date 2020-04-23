@@ -23,6 +23,7 @@
 
 #include "Arc/Arc.h"
 #include "Arc/ArcOptMain.h"
+#include "Arc/Passes.h"
 #include "Rust/Rust.h"
 #include <llvm/Support/CommandLine.h>
 #include <llvm/Support/ErrorOr.h>
@@ -80,6 +81,7 @@ int main(int argc, char **argv) {
   mlir::registerAllPasses();
   mlir::registerDialect<ArcDialect>();
   mlir::registerDialect<rust::RustDialect>();
+  arc::registerArcPasses();
 
   // Register any command line options.
   registerAsmPrinterCLOptions();

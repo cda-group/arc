@@ -66,10 +66,8 @@ static LogicalResult performActions(raw_ostream &os, bool verifyDiagnostics,
     return failure();
 
   if (!rustOutput.empty()) {
-    for (Operation &operation : *module)
-      if (CrateOp op = dyn_cast<CrateOp>(operation))
-        if (failed(op.writeCrate(rustOutput, os)))
-          return failure();
+    if (failed(writeModuleAsCrate(module.get(), rustOutput, os)))
+      return failure();
     return success();
   }
 
