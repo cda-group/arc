@@ -45,6 +45,7 @@ class RustPrinterStream;
 #include "Rust/Rust.h.inc"
 
 LogicalResult writeModuleAsCrate(ModuleOp module, std::string top_dir,
+                                 std::string rust_trailer,
                                  llvm::raw_ostream &o);
 
 } // namespace rust
