@@ -1,0 +1,7 @@
+#[cfg(test)]
+mod tests {
+  #[test]
+  fn it_works() {
+    assert_eq!(crate::returnf64(), hexf64!("0x1.91eb851eb851fp1"));
+  }
+}
