@@ -351,6 +351,11 @@ def Arc_ConstantIntOp : Arc_Op<"constant", [ConstantLike, NoSideEffect]> {
   let printer = [{ return ::print(*this, p); }];
   let verifier = [{ return ::verify(*this); }];
   let hasFolder = 1;
+
+  let extraClassDeclaration = [{
+    Attribute getValue() { return getAttr("value"); }
+  }];
+
 }
 
 def Arc_CMPI_P_EQ : I64EnumAttrCase<"eq", 0>;

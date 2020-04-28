@@ -39,6 +39,11 @@ static cl::opt<std::string>
     rustOutput("crate", cl::desc("Produce Rust crates in the directory"),
                cl::value_desc("directory"));
 
+static cl::opt<std::string> rustTrailer(
+    "extra-rust-trailer",
+    cl::desc("Insert the given file at the end of the produced rust file"),
+    cl::value_desc("filename"));
+
 /// Perform the actions on the input file indicated by the command line flags
 /// within the specified context.
 ///
@@ -66,7 +71,7 @@ static LogicalResult performActions(raw_ostream &os, bool verifyDiagnostics,
     return failure();
 
   if (!rustOutput.empty()) {
-    if (failed(writeModuleAsCrate(module.get(), rustOutput, os)))
+    if (failed(writeModuleAsCrate(module.get(), rustOutput, rustTrailer, os)))
       return failure();
     return success();
   }

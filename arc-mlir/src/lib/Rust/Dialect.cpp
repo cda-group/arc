@@ -47,6 +47,15 @@ RustDialect::RustDialect(mlir::MLIRContext *ctx) : mlir::Dialect("rust", ctx) {
 
   floatTy = RustType::get(ctx, "f32");
   doubleTy = RustType::get(ctx, "f64");
+  boolTy = RustType::get(ctx, "bool");
+  i8Ty = RustType::get(ctx, "i8");
+  i16Ty = RustType::get(ctx, "i16");
+  i32Ty = RustType::get(ctx, "i32");
+  i64Ty = RustType::get(ctx, "i64");
+  u8Ty = RustType::get(ctx, "u8");
+  u16Ty = RustType::get(ctx, "u16");
+  u32Ty = RustType::get(ctx, "u32");
+  u64Ty = RustType::get(ctx, "u64");
 }
 
 //===----------------------------------------------------------------------===//
@@ -162,6 +171,7 @@ static bool writeToml(StringRef filename, StringRef crateName,
 }
 
 LogicalResult rust::writeModuleAsCrate(ModuleOp module, std::string top_dir,
+                                       std::string rustTrailer,
                                        llvm::raw_ostream &o) {
   llvm::errs() << "writing crate \"" << module.getName() << "\" to " << top_dir
                << "\n";
@@ -201,16 +211,32 @@ LogicalResult rust::writeModuleAsCrate(ModuleOp module, std::string top_dir,
 
   PS.flush();
 
-  // Write a small dummy test so that even an empty crate compiles and
-  // tests successfully.
-  out << "#[cfg(test)]\n"
-      << "mod tests {\n"
-      << "#[test]\n"
-      << "fn it_works() {\n"
-      << "assert_eq!(true, true);\n"
-      << "}\n"
-      << "}\n";
+  if (!rustTrailer.empty()) {
+    using namespace llvm::sys::fs;
+    int fd;
+    EC = openFileForRead(rustTrailer, fd, OF_None);
+    if (EC) {
+      llvm::errs() << "Failed to open " << rustTrailer << ", " << EC.message()
+                   << "\n";
+      return failure();
+    }
 
+    constexpr size_t bufSize = 4096;
+    std::vector<char> buffer(bufSize);
+    int bytesRead = 0;
+    for (;;) {
+      bytesRead = read(fd, buffer.data(), bufSize);
+      if (bytesRead <= 0)
+        break;
+      out.write(buffer.data(), bytesRead);
+    }
+
+    if (bytesRead < 0) {
+      llvm::errs() << "Failed to read contents of " << rustTrailer << "\n";
+      return failure();
+    }
+    close(fd);
+  }
   out.close();
 
   if (!writeToml(toml_filename, crateName, PS))
@@ -237,7 +263,8 @@ static RustPrinterStream &writeRust(Operation &operation,
     op.writeRust(PS);
   else if (RustDependencyOp op = dyn_cast<RustDependencyOp>(operation))
     PS.registerDependency(op);
-  else if (RustModuleDirectiveOp op = dyn_cast<RustModuleDirectiveOp>(operation))
+  else if (RustModuleDirectiveOp op =
+               dyn_cast<RustModuleDirectiveOp>(operation))
     PS.registerDirective(op);
   else {
     operation.emitError("Unsupported operation");
