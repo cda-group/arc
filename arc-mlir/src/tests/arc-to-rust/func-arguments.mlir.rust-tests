@@ -1,0 +1,9 @@
+#[cfg(test)]
+mod tests {
+  #[test]
+  fn it_works() {
+   assert_eq!(crate::zero_args(), 4711);
+   assert_eq!(crate::one_arg(4711), 4711);
+   assert_eq!(crate::two_args(4712, 4711), 4711);
+  }
+}

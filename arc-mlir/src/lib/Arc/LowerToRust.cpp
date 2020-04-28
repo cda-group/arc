@@ -58,6 +58,8 @@ class RustTypeConverter : public TypeConverter {
 public:
   RustTypeConverter(MLIRContext *ctx);
 
+  FunctionType convertFunctionSignature(Type, SignatureConversion &);
+
 protected:
   Type convertFloatType(FloatType type);
   Type convertFunctionType(FunctionType type);
@@ -251,6 +253,19 @@ Type RustTypeConverter::convertIntegerType(IntegerType type) {
   }
 }
 
+FunctionType
+RustTypeConverter::convertFunctionSignature(Type ty, SignatureConversion &SC) {
+  mlir::FunctionType funcType =
+      convertType(ty.cast<mlir::FunctionType>()).cast<mlir::FunctionType>();
+
+  for (auto &en : llvm::enumerate(funcType.getInputs())) {
+    Type type = en.value();
+    SC.addInputs(en.index(), convertType(type));
+  }
+
+  return funcType;
+}
+
 struct FuncOpLowering : public ConversionPattern {
 
   FuncOpLowering(MLIRContext *ctx, RustTypeConverter &typeConverter)
@@ -263,8 +278,10 @@ struct FuncOpLowering : public ConversionPattern {
     MLIRContext *ctx = op->getContext();
     mlir::FuncOp func = cast<mlir::FuncOp>(op);
     SmallVector<NamedAttribute, 4> attributes;
-    mlir::FunctionType funcTy = func.getType().cast<mlir::FunctionType>();
-    mlir::Type funcType = TypeConverter.convertType(funcTy);
+
+    TypeConverter::SignatureConversion sigConv(func.getNumArguments());
+    mlir::FunctionType funcType =
+        TypeConverter.convertFunctionSignature(func.getType(), sigConv);
 
     attributes.push_back(
         NamedAttribute(Identifier::get("type", ctx), TypeAttr::get(funcType)));
@@ -274,6 +291,7 @@ struct FuncOpLowering : public ConversionPattern {
         op->getLoc(), SmallVector<mlir::Type, 1>({}), operands, attributes);
 
     rewriter.inlineRegionBefore(func.getBody(), newOp.getBody(), newOp.end());
+    rewriter.applySignatureConversion(&newOp.getBody(), sigConv);
     rewriter.eraseOp(op);
     return success();
   };
