@@ -207,6 +207,42 @@ private:
   }
 };
 
+namespace ArcIntArithmeticOp {
+typedef enum {
+  AddIOp = 0,
+  AndOp,
+  DivIOp,
+  OrOp,
+  MulIOp,
+  SubIOp,
+  RemIOp,
+  XOrOp,
+  LAST
+} Op;
+};
+
+template <class T, ArcIntArithmeticOp::Op arithOp>
+struct ArcIntArithmeticOpLowering : public ConversionPattern {
+  ArcIntArithmeticOpLowering(MLIRContext *ctx, RustTypeConverter &typeConverter)
+      : ConversionPattern(T::getOperationName(), 1, ctx),
+        TypeConverter(typeConverter) {}
+
+  LogicalResult
+  matchAndRewrite(Operation *op, ArrayRef<Value> operands,
+                  ConversionPatternRewriter &rewriter) const final {
+    T o = cast<T>(op);
+    Type rustTy = TypeConverter.convertType(o.getType());
+    rewriter.replaceOpWithNewOp<rust::RustBinaryOp>(op, rustTy, opStr[arithOp],
+                                                    operands[0], operands[1]);
+    return success();
+  };
+
+private:
+  RustTypeConverter &TypeConverter;
+  const char *opStr[ArcIntArithmeticOp::LAST] = {"+", "&", "/", "|",
+                                                 "*", "-", "%", "^"};
+};
+
 RustTypeConverter::RustTypeConverter(MLIRContext *ctx)
     : Ctx(ctx), Dialect(ctx->getRegisteredDialect<rust::RustDialect>()) {
   addConversion([&](FloatType type) { return convertFloatType(type); });
@@ -312,6 +348,22 @@ void ArcToRustLoweringPass::runOnFunction() {
   patterns.insert<StdConstantOpLowering>(&getContext(), typeConverter);
   patterns.insert<ConstantIntOpLowering>(&getContext(), typeConverter);
 
+  patterns.insert<
+      ArcIntArithmeticOpLowering<arc::AddIOp, ArcIntArithmeticOp::AddIOp>>(
+      &getContext(), typeConverter);
+  patterns.insert<
+      ArcIntArithmeticOpLowering<arc::DivIOp, ArcIntArithmeticOp::DivIOp>>(
+      &getContext(), typeConverter);
+  patterns.insert<
+      ArcIntArithmeticOpLowering<arc::MulIOp, ArcIntArithmeticOp::MulIOp>>(
+      &getContext(), typeConverter);
+  patterns.insert<
+      ArcIntArithmeticOpLowering<arc::SubIOp, ArcIntArithmeticOp::SubIOp>>(
+      &getContext(), typeConverter);
+  patterns.insert<
+      ArcIntArithmeticOpLowering<arc::RemIOp, ArcIntArithmeticOp::RemIOp>>(
+      &getContext(), typeConverter);
+  
   if (failed(
           applyFullConversion(getFunction(), target, patterns, &typeConverter)))
     signalPassFailure();
