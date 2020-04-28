@@ -197,7 +197,7 @@ OpFoldResult arc::CmpIOp::fold(ArrayRef<Attribute> operands) {
 OpFoldResult DivIOp::fold(ArrayRef<Attribute> operands) {
   assert(operands.size() == 2 && "binary operation takes two operands");
 
-  bool isUnsigned = operands[0].getType().isUnsignedInteger();
+  bool isUnsigned = getType().isUnsignedInteger();
   // Don't fold if it would overflow or if it requires a division by zero.
   bool overflowOrDiv0 = false;
   auto result = constFoldBinaryOp<IntegerAttr>(operands, [&](APInt a, APInt b) {
@@ -321,7 +321,7 @@ OpFoldResult AddIOp::fold(ArrayRef<Attribute> operands) {
   if (matchPattern(rhs(), m_Zero()))
     return lhs();
 
-  bool isUnsigned = operands[0].getType().isUnsignedInteger();
+  bool isUnsigned = getType().isUnsignedInteger();
   bool overflowDetected = false;
   auto result = constFoldBinaryOp<IntegerAttr>(operands, [&](APInt a, APInt b) {
     if (overflowDetected)
@@ -345,7 +345,7 @@ OpFoldResult MulIOp::fold(ArrayRef<Attribute> operands) {
   if (matchPattern(rhs(), m_One()))
     return getOperand(0);
 
-  bool isUnsigned = operands[0].getType().isUnsignedInteger();
+  bool isUnsigned = getType().isUnsignedInteger();
 
   // Don't fold if it would overflow
   bool overflow = false;
@@ -400,7 +400,7 @@ OpFoldResult RemIOp::fold(ArrayRef<Attribute> operands) {
   auto lhs = operands.front().dyn_cast_or_null<IntegerAttr>();
   if (!lhs)
     return {};
-  bool isUnsigned = operands[0].getType().isUnsignedInteger();
+  bool isUnsigned = getType().isUnsignedInteger();
   return IntegerAttr::get(lhs.getType(), isUnsigned
                                              ? lhs.getValue().urem(rhsValue)
                                              : lhs.getValue().srem(rhsValue));
@@ -433,7 +433,7 @@ OpFoldResult SubIOp::fold(ArrayRef<Attribute> operands) {
   if (matchPattern(rhs(), m_Zero()))
     return lhs();
 
-  bool isUnsigned = operands[0].getType().isUnsignedInteger();
+  bool isUnsigned = getType().isUnsignedInteger();
   bool overflowDetected = false;
   auto result = constFoldBinaryOp<IntegerAttr>(operands, [&](APInt a, APInt b) {
     if (overflowDetected)
