@@ -26,6 +26,7 @@
 #ifndef OP_BASE
 include "../../mlir/include/mlir/IR/OpBase.td"
 include "../../mlir/include/mlir/Interfaces/SideEffects.td"
+include "../../mlir/include/mlir/IR/SymbolInterfaces.td"
 #endif // OP_BASE
 
 //===----------------------------------------------------------------------===//
