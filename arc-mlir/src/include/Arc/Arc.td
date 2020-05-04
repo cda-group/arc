@@ -136,16 +136,6 @@ def ArcKeepOp : Arc_Op<"keep", []> {
   let results = (outs);
 }
 
-def SinOp : Arc_FloatUnaryOp<"sin"> {
-  let summary = "sine of the specified value";
-  let description = [{
-    The `sin` operation computes the sine of a given value.
-    It takes one operand and returns one result of the same type. This type may
-    be a float scalar type, a vector whose element type is float, or a tensor of
-    floats. It has no standard attributes.
-  }];
-}
-
 def TanOp : Arc_FloatUnaryOp<"tan"> {
   let summary = "tangent of the specified value";
   let description = [{
