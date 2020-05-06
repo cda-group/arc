@@ -36,7 +36,7 @@ namespace arc {
 /// This is a lowering of arc operations to the Rust dialect.
 namespace {
 struct ArcToRustLoweringPass : public LowerToRustBase<ArcToRustLoweringPass> {
-  void runOnFunction() final;
+  void runOnOperation() final;
 
   static void emitCrateDependency(StringRef crate, StringRef version,
                                   MLIRContext *ctx,
@@ -336,11 +336,12 @@ private:
   RustTypeConverter &TypeConverter;
 };
 
-void ArcToRustLoweringPass::runOnFunction() {
+void ArcToRustLoweringPass::runOnOperation() {
   RustTypeConverter typeConverter(&getContext());
 
   ConversionTarget target(getContext());
   target.addLegalDialect<rust::RustDialect>();
+  target.addLegalOp<ModuleOp, ModuleTerminatorOp>();
 
   OwningRewritePatternList patterns;
   patterns.insert<ReturnOpLowering>(&getContext());
@@ -363,13 +364,13 @@ void ArcToRustLoweringPass::runOnFunction() {
   patterns.insert<
       ArcIntArithmeticOpLowering<arc::RemIOp, ArcIntArithmeticOp::RemIOp>>(
       &getContext(), typeConverter);
-  
-  if (failed(
-          applyFullConversion(getFunction(), target, patterns, &typeConverter)))
+
+  if (failed(applyFullConversion(getOperation(), target, patterns,
+                                 &typeConverter)))
     signalPassFailure();
 }
 
-std::unique_ptr<mlir::Pass> arc::createLowerToRustPass() {
+std::unique_ptr<OperationPass<ModuleOp>> arc::createLowerToRustPass() {
   return std::make_unique<ArcToRustLoweringPass>();
 }
 
