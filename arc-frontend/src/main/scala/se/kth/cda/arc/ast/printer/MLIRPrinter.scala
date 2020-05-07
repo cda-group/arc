@@ -297,10 +297,8 @@ object MLIRPrinter {
 
         case (UnaryOpKind.Cos, F32) => "cos"
         case (UnaryOpKind.Cos, F64) => "cos"
-        case (UnaryOpKind.Sin, F32) =>
-          out.print(s"""${tmp} = "arc.sin"(${exprValue}) : (${ty.toMLIR}) -> ${ty.toMLIR}\n"""); ""
-        case (UnaryOpKind.Sin, F64) =>
-          out.print(s"""${tmp} = "arc.sin"(${exprValue}) : (${ty.toMLIR}) -> ${ty.toMLIR}\n"""); ""
+        case (UnaryOpKind.Sin, F32) => "sin"
+        case (UnaryOpKind.Sin, F64) => "sin"
         case (UnaryOpKind.Tan, F32) =>
           out.print(s"""${tmp} = "arc.tan"(${exprValue}) : (${ty.toMLIR}) -> ${ty.toMLIR}\n"""); ""
         case (UnaryOpKind.Tan, F64) =>
