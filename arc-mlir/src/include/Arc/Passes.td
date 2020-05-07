@@ -16,7 +16,7 @@
 
 include "mlir/Pass/PassBase.td"
 
-def LowerToRust : FunctionPass<"arc-to-rust"> {
+def LowerToRust : Pass<"arc-to-rust", "ModuleOp"> {
   let summary = "Convert arc/mlir to rust";
   let constructor = "arc::createLowerToRustPass()";
 }

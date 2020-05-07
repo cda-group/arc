@@ -25,7 +25,7 @@ namespace arc {
 void registerArcPasses();
 
 /// Create a pass for lowering to operations in the `Rust` dialect.
-std::unique_ptr<mlir::Pass> createLowerToRustPass();
+std::unique_ptr<OperationPass<ModuleOp>> createLowerToRustPass();
 
 } // namespace arc
 

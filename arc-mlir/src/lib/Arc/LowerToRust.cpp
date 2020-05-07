@@ -36,7 +36,7 @@ namespace arc {
 /// This is a lowering of arc operations to the Rust dialect.
 namespace {
 struct ArcToRustLoweringPass : public LowerToRustBase<ArcToRustLoweringPass> {
-  void runOnFunction() final;
+  void runOnOperation() final;
 
   static void emitCrateDependency(StringRef crate, StringRef version,
                                   MLIRContext *ctx,
@@ -57,6 +57,8 @@ class RustTypeConverter : public TypeConverter {
 
 public:
   RustTypeConverter(MLIRContext *ctx);
+
+  FunctionType convertFunctionSignature(Type, SignatureConversion &);
 
 protected:
   Type convertFloatType(FloatType type);
@@ -205,6 +207,42 @@ private:
   }
 };
 
+namespace ArcIntArithmeticOp {
+typedef enum {
+  AddIOp = 0,
+  AndOp,
+  DivIOp,
+  OrOp,
+  MulIOp,
+  SubIOp,
+  RemIOp,
+  XOrOp,
+  LAST
+} Op;
+};
+
+template <class T, ArcIntArithmeticOp::Op arithOp>
+struct ArcIntArithmeticOpLowering : public ConversionPattern {
+  ArcIntArithmeticOpLowering(MLIRContext *ctx, RustTypeConverter &typeConverter)
+      : ConversionPattern(T::getOperationName(), 1, ctx),
+        TypeConverter(typeConverter) {}
+
+  LogicalResult
+  matchAndRewrite(Operation *op, ArrayRef<Value> operands,
+                  ConversionPatternRewriter &rewriter) const final {
+    T o = cast<T>(op);
+    Type rustTy = TypeConverter.convertType(o.getType());
+    rewriter.replaceOpWithNewOp<rust::RustBinaryOp>(op, rustTy, opStr[arithOp],
+                                                    operands[0], operands[1]);
+    return success();
+  };
+
+private:
+  RustTypeConverter &TypeConverter;
+  const char *opStr[ArcIntArithmeticOp::LAST] = {"+", "&", "/", "|",
+                                                 "*", "-", "%", "^"};
+};
+
 RustTypeConverter::RustTypeConverter(MLIRContext *ctx)
     : Ctx(ctx), Dialect(ctx->getRegisteredDialect<rust::RustDialect>()) {
   addConversion([&](FloatType type) { return convertFloatType(type); });
@@ -251,6 +289,19 @@ Type RustTypeConverter::convertIntegerType(IntegerType type) {
   }
 }
 
+FunctionType
+RustTypeConverter::convertFunctionSignature(Type ty, SignatureConversion &SC) {
+  mlir::FunctionType funcType =
+      convertType(ty.cast<mlir::FunctionType>()).cast<mlir::FunctionType>();
+
+  for (auto &en : llvm::enumerate(funcType.getInputs())) {
+    Type type = en.value();
+    SC.addInputs(en.index(), convertType(type));
+  }
+
+  return funcType;
+}
+
 struct FuncOpLowering : public ConversionPattern {
 
   FuncOpLowering(MLIRContext *ctx, RustTypeConverter &typeConverter)
@@ -263,8 +314,10 @@ struct FuncOpLowering : public ConversionPattern {
     MLIRContext *ctx = op->getContext();
     mlir::FuncOp func = cast<mlir::FuncOp>(op);
     SmallVector<NamedAttribute, 4> attributes;
-    mlir::FunctionType funcTy = func.getType().cast<mlir::FunctionType>();
-    mlir::Type funcType = TypeConverter.convertType(funcTy);
+
+    TypeConverter::SignatureConversion sigConv(func.getNumArguments());
+    mlir::FunctionType funcType =
+        TypeConverter.convertFunctionSignature(func.getType(), sigConv);
 
     attributes.push_back(
         NamedAttribute(Identifier::get("type", ctx), TypeAttr::get(funcType)));
@@ -274,6 +327,7 @@ struct FuncOpLowering : public ConversionPattern {
         op->getLoc(), SmallVector<mlir::Type, 1>({}), operands, attributes);
 
     rewriter.inlineRegionBefore(func.getBody(), newOp.getBody(), newOp.end());
+    rewriter.applySignatureConversion(&newOp.getBody(), sigConv);
     rewriter.eraseOp(op);
     return success();
   };
@@ -282,11 +336,12 @@ private:
   RustTypeConverter &TypeConverter;
 };
 
-void ArcToRustLoweringPass::runOnFunction() {
+void ArcToRustLoweringPass::runOnOperation() {
   RustTypeConverter typeConverter(&getContext());
 
   ConversionTarget target(getContext());
   target.addLegalDialect<rust::RustDialect>();
+  target.addLegalOp<ModuleOp, ModuleTerminatorOp>();
 
   OwningRewritePatternList patterns;
   patterns.insert<ReturnOpLowering>(&getContext());
@@ -294,12 +349,28 @@ void ArcToRustLoweringPass::runOnFunction() {
   patterns.insert<StdConstantOpLowering>(&getContext(), typeConverter);
   patterns.insert<ConstantIntOpLowering>(&getContext(), typeConverter);
 
-  if (failed(
-          applyFullConversion(getFunction(), target, patterns, &typeConverter)))
+  patterns.insert<
+      ArcIntArithmeticOpLowering<arc::AddIOp, ArcIntArithmeticOp::AddIOp>>(
+      &getContext(), typeConverter);
+  patterns.insert<
+      ArcIntArithmeticOpLowering<arc::DivIOp, ArcIntArithmeticOp::DivIOp>>(
+      &getContext(), typeConverter);
+  patterns.insert<
+      ArcIntArithmeticOpLowering<arc::MulIOp, ArcIntArithmeticOp::MulIOp>>(
+      &getContext(), typeConverter);
+  patterns.insert<
+      ArcIntArithmeticOpLowering<arc::SubIOp, ArcIntArithmeticOp::SubIOp>>(
+      &getContext(), typeConverter);
+  patterns.insert<
+      ArcIntArithmeticOpLowering<arc::RemIOp, ArcIntArithmeticOp::RemIOp>>(
+      &getContext(), typeConverter);
+
+  if (failed(applyFullConversion(getOperation(), target, patterns,
+                                 &typeConverter)))
     signalPassFailure();
 }
 
-std::unique_ptr<mlir::Pass> arc::createLowerToRustPass() {
+std::unique_ptr<OperationPass<ModuleOp>> arc::createLowerToRustPass() {
   return std::make_unique<ArcToRustLoweringPass>();
 }
 
