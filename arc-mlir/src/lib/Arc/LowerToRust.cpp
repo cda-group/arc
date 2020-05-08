@@ -364,6 +364,15 @@ void ArcToRustLoweringPass::runOnOperation() {
   patterns.insert<
       ArcIntArithmeticOpLowering<arc::RemIOp, ArcIntArithmeticOp::RemIOp>>(
       &getContext(), typeConverter);
+  patterns.insert<
+      ArcIntArithmeticOpLowering<arc::AndOp, ArcIntArithmeticOp::AndOp>>(
+      &getContext(), typeConverter);
+  patterns
+      .insert<ArcIntArithmeticOpLowering<arc::OrOp, ArcIntArithmeticOp::OrOp>>(
+          &getContext(), typeConverter);
+  patterns.insert<
+      ArcIntArithmeticOpLowering<arc::XOrOp, ArcIntArithmeticOp::XOrOp>>(
+      &getContext(), typeConverter);
 
   if (failed(applyFullConversion(getOperation(), target, patterns,
                                  &typeConverter)))
