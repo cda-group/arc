@@ -243,6 +243,46 @@ private:
                                                  "*", "-", "%", "^"};
 };
 
+struct ArcCmpIOpLowering : public ConversionPattern {
+  ArcCmpIOpLowering(MLIRContext *ctx, RustTypeConverter &typeConverter)
+      : ConversionPattern(arc::CmpIOp::getOperationName(), 1, ctx),
+        TypeConverter(typeConverter) {}
+
+  LogicalResult
+  matchAndRewrite(Operation *op, ArrayRef<Value> operands,
+                  ConversionPatternRewriter &rewriter) const final {
+    arc::CmpIOp o = cast<arc::CmpIOp>(op);
+    Type rustTy = TypeConverter.convertType(o.getType());
+    const char *cmpOp = NULL;
+    switch (o.getPredicate()) {
+    case Arc_CmpIPredicate::eq:
+      cmpOp = "==";
+      break;
+    case Arc_CmpIPredicate::ne:
+      cmpOp = "!=";
+      break;
+    case Arc_CmpIPredicate::lt:
+      cmpOp = "<";
+      break;
+    case Arc_CmpIPredicate::le:
+      cmpOp = "<=";
+      break;
+    case Arc_CmpIPredicate::gt:
+      cmpOp = ">";
+      break;
+    case Arc_CmpIPredicate::ge:
+      cmpOp = ">=";
+      break;
+    }
+    rewriter.replaceOpWithNewOp<rust::RustBinaryOp>(op, rustTy, cmpOp,
+                                                    operands[0], operands[1]);
+    return success();
+  };
+
+private:
+  RustTypeConverter &TypeConverter;
+};
+
 RustTypeConverter::RustTypeConverter(MLIRContext *ctx)
     : Ctx(ctx), Dialect(ctx->getRegisteredDialect<rust::RustDialect>()) {
   addConversion([&](FloatType type) { return convertFloatType(type); });
@@ -373,6 +413,8 @@ void ArcToRustLoweringPass::runOnOperation() {
   patterns.insert<
       ArcIntArithmeticOpLowering<arc::XOrOp, ArcIntArithmeticOp::XOrOp>>(
       &getContext(), typeConverter);
+
+  patterns.insert<ArcCmpIOpLowering>(&getContext(), typeConverter);
 
   if (failed(applyFullConversion(getOperation(), target, patterns,
                                  &typeConverter)))
