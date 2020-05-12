@@ -150,7 +150,7 @@ def Rust_RustUnaryOp : Rust_Op<"unaryop", [SameOperandsAndResultType]> {
   }];
 }
 
-def Rust_RustBinaryOp : Rust_Op<"binaryop", [SameOperandsAndResultType]> {
+def Rust_RustBinaryOp : Rust_Op<"binaryop", [SameTypeOperands]> {
   let summary = "a Rust unary operation.";
   let description = [{
     A Rust unary operation, the op attribute is the string representation of
