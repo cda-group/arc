@@ -309,8 +309,8 @@ void RustConstantOp::writeRust(RustPrinterStream &PS) { PS.getConstant(*this); }
 void RustUnaryOp::writeRust(RustPrinterStream &PS) {
   auto r = getResult();
   types::RustType rt = r.getType().cast<types::RustType>();
-  PS << "let " << r << ":" << rt << " = " << getOperator() << getOperand()
-     << ";\n";
+  PS << "let " << r << ":" << rt << " = " << getOperator() << "("
+     << getOperand() << ");\n";
 }
 
 void RustBinaryOp::writeRust(RustPrinterStream &PS) {
