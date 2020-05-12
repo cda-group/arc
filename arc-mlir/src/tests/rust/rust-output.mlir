@@ -59,5 +59,22 @@ module @"this_is_the_name_of_the_crate" {
 
 }) {sym_name = "this_is_the_name_of_the_eigth_function", type = (!rust<"f64">, !rust<"f64">) -> !rust<"bool"> } : () -> ()
 
+"rust.func"() ( {
+ ^bb0:
+ %a = "rust.constant"() {value="3.14"} : () -> (!rust<"f64">)
+ %r = "rust.method_call"(%a) {method="sin"} : (!rust<"f64">) -> (!rust<"f64">)
+ "rust.return"(%r) : (!rust<"f64">) -> (!rust<"f64">)
+
+}) {sym_name = "testing_a_method_call", type = () -> !rust<"f64"> } : () -> ()
+
+"rust.func"() ( {
+ ^bb0:
+ %a = "rust.constant"() {value="3.14"} : () -> (!rust<"f64">)
+ %b = "rust.constant"() {value="2.0"} : () -> (!rust<"f64">)
+ %r = "rust.method_call"(%a, %b) {method="log"} : (!rust<"f64">, !rust<"f64">) -> (!rust<"f64">)
+ "rust.return"(%r) : (!rust<"f64">) -> (!rust<"f64">)
+
+}) {sym_name = "testing_a_method_call_with_args", type = () -> !rust<"f64"> } : () -> ()
+
 }
 
