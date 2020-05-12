@@ -283,6 +283,49 @@ private:
   RustTypeConverter &TypeConverter;
 };
 
+struct StdCmpFOpLowering : public ConversionPattern {
+  StdCmpFOpLowering(MLIRContext *ctx, RustTypeConverter &typeConverter)
+      : ConversionPattern(mlir::CmpFOp::getOperationName(), 1, ctx),
+        TypeConverter(typeConverter) {}
+
+  LogicalResult
+  matchAndRewrite(Operation *op, ArrayRef<Value> operands,
+                  ConversionPatternRewriter &rewriter) const final {
+    mlir::CmpFOp o = cast<mlir::CmpFOp>(op);
+    Type rustTy = TypeConverter.convertType(o.getType());
+    const char *cmpOp = NULL;
+    switch (o.getPredicate()) {
+    case CmpFPredicate::OEQ:
+      cmpOp = "==";
+      break;
+    case CmpFPredicate::ONE:
+      cmpOp = "!=";
+      break;
+    case CmpFPredicate::OLT:
+      cmpOp = "<";
+      break;
+    case CmpFPredicate::OLE:
+      cmpOp = "<=";
+      break;
+    case CmpFPredicate::OGT:
+      cmpOp = ">";
+      break;
+    case CmpFPredicate::OGE:
+      cmpOp = ">=";
+      break;
+    default:
+      op->emitError("unhandled std.cmpf operation");
+      return failure();
+    }
+    rewriter.replaceOpWithNewOp<rust::RustBinaryOp>(op, rustTy, cmpOp,
+                                                    operands[0], operands[1]);
+    return success();
+  };
+
+private:
+  RustTypeConverter &TypeConverter;
+};
+
 RustTypeConverter::RustTypeConverter(MLIRContext *ctx)
     : Ctx(ctx), Dialect(ctx->getRegisteredDialect<rust::RustDialect>()) {
   addConversion([&](FloatType type) { return convertFloatType(type); });
@@ -415,6 +458,7 @@ void ArcToRustLoweringPass::runOnOperation() {
       &getContext(), typeConverter);
 
   patterns.insert<ArcCmpIOpLowering>(&getContext(), typeConverter);
+  patterns.insert<StdCmpFOpLowering>(&getContext(), typeConverter);
 
   if (failed(applyFullConversion(getOperation(), target, patterns,
                                  &typeConverter)))
