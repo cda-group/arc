@@ -94,7 +94,7 @@ def Rust_RustFuncOp : Rust_Op<"func", [FunctionLike, IsolatedFromAbove, Symbol]>
 }
 
 def Rust_RustReturnOp : Rust_Op<"return", [HasParent<"RustFuncOp">,
-    Terminator, SameOperandsAndResultType]> {
+    Terminator]> {
   let summary = "Terminator for Rust functions.";
   let description = [{
     A terminator operation for regions that appear in the body of  `rust.func`
@@ -103,7 +103,6 @@ def Rust_RustReturnOp : Rust_Op<"return", [HasParent<"RustFuncOp">,
   }];
 
   let arguments = (ins AnyRustType:$result);
-  let results = (outs AnyRustType);
 
   let verifier = [{ return ::verify(*this); }];
 

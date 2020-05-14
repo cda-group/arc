@@ -9,13 +9,13 @@ module @"name-of-the-crate-0" {
 
 "rust.func"() ( {
  ^bb0(%arg0: !rust<"f32">):
- "rust.return"(%arg0) : (!rust<"f32">) -> (!rust<"f32">)
+ "rust.return"(%arg0) : (!rust<"f32">) -> ()
 
 }) {sym_name = "the-function-name-1", type = (!rust<"f32">) -> !rust<"f32"> } : () -> ()
 
 "rust.func"() ( {
  ^bb0(%arg0: !rust<"f64">):
- "rust.return"(%arg0) : (!rust<"f64">) -> (!rust<"f64">)
+ "rust.return"(%arg0) : (!rust<"f64">) -> ()
 
 }) {sym_name = "the-function-name-2", type = (!rust<"f64">) -> !rust<"f64"> } : () -> ()
 }
@@ -28,7 +28,7 @@ module @"name-of-the-crate-1" {
 // expected-note@+1 {{see current operation: "rust.func"() (}}
 "rust.func"() ( {
  ^bb0(%arg0: !rust<"f32">):
- "rust.return"(%arg0) : (!rust<"f32">) -> (!rust<"f32">)
+ "rust.return"(%arg0) : (!rust<"f32">) -> ()
 }) {sym_name = "the-function-name-1" } : () -> ()
 
 }
@@ -40,7 +40,7 @@ module @"name-of-the-crate-2" {
 // expected-note@+1 {{see current operation: "rust.func"() (}}
 "rust.func"() ( {
  ^bb0(%arg0: !rust<"f32">, %arg1: !rust<"f32">):
- "rust.return"(%arg0) : (!rust<"f32">) -> (!rust<"f32">)
+ "rust.return"(%arg0) : (!rust<"f32">) -> ()
 }) {sym_name = "the-function-name-1", type = (!rust<"f32">) -> !rust<"f32"> } : () -> ()
 
 "rust.crate_end"() : () -> ()
@@ -53,7 +53,7 @@ module @"name-of-the-crate-3" {
 // expected-note@+1 {{see current operation: "rust.func"() (}}
 "rust.func"() ( {
  ^bb0(%arg0: !rust<"f32">):
- "rust.return"(%arg0) : (!rust<"f32">) -> (!rust<"f32">)
+ "rust.return"(%arg0) : (!rust<"f32">) -> ()
 }) {sym_name = "the-function-name-1", type = (!rust<"f64">) -> !rust<"f32"> } : () -> ()
 }
 
@@ -63,8 +63,8 @@ module @"name-of-the-crate-3" {
 "rust.func"() ( {
  ^bb0(%arg0: !rust<"f32">):
 // expected-error@+2 {{'rust.return' op result type does not match the type of the function: expected '!rust.f64' but found '!rust.f32'}}
-// expected-note@+1 {{see current operation: %0 = "rust.return"}}
- "rust.return"(%arg0) : (!rust<"f32">) -> (!rust<"f32">)
+// expected-note@+1 {{see current operation: "rust.return"}}
+ "rust.return"(%arg0) : (!rust<"f32">) -> ()
 }) {sym_name = "the-function-name-1", type = (!rust<"f32">) -> !rust<"f64"> } : () -> ()
 }
 

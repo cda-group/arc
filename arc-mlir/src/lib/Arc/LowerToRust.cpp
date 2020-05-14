@@ -74,10 +74,8 @@ struct ReturnOpLowering : public ConversionPattern {
   LogicalResult
   matchAndRewrite(Operation *op, ArrayRef<Value> operands,
                   ConversionPatternRewriter &rewriter) const final {
-    // Can't use a replaceOpWithNewOp as the rust operator has a
-    // result (to encapsulate the type).
-    rewriter.create<rust::RustReturnOp>(op->getLoc(), operands[0]);
-    rewriter.eraseOp(op);
+    rewriter.replaceOpWithNewOp<rust::RustReturnOp>(op, llvm::None,
+                                                    operands[0]);
     return success();
   };
 };
