@@ -261,6 +261,8 @@ static RustPrinterStream &writeRust(Operation &operation,
     op.writeRust(PS);
   else if (RustBlockResultOp op = dyn_cast<RustBlockResultOp>(operation))
     op.writeRust(PS);
+  else if (RustMethodCallOp op = dyn_cast<RustMethodCallOp>(operation))
+    op.writeRust(PS);
   else if (RustDependencyOp op = dyn_cast<RustDependencyOp>(operation))
     PS.registerDependency(op);
   else if (RustModuleDirectiveOp op =
@@ -309,8 +311,22 @@ void RustConstantOp::writeRust(RustPrinterStream &PS) { PS.getConstant(*this); }
 void RustUnaryOp::writeRust(RustPrinterStream &PS) {
   auto r = getResult();
   types::RustType rt = r.getType().cast<types::RustType>();
-  PS << "let " << r << ":" << rt << " = " << getOperator() << getOperand()
-     << ";\n";
+  PS << "let " << r << ":" << rt << " = " << getOperator() << "("
+     << getOperand() << ");\n";
+}
+
+void RustMethodCallOp::writeRust(RustPrinterStream &PS) {
+  auto r = getResult();
+  types::RustType rt = r.getType().cast<types::RustType>();
+  PS << "let " << r << ":" << rt << " = " << obj() << "." << getMethod()
+     << "(";
+  auto args = operands();
+  for (unsigned i = 0; i < args.size(); i++) {
+    if (i != 0)
+      PS << ", ";
+    PS << args[i];
+  }
+  PS << ");\n";
 }
 
 void RustBinaryOp::writeRust(RustPrinterStream &PS) {

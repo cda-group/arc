@@ -150,7 +150,27 @@ def Rust_RustUnaryOp : Rust_Op<"unaryop", [SameOperandsAndResultType]> {
   }];
 }
 
-def Rust_RustBinaryOp : Rust_Op<"binaryop", [SameOperandsAndResultType]> {
+def Rust_RustMethodCallOp : Rust_Op<"method_call", []> {
+  let summary = "a call to a Rust method on an object.";
+  let description = [{
+    A Rust method call, calls the `method` method of the object `obj`.
+  }];
+
+  let arguments = (ins StrAttr : $method, AnyRustType : $obj,
+                   Variadic<AnyRustType>:$operands);
+  let results = (outs AnyRustType);
+
+  let extraClassDeclaration = [{
+    StringRef getMethod() {
+      return getAttr("method").dyn_cast<StringAttr>().getValue();
+    }
+
+    // Write this operation as Rust code to the stream
+    void writeRust(RustPrinterStream &);
+  }];
+}
+
+def Rust_RustBinaryOp : Rust_Op<"binaryop", [SameTypeOperands]> {
   let summary = "a Rust unary operation.";
   let description = [{
     A Rust unary operation, the op attribute is the string representation of

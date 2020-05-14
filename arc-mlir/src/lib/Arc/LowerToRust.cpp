@@ -243,6 +243,131 @@ private:
                                                  "*", "-", "%", "^"};
 };
 
+struct ArcCmpIOpLowering : public ConversionPattern {
+  ArcCmpIOpLowering(MLIRContext *ctx, RustTypeConverter &typeConverter)
+      : ConversionPattern(arc::CmpIOp::getOperationName(), 1, ctx),
+        TypeConverter(typeConverter) {}
+
+  LogicalResult
+  matchAndRewrite(Operation *op, ArrayRef<Value> operands,
+                  ConversionPatternRewriter &rewriter) const final {
+    arc::CmpIOp o = cast<arc::CmpIOp>(op);
+    Type rustTy = TypeConverter.convertType(o.getType());
+    const char *cmpOp = NULL;
+    switch (o.getPredicate()) {
+    case Arc_CmpIPredicate::eq:
+      cmpOp = "==";
+      break;
+    case Arc_CmpIPredicate::ne:
+      cmpOp = "!=";
+      break;
+    case Arc_CmpIPredicate::lt:
+      cmpOp = "<";
+      break;
+    case Arc_CmpIPredicate::le:
+      cmpOp = "<=";
+      break;
+    case Arc_CmpIPredicate::gt:
+      cmpOp = ">";
+      break;
+    case Arc_CmpIPredicate::ge:
+      cmpOp = ">=";
+      break;
+    }
+    rewriter.replaceOpWithNewOp<rust::RustBinaryOp>(op, rustTy, cmpOp,
+                                                    operands[0], operands[1]);
+    return success();
+  };
+
+private:
+  RustTypeConverter &TypeConverter;
+};
+
+struct StdCmpFOpLowering : public ConversionPattern {
+  StdCmpFOpLowering(MLIRContext *ctx, RustTypeConverter &typeConverter)
+      : ConversionPattern(mlir::CmpFOp::getOperationName(), 1, ctx),
+        TypeConverter(typeConverter) {}
+
+  LogicalResult
+  matchAndRewrite(Operation *op, ArrayRef<Value> operands,
+                  ConversionPatternRewriter &rewriter) const final {
+    mlir::CmpFOp o = cast<mlir::CmpFOp>(op);
+    Type rustTy = TypeConverter.convertType(o.getType());
+    const char *cmpOp = NULL;
+    switch (o.getPredicate()) {
+    case CmpFPredicate::OEQ:
+      cmpOp = "==";
+      break;
+    case CmpFPredicate::ONE:
+      cmpOp = "!=";
+      break;
+    case CmpFPredicate::OLT:
+      cmpOp = "<";
+      break;
+    case CmpFPredicate::OLE:
+      cmpOp = "<=";
+      break;
+    case CmpFPredicate::OGT:
+      cmpOp = ">";
+      break;
+    case CmpFPredicate::OGE:
+      cmpOp = ">=";
+      break;
+    default:
+      op->emitError("unhandled std.cmpf operation");
+      return failure();
+    }
+    rewriter.replaceOpWithNewOp<rust::RustBinaryOp>(op, rustTy, cmpOp,
+                                                    operands[0], operands[1]);
+    return success();
+  };
+
+private:
+  RustTypeConverter &TypeConverter;
+};
+
+namespace ArcUnaryFloatOp {
+typedef enum {
+  sin = 0,
+  cos,
+  tan,
+  asin,
+  acos,
+  atan,
+  cosh,
+  sinh,
+  tanh,
+  log,
+  exp,
+  sqrt,
+  LAST
+} Op;
+};
+
+template <class T, ArcUnaryFloatOp::Op arithOp>
+struct ArcUnaryFloatOpLowering : public ConversionPattern {
+  ArcUnaryFloatOpLowering(MLIRContext *ctx, RustTypeConverter &typeConverter)
+      : ConversionPattern(T::getOperationName(), 1, ctx),
+        TypeConverter(typeConverter) {}
+
+  LogicalResult
+  matchAndRewrite(Operation *op, ArrayRef<Value> operands,
+                  ConversionPatternRewriter &rewriter) const final {
+    T o = cast<T>(op);
+    Type rustTy = TypeConverter.convertType(o.getType());
+    rewriter.replaceOpWithNewOp<rust::RustMethodCallOp>(
+        op, rustTy, opStr[arithOp], operands[0],
+        SmallVector<mlir::Value, 1>({}));
+    return success();
+  };
+
+private:
+  RustTypeConverter &TypeConverter;
+  const char *opStr[ArcUnaryFloatOp::LAST] = {"sin",  "cos",  "tan",  "asin",
+                                              "acos", "atan", "cosh", "sinh",
+                                              "tanh", "ln",   "exp",  "sqrt"};
+};
+
 RustTypeConverter::RustTypeConverter(MLIRContext *ctx)
     : Ctx(ctx), Dialect(ctx->getRegisteredDialect<rust::RustDialect>()) {
   addConversion([&](FloatType type) { return convertFloatType(type); });
@@ -372,6 +497,37 @@ void ArcToRustLoweringPass::runOnOperation() {
           &getContext(), typeConverter);
   patterns.insert<
       ArcIntArithmeticOpLowering<arc::XOrOp, ArcIntArithmeticOp::XOrOp>>(
+      &getContext(), typeConverter);
+
+  patterns.insert<ArcCmpIOpLowering>(&getContext(), typeConverter);
+  patterns.insert<StdCmpFOpLowering>(&getContext(), typeConverter);
+
+  patterns.insert<ArcUnaryFloatOpLowering<mlir::SinOp, ArcUnaryFloatOp::sin>>(
+      &getContext(), typeConverter);
+  patterns.insert<ArcUnaryFloatOpLowering<mlir::CosOp, ArcUnaryFloatOp::cos>>(
+      &getContext(), typeConverter);
+  patterns.insert<ArcUnaryFloatOpLowering<arc::TanOp, ArcUnaryFloatOp::tan>>(
+      &getContext(), typeConverter);
+
+  patterns.insert<ArcUnaryFloatOpLowering<arc::AsinOp, ArcUnaryFloatOp::asin>>(
+      &getContext(), typeConverter);
+  patterns.insert<ArcUnaryFloatOpLowering<arc::AcosOp, ArcUnaryFloatOp::acos>>(
+      &getContext(), typeConverter);
+  patterns.insert<ArcUnaryFloatOpLowering<arc::AtanOp, ArcUnaryFloatOp::atan>>(
+      &getContext(), typeConverter);
+
+  patterns.insert<ArcUnaryFloatOpLowering<arc::SinhOp, ArcUnaryFloatOp::sinh>>(
+      &getContext(), typeConverter);
+  patterns.insert<ArcUnaryFloatOpLowering<arc::CoshOp, ArcUnaryFloatOp::cosh>>(
+      &getContext(), typeConverter);
+  patterns.insert<ArcUnaryFloatOpLowering<mlir::TanhOp, ArcUnaryFloatOp::tanh>>(
+      &getContext(), typeConverter);
+
+  patterns.insert<ArcUnaryFloatOpLowering<mlir::LogOp, ArcUnaryFloatOp::log>>(
+      &getContext(), typeConverter);
+  patterns.insert<ArcUnaryFloatOpLowering<mlir::ExpOp, ArcUnaryFloatOp::exp>>(
+      &getContext(), typeConverter);
+  patterns.insert<ArcUnaryFloatOpLowering<mlir::SqrtOp, ArcUnaryFloatOp::sqrt>>(
       &getContext(), typeConverter);
 
   if (failed(applyFullConversion(getOperation(), target, patterns,
