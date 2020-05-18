@@ -74,10 +74,8 @@ struct ReturnOpLowering : public ConversionPattern {
   LogicalResult
   matchAndRewrite(Operation *op, ArrayRef<Value> operands,
                   ConversionPatternRewriter &rewriter) const final {
-    // Can't use a replaceOpWithNewOp as the rust operator has a
-    // result (to encapsulate the type).
-    rewriter.create<rust::RustReturnOp>(op->getLoc(), operands[0]);
-    rewriter.eraseOp(op);
+    rewriter.replaceOpWithNewOp<rust::RustReturnOp>(op, llvm::None,
+                                                    operands[0]);
     return success();
   };
 };
@@ -205,6 +203,50 @@ private:
       return failure();
     }
   }
+};
+
+struct BlockResultOpLowering : public ConversionPattern {
+  BlockResultOpLowering(MLIRContext *ctx, RustTypeConverter &typeConverter)
+      : ConversionPattern(arc::ArcBlockResultOp::getOperationName(), 1, ctx),
+        TypeConverter(typeConverter) {}
+
+  LogicalResult
+  matchAndRewrite(Operation *op, ArrayRef<Value> operands,
+                  ConversionPatternRewriter &rewriter) const final {
+    ArcBlockResultOp o = cast<ArcBlockResultOp>(op);
+    Type retTy = TypeConverter.convertType(o.getType());
+    rewriter.replaceOpWithNewOp<rust::RustBlockResultOp>(op, retTy,
+                                                         operands[0]);
+    return success();
+  };
+
+private:
+  RustTypeConverter &TypeConverter;
+};
+
+struct IfOpLowering : public ConversionPattern {
+  IfOpLowering(MLIRContext *ctx, RustTypeConverter &typeConverter)
+      : ConversionPattern(arc::IfOp::getOperationName(), 1, ctx),
+        TypeConverter(typeConverter) {}
+
+  LogicalResult
+  matchAndRewrite(Operation *op, ArrayRef<Value> operands,
+                  ConversionPatternRewriter &rewriter) const final {
+    arc::IfOp o = cast<arc::IfOp>(op);
+    Type retTy = TypeConverter.convertType(o.getType());
+    auto newOp =
+        rewriter.create<rust::RustIfOp>(op->getLoc(), retTy, operands[0]);
+
+    rewriter.inlineRegionBefore(o.thenRegion(), newOp.thenRegion(),
+                                newOp.thenRegion().end());
+    rewriter.inlineRegionBefore(o.elseRegion(), newOp.elseRegion(),
+                                newOp.elseRegion().end());
+    rewriter.replaceOp(op, newOp.getResult());
+    return success();
+  };
+
+private:
+  RustTypeConverter &TypeConverter;
 };
 
 namespace ArcIntArithmeticOp {
@@ -529,6 +571,9 @@ void ArcToRustLoweringPass::runOnOperation() {
       &getContext(), typeConverter);
   patterns.insert<ArcUnaryFloatOpLowering<mlir::SqrtOp, ArcUnaryFloatOp::sqrt>>(
       &getContext(), typeConverter);
+
+  patterns.insert<IfOpLowering>(&getContext(), typeConverter);
+  patterns.insert<BlockResultOpLowering>(&getContext(), typeConverter);
 
   if (failed(applyFullConversion(getOperation(), target, patterns,
                                  &typeConverter)))

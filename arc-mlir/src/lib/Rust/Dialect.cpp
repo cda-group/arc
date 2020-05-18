@@ -123,7 +123,7 @@ static LogicalResult verify(RustReturnOp returnOp) {
 
   FunctionType funType = function.getType();
   Type funReturnType = funType.getResult(0);
-  Type returnType = returnOp.getResult().getType();
+  Type returnType = returnOp.getOperand().getType();
 
   if (funReturnType != returnType) {
     return returnOp.emitOpError(
