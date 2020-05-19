@@ -27,7 +27,7 @@
 #include <mlir/IR/Dialect.h>
 #include <mlir/IR/Function.h>
 #include <mlir/IR/Operation.h>
-#include <mlir/Interfaces/SideEffects.h>
+#include <mlir/Interfaces/SideEffectInterfaces.h>
 
 #include "Arc/Types.h"
 
