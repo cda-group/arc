@@ -227,6 +227,7 @@ def IndexTupleOp : Arc_Op<"index_tuple", [NoSideEffect]> {
   let results = (outs AnyType);
   let extraClassDeclaration = [{ LogicalResult customVerify(); }];
   let verifier = [{ return customVerify(); }];
+  let hasCanonicalizer = 1;
 }
 
 def ArcBlockResultOp :
