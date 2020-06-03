@@ -64,6 +64,7 @@ protected:
   Type convertFloatType(FloatType type);
   Type convertFunctionType(FunctionType type);
   Type convertIntegerType(IntegerType type);
+  Type convertTupleType(TupleType type);
 };
 
 struct ReturnOpLowering : public ConversionPattern {
@@ -415,6 +416,7 @@ RustTypeConverter::RustTypeConverter(MLIRContext *ctx)
   addConversion([&](FloatType type) { return convertFloatType(type); });
   addConversion([&](FunctionType type) { return convertFunctionType(type); });
   addConversion([&](IntegerType type) { return convertIntegerType(type); });
+  addConversion([&](TupleType type) { return convertTupleType(type); });
 
   // RustType is legal, so add a pass-through conversion.
   addConversion([](rust::types::RustType type) { return type; });
@@ -454,6 +456,17 @@ Type RustTypeConverter::convertIntegerType(IntegerType type) {
   default:
     return emitError(UnknownLoc::get(Ctx), "unsupported type"), Type();
   }
+}
+
+Type RustTypeConverter::convertTupleType(TupleType type) {
+  llvm::errs() << "Converting tuple type: " << type << "\n";
+  SmallVector<rust::types::RustType, 4> elements;
+  for (Type t : type) {
+    rust::types::RustType rt = convertType(t).cast<rust::types::RustType>();
+    llvm::errs() << "  " << t << " -> " << rt << "\n";
+    elements.push_back(rt);
+  }
+  return rust::types::RustType::getTupleTy(Dialect, elements);
 }
 
 FunctionType

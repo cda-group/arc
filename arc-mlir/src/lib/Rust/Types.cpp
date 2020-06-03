@@ -98,5 +98,21 @@ RustType RustType::getIntegerTy(RustDialect *dialect, IntegerType ty) {
            nullptr;
   }
 }
+
+RustType RustType::getTupleTy(RustDialect *dialect,
+                              ArrayRef<RustType> elements) {
+  std::string str;
+  llvm::raw_string_ostream s(str);
+
+  s << "(";
+  for (unsigned i = 0; i < elements.size(); i++) {
+    if (i != 0)
+      s << ", ";
+    s << elements[i].getRustType();
+  }
+  s << ")";
+  return RustType::get(dialect->getContext(), s.str());
+}
+
 } // namespace types
 } // namespace rust
