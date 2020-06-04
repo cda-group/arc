@@ -222,10 +222,12 @@ def IndexTupleOp : Arc_Op<"index_tuple", [NoSideEffect]> {
   let description = [{
     A pure operation which reads a value from a tuple.
   }];
-  let arguments = (ins AnyTuple:$values, Confined<I64Attr, [IntNonNegative]>:$index);
+  let arguments = (ins AnyTuple:$value,
+                   Confined<I64Attr, [IntNonNegative]>:$index);
   let results = (outs AnyType);
   let extraClassDeclaration = [{ LogicalResult customVerify(); }];
   let verifier = [{ return customVerify(); }];
+  let hasCanonicalizer = 1;
 }
 
 def ArcBlockResultOp :
