@@ -129,6 +129,24 @@ def Rust_RustConstantOp : Rust_Op<"constant", [NoSideEffect]> {
   }];
 }
 
+def Rust_RustFieldAccessOp : Rust_Op<"field_access", [NoSideEffect]> {
+  let summary = "Access to a field";
+  let description = [{
+    Access to a field, for example in a tuple or a struct.
+  }];
+
+  let arguments = (ins AnyRustType : $aggregate, StrAttr : $field);
+  let results = (outs AnyRustType);
+
+  let extraClassDeclaration = [{
+    StringRef getField() {
+      return getAttr("field").dyn_cast<StringAttr>().getValue();
+    }
+    // Write this constant as Rust code to os
+    void writeRust(RustPrinterStream &);
+  }];
+}
+
 def Rust_RustUnaryOp : Rust_Op<"unaryop", [SameOperandsAndResultType]> {
   let summary = "a Rust unary operation.";
   let description = [{
