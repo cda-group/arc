@@ -1,0 +1,10 @@
+#[cfg(test)]
+mod tests {
+  #[test]
+  fn test() {
+    let tmp = crate::makemeatuple();
+
+    assert_eq!(tmp.0, 7);
+    assert_eq!(tmp.1, 17);
+  }
+}

@@ -286,4 +286,17 @@ def Rust_RustModuleDirectiveOp : Rust_Op<"module_directive", [NoSideEffect]> {
   }];
 }
 
+def Rust_RustTupleOp
+    : Rust_Op<"tuple", []> {
+  let summary = "constructs a tuple";
+  let description = [{
+    "rust.tuple" constructs a tuple
+  }];
+  let arguments = (ins Variadic<AnyRustType>:$operands);
+  let results = (outs AnyRustType);
+  let extraClassDeclaration = [{
+    // Write this operation as Rust code to the stream
+    void writeRust(RustPrinterStream &);
+  }];
+}
 #endif // RUST_OPS

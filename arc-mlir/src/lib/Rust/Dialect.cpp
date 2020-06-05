@@ -263,6 +263,8 @@ static RustPrinterStream &writeRust(Operation &operation,
     op.writeRust(PS);
   else if (RustMethodCallOp op = dyn_cast<RustMethodCallOp>(operation))
     op.writeRust(PS);
+  else if (RustTupleOp op = dyn_cast<RustTupleOp>(operation))
+    op.writeRust(PS);
   else if (RustDependencyOp op = dyn_cast<RustDependencyOp>(operation))
     PS.registerDependency(op);
   else if (RustModuleDirectiveOp op =
@@ -357,6 +359,19 @@ void RustIfOp::writeRust(RustPrinterStream &PS) {
 
 void RustBlockResultOp::writeRust(RustPrinterStream &PS) {
   PS << getOperand() << "\n";
+}
+
+void RustTupleOp::writeRust(RustPrinterStream &PS) {
+  auto r = getResult();
+  types::RustType rt = r.getType().cast<types::RustType>();
+  PS << "let " << r << ":" << rt << " = (";
+  auto args = operands();
+  for (unsigned i = 0; i < args.size(); i++) {
+    if (i != 0)
+      PS << ", ";
+    PS << args[i];
+  }
+  PS << ");\n";
 }
 
 //===----------------------------------------------------------------------===//

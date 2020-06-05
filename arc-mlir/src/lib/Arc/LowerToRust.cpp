@@ -250,6 +250,24 @@ private:
   RustTypeConverter &TypeConverter;
 };
 
+struct MakeTupleOpLowering : public ConversionPattern {
+  MakeTupleOpLowering(MLIRContext *ctx, RustTypeConverter &typeConverter)
+      : ConversionPattern(arc::MakeTupleOp::getOperationName(), 1, ctx),
+        TypeConverter(typeConverter) {}
+
+  LogicalResult
+  matchAndRewrite(Operation *op, ArrayRef<Value> operands,
+                  ConversionPatternRewriter &rewriter) const final {
+    MakeTupleOp o = cast<MakeTupleOp>(op);
+    Type retTy = TypeConverter.convertType(o.getType());
+    rewriter.replaceOpWithNewOp<rust::RustTupleOp>(op, retTy, operands);
+    return success();
+  };
+
+private:
+  RustTypeConverter &TypeConverter;
+};
+
 namespace ArcIntArithmeticOp {
 typedef enum {
   AddIOp = 0,
@@ -587,6 +605,7 @@ void ArcToRustLoweringPass::runOnOperation() {
 
   patterns.insert<IfOpLowering>(&getContext(), typeConverter);
   patterns.insert<BlockResultOpLowering>(&getContext(), typeConverter);
+  patterns.insert<MakeTupleOpLowering>(&getContext(), typeConverter);
 
   if (failed(applyFullConversion(getOperation(), target, patterns,
                                  &typeConverter)))
