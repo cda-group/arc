@@ -6,5 +6,9 @@ mod tests {
 
     assert_eq!(tmp.0, 7);
     assert_eq!(tmp.1, 17);
+
+    assert_eq!(crate::bool_tuple(),false);
+    assert_eq!(crate::const_tuple(),17);
+    assert_eq!(crate::nonconst_tuple(tmp),17);
   }
 }

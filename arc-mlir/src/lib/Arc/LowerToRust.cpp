@@ -250,6 +250,27 @@ private:
   RustTypeConverter &TypeConverter;
 };
 
+struct IndexTupleOpLowering : public ConversionPattern {
+  IndexTupleOpLowering(MLIRContext *ctx, RustTypeConverter &typeConverter)
+      : ConversionPattern(arc::IndexTupleOp::getOperationName(), 1, ctx),
+        TypeConverter(typeConverter) {}
+
+  LogicalResult
+  matchAndRewrite(Operation *op, ArrayRef<Value> operands,
+                  ConversionPatternRewriter &rewriter) const final {
+    IndexTupleOp o = cast<IndexTupleOp>(op);
+    Type retTy = TypeConverter.convertType(o.getType());
+    APInt i = o.index();
+    std::string idx_str = i.toString(10, false);
+    rewriter.replaceOpWithNewOp<rust::RustFieldAccessOp>(op, retTy, operands[0],
+                                                         idx_str);
+    return success();
+  };
+
+private:
+  RustTypeConverter &TypeConverter;
+};
+
 struct MakeTupleOpLowering : public ConversionPattern {
   MakeTupleOpLowering(MLIRContext *ctx, RustTypeConverter &typeConverter)
       : ConversionPattern(arc::MakeTupleOp::getOperationName(), 1, ctx),
@@ -604,6 +625,7 @@ void ArcToRustLoweringPass::runOnOperation() {
       &getContext(), typeConverter);
 
   patterns.insert<IfOpLowering>(&getContext(), typeConverter);
+  patterns.insert<IndexTupleOpLowering>(&getContext(), typeConverter);
   patterns.insert<BlockResultOpLowering>(&getContext(), typeConverter);
   patterns.insert<MakeTupleOpLowering>(&getContext(), typeConverter);
 
