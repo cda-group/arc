@@ -64,6 +64,7 @@ protected:
   Type convertFloatType(FloatType type);
   Type convertFunctionType(FunctionType type);
   Type convertIntegerType(IntegerType type);
+  Type convertTupleType(TupleType type);
 };
 
 struct ReturnOpLowering : public ConversionPattern {
@@ -249,6 +250,45 @@ private:
   RustTypeConverter &TypeConverter;
 };
 
+struct IndexTupleOpLowering : public ConversionPattern {
+  IndexTupleOpLowering(MLIRContext *ctx, RustTypeConverter &typeConverter)
+      : ConversionPattern(arc::IndexTupleOp::getOperationName(), 1, ctx),
+        TypeConverter(typeConverter) {}
+
+  LogicalResult
+  matchAndRewrite(Operation *op, ArrayRef<Value> operands,
+                  ConversionPatternRewriter &rewriter) const final {
+    IndexTupleOp o = cast<IndexTupleOp>(op);
+    Type retTy = TypeConverter.convertType(o.getType());
+    APInt i = o.index();
+    std::string idx_str = i.toString(10, false);
+    rewriter.replaceOpWithNewOp<rust::RustFieldAccessOp>(op, retTy, operands[0],
+                                                         idx_str);
+    return success();
+  };
+
+private:
+  RustTypeConverter &TypeConverter;
+};
+
+struct MakeTupleOpLowering : public ConversionPattern {
+  MakeTupleOpLowering(MLIRContext *ctx, RustTypeConverter &typeConverter)
+      : ConversionPattern(arc::MakeTupleOp::getOperationName(), 1, ctx),
+        TypeConverter(typeConverter) {}
+
+  LogicalResult
+  matchAndRewrite(Operation *op, ArrayRef<Value> operands,
+                  ConversionPatternRewriter &rewriter) const final {
+    MakeTupleOp o = cast<MakeTupleOp>(op);
+    Type retTy = TypeConverter.convertType(o.getType());
+    rewriter.replaceOpWithNewOp<rust::RustTupleOp>(op, retTy, operands);
+    return success();
+  };
+
+private:
+  RustTypeConverter &TypeConverter;
+};
+
 namespace ArcIntArithmeticOp {
 typedef enum {
   AddIOp = 0,
@@ -415,6 +455,7 @@ RustTypeConverter::RustTypeConverter(MLIRContext *ctx)
   addConversion([&](FloatType type) { return convertFloatType(type); });
   addConversion([&](FunctionType type) { return convertFunctionType(type); });
   addConversion([&](IntegerType type) { return convertIntegerType(type); });
+  addConversion([&](TupleType type) { return convertTupleType(type); });
 
   // RustType is legal, so add a pass-through conversion.
   addConversion([](rust::types::RustType type) { return type; });
@@ -454,6 +495,17 @@ Type RustTypeConverter::convertIntegerType(IntegerType type) {
   default:
     return emitError(UnknownLoc::get(Ctx), "unsupported type"), Type();
   }
+}
+
+Type RustTypeConverter::convertTupleType(TupleType type) {
+  llvm::errs() << "Converting tuple type: " << type << "\n";
+  SmallVector<rust::types::RustType, 4> elements;
+  for (Type t : type) {
+    rust::types::RustType rt = convertType(t).cast<rust::types::RustType>();
+    llvm::errs() << "  " << t << " -> " << rt << "\n";
+    elements.push_back(rt);
+  }
+  return rust::types::RustType::getTupleTy(Dialect, elements);
 }
 
 FunctionType
@@ -573,7 +625,9 @@ void ArcToRustLoweringPass::runOnOperation() {
       &getContext(), typeConverter);
 
   patterns.insert<IfOpLowering>(&getContext(), typeConverter);
+  patterns.insert<IndexTupleOpLowering>(&getContext(), typeConverter);
   patterns.insert<BlockResultOpLowering>(&getContext(), typeConverter);
+  patterns.insert<MakeTupleOpLowering>(&getContext(), typeConverter);
 
   if (failed(applyFullConversion(getOperation(), target, patterns,
                                  &typeConverter)))

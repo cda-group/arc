@@ -257,11 +257,15 @@ static RustPrinterStream &writeRust(Operation &operation,
     op.writeRust(PS);
   else if (RustCompOp op = dyn_cast<RustCompOp>(operation))
     op.writeRust(PS);
+  else if (RustFieldAccessOp op = dyn_cast<RustFieldAccessOp>(operation))
+    op.writeRust(PS);
   else if (RustIfOp op = dyn_cast<RustIfOp>(operation))
     op.writeRust(PS);
   else if (RustBlockResultOp op = dyn_cast<RustBlockResultOp>(operation))
     op.writeRust(PS);
   else if (RustMethodCallOp op = dyn_cast<RustMethodCallOp>(operation))
+    op.writeRust(PS);
+  else if (RustTupleOp op = dyn_cast<RustTupleOp>(operation))
     op.writeRust(PS);
   else if (RustDependencyOp op = dyn_cast<RustDependencyOp>(operation))
     PS.registerDependency(op);
@@ -343,6 +347,13 @@ void RustCompOp::writeRust(RustPrinterStream &PS) {
      << " " << RHS() << ";\n";
 }
 
+void RustFieldAccessOp::writeRust(RustPrinterStream &PS) {
+  auto r = getResult();
+  types::RustType rt = r.getType().cast<types::RustType>();
+  PS << "let " << r << ":" << rt << " = " << aggregate() << "." << getField()
+     << ";\n";
+}
+
 void RustIfOp::writeRust(RustPrinterStream &PS) {
   auto r = getResult();
   types::RustType rt = r.getType().cast<types::RustType>();
@@ -357,6 +368,19 @@ void RustIfOp::writeRust(RustPrinterStream &PS) {
 
 void RustBlockResultOp::writeRust(RustPrinterStream &PS) {
   PS << getOperand() << "\n";
+}
+
+void RustTupleOp::writeRust(RustPrinterStream &PS) {
+  auto r = getResult();
+  types::RustType rt = r.getType().cast<types::RustType>();
+  PS << "let " << r << ":" << rt << " = (";
+  auto args = operands();
+  for (unsigned i = 0; i < args.size(); i++) {
+    if (i != 0)
+      PS << ", ";
+    PS << args[i];
+  }
+  PS << ");\n";
 }
 
 //===----------------------------------------------------------------------===//
