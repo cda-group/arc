@@ -44,16 +44,16 @@ let neg_f64 : f64 = -1.7976931348623157e308;
 #CHECK: {{%[^ ]+}} = constant -1.79769313486231{{[0-9]+[Ee]\+?}}308 : f64
 
 let true_bool : bool = true;
-#CHECK: {{%[^ ]+}} = constant 1 : i1
+#CHECK: {{%[^ ]+}} = constant true
 
 let false_bool : bool = false;
-#CHECK: {{%[^ ]+}} = constant 0 : i1
+#CHECK: {{%[^ ]+}} = constant false
 
 let bool_vector : vec[bool] = [true, false, true, false];
-#CHECK-DAG: [[E0:%[^ ]+]] = constant 1 : i1
-#CHECK-DAG: [[E1:%[^ ]+]] = constant 0 : i1
-#CHECK-DAG: [[E2:%[^ ]+]] = constant 1 : i1
-#CHECK-DAG: [[E3:%[^ ]+]] = constant 0 : i1
+#CHECK-DAG: [[E0:%[^ ]+]] = constant true
+#CHECK-DAG: [[E1:%[^ ]+]] = constant false
+#CHECK-DAG: [[E2:%[^ ]+]] = constant true
+#CHECK-DAG: [[E3:%[^ ]+]] = constant false
 #CHECK: {{%[^ ]+}} = "arc.make_vector"([[E0]], [[E1]], [[E2]], [[E3]]) : (i1, i1, i1, i1) -> tensor<4xi1>
 
 let f64_vector : vec[f64] = [0.694, 1.0, 1.4142, 3.14];

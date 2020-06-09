@@ -3,8 +3,8 @@ module @toplevel {
   func @main(%arg0 : ui64) {
     %true = constant 1 : i1
     %false = constant 0 : i1
-    // CHECK-DAG: [[TRUE:%[^ ]+]] = constant 1 : i1
-    // CHECK-DAG: [[FALSE:%[^ ]+]] = constant 0 : i1
+    // CHECK-DAG: [[TRUE:%[^ ]+]] = constant true
+    // CHECK-DAG: [[FALSE:%[^ ]+]] = constant false
     %smaller_si8 = arc.constant -64 : si8
     %larger_si8 = arc.constant 64 : si8
     %smaller_ui8 = arc.constant 28 : ui8

@@ -11,7 +11,7 @@ let true_bool : bool = true;
 
 #CHECK-DAG: [[A:%[^ ]+]] = arc.constant 65 : si32
 #CHECK-DAG: [[B:%[^ ]+]] = arc.constant 66 : si32
-#CHECK-DAG: [[COND:%[^ ]+]] = constant 1 : i1
+#CHECK-DAG: [[COND:%[^ ]+]] = constant true
 
 if(true_bool, a_i32, b_i32)
 
