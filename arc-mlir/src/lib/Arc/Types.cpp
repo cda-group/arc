@@ -22,6 +22,7 @@
 
 #include "Arc/Types.h"
 #include <llvm/Support/raw_ostream.h>
+#include <mlir/IR/Builders.h>
 #include <mlir/IR/DialectImplementation.h>
 #include <mlir/IR/StandardTypes.h>
 
@@ -158,5 +159,87 @@ AppenderType::verifyConstructionInvariants(Location loc, Type mergeType,
   }
   return success();
 }
+
+//===----------------------------------------------------------------------===//
+// StructType
+//===----------------------------------------------------------------------===//
+struct StructTypeStorage : public mlir::TypeStorage {
+  using KeyTy = llvm::ArrayRef<StructType::FieldTy>;
+
+  StructTypeStorage(llvm::ArrayRef<StructType::FieldTy> elementTypes)
+      : fields(elementTypes) {}
+
+  bool operator==(const KeyTy &key) const { return key == fields; }
+
+  static llvm::hash_code hashKey(const KeyTy &key) {
+    return llvm::hash_value(key);
+  }
+
+  static KeyTy getKey(llvm::ArrayRef<StructType::FieldTy> elementTypes) {
+    return KeyTy(elementTypes);
+  }
+
+  static StructTypeStorage *construct(mlir::TypeStorageAllocator &allocator,
+                                      const KeyTy &key) {
+    llvm::ArrayRef<StructType::FieldTy> elementTypes = allocator.copyInto(key);
+
+    return new (allocator.allocate<StructTypeStorage>())
+        StructTypeStorage(elementTypes);
+  }
+
+  llvm::ArrayRef<StructType::FieldTy> fields;
+};
+
+StructType StructType::get(llvm::ArrayRef<StructType::FieldTy> elementTypes) {
+  assert(!elementTypes.empty() && "expected at least 1 element type");
+
+  mlir::MLIRContext *ctx = elementTypes.front().second.getContext();
+  return Base::get(ctx, arc::types::Struct, elementTypes);
+}
+
+/// Returns the element types of this struct type.
+llvm::ArrayRef<StructType::FieldTy> StructType::getFields() const {
+  // 'getImpl' returns a pointer to the internal storage instance.
+  return getImpl()->fields;
+}
+
+size_t StructType::getNumFields() const { return getFields().size(); }
+
+Type StructType::parse(DialectAsmParser &parser) {
+  if (parser.parseLess())
+    return nullptr;
+  Builder &builder = parser.getBuilder();
+
+  SmallVector<StructType::FieldTy, 3> elementTypes;
+  do {
+    StringRef name;
+    if (parser.parseKeyword(&name) || parser.parseColon())
+      return nullptr;
+
+    StructType::FieldTy elementType;
+    elementType.first = StringAttr::get(name, builder.getContext());
+    if (parser.parseType(elementType.second))
+      return nullptr;
+
+    elementTypes.push_back(elementType);
+  } while (succeeded(parser.parseOptionalComma()));
+
+  if (parser.parseGreater())
+    return Type();
+  return StructType::get(elementTypes);
+}
+
+void StructType::print(DialectAsmPrinter &os) const {
+  // Print the struct type according to the parser format.
+  os << "struct<";
+  auto fields = getFields();
+  for (unsigned i = 0; i < getNumFields(); i++) {
+    if (i != 0)
+      os << ", ";
+    os << fields[i].first.getValue() << " : " << fields[i].second;
+  }
+  os << '>';
+}
+
 } // namespace types
 } // namespace arc

@@ -35,9 +35,7 @@ namespace types {
 // Arc Type Kinds
 //===----------------------------------------------------------------------===//
 
-enum Kind {
-  Appender = Type::Kind::FIRST_PRIVATE_EXPERIMENTAL_0_TYPE,
-};
+enum Kind { Appender = Type::Kind::FIRST_PRIVATE_EXPERIMENTAL_0_TYPE, Struct };
 
 //===----------------------------------------------------------------------===//
 // Arc Type Functions
@@ -52,6 +50,7 @@ bool isBuilderType(Type type);
 
 struct BuilderTypeStorage;
 struct AppenderTypeStorage;
+struct StructTypeStorage;
 
 //===----------------------------------------------------------------------===//
 // Arc Types
@@ -78,6 +77,27 @@ public:
   static LogicalResult
   verifyConstructionInvariants(Location loc, Type mergeType,
                                RankedTensorType resultType);
+  static Type parse(DialectAsmParser &parser);
+  void print(DialectAsmPrinter &os) const;
+};
+
+class StructType
+    : public mlir::Type::TypeBase<StructType, mlir::Type, StructTypeStorage> {
+public:
+  using Base::Base;
+
+  typedef std::pair<mlir::StringAttr, mlir::Type> FieldTy;
+
+  static bool kindof(unsigned kind) { return kind == arc::types::Struct; }
+
+  static StructType get(llvm::ArrayRef<FieldTy> elementTypes);
+
+  /// Returns the fields of this struct type.
+  llvm::ArrayRef<FieldTy> getFields() const;
+
+  /// Returns the number of fields held by this struct.
+  size_t getNumFields() const;
+
   static Type parse(DialectAsmParser &parser);
   void print(DialectAsmPrinter &os) const;
 };
