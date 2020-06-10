@@ -498,11 +498,9 @@ Type RustTypeConverter::convertIntegerType(IntegerType type) {
 }
 
 Type RustTypeConverter::convertTupleType(TupleType type) {
-  llvm::errs() << "Converting tuple type: " << type << "\n";
   SmallVector<rust::types::RustType, 4> elements;
   for (Type t : type) {
     rust::types::RustType rt = convertType(t).cast<rust::types::RustType>();
-    llvm::errs() << "  " << t << " -> " << rt << "\n";
     elements.push_back(rt);
   }
   return rust::types::RustType::getTupleTy(Dialect, elements);
