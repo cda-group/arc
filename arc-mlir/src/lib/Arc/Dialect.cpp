@@ -234,6 +234,24 @@ LogicalResult MakeVectorOp::customVerify() {
   return mlir::success();
 }
 
+LogicalResult MakeStructOp::customVerify() {
+  auto Operation = this->getOperation();
+  auto NumOperands = Operation->getNumOperands();
+  auto StructTy = Operation->getResult(0).getType().cast<StructType>();
+  auto FieldTys = StructTy.getFields();
+  if (NumOperands != StructTy.getNumFields())
+    return emitOpError("expected ")
+           << StructTy.getNumFields() << " fields, but found " << NumOperands;
+  unsigned I = 0;
+  for (const Type &ElemTy : Operation->getOperands().getTypes()) {
+    if (FieldTys[I].second != ElemTy)
+      return emitOpError("operand types do not match: expected ")
+             << FieldTys[I].second << " but found " << ElemTy;
+    I++;
+  }
+  return mlir::success();
+}
+
 LogicalResult MakeTupleOp::customVerify() {
   auto Operation = this->getOperation();
   auto NumOperands = Operation->getNumOperands();
