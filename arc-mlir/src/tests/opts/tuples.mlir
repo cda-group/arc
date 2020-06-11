@@ -9,7 +9,7 @@ module @toplevel {
     %elem = "arc.index_tuple"(%tuple) { index = 0 } : (tuple<i1,i1>) -> i1
 
     return %elem : i1
-    // CHECK-DAG: [[FALSE:%[^ ]+]] = constant 0 : i1
+    // CHECK-DAG: [[FALSE:%[^ ]+]] = constant false
     // CHECK: return [[FALSE]] : i1
   }
 }
