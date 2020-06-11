@@ -1,0 +1,5 @@
+c = true
+x = 3
+if c
+  then x
+  else x

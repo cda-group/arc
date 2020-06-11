@@ -133,3 +133,16 @@ arc-mlir/.guessed-arc-mlir
 
 # Editor backup files
 *~
+
+# Rust
+
+book
+/target
+**/*.rs.bk
+Cargo.lock
+bin/
+pkg/
+package-lock.json
+wasm-pack.log
+dist/
+.bin/
