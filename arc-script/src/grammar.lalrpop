@@ -1,0 +1,381 @@
+use {
+  crate::{ast::*, parser::*},
+  lalrpop_util::ErrorRecovery,
+};
+
+//=============================================================================
+// Grammar
+//=============================================================================
+
+grammar<'err>(
+  errors: &'err mut Vec<ErrorRecovery<usize, Token<'input>, CompilerError>>
+);
+
+extern {
+  type Error = CompilerError;
+  type Location = usize;
+}
+
+//=============================================================================
+// Tokens
+//=============================================================================
+
+match {
+//=============================================================================
+// Separators
+//=============================================================================
+  "(",
+  ")",
+  "{",
+  "}",
+  "[",
+  "]",
+  ",",
+  ";",
+//=============================================================================
+// Operators
+//=============================================================================
+  "+",
+  "-",
+  "*",
+  "/",
+  "!",
+  ":",
+  "?",
+  "=",
+//=============================================================================
+// Keywords
+//=============================================================================
+  "if",
+  "then",
+  "else",
+  "in",
+  "fold",
+  "fmap",
+  "fun",
+  "end",
+  "as",
+//=============================================================================
+// Types
+//=============================================================================
+  "i8",
+  "i16",
+  "i32",
+  "i64",
+  "f32",
+  "f64",
+  "bool",
+  "str",
+  "null",
+  "json",
+  "csv",
+  "dataset",
+} else {
+//=============================================================================
+// Decimal
+//=============================================================================
+  r"[-]?[0-9]+i8"                                                  => TI8Base10,
+  r"[-]?[0-9]+i16"                                                 => TI16Base10,
+  r"[-]?[0-9]+i64"                                                 => TI64Base10,
+  r"[-]?(([0-9]+\.[0-9]+([eE]-?[0-9]+)?)|([0-9]+[eE]-?[0-9]+))f32" => TF64Base10,
+//=============================================================================
+// Binary
+//=============================================================================
+  r"0b[0-1]+i8"                                                 => TI8Base2,
+  r"0b[0-1]+i16"                                                => TI16Base2,
+  r"0b[0-1]+i64"                                                => TI64Base2,
+//=============================================================================
+// Hexadecimal
+//=============================================================================
+  r"0x[0-9a-fA-F]+i8"                                           => TI8Base16,
+  r"0x[0-9a-fA-F]+i16"                                          => TI16Base16,
+  r"0x[0-9a-fA-F]+i64"                                          => TI64Base16,
+//=============================================================================
+// Bool, String
+//=============================================================================
+  r"true|false"                                                 => TBool,
+  r#""[^"]*""#                                                  => TStr,
+} else {
+//=============================================================================
+// Non-Postfixed
+//=============================================================================
+  r"[-]?[0-9]+"                                                => TI32Base10,
+  r"0b[0-1]+"                                                   => TI32Base2,
+  r"0x[0-9a-fA-F]+"                                             => TI32Base16,
+  r"([0-9]+\.[0-9]+([eE]-?[0-9]+)?)|([0-9]+[eE]-?[0-9]+)"       => TF32Base10,
+//=============================================================================
+// Identifiers
+//=============================================================================
+  r"[A-Za-z_][A-Za-z0-9_]*\("                                   => TFunIdent,
+  r"\.[A-Za-z_][A-Za-z0-9_]*\("                                 => TMetIdent,
+  r"\p{Math}"                                                   => TUnicodeOp,
+} else {
+  r"\.[A-Za-z_][A-Za-z0-9_]*"                                   => TFieldIdent,
+  r"\.[0-9]+"                                                   => TTupleIndex,
+  r"[A-Za-z_][A-Za-z0-9_]*'*"                                   => TIdent,
+  r"[\p{Greek}\p{Emoji}][0-9]*'*"                               => TUnicodeIdent,
+} else {
+//=============================================================================
+// Comments
+//=============================================================================
+  r"\s*"                                                        => { },
+  r"//[^\n\r]*[\n\r]*"                                          => { },
+  r"/\*([^\*]*\*+[^\*/])*([^\*]*\*+|[^\*])*\*/"                 => { },
+} else {
+//=============================================================================
+// Undefined
+//=============================================================================
+  r"."                                                          => Undefined,
+}
+
+//=============================================================================
+// Macros
+//=============================================================================
+
+//-----------------------------------------------------------------------------
+// Collections
+//-----------------------------------------------------------------------------
+
+Sep<T, S>: Vec<T> = <v:(<T> S)*> <e:T?> => v.into_iter().chain(e).collect();
+SepNonEmpty<T, S>: Vec<T> = <e:T> <v:(S <T>)*> => vec![e].into_iter().chain(v).collect();
+SepTrailing<T, S> = (<T> S)*;
+Vec<T> = Sep<T, ",">;
+VecNonEmpty<T> = SepNonEmpty<T, ",">;
+Semi<T> = Sep<T, ";">;
+Single<T>: Vec<T> = T => vec![<>];
+Box<T>: Box<T> = T => Box::new(<>);
+Spanned<T>: Spanned<T> = @L T @R => Spanned(<>);
+Paren<T>: T = "(" <T> ")";
+
+//-----------------------------------------------------------------------------
+// Operators
+//-----------------------------------------------------------------------------
+
+BinaryInfixNonAssociative<Op, Next>: ExprKind = {
+  Box<Expr<Next>> Op Box<Expr<Next>> => ExprKind::BinOp(<>),
+  Next,
+};
+
+BinaryInfixLeftAssociative<Op, Next>: ExprKind = {
+  Box<Expr<BinaryInfixLeftAssociative<Op, Next>>> Op Box<Expr<Next>> => ExprKind::BinOp(<>),
+  Next,
+};
+
+BinaryInfixRightAssociative<Op, Next>: ExprKind = {
+  Box<Expr<Next>> Op Box<Expr<BinaryInfixLeftAssociative<Op, Next>>> => ExprKind::BinOp(<>),
+  Next,
+};
+
+UnaryPostfix<Op, Next>: ExprKind = {
+  <e:Box<Expr<UnaryPostfix<Op, Next>>>> <op:Op> => ExprKind::UnOp(op, e),
+  Next,
+};
+
+UnaryPrefix<Op, Next>: ExprKind = {
+  <op:Op> <e:Box<Expr<UnaryPrefix<Op, Next>>>> => ExprKind::UnOp(op, e),
+  Next,
+};
+
+//=============================================================================
+// Terminals
+//=============================================================================
+
+Ident: Ident = {
+  TIdent        => Ident::from(<>),
+  TUnicodeIdent => Ident::from(<>),
+};
+
+TupleIndex: Option<usize> = Spanned<TTupleIndex> => parse_lit_radix(<>, 10, 1, 0, errors);
+
+FieldIdent: Ident = TFieldIdent => Ident::from(&<>[1..].to_string());
+FunIdent: Ident = TFunIdent => Ident::from(&<>[..<>.len()-1].to_string());
+MetIdent: Ident = TMetIdent => Ident::from(&<>[1..<>.len()-1].to_string());
+
+LitStr: String = TStr => <>[1..<>.len()].to_string();
+
+LitBool: Option<bool> = Spanned<TBool> => parse_lit(<>, errors);
+
+//=============================================================================
+// Numeric Literals:
+// * parse_lit_radix(<token>, <radix>, <prefix-len>, <suffix-len>, <errors>)
+//=============================================================================
+
+LitF32: Option<f32> = {
+  Spanned<TF32Base10> => parse_lit_radix(<>, 10, 0, 3, errors),
+};
+
+LitF64: Option<f64> = {
+  Spanned<TF64Base10> => parse_lit_radix(<>, 10, 0, 0, errors),
+};
+
+LitI8: Option<i8> = {
+  Spanned<TI8Base10>  => parse_lit_radix(<>, 10, 0, 2, errors),
+  Spanned<TI8Base2>   => parse_lit_radix(<>,  2, 2, 2, errors),
+  Spanned<TI8Base16>  => parse_lit_radix(<>, 16, 2, 2, errors),
+};
+
+LitI16: Option<i16> = {
+  Spanned<TI16Base10> => parse_lit_radix(<>, 10, 0, 3, errors),
+  Spanned<TI16Base2>  => parse_lit_radix(<>,  2, 2, 3, errors),
+  Spanned<TI16Base16> => parse_lit_radix(<>, 16, 2, 3, errors),
+};
+
+LitI32: Option<i32> = {
+  Spanned<TI32Base10> => parse_lit_radix(<>, 10, 0, 0, errors),
+  Spanned<TI32Base2>  => parse_lit_radix(<>,  2, 2, 3, errors),
+  Spanned<TI32Base16> => parse_lit_radix(<>, 16, 2, 3, errors),
+};
+
+LitI64: Option<i64> = {
+  Spanned<TI64Base10> => parse_lit_radix(<>, 10, 0, 3, errors),
+  Spanned<TI64Base2>  => parse_lit_radix(<>,  2, 2, 3, errors),
+  Spanned<TI64Base16> => parse_lit_radix(<>, 16, 2, 3, errors),
+};
+
+//=============================================================================
+// Non-Terminals
+//=============================================================================
+
+pub Script: Script = Fun* Body => Script::new(<>);
+
+//=============================================================================
+// Functions
+//=============================================================================
+
+Fun: Fun = "fun" <FunIdent> <Vec<Param>> ")" <Body> "end"? => Fun::new(<>);
+
+Param = <Ident> ":" <Type>;
+
+//=============================================================================
+// Expressions
+//=============================================================================
+
+Body = Expr<ExprKind0>;
+Arg  = Expr<ExprKind1>;
+
+Expr<ExprKind>: Expr = Spanned<ExprKind> => Expr::from(<>);
+
+Op0: BinOp = {
+  "+" => BinOp::Add,
+  "-" => BinOp::Sub,
+};
+
+Op1: BinOp = {
+  "*" => BinOp::Mul,
+  "/" => BinOp::Div,
+};
+
+Op2: UnOp = {
+  "!" => UnOp::Not,
+//  "-" => UnOp::Not, TODO: Resolve ambiguity with custom lexer (joint-tokens)
+};
+
+Op3: UnOp = {
+  "as" <Type>               => UnOp::Cast(<>),
+  <MetIdent> <Vec<Arg>> ")" => UnOp::Call(<>),
+  <FieldIdent>              => UnOp::Access(<>),
+  <TupleIndex>              => <>.map(Index).map(UnOp::Project).unwrap_or(UnOp::Error),
+};
+
+OptionalType: Type = (":" <Type>)? => <>.unwrap_or(Type::new());
+
+ExprKind0: ExprKind = {
+  <Ident> <OptionalType> "=" <Box<Arg>> <Box<Body>> => ExprKind::Let(<>),
+  ExprKind1
+};
+
+ExprKind1: ExprKind = {
+  "if" <Box<Body>> "then" <Box<Body>> "else" <Box<Body>> => ExprKind::If(<>),
+  <FunIdent> <Vec<Arg>> ")"      => ExprKind::Call(<>),
+  ExprKind2
+};
+
+ExprKind2: ExprKind = BinaryInfixLeftAssociative<Op0, ExprKind3>;
+ExprKind3: ExprKind = BinaryInfixLeftAssociative<Op1, ExprKind4>;
+ExprKind4: ExprKind =                UnaryPrefix<Op2, ExprKind5>;
+ExprKind5: ExprKind =               UnaryPostfix<Op3, ExprKind6>;
+
+ExprKind6: ExprKind = {
+  Paren<ExprKind0>,
+  Lit   => ExprKind::Lit(<>),
+  BIF   => ExprKind::Bif(<>),
+  Ident => ExprKind::Var(<>),
+  ! => { errors.push(<>); ExprKind::Error },
+};
+
+Lit: Lit = {
+  LitScalar,
+  "[" <VecNonEmpty<Arg>> "]"                 => Lit::Array(<>),
+  "{" <VecNonEmpty<(<Ident> ":" <Arg>)>> "}" => Lit::Struct(<>),
+};
+
+LitScalar: Lit = {
+  LitI32  => <>.map(Lit::I32).unwrap_or(Lit::Error),
+  LitI64  => <>.map(Lit::I64).unwrap_or(Lit::Error),
+  LitF32  => <>.map(Lit::F32).unwrap_or(Lit::Error),
+  LitF64  => <>.map(Lit::F64).unwrap_or(Lit::Error),
+  LitBool => <>.map(Lit::Bool).unwrap_or(Lit::Error),
+}
+
+BIF: Bif = {
+  "dataset" <Paren<Box<Arg>>>                 => Bif::Dataset(<>),
+  "fold" <Paren<(<Box<Arg>> "," <Box<Arg>>)>> => Bif::Fold(<>.0, <>.1),
+  "fmap" <Paren<Box<Arg>>>                    => Bif::Fmap(<>),
+};
+
+//=============================================================================
+// Types
+//=============================================================================
+
+Type: Type = Spanned<TypeKind> => Type::from(<>);
+
+TypeKind: TypeKind = {
+  Scalar,
+  <Box<Type>> "?"                 => TypeKind::Option(<>),
+  "{" <Vec<Param>> "}"            => TypeKind::Struct(<>),
+  "[" <Box<ElemType>> <Shape> "]" => TypeKind::Array(<>),
+  ! => { errors.push(<>); TypeKind::Error },
+};
+
+ElemType: Type = (<Spanned<Scalar>> ";")? => <>.map(Type::from).unwrap_or(Type::new());
+
+Scalar: TypeKind = {
+  "i8"   => TypeKind::I8,
+  "i16"  => TypeKind::I16,
+  "i32"  => TypeKind::I32,
+  "i64"  => TypeKind::I64,
+  "f32"  => TypeKind::F32,
+  "f64"  => TypeKind::F64,
+  "bool" => TypeKind::Bool,
+  "null" => TypeKind::Null,
+  "str"  => TypeKind::String,
+};
+
+//=============================================================================
+// Shape and Dimensions
+//=============================================================================
+
+Shape: Shape = Spanned<ShapeKind> => Shape::from(<>);
+
+ShapeKind: ShapeKind = {
+  <Vec<Dim>> => ShapeKind::Ranked(<>),
+  "*"        => ShapeKind::Unranked,
+};
+
+Dim: Dim = Spanned<DimKind> => Dim::from(<>);
+
+DimKind: DimKind = {
+    Arg => DimKind::Expr(<>),
+    "?" => DimKind::Unknown,
+};
+
+// fun foo(a:[A], b: [B]): [A+B]
+//     
+// x: [1,2,3,4,5] = foo([1,2], [3,4,5])
+//
+//
+// x0 = A   = 2
+// x1 = B   = 3
+// x2 = A+B = 5
+//
+// Global type inference, but not shape inference

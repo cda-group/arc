@@ -1,0 +1,7 @@
+fun max(a, b)
+  c = a > b
+  if c
+    then a
+    else b
+
+max(1,2)

@@ -11,7 +11,31 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Setup mdBook
+      - name: Cache cargo dependencies
+        uses: actions/cache@v1
+        with:
+          key: ${{ runner.os }}-wasm-${{ hashFiles('**/Cargo.lock') }}
+          path: target
+          restore-keys: |
+            ${{ runner.os }}-wasm-
+
+      - name: Setup wasm-pack
+        run: curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
+
+      - name: Build arc-script-wasm
+        run: wasm-pack build
+        working-directory: ./arc-script/wasm
+
+      - name: Setup node
+        uses: actions/setup-node@v1
+
+      - name: Compile website
+        run: |
+          npm install
+          npm run build
+        working-directory: ./arc-script/wasm/www
+
+      - name: Setup mdbook
         uses: peaceiris/actions-mdbook@v1
         with:
           mdbook-version: 'latest'
@@ -19,13 +43,17 @@ jobs:
       - name: Setup graphviz
         uses: kamiazya/setup-graphviz@v1
 
-      - run: dot -Tpng ./docs/src/*.dot -O
+      - name: Build mdbook graphs
+        run: dot -Tpng ./docs/src/*.dot -O
 
-      - run: mdbook build ./docs/
+      - name: Build mdbook
+        run: mdbook build ./docs/ --dest-dir ../arc-script/wasm/www/dist/book
 
-      - name: Deploy
+      - name: Deploy to gh-pages
+        if: success()
         uses: peaceiris/actions-gh-pages@v3
         with:
           deploy_key: ${{ secrets.GITHUB_PAGES }}
-          publish_dir: ./docs/book/
+          publish_dir: ./arc-script/wasm/www/dist
           force_orphan: true
+

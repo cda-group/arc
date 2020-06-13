@@ -1,8 +1,8 @@
-<h1 align="center">The Arc Intermediate Representation</h1>
+<h1 align="center">The Arc Programming Language</h1>
 
 [![Build Status](https://travis-ci.org/cda-group/arc.svg?branch=master)](https://travis-ci.org/cda-group/arc/)
 
-**Arc** is an [*intermediate representation*](https://en.wikipedia.org/wiki/Intermediate_representation) for expressing transformations over batch and streaming data. The output of the Arc compiler is a *dataflow graph* that can be deployed on distributed stream processing runtimes. While the goal is to be runtime-agnostic, Arc is primarily intended to run on top of [Arcon](https://github.com/cda-group/arcon) - a native Rust-based runner.
+**Arc** is a scripting language with an [*intermediate representation*](https://en.wikipedia.org/wiki/Intermediate_representation) for expressing transformations over batch and streaming data. The output of the Arc compiler is a *dataflow graph* that can be deployed on distributed stream processing runtimes. While the goal is to be runtime-agnostic, Arc is primarily intended to run on top of [Arcon](https://github.com/cda-group/arcon) - a native Rust-based runner.
 
 This repository is divided into two parts:
 
@@ -46,3 +46,7 @@ cd arc-mlir/build/llvm-build/; ninja check-arc-mlir; cd -
 # Documentation
 
 [Documentation](www.github.com/cda-group/arc)
+
+<p align="center">
+  <img src="https://github.com/segeljakt/assets/raw/master/arc-script.png">
+</p>

@@ -1,0 +1,5 @@
+[book]
+authors = ["Klas Segeljakt"]
+multilingual = false
+src = "src"
+title = "arc-script"
