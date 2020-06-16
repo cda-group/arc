@@ -120,14 +120,24 @@ LogicalResult RustFuncOp::verifyBody() {
 
 static LogicalResult verify(RustReturnOp returnOp) {
   RustFuncOp function = returnOp.getParentOfType<RustFuncOp>();
-
   FunctionType funType = function.getType();
+
+  if (funType.getNumResults() == 0 && returnOp.operands())
+    return returnOp.emitOpError("cannot return a value from a void function");
+
+  if (!returnOp.operands() && funType.getNumResults())
+    return returnOp.emitOpError("operation must return a ")
+           << funType.getResult(0) << " value";
+
+  if (!funType.getNumResults())
+    return success();
+
+  Type returnType = returnOp.getOperand(0).getType();
   Type funReturnType = funType.getResult(0);
-  Type returnType = returnOp.getOperand().getType();
 
   if (funReturnType != returnType) {
-    return returnOp.emitOpError(
-               "result type does not match the type of the function: expected ")
+    return returnOp.emitOpError("result type does not match the type of the "
+                                "function: expected ")
            << funReturnType << " but found " << returnType;
   }
   return success();
@@ -307,7 +317,10 @@ void RustFuncOp::writeRust(RustPrinterStream &PS) {
 }
 
 void RustReturnOp::writeRust(RustPrinterStream &PS) {
-  PS << "return " << getOperand() << ";\n";
+  if (getNumOperands())
+    PS << "return " << getOperand(0) << ";\n";
+  else
+    PS << "return;\n";
 }
 
 void RustConstantOp::writeRust(RustPrinterStream &PS) { PS.getConstant(*this); }

@@ -102,7 +102,7 @@ def Rust_RustReturnOp : Rust_Op<"return", [HasParent<"RustFuncOp">,
     by an incovation of the `rust.func`.
   }];
 
-  let arguments = (ins AnyRustType:$result);
+  let arguments = (ins Optional<AnyRustType>:$operands);
 
   let verifier = [{ return ::verify(*this); }];
 

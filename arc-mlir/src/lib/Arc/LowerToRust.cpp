@@ -75,8 +75,8 @@ struct ReturnOpLowering : public ConversionPattern {
   LogicalResult
   matchAndRewrite(Operation *op, ArrayRef<Value> operands,
                   ConversionPatternRewriter &rewriter) const final {
-    rewriter.replaceOpWithNewOp<rust::RustReturnOp>(op, llvm::None,
-                                                    operands[0]);
+    rewriter.replaceOpWithNewOp<rust::RustReturnOp>(
+        op, llvm::None, operands.size() ? operands[0] : Value());
     return success();
   };
 };
