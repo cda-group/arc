@@ -281,6 +281,8 @@ static RustPrinterStream &writeRust(Operation &operation,
     op.writeRust(PS);
   else if (RustBlockResultOp op = dyn_cast<RustBlockResultOp>(operation))
     op.writeRust(PS);
+  else if (RustMakeStructOp op = dyn_cast<RustMakeStructOp>(operation))
+    op.writeRust(PS);
   else if (RustMethodCallOp op = dyn_cast<RustMethodCallOp>(operation))
     op.writeRust(PS);
   else if (RustTupleOp op = dyn_cast<RustTupleOp>(operation))
@@ -335,6 +337,19 @@ void RustUnaryOp::writeRust(RustPrinterStream &PS) {
   auto r = getResult();
   PS << "let " << r << ":" << r.getType() << " = " << getOperator() << "("
      << getOperand() << ");\n";
+}
+
+void RustMakeStructOp::writeRust(RustPrinterStream &PS) {
+  auto r = getResult();
+  RustStructType st = r.getType().cast<RustStructType>();
+  PS << "let " << r << ":" << st << " = " << st << " { ";
+  auto args = operands();
+  for (unsigned i = 0; i < args.size(); i++) {
+    if (i != 0)
+      PS << ", ";
+    PS << st.getFieldName(i) << " : " << args[i];
+  }
+  PS << "};\n";
 }
 
 void RustMethodCallOp::writeRust(RustPrinterStream &PS) {

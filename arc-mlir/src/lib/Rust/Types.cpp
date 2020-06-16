@@ -143,6 +143,7 @@ struct RustStructTypeStorage : public TypeStorage {
   RustPrinterStream &printAsRust(RustPrinterStream &os) const;
   raw_ostream &printAsRustNamedType(raw_ostream &os) const;
   void print(DialectAsmPrinter &os) const { os << getRustType(); }
+  StringRef getFieldName(unsigned idx) const;
 
   std::string getRustType() const;
   unsigned getStructTypeId() const;
@@ -169,6 +170,14 @@ RustPrinterStream &RustStructType::printAsRust(RustPrinterStream &os) const {
 
 raw_ostream &RustStructType::printAsRustNamedType(raw_ostream &os) const {
   return getImpl()->printAsRustNamedType(os);
+}
+
+StringRef RustStructType::getFieldName(unsigned idx) const {
+  return getImpl()->getFieldName(idx);
+}
+
+StringRef RustStructTypeStorage::getFieldName(unsigned idx) const {
+  return structFields[idx].first.getValue();
 }
 
 std::string RustStructType::getRustType() const {

@@ -86,6 +86,7 @@ public:
   raw_ostream &printAsRustNamedType(raw_ostream &os) const;
   std::string getRustType() const;
   unsigned getStructTypeId() const;
+  StringRef getFieldName(unsigned idx) const;
 
   typedef std::pair<mlir::StringAttr, Type> StructFieldTy;
   static RustStructType get(RustDialect *dialect,

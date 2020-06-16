@@ -54,6 +54,8 @@ class Rust_Op<string mnemonic, list<OpTrait> traits = []>
     : Op<Rust_Dialect, mnemonic, traits>;
 
 def AnyRustType : Type<CPred<"$_self.isa<RustType>() || $_self.isa<RustStructType>()">, "any RustType">;
+def AnyRustStruct :
+    Type<CPred<"$_self.isa<RustStructType>()">, "any RustStruct">;
 def BoolRustType : Type<CPred<"$_self.isa<RustType>() && $_self.cast<RustType>().isBool()">, "a Rust boolean type">;
 
 //===----------------------------------------------------------------------===//
@@ -284,6 +286,20 @@ def Rust_RustDependencyOp : Rust_Op<"dependency", [NoSideEffect]> {
   let extraClassDeclaration = [{
     Attribute getCrate() { return getAttr("crate"); }
     Attribute getVersion() { return getAttr("version"); }
+  }];
+}
+
+def Rust_RustMakeStructOp
+    : Rust_Op<"make_struct", []> {
+  let summary = "constructs a struct";
+  let description = [{
+    "rust.struct" constructs a tuple
+  }];
+  let arguments = (ins Variadic<AnyRustType>:$operands);
+  let results = (outs AnyRustStruct);
+  let extraClassDeclaration = [{
+    // Write this operation as Rust code to the stream
+    void writeRust(RustPrinterStream &);
   }];
 }
 
