@@ -22,6 +22,7 @@
 
 #include "Rust/Types.h"
 #include "Rust/Rust.h"
+#include "Rust/RustPrinterStream.h"
 #include <llvm/Support/raw_ostream.h>
 #include <mlir/IR/DialectImplementation.h>
 #include <mlir/IR/StandardTypes.h>
@@ -112,6 +113,120 @@ RustType RustType::getTupleTy(RustDialect *dialect,
   }
   s << ")";
   return RustType::get(dialect->getContext(), s.str());
+}
+//===----------------------------------------------------------------------===//
+// RustStructType
+//===----------------------------------------------------------------------===//
+
+struct RustStructTypeStorage : public TypeStorage {
+  RustStructTypeStorage(ArrayRef<RustStructType::StructFieldTy> fields,
+                        unsigned id)
+      : structFields(fields.begin(), fields.end()), id(id) {}
+
+  SmallVector<RustStructType::StructFieldTy, 4> structFields;
+  unsigned id;
+
+  using KeyTy = ArrayRef<RustStructType::StructFieldTy>;
+
+  bool operator==(const KeyTy &key) const { return key == KeyTy(structFields); }
+
+  static llvm::hash_code hashKey(const KeyTy &key) {
+    return llvm::hash_combine(key);
+  }
+
+  static RustStructTypeStorage *construct(TypeStorageAllocator &allocator,
+                                          const KeyTy &key) {
+    return new (allocator.allocate<RustStructTypeStorage>())
+        RustStructTypeStorage(key, idCounter++);
+  }
+
+  RustPrinterStream &printAsRust(RustPrinterStream &os) const;
+  raw_ostream &printAsRustNamedType(raw_ostream &os) const;
+  void print(DialectAsmPrinter &os) const { os << getRustType(); }
+
+  std::string getRustType() const;
+  unsigned getStructTypeId() const;
+
+private:
+  static unsigned idCounter;
+};
+
+unsigned RustStructTypeStorage::idCounter = 0;
+
+RustStructType RustStructType::get(RustDialect *dialect,
+                                   ArrayRef<StructFieldTy> fields) {
+  mlir::MLIRContext *ctx = fields.front().second.getContext();
+  return Base::get(ctx, rust::types::RUST_STRUCT, fields);
+}
+
+void RustStructType::print(DialectAsmPrinter &os) const {
+  getImpl()->print(os);
+}
+
+RustPrinterStream &RustStructType::printAsRust(RustPrinterStream &os) const {
+  return getImpl()->printAsRust(os);
+}
+
+raw_ostream &RustStructType::printAsRustNamedType(raw_ostream &os) const {
+  return getImpl()->printAsRustNamedType(os);
+}
+
+std::string RustStructType::getRustType() const {
+  return getImpl()->getRustType();
+}
+
+unsigned RustStructTypeStorage::getStructTypeId() const { return id; }
+
+unsigned RustStructType::getStructTypeId() const {
+  return getImpl()->getStructTypeId();
+}
+std::string RustStructTypeStorage::getRustType() const {
+  std::string str;
+  llvm::raw_string_ostream s(str);
+
+  s << "struct#" << id << "<";
+  for (unsigned i = 0; i < structFields.size(); i++) {
+    if (i != 0)
+      s << ",";
+    s << structFields[i].first.getValue() << ":" << structFields[i].second;
+  }
+  s << ">";
+
+  return s.str();
+}
+
+RustPrinterStream &
+RustStructTypeStorage::printAsRust(RustPrinterStream &ps) const {
+
+  llvm::raw_ostream &os = ps.getNamedTypesStream();
+
+  // First ensure that any structs used by this struct are defined
+  for (unsigned i = 0; i < structFields.size(); i++)
+    if (structFields[i].second.isa<RustStructType>())
+      ps.writeStructDefiniton(structFields[i].second.cast<RustStructType>());
+
+  os << "pub struct ";
+  printAsRustNamedType(os) << " {\n  ";
+
+  for (unsigned i = 0; i < structFields.size(); i++) {
+    if (i != 0)
+      os << ",\n  ";
+    os << structFields[i].first.getValue() << " : ";
+    Type t = structFields[i].second;
+    if (t.isa<RustType>())
+      t.cast<RustType>().printAsRust(os);
+    else
+      t.cast<RustStructType>().printAsRustNamedType(os);
+  }
+  os << "\n}\n";
+  return ps;
+}
+
+raw_ostream &
+RustStructTypeStorage::printAsRustNamedType(raw_ostream &os) const {
+
+  os << "ArcStruct" << id;
+  return os;
 }
 
 } // namespace types

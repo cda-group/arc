@@ -29,7 +29,7 @@
 using namespace mlir;
 
 namespace rust {
-
+class RustPrinterStream;
 class RustDialect;
 
 namespace types {
@@ -40,6 +40,7 @@ namespace types {
 
 enum Kind {
   RUST_TYPE = Type::Kind::FIRST_PRIVATE_EXPERIMENTAL_1_TYPE,
+  RUST_STRUCT
 };
 
 //===----------------------------------------------------------------------===//
@@ -47,6 +48,7 @@ enum Kind {
 //===----------------------------------------------------------------------===//
 
 struct RustTypeStorage;
+struct RustStructTypeStorage;
 
 //===----------------------------------------------------------------------===//
 // Rust Types
@@ -67,7 +69,29 @@ public:
   static RustType getDoubleTy(RustDialect *dialect);
   static RustType getIntegerTy(RustDialect *dialect, IntegerType ty);
   static RustType getTupleTy(RustDialect *dialect, ArrayRef<RustType> elements);
+
+  typedef std::pair<mlir::StringAttr, Type> StructFieldTy;
+  // static RustType getStructTy(RustDialect *dialect,
+  //                             ArrayRef<StructFieldTy> fieldss);
 };
+
+class RustStructType
+    : public Type::TypeBase<RustStructType, Type, RustStructTypeStorage> {
+public:
+  using Base::Base;
+
+  static bool kindof(unsigned kind) { return kind == RUST_STRUCT; }
+  void print(DialectAsmPrinter &os) const;
+  rust::RustPrinterStream &printAsRust(rust::RustPrinterStream &os) const;
+  raw_ostream &printAsRustNamedType(raw_ostream &os) const;
+  std::string getRustType() const;
+  unsigned getStructTypeId() const;
+
+  typedef std::pair<mlir::StringAttr, Type> StructFieldTy;
+  static RustStructType get(RustDialect *dialect,
+                            ArrayRef<StructFieldTy> fields);
+};
+
 } // namespace types
 } // namespace rust
 

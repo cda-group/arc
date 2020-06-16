@@ -65,6 +65,7 @@ protected:
   Type convertFunctionType(FunctionType type);
   Type convertIntegerType(IntegerType type);
   Type convertTupleType(TupleType type);
+  Type convertStructType(arc::types::StructType type);
 };
 
 struct ReturnOpLowering : public ConversionPattern {
@@ -456,9 +457,12 @@ RustTypeConverter::RustTypeConverter(MLIRContext *ctx)
   addConversion([&](FunctionType type) { return convertFunctionType(type); });
   addConversion([&](IntegerType type) { return convertIntegerType(type); });
   addConversion([&](TupleType type) { return convertTupleType(type); });
+  addConversion(
+      [&](arc::types::StructType type) { return convertStructType(type); });
 
   // RustType is legal, so add a pass-through conversion.
   addConversion([](rust::types::RustType type) { return type; });
+  addConversion([](rust::types::RustStructType type) { return type; });
 }
 
 Type RustTypeConverter::convertFloatType(FloatType type) {
@@ -495,6 +499,15 @@ Type RustTypeConverter::convertIntegerType(IntegerType type) {
   default:
     return emitError(UnknownLoc::get(Ctx), "unsupported type"), Type();
   }
+}
+
+Type RustTypeConverter::convertStructType(arc::types::StructType type) {
+  SmallVector<rust::types::RustType::StructFieldTy, 4> fields;
+  for (const auto &f : type.getFields()) {
+    Type t = convertType(f.second);
+    fields.push_back(std::make_pair(f.first, t));
+  }
+  return rust::types::RustStructType::get(Dialect, fields);
 }
 
 Type RustTypeConverter::convertTupleType(TupleType type) {

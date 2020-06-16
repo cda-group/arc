@@ -44,6 +44,7 @@ RustDialect::RustDialect(mlir::MLIRContext *ctx) : mlir::Dialect("rust", ctx) {
 #include "Rust/Rust.cpp.inc"
       >();
   addTypes<RustType>();
+  addTypes<RustStructType>();
 
   floatTy = RustType::get(ctx, "f32");
   doubleTy = RustType::get(ctx, "f64");
@@ -80,6 +81,9 @@ void RustDialect::printType(Type type, DialectAsmPrinter &os) const {
     llvm_unreachable("Unhandled Rust type");
   case RUST_TYPE:
     type.cast<RustType>().print(os);
+    break;
+  case RUST_STRUCT:
+    type.cast<RustStructType>().print(os);
     break;
   }
 }
@@ -151,8 +155,12 @@ RustPrinterStream &operator<<(RustPrinterStream &os, const Value &v) {
   return os.print(v);
 }
 
-RustPrinterStream &operator<<(RustPrinterStream &os, const RustType &t) {
-  return os.print(t);
+RustPrinterStream &operator<<(RustPrinterStream &os, const Type &t) {
+  if (t.isa<RustType>())
+    os.print(t.cast<RustType>().getRustType());
+  else
+    os.print(t.cast<RustStructType>());
+  return os;
 }
 } // namespace rust
 
@@ -299,13 +307,11 @@ void RustFuncOp::writeRust(RustPrinterStream &PS) {
     if (i != 0)
       PS << ", ";
     Value v = front().getArgument(i);
-    RustType t = v.getType().cast<RustType>();
-    PS << v << ": " << t;
+    PS << v << ": " << v.getType();
   }
   PS << ") ";
   if (getNumFuncResults()) { // The return type
-    RustType funReturnType = getType().getResult(0).cast<RustType>();
-    PS << "-> " << funReturnType << " ";
+    PS << "-> " << getType().getResult(0) << " ";
   }
 
   // Dumping the body
@@ -327,16 +333,14 @@ void RustConstantOp::writeRust(RustPrinterStream &PS) { PS.getConstant(*this); }
 
 void RustUnaryOp::writeRust(RustPrinterStream &PS) {
   auto r = getResult();
-  types::RustType rt = r.getType().cast<types::RustType>();
-  PS << "let " << r << ":" << rt << " = " << getOperator() << "("
+  PS << "let " << r << ":" << r.getType() << " = " << getOperator() << "("
      << getOperand() << ");\n";
 }
 
 void RustMethodCallOp::writeRust(RustPrinterStream &PS) {
   auto r = getResult();
-  types::RustType rt = r.getType().cast<types::RustType>();
-  PS << "let " << r << ":" << rt << " = " << obj() << "." << getMethod()
-     << "(";
+  PS << "let " << r << ":" << r.getType() << " = " << obj() << "."
+     << getMethod() << "(";
   auto args = operands();
   for (unsigned i = 0; i < args.size(); i++) {
     if (i != 0)
@@ -348,29 +352,25 @@ void RustMethodCallOp::writeRust(RustPrinterStream &PS) {
 
 void RustBinaryOp::writeRust(RustPrinterStream &PS) {
   auto r = getResult();
-  types::RustType rt = r.getType().cast<types::RustType>();
-  PS << "let " << r << ":" << rt << " = " << LHS() << " " << getOperator()
-     << " " << RHS() << ";\n";
+  PS << "let " << r << ":" << r.getType() << " = " << LHS() << " "
+     << getOperator() << " " << RHS() << ";\n";
 }
 
 void RustCompOp::writeRust(RustPrinterStream &PS) {
   auto r = getResult();
-  types::RustType rt = r.getType().cast<types::RustType>();
-  PS << "let " << r << ":" << rt << " = " << LHS() << " " << getOperator()
-     << " " << RHS() << ";\n";
+  PS << "let " << r << ":" << r.getType() << " = " << LHS() << " "
+     << getOperator() << " " << RHS() << ";\n";
 }
 
 void RustFieldAccessOp::writeRust(RustPrinterStream &PS) {
   auto r = getResult();
-  types::RustType rt = r.getType().cast<types::RustType>();
-  PS << "let " << r << ":" << rt << " = " << aggregate() << "." << getField()
-     << ";\n";
+  PS << "let " << r << ":" << r.getType() << " = " << aggregate() << "."
+     << getField() << ";\n";
 }
 
 void RustIfOp::writeRust(RustPrinterStream &PS) {
   auto r = getResult();
-  types::RustType rt = r.getType().cast<types::RustType>();
-  PS << "let " << r << ":" << rt << " = if " << getOperand() << " {\n";
+  PS << "let " << r << ":" << r.getType() << " = if " << getOperand() << " {\n";
   for (Operation &operation : thenRegion().front())
     ::writeRust(operation, PS);
   PS << "} else {\n";
@@ -385,8 +385,7 @@ void RustBlockResultOp::writeRust(RustPrinterStream &PS) {
 
 void RustTupleOp::writeRust(RustPrinterStream &PS) {
   auto r = getResult();
-  types::RustType rt = r.getType().cast<types::RustType>();
-  PS << "let " << r << ":" << rt << " = (";
+  PS << "let " << r << ":" << r.getType() << " = (";
   auto args = operands();
   for (unsigned i = 0; i < args.size(); i++) {
     if (i != 0)
