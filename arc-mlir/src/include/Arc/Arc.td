@@ -461,6 +461,7 @@ def StructAccessOp : Arc_Op<"struct_access", [NoSideEffect]> {
   let results = (outs AnyType);
   let extraClassDeclaration = [{ LogicalResult customVerify(); }];
   let verifier = [{ return customVerify(); }];
+  let hasCanonicalizer = 1;
 }
 
 // Base class for standard arithmetic operations.  Requires operands
