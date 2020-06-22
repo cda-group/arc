@@ -39,8 +39,7 @@ def Rust_Dialect : Dialect {
   let extraClassDeclaration = [{
       Type parseType(DialectAsmParser &parser) const override;
       void printType(Type type, DialectAsmPrinter &os) const override;
-      types::RustType floatTy, doubleTy,
-                      boolTy,
+      types::RustType floatTy, doubleTy, boolTy,
                       i8Ty, i16Ty, i32Ty, i64Ty,
                       u8Ty, u16Ty, u32Ty, u64Ty;
   }];
@@ -54,7 +53,9 @@ def Rust_Dialect : Dialect {
 class Rust_Op<string mnemonic, list<OpTrait> traits = []>
     : Op<Rust_Dialect, mnemonic, traits>;
 
-def AnyRustType : Type<CPred<"$_self.isa<RustType>()">, "any RustType">;
+def AnyRustType : Type<CPred<"$_self.isa<RustType>() || $_self.isa<RustStructType>()">, "any RustType">;
+def AnyRustStruct :
+    Type<CPred<"$_self.isa<RustStructType>()">, "any RustStruct">;
 def BoolRustType : Type<CPred<"$_self.isa<RustType>() && $_self.cast<RustType>().isBool()">, "a Rust boolean type">;
 
 //===----------------------------------------------------------------------===//
@@ -102,7 +103,7 @@ def Rust_RustReturnOp : Rust_Op<"return", [HasParent<"RustFuncOp">,
     by an incovation of the `rust.func`.
   }];
 
-  let arguments = (ins AnyRustType:$result);
+  let arguments = (ins Optional<AnyRustType>:$operands);
 
   let verifier = [{ return ::verify(*this); }];
 
@@ -285,6 +286,20 @@ def Rust_RustDependencyOp : Rust_Op<"dependency", [NoSideEffect]> {
   let extraClassDeclaration = [{
     Attribute getCrate() { return getAttr("crate"); }
     Attribute getVersion() { return getAttr("version"); }
+  }];
+}
+
+def Rust_RustMakeStructOp
+    : Rust_Op<"make_struct", []> {
+  let summary = "constructs a struct";
+  let description = [{
+    "rust.struct" constructs a tuple
+  }];
+  let arguments = (ins Variadic<AnyRustType>:$operands);
+  let results = (outs AnyRustStruct);
+  let extraClassDeclaration = [{
+    // Write this operation as Rust code to the stream
+    void writeRust(RustPrinterStream &);
   }];
 }
 

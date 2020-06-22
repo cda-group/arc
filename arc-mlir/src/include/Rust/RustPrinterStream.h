@@ -23,6 +23,10 @@
 #ifndef RUST_PRINTER_STREAM_H_
 #define RUST_PRINTER_STREAM_H_
 
+namespace rust {
+class RustPrinterStream;
+};
+
 #include "Rust/Rust.h"
 #include "Rust/Types.h"
 #include "mlir/IR/Attributes.h"
@@ -44,31 +48,37 @@ namespace rust {
 class RustPrinterStream {
   llvm::raw_ostream &OS;
 
-  llvm::raw_string_ostream Constants, Body;
+  llvm::raw_string_ostream Constants, NamedTypes, Body;
 
-  std::string ConstantsStr, BodyStr;
+  std::string ConstantsStr, NamedTypesStr, BodyStr;
 
   // Variables are using positive IDs, constants are assigned negative
   // IDs.
   int NextID, NextConstID;
   DenseMap<Value, int> Value2ID;
 
+  // Tracking of the named types which has already been output.
+  DenseSet<unsigned> OutputNamedTypes;
+
   std::map<std::string, std::string> CrateDependencies;
   std::map<std::string, std::string> CrateDirectives;
 
 public:
   RustPrinterStream(llvm::raw_ostream &os)
-      : OS(os), Constants(ConstantsStr), Body(BodyStr), NextID(0),
-        NextConstID(0){};
+      : OS(os), Constants(ConstantsStr), NamedTypes(NamedTypesStr),
+        Body(BodyStr), NextID(0), NextConstID(0){};
 
   void flush() {
     for (auto i : CrateDirectives)
       OS << i.second << "\n";
     OS << Constants.str();
+    OS << NamedTypes.str();
     OS << Body.str();
   }
 
   llvm::raw_ostream &getBodyStream() { return Body; }
+
+  llvm::raw_ostream &getNamedTypesStream() { return NamedTypes; }
 
   llvm::raw_ostream &getConstantsStream() { return Constants; }
 
@@ -109,6 +119,22 @@ public:
   RustPrinterStream &print(types::RustType t) {
     t.printAsRust(Body);
     return *this;
+  }
+
+  RustPrinterStream &print(types::RustStructType t) {
+    writeStructDefiniton(t);
+    t.printAsRustNamedType(Body);
+    return *this;
+  }
+
+  void writeStructDefiniton(types::RustStructType t) {
+    unsigned id = t.getStructTypeId();
+
+    // Only output a struct definition once
+    if (OutputNamedTypes.find(id) == OutputNamedTypes.end()) {
+      OutputNamedTypes.insert(id);
+      t.printAsRust(*this);
+    }
   }
 
   template <typename T>

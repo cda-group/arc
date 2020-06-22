@@ -91,6 +91,7 @@ def ArcIntegerLike : TypeConstraint<Or<[
 
 def AnyBuilder : Type<CPred<"$_self.isa<BuilderType>()">, "any builder">;
 def AnyAppender : Type<CPred<"$_self.isa<AppenderType>()">, "any appender">;
+def AnyStruct : Type<CPred<"$_self.isa<StructType>()">, "any struct">;
 
 //===----------------------------------------------------------------------===//
 // Arc Traits
@@ -203,6 +204,24 @@ def ErfOp : Arc_FloatUnaryOp<"erf"> {
     It takes one operand and returns one result of the same type. This type may
     be a float scalar type, a vector whose element type is float, or a tensor of
     floats. It has no standard attributes.
+  }];
+}
+
+def MakeStructOp : Arc_Op<"make_struct", [NoSideEffect]> {
+  let summary = "create a struct from a sequence of values";
+  let description = [{
+    A pure operation which turns its arguments into a struct.
+    ```
+    %r = arc.make_struct(%a, %b : i32, f32) : !arc.struct<a : i32, b : f32>
+    ```
+  }];
+  let arguments = (ins Variadic<AnyType>:$values);
+  let results = (outs AnyStruct:$result);
+  let extraClassDeclaration = [{ LogicalResult customVerify(); }];
+  let verifier = [{ return customVerify(); }];
+
+  let assemblyFormat = [{
+    (`(` $values^ `:` type($values) `)`)? attr-dict `:` type($result)
   }];
 }
 

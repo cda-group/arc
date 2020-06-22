@@ -46,6 +46,7 @@ ArcDialect::ArcDialect(mlir::MLIRContext *ctx) : mlir::Dialect("arc", ctx) {
 #include "Arc/Arc.cpp.inc"
       >();
   addTypes<AppenderType>();
+  addTypes<StructType>();
 }
 
 //===----------------------------------------------------------------------===//
@@ -58,6 +59,8 @@ Type ArcDialect::parseType(DialectAsmParser &parser) const {
     return nullptr;
   if (keyword == "appender")
     return AppenderType::parse(parser);
+  if (keyword == "struct")
+    return StructType::parse(parser);
   parser.emitError(parser.getNameLoc(), "unknown type keyword " + keyword);
   return nullptr;
 }
@@ -72,6 +75,9 @@ void ArcDialect::printType(Type type, DialectAsmPrinter &os) const {
     llvm_unreachable("Unhandled Arc type");
   case Appender:
     type.cast<AppenderType>().print(os);
+    break;
+  case Struct:
+    type.cast<StructType>().print(os);
     break;
   }
 }
@@ -225,6 +231,24 @@ LogicalResult MakeVectorOp::customVerify() {
                "result does not match the number of operands: expected ")
            << TensorTy.getNumElements() << " but found " << NumOperands
            << " operands";
+  return mlir::success();
+}
+
+LogicalResult MakeStructOp::customVerify() {
+  auto Operation = this->getOperation();
+  auto NumOperands = Operation->getNumOperands();
+  auto StructTy = Operation->getResult(0).getType().cast<StructType>();
+  auto FieldTys = StructTy.getFields();
+  if (NumOperands != StructTy.getNumFields())
+    return emitOpError("expected ")
+           << StructTy.getNumFields() << " fields, but found " << NumOperands;
+  unsigned I = 0;
+  for (const Type &ElemTy : Operation->getOperands().getTypes()) {
+    if (FieldTys[I].second != ElemTy)
+      return emitOpError("operand types do not match: expected ")
+             << FieldTys[I].second << " but found " << ElemTy;
+    I++;
+  }
   return mlir::success();
 }
 
