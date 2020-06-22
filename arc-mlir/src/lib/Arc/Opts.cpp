@@ -112,6 +112,32 @@ struct ConstantFoldIndexTuple
   }
 };
 
+struct ConstantFoldStructAccess
+    : public mlir::OpRewritePattern<arc::StructAccessOp> {
+  ConstantFoldStructAccess(MLIRContext *ctx)
+      : OpRewritePattern<arc::StructAccessOp>(ctx, /*benefit=*/1) {}
+
+  mlir::LogicalResult
+  matchAndRewrite(arc::StructAccessOp op,
+                  PatternRewriter &rewriter) const override {
+    Operation *def = op.value().getDefiningOp();
+    auto field = op.field();
+    arc::MakeStructOp ms = dyn_cast_or_null<arc::MakeStructOp>(def);
+    if (!ms)
+      return failure();
+    auto st = ms.getType().cast<arc::types::StructType>();
+    unsigned idx = 0;
+    for (auto &i : st.getFields()) {
+      if (i.first.getValue().equals(field)) {
+        rewriter.replaceOp(op, ms.values()[idx]);
+        return success();
+      }
+      idx++;
+    }
+    return failure();
+  }
+};
+
 #include "Arc/ArcOpts.h.inc"
 
 } // end anonymous namespace
@@ -129,4 +155,9 @@ void IfOp::getCanonicalizationPatterns(OwningRewritePatternList &results,
 void IndexTupleOp::getCanonicalizationPatterns(
     OwningRewritePatternList &results, MLIRContext *ctx) {
   results.insert<ConstantFoldIndexTuple>(ctx);
+}
+
+void StructAccessOp::getCanonicalizationPatterns(
+    OwningRewritePatternList &results, MLIRContext *ctx) {
+  results.insert<ConstantFoldStructAccess>(ctx);
 }

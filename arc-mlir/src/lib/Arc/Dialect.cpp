@@ -340,6 +340,23 @@ LogicalResult ResultOp::customVerify() {
   return mlir::success();
 }
 
+LogicalResult StructAccessOp::customVerify() {
+  auto Operation = this->getOperation();
+  auto ResultTy = Operation->getResult(0).getType();
+  auto StructTy = Operation->getOperand(0).getType().cast<StructType>();
+  auto Field = getAttrOfType<StringAttr>("field").getValue();
+  for (auto &i : StructTy.getFields())
+    if (i.first.getValue().equals(Field)) {
+      if (i.second == ResultTy)
+        return mlir::success();
+      else
+        return emitOpError("field '")
+               << Field << "' does not have a matching type, expected "
+               << ResultTy << " but found " << i.second;
+    }
+  return emitOpError("field '") << Field << "' does not exist in " << StructTy;
+}
+
 OpFoldResult AddIOp::fold(ArrayRef<Attribute> operands) {
   /// addi(x, 0) -> x
   if (matchPattern(rhs(), m_Zero()))

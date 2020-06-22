@@ -447,6 +447,23 @@ def Arc_SelectOp : Arc_Op<"select", [NoSideEffect, SameOperandsAndResultShape,
   }];
 }
 
+def StructAccessOp : Arc_Op<"struct_access", [NoSideEffect]> {
+  let summary = "access a field of a struct";
+  let description = [{
+    A pure operation which acccesses a field of a struct.
+
+    ```
+    %s = arc.make_struct(%x : si32) : !arc.struct<x : si32>
+    %elem = "arc.struct_access"(%s) { field = "x" } : (!arc.struct<x : si32>) -> si32
+    ```
+  }];
+  let arguments = (ins AnyStruct:$value, StrAttr : $field);
+  let results = (outs AnyType);
+  let extraClassDeclaration = [{ LogicalResult customVerify(); }];
+  let verifier = [{ return customVerify(); }];
+  let hasCanonicalizer = 1;
+}
+
 // Base class for standard arithmetic operations.  Requires operands
 // and results to be of the same type, but does not constrain them to
 // specific types. Individual classes will have `lhs` and `rhs`
