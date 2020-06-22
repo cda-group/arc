@@ -576,6 +576,11 @@ struct FuncOpLowering : public ConversionPattern {
 
     rewriter.inlineRegionBefore(func.getBody(), newOp.getBody(), newOp.end());
     rewriter.applySignatureConversion(&newOp.getBody(), sigConv);
+
+    if (failed(rewriter.convertRegionTypes(&newOp.getBody(), TypeConverter,
+                                           &sigConv)))
+      return failure();
+
     rewriter.eraseOp(op);
     return success();
   };
@@ -659,8 +664,7 @@ void ArcToRustLoweringPass::runOnOperation() {
   patterns.insert<MakeTupleOpLowering>(&getContext(), typeConverter);
   patterns.insert<MakeStructOpLowering>(&getContext(), typeConverter);
 
-  if (failed(applyFullConversion(getOperation(), target, patterns,
-                                 &typeConverter)))
+  if (failed(applyFullConversion(getOperation(), target, patterns)))
     signalPassFailure();
 }
 
