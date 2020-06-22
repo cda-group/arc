@@ -469,6 +469,26 @@ private:
                                               "tanh", "ln",   "exp",  "sqrt"};
 };
 
+struct StructAccessOpLowering : public ConversionPattern {
+  StructAccessOpLowering(MLIRContext *ctx, RustTypeConverter &typeConverter)
+      : ConversionPattern(arc::StructAccessOp::getOperationName(), 1, ctx),
+        TypeConverter(typeConverter) {}
+
+  LogicalResult
+  matchAndRewrite(Operation *op, ArrayRef<Value> operands,
+                  ConversionPatternRewriter &rewriter) const final {
+    StructAccessOp o = cast<StructAccessOp>(op);
+    Type retTy = TypeConverter.convertType(o.getType());
+    std::string idx_str(o.field());
+    rewriter.replaceOpWithNewOp<rust::RustFieldAccessOp>(op, retTy, operands[0],
+                                                         idx_str);
+    return success();
+  };
+
+private:
+  RustTypeConverter &TypeConverter;
+};
+
 RustTypeConverter::RustTypeConverter(MLIRContext *ctx)
     : Ctx(ctx), Dialect(ctx->getRegisteredDialect<rust::RustDialect>()) {
   addConversion([&](FloatType type) { return convertFloatType(type); });
@@ -663,6 +683,7 @@ void ArcToRustLoweringPass::runOnOperation() {
   patterns.insert<BlockResultOpLowering>(&getContext(), typeConverter);
   patterns.insert<MakeTupleOpLowering>(&getContext(), typeConverter);
   patterns.insert<MakeStructOpLowering>(&getContext(), typeConverter);
+  patterns.insert<StructAccessOpLowering>(&getContext(), typeConverter);
 
   if (failed(applyFullConversion(getOperation(), target, patterns)))
     signalPassFailure();
