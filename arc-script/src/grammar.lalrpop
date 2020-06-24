@@ -52,6 +52,7 @@ match {
   "in",
   "fold",
   "fmap",
+  "imap",
   "fun",
   "end",
   "as",
@@ -99,7 +100,7 @@ match {
 //=============================================================================
 // Non-Postfixed
 //=============================================================================
-  r"[-]?[0-9]+"                                                => TI32Base10,
+  r"[-]?[0-9]+"                                                 => TI32Base10,
   r"0b[0-1]+"                                                   => TI32Base2,
   r"0x[0-9a-fA-F]+"                                             => TI32Base16,
   r"([0-9]+\.[0-9]+([eE]-?[0-9]+)?)|([0-9]+[eE]-?[0-9]+)"       => TF64Base10,
@@ -315,12 +316,13 @@ LitScalar: Lit = {
   LitF32  => <>.map(Lit::F32).unwrap_or(Lit::Error),
   LitF64  => <>.map(Lit::F64).unwrap_or(Lit::Error),
   LitBool => <>.map(Lit::Bool).unwrap_or(Lit::Error),
-}
+};
 
 BIF: Bif = {
   "dataset" <Paren<Box<Arg>>>                 => Bif::Dataset(<>),
   "fold" <Paren<(<Box<Arg>> "," <Box<Arg>>)>> => Bif::Fold(<>.0, <>.1),
   "fmap" <Paren<Box<Arg>>>                    => Bif::Fmap(<>),
+  "imap" <OptionalType> <Paren<Box<Arg>>>     => Bif::Imap(<>),
 };
 
 //=============================================================================

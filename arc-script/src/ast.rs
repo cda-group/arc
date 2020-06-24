@@ -125,6 +125,7 @@ pub enum Bif {
     Dataset(Box<Expr>),
     Fold(Box<Expr>, Box<Expr>),
     Fmap(Box<Expr>),
+    Imap(Type, Box<Expr>),
     Error,
 }
 
