@@ -42,7 +42,7 @@ impl<'i> Reporter<'i> {
         }
         format!(
             "\n{}",
-            std::str::from_utf8(&mut writer.into_inner())
+            std::str::from_utf8(&writer.into_inner())
                 .unwrap()
                 .to_owned()
         )
@@ -119,25 +119,25 @@ impl From<CompilerError> for Diagnostic {
                 .with_labels(vec![Label::primary((), span)
                     .with_message(format!("expected {}", expected.join(", ")))]),
             CompilerError::TypeMismatch { lhs, rhs, span } => Diagnostic::error()
-                .with_message(format!("Type mismatch"))
+                .with_message("Type mismatch")
                 .with_labels(vec![
                     Label::primary((), span).with_message(format!("{} != {}", lhs, rhs))
                 ]),
             CompilerError::VarNotFound { name, span } => Diagnostic::error()
                 .with_message(format!("Identifier `{}` not bound to anything", name))
                 .with_labels(vec![
-                    Label::primary((), span).with_message(format!("Used here"))
+                    Label::primary((), span).with_message("Used here")
                 ]),
             CompilerError::DisallowedDimExpr { span } => Diagnostic::error()
-                .with_message(format!("Disallowed expression in dimension"))
+                .with_message("Disallowed expression in dimension")
                 .with_labels(vec![
-                    Label::primary((), span).with_message(format!("Found here"))
+                    Label::primary((), span).with_message("Found here")
                 ]),
             CompilerError::ShapeUnsat => {
-                Diagnostic::error().with_message(format!("Unsatisfiable shape"))
+                Diagnostic::error().with_message("Unsatisfiable shape")
             }
             CompilerError::ShapeUnknown => {
-                Diagnostic::error().with_message(format!("Unknown shape"))
+                Diagnostic::error().with_message("Unknown shape")
             }
         }
     }

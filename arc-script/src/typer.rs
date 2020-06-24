@@ -13,13 +13,18 @@ impl Typer {
         Typer { context, errors }
     }
 }
+impl Default for Typer {
+    fn default() -> Typer {
+        Typer::new()
+    }
+}
 
 pub struct Typer {
     context: Context,
     errors: Vec<CompilerError>,
 }
 
-fn type_mismatch<'i>((lhs, rhs): (TypeKind, TypeKind), span: Span) -> CompilerError {
+fn type_mismatch((lhs, rhs): (TypeKind, TypeKind), span: Span) -> CompilerError {
     CompilerError::TypeMismatch {
         lhs: lhs.to_string(),
         rhs: rhs.to_string(),
@@ -82,7 +87,7 @@ impl UnifyValue for TypeKind {
             (x, Error) | (Error, x) => Ok(x),
             (Array(ty1, sh1), Array(ty2, sh2)) => match (&sh1.kind, &sh2.kind) {
                 (Ranked(r1), Ranked(r2)) if r1.len() != r2.len() => {
-                    Err((Array(ty1.clone(), sh1), Array(ty2.clone(), sh2)))
+                    Err((Array(ty1, sh1), Array(ty2, sh2)))
                 }
                 (Ranked(_), Ranked(_)) => Ok(Array(ty1, sh1)),
                 (Ranked(_), Unranked) | (Unranked, Ranked(_)) => Ok(Array(ty2, sh1)),
@@ -161,7 +166,7 @@ impl Expr {
             }
             ExprKind::Bif(_) => unimplemented!(),
             ExprKind::Call(_, _) => unimplemented!(),
-            ExprKind::Error => return,
+            ExprKind::Error => {},
         }
     }
 }

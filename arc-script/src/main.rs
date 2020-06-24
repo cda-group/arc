@@ -3,7 +3,7 @@ use arc_script::{diagnose, io::*, opt::*};
 pub type Error = Box<dyn std::error::Error + 'static>;
 
 pub fn main() -> Result<(), Error> {
-    let ref opt: Opt = Opt::get();
+    let opt = &Opt::get();
     match &opt.subcmd {
         SubCmd::Repl => run_repl(opt)?,
         SubCmd::File(c) => diagnose(&read_file(&c.path)?, opt),

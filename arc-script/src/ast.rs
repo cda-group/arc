@@ -67,6 +67,10 @@ impl Uid {
     }
 }
 
+impl Default for Uid {
+    fn default() -> Self { Self::new() }
+}
+
 #[derive(Debug, Eq, PartialEq, Clone, Hash)]
 pub struct Ident {
     pub name: SmolStr,
@@ -169,6 +173,10 @@ impl Type {
     }
 }
 
+impl Default for Type {
+    fn default() -> Self { Self::new() }
+}
+
 #[derive(Debug, Eq, PartialEq, Clone)]
 pub enum TypeKind {
     I8,
@@ -251,6 +259,10 @@ impl Dim {
         let span = None;
         Dim { kind, span }
     }
+}
+
+impl Default for Dim {
+    fn default() -> Self { Self::new() }
 }
 
 impl From<Spanned<DimKind>> for Dim {

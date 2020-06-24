@@ -12,7 +12,7 @@ impl Expr {
         let (ctx, var) = self.flatten();
         ctx.into_iter().rev().fold(var, |acc, (id, expr)| Expr {
             ty: acc.ty.clone(),
-            span: acc.span.clone(),
+            span: acc.span,
             kind: ExprKind::Let(id, expr.ty.clone(), Box::new(expr), Box::new(acc)),
         })
     }

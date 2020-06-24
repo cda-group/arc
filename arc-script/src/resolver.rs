@@ -8,10 +8,11 @@ impl Expr {
         Uid::reset();
         self.for_each_expr(|expr, stack| match &mut expr.kind {
             ExprKind::Let(id, ..) => id.uid = Some(Uid::new()),
-            ExprKind::Var(id) => match id.lookup_with_name(stack) {
-                Some((_, _, uid)) => id.uid = uid,
-                _ => {}
-            },
+            ExprKind::Var(id) => {
+                if let Some((_, _, uid)) = id.lookup_with_name(stack) {
+                    id.uid = uid
+                }
+            }
             _ => {}
         })
     }
@@ -22,10 +23,11 @@ impl Expr {
     pub fn assign_scope(&mut self) {
         self.for_each_expr(|expr, stack| match &mut expr.kind {
             ExprKind::Let(id, ..) => id.scope = Some(stack.len()),
-            ExprKind::Var(id) => match id.lookup_with_uid(stack) {
-                Some((_, scope, _)) => id.scope = Some(scope),
-                _ => {}
-            },
+            ExprKind::Var(id) => {
+                if let Some((_, scope, _)) = id.lookup_with_uid(stack) {
+                    id.scope = Some(scope)
+                }
+            }
             _ => {}
         })
     }

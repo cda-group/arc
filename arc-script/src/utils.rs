@@ -1,6 +1,7 @@
 use crate::ast::*;
 
-pub type Stack = Vec<(Ident, Type)>;
+pub type StackElem = (Ident, Type);
+pub type Stack = Vec<StackElem>;
 
 impl Expr {
     pub fn for_each_expr<F: FnMut(&mut Expr, &mut Stack)>(&mut self, mut fun: F) {
@@ -20,15 +21,18 @@ impl Expr {
     }
 
     pub fn for_each_dim_expr<F: FnMut(&mut Expr, &mut Stack)>(&mut self, mut f: F) {
-        self.for_each_type(|ty, stack| match &mut ty.kind {
-            TypeKind::Array(_, shape) => match &mut shape.kind {
-                ShapeKind::Ranked(dims) => dims.iter_mut().for_each(|dim| match &mut dim.kind {
-                    DimKind::Expr(expr) => expr.for_each_expr_rec(&mut f, stack),
-                    DimKind::Unknown => {}
-                }),
-                ShapeKind::Unranked => {}
-            },
-            _ => {}
+        self.for_each_type(|ty, stack| {
+            if let TypeKind::Array(_, shape) = &mut ty.kind {
+                match &mut shape.kind {
+                    ShapeKind::Ranked(dims) => {
+                        dims.iter_mut().for_each(|dim| match &mut dim.kind {
+                            DimKind::Expr(expr) => expr.for_each_expr_rec(&mut f, stack),
+                            DimKind::Unknown => {}
+                        })
+                    }
+                    ShapeKind::Unranked => {}
+                }
+            }
         })
     }
 
@@ -112,18 +116,18 @@ impl Type {
 }
 
 impl Ident {
-    pub fn lookup_with_name(&self, stack: &Stack) -> Option<(Type, Scope, Option<Uid>)> {
+    pub fn lookup_with_name(&self, stack: &[StackElem]) -> Option<(Type, Scope, Option<Uid>)> {
         stack
             .iter()
             .enumerate()
             .rev()
             .find_map(|(scope, (id, ty))| match id.name == self.name {
-                true => Some((ty.clone(), scope, id.uid.clone())),
+                true => Some((ty.clone(), scope, id.uid)),
                 false => None,
             })
     }
 
-    pub fn lookup_with_uid(&self, stack: &Stack) -> Option<(Type, Scope, Option<Uid>)> {
+    pub fn lookup_with_uid(&self, stack: &[StackElem]) -> Option<(Type, Scope, Option<Uid>)> {
         self.uid.and_then(|ref uid1| {
             stack
                 .iter()
@@ -132,12 +136,12 @@ impl Ident {
                 .find_map(|(scope, (id, ty))| {
                     id.uid
                         .filter(|uid2| uid2 == uid1)
-                        .map(|_| (ty.clone(), scope, id.uid.clone()))
+                        .map(|_| (ty.clone(), scope, id.uid))
                 })
         })
     }
 
-    pub fn lookup_with_scope(&self, stack: &Stack) -> Option<(Type, Scope, Option<Uid>)> {
+    pub fn lookup_with_scope(&self, stack: &[StackElem]) -> Option<(Type, Scope, Option<Uid>)> {
         let scope = self
             .scope
             .expect("[ICE]: Tried to access unassigned scope.");
@@ -145,11 +149,11 @@ impl Ident {
     }
 }
 
-const TAB: &'static str = "  ";
+const TAB: &str = "  ";
 pub fn indent(indent: u32) -> String {
     format!(
         "\n{}",
-        (0..indent).into_iter().map(|_| TAB).collect::<String>()
+        (0..indent).map(|_| TAB).collect::<String>()
     )
 }
 

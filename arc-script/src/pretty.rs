@@ -57,7 +57,7 @@ impl Pretty for Fun {
 impl<A: Pretty> Pretty for Vec<A> {
     fn pretty(&self, i: u32, v: bool) -> String {
         self.iter()
-            .map(|e| format!("{}", e.pretty(i, v)))
+            .map(|e| e.pretty(i, v))
             .collect::<Vec<String>>()
             .join(", ")
     }
@@ -70,6 +70,7 @@ impl<A: Pretty, B: Pretty> Pretty for (A, B) {
 }
 
 impl Pretty for Expr {
+    #[allow(clippy::many_single_char_names)]
     fn pretty(&self, i: u32, v: bool) -> String {
         let expr = match &self.kind {
             ExprKind::If(c, t, e) => format!(
@@ -200,7 +201,7 @@ impl Pretty for Ident {
             uid = self
                 .uid
                 .map(|uid| uid.to_string())
-                .unwrap_or("?".to_string())
+                .unwrap_or_else(|| "?".to_string())
         )
     }
 }
