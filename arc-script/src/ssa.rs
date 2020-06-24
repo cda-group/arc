@@ -61,7 +61,7 @@ impl Ssa for Expr {
             kind => (vec![], kind),
         };
         let id = info.table.genvar(ty.clone());
-        let var = Self::new(Var(id.clone()), ty.clone(), span);
+        let var = Self::new(Var(id), ty.clone(), span);
         let expr = Self { kind, ty, span };
         ctx.push((id, expr));
         (ctx, var)

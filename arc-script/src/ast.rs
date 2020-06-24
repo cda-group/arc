@@ -1,3 +1,4 @@
+use crate::info::Info;
 use smol_str::SmolStr;
 use DimKind::*;
 use ExprKind::*;
@@ -5,7 +6,6 @@ use LitKind::*;
 use ShapeKind::*;
 use TypeKind::*;
 use {codespan::Span, derive_more::Constructor};
-use crate::info::Info;
 
 pub type ByteIndex = usize;
 

@@ -118,15 +118,11 @@ impl<'i> SymbolStack<'i> {
     }
 
     pub fn bind_global(&mut self, name: Symbol<'i>, ident: Ident) -> Result<(), CompilerError> {
-        if self
-            .globals()
-            .iter()
-            .find(|(needle, _)| name == *needle)
-            .is_some()
-        {
+        if self.globals().iter().any(|(needle, _)| name == *needle) {
             Err(CompilerError::NameClash)
         } else {
-            Ok(self.globals().push((name, ident)))
+            self.globals().push((name, ident));
+            Ok(())
         }
     }
 

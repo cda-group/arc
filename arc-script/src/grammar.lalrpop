@@ -397,13 +397,15 @@ ExprKind6: ExprKind =               UnaryPostfix<Op4, ExprKind7>;
 ExprKind7: ExprKind = {
   Paren<ExprKind0>                           => <>,
   FunCall                                    => <>,
-  LitKind                                    => Lit(<>),
+  Lit                                        => <>,
   Var                                        => <>,
   "[" <VecNonEmpty<Arg>> "]"                 => ConsArray(<>),
 //  "{" <VecNonEmpty<(<Symbol> ":" <Arg>)>> "}" => ConsStruct(<>),
   "(" <VecMulti<Arg>> ")"                    => ConsTuple(<>),
   ! => { errors.push(<>.into()); ExprErr },
 };
+
+Lit: ExprKind = LitKind => Lit(<>);
 
 LitKind: LitKind = ParseLit => {
   <>.unwrap_or_else(|err| { errors.push(err.into()); LitErr })

@@ -9,7 +9,7 @@ use {
     std::{fmt::Display, str::FromStr},
 };
 
-lalrpop_mod!(pub grammar);
+lalrpop_mod!(#[allow(clippy::all)] pub grammar);
 
 pub type ErrorRecovery<'i> = lalrpop_util::ErrorRecovery<usize, Token<'i>, CompilerError>;
 pub type ParseError<'i> = lalrpop_util::ParseError<usize, Token<'i>, CompilerError>;
@@ -67,7 +67,7 @@ impl<'i> From<ParseError<'i>> for CompilerError {
     }
 }
 
-pub fn parse_lit<'i, 'e, T: FromStr>(Spanned(l, s, r): Spanned<&'i str>) -> CompilerResult<T>
+pub fn parse_lit<'i, T: FromStr>(Spanned(l, s, r): Spanned<&'i str>) -> CompilerResult<T>
 where
     <T as FromStr>::Err: Display,
 {
@@ -81,7 +81,7 @@ where
     }
 }
 
-pub fn parse_lit_radix<'i, 'e, T: Num>(
+pub fn parse_lit_radix<'i, T: Num>(
     Spanned(l, s, r): Spanned<&'i str>,
     radix: u32,
     prefix: usize,
@@ -101,7 +101,7 @@ where
 }
 
 // Parses a r"foo" string into a regex::Regex
-pub fn parse_regex<'i, 'e>(Spanned(l, s, r): Spanned<&'i str>) -> CompilerResult<Regex> {
+pub fn parse_regex<'i>(Spanned(l, s, r): Spanned<&'i str>) -> CompilerResult<Regex> {
     match Regex::from_str(&s[1..s.len()]) {
         Err(error) => {
             let span = Span::new(l as u32, r as u32);
