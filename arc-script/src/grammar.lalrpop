@@ -44,6 +44,8 @@ match {
   "?",
   "=",
   "==",
+  "=>",
+  "|",
 //=============================================================================
 // Keywords
 //=============================================================================
@@ -57,6 +59,8 @@ match {
   "fun",
   "end",
   "as",
+  "match",
+  "_",
 //=============================================================================
 // Types
 //=============================================================================
@@ -97,6 +101,10 @@ match {
 //=============================================================================
   r"true|false"                                                 => TBool,
   r#""[^"]*""#                                                  => TStr,
+//=============================================================================
+// Regex
+//=============================================================================
+  r#"r"[^"]*""#                                                 => TRegex,
 } else {
 //=============================================================================
 // Non-Postfixed
@@ -195,6 +203,8 @@ MetIdent: Ident = TMetIdent => Ident::from(&<>[1..<>.len()-1].to_string());
 
 LitStr: String = TStr => <>[1..<>.len()].to_string();
 
+Regex: Option<Regex> = Spanned<TRegex> => parse_regex(<>, errors);
+
 LitBool: Option<bool> = Spanned<TBool> => parse_lit(<>, errors);
 
 //=============================================================================
@@ -291,8 +301,9 @@ ExprKind0: ExprKind = {
 };
 
 ExprKind1: ExprKind = {
-  "if" <Box<Body>> "then" <Box<Body>> "else" <Box<Body>> => ExprKind::If(<>),
-  <FunIdent> <Vec<Arg>> ")"      => ExprKind::Call(<>),
+  "if" <Box<Body>> "then" <Box<Body>> "else" <Box<Body>>  => ExprKind::If(<>),
+  "match" <Box<Body>> "{" <Vec<Clause>> "}"               => ExprKind::Match(<>),
+  <FunIdent> <Vec<Arg>> ")"                               => ExprKind::Call(<>),
   ExprKind2
 };
 
@@ -329,6 +340,29 @@ BIF: Bif = {
   "fold" <Paren<(<Box<Arg>> "," <Box<Arg>>)>> => Bif::Fold(<>.0, <>.1),
   "fmap" <Paren<Box<Arg>>>                    => Bif::Fmap(<>),
   "imap" <OptionalType> <Paren<Box<Arg>>>     => Bif::Imap(<>),
+};
+
+//=============================================================================
+// Patterns
+//=============================================================================
+
+Clause = <RootPattern> "=>" <Body>;
+
+RootPattern = Pattern<PatternKind0>;
+
+Pattern<PatternKind>: Pattern = Spanned<PatternKind> => Pattern::from(<>);
+
+PatternKind0: PatternKind = {
+  <Box<Pattern<PatternKind0>>> "|" <Box<Pattern<PatternKind1>>> => PatternKind::Or(<>),
+  PatternKind1
+};
+
+PatternKind1: PatternKind = {
+  Regex                      => <>.map(PatternKind::Regex).unwrap_or(PatternKind::Error),
+  LitScalar                  => PatternKind::Lit(<>),
+  Ident                      => PatternKind::Var(<>),
+  "(" <Vec<RootPattern>> ")" => PatternKind::Tuple(<>),
+  "_"                        => PatternKind::Wildcard,
 };
 
 //=============================================================================

@@ -44,6 +44,12 @@ impl Expr {
                 t.for_each_expr_rec(fun, stack);
                 e.for_each_expr_rec(fun, stack);
             }
+            ExprKind::Match(e, cases) => {
+                e.for_each_expr_rec(fun, stack);
+                cases
+                    .iter_mut()
+                    .for_each(|(_, e)| e.for_each_expr_rec(fun, stack));
+            }
             ExprKind::Bif(kind) => match kind {
                 Bif::Fmap(e) | Bif::Imap(_, e) => e.for_each_expr_rec(fun, stack),
                 Bif::Fold(f, e) => {

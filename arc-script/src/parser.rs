@@ -4,6 +4,7 @@ use {
     grammar::*,
     lalrpop_util::lalrpop_mod,
     num_traits::Num,
+    regex::Regex,
     smol_str::SmolStr,
     std::{fmt::Display, str::FromStr},
 };
@@ -104,6 +105,23 @@ where
             None
         }
         Ok(l) => Some(l),
+    }
+}
+
+// Parses a r"foo" string into a regex::Regex
+pub fn parse_regex<'i, 'e>(
+    Spanned(l, s, r): Spanned<&'i str>,
+    errors: &'e mut Vec<ErrorRecovery>,
+) -> Option<Regex> {
+    match Regex::from_str(&s[1..s.len()]) {
+        Err(error) => {
+            let span = Span::new(l as u32, r as u32);
+            let msg = error.to_string();
+            let error = CompilerError::BadLiteral { msg, span }.into();
+            errors.push(error);
+            None
+        }
+        Ok(re) => Some(re),
     }
 }
 

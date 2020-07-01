@@ -107,8 +107,37 @@ pub enum ExprKind {
     BinOp(Box<Expr>, BinOp, Box<Expr>),
     If(Box<Expr>, Box<Expr>, Box<Expr>),
     Let(Ident, Type, Box<Expr>, Box<Expr>),
+    Match(Box<Expr>, Vec<Clause>),
     Call(Ident, Vec<Expr>),
     Error,
+}
+
+type Clause = (Pattern, Expr);
+
+#[derive(Debug, Clone)]
+pub struct Pattern {
+    pub vars: Vec<Ident>,
+    pub kind: PatternKind,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone)]
+pub enum PatternKind {
+    Regex(regex::Regex),
+    Tuple(Vec<Pattern>),
+    Lit(Lit),
+    Var(Ident),
+    Or(Box<Pattern>, Box<Pattern>),
+    Wildcard,
+    Error,
+}
+
+impl From<Spanned<PatternKind>> for Pattern {
+    fn from(Spanned(l, kind, r): Spanned<PatternKind>) -> Pattern {
+        let span = Span::new(l as u32, r as u32);
+        let vars = vec![]; // TODO: Extract variables from patterns
+        Pattern { kind, vars, span }
+    }
 }
 
 #[derive(Debug, Clone, Copy)]

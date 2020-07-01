@@ -89,6 +89,9 @@ pub enum CompilerError {
     },
     ShapeUnknown,
     ShapeUnsat,
+    NonExhaustiveMatch {
+        span: Span,
+    },
 }
 
 impl From<CompilerError> for Diagnostic {
@@ -125,20 +128,15 @@ impl From<CompilerError> for Diagnostic {
                 ]),
             CompilerError::VarNotFound { name, span } => Diagnostic::error()
                 .with_message(format!("Identifier `{}` not bound to anything", name))
-                .with_labels(vec![
-                    Label::primary((), span).with_message(format!("Used here"))
-                ]),
+                .with_labels(vec![Label::primary((), span).with_message("Used here")]),
             CompilerError::DisallowedDimExpr { span } => Diagnostic::error()
-                .with_message(format!("Disallowed expression in dimension"))
-                .with_labels(vec![
-                    Label::primary((), span).with_message(format!("Found here"))
-                ]),
-            CompilerError::ShapeUnsat => {
-                Diagnostic::error().with_message(format!("Unsatisfiable shape"))
-            }
-            CompilerError::ShapeUnknown => {
-                Diagnostic::error().with_message(format!("Unknown shape"))
-            }
+                .with_message("Disallowed expression in dimension")
+                .with_labels(vec![Label::primary((), span).with_message("Found here")]),
+            CompilerError::ShapeUnsat => Diagnostic::error().with_message("Unsatisfiable shape"),
+            CompilerError::ShapeUnknown => Diagnostic::error().with_message("Unknown shape"),
+            CompilerError::NonExhaustiveMatch { span } => Diagnostic::error()
+                .with_message("Match is non-exhaustive")
+                .with_labels(vec![Label::primary((), span).with_message("Missing cases")]),
         }
     }
 }

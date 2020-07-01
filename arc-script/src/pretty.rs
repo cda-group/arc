@@ -80,6 +80,22 @@ impl Pretty for Expr {
                 s0 = indent(i + 1),
                 s1 = indent(i + 2),
             ),
+            ExprKind::Match(e, clauses) => format!(
+                "match {e} {{{clause}{s0}}}{s1}",
+                e = e.pretty(i + 1, v),
+                clause = clauses
+                    .iter()
+                    .map(|(p, e)| format!(
+                        "{s2}{} => {}",
+                        p.pretty(i + 2, v),
+                        e.pretty(i + 2, v),
+                        s2 = indent(i + 2)
+                    ))
+                    .collect::<Vec<String>>()
+                    .join(","),
+                s0 = indent(i),
+                s1 = indent(i + 1),
+            ),
             ExprKind::Let(id, ty, e, b) => format!(
                 "{id}: {ty} = {e}{s}{b}",
                 id = id.pretty(i, v),
@@ -220,6 +236,20 @@ impl Pretty for Dim {
         match &self.kind {
             DimKind::Unknown => "?".to_owned(),
             DimKind::Expr(expr) => expr.pretty(i, v),
+        }
+    }
+}
+
+impl Pretty for Pattern {
+    fn pretty(&self, i: u32, v: bool) -> String {
+        match &self.kind {
+            PatternKind::Regex(s) => format!(r#"r"{}""#, s.clone()),
+            PatternKind::Error => "☇".to_string(),
+            PatternKind::Or(l, r) => format!("{} | {}", l.pretty(i, v), r.pretty(i, v)),
+            PatternKind::Lit(l) => l.pretty(i, v),
+            PatternKind::Var(x) => x.pretty(i, v),
+            PatternKind::Tuple(vs) => format!("({})", vs.pretty(i, v)),
+            PatternKind::Wildcard => "_".to_owned(),
         }
     }
 }

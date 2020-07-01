@@ -167,6 +167,7 @@ impl Expr {
                 typer.unify_var_var(&t.ty, &e.ty, e.span);
                 typer.unify_var_var(&t.ty, &self.ty, e.span);
             }
+            ExprKind::Match(_, _) => {}
             ExprKind::Bif(_) => unimplemented!(),
             ExprKind::Call(_, _) => unimplemented!(),
             ExprKind::Error => {}
