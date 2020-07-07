@@ -158,7 +158,11 @@ public:
   void registerDirective(RustModuleDirectiveOp dep) {
     std::string key = dep.getKey().cast<StringAttr>().getValue().str();
     std::string str = dep.getStr().cast<StringAttr>().getValue().str();
-    CrateDirectives[key] = str;
+    registerDirective(key, str);
+  }
+
+  void registerDirective(std::string key, std::string value) {
+    CrateDirectives[key] = value;
   }
 };
 
