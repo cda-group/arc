@@ -88,6 +88,42 @@ void RustDialect::printType(Type type, DialectAsmPrinter &os) const {
   }
 }
 
+struct CloneControl {
+  const Value V;
+
+public:
+  CloneControl(const Value v) : V(v) {}
+  virtual ~CloneControl() {}
+  virtual void output(llvm::raw_string_ostream &os) const = 0;
+
+  bool needsClone() const {
+    const Type t = V.getType();
+    switch (t.getKind()) {
+    case types::RUST_STRUCT:
+      return true;
+    default:
+      return false;
+    }
+  }
+};
+
+struct CloneStart : public CloneControl {
+  CloneStart(Value v) : CloneControl(v) {}
+  void output(llvm::raw_string_ostream &os) const { os << "Rc::clone(&"; }
+};
+
+struct CloneEnd : public CloneControl {
+  CloneEnd(Value v) : CloneControl(v) {}
+  void output(llvm::raw_string_ostream &os) const { os << ")"; };
+};
+
+llvm::raw_string_ostream &operator<<(llvm::raw_string_ostream &os,
+                                     const CloneControl &cc) {
+  if (cc.needsClone())
+    cc.output(os);
+  return os;
+}
+
 //===----------------------------------------------------------------------===//
 // Rust Operations
 //===----------------------------------------------------------------------===//
