@@ -56,4 +56,22 @@ module @toplevel {
     return %r_b_a : si32
   }
 
+  func @ok8(%a : !arc.struct<a : si32>, %b : !arc.struct<a : si32>) -> !arc.struct<a : si32> {
+    return %a : !arc.struct<a : si32>
+  }
+
+  func @ok9(%a : !arc.struct<a : si32, b : !arc.struct<a : si32>>) -> !arc.struct<a : si32> {
+    %r = "arc.struct_access"(%a) { field = "b" } : (!arc.struct<a : si32, b : !arc.struct<a : si32>>) -> !arc.struct<a : si32>
+    return %r : !arc.struct<a : si32>
+  }
+
+  func @ok10() -> si32 {
+    %a = arc.constant 4 : si32
+    %b = arc.constant 3 : si32
+    %s = arc.make_struct(%b : si32) : !arc.struct<a : si32>
+    %r0 = arc.make_struct(%a, %s : si32, !arc.struct<a : si32>) : !arc.struct<a : si32, b : !arc.struct<a : si32>>
+    %r1 = arc.make_struct(%a, %s : si32, !arc.struct<a : si32>) : !arc.struct<a : si32, b : !arc.struct<a : si32>>
+
+    return %a : si32
+  }
 }

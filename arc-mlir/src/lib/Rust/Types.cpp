@@ -215,7 +215,7 @@ RustStructTypeStorage::printAsRust(RustPrinterStream &ps) const {
       ps.writeStructDefiniton(structFields[i].second.cast<RustStructType>());
 
   os << "pub struct ";
-  printAsRustNamedType(os) << " {\n  ";
+  printAsRustNamedType(os) << "Value {\n  ";
 
   for (unsigned i = 0; i < structFields.size(); i++) {
     if (i != 0)
@@ -228,6 +228,9 @@ RustStructTypeStorage::printAsRust(RustPrinterStream &ps) const {
       t.cast<RustStructType>().printAsRustNamedType(os);
   }
   os << "\n}\n";
+  os << "type "; printAsRustNamedType(os) << " = Rc<";
+  printAsRustNamedType(os) << "Value>;\n";
+  ps.registerDirective("rc-import","use std::rc::Rc;\n");
   return ps;
 }
 
