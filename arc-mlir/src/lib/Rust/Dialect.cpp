@@ -101,6 +101,10 @@ public:
     switch (t.getKind()) {
     case types::RUST_STRUCT:
       return true;
+    case types::RUST_TYPE: {
+      RustType rt = t.cast<RustType>();
+      return rt.isByReference();
+    }
     default:
       return false;
     }
@@ -192,9 +196,16 @@ RustPrinterStream &operator<<(RustPrinterStream &os, const Value &v) {
 }
 
 RustPrinterStream &operator<<(RustPrinterStream &os, const Type &t) {
-  if (t.isa<RustType>())
-    os.print(t.cast<RustType>().getRustType());
-  else
+  if (t.isa<RustType>()) {
+    RustType rt = t.cast<RustType>();
+    if (rt.isByReference()) {
+      os.registerDirective("rc-import", "use std::rc::Rc;\n");
+      os << "Rc<";
+      os.print(rt.getRustType());
+      os << ">";
+    } else
+      os.print(rt.getRustType());
+  } else
     os.print(t.cast<RustStructType>());
   return os;
 }
@@ -442,7 +453,7 @@ void RustBlockResultOp::writeRust(RustPrinterStream &PS) {
 
 void RustTupleOp::writeRust(RustPrinterStream &PS) {
   auto r = getResult();
-  PS << "let " << r << ":" << r.getType() << " = (";
+  PS << "let " << r << ":" << r.getType() << " = Rc::new((";
   auto args = operands();
   for (unsigned i = 0; i < args.size(); i++) {
     if (i != 0)
@@ -450,7 +461,7 @@ void RustTupleOp::writeRust(RustPrinterStream &PS) {
     auto v = args[i];
     PS << CloneStart(v) << v << CloneEnd(v);
   }
-  PS << ");\n";
+  PS << "));\n";
 }
 
 //===----------------------------------------------------------------------===//

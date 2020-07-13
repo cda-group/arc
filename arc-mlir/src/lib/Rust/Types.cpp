@@ -38,6 +38,25 @@ namespace types {
 // RustType
 //===----------------------------------------------------------------------===//
 
+static std::string getTypeString(Type t) {
+  switch (t.getKind()) {
+  case types::RUST_STRUCT:
+    return t.cast<RustStructType>().getRustType();
+  case types::RUST_TYPE: {
+    RustType rt = t.cast<RustType>();
+    if (rt.isByReference()) {
+      std::string str;
+      llvm::raw_string_ostream s(str);
+      s << "Rc<" << rt.getRustType() << ">";
+      return s.str();
+    }
+    return rt.getRustType().str();
+  }
+  default:
+    return "<unsupported type>";
+  }
+}
+
 struct RustTypeStorage : public TypeStorage {
   RustTypeStorage(std::string type) : rustType(type) {}
 
@@ -76,6 +95,8 @@ raw_ostream &RustType::printAsRust(raw_ostream &os) const {
 
 bool RustType::isBool() const { return getRustType().equals("bool"); }
 
+bool RustType::isByReference() const { return getRustType()[0] == '('; }
+
 RustType RustType::getFloatTy(RustDialect *dialect) { return dialect->floatTy; }
 
 RustType RustType::getDoubleTy(RustDialect *dialect) {
@@ -100,8 +121,7 @@ RustType RustType::getIntegerTy(RustDialect *dialect, IntegerType ty) {
   }
 }
 
-RustType RustType::getTupleTy(RustDialect *dialect,
-                              ArrayRef<RustType> elements) {
+RustType RustType::getTupleTy(RustDialect *dialect, ArrayRef<Type> elements) {
   std::string str;
   llvm::raw_string_ostream s(str);
 
@@ -109,7 +129,7 @@ RustType RustType::getTupleTy(RustDialect *dialect,
   for (unsigned i = 0; i < elements.size(); i++) {
     if (i != 0)
       s << ", ";
-    s << elements[i].getRustType();
+    s << getTypeString(elements[i]);
   }
   s << ")";
   return RustType::get(dialect->getContext(), s.str());
@@ -193,14 +213,7 @@ std::string RustStructTypeStorage::getRustType() const {
   std::string str;
   llvm::raw_string_ostream s(str);
 
-  s << "struct#" << id << "<";
-  for (unsigned i = 0; i < structFields.size(); i++) {
-    if (i != 0)
-      s << ",";
-    s << structFields[i].first.getValue() << ":" << structFields[i].second;
-  }
-  s << ">";
-
+  s << "ArcStruct" << id;
   return s.str();
 }
 
@@ -228,9 +241,10 @@ RustStructTypeStorage::printAsRust(RustPrinterStream &ps) const {
       t.cast<RustStructType>().printAsRustNamedType(os);
   }
   os << "\n}\n";
-  os << "type "; printAsRustNamedType(os) << " = Rc<";
+  os << "type ";
+  printAsRustNamedType(os) << " = Rc<";
   printAsRustNamedType(os) << "Value>;\n";
-  ps.registerDirective("rc-import","use std::rc::Rc;\n");
+  ps.registerDirective("rc-import", "use std::rc::Rc;\n");
   return ps;
 }
 

@@ -64,11 +64,12 @@ public:
   raw_ostream &printAsRust(raw_ostream &os) const;
   StringRef getRustType() const;
   bool isBool() const;
+  bool isByReference() const;
 
   static RustType getFloatTy(RustDialect *dialect);
   static RustType getDoubleTy(RustDialect *dialect);
   static RustType getIntegerTy(RustDialect *dialect, IntegerType ty);
-  static RustType getTupleTy(RustDialect *dialect, ArrayRef<RustType> elements);
+  static RustType getTupleTy(RustDialect *dialect, ArrayRef<Type> elements);
 
   typedef std::pair<mlir::StringAttr, Type> StructFieldTy;
   // static RustType getStructTy(RustDialect *dialect,

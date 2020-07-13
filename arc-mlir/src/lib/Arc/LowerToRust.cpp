@@ -549,11 +549,9 @@ Type RustTypeConverter::convertStructType(arc::types::StructType type) {
 }
 
 Type RustTypeConverter::convertTupleType(TupleType type) {
-  SmallVector<rust::types::RustType, 4> elements;
-  for (Type t : type) {
-    rust::types::RustType rt = convertType(t).cast<rust::types::RustType>();
-    elements.push_back(rt);
-  }
+  SmallVector<Type, 4> elements;
+  for (Type t : type)
+    elements.push_back(convertType(t));
   return rust::types::RustType::getTupleTy(Dialect, elements);
 }
 
