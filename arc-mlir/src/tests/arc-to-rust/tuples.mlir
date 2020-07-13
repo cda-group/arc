@@ -45,4 +45,13 @@ module @toplevel {
 
     return %outer : tuple<si32,si32,tuple<si32,si32>>
   }
+
+  func @make_with_struct(%s : !arc.struct<a : si32>) -> tuple<si32,si32,!arc.struct<a : si32>> {
+    %a = arc.constant 7 : si32
+    %b = arc.constant 17 : si32
+
+    %outer = "arc.make_tuple"(%a, %b, %s) : (si32, si32, !arc.struct<a : si32>) -> tuple<si32,si32,!arc.struct<a : si32>>
+
+    return %outer : tuple<si32,si32,!arc.struct<a : si32>>
+  }
 }

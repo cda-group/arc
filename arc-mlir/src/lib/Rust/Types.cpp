@@ -38,6 +38,25 @@ namespace types {
 // RustType
 //===----------------------------------------------------------------------===//
 
+static std::string getTypeString(Type t) {
+  switch (t.getKind()) {
+  case types::RUST_STRUCT:
+    return t.cast<RustStructType>().getRustType();
+  case types::RUST_TYPE: {
+    RustType rt = t.cast<RustType>();
+    if (rt.isByReference()) {
+      std::string str;
+      llvm::raw_string_ostream s(str);
+      s << "Rc<" << rt.getRustType() << ">";
+      return s.str();
+    }
+    return rt.getRustType().str();
+  }
+  default:
+    return "<unsupported type>";
+  }
+}
+
 struct RustTypeStorage : public TypeStorage {
   RustTypeStorage(std::string type) : rustType(type) {}
 
@@ -102,8 +121,7 @@ RustType RustType::getIntegerTy(RustDialect *dialect, IntegerType ty) {
   }
 }
 
-RustType RustType::getTupleTy(RustDialect *dialect,
-                              ArrayRef<RustType> elements) {
+RustType RustType::getTupleTy(RustDialect *dialect, ArrayRef<Type> elements) {
   std::string str;
   llvm::raw_string_ostream s(str);
 
@@ -111,10 +129,7 @@ RustType RustType::getTupleTy(RustDialect *dialect,
   for (unsigned i = 0; i < elements.size(); i++) {
     if (i != 0)
       s << ", ";
-    if (elements[i].isByReference())
-      s << "Rc<" << elements[i].getRustType() << ">";
-    else
-      s << elements[i].getRustType();
+    s << getTypeString(elements[i]);
   }
   s << ")";
   return RustType::get(dialect->getContext(), s.str());
@@ -198,14 +213,7 @@ std::string RustStructTypeStorage::getRustType() const {
   std::string str;
   llvm::raw_string_ostream s(str);
 
-  s << "struct#" << id << "<";
-  for (unsigned i = 0; i < structFields.size(); i++) {
-    if (i != 0)
-      s << ",";
-    s << structFields[i].first.getValue() << ":" << structFields[i].second;
-  }
-  s << ">";
-
+  s << "ArcStruct" << id;
   return s.str();
 }
 
