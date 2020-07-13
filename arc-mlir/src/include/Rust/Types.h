@@ -64,6 +64,7 @@ public:
   raw_ostream &printAsRust(raw_ostream &os) const;
   StringRef getRustType() const;
   bool isBool() const;
+  bool isByReference() const;
 
   static RustType getFloatTy(RustDialect *dialect);
   static RustType getDoubleTy(RustDialect *dialect);

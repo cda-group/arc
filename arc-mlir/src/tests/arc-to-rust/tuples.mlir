@@ -32,8 +32,17 @@ module @toplevel {
     return %elem : si32
   }
 
-  func @nonconst_tuple(%tuple : tuple<si32,si32>) -> si32 {
+  func @tuple_access(%tuple : tuple<si32,si32>) -> si32 {
     %elem = "arc.index_tuple"(%tuple) { index = 1 } : (tuple<si32,si32>) -> si32
     return %elem : si32
+  }
+
+  func @make_nested(%inner : tuple<si32,si32>) -> tuple<si32,si32,tuple<si32,si32>> {
+    %a = arc.constant 7 : si32
+    %b = arc.constant 17 : si32
+
+    %outer = "arc.make_tuple"(%a, %b, %inner) : (si32, si32, tuple<si32,si32>) -> tuple<si32,si32,tuple<si32,si32>>
+
+    return %outer : tuple<si32,si32,tuple<si32,si32>>
   }
 }

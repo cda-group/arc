@@ -76,6 +76,8 @@ raw_ostream &RustType::printAsRust(raw_ostream &os) const {
 
 bool RustType::isBool() const { return getRustType().equals("bool"); }
 
+bool RustType::isByReference() const { return getRustType()[0] == '('; }
+
 RustType RustType::getFloatTy(RustDialect *dialect) { return dialect->floatTy; }
 
 RustType RustType::getDoubleTy(RustDialect *dialect) {
@@ -109,7 +111,10 @@ RustType RustType::getTupleTy(RustDialect *dialect,
   for (unsigned i = 0; i < elements.size(); i++) {
     if (i != 0)
       s << ", ";
-    s << elements[i].getRustType();
+    if (elements[i].isByReference())
+      s << "Rc<" << elements[i].getRustType() << ">";
+    else
+      s << elements[i].getRustType();
   }
   s << ")";
   return RustType::get(dialect->getContext(), s.str());
