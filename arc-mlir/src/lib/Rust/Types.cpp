@@ -233,9 +233,10 @@ RustStructTypeStorage::printAsRust(RustPrinterStream &ps) const {
       t.cast<RustStructType>().printAsRustNamedType(os);
   }
   os << "\n}\n";
-  os << "type "; printAsRustNamedType(os) << " = Rc<";
+  os << "type ";
+  printAsRustNamedType(os) << " = Rc<";
   printAsRustNamedType(os) << "Value>;\n";
-  ps.registerDirective("rc-import","use std::rc::Rc;\n");
+  ps.registerDirective("rc-import", "use std::rc::Rc;\n");
   return ps;
 }
 
