@@ -88,6 +88,42 @@ void RustDialect::printType(Type type, DialectAsmPrinter &os) const {
   }
 }
 
+struct CloneControl {
+  const Value V;
+
+public:
+  CloneControl(const Value v) : V(v) {}
+  virtual ~CloneControl() {}
+  virtual void output(llvm::raw_string_ostream &os) const = 0;
+
+  bool needsClone() const {
+    const Type t = V.getType();
+    switch (t.getKind()) {
+    case types::RUST_STRUCT:
+      return true;
+    default:
+      return false;
+    }
+  }
+};
+
+struct CloneStart : public CloneControl {
+  CloneStart(Value v) : CloneControl(v) {}
+  void output(llvm::raw_string_ostream &os) const { os << "Rc::clone(&"; }
+};
+
+struct CloneEnd : public CloneControl {
+  CloneEnd(Value v) : CloneControl(v) {}
+  void output(llvm::raw_string_ostream &os) const { os << ")"; };
+};
+
+llvm::raw_string_ostream &operator<<(llvm::raw_string_ostream &os,
+                                     const CloneControl &cc) {
+  if (cc.needsClone())
+    cc.output(os);
+  return os;
+}
+
 //===----------------------------------------------------------------------===//
 // Rust Operations
 //===----------------------------------------------------------------------===//
@@ -335,21 +371,23 @@ void RustConstantOp::writeRust(RustPrinterStream &PS) { PS.getConstant(*this); }
 
 void RustUnaryOp::writeRust(RustPrinterStream &PS) {
   auto r = getResult();
-  PS << "let " << r << ":" << r.getType() << " = " << getOperator() << "("
-     << getOperand() << ");\n";
+  PS << "let " << r << ":" << r.getType() << " = " << CloneStart(r)
+     << getOperator() << "(" << CloneStart(getOperand()) << getOperand()
+     << CloneEnd(getOperand()) << ")" << CloneEnd(r) << ";\n";
 }
 
 void RustMakeStructOp::writeRust(RustPrinterStream &PS) {
   auto r = getResult();
   RustStructType st = r.getType().cast<RustStructType>();
-  PS << "let " << r << ":" << st << " = " << st << " { ";
+  PS << "let " << r << ":" << st << " = Rc::new(" << st << "Value { ";
   auto args = operands();
   for (unsigned i = 0; i < args.size(); i++) {
     if (i != 0)
       PS << ", ";
-    PS << st.getFieldName(i) << " : " << args[i];
+    auto v = args[i];
+    PS << st.getFieldName(i) << " : " << CloneStart(v) << v << CloneEnd(v);
   }
-  PS << "};\n";
+  PS << "});\n";
 }
 
 void RustMethodCallOp::writeRust(RustPrinterStream &PS) {
@@ -360,31 +398,34 @@ void RustMethodCallOp::writeRust(RustPrinterStream &PS) {
   for (unsigned i = 0; i < args.size(); i++) {
     if (i != 0)
       PS << ", ";
-    PS << args[i];
+    auto v = args[i];
+    PS << CloneStart(v) << v << CloneEnd(v);
   }
   PS << ");\n";
 }
 
 void RustBinaryOp::writeRust(RustPrinterStream &PS) {
   auto r = getResult();
-  PS << "let " << r << ":" << r.getType() << " = " << LHS() << " "
-     << getOperator() << " " << RHS() << ";\n";
+  PS << "let " << r << ":" << r.getType() << " = " << CloneStart(r) << LHS()
+     << " " << getOperator() << " " << RHS() << CloneEnd(r) << ";\n";
 }
 
 void RustCompOp::writeRust(RustPrinterStream &PS) {
   auto r = getResult();
-  PS << "let " << r << ":" << r.getType() << " = " << LHS() << " "
-     << getOperator() << " " << RHS() << ";\n";
+  PS << "let " << r << ":" << r.getType() << " = " << CloneStart(r) << LHS()
+     << " " << getOperator() << " " << RHS() << CloneEnd(r) << ";\n";
 }
 
 void RustFieldAccessOp::writeRust(RustPrinterStream &PS) {
   auto r = getResult();
-  PS << "let " << r << ":" << r.getType() << " = " << aggregate() << "."
-     << getField() << ";\n";
+  PS << "let " << r << ":" << r.getType() << " = " << CloneStart(r)
+     << aggregate() << "." << getField() << CloneEnd(r) << ";\n";
 }
 
 void RustIfOp::writeRust(RustPrinterStream &PS) {
   auto r = getResult();
+  // No clone is needed here as it will be inserted by the block
+  // result.
   PS << "let " << r << ":" << r.getType() << " = if " << getOperand() << " {\n";
   for (Operation &operation : thenRegion().front())
     ::writeRust(operation, PS);
@@ -395,7 +436,8 @@ void RustIfOp::writeRust(RustPrinterStream &PS) {
 }
 
 void RustBlockResultOp::writeRust(RustPrinterStream &PS) {
-  PS << getOperand() << "\n";
+  auto r = getOperand();
+  PS << CloneStart(r) << r << CloneEnd(r) << "\n";
 }
 
 void RustTupleOp::writeRust(RustPrinterStream &PS) {
@@ -405,7 +447,8 @@ void RustTupleOp::writeRust(RustPrinterStream &PS) {
   for (unsigned i = 0; i < args.size(); i++) {
     if (i != 0)
       PS << ", ";
-    PS << args[i];
+    auto v = args[i];
+    PS << CloneStart(v) << v << CloneEnd(v);
   }
   PS << ");\n";
 }
