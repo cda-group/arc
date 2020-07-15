@@ -501,6 +501,7 @@ RustTypeConverter::RustTypeConverter(MLIRContext *ctx)
   // RustType is legal, so add a pass-through conversion.
   addConversion([](rust::types::RustType type) { return type; });
   addConversion([](rust::types::RustStructType type) { return type; });
+  addConversion([](rust::types::RustTupleType type) { return type; });
 }
 
 Type RustTypeConverter::convertFloatType(FloatType type) {
@@ -552,7 +553,7 @@ Type RustTypeConverter::convertTupleType(TupleType type) {
   SmallVector<Type, 4> elements;
   for (Type t : type)
     elements.push_back(convertType(t));
-  return rust::types::RustType::getTupleTy(Dialect, elements);
+  return rust::types::RustTupleType::get(Dialect, elements);
 }
 
 FunctionType

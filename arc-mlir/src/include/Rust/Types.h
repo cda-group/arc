@@ -40,7 +40,8 @@ namespace types {
 
 enum Kind {
   RUST_TYPE = Type::Kind::FIRST_PRIVATE_EXPERIMENTAL_1_TYPE,
-  RUST_STRUCT
+  RUST_STRUCT,
+  RUST_TUPLE
 };
 
 //===----------------------------------------------------------------------===//
@@ -49,6 +50,7 @@ enum Kind {
 
 struct RustTypeStorage;
 struct RustStructTypeStorage;
+struct RustTupleTypeStorage;
 
 //===----------------------------------------------------------------------===//
 // Rust Types
@@ -64,16 +66,12 @@ public:
   raw_ostream &printAsRust(raw_ostream &os) const;
   StringRef getRustType() const;
   bool isBool() const;
-  bool isByReference() const;
 
   static RustType getFloatTy(RustDialect *dialect);
   static RustType getDoubleTy(RustDialect *dialect);
   static RustType getIntegerTy(RustDialect *dialect, IntegerType ty);
-  static RustType getTupleTy(RustDialect *dialect, ArrayRef<Type> elements);
 
   typedef std::pair<mlir::StringAttr, Type> StructFieldTy;
-  // static RustType getStructTy(RustDialect *dialect,
-  //                             ArrayRef<StructFieldTy> fieldss);
 };
 
 class RustStructType
@@ -92,6 +90,21 @@ public:
   typedef std::pair<mlir::StringAttr, Type> StructFieldTy;
   static RustStructType get(RustDialect *dialect,
                             ArrayRef<StructFieldTy> fields);
+  void emitNestedTypedefs(rust::RustPrinterStream &ps) const;
+};
+
+class RustTupleType
+    : public Type::TypeBase<RustTupleType, Type, RustTupleTypeStorage> {
+public:
+  using Base::Base;
+
+  static bool kindof(unsigned kind) { return kind == RUST_TUPLE; }
+  void print(DialectAsmPrinter &os) const;
+  rust::RustPrinterStream &printAsRust(rust::RustPrinterStream &os) const;
+  std::string getRustType() const;
+
+  static RustTupleType get(RustDialect *dialect, ArrayRef<Type> fields);
+  void emitNestedTypedefs(rust::RustPrinterStream &ps) const;
 };
 
 } // namespace types
