@@ -25,6 +25,7 @@
 
 #ifndef OP_BASE
 include "../../mlir/include/mlir/IR/OpBase.td"
+include "../../mlir/include/mlir/Interfaces/CallInterfaces.td"
 include "../../mlir/include/mlir/Interfaces/SideEffectInterfaces.td"
 include "../../mlir/include/mlir/IR/SymbolInterfaces.td"
 #endif // OP_BASE
@@ -61,6 +62,45 @@ def BoolRustType : Type<CPred<"$_self.isa<RustType>() && $_self.cast<RustType>()
 //===----------------------------------------------------------------------===//
 // Rust Operations
 //===----------------------------------------------------------------------===//
+def RustCallOp : Rust_Op<"call", [CallOpInterface]> {
+    // Stolen in large parts from std.call
+  let summary = "call operation";
+  let arguments = (ins FlatSymbolRefAttr:$callee, Variadic<AnyType>:$operands);
+  let results = (outs Variadic<AnyType>);
+
+  let builders = [OpBuilder<
+    "OpBuilder &builder, OperationState &result, SymbolRefAttr callee,"
+    "ArrayRef<Type> results, ValueRange operands = {}", [{
+      result.addOperands(operands);
+      result.addAttribute("callee", callee);
+      result.addTypes(results);
+  }]>, OpBuilder<
+    "OpBuilder &builder, OperationState &result, StringRef callee,"
+    "ArrayRef<Type> results, ValueRange operands = {}", [{
+      build(builder, result, builder.getSymbolRefAttr(callee), results,
+            operands);
+  }]>];
+
+  let extraClassDeclaration = [{
+    // For the CallOpInterface
+    StringRef getCallee() { return callee(); }
+    FunctionType getCalleeType();
+
+    /// Get the argument operands to the called function.
+    operand_range getArgOperands() {
+      return {arg_operand_begin(), arg_operand_end()};
+    }
+
+    operand_iterator arg_operand_begin() { return operand_begin(); }
+    operand_iterator arg_operand_end() { return operand_end(); }
+
+    /// Return the callee of this operation.
+    CallInterfaceCallable getCallableForCallee() {
+      return getAttrOfType<SymbolRefAttr>("callee");
+    }
+  }];
+
+}
 
 def Rust_RustFuncOp : Rust_Op<"func", [FunctionLike, IsolatedFromAbove, Symbol]> {
   let summary = "A function";
