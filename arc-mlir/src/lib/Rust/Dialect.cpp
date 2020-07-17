@@ -45,6 +45,7 @@ RustDialect::RustDialect(mlir::MLIRContext *ctx) : mlir::Dialect("rust", ctx) {
       >();
   addTypes<RustType>();
   addTypes<RustStructType>();
+  addTypes<RustTupleType>();
 
   floatTy = RustType::get(ctx, "f32");
   doubleTy = RustType::get(ctx, "f64");
@@ -85,6 +86,9 @@ void RustDialect::printType(Type type, DialectAsmPrinter &os) const {
   case RUST_STRUCT:
     type.cast<RustStructType>().print(os);
     break;
+  case RUST_TUPLE:
+    type.cast<RustTupleType>().print(os);
+    break;
   }
 }
 
@@ -100,11 +104,10 @@ public:
     const Type t = V.getType();
     switch (t.getKind()) {
     case types::RUST_STRUCT:
+    case types::RUST_TUPLE:
       return true;
-    case types::RUST_TYPE: {
-      RustType rt = t.cast<RustType>();
-      return rt.isByReference();
-    }
+    case types::RUST_TYPE:
+      return false;
     default:
       return false;
     }
@@ -196,17 +199,19 @@ RustPrinterStream &operator<<(RustPrinterStream &os, const Value &v) {
 }
 
 RustPrinterStream &operator<<(RustPrinterStream &os, const Type &t) {
-  if (t.isa<RustType>()) {
-    RustType rt = t.cast<RustType>();
-    if (rt.isByReference()) {
-      os.registerDirective("rc-import", "use std::rc::Rc;\n");
-      os << "Rc<";
-      os.print(rt.getRustType());
-      os << ">";
-    } else
-      os.print(rt.getRustType());
-  } else
+  switch (t.getKind()) {
+  case RUST_TYPE:
+    os.print(t.cast<RustType>().getRustType());
+    break;
+  case RUST_STRUCT:
     os.print(t.cast<RustStructType>());
+    break;
+  case RUST_TUPLE:
+    t.cast<RustTupleType>().printAsRust(os);
+    break;
+  default:
+    os << "<not-a-rust-type>";
+  }
   return os;
 }
 } // namespace rust
@@ -456,10 +461,8 @@ void RustTupleOp::writeRust(RustPrinterStream &PS) {
   PS << "let " << r << ":" << r.getType() << " = Rc::new((";
   auto args = operands();
   for (unsigned i = 0; i < args.size(); i++) {
-    if (i != 0)
-      PS << ", ";
     auto v = args[i];
-    PS << CloneStart(v) << v << CloneEnd(v);
+    PS << CloneStart(v) << v << CloneEnd(v) << ", ";
   }
   PS << "));\n";
 }

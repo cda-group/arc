@@ -53,7 +53,7 @@ def Rust_Dialect : Dialect {
 class Rust_Op<string mnemonic, list<OpTrait> traits = []>
     : Op<Rust_Dialect, mnemonic, traits>;
 
-def AnyRustType : Type<CPred<"$_self.isa<RustType>() || $_self.isa<RustStructType>()">, "any RustType">;
+def AnyRustType : Type<CPred<"$_self.isa<RustType>() || $_self.isa<RustStructType>() || $_self.isa<RustTupleType>()">, "any RustType">;
 def AnyRustStruct :
     Type<CPred<"$_self.isa<RustStructType>()">, "any RustStruct">;
 def BoolRustType : Type<CPred<"$_self.isa<RustType>() && $_self.cast<RustType>().isBool()">, "a Rust boolean type">;

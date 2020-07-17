@@ -54,4 +54,15 @@ module @toplevel {
 
     return %outer : tuple<si32,si32,!arc.struct<a : si32>>
   }
+
+  func @single_element_tuple0() -> tuple<si32> {
+    %a = arc.constant 7 : si32
+    %r = "arc.make_tuple"(%a) : (si32) -> tuple<si32>
+    return %r : tuple<si32>
+  }
+
+  func @single_element_tuple1(%in : tuple<si32>) -> si32 {
+    %r = "arc.index_tuple"(%in) { index = 0 } : (tuple<si32>) -> si32
+    return %r : si32
+  }
 }
