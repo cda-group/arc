@@ -98,6 +98,9 @@ def RustCallOp : Rust_Op<"call", [CallOpInterface]> {
     CallInterfaceCallable getCallableForCallee() {
       return getAttrOfType<SymbolRefAttr>("callee");
     }
+
+    // Write this op as Rust code to os
+    void writeRust(RustPrinterStream &os);
   }];
 
 }
