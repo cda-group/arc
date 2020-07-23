@@ -325,6 +325,8 @@ static RustPrinterStream &writeRust(Operation &operation,
     op.writeRust(PS);
   else if (RustBinaryOp op = dyn_cast<RustBinaryOp>(operation))
     op.writeRust(PS);
+  else if (RustCallOp op = dyn_cast<RustCallOp>(operation))
+    op.writeRust(PS);
   else if (RustCompOp op = dyn_cast<RustCompOp>(operation))
     op.writeRust(PS);
   else if (RustFieldAccessOp op = dyn_cast<RustFieldAccessOp>(operation))
@@ -348,6 +350,21 @@ static RustPrinterStream &writeRust(Operation &operation,
     operation.emitError("Unsupported operation");
   }
   return PS;
+}
+
+void RustCallOp::writeRust(RustPrinterStream &PS) {
+  bool has_result = getNumResults();
+  if (has_result) {
+    auto r = getResult(0);
+    PS << "let " << r << ":" << r.getType() << " = " << CloneStart(r);
+  }
+  PS << getCallee() << "(";
+  for (auto a : getOperands())
+    PS << CloneStart(a) << a << CloneEnd(a) << ", ";
+  PS << ")";
+  if (has_result)
+    PS << CloneEnd(getResult(0));
+  PS << ";\n";
 }
 
 // Write this function as Rust code to os

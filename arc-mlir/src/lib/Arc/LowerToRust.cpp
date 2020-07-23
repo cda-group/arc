@@ -82,6 +82,27 @@ struct ReturnOpLowering : public ConversionPattern {
   };
 };
 
+struct StdCallOpLowering : public ConversionPattern {
+  StdCallOpLowering(MLIRContext *ctx, RustTypeConverter &typeConverter)
+      : ConversionPattern(CallOp::getOperationName(), 1, ctx),
+        TypeConverter(typeConverter) {}
+
+  LogicalResult
+  matchAndRewrite(Operation *op, ArrayRef<Value> operands,
+                  ConversionPatternRewriter &rewriter) const final {
+    CallOp o = cast<CallOp>(op);
+    SmallVector<Type, 4> resultTypes;
+    for (auto r : o.getResultTypes())
+      resultTypes.push_back(TypeConverter.convertType(r));
+    rewriter.replaceOpWithNewOp<rust::RustCallOp>(op, o.getCallee(),
+                                                  resultTypes, operands);
+    return success();
+  };
+
+private:
+  RustTypeConverter &TypeConverter;
+};
+
 struct StdConstantOpLowering : public ConversionPattern {
 
   StdConstantOpLowering(MLIRContext *ctx, RustTypeConverter &typeConverter)
@@ -683,6 +704,7 @@ void ArcToRustLoweringPass::runOnOperation() {
   patterns.insert<MakeTupleOpLowering>(&getContext(), typeConverter);
   patterns.insert<MakeStructOpLowering>(&getContext(), typeConverter);
   patterns.insert<StructAccessOpLowering>(&getContext(), typeConverter);
+  patterns.insert<StdCallOpLowering>(&getContext(), typeConverter);
 
   if (failed(applyFullConversion(getOperation(), target, patterns)))
     signalPassFailure();
