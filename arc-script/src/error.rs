@@ -7,7 +7,6 @@ use {
         files,
         term::{self, termcolor::*},
     },
-    smol_str::SmolStr,
     std::io,
     std::str,
 };
@@ -56,7 +55,7 @@ pub enum CompilerError {
         span: Span,
     },
     ExtraToken {
-        found: SmolStr,
+        found: Name,
         span: Span,
     },
     InvalidToken {
@@ -67,7 +66,7 @@ pub enum CompilerError {
         expected: Vec<String>,
     },
     UnrecognizedToken {
-        found: SmolStr,
+        found: Name,
         span: Span,
         expected: Vec<String>,
     },
@@ -77,7 +76,7 @@ pub enum CompilerError {
         span: Span,
     },
     VarNotFound {
-        name: SmolStr,
+        name: Name,
         span: Span,
     },
     DisallowedDimExpr {

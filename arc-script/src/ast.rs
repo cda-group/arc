@@ -1,5 +1,5 @@
 use crate::info::Info;
-use smol_str::SmolStr;
+use smartstring::{LazyCompact, SmartString};
 use DimKind::*;
 use ExprKind::*;
 use LitKind::*;
@@ -12,7 +12,7 @@ pub type ByteIndex = usize;
 pub struct Spanned<T>(pub ByteIndex, pub T, pub ByteIndex);
 
 pub type Symbol<'i> = &'i str;
-pub type Name = SmolStr;
+pub type Name = SmartString<LazyCompact>;
 pub type Clause = (Pattern, Expr);
 pub type Field = Name;
 
