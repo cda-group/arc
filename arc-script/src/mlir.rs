@@ -92,6 +92,7 @@ impl Expr {
             ConsStruct(..) => todo!(),
             ConsTuple(..) => todo!(),
             FunCall(..) => todo!(),
+            Closure(..) => todo!(),
             Let(..) => panic!("[ICE] Attempted to generate MLIR SSA of Let"),
             Match(..) => panic!("[ICE] Attempted to generate MLIR SSA of Match"),
             Var(_) => panic!("[ICE] Attempted to generate MLIR SSA of Var"),

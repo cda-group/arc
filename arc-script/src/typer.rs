@@ -178,6 +178,7 @@ impl Expr {
                 typer.unify_var_var(&t.ty, &e.ty, e.span, errors);
                 typer.unify_var_var(&t.ty, &self.ty, e.span, errors);
             }
+            Closure(..) => todo!(),
             Match(_, _) => {}
             FunCall(_, _) => unimplemented!(),
             ExprErr => {}

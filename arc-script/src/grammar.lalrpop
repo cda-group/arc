@@ -266,9 +266,9 @@ Params: Vec<Ident> = Vec<Param> => {
   <>
     .into_iter()
     .map(|(sym, ty)| {
-      let id = table.insert(Decl::new(sym, ty, VarDecl));
-      stack.bind_local(sym, id);
-      id
+        let id = table.insert(Decl::new(sym, ty, VarDecl));
+        stack.bind_local(sym, id);
+        id
     })
     .collect::<Vec<_>>()
 };
@@ -333,6 +333,10 @@ TypeDef: TypeDef = "type" <VarSymbol> "=" <Type> => {
   }
   TypeDef::new(id, ty)
 };
+
+ClosureDecl: Vec<Ident> = "|" <Params> "|";
+
+ClosureDef: ExprKind = <ClosureDecl> "{" <Box<Body>> "}" => Closure(<>);
 
 //=============================================================================
 // Expressions
@@ -399,6 +403,7 @@ ExprKind7: ExprKind = {
   FunCall                                    => <>,
   Lit                                        => <>,
   Var                                        => <>,
+  ClosureDef                                 => <>,
   "[" <VecNonEmpty<Arg>> "]"                 => ConsArray(<>),
 //  "{" <VecNonEmpty<(<Symbol> ":" <Arg>)>> "}" => ConsStruct(<>),
   "(" <VecMulti<Arg>> ")"                    => ConsTuple(<>),

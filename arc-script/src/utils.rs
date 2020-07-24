@@ -67,6 +67,7 @@ impl Expr {
                 r.for_each_expr_rec(f);
             }
             UnOp(_, e) => e.for_each_expr_rec(f),
+            Closure(..) => todo!(),
             ExprErr => {}
         }
     }

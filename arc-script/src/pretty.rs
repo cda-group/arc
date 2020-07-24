@@ -109,6 +109,7 @@ impl Pretty for Expr {
                 b = b.pretty(pr),
                 s = pr.indent(),
             ),
+            Closure(..) => todo!(),
             Lit(lit) => lit.pretty(pr),
             Var(id) => id.pretty(pr),
             BinOp(l, op, r) => format!(

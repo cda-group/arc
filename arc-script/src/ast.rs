@@ -92,6 +92,7 @@ pub enum ExprKind {
     ConsStruct(Vec<(Ident, Expr)>),
     ConsTuple(Vec<Expr>),
     Var(Ident),
+    Closure(Vec<Ident>, Box<Expr>),
     UnOp(UnOpKind, Box<Expr>),
     BinOp(Box<Expr>, BinOpKind, Box<Expr>),
     If(Box<Expr>, Box<Expr>, Box<Expr>),
