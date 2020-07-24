@@ -273,6 +273,8 @@ Params: Vec<Ident> = Vec<Param> => {
     .collect::<Vec<_>>()
 };
 
+Param = <VarSymbol> <OptionalType>;
+
 FunDecl: (Ident, Vec<Ident>) = "fun" <FunSymbol> <Params> ")" => {
   let (fun_sym, param_ids) = (<>);
   let fun_id = table.insert(Decl::new(fun_sym, Type::fun(param_ids.len()), FunDecl));
@@ -288,8 +290,6 @@ FunDef: FunDef = <FunDecl> <Body> => {
   stack.pop_scope();
   FunDef::new(fun_id, param_ids, body)
 };
-
-Param = <VarSymbol> ":" <Type>;
 
 LetDecl: (Ident, Box<Expr>) = <VarSymbol> <OptionalType> "=" <Box<Arg>> => {
   let (sym, ty, arg) = (<>);
