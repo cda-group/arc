@@ -117,6 +117,7 @@ pub enum BinOp {
     Sub,
     Mul,
     Div,
+    Eq,
     Error,
 }
 

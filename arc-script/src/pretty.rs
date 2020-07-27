@@ -154,6 +154,7 @@ impl Pretty for BinOp {
             BinOp::Sub => "-".to_string(),
             BinOp::Mul => "*".to_string(),
             BinOp::Div => "/".to_string(),
+            BinOp::Eq => "==".to_string(),
             BinOp::Error => "☇".to_string(),
         }
     }

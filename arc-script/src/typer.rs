@@ -139,9 +139,17 @@ impl Expr {
                 };
                 typer.unify_var_val(&self.ty, &kind, self.span);
             }
-            ExprKind::BinOp(l, _, r) => {
+            ExprKind::BinOp(l, op, r) => {
                 typer.unify_var_var(&l.ty, &r.ty, self.span);
-                typer.unify_var_var(&self.ty, &r.ty, self.span);
+                match op {
+                    BinOp::Add | BinOp::Div | BinOp::Mul | BinOp::Sub => {
+                        typer.unify_var_var(&self.ty, &r.ty, self.span);
+                    }
+                    BinOp::Eq => {
+                        typer.unify_var_val(&self.ty, &TypeKind::Bool, self.span);
+                    }
+                    BinOp::Error => {}
+                }
             }
             ExprKind::UnOp(op, e) => {
                 match op {
@@ -161,7 +169,7 @@ impl Expr {
             }
             ExprKind::Bif(_) => unimplemented!(),
             ExprKind::Call(_, _) => unimplemented!(),
-            ExprKind::Error => return,
+            ExprKind::Error => {}
         }
     }
 }

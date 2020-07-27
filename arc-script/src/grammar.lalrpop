@@ -43,6 +43,7 @@ match {
   ":",
   "?",
   "=",
+  "==",
 //=============================================================================
 // Keywords
 //=============================================================================
@@ -257,21 +258,25 @@ Arg  = Expr<ExprKind1>;
 Expr<ExprKind>: Expr = Spanned<ExprKind> => Expr::from(<>);
 
 Op0: BinOp = {
+  "==" => BinOp::Eq,
+};
+
+Op1: BinOp = {
   "+" => BinOp::Add,
   "-" => BinOp::Sub,
 };
 
-Op1: BinOp = {
+Op2: BinOp = {
   "*" => BinOp::Mul,
   "/" => BinOp::Div,
 };
 
-Op2: UnOp = {
+Op3: UnOp = {
   "!" => UnOp::Not,
 //  "-" => UnOp::Not, TODO: Resolve ambiguity with custom lexer (joint-tokens)
 };
 
-Op3: UnOp = {
+Op4: UnOp = {
   "as" <Type>               => UnOp::Cast(<>),
   <MetIdent> <Vec<Arg>> ")" => UnOp::Call(<>),
   <FieldIdent>              => UnOp::Access(<>),
@@ -293,10 +298,11 @@ ExprKind1: ExprKind = {
 
 ExprKind2: ExprKind = BinaryInfixLeftAssociative<Op0, ExprKind3>;
 ExprKind3: ExprKind = BinaryInfixLeftAssociative<Op1, ExprKind4>;
-ExprKind4: ExprKind =                UnaryPrefix<Op2, ExprKind5>;
-ExprKind5: ExprKind =               UnaryPostfix<Op3, ExprKind6>;
+ExprKind4: ExprKind = BinaryInfixLeftAssociative<Op2, ExprKind5>;
+ExprKind5: ExprKind =                UnaryPrefix<Op3, ExprKind6>;
+ExprKind6: ExprKind =               UnaryPostfix<Op4, ExprKind7>;
 
-ExprKind6: ExprKind = {
+ExprKind7: ExprKind = {
   Paren<ExprKind0>,
   Lit   => ExprKind::Lit(<>),
   BIF   => ExprKind::Bif(<>),
