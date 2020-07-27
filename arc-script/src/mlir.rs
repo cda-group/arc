@@ -134,7 +134,6 @@ impl Lit {
             F32(l) => l.to_string(),
             F64(l) => l.to_string(),
             Bool(l) => l.to_string(),
-            _ => todo!(),
         }
     }
 }

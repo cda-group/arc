@@ -301,14 +301,24 @@ pub enum DimKind {
     Unknown,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Copy, Clone, Educe)]
+#[educe(Hash)]
 pub enum Lit {
     I32(i32),
     I64(i64),
-    F32(f32),
-    F64(f64),
+    F32(#[educe(Hash(ignore))] f32),
+    F64(#[educe(Hash(ignore))] f64),
     Bool(bool),
-    Array(Vec<Expr>),
-    Struct(Vec<(Ident, Expr)>),
-    Error,
 }
+
+impl PartialEq for Lit {
+    fn eq(&self, other: &Self) -> bool {
+        match (self, other) {
+            (Lit::I32(v1), Lit::I32(v2)) => v1 == v2,
+            (Lit::I64(v1), Lit::I64(v2)) => v1 == v2,
+            (Lit::Bool(v1), Lit::Bool(v2)) => v1 == v2,
+            _ => false,
+        }
+    }
+}
+impl Eq for Lit {}

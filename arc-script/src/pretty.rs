@@ -140,7 +140,6 @@ impl Pretty for Lit {
             Lit::F32(l) => format!("{}f32", l.to_string()),
             Lit::F64(l) => l.to_string(),
             Lit::Bool(l) => l.to_string(),
-            _ => todo!()
         }
     }
 }

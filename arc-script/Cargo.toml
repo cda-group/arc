@@ -50,6 +50,7 @@ derive_more        = { version = "0.99.5", default-features = false, features = 
 num-traits         = "0.2.11"
 arrayvec           = "0.5.1"
 smol_str           = "0.1.15"
+educe              = { version = "0.4.4", default-features = false, features = ["Hash"]}
 
 # -- Feature: shaper
 z3                 = { optional = true, version = "0.5.0" }

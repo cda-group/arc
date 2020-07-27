@@ -6,6 +6,9 @@ use std::io::prelude::*;
 #[macro_use]
 mod utils;
 
+#[macro_use] 
+extern crate educe;
+
 pub mod opt;
 pub mod pretty;
 pub mod io;
