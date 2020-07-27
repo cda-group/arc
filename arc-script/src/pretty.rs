@@ -114,6 +114,9 @@ impl Pretty for Expr {
                 r = r.pretty(i, v)
             ),
             ExprKind::UnOp(op, e) => (op, e.as_ref()).pretty(i, v),
+            ExprKind::Array(args) => format!("[{args}]", args = args.pretty(i, v)),
+            ExprKind::Struct(fields) => format!("{{ {fields} }}", fields = fields.pretty(i, v),),
+            ExprKind::Tuple(args) => format!("({args})", args = args.pretty(i, v)),
             ExprKind::Call(id, args) => format!(
                 "{id}({args})",
                 id = id.pretty(i, v),
@@ -130,16 +133,14 @@ impl Pretty for Expr {
 }
 
 impl Pretty for Lit {
-    fn pretty(&self, i: u32, v: bool) -> String {
+    fn pretty(&self, _: u32, _: bool) -> String {
         match self {
             Lit::I32(l) => l.to_string(),
             Lit::I64(l) => format!("{}i64", l.to_string()),
             Lit::F32(l) => format!("{}f32", l.to_string()),
             Lit::F64(l) => l.to_string(),
             Lit::Bool(l) => l.to_string(),
-            Lit::Array(args) => format!("[{args}]", args = args.pretty(i, v)),
-            Lit::Struct(fields) => format!("{{ {fields} }}", fields = fields.pretty(i, v),),
-            Lit::Error => "☇".to_string(),
+            _ => todo!()
         }
     }
 }
@@ -198,6 +199,7 @@ impl Pretty for TypeKind {
                 ty = ty.pretty(i, v),
                 shape = shape.pretty(i, v)
             ),
+            TypeKind::Tuple(tys) => format!("({})", tys.pretty(i, v)),
             TypeKind::Option(ty) => format!("{}?", ty.pretty(i, v)),
             TypeKind::Unknown => "?".to_string(),
             TypeKind::Error => "☇".to_string(),

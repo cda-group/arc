@@ -21,7 +21,7 @@ impl Ssa for Expr {
     /// Turns an expression into a flat list of assignments and a variable
     fn flatten(self) -> (Context, Expr) {
         let Expr { kind, ty, span } = self;
-        use {Bif::*, Lit::*};
+        use {Bif::*};
         let (mut ctx, kind) = match kind {
             ExprKind::BinOp(l, op, r) => {
                 let ((lc, l), (rc, r)) = (l.flatten(), r.flatten());
@@ -56,13 +56,13 @@ impl Ssa for Expr {
                 vc.push((id, v));
                 return (merge(vc, bc), b);
             }
-            ExprKind::Lit(Array(e)) => {
+            ExprKind::Array(e) => {
                 let (ec, e) = e.flatten();
-                (ec, ExprKind::Lit(Array(e)))
+                (ec, ExprKind::Array(e))
             }
-            ExprKind::Lit(Struct(a)) => {
+            ExprKind::Struct(a) => {
                 let (ac, a) = a.flatten();
-                (ac, ExprKind::Lit(Struct(a)))
+                (ac, ExprKind::Struct(a))
             }
             kind @ ExprKind::Var(_) => return (vec![], Expr { kind, ty, span }),
             kind => (vec![], kind),
@@ -80,10 +80,7 @@ impl Expr {
     fn is_imm(&self) -> bool {
         match &self.kind {
             ExprKind::Var(_) => true,
-            ExprKind::Lit(kind) => match kind {
-                Lit::F32(_) | Lit::F64(_) | Lit::I32(_) | Lit::I64(_) | Lit::Bool(_) => true,
-                _ => false,
-            },
+            ExprKind::Lit(_) => true,
             _ => false,
         }
     }

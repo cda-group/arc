@@ -121,22 +121,30 @@ impl Expr {
                     Lit::F32(_) => TypeKind::F32,
                     Lit::F64(_) => TypeKind::F64,
                     Lit::Bool(_) => TypeKind::Bool,
-                    Lit::Array(args) => {
-                        let mut elem_ty = Type::new();
-                        elem_ty.var = typer.fresh();
-                        let size = args.len() as i32;
-                        args.iter()
-                            .for_each(|e| typer.unify_var_var(&elem_ty, &e.ty, self.span));
-                        TypeKind::Array(Box::new(elem_ty), Shape::simple(size, self.span))
-                    }
-                    Lit::Struct(fields) => TypeKind::Struct(
-                        fields
-                            .iter()
-                            .map(|(id, e)| (id.clone(), e.ty.clone()))
-                            .collect::<Vec<(Ident, Type)>>(),
-                    ),
-                    Lit::Error => return,
+                    _ => todo!(),
                 };
+                typer.unify_var_val(&self.ty, &kind, self.span);
+            }
+            ExprKind::Array(args) => {
+                let mut elem_ty = Type::new();
+                elem_ty.var = typer.fresh();
+                let size = args.len() as i32;
+                args.iter()
+                    .for_each(|e| typer.unify_var_var(&elem_ty, &e.ty, self.span));
+                let kind = TypeKind::Array(Box::new(elem_ty), Shape::simple(size, self.span));
+                typer.unify_var_val(&self.ty, &kind, self.span);
+            }
+            ExprKind::Struct(fields) => {
+                let kind = TypeKind::Struct(
+                    fields
+                        .iter()
+                        .map(|(id, e)| (id.clone(), e.ty.clone()))
+                        .collect::<Vec<(Ident, Type)>>(),
+                );
+                typer.unify_var_val(&self.ty, &kind, self.span);
+            }
+            ExprKind::Tuple(args) => {
+                let kind = TypeKind::Tuple(args.iter().map(|arg| arg.ty.clone()).collect());
                 typer.unify_var_val(&self.ty, &kind, self.span);
             }
             ExprKind::BinOp(l, op, r) => {

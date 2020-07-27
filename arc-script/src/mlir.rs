@@ -51,15 +51,15 @@ impl Expr {
             ExprKind::Lit(kind) => {
                 let lit = kind.to_lit();
                 let ty = self.ty.to_ty();
-                match kind {
-                    Lit::Array(_) => todo!(),
-                    _ => format!(
-                        r#""std.constant"() {{ value = {lit} : {ty} }}: () -> {ty}"#,
-                        lit = lit,
-                        ty = ty,
-                    ),
-                }
+                format!(
+                    r#""std.constant"() {{ value = {lit} : {ty} }}: () -> {ty}"#,
+                    lit = lit,
+                    ty = ty,
+                )
             }
+            ExprKind::Array(_) => todo!(),
+            ExprKind::Tuple(_) => todo!(),
+            ExprKind::Struct(_) => todo!(),
             ExprKind::BinOp(l, op, r) => {
                 use BinOp::*;
                 use TypeKind::*;
@@ -117,6 +117,7 @@ impl Type {
             String => todo!(),
             Struct(_) => todo!(),
             Array(_, _) => todo!(),
+            Tuple(_) => todo!(),
             Option(_) => todo!(),
             Unknown => "<UNKNOWN>".to_string(),
             Error => "<ERROR>".to_string(),
@@ -133,9 +134,7 @@ impl Lit {
             F32(l) => l.to_string(),
             F64(l) => l.to_string(),
             Bool(l) => l.to_string(),
-            Array(_) => todo!(),
-            Struct(_) => todo!(),
-            Error => "<ERROR>".to_string(),
+            _ => todo!(),
         }
     }
 }

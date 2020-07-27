@@ -101,6 +101,9 @@ impl Ident {
 #[derive(Debug, Clone)]
 pub enum ExprKind {
     Lit(Lit),
+    Array(Vec<Expr>),
+    Struct(Vec<(Ident, Expr)>),
+    Tuple(Vec<Expr>),
     Bif(Bif),
     Var(Ident),
     UnOp(UnOp, Box<Expr>),
@@ -214,6 +217,7 @@ pub enum TypeKind {
     Option(Box<Type>),
     Struct(Vec<(Ident, Type)>),
     Array(Box<Type>, Shape),
+    Tuple(Vec<Type>),
     Unknown,
     Error,
 }

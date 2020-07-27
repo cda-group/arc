@@ -66,18 +66,12 @@ impl Expr {
                 stack.pop();
             }
             ExprKind::Call(_, ps) => ps.iter_mut().for_each(|p| p.for_each_expr_rec(fun, stack)),
-            ExprKind::Lit(kind) => match kind {
-                Lit::Array(ps) => ps.iter_mut().for_each(|p| p.for_each_expr_rec(fun, stack)),
-                Lit::Struct(fs) => fs
-                    .iter_mut()
-                    .for_each(|(_, v)| v.for_each_expr_rec(fun, stack)),
-                Lit::Bool(_)
-                | Lit::F32(_)
-                | Lit::I32(_)
-                | Lit::F64(_)
-                | Lit::I64(_)
-                | Lit::Error => {}
-            },
+            ExprKind::Array(ps) => ps.iter_mut().for_each(|p| p.for_each_expr_rec(fun, stack)),
+            ExprKind::Tuple(ps) => ps.iter_mut().for_each(|p| p.for_each_expr_rec(fun, stack)),
+            ExprKind::Struct(fs) => fs
+                .iter_mut()
+                .for_each(|(_, v)| v.for_each_expr_rec(fun, stack)),
+            ExprKind::Lit(_) => {}
             ExprKind::Var(_) => {}
             ExprKind::Error => {}
             ExprKind::BinOp(l, _, r) => {
@@ -101,6 +95,7 @@ impl Type {
             TypeKind::Struct(fs) => fs
                 .iter_mut()
                 .for_each(|(_, ty)| ty.for_each_type_rec(f, stack)),
+            TypeKind::Tuple(tys) => tys.iter_mut().for_each(|ty| ty.for_each_type_rec(f, stack)),
             TypeKind::Option(ty) => ty.for_each_type_rec(f, stack),
             TypeKind::I64
             | TypeKind::F64

@@ -148,9 +148,11 @@ match {
 
 Sep<T, S>: Vec<T> = <v:(<T> S)*> <e:T?> => v.into_iter().chain(e).collect();
 SepNonEmpty<T, S>: Vec<T> = <e:T> <v:(S <T>)*> => vec![e].into_iter().chain(v).collect();
+SepMulti<T, S>: Vec<T> = <e:T> <v:(S <T>)+> => vec![e].into_iter().chain(v).collect();
 SepTrailing<T, S> = (<T> S)*;
 Vec<T> = Sep<T, ",">;
 VecNonEmpty<T> = SepNonEmpty<T, ",">;
+VecMulti<T> = SepMulti<T, ",">;
 Semi<T> = Sep<T, ";">;
 Single<T>: Vec<T> = T => vec![<>];
 Box<T>: Box<T> = T => Box::new(<>);
@@ -315,24 +317,21 @@ ExprKind6: ExprKind =               UnaryPostfix<Op4, ExprKind7>;
 
 ExprKind7: ExprKind = {
   Paren<ExprKind0>,
-  Lit   => ExprKind::Lit(<>),
-  BIF   => ExprKind::Bif(<>),
-  Ident => ExprKind::Var(<>),
+  Lit                                        => <>.map(ExprKind::Lit).unwrap_or(ExprKind::Error),
+  BIF                                        => ExprKind::Bif(<>),
+  Ident                                      => ExprKind::Var(<>),
+  "[" <VecNonEmpty<Arg>> "]"                 => ExprKind::Array(<>),
+  "{" <VecNonEmpty<(<Ident> ":" <Arg>)>> "}" => ExprKind::Struct(<>),
+  "(" <VecMulti<Arg>> ")"                    => ExprKind::Tuple(<>),
   ! => { errors.push(<>); ExprKind::Error },
 };
 
-Lit: Lit = {
-  LitScalar,
-  "[" <VecNonEmpty<Arg>> "]"                 => Lit::Array(<>),
-  "{" <VecNonEmpty<(<Ident> ":" <Arg>)>> "}" => Lit::Struct(<>),
-};
-
-LitScalar: Lit = {
-  LitI32  => <>.map(Lit::I32).unwrap_or(Lit::Error),
-  LitI64  => <>.map(Lit::I64).unwrap_or(Lit::Error),
-  LitF32  => <>.map(Lit::F32).unwrap_or(Lit::Error),
-  LitF64  => <>.map(Lit::F64).unwrap_or(Lit::Error),
-  LitBool => <>.map(Lit::Bool).unwrap_or(Lit::Error),
+Lit: Option<Lit> = {
+  LitI32  => <>.map(Lit::I32),
+  LitI64  => <>.map(Lit::I64),
+  LitF32  => <>.map(Lit::F32),
+  LitF64  => <>.map(Lit::F64),
+  LitBool => <>.map(Lit::Bool),
 };
 
 BIF: Bif = {
@@ -359,7 +358,7 @@ PatternKind0: PatternKind = {
 
 PatternKind1: PatternKind = {
   Regex                      => <>.map(PatternKind::Regex).unwrap_or(PatternKind::Error),
-  LitScalar                  => PatternKind::Lit(<>),
+  Lit                        => <>.map(PatternKind::Lit).unwrap_or(PatternKind::Error),
   Ident                      => PatternKind::Var(<>),
   "(" <Vec<RootPattern>> ")" => PatternKind::Tuple(<>),
   "_"                        => PatternKind::Wildcard,
