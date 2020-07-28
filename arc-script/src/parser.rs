@@ -67,10 +67,7 @@ impl<'i> From<ParseError<'i>> for CompilerError {
     }
 }
 
-pub fn parse_lit<'i, 'e, T: FromStr>(
-    Spanned(l, s, r): Spanned<&'i str>,
-    errors: &'e mut Vec<ErrorRecovery>,
-) -> Option<T>
+pub fn parse_lit<'i, 'e, T: FromStr>(Spanned(l, s, r): Spanned<&'i str>) -> CompilerResult<T>
 where
     <T as FromStr>::Err: Display,
 {
@@ -78,11 +75,9 @@ where
         Err(error) => {
             let span = Span::new(l as u32, r as u32);
             let msg = error.to_string();
-            let error = CompilerError::BadLiteral { msg, span }.into();
-            errors.push(error);
-            None
+            Err(CompilerError::BadLiteral { msg, span })
         }
-        Ok(l) => Some(l),
+        Ok(l) => Ok(l),
     }
 }
 
@@ -91,8 +86,7 @@ pub fn parse_lit_radix<'i, 'e, T: Num>(
     radix: u32,
     prefix: usize,
     suffix: usize,
-    errors: &'e mut Vec<ErrorRecovery>,
-) -> Option<T>
+) -> CompilerResult<T>
 where
     <T as Num>::FromStrRadixErr: Display,
 {
@@ -100,28 +94,21 @@ where
         Err(error) => {
             let span = Span::new(l as u32, r as u32);
             let msg = error.to_string();
-            let error = CompilerError::BadLiteral { msg, span }.into();
-            errors.push(error);
-            None
+            Err(CompilerError::BadLiteral { msg, span })
         }
-        Ok(l) => Some(l),
+        Ok(ok) => Ok(ok),
     }
 }
 
 // Parses a r"foo" string into a regex::Regex
-pub fn parse_regex<'i, 'e>(
-    Spanned(l, s, r): Spanned<&'i str>,
-    errors: &'e mut Vec<ErrorRecovery>,
-) -> Option<Regex> {
+pub fn parse_regex<'i, 'e>(Spanned(l, s, r): Spanned<&'i str>) -> CompilerResult<Regex> {
     match Regex::from_str(&s[1..s.len()]) {
         Err(error) => {
             let span = Span::new(l as u32, r as u32);
             let msg = error.to_string();
-            let error = CompilerError::BadLiteral { msg, span }.into();
-            errors.push(error);
-            None
+            Err(CompilerError::BadLiteral { msg, span })
         }
-        Ok(re) => Some(re),
+        Ok(ok) => Ok(ok),
     }
 }
 

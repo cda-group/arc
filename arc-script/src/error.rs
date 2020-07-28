@@ -12,6 +12,7 @@ pub type Error = Box<dyn std::error::Error + 'static>;
 
 pub type SimpleFile<'i> = files::SimpleFile<&'i str, &'i str>;
 pub type Diagnostic = diagnostic::Diagnostic<()>;
+pub type CompilerResult<T> = Result<T, CompilerError>;
 
 pub struct Reporter<'i> {
     pub file: SimpleFile<'i>,

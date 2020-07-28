@@ -309,6 +309,7 @@ pub enum Lit {
     F32(#[educe(Hash(ignore))] f32),
     F64(#[educe(Hash(ignore))] f64),
     Bool(bool),
+    Error
 }
 
 impl PartialEq for Lit {

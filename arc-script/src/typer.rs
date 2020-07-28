@@ -121,6 +121,7 @@ impl Expr {
                     Lit::F32(_) => TypeKind::F32,
                     Lit::F64(_) => TypeKind::F64,
                     Lit::Bool(_) => TypeKind::Bool,
+                    Lit::Error => TypeKind::Error
                 };
                 typer.unify_var_val(&self.ty, &kind, self.span);
             }

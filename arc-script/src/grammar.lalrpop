@@ -197,7 +197,6 @@ Ident: Ident = {
   TUnicodeIdent => Ident::from(<>),
 };
 
-TupleIndex: Option<usize> = Spanned<TTupleIndex> => parse_lit_radix(<>, 10, 1, 0, errors);
 
 FieldIdent: Ident = TFieldIdent => Ident::from(&<>[1..].to_string());
 FunIdent: Ident = TFunIdent => Ident::from(&<>[..<>.len()-1].to_string());
@@ -205,45 +204,47 @@ MetIdent: Ident = TMetIdent => Ident::from(&<>[1..<>.len()-1].to_string());
 
 LitStr: String = TStr => <>[1..<>.len()].to_string();
 
-Regex: Option<Regex> = Spanned<TRegex> => parse_regex(<>, errors);
 
-LitBool: Option<bool> = Spanned<TBool> => parse_lit(<>, errors);
+ParseIndex: CompilerResult<usize> = Spanned<TTupleIndex> => parse_lit_radix(<>, 10, 1, 0);
+ParseStr: String = TStr => <>[1..<>.len()].to_string();
+ParseRegex: CompilerResult<regex::Regex> = Spanned<TRegex> => parse_regex(<>);
+ParseBool: CompilerResult<bool> = Spanned<TBool> => parse_lit(<>);
 
 //=============================================================================
-// Numeric Literals:
-// * parse_lit_radix(<token>, <radix>, <prefix-len>, <suffix-len>, <errors>)
+// Numerals:
+// * parse_lit_radix(<token>, <radix>, <prefix-len>, <suffix-len>)
 //=============================================================================
 
-LitF32: Option<f32> = {
-  Spanned<TF32Base10> => parse_lit_radix(<>, 10, 0, 3, errors),
+ParseF32: CompilerResult<f32> = {
+  Spanned<TF32Base10> => parse_lit_radix(<>, 10, 0, 3),
 };
 
-LitF64: Option<f64> = {
-  Spanned<TF64Base10> => parse_lit_radix(<>, 10, 0, 0, errors),
+ParseF64: CompilerResult<f64> = {
+  Spanned<TF64Base10> => parse_lit_radix(<>, 10, 0, 0),
 };
 
-LitI8: Option<i8> = {
-  Spanned<TI8Base10>  => parse_lit_radix(<>, 10, 0, 2, errors),
-  Spanned<TI8Base2>   => parse_lit_radix(<>,  2, 2, 2, errors),
-  Spanned<TI8Base16>  => parse_lit_radix(<>, 16, 2, 2, errors),
+ParseI8: CompilerResult<i8> = {
+  Spanned<TI8Base10>  => parse_lit_radix(<>, 10, 0, 2),
+  Spanned<TI8Base2>   => parse_lit_radix(<>,  2, 2, 2),
+  Spanned<TI8Base16>  => parse_lit_radix(<>, 16, 2, 2),
 };
 
-LitI16: Option<i16> = {
-  Spanned<TI16Base10> => parse_lit_radix(<>, 10, 0, 3, errors),
-  Spanned<TI16Base2>  => parse_lit_radix(<>,  2, 2, 3, errors),
-  Spanned<TI16Base16> => parse_lit_radix(<>, 16, 2, 3, errors),
+ParseI16: CompilerResult<i16> = {
+  Spanned<TI16Base10> => parse_lit_radix(<>, 10, 0, 3),
+  Spanned<TI16Base2>  => parse_lit_radix(<>,  2, 2, 3),
+  Spanned<TI16Base16> => parse_lit_radix(<>, 16, 2, 3),
 };
 
-LitI32: Option<i32> = {
-  Spanned<TI32Base10> => parse_lit_radix(<>, 10, 0, 0, errors),
-  Spanned<TI32Base2>  => parse_lit_radix(<>,  2, 2, 3, errors),
-  Spanned<TI32Base16> => parse_lit_radix(<>, 16, 2, 3, errors),
+ParseI32: CompilerResult<i32> = {
+  Spanned<TI32Base10> => parse_lit_radix(<>, 10, 0, 0),
+  Spanned<TI32Base2>  => parse_lit_radix(<>,  2, 2, 3),
+  Spanned<TI32Base16> => parse_lit_radix(<>, 16, 2, 3),
 };
 
-LitI64: Option<i64> = {
-  Spanned<TI64Base10> => parse_lit_radix(<>, 10, 0, 3, errors),
-  Spanned<TI64Base2>  => parse_lit_radix(<>,  2, 2, 3, errors),
-  Spanned<TI64Base16> => parse_lit_radix(<>, 16, 2, 3, errors),
+ParseI64: CompilerResult<i64> = {
+  Spanned<TI64Base10> => parse_lit_radix(<>, 10, 0, 3),
+  Spanned<TI64Base2>  => parse_lit_radix(<>,  2, 2, 3),
+  Spanned<TI64Base16> => parse_lit_radix(<>, 16, 2, 3),
 };
 
 //=============================================================================
@@ -292,7 +293,12 @@ Op4: UnOp = {
   "as" <Type>               => UnOp::Cast(<>),
   <MetIdent> <Vec<Arg>> ")" => UnOp::Call(<>),
   <FieldIdent>              => UnOp::Access(<>),
-  <TupleIndex>              => <>.map(Index).map(UnOp::Project).unwrap_or(UnOp::Error),
+  <TupleIndex>,
+};
+TupleIndex: UnOp = ParseIndex => {
+  <>.map(Index)
+    .map(UnOp::Project)
+    .unwrap_or_else(|err| { errors.push(err.into()); UnOp::Error })
 };
 
 OptionalType: Type = (":" <Type>)? => <>.unwrap_or(Type::new());
@@ -317,7 +323,7 @@ ExprKind6: ExprKind =               UnaryPostfix<Op4, ExprKind7>;
 
 ExprKind7: ExprKind = {
   Paren<ExprKind0>,
-  Lit                                        => <>.map(ExprKind::Lit).unwrap_or(ExprKind::Error),
+  Lit                                        => ExprKind::Lit(<>),
   BIF                                        => ExprKind::Bif(<>),
   Ident                                      => ExprKind::Var(<>),
   "[" <VecNonEmpty<Arg>> "]"                 => ExprKind::Array(<>),
@@ -326,12 +332,16 @@ ExprKind7: ExprKind = {
   ! => { errors.push(<>); ExprKind::Error },
 };
 
-Lit: Option<Lit> = {
-  LitI32  => <>.map(Lit::I32),
-  LitI64  => <>.map(Lit::I64),
-  LitF32  => <>.map(Lit::F32),
-  LitF64  => <>.map(Lit::F64),
-  LitBool => <>.map(Lit::Bool),
+Lit: Lit = ParseLit => {
+  <>.unwrap_or_else(|err| { errors.push(err.into()); Lit::Error })
+};
+
+ParseLit: CompilerResult<Lit> = {
+  ParseI32  => <>.map(Lit::I32),
+  ParseI64  => <>.map(Lit::I64),
+  ParseF32  => <>.map(Lit::F32),
+  ParseF64  => <>.map(Lit::F64),
+  ParseBool => <>.map(Lit::Bool),
 };
 
 BIF: Bif = {
@@ -356,9 +366,14 @@ PatternKind0: PatternKind = {
   PatternKind1
 };
 
+Regex: PatternKind = ParseRegex => {
+  <>.map(PatternKind::Regex)
+    .unwrap_or_else(|err| { errors.push(err.into()); PatternKind::Error })
+};
+
 PatternKind1: PatternKind = {
-  Regex                      => <>.map(PatternKind::Regex).unwrap_or(PatternKind::Error),
-  Lit                        => <>.map(PatternKind::Lit).unwrap_or(PatternKind::Error),
+  Regex                      => <>,
+  Lit                        => PatternKind::Lit(<>),
   Ident                      => PatternKind::Var(<>),
   "(" <Vec<RootPattern>> ")" => PatternKind::Tuple(<>),
   "_"                        => PatternKind::Wildcard,
