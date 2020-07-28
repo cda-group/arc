@@ -1,6 +1,15 @@
 use {
     crate::{ast::*, utils::indent},
     std::fmt::*,
+    BinOpKind::*,
+    DimKind::*,
+    ExprKind::*,
+    LitKind::*,
+    PatternKind::*,
+    ScalarKind::*,
+    ShapeKind::*,
+    TypeKind::*,
+    UnOpKind::*,
 };
 
 impl Display for Expr {
@@ -41,7 +50,7 @@ impl Pretty for Script {
     }
 }
 
-impl Pretty for Fun {
+impl Pretty for FunDef {
     fn pretty(&self, i: u32, v: bool) -> String {
         format!(
             "{s0}fun {id}({params}){s1}{body}{s0}end{s0}",
@@ -72,7 +81,7 @@ impl<A: Pretty, B: Pretty> Pretty for (A, B) {
 impl Pretty for Expr {
     fn pretty(&self, i: u32, v: bool) -> String {
         let expr = match &self.kind {
-            ExprKind::If(c, t, e) => format!(
+            If(c, t, e) => format!(
                 "if {c} {s0}then {s1}{t} {s0}else {s1}{e}",
                 c = c.pretty(i + 1, v),
                 t = t.pretty(i + 2, v),
@@ -80,7 +89,7 @@ impl Pretty for Expr {
                 s0 = indent(i + 1),
                 s1 = indent(i + 2),
             ),
-            ExprKind::Match(e, clauses) => format!(
+            Match(e, clauses) => format!(
                 "match {e} {{{clause}{s0}}}{s1}",
                 e = e.pretty(i + 1, v),
                 clause = clauses
@@ -96,7 +105,7 @@ impl Pretty for Expr {
                 s0 = indent(i),
                 s1 = indent(i + 1),
             ),
-            ExprKind::Let(id, ty, e, b) => format!(
+            Let(id, ty, e, b) => format!(
                 "{id}: {ty} = {e}{s}{b}",
                 id = id.pretty(i, v),
                 ty = ty.pretty(i, v),
@@ -104,25 +113,24 @@ impl Pretty for Expr {
                 b = b.pretty(i, v),
                 s = indent(i),
             ),
-            ExprKind::Bif(_) => todo!(),
-            ExprKind::Lit(lit) => lit.pretty(i, v),
-            ExprKind::Var(id) => id.pretty(i, v),
-            ExprKind::BinOp(l, op, r) => format!(
+            Lit(lit) => lit.pretty(i, v),
+            Var(id) => id.pretty(i, v),
+            BinOp(l, op, r) => format!(
                 "{l} {op} {r}",
                 l = l.pretty(i, v),
                 op = op.pretty(i, v),
                 r = r.pretty(i, v)
             ),
-            ExprKind::UnOp(op, e) => (op, e.as_ref()).pretty(i, v),
-            ExprKind::Array(args) => format!("[{args}]", args = args.pretty(i, v)),
-            ExprKind::Struct(fields) => format!("{{ {fields} }}", fields = fields.pretty(i, v),),
-            ExprKind::Tuple(args) => format!("({args})", args = args.pretty(i, v)),
-            ExprKind::Call(id, args) => format!(
+            UnOp(op, e) => (op, e.as_ref()).pretty(i, v),
+            ConsArray(args) => format!("[{args}]", args = args.pretty(i, v)),
+            ConsStruct(fields) => format!("{{ {fields} }}", fields = fields.pretty(i, v)),
+            ConsTuple(args) => format!("({args})", args = args.pretty(i, v)),
+            FunCall(id, args) => format!(
                 "{id}({args})",
                 id = id.pretty(i, v),
                 args = args.pretty(i, v)
             ),
-            ExprKind::Error => "☇".to_string(),
+            ExprErr => "☇".to_string(),
         };
         if v {
             format!("({expr}):{ty}", expr = expr, ty = self.ty.pretty(i, v))
@@ -132,47 +140,47 @@ impl Pretty for Expr {
     }
 }
 
-impl Pretty for Lit {
+impl Pretty for LitKind {
     fn pretty(&self, _: u32, _: bool) -> String {
         match self {
-            Lit::I32(l) => l.to_string(),
-            Lit::I64(l) => format!("{}i64", l.to_string()),
-            Lit::F32(l) => format!("{}f32", l.to_string()),
-            Lit::F64(l) => l.to_string(),
-            Lit::Bool(l) => l.to_string(),
-            Lit::Error => "☇".to_string(),
+            LitI32(l) => l.to_string(),
+            LitI64(l) => format!("{}i64", l.to_string()),
+            LitF32(l) => format!("{}f32", l.to_string()),
+            LitF64(l) => l.to_string(),
+            LitBool(l) => l.to_string(),
+            LitErr => "☇".to_string(),
         }
     }
 }
 
-impl<'i> Pretty for (&'i UnOp, &'i Expr) {
+impl<'i> Pretty for (&'i UnOpKind, &'i Expr) {
     fn pretty(&self, i: u32, v: bool) -> String {
         let (op, e) = self;
         match op {
-            UnOp::Not => format!("!{}", e.pretty(i, v)),
-            UnOp::Cast(ty) => format!("{}:{}", e.pretty(i, v), ty.pretty(i, v)),
-            UnOp::Call(id, args) => format!(
+            Not => format!("!{}", e.pretty(i, v)),
+            Cast(ty) => format!("{}:{}", e.pretty(i, v), ty.pretty(i, v)),
+            MethodCall(id, args) => format!(
                 "{e}.{id}({args})",
                 e = e.pretty(i, v),
                 id = id.pretty(i, v),
                 args = args.pretty(i, v)
             ),
-            UnOp::Project(idx) => format!("{}.{}", e.pretty(i, v), idx.pretty(i, v)),
-            UnOp::Access(_) => todo!(),
-            UnOp::Error => format!("☇{}", e.pretty(i, v)),
+            Project(idx) => format!("{}.{}", e.pretty(i, v), idx.pretty(i, v)),
+            Access(_) => todo!(),
+            UnOpErr => format!("☇{}", e.pretty(i, v)),
         }
     }
 }
 
-impl Pretty for BinOp {
+impl Pretty for BinOpKind {
     fn pretty(&self, _: u32, _: bool) -> String {
         match self {
-            BinOp::Add => "+".to_string(),
-            BinOp::Sub => "-".to_string(),
-            BinOp::Mul => "*".to_string(),
-            BinOp::Div => "/".to_string(),
-            BinOp::Eq => "==".to_string(),
-            BinOp::Error => "☇".to_string(),
+            Add => "+".to_string(),
+            Sub => "-".to_string(),
+            Mul => "*".to_string(),
+            Div => "/".to_string(),
+            Eq => "==".to_string(),
+            BinOpErr => "☇".to_string(),
         }
     }
 }
@@ -184,25 +192,26 @@ impl Pretty for Type {
 impl Pretty for TypeKind {
     fn pretty(&self, i: u32, v: bool) -> String {
         match &self {
-            TypeKind::I8 => "i8".to_string(),
-            TypeKind::I16 => "i16".to_string(),
-            TypeKind::I32 => "i32".to_string(),
-            TypeKind::I64 => "i64".to_string(),
-            TypeKind::F32 => "f32".to_string(),
-            TypeKind::F64 => "f64".to_string(),
-            TypeKind::Bool => "bool".to_string(),
-            TypeKind::Null => "null".to_string(),
-            TypeKind::String => "str".to_string(),
-            TypeKind::Struct(fields) => format!("{{ {fields} }}", fields = fields.pretty(i, v),),
-            TypeKind::Array(ty, shape) => format!(
+            Scalar(I8) => "i8".to_string(),
+            Scalar(I16) => "i16".to_string(),
+            Scalar(I32) => "i32".to_string(),
+            Scalar(I64) => "i64".to_string(),
+            Scalar(F32) => "f32".to_string(),
+            Scalar(F64) => "f64".to_string(),
+            Scalar(Bool) => "bool".to_string(),
+            Scalar(Null) => "null".to_string(),
+            Scalar(Str) => "str".to_string(),
+            Struct(fields) => format!("{{ {fields} }}", fields = fields.pretty(i, v),),
+            Array(ty, shape) => format!(
                 "[{ty}; {shape}]",
                 ty = ty.pretty(i, v),
                 shape = shape.pretty(i, v)
             ),
-            TypeKind::Tuple(tys) => format!("({})", tys.pretty(i, v)),
-            TypeKind::Option(ty) => format!("{}?", ty.pretty(i, v)),
-            TypeKind::Unknown => "?".to_string(),
-            TypeKind::Error => "☇".to_string(),
+            Tuple(tys) => format!("({})", tys.pretty(i, v)),
+            Optional(ty) => format!("{}?", ty.pretty(i, v)),
+            Fun(_, _) => "".to_owned(),
+            Unknown => "?".to_string(),
+            TypeErr => "☇".to_string(),
         }
     }
 }
@@ -227,8 +236,8 @@ impl Pretty for Ident {
 impl Pretty for Shape {
     fn pretty(&self, i: u32, v: bool) -> String {
         match &self.kind {
-            ShapeKind::Unranked => "*".to_owned(),
-            ShapeKind::Ranked(dims) => dims.pretty(i, v),
+            Unranked => "*".to_owned(),
+            Ranked(dims) => dims.pretty(i, v),
         }
     }
 }
@@ -236,8 +245,8 @@ impl Pretty for Shape {
 impl Pretty for Dim {
     fn pretty(&self, i: u32, v: bool) -> String {
         match &self.kind {
-            DimKind::Unknown => "?".to_owned(),
-            DimKind::Expr(expr) => expr.pretty(i, v),
+            Hole => "?".to_owned(),
+            Symbolic(expr) => expr.pretty(i, v),
         }
     }
 }
@@ -245,13 +254,13 @@ impl Pretty for Dim {
 impl Pretty for Pattern {
     fn pretty(&self, i: u32, v: bool) -> String {
         match &self.kind {
-            PatternKind::Regex(s) => format!(r#"r"{}""#, s.clone()),
-            PatternKind::Error => "☇".to_string(),
-            PatternKind::Or(l, r) => format!("{} | {}", l.pretty(i, v), r.pretty(i, v)),
-            PatternKind::Lit(l) => l.pretty(i, v),
-            PatternKind::Var(x) => x.pretty(i, v),
-            PatternKind::Tuple(vs) => format!("({})", vs.pretty(i, v)),
-            PatternKind::Wildcard => "_".to_owned(),
+            Regex(s) => format!(r#"r"{}""#, s.clone()),
+            Or(l, r) => format!("{} | {}", l.pretty(i, v), r.pretty(i, v)),
+            Val(l) => l.pretty(i, v),
+            Bind(x) => x.pretty(i, v),
+            DeconsTuple(vs) => format!("({})", vs.pretty(i, v)),
+            Wildcard => "_".to_owned(),
+            PatternErr => "☇".to_string(),
         }
     }
 }

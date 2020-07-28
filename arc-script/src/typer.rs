@@ -1,3 +1,10 @@
+use BinOpKind::*;
+use ExprKind::*;
+use LitKind::*;
+use ScalarKind::*;
+use ShapeKind::*;
+use TypeKind::*;
+use UnOpKind::*;
 use {
     crate::{ast::*, error::*, utils::*},
     codespan::Span,
@@ -50,7 +57,7 @@ impl Typer {
         }
     }
 
-    fn fresh(&mut self) -> TypeVar { self.context.new_key(TypeKind::Unknown) }
+    fn fresh(&mut self) -> TypeVar { self.context.new_key(Unknown) }
 
     fn lookup(&mut self, var: TypeVar) -> TypeKind { self.context.probe_value(var) }
 
@@ -74,12 +81,10 @@ impl UnifyValue for TypeKind {
     type Error = (TypeKind, TypeKind);
 
     fn unify_values(a: &TypeKind, b: &TypeKind) -> Result<TypeKind, (TypeKind, TypeKind)> {
-        use ShapeKind::*;
-        use TypeKind::*;
         match (a.clone(), b.clone()) {
             (Unknown, Unknown) => Ok(Unknown),
             (x, Unknown) | (Unknown, x) => Ok(x),
-            (x, Error) | (Error, x) => Ok(x),
+            (x, TypeErr) | (TypeErr, x) => Ok(x),
             (Array(ty1, sh1), Array(ty2, sh2)) => match (&sh1.kind, &sh2.kind) {
                 (Ranked(r1), Ranked(r2)) if r1.len() != r2.len() => {
                     Err((Array(ty1.clone(), sh1), Array(ty2.clone(), sh2)))
@@ -103,7 +108,7 @@ impl Expr {
 
     fn constrain(&mut self, typer: &mut Typer, stack: &mut Stack) {
         match &self.kind {
-            ExprKind::Let(_, ty, v, b) => {
+            Let(_, ty, v, b) => {
                 typer.unify_var_var(&v.ty, &ty, self.span);
                 typer.unify_var_var(&self.ty, &b.ty, self.span);
             }
@@ -116,26 +121,26 @@ impl Expr {
             },
             ExprKind::Lit(l) => {
                 let kind = match l {
-                    Lit::I32(_) => TypeKind::I32,
-                    Lit::I64(_) => TypeKind::I64,
-                    Lit::F32(_) => TypeKind::F32,
-                    Lit::F64(_) => TypeKind::F64,
-                    Lit::Bool(_) => TypeKind::Bool,
-                    Lit::Error => TypeKind::Error
+                    LitI32(_) => Scalar(I32),
+                    LitI64(_) => Scalar(I64),
+                    LitF32(_) => Scalar(F32),
+                    LitF64(_) => Scalar(F64),
+                    LitBool(_) => Scalar(Bool),
+                    LitErr => return,
                 };
                 typer.unify_var_val(&self.ty, &kind, self.span);
             }
-            ExprKind::Array(args) => {
+            ConsArray(args) => {
                 let mut elem_ty = Type::new();
                 elem_ty.var = typer.fresh();
                 let size = args.len() as i32;
                 args.iter()
                     .for_each(|e| typer.unify_var_var(&elem_ty, &e.ty, self.span));
-                let kind = TypeKind::Array(Box::new(elem_ty), Shape::simple(size, self.span));
+                let kind = Array(Box::new(elem_ty), Shape::simple(size, self.span));
                 typer.unify_var_val(&self.ty, &kind, self.span);
             }
-            ExprKind::Struct(fields) => {
-                let kind = TypeKind::Struct(
+            ConsStruct(fields) => {
+                let kind = Struct(
                     fields
                         .iter()
                         .map(|(id, e)| (id.clone(), e.ty.clone()))
@@ -143,42 +148,39 @@ impl Expr {
                 );
                 typer.unify_var_val(&self.ty, &kind, self.span);
             }
-            ExprKind::Tuple(args) => {
-                let kind = TypeKind::Tuple(args.iter().map(|arg| arg.ty.clone()).collect());
+            ConsTuple(args) => {
+                let kind = Tuple(args.iter().map(|arg| arg.ty.clone()).collect());
                 typer.unify_var_val(&self.ty, &kind, self.span);
             }
-            ExprKind::BinOp(l, op, r) => {
+            BinOp(l, kind, r) => {
                 typer.unify_var_var(&l.ty, &r.ty, self.span);
-                match op {
-                    BinOp::Add | BinOp::Div | BinOp::Mul | BinOp::Sub => {
-                        typer.unify_var_var(&self.ty, &r.ty, self.span);
+                match kind {
+                    Add | Div | Mul | Sub => {
+                        typer.unify_var_var(&self.ty, &r.ty, self.span)
                     }
-                    BinOp::Eq => {
-                        typer.unify_var_val(&self.ty, &TypeKind::Bool, self.span);
-                    }
-                    BinOp::Error => {}
+                    Eq => typer.unify_var_val(&self.ty, &Scalar(Bool), self.span),
+                    BinOpErr => {}
                 }
             }
-            ExprKind::UnOp(op, e) => {
-                match op {
-                    UnOp::Not => typer.unify_var_val(&e.ty, &TypeKind::Bool, e.span),
-                    UnOp::Cast(ty) => typer.unify_var_val(&e.ty, &ty.kind, e.span),
-                    UnOp::Call(_, _) => return, // TODO
-                    UnOp::Project(_) => return,
-                    UnOp::Access(_) => return,
-                    UnOp::Error => return,
+            UnOp(kind, e) => {
+                match kind {
+                    Not => typer.unify_var_val(&e.ty, &Scalar(Bool), e.span),
+                    Cast(ty) => typer.unify_var_val(&e.ty, &ty.kind, e.span),
+                    MethodCall(_, _) => return, // TODO
+                    Project(_) => return,
+                    Access(_) => return,
+                    UnOpErr => return,
                 }
                 typer.unify_var_var(&self.ty, &e.ty, e.span);
             }
-            ExprKind::If(c, t, e) => {
-                typer.unify_var_val(&c.ty, &TypeKind::Bool, c.span);
+            If(c, t, e) => {
+                typer.unify_var_val(&c.ty, &Scalar(Bool), c.span);
                 typer.unify_var_var(&t.ty, &e.ty, e.span);
                 typer.unify_var_var(&t.ty, &self.ty, e.span);
             }
-            ExprKind::Match(_, _) => {}
-            ExprKind::Bif(_) => unimplemented!(),
-            ExprKind::Call(_, _) => unimplemented!(),
-            ExprKind::Error => {}
+            Match(_, _) => {}
+            FunCall(_, _) => unimplemented!(),
+            ExprErr => {}
         }
     }
 }

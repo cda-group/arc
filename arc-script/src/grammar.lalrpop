@@ -1,6 +1,16 @@
 use {
   crate::{ast::*, parser::*},
   lalrpop_util::ErrorRecovery,
+  ExprKind::*,
+  BinOpKind::*,
+  UnOpKind::*,
+  DimKind::*,
+  ShapeKind::*,
+  ScalarKind::*,
+  TypeKind::*,
+  PatternKind::*,
+  LitKind::*,
+  BIFKind::*,
 };
 
 //=============================================================================
@@ -251,13 +261,13 @@ ParseI64: CompilerResult<i64> = {
 // Non-Terminals
 //=============================================================================
 
-pub Script: Script = Fun* Body => Script::new(<>);
+pub Script: Script = FunDef* Body => Script::new(<>);
 
 //=============================================================================
 // Functions
 //=============================================================================
 
-Fun: Fun = "fun" <FunIdent> <Vec<Param>> ")" <Body> "end"? => Fun::new(<>);
+FunDef: FunDef = "fun" <FunIdent> <Vec<Param>> ")" <Body> "end"? => FunDef::new(<>);
 
 Param = <Ident> ":" <Type>;
 
@@ -270,48 +280,48 @@ Arg  = Expr<ExprKind1>;
 
 Expr<ExprKind>: Expr = Spanned<ExprKind> => Expr::from(<>);
 
-Op0: BinOp = {
-  "==" => BinOp::Eq,
+Op0: BinOpKind = {
+  "==" => Eq,
 };
 
-Op1: BinOp = {
-  "+" => BinOp::Add,
-  "-" => BinOp::Sub,
+Op1: BinOpKind = {
+  "+" => Add,
+  "-" => Sub,
 };
 
-Op2: BinOp = {
-  "*" => BinOp::Mul,
-  "/" => BinOp::Div,
+Op2: BinOpKind = {
+  "*" => Mul,
+  "/" => Div,
 };
 
-Op3: UnOp = {
-  "!" => UnOp::Not,
-//  "-" => UnOp::Not, TODO: Resolve ambiguity with custom lexer (joint-tokens)
+Op3: UnOpKind = {
+  "!" => Not,
+//  "-" => Neg, TODO: Resolve ambiguity with custom lexer (joint-tokens)
 };
 
-Op4: UnOp = {
-  "as" <Type>               => UnOp::Cast(<>),
-  <MetIdent> <Vec<Arg>> ")" => UnOp::Call(<>),
-  <FieldIdent>              => UnOp::Access(<>),
+Op4: UnOpKind = {
+  "as" <Type>               => Cast(<>),
+  <MetIdent> <Vec<Arg>> ")" => MethodCall(<>),
+  <FieldIdent>              => Access(<>),
   <TupleIndex>,
 };
-TupleIndex: UnOp = ParseIndex => {
+
+TupleIndex: UnOpKind = ParseIndex => {
   <>.map(Index)
-    .map(UnOp::Project)
-    .unwrap_or_else(|err| { errors.push(err.into()); UnOp::Error })
+    .map(Project)
+    .unwrap_or_else(|err| { errors.push(err.into()); UnOpErr })
 };
 
 OptionalType: Type = (":" <Type>)? => <>.unwrap_or(Type::new());
 
 ExprKind0: ExprKind = {
-  <Ident> <OptionalType> "=" <Box<Arg>> <Box<Body>> => ExprKind::Let(<>),
-  ExprKind1
+  <Ident> <OptionalType> "=" <Box<Arg>> <Box<Body>> => Let(<>),
+  ExprKind1  => <>,
 };
 
 ExprKind1: ExprKind = {
-  "if" <Box<Body>> "then" <Box<Body>> "else" <Box<Body>>  => ExprKind::If(<>),
-  "match" <Box<Body>> "{" <Vec<Clause>> "}"               => ExprKind::Match(<>),
-  <FunIdent> <Vec<Arg>> ")"                               => ExprKind::Call(<>),
+  "if" <Box<Body>> "then" <Box<Body>> "else" <Box<Body>>  => If(<>),
+  "match" <Box<Body>> "{" <Vec<Clause>> "}"               => Match(<>),
   ExprKind2
 };
 
@@ -322,33 +332,32 @@ ExprKind5: ExprKind =                UnaryPrefix<Op3, ExprKind6>;
 ExprKind6: ExprKind =               UnaryPostfix<Op4, ExprKind7>;
 
 ExprKind7: ExprKind = {
-  Paren<ExprKind0>,
-  Lit                                        => ExprKind::Lit(<>),
-  BIF                                        => ExprKind::Bif(<>),
-  Ident                                      => ExprKind::Var(<>),
-  "[" <VecNonEmpty<Arg>> "]"                 => ExprKind::Array(<>),
-  "{" <VecNonEmpty<(<Ident> ":" <Arg>)>> "}" => ExprKind::Struct(<>),
-  "(" <VecMulti<Arg>> ")"                    => ExprKind::Tuple(<>),
-  ! => { errors.push(<>); ExprKind::Error },
+  Paren<ExprKind0>                           => <>,
+  LitKind                                    => Lit(<>),
+  Ident                                      => Var(<>),
+  "[" <VecNonEmpty<Arg>> "]"                 => ConsArray(<>),
+//  "{" <VecNonEmpty<(<Symbol> ":" <Arg>)>> "}" => ConsStruct(<>),
+  "(" <VecMulti<Arg>> ")"                    => ConsTuple(<>),
+  ! => { errors.push(<>.into()); ExprErr },
 };
 
-Lit: Lit = ParseLit => {
-  <>.unwrap_or_else(|err| { errors.push(err.into()); Lit::Error })
+LitKind: LitKind = ParseLit => {
+  <>.unwrap_or_else(|err| { errors.push(err.into()); LitErr })
 };
 
-ParseLit: CompilerResult<Lit> = {
-  ParseI32  => <>.map(Lit::I32),
-  ParseI64  => <>.map(Lit::I64),
-  ParseF32  => <>.map(Lit::F32),
-  ParseF64  => <>.map(Lit::F64),
-  ParseBool => <>.map(Lit::Bool),
+ParseLit: CompilerResult<LitKind> = {
+  ParseI32  => <>.map(LitI32),
+  ParseI64  => <>.map(LitI64),
+  ParseF32  => <>.map(LitF32),
+  ParseF64  => <>.map(LitF64),
+  ParseBool => <>.map(LitBool),
 };
 
-BIF: Bif = {
-  "dataset" <Paren<Box<Arg>>>                 => Bif::Dataset(<>),
-  "fold" <Paren<(<Box<Arg>> "," <Box<Arg>>)>> => Bif::Fold(<>.0, <>.1),
-  "fmap" <Paren<Box<Arg>>>                    => Bif::Fmap(<>),
-  "imap" <OptionalType> <Paren<Box<Arg>>>     => Bif::Imap(<>),
+BIF: BIFKind = {
+  "dataset" <Paren<Box<Arg>>>                 => Dataset(<>),
+  "fold" <Paren<(<Box<Arg>> "," <Box<Arg>>)>> => Fold(<>.0, <>.1),
+  "fmap" <Paren<Box<Arg>>>                    => Fmap(<>),
+  "imap" <OptionalType> <Paren<Box<Arg>>>     => Imap(<>),
 };
 
 //=============================================================================
@@ -362,21 +371,21 @@ RootPattern = Pattern<PatternKind0>;
 Pattern<PatternKind>: Pattern = Spanned<PatternKind> => Pattern::from(<>);
 
 PatternKind0: PatternKind = {
-  <Box<Pattern<PatternKind0>>> "|" <Box<Pattern<PatternKind1>>> => PatternKind::Or(<>),
+  <Box<Pattern<PatternKind0>>> "|" <Box<Pattern<PatternKind1>>> => Or(<>),
   PatternKind1
 };
 
 Regex: PatternKind = ParseRegex => {
-  <>.map(PatternKind::Regex)
-    .unwrap_or_else(|err| { errors.push(err.into()); PatternKind::Error })
+  <>.map(Regex)
+    .unwrap_or_else(|err| { errors.push(err.into()); PatternErr })
 };
 
 PatternKind1: PatternKind = {
   Regex                      => <>,
-  Lit                        => PatternKind::Lit(<>),
-  Ident                      => PatternKind::Var(<>),
-  "(" <Vec<RootPattern>> ")" => PatternKind::Tuple(<>),
-  "_"                        => PatternKind::Wildcard,
+  LitKind                    => Val(<>),
+//  VarSymbol                     => Var(<>),
+  "(" <Vec<RootPattern>> ")" => DeconsTuple(<>),
+  "_"                        => Wildcard,
 };
 
 //=============================================================================
@@ -386,25 +395,25 @@ PatternKind1: PatternKind = {
 Type: Type = Spanned<TypeKind> => Type::from(<>);
 
 TypeKind: TypeKind = {
-  Scalar,
-  <Box<Type>> "?"                 => TypeKind::Option(<>),
-  "{" <Vec<Param>> "}"            => TypeKind::Struct(<>),
-  "[" <Box<ElemType>> <Shape> "]" => TypeKind::Array(<>),
-  ! => { errors.push(<>); TypeKind::Error },
+  ScalarKind                      => Scalar(<>),
+  <Box<Type>> "?"                 => Optional(<>),
+//  "{" <Vec<Param>> "}"            => Struct(<>),
+//  "[" <Box<ElemType>> <Shape> "]" => Array(<>),
+  ! => { errors.push(<>.into()); TypeErr },
 };
 
-ElemType: Type = (<Spanned<Scalar>> ";")? => <>.map(Type::from).unwrap_or(Type::new());
+//ElemType: Type = (<Spanned<Scalar>> ";")? => <>.map(Type::from).unwrap_or(Type::new());
 
-Scalar: TypeKind = {
-  "i8"   => TypeKind::I8,
-  "i16"  => TypeKind::I16,
-  "i32"  => TypeKind::I32,
-  "i64"  => TypeKind::I64,
-  "f32"  => TypeKind::F32,
-  "f64"  => TypeKind::F64,
-  "bool" => TypeKind::Bool,
-  "null" => TypeKind::Null,
-  "str"  => TypeKind::String,
+ScalarKind: ScalarKind = {
+  "i8"   => I8,
+  "i16"  => I16,
+  "i32"  => I32,
+  "i64"  => I64,
+  "f32"  => F32,
+  "f64"  => F64,
+  "bool" => Bool,
+  "null" => Null,
+  "str"  => Str,
 };
 
 //=============================================================================
@@ -414,24 +423,13 @@ Scalar: TypeKind = {
 Shape: Shape = Spanned<ShapeKind> => Shape::from(<>);
 
 ShapeKind: ShapeKind = {
-  <Vec<Dim>> => ShapeKind::Ranked(<>),
-  "*"        => ShapeKind::Unranked,
+  <Vec<Dim>> => Ranked(<>),
+  "*"        => Unranked,
 };
 
 Dim: Dim = Spanned<DimKind> => Dim::from(<>);
 
 DimKind: DimKind = {
-    Arg => DimKind::Expr(<>),
-    "?" => DimKind::Unknown,
+    Arg => Symbolic(<>),
+    "?" => Hole,
 };
-
-// fun foo(a:[A], b: [B]): [A+B]
-//     
-// x: [1,2,3,4,5] = foo([1,2], [3,4,5])
-//
-//
-// x0 = A   = 2
-// x1 = B   = 3
-// x2 = A+B = 5
-//
-// Global type inference, but not shape inference

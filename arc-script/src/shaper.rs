@@ -1,5 +1,8 @@
 use crate::{ast::*, error::*};
 use z3::{ast::Int, Config, Context, SatResult, Solver};
+use ExprKind::*;
+use BinOpKind::*;
+use LitKind::*;
 
 impl Script {
     pub fn infer_shape(&mut self) {
@@ -20,8 +23,8 @@ impl Script {
                 body.for_each_dim_expr(|expr, _| {
                     let root = iter.next().unwrap();
                     (*expr).kind = match model.eval(&root) {
-                        Some(val) => ExprKind::Lit(Lit::I64(val.as_i64().unwrap())),
-                        None => ExprKind::Error,
+                        Some(val) => Lit(LitI64(val.as_i64().unwrap())),
+                        None => ExprErr,
                     }
                 });
             }
@@ -38,19 +41,19 @@ impl Expr {
         errors: &mut Vec<CompilerError>,
     ) -> Int<'ctx> {
         match &mut self.kind {
-            ExprKind::BinOp(l, op, r) => {
+            BinOp(l, op, r) => {
                 let l = l.visit(context, errors);
                 let r = r.visit(context, errors);
                 match op {
-                    BinOp::Add => l.add(&[&r]),
-                    BinOp::Sub => l.sub(&[&r]),
-                    BinOp::Mul => l.mul(&[&r]),
-                    BinOp::Div => l.div(&r),
+                    Add => l.add(&[&r]),
+                    Sub => l.sub(&[&r]),
+                    Mul => l.mul(&[&r]),
+                    Div => l.div(&r),
                     _ => Int::new_const(context, "unknown"),
                 }
             }
-            ExprKind::Var(id) => Int::new_const(context, id.uid.unwrap().0.to_string()),
-            ExprKind::Lit(Lit::I32(val)) => Int::from_i64(context, *val as i64),
+            Var(id) => Int::new_const(context, id.uid.unwrap().0.to_string()),
+            Lit(LitI32(val)) => Int::from_i64(context, *val as i64),
             _ => {
                 errors.push(CompilerError::DisallowedDimExpr { span: self.span });
                 Int::new_const(context, "unknown")
