@@ -167,8 +167,8 @@ fn report(client: &Client, uri: &Url, code: &str) {
         mlir: false,
         verbose: false,
     };
-    let (_expr, reporter) = compile(code, &opt);
-    let diagnostics = reporter.to_lsp();
+    let script = compile(code, &opt);
+    let diagnostics = script.to_lsp();
     client.publish_diagnostics(uri.clone(), diagnostics, None);
 }
 

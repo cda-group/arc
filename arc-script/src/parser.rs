@@ -1,5 +1,5 @@
 use {
-    crate::{ast::*, error::*},
+    crate::{ast::*, error::*, info::Info, symbols::*},
     codespan::Span,
     grammar::*,
     lalrpop_util::lalrpop_mod,
@@ -14,26 +14,26 @@ lalrpop_mod!(pub grammar);
 pub type ErrorRecovery<'i> = lalrpop_util::ErrorRecovery<usize, Token<'i>, CompilerError>;
 pub type ParseError<'i> = lalrpop_util::ParseError<usize, Token<'i>, CompilerError>;
 
-pub struct Parser<'i> {
-    errors: Vec<ErrorRecovery<'i>>,
-}
-
-impl<'i> Parser<'i> {
-    pub fn new() -> Parser<'i> {
-        let errors = Vec::new();
-        Parser { errors }
-    }
-
-    pub fn parse(&mut self, source: &'i str) -> Script {
-        ScriptParser::new().parse(&mut self.errors, source).unwrap()
-    }
-
-    pub fn errors(self) -> Vec<CompilerError> {
-        self.errors
+impl Script<'_> {
+    pub fn parse(source: &str) -> Script<'_> {
+        let mut errors = Vec::new();
+        let mut table = SymbolTable::new();
+        let mut stack = SymbolStack::new();
+        let (tydefs, fundefs, body) = ScriptParser::new()
+            .parse(&mut errors, &mut stack, &mut table, source)
+            .unwrap();
+        let errors = errors
             .into_iter()
             .map(|recovery| recovery.error)
             .map(Into::into)
-            .collect()
+            .collect();
+        let info = Info::new(table, errors, source);
+        Script {
+            tydefs,
+            fundefs,
+            body,
+            info,
+        }
     }
 }
 

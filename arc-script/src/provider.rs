@@ -1,5 +1,5 @@
 use {
-    crate::{ast::*, Error},
+    crate::{ast::*, error::Error},
     //     http::uri::Uri,
     pb_rs::types::*,
     reqwest::blocking,

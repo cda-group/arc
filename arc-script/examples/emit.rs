@@ -1,4 +1,4 @@
-use arc_script::{compile, opt::*};
+use arc_script::opt::*;
 fn main() {
     let mut args = std::env::args();
     let _ = args.next();
@@ -9,6 +9,6 @@ fn main() {
         verbose: false,
         subcmd: SubCmd::Lib,
     };
-    let (script, reporter) = arc_script::compile(source, &opt);
-    println!("{}", reporter.emit_as_str());
+    let script = arc_script::compile(source, &opt);
+    println!("{}", script.emit_as_str());
 }

@@ -1,32 +1,40 @@
-use crate::{ast::*, error::*};
+use crate::{ast::*, error::*, info::Info};
 use z3::{ast::Int, Config, Context, SatResult, Solver};
-use ExprKind::*;
 use BinOpKind::*;
+use ExprKind::*;
 use LitKind::*;
 
-impl Script {
+impl<'i> Script<'i> {
     pub fn infer_shape(&mut self) {
         let Script {
             ref mut body,
-            ref mut errors,
+            info:
+                Info {
+                    ref mut table,
+                    ref mut errors,
+                    ..
+                },
             ..
         } = self;
         let config = Config::new();
         let ref context = Context::new(&config);
         let mut roots: Vec<Int> = Vec::new();
-        body.for_each_dim_expr(|expr, _| roots.push(expr.visit(context, errors)));
+        body.for_each_dim_expr(|expr| roots.push(expr.visit(context, errors)), table);
         let solver = Solver::new(context);
         match solver.check() {
             SatResult::Sat => {
                 let ref mut model = solver.get_model();
                 let mut iter = roots.into_iter();
-                body.for_each_dim_expr(|expr, _| {
-                    let root = iter.next().unwrap();
-                    (*expr).kind = match model.eval(&root) {
-                        Some(val) => Lit(LitI64(val.as_i64().unwrap())),
-                        None => ExprErr,
-                    }
-                });
+                body.for_each_dim_expr(
+                    |expr| {
+                        let root = iter.next().unwrap();
+                        (*expr).kind = match model.eval(&root) {
+                            Some(val) => Lit(LitI64(val.as_i64().unwrap())),
+                            None => ExprErr,
+                        }
+                    },
+                    table,
+                );
             }
             SatResult::Unsat => errors.push(CompilerError::ShapeUnsat),
             SatResult::Unknown => errors.push(CompilerError::ShapeUnknown),
@@ -52,7 +60,7 @@ impl Expr {
                     _ => Int::new_const(context, "unknown"),
                 }
             }
-            Var(id) => Int::new_const(context, id.uid.unwrap().0.to_string()),
+            Var(id) => Int::new_const(context, id.0.to_string()),
             Lit(LitI32(val)) => Int::from_i64(context, *val as i64),
             _ => {
                 errors.push(CompilerError::DisallowedDimExpr { span: self.span });

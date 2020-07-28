@@ -1,32 +1,33 @@
 use ExprKind::*;
 use {crate::ast::*, std::collections::HashMap};
 
-impl Expr {
+impl Script<'_> {
     pub fn prune(&mut self) {
         let aliases = &mut HashMap::new();
-        self.for_each_expr(|expr, _____| expr.prune_rec(aliases))
+        self.body.for_each_expr(|expr| expr.prune_rec(aliases))
     }
+}
 
+impl Expr {
     /// Prune `let id1 = id2 in body` expressions
-    /// Unwrapping is justified since let-binding variables are
+    /// Unwrapping is OK since let-binding variables are
     /// guaranteed to have a uid, expression-variables must be
     /// checked, since they might not be bound.
-    pub fn prune_rec(&mut self, aliases: &mut HashMap<Uid, Ident>) {
+    pub fn prune_rec(&mut self, aliases: &mut HashMap<Ident, Ident>) {
         match &mut self.kind {
-            Let(let_id, _, v, b) => match &mut v.kind {
-                Var(var_id) if var_id.uid.is_some() => {
-                    aliases.insert(let_id.uid.unwrap(), var_id.clone());
+            Let(let_id, v, b) => {
+                if let Var(var_id) = &mut v.kind {
+                    aliases.insert(*let_id, *var_id);
                     *self = std::mem::take(b);
                     self.prune_rec(aliases);
                 }
-                _ => {}
-            },
-            Var(var_id) if var_id.uid.is_some() => {
-                if let Some(mut alias) = aliases.get(&var_id.uid.unwrap()) {
-                    while let Some(tmp) = aliases.get(&alias.uid.unwrap()) {
+            }
+            Var(var_id) => {
+                if let Some(mut alias) = aliases.get(&var_id) {
+                    while let Some(tmp) = aliases.get(&alias) {
                         alias = tmp;
                     }
-                    *var_id = alias.clone();
+                    *var_id = *alias;
                     self.prune_rec(aliases);
                 }
             }

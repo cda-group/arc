@@ -1,4 +1,3 @@
-use crate::error::CompilerError;
 use smol_str::SmolStr;
 use DimKind::*;
 use ExprKind::*;
@@ -6,32 +5,55 @@ use LitKind::*;
 use ShapeKind::*;
 use TypeKind::*;
 use {codespan::Span, derive_more::Constructor};
+use crate::info::Info;
 
-type ByteIndex = usize;
+pub type ByteIndex = usize;
 
 pub struct Spanned<T>(pub ByteIndex, pub T, pub ByteIndex);
 
-pub struct Script {
-    pub funs: Vec<FunDef>,
-    pub body: Expr,
-    pub errors: Vec<CompilerError>,
-}
-
+pub type Symbol<'i> = &'i str;
+pub type Name = SmolStr;
 pub type Clause = (Pattern, Expr);
-pub type Field = Ident;
+pub type Field = Name;
 
-impl Script {
-    pub fn new(funs: Vec<FunDef>, body: Expr) -> Script {
-        let errors = Vec::new();
-        Script { funs, body, errors }
-    }
+#[derive(Constructor)]
+pub struct Script<'i> {
+    pub tydefs: Vec<TypeDef>,
+    pub fundefs: Vec<FunDef>,
+    pub body: Expr,
+    pub info: Info<'i>,
 }
 
 #[derive(Constructor)]
 pub struct FunDef {
     pub id: Ident,
-    pub params: Vec<(Ident, Type)>,
+    pub params: Vec<Ident>,
     pub body: Expr,
+}
+
+#[derive(Constructor)]
+pub struct TypeDef {
+    pub id: Ident,
+    pub ty: Type,
+}
+
+pub struct Decl {
+    pub name: Name,
+    pub ty: Type,
+    pub kind: DeclKind,
+}
+
+impl Decl {
+    pub fn new(symbol: Symbol, ty: Type, kind: DeclKind) -> Self {
+        let name = symbol.into();
+        Self { name, ty, kind }
+    }
+}
+
+pub enum DeclKind {
+    FunDecl,
+    VarDecl,
+    TypeDecl,
 }
 
 #[derive(Debug, Constructor, Clone)]
@@ -57,56 +79,11 @@ impl Default for Expr {
     fn default() -> Expr { Expr::new(ExprErr, Type::new(), Span::new(0, 0)) }
 }
 
-pub type Scope = usize;
-
 #[derive(Debug, Eq, PartialEq, Clone, Copy, Hash)]
-pub struct Uid(pub u32);
-impl Uid {
-    pub fn reset() {
-        unsafe {
-            COUNTER = 0;
-        }
-    }
-
-    pub fn new() -> Uid {
-        unsafe {
-            let uid = Uid(COUNTER);
-            COUNTER += 1;
-            uid
-        }
-    }
-}
-
-#[derive(Debug, Eq, PartialEq, Clone, Hash)]
-pub struct Ident {
-    pub name: SmolStr,
-    pub scope: Option<Scope>,
-    pub uid: Option<Uid>,
-}
+pub struct Ident(pub usize);
 
 #[derive(Debug, Eq, PartialEq, Clone, Hash)]
 pub struct Index(pub usize);
-
-static mut COUNTER: u32 = 0;
-impl Ident {
-    pub fn from(name: impl Into<String> + AsRef<str>) -> Ident {
-        Ident {
-            name: SmolStr::new(name),
-            scope: None,
-            uid: None,
-        }
-    }
-}
-
-impl Ident {
-    pub fn gen() -> Ident {
-        Ident {
-            name: SmolStr::new("x"),
-            scope: None,
-            uid: Some(Uid::new()),
-        }
-    }
-}
 
 #[derive(Debug, Clone)]
 pub enum ExprKind {
@@ -118,7 +95,7 @@ pub enum ExprKind {
     UnOp(UnOpKind, Box<Expr>),
     BinOp(Box<Expr>, BinOpKind, Box<Expr>),
     If(Box<Expr>, Box<Expr>, Box<Expr>),
-    Let(Ident, Type, Box<Expr>, Box<Expr>),
+    Let(Ident, Box<Expr>, Box<Expr>),
     Match(Box<Expr>, Vec<Clause>),
     FunCall(Ident, Vec<Expr>),
     ExprErr,
@@ -203,6 +180,16 @@ impl From<Spanned<TypeKind>> for Type {
 impl Type {
     pub fn new() -> Type {
         let kind = Unknown;
+        let span = None;
+        let var = TypeVar(0);
+        Type { kind, var, span }
+    }
+
+    pub fn fun(arity: usize) -> Type {
+        let kind = Fun(
+            (0..arity).map(|_| Type::new()).collect(),
+            Box::new(Type::new()),
+        );
         let span = None;
         let var = TypeVar(0);
         Type { kind, var, span }

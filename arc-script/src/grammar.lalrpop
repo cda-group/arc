@@ -4,6 +4,7 @@ use {
   ExprKind::*,
   BinOpKind::*,
   UnOpKind::*,
+  DeclKind::*,
   DimKind::*,
   ShapeKind::*,
   ScalarKind::*,
@@ -17,8 +18,10 @@ use {
 // Grammar
 //=============================================================================
 
-grammar<'err>(
-  errors: &'err mut Vec<ErrorRecovery<usize, Token<'input>, CompilerError>>
+grammar<'a>(
+  errors: &'a mut Vec<ErrorRecovery<usize, Token<'input>, CompilerError>>,
+  stack: &'a mut SymbolStack<'input>,
+  table: &'a mut SymbolTable,
 );
 
 extern {
@@ -59,6 +62,7 @@ match {
 //=============================================================================
 // Keywords
 //=============================================================================
+  "_",
   "if",
   "then",
   "else",
@@ -70,7 +74,7 @@ match {
   "end",
   "as",
   "match",
-  "_",
+  "type",
 //=============================================================================
 // Types
 //=============================================================================
@@ -124,37 +128,32 @@ match {
   r"0x[0-9a-fA-F]+"                                             => TI32Base16,
   r"([0-9]+\.[0-9]+([eE]-?[0-9]+)?)|([0-9]+[eE]-?[0-9]+)"       => TF64Base10,
 //=============================================================================
-// Identifiers
+// Symbols
 //=============================================================================
-  r"[A-Za-z_][A-Za-z0-9_]*\("                                   => TFunIdent,
-  r"\.[A-Za-z_][A-Za-z0-9_]*\("                                 => TMetIdent,
+  r"[A-Za-z_][A-Za-z0-9_]*\("                                   => TFunSymbol,
+  r"\.[A-Za-z_][A-Za-z0-9_]*\("                                 => TMethodSymbol,
   r"\p{Math}"                                                   => TUnicodeOp,
 } else {
-  r"\.[A-Za-z_][A-Za-z0-9_]*"                                   => TFieldIdent,
+  r"\.[A-Za-z_][A-Za-z0-9_]*"                                   => TFieldSymbol,
   r"\.[0-9]+"                                                   => TTupleIndex,
-  r"[A-Za-z_][A-Za-z0-9_]*'*"                                   => TIdent,
-  r"[\p{Greek}\p{Emoji}][0-9]*'*"                               => TUnicodeIdent,
+  r"[A-Za-z_][A-Za-z0-9_]*'*"                                   => TSymbol,
+  r"[\p{Greek}\p{Emoji}][0-9]*'*"                               => TUnicodeSymbol,
 } else {
 //=============================================================================
-// Comments
+// Skip
 //=============================================================================
   r"\s*"                                                        => { },
-  r"//[^\n\r]*[\n\r]*"                                          => { },
-  r"/\*([^\*]*\*+[^\*/])*([^\*]*\*+|[^\*])*\*/"                 => { },
+  r"#[^\n\r]*[\n\r]*"                                           => { },
 } else {
 //=============================================================================
-// Undefined
+// Drop
 //=============================================================================
   r"."                                                          => Undefined,
 }
 
 //=============================================================================
-// Macros
+// Groups
 //=============================================================================
-
-//-----------------------------------------------------------------------------
-// Collections
-//-----------------------------------------------------------------------------
 
 Sep<T, S>: Vec<T> = <v:(<T> S)*> <e:T?> => v.into_iter().chain(e).collect();
 SepNonEmpty<T, S>: Vec<T> = <e:T> <v:(S <T>)*> => vec![e].into_iter().chain(v).collect();
@@ -174,46 +173,42 @@ Paren<T>: T = "(" <T> ")";
 //-----------------------------------------------------------------------------
 
 BinaryInfixNonAssociative<Op, Next>: ExprKind = {
-  Box<Expr<Next>> Op Box<Expr<Next>> => ExprKind::BinOp(<>),
+  Box<Expr<Next>> Op Box<Expr<Next>> => BinOp(<>),
   Next,
 };
 
 BinaryInfixLeftAssociative<Op, Next>: ExprKind = {
-  Box<Expr<BinaryInfixLeftAssociative<Op, Next>>> Op Box<Expr<Next>> => ExprKind::BinOp(<>),
+  Box<Expr<BinaryInfixLeftAssociative<Op, Next>>> Op Box<Expr<Next>> => BinOp(<>),
   Next,
 };
 
 BinaryInfixRightAssociative<Op, Next>: ExprKind = {
-  Box<Expr<Next>> Op Box<Expr<BinaryInfixLeftAssociative<Op, Next>>> => ExprKind::BinOp(<>),
+  Box<Expr<Next>> Op Box<Expr<BinaryInfixLeftAssociative<Op, Next>>> => BinOp(<>),
   Next,
 };
 
 UnaryPostfix<Op, Next>: ExprKind = {
-  <e:Box<Expr<UnaryPostfix<Op, Next>>>> <op:Op> => ExprKind::UnOp(op, e),
+  <e:Box<Expr<UnaryPostfix<Op, Next>>>> <op:Op> => UnOp(op, e),
   Next,
 };
 
 UnaryPrefix<Op, Next>: ExprKind = {
-  <op:Op> <e:Box<Expr<UnaryPrefix<Op, Next>>>> => ExprKind::UnOp(op, e),
+  <op:Op> <e:Box<Expr<UnaryPrefix<Op, Next>>>> => UnOp(op, e),
   Next,
 };
 
 //=============================================================================
-// Terminals
+// Symbols
 //=============================================================================
 
-Ident: Ident = {
-  TIdent        => Ident::from(<>),
-  TUnicodeIdent => Ident::from(<>),
-};
+VarSymbol:    Symbol<'input> = { TSymbol, TUnicodeSymbol };
+FieldSymbol:  Symbol<'input> = TFieldSymbol  => &<>[1..];
+FunSymbol:    Symbol<'input> = TFunSymbol    => &<>[..<>.len()-1];
+MethodSymbol: Symbol<'input> = TMethodSymbol => &<>[1..<>.len()-1];
 
-
-FieldIdent: Ident = TFieldIdent => Ident::from(&<>[1..].to_string());
-FunIdent: Ident = TFunIdent => Ident::from(&<>[..<>.len()-1].to_string());
-MetIdent: Ident = TMetIdent => Ident::from(&<>[1..<>.len()-1].to_string());
-
-LitStr: String = TStr => <>[1..<>.len()].to_string();
-
+//=============================================================================
+// Literals
+//=============================================================================
 
 ParseIndex: CompilerResult<usize> = Spanned<TTupleIndex> => parse_lit_radix(<>, 10, 1, 0);
 ParseStr: String = TStr => <>[1..<>.len()].to_string();
@@ -261,15 +256,83 @@ ParseI64: CompilerResult<i64> = {
 // Non-Terminals
 //=============================================================================
 
-pub Script: Script = FunDef* Body => Script::new(<>);
+pub Script = TypeDef* FunDef* Body;
 
 //=============================================================================
-// Functions
+// Name Resolving
 //=============================================================================
 
-FunDef: FunDef = "fun" <FunIdent> <Vec<Param>> ")" <Body> "end"? => FunDef::new(<>);
+Params: Vec<Ident> = Vec<Param> => {
+  <>
+    .into_iter()
+    .map(|(sym, ty)| {
+      let id = table.insert(Decl::new(sym, ty, VarDecl));
+      stack.bind_local(sym, id);
+      id
+    })
+    .collect::<Vec<_>>()
+};
 
-Param = <Ident> ":" <Type>;
+FunDecl: (Ident, Vec<Ident>) = "fun" <FunSymbol> <Params> ")" => {
+  let (fun_sym, param_ids) = (<>);
+  let fun_id = table.insert(Decl::new(fun_sym, Type::fun(param_ids.len()), FunDecl));
+  if let Err(err) = stack.bind_global(fun_sym, fun_id) {
+      errors.push(err.into());
+  }
+  stack.push_scope();
+  (fun_id, param_ids)
+};
+
+FunDef: FunDef = <FunDecl> <Body> => {
+  let ((fun_id, param_ids), body) = (<>);
+  stack.pop_scope();
+  FunDef::new(fun_id, param_ids, body)
+};
+
+Param = <VarSymbol> ":" <Type>;
+
+LetDecl: (Ident, Box<Expr>) = <VarSymbol> <OptionalType> "=" <Box<Arg>> => {
+  let (sym, ty, arg) = (<>);
+  stack.push_scope();
+  let id = table.insert(Decl::new(sym, ty, VarDecl));
+  stack.bind_local(sym, id);
+  (id, arg)
+};
+
+LetDef: ExprKind = <LetDecl> <Box<Body>> => {
+  let ((id, arg), body) = (<>);
+  stack.pop_scope();
+  Let(id, arg, body) 
+};
+
+Var: ExprKind = <VarSymbol> => {
+  stack.lookup(<>)
+       .map(Var)
+       .unwrap_or(ExprErr)
+};
+
+FunCall: ExprKind = <FunSymbol> <Vec<Arg>> ")" => {
+  let (sym, args) = (<>);
+  stack.lookup(sym)
+       .map(|id| FunCall(id, args))
+       .unwrap_or(ExprErr)
+};
+
+MethodCall: UnOpKind = <MethodSymbol> <Vec<Arg>> ")" => {
+  let (sym, args) = (<>);
+  stack.lookup(sym)
+       .map(|id| MethodCall(id, args))
+       .unwrap_or(UnOpErr)
+};
+
+TypeDef: TypeDef = "type" <VarSymbol> "=" <Type> => {
+  let (sym, ty) = (<>);
+  let id = table.insert(Decl::new(sym, ty.clone(), TypeDecl));
+  if let Err(err) = stack.bind_global(sym, id) {
+      errors.push(err.into());
+  }
+  TypeDef::new(id, ty)
+};
 
 //=============================================================================
 // Expressions
@@ -300,10 +363,10 @@ Op3: UnOpKind = {
 };
 
 Op4: UnOpKind = {
-  "as" <Type>               => Cast(<>),
-  <MetIdent> <Vec<Arg>> ")" => MethodCall(<>),
-  <FieldIdent>              => Access(<>),
-  <TupleIndex>,
+  "as" <Type> => Cast(<>),
+  MethodCall  => <>,
+  FieldSymbol => Access(<>.into()),
+  TupleIndex  => <>,
 };
 
 TupleIndex: UnOpKind = ParseIndex => {
@@ -315,7 +378,7 @@ TupleIndex: UnOpKind = ParseIndex => {
 OptionalType: Type = (":" <Type>)? => <>.unwrap_or(Type::new());
 
 ExprKind0: ExprKind = {
-  <Ident> <OptionalType> "=" <Box<Arg>> <Box<Body>> => Let(<>),
+  LetDef     => <>,
   ExprKind1  => <>,
 };
 
@@ -333,8 +396,9 @@ ExprKind6: ExprKind =               UnaryPostfix<Op4, ExprKind7>;
 
 ExprKind7: ExprKind = {
   Paren<ExprKind0>                           => <>,
+  FunCall                                    => <>,
   LitKind                                    => Lit(<>),
-  Ident                                      => Var(<>),
+  Var                                        => <>,
   "[" <VecNonEmpty<Arg>> "]"                 => ConsArray(<>),
 //  "{" <VecNonEmpty<(<Symbol> ":" <Arg>)>> "}" => ConsStruct(<>),
   "(" <VecMulti<Arg>> ")"                    => ConsTuple(<>),

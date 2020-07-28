@@ -1,4 +1,4 @@
-use crate::{ast::*, utils::indent};
+use crate::{ast::*, info::Info, utils::Printer};
 use BinOpKind::*;
 use ExprKind::*;
 use LitKind::*;
@@ -6,52 +6,56 @@ use ScalarKind::*;
 use TypeKind::*;
 
 impl Expr {
-    pub fn mlir(&self) -> String {
-        let i = 2;
+    pub fn mlir(&self, info: &Info) -> String {
+        let pr = Printer {
+            info,
+            tabs: 2,
+            verbose: false,
+        };
         format!(
             "{s}{module}\n",
-            module = self.to_module(i + 1),
-            s = indent(i)
+            module = self.to_module(&pr.tab()),
+            s = pr.indent()
         )
     }
 
-    pub fn to_module(&self, i: u32) -> String {
+    pub fn to_module(&self, pr: &Printer) -> String {
         let main = format!(
             r#"{s}"std.func"() ({{{region}}}) {{ sym_name = "main", type = () -> {ty} }}"#,
-            region = self.to_region("std.return", i + 1),
+            region = self.to_region("std.return", &pr.tab()),
             ty = self.ty.to_ty(),
-            s = indent(i),
+            s = pr.indent(),
         );
         format!(
             r#""module" ({{{main}{s0}"module_terminator"() : () -> (){s1}}}) : () -> ()"#,
             main = main,
-            s0 = indent(i),
-            s1 = indent(i - 1)
+            s0 = pr.indent(),
+            s1 = pr.untab().indent()
         )
     }
 
-    fn to_region(&self, terminator: &str, i: u32) -> String {
+    fn to_region(&self, terminator: &str, pr: &Printer) -> String {
         match &self.kind {
-            Let(id, _, v, b) => format!(
+            Let(id, v, b) => format!(
                 "{s}{var} = {op}{next}",
                 var = id.to_var(),
-                op = v.to_op(i),
-                next = b.to_region(terminator, i),
-                s = indent(i),
+                op = v.to_op(pr),
+                next = b.to_region(terminator, pr),
+                s = pr.indent(),
             ),
             Var(_) => format!(
                 r#"{s0}"{t}"({var}) : ({ty}) -> (){s1}"#,
                 t = terminator,
                 var = self.to_var(),
                 ty = self.ty.to_ty(),
-                s0 = indent(i),
-                s1 = indent(i - 1),
+                s0 = pr.indent(),
+                s1 = pr.untab().indent(),
             ),
             _ => unreachable!(),
         }
     }
 
-    fn to_op(&self, i: u32) -> String {
+    fn to_op(&self, pr: &Printer) -> String {
         match &self.kind {
             Lit(kind) => {
                 let lit = kind.to_lit();
@@ -78,8 +82,8 @@ impl Expr {
             If(c, t, e) => format!(
                 r#""arc.if"({var}) ({{{t}}},{{{e}}}) : ({arg_ty}) -> {out_ty}"#,
                 var = c.to_var(),
-                t = t.to_region("arc.yield", i + 1),
-                e = e.to_region("arc.yield", i + 1),
+                t = t.to_region("arc.yield", &pr.tab()),
+                e = e.to_region("arc.yield", &pr.tab()),
                 arg_ty = c.ty.to_ty(),
                 out_ty = e.ty.to_ty(),
             ),
@@ -104,13 +108,7 @@ impl Expr {
 }
 
 impl Ident {
-    fn to_var(&self) -> String {
-        format!(
-            "%x_{}",
-            self.uid
-                .expect("[ICE]: Attempted to generate MLIR variable without uid")
-        )
-    }
+    fn to_var(&self) -> String { format!("%x_{}", self.0) }
 }
 
 impl Type {
