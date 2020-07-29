@@ -47,7 +47,6 @@ struct ArcToRustLoweringPass : public LowerToRustBase<ArcToRustLoweringPass> {
                                   ConversionPatternRewriter &rewriter);
 
   static const std::string hexfCrate;
-  static const std::string hexfVersion;
 };
 } // end anonymous namespace.
 
@@ -147,9 +146,9 @@ private:
     Twine str = "hexf" + Twine(width) + "!(\"" + hex + "\")";
     std::string directive =
         "#[macro_use] extern crate " + ArcToRustLoweringPass::hexfCrate + ";";
-    ArcToRustLoweringPass::emitCrateDependency(
-        ArcToRustLoweringPass::hexfCrate, ArcToRustLoweringPass::hexfVersion,
-        op.getContext(), rewriter);
+    ArcToRustLoweringPass::emitCrateDependency(ArcToRustLoweringPass::hexfCrate,
+                                               rust::CrateVersions::hexf,
+                                               op.getContext(), rewriter);
     ArcToRustLoweringPass::emitModuleDirective(
         ArcToRustLoweringPass::hexfCrate, directive, op.getContext(), rewriter);
     return returnResult(op, rustTy, str.str(), rewriter);
@@ -715,7 +714,6 @@ std::unique_ptr<OperationPass<ModuleOp>> arc::createLowerToRustPass() {
 }
 
 const std::string ArcToRustLoweringPass::hexfCrate = "hexf";
-const std::string ArcToRustLoweringPass::hexfVersion = "0.1.0";
 
 void ArcToRustLoweringPass::emitCrateDependency(
     StringRef crate, StringRef version, MLIRContext *ctx,
