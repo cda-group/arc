@@ -6,7 +6,10 @@ on:
 
 env:
   CARGO_TERM_COLOR: always
-  working-directory: ./arc-script
+
+defaults:
+  run:
+    working-directory: ./arc-script
 
 jobs:
   build:
@@ -24,6 +27,9 @@ jobs:
         
     - name: cargo-check
       run: cargo check --all-features
+
+    - name: cargo-check-bins
+      run: cargo check --all-features --bins
 
     - name: cargo-check-tests
       run: cargo check --all-features --tests
