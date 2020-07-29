@@ -41,7 +41,8 @@ namespace types {
 enum Kind {
   RUST_TYPE = Type::Kind::FIRST_PRIVATE_EXPERIMENTAL_1_TYPE,
   RUST_STRUCT,
-  RUST_TUPLE
+  RUST_TUPLE,
+  RUST_TENSOR
 };
 
 //===----------------------------------------------------------------------===//
@@ -51,6 +52,7 @@ enum Kind {
 struct RustTypeStorage;
 struct RustStructTypeStorage;
 struct RustTupleTypeStorage;
+struct RustTensorTypeStorage;
 
 //===----------------------------------------------------------------------===//
 // Rust Types
@@ -91,6 +93,20 @@ public:
   static RustStructType get(RustDialect *dialect,
                             ArrayRef<StructFieldTy> fields);
   void emitNestedTypedefs(rust::RustPrinterStream &ps) const;
+};
+
+class RustTensorType
+    : public Type::TypeBase<RustTensorType, Type, RustTensorTypeStorage> {
+public:
+  using Base::Base;
+
+  static bool kindof(unsigned kind) { return kind == RUST_TENSOR; }
+  void print(DialectAsmPrinter &os) const;
+  rust::RustPrinterStream &printAsRust(rust::RustPrinterStream &os) const;
+  std::string getRustType() const;
+
+  static RustTensorType get(RustDialect *dialect, Type elementTy,
+                            ArrayRef<int64_t> dimensions);
 };
 
 class RustTupleType

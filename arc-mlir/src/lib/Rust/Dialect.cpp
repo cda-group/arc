@@ -45,6 +45,7 @@ RustDialect::RustDialect(mlir::MLIRContext *ctx) : mlir::Dialect("rust", ctx) {
       >();
   addTypes<RustType>();
   addTypes<RustStructType>();
+  addTypes<RustTensorType>();
   addTypes<RustTupleType>();
 
   floatTy = RustType::get(ctx, "f32");
@@ -86,6 +87,9 @@ void RustDialect::printType(Type type, DialectAsmPrinter &os) const {
   case RUST_STRUCT:
     type.cast<RustStructType>().print(os);
     break;
+  case RUST_TENSOR:
+    type.cast<RustTensorType>().print(os);
+    break;
   case RUST_TUPLE:
     type.cast<RustTupleType>().print(os);
     break;
@@ -104,6 +108,7 @@ public:
     const Type t = V.getType();
     switch (t.getKind()) {
     case types::RUST_STRUCT:
+    case types::RUST_TENSOR:
     case types::RUST_TUPLE:
       return true;
     case types::RUST_TYPE:
@@ -205,6 +210,9 @@ RustPrinterStream &operator<<(RustPrinterStream &os, const Type &t) {
     break;
   case RUST_STRUCT:
     os.print(t.cast<RustStructType>());
+    break;
+  case RUST_TENSOR:
+    t.cast<RustTensorType>().printAsRust(os);
     break;
   case RUST_TUPLE:
     t.cast<RustTupleType>().printAsRust(os);
@@ -489,6 +497,7 @@ void RustTupleOp::writeRust(RustPrinterStream &PS) {
 //===----------------------------------------------------------------------===//
 namespace rust {
 const char *CrateVersions::hexf = "0.1.0";
+const char *CrateVersions::ndarray = "0.13.0";
 } // namespace rust
 
 //===----------------------------------------------------------------------===//

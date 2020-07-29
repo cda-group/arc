@@ -63,6 +63,7 @@ protected:
   Type convertFloatType(FloatType type);
   Type convertFunctionType(FunctionType type);
   Type convertIntegerType(IntegerType type);
+  Type convertTensorType(RankedTensorType type);
   Type convertTupleType(TupleType type);
   Type convertStructType(arc::types::StructType type);
 };
@@ -514,6 +515,7 @@ RustTypeConverter::RustTypeConverter(MLIRContext *ctx)
   addConversion([&](FloatType type) { return convertFloatType(type); });
   addConversion([&](FunctionType type) { return convertFunctionType(type); });
   addConversion([&](IntegerType type) { return convertIntegerType(type); });
+  addConversion([&](RankedTensorType type) { return convertTensorType(type); });
   addConversion([&](TupleType type) { return convertTupleType(type); });
   addConversion(
       [&](arc::types::StructType type) { return convertStructType(type); });
@@ -521,6 +523,7 @@ RustTypeConverter::RustTypeConverter(MLIRContext *ctx)
   // RustType is legal, so add a pass-through conversion.
   addConversion([](rust::types::RustType type) { return type; });
   addConversion([](rust::types::RustStructType type) { return type; });
+  addConversion([](rust::types::RustTensorType type) { return type; });
   addConversion([](rust::types::RustTupleType type) { return type; });
 }
 
@@ -567,6 +570,11 @@ Type RustTypeConverter::convertStructType(arc::types::StructType type) {
     fields.push_back(std::make_pair(f.first, t));
   }
   return rust::types::RustStructType::get(Dialect, fields);
+}
+
+Type RustTypeConverter::convertTensorType(RankedTensorType type) {
+  Type t = convertType(type.getElementType());
+  return rust::types::RustTensorType::get(Dialect, t, type.getShape());
 }
 
 Type RustTypeConverter::convertTupleType(TupleType type) {
