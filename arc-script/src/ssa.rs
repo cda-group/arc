@@ -1,75 +1,68 @@
-use crate::{ast::*, utils::*};
+use crate::{ast::*, info::*, utils::*};
+use ExprKind::*;
 
 type Context = Vec<(Ident, Expr)>;
 
 trait Ssa {
-    fn flatten(self) -> (Context, Self);
+    fn flatten(self, info: &mut Info) -> (Context, Self);
 }
 
 impl Expr {
     /// Reverse-folds a vec of SSA values into an AST of let-expressions
-    pub fn into_ssa(self) -> Expr {
-        let (ctx, var) = self.flatten();
+    pub fn into_ssa(self, info: &mut Info) -> Expr {
+        let (ctx, var) = self.flatten(info);
         ctx.into_iter().rev().fold(var, |acc, (id, expr)| Expr {
             ty: acc.ty.clone(),
-            span: acc.span.clone(),
-            kind: ExprKind::Let(id, expr.ty.clone(), Box::new(expr), Box::new(acc)),
+            span: acc.span,
+            kind: Let(id, Box::new(expr), Box::new(acc)),
         })
     }
 }
+
 impl Ssa for Expr {
     /// Turns an expression into a flat list of assignments and a variable
-    fn flatten(self) -> (Context, Expr) {
-        let Expr { kind, ty, span } = self;
-        use {Bif::*, Lit::*};
+    fn flatten(self, info: &mut Info) -> (Context, Self) {
+        let Self { kind, ty, span } = self;
         let (mut ctx, kind) = match kind {
-            ExprKind::BinOp(l, op, r) => {
-                let ((lc, l), (rc, r)) = (l.flatten(), r.flatten());
-                (merge(lc, rc), ExprKind::BinOp(Box::new(l), op, Box::new(r)))
+            BinOp(l, op, r) => {
+                let ((lc, l), (rc, r)) = (l.flatten(info), r.flatten(info));
+                (merge(lc, rc), BinOp(Box::new(l), op, Box::new(r)))
             }
-            ExprKind::UnOp(op, e) => {
-                let (ec, e) = e.flatten();
-                (ec, ExprKind::UnOp(op, Box::new(e)))
+            UnOp(op, e) => {
+                let (ec, e) = e.flatten(info);
+                (ec, UnOp(op, Box::new(e)))
             }
-            ExprKind::If(c, t, e) => {
-                let ((cc, c), t, e) = (c.flatten(), t.into_ssa(), e.into_ssa());
-                (cc, ExprKind::If(Box::new(c), Box::new(t), Box::new(e)))
+            If(c, t, e) => {
+                let ((cc, c), t, e) = (c.flatten(info), t.into_ssa(info), e.into_ssa(info));
+                (cc, If(Box::new(c), Box::new(t), Box::new(e)))
             }
-            ExprKind::Bif(Fmap(e)) => {
-                let (ec, e) = e.flatten();
-                (ec, ExprKind::Bif(Bif::Fmap(Box::new(e))))
+            FunCall(id, a) => {
+                let (ac, a) = a.flatten(info);
+                (ac, FunCall(id, a))
             }
-            ExprKind::Bif(Fold(a, f)) => {
-                let ((ac, a), (fc, f)) = (a.flatten(), f.flatten());
-                (merge(ac, fc), ExprKind::Bif(Fold(Box::new(a), Box::new(f))))
-            }
-            ExprKind::Call(id, a) => {
-                let (ac, a) = a.flatten();
-                (ac, ExprKind::Call(id, a))
-            }
-            ExprKind::Let(id, _, v, b) => {
+            Let(id, v, b) => {
                 let (mut vc, v) = match v.is_imm() {
                     true => (vec![], *v),
-                    false => v.flatten(),
+                    false => v.flatten(info),
                 };
-                let (bc, b) = b.flatten();
+                let (bc, b) = b.flatten(info);
                 vc.push((id, v));
                 return (merge(vc, bc), b);
             }
-            ExprKind::Lit(Array(e)) => {
-                let (ec, e) = e.flatten();
-                (ec, ExprKind::Lit(Array(e)))
+            ConsArray(e) => {
+                let (ec, e) = e.flatten(info);
+                (ec, ConsArray(e))
             }
-            ExprKind::Lit(Struct(a)) => {
-                let (ac, a) = a.flatten();
-                (ac, ExprKind::Lit(Struct(a)))
+            ConsStruct(a) => {
+                let (ac, a) = a.flatten(info);
+                (ac, ConsStruct(a))
             }
-            kind @ ExprKind::Var(_) => return (vec![], Expr { kind, ty, span }),
+            kind @ Var(_) => return (vec![], Expr { kind, ty, span }),
             kind => (vec![], kind),
         };
-        let id = Ident::gen();
-        let var = Expr::new(ExprKind::Var(id.clone()), ty.clone(), span);
-        let expr = Expr { kind, ty, span };
+        let id = info.table.genvar(ty.clone());
+        let var = Self::new(Var(id), ty.clone(), span);
+        let expr = Self { kind, ty, span };
         ctx.push((id, expr));
         (ctx, var)
     }
@@ -79,23 +72,20 @@ impl Expr {
     /// Returns true if an expression has no subexpressions
     fn is_imm(&self) -> bool {
         match &self.kind {
-            ExprKind::Var(_) => true,
-            ExprKind::Lit(kind) => match kind {
-                Lit::F32(_) | Lit::F64(_) | Lit::I32(_) | Lit::I64(_) | Lit::Bool(_) => true,
-                _ => false,
-            },
+            Var(_) => true,
+            Lit(_) => true,
             _ => false,
         }
     }
 }
 
 impl Ssa for Vec<Expr> {
-    fn flatten(self) -> (Context, Self) {
+    fn flatten(self, info: &mut Info) -> (Context, Self) {
         let mut ctx = vec![];
         let exprs = self
             .into_iter()
             .map(|e| {
-                let (mut ec, e) = e.flatten();
+                let (mut ec, e) = e.flatten(info);
                 ctx.append(&mut ec);
                 e
             })
@@ -105,12 +95,12 @@ impl Ssa for Vec<Expr> {
 }
 
 impl Ssa for Vec<(Ident, Expr)> {
-    fn flatten(self) -> (Context, Self) {
+    fn flatten(self, info: &mut Info) -> (Context, Self) {
         let mut ctx = vec![];
         let exprs = self
             .into_iter()
             .map(|(id, e)| {
-                let (mut ec, e) = e.flatten();
+                let (mut ec, e) = e.flatten(info);
                 ctx.append(&mut ec);
                 (id, e)
             })

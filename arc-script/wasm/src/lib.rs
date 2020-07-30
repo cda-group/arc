@@ -18,10 +18,10 @@ pub fn compile(source: &str) -> String {
         verbose: false,
         subcmd: SubCmd::Lib,
     };
-    let (script, reporter) = arc_script::compile(source, &opt);
-    if reporter.diags.is_empty() {
-        script.body.mlir()
+    let script = arc_script::compile(source, &opt);
+    if script.info.errors.is_empty() {
+        script.body.mlir(&script.info)
     } else {
-        reporter.emit_as_str()
+        script.emit_as_str()
     }
 }

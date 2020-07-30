@@ -1,38 +1,38 @@
 use {
-    crate::{ast::*, error::*},
+    crate::{ast::*, error::*, info::Info, symbols::*},
     codespan::Span,
     grammar::*,
     lalrpop_util::lalrpop_mod,
     num_traits::Num,
-    smol_str::SmolStr,
+    regex::Regex,
     std::{fmt::Display, str::FromStr},
 };
 
-lalrpop_mod!(pub grammar);
+lalrpop_mod!(#[allow(clippy::all)] pub grammar);
 
 pub type ErrorRecovery<'i> = lalrpop_util::ErrorRecovery<usize, Token<'i>, CompilerError>;
 pub type ParseError<'i> = lalrpop_util::ParseError<usize, Token<'i>, CompilerError>;
 
-pub struct Parser<'i> {
-    errors: Vec<ErrorRecovery<'i>>,
-}
-
-impl<'i> Parser<'i> {
-    pub fn new() -> Parser<'i> {
-        let errors = Vec::new();
-        Parser { errors }
-    }
-
-    pub fn parse(&mut self, source: &'i str) -> Script {
-        ScriptParser::new().parse(&mut self.errors, source).unwrap()
-    }
-
-    pub fn errors(self) -> Vec<CompilerError> {
-        self.errors
+impl Script<'_> {
+    pub fn parse(source: &str) -> Script<'_> {
+        let mut errors = Vec::new();
+        let mut table = SymbolTable::new();
+        let mut stack = SymbolStack::new();
+        let (tydefs, fundefs, body) = ScriptParser::new()
+            .parse(&mut errors, &mut stack, &mut table, source)
+            .unwrap();
+        let errors = errors
             .into_iter()
             .map(|recovery| recovery.error)
             .map(Into::into)
-            .collect()
+            .collect();
+        let info = Info::new(table, errors, source);
+        Script {
+            tydefs,
+            fundefs,
+            body,
+            info,
+        }
     }
 }
 
@@ -41,7 +41,7 @@ impl<'i> From<ParseError<'i>> for CompilerError {
         match error {
             ParseError::User { error } => error,
             ParseError::ExtraToken { token: (l, t, r) } => CompilerError::ExtraToken {
-                found: SmolStr::from(t.1),
+                found: Name::from(t.1),
                 span: Span::from(l as u32..r as u32),
             },
             ParseError::InvalidToken { location: l } => CompilerError::InvalidToken {
@@ -58,7 +58,7 @@ impl<'i> From<ParseError<'i>> for CompilerError {
                 token: (l, t, r),
                 expected,
             } => CompilerError::UnrecognizedToken {
-                found: SmolStr::from(t.1),
+                found: Name::from(t.1),
                 span: Span::from(l as u32..r as u32),
                 expected,
             },
@@ -66,10 +66,7 @@ impl<'i> From<ParseError<'i>> for CompilerError {
     }
 }
 
-pub fn parse_lit<'i, 'e, T: FromStr>(
-    Spanned(l, s, r): Spanned<&'i str>,
-    errors: &'e mut Vec<ErrorRecovery>,
-) -> Option<T>
+pub fn parse_lit<'i, T: FromStr>(Spanned(l, s, r): Spanned<&'i str>) -> CompilerResult<T>
 where
     <T as FromStr>::Err: Display,
 {
@@ -77,21 +74,18 @@ where
         Err(error) => {
             let span = Span::new(l as u32, r as u32);
             let msg = error.to_string();
-            let error = CompilerError::BadLiteral { msg, span }.into();
-            errors.push(error);
-            None
+            Err(CompilerError::BadLiteral { msg, span })
         }
-        Ok(l) => Some(l),
+        Ok(l) => Ok(l),
     }
 }
 
-pub fn parse_lit_radix<'i, 'e, T: Num>(
+pub fn parse_lit_radix<'i, T: Num>(
     Spanned(l, s, r): Spanned<&'i str>,
     radix: u32,
     prefix: usize,
     suffix: usize,
-    errors: &'e mut Vec<ErrorRecovery>,
-) -> Option<T>
+) -> CompilerResult<T>
 where
     <T as Num>::FromStrRadixErr: Display,
 {
@@ -99,11 +93,21 @@ where
         Err(error) => {
             let span = Span::new(l as u32, r as u32);
             let msg = error.to_string();
-            let error = CompilerError::BadLiteral { msg, span }.into();
-            errors.push(error);
-            None
+            Err(CompilerError::BadLiteral { msg, span })
         }
-        Ok(l) => Some(l),
+        Ok(ok) => Ok(ok),
+    }
+}
+
+// Parses a r"foo" string into a regex::Regex
+pub fn parse_regex<'i>(Spanned(l, s, r): Spanned<&'i str>) -> CompilerResult<Regex> {
+    match Regex::from_str(&s[1..s.len()]) {
+        Err(error) => {
+            let span = Span::new(l as u32, r as u32);
+            let msg = error.to_string();
+            Err(CompilerError::BadLiteral { msg, span })
+        }
+        Ok(ok) => Ok(ok),
     }
 }
 

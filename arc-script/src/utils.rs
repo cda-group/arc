@@ -1,156 +1,128 @@
 use crate::ast::*;
-
-pub type Stack = Vec<(Ident, Type)>;
+use crate::info::Info;
+use crate::symbols::SymbolTable;
+use DimKind::*;
+use ExprKind::*;
+use ShapeKind::*;
+use TypeKind::*;
+use UnOpKind::*;
 
 impl Expr {
-    pub fn for_each_expr<F: FnMut(&mut Expr, &mut Stack)>(&mut self, mut fun: F) {
-        let mut stack = Vec::new();
-        self.for_each_expr_rec(&mut fun, &mut stack);
+    pub fn for_each_expr<F: FnMut(&mut Expr)>(&mut self, mut f: F) {
+        self.for_each_expr_rec(&mut f);
     }
 
-    pub fn for_each_type<F: FnMut(&mut Type, &mut Stack)>(&mut self, mut f: F) {
-        self.for_each_expr(|e, stack| {
-            e.ty.for_each_type_rec(&mut f, stack);
+    pub fn for_each_type<F: FnMut(&mut Type)>(&mut self, mut f: F, table: &mut SymbolTable) {
+        self.for_each_expr(|e| {
+            e.ty.for_each_type_rec(&mut f);
             match &mut e.kind {
-                ExprKind::Let(_, ty, _, _) => ty.for_each_type_rec(&mut f, stack),
-                ExprKind::UnOp(UnOp::Cast(ty), _) => ty.for_each_type_rec(&mut f, stack),
+                Let(id, _, _) => table.get_mut(id).ty.for_each_type_rec(&mut f),
+                UnOp(Cast(ty), _) => ty.for_each_type_rec(&mut f),
                 _ => {}
             }
         })
     }
 
-    pub fn for_each_dim_expr<F: FnMut(&mut Expr, &mut Stack)>(&mut self, mut f: F) {
-        self.for_each_type(|ty, stack| match &mut ty.kind {
-            TypeKind::Array(_, shape) => match &mut shape.kind {
-                ShapeKind::Ranked(dims) => dims.iter_mut().for_each(|dim| match &mut dim.kind {
-                    DimKind::Expr(expr) => expr.for_each_expr_rec(&mut f, stack),
-                    DimKind::Unknown => {}
-                }),
-                ShapeKind::Unranked => {}
+    pub fn for_each_dim_expr<F: FnMut(&mut Expr)>(&mut self, mut f: F, table: &mut SymbolTable) {
+        self.for_each_type(
+            |ty| {
+                if let Array(_, shape) = &mut ty.kind {
+                    match &mut shape.kind {
+                        Ranked(dims) => dims.iter_mut().for_each(|dim| match &mut dim.kind {
+                            Symbolic(expr) => expr.for_each_expr_rec(&mut f),
+                            Hole => {}
+                        }),
+                        Unranked => {}
+                    }
+                }
             },
-            _ => {}
-        })
+            table,
+        )
     }
 
-    fn for_each_expr_rec<F: FnMut(&mut Expr, &mut Stack)>(
-        &mut self,
-        fun: &mut F,
-        stack: &mut Stack,
-    ) {
-        fun(self, stack);
+    fn for_each_expr_rec<F: FnMut(&mut Expr)>(&mut self, f: &mut F) {
+        f(self);
         match &mut self.kind {
-            ExprKind::If(c, t, e) => {
-                c.for_each_expr_rec(fun, stack);
-                t.for_each_expr_rec(fun, stack);
-                e.for_each_expr_rec(fun, stack);
+            If(c, t, e) => {
+                c.for_each_expr_rec(f);
+                t.for_each_expr_rec(f);
+                e.for_each_expr_rec(f);
             }
-            ExprKind::Bif(kind) => match kind {
-                Bif::Fmap(e) => e.for_each_expr_rec(fun, stack),
-                Bif::Fold(f, e) => {
-                    f.for_each_expr_rec(fun, stack);
-                    e.for_each_expr_rec(fun, stack);
-                }
-                Bif::Dataset(_) => {}
-                Bif::Error => {}
-            },
-            ExprKind::Let(id, ty, v, b) => {
-                v.for_each_expr_rec(fun, stack);
-                stack.push((id.clone(), ty.clone()));
-                b.for_each_expr_rec(fun, stack);
-                stack.pop();
+            Match(e, cases) => {
+                e.for_each_expr_rec(f);
+                cases.iter_mut().for_each(|(_, e)| e.for_each_expr_rec(f));
             }
-            ExprKind::Call(_, ps) => ps.iter_mut().for_each(|p| p.for_each_expr_rec(fun, stack)),
-            ExprKind::Lit(kind) => match kind {
-                Lit::Array(ps) => ps.iter_mut().for_each(|p| p.for_each_expr_rec(fun, stack)),
-                Lit::Struct(fs) => fs
-                    .iter_mut()
-                    .for_each(|(_, v)| v.for_each_expr_rec(fun, stack)),
-                Lit::Bool(_)
-                | Lit::F32(_)
-                | Lit::I32(_)
-                | Lit::F64(_)
-                | Lit::I64(_)
-                | Lit::Error => {}
-            },
-            ExprKind::Var(_) => {}
-            ExprKind::Error => {}
-            ExprKind::BinOp(l, _, r) => {
-                l.for_each_expr_rec(fun, stack);
-                r.for_each_expr_rec(fun, stack);
+            Let(_, v, b) => {
+                v.for_each_expr_rec(f);
+                b.for_each_expr_rec(f);
             }
-            ExprKind::UnOp(_, e) => e.for_each_expr_rec(fun, stack),
+            FunCall(_, ps) => ps.iter_mut().for_each(|p| p.for_each_expr_rec(f)),
+            ConsArray(ps) => ps.iter_mut().for_each(|p| p.for_each_expr_rec(f)),
+            ConsTuple(ps) => ps.iter_mut().for_each(|p| p.for_each_expr_rec(f)),
+            ConsStruct(fs) => fs.iter_mut().for_each(|(_, v)| v.for_each_expr_rec(f)),
+            Lit(_) => {}
+            Var(_) => {}
+            BinOp(l, _, r) => {
+                l.for_each_expr_rec(f);
+                r.for_each_expr_rec(f);
+            }
+            UnOp(_, e) => e.for_each_expr_rec(f),
+            Closure(..) => todo!(),
+            ExprErr => {}
         }
     }
 }
 impl Type {
-    pub fn for_each_type<F: FnMut(&mut Type, &mut Stack)>(&mut self, mut f: F) {
-        let mut stack = Vec::new();
-        self.for_each_type_rec(&mut f, &mut stack);
+    pub fn for_each_type<F: FnMut(&mut Type)>(&mut self, mut f: F) {
+        self.for_each_type_rec(&mut f);
     }
 
-    fn for_each_type_rec<F: FnMut(&mut Type, &mut Stack)>(&mut self, f: &mut F, stack: &mut Stack) {
-        f(self, stack);
+    fn for_each_type_rec<F: FnMut(&mut Type)>(&mut self, f: &mut F) {
+        f(self);
         match &mut self.kind {
-            TypeKind::Array(ty, _) => ty.for_each_type_rec(f, stack),
-            TypeKind::Struct(fs) => fs
-                .iter_mut()
-                .for_each(|(_, ty)| ty.for_each_type_rec(f, stack)),
-            TypeKind::Option(ty) => ty.for_each_type_rec(f, stack),
-            TypeKind::I64
-            | TypeKind::F64
-            | TypeKind::I32
-            | TypeKind::F32
-            | TypeKind::Bool
-            | TypeKind::Error
-            | TypeKind::I8
-            | TypeKind::I16
-            | TypeKind::Null
-            | TypeKind::String
-            | TypeKind::Unknown => {}
+            Array(ty, _) => ty.for_each_type_rec(f),
+            Struct(fs) => fs.iter_mut().for_each(|(_, ty)| ty.for_each_type_rec(f)),
+            Tuple(tys) => tys.iter_mut().for_each(|ty| ty.for_each_type_rec(f)),
+            Optional(ty) => ty.for_each_type_rec(f),
+            Scalar(_) => {}
+            Unknown => {}
+            Fun(tys, ty) => {
+                tys.iter_mut().for_each(|ty| ty.for_each_type_rec(f));
+                ty.for_each_type_rec(f);
+            }
+            TypeErr => {}
         }
     }
 }
 
-impl Ident {
-    pub fn lookup_with_name(&self, stack: &Stack) -> Option<(Type, Scope, Option<Uid>)> {
-        stack
-            .iter()
-            .enumerate()
-            .rev()
-            .find_map(|(scope, (id, ty))| match id.name == self.name {
-                true => Some((ty.clone(), scope, id.uid.clone())),
-                false => None,
-            })
-    }
-
-    pub fn lookup_with_uid(&self, stack: &Stack) -> Option<(Type, Scope, Option<Uid>)> {
-        self.uid.and_then(|ref uid1| {
-            stack
-                .iter()
-                .enumerate()
-                .rev()
-                .find_map(|(scope, (id, ty))| {
-                    id.uid
-                        .filter(|uid2| uid2 == uid1)
-                        .map(|_| (ty.clone(), scope, id.uid.clone()))
-                })
-        })
-    }
-
-    pub fn lookup_with_scope(&self, stack: &Stack) -> Option<(Type, Scope, Option<Uid>)> {
-        let scope = self
-            .scope
-            .expect("[ICE]: Tried to access unassigned scope.");
-        stack.get(scope).map(|(id, ty)| (ty.clone(), scope, id.uid))
-    }
+pub struct Printer<'a> {
+    pub info: &'a Info<'a>,
+    pub tabs: u32,
+    pub verbose: bool,
 }
 
-const TAB: &'static str = "  ";
-pub fn indent(indent: u32) -> String {
-    format!(
-        "\n{}",
-        (0..indent).into_iter().map(|_| TAB).collect::<String>()
-    )
+const TAB: &str = "  ";
+
+impl Printer<'_> {
+    pub fn indent(&self) -> String {
+        format!("\n{}", (0..self.tabs).map(|_| TAB).collect::<String>())
+    }
+
+    pub fn tab(&self) -> Printer {
+        Printer {
+            info: self.info,
+            tabs: self.tabs + 1,
+            verbose: self.verbose,
+        }
+    }
+
+    pub fn untab(&self) -> Printer {
+        Printer {
+            info: self.info,
+            tabs: self.tabs - 1,
+            verbose: self.verbose,
+        }
+    }
 }
 
 pub fn merge<T>(mut a: Vec<T>, mut b: Vec<T>) -> Vec<T> {

@@ -1,27 +1,59 @@
-use {crate::error::CompilerError, codespan::Span, derive_more::Constructor, smol_str::SmolStr};
+use crate::info::Info;
+use smartstring::{LazyCompact, SmartString};
+use DimKind::*;
+use ExprKind::*;
+use LitKind::*;
+use ShapeKind::*;
+use TypeKind::*;
+use {codespan::Span, derive_more::Constructor};
 
-type ByteIndex = usize;
+pub type ByteIndex = usize;
 
 pub struct Spanned<T>(pub ByteIndex, pub T, pub ByteIndex);
 
-pub struct Script {
-    pub funs: Vec<Fun>,
-    pub body: Expr,
-    pub errors: Vec<CompilerError>,
-}
+pub type Symbol<'i> = &'i str;
+pub type Name = SmartString<LazyCompact>;
+pub type Clause = (Pattern, Expr);
+pub type Field = Name;
 
-impl Script {
-    pub fn new(funs: Vec<Fun>, body: Expr) -> Script {
-        let errors = Vec::new();
-        Script { funs, body, errors }
-    }
+#[derive(Constructor)]
+pub struct Script<'i> {
+    pub tydefs: Vec<TypeDef>,
+    pub fundefs: Vec<FunDef>,
+    pub body: Expr,
+    pub info: Info<'i>,
 }
 
 #[derive(Constructor)]
-pub struct Fun {
+pub struct FunDef {
     pub id: Ident,
-    pub params: Vec<(Ident, Type)>,
+    pub params: Vec<Ident>,
     pub body: Expr,
+}
+
+#[derive(Constructor)]
+pub struct TypeDef {
+    pub id: Ident,
+    pub ty: Type,
+}
+
+pub struct Decl {
+    pub name: Name,
+    pub ty: Type,
+    pub kind: DeclKind,
+}
+
+impl Decl {
+    pub fn new(symbol: Symbol, ty: Type, kind: DeclKind) -> Self {
+        let name = symbol.into();
+        Self { name, ty, kind }
+    }
+}
+
+pub enum DeclKind {
+    FunDecl,
+    VarDecl,
+    TypeDecl,
 }
 
 #[derive(Debug, Constructor, Clone)]
@@ -36,7 +68,7 @@ impl From<Spanned<ExprKind>> for Expr {
         let span = Span::new(l as u32, r as u32);
         let ty = Type {
             var: TypeVar(0),
-            kind: TypeKind::Unknown,
+            kind: Unknown,
             span: None,
         };
         Expr { kind, ty, span }
@@ -44,98 +76,84 @@ impl From<Spanned<ExprKind>> for Expr {
 }
 
 impl Default for Expr {
-    fn default() -> Expr { Expr::new(ExprKind::Error, Type::new(), Span::new(0, 0)) }
+    fn default() -> Expr { Expr::new(ExprErr, Type::new(), Span::new(0, 0)) }
 }
-
-pub type Scope = usize;
 
 #[derive(Debug, Eq, PartialEq, Clone, Copy, Hash)]
-pub struct Uid(pub u32);
-impl Uid {
-    pub fn reset() {
-        unsafe {
-            COUNTER = 0;
-        }
-    }
-
-    pub fn new() -> Uid {
-        unsafe {
-            let uid = Uid(COUNTER);
-            COUNTER += 1;
-            uid
-        }
-    }
-}
-
-#[derive(Debug, Eq, PartialEq, Clone, Hash)]
-pub struct Ident {
-    pub name: SmolStr,
-    pub scope: Option<Scope>,
-    pub uid: Option<Uid>,
-}
+pub struct Ident(pub usize);
 
 #[derive(Debug, Eq, PartialEq, Clone, Hash)]
 pub struct Index(pub usize);
 
-static mut COUNTER: u32 = 0;
-impl Ident {
-    pub fn from(name: impl Into<String> + AsRef<str>) -> Ident {
-        Ident {
-            name: SmolStr::new(name),
-            scope: None,
-            uid: None,
-        }
-    }
-}
-
-impl Ident {
-    pub fn gen() -> Ident {
-        Ident {
-            name: SmolStr::new("x"),
-            scope: None,
-            uid: Some(Uid::new()),
-        }
-    }
+#[derive(Debug, Clone)]
+pub enum ExprKind {
+    Lit(LitKind),
+    ConsArray(Vec<Expr>),
+    ConsStruct(Vec<(Ident, Expr)>),
+    ConsTuple(Vec<Expr>),
+    Var(Ident),
+    Closure(Vec<Ident>, Box<Expr>),
+    UnOp(UnOpKind, Box<Expr>),
+    BinOp(Box<Expr>, BinOpKind, Box<Expr>),
+    If(Box<Expr>, Box<Expr>, Box<Expr>),
+    Let(Ident, Box<Expr>, Box<Expr>),
+    Match(Box<Expr>, Vec<Clause>),
+    FunCall(Ident, Vec<Expr>),
+    ExprErr,
 }
 
 #[derive(Debug, Clone)]
-pub enum ExprKind {
-    Lit(Lit),
-    Bif(Bif),
-    Var(Ident),
-    UnOp(UnOp, Box<Expr>),
-    BinOp(Box<Expr>, BinOp, Box<Expr>),
-    If(Box<Expr>, Box<Expr>, Box<Expr>),
-    Let(Ident, Type, Box<Expr>, Box<Expr>),
-    Call(Ident, Vec<Expr>),
-    Error,
+pub struct Pattern {
+    pub vars: Vec<Ident>,
+    pub kind: PatternKind,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone)]
+pub enum PatternKind {
+    Regex(regex::Regex),
+    DeconsTuple(Vec<Pattern>),
+    Val(LitKind),
+    Bind(Ident),
+    Or(Box<Pattern>, Box<Pattern>),
+    Wildcard,
+    PatternErr,
+}
+
+impl From<Spanned<PatternKind>> for Pattern {
+    fn from(Spanned(l, kind, r): Spanned<PatternKind>) -> Pattern {
+        let span = Span::new(l as u32, r as u32);
+        let vars = vec![]; // TODO: Extract variables from patterns
+        Pattern { kind, vars, span }
+    }
 }
 
 #[derive(Debug, Clone, Copy)]
-pub enum BinOp {
+pub enum BinOpKind {
     Add,
     Sub,
     Mul,
     Div,
-    Error,
+    Eq,
+    BinOpErr,
 }
 
 #[derive(Debug, Clone)]
-pub enum Bif {
+pub enum BIFKind {
     Dataset(Box<Expr>),
     Fold(Box<Expr>, Box<Expr>),
     Fmap(Box<Expr>),
-    Error,
+    Imap(Type, Box<Expr>),
 }
 
 #[derive(Debug, Clone)]
-pub enum UnOp {
+pub enum UnOpKind {
     Not,
     Cast(Type),
-    Call(Ident, Vec<Expr>),
-    Access(Ident),
+    MethodCall(Ident, Vec<Expr>),
+    Access(Field),
     Project(Index),
-    Error,
+    UnOpErr,
 }
 
 #[derive(Debug, Eq, PartialEq, Copy, Clone)]
@@ -162,7 +180,17 @@ impl From<Spanned<TypeKind>> for Type {
 
 impl Type {
     pub fn new() -> Type {
-        let kind = TypeKind::Unknown;
+        let kind = Unknown;
+        let span = None;
+        let var = TypeVar(0);
+        Type { kind, var, span }
+    }
+
+    pub fn fun(arity: usize) -> Type {
+        let kind = Fun(
+            (0..arity).map(|_| Type::new()).collect(),
+            Box::new(Type::new()),
+        );
         let span = None;
         let var = TypeVar(0);
         Type { kind, var, span }
@@ -171,6 +199,18 @@ impl Type {
 
 #[derive(Debug, Eq, PartialEq, Clone)]
 pub enum TypeKind {
+    Scalar(ScalarKind),
+    Optional(Box<Type>),
+    Struct(Vec<(Ident, Type)>),
+    Array(Box<Type>, Shape),
+    Tuple(Vec<Type>),
+    Fun(Vec<Type>, Box<Type>),
+    Unknown,
+    TypeErr,
+}
+
+#[derive(Debug, Eq, PartialEq, Clone)]
+pub enum ScalarKind {
     I8,
     I16,
     I32,
@@ -179,12 +219,7 @@ pub enum TypeKind {
     F64,
     Bool,
     Null,
-    String,
-    Option(Box<Type>),
-    Struct(Vec<(Ident, Type)>),
-    Array(Box<Type>, Shape),
-    Unknown,
-    Error,
+    Str,
 }
 
 #[derive(Debug, Clone)]
@@ -196,14 +231,14 @@ pub struct Shape {
 impl Shape {
     pub fn simple(size: i32, span: Span) -> Shape {
         Shape {
-            kind: ShapeKind::Ranked(vec![Dim::known(size, span)]),
+            kind: Ranked(vec![Dim::known(size, span)]),
             span: None,
         }
     }
 
     pub fn unranked() -> Shape {
         Shape {
-            kind: ShapeKind::Unranked,
+            kind: Unranked,
             span: None,
         }
     }
@@ -219,8 +254,8 @@ impl From<Spanned<ShapeKind>> for Shape {
 impl PartialEq for Shape {
     fn eq(&self, other: &Self) -> bool {
         match (&self.kind, &other.kind) {
-            (ShapeKind::Unranked, _) | (_, ShapeKind::Unranked) => true,
-            (ShapeKind::Ranked(d1), ShapeKind::Ranked(d2)) => d1.len() == d2.len(),
+            (Unranked, _) | (_, Unranked) => true,
+            (Ranked(d1), Ranked(d2)) => d1.len() == d2.len(),
         }
     }
 }
@@ -241,13 +276,13 @@ pub struct Dim {
 
 impl Dim {
     pub fn known(size: i32, span: Span) -> Dim {
-        let kind = DimKind::Expr(Expr::new(ExprKind::Lit(Lit::I32(size)), Type::new(), span));
+        let kind = Symbolic(Expr::new(Lit(LitI32(size)), Type::new(), span));
         let span = Some(span);
         Dim { kind, span }
     }
 
     pub fn new() -> Dim {
-        let kind = DimKind::Unknown;
+        let kind = Hole;
         let span = None;
         Dim { kind, span }
     }
@@ -262,18 +297,29 @@ impl From<Spanned<DimKind>> for Dim {
 
 #[derive(Debug, Clone)]
 pub enum DimKind {
-    Expr(Expr),
-    Unknown,
+    Symbolic(Expr),
+    Hole,
 }
 
-#[derive(Debug, Clone)]
-pub enum Lit {
-    I32(i32),
-    I64(i64),
-    F32(f32),
-    F64(f64),
-    Bool(bool),
-    Array(Vec<Expr>),
-    Struct(Vec<(Ident, Expr)>),
-    Error,
+#[derive(Debug, Copy, Clone, Educe)]
+#[educe(Hash)]
+pub enum LitKind {
+    LitI32(i32),
+    LitI64(i64),
+    LitF32(#[educe(Hash(ignore))] f32),
+    LitF64(#[educe(Hash(ignore))] f64),
+    LitBool(bool),
+    LitErr,
 }
+
+impl PartialEq for LitKind {
+    fn eq(&self, other: &Self) -> bool {
+        match (self, other) {
+            (LitI32(v1), LitI32(v2)) => v1 == v2,
+            (LitI64(v1), LitI64(v2)) => v1 == v2,
+            (LitBool(v1), LitBool(v2)) => v1 == v2,
+            _ => false,
+        }
+    }
+}
+impl Eq for LitKind {}
