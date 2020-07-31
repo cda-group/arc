@@ -1,4 +1,5 @@
 use crate::info::Info;
+use chrono::Duration;
 use smartstring::{LazyCompact, SmartString};
 use DimKind::*;
 use ExprKind::*;
@@ -313,6 +314,7 @@ pub enum LitKind {
     LitF32(#[educe(Hash(ignore))] f32),
     LitF64(#[educe(Hash(ignore))] f64),
     LitBool(bool),
+    LitTime(Duration),
     LitErr,
 }
 

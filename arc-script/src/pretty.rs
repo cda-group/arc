@@ -143,6 +143,7 @@ impl Pretty for LitKind {
             LitF32(l) => format!("{}f32", l.to_string()),
             LitF64(l) => l.to_string(),
             LitBool(l) => l.to_string(),
+            LitTime(l) => l.to_string(),
             LitErr => "☇".to_string(),
         }
     }

@@ -134,6 +134,7 @@ impl Expr {
                     LitF32(_) => Scalar(F32),
                     LitF64(_) => Scalar(F64),
                     LitBool(_) => Scalar(Bool),
+                    LitTime(_) => todo!(),
                     LitErr => return,
                 };
                 typer.unify_var_val(&self.ty, &kind, self.span, errors);

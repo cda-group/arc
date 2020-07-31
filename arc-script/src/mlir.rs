@@ -145,6 +145,7 @@ impl LitKind {
             LitF32(l) => l.to_string(),
             LitF64(l) => l.to_string(),
             LitBool(l) => l.to_string(),
+            LitTime(_) => todo!(),
             LitErr => "<ERROR>".to_string(),
         }
     }

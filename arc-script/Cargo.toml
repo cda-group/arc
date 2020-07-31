@@ -51,6 +51,7 @@ num-traits         = "0.2.11"
 arrayvec           = "0.5.1"
 smartstring        = "0.2.3"
 educe              = { version = "0.4.4", default-features = false, features = ["Hash"]}
+chrono             = "0.4.13"
 
 # -- Feature: shaper
 z3                 = { optional = true, version = "0.5.0" }

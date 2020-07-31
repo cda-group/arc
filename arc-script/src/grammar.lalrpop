@@ -1,6 +1,7 @@
 use {
   crate::{ast::*, parser::*},
   lalrpop_util::ErrorRecovery,
+  chrono::Duration,
   ExprKind::*,
   BinOpKind::*,
   UnOpKind::*,
@@ -119,6 +120,15 @@ match {
 // Regex
 //=============================================================================
   r#"r"[^"]*""#                                                 => TRegex,
+//=============================================================================
+// Syntactic sugar for expressing different units of time
+//=============================================================================
+  r"[0-9]+s"                                                       => TSec,
+  r"[0-9]+us"                                                      => TMSec,
+  r"[0-9]+ms"                                                      => TUSec,
+  r"[0-9]+ns"                                                      => TNSec,
+  r"[0-9]+min"                                                     => TMin,
+  r"[0-9]+h"                                                       => THour,
 } else {
 //=============================================================================
 // Non-Postfixed
@@ -253,6 +263,15 @@ ParseI64: CompilerResult<i64> = {
   Spanned<TI64Base10> => parse_lit_radix(<>, 10, 0, 3),
   Spanned<TI64Base2>  => parse_lit_radix(<>,  2, 2, 3),
   Spanned<TI64Base16> => parse_lit_radix(<>, 16, 2, 3),
+};
+
+ParseTime: CompilerResult<Duration> = {
+  Spanned<TSec>       => parse_lit_radix(<>, 10, 0, 3).map(Duration::seconds),
+  Spanned<TUSec>      => parse_lit_radix(<>, 10, 0, 3).map(Duration::microseconds),
+  Spanned<TMSec>      => parse_lit_radix(<>, 10, 0, 3).map(Duration::milliseconds),
+  Spanned<TNSec>      => parse_lit_radix(<>, 10, 0, 3).map(Duration::nanoseconds),
+  Spanned<TMin>       => parse_lit_radix(<>, 10, 0, 3).map(Duration::minutes),
+  Spanned<THour>      => parse_lit_radix(<>, 10, 0, 1).map(Duration::hours),
 };
 
 //=============================================================================
@@ -425,6 +444,7 @@ ParseLit: CompilerResult<LitKind> = {
   ParseF32  => <>.map(LitF32),
   ParseF64  => <>.map(LitF64),
   ParseBool => <>.map(LitBool),
+  ParseTime => <>.map(LitTime),
 };
 
 BIF: BIFKind = {
