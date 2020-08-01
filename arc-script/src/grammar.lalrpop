@@ -135,7 +135,7 @@ match {
   r"\p{Math}"                                                   => TUnicodeOp,
 } else {
   r"\.[A-Za-z_][A-Za-z0-9_]*"                                   => TFieldSymbol,
-  r"\.[0-9]+"                                                   => TTupleIndex,
+  r"\.[0-9]+"                                                   => TIndex,
   r"[A-Za-z_][A-Za-z0-9_]*'*"                                   => TSymbol,
   r"[\p{Greek}\p{Emoji}][0-9]*'*"                               => TUnicodeSymbol,
 } else {
@@ -210,7 +210,6 @@ MethodSymbol: Symbol<'input> = TMethodSymbol => &<>[1..<>.len()-1];
 // Literals
 //=============================================================================
 
-ParseIndex: CompilerResult<usize> = Spanned<TTupleIndex> => parse_lit_radix(<>, 10, 1, 0);
 ParseStr: String = TStr => <>[1..<>.len()].to_string();
 ParseRegex: CompilerResult<regex::Regex> = Spanned<TRegex> => parse_regex(<>);
 ParseBool: CompilerResult<bool> = Spanned<TBool> => parse_lit(<>);
@@ -219,6 +218,10 @@ ParseBool: CompilerResult<bool> = Spanned<TBool> => parse_lit(<>);
 // Numerals:
 // * parse_lit_radix(<token>, <radix>, <prefix-len>, <suffix-len>)
 //=============================================================================
+
+ParseIndex: CompilerResult<usize> = {
+  Spanned<TIndex>     => parse_lit_radix(<>, 10, 1, 0),
+};
 
 ParseF32: CompilerResult<f32> = {
   Spanned<TF32Base10> => parse_lit_radix(<>, 10, 0, 3),

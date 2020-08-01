@@ -1,7 +1,7 @@
 use {
+    arc_script::{compile, opt::*},
     criterion::*,
     include_dir::*,
-    arc_script::{compile, opt::*},
 };
 
 const SCRIPTS_DIR: Dir = include_dir!("benches/scripts/");
