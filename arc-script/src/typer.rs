@@ -53,9 +53,13 @@ impl Typer {
         }
     }
 
-    fn fresh(&mut self) -> TypeVar { self.context.new_key(Unknown) }
+    fn fresh(&mut self) -> TypeVar {
+        self.context.new_key(Unknown)
+    }
 
-    fn lookup(&mut self, var: TypeVar) -> TypeKind { self.context.probe_value(var) }
+    fn lookup(&mut self, var: TypeVar) -> TypeKind {
+        self.context.probe_value(var)
+    }
 }
 
 impl UnifyKey for TypeVar {
@@ -66,9 +70,13 @@ impl UnifyKey for TypeVar {
         id
     }
 
-    fn from_index(id: u32) -> TypeVar { TypeVar(id) }
+    fn from_index(id: u32) -> TypeVar {
+        TypeVar(id)
+    }
 
-    fn tag() -> &'static str { "Type" }
+    fn tag() -> &'static str {
+        "Type"
+    }
 }
 
 impl UnifyValue for TypeKind {

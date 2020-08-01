@@ -104,7 +104,9 @@ impl LanguageServer for Backend {
         client.log_message(MessageType::Info, "Arc-Script LSP - ONLINE!");
     }
 
-    async fn shutdown(&self) -> Result<()> { Ok(()) }
+    async fn shutdown(&self) -> Result<()> {
+        Ok(())
+    }
 
     async fn did_change_workspace_folders(
         &self,

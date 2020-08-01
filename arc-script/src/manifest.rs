@@ -73,5 +73,7 @@ pub enum CsvType {
 impl FromStr for Config {
     type Err = toml::de::Error;
 
-    fn from_str(s: &str) -> Result<Self, Self::Err> { toml::from_str(s) }
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        toml::from_str(s)
+    }
 }

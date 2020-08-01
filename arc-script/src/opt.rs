@@ -21,7 +21,9 @@ pub struct Opt {
 
 impl Opt {
     #[cfg(feature = "cli")]
-    pub fn get() -> Opt { <Opt as ::clap::Clap>::parse() }
+    pub fn get() -> Opt {
+        <Opt as ::clap::Clap>::parse()
+    }
 
     #[cfg(not(feature = "cli"))]
     pub fn get() -> Opt {

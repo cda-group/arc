@@ -76,7 +76,9 @@ impl From<Spanned<ExprKind>> for Expr {
 }
 
 impl Default for Expr {
-    fn default() -> Expr { Expr::new(ExprErr, Type::new(), Span::new(0, 0)) }
+    fn default() -> Expr {
+        Expr::new(ExprErr, Type::new(), Span::new(0, 0))
+    }
 }
 
 #[derive(Debug, Eq, PartialEq, Clone, Copy, Hash)]
@@ -167,7 +169,9 @@ pub struct Type {
 }
 
 impl PartialEq for Type {
-    fn eq(&self, other: &Self) -> bool { self.kind == other.kind }
+    fn eq(&self, other: &Self) -> bool {
+        self.kind == other.kind
+    }
 }
 
 impl From<Spanned<TypeKind>> for Type {

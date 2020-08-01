@@ -16,13 +16,21 @@ pub fn main() -> Result<(), Error> {
 }
 
 #[cfg(feature = "lsp")]
-fn run_lsp(opt: &Opt) -> Result<(), Error> { Ok(arc_script::lsp::lsp(opt)) }
+fn run_lsp(opt: &Opt) -> Result<(), Error> {
+    Ok(arc_script::lsp::lsp(opt))
+}
 
 #[cfg(not(feature = "lsp"))]
-fn run_lsp(_: &Opt) -> Result<(), Error> { panic!("Binary was not compiled with LSP support.") }
+fn run_lsp(_: &Opt) -> Result<(), Error> {
+    panic!("Binary was not compiled with LSP support.")
+}
 
 #[cfg(feature = "repl")]
-fn run_repl(opt: &Opt) -> Result<(), Error> { arc_script::repl::repl(opt) }
+fn run_repl(opt: &Opt) -> Result<(), Error> {
+    arc_script::repl::repl(opt)
+}
 
 #[cfg(not(feature = "repl"))]
-fn run_repl(_: &Opt) -> Result<(), Error> { panic!("Binary was not compiled with REPL support.") }
+fn run_repl(_: &Opt) -> Result<(), Error> {
+    panic!("Binary was not compiled with REPL support.")
+}

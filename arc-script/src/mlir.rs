@@ -109,7 +109,9 @@ impl Expr {
 }
 
 impl Ident {
-    fn to_var(&self) -> String { format!("%x_{}", self.0) }
+    fn to_var(&self) -> String {
+        format!("%x_{}", self.0)
+    }
 }
 
 impl Type {

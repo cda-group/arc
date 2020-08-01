@@ -181,7 +181,9 @@ impl Pretty for BinOpKind {
 }
 
 impl Pretty for Type {
-    fn pretty(&self, pr: &Printer) -> String { self.kind.pretty(pr) }
+    fn pretty(&self, pr: &Printer) -> String {
+        self.kind.pretty(pr)
+    }
 }
 
 impl Pretty for TypeKind {
@@ -212,11 +214,15 @@ impl Pretty for TypeKind {
 }
 
 impl Pretty for Index {
-    fn pretty(&self, _: &Printer) -> String { format!("{}", self.0) }
+    fn pretty(&self, _: &Printer) -> String {
+        format!("{}", self.0)
+    }
 }
 
 impl Pretty for Ident {
-    fn pretty(&self, pr: &Printer) -> String { pr.info.table.get(self).name.to_string() }
+    fn pretty(&self, pr: &Printer) -> String {
+        pr.info.table.get(self).name.to_string()
+    }
 }
 
 impl Pretty for Shape {
