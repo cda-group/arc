@@ -117,6 +117,7 @@ impl SymbolTable {
                 VarDecl => println!("[var]  {} => {}", i, name),
                 FunDecl => println!("[fun]  {} => {}", i, name),
                 TypeDecl => println!("[type] {} => {}", i, name),
+                TaskDecl(_) => println!("[task] {} => {}", i, name),
             }
         }
     }

@@ -18,7 +18,7 @@ impl Script<'_> {
         let mut errors = Vec::new();
         let mut table = SymbolTable::new();
         let mut stack = SymbolStack::new();
-        let (tydefs, fundefs, body) = ScriptParser::new()
+        let (taskdefs, tydefs, fundefs, body) = ScriptParser::new()
             .parse(&mut errors, &mut stack, &mut table, source)
             .unwrap();
         let errors = errors
@@ -27,7 +27,7 @@ impl Script<'_> {
             .map(Into::into)
             .collect();
         let info = Info::new(table, errors, source);
-        Script::new(tydefs, fundefs, body, info)
+        Script::new(taskdefs, tydefs, fundefs, body, info)
     }
 }
 

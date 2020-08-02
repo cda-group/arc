@@ -72,6 +72,7 @@ match {
   "fmap",
   "imap",
   "fun",
+  "task",
   "end",
   "as",
   "match",
@@ -218,6 +219,7 @@ VarSymbol: SymbolKey = {
 FieldSymbol:  SymbolKey = TFieldSymbol  => table.intern(&<>[1..]);
 FunSymbol:    SymbolKey = TFunSymbol    => table.intern(&<>[..<>.len()-1]);
 MethodSymbol: SymbolKey = TMethodSymbol => table.intern(&<>[1..<>.len()-1]);
+TaskSymbol:   SymbolKey = FunSymbol;
 
 //=============================================================================
 // Literals
@@ -281,7 +283,7 @@ ParseTime: CompilerResult<Duration> = {
 // Non-Terminals
 //=============================================================================
 
-pub Script = TypeDef* FunDef* Body;
+pub Script = TaskDef* TypeDef* FunDef* Body;
 
 //=============================================================================
 // Name Resolving
@@ -314,6 +316,19 @@ FunDef: FunDef = <FunDecl> <Body> => {
   let ((fun_id, param_ids), body) = (<>);
   stack.pop_scope();
   FunDef::new(fun_id, param_ids, body)
+};
+
+TaskDef: TaskDef = <TaskDecl> <FunDef*> "end" => {
+  let ((task_id, param_ids), fun_defs) = (<>);
+  stack.pop_scope();
+  TaskDef::new(task_id, param_ids, fun_defs)
+};
+
+TaskDecl: (Ident, Vec<Ident>) = "task" <TaskSymbol> <Params> ")" => {
+  let (task_sym, param_ids) = (<>);
+  let task_id = table.insert(Decl::new(task_sym, Type::new(), TaskDecl(Vec::new())));
+  stack.push_scope();
+  (task_id, param_ids)
 };
 
 LetDecl: (Ident, Box<Expr>) = <VarSymbol> <OptionalType> "=" <Box<Arg>> => {
