@@ -1,5 +1,5 @@
 use {
-    crate::{diagnose, opt::Opt, error::Error},
+    crate::{diagnose, error::Error, opt::Opt},
     linefeed::{Completer, Completion, Interface, Prompter, ReadResult, Terminal},
     std::sync::Arc,
 };
