@@ -20,11 +20,6 @@ jobs:
     - name: checkout
       uses: actions/checkout@v2
     
-    - name: setup
-      uses: actions-rs/toolchain@v1
-      with:
-        toolchain: stable
-        
     - name: cargo-check
       run: cargo check --all-features
 

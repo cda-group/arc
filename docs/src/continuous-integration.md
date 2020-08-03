@@ -8,9 +8,10 @@ docker run -i -t ubuntu:16.04 /bin/bash
 
 # Install apt dependencies
 
-apt update
-apt upgrade -y
-apt install -y git vim curl z3 libz3-dev curl libssl-dev gcc pkg-config make ninja-build python
+apt update && apt upgrade -y
+apt install -y git vim curl z3 libz3-dev curl libssl-dev gcc pkg-config make ninja-build python zip openjdk-8-jdk python-software-properties software-properties-common
+add-apt-repository ppa:git-core/ppa -y
+apt update && apt upgrade -y
 
 # Install Rust
 
@@ -40,6 +41,13 @@ export LD_LIBRARY_PATH=~/llvm/lib:$LD_LIBRARY_PATH
 echo 'export PATH=~/llvm/bin:$PATH' >> ~/.bashrc
 echo 'export LD_LIBRARY_PATH=~/llvm/lib:$LD_LIBRARY_PATH' >> ~/.bashrc
 
+# Install SBT / Scala / Java
+
+curl https://piccolo.link/sbt-1.3.13.zip -L --output sbt.zip
+unzip sbt.zip
+export PATH=~/sbt/bin:$PATH
+echo 'export PATH=~/sbt/bin:$PATH' >> ~/.bashrc
+
 # Install GitHub Actions Runner
 
 # Follow this tutorial (Which generates a unique token):
@@ -62,8 +70,7 @@ cd ~
 git clone https://github.com/cda-group/arc
 cd ~/arc
 git checkout mlir
-git submodule init
-git submodule update
+git submodule update --init --recursive
 
 # Check if arc-script builds
 
