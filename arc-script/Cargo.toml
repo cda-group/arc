@@ -30,9 +30,8 @@ harness        = false
 
 [features]
 default     = []
-all         = ["provider", "manifest", "incremental", "lsp", "cli", "repl"]
+all         = ["provider", "manifest", "incremental", "lsp", "repl"]
 shaper      = ["z3"]
-cli         = ["clap"]
 repl        = ["linefeed"]
 provider    = ["reqwest", "http", "http-serde", "tempfile", "quick-protobuf", "pb-rs", "avro-rs", "glob"]
 manifest    = ["serde", "serde_derive", "toml", "tempfile", "http", "http-serde"]
@@ -54,13 +53,10 @@ educe              = { version = "0.4.4", default-features = false, features = [
 chrono             = "0.4.13"
 lasso              = "0.3.1"
 anyhow             = "1.0.32"
+clap               = { git = "https://github.com/clap-rs/clap/", features = ["derive"]}
 
 # -- Feature: shaper
 z3                 = { optional = true, version = "0.5.0" }
-
-# -- Feature: cli
-clap               = { optional = true, git = "https://github.com/clap-rs/clap/", features = ["derive"]}
-dialoguer          = { optional = true, version = "0.6.2" }
 
 # -- Feature: repl
 linefeed           = { optional = true, version = "0.6.0" }

@@ -22,7 +22,7 @@ fn setup() -> Opt {
         debug: false,
         mlir: false,
         verbose: false,
-        subcmd: SubCmd::Bench,
+        subcmd: SubCmd::Lib,
     }
 }
 
