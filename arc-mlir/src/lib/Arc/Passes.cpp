@@ -9,8 +9,7 @@
 #include "Arc/Passes.h"
 #include "Arc/Arc.h"
 
-void arc::registerArcPasses() {
-
 #define GEN_PASS_REGISTRATION
 #include "Arc/Passes.h.inc"
-}
+
+void arc::registerArcPasses() { registerPasses(); }
