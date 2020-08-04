@@ -107,6 +107,8 @@ public:
 
   static RustTensorType get(RustDialect *dialect, Type elementTy,
                             ArrayRef<int64_t> dimensions);
+
+  ArrayRef<int64_t> getDimensions() const;
 };
 
 class RustTupleType
