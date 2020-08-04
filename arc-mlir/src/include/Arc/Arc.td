@@ -89,6 +89,11 @@ def ArcIntegerLike : TypeConstraint<Or<[
         TensorOf<[AnyArcInteger]>.predicate]>,
     "arc-integer-like">;
 
+def ArcTensorElementType : Type<Or<[
+        AnyArcInteger.predicate, Index.predicate,
+        AnyFloat.predicate]>,
+    "arc-tensor-element">;
+
 def AnyBuilder : Type<CPred<"$_self.isa<BuilderType>()">, "any builder">;
 def AnyAppender : Type<CPred<"$_self.isa<AppenderType>()">, "any appender">;
 def AnyStruct : Type<CPred<"$_self.isa<StructType>()">, "any struct">;
@@ -232,6 +237,19 @@ def MakeTupleOp : Arc_Op<"make_tuple", [NoSideEffect]> {
   }];
   let arguments = (ins Variadic<AnyType>:$values);
   let results = (outs AnyTuple);
+  let extraClassDeclaration = [{ LogicalResult customVerify(); }];
+  let verifier = [{ return customVerify(); }];
+}
+
+def MakeTensorOp : Arc_Op<"make_tensor",
+                          [NoSideEffect, SameOperandsAndResultElementType]> {
+  let summary = "create a tensor from a sequence of values";
+  let description = [{
+    A pure operation which turns its arguments into a tensor. The
+    tensor values are given in column-major order
+  }];
+  let arguments = (ins Variadic<ArcTensorElementType>:$values);
+  let results = (outs StaticShapeTensorOf<[ArcTensorElementType]>);
   let extraClassDeclaration = [{ LogicalResult customVerify(); }];
   let verifier = [{ return customVerify(); }];
 }
