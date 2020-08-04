@@ -57,7 +57,15 @@ class Rust_Op<string mnemonic, list<OpTrait> traits = []>
 def AnyRustType : Type<CPred<"$_self.isa<RustType>() || $_self.isa<RustStructType>() || $_self.isa<RustTupleType>() || $_self.isa<RustTensorType>()">, "any RustType">;
 def AnyRustStruct :
     Type<CPred<"$_self.isa<RustStructType>()">, "any RustStruct">;
+
 def BoolRustType : Type<CPred<"$_self.isa<RustType>() && $_self.cast<RustType>().isBool()">, "a Rust boolean type">;
+
+def RustTensorElementType :
+    Type<CPred<"$_self.isa<RustType>()">, "a rust tensor element type">;
+
+def RustTensorType :
+    Type<CPred<"$_self.isa<RustTensorType>()">, "a rust tensor element type">;
+
 
 //===----------------------------------------------------------------------===//
 // Rust Operations
@@ -361,6 +369,22 @@ def Rust_RustModuleDirectiveOp : Rust_Op<"module_directive", [NoSideEffect]> {
     Attribute getStr() { return getAttr("str"); }
   }];
 }
+
+def Rust_RustTensorOp : Rust_Op<"make_tensor", []> {
+  let summary = "create a tensor from a sequence of values";
+  let description = [{
+    A pure operation which turns its arguments into a tensor. The
+    tensor values are given in column-major order
+  }];
+  let arguments = (ins Variadic<RustTensorElementType>:$values);
+  let results = (outs RustTensorType:$result);
+  let extraClassDeclaration = [{
+    // Write this operation as Rust code to the stream
+    void writeRust(RustPrinterStream &);
+  }];
+}
+
+
 
 def Rust_RustTupleOp
     : Rust_Op<"tuple", []> {
