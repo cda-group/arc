@@ -1,6 +1,7 @@
 #![warn(clippy::all)]
 
 use crate::{ast::*, opt::*, pretty::*};
+pub use anyhow::Result;
 use std::io::prelude::*;
 
 #[macro_use]

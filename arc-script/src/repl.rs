@@ -1,10 +1,11 @@
 use {
-    crate::{diagnose, error::Error, opt::Opt},
+    crate::{diagnose, opt::Opt},
+    anyhow::Result,
     linefeed::{Completer, Completion, Interface, Prompter, ReadResult, Terminal},
     std::sync::Arc,
 };
 
-pub fn repl(opt: &Opt) -> Result<(), Error> {
+pub fn repl(opt: &Opt) -> Result<()> {
     let reader = Interface::new("arc-script")?;
     reader.set_prompt("λ ")?;
     reader.set_completer(Arc::new(Repl));

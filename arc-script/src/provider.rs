@@ -1,5 +1,6 @@
 use {
-    crate::{ast::*, error::Error},
+    crate::ast::*,
+    anyhow::Result,
     //     http::uri::Uri,
     pb_rs::types::*,
     reqwest::blocking,
@@ -12,7 +13,7 @@ impl Expr {
 }
 
 #[allow(unused)]
-fn parse_uri(url: &str) -> Result<(), Error> {
+fn parse_uri(url: &str) -> Result<()> {
     let tmp_dir = Builder::new().prefix("tmp").tempdir()?;
     let text = blocking::get(url)?.text()?;
     let path = tmp_dir.path().join(Path::new("tmp.proto"));
