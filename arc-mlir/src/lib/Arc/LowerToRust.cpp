@@ -47,7 +47,6 @@ struct ArcToRustLoweringPass : public LowerToRustBase<ArcToRustLoweringPass> {
                                   ConversionPatternRewriter &rewriter);
 
   static const std::string hexfCrate;
-  static const std::string hexfVersion;
 };
 } // end anonymous namespace.
 
@@ -64,6 +63,7 @@ protected:
   Type convertFloatType(FloatType type);
   Type convertFunctionType(FunctionType type);
   Type convertIntegerType(IntegerType type);
+  Type convertTensorType(RankedTensorType type);
   Type convertTupleType(TupleType type);
   Type convertStructType(arc::types::StructType type);
 };
@@ -147,9 +147,9 @@ private:
     Twine str = "hexf" + Twine(width) + "!(\"" + hex + "\")";
     std::string directive =
         "#[macro_use] extern crate " + ArcToRustLoweringPass::hexfCrate + ";";
-    ArcToRustLoweringPass::emitCrateDependency(
-        ArcToRustLoweringPass::hexfCrate, ArcToRustLoweringPass::hexfVersion,
-        op.getContext(), rewriter);
+    ArcToRustLoweringPass::emitCrateDependency(ArcToRustLoweringPass::hexfCrate,
+                                               rust::CrateVersions::hexf,
+                                               op.getContext(), rewriter);
     ArcToRustLoweringPass::emitModuleDirective(
         ArcToRustLoweringPass::hexfCrate, directive, op.getContext(), rewriter);
     return returnResult(op, rustTy, str.str(), rewriter);
@@ -515,6 +515,7 @@ RustTypeConverter::RustTypeConverter(MLIRContext *ctx)
   addConversion([&](FloatType type) { return convertFloatType(type); });
   addConversion([&](FunctionType type) { return convertFunctionType(type); });
   addConversion([&](IntegerType type) { return convertIntegerType(type); });
+  addConversion([&](RankedTensorType type) { return convertTensorType(type); });
   addConversion([&](TupleType type) { return convertTupleType(type); });
   addConversion(
       [&](arc::types::StructType type) { return convertStructType(type); });
@@ -522,6 +523,7 @@ RustTypeConverter::RustTypeConverter(MLIRContext *ctx)
   // RustType is legal, so add a pass-through conversion.
   addConversion([](rust::types::RustType type) { return type; });
   addConversion([](rust::types::RustStructType type) { return type; });
+  addConversion([](rust::types::RustTensorType type) { return type; });
   addConversion([](rust::types::RustTupleType type) { return type; });
 }
 
@@ -568,6 +570,11 @@ Type RustTypeConverter::convertStructType(arc::types::StructType type) {
     fields.push_back(std::make_pair(f.first, t));
   }
   return rust::types::RustStructType::get(Dialect, fields);
+}
+
+Type RustTypeConverter::convertTensorType(RankedTensorType type) {
+  Type t = convertType(type.getElementType());
+  return rust::types::RustTensorType::get(Dialect, t, type.getShape());
 }
 
 Type RustTypeConverter::convertTupleType(TupleType type) {
@@ -715,7 +722,6 @@ std::unique_ptr<OperationPass<ModuleOp>> arc::createLowerToRustPass() {
 }
 
 const std::string ArcToRustLoweringPass::hexfCrate = "hexf";
-const std::string ArcToRustLoweringPass::hexfVersion = "0.1.0";
 
 void ArcToRustLoweringPass::emitCrateDependency(
     StringRef crate, StringRef version, MLIRContext *ctx,

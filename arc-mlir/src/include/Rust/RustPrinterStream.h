@@ -146,6 +146,10 @@ public:
   void registerDependency(RustDependencyOp dep) {
     std::string key = dep.getCrate().cast<StringAttr>().getValue().str();
     std::string value = dep.getVersion().cast<StringAttr>().getValue().str();
+    registerDependency(key, value);
+  }
+
+  void registerDependency(std::string key, std::string value) {
     CrateDependencies[key] = value;
   }
 

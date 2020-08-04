@@ -44,6 +44,8 @@ static std::string getTypeString(Type t) {
     return t.cast<RustStructType>().getRustType();
   case types::RUST_TUPLE:
     return t.cast<RustTupleType>().getRustType();
+  case types::RUST_TENSOR:
+    return t.cast<RustTensorType>().getRustType();
   case types::RUST_TYPE: {
     RustType rt = t.cast<RustType>();
     return rt.getRustType().str();
@@ -243,6 +245,76 @@ RustStructTypeStorage::printAsRustNamedType(raw_ostream &os) const {
 
   os << "ArcStruct" << id;
   return os;
+}
+
+//===----------------------------------------------------------------------===//
+// RustTensorType
+//===----------------------------------------------------------------------===//
+
+struct RustTensorTypeStorage : public TypeStorage {
+  using KeyTy = std::pair<Type, ArrayRef<int64_t>>;
+
+  RustTensorTypeStorage(KeyTy key)
+      : elementTy(key.first), dimensions(key.second.begin(), key.second.end()) {
+  }
+
+  Type elementTy;
+  SmallVector<int64_t, 3> dimensions;
+
+  bool operator==(const KeyTy &key) const {
+    return key == KeyTy(elementTy, dimensions);
+  }
+
+  static llvm::hash_code hashKey(const KeyTy &key) {
+    return llvm::hash_combine(key);
+  }
+
+  static RustTensorTypeStorage *construct(TypeStorageAllocator &allocator,
+                                          const KeyTy &key) {
+    return new (allocator.allocate<RustTensorTypeStorage>())
+        RustTensorTypeStorage(key);
+  }
+
+  RustPrinterStream &printAsRust(RustPrinterStream &os) const;
+  void print(DialectAsmPrinter &os) const { os << getRustType(); }
+
+  std::string getRustType() const;
+};
+
+RustTensorType RustTensorType::get(RustDialect *dialect, Type elementTy,
+                                   ArrayRef<int64_t> dimensions) {
+  mlir::MLIRContext *ctx = elementTy.getContext();
+  return Base::get(ctx, rust::types::RUST_TENSOR, elementTy, dimensions);
+}
+
+void RustTensorType::print(DialectAsmPrinter &os) const {
+  getImpl()->print(os);
+}
+
+RustPrinterStream &RustTensorType::printAsRust(RustPrinterStream &os) const {
+  return getImpl()->printAsRust(os);
+}
+
+std::string RustTensorType::getRustType() const {
+  return getImpl()->getRustType();
+}
+
+std::string RustTensorTypeStorage::getRustType() const {
+  std::string str;
+  llvm::raw_string_ostream s(str);
+
+  s << "Rc<Array<" << getTypeString(elementTy) << ", Dim<[Ix; "
+    << dimensions.size() << "]>>>";
+  return s.str();
+}
+
+RustPrinterStream &
+RustTensorTypeStorage::printAsRust(RustPrinterStream &ps) const {
+  ps.registerDirective("rc-import", "use std::rc::Rc;\n");
+  ps.registerDirective("ndarray-import", "use ndarray::{Array,Dim,Ix};\n");
+  ps.registerDependency("ndarray", CrateVersions::ndarray);
+  ps << getRustType();
+  return ps;
 }
 
 //===----------------------------------------------------------------------===//
