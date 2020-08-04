@@ -1,6 +1,5 @@
 mod utils;
 
-use arc_script::pretty::Pretty;
 use arc_script::opt::*;
 use wasm_bindgen::prelude::*;
 
