@@ -143,6 +143,17 @@ private:
     char hex[256];
     f.convertToHexString(hex, 0, false, llvm::APFloat::rmNearestTiesToEven);
 
+    // APFloat::convertToHexString() omits the '.' if the mantissa is
+    // 0 which hexf doesn't like. To keep hexf happy we patch the
+    // string.
+    for (size_t i = 0; hex[i] && hex[i] != '.'; i++) {
+      if (hex[i] == 'p') {
+        memmove(hex + i + 1, hex + i, strlen(hex + i));
+        hex[i] = '.';
+        break;
+      }
+    }
+
     unsigned width = ty.getIntOrFloatBitWidth();
     Twine str = "hexf" + Twine(width) + "!(\"" + hex + "\")";
     std::string directive =
