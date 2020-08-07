@@ -463,6 +463,8 @@ LitKind: LitKind = ParseLit => {
 };
 
 ParseLit: CompilerResult<LitKind> = {
+  ParseI8   => <>.map(LitI8),
+  ParseI16  => <>.map(LitI16),
   ParseI32  => <>.map(LitI32),
   ParseI64  => <>.map(LitI64),
   ParseF32  => <>.map(LitF32),

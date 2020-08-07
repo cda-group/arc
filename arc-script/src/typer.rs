@@ -129,6 +129,8 @@ impl Expr {
             }
             Lit(l) => {
                 let kind = match l {
+                    LitI8(_) => Scalar(I8),
+                    LitI16(_) => Scalar(I16),
                     LitI32(_) => Scalar(I32),
                     LitI64(_) => Scalar(I64),
                     LitF32(_) => Scalar(F32),

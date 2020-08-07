@@ -140,6 +140,8 @@ impl Type {
 impl LitKind {
     fn to_lit(&self) -> String {
         match self {
+            LitI8(l) => l.to_string(),
+            LitI16(l) => l.to_string(),
             LitI32(l) => l.to_string(),
             LitI64(l) => l.to_string(),
             LitF32(l) => l.to_string(),

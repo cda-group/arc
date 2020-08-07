@@ -349,6 +349,8 @@ pub enum DimKind {
 #[derive(Debug, Copy, Clone, Educe)]
 #[educe(Hash)]
 pub enum LitKind {
+    LitI8(i8),
+    LitI16(i16),
     LitI32(i32),
     LitI64(i64),
     LitF32(#[educe(Hash(ignore))] f32),
@@ -361,6 +363,8 @@ pub enum LitKind {
 impl PartialEq for LitKind {
     fn eq(&self, other: &Self) -> bool {
         match (self, other) {
+            (LitI8(v1), LitI8(v2)) => v1 == v2,
+            (LitI16(v1), LitI16(v2)) => v1 == v2,
             (LitI32(v1), LitI32(v2)) => v1 == v2,
             (LitI64(v1), LitI64(v2)) => v1 == v2,
             (LitBool(v1), LitBool(v2)) => v1 == v2,
