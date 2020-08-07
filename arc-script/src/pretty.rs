@@ -17,15 +17,15 @@ pub trait Pretty {
             verbose: false,
             info,
         };
-        format!("{}\n", self.pretty(&pr))
+        self.pretty(&pr)
     }
     fn code(&self, verbose: bool, info: &Info) -> String {
         let pr = Printer {
-            tabs: 2,
+            tabs: 0,
             verbose,
             info,
         };
-        format!("{}\n", self.pretty(&pr))
+        self.pretty(&pr)
     }
 }
 
@@ -78,7 +78,7 @@ impl Pretty for Expr {
     fn pretty(&self, pr: &Printer) -> String {
         let expr = match &self.kind {
             If(c, t, e) => format!(
-                "if {c} {s0}then {s1}{t} {s0}else {s1}{e}",
+                "if {c}{s0}then{s1}{t}{s0}else{s1}{e}",
                 c = c.pretty(&pr.tab()),
                 t = t.pretty(&pr.tab().tab()),
                 e = e.pretty(&pr.tab().tab()),

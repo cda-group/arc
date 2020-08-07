@@ -101,6 +101,7 @@ criterion-cpu-time = "0.1.0"
 include_dir        = "0.5.0"
 proptest           = "0.9.6"
 honggfuzz          = "0.5.48"
+goldentests        = "0.3.6"
 
 # -- The development profile, used for `cargo build`.
 [profile.dev]

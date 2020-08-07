@@ -33,7 +33,7 @@ impl<'i> Script<'i> {
     }
 
     pub fn emit_to_stdout(&self) {
-        let writer = StandardStream::stderr(ColorChoice::Always);
+        let writer = StandardStream::stderr(ColorChoice::Never);
         let writer = &mut writer.lock();
         self.emit(writer).unwrap()
     }
