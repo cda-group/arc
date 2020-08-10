@@ -34,12 +34,13 @@ impl Pretty for Script<'_> {
         format!(
             "{funs}{s}{body}",
             funs = self
+                .ast
                 .fundefs
                 .iter()
                 .map(|fun| fun.pretty(pr))
                 .collect::<Vec<String>>()
                 .join("\n"),
-            body = self.body.pretty(pr),
+            body = self.ast.body.pretty(pr),
             s = pr.indent()
         )
     }

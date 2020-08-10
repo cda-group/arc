@@ -7,9 +7,12 @@ use ShapeKind::*;
 use TypeKind::*;
 use UnOpKind::*;
 
-impl Expr {
-    pub fn for_each_expr<F: FnMut(&mut Expr)>(&mut self, mut f: F) {
-        self.for_each_expr_rec(&mut f);
+impl SyntaxTree {
+    pub fn for_each_expr<F: FnMut(&mut Expr)>(&mut self, ref mut f: F) {
+        self.body.for_each_expr(f);
+        for fundef in self.fundefs.iter_mut() {
+            fundef.body.for_each_expr(f);
+        }
     }
 
     pub fn for_each_type<F: FnMut(&mut Type)>(&mut self, mut f: F, table: &mut SymbolTable) {
@@ -29,7 +32,7 @@ impl Expr {
                 if let Array(_, shape) = &mut ty.kind {
                     match &mut shape.kind {
                         Ranked(dims) => dims.iter_mut().for_each(|dim| match &mut dim.kind {
-                            Symbolic(expr) => expr.for_each_expr_rec(&mut f),
+                            Symbolic(expr) => expr.for_each_expr(&mut f),
                             Hole => {}
                         }),
                         Unranked => {}
@@ -39,34 +42,36 @@ impl Expr {
             table,
         )
     }
+}
 
-    fn for_each_expr_rec<F: FnMut(&mut Expr)>(&mut self, f: &mut F) {
+impl Expr {
+    fn for_each_expr<F: FnMut(&mut Expr)>(&mut self, f: &mut F) {
         f(self);
         match &mut self.kind {
             If(c, t, e) => {
-                c.for_each_expr_rec(f);
-                t.for_each_expr_rec(f);
-                e.for_each_expr_rec(f);
+                c.for_each_expr(f);
+                t.for_each_expr(f);
+                e.for_each_expr(f);
             }
             Match(e, cases) => {
-                e.for_each_expr_rec(f);
-                cases.iter_mut().for_each(|(_, e)| e.for_each_expr_rec(f));
+                e.for_each_expr(f);
+                cases.iter_mut().for_each(|(_, e)| e.for_each_expr(f));
             }
             Let(_, v, b) => {
-                v.for_each_expr_rec(f);
-                b.for_each_expr_rec(f);
+                v.for_each_expr(f);
+                b.for_each_expr(f);
             }
-            FunCall(_, ps) => ps.iter_mut().for_each(|p| p.for_each_expr_rec(f)),
-            ConsArray(ps) => ps.iter_mut().for_each(|p| p.for_each_expr_rec(f)),
-            ConsTuple(ps) => ps.iter_mut().for_each(|p| p.for_each_expr_rec(f)),
-            ConsStruct(fs) => fs.iter_mut().for_each(|(_, v)| v.for_each_expr_rec(f)),
+            FunCall(_, ps) => ps.iter_mut().for_each(|p| p.for_each_expr(f)),
+            ConsArray(ps) => ps.iter_mut().for_each(|p| p.for_each_expr(f)),
+            ConsTuple(ps) => ps.iter_mut().for_each(|p| p.for_each_expr(f)),
+            ConsStruct(fs) => fs.iter_mut().for_each(|(_, v)| v.for_each_expr(f)),
             Lit(_) => {}
             Var(_) => {}
             BinOp(l, _, r) => {
-                l.for_each_expr_rec(f);
-                r.for_each_expr_rec(f);
+                l.for_each_expr(f);
+                r.for_each_expr(f);
             }
-            UnOp(_, e) => e.for_each_expr_rec(f),
+            UnOp(_, e) => e.for_each_expr(f),
             Closure(..) => todo!(),
             ExprErr => {}
         }

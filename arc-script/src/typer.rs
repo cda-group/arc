@@ -104,17 +104,16 @@ impl UnifyValue for TypeKind {
 impl Script<'_> {
     pub fn infer(&mut self) {
         let typer = &mut Typer::new();
-        self.body.infer(typer, &mut self.info);
+        let info = &mut self.info;
+        self.ast
+            .for_each_type(|ty| ty.var = typer.fresh(), &mut info.table);
+        self.ast.for_each_expr(|expr| expr.constrain(typer, info));
+        self.ast
+            .for_each_type(|ty| ty.kind = typer.lookup(ty.var), &mut info.table);
     }
 }
 
 impl Expr {
-    pub fn infer(&mut self, typer: &mut Typer, info: &mut Info) {
-        self.for_each_type(|ty| ty.var = typer.fresh(), &mut info.table);
-        self.for_each_expr(|expr| expr.constrain(typer, info));
-        self.for_each_type(|ty| ty.kind = typer.lookup(ty.var), &mut info.table);
-    }
-
     fn constrain(&mut self, typer: &mut Typer, info: &mut Info) {
         let errors = &mut info.errors;
         match &self.kind {

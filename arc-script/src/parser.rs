@@ -26,8 +26,9 @@ impl Script<'_> {
             .map(|recovery| recovery.error)
             .map(Into::into)
             .collect();
+        let ast = SyntaxTree::new(taskdefs, tydefs, fundefs, body);
         let info = Info::new(table, errors, source);
-        Script::new(taskdefs, tydefs, fundefs, body, info)
+        Script::new(ast, info)
     }
 }
 

@@ -44,7 +44,7 @@ pub fn diagnose(source: &str, opt: &Opt) {
     if script.info.errors.is_empty() && !opt.debug {
         let mut w = std::io::stdout();
         let s = match opt {
-            _ if opt.mlir => script.body.mlir(&script.info),
+            _ if opt.mlir => script.ast.body.mlir(&script.info),
             _ => script.code(opt.verbose, &script.info),
         };
         writeln!(w, "{}", s).unwrap();
@@ -71,7 +71,7 @@ pub fn compile<'i>(source: &'i str, opt: &'i Opt) -> Script<'i> {
         println!("{}", script.code(opt.verbose, &script.info));
     }
 
-    script.body = script.body.into_ssa(&mut script.info);
+    script.ast.body = script.ast.body.into_ssa(&mut script.info);
     script.prune();
 
     if opt.debug {
@@ -82,7 +82,7 @@ pub fn compile<'i>(source: &'i str, opt: &'i Opt) -> Script<'i> {
 
         if script.info.errors.is_empty() {
             println!("=== MLIR");
-            println!("{}", script.body.mlir(&script.info));
+            println!("{}", script.ast.body.mlir(&script.info));
         }
     }
 

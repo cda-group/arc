@@ -19,11 +19,16 @@ pub type Field = SymbolKey;
 
 #[derive(Constructor)]
 pub struct Script<'i> {
+    pub ast: SyntaxTree,
+    pub info: Info<'i>,
+}
+
+#[derive(Constructor)]
+pub struct SyntaxTree {
     pub taskdefs: Vec<TaskDef>,
     pub tydefs: Vec<TypeDef>,
     pub fundefs: Vec<FunDef>,
     pub body: Expr,
-    pub info: Info<'i>,
 }
 
 #[derive(Constructor)]

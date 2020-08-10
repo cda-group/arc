@@ -7,11 +7,11 @@ use LitKind::*;
 impl<'i> Script<'i> {
     pub fn infer_shape(&mut self) {
         let Script {
-            ref mut body,
+            ref mut ast,
             info:
                 Info {
-                    ref mut table,
                     ref mut errors,
+                    ref mut table,
                     ..
                 },
             ..
@@ -19,13 +19,13 @@ impl<'i> Script<'i> {
         let config = Config::new();
         let ref context = Context::new(&config);
         let mut roots: Vec<Int> = Vec::new();
-        body.for_each_dim_expr(|expr| roots.push(expr.visit(context, errors)), table);
+        ast.for_each_dim_expr(|expr| roots.push(expr.visit(context, errors)), table);
         let solver = Solver::new(context);
         match solver.check() {
             SatResult::Sat => {
                 let ref mut model = solver.get_model();
                 let mut iter = roots.into_iter();
-                body.for_each_dim_expr(
+                ast.for_each_dim_expr(
                     |expr| {
                         let root = iter.next().unwrap();
                         (*expr).kind = match model.eval(&root) {
