@@ -335,6 +335,8 @@ static RustPrinterStream &writeRust(Operation &operation,
     op.writeRust(PS);
   else if (RustBinaryOp op = dyn_cast<RustBinaryOp>(operation))
     op.writeRust(PS);
+  else if (RustBinaryRcOp op = dyn_cast<RustBinaryRcOp>(operation))
+    op.writeRust(PS);
   else if (RustCallOp op = dyn_cast<RustCallOp>(operation))
     op.writeRust(PS);
   else if (RustCompOp op = dyn_cast<RustCompOp>(operation))
@@ -453,6 +455,12 @@ void RustBinaryOp::writeRust(RustPrinterStream &PS) {
   auto r = getResult();
   PS << "let " << r << ":" << r.getType() << " = " << CloneStart(r) << LHS()
      << " " << getOperator() << " " << RHS() << CloneEnd(r) << ";\n";
+}
+
+void RustBinaryRcOp::writeRust(RustPrinterStream &PS) {
+  auto r = getResult();
+  PS << "let " << r << ":" << r.getType() << " = Rc::new(&*" << LHS() << " "
+     << getOperator() << " &*" << RHS() << ");\n";
 }
 
 void RustCompOp::writeRust(RustPrinterStream &PS) {
