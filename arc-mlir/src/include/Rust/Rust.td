@@ -240,9 +240,9 @@ def Rust_RustMethodCallOp : Rust_Op<"method_call", []> {
 }
 
 def Rust_RustBinaryOp : Rust_Op<"binaryop", [SameTypeOperands]> {
-  let summary = "a Rust unary operation.";
+  let summary = "a Rust binary operation.";
   let description = [{
-    A Rust unary operation, the op attribute is the string representation of
+    A Rust binary operation, the op attribute is the string representation of
     the operator in Rust syntax.
   }];
 
