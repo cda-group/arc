@@ -1,0 +1,56 @@
+#[cfg(test)]
+mod tests {
+    use ndarray::{Array,Dim,Ix};
+    use std::rc::Rc;
+
+    #[test]
+    fn testf32() {
+	let a32:Rc<Array<f32, Dim<[Ix; 2]>>> =
+	    Rc::new(Array::from_shape_vec((2, 2),
+					  vec![1.0, 2.0, 3.0, 4.0]).unwrap());
+	let b32:Rc<Array<f32, Dim<[Ix; 2]>>> =
+	    Rc::new(Array::from_shape_vec((2, 2),
+					  vec![5.0, 6.0, 7.0, 8.0]).unwrap());
+	assert_eq!(*crate::addf_tensor2x2xf32(Rc::clone(&a32),
+					      Rc::clone(&b32)),
+		   &*a32 + &*b32);
+	assert_eq!(*crate::subf_tensor2x2xf32(Rc::clone(&a32),
+					      Rc::clone(&b32)),
+		   &*a32 - &*b32);
+	assert_eq!(*crate::mulf_tensor2x2xf32(Rc::clone(&a32),
+					      Rc::clone(&b32)),
+		   &*a32 * &*b32);
+	assert_eq!(*crate::divf_tensor2x2xf32(Rc::clone(&a32),
+					      Rc::clone(&b32)),
+		   &*a32 / &*b32);
+	assert_eq!(*crate::remf_tensor2x2xf32(Rc::clone(&a32),
+					      Rc::clone(&b32)),
+		   &*a32 % &*b32);
+    }
+
+    #[test]
+    fn testf64() {
+	let a64:Rc<Array<f64, Dim<[Ix; 2]>>> =
+	    Rc::new(Array::from_shape_vec((2, 2),
+					  vec![1.0, 2.0, 3.0, 4.0]).unwrap());
+	let b64:Rc<Array<f64, Dim<[Ix; 2]>>> =
+	    Rc::new(Array::from_shape_vec((2, 2),
+					  vec![5.0, 6.0, 7.0, 8.0]).unwrap());
+	assert_eq!(*crate::addf_tensor2x2xf64(Rc::clone(&a64),
+					      Rc::clone(&b64)),
+		   &*a64 + &*b64);
+	assert_eq!(*crate::subf_tensor2x2xf64(Rc::clone(&a64),
+					      Rc::clone(&b64)),
+		   &*a64 - &*b64);
+	assert_eq!(*crate::mulf_tensor2x2xf64(Rc::clone(&a64),
+					      Rc::clone(&b64)),
+		   &*a64 * &*b64);
+	assert_eq!(*crate::divf_tensor2x2xf64(Rc::clone(&a64),
+					      Rc::clone(&b64)),
+		   &*a64 / &*b64);
+	assert_eq!(*crate::remf_tensor2x2xf64(Rc::clone(&a64),
+					      Rc::clone(&b64)),
+		   &*a64 % &*b64);
+  }
+
+}
