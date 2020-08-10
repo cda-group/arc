@@ -38,7 +38,7 @@ using namespace types;
 // RustDialect
 //===----------------------------------------------------------------------===//
 
-RustDialect::RustDialect(mlir::MLIRContext *ctx) : mlir::Dialect("rust", ctx) {
+void RustDialect::initialize() {
   addOperations<
 #define GET_OP_LIST
 #include "Rust/Rust.cpp.inc"
@@ -47,6 +47,8 @@ RustDialect::RustDialect(mlir::MLIRContext *ctx) : mlir::Dialect("rust", ctx) {
   addTypes<RustStructType>();
   addTypes<RustTensorType>();
   addTypes<RustTupleType>();
+
+  auto ctx = getContext();
 
   floatTy = RustType::get(ctx, "f32");
   doubleTy = RustType::get(ctx, "f64");

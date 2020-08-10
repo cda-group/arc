@@ -76,8 +76,8 @@ bool isBuilderType(Type type) {
 //===----------------------------------------------------------------------===//
 
 struct BuilderTypeStorage : public TypeStorage {
-  BuilderTypeStorage(Type mergeTy, Type resultTy, unsigned subclassData = 0)
-      : TypeStorage(subclassData), mergeType(mergeTy), resultType(resultTy) {}
+  BuilderTypeStorage(Type mergeTy, Type resultTy)
+      : TypeStorage(), mergeType(mergeTy), resultType(resultTy) {}
 
   using KeyTy = std::pair<Type, Type>;
 
