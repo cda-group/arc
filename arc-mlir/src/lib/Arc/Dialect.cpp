@@ -40,7 +40,7 @@ using namespace types;
 // ArcDialect
 //===----------------------------------------------------------------------===//
 
-ArcDialect::ArcDialect(mlir::MLIRContext *ctx) : mlir::Dialect("arc", ctx) {
+void ArcDialect::initialize(void) {
   addOperations<
 #define GET_OP_LIST
 #include "Arc/Arc.cpp.inc"
