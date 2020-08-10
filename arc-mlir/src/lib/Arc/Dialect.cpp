@@ -252,6 +252,23 @@ LogicalResult MakeStructOp::customVerify() {
   return mlir::success();
 }
 
+LogicalResult MakeTensorOp::customVerify() {
+  auto Operation = this->getOperation();
+  auto NumOperands = Operation->getNumOperands();
+  auto TensorTy = Operation->getResult(0).getType().cast<RankedTensorType>();
+  ArrayRef<int64_t> Shape = TensorTy.getShape();
+
+  int64_t NoofElems = 1;
+
+  for (int64_t n : Shape)
+    NoofElems *= n;
+
+  if (NumOperands != NoofElems)
+    return emitOpError("wrong number of operands: expected ")
+           << NoofElems << " but found " << NumOperands << " operands";
+  return mlir::success();
+}
+
 LogicalResult MakeTupleOp::customVerify() {
   auto Operation = this->getOperation();
   auto NumOperands = Operation->getNumOperands();

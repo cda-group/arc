@@ -279,6 +279,8 @@ struct RustTensorTypeStorage : public TypeStorage {
   void print(DialectAsmPrinter &os) const { os << getRustType(); }
 
   std::string getRustType() const;
+
+  ArrayRef<int64_t> getDimensions() const { return dimensions; }
 };
 
 RustTensorType RustTensorType::get(RustDialect *dialect, Type elementTy,
@@ -315,6 +317,10 @@ RustTensorTypeStorage::printAsRust(RustPrinterStream &ps) const {
   ps.registerDependency("ndarray", CrateVersions::ndarray);
   ps << getRustType();
   return ps;
+}
+
+ArrayRef<int64_t> RustTensorType::getDimensions() const {
+  return getImpl()->getDimensions();
 }
 
 //===----------------------------------------------------------------------===//

@@ -349,6 +349,8 @@ static RustPrinterStream &writeRust(Operation &operation,
     op.writeRust(PS);
   else if (RustMethodCallOp op = dyn_cast<RustMethodCallOp>(operation))
     op.writeRust(PS);
+  else if (RustTensorOp op = dyn_cast<RustTensorOp>(operation))
+    op.writeRust(PS);
   else if (RustTupleOp op = dyn_cast<RustTupleOp>(operation))
     op.writeRust(PS);
   else if (RustDependencyOp op = dyn_cast<RustDependencyOp>(operation))
@@ -481,6 +483,22 @@ void RustIfOp::writeRust(RustPrinterStream &PS) {
 void RustBlockResultOp::writeRust(RustPrinterStream &PS) {
   auto r = getOperand();
   PS << CloneStart(r) << r << CloneEnd(r) << "\n";
+}
+
+void RustTensorOp::writeRust(RustPrinterStream &PS) {
+  auto r = getResult();
+  PS << "let " << r << ":" << r.getType()
+     << " = Rc::new(Array::from_shape_vec((";
+  RustTensorType t = result().getType().cast<RustTensorType>();
+  for (int64_t d : t.getDimensions())
+    PS << d << ", ";
+  PS << "), vec![";
+  auto args = values();
+  for (unsigned i = 0; i < args.size(); i++) {
+    auto v = args[i];
+    PS << v << ", ";
+  }
+  PS << "]).unwrap());\n";
 }
 
 void RustTupleOp::writeRust(RustPrinterStream &PS) {

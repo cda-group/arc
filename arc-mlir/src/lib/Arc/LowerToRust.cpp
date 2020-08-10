@@ -143,6 +143,17 @@ private:
     char hex[256];
     f.convertToHexString(hex, 0, false, llvm::APFloat::rmNearestTiesToEven);
 
+    // APFloat::convertToHexString() omits the '.' if the mantissa is
+    // 0 which hexf doesn't like. To keep hexf happy we patch the
+    // string.
+    for (size_t i = 0; hex[i] && hex[i] != '.'; i++) {
+      if (hex[i] == 'p') {
+        memmove(hex + i + 1, hex + i, strlen(hex + i));
+        hex[i] = '.';
+        break;
+      }
+    }
+
     unsigned width = ty.getIntOrFloatBitWidth();
     Twine str = "hexf" + Twine(width) + "!(\"" + hex + "\")";
     std::string directive =
@@ -304,6 +315,24 @@ struct MakeStructOpLowering : public ConversionPattern {
     MakeStructOp o = cast<MakeStructOp>(op);
     Type retTy = TypeConverter.convertType(o.getType());
     rewriter.replaceOpWithNewOp<rust::RustMakeStructOp>(op, retTy, operands);
+    return success();
+  };
+
+private:
+  RustTypeConverter &TypeConverter;
+};
+
+struct MakeTensorOpLowering : public ConversionPattern {
+  MakeTensorOpLowering(MLIRContext *ctx, RustTypeConverter &typeConverter)
+      : ConversionPattern(arc::MakeTensorOp::getOperationName(), 1, ctx),
+        TypeConverter(typeConverter) {}
+
+  LogicalResult
+  matchAndRewrite(Operation *op, ArrayRef<Value> operands,
+                  ConversionPatternRewriter &rewriter) const final {
+    MakeTensorOp o = cast<MakeTensorOp>(op);
+    Type retTy = TypeConverter.convertType(o.getType());
+    rewriter.replaceOpWithNewOp<rust::RustTensorOp>(op, retTy, operands);
     return success();
   };
 
@@ -709,6 +738,7 @@ void ArcToRustLoweringPass::runOnOperation() {
   patterns.insert<IndexTupleOpLowering>(&getContext(), typeConverter);
   patterns.insert<BlockResultOpLowering>(&getContext(), typeConverter);
   patterns.insert<MakeTupleOpLowering>(&getContext(), typeConverter);
+  patterns.insert<MakeTensorOpLowering>(&getContext(), typeConverter);
   patterns.insert<MakeStructOpLowering>(&getContext(), typeConverter);
   patterns.insert<StructAccessOpLowering>(&getContext(), typeConverter);
   patterns.insert<StdCallOpLowering>(&getContext(), typeConverter);
