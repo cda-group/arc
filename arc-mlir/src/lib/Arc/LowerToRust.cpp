@@ -383,8 +383,12 @@ struct ArcIntArithmeticOpLowering : public ConversionPattern {
                   ConversionPatternRewriter &rewriter) const final {
     T o = cast<T>(op);
     Type rustTy = TypeConverter.convertType(o.getType());
-    rewriter.replaceOpWithNewOp<rust::RustBinaryOp>(op, rustTy, opStr[arithOp],
-                                                    operands[0], operands[1]);
+    if (rustTy.getKind() == rust::types::RUST_TENSOR)
+      rewriter.replaceOpWithNewOp<rust::RustBinaryRcOp>(
+          op, rustTy, opStr[arithOp], operands[0], operands[1]);
+    else
+      rewriter.replaceOpWithNewOp<rust::RustBinaryOp>(
+          op, rustTy, opStr[arithOp], operands[0], operands[1]);
     return success();
   };
 
