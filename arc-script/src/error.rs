@@ -1,11 +1,14 @@
 use {
     crate::{ast::*, info::*, pretty::*},
     codespan::Span,
-    codespan_reporting::term::termcolor::WriteColor,
     codespan_reporting::{
         diagnostic::{self, Label},
         files,
-        term::{self, termcolor::*},
+        term::{
+            self,
+            termcolor::{Buffer, ColorChoice, StandardStream, WriteColor},
+            Config,
+        },
     },
     std::io,
     std::str,
@@ -22,7 +25,7 @@ impl<'i> Script<'i> {
         W: io::Write + WriteColor,
     {
         let file = &SimpleFile::new("input", self.info.source);
-        let config = &codespan_reporting::term::Config::default();
+        let config = &Config::default();
         self.info
             .errors
             .iter()
@@ -36,11 +39,11 @@ impl<'i> Script<'i> {
         self.emit(writer).unwrap()
     }
 
-    pub fn emit_as_str(self) -> String {
-        let mut writer = codespan_reporting::term::termcolor::Buffer::ansi();
+    pub fn emit_as_str(&self) -> String {
+        let mut writer = Buffer::ansi();
         self.emit(&mut writer).unwrap();
         let writer = writer.into_inner();
-        format!("\n{}", std::str::from_utf8(&writer).unwrap().to_owned())
+        format!("{}", str::from_utf8(&writer).unwrap().to_owned())
     }
 }
 

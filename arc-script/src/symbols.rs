@@ -56,9 +56,7 @@ pub struct SymbolTable {
 }
 
 impl SymbolTable {
-    pub fn new() -> Self {
-        Self { decls: Vec::new() }
-    }
+    pub fn new() -> Self { Self { decls: Vec::new() } }
 
     pub fn insert(&mut self, decl: Decl) -> Ident {
         let id = Ident(self.decls.len());
@@ -73,13 +71,9 @@ impl SymbolTable {
         id
     }
 
-    pub fn get_mut(&mut self, ident: &Ident) -> &mut Decl {
-        self.decls.get_mut(ident.0).unwrap()
-    }
+    pub fn get_mut(&mut self, ident: &Ident) -> &mut Decl { self.decls.get_mut(ident.0).unwrap() }
 
-    pub fn get(&self, ident: &Ident) -> &Decl {
-        self.decls.get(ident.0).unwrap()
-    }
+    pub fn get(&self, ident: &Ident) -> &Decl { self.decls.get(ident.0).unwrap() }
 
     pub fn debug(&self) {
         for (i, decl) in self.decls.iter().enumerate() {
@@ -113,9 +107,7 @@ impl<'i> SymbolStack<'i> {
         })
     }
 
-    pub fn bind_local(&mut self, name: Symbol<'i>, id: Ident) {
-        self.locals().push((name, id))
-    }
+    pub fn bind_local(&mut self, name: Symbol<'i>, id: Ident) { self.locals().push((name, id)) }
 
     pub fn bind_global(&mut self, name: Symbol<'i>, ident: Ident) -> Result<(), CompilerError> {
         if self.globals().iter().any(|(needle, _)| name == *needle) {
@@ -126,19 +118,11 @@ impl<'i> SymbolStack<'i> {
         }
     }
 
-    pub fn globals(&mut self) -> &mut Vec<(Symbol<'i>, Ident)> {
-        self.scopes.first_mut().unwrap()
-    }
+    pub fn globals(&mut self) -> &mut Vec<(Symbol<'i>, Ident)> { self.scopes.first_mut().unwrap() }
 
-    pub fn locals(&mut self) -> &mut Vec<(Symbol<'i>, Ident)> {
-        self.scopes.last_mut().unwrap()
-    }
+    pub fn locals(&mut self) -> &mut Vec<(Symbol<'i>, Ident)> { self.scopes.last_mut().unwrap() }
 
-    pub fn push_scope(&mut self) {
-        self.scopes.push(Vec::new())
-    }
+    pub fn push_scope(&mut self) { self.scopes.push(Vec::new()) }
 
-    pub fn pop_scope(&mut self) {
-        self.scopes.pop();
-    }
+    pub fn pop_scope(&mut self) { self.scopes.pop(); }
 }

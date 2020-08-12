@@ -41,5 +41,5 @@ jobs:
     - name: cargo-clippy
       run: cargo clippy --all-features
 
-    - name: cargo-fmt
-      run: cargo fmt -- --check
+#    - name: cargo-fmt
+#      run: cargo fmt -- -v --check

@@ -27,12 +27,7 @@ impl Script<'_> {
             .map(Into::into)
             .collect();
         let info = Info::new(table, errors, source);
-        Script {
-            tydefs,
-            fundefs,
-            body,
-            info,
-        }
+        Script::new(tydefs, fundefs, body, info)
     }
 }
 
