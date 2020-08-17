@@ -3,7 +3,6 @@ use {
         ast::Script,
         error::{Diagnostic, SimpleFile},
     },
-    codespan::ByteIndex,
     codespan_lsp::byte_index_to_position,
     codespan_reporting::diagnostic::{Label, Severity},
     tower_lsp::lsp_types as lsp,
@@ -30,10 +29,8 @@ impl<'i> Script<'i> {
                         .into_iter()
                         .map(|Label { range, message, .. }| lsp::Diagnostic {
                             range: lsp::Range::new(
-                                byte_index_to_position(&files, id, ByteIndex(range.start as u32))
-                                    .unwrap(),
-                                byte_index_to_position(&files, id, ByteIndex(range.end as u32))
-                                    .unwrap(),
+                                byte_index_to_position(&files, id, range.start).unwrap(),
+                                byte_index_to_position(&files, id, range.end).unwrap(),
                             ),
                             severity: Some(match severity {
                                 Severity::Bug => lsp::DiagnosticSeverity::Error,

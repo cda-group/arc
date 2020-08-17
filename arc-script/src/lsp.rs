@@ -8,19 +8,21 @@ use {
     },
 };
 
-#[derive(Debug, Default)]
-struct Backend;
+#[derive(Debug)]
+struct Backend {
+    client: Client,
+}
 
 #[tower_lsp::async_trait]
 impl LanguageServer for Backend {
-    async fn initialize(&self, _: &Client, _: InitializeParams) -> Result<InitializeResult> {
+    async fn initialize(&self, _: InitializeParams) -> Result<InitializeResult> {
         Ok(InitializeResult {
             server_info: None,
             capabilities: ServerCapabilities {
                 text_document_sync: Some(TextDocumentSyncCapability::Kind(
                     TextDocumentSyncKind::Full,
                 )),
-                hover_provider: Some(true),
+                hover_provider: Some(HoverProviderCapability::Simple(true)),
                 completion_provider: Some(CompletionOptions {
                     resolve_provider: Some(true),
                     trigger_characters: Some(vec![
@@ -100,65 +102,64 @@ impl LanguageServer for Backend {
         }
     }
 
-    async fn initialized(&self, client: &Client, _: InitializedParams) {
-        client.log_message(MessageType::Info, "Arc-Script LSP - ONLINE!");
+    async fn initialized(&self, _: InitializedParams) {
+        self.client
+            .log_message(MessageType::Info, "Arc-Script LSP - ONLINE!");
     }
 
     async fn shutdown(&self) -> Result<()> {
         Ok(())
     }
 
-    async fn did_change_workspace_folders(
-        &self,
-        client: &Client,
-        _: DidChangeWorkspaceFoldersParams,
-    ) {
-        client.log_message(MessageType::Info, "workspace folders changed!");
+    async fn did_change_workspace_folders(&self, _: DidChangeWorkspaceFoldersParams) {
+        self.client
+            .log_message(MessageType::Info, "workspace folders changed!");
     }
 
-    async fn did_change_configuration(&self, client: &Client, _: DidChangeConfigurationParams) {
-        client.log_message(MessageType::Info, "configuration changed!");
+    async fn did_change_configuration(&self, _: DidChangeConfigurationParams) {
+        self.client
+            .log_message(MessageType::Info, "configuration changed!");
     }
 
-    async fn did_change_watched_files(&self, client: &Client, _: DidChangeWatchedFilesParams) {
-        client.log_message(MessageType::Info, "watched files have changed!");
+    async fn did_change_watched_files(&self, _: DidChangeWatchedFilesParams) {
+        self.client
+            .log_message(MessageType::Info, "watched files have changed!");
     }
 
-    async fn execute_command(
-        &self,
-        client: &Client,
-        _: ExecuteCommandParams,
-    ) -> Result<Option<Value>> {
-        client.log_message(MessageType::Info, "command executed!");
+    async fn execute_command(&self, _: ExecuteCommandParams) -> Result<Option<Value>> {
+        self.client
+            .log_message(MessageType::Info, "command executed!");
 
-        match client.apply_edit(WorkspaceEdit::default()).await {
-            Ok(res) if res.applied => client.log_message(MessageType::Info, "edit applied"),
-            Ok(_) => client.log_message(MessageType::Info, "edit not applied"),
-            Err(err) => client.log_message(MessageType::Error, err),
+        match self.client.apply_edit(WorkspaceEdit::default()).await {
+            Ok(res) if res.applied => self.client.log_message(MessageType::Info, "edit applied"),
+            Ok(_) => self
+                .client
+                .log_message(MessageType::Info, "edit not applied"),
+            Err(err) => self.client.log_message(MessageType::Error, err),
         }
 
         Ok(None)
     }
 
-    async fn did_open(&self, client: &Client, _: DidOpenTextDocumentParams) {
-        client.log_message(MessageType::Info, "file opened!");
+    async fn did_open(&self, _: DidOpenTextDocumentParams) {
+        self.client.log_message(MessageType::Info, "file opened!");
     }
 
-    async fn did_change(&self, client: &Client, params: DidChangeTextDocumentParams) {
-        client.log_message(MessageType::Info, "file changed!");
+    async fn did_change(&self, params: DidChangeTextDocumentParams) {
+        self.client.log_message(MessageType::Info, "file changed!");
         report(
-            client,
+            &self.client,
             &params.text_document.uri,
             &params.content_changes[0].text,
         );
     }
 
-    async fn did_save(&self, client: &Client, _: DidSaveTextDocumentParams) {
-        client.log_message(MessageType::Info, "file saved!");
+    async fn did_save(&self, _: DidSaveTextDocumentParams) {
+        self.client.log_message(MessageType::Info, "file saved!");
     }
 
-    async fn did_close(&self, client: &Client, _: DidCloseTextDocumentParams) {
-        client.log_message(MessageType::Info, "file closed!");
+    async fn did_close(&self, _: DidCloseTextDocumentParams) {
+        self.client.log_message(MessageType::Info, "file closed!");
     }
 }
 
@@ -179,7 +180,7 @@ pub async fn lsp(_opt: &Opt) {
     let stdin = tokio::io::stdin();
     let stdout = tokio::io::stdout();
 
-    let (service, messages) = LspService::new(Backend::default());
+    let (service, messages) = LspService::new(|client| Backend { client });
     Server::new(stdin, stdout)
         .interleave(messages)
         .serve(service)

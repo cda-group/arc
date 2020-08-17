@@ -53,9 +53,9 @@ impl Expr {
                 let l = l.visit(context, errors);
                 let r = r.visit(context, errors);
                 match op {
-                    Add => l.add(&[&r]),
-                    Sub => l.sub(&[&r]),
-                    Mul => l.mul(&[&r]),
+                    Add => Int::add(context, &[&l, &r]),
+                    Sub => Int::sub(context, &[&l, &r]),
+                    Mul => Int::mul(context, &[&l, &r]),
                     Div => l.div(&r),
                     _ => Int::new_const(context, "unknown"),
                 }
