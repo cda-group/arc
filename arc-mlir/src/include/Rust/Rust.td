@@ -240,10 +240,31 @@ def Rust_RustMethodCallOp : Rust_Op<"method_call", []> {
 }
 
 def Rust_RustBinaryOp : Rust_Op<"binaryop", [SameTypeOperands]> {
-  let summary = "a Rust unary operation.";
+  let summary = "a Rust binary operation.";
   let description = [{
-    A Rust unary operation, the op attribute is the string representation of
+    A Rust binary operation, the op attribute is the string representation of
     the operator in Rust syntax.
+  }];
+
+  let arguments = (ins StrAttr : $op, AnyRustType : $LHS, AnyRustType : $RHS);
+  let results = (outs AnyRustType);
+
+  let extraClassDeclaration = [{
+    StringRef getOperator() {
+      return getAttr("op").dyn_cast<StringAttr>().getValue();
+    }
+
+    // Write this operation as Rust code to the stream
+    void writeRust(RustPrinterStream &);
+  }];
+}
+
+def Rust_RustBinaryRcOp : Rust_Op<"binaryrcop", [SameTypeOperands]> {
+  let summary = "a Rust binary operation operating on a Rc value.";
+  let description = [{
+    A Rust binary operation, the op attribute is the string representation of
+    the operator in Rust syntax. The operands will be dereferenced and the
+    result wrapped in a Rc.
   }];
 
   let arguments = (ins StrAttr : $op, AnyRustType : $LHS, AnyRustType : $RHS);

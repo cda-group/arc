@@ -383,8 +383,12 @@ struct ArcIntArithmeticOpLowering : public ConversionPattern {
                   ConversionPatternRewriter &rewriter) const final {
     T o = cast<T>(op);
     Type rustTy = TypeConverter.convertType(o.getType());
-    rewriter.replaceOpWithNewOp<rust::RustBinaryOp>(op, rustTy, opStr[arithOp],
-                                                    operands[0], operands[1]);
+    if (rustTy.getKind() == rust::types::RUST_TENSOR)
+      rewriter.replaceOpWithNewOp<rust::RustBinaryRcOp>(
+          op, rustTy, opStr[arithOp], operands[0], operands[1]);
+    else
+      rewriter.replaceOpWithNewOp<rust::RustBinaryOp>(
+          op, rustTy, opStr[arithOp], operands[0], operands[1]);
     return success();
   };
 
@@ -432,6 +436,35 @@ struct ArcCmpIOpLowering : public ConversionPattern {
 
 private:
   RustTypeConverter &TypeConverter;
+};
+
+namespace StdArithmeticOp {
+typedef enum { AddFOp = 0, DivFOp, MulFOp, SubFOp, RemFOp, LAST } Op;
+};
+
+template <class T, StdArithmeticOp::Op arithOp>
+struct StdArithmeticOpLowering : public ConversionPattern {
+  StdArithmeticOpLowering(MLIRContext *ctx, RustTypeConverter &typeConverter)
+      : ConversionPattern(T::getOperationName(), 1, ctx),
+        TypeConverter(typeConverter) {}
+
+  LogicalResult
+  matchAndRewrite(Operation *op, ArrayRef<Value> operands,
+                  ConversionPatternRewriter &rewriter) const final {
+    T o = cast<T>(op);
+    Type rustTy = TypeConverter.convertType(o.getType());
+    if (rustTy.getKind() == rust::types::RUST_TENSOR)
+      rewriter.replaceOpWithNewOp<rust::RustBinaryRcOp>(
+          op, rustTy, opStr[arithOp], operands[0], operands[1]);
+    else
+      rewriter.replaceOpWithNewOp<rust::RustBinaryOp>(
+          op, rustTy, opStr[arithOp], operands[0], operands[1]);
+    return success();
+  };
+
+private:
+  RustTypeConverter &TypeConverter;
+  const char *opStr[StdArithmeticOp::LAST] = {"+", "/", "*", "-", "%"};
 };
 
 struct StdCmpFOpLowering : public ConversionPattern {
@@ -702,6 +735,22 @@ void ArcToRustLoweringPass::runOnOperation() {
   patterns.insert<
       ArcIntArithmeticOpLowering<arc::XOrOp, ArcIntArithmeticOp::XOrOp>>(
       &getContext(), typeConverter);
+
+  patterns
+      .insert<StdArithmeticOpLowering<mlir::AddFOp, StdArithmeticOp::AddFOp>>(
+          &getContext(), typeConverter);
+  patterns
+      .insert<StdArithmeticOpLowering<mlir::DivFOp, StdArithmeticOp::DivFOp>>(
+          &getContext(), typeConverter);
+  patterns
+      .insert<StdArithmeticOpLowering<mlir::MulFOp, StdArithmeticOp::MulFOp>>(
+          &getContext(), typeConverter);
+  patterns
+      .insert<StdArithmeticOpLowering<mlir::SubFOp, StdArithmeticOp::SubFOp>>(
+          &getContext(), typeConverter);
+  patterns
+      .insert<StdArithmeticOpLowering<mlir::RemFOp, StdArithmeticOp::RemFOp>>(
+          &getContext(), typeConverter);
 
   patterns.insert<ArcCmpIOpLowering>(&getContext(), typeConverter);
   patterns.insert<StdCmpFOpLowering>(&getContext(), typeConverter);
