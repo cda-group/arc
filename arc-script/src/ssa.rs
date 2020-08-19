@@ -7,9 +7,26 @@ trait Ssa {
     fn flatten(self, info: &mut Info) -> (Context, Self);
 }
 
+impl Script<'_> {
+    pub fn into_ssa(mut self) -> Self {
+        let info = &mut self.info;
+        self.ast.body = self.ast.body.into_ssa(info);
+        self.ast.fundefs = self
+            .ast
+            .fundefs
+            .drain(..)
+            .map(|mut fundef| {
+                fundef.body = fundef.body.into_ssa(info);
+                fundef
+            })
+            .collect();
+        self
+    }
+}
+
 impl Expr {
     /// Reverse-folds a vec of SSA values into an AST of let-expressions
-    pub fn into_ssa(self, info: &mut Info) -> Expr {
+    pub fn into_ssa(self, info: &mut Info) -> Self {
         let (ctx, var) = self.flatten(info);
         ctx.into_iter().rev().fold(var, |acc, (id, expr)| Expr {
             ty: acc.ty.clone(),

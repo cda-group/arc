@@ -71,7 +71,7 @@ pub fn compile<'i>(source: &'i str, opt: &'i Opt) -> Script<'i> {
         println!("{}", script.code(opt.verbose, &script.info));
     }
 
-    script.ast.body = script.ast.body.into_ssa(&mut script.info);
+    script = script.into_ssa();
     script.prune();
 
     if opt.debug {
