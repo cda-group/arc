@@ -13,15 +13,15 @@ use {
 
 pub type Context = UnificationTable<InPlace<TypeVar>>;
 
+pub struct Typer {
+    context: Context,
+}
+
 impl Typer {
     pub fn new() -> Typer {
         let context = Context::new();
         Typer { context }
     }
-}
-
-pub struct Typer {
-    context: Context,
 }
 
 impl Typer {
@@ -53,6 +53,7 @@ impl Typer {
         }
     }
 
+
     fn fresh(&mut self) -> TypeVar {
         self.context.new_key(Unknown)
     }
@@ -80,9 +81,9 @@ impl UnifyKey for TypeVar {
 }
 
 impl UnifyValue for TypeKind {
-    type Error = (TypeKind, TypeKind);
+    type Error = (Self, Self);
 
-    fn unify_values(a: &TypeKind, b: &TypeKind) -> Result<TypeKind, (TypeKind, TypeKind)> {
+    fn unify_values(a: &Self, b: &Self) -> Result<Self, (Self, Self)> {
         match (a.clone(), b.clone()) {
             (Unknown, Unknown) => Ok(Unknown),
             (x, Unknown) | (Unknown, x) => Ok(x),
