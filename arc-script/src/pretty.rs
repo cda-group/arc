@@ -51,7 +51,16 @@ impl Pretty for FunDef {
         format!(
             "{s0}fun {id}({params}){s1}{body}{s0}end{s0}",
             id = self.id.pretty(pr),
-            params = self.params.pretty(pr),
+            params = self
+                .params
+                .iter()
+                .map(|param| format!(
+                    "{}: {}",
+                    param.pretty(pr),
+                    pr.info.table.get_decl(param).ty.pretty(pr)
+                ))
+                .collect::<Vec<_>>()
+                .join(", "),
             body = self.body.pretty(&pr.tab()),
             s0 = pr.indent(),
             s1 = pr.tab().indent(),
@@ -210,7 +219,7 @@ impl Pretty for TypeKind {
             ),
             Tuple(tys) => format!("({})", tys.pretty(pr)),
             Optional(ty) => format!("{}?", ty.pretty(pr)),
-            Fun(_, _) => "".to_owned(),
+            Fun(args, ty) => format!("({}) -> {}", args.pretty(pr), ty.pretty(pr)),
             Unknown => "?".to_string(),
             TypeErr => "☇".to_string(),
         }
