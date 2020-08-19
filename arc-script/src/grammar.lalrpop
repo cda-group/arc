@@ -300,7 +300,7 @@ Params: Vec<Ident> = Vec<Param> => {
     .collect::<Vec<_>>()
 };
 
-Param = <VarSymbol> <OptionalType>;
+Param = <VarSymbol> ":" <Type>;
 
 FunDecl: (Ident, Vec<Ident>) = "fun" <FunSymbol> <Params> ")" => {
   let (fun_sym, param_ids) = (<>);
