@@ -9,19 +9,24 @@ use UnOpKind::*;
 
 impl SyntaxTree {
     pub fn for_each_expr<F: FnMut(&mut Expr)>(&mut self, ref mut f: F) {
+        self.for_each_fun(|fun| fun.body.for_each_expr(f));
         self.body.for_each_expr(f);
-        for fundef in self.fundefs.iter_mut() {
-            fundef.body.for_each_expr(f);
-        }
+    }
+
+    pub fn for_each_fun<F: FnMut(&mut FunDef)>(&mut self, ref mut f: F) {
+        self.fundefs.iter_mut().for_each(|fundef| f(fundef));
+    }
+
+    pub fn for_each_decl<F: FnMut(&mut Decl)>(&mut self, ref mut f: F, table: &mut SymbolTable) {
+        table.decls.iter_mut().for_each(f);
     }
 
     pub fn for_each_type<F: FnMut(&mut Type)>(&mut self, mut f: F, table: &mut SymbolTable) {
+        self.for_each_decl(|decl| decl.ty.for_each_type(&mut f), table);
         self.for_each_expr(|e| {
             e.ty.for_each_type_rec(&mut f);
-            match &mut e.kind {
-                Let(id, _, _) => table.get_decl_mut(id).ty.for_each_type_rec(&mut f),
-                UnOp(Cast(ty), _) => ty.for_each_type_rec(&mut f),
-                _ => {}
+            if let UnOp(Cast(ty), _) = &mut e.kind {
+                ty.for_each_type_rec(&mut f)
             }
         })
     }
