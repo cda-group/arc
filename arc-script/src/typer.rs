@@ -53,7 +53,6 @@ impl Typer {
         }
     }
 
-
     fn fresh(&mut self) -> TypeVar {
         self.context.new_key(Unknown)
     }
@@ -96,6 +95,13 @@ impl UnifyValue for TypeKind {
                 (Ranked(_), Unranked) | (Unranked, Ranked(_)) => Ok(Array(ty2, sh1)),
                 (Unranked, Unranked) => Ok(Array(ty2, sh1)),
             },
+            (Fun(mut args1, mut ret1), Fun(args2, ret2)) if args1.len() == args2.len() => {
+                for (arg1, arg2) in args1.iter_mut().zip(args2.into_iter()) {
+                    arg1.kind = TypeKind::unify_values(&arg1.kind, &arg2.kind)?;
+                }
+                ret1.kind = TypeKind::unify_values(&ret1.kind, &ret2.kind)?;
+                Ok(Fun(args1, ret1))
+            }
             (a, b) if a == b => Ok(a),
             (a, b) => Err((a, b)),
         }
@@ -106,11 +112,25 @@ impl Script<'_> {
     pub fn infer(&mut self) {
         let typer = &mut Typer::new();
         let info = &mut self.info;
+        self.ast.for_each_fun(|fun| fun.constrain(typer, info));
         self.ast
             .for_each_type(|ty| ty.var = typer.fresh(), &mut info.table);
         self.ast.for_each_expr(|expr| expr.constrain(typer, info));
         self.ast
             .for_each_type(|ty| ty.kind = typer.lookup(ty.var), &mut info.table);
+    }
+}
+
+impl FunDef {
+    fn constrain(&mut self, typer: &mut Typer, info: &mut Info) {
+        let errors = &mut info.errors;
+        if let Fun(arg_tys, ret_ty) = &info.table.get_decl(&self.id).ty.kind {
+            typer.unify_var_var(&self.body.ty, ret_ty, self.body.span, errors);
+            for (arg_ty, param) in arg_tys.iter().zip(&self.params) {
+                let param_ty = &info.table.get_decl(&param).ty;
+                typer.unify_var_var(param_ty, arg_ty, self.body.span, errors);
+            }
+        }
     }
 }
 
@@ -191,7 +211,14 @@ impl Expr {
             }
             Closure(..) => todo!(),
             Match(_, _) => {}
-            FunCall(_, _) => unimplemented!(),
+            FunCall(id, args) => {
+                let ty = &info.table.get_decl(id).ty;
+                let fun = Fun(
+                    args.iter().map(|arg| arg.ty.clone()).collect(),
+                    Box::new(self.ty.clone()),
+                );
+                typer.unify_var_val(&ty, &fun, self.span, errors);
+            }
             ExprErr => {}
         }
     }
