@@ -70,16 +70,12 @@ Type ArcDialect::parseType(DialectAsmParser &parser) const {
 //===----------------------------------------------------------------------===//
 
 void ArcDialect::printType(Type type, DialectAsmPrinter &os) const {
-  switch (type.getKind()) {
-  default:
+  if (auto t = type.dyn_cast<AppenderType>())
+    t.print(os);
+  else if (auto t = type.dyn_cast<StructType>())
+    t.print(os);
+  else
     llvm_unreachable("Unhandled Arc type");
-  case Appender:
-    type.cast<AppenderType>().print(os);
-    break;
-  case Struct:
-    type.cast<StructType>().print(os);
-    break;
-  }
 }
 
 //===----------------------------------------------------------------------===//
@@ -128,14 +124,12 @@ static LogicalResult verify(arc::ConstantIntOp constOp) {
   // ODS already generates checks to make sure the result type is
   // valid. We just need to additionally check that the value's
   // attribute type is consistent with the result type.
-  switch (value.getKind()) {
-  case StandardAttributes::Integer: {
+  if (value.isa<IntegerAttr>()) {
     if (valueType != opType)
       return constOp.emitOpError("result type (")
              << opType << ") does not match value type (" << valueType << ")";
     return success();
-  } break;
-  default:
+  } else {
     return constOp.emitOpError("cannot have value of type ") << valueType;
   }
 
