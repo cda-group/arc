@@ -10,7 +10,7 @@ use DeclKind::*;
 /// The symbol-table is constructed during parsing (i.e., while building the AST). To this end,
 /// parsing of functions, let-expressions, and type-aliases must be separated into a declaration
 /// and definition step. For example (see `grammar.lalrpop`):
-/// ```ignore
+/// ```text
 /// LetDecl: (Ident, Box<Expr>) = <VarSymbol> <OptionalType> "=" <Box<Arg>> => {
 ///   let (sym, ty, arg) = (<>);
 ///   stack.push_scope();
