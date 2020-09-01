@@ -238,7 +238,7 @@ impl Type {
     }
 }
 
-#[derive(Debug, Eq, Clone)]
+#[derive(Debug, Eq, Clone, PartialEq)]
 pub enum TypeKind {
     Scalar(ScalarKind),
     Optional(TypeVar),
@@ -248,16 +248,6 @@ pub enum TypeKind {
     Fun(Vec<TypeVar>, TypeVar),
     Unknown,
     TypeErr,
-}
-
-impl PartialEq for TypeKind {
-    fn eq(&self, other: &Self) -> bool {
-        match (self, other) {
-            (Unknown, _) | (_, Unknown) => true,
-            (TypeErr, _) | (_, TypeErr) => true,
-            (a, b) => a == b,
-        }
-    }
 }
 
 #[derive(Debug, Eq, PartialEq, Clone)]

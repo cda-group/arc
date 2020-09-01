@@ -142,18 +142,22 @@ impl UnifyValue for Type {
     /// all unification needs to be "top-level".
     fn unify_values(ty1: &Self, ty2: &Self) -> Result<Self, Self::Error> {
         if let (Array(_, sh1), Array(_, sh2)) = (&ty1.kind, &ty2.kind) {
-            // An experiment to see if array types can be unified
             match (&sh1.dims, &sh2.dims) {
                 (d1, _) if d1.iter().all(|dim| dim.is_val()) => Ok(ty1.clone()),
                 (_, d2) if d2.iter().all(|dim| dim.is_val()) => Ok(ty2.clone()),
                 _ => Err((ty1.clone(), ty2.clone())),
             }
         } else {
-            if ty1 == ty2 {
-                // NOTE: We assume the second type is the bound one
-                Ok(ty2.clone())
-            } else {
-                Err((ty1.clone(), ty2.clone()))
+            match (&ty1.kind, &ty2.kind) {
+                (Unknown, _) | (TypeErr, _) => Ok(ty2.clone()),
+                (_, Unknown) | (_, TypeErr) => Ok(ty1.clone()),
+                (a, b) => {
+                    if a == b {
+                        Ok(ty1.clone())
+                    } else {
+                        Err((ty1.clone(), ty2.clone()))
+                    }
+                }
             }
         }
     }
@@ -177,7 +181,8 @@ impl Typer {
                 }
                 self.unify(*ret1, *ret2, span, errors);
             }
-            _ => {}
+            // This seems a bit out of place, but it is needed to ensure that monotypes unify
+            _ => self.unify_var_var(tv1, tv2, span, errors),
         }
     }
 }
@@ -222,48 +227,46 @@ impl Expr {
     ) {
         match &self.kind {
             Let(id, v, b) => {
-                let ty = table.get_decl(id).tv;
-                typer.unify(v.tv, ty, self.span, errors);
+                let tv = table.get_decl(id).tv;
+                typer.unify(v.tv, tv, self.span, errors);
                 typer.unify(self.tv, b.tv, self.span, errors);
             }
             Var(id) => {
-                let ty = table.get_decl(id).tv;
-                typer.unify(self.tv, ty, self.span, errors);
+                let tv = table.get_decl(id).tv;
+                typer.unify(self.tv, tv, self.span, errors);
             }
             Lit(l) => {
                 let kind = match l {
-                    LitI8(_) => Scalar(I8),
-                    LitI16(_) => Scalar(I16),
-                    LitI32(_) => Scalar(I32),
-                    LitI64(_) => Scalar(I64),
-                    LitF32(_) => Scalar(F32),
-                    LitF64(_) => Scalar(F64),
-                    LitBool(_) => Scalar(Bool),
+                    LitI8(_) => I8,
+                    LitI16(_) => I16,
+                    LitI32(_) => I32,
+                    LitI64(_) => I64,
+                    LitF32(_) => F32,
+                    LitF64(_) => F64,
+                    LitBool(_) => Bool,
                     LitTime(_) => todo!(),
                     LitErr => return,
                 };
-                typer.unify_var_val(self.tv, kind, self.span, errors);
+                typer.unify_var_val(self.tv, Scalar(kind), self.span, errors);
             }
             ConsArray(args) => {
                 let elem_tv = typer.fresh();
                 let dim = Dim::from(DimVal(args.len() as i32));
                 args.iter()
                     .for_each(|e| typer.unify(elem_tv, e.tv, self.span, errors));
-                let kind = Array(elem_tv, Shape::from(vec![dim]));
-                typer.unify_var_val(self.tv, kind, self.span, errors);
+                let shape = Shape::from(vec![dim]);
+                typer.unify_var_val(self.tv, Array(elem_tv, shape), self.span, errors);
             }
             ConsStruct(fields) => {
-                let kind = Struct(
-                    fields
-                        .iter()
-                        .map(|(sym, e)| (*sym, e.tv.clone()))
-                        .collect::<Vec<_>>(),
-                );
-                typer.unify_var_val(self.tv, kind, self.span, errors);
+                let fields = fields
+                    .iter()
+                    .map(|(sym, e)| (*sym, e.tv))
+                    .collect::<Vec<_>>();
+                typer.unify_var_val(self.tv, Struct(fields), self.span, errors);
             }
             ConsTuple(args) => {
-                let tys = args.iter().map(|arg| arg.tv.clone()).collect();
-                typer.unify_var_val(self.tv, Tuple(tys), self.span, errors);
+                let tvs = args.iter().map(|arg| arg.tv).collect();
+                typer.unify_var_val(self.tv, Tuple(tvs), self.span, errors);
             }
             BinOp(l, kind, r) => {
                 typer.unify(l.tv, r.tv, self.span, errors);
@@ -293,7 +296,7 @@ impl Expr {
             Match(_, _) => {}
             FunCall(id, args) => {
                 let tv = table.get_decl(id).tv;
-                let fun = Fun(args.iter().map(|arg| arg.tv.clone()).collect(), self.tv);
+                let fun = Fun(args.iter().map(|arg| arg.tv).collect(), self.tv);
                 typer.unify_var_val(tv, fun, self.span, errors);
             }
             ExprErr => {}
