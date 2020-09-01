@@ -1,10 +1,9 @@
-use crate::info::Info;
+use crate::{info::Info, typer::Typer};
 use chrono::Duration;
 use lasso::Spur;
 use DimKind::*;
 use ExprKind::*;
 use LitKind::*;
-use ShapeKind::*;
 use TypeKind::*;
 use {codespan::Span, derive_more::Constructor};
 
@@ -41,7 +40,7 @@ pub struct FunDef {
 #[derive(Constructor)]
 pub struct TypeDef {
     pub id: Ident,
-    pub ty: Type,
+    pub tv: TypeVar,
 }
 
 /// A task is a generic low-level primitive which resembles a node in the dataflow graph.
@@ -91,7 +90,7 @@ pub struct TaskDef {
 #[derive(Constructor)]
 pub struct Decl {
     pub sym: SymbolKey,
-    pub ty: Type,
+    pub tv: TypeVar,
     pub kind: DeclKind,
 }
 
@@ -102,28 +101,22 @@ pub enum DeclKind {
     TaskDecl(Vec<Ident>),
 }
 
-#[derive(Debug, Constructor, Clone)]
+#[derive(Debug, Clone, Constructor)]
 pub struct Expr {
     pub kind: ExprKind,
-    pub ty: Type,
+    pub tv: TypeVar,
     pub span: Span,
 }
 
-impl From<Spanned<ExprKind>> for Expr {
-    fn from(Spanned(l, kind, r): Spanned<ExprKind>) -> Expr {
+impl Expr {
+    pub fn from(Spanned(l, kind, r): Spanned<ExprKind>, typer: &mut Typer) -> Expr {
         let span = Span::new(l as u32, r as u32);
-        let ty = Type {
-            var: TypeVar(0),
-            kind: Unknown,
-            span: None,
-        };
-        Expr { kind, ty, span }
+        let tv = typer.fresh();
+        Expr { kind, tv, span }
     }
-}
-
-impl Default for Expr {
-    fn default() -> Expr {
-        Expr::new(ExprErr, Type::new(), Span::new(0, 0))
+    /// Moves an expression out of its mutable reference, replacing it with an error expression
+    pub fn take(&mut self) -> Expr {
+        std::mem::replace(self, Expr::new(ExprErr, TypeVar(0), Span::new(0, 0)))
     }
 }
 
@@ -191,13 +184,13 @@ pub enum BIFKind {
     Dataset(Box<Expr>),
     Fold(Box<Expr>, Box<Expr>),
     Fmap(Box<Expr>),
-    Imap(Type, Box<Expr>),
+    Imap(TypeVar, Box<Expr>),
 }
 
 #[derive(Debug, Clone)]
 pub enum UnOpKind {
     Not,
-    Cast(Type),
+    Cast(TypeVar),
     MethodCall(Ident, Vec<Expr>),
     Access(Field),
     Project(Index),
@@ -207,24 +200,25 @@ pub enum UnOpKind {
 #[derive(Debug, Eq, PartialEq, Copy, Clone)]
 pub struct TypeVar(pub u32);
 
-#[derive(Debug, Eq, Clone)]
+#[derive(Debug, Eq, Clone, Educe)]
+#[educe(PartialEq)]
 pub struct Type {
     pub kind: TypeKind,
-    pub var: TypeVar,
+    #[educe(PartialEq(ignore))]
     pub span: Option<Span>,
-}
-
-impl PartialEq for Type {
-    fn eq(&self, other: &Self) -> bool {
-        self.kind == other.kind
-    }
 }
 
 impl From<Spanned<TypeKind>> for Type {
     fn from(Spanned(l, kind, r): Spanned<TypeKind>) -> Type {
         let span = Some(Span::new(l as u32, r as u32));
-        let var = TypeVar(0);
-        Type { kind, var, span }
+        Type { kind, span }
+    }
+}
+
+impl From<TypeKind> for Type {
+    fn from(kind: TypeKind) -> Type {
+        let span = None;
+        Type { kind, span }
     }
 }
 
@@ -232,31 +226,38 @@ impl Type {
     pub fn new() -> Type {
         let kind = Unknown;
         let span = None;
-        let var = TypeVar(0);
-        Type { kind, var, span }
+        Type { kind, span }
     }
 
-    pub fn fun(arity: usize) -> Type {
-        let kind = Fun(
-            (0..arity).map(|_| Type::new()).collect(),
-            Box::new(Type::new()),
-        );
+    pub fn fun(arity: usize, typer: &mut Typer) -> Type {
+        let input = (0..arity).map(|_| typer.fresh()).collect();
+        let output = typer.fresh();
+        let kind = Fun(input, output);
         let span = None;
-        let var = TypeVar(0);
-        Type { kind, var, span }
+        Type { kind, span }
     }
 }
 
-#[derive(Debug, Eq, PartialEq, Clone)]
+#[derive(Debug, Eq, Clone)]
 pub enum TypeKind {
     Scalar(ScalarKind),
-    Optional(Box<Type>),
-    Struct(Vec<(SymbolKey, Type)>),
-    Array(Box<Type>, Shape),
-    Tuple(Vec<Type>),
-    Fun(Vec<Type>, Box<Type>),
+    Optional(TypeVar),
+    Struct(Vec<(SymbolKey, TypeVar)>),
+    Array(TypeVar, Shape),
+    Tuple(Vec<TypeVar>),
+    Fun(Vec<TypeVar>, TypeVar),
     Unknown,
     TypeErr,
+}
+
+impl PartialEq for TypeKind {
+    fn eq(&self, other: &Self) -> bool {
+        match (self, other) {
+            (Unknown, _) | (_, Unknown) => true,
+            (TypeErr, _) | (_, TypeErr) => true,
+            (a, b) => a == b,
+        }
+    }
 }
 
 #[derive(Debug, Eq, PartialEq, Clone)]
@@ -272,67 +273,79 @@ pub enum ScalarKind {
     Str,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Eq, Clone, Educe)]
+#[educe(PartialEq)]
 pub struct Shape {
-    pub kind: ShapeKind,
+    pub dims: Vec<Dim>,
+    #[educe(PartialEq(ignore))]
     pub span: Option<Span>,
 }
 
-impl Shape {
-    pub fn simple(size: i32, span: Span) -> Shape {
-        Shape {
-            kind: Ranked(vec![Dim::known(size, span)]),
-            span: None,
-        }
-    }
-
-    pub fn unranked() -> Shape {
-        Shape {
-            kind: Unranked,
-            span: None,
-        }
-    }
-}
-
-impl From<Spanned<ShapeKind>> for Shape {
-    fn from(Spanned(l, kind, r): Spanned<ShapeKind>) -> Shape {
+impl From<Spanned<Vec<Dim>>> for Shape {
+    fn from(Spanned(l, dims, r): Spanned<Vec<Dim>>) -> Shape {
         let span = Some(Span::new(l as u32, r as u32));
-        Shape { kind, span }
+        Shape { dims, span }
     }
 }
 
-impl PartialEq for Shape {
-    fn eq(&self, other: &Self) -> bool {
-        match (&self.kind, &other.kind) {
-            (Unranked, _) | (_, Unranked) => true,
-            (Ranked(d1), Ranked(d2)) => d1.len() == d2.len(),
-        }
+impl From<Vec<Dim>> for Shape {
+    fn from(dims: Vec<Dim>) -> Shape {
+        let span = None;
+        Shape { dims, span }
     }
 }
 
-impl Eq for Shape {}
-
-#[derive(Debug, Clone)]
-pub enum ShapeKind {
-    Unranked,
-    Ranked(Vec<Dim>),
-}
-
-#[derive(Debug, Clone)]
+#[derive(Debug, Eq, Clone, Educe)]
+#[educe(PartialEq)]
 pub struct Dim {
     pub kind: DimKind,
+    #[educe(PartialEq(ignore))]
     pub span: Option<Span>,
+}
+
+impl From<DimKind> for Dim {
+    fn from(kind: DimKind) -> Dim {
+        let span = None;
+        Dim { kind, span }
+    }
+}
+
+impl Dim {
+    pub fn is_val(&self) -> bool {
+        if let DimVal(_) = self.kind {
+            true
+        } else {
+            false
+        }
+    }
+}
+
+/// An expression solveable by the z3 SMT solver
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum DimKind {
+    DimVar(i32),
+    DimVal(i32),
+    DimOp(Box<Dim>, DimOpKind, Box<Dim>),
+    DimErr,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum DimOpKind {
+    DimAdd,
+    DimSub,
+    DimMul,
+    DimDiv,
 }
 
 impl Dim {
     pub fn known(size: i32, span: Span) -> Dim {
-        let kind = Symbolic(Expr::new(Lit(LitI32(size)), Type::new(), span));
+        let kind = DimVal(size);
         let span = Some(span);
         Dim { kind, span }
     }
 
     pub fn new() -> Dim {
-        let kind = Hole;
+        let kind = DimVar(0);
         let span = None;
         Dim { kind, span }
     }
@@ -343,12 +356,6 @@ impl From<Spanned<DimKind>> for Dim {
         let span = Some(Span::new(l as u32, r as u32));
         Dim { kind, span }
     }
-}
-
-#[derive(Debug, Clone)]
-pub enum DimKind {
-    Symbolic(Expr),
-    Hole,
 }
 
 #[derive(Debug, Copy, Clone, Educe)]
@@ -377,4 +384,5 @@ impl PartialEq for LitKind {
         }
     }
 }
+
 impl Eq for LitKind {}

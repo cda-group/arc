@@ -74,8 +74,8 @@ pub enum CompilerError {
         expected: Vec<String>,
     },
     TypeMismatch {
-        lhs: TypeKind,
-        rhs: TypeKind,
+        lhs: Type,
+        rhs: Type,
         span: Span,
     },
     VarNotFound {

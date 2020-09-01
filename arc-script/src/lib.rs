@@ -24,8 +24,8 @@ mod mlir;
 mod info;
 mod symbols;
 
-#[cfg(feature = "shaper")]
-mod shaper;
+// #[cfg(feature = "shaper")]
+// mod shaper;
 #[cfg(feature = "lsp")]
 mod completer;
 #[cfg(feature = "lsp")]

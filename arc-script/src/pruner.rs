@@ -9,16 +9,13 @@ impl Script<'_> {
 }
 
 impl Expr {
-    /// Prune `let id1 = id2 in body` expressions
-    /// Unwrapping is OK since let-binding variables are
-    /// guaranteed to have a uid, expression-variables must be
-    /// checked, since they might not be bound.
+    /// Remove `let id1 = id2 in body` expressions
     pub fn prune_rec(&mut self, aliases: &mut HashMap<Ident, Ident>) {
         match &mut self.kind {
             Let(let_id, v, b) => {
                 if let Var(var_id) = &mut v.kind {
                     aliases.insert(*let_id, *var_id);
-                    *self = std::mem::take(b);
+                    *self = b.take();
                     self.prune_rec(aliases);
                 }
             }

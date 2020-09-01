@@ -1,11 +1,11 @@
 use crate::{ast::*, info::Info, utils::Printer};
 use BinOpKind::*;
 use DimKind::*;
+use DimOpKind::*;
 use ExprKind::*;
 use LitKind::*;
 use PatternKind::*;
 use ScalarKind::*;
-use ShapeKind::*;
 use TypeKind::*;
 use UnOpKind::*;
 
@@ -57,7 +57,7 @@ impl Pretty for FunDef {
                 .map(|param| format!(
                     "{}: {}",
                     param.pretty(pr),
-                    pr.info.table.get_decl(param).ty.pretty(pr)
+                    pr.info.table.get_decl(param).tv.pretty(pr)
                 ))
                 .collect::<Vec<_>>()
                 .join(", "),
@@ -114,7 +114,7 @@ impl Pretty for Expr {
             Let(id, e, b) => format!(
                 "{id}: {ty} = {e}{s}{b}",
                 id = id.pretty(pr),
-                ty = pr.info.table.get_decl(id).ty.pretty(pr),
+                ty = pr.info.table.get_decl(id).tv.pretty(pr),
                 e = e.pretty(pr),
                 b = b.pretty(pr),
                 s = pr.indent(),
@@ -138,7 +138,7 @@ impl Pretty for Expr {
             ExprErr => "☇".to_string(),
         };
         if pr.verbose {
-            format!("({expr}):{ty}", expr = expr, ty = self.ty.pretty(pr))
+            format!("({expr}):{ty}", expr = expr, ty = self.tv.pretty(pr))
         } else {
             expr
         }
@@ -193,15 +193,16 @@ impl Pretty for BinOpKind {
     }
 }
 
-impl Pretty for Type {
+impl Pretty for TypeVar {
     fn pretty(&self, pr: &Printer) -> String {
-        self.kind.pretty(pr)
+        let ty = { pr.info.typer.borrow_mut().lookup(*self) };
+        ty.pretty(pr)
     }
 }
 
-impl Pretty for TypeKind {
+impl Pretty for Type {
     fn pretty(&self, pr: &Printer) -> String {
-        match &self {
+        match &self.kind {
             Scalar(I8) => "i8".to_string(),
             Scalar(I16) => "i16".to_string(),
             Scalar(I32) => "i32".to_string(),
@@ -246,18 +247,32 @@ impl Pretty for SymbolKey {
 
 impl Pretty for Shape {
     fn pretty(&self, pr: &Printer) -> String {
-        match &self.kind {
-            Unranked => "*".to_owned(),
-            Ranked(dims) => dims.pretty(pr),
-        }
+        self.dims
+            .iter()
+            .map(|dim| dim.pretty(pr))
+            .collect::<Vec<String>>()
+            .join(",")
     }
 }
 
 impl Pretty for Dim {
     fn pretty(&self, pr: &Printer) -> String {
         match &self.kind {
-            Hole => "?".to_owned(),
-            Symbolic(expr) => expr.pretty(pr),
+            DimVar(_) => "?".to_owned(),
+            DimVal(v) => format!("{}", v),
+            DimOp(l, op, r) => format!("{}{}{}", l.pretty(pr), op.pretty(pr), r.pretty(pr)),
+            DimErr => "☇".to_string(),
+        }
+    }
+}
+
+impl Pretty for DimOpKind {
+    fn pretty(&self, _: &Printer) -> String {
+        match self {
+            DimAdd => "+".to_owned(),
+            DimSub => "-".to_owned(),
+            DimMul => "*".to_owned(),
+            DimDiv => "/".to_owned(),
         }
     }
 }

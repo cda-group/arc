@@ -1,37 +1,38 @@
 use crate::{ast::*, error::*, info::Info};
 use z3::{ast::Int, Config, Context, SatResult, Solver};
-use BinOpKind::*;
+use DimKind::*;
+use DimOpKind::*;
 use ExprKind::*;
-use LitKind::*;
 
 impl<'i> Script<'i> {
     pub fn infer_shape(&mut self) {
         let Script {
-            ref mut ast,
+            ast,
             info:
                 Info {
-                    ref mut errors,
-                    ref mut table,
+                    errors,
+                    table,
+                    typer,
                     ..
                 },
             ..
         } = self;
         let config = Config::new();
-        let ref context = Context::new(&config);
-        let mut roots: Vec<Int> = Vec::new();
-        ast.for_each_dim_expr(|expr| roots.push(expr.visit(context, errors)), table);
-        let solver = Solver::new(context);
+        let ref ctx = Context::new(&config);
+        let mut roots = Vec::<Int>::new();
+        ast.for_each_dim(|expr| roots.push(expr.constrain(ctx, errors)), table);
+        let solver = Solver::new(ctx);
         match solver.check() {
             SatResult::Sat => {
-                let ref mut model = solver.get_model();
+                let model = &mut solver.get_model();
                 let mut iter = roots.into_iter();
-                ast.for_each_dim_expr(
+                ast.for_each_dim(
                     |expr| {
                         let root = iter.next().unwrap();
-                        (*expr).kind = match model.eval(&root) {
-                            Some(val) => Lit(LitI64(val.as_i64().unwrap())),
-                            None => ExprErr,
-                        }
+                        (*expr).kind = model
+                            .eval(&root)
+                            .map(|v| DimVal(v.as_i64().unwrap() as i32))
+                            .unwrap_or(DimErr);
                     },
                     table,
                 );
@@ -42,30 +43,22 @@ impl<'i> Script<'i> {
     }
 }
 
-impl Expr {
-    pub fn visit<'ctx>(
-        &mut self,
-        context: &'ctx Context,
-        errors: &mut Vec<CompilerError>,
-    ) -> Int<'ctx> {
-        match &mut self.kind {
-            BinOp(l, op, r) => {
-                let l = l.visit(context, errors);
-                let r = r.visit(context, errors);
+impl Dim {
+    fn constrain_shape<'i>(&self, ctx: &'i Context, errors: &mut Vec<CompilerError>) -> Int<'i> {
+        match &self.kind {
+            DimOp(l, op, r) => {
+                let l = l.constrain_shape(ctx, errors);
+                let r = r.constrain_shape(ctx, errors);
                 match op {
-                    Add => Int::add(context, &[&l, &r]),
-                    Sub => Int::sub(context, &[&l, &r]),
-                    Mul => Int::mul(context, &[&l, &r]),
-                    Div => l.div(&r),
-                    _ => Int::new_const(context, "unknown"),
+                    DimAdd => Int::add(ctx, &[&l, &r]),
+                    DimSub => Int::sub(ctx, &[&l, &r]),
+                    DimMul => Int::mul(ctx, &[&l, &r]),
+                    DimDiv => l.div(&r),
                 }
             }
-            Var(id) => Int::new_const(context, id.0.to_string()),
-            Lit(LitI32(val)) => Int::from_i64(context, *val as i64),
-            _ => {
-                errors.push(CompilerError::DisallowedDimExpr { span: self.span });
-                Int::new_const(context, "unknown")
-            }
+            DimVar(x) => Int::new_const(ctx, *x as u32),
+            DimVal(v) => Int::from_i64(ctx, *v as i64),
+            DimErr => Int::new_const(ctx, "unknown"),
         }
     }
 }

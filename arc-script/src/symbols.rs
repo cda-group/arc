@@ -85,10 +85,10 @@ impl SymbolTable {
         self.intern.resolve(symbol)
     }
 
-    pub fn genvar(&mut self, ty: Type) -> Ident {
+    pub fn genvar(&mut self, tv: TypeVar) -> Ident {
         let id = Ident(self.decls.len());
         let key = self.intern.get_or_intern(&format!("x{}", id.0));
-        self.decls.push(Decl::new(key, ty, VarDecl));
+        self.decls.push(Decl::new(key, tv, VarDecl));
         id
     }
 

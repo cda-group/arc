@@ -29,7 +29,7 @@ impl Expr {
     pub fn into_ssa(self, info: &mut Info) -> Self {
         let (ctx, var) = self.flatten(info);
         ctx.into_iter().rev().fold(var, |acc, (id, expr)| Expr {
-            ty: acc.ty.clone(),
+            tv: acc.tv,
             span: acc.span,
             kind: Let(id, Box::new(expr), Box::new(acc)),
         })
@@ -39,7 +39,7 @@ impl Expr {
 impl Ssa for Expr {
     /// Turns an expression into a flat list of assignments and a variable
     fn flatten(self, info: &mut Info) -> (Context, Self) {
-        let Self { kind, ty, span } = self;
+        let Self { kind, tv, span } = self;
         let (mut ctx, kind) = match kind {
             BinOp(l, op, r) => {
                 let ((lc, l), (rc, r)) = (l.flatten(info), r.flatten(info));
@@ -74,12 +74,12 @@ impl Ssa for Expr {
                 let (ac, a) = a.flatten(info);
                 (ac, ConsStruct(a))
             }
-            kind @ Var(_) => return (vec![], Expr { kind, ty, span }),
+            kind @ Var(_) => return (vec![], Expr { kind, tv, span }),
             kind => (vec![], kind),
         };
-        let id = info.table.genvar(ty.clone());
-        let var = Self::new(Var(id), ty.clone(), span);
-        let expr = Self { kind, ty, span };
+        let id = info.table.genvar(tv);
+        let var = Self::new(Var(id), tv, span);
+        let expr = Self::new(kind, tv, span);
         ctx.push((id, expr));
         (ctx, var)
     }
@@ -89,8 +89,7 @@ impl Expr {
     /// Returns true if an expression has no subexpressions
     fn is_imm(&self) -> bool {
         match &self.kind {
-            Var(_) => true,
-            Lit(_) => true,
+            Var(_) | Lit(_) => true,
             _ => false,
         }
     }

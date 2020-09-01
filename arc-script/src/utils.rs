@@ -1,11 +1,7 @@
 use crate::ast::*;
 use crate::info::Info;
 use crate::symbols::SymbolTable;
-use DimKind::*;
 use ExprKind::*;
-use ShapeKind::*;
-use TypeKind::*;
-use UnOpKind::*;
 
 impl SyntaxTree {
     pub fn for_each_expr<F: FnMut(&mut Expr)>(&mut self, ref mut f: F) {
@@ -19,33 +15,6 @@ impl SyntaxTree {
 
     pub fn for_each_decl<F: FnMut(&mut Decl)>(&mut self, ref mut f: F, table: &mut SymbolTable) {
         table.decls.iter_mut().for_each(f);
-    }
-
-    pub fn for_each_type<F: FnMut(&mut Type)>(&mut self, mut f: F, table: &mut SymbolTable) {
-        self.for_each_decl(|decl| decl.ty.for_each_type(&mut f), table);
-        self.for_each_expr(|e| {
-            e.ty.for_each_type_rec(&mut f);
-            if let UnOp(Cast(ty), _) = &mut e.kind {
-                ty.for_each_type_rec(&mut f)
-            }
-        })
-    }
-
-    pub fn for_each_dim_expr<F: FnMut(&mut Expr)>(&mut self, mut f: F, table: &mut SymbolTable) {
-        self.for_each_type(
-            |ty| {
-                if let Array(_, shape) = &mut ty.kind {
-                    match &mut shape.kind {
-                        Ranked(dims) => dims.iter_mut().for_each(|dim| match &mut dim.kind {
-                            Symbolic(expr) => expr.for_each_expr(&mut f),
-                            Hole => {}
-                        }),
-                        Unranked => {}
-                    }
-                }
-            },
-            table,
-        )
     }
 }
 
@@ -79,28 +48,6 @@ impl Expr {
             UnOp(_, e) => e.for_each_expr(f),
             Closure(..) => todo!(),
             ExprErr => {}
-        }
-    }
-}
-impl Type {
-    pub fn for_each_type<F: FnMut(&mut Type)>(&mut self, mut f: F) {
-        self.for_each_type_rec(&mut f);
-    }
-
-    fn for_each_type_rec<F: FnMut(&mut Type)>(&mut self, f: &mut F) {
-        f(self);
-        match &mut self.kind {
-            Array(ty, _) => ty.for_each_type_rec(f),
-            Struct(fs) => fs.iter_mut().for_each(|(_, ty)| ty.for_each_type_rec(f)),
-            Tuple(tys) => tys.iter_mut().for_each(|ty| ty.for_each_type_rec(f)),
-            Optional(ty) => ty.for_each_type_rec(f),
-            Scalar(_) => {}
-            Unknown => {}
-            Fun(tys, ty) => {
-                tys.iter_mut().for_each(|ty| ty.for_each_type_rec(f));
-                ty.for_each_type_rec(f);
-            }
-            TypeErr => {}
         }
     }
 }

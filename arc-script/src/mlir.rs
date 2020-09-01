@@ -1,4 +1,5 @@
-use crate::{ast::*, info::Info, utils::Printer};
+use crate::{ast::*, info::Info, typer::*, utils::Printer};
+use std::cell::RefMut;
 use BinOpKind::*;
 use ExprKind::*;
 use LitKind::*;
@@ -23,7 +24,7 @@ impl Expr {
         let main = format!(
             r#"{s}"std.func"() ({{{region}}}) {{ sym_name = "main", type = () -> {ty} }}"#,
             region = self.to_region("std.return", &pr.tab()),
-            ty = self.ty.to_ty(),
+            ty = self.tv.to_ty(pr),
             s = pr.indent(),
         );
         format!(
@@ -47,7 +48,7 @@ impl Expr {
                 r#"{s0}"{t}"({var}) : ({ty}) -> (){s1}"#,
                 t = terminator,
                 var = self.to_var(),
-                ty = self.ty.to_ty(),
+                ty = self.tv.to_ty(pr),
                 s0 = pr.indent(),
                 s1 = pr.untab().indent(),
             ),
@@ -59,7 +60,7 @@ impl Expr {
         match &self.kind {
             Lit(kind) => {
                 let lit = kind.to_lit();
-                let ty = self.ty.to_ty();
+                let ty = self.tv.to_ty(pr);
                 format!(
                     r#""std.constant"() {{ value = {lit} : {ty} }}: () -> {ty}"#,
                     lit = lit,
@@ -69,7 +70,8 @@ impl Expr {
             BinOp(l, op, r) => {
                 let l = l.to_var();
                 let r = r.to_var();
-                match (op, &self.ty.kind) {
+                let ty = pr.info.typer.borrow_mut().lookup(self.tv);
+                match (op, ty.kind) {
                     (Add, Scalar(I32)) => {
                         format!(r#""std.addi"({}, {}) : (i32, i32) -> i32"#, l, r)
                     }
@@ -84,8 +86,8 @@ impl Expr {
                 var = c.to_var(),
                 t = t.to_region("arc.yield", &pr.tab()),
                 e = e.to_region("arc.yield", &pr.tab()),
-                arg_ty = c.ty.to_ty(),
-                out_ty = e.ty.to_ty(),
+                arg_ty = c.tv.to_ty(pr),
+                out_ty = e.tv.to_ty(pr),
             ),
             UnOp(..) => todo!(),
             ConsArray(..) => todo!(),
@@ -114,9 +116,13 @@ impl Ident {
     }
 }
 
-impl Type {
-    fn to_ty(&self) -> String {
-        match &self.kind {
+impl TypeVar {
+    fn to_ty(self, pr: &Printer) -> String {
+        let typer = pr.info.typer.borrow_mut();
+        self.to_ty_rec(typer)
+    }
+    fn to_ty_rec(self, mut typer: RefMut<Typer>) -> String {
+        match typer.lookup(self).kind {
             Scalar(I8) => "i8".to_owned(),
             Scalar(I16) => "i16".to_owned(),
             Scalar(I32) => "i32".to_owned(),

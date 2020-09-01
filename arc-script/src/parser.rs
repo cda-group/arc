@@ -1,11 +1,11 @@
 use {
-    crate::{ast::*, error::*, info::Info, symbols::*},
+    crate::{ast::*, error::*, info::Info, symbols::*, typer::Typer},
     codespan::Span,
     grammar::*,
     lalrpop_util::lalrpop_mod,
     num_traits::Num,
     regex::Regex,
-    std::{fmt::Display, str::FromStr},
+    std::{fmt::Display, str::FromStr, cell::RefCell},
 };
 
 lalrpop_mod!(#[allow(clippy::all)] pub grammar);
@@ -18,8 +18,9 @@ impl Script<'_> {
         let mut errors = Vec::new();
         let mut table = SymbolTable::new();
         let mut stack = SymbolStack::new();
+        let mut typer = Typer::new();
         let (taskdefs, tydefs, fundefs, body) = ScriptParser::new()
-            .parse(&mut errors, &mut stack, &mut table, source)
+            .parse(&mut errors, &mut stack, &mut table, &mut typer, source)
             .unwrap();
         let errors = errors
             .into_iter()
@@ -27,7 +28,7 @@ impl Script<'_> {
             .map(Into::into)
             .collect();
         let ast = SyntaxTree::new(taskdefs, tydefs, fundefs, body);
-        let info = Info::new(table, errors, source);
+        let info = Info::new(table, errors, source, RefCell::new(typer));
         Script::new(ast, info)
     }
 }

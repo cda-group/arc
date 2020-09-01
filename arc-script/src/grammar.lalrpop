@@ -7,7 +7,7 @@ use {
   UnOpKind::*,
   DeclKind::*,
   DimKind::*,
-  ShapeKind::*,
+  DimOpKind::*,
   ScalarKind::*,
   TypeKind::*,
   PatternKind::*,
@@ -23,6 +23,7 @@ grammar<'a>(
   errors: &'a mut Vec<ErrorRecovery<usize, Token<'input>, CompilerError>>,
   stack: &'a mut SymbolStack,
   table: &'a mut SymbolTable,
+  typer: &'a mut Typer,
 );
 
 extern {
@@ -124,12 +125,12 @@ match {
 //=============================================================================
 // Syntactic sugar for expressing different units of time
 //=============================================================================
-  r"[0-9]+s"                                                       => TSec,
-  r"[0-9]+us"                                                      => TMSec,
-  r"[0-9]+ms"                                                      => TUSec,
-  r"[0-9]+ns"                                                      => TNSec,
-  r"[0-9]+min"                                                     => TMin,
-  r"[0-9]+h"                                                       => THour,
+  r"[0-9]+s"                                                    => TSec,
+  r"[0-9]+us"                                                   => TMSec,
+  r"[0-9]+ms"                                                   => TUSec,
+  r"[0-9]+ns"                                                   => TNSec,
+  r"[0-9]+min"                                                  => TMin,
+  r"[0-9]+h"                                                    => THour,
 } else {
 //=============================================================================
 // Non-Postfixed
@@ -292,8 +293,8 @@ pub Script = TaskDef* TypeDef* FunDef* Body;
 Params: Vec<Ident> = Vec<Param> => {
   <>
     .into_iter()
-    .map(|(sym, ty)| {
-        let id = table.insert(Decl::new(sym, ty, VarDecl));
+    .map(|(sym, tv)| {
+        let id = table.insert(Decl::new(sym, tv, VarDecl));
         stack.bind_local(sym, id);
         id
     })
@@ -303,38 +304,40 @@ Params: Vec<Ident> = Vec<Param> => {
 Param = <VarSymbol> ":" <Type>;
 
 FunDecl: (Ident, Vec<Ident>) = "fun" <FunSymbol> <Params> ")" => {
-  let (fun_sym, param_ids) = (<>);
-  let fun_id = table.insert(Decl::new(fun_sym, Type::fun(param_ids.len()), FunDecl));
-  if let Err(err) = stack.bind_global(fun_sym, fun_id) {
+  let (sym, param_ids) = (<>);
+  let tv = typer.fresh();
+  let id = table.insert(Decl::new(sym, tv, FunDecl));
+  if let Err(err) = stack.bind_global(sym, id) {
       errors.push(err.into());
   }
   stack.push_scope();
-  (fun_id, param_ids)
+  (id, param_ids)
 };
 
 FunDef: FunDef = <FunDecl> <Body> => {
-  let ((fun_id, param_ids), body) = (<>);
+  let ((id, param_ids), body) = (<>);
   stack.pop_scope();
-  FunDef::new(fun_id, param_ids, body)
+  FunDef::new(id, param_ids, body)
 };
 
 TaskDef: TaskDef = <TaskDecl> <FunDef*> "end" => {
-  let ((task_id, param_ids), fun_defs) = (<>);
+  let ((id, param_ids), fun_defs) = (<>);
   stack.pop_scope();
-  TaskDef::new(task_id, param_ids, fun_defs)
+  TaskDef::new(id, param_ids, fun_defs)
 };
 
 TaskDecl: (Ident, Vec<Ident>) = "task" <TaskSymbol> <Params> ")" => {
-  let (task_sym, param_ids) = (<>);
-  let task_id = table.insert(Decl::new(task_sym, Type::new(), TaskDecl(Vec::new())));
+  let (sym, param_ids) = (<>);
+  let tv = typer.fresh();
+  let id = table.insert(Decl::new(sym, tv, TaskDecl(Vec::new())));
   stack.push_scope();
-  (task_id, param_ids)
+  (id, param_ids)
 };
 
-LetDecl: (Ident, Box<Expr>) = <VarSymbol> <OptionalType> "=" <Box<Arg>> => {
-  let (sym, ty, arg) = (<>);
+LetDecl: (Ident, Box<Expr>) = <VarSymbol> <TypeAnnot> "=" <Box<Arg>> => {
+  let (sym, tv, arg) = (<>);
   stack.push_scope();
-  let id = table.insert(Decl::new(sym, ty, VarDecl));
+  let id = table.insert(Decl::new(sym, tv, VarDecl));
   stack.bind_local(sym, id);
   (id, arg)
 };
@@ -366,12 +369,12 @@ MethodCall: UnOpKind = <MethodSymbol> <Vec<Arg>> ")" => {
 };
 
 TypeDef: TypeDef = "type" <VarSymbol> "=" <Type> => {
-  let (sym, ty) = (<>);
-  let id = table.insert(Decl::new(sym, ty.clone(), TypeDecl));
+  let (sym, tv) = (<>);
+  let id = table.insert(Decl::new(sym, tv, TypeDecl));
   if let Err(err) = stack.bind_global(sym, id) {
       errors.push(err.into());
   }
-  TypeDef::new(id, ty)
+  TypeDef::new(id, tv)
 };
 
 ClosureDecl: Vec<Ident> = "|" <Params> "|";
@@ -385,7 +388,7 @@ ClosureDef: ExprKind = <ClosureDecl> "{" <Box<Body>> "}" => Closure(<>);
 Body = Expr<ExprKind0>;
 Arg  = Expr<ExprKind1>;
 
-Expr<ExprKind>: Expr = Spanned<ExprKind> => Expr::from(<>);
+Expr<ExprKind>: Expr = Spanned<ExprKind> => Expr::from(<>, typer);
 
 Op0: BinOpKind = {
   "==" => Eq,
@@ -418,8 +421,6 @@ TupleIndex: UnOpKind = ParseIndex => {
     .map(Project)
     .unwrap_or_else(|err| { errors.push(err.into()); UnOpErr })
 };
-
-OptionalType: Type = (":" <Type>)? => <>.unwrap_or(Type::new());
 
 ExprKind0: ExprKind = {
   LetDef     => <>,
@@ -477,7 +478,7 @@ BIF: BIFKind = {
   "dataset" <Paren<Box<Arg>>>                 => Dataset(<>),
   "fold" <Paren<(<Box<Arg>> "," <Box<Arg>>)>> => Fold(<>.0, <>.1),
   "fmap" <Paren<Box<Arg>>>                    => Fmap(<>),
-  "imap" <OptionalType> <Paren<Box<Arg>>>     => Imap(<>),
+  "imap" <TypeAnnot> <Paren<Box<Arg>>>        => Imap(<>),
 };
 
 //=============================================================================
@@ -512,17 +513,17 @@ PatternKind1: PatternKind = {
 // Types
 //=============================================================================
 
-Type: Type = Spanned<TypeKind> => Type::from(<>);
+Type:      TypeVar = Spanned<TypeKind> => typer.intern(Type::from(<>));
+TypeAnnot: TypeVar = (":" <Type>)?     => <>.unwrap_or_else(|| typer.fresh());
+TypeElem:  TypeVar = (<Type> ";")?     => <>.unwrap_or_else(|| typer.fresh());
 
 TypeKind: TypeKind = {
   ScalarKind                      => Scalar(<>),
-  <Box<Type>> "?"                 => Optional(<>),
-//  "{" <Vec<Param>> "}"            => Struct(<>),
-//  "[" <Box<ElemType>> <Shape> "]" => Array(<>),
+  <Type> "?"                      => Optional(<>),
+  "{" <Vec<Param>> "}"            => Struct(<>),
+  "[" <TypeElem> <Shape> "]"      => Array(<>),
   ! => { errors.push(<>.into()); TypeErr },
 };
-
-//ElemType: Type = (<Spanned<Scalar>> ";")? => <>.map(Type::from).unwrap_or(Type::new());
 
 ScalarKind: ScalarKind = {
   "i8"   => I8,
@@ -540,16 +541,31 @@ ScalarKind: ScalarKind = {
 // Shape and Dimensions
 //=============================================================================
 
-Shape: Shape = Spanned<ShapeKind> => Shape::from(<>);
+Shape: Shape = Spanned<Vec<Dim<DimKind0>>> => Shape::from(<>);
 
-ShapeKind: ShapeKind = {
-  <Vec<Dim>> => Ranked(<>),
-  "*"        => Unranked,
+Dim<DimKind>: Dim = Spanned<DimKind> => Dim::from(<>);
+
+DimKind0: DimKind = {
+  Box<Dim<DimKind0>> DimOp0 Box<Dim<DimKind1>> => DimOp(<>),
+  DimKind1,
 };
 
-Dim: Dim = Spanned<DimKind> => Dim::from(<>);
+DimKind1: DimKind = {
+  Box<Dim<DimKind1>> DimOp1 Box<Dim<DimKind2>> => DimOp(<>),
+  DimKind2,
+};
 
-DimKind: DimKind = {
-    Arg => Symbolic(<>),
-    "?" => Hole,
+DimKind2: DimKind = {
+  ParseI32 => <>.map(DimVal).unwrap_or(DimErr),
+  "?"      => DimVar(0),
+};
+
+DimOp0: DimOpKind = {
+  "+" => DimAdd,
+  "-" => DimSub,
+};
+
+DimOp1: DimOpKind = {
+  "*" => DimMul,
+  "/" => DimDiv,
 };
