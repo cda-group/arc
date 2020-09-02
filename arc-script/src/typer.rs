@@ -297,9 +297,10 @@ impl Expr {
             Closure(..) => todo!(),
             Match(_, _) => {}
             FunCall(id, args) => {
-                let tv = table.get_decl(id).tv;
-                let fun = Fun(args.iter().map(|arg| arg.tv).collect(), self.tv);
-                typer.unify_var_val(tv, fun, self.span, errors);
+                let tv1 = table.get_decl(id).tv;
+                let params = args.iter().map(|arg| arg.tv).collect();
+                let tv2 = typer.intern(Fun(params, self.tv));
+                typer.unify(tv1, tv2, self.span, errors);
             }
             ExprErr => {}
         }
