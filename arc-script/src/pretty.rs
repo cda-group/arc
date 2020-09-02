@@ -119,7 +119,11 @@ impl Pretty for Expr {
                 b = b.pretty(pr),
                 s = pr.indent(),
             ),
-            Closure(..) => todo!(),
+            Closure(params, body) => format!(
+                "|{params}| {{{body}}}",
+                params = params.pretty(pr),
+                body = body.pretty(pr)
+            ),
             Lit(lit) => lit.pretty(pr),
             Var(id) => id.pretty(pr),
             BinOp(l, op, r) => format!(

@@ -294,7 +294,14 @@ impl Expr {
                 typer.unify(t.tv, e.tv, e.span, errors);
                 typer.unify(t.tv, self.tv, e.span, errors);
             }
-            Closure(..) => todo!(),
+            Closure(params, body) => {
+                let params = params
+                    .iter()
+                    .map(|param| table.get_decl(param).tv)
+                    .collect();
+                let tv = typer.intern(Fun(params, body.tv));
+                typer.unify(self.tv, tv, self.span, errors)
+            }
             Match(_, _) => {}
             FunCall(id, args) => {
                 let tv1 = table.get_decl(id).tv;

@@ -66,6 +66,10 @@ impl Ssa for Expr {
                 vc.push((id, v));
                 return (merge(vc, bc), b);
             }
+            Closure(ps, e) => {
+                let e = e.into_ssa(info);
+                (Vec::new(), Closure(ps, Box::new(e)))
+            }
             ConsArray(e) => {
                 let (ec, e) = e.flatten(info);
                 (ec, ConsArray(e))
