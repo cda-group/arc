@@ -172,18 +172,18 @@ match {
 // Groups
 //=============================================================================
 
-Sep<T, S>: Vec<T> = <v:(<T> S)*> <e:T?> => v.into_iter().chain(e).collect();
+Sep<T, S>:         Vec<T> = <v:(<T> S)*> <e:T?> => v.into_iter().chain(e).collect();
 SepNonEmpty<T, S>: Vec<T> = <e:T> <v:(S <T>)*> => vec![e].into_iter().chain(v).collect();
-SepMulti<T, S>: Vec<T> = <e:T> <v:(S <T>)+> => vec![e].into_iter().chain(v).collect();
-SepTrailing<T, S> = (<T> S)*;
-Vec<T> = Sep<T, ",">;
-VecNonEmpty<T> = SepNonEmpty<T, ",">;
-VecMulti<T> = SepMulti<T, ",">;
-Semi<T> = Sep<T, ";">;
-Single<T>: Vec<T> = T => vec![<>];
-Box<T>: Box<T> = T => Box::new(<>);
-Spanned<T>: Spanned<T> = @L T @R => Spanned(<>);
-Paren<T>: T = "(" <T> ")";
+SepMulti<T, S>:    Vec<T> = <e:T> <v:(S <T>)+> => vec![e].into_iter().chain(v).collect();
+SepTrailing<T, S>: Vec<T> = (<T> S)*;
+Vec<T>:            Vec<T> = Sep<T, ",">;
+VecNonEmpty<T>:    Vec<T> = SepNonEmpty<T, ",">;
+VecMulti<T>:       Vec<T> = SepMulti<T, ",">;
+Semi<T>:           Vec<T> = Sep<T, ";">;
+Single<T>:         Vec<T> = T => vec![<>];
+Box<T>:            Box<T> = T => Box::new(<>);
+Spanned<T>:        Spanned<T> = @L T @R => Spanned(<>);
+Paren<T>:          T = "(" <T> ")";
 
 //-----------------------------------------------------------------------------
 // Operators

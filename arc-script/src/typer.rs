@@ -275,7 +275,7 @@ impl Expr {
                     Eq | Neq | Gt | Lt | Geq | Leq => {
                         typer.unify_var_val(self.tv, Scalar(Bool), self.span, errors)
                     }
-                    BinOpErr => {}
+                    BinOpErr => return,
                 }
             }
             UnOp(kind, e) => {
@@ -309,7 +309,7 @@ impl Expr {
                 let tv2 = typer.intern(Fun(params, self.tv));
                 typer.unify(tv1, tv2, self.span, errors);
             }
-            ExprErr => {}
+            ExprErr => return,
         }
     }
 }
