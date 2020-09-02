@@ -101,8 +101,8 @@ impl Typer {
         }
     }
 
-    pub fn intern(&mut self, ty: Type) -> TypeVar {
-        self.context.new_key(ty)
+    pub fn intern<T: Into<Type>>(&mut self, ty: T) -> TypeVar {
+        self.context.new_key(ty.into())
     }
 
     pub fn fresh(&mut self) -> TypeVar {
@@ -208,7 +208,7 @@ impl FunDef {
         &mut self,
         typer: &mut Typer,
         errors: &mut Vec<CompilerError>,
-        table: &mut SymbolTable,
+        table: &SymbolTable,
     ) {
         let tv = table.get_decl(&self.id).tv;
         let ty = typer.context.probe_value(tv);
@@ -223,7 +223,7 @@ impl Expr {
         &mut self,
         typer: &mut Typer,
         errors: &mut Vec<CompilerError>,
-        table: &mut SymbolTable,
+        table: &SymbolTable,
     ) {
         match &self.kind {
             Let(id, v, b) => {
