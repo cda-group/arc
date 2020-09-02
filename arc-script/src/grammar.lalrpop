@@ -296,6 +296,7 @@ pub Script = TaskDef* TypeDef* FunDef* Body;
 //=============================================================================
 
 Params: Vec<Ident> = Vec<Param> => {
+  stack.push_scope();
   <>
     .into_iter()
     .map(|(sym, tv)| {
@@ -315,7 +316,6 @@ FunDecl: (Ident, Vec<Ident>) = "fun" <FunSymbol> <Params> ")" => {
   if let Err(err) = stack.bind_global(sym, id) {
       errors.push(err.into());
   }
-  stack.push_scope();
   (id, param_ids)
 };
 
@@ -384,7 +384,10 @@ TypeDef: TypeDef = "type" <VarSymbol> "=" <Type> => {
 
 ClosureDecl: Vec<Ident> = "|" <Params> "|";
 
-ClosureDef: ExprKind = <ClosureDecl> "{" <Box<Body>> "}" => Closure(<>);
+ClosureDef: ExprKind = <ClosureDecl> "{" <Box<Body>> "}" => {
+  stack.pop_scope();
+  Closure(<>)
+};
 
 //=============================================================================
 // Expressions
