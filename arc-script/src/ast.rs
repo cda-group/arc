@@ -176,6 +176,11 @@ pub enum BinOpKind {
     Mul,
     Div,
     Eq,
+    Neq,
+    Gt,
+    Lt,
+    Geq,
+    Leq,
     BinOpErr,
 }
 

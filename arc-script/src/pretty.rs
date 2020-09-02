@@ -188,6 +188,11 @@ impl Pretty for BinOpKind {
             Mul => "*".to_string(),
             Div => "/".to_string(),
             Eq => "==".to_string(),
+            Neq => "!=".to_string(),
+            Gt => ">".to_string(),
+            Lt => "<".to_string(),
+            Geq => ">=".to_string(),
+            Leq => "<=".to_string(),
             BinOpErr => "☇".to_string(),
         }
     }

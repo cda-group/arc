@@ -272,7 +272,9 @@ impl Expr {
                 typer.unify(l.tv, r.tv, self.span, errors);
                 match kind {
                     Add | Div | Mul | Sub => typer.unify(self.tv, r.tv, self.span, errors),
-                    Eq => typer.unify_var_val(self.tv, Scalar(Bool), self.span, errors),
+                    Eq | Neq | Gt | Lt | Geq | Leq => {
+                        typer.unify_var_val(self.tv, Scalar(Bool), self.span, errors)
+                    }
                     BinOpErr => {}
                 }
             }
