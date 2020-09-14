@@ -104,7 +104,7 @@ impl Pretty for Expr {
             Let(id, e, b) => format!(
                 "{id}: {ty} = {e}{s}{b}",
                 id = id.pretty(pr),
-                ty = pr.info.table.get(id).ty.pretty(pr),
+                ty = pr.info.table.get_decl(id).ty.pretty(pr),
                 e = e.pretty(pr),
                 b = b.pretty(pr),
                 s = pr.indent(),
@@ -222,7 +222,13 @@ impl Pretty for Index {
 
 impl Pretty for Ident {
     fn pretty(&self, pr: &Printer) -> String {
-        pr.info.table.get(self).name.to_string()
+        pr.info.table.get_decl_name(self).to_string()
+    }
+}
+
+impl Pretty for SymbolKey {
+    fn pretty(&self, pr: &Printer) -> String {
+        pr.info.table.resolve(self).to_string()
     }
 }
 

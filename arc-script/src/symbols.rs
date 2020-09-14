@@ -1,5 +1,6 @@
 use crate::ast::*;
 use crate::error::CompilerError;
+use lasso::Rodeo;
 use DeclKind::*;
 
 /// The symbol-table is used to store symbolic identifiers for functions, let-expressions,
@@ -52,11 +53,23 @@ use DeclKind::*;
 /// Maps symbolic identifiers to their declarations
 #[derive(Default)]
 pub struct SymbolTable {
-    decls: Vec<Decl>,
+    /// Maps Ident(ifiers) to declarations
+    pub decls: Vec<Decl>,
+    /// Maps SymbolKeys to SymbolNames, i.e., stores strings outside of the AST.
+    pub intern: Rodeo,
 }
 
 impl SymbolTable {
+<<<<<<< HEAD
     pub fn new() -> Self { Self { decls: Vec::new() } }
+=======
+    pub fn new() -> Self {
+        Self {
+            decls: Vec::new(),
+            intern: Rodeo::new(),
+        }
+    }
+>>>>>>> a2b70c8... Add interner for uniquing strings
 
     pub fn insert(&mut self, decl: Decl) -> Ident {
         let id = Ident(self.decls.len());
@@ -64,33 +77,57 @@ impl SymbolTable {
         id
     }
 
+    pub fn intern(&mut self, symbol: SymbolName) -> SymbolKey {
+        self.intern.get_or_intern(symbol)
+    }
+
+    pub fn resolve(&self, symbol: &SymbolKey) -> SymbolName {
+        self.intern.resolve(symbol)
+    }
+
     pub fn genvar(&mut self, ty: Type) -> Ident {
         let id = Ident(self.decls.len());
-        self.decls
-            .push(Decl::new(&format!("x{}", id.0), ty, VarDecl));
+        let key = self.intern.get_or_intern(&format!("x{}", id.0));
+        self.decls.push(Decl::new(key, ty, VarDecl));
         id
     }
 
+<<<<<<< HEAD
     pub fn get_mut(&mut self, ident: &Ident) -> &mut Decl { self.decls.get_mut(ident.0).unwrap() }
 
     pub fn get(&self, ident: &Ident) -> &Decl { self.decls.get(ident.0).unwrap() }
+=======
+    pub fn get_decl_mut(&mut self, ident: &Ident) -> &mut Decl {
+        self.decls.get_mut(ident.0).unwrap()
+    }
+
+    pub fn get_decl_name(&self, ident: &Ident) -> &str {
+        self.resolve(&self.get_decl(&ident).sym)
+    }
+
+    pub fn get_decl(&self, ident: &Ident) -> &Decl {
+        self.decls.get(ident.0).unwrap()
+    }
+>>>>>>> a2b70c8... Add interner for uniquing strings
 
     pub fn debug(&self) {
         for (i, decl) in self.decls.iter().enumerate() {
+            let name = self.intern.resolve(&decl.sym);
             match decl.kind {
-                VarDecl => println!("[var]  {} => {}", i, decl.name),
-                FunDecl => println!("[fun]  {} => {}", i, decl.name),
-                TypeDecl => println!("[type] {} => {}", i, decl.name),
+                VarDecl => println!("[var]  {} => {}", i, name),
+                FunDecl => println!("[fun]  {} => {}", i, name),
+                TypeDecl => println!("[type] {} => {}", i, name),
             }
         }
     }
 }
 
-pub struct SymbolStack<'i> {
-    scopes: Vec<Vec<(Symbol<'i>, Ident)>>,
+pub type Scope = Vec<(SymbolKey, Ident)>;
+pub struct SymbolStack {
+    scopes: Vec<Scope>,
 }
 
-impl<'i> SymbolStack<'i> {
+impl SymbolStack {
     pub fn new() -> Self {
         let mut scopes = Vec::new();
         let globals = Vec::new();
@@ -98,7 +135,7 @@ impl<'i> SymbolStack<'i> {
         Self { scopes }
     }
 
-    pub fn lookup(&self, needle: Symbol<'i>) -> Option<Ident> {
+    pub fn lookup(&self, needle: SymbolKey) -> Option<Ident> {
         self.scopes.iter().rev().find_map(|scope| {
             scope
                 .iter()
@@ -107,9 +144,11 @@ impl<'i> SymbolStack<'i> {
         })
     }
 
-    pub fn bind_local(&mut self, name: Symbol<'i>, id: Ident) { self.locals().push((name, id)) }
+    pub fn bind_local(&mut self, name: SymbolKey, id: Ident) {
+        self.locals().push((name, id))
+    }
 
-    pub fn bind_global(&mut self, name: Symbol<'i>, ident: Ident) -> Result<(), CompilerError> {
+    pub fn bind_global(&mut self, name: SymbolKey, ident: Ident) -> Result<(), CompilerError> {
         if self.globals().iter().any(|(needle, _)| name == *needle) {
             Err(CompilerError::NameClash)
         } else {
@@ -118,9 +157,13 @@ impl<'i> SymbolStack<'i> {
         }
     }
 
-    pub fn globals(&mut self) -> &mut Vec<(Symbol<'i>, Ident)> { self.scopes.first_mut().unwrap() }
+    pub fn globals(&mut self) -> &mut Scope {
+        self.scopes.first_mut().unwrap()
+    }
 
-    pub fn locals(&mut self) -> &mut Vec<(Symbol<'i>, Ident)> { self.scopes.last_mut().unwrap() }
+    pub fn locals(&mut self) -> &mut Scope {
+        self.scopes.last_mut().unwrap()
+    }
 
     pub fn push_scope(&mut self) { self.scopes.push(Vec::new()) }
 

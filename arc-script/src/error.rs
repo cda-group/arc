@@ -47,6 +47,7 @@ impl<'i> Script<'i> {
     }
 }
 
+/// Represents the various errors reported by the compiler.
 #[derive(Debug)]
 pub enum CompilerError {
     BadLiteral {
@@ -58,7 +59,7 @@ pub enum CompilerError {
         span: Span,
     },
     ExtraToken {
-        found: Name,
+        found: String,
         span: Span,
     },
     InvalidToken {
@@ -69,7 +70,7 @@ pub enum CompilerError {
         expected: Vec<String>,
     },
     UnrecognizedToken {
-        found: Name,
+        found: String,
         span: Span,
         expected: Vec<String>,
     },
@@ -79,7 +80,7 @@ pub enum CompilerError {
         span: Span,
     },
     VarNotFound {
-        name: Name,
+        name: Ident,
         span: Span,
     },
     DisallowedDimExpr {
@@ -93,6 +94,7 @@ pub enum CompilerError {
     NameClash,
 }
 
+/// Converts a compiler error into a diagnostic which can be emitted by codespan.
 impl CompilerError {
     pub fn to_diagnostic(&self, info: &Info) -> Diagnostic {
         match self {
@@ -128,7 +130,10 @@ impl CompilerError {
                     rhs.brief(info)
                 ))]),
             CompilerError::VarNotFound { name, span } => Diagnostic::error()
-                .with_message(format!("Identifier `{}` not bound to anything", name))
+                .with_message(format!(
+                    "Identifier `{}` not bound to anything",
+                    info.table.get_decl_name(name)
+                ))
                 .with_labels(vec![Label::primary((), *span).with_message("Used here")]),
             CompilerError::DisallowedDimExpr { span } => Diagnostic::error()
                 .with_message("Disallowed expression in dimension")

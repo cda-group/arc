@@ -94,15 +94,15 @@ impl Ssa for Vec<Expr> {
     }
 }
 
-impl Ssa for Vec<(Ident, Expr)> {
+impl<T> Ssa for Vec<(T, Expr)> {
     fn flatten(self, info: &mut Info) -> (Context, Self) {
         let mut ctx = vec![];
         let exprs = self
             .into_iter()
-            .map(|(id, e)| {
+            .map(|(x, e)| {
                 let (mut ec, e) = e.flatten(info);
                 ctx.append(&mut ec);
-                (id, e)
+                (x, e)
             })
             .collect();
         (ctx, exprs)

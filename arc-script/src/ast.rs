@@ -1,6 +1,6 @@
 use crate::info::Info;
 use chrono::Duration;
-use smartstring::{LazyCompact, SmartString};
+use lasso::Spur;
 use DimKind::*;
 use ExprKind::*;
 use LitKind::*;
@@ -12,10 +12,10 @@ pub type ByteIndex = usize;
 
 pub struct Spanned<T>(pub ByteIndex, pub T, pub ByteIndex);
 
-pub type Symbol<'i> = &'i str;
-pub type Name = SmartString<LazyCompact>;
+pub type SymbolName<'i> = &'i str;
+pub type SymbolKey = Spur;
 pub type Clause = (Pattern, Expr);
-pub type Field = Name;
+pub type Field = SymbolKey;
 
 #[derive(Constructor)]
 pub struct Script<'i> {
@@ -38,17 +38,11 @@ pub struct TypeDef {
     pub ty: Type,
 }
 
+#[derive(Constructor)]
 pub struct Decl {
-    pub name: Name,
+    pub sym: SymbolKey,
     pub ty: Type,
     pub kind: DeclKind,
-}
-
-impl Decl {
-    pub fn new(symbol: Symbol, ty: Type, kind: DeclKind) -> Self {
-        let name = symbol.into();
-        Self { name, ty, kind }
-    }
 }
 
 pub enum DeclKind {
@@ -92,7 +86,7 @@ pub struct Index(pub usize);
 pub enum ExprKind {
     Lit(LitKind),
     ConsArray(Vec<Expr>),
-    ConsStruct(Vec<(Ident, Expr)>),
+    ConsStruct(Vec<(SymbolKey, Expr)>),
     ConsTuple(Vec<Expr>),
     Var(Ident),
     Closure(Vec<Ident>, Box<Expr>),
@@ -206,7 +200,7 @@ impl Type {
 pub enum TypeKind {
     Scalar(ScalarKind),
     Optional(Box<Type>),
-    Struct(Vec<(Ident, Type)>),
+    Struct(Vec<(SymbolKey, Type)>),
     Array(Box<Type>, Shape),
     Tuple(Vec<Type>),
     Fun(Vec<Type>, Box<Type>),

@@ -36,7 +36,7 @@ impl<'i> From<ParseError<'i>> for CompilerError {
         match error {
             ParseError::User { error } => error,
             ParseError::ExtraToken { token: (l, t, r) } => CompilerError::ExtraToken {
-                found: Name::from(t.1),
+                found: t.1.to_string(),
                 span: Span::from(l as u32..r as u32),
             },
             ParseError::InvalidToken { location: l } => CompilerError::InvalidToken {
@@ -53,7 +53,7 @@ impl<'i> From<ParseError<'i>> for CompilerError {
                 token: (l, t, r),
                 expected,
             } => CompilerError::UnrecognizedToken {
-                found: Name::from(t.1),
+                found: t.1.to_string(),
                 span: Span::from(l as u32..r as u32),
                 expected,
             },

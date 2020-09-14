@@ -21,7 +21,7 @@ use {
 
 grammar<'a>(
   errors: &'a mut Vec<ErrorRecovery<usize, Token<'input>, CompilerError>>,
-  stack: &'a mut SymbolStack<'input>,
+  stack: &'a mut SymbolStack,
   table: &'a mut SymbolTable,
 );
 
@@ -211,10 +211,13 @@ UnaryPrefix<Op, Next>: ExprKind = {
 // Symbols
 //=============================================================================
 
-VarSymbol:    Symbol<'input> = { TSymbol, TUnicodeSymbol };
-FieldSymbol:  Symbol<'input> = TFieldSymbol  => &<>[1..];
-FunSymbol:    Symbol<'input> = TFunSymbol    => &<>[..<>.len()-1];
-MethodSymbol: Symbol<'input> = TMethodSymbol => &<>[1..<>.len()-1];
+VarSymbol: SymbolKey = { 
+  TSymbol        => table.intern(<>),
+  TUnicodeSymbol => table.intern(<>),
+};
+FieldSymbol:  SymbolKey = TFieldSymbol  => table.intern(&<>[1..]);
+FunSymbol:    SymbolKey = TFunSymbol    => table.intern(&<>[..<>.len()-1]);
+MethodSymbol: SymbolKey = TMethodSymbol => table.intern(&<>[1..<>.len()-1]);
 
 //=============================================================================
 // Literals
@@ -391,7 +394,7 @@ Op3: UnOpKind = {
 Op4: UnOpKind = {
   "as" <Type> => Cast(<>),
   MethodCall  => <>,
-  FieldSymbol => Access(<>.into()),
+  FieldSymbol => Access(<>),
   TupleIndex  => <>,
 };
 
@@ -421,16 +424,22 @@ ExprKind5: ExprKind =                UnaryPrefix<Op3, ExprKind6>;
 ExprKind6: ExprKind =               UnaryPostfix<Op4, ExprKind7>;
 
 ExprKind7: ExprKind = {
-  Paren<ExprKind0>                           => <>,
-  FunCall                                    => <>,
-  Lit                                        => <>,
-  Var                                        => <>,
-  ClosureDef                                 => <>,
-  "[" <VecNonEmpty<Arg>> "]"                 => ConsArray(<>),
-//  "{" <VecNonEmpty<(<Symbol> ":" <Arg>)>> "}" => ConsStruct(<>),
-  "(" <VecMulti<Arg>> ")"                    => ConsTuple(<>),
+  Paren<ExprKind0>,
+  FunCall,
+  Lit,
+  Var,
+  ClosureDef,
+  ConsArray,
+  ConsStruct,
+  ConsTuple,
   ! => { errors.push(<>.into()); ExprErr },
 };
+
+ConsArray: ExprKind = "[" <VecNonEmpty<Arg>> "]" => ConsArray(<>);
+
+ConsStruct: ExprKind = "{" <VecNonEmpty<(<FieldSymbol> ":" <Arg>)>> "}" => ConsStruct(<>);
+
+ConsTuple: ExprKind = "(" <VecMulti<Arg>> ")" => ConsTuple(<>);
 
 Lit: ExprKind = LitKind => Lit(<>);
 

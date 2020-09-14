@@ -16,7 +16,7 @@ impl Expr {
         self.for_each_expr(|e| {
             e.ty.for_each_type_rec(&mut f);
             match &mut e.kind {
-                Let(id, _, _) => table.get_mut(id).ty.for_each_type_rec(&mut f),
+                Let(id, _, _) => table.get_decl_mut(id).ty.for_each_type_rec(&mut f),
                 UnOp(Cast(ty), _) => ty.for_each_type_rec(&mut f),
                 _ => {}
             }

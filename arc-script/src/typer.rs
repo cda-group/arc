@@ -119,12 +119,12 @@ impl Expr {
         let errors = &mut info.errors;
         match &self.kind {
             Let(id, v, b) => {
-                let ty = &info.table.get(id).ty;
+                let ty = &info.table.get_decl(id).ty;
                 typer.unify_var_var(&v.ty, &ty, self.span, errors);
                 typer.unify_var_var(&self.ty, &b.ty, self.span, errors);
             }
             Var(id) => {
-                let ty = &info.table.get(id).ty;
+                let ty = &info.table.get_decl(id).ty;
                 typer.unify_var_var(&self.ty, &ty, self.span, errors);
             }
             Lit(l) => {
@@ -152,8 +152,8 @@ impl Expr {
                 let kind = Struct(
                     fields
                         .iter()
-                        .map(|(id, e)| (*id, e.ty.clone()))
-                        .collect::<Vec<(Ident, Type)>>(),
+                        .map(|(sym, e)| (*sym, e.ty.clone()))
+                        .collect::<Vec<_>>(),
                 );
                 typer.unify_var_val(&self.ty, &kind, self.span, errors);
             }
