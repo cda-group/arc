@@ -350,7 +350,7 @@ MethodCall: UnOpKind = <Symbol> "(" <Vec<Arg>> ")" => {
        .unwrap_or(UnOpErr)
 };
 
-TypeDef: TypeDef = "type" <Symbol> "=" <Type> "in" => {
+TypeDef: TypeDef = "type" <Symbol> "=" <Type> => {
   let (sym, tv) = (<>);
   let id = table.insert(Decl::new(sym, tv, TypeDecl));
   if let Err(err) = stack.bind_global(sym, id) {
@@ -421,7 +421,7 @@ Op4: BinOpKind = {
 
 Op5: UnOpKind = {
   "!" => Not,
-//  "-" => Neg, TODO: Resolve ambiguity with custom lexer (joint-tokens)
+  "-" => Neg,
 };
 
 Op6: UnOpKind = {

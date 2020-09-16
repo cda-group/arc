@@ -199,6 +199,7 @@ pub enum BIFKind {
 #[derive(Debug, Clone)]
 pub enum UnOpKind {
     Not,
+    Neg,
     Cast(TypeVar),
     MethodCall(Ident, Vec<Expr>),
     Access(Field),

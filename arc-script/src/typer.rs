@@ -287,6 +287,7 @@ impl Expr {
                         typer.unify(self.tv, e.tv, e.span, errors);
                         typer.unify_var_val(e.tv, Scalar(Bool), e.span, errors);
                     }
+                    Neg => typer.unify_var_var(e.tv, self.tv, e.span, errors),
                     Cast(tv) => typer.unify(e.tv, *tv, e.span, errors),
                     MethodCall(_, _) => return, // TODO
                     Project(_) => return,

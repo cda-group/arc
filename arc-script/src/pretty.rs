@@ -189,6 +189,7 @@ impl<'i> Pretty for (&'i UnOpKind, &'i Expr) {
         let (op, e) = self;
         match op {
             Not => format!("!{}", e.pretty(pr)),
+            Neg => format!("-{}", e.pretty(pr)),
             Cast(ty) => format!("{}:{}", e.pretty(pr), ty.pretty(pr)),
             MethodCall(id, args) => format!(
                 "{e}.{id}({args})",
