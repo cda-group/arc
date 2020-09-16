@@ -184,7 +184,7 @@ impl Pretty for LitKind {
     }
 }
 
-impl<'i> Pretty for (&'i UnOpKind, &'i Expr) {
+impl Pretty for (&UnOpKind, &Expr) {
     fn pretty(&self, pr: &Printer) -> String {
         let (op, e) = self;
         match op {
