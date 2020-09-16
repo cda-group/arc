@@ -1,4 +1,5 @@
 use ExprKind::*;
+use BinOpKind::*;
 use {crate::ast::*, std::collections::HashMap};
 
 impl Script<'_> {
@@ -12,11 +13,13 @@ impl Expr {
     /// Remove `let id1 = id2 in body` expressions
     pub fn prune_rec(&mut self, aliases: &mut HashMap<Ident, Ident>) {
         match &mut self.kind {
-            Let(let_id, v, b) => {
-                if let Var(var_id) = &mut v.kind {
-                    aliases.insert(*let_id, *var_id);
-                    *self = b.take();
-                    self.prune_rec(aliases);
+            BinOp(lhs, Seq, rhs) => {
+                if let Let(let_id, v) = &mut lhs.kind {
+                    if let Var(var_id) = &mut v.kind {
+                        aliases.insert(*let_id, *var_id);
+                        *self = rhs.take();
+                        self.prune_rec(aliases);
+                    }
                 }
             }
             Var(var_id) => {

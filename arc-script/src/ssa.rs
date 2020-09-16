@@ -1,5 +1,9 @@
 use crate::{ast::*, info::*, utils::*};
+use BinOpKind::*;
 use ExprKind::*;
+use ScalarKind::*;
+use TypeKind::*;
+use UnOpKind::*;
 
 type Context = Vec<(Ident, Expr)>;
 
@@ -28,10 +32,19 @@ impl Expr {
     /// Reverse-folds a vec of SSA values into an AST of let-expressions
     pub fn into_ssa(self, info: &mut Info) -> Self {
         let (ctx, var) = self.flatten(info);
+        let typer = &mut info.typer.borrow_mut();
         ctx.into_iter().rev().fold(var, |acc, (id, expr)| Expr {
             tv: acc.tv,
             span: acc.span,
-            kind: Let(id, Box::new(expr), Box::new(acc)),
+            kind: BinOp(
+                Box::new(Expr {
+                    tv: typer.intern(Scalar(Unit)),
+                    span: acc.span,
+                    kind: Let(id, Box::new(expr)),
+                }),
+                Seq,
+                Box::new(acc),
+            ),
         })
     }
 }
@@ -42,29 +55,28 @@ impl Ssa for Expr {
         let Self { kind, tv, span } = self;
         let (mut ctx, kind) = match kind {
             BinOp(l, op, r) => {
+                if let Seq = op {
+                    if let Let(id, v) = l.kind {
+                        let (mut vc, v) = match v.is_imm() {
+                            true => (vec![], *v),
+                            false => v.flatten(info),
+                        };
+                        let (rc, r) = r.flatten(info);
+                        vc.push((id, v));
+                        return (merge(vc, rc), r);
+                    }
+                }
                 let ((lc, l), (rc, r)) = (l.flatten(info), r.flatten(info));
                 (merge(lc, rc), BinOp(Box::new(l), op, Box::new(r)))
             }
-            UnOp(op, e) => {
+            UnOp(o, e) => {
+                let (oc, o) = o.flatten(info);
                 let (ec, e) = e.flatten(info);
-                (ec, UnOp(op, Box::new(e)))
+                (merge(oc, ec), UnOp(o, Box::new(e)))
             }
             If(c, t, e) => {
                 let ((cc, c), t, e) = (c.flatten(info), t.into_ssa(info), e.into_ssa(info));
                 (cc, If(Box::new(c), Box::new(t), Box::new(e)))
-            }
-            FunCall(id, a) => {
-                let (ac, a) = a.flatten(info);
-                (ac, FunCall(id, a))
-            }
-            Let(id, v, b) => {
-                let (mut vc, v) = match v.is_imm() {
-                    true => (vec![], *v),
-                    false => v.flatten(info),
-                };
-                let (bc, b) = b.flatten(info);
-                vc.push((id, v));
-                return (merge(vc, bc), b);
             }
             Closure(ps, e) => {
                 let e = e.into_ssa(info);
@@ -95,6 +107,22 @@ impl Expr {
         match &self.kind {
             Var(_) | Lit(_) => true,
             _ => false,
+        }
+    }
+}
+
+impl Ssa for UnOpKind {
+    fn flatten(self, info: &mut Info) -> (Context, Self) {
+        match self {
+            FunCall(a) => {
+                let (ac, a) = a.flatten(info);
+                (ac, FunCall(a))
+            }
+            MethodCall(id, a) => {
+                let (ac, a) = a.flatten(info);
+                (ac, MethodCall(id, a))
+            }
+            _ => (Vec::new(), self),
         }
     }
 }

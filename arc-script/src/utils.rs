@@ -2,6 +2,7 @@ use crate::ast::*;
 use crate::info::Info;
 use crate::symbols::SymbolTable;
 use ExprKind::*;
+use UnOpKind::*;
 
 impl SyntaxTree {
     pub fn for_each_expr<F: FnMut(&mut Expr)>(&mut self, ref mut f: F) {
@@ -31,11 +32,7 @@ impl Expr {
                 e.for_each_expr(f);
                 cases.iter_mut().for_each(|(_, e)| e.for_each_expr(f));
             }
-            Let(_, v, b) => {
-                v.for_each_expr(f);
-                b.for_each_expr(f);
-            }
-            FunCall(_, ps) => ps.iter_mut().for_each(|p| p.for_each_expr(f)),
+            Let(_, v) => v.for_each_expr(f),
             ConsArray(ps) => ps.iter_mut().for_each(|p| p.for_each_expr(f)),
             ConsTuple(ps) => ps.iter_mut().for_each(|p| p.for_each_expr(f)),
             ConsStruct(fs) => fs.iter_mut().for_each(|(_, v)| v.for_each_expr(f)),
@@ -45,9 +42,28 @@ impl Expr {
                 l.for_each_expr(f);
                 r.for_each_expr(f);
             }
-            UnOp(_, e) => e.for_each_expr(f),
+            UnOp(op, e) => {
+                op.for_each_expr(f);
+                e.for_each_expr(f);
+            }
+            Sink(_) => {}
+            Source(_) => {}
+            Loop(cond, body) => {
+                cond.for_each_expr(f);
+                body.for_each_expr(f);
+            }
             Closure(_, body) => body.for_each_expr(f),
             ExprErr => {}
+        }
+    }
+}
+
+impl UnOpKind {
+    fn for_each_expr<F: FnMut(&mut Expr)>(&mut self, f: &mut F) {
+        match self {
+            FunCall(ps) => ps.iter_mut().for_each(|p| p.for_each_expr(f)),
+            MethodCall(_, ps) => ps.iter_mut().for_each(|p| p.for_each_expr(f)),
+            _ => {}
         }
     }
 }
@@ -58,7 +74,7 @@ pub struct Printer<'a> {
     pub verbose: bool,
 }
 
-const TAB: &str = "  ";
+const TAB: &str = "    ";
 
 impl Printer<'_> {
     pub fn indent(&self) -> String {

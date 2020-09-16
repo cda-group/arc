@@ -6,6 +6,13 @@ use LitKind::*;
 use ScalarKind::*;
 use TypeKind::*;
 
+impl Script<'_> {
+    pub fn mlir(&self) -> String {
+        "todo".to_owned()
+        //         self.ast.fundefs.
+    }
+}
+
 impl Expr {
     pub fn mlir(&self, info: &Info) -> String {
         let pr = Printer {
@@ -37,11 +44,16 @@ impl Expr {
 
     fn to_region(&self, terminator: &str, pr: &Printer) -> String {
         match &self.kind {
-            Let(id, v, b) => format!(
-                "{s}{var} = {op}{next}",
+            Let(id, v) => format!(
+                "{s}{var} = {op}",
                 var = id.to_var(),
                 op = v.to_op(pr),
-                next = b.to_region(terminator, pr),
+                s = pr.indent(),
+            ),
+            BinOp(lhs, Seq, rhs) => format!(
+                "{s}{lhs}{rhs}",
+                lhs = lhs.to_op(pr),
+                rhs = rhs.to_region(terminator, pr),
                 s = pr.indent(),
             ),
             Var(_) => format!(
@@ -93,11 +105,13 @@ impl Expr {
             ConsArray(..) => todo!(),
             ConsStruct(..) => todo!(),
             ConsTuple(..) => todo!(),
-            FunCall(..) => todo!(),
             Closure(..) => todo!(),
             Let(..) => panic!("[ICE] Attempted to generate MLIR SSA of Let"),
             Match(..) => panic!("[ICE] Attempted to generate MLIR SSA of Match"),
             Var(_) => panic!("[ICE] Attempted to generate MLIR SSA of Var"),
+            Sink(_) => todo!(),
+            Source(_) => todo!(),
+            Loop(_, _) => todo!(),
             ExprErr => "<ERROR>".to_owned(),
         }
     }

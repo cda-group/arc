@@ -47,6 +47,7 @@ match {
   "]",
   ",",
   ";",
+  ".",
 //=============================================================================
 // Operators
 //=============================================================================
@@ -66,10 +67,14 @@ match {
   "<=",
   "=>",
   "|",
+  "::",
+  "|>",
+  "<-",
 //=============================================================================
 // Keywords
 //=============================================================================
   "_",
+  "let",
   "if",
   "then",
   "else",
@@ -83,6 +88,9 @@ match {
   "as",
   "match",
   "type",
+  "source",
+  "sink",
+  "loop",
 //=============================================================================
 // Types
 //=============================================================================
@@ -147,14 +155,9 @@ match {
 //=============================================================================
 // Symbols
 //=============================================================================
-  r"[A-Za-z_][A-Za-z0-9_]*\("                                   => TFunSymbol,
-  r"\.[A-Za-z_][A-Za-z0-9_]*\("                                 => TMethodSymbol,
-  r"\p{Math}"                                                   => TUnicodeOp,
 } else {
-  r"\.[A-Za-z_][A-Za-z0-9_]*"                                   => TFieldSymbol,
-  r"\.[0-9]+"                                                   => TIndex,
+  r"\[[0-9]+\]"                                                 => TIndex,
   r"[A-Za-z_][A-Za-z0-9_]*'*"                                   => TSymbol,
-  r"[\p{Greek}\p{Emoji}][0-9]*'*"                               => TUnicodeSymbol,
 } else {
 //=============================================================================
 // Skip
@@ -189,11 +192,6 @@ Paren<T>:          T = "(" <T> ")";
 // Operators
 //-----------------------------------------------------------------------------
 
-BinaryInfixNonAssociative<Op, Next>: ExprKind = {
-  Box<Expr<Next>> Op Box<Expr<Next>> => BinOp(<>),
-  Next,
-};
-
 BinaryInfixLeftAssociative<Op, Next>: ExprKind = {
   Box<Expr<BinaryInfixLeftAssociative<Op, Next>>> Op Box<Expr<Next>> => BinOp(<>),
   Next,
@@ -218,14 +216,7 @@ UnaryPrefix<Op, Next>: ExprKind = {
 // Symbols
 //=============================================================================
 
-VarSymbol: SymbolKey = { 
-  TSymbol        => table.intern(<>),
-  TUnicodeSymbol => table.intern(<>),
-};
-FieldSymbol:  SymbolKey = TFieldSymbol  => table.intern(&<>[1..]);
-FunSymbol:    SymbolKey = TFunSymbol    => table.intern(&<>[..<>.len()-1]);
-MethodSymbol: SymbolKey = TMethodSymbol => table.intern(&<>[1..<>.len()-1]);
-TaskSymbol:   SymbolKey = FunSymbol;
+Symbol: SymbolKey = TSymbol => table.intern(<>);
 
 //=============================================================================
 // Literals
@@ -241,7 +232,7 @@ ParseBool: CompilerResult<bool> = Spanned<TBool> => parse_lit(<>);
 //=============================================================================
 
 ParseIndex: CompilerResult<usize> = {
-  Spanned<TIndex>     => parse_lit_radix(<>, 10, 1, 0),
+  Spanned<TIndex>     => parse_lit_radix(<>, 10, 1, 1),
 };
 
 ParseF32: CompilerResult<f32> = {
@@ -307,9 +298,9 @@ Params: Vec<Ident> = Vec<Param> => {
     .collect::<Vec<_>>()
 };
 
-Param = <VarSymbol> ":" <Type>;
+Param = <Symbol> ":" <Type>;
 
-FunDecl: (Ident, Vec<Ident>) = "fun" <FunSymbol> <Params> ")" => {
+FunDecl: (Ident, Vec<Ident>) = "fun" <Symbol> "(" <Params> ")" => {
   let (sym, param_ids) = (<>);
   let tv = typer.fresh();
   let id = table.insert(Decl::new(sym, tv, FunDecl));
@@ -319,19 +310,13 @@ FunDecl: (Ident, Vec<Ident>) = "fun" <FunSymbol> <Params> ")" => {
   (id, param_ids)
 };
 
-FunDef: FunDef = <FunDecl> <Body> => {
+FunDef: FunDef = <FunDecl> "{" <Body>  "}" => {
   let ((id, param_ids), body) = (<>);
   stack.pop_scope();
   FunDef::new(id, param_ids, body)
 };
 
-TaskDef: TaskDef = <TaskDecl> <FunDef*> "end" => {
-  let ((id, param_ids), fun_defs) = (<>);
-  stack.pop_scope();
-  TaskDef::new(id, param_ids, fun_defs)
-};
-
-TaskDecl: (Ident, Vec<Ident>) = "task" <TaskSymbol> <Params> ")" => {
+TaskDecl: (Ident, Vec<Ident>) = "task" <Symbol> "(" <Params> ")" => {
   let (sym, param_ids) = (<>);
   let tv = typer.fresh();
   let id = table.insert(Decl::new(sym, tv, TaskDecl(Vec::new())));
@@ -339,41 +324,33 @@ TaskDecl: (Ident, Vec<Ident>) = "task" <TaskSymbol> <Params> ")" => {
   (id, param_ids)
 };
 
-LetDecl: (Ident, Box<Expr>) = <VarSymbol> <TypeAnnot> "=" <Box<Arg>> => {
+TaskDef: TaskDef = <TaskDecl> "{" <FunDef*> "}" => {
+  let ((id, param_ids), fun_defs) = (<>);
+  stack.pop_scope();
+  TaskDef::new(id, param_ids, fun_defs)
+};
+
+Let: ExprKind = "let" <Symbol> <TypeAnnot> "=" <Box<Arg>> => {
   let (sym, tv, arg) = (<>);
-  stack.push_scope();
   let id = table.insert(Decl::new(sym, tv, VarDecl));
   stack.bind_local(sym, id);
-  (id, arg)
+  Let(id, arg) 
 };
 
-LetDef: ExprKind = <LetDecl> <Box<Body>> => {
-  let ((id, arg), body) = (<>);
-  stack.pop_scope();
-  Let(id, arg, body) 
-};
-
-Var: ExprKind = <VarSymbol> => {
+Var: ExprKind = <Symbol> => {
   stack.lookup(<>)
        .map(Var)
        .unwrap_or(ExprErr)
 };
 
-FunCall: ExprKind = <FunSymbol> <Vec<Arg>> ")" => {
-  let (sym, args) = (<>);
-  stack.lookup(sym)
-       .map(|id| FunCall(id, args))
-       .unwrap_or(ExprErr)
-};
-
-MethodCall: UnOpKind = <MethodSymbol> <Vec<Arg>> ")" => {
+MethodCall: UnOpKind = <Symbol> "(" <Vec<Arg>> ")" => {
   let (sym, args) = (<>);
   stack.lookup(sym)
        .map(|id| MethodCall(id, args))
        .unwrap_or(UnOpErr)
 };
 
-TypeDef: TypeDef = "type" <VarSymbol> "=" <Type> => {
+TypeDef: TypeDef = "type" <Symbol> "=" <Type> "in" => {
   let (sym, tv) = (<>);
   let id = table.insert(Decl::new(sym, tv, TypeDecl));
   if let Err(err) = stack.bind_global(sym, id) {
@@ -384,9 +361,22 @@ TypeDef: TypeDef = "type" <VarSymbol> "=" <Type> => {
 
 ClosureDecl: Vec<Ident> = "|" <Params> "|";
 
-ClosureDef: ExprKind = <ClosureDecl> "{" <Box<Body>> "}" => {
+ClosureDef: ExprKind = <ClosureDecl> <Box<Arg>> => {
   stack.pop_scope();
   Closure(<>)
+};
+
+
+SeqBegin: Box<Expr> = <Box<Stmt>> ";" => {
+  let lhs = <>;
+  stack.push_scope();
+  lhs
+};
+
+Seq: ExprKind = SeqBegin Box<Body> => {
+  let (lhs, rhs) = (<>);
+  stack.pop_scope();
+  BinOp(lhs, Seq, rhs)
 };
 
 //=============================================================================
@@ -394,85 +384,134 @@ ClosureDef: ExprKind = <ClosureDecl> "{" <Box<Body>> "}" => {
 //=============================================================================
 
 Body = Expr<ExprKind0>;
-Arg  = Expr<ExprKind1>;
+Stmt = Expr<ExprKind1>;
+Arg  = Expr<ExprKind2>;
 
 Expr<ExprKind>: Expr = Spanned<ExprKind> => Expr::from(<>, typer);
 
+//=============================================================================
+// Operators
+//=============================================================================
+
 Op0: BinOpKind = {
+  "|>" => Pipe,
+};
+
+Op1: BinOpKind = {
   "==" => Eq,
   "!=" => Neq,
 };
 
-Op1: BinOpKind = {
+Op2: BinOpKind = {
   ">"  => Gt,
   "<"  => Lt,
   ">=" => Geq,
   "<=" => Leq,
 };
 
-Op2: BinOpKind = {
+Op3: BinOpKind = {
   "+" => Add,
   "-" => Sub,
 };
 
-Op3: BinOpKind = {
+Op4: BinOpKind = {
   "*" => Mul,
   "/" => Div,
 };
 
-Op4: UnOpKind = {
+Op5: UnOpKind = {
   "!" => Not,
 //  "-" => Neg, TODO: Resolve ambiguity with custom lexer (joint-tokens)
 };
 
-Op5: UnOpKind = {
-  "as" <Type> => Cast(<>),
-  MethodCall  => <>,
-  FieldSymbol => Access(<>),
-  TupleIndex  => <>,
+Op6: UnOpKind = {
+  FunCall,
+  MethodCall,
+  TupleIndex,
+  FieldAccess,
+  TypeCast,
 };
 
-TupleIndex: UnOpKind = ParseIndex => {
+TypeCast:    UnOpKind = "as" <Type>        => Cast(<>);
+FieldAccess: UnOpKind = "." <Symbol>       => Access(<>);
+FunCall:     UnOpKind = "(" <Vec<Arg>> ")" => FunCall(<>);
+TupleIndex:  UnOpKind = ParseIndex => {
   <>.map(Index)
     .map(Project)
     .unwrap_or_else(|err| { errors.push(err.into()); UnOpErr })
 };
 
+//=============================================================================
+// Keyword operators
+//=============================================================================
+
+If:    ExprKind = "if" <Box<Arg>> "{" <Box<Arg>> "}" "else" "{" <Box<Arg>> "}" => If(<>);
+Match: ExprKind = "match" <Box<Arg>> "{" <Vec<Clause>> "}"                     => Match(<>);
+Loop:  ExprKind = "loop" <Box<Arg>> "{" <Box<Arg>> "}"                         => Loop(<>);
+
+//=============================================================================
+// Qualifiers
+//=============================================================================
+
+Source: ExprKind = "source" "::" <Symbol> => {
+  todo!()
+  // Source(<>)
+};
+
+Sink: ExprKind = "sink" "::" <Symbol> => {
+  todo!()
+  //  Sink(<>)
+};
+
+//=============================================================================
+// Cons
+//=============================================================================
+
+ConsArray:  ExprKind = "[" <VecNonEmpty<Arg>> "]"                  => ConsArray(<>);
+ConsStruct: ExprKind = "{" <VecNonEmpty<(<Symbol> ":" <Arg>)>> "}" => ConsStruct(<>);
+ConsTuple:  ExprKind = "(" <VecMulti<Arg>> ")"                     => ConsTuple(<>);
+
+//=============================================================================
+// Precedence Climbing
+//=============================================================================
+
 ExprKind0: ExprKind = {
-  LetDef     => <>,
-  ExprKind1  => <>,
+  Seq,
+  ExprKind1,
 };
 
 ExprKind1: ExprKind = {
-  "if" <Box<Body>> "then" <Box<Body>> "else" <Box<Body>>  => If(<>),
-  "match" <Box<Body>> "{" <Vec<Clause>> "}"               => Match(<>),
-  ExprKind2
+  Let,
+  ExprKind2,
 };
 
-ExprKind2: ExprKind = BinaryInfixLeftAssociative<Op0, ExprKind3>;
-ExprKind3: ExprKind = BinaryInfixLeftAssociative<Op1, ExprKind4>;
-ExprKind4: ExprKind = BinaryInfixLeftAssociative<Op2, ExprKind5>;
-ExprKind5: ExprKind = BinaryInfixLeftAssociative<Op3, ExprKind6>;
-ExprKind6: ExprKind =                UnaryPrefix<Op4, ExprKind7>;
-ExprKind7: ExprKind =               UnaryPostfix<Op5, ExprKind8>;
+ExprKind2: ExprKind = {
+  ClosureDef,
+  ExprKind3,
+};
 
-ExprKind8: ExprKind = {
+ExprKind3: ExprKind = BinaryInfixLeftAssociative<Op0, ExprKind4>;
+ExprKind4: ExprKind = BinaryInfixLeftAssociative<Op1, ExprKind5>;
+ExprKind5: ExprKind = BinaryInfixLeftAssociative<Op2, ExprKind6>;
+ExprKind6: ExprKind = BinaryInfixLeftAssociative<Op3, ExprKind7>;
+ExprKind7: ExprKind = BinaryInfixLeftAssociative<Op4, ExprKind8>;
+ExprKind8: ExprKind =                UnaryPrefix<Op5, ExprKind9>;
+ExprKind9: ExprKind =               UnaryPostfix<Op6, ExprKind10>;
+
+ExprKind10: ExprKind = {
   Paren<ExprKind0>,
-  FunCall,
   Lit,
   Var,
-  ClosureDef,
   ConsArray,
   ConsStruct,
   ConsTuple,
+  Sink,
+  Source,
+  Loop,
+  Match,
+  If,
   ! => { errors.push(<>.into()); ExprErr },
 };
-
-ConsArray: ExprKind = "[" <VecNonEmpty<Arg>> "]" => ConsArray(<>);
-
-ConsStruct: ExprKind = "{" <VecNonEmpty<(<FieldSymbol> ":" <Arg>)>> "}" => ConsStruct(<>);
-
-ConsTuple: ExprKind = "(" <VecMulti<Arg>> ")" => ConsTuple(<>);
 
 Lit: ExprKind = LitKind => Lit(<>);
 
@@ -521,7 +560,7 @@ Regex: PatternKind = ParseRegex => {
 PatternKind1: PatternKind = {
   Regex                      => <>,
   LitKind                    => Val(<>),
-//  VarSymbol                     => Var(<>),
+//  Symbol                     => Var(<>),
   "(" <Vec<RootPattern>> ")" => DeconsTuple(<>),
   "_"                        => Wildcard,
 };

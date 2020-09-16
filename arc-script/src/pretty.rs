@@ -49,7 +49,7 @@ impl Pretty for Script<'_> {
 impl Pretty for FunDef {
     fn pretty(&self, pr: &Printer) -> String {
         format!(
-            "{s0}fun {id}({params}){s1}{body}{s0}end{s0}",
+            "{s0}fun {id}({params}) {{{s1}{body}{s0}}}",
             id = self.id.pretty(pr),
             params = self
                 .params
@@ -88,12 +88,12 @@ impl Pretty for Expr {
     fn pretty(&self, pr: &Printer) -> String {
         let expr = match &self.kind {
             If(c, t, e) => format!(
-                "if {c}{s0}then{s1}{t}{s0}else{s1}{e}",
-                c = c.pretty(&pr.tab()),
-                t = t.pretty(&pr.tab().tab()),
-                e = e.pretty(&pr.tab().tab()),
-                s0 = pr.tab().indent(),
-                s1 = pr.tab().tab().indent(),
+                "if {c} {{{s1}{t}{s0}}} else {{{s1}{e}{s0}}}",
+                c = c.pretty(&pr),
+                t = t.pretty(&pr.tab()),
+                e = e.pretty(&pr.tab()),
+                s0 = pr.indent(),
+                s1 = pr.tab().indent(),
             ),
             Match(e, clauses) => format!(
                 "match {e} {{{clause}{s0}}}{s1}",
@@ -111,34 +111,53 @@ impl Pretty for Expr {
                 s0 = pr.indent(),
                 s1 = pr.tab().indent(),
             ),
-            Let(id, e, b) => format!(
-                "{id}: {ty} = {e}{s}{b}",
+            Let(id, e) => format!(
+                "let {id}: {ty} = {e}",
                 id = id.pretty(pr),
                 ty = pr.info.table.get_decl(id).tv.pretty(pr),
                 e = e.pretty(pr),
-                b = b.pretty(pr),
-                s = pr.indent(),
             ),
             Closure(params, body) => format!(
-                "|{params}| {{{body}}}",
-                params = params.pretty(pr),
-                body = body.pretty(pr)
+                "|{params}| {{{s1}{body}{s0}}}",
+                params = params
+                    .iter()
+                    .map(|id| format!(
+                        "{id}:{ty}",
+                        id = id.pretty(pr),
+                        ty = pr.info.table.get_decl(id).tv.pretty(pr)
+                    ))
+                    .collect::<Vec<String>>()
+                    .join(", "),
+                body = body.pretty(&pr.tab()),
+                s0 = pr.indent(),
+                s1 = pr.tab().indent(),
             ),
             Lit(lit) => lit.pretty(pr),
             Var(id) => id.pretty(pr),
+            BinOp(l, Seq, r) => format!(
+                "{l};{s0}{r}",
+                l = l.pretty(pr),
+                r = r.pretty(pr),
+                s0 = pr.indent(),
+            ),
             BinOp(l, op, r) => format!(
                 "{l} {op} {r}",
                 l = l.pretty(pr),
-                op = op.pretty(pr),
+                op = op.pretty(&pr.tab()),
                 r = r.pretty(pr)
             ),
             UnOp(op, e) => (op, e.as_ref()).pretty(pr),
             ConsArray(args) => format!("[{args}]", args = args.pretty(pr)),
             ConsStruct(fields) => format!("{{ {fields} }}", fields = fields.pretty(pr)),
             ConsTuple(args) => format!("({args})", args = args.pretty(pr)),
-            FunCall(id, args) => {
-                format!("{id}({args})", id = id.pretty(pr), args = args.pretty(pr))
-            }
+            Sink(id) => format!("sink::{id}", id = id.pretty(pr)),
+            Source(id) => format!("source::{id}", id = id.pretty(pr)),
+            Loop(cond, body) => format!(
+                "loop {cond} {{{s1}{body}}}",
+                cond = cond.pretty(pr),
+                body = body.pretty(pr),
+                s1 = pr.tab().indent(),
+            ),
             ExprErr => "☇".to_string(),
         };
         if pr.verbose {
@@ -179,6 +198,7 @@ impl<'i> Pretty for (&'i UnOpKind, &'i Expr) {
             ),
             Project(idx) => format!("{}.{}", e.pretty(pr), idx.pretty(pr)),
             Access(_) => todo!(),
+            FunCall(args) => format!("{e}({args})", e = e.pretty(pr), args = args.pretty(pr)),
             UnOpErr => format!("☇{}", e.pretty(pr)),
         }
     }
@@ -197,6 +217,8 @@ impl Pretty for BinOpKind {
             Lt => "<".to_string(),
             Geq => ">=".to_string(),
             Leq => "<=".to_string(),
+            Pipe => "|>".to_string(),
+            Seq => ";".to_string(),
             BinOpErr => "☇".to_string(),
         }
     }

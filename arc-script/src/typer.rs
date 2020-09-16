@@ -211,7 +211,7 @@ impl FunDef {
         table: &SymbolTable,
     ) {
         let tv = table.get_decl(&self.id).tv;
-        let ty = typer.context.probe_value(tv);
+        let ty = typer.lookup(tv);
         if let Fun(_, ret_tv) = ty.kind {
             typer.unify(self.body.tv, ret_tv, self.body.span, errors)
         }
@@ -226,10 +226,10 @@ impl Expr {
         table: &SymbolTable,
     ) {
         match &self.kind {
-            Let(id, v, b) => {
+            Let(id, v) => {
                 let tv = table.get_decl(id).tv;
                 typer.unify(v.tv, tv, self.span, errors);
-                typer.unify(self.tv, b.tv, self.span, errors);
+                typer.unify_var_val(self.tv, Scalar(Unit), self.span, errors);
             }
             Var(id) => {
                 let tv = table.get_decl(id).tv;
@@ -268,31 +268,41 @@ impl Expr {
                 let tvs = args.iter().map(|arg| arg.tv).collect();
                 typer.unify_var_val(self.tv, Tuple(tvs), self.span, errors);
             }
-            BinOp(l, kind, r) => {
-                typer.unify(l.tv, r.tv, self.span, errors);
-                match kind {
-                    Add | Div | Mul | Sub => typer.unify(self.tv, r.tv, self.span, errors),
-                    Eq | Neq | Gt | Lt | Geq | Leq => {
-                        typer.unify_var_val(self.tv, Scalar(Bool), self.span, errors)
-                    }
-                    BinOpErr => return,
+            BinOp(l, kind, r) => match kind {
+                Add | Div | Mul | Sub => {
+                    typer.unify(l.tv, r.tv, self.span, errors);
+                    typer.unify(self.tv, r.tv, self.span, errors)
                 }
-            }
+                Eq | Neq | Gt | Lt | Geq | Leq => {
+                    typer.unify(l.tv, r.tv, self.span, errors);
+                    typer.unify_var_val(self.tv, Scalar(Bool), self.span, errors)
+                }
+                Pipe => todo!(),
+                Seq => typer.unify(self.tv, r.tv, self.span, errors),
+                BinOpErr => return,
+            },
             UnOp(kind, e) => {
                 match kind {
-                    Not => typer.unify_var_val(e.tv, Scalar(Bool), e.span, errors),
+                    Not => {
+                        typer.unify(self.tv, e.tv, e.span, errors);
+                        typer.unify_var_val(e.tv, Scalar(Bool), e.span, errors);
+                    }
                     Cast(tv) => typer.unify(e.tv, *tv, e.span, errors),
                     MethodCall(_, _) => return, // TODO
                     Project(_) => return,
                     Access(_) => return,
+                    FunCall(args) => {
+                        let params = args.iter().map(|arg| arg.tv).collect();
+                        let tv2 = typer.intern(Fun(params, self.tv));
+                        typer.unify(e.tv, tv2, self.span, errors);
+                    }
                     UnOpErr => return,
                 }
-                typer.unify(self.tv, e.tv, e.span, errors);
             }
             If(c, t, e) => {
                 typer.unify_var_val(c.tv, Scalar(Bool), c.span, errors);
                 typer.unify(t.tv, e.tv, e.span, errors);
-                typer.unify(t.tv, self.tv, e.span, errors);
+                typer.unify(t.tv, self.tv, t.span, errors);
             }
             Closure(params, body) => {
                 let params = params
@@ -303,12 +313,9 @@ impl Expr {
                 typer.unify(self.tv, tv, self.span, errors)
             }
             Match(_, _) => {}
-            FunCall(id, args) => {
-                let tv1 = table.get_decl(id).tv;
-                let params = args.iter().map(|arg| arg.tv).collect();
-                let tv2 = typer.intern(Fun(params, self.tv));
-                typer.unify(tv1, tv2, self.span, errors);
-            }
+            Sink(_) => todo!(),
+            Source(_) => todo!(),
+            Loop(_, _) => todo!(),
             ExprErr => return,
         }
     }

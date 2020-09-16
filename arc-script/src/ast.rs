@@ -137,9 +137,11 @@ pub enum ExprKind {
     UnOp(UnOpKind, Box<Expr>),
     BinOp(Box<Expr>, BinOpKind, Box<Expr>),
     If(Box<Expr>, Box<Expr>, Box<Expr>),
-    Let(Ident, Box<Expr>, Box<Expr>),
+    Let(Ident, Box<Expr>),
     Match(Box<Expr>, Vec<Clause>),
-    FunCall(Ident, Vec<Expr>),
+    Sink(Ident),
+    Source(Ident),
+    Loop(Box<Expr>, Box<Expr>),
     ExprErr,
 }
 
@@ -181,6 +183,8 @@ pub enum BinOpKind {
     Lt,
     Geq,
     Leq,
+    Pipe,
+    Seq,
     BinOpErr,
 }
 
@@ -199,6 +203,7 @@ pub enum UnOpKind {
     MethodCall(Ident, Vec<Expr>),
     Access(Field),
     Project(Index),
+    FunCall(Vec<Expr>),
     UnOpErr,
 }
 
