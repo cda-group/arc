@@ -277,6 +277,11 @@ impl Expr {
                     typer.unify(l.tv, r.tv, self.span, errors);
                     typer.unify_var_val(self.tv, Scalar(Bool), self.span, errors)
                 }
+                Or | And => {
+                    typer.unify(self.tv, l.tv, self.span, errors);
+                    typer.unify(self.tv, r.tv, self.span, errors);
+                    typer.unify_var_val(self.tv, Scalar(Bool), self.span, errors)
+                }
                 Pipe => todo!(),
                 Seq => typer.unify(self.tv, r.tv, self.span, errors),
                 BinOpErr => return,

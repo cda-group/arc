@@ -70,6 +70,8 @@ match {
   "::",
   "|>",
   "<-",
+  "||",
+  "&&",
 //=============================================================================
 // Keywords
 //=============================================================================
@@ -398,33 +400,38 @@ Op0: BinOpKind = {
 };
 
 Op1: BinOpKind = {
+  "||" => Or,
+  "&&" => And,
+};
+
+Op2: BinOpKind = {
   "==" => Eq,
   "!=" => Neq,
 };
 
-Op2: BinOpKind = {
+Op3: BinOpKind = {
   ">"  => Gt,
   "<"  => Lt,
   ">=" => Geq,
   "<=" => Leq,
 };
 
-Op3: BinOpKind = {
+Op4: BinOpKind = {
   "+" => Add,
   "-" => Sub,
 };
 
-Op4: BinOpKind = {
+Op5: BinOpKind = {
   "*" => Mul,
   "/" => Div,
 };
 
-Op5: UnOpKind = {
+Op6: UnOpKind = {
   "!" => Not,
   "-" => Neg,
 };
 
-Op6: UnOpKind = {
+Op7: UnOpKind = {
   FunCall,
   MethodCall,
   TupleIndex,
@@ -490,15 +497,16 @@ ExprKind2: ExprKind = {
   ExprKind3,
 };
 
-ExprKind3: ExprKind = BinaryInfixLeftAssociative<Op0, ExprKind4>;
-ExprKind4: ExprKind = BinaryInfixLeftAssociative<Op1, ExprKind5>;
-ExprKind5: ExprKind = BinaryInfixLeftAssociative<Op2, ExprKind6>;
-ExprKind6: ExprKind = BinaryInfixLeftAssociative<Op3, ExprKind7>;
-ExprKind7: ExprKind = BinaryInfixLeftAssociative<Op4, ExprKind8>;
-ExprKind8: ExprKind =                UnaryPrefix<Op5, ExprKind9>;
-ExprKind9: ExprKind =               UnaryPostfix<Op6, ExprKind10>;
+ExprKind3:  ExprKind = BinaryInfixLeftAssociative<Op0, ExprKind4>;
+ExprKind4:  ExprKind = BinaryInfixLeftAssociative<Op1, ExprKind5>;
+ExprKind5:  ExprKind = BinaryInfixLeftAssociative<Op2, ExprKind6>;
+ExprKind6:  ExprKind = BinaryInfixLeftAssociative<Op3, ExprKind7>;
+ExprKind7:  ExprKind = BinaryInfixLeftAssociative<Op4, ExprKind8>;
+ExprKind8:  ExprKind = BinaryInfixLeftAssociative<Op5, ExprKind9>;
+ExprKind9:  ExprKind =                UnaryPrefix<Op6, ExprKind10>;
+ExprKind10: ExprKind =               UnaryPostfix<Op7, ExprKind11>;
 
-ExprKind10: ExprKind = {
+ExprKind11: ExprKind = {
   Paren<ExprKind0>,
   Lit,
   Var,
@@ -548,7 +556,7 @@ RootPattern = Pattern<PatternKind0>;
 Pattern<PatternKind>: Pattern = Spanned<PatternKind> => Pattern::from(<>);
 
 PatternKind0: PatternKind = {
-  <Box<Pattern<PatternKind0>>> "|" <Box<Pattern<PatternKind1>>> => Or(<>),
+  <Box<Pattern<PatternKind0>>> "|" <Box<Pattern<PatternKind1>>> => Either(<>),
   PatternKind1
 };
 

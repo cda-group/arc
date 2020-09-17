@@ -206,20 +206,23 @@ impl Pretty for (&UnOpKind, &Expr) {
 }
 
 impl Pretty for BinOpKind {
+    #[rustfmt::skip]
     fn pretty(&self, _: &Printer) -> String {
         match self {
-            Add => "+".to_string(),
-            Sub => "-".to_string(),
-            Mul => "*".to_string(),
-            Div => "/".to_string(),
-            Eq => "==".to_string(),
-            Neq => "!=".to_string(),
-            Gt => ">".to_string(),
-            Lt => "<".to_string(),
-            Geq => ">=".to_string(),
-            Leq => "<=".to_string(),
+            Add  => "+".to_string(),
+            Sub  => "-".to_string(),
+            Mul  => "*".to_string(),
+            Div  => "/".to_string(),
+            Eq   => "==".to_string(),
+            Neq  => "!=".to_string(),
+            Gt   => ">".to_string(),
+            Lt   => "<".to_string(),
+            Geq  => ">=".to_string(),
+            Leq  => "<=".to_string(),
+            Or   => "||".to_string(),
+            And  => "&&".to_string(),
             Pipe => "|>".to_string(),
-            Seq => ";".to_string(),
+            Seq  => ";".to_string(),
             BinOpErr => "☇".to_string(),
         }
     }
@@ -315,7 +318,7 @@ impl Pretty for Pattern {
     fn pretty(&self, pr: &Printer) -> String {
         match &self.kind {
             Regex(s) => format!(r#"r"{}""#, s.clone()),
-            Or(l, r) => format!("{} | {}", l.pretty(pr), r.pretty(pr)),
+            Either(l, r) => format!("{} | {}", l.pretty(pr), r.pretty(pr)),
             Val(l) => l.pretty(pr),
             Bind(x) => x.pretty(pr),
             DeconsTuple(vs) => format!("({})", vs.pretty(pr)),

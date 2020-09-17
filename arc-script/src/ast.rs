@@ -158,7 +158,7 @@ pub enum PatternKind {
     DeconsTuple(Vec<Pattern>),
     Val(LitKind),
     Bind(Ident),
-    Or(Box<Pattern>, Box<Pattern>),
+    Either(Box<Pattern>, Box<Pattern>),
     Wildcard,
     PatternErr,
 }
@@ -179,6 +179,8 @@ pub enum BinOpKind {
     Div,
     Eq,
     Neq,
+    Or,
+    And,
     Gt,
     Lt,
     Geq,
