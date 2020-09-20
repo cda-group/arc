@@ -5,7 +5,7 @@ fun max(a: i32, b: i32) {
 
 max(1,2)
 
-# args: --verbose file
+# args: --verbose --check file
 # expected stdout:
 # fun max(a: i32, b: i32) {
 #     ((let x7: bool = ((a):i32 > (b):i32):bool):();

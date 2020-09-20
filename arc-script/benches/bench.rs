@@ -23,6 +23,8 @@ fn setup() -> Opt {
         mlir: false,
         verbose: false,
         subcmd: SubCmd::Lib,
+        connectors: Vec::new(),
+        check: false,
     }
 }
 

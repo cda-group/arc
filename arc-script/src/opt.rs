@@ -11,6 +11,10 @@ pub struct Opt {
     #[clap(short, long)]
     pub mlir: bool,
 
+    /// Only run up until typechecking
+    #[clap(short, long)]
+    pub check: bool,
+
     /// Print AST with type information and parentheses
     #[clap(short, long)]
     pub verbose: bool,

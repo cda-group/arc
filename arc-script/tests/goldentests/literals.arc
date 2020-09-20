@@ -7,7 +7,7 @@ let xf64  = 1.1;
 let xbool = true;
 1
 
-# args: file
+# args: --check file
 # expected stdout:
 # let xi8: i8 = 1i8;
 # let xi16: i16 = 1i16;

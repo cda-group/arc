@@ -23,6 +23,8 @@ mod pruner;
 mod mlir;
 mod info;
 mod symbols;
+mod eval;
+mod dataflow;
 
 // #[cfg(feature = "shaper")]
 // mod shaper;
@@ -84,6 +86,11 @@ pub fn compile<'i>(source: &'i str, opt: &'i Opt) -> Script<'i> {
             println!("=== MLIR");
             println!("{}", script.mlir());
         }
+    }
+
+    if !opt.check {
+        let dataflow = script.eval();
+        println!("{}", dataflow.pretty());
     }
 
     script

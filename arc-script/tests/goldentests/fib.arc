@@ -8,7 +8,7 @@ fun fib(n: i32) {
 
 fib(5)
 
-# args: --verbose file
+# args: --verbose --check file
 # expected stdout:
 # fun fib(n: i32) {
 #     ((let x4: i32 = (2):i32):();

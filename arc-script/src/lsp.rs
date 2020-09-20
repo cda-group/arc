@@ -169,6 +169,8 @@ fn report(client: &Client, uri: &Url, code: &str) {
         subcmd: SubCmd::Lsp,
         mlir: false,
         verbose: false,
+        connectors: Vec::new(),
+        check: true,
     };
     let script = compile(code, &opt);
     let diagnostics = script.to_lsp();

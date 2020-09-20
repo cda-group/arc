@@ -7,6 +7,7 @@ fn main() {
         debug: false,
         mlir: false,
         verbose: false,
+        check: false,
         subcmd: SubCmd::Lib,
     };
     let script = arc_script::compile(source, &opt);

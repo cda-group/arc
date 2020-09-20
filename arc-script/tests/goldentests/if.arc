@@ -2,7 +2,7 @@ let c = true;
 let x = 3;
 if c { x } else { x }
 
-# args: --verbose file
+# args: --verbose --check file
 # expected stdout:
 # ((let c: bool = (true):bool):();
 # ((let x: i32 = (3):i32):();

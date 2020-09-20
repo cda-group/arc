@@ -16,6 +16,8 @@ pub fn compile(source: &str) -> String {
         mlir: true,
         verbose: false,
         subcmd: SubCmd::Lib,
+        connectors: Vec::new(),
+        check: false,
     };
     let script = arc_script::compile(source, &opt);
     if script.info.errors.is_empty() {

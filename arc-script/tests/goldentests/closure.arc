@@ -2,7 +2,7 @@ let increment = |i:i32| i + 1;
 let foo = 1;
 increment(foo)
 
-# args: --verbose file
+# args: --verbose --check file
 # expected stdout:
 # ((let x5: (i32) -> i32 = (|i:i32| {
 #     ((let x3: i32 = (1):i32):();
