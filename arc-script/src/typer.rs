@@ -8,13 +8,13 @@ use UnOpKind::*;
 use {
     crate::{ast::*, error::*, info::*, symbols::*},
     codespan::Span,
-    ena::unify::{InPlace, UnificationTable, UnifyKey, UnifyValue},
+    ena::unify::{InPlace, UnifyKey, UnifyValue},
 };
 
-pub type TypingContext = UnificationTable<InPlace<TypeVar>>;
+pub type UnificationTable = ena::unify::UnificationTable<InPlace<TypeVar>>;
 
 pub struct Typer {
-    context: TypingContext,
+    table: UnificationTable,
 }
 
 /// Suppose we have the following arc-script code:
@@ -64,12 +64,13 @@ pub struct Typer {
 
 impl Typer {
     pub fn new() -> Typer {
-        let context = TypingContext::new();
-        Typer { context }
+        let table = UnificationTable::new();
+        Typer { table }
     }
 }
 
 impl Typer {
+    /// Unifies two type variables `a` and `b`.
     fn unify_var_var(
         &mut self,
         a: TypeVar,
@@ -77,40 +78,44 @@ impl Typer {
         span: Span,
         errors: &mut Vec<CompilerError>,
     ) {
-        let snapshot = self.context.snapshot();
-        match self.context.unify_var_var(a, b) {
-            Ok(()) => self.context.commit(snapshot),
+        let snapshot = self.table.snapshot();
+        match self.table.unify_var_var(a, b) {
+            Ok(()) => self.table.commit(snapshot),
             Err((lhs, rhs)) => {
                 errors.push(CompilerError::TypeMismatch { lhs, rhs, span });
-                self.context.rollback_to(snapshot)
+                self.table.rollback_to(snapshot)
             }
         }
     }
 
+    /// Unifies a type variable `a` with a type `b`.
     fn unify_var_val<T>(&mut self, a: TypeVar, b: T, span: Span, errors: &mut Vec<CompilerError>)
     where
         T: Into<Type>,
     {
-        let snapshot = self.context.snapshot();
-        match self.context.unify_var_value(a, b.into()) {
-            Ok(()) => self.context.commit(snapshot),
+        let snapshot = self.table.snapshot();
+        match self.table.unify_var_value(a, b.into()) {
+            Ok(()) => self.table.commit(snapshot),
             Err((lhs, rhs)) => {
                 errors.push(CompilerError::TypeMismatch { lhs, rhs, span });
-                self.context.rollback_to(snapshot)
+                self.table.rollback_to(snapshot)
             }
         }
     }
 
+    /// Returns a fresh type variable which is unified with the given type `ty`.
     pub fn intern<T: Into<Type>>(&mut self, ty: T) -> TypeVar {
-        self.context.new_key(ty.into())
+        self.table.new_key(ty.into())
     }
 
+    /// Returns a fresh type variable.
     pub fn fresh(&mut self) -> TypeVar {
-        self.context.new_key(Type::new())
+        self.table.new_key(Type::new())
     }
 
-    pub fn lookup(&mut self, var: TypeVar) -> Type {
-        self.context.probe_value(var)
+    /// Returns the type which `tv` is unified with.
+    pub fn lookup(&mut self, tv: TypeVar) -> Type {
+        self.table.probe_value(tv)
     }
 }
 
@@ -188,6 +193,7 @@ impl Typer {
 }
 
 impl Script<'_> {
+    /// Infers the types of all type variables in a Script.
     pub fn infer(&mut self) {
         let Info {
             table,
@@ -239,15 +245,16 @@ impl Constrain for Expr {
         errors: &mut Vec<CompilerError>,
         table: &SymbolTable,
     ) {
+        let span = self.span;
         match &self.kind {
             Let(id, v) => {
                 let tv = table.get_decl(id).tv;
-                typer.unify(v.tv, tv, self.span, errors);
-                typer.unify_var_val(self.tv, Scalar(Unit), self.span, errors);
+                typer.unify(v.tv, tv, span, errors);
+                typer.unify_var_val(self.tv, Scalar(Unit), span, errors);
             }
             Var(id) => {
                 let tv = table.get_decl(id).tv;
-                typer.unify(self.tv, tv, self.span, errors);
+                typer.unify(self.tv, tv, span, errors);
             }
             Lit(l) => {
                 let kind = match l {
@@ -262,35 +269,35 @@ impl Constrain for Expr {
                     LitTime(_) => todo!(),
                     LitErr => return,
                 };
-                typer.unify_var_val(self.tv, Scalar(kind), self.span, errors);
+                typer.unify_var_val(self.tv, Scalar(kind), span, errors);
             }
             ConsArray(args) => {
                 let elem_tv = typer.fresh();
                 let dim = Dim::from(DimVal(args.len() as i32));
                 args.iter()
-                    .for_each(|e| typer.unify(elem_tv, e.tv, self.span, errors));
+                    .for_each(|e| typer.unify(elem_tv, e.tv, span, errors));
                 let shape = Shape::from(vec![dim]);
-                typer.unify_var_val(self.tv, Array(elem_tv, shape), self.span, errors);
+                typer.unify_var_val(self.tv, Array(elem_tv, shape), span, errors);
             }
             ConsStruct(fields) => {
                 let fields = fields
                     .iter()
                     .map(|(sym, e)| (*sym, e.tv))
                     .collect::<Vec<_>>();
-                typer.unify_var_val(self.tv, Struct(fields), self.span, errors);
+                typer.unify_var_val(self.tv, Struct(fields), span, errors);
             }
             ConsTuple(args) => {
                 let tvs = args.iter().map(|arg| arg.tv).collect();
-                typer.unify_var_val(self.tv, Tuple(tvs), self.span, errors);
+                typer.unify_var_val(self.tv, Tuple(tvs), span, errors);
             }
             BinOp(l, kind, r) => match kind {
                 Add | Div | Mul | Sub => {
-                    typer.unify(l.tv, r.tv, self.span, errors);
-                    typer.unify(self.tv, r.tv, self.span, errors)
+                    typer.unify(l.tv, r.tv, span, errors);
+                    typer.unify(self.tv, r.tv, span, errors)
                 }
                 Eq | Neq | Gt | Lt | Geq | Leq => {
-                    typer.unify(l.tv, r.tv, self.span, errors);
-                    typer.unify_var_val(self.tv, Scalar(Bool), self.span, errors)
+                    typer.unify(l.tv, r.tv, span, errors);
+                    typer.unify_var_val(self.tv, Scalar(Bool), span, errors)
                 }
                 Or | And => {
                     typer.unify(self.tv, l.tv, self.span, errors);
@@ -298,32 +305,32 @@ impl Constrain for Expr {
                     typer.unify_var_val(self.tv, Scalar(Bool), self.span, errors)
                 }
                 Pipe => todo!(),
-                Seq => typer.unify(self.tv, r.tv, self.span, errors),
+                Seq => typer.unify(self.tv, r.tv, span, errors),
                 BinOpErr => return,
             },
             UnOp(kind, e) => {
                 match kind {
                     Not => {
-                        typer.unify(self.tv, e.tv, e.span, errors);
-                        typer.unify_var_val(e.tv, Scalar(Bool), e.span, errors);
+                        typer.unify(self.tv, e.tv, span, errors);
+                        typer.unify_var_val(e.tv, Scalar(Bool), span, errors);
                     }
-                    Neg => typer.unify_var_var(e.tv, self.tv, e.span, errors),
-                    Cast(tv) => typer.unify(e.tv, *tv, e.span, errors),
+                    Neg => typer.unify(self.tv, e.tv, span, errors),
+                    Cast(tv) => typer.unify(e.tv, *tv, span, errors),
                     MethodCall(_, _) => return, // TODO
                     Project(_) => return,
                     Access(_) => return,
                     FunCall(args) => {
                         let params = args.iter().map(|arg| arg.tv).collect();
                         let tv2 = typer.intern(Fun(params, self.tv));
-                        typer.unify(e.tv, tv2, self.span, errors);
+                        typer.unify(e.tv, tv2, span, errors);
                     }
                     UnOpErr => return,
                 }
             }
             If(c, t, e) => {
-                typer.unify_var_val(c.tv, Scalar(Bool), c.span, errors);
-                typer.unify(t.tv, e.tv, e.span, errors);
-                typer.unify(t.tv, self.tv, t.span, errors);
+                typer.unify_var_val(c.tv, Scalar(Bool), span, errors);
+                typer.unify(t.tv, e.tv, span, errors);
+                typer.unify(t.tv, self.tv, span, errors);
             }
             Closure(params, body) => {
                 let params = params
@@ -331,7 +338,7 @@ impl Constrain for Expr {
                     .map(|param| table.get_decl(param).tv)
                     .collect();
                 let tv = typer.intern(Fun(params, body.tv));
-                typer.unify(self.tv, tv, self.span, errors)
+                typer.unify(self.tv, tv, span, errors)
             }
             Match(_, _) => {}
             Sink(_) => todo!(),
