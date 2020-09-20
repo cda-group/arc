@@ -180,6 +180,7 @@ impl Pretty for LitKind {
             LitF64(l) => l.to_string(),
             LitBool(l) => l.to_string(),
             LitTime(l) => l.to_string(),
+            LitUnit => format!("()"),
             LitErr => "☇".to_string(),
         }
     }

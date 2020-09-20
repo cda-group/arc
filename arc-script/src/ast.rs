@@ -372,6 +372,7 @@ pub enum LitKind {
     LitF64(#[educe(Hash(ignore))] f64),
     LitBool(bool),
     LitTime(Duration),
+    LitUnit,
     LitErr,
 }
 

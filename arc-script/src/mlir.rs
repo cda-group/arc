@@ -170,6 +170,7 @@ impl LitKind {
             LitF64(l) => l.to_string(),
             LitBool(l) => l.to_string(),
             LitTime(_) => todo!(),
+            LitUnit => todo!(),
             LitErr => "<ERROR>".to_string(),
         }
     }

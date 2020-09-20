@@ -258,6 +258,7 @@ impl Constrain for Expr {
                     LitF32(_) => F32,
                     LitF64(_) => F64,
                     LitBool(_) => Bool,
+                    LitUnit => Unit,
                     LitTime(_) => todo!(),
                     LitErr => return,
                 };
