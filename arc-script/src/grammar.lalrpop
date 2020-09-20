@@ -1,5 +1,6 @@
 use {
   crate::{ast::*, parser::*},
+  std::collections::HashMap,
   lalrpop_util::ErrorRecovery,
   chrono::Duration,
   ExprKind::*,
@@ -21,6 +22,9 @@ use {
 
 grammar<'a>(
   errors: &'a mut Vec<ErrorRecovery<usize, Token<'input>, CompilerError>>,
+  taskdefs: &'a mut HashMap<Ident, TaskDef>,
+  tydefs: &'a mut HashMap<Ident, TypeDef>,
+  fundefs: &'a mut HashMap<Ident, FunDef>,
   stack: &'a mut SymbolStack,
   table: &'a mut SymbolTable,
   typer: &'a mut Typer,
@@ -282,7 +286,26 @@ ParseTime: CompilerResult<Duration> = {
 // Non-Terminals
 //=============================================================================
 
-pub Script = TaskDef* TypeDef* FunDef* Body;
+pub Script = Def* <Body>;
+
+//=============================================================================
+// Definitions
+//=============================================================================
+
+Def: () = {
+  TaskDef => {
+    let (id, taskdef) = <>;
+    taskdefs.insert(id, taskdef);
+  },
+  TypeDef => {
+    let (id, tydef) = <>;
+    tydefs.insert(id, tydef);
+  },
+  FunDef => {
+    let (id, fundef) = <>;
+    fundefs.insert(id, fundef);
+  },
+};
 
 //=============================================================================
 // Name Resolving
@@ -312,10 +335,10 @@ FunDecl: (Ident, Vec<Ident>) = "fun" <Symbol> "(" <Params> ")" => {
   (id, param_ids)
 };
 
-FunDef: FunDef = <FunDecl> "{" <Body>  "}" => {
+FunDef: (Ident, FunDef) = <FunDecl> "{" <Body>  "}" => {
   let ((id, param_ids), body) = (<>);
   stack.pop_scope();
-  FunDef::new(id, param_ids, body)
+  (id, FunDef::new(param_ids, body))
 };
 
 TaskDecl: (Ident, Vec<Ident>) = "task" <Symbol> "(" <Params> ")" => {
@@ -326,10 +349,10 @@ TaskDecl: (Ident, Vec<Ident>) = "task" <Symbol> "(" <Params> ")" => {
   (id, param_ids)
 };
 
-TaskDef: TaskDef = <TaskDecl> "{" <FunDef*> "}" => {
+TaskDef: (Ident, TaskDef) = <TaskDecl> "{" <FunDef*> "}" => {
   let ((id, param_ids), fun_defs) = (<>);
   stack.pop_scope();
-  TaskDef::new(id, param_ids, fun_defs)
+  (id, TaskDef::new(param_ids, fun_defs.into_iter().collect()))
 };
 
 Let: ExprKind = "let" <Symbol> <TypeAnnot> "=" <Box<Arg>> => {
@@ -352,13 +375,13 @@ MethodCall: UnOpKind = <Symbol> "(" <Vec<Arg>> ")" => {
        .unwrap_or(UnOpErr)
 };
 
-TypeDef: TypeDef = "type" <Symbol> "=" <Type> => {
+TypeDef: (Ident, TypeDef) = "type" <Symbol> "=" <Type> => {
   let (sym, tv) = (<>);
   let id = table.insert(Decl::new(sym, tv, TypeDecl));
   if let Err(err) = stack.bind_global(sym, id) {
       errors.push(err.into());
   }
-  TypeDef::new(id, tv)
+  (id, TypeDef::new(tv))
 };
 
 ClosureDecl: Vec<Ident> = "|" <Params> "|";

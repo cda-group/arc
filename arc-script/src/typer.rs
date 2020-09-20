@@ -199,26 +199,40 @@ impl Script<'_> {
         self.ast
             .for_each_expr(|expr| expr.constrain(typer, errors, table));
         self.ast
-            .for_each_fun(|fun| fun.constrain(typer, errors, table));
+            .fundefs
+            .iter_mut()
+            .for_each(|(id, fundef)| (id, fundef).constrain(typer, errors, table));
     }
 }
 
-impl FunDef {
+trait Constrain {
+    fn constrain(
+        &mut self,
+        typer: &mut Typer,
+        errors: &mut Vec<CompilerError>,
+        table: &SymbolTable,
+    );
+}
+
+impl Constrain for (&Ident, &mut FunDef) {
+    /// Constrains the types of a function based on its signature and body.
     fn constrain(
         &mut self,
         typer: &mut Typer,
         errors: &mut Vec<CompilerError>,
         table: &SymbolTable,
     ) {
-        let tv = table.get_decl(&self.id).tv;
+        let (id, fundef) = self;
+        let tv = table.get_decl(&id).tv;
         let ty = typer.lookup(tv);
         if let Fun(_, ret_tv) = ty.kind {
-            typer.unify(self.body.tv, ret_tv, self.body.span, errors)
+            typer.unify(fundef.body.tv, ret_tv, fundef.body.span, errors)
         }
     }
 }
 
-impl Expr {
+impl Constrain for Expr {
+    /// Constrains an expression based on its subexpressions.
     fn constrain(
         &mut self,
         typer: &mut Typer,

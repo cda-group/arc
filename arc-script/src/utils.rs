@@ -11,7 +11,7 @@ impl SyntaxTree {
     }
 
     pub fn for_each_fun<F: FnMut(&mut FunDef)>(&mut self, ref mut f: F) {
-        self.fundefs.iter_mut().for_each(|fundef| f(fundef));
+        self.fundefs.iter_mut().for_each(|(_, fundef)| f(fundef));
     }
 
     pub fn for_each_decl<F: FnMut(&mut Decl)>(&mut self, ref mut f: F, table: &mut SymbolTable) {

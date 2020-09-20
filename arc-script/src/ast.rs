@@ -1,6 +1,7 @@
 use crate::{info::Info, typer::Typer};
 use chrono::Duration;
 use lasso::Spur;
+use std::collections::HashMap;
 use DimKind::*;
 use ExprKind::*;
 use LitKind::*;
@@ -24,22 +25,20 @@ pub struct Script<'i> {
 
 #[derive(Constructor)]
 pub struct SyntaxTree {
-    pub taskdefs: Vec<TaskDef>,
-    pub tydefs: Vec<TypeDef>,
-    pub fundefs: Vec<FunDef>,
+    pub taskdefs: HashMap<Ident, TaskDef>,
+    pub tydefs: HashMap<Ident, TypeDef>,
+    pub fundefs: HashMap<Ident, FunDef>,
     pub body: Expr,
 }
 
 #[derive(Constructor)]
 pub struct FunDef {
-    pub id: Ident,
     pub params: Vec<Ident>,
     pub body: Expr,
 }
 
 #[derive(Constructor)]
 pub struct TypeDef {
-    pub id: Ident,
     pub tv: TypeVar,
 }
 
@@ -82,9 +81,8 @@ pub struct TypeDef {
 /// ```
 #[derive(Constructor)]
 pub struct TaskDef {
-    pub id: Ident,
     pub params: Vec<Ident>,
-    pub fundefs: Vec<FunDef>,
+    pub fundefs: HashMap<Ident, FunDef>,
 }
 
 #[derive(Constructor)]

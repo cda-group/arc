@@ -18,10 +18,10 @@ impl Script<'_> {
         self.ast.fundefs = self
             .ast
             .fundefs
-            .drain(..)
-            .map(|mut fundef| {
+            .into_iter()
+            .map(|(ident, mut fundef)| {
                 fundef.body = fundef.body.into_ssa(info);
-                fundef
+                (ident, fundef)
             })
             .collect();
         self

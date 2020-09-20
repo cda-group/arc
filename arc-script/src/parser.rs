@@ -5,7 +5,8 @@ use {
     lalrpop_util::lalrpop_mod,
     num_traits::Num,
     regex::Regex,
-    std::{fmt::Display, str::FromStr, cell::RefCell},
+    std::collections::HashMap,
+    std::{cell::RefCell, fmt::Display, str::FromStr},
 };
 
 lalrpop_mod!(#[allow(clippy::all)] pub grammar);
@@ -19,8 +20,20 @@ impl Script<'_> {
         let mut table = SymbolTable::new();
         let mut stack = SymbolStack::new();
         let mut typer = Typer::new();
-        let (taskdefs, tydefs, fundefs, body) = ScriptParser::new()
-            .parse(&mut errors, &mut stack, &mut table, &mut typer, source)
+        let mut taskdefs = HashMap::new();
+        let mut tydefs = HashMap::new();
+        let mut fundefs = HashMap::new();
+        let body = ScriptParser::new()
+            .parse(
+                &mut errors,
+                &mut taskdefs,
+                &mut tydefs,
+                &mut fundefs,
+                &mut stack,
+                &mut table,
+                &mut typer,
+                source,
+            )
             .unwrap();
         let errors = errors
             .into_iter()

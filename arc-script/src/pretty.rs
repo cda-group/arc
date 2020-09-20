@@ -37,7 +37,7 @@ impl Pretty for Script<'_> {
                 .ast
                 .fundefs
                 .iter()
-                .map(|fun| fun.pretty(pr))
+                .map(|(id, fun)| (id, fun).pretty(pr))
                 .collect::<Vec<String>>()
                 .join("\n"),
             body = self.ast.body.pretty(pr),
@@ -46,12 +46,13 @@ impl Pretty for Script<'_> {
     }
 }
 
-impl Pretty for FunDef {
+impl Pretty for (&Ident, &FunDef) {
     fn pretty(&self, pr: &Printer) -> String {
+        let (id, fundef) = self;
         format!(
             "{s0}fun {id}({params}) {{{s1}{body}{s0}}}",
-            id = self.id.pretty(pr),
-            params = self
+            id = id.pretty(pr),
+            params = fundef
                 .params
                 .iter()
                 .map(|param| format!(
@@ -61,7 +62,7 @@ impl Pretty for FunDef {
                 ))
                 .collect::<Vec<_>>()
                 .join(", "),
-            body = self.body.pretty(&pr.tab()),
+            body = fundef.body.pretty(&pr.tab()),
             s0 = pr.indent(),
             s1 = pr.tab().indent(),
         )
