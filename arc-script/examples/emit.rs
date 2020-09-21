@@ -9,6 +9,7 @@ fn main() {
         verbose: false,
         check: false,
         subcmd: SubCmd::Lib,
+        connectors: Vec::new(),
     };
     let script = arc_script::compile(source, &opt);
     println!("{}", script.emit_as_str());

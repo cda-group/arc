@@ -34,9 +34,9 @@ all         = ["provider", "manifest", "incremental", "lsp", "repl"]
 shaper      = ["z3"]
 repl        = ["linefeed"]
 provider    = ["reqwest", "http", "http-serde", "tempfile", "quick-protobuf", "pb-rs", "avro-rs", "glob"]
-manifest    = ["serde", "serde_derive", "toml", "tempfile", "http", "http-serde"]
+manifest    = ["toml", "tempfile", "http", "http-serde"]
 incremental = ["salsa"]
-lsp         = ["tower-lsp", "tokio", "codespan-lsp", "serde_json", "trie-rs", "lazy_static", "async-trait"]
+lsp         = ["tower-lsp", "tokio", "codespan-lsp", "trie-rs", "lazy_static", "async-trait"]
 
 [dependencies]
 # logos              = "0.11.0"
@@ -54,6 +54,9 @@ chrono             = "0.4.15"
 lasso              = "0.3.1"
 anyhow             = "1.0.32"
 clap               = { git = "https://github.com/clap-rs/clap/", features = ["derive"]}
+serde              = "1.0.115"
+serde_derive       = "1.0.115"
+serde_json         = "1.0.57"
 
 # -- Feature: shaper
 z3                 = { optional = true, version = "0.6.0" }
@@ -72,8 +75,6 @@ glob               = { optional = true, version = "0.3.0" }
 zip                = { optional = true, version = "0.5.6" }
 
 # -- Feature: manifest
-serde              = { optional = true, version = "1.0.115" }
-serde_derive       = { optional = true, version = "1.0.115" }
 toml               = { optional = true, version = "0.5.6" }
 tempfile           = { optional = true, version = "3.1.0" }
 
@@ -84,7 +85,6 @@ salsa              = { optional = true, version = "0.15.2" }
 tower-lsp          = { optional = true, version = "0.12.1" }
 tokio              = { optional = true, version = "0.2.22", features = ["rt-core", "macros", "io-std"] }
 codespan-lsp       = { optional = true, version = "0.10.0" }
-serde_json         = { optional = true, version = "1.0.57" }
 trie-rs            = { optional = true, version = "0.1.1" }
 lazy_static        = { optional = true, version = "1.4.0" }
 async-trait        = { optional = true, version = "0.1.37" }

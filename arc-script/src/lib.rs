@@ -60,6 +60,8 @@ pub fn compile<'i>(source: &'i str, opt: &'i Opt) -> Script<'i> {
     let mut script = Script::parse(source);
 
     if opt.debug {
+        println!("=== Opt");
+        println!("{:?}", opt);
         println!("=== Parsed");
         println!("{}", script.code(opt.verbose, &script.info));
     }

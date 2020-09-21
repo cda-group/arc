@@ -1,4 +1,7 @@
 pub use clap::Clap;
+use derive_more::Constructor;
+use serde::Deserialize;
+use std::net::SocketAddr;
 use std::path::PathBuf;
 
 #[derive(Clap, Debug)]
@@ -19,8 +22,31 @@ pub struct Opt {
     #[clap(short, long)]
     pub verbose: bool,
 
+    /// Data interface to the outside world
+    #[clap(short = 'C', parse(try_from_str = serde_json::from_str), number_of_values = 1)]
+    pub connectors: Vec<Connector>,
+
     #[clap(subcommand)]
     pub subcmd: SubCmd,
+}
+
+#[derive(Deserialize, Debug, Constructor)]
+pub struct Connector {
+    endpoint: Endpoint,
+    name: String,
+    provider: Provider,
+}
+
+#[derive(Deserialize, Debug)]
+pub enum Endpoint {
+    Source,
+    Sink,
+}
+
+#[derive(Deserialize, Debug)]
+pub enum Provider {
+    Socket(SocketAddr),
+    File(PathBuf),
 }
 
 #[derive(Clap, Debug)]
