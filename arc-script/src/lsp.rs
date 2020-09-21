@@ -104,7 +104,8 @@ impl LanguageServer for Backend {
 
     async fn initialized(&self, _: InitializedParams) {
         self.client
-            .log_message(MessageType::Info, "Arc-Script LSP - ONLINE!");
+            .log_message(MessageType::Info, "Arc-Script LSP - ONLINE!")
+            .await;
     }
 
     async fn shutdown(&self) -> Result<()> {
@@ -113,57 +114,76 @@ impl LanguageServer for Backend {
 
     async fn did_change_workspace_folders(&self, _: DidChangeWorkspaceFoldersParams) {
         self.client
-            .log_message(MessageType::Info, "workspace folders changed!");
+            .log_message(MessageType::Info, "workspace folders changed!")
+            .await;
     }
 
     async fn did_change_configuration(&self, _: DidChangeConfigurationParams) {
         self.client
-            .log_message(MessageType::Info, "configuration changed!");
+            .log_message(MessageType::Info, "configuration changed!")
+            .await;
     }
 
     async fn did_change_watched_files(&self, _: DidChangeWatchedFilesParams) {
         self.client
-            .log_message(MessageType::Info, "watched files have changed!");
+            .log_message(MessageType::Info, "watched files have changed!")
+            .await;
     }
 
     async fn execute_command(&self, _: ExecuteCommandParams) -> Result<Option<Value>> {
         self.client
-            .log_message(MessageType::Info, "command executed!");
+            .log_message(MessageType::Info, "command executed!")
+            .await;
 
         match self.client.apply_edit(WorkspaceEdit::default()).await {
-            Ok(res) if res.applied => self.client.log_message(MessageType::Info, "edit applied"),
-            Ok(_) => self
-                .client
-                .log_message(MessageType::Info, "edit not applied"),
-            Err(err) => self.client.log_message(MessageType::Error, err),
+            Ok(res) if res.applied => {
+                self.client
+                    .log_message(MessageType::Info, "edit applied")
+                    .await
+            }
+            Ok(_) => {
+                self.client
+                    .log_message(MessageType::Info, "edit not applied")
+                    .await
+            }
+            Err(_) => self.client.log_message(MessageType::Error, "error").await,
         }
 
         Ok(None)
     }
 
     async fn did_open(&self, _: DidOpenTextDocumentParams) {
-        self.client.log_message(MessageType::Info, "file opened!");
+        self.client
+            .log_message(MessageType::Info, "file opened!")
+            .await;
     }
 
     async fn did_change(&self, params: DidChangeTextDocumentParams) {
-        self.client.log_message(MessageType::Info, "file changed!");
+        self.client
+            .log_message(MessageType::Info, "file changed!")
+            .await;
         report(
             &self.client,
             &params.text_document.uri,
             &params.content_changes[0].text,
-        );
+        )
+        .await;
     }
 
     async fn did_save(&self, _: DidSaveTextDocumentParams) {
-        self.client.log_message(MessageType::Info, "file saved!");
+        self.client
+            .log_message(MessageType::Info, "file saved!")
+            .await;
     }
 
     async fn did_close(&self, _: DidCloseTextDocumentParams) {
-        self.client.log_message(MessageType::Info, "file closed!");
+        self.client
+            .log_message(MessageType::Info, "file closed!")
+            .await;
     }
 }
 
-fn report(client: &Client, uri: &Url, code: &str) {
+async fn report(client: &Client, uri: &Url, code: &str) {
     let opt = Opt {
         debug: false,
         subcmd: SubCmd::Lsp,
@@ -174,7 +194,9 @@ fn report(client: &Client, uri: &Url, code: &str) {
     };
     let script = compile(code, &opt);
     let diagnostics = script.to_lsp();
-    client.publish_diagnostics(uri.clone(), diagnostics, None);
+    client
+        .publish_diagnostics(uri.clone(), diagnostics, None)
+        .await;
 }
 
 #[tokio::main]
