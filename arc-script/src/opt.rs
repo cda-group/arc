@@ -1,8 +1,6 @@
 pub use clap::Clap;
-use derive_more::Constructor;
-use serde::Deserialize;
-use std::net::SocketAddr;
 use std::path::PathBuf;
+use crate::connector::Connector;
 
 #[derive(Clap, Debug)]
 pub struct Opt {
@@ -28,25 +26,6 @@ pub struct Opt {
 
     #[clap(subcommand)]
     pub subcmd: SubCmd,
-}
-
-#[derive(Deserialize, Debug, Constructor)]
-pub struct Connector {
-    endpoint: Endpoint,
-    name: String,
-    provider: Provider,
-}
-
-#[derive(Deserialize, Debug)]
-pub enum Endpoint {
-    Source,
-    Sink,
-}
-
-#[derive(Deserialize, Debug)]
-pub enum Provider {
-    Socket(SocketAddr),
-    File(PathBuf),
 }
 
 #[derive(Clap, Debug)]

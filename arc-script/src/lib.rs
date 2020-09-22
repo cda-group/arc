@@ -25,6 +25,7 @@ mod info;
 mod symbols;
 mod eval;
 mod dataflow;
+mod connector;
 
 // #[cfg(feature = "shaper")]
 // mod shaper;
