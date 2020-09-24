@@ -1,9 +1,9 @@
+use crate::prelude::*;
 use crate::{info::Info, typer::Typer};
 use chrono::Duration;
 use flat_map::flat_map::FlatMap;
 use lasso::Spur;
 use std::collections::HashMap;
-use crate::prelude::*;
 use {codespan::Span, derive_more::Constructor};
 
 pub type ByteIndex = usize;
@@ -158,7 +158,6 @@ pub enum ExprKind {
 
 #[derive(Debug, Clone)]
 pub struct Pattern {
-    pub vars: Vec<Ident>,
     pub kind: PatternKind,
     pub span: Span,
 }
@@ -177,8 +176,7 @@ pub enum PatternKind {
 impl From<Spanned<PatternKind>> for Pattern {
     fn from(Spanned(l, kind, r): Spanned<PatternKind>) -> Pattern {
         let span = Span::new(l as u32, r as u32);
-        let vars = vec![]; // TODO: Extract variables from patterns
-        Pattern { kind, vars, span }
+        Pattern { kind, span }
     }
 }
 
@@ -248,14 +246,6 @@ impl From<TypeKind> for Type {
 impl Type {
     pub fn new() -> Type {
         let kind = Unknown;
-        let span = None;
-        Type { kind, span }
-    }
-
-    pub fn fun(arity: usize, typer: &mut Typer) -> Type {
-        let input = (0..arity).map(|_| typer.fresh()).collect();
-        let output = typer.fresh();
-        let kind = Fun(input, output);
         let span = None;
         Type { kind, span }
     }
