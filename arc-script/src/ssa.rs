@@ -109,9 +109,9 @@ impl Expr {
 impl Ssa for UnOpKind {
     fn flatten(self, info: &mut Info) -> (Context, Self) {
         match self {
-            FunCall(a) => {
+            Call(a) => {
                 let (ac, a) = a.flatten(info);
-                (ac, FunCall(a))
+                (ac, Call(a))
             }
             _ => (Vec::new(), self),
         }

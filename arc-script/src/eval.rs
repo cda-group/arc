@@ -140,7 +140,7 @@ impl Expr {
                         F64(v) => F64(-v),
                         _ => ValueErr,
                     },
-                    FunCall(exprs) => match v {
+                    Call(exprs) => match v {
                         Fun => todo!(),
                         _ => ValueErr,
                     },

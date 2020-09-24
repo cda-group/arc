@@ -227,8 +227,8 @@ ParseBool: CompilerResult<bool> = Spanned<TBool> => parse_lit(<>);
 // * parse_lit_radix(<token>, <radix>, <prefix-len>, <suffix-len>)
 //=============================================================================
 
-ParseIndex: CompilerResult<usize> = {
-  Spanned<TIndex>     => parse_lit_radix(<>, 10, 1, 1),
+ParseIndex: CompilerResult<Index> = {
+  Spanned<TIndex>     => parse_lit_radix(<>, 10, 1, 1).map(Index),
 };
 
 ParseF32: CompilerResult<f32> = {
@@ -438,18 +438,17 @@ Op6: UnOpKind = {
 };
 
 Op7: UnOpKind = {
-  FunCall,
-  TupleIndex,
-  FieldAccess,
-  TypeCast,
+  Call,
+  Project,
+  Access,
+  Cast,
 };
 
-TypeCast:    UnOpKind = "as" <Type>        => Cast(<>);
-FieldAccess: UnOpKind = "." <Symbol>       => Access(<>);
-FunCall:     UnOpKind = "(" <Vec<Arg>> ")" => FunCall(<>);
-TupleIndex:  UnOpKind = ParseIndex => {
-  <>.map(Index)
-    .map(Project)
+Cast:    UnOpKind = "as" <Type>        => Cast(<>);
+Access:  UnOpKind = "." <Symbol>       => Access(<>);
+Call:    UnOpKind = "(" <Vec<Arg>> ")" => Call(<>);
+Project: UnOpKind = ParseIndex => {
+  <>.map(Project)
     .unwrap_or_else(|err| { errors.push(err.into()); UnOpErr })
 };
 

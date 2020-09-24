@@ -311,7 +311,7 @@ impl Constrain for Expr {
                     Cast(tv) => typer.unify(e.tv, *tv, span, errors),
                     Project(_) => return,
                     Access(_) => return,
-                    FunCall(args) => {
+                    Call(args) => {
                         let params = args.iter().map(|arg| arg.tv).collect();
                         let tv2 = typer.intern(Fun(params, self.tv));
                         typer.unify(e.tv, tv2, span, errors);

@@ -200,7 +200,7 @@ pub enum UnOpKind {
     Cast(TypeVar),
     Access(Field),
     Project(Index),
-    FunCall(Vec<Expr>),
+    Call(Vec<Expr>),
     UnOpErr,
 }
 
