@@ -467,7 +467,8 @@ Access:  UnOpKind = "." <Field>        => Access(<>);
 Call:    UnOpKind = "(" <Vec<Arg>> ")" => Call(<>);
 Project: UnOpKind = ParseIndex => {
   <>.map(Project)
-    .unwrap_or_else(|err| { errors.push(err.into()); UnOpErr })
+    .map_err(|err| errors.push(err.into()))
+    .unwrap_or(UnOpErr)
 };
 
 //=============================================================================
@@ -548,7 +549,8 @@ ExprKind11: ExprKind = {
 Lit: ExprKind = LitKind => Lit(<>);
 
 LitKind: LitKind = ParseLit => {
-  <>.unwrap_or_else(|err| { errors.push(err.into()); LitErr })
+  <>.map_err(|err| errors.push(err.into()))
+    .unwrap_or(LitErr)
 };
 
 ParseLit: CompilerResult<LitKind> = {
@@ -586,7 +588,8 @@ PatternKind0: PatternKind = {
 
 Regex: PatternKind = ParseRegex => {
   <>.map(Regex)
-    .unwrap_or_else(|err| { errors.push(err.into()); PatternErr })
+    .map_err(|err| errors.push(err.into()))
+    .unwrap_or(PatternErr)
 };
 
 PatternKind1: PatternKind = {
