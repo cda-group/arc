@@ -358,13 +358,6 @@ Var: ExprKind = <Symbol> => {
        .unwrap_or(ExprErr)
 };
 
-MethodCall: UnOpKind = <Symbol> "(" <Vec<Arg>> ")" => {
-  let (sym, args) = (<>);
-  stack.lookup(sym)
-       .map(|id| MethodCall(id, args))
-       .unwrap_or(UnOpErr)
-};
-
 TypeDef: (Ident, TypeDef) = "type" <Symbol> "=" <Type> => {
   let (sym, tv) = (<>);
   let id = table.insert(Decl::new(sym, tv, TypeDecl));
@@ -446,7 +439,6 @@ Op6: UnOpKind = {
 
 Op7: UnOpKind = {
   FunCall,
-  MethodCall,
   TupleIndex,
   FieldAccess,
   TypeCast,

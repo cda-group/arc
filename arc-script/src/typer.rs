@@ -309,7 +309,6 @@ impl Constrain for Expr {
                     }
                     Neg => typer.unify(self.tv, e.tv, span, errors),
                     Cast(tv) => typer.unify(e.tv, *tv, span, errors),
-                    MethodCall(_, _) => return, // TODO
                     Project(_) => return,
                     Access(_) => return,
                     FunCall(args) => {

@@ -113,10 +113,6 @@ impl Ssa for UnOpKind {
                 let (ac, a) = a.flatten(info);
                 (ac, FunCall(a))
             }
-            MethodCall(id, a) => {
-                let (ac, a) = a.flatten(info);
-                (ac, MethodCall(id, a))
-            }
             _ => (Vec::new(), self),
         }
     }

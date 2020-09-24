@@ -198,7 +198,6 @@ pub enum UnOpKind {
     Not,
     Neg,
     Cast(TypeVar),
-    MethodCall(Ident, Vec<Expr>),
     Access(Field),
     Project(Index),
     FunCall(Vec<Expr>),

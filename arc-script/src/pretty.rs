@@ -184,12 +184,6 @@ impl Pretty for (&UnOpKind, &Expr) {
             Not => format!("!{}", e.pretty(pr)),
             Neg => format!("-{}", e.pretty(pr)),
             Cast(ty) => format!("{}:{}", e.pretty(pr), ty.pretty(pr)),
-            MethodCall(id, args) => format!(
-                "{e}.{id}({args})",
-                e = e.pretty(pr),
-                id = id.pretty(pr),
-                args = args.pretty(pr)
-            ),
             Project(idx) => format!("{}.{}", e.pretty(pr), idx.pretty(pr)),
             Access(_) => todo!(),
             FunCall(args) => format!("{e}({args})", e = e.pretty(pr), args = args.pretty(pr)),

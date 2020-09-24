@@ -151,10 +151,6 @@ impl Expr {
                     Access(field) => match v {
                         _ => todo!(),
                     },
-                    MethodCall(id, exprs) => match v {
-                        _ => todo!(),
-                        _ => ValueErr,
-                    },
                     _ => ValueErr,
                 }
             }

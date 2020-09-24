@@ -60,7 +60,6 @@ impl UnOpKind {
     fn for_each_expr<F: FnMut(&mut Expr)>(&mut self, f: &mut F) {
         match self {
             FunCall(ps) => ps.iter_mut().for_each(|p| p.for_each_expr(f)),
-            MethodCall(_, ps) => ps.iter_mut().for_each(|p| p.for_each_expr(f)),
             _ => {}
         }
     }
