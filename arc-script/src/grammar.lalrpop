@@ -1,19 +1,9 @@
 use {
-  crate::{ast::*, parser::*},
+  crate::prelude::*,
+  crate::parser::*,
   std::collections::HashMap,
   lalrpop_util::ErrorRecovery,
   chrono::Duration,
-  ExprKind::*,
-  BinOpKind::*,
-  UnOpKind::*,
-  DeclKind::*,
-  DimKind::*,
-  DimOpKind::*,
-  ScalarKind::*,
-  TypeKind::*,
-  PatternKind::*,
-  LitKind::*,
-  BIFKind::*,
 };
 
 //=============================================================================
@@ -428,7 +418,7 @@ Op1: BinOpKind = {
 };
 
 Op2: BinOpKind = {
-  "==" => Eq,
+  "==" => Equ,
   "!=" => Neq,
 };
 

@@ -1,6 +1,6 @@
 #![warn(clippy::all)]
 
-use crate::{ast::*, opt::*, pretty::*};
+use crate::{prelude::*, opt::*, pretty::*};
 pub use anyhow::Result;
 use std::io::prelude::*;
 
@@ -14,6 +14,7 @@ pub mod opt;
 pub mod pretty;
 pub mod io;
 
+mod prelude;
 mod ast;
 mod error;
 mod parser;

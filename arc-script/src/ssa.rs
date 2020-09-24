@@ -1,9 +1,4 @@
-use crate::{ast::*, info::*, utils::*};
-use BinOpKind::*;
-use ExprKind::*;
-use ScalarKind::*;
-use TypeKind::*;
-use UnOpKind::*;
+use crate::{prelude::*, info::*, utils::*};
 
 type Context = Vec<(Ident, Expr)>;
 

@@ -1,13 +1,4 @@
-use crate::{ast::*, info::Info, utils::Printer};
-use BinOpKind::*;
-use DimKind::*;
-use DimOpKind::*;
-use ExprKind::*;
-use LitKind::*;
-use PatternKind::*;
-use ScalarKind::*;
-use TypeKind::*;
-use UnOpKind::*;
+use crate::{prelude::*, info::Info, utils::Printer};
 
 pub trait Pretty {
     fn pretty(&self, pr: &Printer) -> String;
@@ -215,7 +206,7 @@ impl Pretty for BinOpKind {
             Sub  => "-".to_string(),
             Mul  => "*".to_string(),
             Div  => "/".to_string(),
-            Eq   => "==".to_string(),
+            Equ  => "==".to_string(),
             Neq  => "!=".to_string(),
             Gt   => ">".to_string(),
             Lt   => "<".to_string(),

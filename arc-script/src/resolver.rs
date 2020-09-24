@@ -1,5 +1,4 @@
-use crate::ast::*;
-use ExprKind::*;
+use crate::prelude::*;
 
 impl Script {
     pub fn assign_scope(&mut self) {

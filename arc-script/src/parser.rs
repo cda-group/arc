@@ -1,5 +1,6 @@
 use {
-    crate::{ast::*, error::*, info::Info, symbols::*, typer::Typer},
+    crate::{error::*, info::Info, symbols::*, typer::Typer},
+    crate::prelude::*,
     codespan::Span,
     grammar::*,
     lalrpop_util::lalrpop_mod,

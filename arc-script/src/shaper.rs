@@ -1,8 +1,5 @@
-use crate::{ast::*, error::*, info::Info};
+use crate::{prelude::*, error::*, info::Info};
 use z3::{ast::Int, Config, Context, SatResult, Solver};
-use DimKind::*;
-use DimOpKind::*;
-use ExprKind::*;
 
 impl<'i> Script<'i> {
     pub fn infer_shape(&mut self) {

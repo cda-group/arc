@@ -2,10 +2,7 @@ use crate::{info::Info, typer::Typer};
 use chrono::Duration;
 use lasso::Spur;
 use std::collections::HashMap;
-use DimKind::*;
-use ExprKind::*;
-use LitKind::*;
-use TypeKind::*;
+use crate::prelude::*;
 use {codespan::Span, derive_more::Constructor};
 
 pub type ByteIndex = usize;
@@ -175,7 +172,7 @@ pub enum BinOpKind {
     Sub,
     Mul,
     Div,
-    Eq,
+    Equ,
     Neq,
     Or,
     And,

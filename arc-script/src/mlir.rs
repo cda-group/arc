@@ -1,10 +1,5 @@
-use crate::{ast::*, info::Info, typer::*, utils::Printer};
+use crate::{prelude::*, info::Info, typer::*, utils::Printer};
 use std::cell::RefMut;
-use BinOpKind::*;
-use ExprKind::*;
-use LitKind::*;
-use ScalarKind::*;
-use TypeKind::*;
 
 impl Script<'_> {
     pub fn mlir(&self) -> String {

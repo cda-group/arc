@@ -1,8 +1,6 @@
-use crate::ast::*;
+use crate::prelude::*;
 use crate::info::Info;
 use crate::symbols::SymbolTable;
-use ExprKind::*;
-use UnOpKind::*;
 
 impl SyntaxTree {
     pub fn for_each_expr<F: FnMut(&mut Expr)>(&mut self, ref mut f: F) {

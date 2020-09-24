@@ -1,7 +1,6 @@
-use crate::ast::*;
+use crate::prelude::*;
 use crate::error::CompilerError;
 use lasso::Rodeo;
-use DeclKind::*;
 
 /// The symbol-table is used to store symbolic identifiers for functions, let-expressions,
 /// and type-aliases outside of the AST. Each symbols in the symbol table additionally stores a

@@ -190,12 +190,12 @@ impl Expr {
                     (I64(l), Div, I64(r)) => I64(l / r),
                     (F32(l), Div, F32(r)) => F32(l / r),
                     (F64(l), Div, F64(r)) => F64(l / r),
-                    // Eq
-                    (I8(l), Eq, I8(r)) => Bool(l == r),
-                    (I16(l), Eq, I16(r)) => Bool(l == r),
-                    (I32(l), Eq, I32(r)) => Bool(l == r),
-                    (I64(l), Eq, I64(r)) => Bool(l == r),
-                    (Unit, Eq, Unit) => Bool(true),
+                    // Equ
+                    (I8(l), Equ, I8(r)) => Bool(l == r),
+                    (I16(l), Equ, I16(r)) => Bool(l == r),
+                    (I32(l), Equ, I32(r)) => Bool(l == r),
+                    (I64(l), Equ, I64(r)) => Bool(l == r),
+                    (Unit, Equ, Unit) => Bool(true),
                     // Neq
                     (I8(l), Neq, I8(r)) => Bool(l == r),
                     (I16(l), Neq, I16(r)) => Bool(l == r),

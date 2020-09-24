@@ -1,6 +1,4 @@
-use ExprKind::*;
-use BinOpKind::*;
-use {crate::ast::*, std::collections::HashMap};
+use {crate::prelude::*, std::collections::HashMap};
 
 impl Script<'_> {
     pub fn prune(&mut self) {

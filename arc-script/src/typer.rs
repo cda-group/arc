@@ -1,12 +1,5 @@
-use BinOpKind::*;
-use DimKind::*;
-use ExprKind::*;
-use LitKind::*;
-use ScalarKind::*;
-use TypeKind::*;
-use UnOpKind::*;
 use {
-    crate::{ast::*, error::*, info::*, symbols::*},
+    crate::{prelude::*, error::*, info::*, symbols::*},
     codespan::Span,
     ena::unify::{InPlace, UnifyKey, UnifyValue},
 };
@@ -295,7 +288,7 @@ impl Constrain for Expr {
                     typer.unify(l.tv, r.tv, span, errors);
                     typer.unify(self.tv, r.tv, span, errors)
                 }
-                Eq | Neq | Gt | Lt | Geq | Leq => {
+                Equ | Neq | Gt | Lt | Geq | Leq => {
                     typer.unify(l.tv, r.tv, span, errors);
                     typer.unify_var_val(self.tv, Scalar(Bool), span, errors)
                 }
