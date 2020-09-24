@@ -1,5 +1,5 @@
 use {
-    crate::{prelude::*, info::*, pretty::*},
+    crate::{info::*, prelude::*, pretty::*},
     codespan::Span,
     codespan_reporting::{
         diagnostic::{self, Label},
@@ -91,6 +91,9 @@ pub enum CompilerError {
         span: Span,
     },
     NameClash,
+    DuplicateField {
+        field: Field,
+    },
 }
 
 /// Converts a compiler error into a diagnostic which can be emitted by codespan.
@@ -143,6 +146,11 @@ impl CompilerError {
                 .with_message("Match is non-exhaustive")
                 .with_labels(vec![Label::primary((), *span).with_message("Missing cases")]),
             CompilerError::NameClash => Diagnostic::error().with_message("Name clash"),
+            CompilerError::DuplicateField { field } => Diagnostic::error()
+                .with_message("Found duplicate key")
+                .with_labels(vec![
+                    Label::primary((), field.span).with_message(info.table.resolve(&field.key))
+                ]),
         }
     }
 }

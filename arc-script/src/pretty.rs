@@ -263,6 +263,12 @@ impl Pretty for Ident {
     }
 }
 
+impl Pretty for Field {
+    fn pretty(&self, pr: &Printer) -> String {
+        pr.info.table.resolve(&self.key).to_string()
+    }
+}
+
 impl Pretty for SymbolKey {
     fn pretty(&self, pr: &Printer) -> String {
         pr.info.table.resolve(self).to_string()
@@ -312,5 +318,18 @@ impl Pretty for Pattern {
             Wildcard => "_".to_owned(),
             PatternErr => "☇".to_string(),
         }
+    }
+}
+
+impl<K, V> Pretty for Map<K, V>
+where
+    K: Pretty,
+    V: Pretty,
+{
+    fn pretty(&self, pr: &Printer) -> String {
+        self.iter()
+            .map(|(k, v)| format!("{}:{}", k.pretty(pr), v.pretty(pr)))
+            .collect::<Vec<String>>()
+            .join(", ")
     }
 }

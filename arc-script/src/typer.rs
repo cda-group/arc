@@ -276,7 +276,7 @@ impl Constrain for Expr {
                 let fields = fields
                     .iter()
                     .map(|(sym, e)| (*sym, e.tv))
-                    .collect::<Vec<_>>();
+                    .collect::<Map<_, _>>();
                 typer.unify_var_val(self.tv, Struct(fields), span, errors);
             }
             ConsTuple(args) => {

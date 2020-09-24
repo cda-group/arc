@@ -1,5 +1,6 @@
 use crate::{info::Info, typer::Typer};
 use chrono::Duration;
+use flat_map::flat_map::FlatMap;
 use lasso::Spur;
 use std::collections::HashMap;
 use crate::prelude::*;
@@ -12,7 +13,7 @@ pub struct Spanned<T>(pub ByteIndex, pub T, pub ByteIndex);
 pub type SymbolName<'i> = &'i str;
 pub type SymbolKey = Spur;
 pub type Clause = (Pattern, Expr);
-pub type Field = SymbolKey;
+pub type Map<K, V> = FlatMap<K, V>;
 
 #[derive(Constructor)]
 pub struct Script<'i> {
@@ -115,6 +116,21 @@ impl Expr {
     }
 }
 
+#[derive(Debug, Clone, Copy, Eq, Ord, Constructor, Educe)]
+#[educe(PartialEq, PartialOrd)]
+pub struct Field {
+    pub key: SymbolKey,
+    #[educe(PartialEq(ignore), PartialOrd(ignore))]
+    pub span: Span,
+}
+
+impl From<Spanned<SymbolKey>> for Field {
+    fn from(Spanned(l, key, r): Spanned<SymbolKey>) -> Field {
+        let span = Span::new(l as u32, r as u32);
+        Field::new(key, span)
+    }
+}
+
 #[derive(Debug, Eq, PartialEq, Clone, Copy, Hash)]
 pub struct Ident(pub usize);
 
@@ -125,7 +141,7 @@ pub struct Index(pub usize);
 pub enum ExprKind {
     Lit(LitKind),
     ConsArray(Vec<Expr>),
-    ConsStruct(Vec<(SymbolKey, Expr)>),
+    ConsStruct(Map<Field, Expr>),
     ConsTuple(Vec<Expr>),
     Var(Ident),
     Closure(Vec<Ident>, Box<Expr>),
@@ -249,7 +265,7 @@ impl Type {
 pub enum TypeKind {
     Scalar(ScalarKind),
     Optional(TypeVar),
-    Struct(Vec<(SymbolKey, TypeVar)>),
+    Struct(Map<Field, TypeVar>),
     Array(TypeVar, Shape),
     Tuple(Vec<TypeVar>),
     Fun(Vec<TypeVar>, TypeVar),
