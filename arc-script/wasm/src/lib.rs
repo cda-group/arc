@@ -21,7 +21,7 @@ pub fn compile(source: &str) -> String {
     };
     let script = arc_script::compile(source, &opt);
     if script.info.errors.is_empty() {
-        script.body.mlir(&script.info)
+        script.mlir()
     } else {
         script.emit_as_str()
     }
