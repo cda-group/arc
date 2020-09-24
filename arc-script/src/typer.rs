@@ -179,6 +179,20 @@ impl Typer {
                 }
                 self.unify(*ret1, *ret2, span, errors);
             }
+            (Tuple(args1), Tuple(args2)) if args1.len() == args2.len() => {
+                for (arg1, arg2) in args1.into_iter().zip(args2.into_iter()) {
+                    self.unify(*arg1, *arg2, span, errors);
+                }
+            }
+            (Struct(map1), Struct(map2)) => {
+                for (field1, tv1) in map1.into_iter() {
+                    if let Some(tv2) = map2.get(field1) {
+                        self.unify(*tv1, *tv2, span, errors);
+                    }
+                }
+            }
+            (Stream(tv1), Stream(tv2)) => self.unify(*tv1, *tv2, span, errors),
+            (Optional(tv1), Optional(tv2)) => self.unify(*tv1, *tv2, span, errors),
             // This seems a bit out of place, but it is needed to ensure that monotypes unify
             _ => self.unify_var_var(tv1, tv2, span, errors),
         }
