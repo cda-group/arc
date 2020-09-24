@@ -1,6 +1,6 @@
 #![warn(clippy::all)]
 
-use crate::{prelude::*, opt::*, pretty::*};
+use crate::{opt::*, prelude::*, pretty::*};
 pub use anyhow::Result;
 use std::io::prelude::*;
 
@@ -10,23 +10,23 @@ mod utils;
 #[macro_use]
 extern crate educe;
 
+pub mod io;
 pub mod opt;
 pub mod pretty;
-pub mod io;
 
-mod prelude;
 mod ast;
-mod error;
-mod parser;
-mod typer;
-mod ssa;
-mod pruner;
-mod mlir;
-mod info;
-mod symbols;
-mod eval;
-mod dataflow;
 mod connector;
+mod dataflow;
+mod error;
+mod eval;
+mod info;
+mod mlir;
+mod parser;
+mod prelude;
+mod pruner;
+mod ssa;
+mod symbols;
+mod typer;
 
 // #[cfg(feature = "shaper")]
 // mod shaper;

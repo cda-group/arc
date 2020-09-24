@@ -1,6 +1,6 @@
+use crate::connector::Connector;
 pub use clap::Clap;
 use std::path::PathBuf;
-use crate::connector::Connector;
 
 #[derive(Clap, Debug)]
 pub struct Opt {

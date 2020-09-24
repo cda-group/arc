@@ -1,5 +1,5 @@
 use {
-    crate::{prelude::*, error::*, info::*, symbols::*},
+    crate::{error::*, info::*, prelude::*, symbols::*},
     codespan::Span,
     ena::unify::{InPlace, UnifyKey, UnifyValue},
 };
@@ -301,24 +301,22 @@ impl Constrain for Expr {
                 Seq => typer.unify(self.tv, r.tv, span, errors),
                 BinOpErr => return,
             },
-            UnOp(kind, e) => {
-                match kind {
-                    Not => {
-                        typer.unify(self.tv, e.tv, span, errors);
-                        typer.unify_var_val(e.tv, Scalar(Bool), span, errors);
-                    }
-                    Neg => typer.unify(self.tv, e.tv, span, errors),
-                    Cast(tv) => typer.unify(e.tv, *tv, span, errors),
-                    Project(_) => return,
-                    Access(_) => return,
-                    Call(args) => {
-                        let params = args.iter().map(|arg| arg.tv).collect();
-                        let tv2 = typer.intern(Fun(params, self.tv));
-                        typer.unify(e.tv, tv2, span, errors);
-                    }
-                    UnOpErr => return,
+            UnOp(kind, e) => match kind {
+                Not => {
+                    typer.unify(self.tv, e.tv, span, errors);
+                    typer.unify_var_val(e.tv, Scalar(Bool), span, errors);
                 }
-            }
+                Neg => typer.unify(self.tv, e.tv, span, errors),
+                Cast(tv) => typer.unify(e.tv, *tv, span, errors),
+                Project(_) => return,
+                Access(_) => return,
+                Call(args) => {
+                    let params = args.iter().map(|arg| arg.tv).collect();
+                    let tv2 = typer.intern(Fun(params, self.tv));
+                    typer.unify(e.tv, tv2, span, errors);
+                }
+                UnOpErr => return,
+            },
             If(c, t, e) => {
                 typer.unify_var_val(c.tv, Scalar(Bool), span, errors);
                 typer.unify(t.tv, e.tv, span, errors);

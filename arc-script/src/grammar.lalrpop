@@ -575,30 +575,37 @@ BIF: BIFKind = {
 // Patterns
 //=============================================================================
 
-Clause = <RootPattern> "=>" <Body>;
+Clause = <RootPat> "=>" <Body>;
 
-RootPattern = Pattern<PatternKind0>;
+RootPat = Pat<PatKind0>;
+LeafPat = Pat<PatKind1>;
 
-Pattern<PatternKind>: Pattern = Spanned<PatternKind> => Pattern::from(<>);
+Pat<PatKind>: Pat = Spanned<PatKind> => Pat::from(<>);
 
-PatternKind0: PatternKind = {
-  <Box<Pattern<PatternKind0>>> "|" <Box<Pattern<PatternKind1>>> => Either(<>),
-  PatternKind1
+PatKind0: PatKind = {
+  PatOr,
+  PatKind1
 };
 
-Regex: PatternKind = ParseRegex => {
-  <>.map(Regex)
+PatKind1: PatKind = {
+  PatVal,
+  //PatVar,
+  PatTuple,
+  PatIgnore,
+};
+
+PatOr: PatKind = <Box<RootPat>> "|" <Box<LeafPat>> => PatOr(<>);
+PatRegex: PatKind = ParseRegex => {
+  <>.map(PatRegex)
     .map_err(|err| errors.push(err.into()))
-    .unwrap_or(PatternErr)
+    .unwrap_or(PatErr)
 };
 
-PatternKind1: PatternKind = {
-  Regex                      => <>,
-  LitKind                    => Val(<>),
-//  Symbol                     => Var(<>),
-  "(" <Vec<RootPattern>> ")" => DeconsTuple(<>),
-  "_"                        => Wildcard,
-};
+PatVal:    PatKind = LitKind                => PatVal(<>);
+//PatVar:    PatKind = Symbol                 => PatVar(<>);
+PatTuple:  PatKind = "(" <Vec<RootPat>> ")" => PatTuple(<>);
+PatStruct: PatKind = "{" <Vec<RootPat>> "}" => PatStruct(<>);
+PatIgnore: PatKind = "_"                    => PatIgnore;
 
 //=============================================================================
 // Types
@@ -609,12 +616,17 @@ TypeAnnot: TypeVar = (":" <Type>)?     => <>.unwrap_or_else(|| typer.fresh());
 TypeElem:  TypeVar = (<Type> ";")?     => <>.unwrap_or_else(|| typer.fresh());
 
 TypeKind: TypeKind = {
-  ScalarKind                      => Scalar(<>),
-  <Type> "?"                      => Optional(<>),
-  "{" <Map<Field, Type>> "}"      => Struct(<>),
-  "[" <TypeElem> <Shape> "]"      => Array(<>),
+  Scalar,
+  Optional,
+  Struct,
+  Array,
   ! => { errors.push(<>.into()); TypeErr },
 };
+
+Struct:   TypeKind = "{" <Map<Field, Type>> "}" => Struct(<>);
+Optional: TypeKind = <Type> "?"                 => Optional(<>);
+Scalar:   TypeKind = ScalarKind                 => Scalar(<>);
+Array:    TypeKind = "[" <TypeElem> <Shape> "]" => Array(<>);
 
 ScalarKind: ScalarKind = {
   "i8"   => I8,

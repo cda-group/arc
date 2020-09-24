@@ -12,7 +12,7 @@ pub struct Spanned<T>(pub ByteIndex, pub T, pub ByteIndex);
 
 pub type SymbolName<'i> = &'i str;
 pub type SymbolKey = Spur;
-pub type Clause = (Pattern, Expr);
+pub type Clause = (Pat, Expr);
 pub type Map<K, V> = FlatMap<K, V>;
 
 #[derive(Constructor)]
@@ -157,26 +157,27 @@ pub enum ExprKind {
 }
 
 #[derive(Debug, Clone)]
-pub struct Pattern {
-    pub kind: PatternKind,
+pub struct Pat {
+    pub kind: PatKind,
     pub span: Span,
 }
 
 #[derive(Debug, Clone)]
-pub enum PatternKind {
-    Regex(regex::Regex),
-    DeconsTuple(Vec<Pattern>),
-    Val(LitKind),
-    Bind(Ident),
-    Either(Box<Pattern>, Box<Pattern>),
-    Wildcard,
-    PatternErr,
+pub enum PatKind {
+    PatRegex(regex::Regex),
+    PatTuple(Vec<Pat>),
+    PatStruct(Vec<Pat>),
+    PatVal(LitKind),
+    PatVar(Ident),
+    PatOr(Box<Pat>, Box<Pat>),
+    PatIgnore,
+    PatErr,
 }
 
-impl From<Spanned<PatternKind>> for Pattern {
-    fn from(Spanned(l, kind, r): Spanned<PatternKind>) -> Pattern {
+impl From<Spanned<PatKind>> for Pat {
+    fn from(Spanned(l, kind, r): Spanned<PatKind>) -> Pat {
         let span = Span::new(l as u32, r as u32);
-        Pattern { kind, span }
+        Pat { kind, span }
     }
 }
 

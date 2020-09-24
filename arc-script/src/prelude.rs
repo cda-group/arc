@@ -5,7 +5,7 @@ pub use crate::ast::DimKind::*;
 pub use crate::ast::DimOpKind::*;
 pub use crate::ast::ExprKind::*;
 pub use crate::ast::LitKind::*;
-pub use crate::ast::PatternKind::*;
+pub use crate::ast::PatKind::*;
 pub use crate::ast::ScalarKind::*;
 pub use crate::ast::TypeKind::*;
 pub use crate::ast::UnOpKind::*;

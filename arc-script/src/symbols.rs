@@ -1,5 +1,5 @@
-use crate::prelude::*;
 use crate::error::CompilerError;
+use crate::prelude::*;
 use lasso::Rodeo;
 
 /// The symbol-table is used to store symbolic identifiers for functions, let-expressions,

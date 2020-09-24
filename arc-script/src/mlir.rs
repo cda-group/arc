@@ -1,4 +1,4 @@
-use crate::{prelude::*, info::Info, typer::*, utils::Printer};
+use crate::{info::Info, prelude::*, typer::*, utils::Printer};
 use std::cell::RefMut;
 
 impl Script<'_> {

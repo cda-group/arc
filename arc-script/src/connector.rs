@@ -21,4 +21,3 @@ pub enum Provider {
     Socket(SocketAddr),
     File(PathBuf),
 }
-

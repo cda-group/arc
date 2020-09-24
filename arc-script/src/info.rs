@@ -1,8 +1,8 @@
-use std::cell::RefCell;
 use crate::error::CompilerError;
 use crate::symbols::SymbolTable;
 use crate::typer::Typer;
 use derive_more::Constructor;
+use std::cell::RefCell;
 
 #[derive(Constructor)]
 pub struct Info<'i> {

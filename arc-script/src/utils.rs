@@ -1,5 +1,5 @@
-use crate::prelude::*;
 use crate::info::Info;
+use crate::prelude::*;
 use crate::symbols::SymbolTable;
 
 impl SyntaxTree {

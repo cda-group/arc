@@ -1,4 +1,4 @@
-use crate::{prelude::*, info::Info, utils::Printer};
+use crate::{info::Info, prelude::*, utils::Printer};
 
 pub trait Pretty {
     fn pretty(&self, pr: &Printer) -> String;
@@ -307,16 +307,17 @@ impl Pretty for DimOpKind {
     }
 }
 
-impl Pretty for Pattern {
+impl Pretty for Pat {
     fn pretty(&self, pr: &Printer) -> String {
         match &self.kind {
-            Regex(s) => format!(r#"r"{}""#, s.clone()),
-            Either(l, r) => format!("{} | {}", l.pretty(pr), r.pretty(pr)),
-            Val(l) => l.pretty(pr),
-            Bind(x) => x.pretty(pr),
-            DeconsTuple(vs) => format!("({})", vs.pretty(pr)),
-            Wildcard => "_".to_owned(),
-            PatternErr => "☇".to_string(),
+            PatRegex(s) => format!(r#"r"{}""#, s.clone()),
+            PatOr(l, r) => format!("{} | {}", l.pretty(pr), r.pretty(pr)),
+            PatVal(l) => l.pretty(pr),
+            PatVar(x) => x.pretty(pr),
+            PatTuple(vs) => format!("({})", vs.pretty(pr)),
+            PatStruct(vs) => format!("{{ {} }}", vs.pretty(pr)),
+            PatIgnore => "_".to_owned(),
+            PatErr => "☇".to_string(),
         }
     }
 }
