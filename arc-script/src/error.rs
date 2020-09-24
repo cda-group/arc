@@ -94,6 +94,9 @@ pub enum CompilerError {
     DuplicateField {
         field: Field,
     },
+    DuplicateVariant {
+        variant: Variant,
+    },
 }
 
 /// Converts a compiler error into a diagnostic which can be emitted by codespan.
@@ -150,6 +153,11 @@ impl CompilerError {
                 .with_message("Found duplicate key")
                 .with_labels(vec![
                     Label::primary((), field.span).with_message(info.table.resolve(&field.key))
+                ]),
+            CompilerError::DuplicateVariant { variant } => Diagnostic::error()
+                .with_message("Found duplicate key")
+                .with_labels(vec![
+                    Label::primary((), variant.span).with_message(info.table.resolve(&variant.key))
                 ]),
         }
     }

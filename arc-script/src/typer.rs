@@ -191,6 +191,13 @@ impl Typer {
                     }
                 }
             }
+            (Enum(map1), Enum(map2)) => {
+                for (variant1, tv1) in map1.into_iter() {
+                    if let Some(tv2) = map2.get(variant1) {
+                        self.unify(*tv1, *tv2, span, errors);
+                    }
+                }
+            }
             (Stream(tv1), Stream(tv2)) => self.unify(*tv1, *tv2, span, errors),
             (Optional(tv1), Optional(tv2)) => self.unify(*tv1, *tv2, span, errors),
             // This seems a bit out of place, but it is needed to ensure that monotypes unify
@@ -289,9 +296,16 @@ impl Constrain for Expr {
             ConsStruct(fields) => {
                 let fields = fields
                     .iter()
-                    .map(|(sym, e)| (*sym, e.tv))
+                    .map(|(field, arg)| (*field, arg.tv))
                     .collect::<Map<_, _>>();
                 typer.unify_var_val(self.tv, Struct(fields), span, errors);
+            }
+            ConsEnum(variants) => {
+                let variants = variants
+                    .iter()
+                    .map(|(variant, arg)| (*variant, arg.tv))
+                    .collect::<Map<_, _>>();
+                typer.unify_var_val(self.tv, Enum(variants), span, errors);
             }
             ConsTuple(args) => {
                 let tvs = args.iter().map(|arg| arg.tv).collect();

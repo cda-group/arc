@@ -131,6 +131,21 @@ impl From<Spanned<SymbolKey>> for Field {
     }
 }
 
+#[derive(Debug, Clone, Copy, Eq, Ord, Constructor, Educe)]
+#[educe(PartialEq, PartialOrd)]
+pub struct Variant {
+    pub key: SymbolKey,
+    #[educe(PartialEq(ignore), PartialOrd(ignore))]
+    pub span: Span,
+}
+
+impl From<Spanned<SymbolKey>> for Variant {
+    fn from(Spanned(l, key, r): Spanned<SymbolKey>) -> Variant {
+        let span = Span::new(l as u32, r as u32);
+        Variant::new(key, span)
+    }
+}
+
 #[derive(Debug, Eq, PartialEq, Clone, Copy, Hash)]
 pub struct Ident(pub usize);
 
@@ -142,6 +157,7 @@ pub enum ExprKind {
     Lit(LitKind),
     ConsArray(Vec<Expr>),
     ConsStruct(Map<Field, Expr>),
+    ConsEnum(Map<Variant, Expr>),
     ConsTuple(Vec<Expr>),
     Var(Ident),
     Closure(Vec<Ident>, Box<Expr>),
@@ -257,6 +273,7 @@ pub enum TypeKind {
     Scalar(ScalarKind),
     Optional(TypeVar),
     Struct(Map<Field, TypeVar>),
+    Enum(Map<Variant, TypeVar>),
     Array(TypeVar, Shape),
     Tuple(Vec<TypeVar>),
     Fun(Vec<TypeVar>, TypeVar),

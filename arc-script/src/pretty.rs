@@ -141,6 +141,7 @@ impl Pretty for Expr {
             UnOp(op, e) => (op, e.as_ref()).pretty(pr),
             ConsArray(args) => format!("[{args}]", args = args.pretty(pr)),
             ConsStruct(fields) => format!("{{ {fields} }}", fields = fields.pretty(pr)),
+            ConsEnum(variants) => format!("{{ {variants} }}", variants = variants.pretty(pr)),
             ConsTuple(args) => format!("({args})", args = args.pretty(pr)),
             Sink(id) => format!("sink::{id}", id = id.pretty(pr)),
             Source(id) => format!("source::{id}", id = id.pretty(pr)),
@@ -236,6 +237,7 @@ impl Pretty for Type {
             Scalar(Str) => "str".to_string(),
             Scalar(Unit) => "()".to_string(),
             Struct(fields) => format!("{{ {fields} }}", fields = fields.pretty(pr),),
+            Enum(variants) => format!("{{ {variants} }}", variants = variants.pretty(pr),),
             Array(ty, shape) => format!(
                 "[{ty}; {shape}]",
                 ty = ty.pretty(pr),
@@ -264,6 +266,12 @@ impl Pretty for Ident {
 }
 
 impl Pretty for Field {
+    fn pretty(&self, pr: &Printer) -> String {
+        pr.info.table.resolve(&self.key).to_string()
+    }
+}
+
+impl Pretty for Variant {
     fn pretty(&self, pr: &Printer) -> String {
         pr.info.table.resolve(&self.key).to_string()
     }
@@ -322,14 +330,25 @@ impl Pretty for Pat {
     }
 }
 
-impl<K, V> Pretty for Map<K, V>
+impl<V> Pretty for Map<Field, V>
 where
-    K: Pretty,
     V: Pretty,
 {
     fn pretty(&self, pr: &Printer) -> String {
         self.iter()
             .map(|(k, v)| format!("{}:{}", k.pretty(pr), v.pretty(pr)))
+            .collect::<Vec<String>>()
+            .join(", ")
+    }
+}
+
+impl<V> Pretty for Map<Variant, V>
+where
+    V: Pretty,
+{
+    fn pretty(&self, pr: &Printer) -> String {
+        self.iter()
+            .map(|(k, v)| format!("{} of {}", k.pretty(pr), v.pretty(pr)))
             .collect::<Vec<String>>()
             .join(", ")
     }
