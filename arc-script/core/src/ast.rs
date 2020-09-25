@@ -3,6 +3,7 @@ use crate::{info::Info, typer::Typer};
 use chrono::Duration;
 use flat_map::flat_map::FlatMap;
 use lasso::Spur;
+use spanned_derive::{MaybeSpanned, Spanned};
 use std::collections::HashMap;
 use {codespan::Span, derive_more::Constructor};
 
@@ -116,7 +117,7 @@ impl Expr {
     }
 }
 
-#[derive(Debug, Clone, Copy, Eq, Ord, Constructor, Educe)]
+#[derive(Debug, Clone, Copy, Eq, Ord, Constructor, Educe, Spanned)]
 #[educe(PartialEq, PartialOrd)]
 pub struct Field {
     pub key: SymbolKey,
@@ -124,26 +125,12 @@ pub struct Field {
     pub span: Span,
 }
 
-impl From<Spanned<SymbolKey>> for Field {
-    fn from(Spanned(l, key, r): Spanned<SymbolKey>) -> Field {
-        let span = Span::new(l as u32, r as u32);
-        Field::new(key, span)
-    }
-}
-
-#[derive(Debug, Clone, Copy, Eq, Ord, Constructor, Educe)]
+#[derive(Debug, Clone, Copy, Eq, Ord, Constructor, Educe, Spanned)]
 #[educe(PartialEq, PartialOrd)]
 pub struct Variant {
     pub key: SymbolKey,
     #[educe(PartialEq(ignore), PartialOrd(ignore))]
     pub span: Span,
-}
-
-impl From<Spanned<SymbolKey>> for Variant {
-    fn from(Spanned(l, key, r): Spanned<SymbolKey>) -> Variant {
-        let span = Span::new(l as u32, r as u32);
-        Variant::new(key, span)
-    }
 }
 
 #[derive(Debug, Eq, PartialEq, Clone, Copy, Hash)]
@@ -172,7 +159,7 @@ pub enum ExprKind {
     ExprErr,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Spanned)]
 pub struct Pat {
     pub kind: PatKind,
     pub span: Span,
@@ -188,13 +175,6 @@ pub enum PatKind {
     PatOr(Box<Pat>, Box<Pat>),
     PatIgnore,
     PatErr,
-}
-
-impl From<Spanned<PatKind>> for Pat {
-    fn from(Spanned(l, kind, r): Spanned<PatKind>) -> Pat {
-        let span = Span::new(l as u32, r as u32);
-        Pat { kind, span }
-    }
 }
 
 #[derive(Debug, Clone, Copy)]
@@ -238,26 +218,12 @@ pub enum UnOpKind {
 #[derive(Debug, Eq, PartialEq, Copy, Clone)]
 pub struct TypeVar(pub u32);
 
-#[derive(Debug, Eq, Clone, Educe)]
+#[derive(Debug, Eq, Clone, Educe, MaybeSpanned)]
 #[educe(PartialEq)]
 pub struct Type {
     pub kind: TypeKind,
     #[educe(PartialEq(ignore))]
     pub span: Option<Span>,
-}
-
-impl From<Spanned<TypeKind>> for Type {
-    fn from(Spanned(l, kind, r): Spanned<TypeKind>) -> Type {
-        let span = Some(Span::new(l as u32, r as u32));
-        Type { kind, span }
-    }
-}
-
-impl From<TypeKind> for Type {
-    fn from(kind: TypeKind) -> Type {
-        let span = None;
-        Type { kind, span }
-    }
 }
 
 impl Type {
@@ -296,7 +262,7 @@ pub enum ScalarKind {
     Unit,
 }
 
-#[derive(Debug, Eq, Clone, Educe)]
+#[derive(Debug, Eq, Clone, Educe, MaybeSpanned)]
 #[educe(PartialEq)]
 pub struct Shape {
     pub dims: Vec<Dim>,
@@ -304,33 +270,12 @@ pub struct Shape {
     pub span: Option<Span>,
 }
 
-impl From<Spanned<Vec<Dim>>> for Shape {
-    fn from(Spanned(l, dims, r): Spanned<Vec<Dim>>) -> Shape {
-        let span = Some(Span::new(l as u32, r as u32));
-        Shape { dims, span }
-    }
-}
-
-impl From<Vec<Dim>> for Shape {
-    fn from(dims: Vec<Dim>) -> Shape {
-        let span = None;
-        Shape { dims, span }
-    }
-}
-
-#[derive(Debug, Eq, Clone, Educe)]
+#[derive(Debug, Eq, Clone, Educe, MaybeSpanned)]
 #[educe(PartialEq)]
 pub struct Dim {
     pub kind: DimKind,
     #[educe(PartialEq(ignore))]
     pub span: Option<Span>,
-}
-
-impl From<DimKind> for Dim {
-    fn from(kind: DimKind) -> Dim {
-        let span = None;
-        Dim { kind, span }
-    }
 }
 
 impl Dim {
@@ -370,13 +315,6 @@ impl Dim {
     pub fn new() -> Dim {
         let kind = DimVar(0);
         let span = None;
-        Dim { kind, span }
-    }
-}
-
-impl From<Spanned<DimKind>> for Dim {
-    fn from(Spanned(l, kind, r): Spanned<DimKind>) -> Dim {
-        let span = Some(Span::new(l as u32, r as u32));
         Dim { kind, span }
     }
 }

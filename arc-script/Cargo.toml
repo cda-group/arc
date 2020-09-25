@@ -1,6 +1,7 @@
 [workspace]
 members = [
   "core",
+  "macros/spanned-derive",
   "wasm",
 ]
 
