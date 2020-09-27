@@ -27,6 +27,7 @@ mod pruner;
 mod ssa;
 mod symbols;
 mod typer;
+mod lexer;
 
 // #[cfg(feature = "shaper")]
 // mod shaper;
