@@ -507,7 +507,7 @@ Project: UnOpKind = ParseIndex => {
 //=============================================================================
 
 If:    ExprKind = "if" <Box<Arg>> "{" <Box<Arg>> "}" "else" "{" <Box<Arg>> "}" => If(<>);
-Match: ExprKind = "match" <Box<Arg>> "{" <Vec<Clause>> "}"                     => Match(<>);
+Match: ExprKind = "match" <Box<Arg>> "{" <Vec<Case>> "}"                       => Match(<>);
 Loop:  ExprKind = "loop" <Box<Arg>> "{" <Box<Arg>> "}"                         => Loop(<>);
 
 //=============================================================================
@@ -605,10 +605,10 @@ BIF: BIFKind = {
 // Patterns
 //=============================================================================
 
-Clause = <RootPat> "=>" <Body>;
+Case = <Clause> "=>" <Body>;
 
-RootPat = Pat<PatKind0>;
-LeafPat = Pat<PatKind1>;
+Clause = Pat<PatKind0>;
+Leaf   = Pat<PatKind1>;
 
 Pat<PatKind>: Pat = Spanned<PatKind> => Pat::from(<>);
 
@@ -624,18 +624,18 @@ PatKind1: PatKind = {
   PatIgnore,
 };
 
-PatOr: PatKind = <Box<RootPat>> "|" <Box<LeafPat>> => PatOr(<>);
+PatOr: PatKind = <Box<Clause>> "|" <Box<Leaf>> => PatOr(<>);
 PatRegex: PatKind = ParseRegex => {
   <>.map(PatRegex)
     .map_err(|err| errors.push(err.into()))
     .unwrap_or(PatErr)
 };
 
-PatVal:    PatKind = LitKind                => PatVal(<>);
-//PatVar:    PatKind = Symbol                 => PatVar(<>);
-PatTuple:  PatKind = "(" <Vec<RootPat>> ")" => PatTuple(<>);
-PatStruct: PatKind = "{" <Vec<RootPat>> "}" => PatStruct(<>);
-PatIgnore: PatKind = "_"                    => PatIgnore;
+PatVal:    PatKind = LitKind               => PatVal(<>);
+//PatVar:    PatKind = Symbol                => PatVar(<>);
+PatTuple:  PatKind = "(" <Vec<Clause>> ")" => PatTuple(<>);
+PatStruct: PatKind = "{" <Vec<Clause>> "}" => PatStruct(<>);
+PatIgnore: PatKind = "_"                   => PatIgnore;
 
 //=============================================================================
 // Types
