@@ -1,6 +1,7 @@
 use {
     crate::{error::*, info::*, prelude::*, symbols::*},
     codespan::Span,
+    derive_more::Constructor,
     ena::unify::{InPlace, UnifyKey, UnifyValue},
 };
 
@@ -8,6 +9,15 @@ pub type UnificationTable = ena::unify::UnificationTable<InPlace<TypeVar>>;
 
 pub struct Typer {
     table: UnificationTable,
+}
+
+/// Lumps together all values which are needed during typeinference for brevity.
+#[derive(Constructor)]
+struct Context<'i> {
+    typer: &'i mut Typer,
+    span: Span,
+    errors: &'i mut Vec<CompilerError>,
+    table: &'i SymbolTable,
 }
 
 /// Suppose we have the following arc-script code:
@@ -56,46 +66,11 @@ pub struct Typer {
 ///   1 → Fun(2,3)
 
 impl Typer {
+    /// Returns a new Typer
     pub fn new() -> Typer {
         let table = UnificationTable::new();
         Typer { table }
     }
-}
-
-impl Typer {
-    /// Unifies two type variables `a` and `b`.
-    fn unify_var_var(
-        &mut self,
-        a: TypeVar,
-        b: TypeVar,
-        span: Span,
-        errors: &mut Vec<CompilerError>,
-    ) {
-        let snapshot = self.table.snapshot();
-        match self.table.unify_var_var(a, b) {
-            Ok(()) => self.table.commit(snapshot),
-            Err((lhs, rhs)) => {
-                errors.push(CompilerError::TypeMismatch { lhs, rhs, span });
-                self.table.rollback_to(snapshot)
-            }
-        }
-    }
-
-    /// Unifies a type variable `a` with a type `b`.
-    fn unify_var_val<T>(&mut self, a: TypeVar, b: T, span: Span, errors: &mut Vec<CompilerError>)
-    where
-        T: Into<Type>,
-    {
-        let snapshot = self.table.snapshot();
-        match self.table.unify_var_value(a, b.into()) {
-            Ok(()) => self.table.commit(snapshot),
-            Err((lhs, rhs)) => {
-                errors.push(CompilerError::TypeMismatch { lhs, rhs, span });
-                self.table.rollback_to(snapshot)
-            }
-        }
-    }
-
     /// Returns a fresh type variable which is unified with the given type `ty`.
     pub fn intern<T: Into<Type>>(&mut self, ty: T) -> TypeVar {
         self.table.new_key(ty.into())
@@ -161,47 +136,78 @@ impl UnifyValue for Type {
     }
 }
 
-impl Typer {
+impl<'i> Context<'i> {
+    /// Unifies two type variables `a` and `b`.
+    fn unify_var_var(&mut self, a: TypeVar, b: TypeVar) {
+        let snapshot = self.typer.table.snapshot();
+        match self.typer.table.unify_var_var(a, b) {
+            Ok(()) => self.typer.table.commit(snapshot),
+            Err((lhs, rhs)) => {
+                let span = self.span;
+                self.errors
+                    .push(CompilerError::TypeMismatch { lhs, rhs, span });
+                self.typer.table.rollback_to(snapshot)
+            }
+        }
+    }
+
+    /// Unifies a type variable `a` with a type `b`.
+    fn unify_var_val<T>(&mut self, a: TypeVar, b: T)
+    where
+        T: Into<Type>,
+    {
+        let snapshot = self.typer.table.snapshot();
+        match self.typer.table.unify_var_value(a, b.into()) {
+            Ok(()) => self.typer.table.commit(snapshot),
+            Err((lhs, rhs)) => {
+                let span = self.span;
+                self.errors
+                    .push(CompilerError::TypeMismatch { lhs, rhs, span });
+                self.typer.table.rollback_to(snapshot)
+            }
+        }
+    }
+
     /// Unifies two polytypes, i.e., types which may contain type variables
-    fn unify(&mut self, tv1: TypeVar, tv2: TypeVar, span: Span, errors: &mut Vec<CompilerError>) {
-        let ty1 = self.lookup(tv1);
-        let ty2 = self.lookup(tv2);
+    fn unify(&mut self, tv1: TypeVar, tv2: TypeVar) {
+        let ty1 = self.typer.lookup(tv1);
+        let ty2 = self.typer.lookup(tv2);
         match (&ty1.kind, &ty2.kind) {
-            (Unknown, Unknown) => self.unify_var_var(tv1, tv2, span, errors),
-            (Unknown, _) => self.unify_var_val(tv1, ty2, span, errors),
-            (_, Unknown) => self.unify_var_val(tv2, ty1, span, errors),
+            (Unknown, Unknown) => self.unify_var_var(tv1, tv2),
+            (Unknown, _) => self.unify_var_val(tv1, ty2),
+            (_, Unknown) => self.unify_var_val(tv2, ty1),
             (Array(tv1, sh1), Array(tv2, sh2)) if sh1.dims.len() == sh2.dims.len() => {
-                self.unify(*tv1, *tv2, span, errors);
+                self.unify(*tv1, *tv2);
             }
             (Fun(args1, ret1), Fun(args2, ret2)) if args1.len() == args2.len() => {
                 for (arg1, arg2) in args1.into_iter().zip(args2.into_iter()) {
-                    self.unify(*arg1, *arg2, span, errors);
+                    self.unify(*arg1, *arg2);
                 }
-                self.unify(*ret1, *ret2, span, errors);
+                self.unify(*ret1, *ret2);
             }
             (Tuple(args1), Tuple(args2)) if args1.len() == args2.len() => {
                 for (arg1, arg2) in args1.into_iter().zip(args2.into_iter()) {
-                    self.unify(*arg1, *arg2, span, errors);
+                    self.unify(*arg1, *arg2);
                 }
             }
             (Struct(map1), Struct(map2)) => {
                 for (field1, tv1) in map1.into_iter() {
                     if let Some(tv2) = map2.get(field1) {
-                        self.unify(*tv1, *tv2, span, errors);
+                        self.unify(*tv1, *tv2);
                     }
                 }
             }
             (Enum(map1), Enum(map2)) => {
                 for (variant1, tv1) in map1.into_iter() {
                     if let Some(tv2) = map2.get(variant1) {
-                        self.unify(*tv1, *tv2, span, errors);
+                        self.unify(*tv1, *tv2);
                     }
                 }
             }
-            (Stream(tv1), Stream(tv2)) => self.unify(*tv1, *tv2, span, errors),
-            (Optional(tv1), Optional(tv2)) => self.unify(*tv1, *tv2, span, errors),
+            (Stream(tv1), Stream(tv2)) => self.unify(*tv1, *tv2),
+            (Optional(tv1), Optional(tv2)) => self.unify(*tv1, *tv2),
             // This seems a bit out of place, but it is needed to ensure that monotypes unify
-            _ => self.unify_var_var(tv1, tv2, span, errors),
+            _ => self.unify_var_var(tv1, tv2),
         }
     }
 }
@@ -216,59 +222,45 @@ impl Script<'_> {
             ..
         } = &mut self.info;
         let typer = typer.get_mut();
-        self.ast
-            .for_each_expr(|expr| expr.constrain(typer, errors, table));
-        self.ast
-            .fundefs
-            .iter_mut()
-            .for_each(|(id, fundef)| (id, fundef).constrain(typer, errors, table));
+        self.ast.for_each_expr(|expr| {
+            let ctx = &mut Context::new(typer, expr.span, errors, table);
+            expr.constrain(ctx)
+        });
+        self.ast.fundefs.iter_mut().for_each(|(id, fundef)| {
+            let ctx = &mut Context::new(typer, fundef.body.span, errors, table);
+            (id, fundef).constrain(ctx);
+        });
     }
 }
 
-trait Constrain {
-    fn constrain(
-        &mut self,
-        typer: &mut Typer,
-        errors: &mut Vec<CompilerError>,
-        table: &SymbolTable,
-    );
+trait Constrain<'i> {
+    fn constrain(&mut self, context: &mut Context<'i>);
 }
 
-impl Constrain for (&Ident, &mut FunDef) {
+impl<'i> Constrain<'i> for (&Ident, &mut FunDef) {
     /// Constrains the types of a function based on its signature and body.
-    fn constrain(
-        &mut self,
-        typer: &mut Typer,
-        errors: &mut Vec<CompilerError>,
-        table: &SymbolTable,
-    ) {
+    fn constrain(&mut self, ctx: &mut Context<'i>) {
         let (id, fundef) = self;
-        let tv = table.get_decl(&id).tv;
-        let ty = typer.lookup(tv);
+        let tv = ctx.table.get_decl(&id).tv;
+        let ty = ctx.typer.lookup(tv);
         if let Fun(_, ret_tv) = ty.kind {
-            typer.unify(fundef.body.tv, ret_tv, fundef.body.span, errors)
+            ctx.unify(fundef.body.tv, ret_tv)
         }
     }
 }
 
-impl Constrain for Expr {
+impl<'i> Constrain<'i> for Expr {
     /// Constrains an expression based on its subexpressions.
-    fn constrain(
-        &mut self,
-        typer: &mut Typer,
-        errors: &mut Vec<CompilerError>,
-        table: &SymbolTable,
-    ) {
-        let span = self.span;
+    fn constrain(&mut self, ctx: &mut Context<'i>) {
         match &self.kind {
             Let(id, v) => {
-                let tv = table.get_decl(id).tv;
-                typer.unify(v.tv, tv, span, errors);
-                typer.unify_var_val(self.tv, Scalar(Unit), span, errors);
+                let tv = ctx.table.get_decl(id).tv;
+                ctx.unify(v.tv, tv);
+                ctx.unify_var_val(self.tv, Scalar(Unit));
             }
             Var(id) => {
-                let tv = table.get_decl(id).tv;
-                typer.unify(self.tv, tv, span, errors);
+                let tv = ctx.table.get_decl(id).tv;
+                ctx.unify(self.tv, tv);
             }
             Lit(l) => {
                 let kind = match l {
@@ -283,95 +275,94 @@ impl Constrain for Expr {
                     LitTime(_) => todo!(),
                     LitErr => return,
                 };
-                typer.unify_var_val(self.tv, Scalar(kind), span, errors);
+                ctx.unify_var_val(self.tv, Scalar(kind));
             }
             ConsArray(args) => {
-                let elem_tv = typer.fresh();
+                let elem_tv = ctx.typer.fresh();
                 let dim = Dim::from(DimVal(args.len() as i32));
-                args.iter()
-                    .for_each(|e| typer.unify(elem_tv, e.tv, span, errors));
+                args.iter().for_each(|e| ctx.unify(elem_tv, e.tv));
                 let shape = Shape::from(vec![dim]);
-                typer.unify_var_val(self.tv, Array(elem_tv, shape), span, errors);
+                ctx.unify_var_val(self.tv, Array(elem_tv, shape));
             }
             ConsStruct(fields) => {
                 let fields = fields
                     .iter()
                     .map(|(field, arg)| (*field, arg.tv))
                     .collect::<Map<_, _>>();
-                typer.unify_var_val(self.tv, Struct(fields), span, errors);
+                ctx.unify_var_val(self.tv, Struct(fields));
             }
             ConsEnum(variants) => {
                 let variants = variants
                     .iter()
                     .map(|(variant, arg)| (*variant, arg.tv))
                     .collect::<Map<_, _>>();
-                typer.unify_var_val(self.tv, Enum(variants), span, errors);
+                ctx.unify_var_val(self.tv, Enum(variants));
             }
             ConsTuple(args) => {
                 let tvs = args.iter().map(|arg| arg.tv).collect();
-                typer.unify_var_val(self.tv, Tuple(tvs), span, errors);
+                ctx.unify_var_val(self.tv, Tuple(tvs));
             }
             BinOp(l, kind, r) => match kind {
                 Add | Div | Mul | Sub => {
-                    typer.unify(l.tv, r.tv, span, errors);
-                    typer.unify(self.tv, r.tv, span, errors)
+                    ctx.unify(l.tv, r.tv);
+                    ctx.unify(self.tv, r.tv)
                 }
                 Pow => {
-                    typer.unify(self.tv, l.tv, span, errors);
-                    match typer.lookup(l.tv).kind {
+                    ctx.unify(self.tv, l.tv);
+                    match ctx.typer.lookup(l.tv).kind {
                         Scalar(I8) | Scalar(I16) | Scalar(I32) | Scalar(I64) => {
-                            typer.unify_var_val(r.tv, Scalar(I32), span, errors)
+                            ctx.unify_var_val(r.tv, Scalar(I32))
                         }
-                        Scalar(F32) => typer.unify_var_val(r.tv, Scalar(F32), span, errors),
-                        Scalar(F64) => typer.unify_var_val(r.tv, Scalar(F64), span, errors),
-                        _ => match typer.lookup(r.tv).kind {
-                            Scalar(F32) => typer.unify_var_val(l.tv, Scalar(F32), span, errors),
-                            Scalar(F64) => typer.unify_var_val(l.tv, Scalar(F64), span, errors),
+                        Scalar(F32) => ctx.unify_var_val(r.tv, Scalar(F32)),
+                        Scalar(F64) => ctx.unify_var_val(r.tv, Scalar(F64)),
+                        _ => match ctx.typer.lookup(r.tv).kind {
+                            Scalar(F32) => ctx.unify_var_val(l.tv, Scalar(F32)),
+                            Scalar(F64) => ctx.unify_var_val(l.tv, Scalar(F64)),
                             _ => {}
                         },
                     }
                 }
                 Equ | Neq | Gt | Lt | Geq | Leq => {
-                    typer.unify(l.tv, r.tv, span, errors);
-                    typer.unify_var_val(self.tv, Scalar(Bool), span, errors)
+                    ctx.unify(l.tv, r.tv);
+                    ctx.unify_var_val(self.tv, Scalar(Bool))
                 }
                 Or | And => {
-                    typer.unify(self.tv, l.tv, self.span, errors);
-                    typer.unify(self.tv, r.tv, self.span, errors);
-                    typer.unify_var_val(self.tv, Scalar(Bool), self.span, errors)
+                    ctx.unify(self.tv, l.tv);
+                    ctx.unify(self.tv, r.tv);
+                    ctx.unify_var_val(self.tv, Scalar(Bool))
                 }
                 Pipe => todo!(),
-                Seq => typer.unify(self.tv, r.tv, span, errors),
+                Seq => ctx.unify(self.tv, r.tv),
                 BinOpErr => return,
             },
             UnOp(kind, e) => match kind {
                 Not => {
-                    typer.unify(self.tv, e.tv, span, errors);
-                    typer.unify_var_val(e.tv, Scalar(Bool), span, errors);
+                    ctx.unify(self.tv, e.tv);
+                    ctx.unify_var_val(e.tv, Scalar(Bool));
                 }
-                Neg => typer.unify(self.tv, e.tv, span, errors),
-                Cast(tv) => typer.unify(e.tv, *tv, span, errors),
+                Neg => ctx.unify(self.tv, e.tv),
+                Cast(tv) => ctx.unify(e.tv, *tv),
                 Project(_) => return,
                 Access(_) => return,
                 Call(args) => {
                     let params = args.iter().map(|arg| arg.tv).collect();
-                    let tv2 = typer.intern(Fun(params, self.tv));
-                    typer.unify(e.tv, tv2, span, errors);
+                    let tv2 = ctx.typer.intern(Fun(params, self.tv));
+                    ctx.unify(e.tv, tv2);
                 }
                 UnOpErr => return,
             },
             If(c, t, e) => {
-                typer.unify_var_val(c.tv, Scalar(Bool), span, errors);
-                typer.unify(t.tv, e.tv, span, errors);
-                typer.unify(t.tv, self.tv, span, errors);
+                ctx.unify_var_val(c.tv, Scalar(Bool));
+                ctx.unify(t.tv, e.tv);
+                ctx.unify(t.tv, self.tv);
             }
             Closure(params, body) => {
                 let params = params
                     .iter()
-                    .map(|param| table.get_decl(param).tv)
+                    .map(|param| ctx.table.get_decl(param).tv)
                     .collect();
-                let tv = typer.intern(Fun(params, body.tv));
-                typer.unify(self.tv, tv, span, errors)
+                let tv = ctx.typer.intern(Fun(params, body.tv));
+                ctx.unify(self.tv, tv)
             }
             Match(_, _) => {}
             Sink(_) => todo!(),
