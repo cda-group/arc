@@ -3,12 +3,12 @@ use {crate::prelude::*, std::collections::HashMap};
 impl Script<'_> {
     pub fn prune(&mut self) {
         let aliases = &mut HashMap::new();
-        self.ast.for_each_expr(|expr| expr.prune_rec(aliases));
+        self.ast.for_each_expr_preorder(|expr| expr.prune_rec(aliases));
     }
 }
 
 impl Expr {
-    /// Remove `let id1 = id2 in body` expressions
+    /// Remove `let id1 = id2` expressions
     pub fn prune_rec(&mut self, aliases: &mut HashMap<Ident, Ident>) {
         match &mut self.kind {
             BinOp(lhs, Seq, rhs) => {

@@ -3,9 +3,15 @@ use crate::prelude::*;
 use crate::symbols::SymbolTable;
 
 impl SyntaxTree {
+    // Post-order traversal (Leaves first)
     pub fn for_each_expr<F: FnMut(&mut Expr)>(&mut self, ref mut f: F) {
         self.for_each_fun(|fun| fun.body.for_each_expr(f));
         self.body.for_each_expr(f);
+    }
+    // Pre-order traversal (Parents first)
+    pub fn for_each_expr_preorder<F: FnMut(&mut Expr)>(&mut self, ref mut f: F) {
+        self.for_each_fun(|fun| fun.body.for_each_expr_preorder(f));
+        self.body.for_each_expr_preorder(f)
     }
 
     pub fn for_each_fun<F: FnMut(&mut FunDef)>(&mut self, ref mut f: F) {
@@ -18,8 +24,50 @@ impl SyntaxTree {
 }
 
 impl Expr {
-    fn for_each_expr<F: FnMut(&mut Expr)>(&mut self, f: &mut F) {
+    fn for_each_expr_preorder<F: FnMut(&mut Expr)>(&mut self, f: &mut F) {
         f(self);
+        match &mut self.kind {
+            If(c, t, e) => {
+                c.for_each_expr_preorder(f);
+                t.for_each_expr_preorder(f);
+                e.for_each_expr_preorder(f);
+            }
+            Match(e, cases) => {
+                e.for_each_expr_preorder(f);
+                cases
+                    .iter_mut()
+                    .for_each(|(_, e)| e.for_each_expr_preorder(f));
+            }
+            Let(_, v) => v.for_each_expr_preorder(f),
+            ConsArray(ps) => ps.iter_mut().for_each(|p| p.for_each_expr_preorder(f)),
+            ConsTuple(ps) => ps.iter_mut().for_each(|p| p.for_each_expr_preorder(f)),
+            ConsStruct(fs) => fs.iter_mut().for_each(|(_, v)| v.for_each_expr_preorder(f)),
+            ConsEnum(vs) => vs.iter_mut().for_each(|(_, v)| v.for_each_expr_preorder(f)),
+            Lit(_) => {}
+            Var(_) => {}
+            BinOp(l, _, r) => {
+                l.for_each_expr_preorder(f);
+                r.for_each_expr_preorder(f);
+            }
+            UnOp(Call(ps), e) => {
+                ps.iter_mut().for_each(|p| p.for_each_expr_preorder(f));
+                e.for_each_expr_preorder(f);
+            }
+            UnOp(_, _) => {}
+            Sink(_) => {}
+            Source(_) => {}
+            Loop(cond, body) => {
+                cond.for_each_expr_preorder(f);
+                body.for_each_expr_preorder(f);
+            }
+            Closure(_, body) => body.for_each_expr_preorder(f),
+            ExprErr => {}
+        }
+    }
+}
+
+impl Expr {
+    fn for_each_expr<F: FnMut(&mut Expr)>(&mut self, f: &mut F) {
         match &mut self.kind {
             If(c, t, e) => {
                 c.for_each_expr(f);
@@ -41,10 +89,11 @@ impl Expr {
                 l.for_each_expr(f);
                 r.for_each_expr(f);
             }
-            UnOp(op, e) => {
-                op.for_each_expr(f);
+            UnOp(Call(ps), e) => {
+                ps.iter_mut().for_each(|p| p.for_each_expr(f));
                 e.for_each_expr(f);
             }
+            UnOp(_, _) => {}
             Sink(_) => {}
             Source(_) => {}
             Loop(cond, body) => {
@@ -54,15 +103,7 @@ impl Expr {
             Closure(_, body) => body.for_each_expr(f),
             ExprErr => {}
         }
-    }
-}
-
-impl UnOpKind {
-    fn for_each_expr<F: FnMut(&mut Expr)>(&mut self, f: &mut F) {
-        match self {
-            Call(ps) => ps.iter_mut().for_each(|p| p.for_each_expr(f)),
-            _ => {}
-        }
+        f(self);
     }
 }
 
