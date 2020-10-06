@@ -201,6 +201,7 @@ impl Pretty for BinOpKind {
             Sub  => "-".to_string(),
             Mul  => "*".to_string(),
             Div  => "/".to_string(),
+            Pow  => "**".to_string(),
             Equ  => "==".to_string(),
             Neq  => "!=".to_string(),
             Gt   => ">".to_string(),

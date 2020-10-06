@@ -316,6 +316,21 @@ impl Constrain for Expr {
                     typer.unify(l.tv, r.tv, span, errors);
                     typer.unify(self.tv, r.tv, span, errors)
                 }
+                Pow => {
+                    typer.unify(self.tv, l.tv, span, errors);
+                    match typer.lookup(l.tv).kind {
+                        Scalar(I8) | Scalar(I16) | Scalar(I32) | Scalar(I64) => {
+                            typer.unify_var_val(r.tv, Scalar(I32), span, errors)
+                        }
+                        Scalar(F32) => typer.unify_var_val(r.tv, Scalar(F32), span, errors),
+                        Scalar(F64) => typer.unify_var_val(r.tv, Scalar(F64), span, errors),
+                        _ => match typer.lookup(r.tv).kind {
+                            Scalar(F32) => typer.unify_var_val(l.tv, Scalar(F32), span, errors),
+                            Scalar(F64) => typer.unify_var_val(l.tv, Scalar(F64), span, errors),
+                            _ => {}
+                        },
+                    }
+                }
                 Equ | Neq | Gt | Lt | Geq | Leq => {
                     typer.unify(l.tv, r.tv, span, errors);
                     typer.unify_var_val(self.tv, Scalar(Bool), span, errors)

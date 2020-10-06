@@ -187,6 +187,15 @@ impl Expr {
                     (I64(l), Div, I64(r)) => I64(l / r),
                     (F32(l), Div, F32(r)) => F32(l / r),
                     (F64(l), Div, F64(r)) => F64(l / r),
+                    // Pow
+                    (I8(l), Pow, I32(r)) => I8(l.pow(r as u32)),
+                    (I16(l), Pow, I32(r)) => I16(l.pow(r as u32)),
+                    (I32(l), Pow, I32(r)) => I32(l.pow(r as u32)),
+                    (I64(l), Pow, I32(r)) => I64(l.pow(r as u32)),
+                    (F32(l), Pow, I32(r)) => F32(l.powi(r)),
+                    (F64(l), Pow, I32(r)) => F64(l.powi(r)),
+                    (F32(l), Pow, F32(r)) => F32(l.powf(r)),
+                    (F64(l), Pow, F64(r)) => F64(l.powf(r)),
                     // Equ
                     (I8(l), Equ, I8(r)) => Bool(l == r),
                     (I16(l), Equ, I16(r)) => Bool(l == r),

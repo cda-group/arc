@@ -48,6 +48,7 @@ match {
   "-",
   "*",
   "/",
+  "**",
   "!",
   ":",
   "?",
@@ -486,7 +487,11 @@ Op6: UnOpKind = {
   "-" => Neg,
 };
 
-Op7: UnOpKind = {
+Op7: BinOpKind = {
+  "**" => Pow,
+};
+
+Op8: UnOpKind = {
   Call,
   Project,
   Access,
@@ -537,31 +542,19 @@ ConsEnum:   ExprKind = "<{" <Variants<Arg>> "}>"  => ConsEnum(<>);
 // Precedence Climbing
 //=============================================================================
 
-ExprKind0: ExprKind = {
-  Seq,
-  ExprKind1,
-};
-
-ExprKind1: ExprKind = {
-  Let,
-  ExprKind2,
-};
-
-ExprKind2: ExprKind = {
-  ClosureDef,
-  ExprKind3,
-};
-
-ExprKind3:  ExprKind = BinaryInfixLeftAssociative<Op0, ExprKind4>;
-ExprKind4:  ExprKind = BinaryInfixLeftAssociative<Op1, ExprKind5>;
-ExprKind5:  ExprKind = BinaryInfixLeftAssociative<Op2, ExprKind6>;
-ExprKind6:  ExprKind = BinaryInfixLeftAssociative<Op3, ExprKind7>;
-ExprKind7:  ExprKind = BinaryInfixLeftAssociative<Op4, ExprKind8>;
-ExprKind8:  ExprKind = BinaryInfixLeftAssociative<Op5, ExprKind9>;
-ExprKind9:  ExprKind =                UnaryPrefix<Op6, ExprKind10>;
-ExprKind10: ExprKind =               UnaryPostfix<Op7, ExprKind11>;
-
-ExprKind11: ExprKind = {
+ExprKind0:  ExprKind = { Seq, ExprKind1 };
+ExprKind1:  ExprKind = { Let, ExprKind2 };
+ExprKind2:  ExprKind = { ClosureDef, ExprKind3 };
+ExprKind3:  ExprKind =  BinaryInfixLeftAssociative<Op0, ExprKind4>;
+ExprKind4:  ExprKind =  BinaryInfixLeftAssociative<Op1, ExprKind5>;
+ExprKind5:  ExprKind =  BinaryInfixLeftAssociative<Op2, ExprKind6>;
+ExprKind6:  ExprKind =  BinaryInfixLeftAssociative<Op3, ExprKind7>;
+ExprKind7:  ExprKind =  BinaryInfixLeftAssociative<Op4, ExprKind8>;
+ExprKind8:  ExprKind =  BinaryInfixLeftAssociative<Op5, ExprKind9>;
+ExprKind9:  ExprKind =                 UnaryPrefix<Op6, ExprKind10>;
+ExprKind10: ExprKind = BinaryInfixRightAssociative<Op7, ExprKind11>;
+ExprKind11: ExprKind =                UnaryPostfix<Op8, ExprKind12>;
+ExprKind12: ExprKind = {
   Paren<ExprKind0>,
   Lit,
   Var,

@@ -183,6 +183,7 @@ pub enum BinOpKind {
     Sub,
     Mul,
     Div,
+    Pow,
     Equ,
     Neq,
     Or,
