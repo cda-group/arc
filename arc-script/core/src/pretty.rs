@@ -162,33 +162,35 @@ impl Pretty for Expr {
 }
 
 impl Pretty for LitKind {
+    #[rustfmt::skip]
     fn pretty(&self, _: &Printer) -> String {
         match self {
-            LitI8(l) => format!("{}i8", l),
-            LitI16(l) => format!("{}i16", l),
-            LitI32(l) => l.to_string(),
-            LitI64(l) => format!("{}i64", l),
-            LitF32(l) => format!("{}f32", l),
-            LitF64(l) => format!("{}", l),
-            LitBool(l) => l.to_string(),
-            LitTime(l) => l.to_string(),
-            LitUnit => format!("()"),
-            LitErr => "☇".to_string(),
+            LitI8(l)   => format!("{}i8", l),
+            LitI16(l)  => format!("{}i16", l),
+            LitI32(l)  => format!("{}", l),
+            LitI64(l)  => format!("{}i64", l),
+            LitF32(l)  => format!("{}f32", l),
+            LitF64(l)  => format!("{}", l),
+            LitBool(l) => format!("{}", l),
+            LitTime(l) => format!("{}", l),
+            LitUnit    => format!("()"),
+            LitErr     => "☇".to_string(),
         }
     }
 }
 
 impl Pretty for (&UnOpKind, &Expr) {
+    #[rustfmt::skip]
     fn pretty(&self, pr: &Printer) -> String {
         let (op, e) = self;
         match op {
-            Not => format!("!{}", e.pretty(pr)),
-            Neg => format!("-{}", e.pretty(pr)),
-            Cast(ty) => format!("{}:{}", e.pretty(pr), ty.pretty(pr)),
+            Not          => format!("!{}", e.pretty(pr)),
+            Neg          => format!("-{}", e.pretty(pr)),
+            Cast(ty)     => format!("{}:{}", e.pretty(pr), ty.pretty(pr)),
             Project(idx) => format!("{}.{}", e.pretty(pr), idx.pretty(pr)),
-            Access(_) => todo!(),
-            Call(args) => format!("{e}({args})", e = e.pretty(pr), args = args.pretty(pr)),
-            UnOpErr => format!("☇{}", e.pretty(pr)),
+            Access(_)    => todo!(),
+            Call(args)   => format!("{e}({args})", e = e.pretty(pr), args = args.pretty(pr)),
+            UnOpErr      => format!("☇{}", e.pretty(pr)),
         }
     }
 }
@@ -197,22 +199,22 @@ impl Pretty for BinOpKind {
     #[rustfmt::skip]
     fn pretty(&self, _: &Printer) -> String {
         match self {
-            Add  => "+".to_string(),
-            Sub  => "-".to_string(),
-            Mul  => "*".to_string(),
-            Div  => "/".to_string(),
-            Pow  => "**".to_string(),
-            Equ  => "==".to_string(),
-            Neq  => "!=".to_string(),
-            Gt   => ">".to_string(),
-            Lt   => "<".to_string(),
-            Geq  => ">=".to_string(),
-            Leq  => "<=".to_string(),
-            Or   => "||".to_string(),
-            And  => "&&".to_string(),
-            Pipe => "|>".to_string(),
-            Seq  => ";".to_string(),
-            BinOpErr => "☇".to_string(),
+            Add      => format!("+"),
+            Sub      => format!("-"),
+            Mul      => format!("*"),
+            Div      => format!("/"),
+            Pow      => format!("**"),
+            Equ      => format!("=="),
+            Neq      => format!("!="),
+            Gt       => format!(">"),
+            Lt       => format!("<"),
+            Geq      => format!(">="),
+            Leq      => format!("<="),
+            Or       => format!("||"),
+            And      => format!("&&"),
+            Pipe     => format!("|>"),
+            Seq      => format!(";"),
+            BinOpErr => format!("☇"),
         }
     }
 }
@@ -225,31 +227,32 @@ impl Pretty for TypeVar {
 }
 
 impl Pretty for Type {
+    #[rustfmt::skip]
     fn pretty(&self, pr: &Printer) -> String {
         match &self.kind {
-            Scalar(I8) => "i8".to_string(),
-            Scalar(I16) => "i16".to_string(),
-            Scalar(I32) => "i32".to_string(),
-            Scalar(I64) => "i64".to_string(),
-            Scalar(F32) => "f32".to_string(),
-            Scalar(F64) => "f64".to_string(),
-            Scalar(Bool) => "bool".to_string(),
-            Scalar(Null) => "null".to_string(),
-            Scalar(Str) => "str".to_string(),
-            Scalar(Unit) => "()".to_string(),
-            Struct(fields) => format!("{{ {fields} }}", fields = fields.pretty(pr),),
-            Enum(variants) => format!("{{ {variants} }}", variants = variants.pretty(pr),),
+            Scalar(I8)       => format!("i8"),
+            Scalar(I16)      => format!("i16"),
+            Scalar(I32)      => format!("i32"),
+            Scalar(I64)      => format!("i64"),
+            Scalar(F32)      => format!("f32"),
+            Scalar(F64)      => format!("f64"),
+            Scalar(Bool)     => format!("bool"),
+            Scalar(Null)     => format!("null"),
+            Scalar(Str)      => format!("str"),
+            Scalar(Unit)     => format!("()"),
+            Struct(fields)   => format!("{{ {fields} }}", fields = fields.pretty(pr),),
+            Enum(variants)   => format!("{{ {variants} }}", variants = variants.pretty(pr),),
             Array(ty, shape) => format!(
                 "[{ty}; {shape}]",
                 ty = ty.pretty(pr),
                 shape = shape.pretty(pr)
             ),
-            Stream(ty) => format!("Stream[{}]", ty.pretty(pr)),
-            Tuple(tys) => format!("({})", tys.pretty(pr)),
-            Optional(ty) => format!("{}?", ty.pretty(pr)),
-            Fun(args, ty) => format!("({}) -> {}", args.pretty(pr), ty.pretty(pr)),
-            Unknown => "?".to_string(),
-            TypeErr => "☇".to_string(),
+            Stream(ty)       => format!("Stream[{}]", ty.pretty(pr)),
+            Tuple(tys)       => format!("({})", tys.pretty(pr)),
+            Optional(ty)     => format!("{}?", ty.pretty(pr)),
+            Fun(args, ty)    => format!("({}) -> {}", args.pretty(pr), ty.pretty(pr)),
+            Unknown          => format!("?"),
+            TypeErr          => format!("☇"),
         }
     }
 }
@@ -295,12 +298,13 @@ impl Pretty for Shape {
 }
 
 impl Pretty for Dim {
+    #[rustfmt::skip]
     fn pretty(&self, pr: &Printer) -> String {
         match &self.kind {
-            DimVar(_) => "?".to_owned(),
-            DimVal(v) => format!("{}", v),
+            DimVar(_)       => format!("?"),
+            DimVal(v)       => format!("{}", v),
             DimOp(l, op, r) => format!("{}{}{}", l.pretty(pr), op.pretty(pr), r.pretty(pr)),
-            DimErr => "☇".to_string(),
+            DimErr          => format!("☇"),
         }
     }
 }
@@ -308,25 +312,26 @@ impl Pretty for Dim {
 impl Pretty for DimOpKind {
     fn pretty(&self, _: &Printer) -> String {
         match self {
-            DimAdd => "+".to_owned(),
-            DimSub => "-".to_owned(),
-            DimMul => "*".to_owned(),
-            DimDiv => "/".to_owned(),
+            DimAdd => format!("+"),
+            DimSub => format!("-"),
+            DimMul => format!("*"),
+            DimDiv => format!("/"),
         }
     }
 }
 
 impl Pretty for Pat {
+    #[rustfmt::skip]
     fn pretty(&self, pr: &Printer) -> String {
         match &self.kind {
-            PatRegex(s) => format!(r#"r"{}""#, s.clone()),
-            PatOr(l, r) => format!("{} | {}", l.pretty(pr), r.pretty(pr)),
-            PatVal(l) => l.pretty(pr),
-            PatVar(x) => x.pretty(pr),
-            PatTuple(vs) => format!("({})", vs.pretty(pr)),
+            PatRegex(s)   => format!(r#"r"{}""#, s.clone()),
+            PatOr(l, r)   => format!("{} | {}", l.pretty(pr), r.pretty(pr)),
+            PatVal(l)     => l.pretty(pr),
+            PatVar(x)     => x.pretty(pr),
+            PatTuple(vs)  => format!("({})", vs.pretty(pr)),
             PatStruct(vs) => format!("{{ {} }}", vs.pretty(pr)),
-            PatIgnore => "_".to_owned(),
-            PatErr => "☇".to_string(),
+            PatIgnore     => format!("_"),
+            PatErr        => format!("☇"),
         }
     }
 }
