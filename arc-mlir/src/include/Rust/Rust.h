@@ -33,16 +33,11 @@
 
 using namespace mlir;
 
+#include "Rust/RustDialect.h.inc"
+
 namespace rust {
 
 class RustPrinterStream;
-
-#include "Rust/RustDialect.h.inc"
-
-/// Include the auto-generated header file containing the declarations of the
-/// rust operations.
-#define GET_OP_CLASSES
-#include "Rust/Rust.h.inc"
 
 LogicalResult writeModuleAsCrate(ModuleOp module, std::string top_dir,
                                  std::string rust_trailer,
@@ -56,5 +51,10 @@ struct CrateVersions {
 };
 
 } // namespace rust
+
+/// Include the auto-generated header file containing the declarations of the
+/// rust operations.
+#define GET_OP_CLASSES
+#include "Rust/Rust.h.inc"
 
 #endif // RUST_DIALECT_H_

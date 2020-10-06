@@ -76,6 +76,7 @@ static cl::opt<bool>
 int main(int argc, char **argv) {
   InitLLVM y(argc, argv);
 
+  mlir::enableGlobalDialectRegistry(true);
   mlir::registerAllDialects();
   mlir::registerAllPasses();
   mlir::registerDialect<ArcDialect>();

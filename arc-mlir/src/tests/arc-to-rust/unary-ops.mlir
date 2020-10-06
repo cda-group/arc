@@ -11,7 +11,7 @@ func @asin_f32(%a : f32) -> f32 {
 }
 
 func @atan_f32(%a : f32) -> f32 {
-  %r = arc.atan %a : f32
+  %r = atan %a : f32
   return %r : f32
 }
 
@@ -71,7 +71,7 @@ func @asin_f64(%a : f64) -> f64 {
 }
 
 func @atan_f64(%a : f64) -> f64 {
-  %r = arc.atan %a : f64
+  %r = atan %a : f64
   return %r : f64
 }
 
