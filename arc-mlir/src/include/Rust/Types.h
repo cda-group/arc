@@ -35,17 +35,6 @@ class RustDialect;
 namespace types {
 
 //===----------------------------------------------------------------------===//
-// Rust Type Kinds
-//===----------------------------------------------------------------------===//
-
-enum Kind {
-  RUST_TYPE = Type::Kind::FIRST_PRIVATE_EXPERIMENTAL_1_TYPE,
-  RUST_STRUCT,
-  RUST_TUPLE,
-  RUST_TENSOR
-};
-
-//===----------------------------------------------------------------------===//
 // Rust Type Storages
 //===----------------------------------------------------------------------===//
 
@@ -62,7 +51,6 @@ class RustType : public Type::TypeBase<RustType, Type, RustTypeStorage> {
 public:
   using Base::Base;
 
-  static bool kindof(unsigned kind) { return kind == RUST_TYPE; }
   static RustType get(MLIRContext *context, StringRef type);
   void print(DialectAsmPrinter &os) const;
   raw_ostream &printAsRust(raw_ostream &os) const;
@@ -81,7 +69,6 @@ class RustStructType
 public:
   using Base::Base;
 
-  static bool kindof(unsigned kind) { return kind == RUST_STRUCT; }
   void print(DialectAsmPrinter &os) const;
   rust::RustPrinterStream &printAsRust(rust::RustPrinterStream &os) const;
   raw_ostream &printAsRustNamedType(raw_ostream &os) const;
@@ -100,7 +87,6 @@ class RustTensorType
 public:
   using Base::Base;
 
-  static bool kindof(unsigned kind) { return kind == RUST_TENSOR; }
   void print(DialectAsmPrinter &os) const;
   rust::RustPrinterStream &printAsRust(rust::RustPrinterStream &os) const;
   std::string getRustType() const;
@@ -116,7 +102,6 @@ class RustTupleType
 public:
   using Base::Base;
 
-  static bool kindof(unsigned kind) { return kind == RUST_TUPLE; }
   void print(DialectAsmPrinter &os) const;
   rust::RustPrinterStream &printAsRust(rust::RustPrinterStream &os) const;
   std::string getRustType() const;

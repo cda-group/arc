@@ -80,22 +80,16 @@ Type RustDialect::parseType(DialectAsmParser &parser) const {
 //===----------------------------------------------------------------------===//
 
 void RustDialect::printType(Type type, DialectAsmPrinter &os) const {
-  switch (type.getKind()) {
-  default:
+  if (auto t = type.dyn_cast<RustType>())
+    t.print(os);
+  else if (auto t = type.dyn_cast<RustStructType>())
+    t.print(os);
+  else if (auto t = type.dyn_cast<RustTensorType>())
+    t.print(os);
+  else if (auto t = type.dyn_cast<RustTupleType>())
+    t.print(os);
+  else
     llvm_unreachable("Unhandled Rust type");
-  case RUST_TYPE:
-    type.cast<RustType>().print(os);
-    break;
-  case RUST_STRUCT:
-    type.cast<RustStructType>().print(os);
-    break;
-  case RUST_TENSOR:
-    type.cast<RustTensorType>().print(os);
-    break;
-  case RUST_TUPLE:
-    type.cast<RustTupleType>().print(os);
-    break;
-  }
 }
 
 struct CloneControl {
@@ -108,16 +102,13 @@ public:
 
   bool needsClone() const {
     const Type t = V.getType();
-    switch (t.getKind()) {
-    case types::RUST_STRUCT:
-    case types::RUST_TENSOR:
-    case types::RUST_TUPLE:
+    if (t.isa<rust::types::RustStructType>())
       return true;
-    case types::RUST_TYPE:
-      return false;
-    default:
-      return false;
-    }
+    if (t.isa<rust::types::RustTensorType>())
+      return true;
+    if (t.isa<rust::types::RustTupleType>())
+      return true;
+    return false;
   }
 };
 
@@ -205,23 +196,17 @@ RustPrinterStream &operator<<(RustPrinterStream &os, const Value &v) {
   return os.print(v);
 }
 
-RustPrinterStream &operator<<(RustPrinterStream &os, const Type &t) {
-  switch (t.getKind()) {
-  case RUST_TYPE:
-    os.print(t.cast<RustType>().getRustType());
-    break;
-  case RUST_STRUCT:
-    os.print(t.cast<RustStructType>());
-    break;
-  case RUST_TENSOR:
-    t.cast<RustTensorType>().printAsRust(os);
-    break;
-  case RUST_TUPLE:
-    t.cast<RustTupleType>().printAsRust(os);
-    break;
-  default:
+RustPrinterStream &operator<<(RustPrinterStream &os, const Type &type) {
+  if (auto t = type.dyn_cast<RustType>())
+    os.print(t.getRustType());
+  else if (auto t = type.dyn_cast<RustStructType>())
+    os.print(t);
+  else if (auto t = type.dyn_cast<RustTensorType>())
+    t.printAsRust(os);
+  else if (auto t = type.dyn_cast<RustTupleType>())
+    t.printAsRust(os);
+  else
     os << "<not-a-rust-type>";
-  }
   return os;
 }
 } // namespace rust

@@ -38,21 +38,16 @@ namespace types {
 // RustType
 //===----------------------------------------------------------------------===//
 
-static std::string getTypeString(Type t) {
-  switch (t.getKind()) {
-  case types::RUST_STRUCT:
-    return t.cast<RustStructType>().getRustType();
-  case types::RUST_TUPLE:
-    return t.cast<RustTupleType>().getRustType();
-  case types::RUST_TENSOR:
-    return t.cast<RustTensorType>().getRustType();
-  case types::RUST_TYPE: {
-    RustType rt = t.cast<RustType>();
-    return rt.getRustType().str();
-  }
-  default:
-    return "<unsupported type>";
-  }
+static std::string getTypeString(Type type) {
+  if (auto t = type.dyn_cast<RustStructType>())
+    return t.getRustType();
+  if (auto t = type.dyn_cast<RustTupleType>())
+    return t.getRustType();
+  if (auto t = type.dyn_cast<RustTensorType>())
+    return t.getRustType();
+  if (auto t = type.dyn_cast<RustType>())
+    return t.getRustType().str();
+  return "<unsupported type>";
 }
 
 struct RustTypeStorage : public TypeStorage {
@@ -80,7 +75,7 @@ struct RustTypeStorage : public TypeStorage {
 };
 
 RustType RustType::get(MLIRContext *context, StringRef type) {
-  return Base::get(context, RUST_TYPE, type);
+  return Base::get(context, type);
 }
 
 StringRef RustType::getRustType() const { return getImpl()->rustType; }
@@ -162,7 +157,7 @@ unsigned RustStructTypeStorage::idCounter = 0;
 RustStructType RustStructType::get(RustDialect *dialect,
                                    ArrayRef<StructFieldTy> fields) {
   mlir::MLIRContext *ctx = fields.front().second.getContext();
-  return Base::get(ctx, rust::types::RUST_STRUCT, fields);
+  return Base::get(ctx, fields);
 }
 
 void RustStructType::print(DialectAsmPrinter &os) const {
@@ -286,7 +281,7 @@ struct RustTensorTypeStorage : public TypeStorage {
 RustTensorType RustTensorType::get(RustDialect *dialect, Type elementTy,
                                    ArrayRef<int64_t> dimensions) {
   mlir::MLIRContext *ctx = elementTy.getContext();
-  return Base::get(ctx, rust::types::RUST_TENSOR, elementTy, dimensions);
+  return Base::get(ctx, elementTy, dimensions);
 }
 
 void RustTensorType::print(DialectAsmPrinter &os) const {
@@ -357,7 +352,7 @@ struct RustTupleTypeStorage : public TypeStorage {
 
 RustTupleType RustTupleType::get(RustDialect *dialect, ArrayRef<Type> fields) {
   mlir::MLIRContext *ctx = fields.front().getContext();
-  return Base::get(ctx, rust::types::RUST_TUPLE, fields);
+  return Base::get(ctx, fields);
 }
 
 void RustTupleType::print(DialectAsmPrinter &os) const { getImpl()->print(os); }

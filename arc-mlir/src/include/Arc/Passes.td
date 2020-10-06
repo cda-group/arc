@@ -19,6 +19,12 @@ include "mlir/Pass/PassBase.td"
 def LowerToRust : Pass<"arc-to-rust", "ModuleOp"> {
   let summary = "Convert arc/mlir to rust";
   let constructor = "arc::createLowerToRustPass()";
+
+  let dependentDialects = [
+        "arc::ArcDialect",
+        "rust::RustDialect",
+        "StandardOpsDialect"
+  ];
 }
 
 #endif // ARC_PASSES

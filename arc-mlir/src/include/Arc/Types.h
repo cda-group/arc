@@ -32,12 +32,6 @@ namespace arc {
 namespace types {
 
 //===----------------------------------------------------------------------===//
-// Arc Type Kinds
-//===----------------------------------------------------------------------===//
-
-enum Kind { Appender = Type::Kind::FIRST_PRIVATE_EXPERIMENTAL_0_TYPE, Struct };
-
-//===----------------------------------------------------------------------===//
 // Arc Type Functions
 //===----------------------------------------------------------------------===//
 
@@ -70,7 +64,6 @@ class AppenderType
 public:
   using Base::Base;
 
-  static bool kindof(unsigned kind) { return kind == Appender; }
   static AppenderType get(Type mergeType, RankedTensorType resultType);
   static AppenderType getChecked(Type mergeType, RankedTensorType resultType,
                                  Location loc);
@@ -87,8 +80,6 @@ public:
   using Base::Base;
 
   typedef std::pair<mlir::StringAttr, mlir::Type> FieldTy;
-
-  static bool kindof(unsigned kind) { return kind == arc::types::Struct; }
 
   static StructType get(llvm::ArrayRef<FieldTy> elementTypes);
 

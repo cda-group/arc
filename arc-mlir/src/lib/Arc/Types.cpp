@@ -38,38 +38,24 @@ namespace types {
 //===----------------------------------------------------------------------===//
 
 bool isValueType(Type type) {
-  switch (type.getKind()) {
-  case StandardTypes::BF16:
-  case StandardTypes::F16:
-  case StandardTypes::F32:
-  case StandardTypes::F64:
-  case StandardTypes::Integer:
-  case StandardTypes::Vector:
-  case StandardTypes::RankedTensor:
-  case StandardTypes::UnrankedTensor:
-  case StandardTypes::UnrankedMemRef:
-  case StandardTypes::MemRef:
-  case StandardTypes::Complex:
-  case StandardTypes::None:
+  if (type.isa<BFloat16Type>() || type.isa<Float16Type>() ||
+      type.isa<Float32Type>() || type.isa<Float64Type>() ||
+      type.isa<IntegerType>() || type.isa<VectorType>() ||
+      type.isa<RankedTensorType>() || type.isa<UnrankedTensorType>() ||
+      type.isa<UnrankedMemRefType>() || type.isa<MemRefType>() ||
+      type.isa<ComplexType>() || type.isa<ComplexType>() ||
+      type.isa<NoneType>())
     return true;
-  case StandardTypes::Tuple:
+  if (type.isa<TupleType>()) {
     for (auto t : type.cast<TupleType>().getTypes())
       if (!isValueType(t))
         return false;
     return true;
-  default:
-    return false;
   }
+  return false;
 }
 
-bool isBuilderType(Type type) {
-  switch (type.getKind()) {
-  case Appender:
-    return true;
-  default:
-    return false;
-  }
-}
+bool isBuilderType(Type type) { return type.isa<AppenderType>(); }
 
 //===----------------------------------------------------------------------===//
 // BuilderType
@@ -123,13 +109,13 @@ struct AppenderTypeStorage : public BuilderTypeStorage {
 };
 
 AppenderType AppenderType::get(Type mergeType, RankedTensorType resultType) {
-  return Base::get(mergeType.getContext(), Appender, mergeType, resultType);
+  return Base::get(mergeType.getContext(), mergeType, resultType);
 }
 
 AppenderType AppenderType::getChecked(Type mergeType,
                                       RankedTensorType resultType,
                                       Location loc) {
-  return Base::getChecked(loc, Appender, mergeType, resultType);
+  return Base::getChecked(loc, mergeType, resultType);
 }
 
 Type AppenderType::parse(DialectAsmParser &parser) {
@@ -194,7 +180,7 @@ StructType StructType::get(llvm::ArrayRef<StructType::FieldTy> elementTypes) {
   assert(!elementTypes.empty() && "expected at least 1 element type");
 
   mlir::MLIRContext *ctx = elementTypes.front().second.getContext();
-  return Base::get(ctx, arc::types::Struct, elementTypes);
+  return Base::get(ctx, elementTypes);
 }
 
 /// Returns the element types of this struct type.

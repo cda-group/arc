@@ -114,15 +114,12 @@ struct StdConstantOpLowering : public ConversionPattern {
                   ConversionPatternRewriter &rewriter) const final {
     mlir::ConstantOp cOp = cast<mlir::ConstantOp>(op);
     Attribute attr = cOp.getValue();
-    switch (attr.getKind()) {
-    case StandardAttributes::Float:
+    if (attr.isa<FloatAttr>())
       return convertFloat(cOp, rewriter);
-    case StandardAttributes::Integer:
+    if (attr.isa<IntegerAttr>())
       return convertInteger(cOp, rewriter);
-    default:
-      op->emitError("unhandled constant type");
-      return failure();
-    }
+    op->emitError("unhandled constant type");
+    return failure();
   };
 
 private:
@@ -196,13 +193,10 @@ struct ConstantIntOpLowering : public ConversionPattern {
                   ConversionPatternRewriter &rewriter) const final {
     arc::ConstantIntOp cOp = cast<arc::ConstantIntOp>(op);
     Attribute attr = cOp.getValue();
-    switch (attr.getKind()) {
-    case StandardAttributes::Integer:
+    if (attr.isa<IntegerAttr>())
       return convertInteger(cOp, rewriter);
-    default:
-      op->emitError("unhandled constant type");
-      return failure();
-    }
+    op->emitError("unhandled constant type");
+    return failure();
   };
 
 private:
@@ -383,7 +377,7 @@ struct ArcIntArithmeticOpLowering : public ConversionPattern {
                   ConversionPatternRewriter &rewriter) const final {
     T o = cast<T>(op);
     Type rustTy = TypeConverter.convertType(o.getType());
-    if (rustTy.getKind() == rust::types::RUST_TENSOR)
+    if (rustTy.isa<rust::types::RustTensorType>())
       rewriter.replaceOpWithNewOp<rust::RustBinaryRcOp>(
           op, rustTy, opStr[arithOp], operands[0], operands[1]);
     else
@@ -453,7 +447,7 @@ struct StdArithmeticOpLowering : public ConversionPattern {
                   ConversionPatternRewriter &rewriter) const final {
     T o = cast<T>(op);
     Type rustTy = TypeConverter.convertType(o.getType());
-    if (rustTy.getKind() == rust::types::RUST_TENSOR)
+    if (rustTy.isa<rust::types::RustTensorType>())
       rewriter.replaceOpWithNewOp<rust::RustBinaryRcOp>(
           op, rustTy, opStr[arithOp], operands[0], operands[1]);
     else
@@ -573,7 +567,7 @@ private:
 };
 
 RustTypeConverter::RustTypeConverter(MLIRContext *ctx)
-    : Ctx(ctx), Dialect(ctx->getRegisteredDialect<rust::RustDialect>()) {
+    : Ctx(ctx), Dialect(ctx->getOrLoadDialect<rust::RustDialect>()) {
   addConversion([&](FloatType type) { return convertFloatType(type); });
   addConversion([&](FunctionType type) { return convertFunctionType(type); });
   addConversion([&](IntegerType type) { return convertIntegerType(type); });
@@ -590,17 +584,14 @@ RustTypeConverter::RustTypeConverter(MLIRContext *ctx)
 }
 
 Type RustTypeConverter::convertFloatType(FloatType type) {
-  switch (type.getKind()) {
-  case mlir::StandardTypes::F32:
+  if (type.isa<Float32Type>())
     return rust::types::RustType::getFloatTy(Dialect);
-  case mlir::StandardTypes::F64:
+  if (type.isa<Float64Type>())
     return rust::types::RustType::getDoubleTy(Dialect);
-  case mlir::StandardTypes::Integer:
+  if (type.isa<IntegerType>())
     return rust::types::RustType::getIntegerTy(Dialect,
                                                type.cast<IntegerType>());
-  default:
-    return emitError(UnknownLoc::get(Ctx), "unsupported type"), Type();
-  }
+  return emitError(UnknownLoc::get(Ctx), "unsupported type"), Type();
 }
 
 Type RustTypeConverter::convertFunctionType(FunctionType type) {
@@ -616,13 +607,9 @@ Type RustTypeConverter::convertFunctionType(FunctionType type) {
 }
 
 Type RustTypeConverter::convertIntegerType(IntegerType type) {
-  switch (type.getKind()) {
-  case mlir::StandardTypes::Integer:
-    return rust::types::RustType::getIntegerTy(Dialect,
-                                               type.cast<IntegerType>());
-  default:
-    return emitError(UnknownLoc::get(Ctx), "unsupported type"), Type();
-  }
+  if (auto t = type.dyn_cast<IntegerType>())
+    return rust::types::RustType::getIntegerTy(Dialect, t);
+  return emitError(UnknownLoc::get(Ctx), "unsupported type"), Type();
 }
 
 Type RustTypeConverter::convertStructType(arc::types::StructType type) {
