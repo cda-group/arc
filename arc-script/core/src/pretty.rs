@@ -164,12 +164,12 @@ impl Pretty for Expr {
 impl Pretty for LitKind {
     fn pretty(&self, _: &Printer) -> String {
         match self {
-            LitI8(l) => format!("{}i8", l.to_string()),
-            LitI16(l) => format!("{}i16", l.to_string()),
+            LitI8(l) => format!("{}i8", l),
+            LitI16(l) => format!("{}i16", l),
             LitI32(l) => l.to_string(),
-            LitI64(l) => format!("{}i64", l.to_string()),
-            LitF32(l) => format!("{}f32", l.to_string()),
-            LitF64(l) => l.to_string(),
+            LitI64(l) => format!("{}i64", l),
+            LitF32(l) => format!("{}f32", l),
+            LitF64(l) => format!("{}", l),
             LitBool(l) => l.to_string(),
             LitTime(l) => l.to_string(),
             LitUnit => format!("()"),
