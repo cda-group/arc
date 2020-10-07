@@ -69,6 +69,7 @@ match {
   ",",
   ";",
   ".",
+  "#",
 //=============================================================================
 // Keywords
 //=============================================================================
@@ -348,6 +349,19 @@ Def: () = {
 };
 
 //=============================================================================
+// Annotations
+//=============================================================================
+
+Annot: Vec<Setting> = ("#" "[" <Vec<Setting>> "]")? => <>.unwrap_or_else(|| Vec::new());
+
+Setting: Setting = Spanned<SettingKind> => Setting::from(<>);
+
+SettingKind: SettingKind = {
+  Symbol Paren<LitKind> => Calibrate(<>),
+  Symbol                => Activate(<>),
+};
+
+//=============================================================================
 // Name Resolving
 //=============================================================================
 
@@ -365,10 +379,10 @@ Params: Vec<Ident> = Vec<Param> => {
 
 Param = <Symbol> ":" <Type>;
 
-FunDecl: (Ident, Vec<Ident>) = "fun" <Symbol> "(" <Params> ")" => {
-  let (sym, param_ids) = (<>);
+FunDecl: (Ident, Vec<Ident>) = <Annot> "fun" <Symbol> "(" <Params> ")" => {
+  let (annot, sym, param_ids) = (<>);
   let tv = typer.fresh();
-  let id = table.insert(Decl::new(sym, tv, FunDecl));
+  let id = table.insert(Decl::new(sym, tv, FunDecl(annot)));
   if let Err(err) = stack.bind_global(sym, id) {
       errors.push(err.into());
   }
@@ -381,10 +395,10 @@ FunDef: (Ident, FunDef) = <FunDecl> "{" <Body>  "}" => {
   (id, FunDef::new(param_ids, body))
 };
 
-TaskDecl: (Ident, Vec<Ident>) = "task" <Symbol> "(" <Params> ")" => {
-  let (sym, param_ids) = (<>);
+TaskDecl: (Ident, Vec<Ident>) = <Annot> "task" <Symbol> "(" <Params> ")" => {
+  let (annot, sym, param_ids) = (<>);
   let tv = typer.fresh();
-  let id = table.insert(Decl::new(sym, tv, TaskDecl(Vec::new())));
+  let id = table.insert(Decl::new(sym, tv, TaskDecl(Vec::new(), annot)));
   stack.push_scope();
   (id, param_ids)
 };

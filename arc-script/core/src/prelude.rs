@@ -9,4 +9,5 @@ pub use crate::ast::PatKind::*;
 pub use crate::ast::ScalarKind::*;
 pub use crate::ast::TypeKind::*;
 pub use crate::ast::UnOpKind::*;
+pub use crate::ast::SettingKind::*;
 pub use crate::ast::*;

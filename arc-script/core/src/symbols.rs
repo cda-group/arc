@@ -109,14 +109,15 @@ impl SymbolTable {
     }
 >>>>>>> a2b70c8... Add interner for uniquing strings
 
+    #[rustfmt::skip]
     pub fn debug(&self) {
         for (i, decl) in self.decls.iter().enumerate() {
             let name = self.intern.resolve(&decl.sym);
             match decl.kind {
-                VarDecl => println!("[var]  {} => {}", i, name),
-                FunDecl => println!("[fun]  {} => {}", i, name),
-                TypeDecl => println!("[type] {} => {}", i, name),
-                TaskDecl(_) => println!("[task] {} => {}", i, name),
+                VarDecl        => println!("[var]  {} => {}", i, name),
+                FunDecl(_)     => println!("[fun]  {} => {}", i, name),
+                TypeDecl       => println!("[type] {} => {}", i, name),
+                TaskDecl(_, _) => println!("[task] {} => {}", i, name),
             }
         }
     }

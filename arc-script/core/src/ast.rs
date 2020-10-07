@@ -30,6 +30,17 @@ pub struct SyntaxTree {
     pub body: Expr,
 }
 
+#[derive(Spanned)]
+pub struct Setting {
+    pub kind: SettingKind,
+    pub span: Span,
+}
+
+pub enum SettingKind {
+    Calibrate(SymbolKey, LitKind),
+    Activate(SymbolKey),
+}
+
 #[derive(Constructor)]
 pub struct FunDef {
     pub params: Vec<Ident>,
@@ -92,10 +103,10 @@ pub struct Decl {
 }
 
 pub enum DeclKind {
-    FunDecl,
+    FunDecl(Vec<Setting>),
     VarDecl,
     TypeDecl,
-    TaskDecl(Vec<Ident>),
+    TaskDecl(Vec<Ident>, Vec<Setting>),
 }
 
 #[derive(Debug, Clone, Constructor)]
