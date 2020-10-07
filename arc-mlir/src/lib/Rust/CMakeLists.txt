@@ -13,6 +13,6 @@ target_link_libraries(RustDialect
   PUBLIC
   MLIREDSC
   MLIRIR
-  MLIRStandardOps
+  MLIRStandard
   LLVMSupport
 )

@@ -107,7 +107,7 @@ struct ConstantFoldIndexTuple
     arc::MakeTupleOp mt = def ? dyn_cast<arc::MakeTupleOp>(def) : nullptr;
     if (!mt)
       return failure();
-    rewriter.replaceOp(op, mt.values()[op.index().getZExtValue()]);
+    rewriter.replaceOp(op, mt.values()[op.index()]);
     return success();
   }
 };

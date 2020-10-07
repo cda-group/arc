@@ -287,10 +287,8 @@ struct IndexTupleOpLowering : public ConversionPattern {
                   ConversionPatternRewriter &rewriter) const final {
     IndexTupleOp o = cast<IndexTupleOp>(op);
     Type retTy = TypeConverter.convertType(o.getType());
-    APInt i = o.index();
-    std::string idx_str = i.toString(10, false);
-    rewriter.replaceOpWithNewOp<rust::RustFieldAccessOp>(op, retTy, operands[0],
-                                                         idx_str);
+    rewriter.replaceOpWithNewOp<rust::RustFieldAccessOp>(
+        op, retTy, operands[0], std::to_string(o.index()));
     return success();
   };
 
@@ -753,7 +751,7 @@ void ArcToRustLoweringPass::runOnOperation() {
       &getContext(), typeConverter);
   patterns.insert<ArcUnaryFloatOpLowering<arc::AcosOp, ArcUnaryFloatOp::acos>>(
       &getContext(), typeConverter);
-  patterns.insert<ArcUnaryFloatOpLowering<arc::AtanOp, ArcUnaryFloatOp::atan>>(
+  patterns.insert<ArcUnaryFloatOpLowering<mlir::AtanOp, ArcUnaryFloatOp::atan>>(
       &getContext(), typeConverter);
 
   patterns.insert<ArcUnaryFloatOpLowering<arc::SinhOp, ArcUnaryFloatOp::sinh>>(

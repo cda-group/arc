@@ -35,14 +35,11 @@ using namespace mlir;
 
 #include "Arc/ArcOpsEnums.h.inc"
 
-namespace arc {
+#include "Arc/ArcDialect.h.inc"
 
 /// Include the auto-generated header file containing the declarations of the
 /// arc operations.
 #define GET_OP_CLASSES
 #include "Arc/Arc.h.inc"
-#include "Arc/ArcDialect.h.inc"
-
-} // end namespace arc
 
 #endif // ARC_DIALECT_H_

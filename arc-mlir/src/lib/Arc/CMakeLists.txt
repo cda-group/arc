@@ -16,6 +16,6 @@ target_link_libraries(ArcDialect
   PUBLIC
   MLIREDSC
   MLIRIR
-  MLIRStandardOps
+  MLIRStandard
   LLVMSupport
   )

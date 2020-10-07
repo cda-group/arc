@@ -67,10 +67,10 @@ let asin_f64 : f64 = asin(c_f64);
 #CHECK: {{%[^ ]+}} = "arc.asin"({{%[^ ]+}}) : (f64) -> f64
 
 let atan_f32 : f32 = atan(c_f32);
-#CHECK: {{%[^ ]+}} = "arc.atan"({{%[^ ]+}}) : (f32) -> f32
+#CHECK: {{%[^ ]+}} =  atan {{%[^ ]+}} : f32
 
 let atan_f64 : f64 = atan(c_f64);
-#CHECK: {{%[^ ]+}} = "arc.atan"({{%[^ ]+}}) : (f64) -> f64
+#CHECK: {{%[^ ]+}} = atan {{%[^ ]+}} : f64
 
 let cosh_f32 : f32 = cosh(c_f32);
 #CHECK: {{%[^ ]+}} = "arc.cosh"({{%[^ ]+}}) : (f32) -> f32
