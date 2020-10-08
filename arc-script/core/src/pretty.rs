@@ -261,6 +261,9 @@ impl Pretty for Type {
                 shape = shape.pretty(pr)
             ),
             Stream(ty)       => format!("Stream[{}]", ty.pretty(pr)),
+            Map(kty, vty)    => format!("Map[{},{}]", kty.pretty(pr), vty.pretty(pr)),
+            Set(ty)          => format!("Set[{}]", ty.pretty(pr)),
+            Vector(ty)       => format!("Vec[{}]", ty.pretty(pr)),
             Tuple(tys)       => format!("({})", tys.pretty(pr)),
             Optional(ty)     => format!("{}?", ty.pretty(pr)),
             Fun(args, ty)    => format!("({}) -> {}", args.pretty(pr), ty.pretty(pr)),

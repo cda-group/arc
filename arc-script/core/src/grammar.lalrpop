@@ -103,6 +103,14 @@ match {
   "bool",
   "str",
   "null",
+//=============================================================================
+// Higher-Order Types (For now intrinsic)
+//=============================================================================
+  "Operator",
+  "Stream",
+  "Map",
+  "Set",
+  "Vec",
 } else {
 //=============================================================================
 // Decimal
@@ -662,14 +670,22 @@ TypeKind: TypeKind = {
   Struct,
   Array,
   Enum,
+  Stream,
+  Map,
+  Set,
+  Vector,
   ! => { errors.push(<>.into()); TypeErr },
 };
 
-Struct:   TypeKind = "{" <Fields<Type>> "}"     => Struct(<>);
-Optional: TypeKind = <Type> "?"                 => Optional(<>);
-Scalar:   TypeKind = ScalarKind                 => Scalar(<>);
-Array:    TypeKind = "[" <TypeElem> <Shape> "]" => Array(<>);
-Enum:     TypeKind = "<{" <Variants<Type>> "}>" => Enum(<>);
+Struct:   TypeKind = "{" <Fields<Type>> "}"          => Struct(<>);
+Optional: TypeKind = <Type> "?"                      => Optional(<>);
+Scalar:   TypeKind = ScalarKind                      => Scalar(<>);
+Array:    TypeKind = "[" <TypeElem> <Shape> "]"      => Array(<>);
+Enum:     TypeKind = "<{" <Variants<Type>> "}>"      => Enum(<>);
+Stream:   TypeKind = "Stream" "[" <Type> "]"         => Stream(<>);
+Map:      TypeKind = "Map" "[" <Type> "," <Type> "]" => Map(<>);
+Set:      TypeKind = "Set" "[" <Type> "]"            => Set(<>);
+Vector:   TypeKind = "Vec" "[" <Type> "]"            => Vector(<>);
 
 ScalarKind: ScalarKind = {
   "i8"   => I8,

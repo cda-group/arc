@@ -249,6 +249,9 @@ pub enum TypeKind {
     Tuple(Vec<TypeVar>),
     Fun(Vec<TypeVar>, TypeVar),
     Stream(TypeVar),
+    Map(TypeVar, TypeVar),
+    Set(TypeVar),
+    Vector(TypeVar),
     Unknown,
     TypeErr,
 }
