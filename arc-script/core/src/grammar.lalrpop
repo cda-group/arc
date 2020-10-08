@@ -82,9 +82,6 @@ match {
   "where",
   "in",
   "of",
-  "fold",
-  "fmap",
-  "imap",
   "fun",
   "task",
   "end",
@@ -106,9 +103,6 @@ match {
   "bool",
   "str",
   "null",
-  "json",
-  "csv",
-  "dataset",
 } else {
 //=============================================================================
 // Decimal
@@ -616,13 +610,6 @@ ParseLit: CompilerResult<LitKind> = {
   ParseF64  => <>.map(LitF64),
   ParseBool => <>.map(LitBool),
   ParseTime => <>.map(LitTime),
-};
-
-BIF: BIFKind = {
-  "dataset" <Paren<Box<Arg>>>                 => Dataset(<>),
-  "fold" <Paren<(<Box<Arg>> "," <Box<Arg>>)>> => Fold(<>.0, <>.1),
-  "fmap" <Paren<Box<Arg>>>                    => Fmap(<>),
-  "imap" <TypeAnnot> <Paren<Box<Arg>>>        => Imap(<>),
 };
 
 //=============================================================================

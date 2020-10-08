@@ -210,14 +210,6 @@ pub enum BinOpKind {
 }
 
 #[derive(Debug, Clone)]
-pub enum BIFKind {
-    Dataset(Box<Expr>),
-    Fold(Box<Expr>, Box<Expr>),
-    Fmap(Box<Expr>),
-    Imap(TypeVar, Box<Expr>),
-}
-
-#[derive(Debug, Clone)]
 pub enum UnOpKind {
     Not,
     Neg,

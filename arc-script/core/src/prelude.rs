@@ -1,4 +1,3 @@
-pub use crate::ast::BIFKind::*;
 pub use crate::ast::BinOpKind::*;
 pub use crate::ast::DeclKind::*;
 pub use crate::ast::DimKind::*;
