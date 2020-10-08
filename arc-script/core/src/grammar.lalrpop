@@ -195,8 +195,8 @@ Paren<T>:          T = "(" <T> ")";
 
 Field: Field = Spanned<Symbol> => Field::from(<>);
 
-Fields<V>: Map<Field, V> = Vec<(<Field> ":" <V>)> => {
-  let mut map = Map::new();
+Fields<V>: VecMap<Field, V> = Vec<(<Field> ":" <V>)> => {
+  let mut map = VecMap::new();
   for (field, val) in <>.into_iter() {
       if map.contains_key(&field) {
         errors.push(
@@ -216,8 +216,8 @@ Fields<V>: Map<Field, V> = Vec<(<Field> ":" <V>)> => {
 
 Variant: Variant = Spanned<Symbol> => Variant::from(<>);
 
-Variants<V>: Map<Variant, V> = Vec<(<Variant> "of" <V>)> => {
-  let mut map = Map::new();
+Variants<V>: VecMap<Variant, V> = Vec<(<Variant> "of" <V>)> => {
+  let mut map = VecMap::new();
   for (variant, val) in <>.into_iter() {
       if map.contains_key(&variant) {
         errors.push(

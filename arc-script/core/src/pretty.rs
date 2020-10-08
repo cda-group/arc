@@ -336,7 +336,7 @@ impl Pretty for Pat {
     }
 }
 
-impl<V> Pretty for Map<Field, V>
+impl<V> Pretty for VecMap<Field, V>
 where
     V: Pretty,
 {
@@ -348,7 +348,7 @@ where
     }
 }
 
-impl<V> Pretty for Map<Variant, V>
+impl<V> Pretty for VecMap<Variant, V>
 where
     V: Pretty,
 {

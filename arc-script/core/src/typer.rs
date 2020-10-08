@@ -288,14 +288,14 @@ impl<'i> Constrain<'i> for Expr {
                 let fields = fields
                     .iter()
                     .map(|(field, arg)| (*field, arg.tv))
-                    .collect::<Map<_, _>>();
+                    .collect::<VecMap<_, _>>();
                 ctx.unify_var_val(self.tv, Struct(fields));
             }
             ConsEnum(variants) => {
                 let variants = variants
                     .iter()
                     .map(|(variant, arg)| (*variant, arg.tv))
-                    .collect::<Map<_, _>>();
+                    .collect::<VecMap<_, _>>();
                 ctx.unify_var_val(self.tv, Enum(variants));
             }
             ConsTuple(args) => {

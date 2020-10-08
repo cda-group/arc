@@ -133,7 +133,7 @@ impl Ssa for Vec<Expr> {
     }
 }
 
-impl Ssa for Map<Field, Expr> {
+impl Ssa for VecMap<Field, Expr> {
     fn flatten(self, info: &mut Info) -> (Context, Self) {
         let mut ctx = vec![];
         let exprs = self

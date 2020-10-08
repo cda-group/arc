@@ -14,7 +14,7 @@ pub struct Spanned<T>(pub ByteIndex, pub T, pub ByteIndex);
 pub type SymbolName<'i> = &'i str;
 pub type SymbolKey = Spur;
 pub type Clause = (Pat, Expr);
-pub type Map<K, V> = FlatMap<K, V>;
+pub type VecMap<K, V> = FlatMap<K, V>;
 
 #[derive(Constructor)]
 pub struct Script<'i> {
@@ -154,8 +154,8 @@ pub struct Index(pub usize);
 pub enum ExprKind {
     Lit(LitKind),
     ConsArray(Vec<Expr>),
-    ConsStruct(Map<Field, Expr>),
-    ConsEnum(Map<Variant, Expr>),
+    ConsStruct(VecMap<Field, Expr>),
+    ConsEnum(VecMap<Variant, Expr>),
     ConsTuple(Vec<Expr>),
     Var(Ident),
     Closure(Vec<Ident>, Box<Expr>),
@@ -250,8 +250,8 @@ impl Type {
 pub enum TypeKind {
     Scalar(ScalarKind),
     Optional(TypeVar),
-    Struct(Map<Field, TypeVar>),
-    Enum(Map<Variant, TypeVar>),
+    Struct(VecMap<Field, TypeVar>),
+    Enum(VecMap<Variant, TypeVar>),
     Array(TypeVar, Shape),
     Tuple(Vec<TypeVar>),
     Fun(Vec<TypeVar>, TypeVar),
