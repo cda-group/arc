@@ -270,6 +270,12 @@ pub enum ScalarKind {
     Unit,
 }
 
+impl Into<Type> for ScalarKind {
+    fn into(self) -> Type {
+        TypeKind::Scalar(self).into()
+    }
+}
+
 #[derive(Debug, Eq, Clone, Educe, MaybeSpanned)]
 #[educe(PartialEq)]
 pub struct Shape {

@@ -243,16 +243,18 @@ impl Pretty for Type {
     #[rustfmt::skip]
     fn pretty(&self, pr: &Printer) -> String {
         match &self.kind {
-            Scalar(I8)       => format!("i8"),
-            Scalar(I16)      => format!("i16"),
-            Scalar(I32)      => format!("i32"),
-            Scalar(I64)      => format!("i64"),
-            Scalar(F32)      => format!("f32"),
-            Scalar(F64)      => format!("f64"),
-            Scalar(Bool)     => format!("bool"),
-            Scalar(Null)     => format!("null"),
-            Scalar(Str)      => format!("str"),
-            Scalar(Unit)     => format!("()"),
+            Scalar(kind) => match kind {
+                I8   => format!("i8"),
+                I16  => format!("i16"),
+                I32  => format!("i32"),
+                I64  => format!("i64"),
+                F32  => format!("f32"),
+                F64  => format!("f64"),
+                Bool => format!("bool"),
+                Null => format!("null"),
+                Str  => format!("str"),
+                Unit => format!("()"),
+            }
             Struct(fields)   => format!("{{ {fields} }}", fields = fields.pretty(pr),),
             Enum(variants)   => format!("{{ {variants} }}", variants = variants.pretty(pr),),
             Array(ty, shape) => format!(

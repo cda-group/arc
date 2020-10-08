@@ -256,7 +256,7 @@ impl<'i> Constrain<'i> for Expr {
             Let(id, v) => {
                 let tv = ctx.table.get_decl(id).tv;
                 ctx.unify(v.tv, tv);
-                ctx.unify_var_val(self.tv, Scalar(Unit));
+                ctx.unify_var_val(self.tv, Unit);
             }
             Var(id) => {
                 let tv = ctx.table.get_decl(id).tv;
@@ -275,7 +275,7 @@ impl<'i> Constrain<'i> for Expr {
                     LitTime(_) => todo!(),
                     LitErr => return,
                 };
-                ctx.unify_var_val(self.tv, Scalar(kind));
+                ctx.unify_var_val(self.tv, kind);
             }
             ConsArray(args) => {
                 let elem_tv = ctx.typer.fresh();
@@ -310,27 +310,30 @@ impl<'i> Constrain<'i> for Expr {
                 }
                 Pow => {
                     ctx.unify(self.tv, l.tv);
-                    match ctx.typer.lookup(l.tv).kind {
-                        Scalar(I8) | Scalar(I16) | Scalar(I32) | Scalar(I64) => {
-                            ctx.unify_var_val(r.tv, Scalar(I32))
-                        }
-                        Scalar(F32) => ctx.unify_var_val(r.tv, Scalar(F32)),
-                        Scalar(F64) => ctx.unify_var_val(r.tv, Scalar(F64)),
-                        _ => match ctx.typer.lookup(r.tv).kind {
-                            Scalar(F32) => ctx.unify_var_val(l.tv, Scalar(F32)),
-                            Scalar(F64) => ctx.unify_var_val(l.tv, Scalar(F64)),
+                    if let Scalar(kind) = ctx.typer.lookup(l.tv).kind {
+                        match kind {
+                            I8 | I16 | I32 | I64 => ctx.unify_var_val(r.tv, I32),
+                            F32 => ctx.unify_var_val(r.tv, F32),
+                            F64 => ctx.unify_var_val(r.tv, F64),
                             _ => {}
-                        },
+                        }
+                    }
+                    if let Scalar(kind) = ctx.typer.lookup(r.tv).kind {
+                        match kind {
+                            F32 => ctx.unify_var_val(l.tv, F32),
+                            F64 => ctx.unify_var_val(l.tv, F64),
+                            _ => {}
+                        }
                     }
                 }
                 Equ | Neq | Gt | Lt | Geq | Leq => {
                     ctx.unify(l.tv, r.tv);
-                    ctx.unify_var_val(self.tv, Scalar(Bool))
+                    ctx.unify_var_val(self.tv, Bool)
                 }
                 Or | And => {
                     ctx.unify(self.tv, l.tv);
                     ctx.unify(self.tv, r.tv);
-                    ctx.unify_var_val(self.tv, Scalar(Bool))
+                    ctx.unify_var_val(self.tv, Bool)
                 }
                 Pipe => todo!(),
                 Seq => ctx.unify(self.tv, r.tv),
@@ -339,7 +342,7 @@ impl<'i> Constrain<'i> for Expr {
             UnOp(kind, e) => match kind {
                 Not => {
                     ctx.unify(self.tv, e.tv);
-                    ctx.unify_var_val(e.tv, Scalar(Bool));
+                    ctx.unify_var_val(e.tv, Bool);
                 }
                 Neg => ctx.unify(self.tv, e.tv),
                 Cast(tv) => ctx.unify(e.tv, *tv),
@@ -353,7 +356,7 @@ impl<'i> Constrain<'i> for Expr {
                 UnOpErr => return,
             },
             If(c, t, e) => {
-                ctx.unify_var_val(c.tv, Scalar(Bool));
+                ctx.unify_var_val(c.tv, Bool);
                 ctx.unify(t.tv, e.tv);
                 ctx.unify(t.tv, self.tv);
             }

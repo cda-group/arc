@@ -134,16 +134,18 @@ impl TypeVar {
     }
     fn to_ty_rec(self, mut typer: RefMut<Typer>) -> String {
         match typer.lookup(self).kind {
-            Scalar(I8) => "i8".to_owned(),
-            Scalar(I16) => "i16".to_owned(),
-            Scalar(I32) => "i32".to_owned(),
-            Scalar(I64) => "i64".to_owned(),
-            Scalar(F32) => "f32".to_owned(),
-            Scalar(F64) => "f64".to_owned(),
-            Scalar(Bool) => "i1".to_owned(),
-            Scalar(Null) => todo!(),
-            Scalar(Str) => todo!(),
-            Scalar(Unit) => todo!(),
+            Scalar(kind) => match kind {
+                I8 => "i8".to_owned(),
+                I16 => "i16".to_owned(),
+                I32 => "i32".to_owned(),
+                I64 => "i64".to_owned(),
+                F32 => "f32".to_owned(),
+                F64 => "f64".to_owned(),
+                Bool => "i1".to_owned(),
+                Null => todo!(),
+                Str => todo!(),
+                Unit => todo!(),
+            },
             Struct(_) => todo!(),
             Enum(_) => todo!(),
             Array(_, _) => todo!(),
