@@ -32,6 +32,13 @@ impl Expr {
                 t.for_each_expr_preorder(f);
                 e.for_each_expr_preorder(f);
             }
+            For(_, e, c, b) => {
+                e.for_each_expr_preorder(f);
+                if let Some(c) = c {
+                    c.for_each_expr_preorder(f);
+                }
+                b.for_each_expr_preorder(f);
+            }
             Match(e, cases) => {
                 e.for_each_expr_preorder(f);
                 cases
@@ -73,6 +80,13 @@ impl Expr {
                 c.for_each_expr(f);
                 t.for_each_expr(f);
                 e.for_each_expr(f);
+            }
+            For(_, e, c, b) => {
+                e.for_each_expr(f);
+                if let Some(c) = c {
+                    c.for_each_expr(f);
+                }
+                b.for_each_expr(f);
             }
             Match(e, cases) => {
                 e.for_each_expr(f);

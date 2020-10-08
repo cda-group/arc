@@ -78,6 +78,8 @@ match {
   "if",
   "then",
   "else",
+  "for",
+  "where",
   "in",
   "of",
   "fold",
@@ -420,6 +422,21 @@ Var: ExprKind = <Symbol> => {
   stack.lookup(<>)
        .map(Var)
        .unwrap_or(ExprErr)
+};
+
+ForDecl: Ident = "for" <Symbol> => {
+  let sym = <>;
+  let tv = typer.fresh();
+  let id = table.insert(Decl::new(sym, tv, VarDecl));
+  stack.push_scope();
+  stack.bind_local(sym, id);
+  id
+};
+
+ForDef: ExprKind = <ForDecl> "in" <Box<Arg>> <("where" <Box<Arg>>)?> "{" <Box<Body>> "}" => {
+  let (id, arg, cond, body) = (<>);
+  stack.pop_scope();
+  For(id, arg, cond, body)
 };
 
 TypeDef: (Ident, TypeDef) = "type" <Symbol> "=" <Type> => {

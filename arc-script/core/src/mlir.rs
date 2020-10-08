@@ -108,6 +108,7 @@ impl Expr {
             Sink(_) => todo!(),
             Source(_) => todo!(),
             Loop(_, _) => todo!(),
+            For(..) => todo!(),
             ExprErr => "<ERROR>".to_owned(),
         }
     }

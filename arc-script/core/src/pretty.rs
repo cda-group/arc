@@ -87,6 +87,19 @@ impl Pretty for Expr {
                 s0 = pr.indent(),
                 s1 = pr.tab().indent(),
             ),
+            For(p, e, c, b) => format!(
+                "for {p} in {e} {c} {{{s1}{b}{s0}}}",
+                p = p.pretty(&pr),
+                e = e.pretty(&pr),
+                c = if let Some(c) = c {
+                    format!("where {c}", c = c.pretty(&pr))
+                } else {
+                    format!("")
+                },
+                b = b.pretty(&pr),
+                s0 = pr.indent(),
+                s1 = pr.tab().indent()
+            ),
             Match(e, clauses) => format!(
                 "match {e} {{{clause}{s0}}}{s1}",
                 e = e.pretty(&pr.tab()),

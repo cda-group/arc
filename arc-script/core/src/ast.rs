@@ -157,6 +157,7 @@ pub enum ExprKind {
     ConsStruct(VecMap<Field, Expr>),
     ConsEnum(VecMap<Variant, Expr>),
     ConsTuple(Vec<Expr>),
+    For(Ident, Box<Expr>, Option<Box<Expr>>, Box<Expr>),
     Var(Ident),
     Closure(Vec<Ident>, Box<Expr>),
     UnOp(UnOpKind, Box<Expr>),

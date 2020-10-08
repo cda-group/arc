@@ -302,6 +302,7 @@ impl<'i> Constrain<'i> for Expr {
                 let tvs = args.iter().map(|arg| arg.tv).collect();
                 ctx.unify_var_val(self.tv, Tuple(tvs));
             }
+            For(..) => todo!(),
             BinOp(l, kind, r) => match kind {
                 Add | Div | Mul | Sub => {
                     ctx.unify(l.tv, r.tv);

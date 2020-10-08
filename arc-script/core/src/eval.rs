@@ -113,6 +113,7 @@ impl Expr {
             ConsEnum(variants) => todo!(),
             ConsTuple(exprs) => todo!(),
             Closure(id, expr) => todo!(),
+            For(..) => todo!(),
             If(c, t, e) => {
                 let c = c.eval(ctx);
                 match (c, t, e) {
