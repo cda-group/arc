@@ -153,7 +153,7 @@ impl Expr {
                     Access(field) => match v {
                         _ => todo!(),
                     },
-                    _ => ValueErr,
+                    UnOpErr | Cast(_) | Emit => ValueErr,
                 }
             }
             BinOp(lhs, kind, rhs) => {

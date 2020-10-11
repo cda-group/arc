@@ -203,6 +203,7 @@ impl Pretty for (&UnOpKind, &Expr) {
             Project(idx) => format!("{}.{}", e.pretty(pr), idx.pretty(pr)),
             Access(_)    => todo!(),
             Call(args)   => format!("{e}({args})", e = e.pretty(pr), args = args.pretty(pr)),
+            Emit         => format!("emit {e}", e = e.pretty(pr)),
             UnOpErr      => format!("☇{}", e.pretty(pr)),
         }
     }

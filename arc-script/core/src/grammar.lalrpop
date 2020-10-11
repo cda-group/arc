@@ -80,6 +80,7 @@ match {
   "then",
   "else",
   "for",
+  "emit",
   "where",
   "in",
   "of",
@@ -548,6 +549,7 @@ Project: UnOpKind = ParseIndex => {
 If:    ExprKind = "if" <Box<Arg>> "{" <Box<Arg>> "}" "else" "{" <Box<Arg>> "}" => If(<>);
 Match: ExprKind = "match" <Box<Arg>> "{" <Vec<Case>> "}"                       => Match(<>);
 Loop:  ExprKind = "loop" <Box<Arg>> "{" <Box<Arg>> "}"                         => Loop(<>);
+Emit:  ExprKind = "emit" <Box<Arg>>                                            => UnOp(Emit, <>);
 
 //=============================================================================
 // Qualifiers
@@ -570,14 +572,14 @@ Sink: ExprKind = "sink" "::" <Symbol> => {
 ConsArray:  ExprKind = "[" <VecNonEmpty<Arg>> "]" => ConsArray(<>);
 ConsTuple:  ExprKind = "(" <VecMulti<Arg>> ")"    => ConsTuple(<>);
 ConsStruct: ExprKind = "{" <Fields<Arg>> "}"      => ConsStruct(<>);
-ConsEnum:   ExprKind = "<{" <Variants<Arg>> "}>"  => ConsEnum(<>);
+ConsEnum:   ExprKind = "{" <Variants<Arg>> "}"    => ConsEnum(<>);
 
 //=============================================================================
 // Precedence Climbing
 //=============================================================================
 
 ExprKind0:  ExprKind = { Seq, ExprKind1 };
-ExprKind1:  ExprKind = { Let, ExprKind2 };
+ExprKind1:  ExprKind = { Let, Emit, ExprKind2 };
 ExprKind2:  ExprKind = { ClosureDef, ExprKind3 };
 ExprKind3:  ExprKind =  BinaryInfixLeftAssociative<Op0, ExprKind4>;
 ExprKind4:  ExprKind =  BinaryInfixLeftAssociative<Op1, ExprKind5>;

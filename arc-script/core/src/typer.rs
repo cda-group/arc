@@ -353,6 +353,10 @@ impl<'i> Constrain<'i> for Expr {
                     let tv2 = ctx.typer.intern(Fun(params, self.tv));
                     ctx.unify(e.tv, tv2);
                 }
+                Emit => {
+                    // TODO: Ensure that arg is a sink (enum variant)
+                    ctx.unify_var_val(self.tv, Unit);
+                }
                 UnOpErr => return,
             },
             If(c, t, e) => {

@@ -211,6 +211,7 @@ pub enum BinOpKind {
 
 #[derive(Debug, Clone)]
 pub enum UnOpKind {
+    Emit,
     Not,
     Neg,
     Cast(TypeVar),
