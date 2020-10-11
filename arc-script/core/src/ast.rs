@@ -11,8 +11,8 @@ pub type ByteIndex = usize;
 
 pub struct Spanned<T>(pub ByteIndex, pub T, pub ByteIndex);
 
-pub type SymbolName<'i> = &'i str;
-pub type SymbolKey = Spur;
+pub type SymbolBuf<'i> = &'i str;
+pub type Symbol = Spur;
 pub type Clause = (Pat, Expr);
 pub type VecMap<K, V> = FlatMap<K, V>;
 
@@ -37,8 +37,8 @@ pub struct Setting {
 }
 
 pub enum SettingKind {
-    Calibrate(SymbolKey, LitKind),
-    Activate(SymbolKey),
+    Calibrate(Symbol, LitKind),
+    Activate(Symbol),
 }
 
 #[derive(Constructor)]
@@ -97,7 +97,7 @@ pub struct TaskDef {
 
 #[derive(Constructor)]
 pub struct Decl {
-    pub sym: SymbolKey,
+    pub sym: Symbol,
     pub tv: TypeVar,
     pub kind: DeclKind,
 }
@@ -131,7 +131,7 @@ impl Expr {
 #[derive(Debug, Clone, Copy, Eq, Ord, Constructor, Educe, Spanned)]
 #[educe(PartialEq, PartialOrd)]
 pub struct Field {
-    pub key: SymbolKey,
+    pub key: Symbol,
     #[educe(PartialEq(ignore), PartialOrd(ignore))]
     pub span: Span,
 }
@@ -139,7 +139,7 @@ pub struct Field {
 #[derive(Debug, Clone, Copy, Eq, Ord, Constructor, Educe, Spanned)]
 #[educe(PartialEq, PartialOrd)]
 pub struct Variant {
-    pub key: SymbolKey,
+    pub key: Symbol,
     #[educe(PartialEq(ignore), PartialOrd(ignore))]
     pub span: Span,
 }

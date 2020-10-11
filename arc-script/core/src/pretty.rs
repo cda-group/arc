@@ -296,7 +296,7 @@ impl Pretty for Variant {
     }
 }
 
-impl Pretty for SymbolKey {
+impl Pretty for Symbol {
     fn pretty(&self, pr: &Printer) -> String {
         pr.info.table.resolve(self).to_string()
     }

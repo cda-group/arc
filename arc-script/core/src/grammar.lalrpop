@@ -272,7 +272,7 @@ UnaryPrefix<Op, Next>: ExprKind = {
 // Symbols
 //=============================================================================
 
-Symbol: SymbolKey = TSymbol => table.intern(<>);
+Symbol: Symbol = TSymbol => table.intern(<>);
 
 //=============================================================================
 // Literals
@@ -392,7 +392,7 @@ FunDecl: (Ident, Vec<Ident>) = <Annot> "fun" <Symbol> "(" <Params> ")" => {
   let (annot, sym, param_ids) = (<>);
   let tv = typer.fresh();
   let id = table.insert(Decl::new(sym, tv, FunDecl(annot)));
-  if let Err(err) = stack.bind_global(sym, id) {
+  if let Err(err) = stack.bind_item(sym, id) {
       errors.push(err.into());
   }
   (id, param_ids)
@@ -449,7 +449,7 @@ ForDef: ExprKind = <ForDecl> "in" <Box<Arg>> <("where" <Box<Arg>>)?> "{" <Box<Bo
 TypeDef: (Ident, TypeDef) = "type" <Symbol> "=" <Type> => {
   let (sym, tv) = (<>);
   let id = table.insert(Decl::new(sym, tv, TypeDecl));
-  if let Err(err) = stack.bind_global(sym, id) {
+  if let Err(err) = stack.bind_item(sym, id) {
       errors.push(err.into());
   }
   (id, TypeDef::new(tv))

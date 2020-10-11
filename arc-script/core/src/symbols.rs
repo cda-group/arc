@@ -76,11 +76,11 @@ impl SymbolTable {
         id
     }
 
-    pub fn intern(&mut self, symbol: SymbolName) -> SymbolKey {
+    pub fn intern(&mut self, symbol: SymbolBuf) -> Symbol {
         self.intern.get_or_intern(symbol)
     }
 
-    pub fn resolve(&self, symbol: &SymbolKey) -> SymbolName {
+    pub fn resolve(&self, symbol: &Symbol) -> SymbolBuf {
         self.intern.resolve(symbol)
     }
 
@@ -123,7 +123,7 @@ impl SymbolTable {
     }
 }
 
-pub type Scope = Vec<(SymbolKey, Ident)>;
+pub type Scope = Vec<(Symbol, Ident)>;
 pub struct SymbolStack {
     scopes: Vec<Scope>,
 }
@@ -136,7 +136,7 @@ impl SymbolStack {
         Self { scopes }
     }
 
-    pub fn lookup(&self, needle: SymbolKey) -> Option<Ident> {
+    pub fn lookup(&self, needle: Symbol) -> Option<Ident> {
         self.scopes.iter().rev().find_map(|scope| {
             scope
                 .iter()
@@ -145,11 +145,11 @@ impl SymbolStack {
         })
     }
 
-    pub fn bind_local(&mut self, name: SymbolKey, id: Ident) {
+    pub fn bind_local(&mut self, name: Symbol, id: Ident) {
         self.locals().push((name, id))
     }
 
-    pub fn bind_global(&mut self, name: SymbolKey, ident: Ident) -> Result<(), CompilerError> {
+    pub fn bind_item(&mut self, name: Symbol, ident: Ident) -> Result<(), CompilerError> {
         if self.globals().iter().any(|(needle, _)| name == *needle) {
             Err(CompilerError::NameClash)
         } else {
