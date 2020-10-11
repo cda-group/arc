@@ -204,7 +204,7 @@ Paren<T>:          T = "(" <T> ")";
 
 Field: Field = Spanned<Symbol> => Field::from(<>);
 
-Fields<V>: VecMap<Field, V> = Vec<(<Field> ":" <V>)> => {
+Fields<V>: VecMap<Field, V> = VecNonEmpty<(<Field> ":" <V>)> => {
   let mut map = VecMap::new();
   for (field, val) in <>.into_iter() {
       if map.contains_key(&field) {
@@ -225,7 +225,7 @@ Fields<V>: VecMap<Field, V> = Vec<(<Field> ":" <V>)> => {
 
 Variant: Variant = Spanned<Symbol> => Variant::from(<>);
 
-Variants<V>: VecMap<Variant, V> = Vec<(<Variant> "of" <V>)> => {
+Variants<V>: VecMap<Variant, V> = VecNonEmpty<(<Variant> <Paren<V>>)> => {
   let mut map = VecMap::new();
   for (variant, val) in <>.into_iter() {
       if map.contains_key(&variant) {
@@ -687,10 +687,10 @@ TypeKind: TypeKind = {
 };
 
 Struct:   TypeKind = "{" <Fields<Type>> "}"          => Struct(<>);
+Enum:     TypeKind = "{" <Variants<Type>> "}"      => Enum(<>);
 Optional: TypeKind = <Type> "?"                      => Optional(<>);
 Scalar:   TypeKind = ScalarKind                      => Scalar(<>);
 Array:    TypeKind = "[" <TypeElem> <Shape> "]"      => Array(<>);
-Enum:     TypeKind = "<{" <Variants<Type>> "}>"      => Enum(<>);
 Stream:   TypeKind = "Stream" "[" <Type> "]"         => Stream(<>);
 Map:      TypeKind = "Map" "[" <Type> "," <Type> "]" => Map(<>);
 Set:      TypeKind = "Set" "[" <Type> "]"            => Set(<>);
