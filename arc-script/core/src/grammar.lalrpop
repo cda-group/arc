@@ -94,7 +94,7 @@ match {
   "sink",
   "loop",
 //=============================================================================
-// Types
+// Primitive Types
 //=============================================================================
   "i8",
   "i16",
@@ -358,7 +358,7 @@ Def: () = {
 // Annotations
 //=============================================================================
 
-Annot: Vec<Setting> = ("#" "[" <Vec<Setting>> "]")? => <>.unwrap_or_else(|| Vec::new());
+Annot: Vec<Setting> = ("#" "[" <Vec<Setting>> "]")? => <>.unwrap_or_else(Vec::new);
 
 Setting: Setting = Spanned<SettingKind> => Setting::from(<>);
 

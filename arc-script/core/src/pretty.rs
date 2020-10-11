@@ -258,11 +258,7 @@ impl Pretty for Type {
             }
             Struct(fields)   => format!("{{ {fields} }}", fields = fields.pretty(pr),),
             Enum(variants)   => format!("{{ {variants} }}", variants = variants.pretty(pr),),
-            Array(ty, shape) => format!(
-                "[{ty}; {shape}]",
-                ty = ty.pretty(pr),
-                shape = shape.pretty(pr)
-            ),
+            Array(ty, shape) => format!( "[{ty}; {shape}]", ty = ty.pretty(pr), shape = shape.pretty(pr)),
             Stream(ty)       => format!("Stream[{}]", ty.pretty(pr)),
             Map(kty, vty)    => format!("Map[{},{}]", kty.pretty(pr), vty.pretty(pr)),
             Set(ty)          => format!("Set[{}]", ty.pretty(pr)),

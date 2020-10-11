@@ -346,8 +346,8 @@ impl<'i> Constrain<'i> for Expr {
                 }
                 Neg => ctx.unify(self.tv, e.tv),
                 Cast(tv) => ctx.unify(e.tv, *tv),
-                Project(_) => return,
-                Access(_) => return,
+                Project(_) => todo!(),
+                Access(_) => todo!(),
                 Call(args) => {
                     let params = args.iter().map(|arg| arg.tv).collect();
                     let tv2 = ctx.typer.intern(Fun(params, self.tv));

@@ -242,7 +242,7 @@ impl Expr {
                     (F32(l), Leq, F32(r)) => Bool(l <= r),
                     (F64(l), Leq, F64(r)) => Bool(l <= r),
                     // Staged
-                    (l, Pipe, r) => StagedPipe(Box::new(l), Box::new(r)),
+                    (l, Pipe, r) => StagedPipe(l.into(), r.into()),
                     (_, BinOpErr, _) => ValueErr,
                     _ => unreachable!(),
                 }

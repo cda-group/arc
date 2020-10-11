@@ -32,13 +32,13 @@ impl Expr {
             tv: acc.tv,
             span: acc.span,
             kind: BinOp(
-                Box::new(Expr {
+                Expr {
                     tv: typer.intern(Scalar(Unit)),
                     span: acc.span,
-                    kind: Let(id, Box::new(expr)),
-                }),
+                    kind: Let(id, expr.into()),
+                }.into(),
                 Seq,
-                Box::new(acc),
+                acc.into(),
             ),
         })
     }
@@ -62,20 +62,20 @@ impl Ssa for Expr {
                     }
                 }
                 let ((lc, l), (rc, r)) = (l.flatten(info), r.flatten(info));
-                (merge(lc, rc), BinOp(Box::new(l), op, Box::new(r)))
+                (merge(lc, rc), BinOp(l.into(), op, r.into()))
             }
             UnOp(o, e) => {
                 let (oc, o) = o.flatten(info);
                 let (ec, e) = e.flatten(info);
-                (merge(oc, ec), UnOp(o, Box::new(e)))
+                (merge(oc, ec), UnOp(o, e.into()))
             }
             If(c, t, e) => {
                 let ((cc, c), t, e) = (c.flatten(info), t.into_ssa(info), e.into_ssa(info));
-                (cc, If(Box::new(c), Box::new(t), Box::new(e)))
+                (cc, If(c.into(), t.into(), e.into()))
             }
             Closure(ps, e) => {
                 let e = e.into_ssa(info);
-                (Vec::new(), Closure(ps, Box::new(e)))
+                (Vec::new(), Closure(ps, e.into()))
             }
             ConsArray(e) => {
                 let (ec, e) = e.flatten(info);
