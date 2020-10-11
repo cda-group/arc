@@ -356,7 +356,16 @@ impl<'i> Constrain<'i> for Expr {
                         }
                     }
                 }
-                Access(_) => todo!(),
+                Access(sym) => {
+                    if let Struct(fields) = ctx.typer.lookup(e.tv).kind {
+                        if let Some(tv) = fields.get(sym) {
+                            ctx.unify_var_var(self.tv, *tv);
+                        } else {
+                            ctx.errors
+                                .push(CompilerError::FieldNotFound { span: self.span })
+                        }
+                    }
+                }
                 Call(args) => {
                     let params = args.iter().map(|arg| arg.tv).collect();
                     let tv2 = ctx.typer.intern(Fun(params, self.tv));

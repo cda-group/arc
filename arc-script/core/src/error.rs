@@ -100,6 +100,9 @@ pub enum CompilerError {
     OutOfBoundsProject {
         span: Span,
     },
+    FieldNotFound {
+        span: Span,
+    },
 }
 
 /// Converts a compiler error into a diagnostic which can be emitted by codespan.
@@ -164,6 +167,9 @@ impl CompilerError {
                 ]),
             CompilerError::OutOfBoundsProject { span } => Diagnostic::error()
                 .with_message("Out of bounds projection")
+                .with_labels(vec![Label::primary((), *span)]),
+            CompilerError::FieldNotFound { span } => Diagnostic::error()
+                .with_message("Field not found")
                 .with_labels(vec![Label::primary((), *span)]),
         }
     }
