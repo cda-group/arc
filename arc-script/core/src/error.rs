@@ -97,6 +97,9 @@ pub enum CompilerError {
     DuplicateVariant {
         sym: Symbol,
     },
+    OutOfBoundsProject {
+        span: Span,
+    },
 }
 
 /// Converts a compiler error into a diagnostic which can be emitted by codespan.
@@ -159,6 +162,9 @@ impl CompilerError {
                 .with_labels(vec![
                     Label::primary((), sym.span).with_message(info.table.resolve(&sym))
                 ]),
+            CompilerError::OutOfBoundsProject { span } => Diagnostic::error()
+                .with_message("Out of bounds projection")
+                .with_labels(vec![Label::primary((), *span)]),
         }
     }
 }

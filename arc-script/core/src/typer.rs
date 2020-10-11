@@ -346,7 +346,16 @@ impl<'i> Constrain<'i> for Expr {
                 }
                 Neg => ctx.unify(self.tv, e.tv),
                 Cast(tv) => ctx.unify(e.tv, *tv),
-                Project(_) => todo!(),
+                Project(idx) => {
+                    if let Tuple(tvs) = ctx.typer.lookup(e.tv).kind {
+                        if let Some(tv) = tvs.get(idx.0) {
+                            ctx.unify_var_var(self.tv, *tv);
+                        } else {
+                            ctx.errors
+                                .push(CompilerError::OutOfBoundsProject { span: self.span })
+                        }
+                    }
+                }
                 Access(_) => todo!(),
                 Call(args) => {
                     let params = args.iter().map(|arg| arg.tv).collect();

@@ -139,7 +139,7 @@ impl Expr {
 #[derive(Debug, Eq, PartialEq, Clone, Copy, Hash)]
 pub struct Ident(pub usize);
 
-#[derive(Debug, Eq, PartialEq, Clone, Hash)]
+#[derive(Debug, Eq, PartialEq, Clone, Copy, Hash)]
 pub struct Index(pub usize);
 
 #[derive(Debug, Clone)]
