@@ -408,13 +408,13 @@ TaskDecl: (Ident, Vec<Ident>) = <Annot> "task" <Symbol> "(" <Params> ")" => {
   let (annot, sym, param_ids) = (<>);
   let tv = typer.fresh();
   let id = table.insert(Decl::new(sym, tv, TaskDecl(Vec::new(), annot)));
-  stack.push_scope();
+  stack.push_item_scope();
   (id, param_ids)
 };
 
 TaskDef: (Ident, TaskDef) = <TaskDecl> "{" <FunDef*> "}" => {
   let ((id, param_ids), fun_defs) = (<>);
-  stack.pop_scope();
+  stack.pop_item_scope();
   (id, TaskDef::new(param_ids, fun_defs.into_iter().collect()))
 };
 

@@ -91,11 +91,6 @@ impl SymbolTable {
         id
     }
 
-<<<<<<< HEAD
-    pub fn get_mut(&mut self, ident: &Ident) -> &mut Decl { self.decls.get_mut(ident.0).unwrap() }
-
-    pub fn get(&self, ident: &Ident) -> &Decl { self.decls.get(ident.0).unwrap() }
-=======
     pub fn get_decl_mut(&mut self, ident: &Ident) -> &mut Decl {
         self.decls.get_mut(ident.0).unwrap()
     }
@@ -107,7 +102,6 @@ impl SymbolTable {
     pub fn get_decl(&self, ident: &Ident) -> &Decl {
         self.decls.get(ident.0).unwrap()
     }
->>>>>>> a2b70c8... Add interner for uniquing strings
 
     #[rustfmt::skip]
     pub fn debug(&self) {
@@ -126,6 +120,8 @@ impl SymbolTable {
 pub type Scope = Vec<(Symbol, Ident)>;
 pub struct SymbolStack {
     scopes: Vec<Scope>,
+    /// The innermost scope where item-identifiers are stored.
+    item_scopes: usize,
 }
 
 impl SymbolStack {
@@ -133,7 +129,8 @@ impl SymbolStack {
         let mut scopes = Vec::new();
         let globals = Vec::new();
         scopes.push(globals);
-        Self { scopes }
+        let item_scopes = scopes.len();
+        Self { scopes, item_scopes }
     }
 
     pub fn lookup(&self, needle: Symbol) -> Option<Ident> {
@@ -150,16 +147,19 @@ impl SymbolStack {
     }
 
     pub fn bind_item(&mut self, name: Symbol, ident: Ident) -> Result<(), CompilerError> {
-        if self.globals().iter().any(|(needle, _)| name == *needle) {
+        if self
+            .items()
+            .any(|scope| scope.iter().any(|(needle, _)| name == *needle))
+        {
             Err(CompilerError::NameClash)
         } else {
-            self.globals().push((name, ident));
+            self.items().last().unwrap().push((name, ident));
             Ok(())
         }
     }
 
-    pub fn globals(&mut self) -> &mut Scope {
-        self.scopes.first_mut().unwrap()
+    pub fn items(&mut self) -> impl Iterator<Item = &mut Scope> {
+        self.scopes.iter_mut().take(self.item_scopes)
     }
 
     pub fn locals(&mut self) -> &mut Scope {
@@ -168,5 +168,17 @@ impl SymbolStack {
 
     pub fn push_scope(&mut self) { self.scopes.push(Vec::new()) }
 
-    pub fn pop_scope(&mut self) { self.scopes.pop(); }
+    pub fn pop_scope(&mut self) {
+        self.scopes.pop();
+    }
+
+    pub fn push_item_scope(&mut self) {
+        self.scopes.push(Vec::new());
+        self.item_scopes += 1;
+    }
+
+    pub fn pop_item_scope(&mut self) {
+        self.scopes.pop();
+        self.item_scopes -= 1;
+    }
 }
