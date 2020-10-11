@@ -197,7 +197,7 @@ impl Pretty for (&UnOpKind, &Expr) {
     fn pretty(&self, pr: &Printer) -> String {
         let (op, e) = self;
         match op {
-            Not          => format!("!{}", e.pretty(pr)),
+            Not          => format!("not {}", e.pretty(pr)),
             Neg          => format!("-{}", e.pretty(pr)),
             Cast(ty)     => format!("{}:{}", e.pretty(pr), ty.pretty(pr)),
             Project(idx) => format!("{}.{}", e.pretty(pr), idx.pretty(pr)),
@@ -224,8 +224,8 @@ impl Pretty for BinOpKind {
             Lt       => format!("<"),
             Geq      => format!(">="),
             Leq      => format!("<="),
-            Or       => format!("||"),
-            And      => format!("&&"),
+            Or       => format!("or"),
+            And      => format!("and"),
             Pipe     => format!("|>"),
             Seq      => format!(";"),
             BinOpErr => format!("☇"),
