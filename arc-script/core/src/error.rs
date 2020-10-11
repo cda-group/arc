@@ -92,10 +92,10 @@ pub enum CompilerError {
     },
     NameClash,
     DuplicateField {
-        field: Field,
+        sym: Symbol,
     },
     DuplicateVariant {
-        variant: Variant,
+        sym: Symbol,
     },
 }
 
@@ -149,15 +149,15 @@ impl CompilerError {
                 .with_message("Match is non-exhaustive")
                 .with_labels(vec![Label::primary((), *span).with_message("Missing cases")]),
             CompilerError::NameClash => Diagnostic::error().with_message("Name clash"),
-            CompilerError::DuplicateField { field } => Diagnostic::error()
+            CompilerError::DuplicateField { sym } => Diagnostic::error()
                 .with_message("Found duplicate key")
                 .with_labels(vec![
-                    Label::primary((), field.span).with_message(info.table.resolve(&field.key))
+                    Label::primary((), sym.span).with_message(info.table.resolve(&sym))
                 ]),
-            CompilerError::DuplicateVariant { variant } => Diagnostic::error()
+            CompilerError::DuplicateVariant { sym } => Diagnostic::error()
                 .with_message("Found duplicate key")
                 .with_labels(vec![
-                    Label::primary((), variant.span).with_message(info.table.resolve(&variant.key))
+                    Label::primary((), sym.span).with_message(info.table.resolve(&sym))
                 ]),
         }
     }

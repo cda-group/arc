@@ -12,7 +12,15 @@ pub type ByteIndex = usize;
 pub struct Spanned<T>(pub ByteIndex, pub T, pub ByteIndex);
 
 pub type SymbolBuf<'i> = &'i str;
-pub type Symbol = Spur;
+
+#[derive(Spanned, Eq, Ord, Clone, Copy, Debug, Educe)]
+#[educe(PartialEq, PartialOrd)]
+pub struct Symbol {
+    pub key: Spur,
+    #[educe(PartialEq(ignore), PartialOrd(ignore))]
+    pub span: Span,
+}
+
 pub type Clause = (Pat, Expr);
 pub type VecMap<K, V> = FlatMap<K, V>;
 
@@ -128,22 +136,6 @@ impl Expr {
     }
 }
 
-#[derive(Debug, Clone, Copy, Eq, Ord, Constructor, Educe, Spanned)]
-#[educe(PartialEq, PartialOrd)]
-pub struct Field {
-    pub key: Symbol,
-    #[educe(PartialEq(ignore), PartialOrd(ignore))]
-    pub span: Span,
-}
-
-#[derive(Debug, Clone, Copy, Eq, Ord, Constructor, Educe, Spanned)]
-#[educe(PartialEq, PartialOrd)]
-pub struct Variant {
-    pub key: Symbol,
-    #[educe(PartialEq(ignore), PartialOrd(ignore))]
-    pub span: Span,
-}
-
 #[derive(Debug, Eq, PartialEq, Clone, Copy, Hash)]
 pub struct Ident(pub usize);
 
@@ -154,8 +146,8 @@ pub struct Index(pub usize);
 pub enum ExprKind {
     Lit(LitKind),
     ConsArray(Vec<Expr>),
-    ConsStruct(VecMap<Field, Expr>),
-    ConsEnum(VecMap<Variant, Expr>),
+    ConsStruct(VecMap<Symbol, Expr>),
+    ConsEnum(VecMap<Symbol, Expr>),
     ConsTuple(Vec<Expr>),
     For(Ident, Box<Expr>, Option<Box<Expr>>, Box<Expr>),
     Var(Ident),
@@ -215,7 +207,7 @@ pub enum UnOpKind {
     Not,
     Neg,
     Cast(TypeVar),
-    Access(Field),
+    Access(Symbol),
     Project(Index),
     Call(Vec<Expr>),
     UnOpErr,
@@ -244,8 +236,8 @@ impl Type {
 pub enum TypeKind {
     Scalar(ScalarKind),
     Optional(TypeVar),
-    Struct(VecMap<Field, TypeVar>),
-    Enum(VecMap<Variant, TypeVar>),
+    Struct(VecMap<Symbol, TypeVar>),
+    Enum(VecMap<Symbol, TypeVar>),
     Array(TypeVar, Shape),
     Tuple(Vec<TypeVar>),
     Fun(Vec<TypeVar>, TypeVar),

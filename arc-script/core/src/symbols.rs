@@ -1,5 +1,6 @@
 use crate::error::CompilerError;
 use crate::prelude::*;
+use codespan::Span;
 use lasso::Rodeo;
 
 /// The symbol-table is used to store symbolic identifiers for functions, let-expressions,
@@ -76,18 +77,22 @@ impl SymbolTable {
         id
     }
 
-    pub fn intern(&mut self, symbol: SymbolBuf) -> Symbol {
-        self.intern.get_or_intern(symbol)
+    pub fn intern(&mut self, Spanned(l, buf, r): Spanned<SymbolBuf>) -> Symbol {
+        let span = Span::new(l as u32, r as u32);
+        let key = self.intern.get_or_intern(buf);
+        Symbol { key, span }
     }
 
     pub fn resolve(&self, symbol: &Symbol) -> SymbolBuf {
-        self.intern.resolve(symbol)
+        self.intern.resolve(&symbol.key)
     }
 
     pub fn genvar(&mut self, tv: TypeVar) -> Ident {
         let id = Ident(self.decls.len());
         let key = self.intern.get_or_intern(&format!("x{}", id.0));
-        self.decls.push(Decl::new(key, tv, VarDecl));
+        let span = Span::new(0, 0);
+        let sym = Symbol { key, span };
+        self.decls.push(Decl::new(sym, tv, VarDecl));
         id
     }
 
@@ -106,7 +111,7 @@ impl SymbolTable {
     #[rustfmt::skip]
     pub fn debug(&self) {
         for (i, decl) in self.decls.iter().enumerate() {
-            let name = self.intern.resolve(&decl.sym);
+            let name = self.intern.resolve(&decl.sym.key);
             match decl.kind {
                 VarDecl        => println!("[var]  {} => {}", i, name),
                 FunDecl(_)     => println!("[fun]  {} => {}", i, name),

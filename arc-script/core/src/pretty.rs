@@ -153,8 +153,8 @@ impl Pretty for Expr {
             ),
             UnOp(op, e) => (op, e.as_ref()).pretty(pr),
             ConsArray(args) => format!("[{args}]", args = args.pretty(pr)),
-            ConsStruct(fields) => format!("{{ {fields} }}", fields = fields.pretty(pr)),
-            ConsEnum(variants) => format!("{{ {variants} }}", variants = variants.pretty(pr)),
+            ConsStruct(fields) => format!("{{ {fields} }}", fields = pretty_fields(fields, pr)),
+            ConsEnum(variants) => format!("{{ {variants} }}", variants = pretty_variants(variants, pr)),
             ConsTuple(args) => format!("({args})", args = args.pretty(pr)),
             Sink(id) => format!("sink::{id}", id = id.pretty(pr)),
             Source(id) => format!("source::{id}", id = id.pretty(pr)),
@@ -256,8 +256,8 @@ impl Pretty for Type {
                 Str  => format!("str"),
                 Unit => format!("()"),
             }
-            Struct(fields)   => format!("{{ {fields} }}", fields = fields.pretty(pr),),
-            Enum(variants)   => format!("{{ {variants} }}", variants = variants.pretty(pr),),
+            Struct(fields)   => format!("{{ {fields} }}", fields = pretty_fields(fields, pr)),
+            Enum(variants)   => format!("{{ {variants} }}", variants = pretty_variants(variants, pr)),
             Array(ty, shape) => format!( "[{ty}; {shape}]", ty = ty.pretty(pr), shape = shape.pretty(pr)),
             Stream(ty)       => format!("Stream[{}]", ty.pretty(pr)),
             Map(kty, vty)    => format!("Map[{},{}]", kty.pretty(pr), vty.pretty(pr)),
@@ -281,18 +281,6 @@ impl Pretty for Index {
 impl Pretty for Ident {
     fn pretty(&self, pr: &Printer) -> String {
         pr.info.table.get_decl_name(self).to_string()
-    }
-}
-
-impl Pretty for Field {
-    fn pretty(&self, pr: &Printer) -> String {
-        pr.info.table.resolve(&self.key).to_string()
-    }
-}
-
-impl Pretty for Variant {
-    fn pretty(&self, pr: &Printer) -> String {
-        pr.info.table.resolve(&self.key).to_string()
     }
 }
 
@@ -351,26 +339,24 @@ impl Pretty for Pat {
     }
 }
 
-impl<V> Pretty for VecMap<Field, V>
+fn pretty_fields<V>(fields: &VecMap<Symbol, V>, pr: &Printer) -> String
 where
     V: Pretty,
 {
-    fn pretty(&self, pr: &Printer) -> String {
-        self.iter()
-            .map(|(k, v)| format!("{}:{}", k.pretty(pr), v.pretty(pr)))
-            .collect::<Vec<String>>()
-            .join(", ")
-    }
+    fields
+        .iter()
+        .map(|(k, v)| format!("{}:{}", k.pretty(pr), v.pretty(pr)))
+        .collect::<Vec<String>>()
+        .join(", ")
 }
 
-impl<V> Pretty for VecMap<Variant, V>
+fn pretty_variants<V>(variants: &VecMap<Symbol, V>, pr: &Printer) -> String
 where
     V: Pretty,
 {
-    fn pretty(&self, pr: &Printer) -> String {
-        self.iter()
-            .map(|(k, v)| format!("{} of {}", k.pretty(pr), v.pretty(pr)))
-            .collect::<Vec<String>>()
-            .join(", ")
-    }
+    variants
+        .iter()
+        .map(|(k, v)| format!("{} of {}", k.pretty(pr), v.pretty(pr)))
+        .collect::<Vec<String>>()
+        .join(", ")
 }

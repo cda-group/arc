@@ -202,43 +202,39 @@ Paren<T>:          T = "(" <T> ")";
 // Fields & Variants
 //=============================================================================
 
-Field: Field = Spanned<Symbol> => Field::from(<>);
-
-Fields<V>: VecMap<Field, V> = VecNonEmpty<(<Field> ":" <V>)> => {
+Fields<V>: VecMap<Symbol, V> = VecNonEmpty<(<Symbol> ":" <V>)> => {
   let mut map = VecMap::new();
-  for (field, val) in <>.into_iter() {
-      if map.contains_key(&field) {
+  for (sym, val) in <>.into_iter() {
+      if map.contains_key(&sym) {
         errors.push(
             ErrorRecovery {
                 error: ParseError::User {
-                    error: CompilerError::DuplicateField { field }
+                    error: CompilerError::DuplicateField { sym }
                 },
                 dropped_tokens: vec![],
             }
         );
       } else {
-          map.insert(field, val);
+          map.insert(sym, val);
       }
   }
   map
 };
 
-Variant: Variant = Spanned<Symbol> => Variant::from(<>);
-
-Variants<V>: VecMap<Variant, V> = VecNonEmpty<(<Variant> <Paren<V>>)> => {
+Variants<V>: VecMap<Symbol, V> = VecNonEmpty<(<Symbol> <Paren<V>>)> => {
   let mut map = VecMap::new();
-  for (variant, val) in <>.into_iter() {
-      if map.contains_key(&variant) {
+  for (sym, val) in <>.into_iter() {
+      if map.contains_key(&sym) {
         errors.push(
             ErrorRecovery {
                 error: ParseError::User {
-                    error: CompilerError::DuplicateVariant { variant }
+                    error: CompilerError::DuplicateVariant { sym }
                 },
                 dropped_tokens: vec![],
             }
         );
       } else {
-          map.insert(variant, val);
+          map.insert(sym, val);
       }
   }
   map
@@ -272,7 +268,7 @@ UnaryPrefix<Op, Next>: ExprKind = {
 // Symbols
 //=============================================================================
 
-Symbol: Symbol = TSymbol => table.intern(<>);
+Symbol: Symbol = Spanned<TSymbol> => table.intern(<>);
 
 //=============================================================================
 // Literals
@@ -537,7 +533,7 @@ Op8: UnOpKind = {
 };
 
 Cast:    UnOpKind = "as" <Type>        => Cast(<>);
-Access:  UnOpKind = "." <Field>        => Access(<>);
+Access:  UnOpKind = "." <Symbol>       => Access(<>);
 Call:    UnOpKind = "(" <Vec<Arg>> ")" => Call(<>);
 Project: UnOpKind = ParseIndex => {
   <>.map(Project)
