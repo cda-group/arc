@@ -41,6 +41,10 @@ cd arc-mlir/; ./arc-to-mlir-build; cd -
 
 # Run tests
 cd arc-mlir/build/llvm-build/; ninja check-arc-mlir; cd -
+
+# Compile and run arc-script
+cd arc-script/
+cargo run --release --features=repl -- --check repl
 ```
 
 # Documentation
