@@ -114,12 +114,14 @@ public:
 
 struct CloneStart : public CloneControl {
   CloneStart(Value v) : CloneControl(v) {}
-  void output(llvm::raw_string_ostream &os) const { os << "Rc::clone(&"; }
+  void output(llvm::raw_string_ostream &os) const override {
+    os << "Rc::clone(&";
+  }
 };
 
 struct CloneEnd : public CloneControl {
   CloneEnd(Value v) : CloneControl(v) {}
-  void output(llvm::raw_string_ostream &os) const { os << ")"; };
+  void output(llvm::raw_string_ostream &os) const override { os << ")"; };
 };
 
 llvm::raw_string_ostream &operator<<(llvm::raw_string_ostream &os,
