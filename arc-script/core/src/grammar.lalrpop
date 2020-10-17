@@ -211,14 +211,7 @@ Fields<V>: VecMap<Symbol, V> = VecNonEmpty<Field<V>> => {
   let mut map = VecMap::new();
   for (sym, val) in <>.into_iter() {
       if map.contains_key(&sym) {
-        errors.push(
-            ErrorRecovery {
-                error: ParseError::User {
-                    error: CompilerError::DuplicateField { sym }
-                },
-                dropped_tokens: vec![],
-            }
-        );
+          errors.push(CompilerError::DuplicateField { sym }.into());
       } else {
           map.insert(sym, val);
       }
@@ -230,14 +223,7 @@ Variants<V>: VecMap<Symbol, V> = VecNonEmpty<(<Symbol> <Paren<V>>)> => {
   let mut map = VecMap::new();
   for (sym, val) in <>.into_iter() {
       if map.contains_key(&sym) {
-        errors.push(
-            ErrorRecovery {
-                error: ParseError::User {
-                    error: CompilerError::DuplicateVariant { sym }
-                },
-                dropped_tokens: vec![],
-            }
-        );
+          errors.push(CompilerError::DuplicateVariant { sym }.into());
       } else {
           map.insert(sym, val);
       }
