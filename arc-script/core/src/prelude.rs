@@ -10,3 +10,8 @@ pub use crate::ast::TypeKind::*;
 pub use crate::ast::UnOpKind::*;
 pub use crate::ast::SettingKind::*;
 pub use crate::ast::*;
+pub use crate::typer::Typer;
+pub use crate::symbols::SymbolTable;
+pub use crate::error::CompilerError;
+pub use derive_more::Constructor;
+pub use codespan::Span;

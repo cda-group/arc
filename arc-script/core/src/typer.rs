@@ -1,7 +1,5 @@
 use {
     crate::{error::*, info::*, prelude::*, symbols::*},
-    codespan::Span,
-    derive_more::Constructor,
     ena::unify::{InPlace, UnifyKey, UnifyValue},
 };
 

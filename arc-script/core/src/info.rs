@@ -1,7 +1,4 @@
-use crate::error::CompilerError;
-use crate::symbols::SymbolTable;
-use crate::typer::Typer;
-use derive_more::Constructor;
+use crate::prelude::*;
 use std::cell::RefCell;
 
 #[derive(Constructor)]

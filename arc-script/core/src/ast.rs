@@ -5,7 +5,6 @@ use flat_map::flat_map::FlatMap;
 use lasso::Spur;
 use spanned_derive::{MaybeSpanned, Spanned};
 use std::collections::HashMap;
-use {codespan::Span, derive_more::Constructor};
 
 pub type ByteIndex = usize;
 
