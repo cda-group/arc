@@ -28,6 +28,7 @@ mod ssa;
 mod symbols;
 mod typer;
 mod lexer;
+mod printer;
 
 // #[cfg(feature = "shaper")]
 // mod shaper;

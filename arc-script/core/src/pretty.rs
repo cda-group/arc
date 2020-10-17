@@ -1,4 +1,4 @@
-use crate::{info::Info, prelude::*, utils::Printer};
+use crate::{info::Info, prelude::*, printer::Printer};
 
 pub trait Pretty {
     fn pretty(&self, pr: &Printer) -> String;
