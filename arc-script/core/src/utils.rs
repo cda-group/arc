@@ -9,9 +9,9 @@ impl SyntaxTree {
         self.body.for_each_expr(f);
     }
     // Pre-order traversal (Parents first)
-    pub fn for_each_expr_preorder<F: FnMut(&mut Expr)>(&mut self, ref mut f: F) {
-        self.for_each_fun(|fun| fun.body.for_each_expr_preorder(f));
-        self.body.for_each_expr_preorder(f)
+    pub fn for_each_expr_postorder<F: FnMut(&mut Expr)>(&mut self, ref mut f: F) {
+        self.for_each_fun(|fun| fun.body.for_each_expr_postorder(f));
+        self.body.for_each_expr_postorder(f)
     }
 
     pub fn for_each_fun<F: FnMut(&mut FunDef)>(&mut self, ref mut f: F) {
@@ -27,108 +27,86 @@ impl SyntaxTree {
     }
 }
 
-impl Expr {
-    fn for_each_expr_preorder<F: FnMut(&mut Expr)>(&mut self, f: &mut F) {
-        f(self);
-        match &mut self.kind {
-            If(c, t, e) => {
-                c.for_each_expr_preorder(f);
-                t.for_each_expr_preorder(f);
-                e.for_each_expr_preorder(f);
-            }
-            For(_, e, c, b) => {
-                e.for_each_expr_preorder(f);
-                if let Some(c) = c {
-                    c.for_each_expr_preorder(f);
-                }
-                b.for_each_expr_preorder(f);
-            }
-            Match(e, cases) => {
-                e.for_each_expr_preorder(f);
-                cases
-                    .iter_mut()
-                    .for_each(|(_, e)| e.for_each_expr_preorder(f));
-            }
-            Let(_, v) => v.for_each_expr_preorder(f),
-            ConsArray(ps) => ps.iter_mut().for_each(|p| p.for_each_expr_preorder(f)),
-            ConsTuple(ps) => ps.iter_mut().for_each(|p| p.for_each_expr_preorder(f)),
-            ConsStruct(fs) => fs.iter_mut().for_each(|(_, v)| v.for_each_expr_preorder(f)),
-            ConsVariant(_, e) => e.for_each_expr_preorder(f),
-            Lit(_) => {}
-            Var(_) => {}
-            BinOp(l, _, r) => {
-                l.for_each_expr_preorder(f);
-                r.for_each_expr_preorder(f);
-            }
-            UnOp(Call(ps), e) => {
-                ps.iter_mut().for_each(|p| p.for_each_expr_preorder(f));
-                e.for_each_expr_preorder(f);
-            }
-            UnOp(_, _) => {}
-            Sink(_) => {}
-            Source(_) => {}
-            Loop(cond, body) => {
-                cond.for_each_expr_preorder(f);
-                body.for_each_expr_preorder(f);
-            }
-            Closure(_, body) => body.for_each_expr_preorder(f),
-            ExprErr => {}
-        }
-    }
-}
-
 impl TaskDef {
     pub fn for_each_fun<F: FnMut(&mut FunDef)>(&mut self, ref mut f: F) {
         self.fundefs.iter_mut().for_each(|(_, fundef)| f(fundef));
     }
 }
 
-impl Expr {
-    fn for_each_expr<F: FnMut(&mut Expr)>(&mut self, f: &mut F) {
-        match &mut self.kind {
-            If(c, t, e) => {
-                c.for_each_expr(f);
-                t.for_each_expr(f);
-                e.for_each_expr(f);
-            }
-            For(_, e, c, b) => {
-                e.for_each_expr(f);
-                if let Some(c) = c {
-                    c.for_each_expr(f);
+/// Macro for generating pre- and post-order visitors of expressions.
+macro_rules! for_each_expr {
+    {
+        name: $name:ident,
+        pre: $pre:literal,
+        post: $post:literal
+    } => {
+        impl Expr {
+            pub fn $name<F: FnMut(&mut Expr)>(&mut self, f: &mut F) {
+                if $pre {
+                    f(self);
                 }
-                b.for_each_expr(f);
+                match &mut self.kind {
+                    If(c, t, e) => {
+                        c.$name(f);
+                        t.$name(f);
+                        e.$name(f);
+                    }
+                    For(_, e, c, b) => {
+                        e.$name(f);
+                        if let Some(c) = c {
+                            c.$name(f);
+                        }
+                        b.$name(f);
+                    }
+                    Match(e, cases) => {
+                        e.$name(f);
+                        cases.iter_mut().for_each(|(_, e)| e.$name(f));
+                    }
+                    Let(_, v) => v.$name(f),
+                    ConsArray(ps) => ps.iter_mut().for_each(|p| p.$name(f)),
+                    ConsTuple(ps) => ps.iter_mut().for_each(|p| p.$name(f)),
+                    ConsStruct(fs) => fs.iter_mut().for_each(|(_, v)| v.$name(f)),
+                    ConsVariant(_, arg) => arg.$name(f),
+                    Lit(_) => {}
+                    Var(_) => {}
+                    BinOp(l, _, r) => {
+                        l.$name(f);
+                        r.$name(f);
+                    }
+                    UnOp(op, e) => {
+                        match op {
+                            Call(ps) => ps.iter_mut().for_each(|p| p.$name(f)),
+                            _ => {}
+                        }
+                        e.$name(f);
+                    }
+                    Sink(_) => {}
+                    Source(_) => {}
+                    Loop(cond, body) => {
+                        cond.$name(f);
+                        body.$name(f);
+                    }
+                    Closure(_, body) => body.$name(f),
+                    ExprErr => {}
+                }
+                if $post {
+                    f(self);
+                }
             }
-            Match(e, cases) => {
-                e.for_each_expr(f);
-                cases.iter_mut().for_each(|(_, e)| e.for_each_expr(f));
-            }
-            Let(_, v) => v.for_each_expr(f),
-            ConsArray(ps) => ps.iter_mut().for_each(|p| p.for_each_expr(f)),
-            ConsTuple(ps) => ps.iter_mut().for_each(|p| p.for_each_expr(f)),
-            ConsStruct(fs) => fs.iter_mut().for_each(|(_, v)| v.for_each_expr(f)),
-            ConsVariant(_, e) => e.for_each_expr(f),
-            Lit(_) => {}
-            Var(_) => {}
-            BinOp(l, _, r) => {
-                l.for_each_expr(f);
-                r.for_each_expr(f);
-            }
-            UnOp(Call(ps), e) => {
-                ps.iter_mut().for_each(|p| p.for_each_expr(f));
-                e.for_each_expr(f);
-            }
-            UnOp(_, _) => {}
-            Sink(_) => {}
-            Source(_) => {}
-            Loop(cond, body) => {
-                cond.for_each_expr(f);
-                body.for_each_expr(f);
-            }
-            Closure(_, body) => body.for_each_expr(f),
-            ExprErr => {}
         }
-        f(self);
     }
+}
+
+for_each_expr! {
+    name: for_each_expr,
+    pre: true,
+    post: false
+}
+
+for_each_expr! {
+    name: for_each_expr_postorder,
+    pre: false,
+    post: true
 }
 
 pub struct Printer<'a> {

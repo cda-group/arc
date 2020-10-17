@@ -3,7 +3,7 @@ use {crate::prelude::*, std::collections::HashMap};
 impl Script<'_> {
     pub fn prune(&mut self) {
         let aliases = &mut HashMap::new();
-        self.ast.for_each_expr_preorder(|expr| expr.prune_rec(aliases));
+        self.ast.for_each_expr(|expr| expr.prune_rec(aliases));
     }
 }
 
