@@ -21,6 +21,10 @@ impl SyntaxTree {
     pub fn for_each_decl<F: FnMut(&mut Decl)>(&mut self, ref mut f: F, table: &mut SymbolTable) {
         table.decls.iter_mut().for_each(f);
     }
+
+    pub fn for_each_task<F: FnMut(&mut TaskDef)>(&mut self, ref mut f: F) {
+        self.taskdefs.iter_mut().for_each(|(_, taskdef)| f(taskdef));
+    }
 }
 
 impl Expr {
@@ -70,6 +74,12 @@ impl Expr {
             Closure(_, body) => body.for_each_expr_preorder(f),
             ExprErr => {}
         }
+    }
+}
+
+impl TaskDef {
+    pub fn for_each_fun<F: FnMut(&mut FunDef)>(&mut self, ref mut f: F) {
+        self.fundefs.iter_mut().for_each(|(_, fundef)| f(fundef));
     }
 }
 
