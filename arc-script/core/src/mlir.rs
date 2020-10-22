@@ -3,8 +3,20 @@ use std::cell::RefMut;
 
 impl Script<'_> {
     pub fn mlir(&self) -> String {
-        "todo".to_owned()
-        //         self.ast.fundefs.
+        let pr = Printer {
+            info: &self.info,
+            tabs: 2,
+            verbose: false,
+        };
+        format!(
+            "{}",
+            self.ast
+                .fundefs
+                .values()
+                .map(|fundef| fundef.to_func(&pr))
+                .collect::<Vec<_>>()
+                .join("\n")
+        )
     }
 }
 
@@ -175,6 +187,31 @@ impl LitKind {
             LitTime(_) => todo!(),
             LitUnit => todo!(),
             LitErr => "<ERROR>".to_string(),
+        }
+    }
+}
+
+impl FunDef {
+    fn to_func(&self, pr: &Printer) -> String {
+        let tv = pr.info.table.get_decl(&self.id).tv;
+        let ty = { pr.info.typer.borrow_mut().lookup(tv) };
+        if let Fun(_, ret_tv) = ty.kind {
+            format!(
+                "func @{id}({params}) -> ({ret_ty}) {{{s1}{body}{s0}}}",
+                id = self.id.to_var(),
+                params = self
+                    .params
+                    .iter()
+                    .map(|id| pr.info.table.get_decl(id).tv.to_ty(pr))
+                    .collect::<Vec<_>>()
+                    .join(","),
+                ret_ty = ret_tv.to_ty(&pr),
+                body = self.body.to_region("std.return", &pr.tab()),
+                s0 = pr.indent(),
+                s1 = pr.tab().indent(),
+            )
+        } else {
+            "<ERROR>".to_string()
         }
     }
 }
