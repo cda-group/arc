@@ -138,7 +138,10 @@ impl SymbolStack {
         let globals = Vec::new();
         scopes.push(globals);
         let item_scopes = scopes.len();
-        Self { scopes, item_scopes }
+        Self {
+            scopes,
+            item_scopes,
+        }
     }
 
     pub fn lookup(&self, needle: Symbol) -> Option<Ident> {
@@ -154,14 +157,14 @@ impl SymbolStack {
         self.locals().push((name, id))
     }
 
-    pub fn bind_item(&mut self, name: Symbol, ident: Ident) -> Result<(), CompilerError> {
+    pub fn bind_item(&mut self, name: Symbol, id: Ident) -> Result<(), CompilerError> {
         if self
             .items()
             .any(|scope| scope.iter().any(|(needle, _)| name == *needle))
         {
             Err(CompilerError::NameClash)
         } else {
-            self.items().last().unwrap().push((name, ident));
+            self.items().last().unwrap().push((name, id));
             Ok(())
         }
     }
