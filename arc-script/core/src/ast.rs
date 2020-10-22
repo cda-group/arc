@@ -120,6 +120,8 @@ pub enum DeclKind {
     VarDecl,
     TypeDecl,
     TaskDecl { settings: Vec<Setting> },
+    SinkDecl,
+    SourceDecl,
 }
 
 #[derive(Debug, Clone, Constructor)]
