@@ -197,6 +197,7 @@ VecMulti<T>:       Vec<T> = SepMulti<T, ",">;
 Semi<T>:           Vec<T> = Sep<T, ";">;
 Single<T>:         Vec<T> = T => vec![<>];
 Box<T>:            Box<T> = T => Box::new(<>);
+Err:               ()     = ! => errors.push(<>.into());
 Spanned<T>:        Spanned<T> = @L T @R => Spanned(<>);
 Paren<T>:          T = "(" <T> ")";
 
@@ -597,7 +598,7 @@ ExprKind12: ExprKind = {
   Match,
   If,
   Todo,
-  ! => { errors.push(<>.into()); ExprErr },
+  Err => ExprErr,
 };
 
 Todo: ExprKind = "???" => ExprErr;
@@ -676,7 +677,7 @@ TypeKind: TypeKind = {
   Map,
   Set,
   Vector,
-  ! => { errors.push(<>.into()); TypeErr },
+  Err => TypeErr,
 };
 
 Struct:   TypeKind = "{" <Fields<Type>> "}"          => Struct(<>);
