@@ -2,20 +2,20 @@ use {http_serde, serde_derive::Deserialize, std::str::FromStr};
 
 #[derive(Deserialize)]
 pub struct Config {
-    pub sources: Vec<Source>,
-    pub sinks: Vec<Sink>,
+    pub sources: Vec<SourceConfig>,
+    pub sinks: Vec<SinkConfig>,
 }
 
 #[derive(Deserialize)]
-pub struct Source {
+pub struct SourceConfig {
     pub schema: Schema,
-    pub feed: Feed,
+    pub provider: Provider,
 }
 
 #[derive(Deserialize)]
-pub struct Sink {
+pub struct SinkConfig {
     pub schema: Schema,
-    pub feed: Feed,
+    pub provider: Provider,
 }
 
 #[derive(Deserialize)]
@@ -35,7 +35,7 @@ pub struct Proto {
 }
 
 #[derive(Deserialize)]
-pub enum Feed {
+pub enum Provider {
     Kafka(Kafka),
     File(File),
 }
