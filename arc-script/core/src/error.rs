@@ -102,6 +102,10 @@ pub enum CompilerError {
     FieldNotFound {
         span: Span,
     },
+    DataflowTypeInOperator {
+        span: Span,
+        ty: Type,
+    },
 }
 
 /// Converts a compiler error into a diagnostic which can be emitted by codespan.
@@ -170,6 +174,9 @@ impl CompilerError {
             CompilerError::FieldNotFound { span } => Diagnostic::error()
                 .with_message("Field not found")
                 .with_labels(vec![Label::primary((), *span)]),
+            CompilerError::DataflowTypeInOperator { span, ty } => Diagnostic::error()
+                .with_message("Cannot use dataflow types inside operators.")
+                .with_labels(vec![Label::primary((), *span).with_message(ty.brief(info))]),
         }
     }
 }
