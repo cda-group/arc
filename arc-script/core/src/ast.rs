@@ -111,6 +111,7 @@ pub struct Decl {
 
 pub enum DeclKind {
     FunDecl { settings: Vec<Setting> },
+    VariantDecl,
     VarDecl,
     TypeDecl,
     TaskDecl { settings: Vec<Setting> },
