@@ -565,9 +565,9 @@ Emit:  ExprKind = "emit" <Box<Arg>>                                            =
 // Cons
 //=============================================================================
 
-ConsArray:  ExprKind = "[" <VecNonEmpty<Arg>> "]" => ConsArray(<>);
-ConsTuple:  ExprKind = "(" <VecMulti<Arg>> ")"    => ConsTuple(<>);
-ConsStruct: ExprKind = "{" <Fields<Arg>> "}"      => ConsStruct(<>);
+ConsArray:   ExprKind = "[" <VecNonEmpty<Arg>> "]"          => ConsArray(<>);
+ConsTuple:   ExprKind = "(" <VecMulti<Arg>> ")"             => ConsTuple(<>);
+ConsStruct:  ExprKind = "{" <Fields<Arg>> "}"               => ConsStruct(<>);
 ConsVariant: ExprKind = "{" <Symbol> "(" <Box<Arg>> ")" "}" => ConsVariant(<>);
 
 //=============================================================================
@@ -661,8 +661,8 @@ PatIgnore: PatKind = "_"                   => PatIgnore;
 //=============================================================================
 
 Type:      TypeVar = TypeKind      => typer.intern(Type::from(<>));
-TypeAnnot: TypeVar = (":" <Type>)?     => <>.unwrap_or_else(|| typer.fresh());
-TypeElem:  TypeVar = (<Type> ";")?     => <>.unwrap_or_else(|| typer.fresh());
+TypeAnnot: TypeVar = (":" <Type>)? => <>.unwrap_or_else(|| typer.fresh());
+TypeElem:  TypeVar = (<Type> ";")? => <>.unwrap_or_else(|| typer.fresh());
 
 TypeKind: TypeKind = {
   Scalar,
