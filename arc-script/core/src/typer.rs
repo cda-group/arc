@@ -342,8 +342,6 @@ impl Constrain<'_> for Expr {
                 ctx.unify(self.tv, tv)
             }
             Match(_, _) => {}
-            Sink(_) => todo!(),
-            Source(_) => todo!(),
             Loop(_, _) => todo!(),
             ExprErr => return,
         }

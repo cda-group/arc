@@ -123,8 +123,6 @@ impl Expr {
                 }
             }
             Match(expr, clauses) => todo!(),
-            Sink(id) => todo!(),
-            Source(id) => todo!(),
             Loop(cond, body) => todo!(),
             UnOp(kind, expr) => {
                 let v = expr.eval(ctx);

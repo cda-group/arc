@@ -105,8 +105,6 @@ impl Expr {
             Let(..) => panic!("[ICE] Attempted to generate MLIR SSA of Let"),
             Match(..) => panic!("[ICE] Attempted to generate MLIR SSA of Match"),
             Var(_) => panic!("[ICE] Attempted to generate MLIR SSA of Var"),
-            Sink(_) => todo!(),
-            Source(_) => todo!(),
             Loop(_, _) => todo!(),
             For(..) => todo!(),
             ExprErr => "<ERROR>".to_owned(),

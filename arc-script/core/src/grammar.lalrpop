@@ -562,20 +562,6 @@ Loop:  ExprKind = "loop" <Box<Arg>> "{" <Box<Arg>> "}"                         =
 Emit:  ExprKind = "emit" <Box<Arg>>                                            => UnOp(Emit, <>);
 
 //=============================================================================
-// Qualifiers
-//=============================================================================
-
-Source: ExprKind = "source" "::" <Symbol> => {
-  todo!()
-  // Source(<>)
-};
-
-Sink: ExprKind = "sink" "::" <Symbol> => {
-  todo!()
-  //  Sink(<>)
-};
-
-//=============================================================================
 // Cons
 //=============================================================================
 
@@ -607,8 +593,6 @@ ExprKind12: ExprKind = {
   ConsArray,
   ConsStruct,
   ConsTuple,
-  Sink,
-  Source,
   Loop,
   Match,
   If,

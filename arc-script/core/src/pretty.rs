@@ -160,8 +160,6 @@ impl Pretty for Expr {
                 arg = arg.pretty(pr)
             ),
             ConsTuple(args) => format!("({args})", args = args.pretty(pr)),
-            Sink(id) => format!("sink::{id}", id = id.pretty(pr)),
-            Source(id) => format!("source::{id}", id = id.pretty(pr)),
             Loop(cond, body) => format!(
                 "loop {cond} {{{s1}{body}}}",
                 cond = cond.pretty(pr),

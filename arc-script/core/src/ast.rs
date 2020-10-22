@@ -162,8 +162,6 @@ pub enum ExprKind {
     If(Box<Expr>, Box<Expr>, Box<Expr>),
     Let(Ident, Box<Expr>),
     Match(Box<Expr>, Vec<Clause>),
-    Sink(Ident),
-    Source(Ident),
     Loop(Box<Expr>, Box<Expr>),
     ExprErr,
 }

@@ -78,8 +78,6 @@ macro_rules! for_each_expr {
                         }
                         e.$name(f);
                     }
-                    Sink(_) => {}
-                    Source(_) => {}
                     Loop(cond, body) => {
                         cond.$name(f);
                         body.$name(f);
