@@ -147,7 +147,7 @@ impl LanguageServer for Backend {
                     .await
             }
             Err(_) => self.client.log_message(MessageType::Error, "error").await,
-        }
+        };
 
         Ok(None)
     }
@@ -190,13 +190,13 @@ async fn report(client: &Client, uri: &Url, code: &str) {
         mlir: false,
         verbose: false,
         connectors: Vec::new(),
-        check: true,
+        check: false,
     };
     let script = compile(code, &opt);
     let diagnostics = script.to_lsp();
     client
         .publish_diagnostics(uri.clone(), diagnostics, None)
-        .await;
+        .await
 }
 
 #[tokio::main]
