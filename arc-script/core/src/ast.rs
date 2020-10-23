@@ -110,10 +110,10 @@ pub struct Decl {
 }
 
 pub enum DeclKind {
-    FunDecl(Vec<Setting>),
+    FunDecl { settings: Vec<Setting> },
     VarDecl,
     TypeDecl,
-    TaskDecl(Vec<Ident>, Vec<Setting>),
+    TaskDecl { settings: Vec<Setting> },
 }
 
 #[derive(Debug, Clone, Constructor)]

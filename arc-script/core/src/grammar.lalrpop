@@ -354,10 +354,10 @@ Def: () = {
 };
 
 //=============================================================================
-// Annotations
+// Settings
 //=============================================================================
 
-Annot: Vec<Setting> = ("#" "[" <Vec<Setting>> "]")? => <>.unwrap_or_else(Vec::new);
+Settings: Vec<Setting> = ("#" "[" <Vec<Setting>> "]")? => <>.unwrap_or_else(Vec::new);
 
 Setting: Setting = Spanned<SettingKind> => Setting::from(<>);
 
@@ -384,10 +384,10 @@ Params: Vec<Ident> = Vec<Param> => {
 
 Param = <Symbol> ":" <Type>;
 
-FunDecl: (Ident, Vec<Ident>) = <Annot> "fun" <Symbol> "(" <Params> ")" => {
-  let (annot, sym, param_ids) = (<>);
+FunDecl: (Ident, Vec<Ident>) = <Settings> "fun" <Symbol> "(" <Params> ")" => {
+  let (settings, sym, param_ids) = (<>);
   let tv = typer.fresh();
-  let id = table.insert(Decl::new(sym, tv, FunDecl(annot)));
+  let id = table.insert(Decl::new(sym, tv, FunDecl { settings }));
   if let Err(err) = stack.bind_item(sym, id) {
       errors.push(err.into());
   }
@@ -400,10 +400,10 @@ FunDef: (Ident, FunDef) = <FunDecl> "{" <Body>  "}" => {
   (id, FunDef::new(param_ids, body))
 };
 
-TaskDecl: (Ident, Vec<Ident>) = <Annot> "task" <Symbol> "(" <Params> ")" => {
-  let (annot, sym, param_ids) = (<>);
+TaskDecl: (Ident, Vec<Ident>) = <Settings> "task" <Symbol> "(" <Params> ")" => {
+  let (settings, sym, param_ids) = (<>);
   let tv = typer.fresh();
-  let id = table.insert(Decl::new(sym, tv, TaskDecl(Vec::new(), annot)));
+  let id = table.insert(Decl::new(sym, tv, TaskDecl { settings }));
   stack.push_item_scope();
   (id, param_ids)
 };
