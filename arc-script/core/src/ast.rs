@@ -50,12 +50,14 @@ pub enum SettingKind {
 
 #[derive(Constructor)]
 pub struct FunDef {
+    pub id: Ident,
     pub params: Vec<Ident>,
     pub body: Expr,
 }
 
 #[derive(Constructor)]
 pub struct TypeDef {
+    pub id: Ident,
     pub tv: TypeVar,
 }
 
@@ -98,6 +100,7 @@ pub struct TypeDef {
 /// ```
 #[derive(Constructor)]
 pub struct TaskDef {
+    pub id: Ident,
     pub params: Vec<Ident>,
     pub sources: Vec<Ident>,
     pub sinks: Vec<Ident>,
