@@ -374,6 +374,8 @@ Params: Vec<Ident> = Vec<Param> => {
 };
 
 Param = <Symbol> ":" <Type>;
+Sinks   = Variants<Type>;
+Sources = Variants<Type>;
 
 FunDecl: (Ident, Vec<Ident>) = <Settings> "fun" <Symbol> "(" <Params> ")" => {
   let (settings, sym, param_ids) = (<>);
@@ -391,18 +393,33 @@ FunDef: (Ident, FunDef) = <FunDecl> "{" <Body>  "}" => {
   (id, FunDef::new(param_ids, body))
 };
 
-TaskDecl: (Ident, Vec<Ident>) = <Settings> "task" <Symbol> "(" <Params> ")" => {
-  let (settings, sym, param_ids) = (<>);
+TaskDecl: (Ident, Vec<Ident>, Vec<Ident>, Vec<Ident>) =
+  <Settings> "task" <Symbol> "(" <Params> ")" "(" <Sources> ")" "->" "(" <Sinks> ")" => {
+  let (settings, sym, param_ids, sources, sinks) = (<>);
   let tv = typer.fresh();
   let id = table.insert(Decl::new(sym, tv, TaskDecl { settings }));
   stack.push_item_scope();
-  (id, param_ids)
+  let source_ids = sources.into_iter().map(|(sym, tv)| {
+      let id = table.insert(Decl::new(sym, tv, VariantDecl));
+      if let Err(err) = stack.bind_item(sym, id) {
+          errors.push(err.into());
+      }
+      id
+  }).collect();
+  let sink_ids = sinks.into_iter().map(|(sym, tv)| {
+      let id = table.insert(Decl::new(sym, tv, VariantDecl));
+      if let Err(err) = stack.bind_item(sym, id) {
+          errors.push(err.into());
+      }
+      id
+  }).collect();
+  (id, param_ids, source_ids, sink_ids)
 };
 
 TaskDef: (Ident, TaskDef) = <TaskDecl> "{" <FunDef*> "}" => {
-  let ((id, param_ids), fun_defs) = (<>);
+  let ((id, param_ids, source_ids, sink_ids), fun_defs) = (<>);
   stack.pop_item_scope();
-  (id, TaskDef::new(param_ids, fun_defs.into_iter().collect()))
+  (id, TaskDef::new(param_ids, source_ids, sink_ids, fun_defs.into_iter().collect()))
 };
 
 Let: ExprKind = "let" <Symbol> <TypeAnnot> "=" <Box<Arg>> => {

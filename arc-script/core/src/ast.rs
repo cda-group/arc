@@ -99,6 +99,8 @@ pub struct TypeDef {
 #[derive(Constructor)]
 pub struct TaskDef {
     pub params: Vec<Ident>,
+    pub sources: Vec<Ident>,
+    pub sinks: Vec<Ident>,
     pub fundefs: HashMap<Ident, FunDef>,
 }
 
