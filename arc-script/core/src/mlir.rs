@@ -99,7 +99,7 @@ impl Expr {
             UnOp(..) => todo!(),
             ConsArray(..) => todo!(),
             ConsStruct(..) => todo!(),
-            ConsEnum(..) => todo!(),
+            ConsVariant(_, _) => todo!(),
             ConsTuple(..) => todo!(),
             Closure(..) => todo!(),
             Let(..) => panic!("[ICE] Attempted to generate MLIR SSA of Let"),

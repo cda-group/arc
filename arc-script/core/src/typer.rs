@@ -289,12 +289,8 @@ impl<'i> Constrain<'i> for Expr {
                     .collect::<VecMap<_, _>>();
                 ctx.unify_var_val(self.tv, Struct(fields));
             }
-            ConsEnum(variants) => {
-                let variants = variants
-                    .iter()
-                    .map(|(variant, arg)| (*variant, arg.tv))
-                    .collect::<VecMap<_, _>>();
-                ctx.unify_var_val(self.tv, Enum(variants));
+            ConsVariant(sym, arg) => {
+                ctx.unify_var_val(self.tv, Enum(vec![(*sym, arg.tv)].into_iter().collect()))
             }
             ConsTuple(args) => {
                 let tvs = args.iter().map(|arg| arg.tv).collect();

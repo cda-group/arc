@@ -53,7 +53,7 @@ impl Expr {
             ConsArray(ps) => ps.iter_mut().for_each(|p| p.for_each_expr_preorder(f)),
             ConsTuple(ps) => ps.iter_mut().for_each(|p| p.for_each_expr_preorder(f)),
             ConsStruct(fs) => fs.iter_mut().for_each(|(_, v)| v.for_each_expr_preorder(f)),
-            ConsEnum(vs) => vs.iter_mut().for_each(|(_, v)| v.for_each_expr_preorder(f)),
+            ConsVariant(_, e) => e.for_each_expr_preorder(f),
             Lit(_) => {}
             Var(_) => {}
             BinOp(l, _, r) => {
@@ -106,7 +106,7 @@ impl Expr {
             ConsArray(ps) => ps.iter_mut().for_each(|p| p.for_each_expr(f)),
             ConsTuple(ps) => ps.iter_mut().for_each(|p| p.for_each_expr(f)),
             ConsStruct(fs) => fs.iter_mut().for_each(|(_, v)| v.for_each_expr(f)),
-            ConsEnum(vs) => vs.iter_mut().for_each(|(_, v)| v.for_each_expr(f)),
+            ConsVariant(_, e) => e.for_each_expr(f),
             Lit(_) => {}
             Var(_) => {}
             BinOp(l, _, r) => {

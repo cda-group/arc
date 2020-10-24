@@ -202,7 +202,10 @@ Paren<T>:          T = "(" <T> ")";
 // Fields & Variants
 //=============================================================================
 
-Fields<V>: VecMap<Symbol, V> = VecNonEmpty<(<Symbol> ":" <V>)> => {
+#[inline]
+Field<V> = <Symbol> ":" <V>;
+
+Fields<V>: VecMap<Symbol, V> = VecNonEmpty<Field<V>> => {
   let mut map = VecMap::new();
   for (sym, val) in <>.into_iter() {
       if map.contains_key(&sym) {
@@ -571,7 +574,7 @@ Sink: ExprKind = "sink" "::" <Symbol> => {
 ConsArray:  ExprKind = "[" <VecNonEmpty<Arg>> "]" => ConsArray(<>);
 ConsTuple:  ExprKind = "(" <VecMulti<Arg>> ")"    => ConsTuple(<>);
 ConsStruct: ExprKind = "{" <Fields<Arg>> "}"      => ConsStruct(<>);
-ConsEnum:   ExprKind = "{" <Variants<Arg>> "}"    => ConsEnum(<>);
+ConsVariant: ExprKind = "{" <Symbol> "(" <Box<Arg>> ")" "}" => ConsVariant(<>);
 
 //=============================================================================
 // Precedence Climbing

@@ -154,7 +154,11 @@ impl Pretty for Expr {
             UnOp(op, e) => (op, e.as_ref()).pretty(pr),
             ConsArray(args) => format!("[{args}]", args = args.pretty(pr)),
             ConsStruct(fields) => format!("{{ {fields} }}", fields = pretty_fields(fields, pr)),
-            ConsEnum(variants) => format!("{{ {variants} }}", variants = pretty_variants(variants, pr)),
+            ConsVariant(sym, arg) => format!(
+                "{{ {sym}({arg}) }}",
+                sym = sym.pretty(pr),
+                arg = arg.pretty(pr)
+            ),
             ConsTuple(args) => format!("({args})", args = args.pretty(pr)),
             Sink(id) => format!("sink::{id}", id = id.pretty(pr)),
             Source(id) => format!("source::{id}", id = id.pretty(pr)),

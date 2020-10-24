@@ -110,8 +110,8 @@ impl Expr {
             }
             ConsArray(exprs) => todo!(),
             ConsStruct(fields) => todo!(),
-            ConsEnum(variants) => todo!(),
             ConsTuple(exprs) => todo!(),
+            ConsVariant(sym, exprs) => todo!(),
             Closure(id, expr) => todo!(),
             For(..) => todo!(),
             If(c, t, e) => {

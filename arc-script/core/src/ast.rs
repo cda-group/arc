@@ -146,7 +146,7 @@ pub enum ExprKind {
     Lit(LitKind),
     ConsArray(Vec<Expr>),
     ConsStruct(VecMap<Symbol, Expr>),
-    ConsEnum(VecMap<Symbol, Expr>),
+    ConsVariant(Symbol, Box<Expr>),
     ConsTuple(Vec<Expr>),
     For(Ident, Box<Expr>, Option<Box<Expr>>, Box<Expr>),
     Var(Ident),
