@@ -219,7 +219,10 @@ Fields<V>: VecMap<Symbol, V> = VecNonEmpty<Field<V>> => {
   map
 };
 
-Variants<V>: VecMap<Symbol, V> = VecNonEmpty<(<Symbol> <Paren<V>>)> => {
+#[inline]
+Variant<V> = <Symbol> <Paren<V>>;
+
+Variants<V>: VecMap<Symbol, V> = VecNonEmpty<Variant<V>> => {
   let mut map = VecMap::new();
   for (sym, val) in <>.into_iter() {
       if map.contains_key(&sym) {
