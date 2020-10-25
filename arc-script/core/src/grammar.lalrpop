@@ -667,6 +667,7 @@ TypeKind: TypeKind = {
   Struct,
   Array,
   Enum,
+  Tuple,
   Stream,
   Map,
   Set,
@@ -676,6 +677,7 @@ TypeKind: TypeKind = {
 
 Struct:   TypeKind = "{" <Fields<Type>> "}"          => Struct(<>);
 Enum:     TypeKind = "{" <Variants<Type>> "}"      => Enum(<>);
+Tuple:    TypeKind = "(" <VecMulti<Type>> ")"        => Tuple(<>);
 Optional: TypeKind = <Type> "?"                      => Optional(<>);
 Scalar:   TypeKind = ScalarKind                      => Scalar(<>);
 Array:    TypeKind = "[" <TypeElem> <Shape> "]"      => Array(<>);
@@ -683,6 +685,9 @@ Stream:   TypeKind = "Stream" "[" <Type> "]"         => Stream(<>);
 Map:      TypeKind = "Map" "[" <Type> "," <Type> "]" => Map(<>);
 Set:      TypeKind = "Set" "[" <Type> "]"            => Set(<>);
 Vector:   TypeKind = "Vec" "[" <Type> "]"            => Vector(<>);
+Fun:      TypeKind = <FunInput> "->" <Type>          => Fun(<>);
+
+FunInput = { Single<Type>, Paren<<SepNonEmpty<Type, "->">>> };
 
 Nominal: TypeKind = Symbol => {
   stack.lookup(<>)
@@ -700,6 +705,7 @@ ScalarKind: ScalarKind = {
   "bool" => Bool,
   "null" => Null,
   "str"  => Str,
+  "()"   => Unit,
 };
 
 //=============================================================================
