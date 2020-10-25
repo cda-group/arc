@@ -682,8 +682,8 @@ Optional: TypeKind = <Type> "?"                      => Optional(<>);
 Scalar:   TypeKind = ScalarKind                      => Scalar(<>);
 Array:    TypeKind = "[" <TypeElem> <Shape> "]"      => Array(<>);
 Stream:   TypeKind = "Stream" "[" <Type> "]"         => Stream(<>);
-Map:      TypeKind = "Map" "[" <Type> "," <Type> "]" => Map(<>);
-Set:      TypeKind = "Set" "[" <Type> "]"            => Set(<>);
+Map:      TypeKind = "{" <Type> "=>" <Type> "}"      => Map(<>);
+Set:      TypeKind = "{" <Type> "}"                  => Set(<>);
 Vector:   TypeKind = "Vec" "[" <Type> "]"            => Vector(<>);
 Fun:      TypeKind = <FunInput> "->" <Type>          => Fun(<>);
 
