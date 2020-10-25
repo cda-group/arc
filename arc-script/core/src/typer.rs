@@ -122,13 +122,7 @@ impl UnifyValue for Type {
             match (&ty1.kind, &ty2.kind) {
                 (Unknown, _) | (TypeErr, _) => Ok(ty2.clone()),
                 (_, Unknown) | (_, TypeErr) => Ok(ty1.clone()),
-                (a, b) => {
-                    if a == b {
-                        Ok(ty1.clone())
-                    } else {
-                        Err((ty1.clone(), ty2.clone()))
-                    }
-                }
+                (_, _) => Ok(ty1.clone()),
             }
         }
     }

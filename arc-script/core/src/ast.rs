@@ -215,8 +215,7 @@ pub enum UnOpKind {
 #[derive(Debug, Eq, PartialEq, Copy, Clone)]
 pub struct TypeVar(pub u32);
 
-#[derive(Debug, Eq, Clone, Educe)]
-#[educe(PartialEq)]
+#[derive(Debug, Clone)]
 pub struct Type {
     pub kind: TypeKind,
 }
@@ -234,7 +233,7 @@ impl From<TypeKind> for Type {
     }
 }
 
-#[derive(Debug, Eq, Clone, PartialEq)]
+#[derive(Debug, Clone)]
 pub enum TypeKind {
     Nominal(Ident),
     Scalar(ScalarKind),
