@@ -662,6 +662,7 @@ TypeElem:  TypeVar = (<Type> ";")?     => <>.unwrap_or_else(|| typer.fresh());
 
 TypeKind: TypeKind = {
   Scalar,
+  Nominal,
   Optional,
   Struct,
   Array,
@@ -682,6 +683,12 @@ Stream:   TypeKind = "Stream" "[" <Type> "]"         => Stream(<>);
 Map:      TypeKind = "Map" "[" <Type> "," <Type> "]" => Map(<>);
 Set:      TypeKind = "Set" "[" <Type> "]"            => Set(<>);
 Vector:   TypeKind = "Vec" "[" <Type> "]"            => Vector(<>);
+
+Nominal: TypeKind = Symbol => {
+  stack.lookup(<>)
+       .map(Nominal)
+       .unwrap_or(TypeErr)
+};
 
 ScalarKind: ScalarKind = {
   "i8"   => I8,

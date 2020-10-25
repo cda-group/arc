@@ -233,6 +233,7 @@ impl Type {
 
 #[derive(Debug, Eq, Clone, PartialEq)]
 pub enum TypeKind {
+    Nominal(Ident),
     Scalar(ScalarKind),
     Optional(TypeVar),
     Struct(VecMap<Symbol, TypeVar>),
@@ -244,6 +245,7 @@ pub enum TypeKind {
     Map(TypeVar, TypeVar),
     Set(TypeVar),
     Vector(TypeVar),
+    Task(Vec<TypeVar>),
     Unknown,
     TypeErr,
 }

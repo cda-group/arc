@@ -134,6 +134,7 @@ impl TypeVar {
     }
     fn to_ty_rec(self, mut typer: RefMut<Typer>) -> String {
         match typer.lookup(self).kind {
+            Nominal(_) => todo!(),
             Scalar(kind) => match kind {
                 I8 => "i8".to_owned(),
                 I16 => "i16".to_owned(),
@@ -156,6 +157,7 @@ impl TypeVar {
             Tuple(_) => todo!(),
             Optional(_) => todo!(),
             Fun(_, _) => todo!(),
+            Task(_) => todo!(),
             Unknown => "<UNKNOWN>".to_string(),
             TypeErr => "<ERROR>".to_string(),
         }

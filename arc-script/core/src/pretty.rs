@@ -260,6 +260,7 @@ impl Pretty for Type {
                 Str  => format!("str"),
                 Unit => format!("()"),
             }
+            Nominal(id)      => format!("{id}", id = id.pretty(pr)),
             Struct(fields)   => format!("{{ {fields} }}", fields = pretty_fields(fields, pr)),
             Enum(variants)   => format!("{{ {variants} }}", variants = pretty_variants(variants, pr)),
             Array(ty, shape) => format!( "[{ty}; {shape}]", ty = ty.pretty(pr), shape = shape.pretty(pr)),
@@ -270,6 +271,7 @@ impl Pretty for Type {
             Tuple(tys)       => format!("({})", tys.pretty(pr)),
             Optional(ty)     => format!("{}?", ty.pretty(pr)),
             Fun(args, ty)    => format!("({}) -> {}", args.pretty(pr), ty.pretty(pr)),
+            Task(_)          => format!(""),
             Unknown          => format!("?"),
             TypeErr          => format!("☇"),
         }
