@@ -432,7 +432,7 @@ Let: ExprKind = "let" <Symbol> <TypeAnnot> "=" <Box<Arg>> => {
   Let(id, arg) 
 };
 
-Var: ExprKind = <Symbol> => {
+Var: ExprKind = Symbol => {
   stack.lookup(<>)
        .map(Var)
        .unwrap_or(ExprErr)
@@ -696,14 +696,14 @@ TypeKind: TypeKind = {
 };
 
 Struct:   TypeKind = "{" <Fields<Type>> "}"          => Struct(<>);
-Enum:     TypeKind = "{" <Variants<Type>> "}"      => Enum(<>);
+Enum:     TypeKind = "{" <Variants<Type>> "}"        => Enum(<>);
+Map:      TypeKind = "{" <Type> "=>" <Type> "}"      => Map(<>);
+Set:      TypeKind = "{" <Type> "}"                  => Set(<>);
 Tuple:    TypeKind = "(" <VecMulti<Type>> ")"        => Tuple(<>);
 Optional: TypeKind = <Type> "?"                      => Optional(<>);
 Scalar:   TypeKind = ScalarKind                      => Scalar(<>);
 Array:    TypeKind = "[" <TypeElem> <Shape> "]"      => Array(<>);
 Stream:   TypeKind = "Stream" "[" <Type> "]"         => Stream(<>);
-Map:      TypeKind = "{" <Type> "=>" <Type> "}"      => Map(<>);
-Set:      TypeKind = "{" <Type> "}"                  => Set(<>);
 Vector:   TypeKind = "Vec" "[" <Type> "]"            => Vector(<>);
 Fun:      TypeKind = <FunInput> "->" <Type>          => Fun(<>);
 
