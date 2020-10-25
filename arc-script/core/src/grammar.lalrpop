@@ -656,7 +656,7 @@ PatIgnore: PatKind = "_"                   => PatIgnore;
 // Types
 //=============================================================================
 
-Type:      TypeVar = Spanned<TypeKind> => typer.intern(Type::from(<>));
+Type:      TypeVar = TypeKind      => typer.intern(Type::from(<>));
 TypeAnnot: TypeVar = (":" <Type>)?     => <>.unwrap_or_else(|| typer.fresh());
 TypeElem:  TypeVar = (<Type> ";")?     => <>.unwrap_or_else(|| typer.fresh());
 

@@ -215,19 +215,22 @@ pub enum UnOpKind {
 #[derive(Debug, Eq, PartialEq, Copy, Clone)]
 pub struct TypeVar(pub u32);
 
-#[derive(Debug, Eq, Clone, Educe, MaybeSpanned)]
+#[derive(Debug, Eq, Clone, Educe)]
 #[educe(PartialEq)]
 pub struct Type {
     pub kind: TypeKind,
-    #[educe(PartialEq(ignore))]
-    pub span: Option<Span>,
 }
 
 impl Type {
     pub fn new() -> Type {
         let kind = Unknown;
-        let span = None;
-        Type { kind, span }
+        Type { kind }
+    }
+}
+
+impl From<TypeKind> for Type {
+    fn from(kind: TypeKind) -> Type {
+        Type { kind }
     }
 }
 
