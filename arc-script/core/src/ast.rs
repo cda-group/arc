@@ -20,7 +20,7 @@ pub struct Symbol {
     pub span: Span,
 }
 
-pub type Clause = (Pat, Expr);
+pub type Case = (Pat, Expr);
 pub type VecMap<K, V> = FlatMap<K, V>;
 
 #[derive(Constructor)]
@@ -163,7 +163,7 @@ pub enum ExprKind {
     BinOp(Box<Expr>, BinOpKind, Box<Expr>),
     If(Box<Expr>, Box<Expr>, Box<Expr>),
     Let(Ident, Box<Expr>, Box<Expr>),
-    Match(Box<Expr>, Vec<Clause>),
+    Match(Box<Expr>, Vec<Case>),
     Loop(Box<Expr>, Box<Expr>),
     ExprErr,
 }
