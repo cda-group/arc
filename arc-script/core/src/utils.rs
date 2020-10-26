@@ -60,7 +60,10 @@ macro_rules! for_each_expr {
                         e.$name(f);
                         cases.iter_mut().for_each(|(_, e)| e.$name(f));
                     }
-                    Let(_, v) => v.$name(f),
+                    Let(_, e1, e2) => {
+                        e1.$name(f);
+                        e2.$name(f);
+                    },
                     ConsArray(ps) => ps.iter_mut().for_each(|p| p.$name(f)),
                     ConsTuple(ps) => ps.iter_mut().for_each(|p| p.$name(f)),
                     ConsStruct(fs) => fs.iter_mut().for_each(|(_, v)| v.$name(f)),

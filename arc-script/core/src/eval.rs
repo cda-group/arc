@@ -96,10 +96,10 @@ impl Expr {
                     ValueErr
                 }
             }
-            Let(id, e) => {
-                let v = e.eval(ctx);
-                ctx.stack.insert(*id, v);
-                Unit
+            Let(id, e1, e2) => {
+                let v1 = e1.eval(ctx);
+                ctx.stack.insert(*id, v1);
+                e2.eval(ctx)
             }
             BinOp(lhs, Seq, rhs) => {
                 lhs.eval(ctx);

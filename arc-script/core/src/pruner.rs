@@ -11,13 +11,11 @@ impl Expr {
     /// Remove `let id1 = id2` expressions
     pub fn prune_rec(&mut self, aliases: &mut HashMap<Ident, Ident>) {
         match &mut self.kind {
-            BinOp(lhs, Seq, rhs) => {
-                if let Let(let_id, v) = &mut lhs.kind {
-                    if let Var(var_id) = &mut v.kind {
-                        aliases.insert(*let_id, *var_id);
-                        *self = rhs.take();
-                        self.prune_rec(aliases);
-                    }
+            Let(let_id, e1, e2) => {
+                if let Var(var_id) = &mut e1.kind {
+                    aliases.insert(*let_id, *var_id);
+                    *self = e2.take();
+                    self.prune_rec(aliases);
                 }
             }
             Var(var_id) => {

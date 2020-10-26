@@ -426,11 +426,18 @@ TaskDef: (Ident, TaskDef) = <TaskDecl> "{" <FunDef*> "}" => {
   (id, TaskDef::new(id, param_ids, source_ids, sink_ids, fun_defs.into_iter().collect()))
 };
 
-Let: ExprKind = "let" <Symbol> <TypeAnnot> "=" <Box<Arg>> => {
+LetDecl: (Ident, Box<Expr>) = "let" <Symbol> <TypeAnnot> "=" <Box<Arg>> => {
   let (sym, tv, arg) = (<>);
   let id = table.insert(Decl::new(sym, tv, VarDecl));
+  stack.push_scope();
   stack.bind_local(sym, id);
-  Let(id, arg) 
+  (id, arg)
+};
+
+LetDef: ExprKind = <LetDecl> "in" <Box<Stmt>> => {
+  let ((id, arg), body) = (<>);
+  stack.pop_scope();
+  Let(id, arg, body) 
 };
 
 Var: ExprKind = Symbol => {
@@ -576,7 +583,7 @@ ConsVariant: ExprKind = "{" <Symbol> "(" <Box<Arg>> ")" "}" => ConsVariant(<>);
 //=============================================================================
 
 ExprKind0:  ExprKind = { Seq, ExprKind1 };
-ExprKind1:  ExprKind = { Let, Emit, ExprKind2 };
+ExprKind1:  ExprKind = { LetDef, Emit, ExprKind2 };
 ExprKind2:  ExprKind = { ClosureDef, ExprKind3 };
 ExprKind3:  ExprKind =  BinaryInfixLeftAssociative<Op0, ExprKind4>;
 ExprKind4:  ExprKind =  BinaryInfixLeftAssociative<Op1, ExprKind5>;

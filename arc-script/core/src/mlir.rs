@@ -51,10 +51,11 @@ impl Expr {
 
     fn to_region(&self, terminator: &str, pr: &Printer) -> String {
         match &self.kind {
-            Let(id, v) => format!(
-                "{s}{var} = {op}",
+            Let(id, e1, e2) => format!(
+                "{s}{var} = {op}{next}",
                 var = id.to_var(),
-                op = v.to_op(pr),
+                op = e1.to_op(pr),
+                next = e2.to_region(terminator, pr),
                 s = pr.indent(),
             ),
             BinOp(lhs, Seq, rhs) => format!(

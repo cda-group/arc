@@ -204,10 +204,10 @@ impl Constrain<'_> for Expr {
     /// Constrains an expression based on its subexpressions.
     fn constrain(&mut self, ctx: &mut Context<'_>) {
         match &self.kind {
-            Let(id, v) => {
+            Let(id, e1, e2) => {
                 let tv = ctx.table.get_decl(id).tv;
-                ctx.unify(v.tv, tv);
-                ctx.unify(self.tv, Unit);
+                ctx.unify(tv, e1.tv);
+                ctx.unify(self.tv, e2.tv);
             }
             Var(id) => {
                 let tv = ctx.table.get_decl(id).tv;

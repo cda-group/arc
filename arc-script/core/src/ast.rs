@@ -162,7 +162,7 @@ pub enum ExprKind {
     UnOp(UnOpKind, Box<Expr>),
     BinOp(Box<Expr>, BinOpKind, Box<Expr>),
     If(Box<Expr>, Box<Expr>, Box<Expr>),
-    Let(Ident, Box<Expr>),
+    Let(Ident, Box<Expr>, Box<Expr>),
     Match(Box<Expr>, Vec<Clause>),
     Loop(Box<Expr>, Box<Expr>),
     ExprErr,

@@ -116,11 +116,13 @@ impl Pretty for Expr {
                 s0 = pr.indent(),
                 s1 = pr.tab().indent(),
             ),
-            Let(id, e) => format!(
-                "let {id}: {ty} = {e}",
+            Let(id, e1, e2) => format!(
+                "let {id}: {ty} = {e1} in{s}{e2}",
                 id = id.pretty(pr),
                 ty = pr.info.table.get_decl(id).tv.pretty(pr),
-                e = e.pretty(pr),
+                e1 = e1.pretty(pr),
+                e2 = e2.pretty(pr),
+                s = pr.indent()
             ),
             Closure(params, body) => format!(
                 "|{params}| {{{s1}{body}{s0}}}",

@@ -27,19 +27,10 @@ impl Expr {
     /// Reverse-folds a vec of SSA values into an AST of let-expressions
     pub fn into_ssa(self, info: &mut Info) -> Self {
         let (ctx, var) = self.flatten(info);
-        let typer = &mut info.typer.borrow_mut();
         ctx.into_iter().rev().fold(var, |acc, (id, expr)| Expr {
             tv: acc.tv,
             span: acc.span,
-            kind: BinOp(
-                Expr {
-                    tv: typer.intern(Scalar(Unit)),
-                    span: acc.span,
-                    kind: Let(id, expr.into()),
-                }.into(),
-                Seq,
-                acc.into(),
-            ),
+            kind: Let(id, expr.into(), acc.into()).into(),
         })
     }
 }
@@ -49,18 +40,17 @@ impl Ssa for Expr {
     fn flatten(self, info: &mut Info) -> (Context, Self) {
         let Self { kind, tv, span } = self;
         let (mut ctx, kind) = match kind {
+            Let(id, e1, e2) => {
+                let (mut vc, v) = if e1.is_imm() {
+                    (vec![], *e1)
+                } else {
+                    e1.flatten(info)
+                };
+                let (rc, r) = e2.flatten(info);
+                vc.push((id, v));
+                return (merge(vc, rc), r);
+            }
             BinOp(l, op, r) => {
-                if let Seq = op {
-                    if let Let(id, v) = l.kind {
-                        let (mut vc, v) = match v.is_imm() {
-                            true => (vec![], *v),
-                            false => v.flatten(info),
-                        };
-                        let (rc, r) = r.flatten(info);
-                        vc.push((id, v));
-                        return (merge(vc, rc), r);
-                    }
-                }
                 let ((lc, l), (rc, r)) = (l.flatten(info), r.flatten(info));
                 (merge(lc, rc), BinOp(l.into(), op, r.into()))
             }
