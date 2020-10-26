@@ -480,13 +480,13 @@ ClosureDef: ExprKind = <ClosureDecl> <Box<Arg>> => {
 };
 
 
-SeqBegin: Box<Expr> = <Box<Stmt>> ";" => {
+SeqDecl: Box<Expr> = <Box<Stmt>> ";" => {
   let lhs = <>;
   stack.push_scope();
   lhs
 };
 
-Seq: ExprKind = SeqBegin Box<Body> => {
+SeqDef: ExprKind = SeqDecl Box<Body> => {
   let (lhs, rhs) = (<>);
   stack.pop_scope();
   BinOp(lhs, Seq, rhs)
@@ -584,7 +584,7 @@ ConsVariant: ExprKind = "{" <Symbol> "(" <Box<Arg>> ")" "}" => ConsVariant(<>);
 // Precedence Climbing
 //=============================================================================
 
-ExprKind0:  ExprKind = { Seq, ExprKind1 };
+ExprKind0:  ExprKind = { SeqDef, ExprKind1 };
 ExprKind1:  ExprKind = { LetDef, Emit, ExprKind2 };
 ExprKind2:  ExprKind = { ClosureDef, ExprKind3 };
 ExprKind3:  ExprKind =  BinaryInfixLeftAssociative<Op0, ExprKind4>;
