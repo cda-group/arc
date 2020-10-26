@@ -82,6 +82,8 @@ match {
   "else",
   "for",
   "emit",
+  "on",
+  "shutdown",
   "where",
   "in",
   "of",
