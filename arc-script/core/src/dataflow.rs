@@ -4,8 +4,16 @@ use petgraph::prelude::{Directed, Graph, NodeIndex};
 use std::io::Write;
 use std::process::{Command, Stdio};
 
-type Node = Ident;
-type Edge = ();
+#[derive(Debug)]
+pub struct Node {
+    id: Ident,
+}
+
+#[derive(Debug)]
+pub struct Edge {
+    source_port: usize,
+    sink_port: usize,
+}
 
 #[derive(Default)]
 pub struct Dataflow {
@@ -19,8 +27,8 @@ impl Dataflow {
     pub fn add_node(&mut self, node: Node) -> NodeIndex {
         self.graph.add_node(node)
     }
-    pub fn add_edge(&mut self, a: NodeIndex, b: NodeIndex) {
-        self.graph.add_edge(a, b, ());
+    pub fn add_edge(&mut self, a: NodeIndex, b: NodeIndex, edge: Edge) {
+        self.graph.add_edge(a, b, edge);
     }
     pub fn pretty(&self) -> String {
         let config = &[Config::EdgeNoLabel];
