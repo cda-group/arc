@@ -86,13 +86,15 @@ static LogicalResult performActions(raw_ostream &os, bool verifyDiagnostics,
 static LogicalResult processBuffer(raw_ostream &os,
                                    std::unique_ptr<MemoryBuffer> ownedBuffer,
                                    bool verifyDiagnostics, bool verifyPasses,
-                                   const PassPipelineCLParser &passPipeline) {
+                                   const PassPipelineCLParser &passPipeline,
+                                   DialectRegistry &registry) {
   // Tell sourceMgr about this buffer, which is what the parser will pick up.
   SourceMgr sourceMgr;
   sourceMgr.AddNewSourceBuffer(std::move(ownedBuffer), SMLoc());
 
   // Parse the input file.
   MLIRContext context;
+  registry.appendTo(context.getDialectRegistry());
 
   // If we are in verify diagnostics mode then we have a lot of work to do,
   // otherwise just perform the actions without worrying about it.
@@ -118,8 +120,8 @@ static LogicalResult processBuffer(raw_ostream &os,
 LogicalResult mlir::ArcOptMain(raw_ostream &os,
                                std::unique_ptr<MemoryBuffer> buffer,
                                const PassPipelineCLParser &passPipeline,
-                               bool splitInputFile, bool verifyDiagnostics,
-                               bool verifyPasses) {
+                               DialectRegistry &registry, bool splitInputFile,
+                               bool verifyDiagnostics, bool verifyPasses) {
   // The split-input-file mode is a very specific mode that slices the file
   // up into small pieces and checks each independently.
   if (splitInputFile)
@@ -127,10 +129,10 @@ LogicalResult mlir::ArcOptMain(raw_ostream &os,
         std::move(buffer),
         [&](std::unique_ptr<MemoryBuffer> chunkBuffer, raw_ostream &os) {
           return processBuffer(os, std::move(chunkBuffer), verifyDiagnostics,
-                               verifyPasses, passPipeline);
+                               verifyPasses, passPipeline, registry);
         },
         os);
 
   return processBuffer(os, std::move(buffer), verifyDiagnostics, verifyPasses,
-                       passPipeline);
+                       passPipeline, registry);
 }
