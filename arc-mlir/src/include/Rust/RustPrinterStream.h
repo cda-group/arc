@@ -145,7 +145,8 @@ public:
 
   void registerDependency(RustDependencyOp dep) {
     std::string key = dep.getCrate().cast<StringAttr>().getValue().str();
-    std::string value = dep.getVersion().cast<StringAttr>().getValue().str();
+    std::string value =
+        "\"" + dep.getVersion().cast<StringAttr>().getValue().str() + "\"";
     registerDependency(key, value);
   }
 
@@ -155,8 +156,7 @@ public:
 
   void writeTomlDependencies(llvm::raw_ostream &out) {
     for (auto i : CrateDependencies)
-      out << i.first << " = "
-          << "\"" << i.second << "\"\n";
+      out << i.first << " = " << i.second << "\n";
   }
 
   void registerDirective(RustModuleDirectiveOp dep) {

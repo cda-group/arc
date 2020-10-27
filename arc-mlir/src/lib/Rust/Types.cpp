@@ -309,7 +309,8 @@ RustPrinterStream &
 RustTensorTypeStorage::printAsRust(RustPrinterStream &ps) const {
   ps.registerDirective("rc-import", "use std::rc::Rc;\n");
   ps.registerDirective("ndarray-import", "use ndarray::{Array,Dim,Ix};\n");
-  ps.registerDependency("ndarray", CrateVersions::ndarray);
+  ps.registerDependency("ndarray",
+                        (Twine("\"") + CrateVersions::ndarray + "\"").str());
   ps << getRustType();
   return ps;
 }
