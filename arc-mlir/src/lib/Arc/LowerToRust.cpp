@@ -777,7 +777,7 @@ void ArcToRustLoweringPass::runOnOperation() {
   patterns.insert<StructAccessOpLowering>(&getContext(), typeConverter);
   patterns.insert<StdCallOpLowering>(&getContext(), typeConverter);
 
-  if (failed(applyFullConversion(getOperation(), target, patterns)))
+  if (failed(applyFullConversion(getOperation(), target, std::move(patterns))))
     signalPassFailure();
 }
 

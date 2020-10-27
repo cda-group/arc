@@ -76,11 +76,12 @@ static cl::opt<bool>
 int main(int argc, char **argv) {
   InitLLVM y(argc, argv);
 
-  mlir::enableGlobalDialectRegistry(true);
-  mlir::registerAllDialects();
   mlir::registerAllPasses();
-  mlir::registerDialect<ArcDialect>();
-  mlir::registerDialect<rust::RustDialect>();
+
+  mlir::DialectRegistry registry;
+  registry.insert<mlir::StandardOpsDialect>();
+  registry.insert<ArcDialect>();
+  registry.insert<rust::RustDialect>();
   arc::registerArcPasses();
 
   // Register any command line options.
@@ -107,5 +108,6 @@ int main(int argc, char **argv) {
   }
 
   return failed(ArcOptMain(output->os(), std::move(file), passPipeline,
-                           splitInputFile, verifyDiagnostics, verifyPasses));
+                           registry, splitInputFile, verifyDiagnostics,
+                           verifyPasses));
 }

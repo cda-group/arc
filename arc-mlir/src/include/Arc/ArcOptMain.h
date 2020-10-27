@@ -13,6 +13,8 @@
 #include <memory>
 #include <vector>
 
+#include "mlir/IR/Dialect.h"
+
 namespace llvm {
 class raw_ostream;
 class MemoryBuffer;
@@ -25,7 +27,7 @@ class PassPipelineCLParser;
 LogicalResult ArcOptMain(llvm::raw_ostream &os,
                          std::unique_ptr<llvm::MemoryBuffer> buffer,
                          const PassPipelineCLParser &passPipeline,
-                         bool splitInputFile, bool verifyDiagnostics,
-                         bool verifyPasses);
+                         DialectRegistry &registry, bool splitInputFile,
+                         bool verifyDiagnostics, bool verifyPasses);
 
 } // end namespace mlir
