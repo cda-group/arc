@@ -145,6 +145,37 @@ def Rust_RustFuncOp : Rust_Op<"func", [FunctionLike, IsolatedFromAbove, Symbol]>
   }];
 }
 
+def Rust_RustExtFuncOp : Rust_Op<"extfunc", [FunctionLike, IsolatedFromAbove, Symbol]> {
+  let summary = "An external function";
+
+  let description = [{
+  }];
+
+  let arguments = (ins StrAttr : $language);
+
+  let regions = (region AnyRegion:$empty_body);
+
+  let extraClassDeclaration = [{
+    /// Returns the type of the function this Op defines.
+    FunctionType getType() {
+      return getTypeAttr().getValue().cast<FunctionType>();
+    }
+
+    // FunctionLike trait needs access to the functions below.
+    friend class OpTrait::FunctionLike<RustExtFuncOp>;
+
+    /// Hooks for the input/output type enumeration in FunctionLike .
+    unsigned getNumFuncArguments() { return getType().getNumInputs(); }
+    unsigned getNumFuncResults() { return getType().getNumResults(); }
+
+    /// Hook for FunctionLike verifier.
+    LogicalResult verifyType();
+
+    // Write this function as Rust code to os
+    void writeRust(RustPrinterStream &os);
+  }];
+}
+
 def Rust_RustReturnOp : Rust_Op<"return", [HasParent<"RustFuncOp">,
     Terminator]> {
   let summary = "Terminator for Rust functions.";

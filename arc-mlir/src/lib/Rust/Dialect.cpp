@@ -144,6 +144,33 @@ LogicalResult RustFuncOp::verifyType() {
   return success();
 }
 
+/// Hook for FunctionLike verifier.
+LogicalResult RustExtFuncOp::verifyType() {
+  Type type = getTypeAttr().getValue();
+  if (!type.isa<FunctionType>())
+    return emitOpError("requires '" + getTypeAttrName() +
+                       "' attribute of function type");
+  Attribute lang = getAttr("language");
+  if (!lang || !lang.isa<StringAttr>())
+    return emitOpError("requires 'language' attribute");
+  StringAttr lang_str = lang.cast<StringAttr>();
+  if (!lang_str.getValue().equals("rust"))
+    return emitOpError("only supports the Rust language");
+  Attribute crate = getAttr("crate");
+  if (!crate || !crate.isa<StringAttr>())
+    return emitOpError("requires 'crate' attribute");
+
+  std::string dependency_key =
+      ("rust.dependency." + crate.cast<StringAttr>().getValue()).str();
+
+  Attribute dep = getParentOp()->getAttr(dependency_key);
+  if (!dep || !dep.isa<StringAttr>())
+    return getParentOp()->emitOpError("requires '" + dependency_key +
+                                      "' attribute");
+
+  return success();
+}
+
 /// Verifies the body of the function.
 LogicalResult RustFuncOp::verifyBody() {
   unsigned numFuncArguments = getNumArguments();
@@ -457,6 +484,23 @@ void RustFuncOp::writeRust(RustPrinterStream &PS) {
     ::writeRust(operation, PS);
   }
   PS << "}\n";
+}
+
+// Write this function as Rust code to os
+void RustExtFuncOp::writeRust(RustPrinterStream &PS) {
+  StringRef crate = getAttr("crate").cast<StringAttr>().getValue();
+  StringRef symbol = getAttr("sym_name").cast<StringAttr>().getValue();
+
+  std::string d =
+      ("use " + crate + "::" + symbol + " as " + symbol + ";\n").str();
+  PS.registerDirective(d, d);
+
+  std::string dependency_key = ("rust.dependency." + crate).str();
+  PS.registerDependency(crate.str(), getParentOp()
+                                         ->getAttr(dependency_key)
+                                         .cast<StringAttr>()
+                                         .getValue()
+                                         .str());
 }
 
 void RustReturnOp::writeRust(RustPrinterStream &PS) {
