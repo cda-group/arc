@@ -224,6 +224,7 @@ RustPrinterStream &
 RustStructTypeStorage::printAsRust(RustPrinterStream &ps) const {
 
   llvm::raw_ostream &os = ps.getNamedTypesStream();
+  llvm::raw_ostream &uses_os = ps.getUsesStream();
   // First ensure that any structs used by this struct are defined
   emitNestedTypedefs(ps);
 
@@ -233,14 +234,22 @@ RustStructTypeStorage::printAsRust(RustPrinterStream &ps) const {
   for (unsigned i = 0; i < structFields.size(); i++) {
     if (i != 0)
       os << ",\n  ";
-    os << structFields[i].first.getValue() << " : ";
+    os << "pub " << structFields[i].first.getValue() << " : ";
     os << getTypeString(structFields[i].second);
   }
   os << "\n}\n";
-  os << "type ";
+  os << "pub type ";
   printAsRustNamedType(os) << " = Rc<";
   printAsRustNamedType(os) << "Value>;\n";
   ps.registerDirective("rc-import", "use std::rc::Rc;\n");
+  uses_os << "use ";
+  ps.printModuleName(uses_os) << "_types::";
+  printAsRustNamedType(uses_os) << " as ";
+  printAsRustNamedType(uses_os) << ";\n";
+  uses_os << "use ";
+  ps.printModuleName(uses_os) << "_types::";
+  printAsRustNamedType(uses_os) << "Value as ";
+  printAsRustNamedType(uses_os) << "Value;\n";
   return ps;
 }
 

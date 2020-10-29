@@ -233,15 +233,44 @@ static bool writeToml(StringRef filename, StringRef crateName,
       << "\n"
       << "[dependencies]\n";
   PS.writeTomlDependencies(out);
+  if (PS.hasTypesOutput())
+    out << crateName << "_types = { path = \"../" << crateName
+        << "_types\", version = \"0.1.0\" }\n";
   out.close();
   return true;
 }
 
-LogicalResult rust::writeModuleAsCrate(ModuleOp module, std::string top_dir,
-                                       std::string rustTrailer,
-                                       llvm::raw_ostream &o) {
-  llvm::errs() << "writing crate \"" << module.getName() << "\" to " << top_dir
+static bool writeTypesToml(StringRef filename, StringRef crateName,
+                           RustPrinterStream &PS) {
+  std::error_code EC;
+  llvm::raw_fd_ostream out(filename, EC, llvm::sys::fs::CD_CreateAlways,
+                           llvm::sys::fs::FA_Write, llvm::sys::fs::OF_Text);
+
+  if (EC) {
+    llvm::errs() << "Failed to create " << filename << ", " << EC.message()
+                 << "\n";
+    return false;
+  }
+
+  out << "[package]\n"
+      << "name = \"" << crateName << "_types\"\n"
+      << "version = \"0.1.0\"\n"
+      << "authors = [\"arc-mlir\"]\n"
+      << "edition = \"2018\"\n"
+      << "\n"
+      << "[dependencies]\n";
+
+  out.close();
+  return true;
+}
+
+LogicalResult rust::writeModuleAsCrates(ModuleOp module, std::string top_dir,
+                                        std::string rustTrailer,
+                                        llvm::raw_ostream &o) {
+  llvm::errs() << "writing crates \"" << module.getName() << "\" to " << top_dir
                << "\n";
+
+  // Create the files for the main rust crate
   StringRef crateName = module.getName().getValueOr("unknown");
   SmallString<128> crate_dir(top_dir);
   llvm::sys::path::append(crate_dir, crateName);
@@ -270,11 +299,43 @@ LogicalResult rust::writeModuleAsCrate(ModuleOp module, std::string top_dir,
     return failure();
   }
 
-  RustPrinterStream PS(out);
+  // Create the files for the type crate
+  std::string typesCrateName = crateName.str() + "_types";
+  SmallString<128> types_crate_dir(top_dir);
+  llvm::sys::path::append(types_crate_dir, typesCrateName);
+  SmallString<128> types_src_dir(types_crate_dir);
+  llvm::sys::path::append(types_src_dir, "src");
 
-  for (Operation &operation : module)
+  SmallString<128> types_toml_filename(types_crate_dir);
+  llvm::sys::path::append(types_toml_filename, "Cargo.toml");
+
+  SmallString<128> types_rs_filename(types_src_dir);
+  llvm::sys::path::append(types_rs_filename, "lib.rs");
+
+  EC = llvm::sys::fs::create_directories(types_src_dir);
+  if (EC) {
+    llvm::errs() << "Unable to create crate directories: " << types_src_dir
+                 << ", " << EC.message() << ".\n";
+    return failure();
+  }
+
+  llvm::raw_fd_ostream types(types_rs_filename, EC,
+                             llvm::sys::fs::CD_CreateAlways,
+                             llvm::sys::fs::FA_Write, llvm::sys::fs::OF_Text);
+  if (EC) {
+    llvm::errs() << "Failed to create " << types_rs_filename << ", "
+                 << EC.message() << "\n";
+    return failure();
+  }
+
+  RustPrinterStream PS(out, types, crateName.str());
+
+  for (Operation &operation : module) {
     if (RustFuncOp op = dyn_cast<RustFuncOp>(operation))
       op.writeRust(PS);
+    else if (RustExtFuncOp op = dyn_cast<RustExtFuncOp>(operation))
+      op.writeRust(PS);
+  }
 
   PS.flush();
 
@@ -305,8 +366,12 @@ LogicalResult rust::writeModuleAsCrate(ModuleOp module, std::string top_dir,
     close(fd);
   }
   out.close();
+  types.close();
 
   if (!writeToml(toml_filename, crateName, PS))
+    return failure();
+
+  if (!writeTypesToml(types_toml_filename, crateName, PS))
     return failure();
 
   return success();
