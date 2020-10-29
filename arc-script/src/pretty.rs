@@ -221,12 +221,14 @@ impl Pretty for Type {
             Scalar(Bool) => "bool".to_string(),
             Scalar(Null) => "null".to_string(),
             Scalar(Str) => "str".to_string(),
+            Scalar(Unit) => "()".to_string(),
             Struct(fields) => format!("{{ {fields} }}", fields = fields.pretty(pr),),
             Array(ty, shape) => format!(
                 "[{ty}; {shape}]",
                 ty = ty.pretty(pr),
                 shape = shape.pretty(pr)
             ),
+            Stream(ty) => format!("Stream[{}]", ty.pretty(pr)),
             Tuple(tys) => format!("({})", tys.pretty(pr)),
             Optional(ty) => format!("{}?", ty.pretty(pr)),
             Fun(args, ty) => format!("({}) -> {}", args.pretty(pr), ty.pretty(pr)),

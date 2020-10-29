@@ -251,6 +251,7 @@ pub enum TypeKind {
     Array(TypeVar, Shape),
     Tuple(Vec<TypeVar>),
     Fun(Vec<TypeVar>, TypeVar),
+    Stream(TypeVar),
     Unknown,
     TypeErr,
 }
@@ -266,6 +267,7 @@ pub enum ScalarKind {
     Bool,
     Null,
     Str,
+    Unit,
 }
 
 #[derive(Debug, Eq, Clone, Educe)]
