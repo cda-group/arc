@@ -62,6 +62,8 @@ public:
   static RustType getIntegerTy(RustDialect *dialect, IntegerType ty);
 
   typedef std::pair<mlir::StringAttr, Type> StructFieldTy;
+
+  std::string getSignature() const;
 };
 
 class RustStructType
@@ -80,6 +82,7 @@ public:
   static RustStructType get(RustDialect *dialect,
                             ArrayRef<StructFieldTy> fields);
   void emitNestedTypedefs(rust::RustPrinterStream &ps) const;
+  std::string getSignature() const;
 };
 
 class RustTensorType
@@ -95,6 +98,7 @@ public:
                             ArrayRef<int64_t> dimensions);
 
   ArrayRef<int64_t> getDimensions() const;
+  std::string getSignature() const;
 };
 
 class RustTupleType
@@ -108,6 +112,7 @@ public:
 
   static RustTupleType get(RustDialect *dialect, ArrayRef<Type> fields);
   void emitNestedTypedefs(rust::RustPrinterStream &ps) const;
+  std::string getSignature() const;
 };
 
 } // namespace types
