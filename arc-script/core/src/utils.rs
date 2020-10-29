@@ -1,3 +1,5 @@
+#![allow(unused)]
+
 use crate::prelude::*;
 
 impl SyntaxTree {
@@ -31,13 +33,38 @@ impl TaskDef {
     }
 }
 
+/// Macro for generating pre- and post-order visitors of patterns.
+macro_rules! for_each_pat {
+    { name: $name:ident, pre: $pre:literal, post: $post:literal } => {
+        impl Pat {
+            pub fn $name<F: FnMut(&mut Pat)>(&mut self, f: &mut F) {
+                if $pre {
+                    f(self);
+                }
+                match &mut self.kind {
+                    PatRegex(_) => {},
+                    PatTuple(p0) => p0.$name(f),
+                    PatStruct(p0) => p0.$name(f),
+                    PatVal(_) => {},
+                    PatVar(_) => {},
+                    PatOr(p0, p1) => {
+                        p0.$name(f);
+                        p1.$name(f);
+                    },
+                    PatIgnore => {},
+                    PatErr => {},
+                }
+                if $post {
+                    f(self);
+                }
+            }
+        }
+    }
+}
+
 /// Macro for generating pre- and post-order visitors of expressions.
 macro_rules! for_each_expr {
-    {
-        name: $name:ident,
-        pre: $pre:literal,
-        post: $post:literal
-    } => {
+    { name: $name:ident, pre: $pre:literal, post: $post:literal } => {
         impl Expr {
             pub fn $name<F: FnMut(&mut Expr)>(&mut self, f: &mut F) {
                 if $pre {
@@ -96,17 +123,10 @@ macro_rules! for_each_expr {
     }
 }
 
-for_each_expr! {
-    name: for_each_expr,
-    pre: true,
-    post: false
-}
-
-for_each_expr! {
-    name: for_each_expr_postorder,
-    pre: false,
-    post: true
-}
+for_each_expr! { name: for_each_pat,            pre: true,  post: false }
+for_each_expr! { name: for_each_pat_postorder,  pre: false, post: true  }
+for_each_expr! { name: for_each_expr,           pre: true,  post: false }
+for_each_expr! { name: for_each_expr_postorder, pre: false, post: true  }
 
 pub fn merge<T>(mut a: Vec<T>, mut b: Vec<T>) -> Vec<T> {
     a.append(&mut b);
