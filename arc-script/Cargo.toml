@@ -1,105 +1,9 @@
-[package]      
-name           = "arc-script"
-version        = "0.1.0"
-authors        = ["Klas Segeljakt <klasseg@kth.se>"]
-description    = "The Arc-Script compiler."
-homepage       = "https://cda-group.github.io/"
-repository     = "https://www.github.com/segeljakt/arc-script"
-documentation  = "https://segeljakt.github.io/arc-script/"
-readme         = "README.md"
-keywords       = ["compiler", "data-science"]
-categories     = ["science", "database"]
-license        = "MIT"
-# license-file   = "" TODO
-edition        = "2018"
-build          = "build.rs"
-publish        = false
-default-run    = "arc-script"
-
-[lib]
-name           = "arc_script"
-path           = "src/lib.rs"
-
-[[bin]]
-name           = "arc-script"
-path           = "src/main.rs"
-
-[[bench]]
-name           = "bench"
-harness        = false
-
-[features]
-default     = []
-all         = ["provider", "manifest", "incremental", "lsp", "cli", "repl"]
-shaper      = ["z3"]
-cli         = ["clap"]
-repl        = ["linefeed"]
-provider    = ["reqwest", "http", "http-serde", "tempfile", "quick-protobuf", "pb-rs", "avro-rs", "glob"]
-manifest    = ["serde", "serde_derive", "toml", "tempfile", "http", "http-serde"]
-incremental = ["salsa"]
-lsp         = ["tower-lsp", "tokio", "codespan-lsp", "serde_json", "trie-rs", "lazy_static", "async-trait"]
-
-[dependencies]
-# logos              = "0.11.0"
-regex              = "1.3.7"
-lalrpop-util       = "0.18.1"
-ena                = "0.14.0"
-codespan           = "0.9.3"
-codespan-reporting = "0.9.3"
-derive_more        = { version = "0.99.5", default-features = false, features = ["constructor"] }
-num-traits         = "0.2.11"
-arrayvec           = "0.5.1"
-smartstring        = "0.2.3"
-educe              = { version = "0.4.4", default-features = false, features = ["Hash"]}
-
-# -- Feature: shaper
-z3                 = { optional = true, version = "0.5.0" }
-
-# -- Feature: cli
-clap               = { optional = true, git = "https://github.com/clap-rs/clap/", features = ["derive"]}
-dialoguer          = { optional = true, version = "0.6.2" }
-
-# -- Feature: repl
-linefeed           = { optional = true, version = "0.6.0" }
-
-# -- Feature: provider
-reqwest            = { optional = true, version = "0.10.4", features = ["blocking"] }
-http               = { optional = true, version = "0.2.1" }
-http-serde         = { optional = true, version = "1.0.1" }
-quick-protobuf     = { optional = true, version = "0.6.4" }
-pb-rs              = { optional = true, version = "0.8.3" }
-avro-rs            = { optional = true, version = "0.9.1" }
-glob               = { optional = true, version = "0.3.0" }
-zip                = { optional = true, version = "0.5.5" }
-
-# -- Feature: manifest
-serde              = { optional = true, version = "1.0.106" }
-serde_derive       = { optional = true, version = "1.0.106" }
-toml               = { optional = true, version = "0.5.6" }
-tempfile           = { optional = true, version = "3.1.0" }
-
-# -- Feature: incremental
-salsa              = { optional = true, version = "0.14.1" }
-
-# -- Feature: lsp
-tower-lsp          = { optional = true, version = "0.11.0" }
-tokio              = { optional = true, version = "0.2.20", features = ["rt-core", "macros", "io-std"] }
-codespan-lsp       = { optional = true, version = "0.9.3" }
-serde_json         = { optional = true, version = "1.0.52" }
-trie-rs            = { optional = true, version = "0.1.1" }
-lazy_static        = { optional = true, version = "1.4.0" }
-async-trait        = { optional = true, version = "0.1.30" }
-wasm-bindgen       = "0.2.62"
-
-[build-dependencies]
-lalrpop            = { version = "0.18.1", features = [ "lexer" ] }
-
-[dev-dependencies]
-criterion          = "0.3.2"
-criterion-cpu-time = "0.1.0"
-include_dir        = "0.5.0"
-proptest           = "0.9.6"
-honggfuzz          = "0.5.48"
+[workspace]
+members = [
+  "core",
+  "macros/spanned-derive",
+  "wasm",
+]
 
 # -- The development profile, used for `cargo build`.
 [profile.dev]
@@ -138,3 +42,7 @@ rpath            = false
 lto              = false
 debug-assertions = false
 codegen-units    = 1
+
+# --- Optimize for small binaries when compiling for the web
+[profile.release.package.arc-script-wasm]
+opt-level = "s"
