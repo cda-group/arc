@@ -60,16 +60,12 @@ pub struct SymbolTable {
 }
 
 impl SymbolTable {
-<<<<<<< HEAD
-    pub fn new() -> Self { Self { decls: Vec::new() } }
-=======
     pub fn new() -> Self {
         Self {
             decls: Vec::new(),
             intern: Rodeo::new(),
         }
     }
->>>>>>> a2b70c8... Add interner for uniquing strings
 
     pub fn insert(&mut self, decl: Decl) -> Ident {
         let id = Ident(self.decls.len());
