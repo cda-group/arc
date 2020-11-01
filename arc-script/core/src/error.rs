@@ -1,5 +1,5 @@
 use {
-    crate::{info::*, prelude::*, pretty::*},
+    crate::prelude::*,
     codespan_reporting::{
         diagnostic::{self, Label},
         files,

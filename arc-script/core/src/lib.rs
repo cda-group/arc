@@ -1,6 +1,6 @@
 #![warn(clippy::all)]
 
-use crate::{opt::*, prelude::*, pretty::*};
+use crate::prelude::*;
 pub use anyhow::Result;
 use std::io::prelude::*;
 
@@ -10,9 +10,9 @@ mod utils;
 #[macro_use]
 extern crate educe;
 
+pub mod codegen;
 pub mod io;
 pub mod opt;
-pub mod pretty;
 
 mod ast;
 mod connector;
@@ -21,7 +21,6 @@ mod error;
 mod eval;
 mod info;
 mod lexer;
-mod mlir;
 mod parser;
 mod prelude;
 mod printer;

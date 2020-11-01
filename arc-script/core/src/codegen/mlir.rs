@@ -8,15 +8,12 @@ impl Script<'_> {
             tabs: 2,
             verbose: false,
         };
-        format!(
-            "{}",
-            self.ast
-                .fundefs
-                .values()
-                .map(|fundef| fundef.to_func(&pr))
-                .collect::<Vec<_>>()
-                .join("\n")
-        )
+        self.ast
+            .fundefs
+            .values()
+            .map(|fundef| fundef.to_func(&pr))
+            .collect::<Vec<_>>()
+            .join("\n")
     }
 }
 

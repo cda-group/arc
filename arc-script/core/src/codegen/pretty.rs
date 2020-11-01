@@ -1,3 +1,4 @@
+#![allow(clippy::useless_format)]
 use crate::{info::Info, prelude::*, printer::Printer};
 
 pub trait Pretty {
