@@ -1,4 +1,4 @@
-use crate::info::Info;
+use crate::prelude::*;
 
 pub struct Printer<'a> {
     pub info: &'a Info<'a>,
@@ -26,6 +26,19 @@ impl Printer<'_> {
             info: self.info,
             tabs: self.tabs - 1,
             verbose: self.verbose,
+        }
+    }
+    pub fn lookup(&self, tv: TypeVar) -> Type {
+        self.info.typer.borrow_mut().lookup(tv)
+    }
+}
+
+impl<'i> From<&'i Info<'i>> for Printer<'i> {
+    fn from(info: &'i Info) -> Self {
+        Self {
+            info,
+            tabs: 0,
+            verbose: false,
         }
     }
 }

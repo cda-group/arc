@@ -4,19 +4,12 @@ use crate::{info::Info, prelude::*, printer::Printer};
 pub trait Pretty {
     fn pretty(&self, pr: &Printer) -> String;
     fn brief(&self, info: &Info) -> String {
-        let pr = Printer {
-            tabs: 0,
-            verbose: false,
-            info,
-        };
+        let pr = Printer::from(info);
         self.pretty(&pr)
     }
     fn code(&self, verbose: bool, info: &Info) -> String {
-        let pr = Printer {
-            tabs: 0,
-            verbose,
-            info,
-        };
+        let mut pr = Printer::from(info);
+        pr.verbose = verbose;
         self.pretty(&pr)
     }
 }
@@ -240,8 +233,7 @@ impl Pretty for BinOpKind {
 
 impl Pretty for TypeVar {
     fn pretty(&self, pr: &Printer) -> String {
-        let ty = { pr.info.typer.borrow_mut().lookup(*self) };
-        ty.pretty(pr)
+        pr.lookup(*self).pretty(pr)
     }
 }
 

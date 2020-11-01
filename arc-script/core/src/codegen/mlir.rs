@@ -3,11 +3,7 @@ use std::cell::RefMut;
 
 impl Script<'_> {
     pub fn mlir(&self) -> String {
-        let pr = Printer {
-            info: &self.info,
-            tabs: 2,
-            verbose: false,
-        };
+        let pr = Printer::from(&self.info);
         self.ast
             .fundefs
             .values()
@@ -19,11 +15,7 @@ impl Script<'_> {
 
 impl Expr {
     pub fn mlir(&self, info: &Info) -> String {
-        let pr = Printer {
-            info,
-            tabs: 2,
-            verbose: false,
-        };
+        let pr = Printer::from(info);
         format!(
             "{s}{module}\n",
             module = self.to_module(&pr.tab()),
