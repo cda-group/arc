@@ -12,11 +12,11 @@ pub struct Spanned<T>(pub ByteIndex, pub T, pub ByteIndex);
 
 pub type SymbolBuf<'i> = &'i str;
 
-#[derive(Spanned, Eq, Ord, Clone, Copy, Debug, Educe)]
-#[educe(PartialEq, PartialOrd)]
+#[derive(Spanned, Eq, Clone, Copy, Debug, Educe)]
+#[educe(PartialEq, PartialOrd, Ord)]
 pub struct Symbol {
     pub key: Spur,
-    #[educe(PartialEq(ignore), PartialOrd(ignore))]
+    #[educe(PartialEq(ignore), PartialOrd(ignore), Ord(ignore))]
     pub span: Span,
 }
 
@@ -132,14 +132,14 @@ pub struct Expr {
 }
 
 impl Expr {
-    pub fn from(Spanned(l, kind, r): Spanned<ExprKind>, typer: &mut Typer) -> Expr {
+    pub fn from(Spanned(l, kind, r): Spanned<ExprKind>, typer: &mut Typer) -> Self {
         let span = Span::new(l as u32, r as u32);
         let tv = typer.fresh();
-        Expr { kind, tv, span }
+        Self { kind, tv, span }
     }
     /// Moves an expression out of its mutable reference, replacing it with an error expression
-    pub fn take(&mut self) -> Expr {
-        std::mem::replace(self, Expr::new(ExprErr, TypeVar(0), Span::new(0, 0)))
+    pub fn take(&mut self) -> Self {
+        std::mem::replace(self, Self::new(ExprErr, TypeVar(0), Span::new(0, 0)))
     }
 }
 
@@ -226,16 +226,22 @@ pub struct Type {
     pub kind: TypeKind,
 }
 
-impl Type {
-    pub fn new() -> Type {
+impl Default for Type {
+    fn default() -> Self {
         let kind = Unknown;
         Type { kind }
     }
 }
 
+impl Type {
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
+
 impl From<TypeKind> for Type {
-    fn from(kind: TypeKind) -> Type {
-        Type { kind }
+    fn from(kind: TypeKind) -> Self {
+        Self { kind }
     }
 }
 
@@ -296,11 +302,7 @@ pub struct Dim {
 
 impl Dim {
     pub fn is_val(&self) -> bool {
-        if let DimVal(_) = self.kind {
-            true
-        } else {
-            false
-        }
+        matches!(self.kind, DimVal(_))
     }
 }
 
@@ -321,6 +323,14 @@ pub enum DimOpKind {
     DimDiv,
 }
 
+impl Default for Dim {
+    fn default() -> Self {
+        let kind = DimVar(0);
+        let span = None;
+        Self { kind, span }
+    }
+}
+
 impl Dim {
     pub fn known(size: i32, span: Span) -> Dim {
         let kind = DimVal(size);
@@ -328,10 +338,8 @@ impl Dim {
         Dim { kind, span }
     }
 
-    pub fn new() -> Dim {
-        let kind = DimVar(0);
-        let span = None;
-        Dim { kind, span }
+    pub fn new() -> Self {
+        Self::default()
     }
 }
 

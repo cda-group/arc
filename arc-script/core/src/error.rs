@@ -40,8 +40,7 @@ impl<'i> Script<'i> {
     pub fn emit_as_str(&self) -> String {
         let mut writer = Buffer::ansi();
         self.emit(&mut writer).unwrap();
-        let writer = writer.into_inner();
-        format!("{}", str::from_utf8(&writer).unwrap().to_owned())
+        str::from_utf8(&writer.into_inner()).unwrap().to_owned()
     }
 }
 

@@ -51,7 +51,7 @@ derive_more        = { version = "0.99.11", default-features = false, features =
 num-traits         = "0.2.12"
 arrayvec           = "0.5.1"
 smartstring        = "0.2.5"
-educe              = { version = "0.4.13", default-features = false, features = ["Hash", "PartialEq", "PartialOrd"] }
+educe              = { version = "0.4.13", default-features = false, features = ["Hash", "PartialEq", "PartialOrd", "Ord"] }
 chrono             = "0.4.19"
 lasso              = "0.3.1"
 anyhow             = "1.0.33"

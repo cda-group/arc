@@ -1,4 +1,4 @@
-#![warn(clippy::all)]
+#![deny(clippy::all)]
 
 use crate::prelude::*;
 pub use anyhow::Result;

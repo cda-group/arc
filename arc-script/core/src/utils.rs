@@ -1,3 +1,4 @@
+#![allow(clippy::toplevel_ref_arg)]
 #![allow(unused)]
 
 use crate::prelude::*;
