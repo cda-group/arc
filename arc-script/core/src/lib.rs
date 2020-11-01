@@ -20,15 +20,15 @@ mod dataflow;
 mod error;
 mod eval;
 mod info;
+mod lexer;
 mod mlir;
 mod parser;
 mod prelude;
+mod printer;
 mod pruner;
 mod ssa;
 mod symbols;
 mod typer;
-mod lexer;
-mod printer;
 
 // #[cfg(feature = "shaper")]
 // mod shaper;

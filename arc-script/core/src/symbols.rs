@@ -173,7 +173,9 @@ impl SymbolStack {
         self.scopes.last_mut().unwrap()
     }
 
-    pub fn push_scope(&mut self) { self.scopes.push(Vec::new()) }
+    pub fn push_scope(&mut self) {
+        self.scopes.push(Vec::new())
+    }
 
     pub fn pop_scope(&mut self) {
         self.scopes.pop();
