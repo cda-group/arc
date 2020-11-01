@@ -1,7 +1,9 @@
+use crate::codegen::op::Op;
 use crate::{info::Info, prelude::*, printer::Printer, typer::*};
 use std::cell::RefMut;
 
 impl Script<'_> {
+    /// MLIR code-generator.
     pub fn mlir(&self) -> String {
         let pr = Printer::from(&self.info);
         self.ast
@@ -65,28 +67,95 @@ impl Expr {
         }
     }
 
+    #[rustfmt::skip]
     fn to_op(&self, pr: &Printer) -> String {
         match &self.kind {
             Lit(kind) => {
-                let lit = kind.to_lit();
-                let ty = self.tv.to_ty(pr);
-                format!(
-                    r#""std.constant"() {{ value = {lit} : {ty} }}: () -> {ty}"#,
-                    lit = lit,
-                    ty = ty,
-                )
+                let t = self.tv.to_ty(pr);
+                let l = kind.to_lit();
+                format!(r#""arc.constant"() {{ value = {l} : {t} }}: () -> {}"#, l=l, t=t)
             }
             BinOp(l, op, r) => {
+                let t = l.tv.to_ty(pr);
+                let rt = self.tv.to_ty(pr);
                 let l = l.to_var();
                 let r = r.to_var();
-                let ty = pr.info.typer.borrow_mut().lookup(self.tv);
+                let ty = pr.lookup(self.tv);
                 match (op, ty.kind) {
-                    (Add, Scalar(I32)) => {
-                        format!(r#""std.addi"({}, {}) : (i32, i32) -> i32"#, l, r)
-                    }
-                    (Add, Scalar(F32)) => {
-                        format!(r#""std.addf"({}, {}) : (f32, f32) -> f32"#, l, r)
-                    }
+                    // Add
+                    (Add, Scalar(I8 )) => format!(r#""arc.addi"({l},{r}) : ({t},{t}) -> {rt}"#, l=l, r=r, t=t, rt=rt),
+                    (Add, Scalar(I16)) => format!(r#""arc.addi"({l},{r}) : ({t},{t}) -> {rt}"#, l=l, r=r, t=t, rt=rt),
+                    (Add, Scalar(I32)) => format!(r#""arc.addi"({l},{r}) : ({t},{t}) -> {rt}"#, l=l, r=r, t=t, rt=rt),
+                    (Add, Scalar(I64)) => format!(r#""arc.addi"({l},{r}) : ({t},{t}) -> {rt}"#, l=l, r=r, t=t, rt=rt),
+                    (Add, Scalar(F32)) => format!(r#""std.addf"({l},{r}) : ({t},{t}) -> {rt}"#, l=l, r=r, t=t, rt=rt),
+                    (Add, Scalar(F64)) => format!(r#""std.addf"({l},{r}) : ({t},{t}) -> {rt}"#, l=l, r=r, t=t, rt=rt),
+                    // Sub
+                    (Sub, Scalar(I8 )) => format!(r#""arc.subi"({l},{r}) : ({t},{t}) -> {rt}"#, l=l, r=r, t=t, rt=rt), 
+                    (Sub, Scalar(I16)) => format!(r#""arc.subi"({l},{r}) : ({t},{t}) -> {rt}"#, l=l, r=r, t=t, rt=rt), 
+                    (Sub, Scalar(I32)) => format!(r#""arc.subi"({l},{r}) : ({t},{t}) -> {rt}"#, l=l, r=r, t=t, rt=rt), 
+                    (Sub, Scalar(I64)) => format!(r#""arc.subi"({l},{r}) : ({t},{t}) -> {rt}"#, l=l, r=r, t=t, rt=rt), 
+                    (Sub, Scalar(F32)) => format!(r#""std.subf"({l},{r}) : ({t},{t}) -> {rt}"#, l=l, r=r, t=t, rt=rt), 
+                    (Sub, Scalar(F64)) => format!(r#""std.subf"({l},{r}) : ({t},{t}) -> {rt}"#, l=l, r=r, t=t, rt=rt), 
+                    // Mul
+                    (Mul, Scalar(I8 )) => format!(r#""arc.muli"({l},{r}) : ({t},{t}) -> {rt}"#, l=l, r=r, t=t, rt=rt), 
+                    (Mul, Scalar(I16)) => format!(r#""arc.muli"({l},{r}) : ({t},{t}) -> {rt}"#, l=l, r=r, t=t, rt=rt), 
+                    (Mul, Scalar(I32)) => format!(r#""arc.muli"({l},{r}) : ({t},{t}) -> {rt}"#, l=l, r=r, t=t, rt=rt), 
+                    (Mul, Scalar(I64)) => format!(r#""arc.muli"({l},{r}) : ({t},{t}) -> {rt}"#, l=l, r=r, t=t, rt=rt), 
+                    (Mul, Scalar(F32)) => format!(r#""std.mulf"({l},{r}) : ({t},{t}) -> {rt}"#, l=l, r=r, t=t, rt=rt), 
+                    (Mul, Scalar(F64)) => format!(r#""std.mulf"({l},{r}) : ({t},{t}) -> {rt}"#, l=l, r=r, t=t, rt=rt), 
+                    // Div
+                    (Div, Scalar(I8 )) => format!(r#""arc.divi"({l},{r}) : ({t},{t}) -> {rt}"#, l=l, r=r, t=t, rt=rt), 
+                    (Div, Scalar(I16)) => format!(r#""arc.divi"({l},{r}) : ({t},{t}) -> {rt}"#, l=l, r=r, t=t, rt=rt), 
+                    (Div, Scalar(I32)) => format!(r#""arc.divi"({l},{r}) : ({t},{t}) -> {rt}"#, l=l, r=r, t=t, rt=rt), 
+                    (Div, Scalar(I64)) => format!(r#""arc.divi"({l},{r}) : ({t},{t}) -> {rt}"#, l=l, r=r, t=t, rt=rt), 
+                    (Div, Scalar(F32)) => format!(r#""std.divf"({l},{r}) : ({t},{t}) -> {rt}"#, l=l, r=r, t=t, rt=rt), 
+                    (Div, Scalar(F64)) => format!(r#""std.divf"({l},{r}) : ({t},{t}) -> {rt}"#, l=l, r=r, t=t, rt=rt), 
+                    // Lt 
+                    (Lt, Scalar(I8 ))  => format!(r#""arc.cmpi "lt"  ({l},{r}) : ({t},{t}) -> {rt}"#, l=l, r=r, t=t, rt=rt), 
+                    (Lt, Scalar(I16))  => format!(r#""arc.cmpi "lt"  ({l},{r}) : ({t},{t}) -> {rt}"#, l=l, r=r, t=t, rt=rt), 
+                    (Lt, Scalar(I32))  => format!(r#""arc.cmpi "lt"  ({l},{r}) : ({t},{t}) -> {rt}"#, l=l, r=r, t=t, rt=rt), 
+                    (Lt, Scalar(I64))  => format!(r#""arc.cmpi "lt"  ({l},{r}) : ({t},{t}) -> {rt}"#, l=l, r=r, t=t, rt=rt), 
+                    (Lt, Scalar(F32))  => format!(r#""std.cmpf "olt" ({l},{r}) : ({t},{t}) -> {rt}"#, l=l, r=r, t=t, rt=rt), 
+                    (Lt, Scalar(F64))  => format!(r#""std.cmpf "olt" ({l},{r}) : ({t},{t}) -> {rt}"#, l=l, r=r, t=t, rt=rt), 
+                    // Leq 
+                    (Leq, Scalar(I8 )) => format!(r#""arc.cmpi "le"  ({l},{r}) : ({t},{t}) -> {rt}"#, l=l, r=r, t=t, rt=rt), 
+                    (Leq, Scalar(I16)) => format!(r#""arc.cmpi "le"  ({l},{r}) : ({t},{t}) -> {rt}"#, l=l, r=r, t=t, rt=rt), 
+                    (Leq, Scalar(I32)) => format!(r#""arc.cmpi "le"  ({l},{r}) : ({t},{t}) -> {rt}"#, l=l, r=r, t=t, rt=rt), 
+                    (Leq, Scalar(I64)) => format!(r#""arc.cmpi "le"  ({l},{r}) : ({t},{t}) -> {rt}"#, l=l, r=r, t=t, rt=rt), 
+                    (Leq, Scalar(F32)) => format!(r#""std.cmpf "ole" ({l},{r}) : ({t},{t}) -> {rt}"#, l=l, r=r, t=t, rt=rt), 
+                    (Leq, Scalar(F64)) => format!(r#""std.cmpf "ole" ({l},{r}) : ({t},{t}) -> {rt}"#, l=l, r=r, t=t, rt=rt), 
+                    // Gt 
+                    (Gt, Scalar(I8 ))  => format!(r#""arc.cmpi "gt"  ({l},{r}) : ({t},{t}) -> {rt}"#, l=l, r=r, t=t, rt=rt), 
+                    (Gt, Scalar(I16))  => format!(r#""arc.cmpi "gt"  ({l},{r}) : ({t},{t}) -> {rt}"#, l=l, r=r, t=t, rt=rt), 
+                    (Gt, Scalar(I32))  => format!(r#""arc.cmpi "gt"  ({l},{r}) : ({t},{t}) -> {rt}"#, l=l, r=r, t=t, rt=rt), 
+                    (Gt, Scalar(I64))  => format!(r#""arc.cmpi "gt"  ({l},{r}) : ({t},{t}) -> {rt}"#, l=l, r=r, t=t, rt=rt), 
+                    (Gt, Scalar(F32))  => format!(r#""std.cmpf "ogt" ({l},{r}) : ({t},{t}) -> {rt}"#, l=l, r=r, t=t, rt=rt), 
+                    (Gt, Scalar(F64))  => format!(r#""std.cmpf "ogt" ({l},{r}) : ({t},{t}) -> {rt}"#, l=l, r=r, t=t, rt=rt), 
+                    // Geq
+                    (Geq, Scalar(I8 )) => format!(r#""arc.cmpi "ge"  ({l},{r}) : ({t},{t}) -> {rt}"#, l=l, r=r, t=t, rt=rt), 
+                    (Geq, Scalar(I16)) => format!(r#""arc.cmpi "ge"  ({l},{r}) : ({t},{t}) -> {rt}"#, l=l, r=r, t=t, rt=rt), 
+                    (Geq, Scalar(I32)) => format!(r#""arc.cmpi "ge"  ({l},{r}) : ({t},{t}) -> {rt}"#, l=l, r=r, t=t, rt=rt), 
+                    (Geq, Scalar(I64)) => format!(r#""arc.cmpi "ge"  ({l},{r}) : ({t},{t}) -> {rt}"#, l=l, r=r, t=t, rt=rt), 
+                    (Geq, Scalar(F32)) => format!(r#""std.cmpf "oge" ({l},{r}) : ({t},{t}) -> {rt}"#, l=l, r=r, t=t, rt=rt), 
+                    (Geq, Scalar(F64)) => format!(r#""std.cmpf "oge" ({l},{r}) : ({t},{t}) -> {rt}"#, l=l, r=r, t=t, rt=rt), 
+                    // Equ
+                    (Equ, Scalar(I8 )) => format!(r#""arc.cmpi "eq"  ({l},{r}) : ({t},{t}) -> {rt}"#, l=l, r=r, t=t, rt=rt), 
+                    (Equ, Scalar(I16)) => format!(r#""arc.cmpi "eq"  ({l},{r}) : ({t},{t}) -> {rt}"#, l=l, r=r, t=t, rt=rt), 
+                    (Equ, Scalar(I32)) => format!(r#""arc.cmpi "eq"  ({l},{r}) : ({t},{t}) -> {rt}"#, l=l, r=r, t=t, rt=rt), 
+                    (Equ, Scalar(I64)) => format!(r#""arc.cmpi "eq"  ({l},{r}) : ({t},{t}) -> {rt}"#, l=l, r=r, t=t, rt=rt), 
+                    (Equ, Scalar(F32)) => format!(r#""std.cmpf "oeq" ({l},{r}) : ({t},{t}) -> {rt}"#, l=l, r=r, t=t, rt=rt), 
+                    (Equ, Scalar(F64)) => format!(r#""std.cmpf "oeq" ({l},{r}) : ({t},{t}) -> {rt}"#, l=l, r=r, t=t, rt=rt), 
+                    // Neq
+                    (Neq, Scalar(I8 )) => format!(r#""arc.cmpi "ne"  ({l},{r}) : ({t},{t}) -> {rt}"#, l=l, r=r, t=t, rt=rt), 
+                    (Neq, Scalar(I16)) => format!(r#""arc.cmpi "ne"  ({l},{r}) : ({t},{t}) -> {rt}"#, l=l, r=r, t=t, rt=rt), 
+                    (Neq, Scalar(I32)) => format!(r#""arc.cmpi "ne"  ({l},{r}) : ({t},{t}) -> {rt}"#, l=l, r=r, t=t, rt=rt), 
+                    (Neq, Scalar(I64)) => format!(r#""arc.cmpi "ne"  ({l},{r}) : ({t},{t}) -> {rt}"#, l=l, r=r, t=t, rt=rt), 
+                    (Neq, Scalar(F32)) => format!(r#""std.cmpf "one" ({l},{r}) : ({t},{t}) -> {rt}"#, l=l, r=r, t=t, rt=rt), 
+                    (Neq, Scalar(F64)) => format!(r#""std.cmpf "one" ({l},{r}) : ({t},{t}) -> {rt}"#, l=l, r=r, t=t, rt=rt), 
+                    // And
+                    (And, _)           => format!(r#""arc.and ({l},{r}) : ({t},{t}) -> {rt}"#, l=l, r=r, t=t, rt=rt),
+                    // Or
+                    (Or,  _)           => format!(r#""arc.or  ({l},{r}) : ({t},{t}) -> {rt}"#, l=l, r=r, t=t, rt=rt),
                     _ => todo!(),
                 }
             }
@@ -98,7 +167,25 @@ impl Expr {
                 arg_ty = c.tv.to_ty(pr),
                 out_ty = e.tv.to_ty(pr),
             ),
-            UnOp(..) => todo!(),
+            UnOp(kind, e) => {
+                let ty = pr.lookup(self.tv);
+                if let (Neg, Lit(lit)) = (kind, &e.kind) {
+                    let t = self.tv.to_ty(pr);
+                    let l = lit.to_lit();
+                    return match lit {
+                        LitI8(_)  => format!(r#""arc.constant"() {{ value = -{} : {} }}: () -> {}"#, l, t, t),
+                        LitI16(_) => format!(r#""arc.constant"() {{ value = -{} : {} }}: () -> {}"#, l, t, t),
+                        LitI32(_) => format!(r#""arc.constant"() {{ value = -{} : {} }}: () -> {}"#, l, t, t),
+                        LitI64(_) => format!(r#""arc.constant"() {{ value = -{} : {} }}: () -> {}"#, l, t, t),
+                        LitF32(_) => format!(r#""arc.constant"() {{ value = -{} : {} }}: () -> {}"#, l, t, t),
+                        LitF64(_) => format!(r#""arc.constant"() {{ value = -{} : {} }}: () -> {}"#, l, t, t),
+                        _ => unreachable!()
+                    }
+                }
+                match (kind, ty) {
+                    _ => todo!()
+                }
+            }
             ConsArray(..) => todo!(),
             ConsStruct(..) => todo!(),
             ConsVariant(_, _) => todo!(),
@@ -132,34 +219,35 @@ impl TypeVar {
         let typer = pr.info.typer.borrow_mut();
         self.to_ty_rec(typer)
     }
+    #[rustfmt::skip]
     fn to_ty_rec(self, mut typer: RefMut<Typer>) -> String {
         match typer.lookup(self).kind {
             Nominal(_) => todo!(),
             Scalar(kind) => match kind {
-                I8 => "i8".to_owned(),
-                I16 => "i16".to_owned(),
-                I32 => "i32".to_owned(),
-                I64 => "i64".to_owned(),
-                F32 => "f32".to_owned(),
-                F64 => "f64".to_owned(),
+                I8   => "i8".to_owned(),
+                I16  => "i16".to_owned(),
+                I32  => "i32".to_owned(),
+                I64  => "i64".to_owned(),
+                F32  => "f32".to_owned(),
+                F64  => "f64".to_owned(),
                 Bool => "i1".to_owned(),
                 Null => todo!(),
-                Str => todo!(),
-                Unit => todo!(),
+                Str  => todo!(),
+                Unit => "()".to_owned(),
             },
-            Struct(_) => todo!(),
-            Enum(_) => todo!(),
+            Struct(_)   => todo!(),
+            Enum(_)     => todo!(),
             Array(_, _) => todo!(),
-            Stream(_) => todo!(),
-            Map(_, _) => todo!(),
-            Set(_) => todo!(),
-            Vector(_) => todo!(),
-            Tuple(_) => todo!(),
+            Stream(_)   => todo!(),
+            Map(_, _)   => todo!(),
+            Set(_)      => todo!(),
+            Vector(_)   => todo!(),
+            Tuple(_)    => todo!(),
             Optional(_) => todo!(),
-            Fun(_, _) => todo!(),
-            Task(_) => todo!(),
-            Unknown => "<UNKNOWN>".to_string(),
-            TypeErr => "<ERROR>".to_string(),
+            Fun(_, _)   => todo!(),
+            Task(_)     => todo!(),
+            Unknown     => "<UNKNOWN>".to_string(),
+            TypeErr     => "<ERROR>".to_string(),
         }
     }
 }
