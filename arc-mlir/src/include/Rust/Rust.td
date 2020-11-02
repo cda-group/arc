@@ -76,18 +76,18 @@ def RustCallOp : Rust_Op<"call", [CallOpInterface]> {
   let arguments = (ins FlatSymbolRefAttr:$callee, Variadic<AnyType>:$operands);
   let results = (outs Variadic<AnyType>);
 
-  let builders = [OpBuilder<
-    "OpBuilder &builder, OperationState &result, SymbolRefAttr callee,"
-    "ArrayRef<Type> results, ValueRange operands = {}", [{
-      result.addOperands(operands);
-      result.addAttribute("callee", callee);
-      result.addTypes(results);
-  }]>, OpBuilder<
-    "OpBuilder &builder, OperationState &result, StringRef callee,"
-    "ArrayRef<Type> results, ValueRange operands = {}", [{
-      build(builder, result, builder.getSymbolRefAttr(callee), results,
+  let builders = [
+    OpBuilderDAG<(ins "SymbolRefAttr":$callee, "TypeRange":$results,
+      CArg<"ValueRange", "{}">:$operands), [{
+      $_state.addOperands(operands);
+      $_state.addAttribute("callee", callee);
+      $_state.addTypes(results);
+    }]>,
+    OpBuilderDAG<(ins "StringRef":$callee, "TypeRange":$results,
+      CArg<"ValueRange", "{}">:$operands), [{
+      build($_builder, $_state, $_builder.getSymbolRefAttr(callee), results,
             operands);
-  }]>];
+    }]>];
 
   let extraClassDeclaration = [{
     // For the CallOpInterface
