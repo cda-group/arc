@@ -37,7 +37,7 @@ pub struct SyntaxTree {
     pub body: Expr,
 }
 
-#[derive(Spanned)]
+#[derive(Constructor, Spanned)]
 pub struct Setting {
     pub kind: SettingKind,
     pub span: Span,
@@ -168,7 +168,7 @@ pub enum ExprKind {
     ExprErr,
 }
 
-#[derive(Debug, Clone, Spanned)]
+#[derive(Debug, Clone, Spanned, Constructor)]
 pub struct Pat {
     pub kind: PatKind,
     pub span: Span,
@@ -284,7 +284,7 @@ impl Into<Type> for ScalarKind {
     }
 }
 
-#[derive(Debug, Eq, Clone, Educe, MaybeSpanned)]
+#[derive(Debug, Eq, Clone, Educe, MaybeSpanned, Constructor)]
 #[educe(PartialEq)]
 pub struct Shape {
     pub dims: Vec<Dim>,
