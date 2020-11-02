@@ -2,7 +2,7 @@ use arc_script::opt::*;
 fn main() {
     let mut args = std::env::args();
     let _ = args.next();
-    let ref source = args.next().unwrap();
+    let source = &args.next().unwrap();
     let opt = Opt {
         debug: false,
         mlir: false,
