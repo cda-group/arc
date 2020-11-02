@@ -47,10 +47,11 @@ namespace rust {
 // unique ids.
 class RustPrinterStream {
   llvm::raw_ostream &OS;
+  llvm::raw_ostream &Types;
 
-  llvm::raw_string_ostream Constants, NamedTypes, Body;
+  llvm::raw_string_ostream Constants, NamedTypes, TypeUses, Body;
 
-  std::string ConstantsStr, NamedTypesStr, BodyStr;
+  std::string ConstantsStr, NamedTypesStr, UsesStr, BodyStr;
 
   // Variables are using positive IDs, constants are assigned negative
   // IDs.
@@ -63,22 +64,39 @@ class RustPrinterStream {
   std::map<std::string, std::string> CrateDependencies;
   std::map<std::string, std::string> CrateDirectives;
 
+  std::string ModuleName;
+
 public:
-  RustPrinterStream(llvm::raw_ostream &os)
-      : OS(os), Constants(ConstantsStr), NamedTypes(NamedTypesStr),
-        Body(BodyStr), NextID(0), NextConstID(0){};
+  RustPrinterStream(llvm::raw_ostream &os, llvm::raw_ostream &types,
+                    std::string module_name)
+      : OS(os), Types(types), Constants(ConstantsStr),
+        NamedTypes(NamedTypesStr), TypeUses(UsesStr), Body(BodyStr), NextID(0),
+        NextConstID(0), ModuleName(module_name){};
 
   void flush() {
+    OS << "#![allow(non_snake_case)]\n#![allow(non_camel_case_types)]\n";
+    Types << "#![allow(non_snake_case)]\n#![allow(non_camel_case_types)]\n";
+
     for (auto i : CrateDirectives)
       OS << i.second << "\n";
     OS << Constants.str();
-    OS << NamedTypes.str();
+    OS << TypeUses.str();
+    std::string types = NamedTypes.str();
+    if (!types.empty())
+      Types << "use std::rc::Rc;\n";
+    Types << types;
     OS << Body.str();
   }
+
+  // Returns true if there has been output to the types NamedTypes
+  // stream.
+  bool hasTypesOutput() const { return !NamedTypesStr.empty(); };
 
   llvm::raw_ostream &getBodyStream() { return Body; }
 
   llvm::raw_ostream &getNamedTypesStream() { return NamedTypes; }
+
+  llvm::raw_ostream &getUsesStream() { return TypeUses; }
 
   llvm::raw_ostream &getConstantsStream() { return Constants; }
 
@@ -143,9 +161,15 @@ public:
     return *this;
   }
 
+  llvm::raw_ostream &printModuleName(llvm::raw_ostream &os) {
+    os << ModuleName;
+    return os;
+  }
+
   void registerDependency(RustDependencyOp dep) {
     std::string key = dep.getCrate().cast<StringAttr>().getValue().str();
-    std::string value = dep.getVersion().cast<StringAttr>().getValue().str();
+    std::string value =
+        "\"" + dep.getVersion().cast<StringAttr>().getValue().str() + "\"";
     registerDependency(key, value);
   }
 
@@ -155,8 +179,7 @@ public:
 
   void writeTomlDependencies(llvm::raw_ostream &out) {
     for (auto i : CrateDependencies)
-      out << i.first << " = "
-          << "\"" << i.second << "\"\n";
+      out << i.first << " = " << i.second << "\n";
   }
 
   void registerDirective(RustModuleDirectiveOp dep) {

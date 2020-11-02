@@ -50,6 +50,18 @@ static std::string getTypeString(Type type) {
   return "<unsupported type>";
 }
 
+static std::string getTypeSignature(Type type) {
+  if (auto t = type.dyn_cast<RustStructType>())
+    return t.getSignature();
+  if (auto t = type.dyn_cast<RustTupleType>())
+    return t.getSignature();
+  if (auto t = type.dyn_cast<RustTensorType>())
+    return t.getSignature();
+  if (auto t = type.dyn_cast<RustType>())
+    return t.getSignature();
+  return "<unsupported type>";
+}
+
 struct RustTypeStorage : public TypeStorage {
   RustTypeStorage(std::string type) : rustType(type) {}
 
@@ -72,6 +84,7 @@ struct RustTypeStorage : public TypeStorage {
     os << rustType;
     return os;
   }
+  std::string getSignature() const;
 };
 
 RustType RustType::get(MLIRContext *context, StringRef type) {
@@ -112,6 +125,10 @@ RustType RustType::getIntegerTy(RustDialect *dialect, IntegerType ty) {
   }
 }
 
+std::string RustType::getSignature() const { return getImpl()->getSignature(); }
+
+std::string RustTypeStorage::getSignature() const { return rustType; }
+
 //===----------------------------------------------------------------------===//
 // RustStructType
 //===----------------------------------------------------------------------===//
@@ -119,7 +136,17 @@ RustType RustType::getIntegerTy(RustDialect *dialect, IntegerType ty) {
 struct RustStructTypeStorage : public TypeStorage {
   RustStructTypeStorage(ArrayRef<RustStructType::StructFieldTy> fields,
                         unsigned id)
-      : structFields(fields.begin(), fields.end()), id(id) {}
+      : structFields(fields.begin(), fields.end()), id(id) {
+    std::string str;
+    llvm::raw_string_ostream s(str);
+    s << "ArcStruct";
+
+    for (auto &f : fields) {
+      s << "F" << f.first.getValue() << "T";
+      s << getTypeSignature(f.second);
+    }
+    signature = s.str();
+  }
 
   SmallVector<RustStructType::StructFieldTy, 4> structFields;
   unsigned id;
@@ -147,9 +174,11 @@ struct RustStructTypeStorage : public TypeStorage {
   unsigned getStructTypeId() const;
 
   void emitNestedTypedefs(rust::RustPrinterStream &os) const;
+  std::string getSignature() const;
 
 private:
   static unsigned idCounter;
+  std::string signature;
 };
 
 unsigned RustStructTypeStorage::idCounter = 0;
@@ -189,18 +218,13 @@ unsigned RustStructTypeStorage::getStructTypeId() const { return id; }
 unsigned RustStructType::getStructTypeId() const {
   return getImpl()->getStructTypeId();
 }
-std::string RustStructTypeStorage::getRustType() const {
-  std::string str;
-  llvm::raw_string_ostream s(str);
-
-  s << "ArcStruct" << id;
-  return s.str();
-}
+std::string RustStructTypeStorage::getRustType() const { return signature; }
 
 RustPrinterStream &
 RustStructTypeStorage::printAsRust(RustPrinterStream &ps) const {
 
   llvm::raw_ostream &os = ps.getNamedTypesStream();
+  llvm::raw_ostream &uses_os = ps.getUsesStream();
   // First ensure that any structs used by this struct are defined
   emitNestedTypedefs(ps);
 
@@ -210,14 +234,22 @@ RustStructTypeStorage::printAsRust(RustPrinterStream &ps) const {
   for (unsigned i = 0; i < structFields.size(); i++) {
     if (i != 0)
       os << ",\n  ";
-    os << structFields[i].first.getValue() << " : ";
+    os << "pub " << structFields[i].first.getValue() << " : ";
     os << getTypeString(structFields[i].second);
   }
   os << "\n}\n";
-  os << "type ";
+  os << "pub type ";
   printAsRustNamedType(os) << " = Rc<";
   printAsRustNamedType(os) << "Value>;\n";
   ps.registerDirective("rc-import", "use std::rc::Rc;\n");
+  uses_os << "use ";
+  ps.printModuleName(uses_os) << "_types::";
+  printAsRustNamedType(uses_os) << " as ";
+  printAsRustNamedType(uses_os) << ";\n";
+  uses_os << "use ";
+  ps.printModuleName(uses_os) << "_types::";
+  printAsRustNamedType(uses_os) << "Value as ";
+  printAsRustNamedType(uses_os) << "Value;\n";
   return ps;
 }
 
@@ -238,9 +270,15 @@ void RustStructTypeStorage::emitNestedTypedefs(
 raw_ostream &
 RustStructTypeStorage::printAsRustNamedType(raw_ostream &os) const {
 
-  os << "ArcStruct" << id;
+  os << signature;
   return os;
 }
+
+std::string RustStructType::getSignature() const {
+  return getImpl()->getSignature();
+}
+
+std::string RustStructTypeStorage::getSignature() const { return signature; }
 
 //===----------------------------------------------------------------------===//
 // RustTensorType
@@ -276,6 +314,7 @@ struct RustTensorTypeStorage : public TypeStorage {
   std::string getRustType() const;
 
   ArrayRef<int64_t> getDimensions() const { return dimensions; }
+  std::string getSignature() const;
 };
 
 RustTensorType RustTensorType::get(RustDialect *dialect, Type elementTy,
@@ -309,13 +348,26 @@ RustPrinterStream &
 RustTensorTypeStorage::printAsRust(RustPrinterStream &ps) const {
   ps.registerDirective("rc-import", "use std::rc::Rc;\n");
   ps.registerDirective("ndarray-import", "use ndarray::{Array,Dim,Ix};\n");
-  ps.registerDependency("ndarray", CrateVersions::ndarray);
+  ps.registerDependency("ndarray",
+                        (Twine("\"") + CrateVersions::ndarray + "\"").str());
   ps << getRustType();
   return ps;
 }
 
 ArrayRef<int64_t> RustTensorType::getDimensions() const {
   return getImpl()->getDimensions();
+}
+
+std::string RustTensorType::getSignature() const {
+  return getImpl()->getSignature();
+}
+
+std::string RustTensorTypeStorage::getSignature() const {
+  std::string str;
+  llvm::raw_string_ostream s(str);
+
+  s << "TensorT" << getTypeSignature(elementTy) << "x" << dimensions.size();
+  return s.str();
 }
 
 //===----------------------------------------------------------------------===//
@@ -348,6 +400,8 @@ struct RustTupleTypeStorage : public TypeStorage {
   std::string getRustType() const;
 
   void emitNestedTypedefs(rust::RustPrinterStream &ps) const;
+
+  std::string getSignature() const;
 };
 
 RustTupleType RustTupleType::get(RustDialect *dialect, ArrayRef<Type> fields) {
@@ -397,6 +451,20 @@ void RustTupleTypeStorage::emitNestedTypedefs(
       ps.writeStructDefiniton(tupleFields[i].cast<RustStructType>());
     else if (tupleFields[i].isa<RustTupleType>())
       tupleFields[i].cast<RustTupleType>().emitNestedTypedefs(ps);
+}
+
+std::string RustTupleType::getSignature() const {
+  return getImpl()->getSignature();
+}
+
+std::string RustTupleTypeStorage::getSignature() const {
+  std::string str;
+  llvm::raw_string_ostream s(str);
+
+  s << "Tuple";
+  for (unsigned i = 0; i < tupleFields.size(); i++)
+    s << "T" << getTypeSignature(tupleFields[i]);
+  return s.str();
 }
 
 } // namespace types

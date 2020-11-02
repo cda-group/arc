@@ -71,7 +71,7 @@ static LogicalResult performActions(raw_ostream &os, bool verifyDiagnostics,
     return failure();
 
   if (!rustOutput.empty()) {
-    if (failed(writeModuleAsCrate(module.get(), rustOutput, rustTrailer, os)))
+    if (failed(writeModuleAsCrates(module.get(), rustOutput, rustTrailer, os)))
       return failure();
     return success();
   }
