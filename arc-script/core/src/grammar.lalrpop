@@ -1,7 +1,6 @@
 use {
   crate::prelude::*,
   crate::parser::*,
-  std::collections::HashMap,
   lalrpop_util::ErrorRecovery,
   chrono::Duration,
 };

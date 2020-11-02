@@ -4,15 +4,15 @@ use chrono::Duration;
 use flat_map::flat_map::FlatMap;
 use lasso::Spur;
 use spanned_derive::{MaybeSpanned, Spanned};
-use std::collections::HashMap;
 
+pub type HashMap<K, V> = indexmap::map::IndexMap<K, V>;
 pub type ByteIndex = usize;
 
 pub struct Spanned<T>(pub ByteIndex, pub T, pub ByteIndex);
 
 pub type SymbolBuf<'i> = &'i str;
 
-#[derive(Spanned, Eq, Clone, Copy, Debug, Educe)]
+#[derive(Constructor, Spanned, Eq, Clone, Copy, Debug, Educe)]
 #[educe(PartialEq, PartialOrd, Ord)]
 pub struct Symbol {
     pub key: Spur,

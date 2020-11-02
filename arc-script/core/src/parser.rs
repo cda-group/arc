@@ -6,7 +6,6 @@ use {
     lalrpop_util::lalrpop_mod,
     num_traits::Num,
     regex::Regex,
-    std::collections::HashMap,
     std::{cell::RefCell, fmt::Display, str::FromStr},
 };
 

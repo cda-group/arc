@@ -59,6 +59,7 @@ serde              = "1.0.117"
 serde_derive       = "1.0.117"
 flat_map           = "0.0.10"
 indoc              = "1.0.3"
+indexmap           = "1.6.0"
 
 # -- Feature: cli
 clap               = { optional = true, git = "https://github.com/clap-rs/clap/", features = ["derive"]}
