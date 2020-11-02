@@ -23,7 +23,7 @@ impl Script<'_> {
         let mut taskdefs = HashMap::new();
         let mut tydefs = HashMap::new();
         let mut fundefs = HashMap::new();
-        let body = ScriptParser::new()
+        ScriptParser::new()
             .parse(
                 &mut errors,
                 &mut taskdefs,
@@ -40,7 +40,7 @@ impl Script<'_> {
             .map(|recovery| recovery.error)
             .map(Into::into)
             .collect();
-        let ast = SyntaxTree::new(taskdefs, tydefs, fundefs, body);
+        let ast = SyntaxTree::new(taskdefs, tydefs, fundefs);
         let info = Info::new(table, errors, source, RefCell::new(typer));
         Script::new(ast, info)
     }

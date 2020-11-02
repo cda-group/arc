@@ -7,12 +7,10 @@ impl SyntaxTree {
     // Post-order traversal (Leaves first)
     pub fn for_each_expr<F: FnMut(&mut Expr)>(&mut self, ref mut f: F) {
         self.for_each_fun(|fun| fun.body.for_each_expr(f));
-        self.body.for_each_expr(f);
     }
     // Pre-order traversal (Parents first)
     pub fn for_each_expr_postorder<F: FnMut(&mut Expr)>(&mut self, ref mut f: F) {
         self.for_each_fun(|fun| fun.body.for_each_expr_postorder(f));
-        self.body.for_each_expr_postorder(f)
     }
 
     pub fn for_each_fun<F: FnMut(&mut FunDef)>(&mut self, ref mut f: F) {

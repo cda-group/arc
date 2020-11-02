@@ -34,7 +34,6 @@ pub struct SyntaxTree {
     pub taskdefs: HashMap<Ident, TaskDef>,
     pub tydefs: HashMap<Ident, TypeDef>,
     pub fundefs: HashMap<Ident, FunDef>,
-    pub body: Expr,
 }
 
 #[derive(Constructor, Spanned)]

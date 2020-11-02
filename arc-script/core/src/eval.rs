@@ -68,7 +68,11 @@ impl Script<'_> {
             dataflow: &mut dataflow,
             typer: info.typer.get_mut(),
         };
-        let _ = ast.body.eval(&mut ctx);
+        // TODO: Currently a hacky solution
+        // which just evaluates the last function of the script
+        if let Some(fundef) = ast.fundefs.values().last() {
+            fundef.body.eval(&mut ctx);
+        }
         dataflow
     }
 }

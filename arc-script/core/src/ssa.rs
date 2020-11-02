@@ -9,7 +9,6 @@ trait Ssa {
 impl Script<'_> {
     pub fn into_ssa(mut self) -> Self {
         let info = &mut self.info;
-        self.ast.body = self.ast.body.into_ssa(info);
         self.ast.fundefs = self
             .ast
             .fundefs
