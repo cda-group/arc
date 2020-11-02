@@ -48,11 +48,11 @@ pub fn diagnose(source: &str, opt: &Opt) {
     let script = compile(source, opt);
     if script.info.errors.is_empty() && !opt.debug {
         let mut w = std::io::stdout();
-        let s = match opt {
-            _ if opt.mlir => script.mlir(),
-            _ => script.code(opt.verbose, &script.info),
+        if opt.mlir {
+            writeln!(w, "{}", script.mlir()).unwrap();
+        } else {
+            writeln!(w, "{}", script.code(opt.verbose)).unwrap();
         };
-        writeln!(w, "{}", s).unwrap();
         w.flush().unwrap();
     } else {
         script.emit_to_stdout()
@@ -66,7 +66,7 @@ pub fn compile<'i>(source: &'i str, opt: &'i Opt) -> Script<'i> {
         println!("=== Opt");
         println!("{:?}", opt);
         println!("=== Parsed");
-        println!("{}", script.code(opt.verbose, &script.info));
+        println!("{}", script.code(opt.verbose));
     }
 
     // script.body.download();
@@ -75,7 +75,7 @@ pub fn compile<'i>(source: &'i str, opt: &'i Opt) -> Script<'i> {
 
     if opt.debug {
         println!("=== Typed");
-        println!("{}", script.code(opt.verbose, &script.info));
+        println!("{}", script.code(opt.verbose));
     }
 
     script = script.into_ssa();
@@ -84,7 +84,7 @@ pub fn compile<'i>(source: &'i str, opt: &'i Opt) -> Script<'i> {
     if opt.debug {
         if opt.debug {
             println!("=== Canonicalized");
-            println!("{}", script.code(opt.verbose, &script.info));
+            println!("{}", script.code(opt.verbose));
         }
 
         if script.info.errors.is_empty() {

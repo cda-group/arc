@@ -1,360 +1,337 @@
 #![allow(clippy::useless_format)]
-use crate::{info::Info, prelude::*, printer::Printer};
+pub use crate::codegen::pretty_utils::*;
+use crate::prelude::*;
+use crate::printer::Printer;
+use std::fmt::{self, Display, Formatter};
 
-pub trait Pretty {
-    fn pretty(&self, pr: &Printer) -> String;
-    fn brief(&self, info: &Info) -> String {
-        let pr = Printer::from(info);
-        self.pretty(&pr)
-    }
-    fn code(&self, verbose: bool, info: &Info) -> String {
-        let mut pr = Printer::from(info);
+impl Script<'_> {
+    pub fn code(&self, verbose: bool) -> String {
+        let mut pr = Printer::from(&self.info);
         pr.verbose = verbose;
-        self.pretty(&pr)
+        self.pretty(&pr).to_string()
     }
 }
 
-impl Pretty for Script<'_> {
-    fn pretty(&self, pr: &Printer) -> String {
-        format!(
-            "{funs}{s}{body}",
-            funs = self
-                .ast
-                .fundefs
-                .values()
-                .map(|fun| fun.pretty(pr))
-                .collect::<Vec<String>>()
-                .join("\n"),
-            body = self.ast.body.pretty(pr),
-            s = pr.indent()
-        )
+impl Display for Pretty<'_, Script<'_>> {
+    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
+        let Pretty(script, pr) = self;
+        write!(f, "{}", script.ast.fundefs.values().all_pretty("\n", pr))
     }
 }
 
-impl Pretty for &FunDef {
-    fn pretty(&self, pr: &Printer) -> String {
-        format!(
+impl Display for Pretty<'_, FunDef> {
+    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
+        let Pretty(fundef, pr) = self;
+        write!(
+            f,
             "{s0}fun {id}({params}) {{{s1}{body}{s0}}}",
-            id = self.id.pretty(pr),
-            params = self
-                .params
-                .iter()
-                .map(|param| format!(
-                    "{}: {}",
-                    param.pretty(pr),
-                    pr.info.table.get_decl(param).tv.pretty(pr)
-                ))
-                .collect::<Vec<_>>()
-                .join(", "),
-            body = self.body.pretty(&pr.tab()),
+            id = fundef.id.pretty(pr),
+            params = fundef.params.iter().map_pretty(
+                |param, f| {
+                    let tv = pr.info.table.get_decl(param).tv;
+                    write!(f, "{}: {}", param.pretty(pr), tv.pretty(pr))
+                },
+                ", "
+            ),
+            body = fundef.body.pretty(&pr.tab()),
             s0 = pr.indent(),
             s1 = pr.tab().indent(),
         )
     }
 }
 
-impl<A: Pretty> Pretty for Vec<A> {
-    fn pretty(&self, pr: &Printer) -> String {
-        self.iter()
-            .map(|e| e.pretty(pr))
-            .collect::<Vec<String>>()
-            .join(", ")
-    }
-}
-
-impl<A: Pretty, B: Pretty> Pretty for (A, B) {
-    fn pretty(&self, pr: &Printer) -> String {
-        format!("{}: {}", self.0.pretty(pr), self.1.pretty(pr))
-    }
-}
-
-impl Pretty for Expr {
+impl Display for Pretty<'_, Expr> {
     #[allow(clippy::many_single_char_names)]
-    fn pretty(&self, pr: &Printer) -> String {
-        let expr = match &self.kind {
-            If(c, t, e) => format!(
-                "if {c} {{{s1}{t}{s0}}} else {{{s1}{e}{s0}}}",
-                c = c.pretty(&pr),
-                t = t.pretty(&pr.tab()),
-                e = e.pretty(&pr.tab()),
+    #[rustfmt::skip]
+    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
+        let Pretty(expr, pr) = self;
+        if pr.verbose {
+            write!(f, "(")?;
+        }
+        match &expr.kind {
+            If(e0, e1, e2) => write!(
+                f,
+                "if {e0} {{{s1}{e1}{s0}}} else {{{s1}{e2}{s0}}}",
+                e0 = e0.as_ref().pretty(&pr),
+                e1 = e1.as_ref().pretty(&pr.tab()),
+                e2 = e2.as_ref().pretty(&pr.tab()),
                 s0 = pr.indent(),
                 s1 = pr.tab().indent(),
             ),
-            For(p, e, c, b) => format!(
-                "for {p} in {e} {c} {{{s1}{b}{s0}}}",
+            For(p, e0, None, e2) => write!(
+                f,
+                "for {p} in {e0} {{{s1}{e2}{s0}}}",
                 p = p.pretty(&pr),
-                e = e.pretty(&pr),
-                c = if let Some(c) = c {
-                    format!("where {c}", c = c.pretty(&pr))
-                } else {
-                    format!("")
-                },
-                b = b.pretty(&pr),
+                e0 = e0.as_ref().pretty(&pr),
+                e2 = e2.as_ref().pretty(&pr),
                 s0 = pr.indent(),
                 s1 = pr.tab().indent()
             ),
-            Match(e, clauses) => format!(
-                "match {e} {{{clause}{s0}}}{s1}",
-                e = e.pretty(&pr.tab()),
-                clause = clauses
-                    .iter()
-                    .map(|(p, e)| format!(
-                        "{s2}{} => {}",
-                        p.pretty(&pr.tab().tab()),
-                        e.pretty(&pr.tab().tab()),
-                        s2 = pr.indent()
-                    ))
-                    .collect::<Vec<String>>()
-                    .join(","),
+            For(p, e0, Some(e1), e2) => write!(
+                f,
+                "for {p} in {e0} where {e1} {{{s1}{e2}{s0}}}",
+                p = p.pretty(&pr),
+                e0 = e0.as_ref().pretty(&pr),
+                e1 = e1.as_ref().pretty(&pr),
+                e2 = e2.as_ref().pretty(&pr),
+                s0 = pr.indent(),
+                s1 = pr.tab().indent()
+            ),
+            Match(e, cs) => write!(
+                f,
+                "match {e} {{{cs}{s0}}}{s1}",
+                e = e.as_ref().pretty(&pr.tab()),
+                cs = cs.map_pretty(
+                    |(p, e), f| write!(f, "{} => {}", p.pretty(pr), e.pretty(pr)),
+                    ", "
+                ),
                 s0 = pr.indent(),
                 s1 = pr.tab().indent(),
             ),
-            Let(id, e1, e2) => format!(
-                "let {id}: {ty} = {e1} in{s}{e2}",
+            Let(id, e0, e1) => write!(
+                f,
+                "let {id}: {ty} = {e0} in{s}{e1}",
                 id = id.pretty(pr),
                 ty = pr.info.table.get_decl(id).tv.pretty(pr),
-                e1 = e1.pretty(pr),
-                e2 = e2.pretty(pr),
+                e0 = e0.as_ref().pretty(pr),
+                e1 = e1.as_ref().pretty(pr),
                 s = pr.indent()
             ),
-            Closure(params, body) => format!(
-                "|{params}| {{{s1}{body}{s0}}}",
-                params = params
-                    .iter()
-                    .map(|id| format!(
-                        "{id}:{ty}",
-                        id = id.pretty(pr),
-                        ty = pr.info.table.get_decl(id).tv.pretty(pr)
-                    ))
-                    .collect::<Vec<String>>()
-                    .join(", "),
-                body = body.pretty(&pr.tab()),
+            Closure(ps, e0) => write!(
+                f,
+                "|{ps}| {{{s1}{e0}{s0}}}",
+                ps = ps.iter().map_pretty(
+                    |x, f| {
+                        let tv = pr.info.table.get_decl(x).tv;
+                        write!(f, "{}: {}", x.pretty(pr), tv.pretty(pr))
+                    },
+                    ", "
+                ),
+                e0 = e0.as_ref().pretty(&pr.tab()),
                 s0 = pr.indent(),
                 s1 = pr.tab().indent(),
             ),
-            Lit(lit) => lit.pretty(pr),
-            Var(id) => id.pretty(pr),
-            BinOp(l, Seq, r) => format!(
-                "{l};{s0}{r}",
-                l = l.pretty(pr),
-                r = r.pretty(pr),
+            Lit(l) => write!(f, "{}", l.pretty(pr)),
+            Var(x) => write!(f, "{}", x.pretty(pr)),
+            BinOp(e0, Seq, e1) => write!(
+                f,
+                "{e0};{s0}{e1}",
+                e0 = e0.as_ref().pretty(pr),
+                e1 = e1.as_ref().pretty(pr),
                 s0 = pr.indent(),
             ),
-            BinOp(l, op, r) => format!(
-                "{l} {op} {r}",
-                l = l.pretty(pr),
+            BinOp(e0, op, e1) => write!(
+                f,
+                "{e0} {op} {e1}",
+                e0 = e0.as_ref().pretty(pr),
                 op = op.pretty(&pr.tab()),
-                r = r.pretty(pr)
+                e1 = e1.as_ref().pretty(pr)
             ),
-            UnOp(op, e) => (op, e.as_ref()).pretty(pr),
-            ConsArray(args) => format!("[{args}]", args = args.pretty(pr)),
-            ConsStruct(fields) => format!("{{ {fields} }}", fields = pretty_fields(fields, pr)),
-            ConsVariant(sym, arg) => format!(
-                "{{ {sym}({arg}) }}",
-                sym = sym.pretty(pr),
-                arg = arg.pretty(pr)
+            UnOp(op, e0) => match op {
+                Not        => write!(f, "not {}", e0.as_ref().pretty(pr)),
+                Neg        => write!(f, "-{}", e0.as_ref().pretty(pr)),
+                Cast(ty)   => write!(f, "{}:{}", e0.as_ref().pretty(pr), ty.pretty(pr)),
+                Project(i) => write!(f, "{}.{}", e0.as_ref().pretty(pr), i.pretty(pr)),
+                Access(_)  => todo!(),
+                Call(es)   => write!(f, "{}({})", e0.as_ref().pretty(pr), es.all_pretty(", ", pr)),
+                Emit       => write!(f, "emit {e0}", e0 = e0.as_ref().pretty(pr)),
+                UnOpErr    => write!(f, "☇{}", e0.as_ref().pretty(pr)),
+            },
+            ConsArray(es) => write!(f, "[{es}]", es = es.all_pretty(", ", pr)),
+            ConsStruct(_fs) => todo!(), //write!(f, "{{ {fields} }}", fields = pretty_fields(fields, pr)),
+            ConsVariant(s, e0) => write!(
+                f,
+                "{{ {s}({e0}) }}",
+                s = s.pretty(pr),
+                e0 = e0.as_ref().pretty(pr)
             ),
-            ConsTuple(args) => format!("({args})", args = args.pretty(pr)),
-            Loop(cond, body) => format!(
-                "loop {cond} {{{s1}{body}}}",
-                cond = cond.pretty(pr),
-                body = body.pretty(pr),
+            ConsTuple(es) => write!(f, "({es})", es = es.all_pretty(", ", pr)),
+            Loop(e0, e1) => write!(
+                f,
+                "loop {e0} {{{s1}{e1}}}",
+                e0 = e0.as_ref().pretty(pr),
+                e1 = e1.as_ref().pretty(pr),
                 s1 = pr.tab().indent(),
             ),
-            ExprErr => "☇".to_string(),
-        };
+            ExprErr => write!(f, "☇"),
+        }?;
         if pr.verbose {
-            format!("({expr}):{ty}", expr = expr, ty = self.tv.pretty(pr))
-        } else {
-            expr
+            write!(f, "):{ty}", ty = expr.tv.pretty(pr))?
+        };
+        Ok(())
+    }
+}
+
+impl Display for Pretty<'_, LitKind> {
+    #[rustfmt::skip]
+    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
+        let Pretty(lit, _) = self;
+        match lit {
+            LitI8(l)   => write!(f, "{}i8", l),
+            LitI16(l)  => write!(f, "{}i16", l),
+            LitI32(l)  => write!(f, "{}", l),
+            LitI64(l)  => write!(f, "{}i64", l),
+            LitF32(l)  => write!(f, "{}f32", l),
+            LitF64(l)  => write!(f, "{}", l),
+            LitBool(l) => write!(f, "{}", l),
+            LitTime(l) => write!(f, "{}", l),
+            LitUnit    => write!(f, "()"),
+            LitErr     => write!(f, "☇"),
         }
     }
 }
 
-impl Pretty for LitKind {
+impl Display for Pretty<'_, BinOpKind> {
     #[rustfmt::skip]
-    fn pretty(&self, _: &Printer) -> String {
-        match self {
-            LitI8(l)   => format!("{}i8", l),
-            LitI16(l)  => format!("{}i16", l),
-            LitI32(l)  => format!("{}", l),
-            LitI64(l)  => format!("{}i64", l),
-            LitF32(l)  => format!("{}f32", l),
-            LitF64(l)  => format!("{}", l),
-            LitBool(l) => format!("{}", l),
-            LitTime(l) => format!("{}", l),
-            LitUnit    => format!("()"),
-            LitErr     => "☇".to_string(),
-        }
-    }
-}
-
-impl Pretty for (&UnOpKind, &Expr) {
-    #[rustfmt::skip]
-    fn pretty(&self, pr: &Printer) -> String {
-        let (op, e) = self;
+    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
+        let Pretty(op, _) = self;
         match op {
-            Not          => format!("not {}", e.pretty(pr)),
-            Neg          => format!("-{}", e.pretty(pr)),
-            Cast(ty)     => format!("{}:{}", e.pretty(pr), ty.pretty(pr)),
-            Project(idx) => format!("{}.{}", e.pretty(pr), idx.pretty(pr)),
-            Access(_)    => todo!(),
-            Call(args)   => format!("{e}({args})", e = e.pretty(pr), args = args.pretty(pr)),
-            Emit         => format!("emit {e}", e = e.pretty(pr)),
-            UnOpErr      => format!("☇{}", e.pretty(pr)),
+            Add      => write!(f, "+"),
+            Sub      => write!(f, "-"),
+            Mul      => write!(f, "*"),
+            Div      => write!(f, "/"),
+            Pow      => write!(f, "**"),
+            Equ      => write!(f, "=="),
+            Neq      => write!(f, "!="),
+            Gt       => write!(f, ">"),
+            Lt       => write!(f, "<"),
+            Geq      => write!(f, ">="),
+            Leq      => write!(f, "<="),
+            Or       => write!(f, "or"),
+            And      => write!(f, "and"),
+            Pipe     => write!(f, "|>"),
+            Seq      => write!(f, ";"),
+            BinOpErr => write!(f, "☇"),
         }
     }
 }
 
-impl Pretty for BinOpKind {
+impl Display for Pretty<'_, TypeVar> {
     #[rustfmt::skip]
-    fn pretty(&self, _: &Printer) -> String {
-        match self {
-            Add      => format!("+"),
-            Sub      => format!("-"),
-            Mul      => format!("*"),
-            Div      => format!("/"),
-            Pow      => format!("**"),
-            Equ      => format!("=="),
-            Neq      => format!("!="),
-            Gt       => format!(">"),
-            Lt       => format!("<"),
-            Geq      => format!(">="),
-            Leq      => format!("<="),
-            Or       => format!("or"),
-            And      => format!("and"),
-            Pipe     => format!("|>"),
-            Seq      => format!(";"),
-            BinOpErr => format!("☇"),
-        }
+    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
+        let Pretty(tv, pr) = self;
+        write!(f, "{}", pr.lookup(**tv).pretty(pr))
     }
 }
 
-impl Pretty for TypeVar {
-    fn pretty(&self, pr: &Printer) -> String {
-        pr.lookup(*self).pretty(pr)
-    }
-}
-
-impl Pretty for Type {
+impl Display for Pretty<'_, Type> {
     #[rustfmt::skip]
-    fn pretty(&self, pr: &Printer) -> String {
-        match &self.kind {
+    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
+        let Pretty(ty, pr) = self;
+        match &ty.kind {
             Scalar(kind) => match kind {
-                I8   => format!("i8"),
-                I16  => format!("i16"),
-                I32  => format!("i32"),
-                I64  => format!("i64"),
-                F32  => format!("f32"),
-                F64  => format!("f64"),
-                Bool => format!("bool"),
-                Null => format!("null"),
-                Str  => format!("str"),
-                Unit => format!("()"),
+                I8   => write!(f, "i8"),
+                I16  => write!(f, "i16"),
+                I32  => write!(f, "i32"),
+                I64  => write!(f, "i64"),
+                F32  => write!(f, "f32"),
+                F64  => write!(f, "f64"),
+                Bool => write!(f, "bool"),
+                Null => write!(f, "null"),
+                Str  => write!(f, "str"),
+                Unit => write!(f, "()"),
             }
-            Nominal(id)      => format!("{id}", id = id.pretty(pr)),
-            Struct(fields)   => format!("{{ {fields} }}", fields = pretty_fields(fields, pr)),
-            Enum(variants)   => format!("{{ {variants} }}", variants = pretty_variants(variants, pr)),
-            Array(ty, shape) => format!( "[{ty}; {shape}]", ty = ty.pretty(pr), shape = shape.pretty(pr)),
-            Stream(ty)       => format!("Stream[{}]", ty.pretty(pr)),
-            Map(kty, vty)    => format!("Map[{},{}]", kty.pretty(pr), vty.pretty(pr)),
-            Set(ty)          => format!("Set[{}]", ty.pretty(pr)),
-            Vector(ty)       => format!("Vec[{}]", ty.pretty(pr)),
-            Tuple(tys)       => format!("({})", tys.pretty(pr)),
-            Optional(ty)     => format!("{}?", ty.pretty(pr)),
-            Fun(args, ty)    => format!("({}) -> {}", args.pretty(pr), ty.pretty(pr)),
-            Task(_)          => format!(""),
-            Unknown          => format!("?"),
-            TypeErr          => format!("☇"),
+            Struct(fs) => {
+                write!(f, "{{ {fs} }}",
+                    fs = fs.clone()
+                           .into_inner()
+                           .iter()
+                           .map_pretty(|(k,v),f| write!(f, "{}: {}", k.pretty(pr), v.pretty(pr)), ","))
+            }
+            Enum(vs) =>{
+                write!(f, "{{ {vs} }}",
+                    vs = vs.clone()
+                           .into_inner()
+                           .iter()
+                           .map_pretty(|(k,v),f| write!(f, "{}({})", k.pretty(pr), v.pretty(pr)), ","))
+            }
+            Nominal(x)       => write!(f, "{x}", x = x.pretty(pr)),
+            Array(ty, shape) => write!(f,  "[{ty}; {shape}]", ty = ty.pretty(pr), shape = shape.pretty(pr)),
+            Stream(ty)       => write!(f, "Stream[{}]", ty.pretty(pr)),
+            Map(kty, vty)    => write!(f, "Map[{},{}]", kty.pretty(pr), vty.pretty(pr)),
+            Set(ty)          => write!(f, "Set[{}]", ty.pretty(pr)),
+            Vector(ty)       => write!(f, "Vec[{}]", ty.pretty(pr)),
+            Tuple(tys)       => write!(f, "({})", tys.all_pretty(", ", pr)),
+            Optional(ty)     => write!(f, "{}?", ty.pretty(pr)),
+            Fun(args, ty)    => write!(f, "({}) -> {}", args.all_pretty(", ", pr), ty.pretty(pr)),
+            Task(_)          => write!(f, ""),
+            Unknown          => write!(f, "?"),
+            TypeErr          => write!(f, "☇"),
         }
     }
 }
 
-impl Pretty for Index {
-    fn pretty(&self, _: &Printer) -> String {
-        format!("{}", self.0)
-    }
-}
-
-impl Pretty for Ident {
-    fn pretty(&self, pr: &Printer) -> String {
-        pr.info.table.get_decl_name(self).to_string()
-    }
-}
-
-impl Pretty for Symbol {
-    fn pretty(&self, pr: &Printer) -> String {
-        pr.info.table.resolve(self).to_string()
-    }
-}
-
-impl Pretty for Shape {
-    fn pretty(&self, pr: &Printer) -> String {
-        self.dims
-            .iter()
-            .map(|dim| dim.pretty(pr))
-            .collect::<Vec<String>>()
-            .join(",")
-    }
-}
-
-impl Pretty for Dim {
+impl Display for Pretty<'_, Index> {
     #[rustfmt::skip]
-    fn pretty(&self, pr: &Printer) -> String {
-        match &self.kind {
-            DimVar(_)       => format!("?"),
-            DimVal(v)       => format!("{}", v),
-            DimOp(l, op, r) => format!("{}{}{}", l.pretty(pr), op.pretty(pr), r.pretty(pr)),
-            DimErr          => format!("☇"),
-        }
+    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
+        let Pretty(Index(i), _) = self;
+        write!(f, "{}", i)
     }
 }
 
-impl Pretty for DimOpKind {
-    fn pretty(&self, _: &Printer) -> String {
-        match self {
-            DimAdd => format!("+"),
-            DimSub => format!("-"),
-            DimMul => format!("*"),
-            DimDiv => format!("/"),
-        }
-    }
-}
-
-impl Pretty for Pat {
+impl Display for Pretty<'_, Ident> {
     #[rustfmt::skip]
-    fn pretty(&self, pr: &Printer) -> String {
-        match &self.kind {
-            PatRegex(s)   => format!(r#"r"{}""#, s.clone()),
-            PatOr(l, r)   => format!("{} | {}", l.pretty(pr), r.pretty(pr)),
-            PatVal(l)     => l.pretty(pr),
-            PatVar(x)     => x.pretty(pr),
-            PatTuple(vs)  => format!("({})", vs.pretty(pr)),
-            PatStruct(vs) => format!("{{ {} }}", vs.pretty(pr)),
-            PatIgnore     => format!("_"),
-            PatErr        => format!("☇"),
+    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
+        let Pretty(id, pr) = self;
+        write!(f, "{}", pr.info.table.get_decl_name(id))
+    }
+}
+
+impl Display for Pretty<'_, Symbol> {
+    #[rustfmt::skip]
+    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
+        let Pretty(sym, pr) = self;
+        write!(f, "{}", pr.info.table.resolve(sym))
+    }
+}
+
+impl Display for Pretty<'_, Shape> {
+    #[rustfmt::skip]
+    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
+        let Pretty(shape, pr) = self;
+        write!(f, "{}", shape.dims.iter().all_pretty(", ", pr))
+    }
+}
+
+impl Display for Pretty<'_, Dim> {
+    #[rustfmt::skip]
+    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
+        let Pretty(dim, pr) = self;
+        match &dim.kind {
+            DimVar(_)       => write!(f, "?"),
+            DimVal(v)       => write!(f, "{}", v),
+            DimOp(l, op, r) => write!(f, "{}{}{}", l.as_ref().pretty(pr), op.pretty(pr), r.as_ref().pretty(pr)),
+            DimErr          => write!(f, "☇"),
         }
     }
 }
 
-fn pretty_fields<V>(fields: &VecMap<Symbol, V>, pr: &Printer) -> String
-where
-    V: Pretty,
-{
-    fields
-        .iter()
-        .map(|(k, v)| format!("{}:{}", k.pretty(pr), v.pretty(pr)))
-        .collect::<Vec<String>>()
-        .join(", ")
+impl Display for Pretty<'_, DimOpKind> {
+    #[rustfmt::skip]
+    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
+        let Pretty(op, _pr) = self;
+        match op {
+            DimAdd => write!(f, "+"),
+            DimSub => write!(f, "-"),
+            DimMul => write!(f, "*"),
+            DimDiv => write!(f, "/"),
+        }
+    }
 }
 
-fn pretty_variants<V>(variants: &VecMap<Symbol, V>, pr: &Printer) -> String
-where
-    V: Pretty,
-{
-    variants
-        .iter()
-        .map(|(k, v)| format!("{} of {}", k.pretty(pr), v.pretty(pr)))
-        .collect::<Vec<String>>()
-        .join(", ")
+impl Display for Pretty<'_, Pat> {
+    #[rustfmt::skip]
+    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
+        let Pretty(pat, pr) = self;
+        match &pat.kind {
+            PatRegex(s)   => write!(f, r#"r"{}""#, s.clone()),
+            PatOr(p0, p1) => write!(f, "{} | {}", p0.as_ref().pretty(pr), p1.as_ref().pretty(pr)),
+            PatVal(l)     => write!(f, "{}", l.pretty(pr)),
+            PatVar(x)     => write!(f, "{}", x.pretty(pr)),
+            PatTuple(ps)  => write!(f, "({})", ps.all_pretty(", ", pr)),
+            PatStruct(ps) => write!(f, "{{ {} }}", ps.all_pretty(", ", pr)),
+            PatIgnore     => write!(f, "_"),
+            PatErr        => write!(f, "☇"),
+        }
+    }
 }

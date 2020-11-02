@@ -1,4 +1,3 @@
-use crate::codegen::op::Op;
 use crate::{info::Info, prelude::*, printer::Printer, typer::*};
 use std::cell::RefMut;
 
@@ -168,11 +167,10 @@ impl Expr {
                 out_ty = e.tv.to_ty(pr),
             ),
             UnOp(kind, e) => {
-                let ty = pr.lookup(self.tv);
                 if let (Neg, Lit(lit)) = (kind, &e.kind) {
                     let t = self.tv.to_ty(pr);
                     let l = lit.to_lit();
-                    return match lit {
+                    match lit {
                         LitI8(_)  => format!(r#""arc.constant"() {{ value = -{} : {} }}: () -> {}"#, l, t, t),
                         LitI16(_) => format!(r#""arc.constant"() {{ value = -{} : {} }}: () -> {}"#, l, t, t),
                         LitI32(_) => format!(r#""arc.constant"() {{ value = -{} : {} }}: () -> {}"#, l, t, t),
@@ -181,9 +179,8 @@ impl Expr {
                         LitF64(_) => format!(r#""arc.constant"() {{ value = -{} : {} }}: () -> {}"#, l, t, t),
                         _ => unreachable!()
                     }
-                }
-                match (kind, ty) {
-                    _ => todo!()
+                } else {
+                    todo!()
                 }
             }
             ConsArray(..) => todo!(),

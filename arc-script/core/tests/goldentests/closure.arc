@@ -4,7 +4,7 @@ increment(foo)
 
 -- args: --verbose --check file
 -- expected stdout:
--- (let x5: (i32) -> i32 = (|i:i32| {
+-- (let x5: (i32) -> i32 = (|i: i32| {
 --     (let x3: i32 = (1):i32 in
 --     (let x4: i32 = ((i):i32 + (x3):i32):i32 in
 --     (x4):i32):i32):i32

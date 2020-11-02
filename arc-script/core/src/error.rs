@@ -139,8 +139,8 @@ impl CompilerError {
                 .with_message("Type mismatch")
                 .with_labels(vec![Label::primary((), *span).with_message(format!(
                     "{} != {}",
-                    lhs.brief(info),
-                    rhs.brief(info)
+                    lhs.pretty(&info.into()),
+                    rhs.pretty(&info.into())
                 ))]),
             CompilerError::VarNotFound { name, span } => Diagnostic::error()
                 .with_message(format!(
@@ -175,7 +175,9 @@ impl CompilerError {
                 .with_labels(vec![Label::primary((), *span)]),
             CompilerError::DataflowTypeInOperator { span, ty } => Diagnostic::error()
                 .with_message("Cannot use dataflow types inside operators.")
-                .with_labels(vec![Label::primary((), *span).with_message(ty.brief(info))]),
+                .with_labels(vec![
+                    Label::primary((), *span).with_message(ty.pretty(&info.into()).to_string())
+                ]),
         }
     }
 }

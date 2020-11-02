@@ -1,5 +1,6 @@
 use crate::prelude::*;
 
+#[derive(Copy, Clone)]
 pub struct Printer<'a> {
     pub info: &'a Info<'a>,
     pub tabs: u32,
@@ -33,8 +34,18 @@ impl Printer<'_> {
     }
 }
 
-impl<'i> From<&'i Info<'i>> for Printer<'i> {
+impl<'i> From<&'i Info<'_>> for Printer<'i> {
     fn from(info: &'i Info) -> Self {
+        Self {
+            info,
+            tabs: 0,
+            verbose: false,
+        }
+    }
+}
+
+impl<'i> From<&'i mut Info<'_>> for Printer<'i> {
+    fn from(info: &'i mut Info) -> Self {
         Self {
             info,
             tabs: 0,
