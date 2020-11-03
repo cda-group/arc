@@ -116,13 +116,13 @@ impl SymbolTable {
         for (i, decl) in self.decls.iter().enumerate() {
             let name = self.intern.resolve(&decl.sym.key);
             match decl.kind {
-                VarDecl         => println!("[var]     {} => {}", i, name),
-                VariantDecl     => println!("[variant] {} => {}", i, name),
-                SourceDecl      => println!("[source]  {} => {}", i, name),
-                SinkDecl        => println!("[sink]    {} => {}", i, name),
-                FunDecl { .. }  => println!("[fun]     {} => {}", i, name),
-                TypeDecl        => println!("[type]    {} => {}", i, name),
-                TaskDecl { .. } => println!("[task]    {} => {}", i, name),
+                VarDecl     => println!("[var]     {} => {}", i, name),
+                VariantDecl => println!("[variant] {} => {}", i, name),
+                SourceDecl  => println!("[source]  {} => {}", i, name),
+                SinkDecl    => println!("[sink]    {} => {}", i, name),
+                FunDecl     => println!("[fun]     {} => {}", i, name),
+                TypeDecl    => println!("[type]    {} => {}", i, name),
+                TaskDecl    => println!("[task]    {} => {}", i, name),
             }
         }
     }

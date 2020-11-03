@@ -106,19 +106,36 @@ pub struct TaskDef {
     pub fundefs: HashMap<Ident, FunDef>,
 }
 
-#[derive(Constructor)]
 pub struct Decl {
     pub sym: Symbol,
     pub tv: TypeVar,
+    pub settings: Option<Vec<Setting>>,
     pub kind: DeclKind,
 }
 
+impl Decl {
+    pub fn new(sym: Symbol, tv: TypeVar, kind: DeclKind) -> Self {
+        Self {
+            sym,
+            tv,
+            kind,
+            settings: None,
+        }
+    }
+
+    #[inline(always)]
+    pub fn with_settings(mut self, settings: Vec<Setting>) -> Self {
+        self.settings = Some(settings);
+        self
+    }
+}
+
 pub enum DeclKind {
-    FunDecl { settings: Vec<Setting> },
+    FunDecl,
     VariantDecl,
     VarDecl,
     TypeDecl,
-    TaskDecl { settings: Vec<Setting> },
+    TaskDecl,
     SinkDecl,
     SourceDecl,
 }

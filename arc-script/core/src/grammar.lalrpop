@@ -387,7 +387,7 @@ Sources = Variants<Type>;
 FunDecl: (Ident, Vec<Ident>) = <Settings> "fun" <Symbol> <ParVec<Params>> => {
   let (settings, sym, param_ids) = (<>);
   let tv = typer.fresh();
-  let id = table.insert(Decl::new(sym, tv, FunDecl { settings }));
+  let id = table.insert(Decl::new(sym, tv, FunDecl));
   if let Err(err) = stack.bind_item(sym, id) {
       errors.push(err.into());
   }
@@ -404,7 +404,7 @@ TaskDecl: (Ident, Vec<Ident>, Vec<Ident>, Vec<Ident>) =
   <Settings> "task" <Symbol> <ParVec<Params>> "(" <Sources> ")" "->" "(" <Sinks> ")" => {
   let (settings, sym, param_ids, sources, sinks) = (<>);
   let tv = typer.fresh();
-  let id = table.insert(Decl::new(sym, tv, TaskDecl { settings }));
+  let id = table.insert(Decl::new(sym, tv, TaskDecl).with_settings(settings));
   stack.push_item_scope();
   let source_ids = sources.into_iter().map(|(sym, tv)| {
       let id = table.insert(Decl::new(sym, tv, VariantDecl));
