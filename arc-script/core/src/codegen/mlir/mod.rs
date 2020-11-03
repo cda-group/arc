@@ -167,20 +167,27 @@ impl Expr {
                 out_ty = e.tv.to_ty(pr),
             ),
             UnOp(kind, e) => {
-                if let (Neg, Lit(lit)) = (kind, &e.kind) {
-                    let t = self.tv.to_ty(pr);
-                    let l = lit.to_lit();
-                    match lit {
-                        LitI8(_)  => format!(r#""arc.constant"() {{ value = -{} : {} }}: () -> {}"#, l, t, t),
-                        LitI16(_) => format!(r#""arc.constant"() {{ value = -{} : {} }}: () -> {}"#, l, t, t),
-                        LitI32(_) => format!(r#""arc.constant"() {{ value = -{} : {} }}: () -> {}"#, l, t, t),
-                        LitI64(_) => format!(r#""arc.constant"() {{ value = -{} : {} }}: () -> {}"#, l, t, t),
-                        LitF32(_) => format!(r#""arc.constant"() {{ value = -{} : {} }}: () -> {}"#, l, t, t),
-                        LitF64(_) => format!(r#""arc.constant"() {{ value = -{} : {} }}: () -> {}"#, l, t, t),
-                        _ => unreachable!()
+                match (kind, &e.kind) {
+                    (Neg, Lit(lit)) => {
+                        let t = self.tv.to_ty(pr);
+                        let l = lit.to_lit();
+                        match lit {
+                            LitI8(_)  => format!(r#""arc.constant"() {{ value = -{l} : {t} }}: () -> {t}"#, l=l, t=t),
+                            LitI16(_) => format!(r#""arc.constant"() {{ value = -{l} : {t} }}: () -> {t}"#, l=l, t=t),
+                            LitI32(_) => format!(r#""arc.constant"() {{ value = -{l} : {t} }}: () -> {t}"#, l=l, t=t),
+                            LitI64(_) => format!(r#""arc.constant"() {{ value = -{l} : {t} }}: () -> {t}"#, l=l, t=t),
+                            LitF32(_) => format!(r#""arc.constant"() {{ value = -{l} : {t} }}: () -> {t}"#, l=l, t=t),
+                            LitF64(_) => format!(r#""arc.constant"() {{ value = -{l} : {t} }}: () -> {t}"#, l=l, t=t),
+                            _ => unreachable!()
+                        }
                     }
-                } else {
-                    todo!("{:?}", kind)
+                    (Call(args), Var(id)) => {
+                        let ty = e.tv.to_ty(pr);
+                        let id = id.to_var();
+                        let args = args.iter().map(|arg| arg.to_var()).collect::<Vec<_>>().join(",");
+                        format!(r#"call @{id}({args}) {ty}"#, id=id, args=args, ty=ty)
+                    },
+                    x => todo!("{:?}", x)
                 }
             }
             ConsArray(..) => todo!(),
@@ -213,11 +220,11 @@ impl Ident {
 
 impl TypeVar {
     fn to_ty(self, pr: &Printer) -> String {
-        let typer = pr.info.typer.borrow_mut();
-        self.to_ty_rec(typer)
+        let mut typer = pr.info.typer.borrow_mut();
+        self.to_ty_rec(&mut typer)
     }
     #[rustfmt::skip]
-    fn to_ty_rec(self, mut typer: RefMut<Typer>) -> String {
+    fn to_ty_rec(self, typer: &mut RefMut<Typer>) -> String {
         match typer.lookup(self).kind {
             Nominal(_) => todo!(),
             Scalar(kind) => match kind {
@@ -232,19 +239,23 @@ impl TypeVar {
                 Str  => todo!(),
                 Unit => "()".to_owned(),
             },
-            Struct(_)   => todo!(),
-            Enum(_)     => todo!(),
-            Array(_, _) => todo!(),
-            Stream(_)   => todo!(),
-            Map(_, _)   => todo!(),
-            Set(_)      => todo!(),
-            Vector(_)   => todo!(),
-            Tuple(_)    => todo!(),
-            Optional(_) => todo!(),
-            Fun(_, _)   => todo!(),
-            Task(_)     => todo!(),
-            Unknown     => "<UNKNOWN>".to_string(),
-            TypeErr     => "<TYPE-ERROR>".to_string(),
+            Struct(_)      => todo!(),
+            Enum(_)        => todo!(),
+            Array(_, _)    => todo!(),
+            Stream(_)      => todo!(),
+            Map(_, _)      => todo!(),
+            Set(_)         => todo!(),
+            Vector(_)      => todo!(),
+            Tuple(_)       => todo!(),
+            Optional(_)    => todo!(),
+            Fun(ptvs, rtv) => {
+                let ptys = ptvs.iter().map(|tv| tv.to_ty_rec(typer)).collect::<Vec<_>>().join(",");
+                let rty = rtv.to_ty_rec(typer);
+                format!("({ptys}) -> {rty}", ptys=ptys, rty=rty)
+            },
+            Task(_)        => todo!(),
+            Unknown        => "<UNKNOWN>".to_string(),
+            TypeErr        => "<TYPE-ERROR>".to_string(),
         }
     }
 }
