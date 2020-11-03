@@ -46,13 +46,11 @@ pub mod repl;
 pub fn diagnose(source: &str, opt: &Opt) {
     let script = compile(source, opt);
     if script.info.errors.is_empty() && !opt.debug {
-        let mut w = std::io::stdout();
         if opt.mlir {
-            writeln!(w, "{}", script.mlir()).unwrap();
+            println!("{}", script.mlir());
         } else {
-            writeln!(w, "{}", script).unwrap();
+            println!("{}", script);
         };
-        w.flush().unwrap();
     } else {
         script.emit_to_stdout()
     }
