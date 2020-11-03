@@ -1,7 +1,7 @@
 #![allow(clippy::useless_format)]
 pub use crate::codegen::pretty_utils::*;
+use crate::codegen::printer::Printer;
 use crate::prelude::*;
-use crate::printer::Printer;
 use std::fmt::{self, Display, Formatter};
 
 impl Script<'_> {

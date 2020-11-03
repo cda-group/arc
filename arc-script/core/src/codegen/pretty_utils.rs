@@ -1,4 +1,4 @@
-use crate::{prelude::*, printer::Printer};
+use crate::{prelude::*, codegen::printer::Printer};
 use std::fmt::{self, Display, Formatter};
 
 /// Wraps a single AST node to be printed

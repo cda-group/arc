@@ -23,7 +23,6 @@ mod info;
 mod lexer;
 mod parser;
 mod prelude;
-mod printer;
 mod pruner;
 mod ssa;
 mod symbols;
