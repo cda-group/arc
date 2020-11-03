@@ -20,6 +20,11 @@ jobs:
     - name: checkout
       uses: actions/checkout@v2
     
+    - name: cargo-fetch-update
+      run: |
+        cargo fetch
+        cargo update -p lsp-types:0.81.0 --precise 0.79.0
+
     - name: cargo-check
       run: cargo check --all-features
 
