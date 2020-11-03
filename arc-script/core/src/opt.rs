@@ -70,3 +70,16 @@ pub struct File {
     #[cfg_attr(feature = "cli", clap(parse(from_os_str)))]
     pub path: PathBuf,
 }
+
+impl Default for Opt {
+    fn default() -> Self {
+        Self {
+            debug: false,
+            mlir: false,
+            check: true,
+            verbose: false,
+            connectors: Vec::new(),
+            subcmd: SubCmd::Lib,
+        }
+    }
+}

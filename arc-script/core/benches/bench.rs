@@ -17,20 +17,9 @@ criterion_group!(
 
 criterion_main!(benches);
 
-fn setup() -> Opt {
-    Opt {
-        debug: false,
-        mlir: false,
-        verbose: false,
-        subcmd: SubCmd::Lib,
-        connectors: Vec::new(),
-        check: false,
-    }
-}
-
 fn end_to_end(criterion: &mut Criterion) {
     let mut group = criterion.benchmark_group("end_to_end");
-    let opt = &setup();
+    let opt = &Opt::default();
     group.sample_size(100);
     for (i, script) in SCRIPTS_DIR.files().iter().enumerate() {
         let path = &script.path();
