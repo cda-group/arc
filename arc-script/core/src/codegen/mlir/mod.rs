@@ -75,11 +75,11 @@ impl Expr {
                 format!(r#""arc.constant"() {{ value = {l} : {t} }}: () -> {}"#, l=l, t=t)
             }
             BinOp(l, op, r) => {
+                let ty = pr.lookup(l.tv);
                 let t = l.tv.to_ty(pr);
                 let rt = self.tv.to_ty(pr);
                 let l = l.to_var();
                 let r = r.to_var();
-                let ty = pr.lookup(self.tv);
                 match (op, ty.kind) {
                     // Add
                     (Add, Scalar(I8 )) => format!(r#""arc.addi"({l},{r}) : ({t},{t}) -> {rt}"#, l=l, r=r, t=t, rt=rt),
