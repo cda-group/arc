@@ -60,7 +60,7 @@ pub fn diagnose(source: &str, opt: &Opt) {
 }
 
 pub fn compile<'i>(source: &'i str, opt: &'i Opt) -> Script<'i> {
-    let mut script = Script::parse(source);
+    let mut script = Script::parse(source, opt);
 
     if opt.debug {
         println!("=== Opt");

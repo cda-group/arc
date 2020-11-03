@@ -15,7 +15,7 @@ pub type ErrorRecovery<'i> = lalrpop_util::ErrorRecovery<usize, Token<'i>, Compi
 pub type ParseError<'i> = lalrpop_util::ParseError<usize, Token<'i>, CompilerError>;
 
 impl Script<'_> {
-    pub fn parse(source: &str) -> Script<'_> {
+    pub fn parse<'i>(source: &'i str, opt: &'i Opt) -> Script<'i> {
         let mut errors = Vec::new();
         let mut table = SymbolTable::new();
         let mut stack = SymbolStack::new();
@@ -41,7 +41,7 @@ impl Script<'_> {
             .map(Into::into)
             .collect();
         let ast = SyntaxTree::new(taskdefs, tydefs, fundefs);
-        let info = Info::new(table, errors, source, RefCell::new(typer));
+        let info = Info::new(table, errors, source, RefCell::new(typer), opt);
         Script::new(ast, info)
     }
 }
