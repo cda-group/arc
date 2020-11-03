@@ -2,7 +2,6 @@
 
 use crate::prelude::*;
 pub use anyhow::Result;
-use std::io::prelude::*;
 
 #[macro_use]
 mod utils;

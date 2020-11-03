@@ -1,5 +1,6 @@
 #![allow(clippy::useless_format)]
-pub use crate::codegen::pretty_utils::*;
+mod utils;
+pub use crate::codegen::pretty::utils::*;
 use crate::codegen::printer::Printer;
 use crate::prelude::*;
 use std::fmt::{self, Display, Formatter};
