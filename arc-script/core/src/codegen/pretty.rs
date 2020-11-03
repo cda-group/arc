@@ -4,11 +4,10 @@ use crate::codegen::printer::Printer;
 use crate::prelude::*;
 use std::fmt::{self, Display, Formatter};
 
-impl Script<'_> {
-    pub fn code(&self, verbose: bool) -> String {
-        let mut pr = Printer::from(&self.info);
-        pr.verbose = verbose;
-        self.pretty(&pr).to_string()
+impl Display for Script<'_> {
+    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
+        let pr = Printer::from(&self.info);
+        write!(f, "{}", self.pretty(&pr))
     }
 }
 
@@ -45,7 +44,7 @@ impl Display for Pretty<'_, Expr> {
     #[rustfmt::skip]
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
         let Pretty(expr, pr) = self;
-        if pr.verbose {
+        if pr.info.opt.verbose {
             write!(f, "(")?;
         }
         match &expr.kind {
@@ -155,7 +154,7 @@ impl Display for Pretty<'_, Expr> {
             ),
             ExprErr => write!(f, "☇"),
         }?;
-        if pr.verbose {
+        if pr.info.opt.verbose {
             write!(f, "):{ty}", ty = expr.tv.pretty(pr))?
         };
         Ok(())

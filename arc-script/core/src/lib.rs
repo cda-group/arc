@@ -50,7 +50,7 @@ pub fn diagnose(source: &str, opt: &Opt) {
         if opt.mlir {
             writeln!(w, "{}", script.mlir()).unwrap();
         } else {
-            writeln!(w, "{}", script.code(opt.verbose)).unwrap();
+            writeln!(w, "{}", script).unwrap();
         };
         w.flush().unwrap();
     } else {
@@ -65,7 +65,7 @@ pub fn compile<'i>(source: &'i str, opt: &'i Opt) -> Script<'i> {
         println!("=== Opt");
         println!("{:?}", opt);
         println!("=== Parsed");
-        println!("{}", script.code(opt.verbose));
+        println!("{}", script);
     }
 
     // script.body.download();
@@ -74,7 +74,7 @@ pub fn compile<'i>(source: &'i str, opt: &'i Opt) -> Script<'i> {
 
     if opt.debug {
         println!("=== Typed");
-        println!("{}", script.code(opt.verbose));
+        println!("{}", script);
     }
 
     script = script.into_ssa();
@@ -83,7 +83,7 @@ pub fn compile<'i>(source: &'i str, opt: &'i Opt) -> Script<'i> {
     if opt.debug {
         if opt.debug {
             println!("=== Canonicalized");
-            println!("{}", script.code(opt.verbose));
+            println!("{}", script);
         }
 
         if script.info.errors.is_empty() {
