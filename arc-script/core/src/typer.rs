@@ -189,10 +189,14 @@ impl Constrain<'_> for FunDef {
     /// Constrains the types of a function based on its signature and body.
     fn constrain(&mut self, ctx: &mut Context<'_>) {
         let tv = ctx.table.get_decl(&self.id).tv;
-        let ty = ctx.typer.lookup(tv);
-        if let Fun(_, ret_tv) = ty.kind {
-            ctx.unify(self.body.tv, ret_tv)
-        }
+        let ptys = self
+            .params
+            .iter()
+            .map(|id| ctx.table.get_decl(id).tv)
+            .collect();
+        let rty = self.body.tv;
+        let fty = Fun(ptys, rty);
+        ctx.unify(tv, fty);
     }
 }
 
