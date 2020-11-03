@@ -72,7 +72,7 @@ impl Expr {
             Lit(kind) => {
                 let t = self.tv.to_ty(pr);
                 let l = kind.to_lit();
-                format!(r#""arc.constant"() {{ value = {l} : {t} }}: () -> {}"#, l=l, t=t)
+                format!(r#""arc.constant"() {{ value = {l} : {t} }}: () -> {t}"#, l=l, t=t)
             }
             BinOp(l, op, r) => {
                 let ty = pr.lookup(l.tv);
@@ -272,7 +272,7 @@ impl FunDef {
         let ty = pr.lookup(tv);
         if let Fun(_, ret_tv) = ty.kind {
             format!(
-                "func @{id}({params}) -> ({ret_ty}) {{{s1}{body}{s0}}}",
+                "func @{id}({params}) -> ({ret_ty}) {{{body}}}",
                 id = self.id.to_var(),
                 params = self
                     .params
@@ -282,8 +282,6 @@ impl FunDef {
                     .join(","),
                 ret_ty = ret_tv.to_ty(&pr),
                 body = self.body.to_region("std.return", &pr.tab()),
-                s0 = pr.indent(),
-                s1 = pr.tab().indent(),
             )
         } else {
             "<FUNC-ERROR>".to_string()
