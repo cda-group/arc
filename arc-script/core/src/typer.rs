@@ -174,9 +174,9 @@ impl Script<'_> {
             let ctx = &mut Context::new(typer, expr.span, errors, table);
             expr.constrain(ctx)
         });
-        self.ast.fundefs.iter_mut().for_each(|(id, fundef)| {
-            let ctx = &mut Context::new(typer, fundef.body.span, errors, table);
-            (id, fundef).constrain(ctx);
+        self.ast.for_each_fun(|fun| {
+            let ctx = &mut Context::new(typer, fun.body.span, errors, table);
+            fun.constrain(ctx);
         });
     }
 }
@@ -185,14 +185,13 @@ trait Constrain<'i> {
     fn constrain(&mut self, context: &mut Context<'i>);
 }
 
-impl Constrain<'_> for (&Ident, &mut FunDef) {
+impl Constrain<'_> for FunDef {
     /// Constrains the types of a function based on its signature and body.
     fn constrain(&mut self, ctx: &mut Context<'_>) {
-        let (id, fundef) = self;
-        let tv = ctx.table.get_decl(&id).tv;
+        let tv = ctx.table.get_decl(&self.id).tv;
         let ty = ctx.typer.lookup(tv);
         if let Fun(_, ret_tv) = ty.kind {
-            ctx.unify(fundef.body.tv, ret_tv)
+            ctx.unify(self.body.tv, ret_tv)
         }
     }
 }

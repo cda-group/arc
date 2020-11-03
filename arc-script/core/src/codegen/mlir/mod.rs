@@ -1,4 +1,4 @@
-use crate::{info::Info, prelude::*, codegen::printer::Printer, typer::*};
+use crate::{codegen::printer::Printer, info::Info, prelude::*, typer::*};
 use std::cell::RefMut;
 
 impl Script<'_> {
@@ -155,7 +155,7 @@ impl Expr {
                     (And, _)           => format!(r#""arc.and ({l},{r}) : ({t},{t}) -> {rt}"#, l=l, r=r, t=t, rt=rt),
                     // Or
                     (Or,  _)           => format!(r#""arc.or  ({l},{r}) : ({t},{t}) -> {rt}"#, l=l, r=r, t=t, rt=rt),
-                    _ => todo!(),
+                    x => todo!("{:?}", x),
                 }
             }
             If(c, t, e) => format!(
@@ -180,7 +180,7 @@ impl Expr {
                         _ => unreachable!()
                     }
                 } else {
-                    todo!()
+                    todo!("{:?}", kind)
                 }
             }
             ConsArray(..) => todo!(),
@@ -193,7 +193,7 @@ impl Expr {
             Var(_) => panic!("[ICE] Attempted to generate MLIR SSA of Var"),
             Loop(_, _) => todo!(),
             For(..) => todo!(),
-            ExprErr => "<ERROR>".to_owned(),
+            ExprErr => "<EXPR-ERROR>".to_owned(),
         }
     }
 
@@ -244,7 +244,7 @@ impl TypeVar {
             Fun(_, _)   => todo!(),
             Task(_)     => todo!(),
             Unknown     => "<UNKNOWN>".to_string(),
-            TypeErr     => "<ERROR>".to_string(),
+            TypeErr     => "<TYPE-ERROR>".to_string(),
         }
     }
 }
@@ -261,7 +261,7 @@ impl LitKind {
             LitBool(l) => l.to_string(),
             LitTime(_) => todo!(),
             LitUnit => todo!(),
-            LitErr => "<ERROR>".to_string(),
+            LitErr => "<LIT-ERROR>".to_string(),
         }
     }
 }
@@ -269,7 +269,7 @@ impl LitKind {
 impl FunDef {
     fn to_func(&self, pr: &Printer) -> String {
         let tv = pr.info.table.get_decl(&self.id).tv;
-        let ty = { pr.info.typer.borrow_mut().lookup(tv) };
+        let ty = pr.lookup(tv);
         if let Fun(_, ret_tv) = ty.kind {
             format!(
                 "func @{id}({params}) -> ({ret_ty}) {{{s1}{body}{s0}}}",
@@ -286,7 +286,7 @@ impl FunDef {
                 s1 = pr.tab().indent(),
             )
         } else {
-            "<ERROR>".to_string()
+            "<FUNC-ERROR>".to_string()
         }
     }
 }
