@@ -25,7 +25,7 @@ fun test() {
 
 --[MLIR] args: --mlir --check file
 --[MLIR] expected stdout:
---[MLIR] func @%x_0() -> (i32) {
+--[MLIR] func @x_0() -> (i32) {
 --[MLIR]     %x_1 = "arc.constant"() { value = 1 : i8 }: () -> i8
 --[MLIR]     %x_2 = "arc.constant"() { value = 1 : i16 }: () -> i16
 --[MLIR]     %x_3 = "arc.constant"() { value = 1 : i32 }: () -> i32
