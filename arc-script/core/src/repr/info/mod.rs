@@ -1,3 +1,8 @@
+pub(crate) mod error;
+pub(crate) mod opt;
+pub(crate) mod symbols;
+pub(crate) mod connector;
+
 use crate::prelude::*;
 use std::cell::RefCell;
 

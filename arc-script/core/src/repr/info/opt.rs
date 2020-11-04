@@ -1,4 +1,4 @@
-use crate::connector::Connector;
+use crate::repr::info::connector::Connector;
 use std::path::PathBuf;
 
 #[cfg(feature = "cli")]

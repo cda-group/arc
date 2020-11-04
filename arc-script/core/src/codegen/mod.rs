@@ -1,3 +1,3 @@
-pub mod mlir;
-pub mod pretty;
-mod printer;
+pub(crate) mod mlir;
+pub(crate) mod pretty;
+pub(crate) mod printer;

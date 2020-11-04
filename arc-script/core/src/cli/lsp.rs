@@ -1,5 +1,5 @@
 use {
-    crate::{compile, completer::*, opt::*},
+    crate::{cli::completer::*, prelude::*},
     serde_json::{Number, Value},
     tower_lsp::{
         jsonrpc::Result,
@@ -188,7 +188,7 @@ async fn report(client: &Client, uri: &Url, code: &str) {
         subcmd: SubCmd::Lsp,
         ..Default::default()
     };
-    let script = compile(code, &opt);
+    let script = compiler::compile(code, &opt);
     let diagnostics = script.to_lsp();
     client
         .publish_diagnostics(uri.clone(), diagnostics, None)
@@ -196,7 +196,7 @@ async fn report(client: &Client, uri: &Url, code: &str) {
 }
 
 #[tokio::main]
-pub async fn lsp(_opt: &Opt) {
+pub async fn start(_opt: &Opt) {
     let stdin = tokio::io::stdin();
     let stdout = tokio::io::stdout();
 

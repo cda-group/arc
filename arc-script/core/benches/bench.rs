@@ -1,8 +1,4 @@
-use {
-    arc_script::{compile, opt::*},
-    criterion::*,
-    include_dir::*,
-};
+use {arc_script::prelude::*, criterion::*, include_dir::*};
 
 const SCRIPTS_DIR: Dir = include_dir!("benches/scripts/");
 
@@ -26,7 +22,7 @@ fn end_to_end(criterion: &mut Criterion) {
         let source = &script.contents_utf8().expect("Failed reading file");
         let id = BenchmarkId::new(path.to_str().unwrap(), i);
         group.bench_with_input(id, source, |bench, source| {
-            bench.iter(|| compile(black_box(source), black_box(opt)))
+            bench.iter(|| compiler::compile(black_box(source), black_box(opt)))
         });
     }
 }

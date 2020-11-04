@@ -1,4 +1,5 @@
-use crate::{codegen::printer::Printer, info::Info, prelude::*, typer::*};
+use crate::codegen::printer::Printer;
+use crate::prelude::*;
 use std::cell::RefMut;
 
 impl Script<'_> {

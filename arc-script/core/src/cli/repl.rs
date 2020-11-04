@@ -1,16 +1,16 @@
 use {
-    crate::{diagnose, opt::Opt},
+    crate::prelude::*,
     anyhow::Result,
     linefeed::{Completer, Completion, Interface, Prompter, ReadResult, Terminal},
     std::sync::Arc,
 };
 
-pub fn repl(opt: &Opt) -> Result<()> {
+pub fn start(opt: &Opt) -> Result<()> {
     let reader = Interface::new("arc-script")?;
     reader.set_prompt("λ ")?;
     reader.set_completer(Arc::new(Repl));
     while let ReadResult::Input(input) = reader.read_line()? {
-        diagnose(&input, opt);
+        compiler::diagnose(&input, opt);
         reader.set_buffer(&input)?;
     }
     Ok(())

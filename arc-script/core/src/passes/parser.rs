@@ -1,15 +1,12 @@
 use {
     crate::prelude::*,
-    crate::{error::*, info::Info, symbols::*, typer::Typer},
+    crate::repr::grammar::*,
+    crate::repr::info::symbols::SymbolStack,
     codespan::Span,
-    grammar::*,
-    lalrpop_util::lalrpop_mod,
     num_traits::Num,
     regex::Regex,
     std::{cell::RefCell, fmt::Display, str::FromStr},
 };
-
-lalrpop_mod!(#[allow(clippy::all)] pub grammar);
 
 pub type ErrorRecovery<'i> = lalrpop_util::ErrorRecovery<usize, Token<'i>, CompilerError>;
 pub type ParseError<'i> = lalrpop_util::ParseError<usize, Token<'i>, CompilerError>;

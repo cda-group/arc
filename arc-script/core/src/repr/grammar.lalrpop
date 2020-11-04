@@ -1,6 +1,7 @@
 use {
   crate::prelude::*,
-  crate::parser::*,
+  crate::passes::parser::*,
+  crate::repr::info::symbols::SymbolStack,
   lalrpop_util::ErrorRecovery,
   chrono::Duration,
 };

@@ -1,4 +1,3 @@
-use crate::error::CompilerError;
 use crate::prelude::*;
 use codespan::Span;
 use lasso::Rodeo;

@@ -1,8 +1,6 @@
 use {
-    crate::{
-        ast::Script,
-        error::{Diagnostic, SimpleFile},
-    },
+    crate::prelude::*,
+    crate::repr::info::error::{Diagnostic, SimpleFile},
     codespan_lsp::byte_index_to_position,
     codespan_reporting::diagnostic::{Label, Severity},
     tower_lsp::lsp_types as lsp,
