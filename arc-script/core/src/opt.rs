@@ -1,66 +1,85 @@
 use crate::connector::Connector;
-pub use clap::Clap;
 use std::path::PathBuf;
 
-#[derive(Clap, Debug)]
+#[cfg(feature = "cli")]
+pub use clap::Clap;
+
+#[cfg_attr(feature = "cli", derive(Clap))]
+#[derive(Debug)]
 pub struct Opt {
     /// Activate DEBUG mode
-    #[clap(short, long)]
+    #[cfg_attr(feature = "cli", clap(short, long))]
     pub debug: bool,
 
     /// Emit MLIR to stdout
-    #[clap(short, long)]
+    #[cfg_attr(feature = "cli", clap(short, long))]
     pub mlir: bool,
 
     /// Only run up until typechecking
-    #[clap(short, long)]
+    #[cfg_attr(feature = "cli", clap(short, long))]
     pub check: bool,
 
     /// Print AST with type information and parentheses
-    #[clap(short, long)]
+    #[cfg_attr(feature = "cli", clap(short, long))]
     pub verbose: bool,
 
     /// Data interface to the outside world
-    #[clap(short = 'C', parse(try_from_str = serde_json::from_str), number_of_values = 1)]
+    #[cfg_attr(feature = "cli", clap(short = 'C', parse(try_from_str = serde_json::from_str), number_of_values = 1))]
     pub connectors: Vec<Connector>,
 
-    #[clap(subcommand)]
+    #[cfg_attr(feature = "cli", clap(subcommand))]
     pub subcmd: SubCmd,
 }
 
-#[derive(Clap, Debug)]
+#[cfg_attr(feature = "cli", derive(Clap))]
+#[derive(Debug)]
 pub enum SubCmd {
     /// Run in REPL mode
     #[cfg(feature = "repl")]
-    #[clap(name = "repl")]
+    #[cfg_attr(feature = "cli", clap(name = "repl"))]
     Repl,
 
     /// Run in LSP mode
     #[cfg(feature = "lsp")]
-    #[clap(name = "lsp")]
+    #[cfg_attr(feature = "cli", clap(name = "lsp"))]
     Lsp,
 
     /// Compile source code
-    #[clap(name = "code")]
+    #[cfg_attr(feature = "cli", clap(name = "code"))]
     Code(Code),
 
     /// Compile source file
-    #[clap(name = "file")]
+    #[cfg_attr(feature = "cli", clap(name = "file"))]
     File(File),
 
-    #[clap(name = "")]
+    #[cfg_attr(feature = "cli", clap(name = ""))]
     Lib,
 }
 
-#[derive(clap::Clap, Debug)]
+#[cfg_attr(feature = "cli", derive(Clap))]
+#[derive(Debug)]
 pub struct Code {
     /// String of source code
     pub code: String,
 }
 
-#[derive(clap::Clap, Debug)]
+#[cfg_attr(feature = "cli", derive(Clap))]
+#[derive(Debug)]
 pub struct File {
     /// Path to file
-    #[clap(parse(from_os_str))]
+    #[cfg_attr(feature = "cli", clap(parse(from_os_str)))]
     pub path: PathBuf,
+}
+
+impl Default for Opt {
+    fn default() -> Self {
+        Self {
+            debug: false,
+            mlir: false,
+            check: true,
+            verbose: false,
+            connectors: Vec::new(),
+            subcmd: SubCmd::Lib,
+        }
+    }
 }

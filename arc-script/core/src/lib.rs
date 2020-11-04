@@ -1,8 +1,7 @@
-#![warn(clippy::all)]
+#![deny(clippy::all)]
 
-use crate::{opt::*, prelude::*, pretty::*};
+use crate::prelude::*;
 pub use anyhow::Result;
-use std::io::prelude::*;
 
 #[macro_use]
 mod utils;
@@ -10,9 +9,9 @@ mod utils;
 #[macro_use]
 extern crate educe;
 
+pub mod codegen;
 pub mod io;
 pub mod opt;
-pub mod pretty;
 
 mod ast;
 mod connector;
@@ -20,15 +19,13 @@ mod dataflow;
 mod error;
 mod eval;
 mod info;
-mod mlir;
+mod lexer;
 mod parser;
 mod prelude;
 mod pruner;
 mod ssa;
 mod symbols;
 mod typer;
-mod lexer;
-mod printer;
 
 // #[cfg(feature = "shaper")]
 // mod shaper;
@@ -48,26 +45,24 @@ pub mod repl;
 pub fn diagnose(source: &str, opt: &Opt) {
     let script = compile(source, opt);
     if script.info.errors.is_empty() && !opt.debug {
-        let mut w = std::io::stdout();
-        let s = match opt {
-            _ if opt.mlir => script.mlir(),
-            _ => script.code(opt.verbose, &script.info),
+        if opt.mlir {
+            println!("{}", script.mlir());
+        } else {
+            println!("{}", script);
         };
-        writeln!(w, "{}", s).unwrap();
-        w.flush().unwrap();
     } else {
         script.emit_to_stdout()
     }
 }
 
 pub fn compile<'i>(source: &'i str, opt: &'i Opt) -> Script<'i> {
-    let mut script = Script::parse(source);
+    let mut script = Script::parse(source, opt);
 
     if opt.debug {
         println!("=== Opt");
         println!("{:?}", opt);
         println!("=== Parsed");
-        println!("{}", script.code(opt.verbose, &script.info));
+        println!("{}", script);
     }
 
     // script.body.download();
@@ -76,7 +71,7 @@ pub fn compile<'i>(source: &'i str, opt: &'i Opt) -> Script<'i> {
 
     if opt.debug {
         println!("=== Typed");
-        println!("{}", script.code(opt.verbose, &script.info));
+        println!("{}", script);
     }
 
     script = script.into_ssa();
@@ -85,7 +80,7 @@ pub fn compile<'i>(source: &'i str, opt: &'i Opt) -> Script<'i> {
     if opt.debug {
         if opt.debug {
             println!("=== Canonicalized");
-            println!("{}", script.code(opt.verbose, &script.info));
+            println!("{}", script);
         }
 
         if script.info.errors.is_empty() {

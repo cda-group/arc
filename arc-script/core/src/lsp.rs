@@ -185,12 +185,8 @@ impl LanguageServer for Backend {
 
 async fn report(client: &Client, uri: &Url, code: &str) {
     let opt = Opt {
-        debug: false,
         subcmd: SubCmd::Lsp,
-        mlir: false,
-        verbose: false,
-        connectors: Vec::new(),
-        check: false,
+        ..Default::default()
     };
     let script = compile(code, &opt);
     let diagnostics = script.to_lsp();

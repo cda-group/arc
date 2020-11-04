@@ -18,11 +18,17 @@ struct Context<'i> {
     table: &'i SymbolTable,
 }
 
+impl Default for Typer {
+    fn default() -> Self {
+        let table = UnificationTable::new();
+        Typer { table }
+    }
+}
+
 impl Typer {
     /// Returns a new Typer
     pub fn new() -> Typer {
-        let table = UnificationTable::new();
-        Typer { table }
+        Self::default()
     }
     /// Returns a fresh type variable which is unified with the given type `ty`.
     pub fn intern<T: Into<Type>>(&mut self, ty: T) -> TypeVar {
@@ -112,13 +118,13 @@ impl Unify<TypeVar, TypeVar> for Context<'_> {
                 self.unify(*tv1, *tv2);
             }
             (Fun(args1, ret1), Fun(args2, ret2)) if args1.len() == args2.len() => {
-                for (arg1, arg2) in args1.into_iter().zip(args2.into_iter()) {
+                for (arg1, arg2) in args1.iter().zip(args2.iter()) {
                     self.unify(*arg1, *arg2);
                 }
                 self.unify(*ret1, *ret2);
             }
             (Tuple(args1), Tuple(args2)) if args1.len() == args2.len() => {
-                for (arg1, arg2) in args1.into_iter().zip(args2.into_iter()) {
+                for (arg1, arg2) in args1.iter().zip(args2.iter()) {
                     self.unify(*arg1, *arg2);
                 }
             }
@@ -168,9 +174,9 @@ impl Script<'_> {
             let ctx = &mut Context::new(typer, expr.span, errors, table);
             expr.constrain(ctx)
         });
-        self.ast.fundefs.iter_mut().for_each(|(id, fundef)| {
-            let ctx = &mut Context::new(typer, fundef.body.span, errors, table);
-            (id, fundef).constrain(ctx);
+        self.ast.for_each_fun(|fun| {
+            let ctx = &mut Context::new(typer, fun.body.span, errors, table);
+            fun.constrain(ctx);
         });
     }
 }
@@ -179,15 +185,18 @@ trait Constrain<'i> {
     fn constrain(&mut self, context: &mut Context<'i>);
 }
 
-impl Constrain<'_> for (&Ident, &mut FunDef) {
+impl Constrain<'_> for FunDef {
     /// Constrains the types of a function based on its signature and body.
     fn constrain(&mut self, ctx: &mut Context<'_>) {
-        let (id, fundef) = self;
-        let tv = ctx.table.get_decl(&id).tv;
-        let ty = ctx.typer.lookup(tv);
-        if let Fun(_, ret_tv) = ty.kind {
-            ctx.unify(fundef.body.tv, ret_tv)
-        }
+        let tv = ctx.table.get_decl(&self.id).tv;
+        let ptys = self
+            .params
+            .iter()
+            .map(|id| ctx.table.get_decl(id).tv)
+            .collect();
+        let rty = self.body.tv;
+        let fty = Fun(ptys, rty);
+        ctx.unify(tv, fty);
     }
 }
 
@@ -284,7 +293,7 @@ impl Constrain<'_> for Expr {
                 }
                 Pipe => todo!(),
                 Seq => ctx.unify(self.tv, r.tv),
-                BinOpErr => return,
+                BinOpErr => {}
             },
             UnOp(kind, e) => match kind {
                 Not => {
@@ -320,13 +329,13 @@ impl Constrain<'_> for Expr {
                     // * Tasks are values which makes things harder
                     //   * Either do some sophisticated type inference
                     //   * Or maybe represent them as functions
-                    let param_tvs = args.into_iter().map(|arg| arg.tv).collect();
+                    let param_tvs = args.iter().map(|arg| arg.tv).collect();
                     ctx.unify(e.tv, Fun(param_tvs, self.tv));
                 }
                 Emit => {
                     ctx.unify(self.tv, Unit);
                 }
-                UnOpErr => return,
+                UnOpErr => {}
             },
             If(c, t, e) => {
                 ctx.unify(c.tv, Bool);
@@ -343,7 +352,7 @@ impl Constrain<'_> for Expr {
             }
             Match(_, _) => {}
             Loop(_, _) => todo!(),
-            ExprErr => return,
+            ExprErr => {}
         }
     }
 }

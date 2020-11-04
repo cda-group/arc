@@ -4,19 +4,19 @@ use chrono::Duration;
 use flat_map::flat_map::FlatMap;
 use lasso::Spur;
 use spanned_derive::{MaybeSpanned, Spanned};
-use std::collections::HashMap;
 
+pub type HashMap<K, V> = indexmap::map::IndexMap<K, V>;
 pub type ByteIndex = usize;
 
 pub struct Spanned<T>(pub ByteIndex, pub T, pub ByteIndex);
 
 pub type SymbolBuf<'i> = &'i str;
 
-#[derive(Spanned, Eq, Ord, Clone, Copy, Debug, Educe)]
-#[educe(PartialEq, PartialOrd)]
+#[derive(Constructor, Spanned, Eq, Clone, Copy, Debug, Educe)]
+#[educe(PartialEq, PartialOrd, Ord)]
 pub struct Symbol {
     pub key: Spur,
-    #[educe(PartialEq(ignore), PartialOrd(ignore))]
+    #[educe(PartialEq(ignore), PartialOrd(ignore), Ord(ignore))]
     pub span: Span,
 }
 
@@ -34,10 +34,9 @@ pub struct SyntaxTree {
     pub taskdefs: HashMap<Ident, TaskDef>,
     pub tydefs: HashMap<Ident, TypeDef>,
     pub fundefs: HashMap<Ident, FunDef>,
-    pub body: Expr,
 }
 
-#[derive(Spanned)]
+#[derive(Constructor, Spanned)]
 pub struct Setting {
     pub kind: SettingKind,
     pub span: Span,
@@ -107,19 +106,36 @@ pub struct TaskDef {
     pub fundefs: HashMap<Ident, FunDef>,
 }
 
-#[derive(Constructor)]
 pub struct Decl {
     pub sym: Symbol,
     pub tv: TypeVar,
+    pub settings: Option<Vec<Setting>>,
     pub kind: DeclKind,
 }
 
+impl Decl {
+    pub fn new(sym: Symbol, tv: TypeVar, kind: DeclKind) -> Self {
+        Self {
+            sym,
+            tv,
+            kind,
+            settings: None,
+        }
+    }
+
+    #[inline(always)]
+    pub fn with_settings(mut self, settings: Vec<Setting>) -> Self {
+        self.settings = Some(settings);
+        self
+    }
+}
+
 pub enum DeclKind {
-    FunDecl { settings: Vec<Setting> },
+    FunDecl,
     VariantDecl,
     VarDecl,
     TypeDecl,
-    TaskDecl { settings: Vec<Setting> },
+    TaskDecl,
     SinkDecl,
     SourceDecl,
 }
@@ -132,14 +148,14 @@ pub struct Expr {
 }
 
 impl Expr {
-    pub fn from(Spanned(l, kind, r): Spanned<ExprKind>, typer: &mut Typer) -> Expr {
+    pub fn from(Spanned(l, kind, r): Spanned<ExprKind>, typer: &mut Typer) -> Self {
         let span = Span::new(l as u32, r as u32);
         let tv = typer.fresh();
-        Expr { kind, tv, span }
+        Self { kind, tv, span }
     }
     /// Moves an expression out of its mutable reference, replacing it with an error expression
-    pub fn take(&mut self) -> Expr {
-        std::mem::replace(self, Expr::new(ExprErr, TypeVar(0), Span::new(0, 0)))
+    pub fn take(&mut self) -> Self {
+        std::mem::replace(self, Self::new(ExprErr, TypeVar(0), Span::new(0, 0)))
     }
 }
 
@@ -168,7 +184,7 @@ pub enum ExprKind {
     ExprErr,
 }
 
-#[derive(Debug, Clone, Spanned)]
+#[derive(Debug, Clone, Spanned, Constructor)]
 pub struct Pat {
     pub kind: PatKind,
     pub span: Span,
@@ -226,16 +242,22 @@ pub struct Type {
     pub kind: TypeKind,
 }
 
-impl Type {
-    pub fn new() -> Type {
+impl Default for Type {
+    fn default() -> Self {
         let kind = Unknown;
         Type { kind }
     }
 }
 
+impl Type {
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
+
 impl From<TypeKind> for Type {
-    fn from(kind: TypeKind) -> Type {
-        Type { kind }
+    fn from(kind: TypeKind) -> Self {
+        Self { kind }
     }
 }
 
@@ -278,7 +300,7 @@ impl Into<Type> for ScalarKind {
     }
 }
 
-#[derive(Debug, Eq, Clone, Educe, MaybeSpanned)]
+#[derive(Debug, Eq, Clone, Educe, MaybeSpanned, Constructor)]
 #[educe(PartialEq)]
 pub struct Shape {
     pub dims: Vec<Dim>,
@@ -296,11 +318,7 @@ pub struct Dim {
 
 impl Dim {
     pub fn is_val(&self) -> bool {
-        if let DimVal(_) = self.kind {
-            true
-        } else {
-            false
-        }
+        matches!(self.kind, DimVal(_))
     }
 }
 
@@ -321,6 +339,14 @@ pub enum DimOpKind {
     DimDiv,
 }
 
+impl Default for Dim {
+    fn default() -> Self {
+        let kind = DimVar(0);
+        let span = None;
+        Self { kind, span }
+    }
+}
+
 impl Dim {
     pub fn known(size: i32, span: Span) -> Dim {
         let kind = DimVal(size);
@@ -328,10 +354,8 @@ impl Dim {
         Dim { kind, span }
     }
 
-    pub fn new() -> Dim {
-        let kind = DimVar(0);
-        let span = None;
-        Dim { kind, span }
+    pub fn new() -> Self {
+        Self::default()
     }
 }
 

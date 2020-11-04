@@ -17,24 +17,13 @@ criterion_group!(
 
 criterion_main!(benches);
 
-fn setup() -> Opt {
-    Opt {
-        debug: false,
-        mlir: false,
-        verbose: false,
-        subcmd: SubCmd::Lib,
-        connectors: Vec::new(),
-        check: false,
-    }
-}
-
 fn end_to_end(criterion: &mut Criterion) {
     let mut group = criterion.benchmark_group("end_to_end");
-    let ref opt = setup();
+    let opt = &Opt::default();
     group.sample_size(100);
     for (i, script) in SCRIPTS_DIR.files().iter().enumerate() {
-        let ref path = script.path();
-        let ref source = script.contents_utf8().expect("Failed reading file");
+        let path = &script.path();
+        let source = &script.contents_utf8().expect("Failed reading file");
         let id = BenchmarkId::new(path.to_str().unwrap(), i);
         group.bench_with_input(id, source, |bench, source| {
             bench.iter(|| compile(black_box(source), black_box(opt)))

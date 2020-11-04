@@ -91,10 +91,10 @@ pub fn derive_maybe_spanned(input: TokenStream) -> TokenStream {
 }
 
 fn split_ids_tys(data: &DataStruct) -> (Vec<&Ident>, Vec<&Type>) {
-    let fields = data.fields.iter().filter(|field| match &field.ident {
-        Some(id) if id.to_string() != "span" => true,
-        _ => false,
-    });
+    let fields = data
+        .fields
+        .iter()
+        .filter(|field| matches!(&field.ident, Some(id) if *id != "span"));
     let ids = fields.clone().filter_map(|field| field.ident.as_ref());
     let tys = fields.clone().map(|field| &field.ty);
     (ids.collect(), tys.collect())

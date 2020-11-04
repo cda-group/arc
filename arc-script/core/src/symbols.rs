@@ -53,87 +53,92 @@ use lasso::Rodeo;
 /// Maps symbolic identifiers to their declarations
 #[derive(Default)]
 pub struct SymbolTable {
-    /// Maps Ident(ifiers) to declarations
+    /// Maps identifiers (indices) to declarations.
     pub decls: Vec<Decl>,
-    /// Maps SymbolKeys to SymbolNames, i.e., stores strings outside of the AST.
+    /// Maps symbols to symbol buffers, i.e., stores strings outside of the AST.
     pub intern: Rodeo,
 }
 
 impl SymbolTable {
-<<<<<<< HEAD
-    pub fn new() -> Self { Self { decls: Vec::new() } }
-=======
+    /// Creates a new Symbol Table
     pub fn new() -> Self {
-        Self {
-            decls: Vec::new(),
-            intern: Rodeo::new(),
-        }
+        Self::default()
     }
->>>>>>> a2b70c8... Add interner for uniquing strings
 
+    /// Inserts a new declaration into the symbol table and returns its identifier
     pub fn insert(&mut self, decl: Decl) -> Ident {
         let id = Ident(self.decls.len());
         self.decls.push(decl);
         id
     }
 
+    /// Interns a symbol buffer and returns its symbol.
     pub fn intern(&mut self, Spanned(l, buf, r): Spanned<SymbolBuf>) -> Symbol {
         let span = Span::new(l as u32, r as u32);
         let key = self.intern.get_or_intern(buf);
         Symbol { key, span }
     }
 
+    /// Resolves a symbol into a symbol buffer.
     pub fn resolve(&self, symbol: &Symbol) -> SymbolBuf {
         self.intern.resolve(&symbol.key)
     }
 
+    /// Generates a new variable with type `tv`.
+    /// The span of the symbol is unknown (for now).
     pub fn genvar(&mut self, tv: TypeVar) -> Ident {
         let id = Ident(self.decls.len());
         let key = self.intern.get_or_intern(&format!("x{}", id.0));
         let span = Span::new(0, 0);
-        let sym = Symbol { key, span };
+        let sym = Symbol::new(key, span);
         self.decls.push(Decl::new(sym, tv, VarDecl));
         id
     }
 
+    /// Retrieves the mutable declaration of an identifier.
     pub fn get_decl_mut(&mut self, ident: &Ident) -> &mut Decl {
         self.decls.get_mut(ident.0).unwrap()
     }
 
-    pub fn get_decl_name(&self, ident: &Ident) -> &str {
-        self.resolve(&self.get_decl(&ident).sym)
-    }
-
+    /// Retrieves the declaration of an identifier.
     pub fn get_decl(&self, ident: &Ident) -> &Decl {
         self.decls.get(ident.0).unwrap()
     }
 
+    /// Retrieves the name of a declaration of an identifier.
+    pub fn get_decl_name(&self, ident: &Ident) -> &str {
+        self.resolve(&self.get_decl(&ident).sym)
+    }
+
+    /// Debug-prints a symbol table.
     #[rustfmt::skip]
     pub fn debug(&self) {
         for (i, decl) in self.decls.iter().enumerate() {
             let name = self.intern.resolve(&decl.sym.key);
             match decl.kind {
-                VarDecl         => println!("[var]     {} => {}", i, name),
-                VariantDecl     => println!("[variant] {} => {}", i, name),
-                SourceDecl      => println!("[source]  {} => {}", i, name),
-                SinkDecl        => println!("[sink]    {} => {}", i, name),
-                FunDecl { .. }  => println!("[fun]     {} => {}", i, name),
-                TypeDecl        => println!("[type]    {} => {}", i, name),
-                TaskDecl { .. } => println!("[task]    {} => {}", i, name),
+                VarDecl     => println!("[var]     {} => {}", i, name),
+                VariantDecl => println!("[variant] {} => {}", i, name),
+                SourceDecl  => println!("[source]  {} => {}", i, name),
+                SinkDecl    => println!("[sink]    {} => {}", i, name),
+                FunDecl     => println!("[fun]     {} => {}", i, name),
+                TypeDecl    => println!("[type]    {} => {}", i, name),
+                TaskDecl    => println!("[task]    {} => {}", i, name),
             }
         }
     }
 }
 
 pub type Scope = Vec<(Symbol, Ident)>;
+
 pub struct SymbolStack {
     scopes: Vec<Scope>,
-    /// The innermost scope where item-identifiers are stored.
+    /// The innermost scope where item-identifiers are stored. This is needed for definitions
+    /// which contain definitions, for example operators.
     item_scopes: usize,
 }
 
-impl SymbolStack {
-    pub fn new() -> Self {
+impl Default for SymbolStack {
+    fn default() -> Self {
         let mut scopes = Vec::new();
         let globals = Vec::new();
         scopes.push(globals);
@@ -143,7 +148,15 @@ impl SymbolStack {
             item_scopes,
         }
     }
+}
 
+impl SymbolStack {
+    /// Returns a new symbol stack.
+    pub fn new() -> Self {
+        Self::default()
+    }
+
+    /// Returns the identifier of a symbol.
     pub fn lookup(&self, needle: Symbol) -> Option<Ident> {
         self.scopes.iter().rev().find_map(|scope| {
             scope
@@ -177,7 +190,9 @@ impl SymbolStack {
         self.scopes.last_mut().unwrap()
     }
 
-    pub fn push_scope(&mut self) { self.scopes.push(Vec::new()) }
+    pub fn push_scope(&mut self) {
+        self.scopes.push(Vec::new())
+    }
 
     pub fn pop_scope(&mut self) {
         self.scopes.pop();

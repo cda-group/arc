@@ -1,5 +1,5 @@
 use {
-    crate::{info::*, prelude::*, pretty::*},
+    crate::prelude::*,
     codespan_reporting::{
         diagnostic::{self, Label},
         files,
@@ -40,8 +40,7 @@ impl<'i> Script<'i> {
     pub fn emit_as_str(&self) -> String {
         let mut writer = Buffer::ansi();
         self.emit(&mut writer).unwrap();
-        let writer = writer.into_inner();
-        format!("{}", str::from_utf8(&writer).unwrap().to_owned())
+        str::from_utf8(&writer.into_inner()).unwrap().to_owned()
     }
 }
 
@@ -140,8 +139,8 @@ impl CompilerError {
                 .with_message("Type mismatch")
                 .with_labels(vec![Label::primary((), *span).with_message(format!(
                     "{} != {}",
-                    lhs.brief(info),
-                    rhs.brief(info)
+                    lhs.pretty(&info.into()),
+                    rhs.pretty(&info.into())
                 ))]),
             CompilerError::VarNotFound { name, span } => Diagnostic::error()
                 .with_message(format!(
@@ -176,7 +175,9 @@ impl CompilerError {
                 .with_labels(vec![Label::primary((), *span)]),
             CompilerError::DataflowTypeInOperator { span, ty } => Diagnostic::error()
                 .with_message("Cannot use dataflow types inside operators.")
-                .with_labels(vec![Label::primary((), *span).with_message(ty.brief(info))]),
+                .with_labels(vec![
+                    Label::primary((), *span).with_message(ty.pretty(&info.into()).to_string())
+                ]),
         }
     }
 }

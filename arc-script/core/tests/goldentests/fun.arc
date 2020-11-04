@@ -3,20 +3,44 @@ fun max(a: i32, b: i32) {
     if c { a } else { b }
 }
 
-max(1,2)
+fun test() {
+  max(1,2)
+}
 
--- args: --verbose --check file
--- expected stdout:
--- fun max(a: i32, b: i32) {
---     (let x7: bool = ((a):i32 > (b):i32):bool in
---     (let x8: i32 = (if (x7):bool {
---         (a):i32
---     } else {
---         (b):i32
---     }):i32 in
---     (x8):i32):i32):i32
--- }
--- (let x4: i32 = (1):i32 in
--- (let x5: i32 = (2):i32 in
--- (let x6: i32 = ((max):(i32, i32) -> i32((x4):i32, (x5):i32)):i32 in
--- (x6):i32):i32):i32):i32
+--[ARC] args: --verbose --check file
+--[ARC] expected stdout:
+--[ARC] fun max(a: i32, b: i32) {
+--[ARC]     (let x5: bool = ((a):i32 > (b):i32):bool in
+--[ARC]     (let x6: i32 = (if (x5):bool {
+--[ARC]         (a):i32
+--[ARC]     } else {
+--[ARC]         (b):i32
+--[ARC]     }):i32 in
+--[ARC]     (x6):i32):i32):i32
+--[ARC] }
+--[ARC] 
+--[ARC] fun test() {
+--[ARC]     (let x7: i32 = (1):i32 in
+--[ARC]     (let x8: i32 = (2):i32 in
+--[ARC]     (let x9: i32 = ((max):(i32, i32) -> i32((x7):i32, (x8):i32)):i32 in
+--[ARC]     (x9):i32):i32):i32):i32
+--[ARC] }
+
+--[MLIR] args: --mlir --check file
+--[MLIR] expected stdout:
+--[MLIR] func @%x_2(i32,i32) -> (i32) {
+--[MLIR]     %x_5 = "arc.cmpi "gt"  (%x_0,%x_1) : (i32,i32) -> i1
+--[MLIR]     %x_6 = "arc.if"(%x_5) ({
+--[MLIR]         "arc.yield"(%x_0) : (i32) -> ()
+--[MLIR]     },{
+--[MLIR]         "arc.yield"(%x_1) : (i32) -> ()
+--[MLIR]     }) : (i1) -> i32
+--[MLIR]     "std.return"(%x_6) : (i32) -> ()
+--[MLIR] }
+--[MLIR] func @%x_4() -> (i32) {
+--[MLIR]     %x_7 = "arc.constant"() { value = 1 : i32 }: () -> i32
+--[MLIR]     %x_8 = "arc.constant"() { value = 2 : i32 }: () -> i32
+--[MLIR]     %x_9 = call @%x_2(%x_7,%x_8) (i32,i32) -> i32
+--[MLIR]     "std.return"(%x_9) : (i32) -> ()
+--[MLIR] }
+

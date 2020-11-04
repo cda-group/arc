@@ -2,6 +2,9 @@ use goldentests::{TestConfig, TestResult};
 
 #[test]
 fn run_golden_tests() -> TestResult<()> {
-    let config = TestConfig::new("../target/debug/arc-script", "tests/goldentests", "-- ")?;
-    config.run_tests()
+    // Pretty Printer tests are prefixed with `--*`
+    TestConfig::new("../target/debug/arc-script", "tests/goldentests", "--[ARC] ")?.run_tests()?;
+    // MLIR tests are prefixed with `--*`
+    TestConfig::new("../target/debug/arc-script", "tests/goldentests", "--[MLIR] ")?.run_tests()?;
+    Ok(())
 }

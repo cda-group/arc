@@ -1,7 +1,6 @@
 use {
   crate::prelude::*,
   crate::parser::*,
-  std::collections::HashMap,
   lalrpop_util::ErrorRecovery,
   chrono::Duration,
 };
@@ -201,7 +200,8 @@ Single<T>:         Vec<T> = T => vec![<>];
 Box<T>:            Box<T> = T => Box::new(<>);
 Err:               ()     = ! => errors.push(<>.into());
 Spanned<T>:        Spanned<T> = @L T @R => Spanned(<>);
-Paren<T>:          T = "(" <T> ")";
+Par<T>:            T = "(" <T> ")";
+ParVec<T>:         T = { "()" => Vec::new(), Par<T> };
 
 //=============================================================================
 // Fields & Variants
@@ -223,7 +223,7 @@ Fields<V>: VecMap<Symbol, V> = VecNonEmpty<Field<V>> => {
 };
 
 #[inline]
-Variant<V> = <Symbol> <Paren<V>>;
+Variant<V> = <Symbol> <Par<V>>;
 
 Variants<V>: VecMap<Symbol, V> = VecNonEmpty<Variant<V>> => {
   let mut map = VecMap::new();
@@ -329,7 +329,7 @@ ParseTime: CompilerResult<Duration> = {
 // Non-Terminals
 //=============================================================================
 
-pub Script = Def* <Body>;
+pub Script = Def*;
 
 //=============================================================================
 // Definitions
@@ -348,6 +348,7 @@ Def: () = {
     let (id, fundef) = <>;
     fundefs.insert(id, fundef);
   },
+  Err => (),
 };
 
 //=============================================================================
@@ -359,8 +360,8 @@ Settings: Vec<Setting> = ("#" "[" <Vec<Setting>> "]")? => <>.unwrap_or_else(Vec:
 Setting: Setting = Spanned<SettingKind> => Setting::from(<>);
 
 SettingKind: SettingKind = {
-  Symbol Paren<LitKind> => Calibrate(<>),
-  Symbol                => Activate(<>),
+  Symbol Par<LitKind> => Calibrate(<>),
+  Symbol              => Activate(<>),
 };
 
 //=============================================================================
@@ -383,10 +384,10 @@ Param = <Symbol> ":" <Type>;
 Sinks   = Variants<Type>;
 Sources = Variants<Type>;
 
-FunDecl: (Ident, Vec<Ident>) = <Settings> "fun" <Symbol> "(" <Params> ")" => {
+FunDecl: (Ident, Vec<Ident>) = <Settings> "fun" <Symbol> <ParVec<Params>> => {
   let (settings, sym, param_ids) = (<>);
   let tv = typer.fresh();
-  let id = table.insert(Decl::new(sym, tv, FunDecl { settings }));
+  let id = table.insert(Decl::new(sym, tv, FunDecl));
   if let Err(err) = stack.bind_item(sym, id) {
       errors.push(err.into());
   }
@@ -400,10 +401,10 @@ FunDef: (Ident, FunDef) = <FunDecl> "{" <Body>  "}" => {
 };
 
 TaskDecl: (Ident, Vec<Ident>, Vec<Ident>, Vec<Ident>) =
-  <Settings> "task" <Symbol> "(" <Params> ")" "(" <Sources> ")" "->" "(" <Sinks> ")" => {
+  <Settings> "task" <Symbol> <ParVec<Params>> "(" <Sources> ")" "->" "(" <Sinks> ")" => {
   let (settings, sym, param_ids, sources, sinks) = (<>);
   let tv = typer.fresh();
-  let id = table.insert(Decl::new(sym, tv, TaskDecl { settings }));
+  let id = table.insert(Decl::new(sym, tv, TaskDecl).with_settings(settings));
   stack.push_item_scope();
   let source_ids = sources.into_iter().map(|(sym, tv)| {
       let id = table.insert(Decl::new(sym, tv, VariantDecl));
@@ -553,9 +554,9 @@ Op8: UnOpKind = {
   Cast,
 };
 
-Cast:    UnOpKind = "as" <Type>        => Cast(<>);
-Access:  UnOpKind = "." <Symbol>       => Access(<>);
-Call:    UnOpKind = "(" <Vec<Arg>> ")" => Call(<>);
+Cast:    UnOpKind = "as" <Type>      => Cast(<>);
+Access:  UnOpKind = "." <Symbol>     => Access(<>);
+Call:    UnOpKind = ParVec<Vec<Arg>> => Call(<>);
 Project: UnOpKind = ParseIndex => {
   <>.map(Project)
     .map_err(|err| errors.push(err.into()))
@@ -597,7 +598,7 @@ ExprKind9:  ExprKind =                 UnaryPrefix<Op6, ExprKind10>;
 ExprKind10: ExprKind = BinaryInfixRightAssociative<Op7, ExprKind11>;
 ExprKind11: ExprKind =                UnaryPostfix<Op8, ExprKind12>;
 ExprKind12: ExprKind = {
-  Paren<ExprKind0>,
+  Par<ExprKind0>,
   Lit,
   Var,
   ConsArray,
@@ -701,7 +702,7 @@ Stream:   TypeKind = "Stream" "[" <Type> "]"         => Stream(<>);
 Vector:   TypeKind = "Vec" "[" <Type> "]"            => Vector(<>);
 Fun:      TypeKind = <FunInput> "->" <Type>          => Fun(<>);
 
-FunInput = { Single<Type>, Paren<<SepNonEmpty<Type, "->">>> };
+FunInput = { Single<Type>, Par<<SepNonEmpty<Type, "->">>> };
 
 Nominal: TypeKind = Symbol => {
   stack.lookup(<>)

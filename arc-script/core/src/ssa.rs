@@ -9,7 +9,6 @@ trait Ssa {
 impl Script<'_> {
     pub fn into_ssa(mut self) -> Self {
         let info = &mut self.info;
-        self.ast.body = self.ast.body.into_ssa(info);
         self.ast.fundefs = self
             .ast
             .fundefs
@@ -30,7 +29,7 @@ impl Expr {
         ctx.into_iter().rev().fold(var, |acc, (id, expr)| Expr {
             tv: acc.tv,
             span: acc.span,
-            kind: Let(id, expr.into(), acc.into()).into(),
+            kind: Let(id, expr.into(), acc.into()),
         })
     }
 }
@@ -89,10 +88,7 @@ impl Ssa for Expr {
 impl Expr {
     /// Returns true if an expression has no subexpressions
     fn is_imm(&self) -> bool {
-        match &self.kind {
-            Var(_) | Lit(_) => true,
-            _ => false,
-        }
+        matches!(&self.kind, Var(_) | Lit(_))
     }
 }
 

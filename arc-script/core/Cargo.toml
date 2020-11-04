@@ -29,14 +29,15 @@ name           = "bench"
 harness        = false
 
 [features]
-default     = []
+default     = ["cli"]
 all         = ["provider", "manifest", "incremental", "lsp", "repl"]
 shaper      = ["z3"]
 repl        = ["linefeed"]
 provider    = ["reqwest", "http", "http-serde", "tempfile", "quick-protobuf", "pb-rs", "avro-rs", "glob"]
 manifest    = ["toml", "tempfile", "http", "http-serde"]
 incremental = ["salsa"]
-lsp         = ["tower-lsp", "tokio", "codespan-lsp", "trie-rs", "lazy_static", "async-trait"]
+lsp         = ["tower-lsp", "tokio", "codespan-lsp", "trie-rs", "lazy_static", "async-trait", "serde_json"]
+cli         = ["clap", "serde_json"]
 
 [dependencies]
 spanned-derive     = { version = "0.1.0", path = "../macros/spanned-derive" }
@@ -50,16 +51,19 @@ derive_more        = { version = "0.99.11", default-features = false, features =
 num-traits         = "0.2.12"
 arrayvec           = "0.5.1"
 smartstring        = "0.2.5"
-educe              = { version = "0.4.13", default-features = false, features = ["Hash", "PartialEq", "PartialOrd"] }
+educe              = { version = "0.4.13", default-features = false, features = ["Hash", "PartialEq", "PartialOrd", "Ord"] }
 chrono             = "0.4.19"
 lasso              = "0.3.1"
 anyhow             = "1.0.33"
-clap               = { git = "https://github.com/clap-rs/clap/", features = ["derive"]}
 serde              = "1.0.117"
 serde_derive       = "1.0.117"
-serde_json         = "1.0.59"
 flat_map           = "0.0.10"
 indoc              = "1.0.3"
+indexmap           = "1.6.0"
+
+# -- Feature: cli
+clap               = { optional = true, git = "https://github.com/clap-rs/clap/", features = ["derive"]}
+serde_json         = { optional = true, version = "1.0.59" }
 
 # -- Feature: shaper
 z3                 = { optional = true, version = "0.6.0" }

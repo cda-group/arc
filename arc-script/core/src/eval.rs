@@ -10,19 +10,19 @@ use Value::*;
 #[allow(unused)]
 #[derive(Clone, Debug)]
 enum Value {
-    I8(i8),
-    I16(i16),
-    I32(i32),
-    I64(i64),
-    F32(f32),
-    F64(f64),
-    Bool(bool),
-    Unit,
-    Fun,
-    Vector(Vec<Value>),
-    Tuple(Vec<Value>),
-    StagedPipe(Box<Value>, Box<Value>),
-    ValueErr,
+    VI8(i8),
+    VI16(i16),
+    VI32(i32),
+    VI64(i64),
+    VF32(f32),
+    VF64(f64),
+    VBool(bool),
+    VUnit,
+    VFun,
+    VVector(Vec<Value>),
+    VTuple(Vec<Value>),
+    VPipe(Box<Value>, Box<Value>),
+    VErr,
 }
 
 #[derive(Default, Debug)]
@@ -68,7 +68,11 @@ impl Script<'_> {
             dataflow: &mut dataflow,
             typer: info.typer.get_mut(),
         };
-        let _ = ast.body.eval(&mut ctx);
+        // TODO: Currently a hacky solution
+        // which just evaluates the last function of the script
+        if let Some(fundef) = ast.fundefs.values().last() {
+            fundef.body.eval(&mut ctx);
+        }
         dataflow
     }
 }
@@ -78,22 +82,22 @@ impl Expr {
     fn eval(&self, ctx: &mut Context) -> Value {
         match &self.kind {
             Lit(kind) => match kind {
-                LitI8(v) => I8(*v),
-                LitI16(v) => I16(*v),
-                LitI32(v) => I32(*v),
-                LitI64(v) => I64(*v),
-                LitF32(v) => F32(*v),
-                LitF64(v) => F64(*v),
-                LitBool(v) => Bool(*v),
-                LitUnit => Unit,
-                LitErr => ValueErr,
+                LitI8(v) => VI8(*v),
+                LitI16(v) => VI16(*v),
+                LitI32(v) => VI32(*v),
+                LitI64(v) => VI64(*v),
+                LitF32(v) => VF32(*v),
+                LitF64(v) => VF64(*v),
+                LitBool(v) => VBool(*v),
+                LitUnit => VUnit,
+                LitErr => VErr,
                 LitTime(_) => todo!(),
             },
             Var(id) => {
                 if let Some(val) = ctx.stack.lookup(*id) {
                     val.clone()
                 } else {
-                    ValueErr
+                    VErr
                 }
             }
             Let(id, e1, e2) => {
@@ -117,9 +121,9 @@ impl Expr {
             If(c, t, e) => {
                 let c = c.eval(ctx);
                 match (c, t, e) {
-                    (Bool(c), t, e) if c => t.eval(ctx),
-                    (Bool(c), t, e) if !c => e.eval(ctx),
-                    _ => ValueErr,
+                    (VBool(c), t, e) if c => t.eval(ctx),
+                    (VBool(c), t, e) if !c => e.eval(ctx),
+                    _ => VErr,
                 }
             }
             Match(expr, clauses) => todo!(),
@@ -128,30 +132,28 @@ impl Expr {
                 let v = expr.eval(ctx);
                 match kind {
                     Not => match v {
-                        Bool(v) => Bool(!v),
-                        _ => ValueErr,
+                        VBool(v) => VBool(!v),
+                        _ => VErr,
                     },
                     Neg => match v {
-                        I8(v) => I8(-v),
-                        I16(v) => I16(-v),
-                        I32(v) => I32(-v),
-                        I64(v) => I64(-v),
-                        F32(v) => F32(-v),
-                        F64(v) => F64(-v),
-                        _ => ValueErr,
+                        VI8(v) => VI8(-v),
+                        VI16(v) => VI16(-v),
+                        VI32(v) => VI32(-v),
+                        VI64(v) => VI64(-v),
+                        VF32(v) => VF32(-v),
+                        VF64(v) => VF64(-v),
+                        _ => VErr,
                     },
                     Call(exprs) => match v {
-                        Fun => todo!(),
-                        _ => ValueErr,
+                        VFun => todo!(),
+                        _ => VErr,
                     },
                     Project(index) => match v {
-                        Tuple(values) => todo!(),
-                        _ => ValueErr,
+                        VTuple(values) => todo!(),
+                        _ => VErr,
                     },
-                    Access(field) => match v {
-                        _ => todo!(),
-                    },
-                    UnOpErr | Cast(_) | Emit => ValueErr,
+                    Access(field) => todo!(),
+                    UnOpErr | Cast(_) | Emit => VErr,
                 }
             }
             BinOp(lhs, kind, rhs) => {
@@ -159,93 +161,93 @@ impl Expr {
                 let rhs = rhs.eval(ctx);
                 match (lhs, kind, rhs) {
                     // Add
-                    (I8(l), Add, I8(r)) => I8(l + r),
-                    (I16(l), Add, I16(r)) => I16(l + r),
-                    (I32(l), Add, I32(r)) => I32(l + r),
-                    (I64(l), Add, I64(r)) => I64(l + r),
-                    (F32(l), Add, F32(r)) => F32(l + r),
-                    (F64(l), Add, F64(r)) => F64(l + r),
+                    (VI8(l), Add, VI8(r)) => VI8(l + r),
+                    (VI16(l), Add, VI16(r)) => VI16(l + r),
+                    (VI32(l), Add, VI32(r)) => VI32(l + r),
+                    (VI64(l), Add, VI64(r)) => VI64(l + r),
+                    (VF32(l), Add, VF32(r)) => VF32(l + r),
+                    (VF64(l), Add, VF64(r)) => VF64(l + r),
                     // Sub
-                    (I8(l), Sub, I8(r)) => I8(l - r),
-                    (I16(l), Sub, I16(r)) => I16(l - r),
-                    (I32(l), Sub, I32(r)) => I32(l - r),
-                    (I64(l), Sub, I64(r)) => I64(l - r),
-                    (F32(l), Sub, F32(r)) => F32(l - r),
-                    (F64(l), Sub, F64(r)) => F64(l - r),
+                    (VI8(l), Sub, VI8(r)) => VI8(l - r),
+                    (VI16(l), Sub, VI16(r)) => VI16(l - r),
+                    (VI32(l), Sub, VI32(r)) => VI32(l - r),
+                    (VI64(l), Sub, VI64(r)) => VI64(l - r),
+                    (VF32(l), Sub, VF32(r)) => VF32(l - r),
+                    (VF64(l), Sub, VF64(r)) => VF64(l - r),
                     // Mul
-                    (I8(l), Mul, I8(r)) => I8(l * r),
-                    (I16(l), Mul, I16(r)) => I16(l * r),
-                    (I32(l), Mul, I32(r)) => I32(l * r),
-                    (I64(l), Mul, I64(r)) => I64(l * r),
-                    (F32(l), Mul, F32(r)) => F32(l * r),
-                    (F64(l), Mul, F64(r)) => F64(l * r),
+                    (VI8(l), Mul, VI8(r)) => VI8(l * r),
+                    (VI16(l), Mul, VI16(r)) => VI16(l * r),
+                    (VI32(l), Mul, VI32(r)) => VI32(l * r),
+                    (VI64(l), Mul, VI64(r)) => VI64(l * r),
+                    (VF32(l), Mul, VF32(r)) => VF32(l * r),
+                    (VF64(l), Mul, VF64(r)) => VF64(l * r),
                     // Div
-                    (I8(l), Div, I8(r)) => I8(l / r),
-                    (I16(l), Div, I16(r)) => I16(l / r),
-                    (I32(l), Div, I32(r)) => I32(l / r),
-                    (I64(l), Div, I64(r)) => I64(l / r),
-                    (F32(l), Div, F32(r)) => F32(l / r),
-                    (F64(l), Div, F64(r)) => F64(l / r),
+                    (VI8(l), Div, VI8(r)) => VI8(l / r),
+                    (VI16(l), Div, VI16(r)) => VI16(l / r),
+                    (VI32(l), Div, VI32(r)) => VI32(l / r),
+                    (VI64(l), Div, VI64(r)) => VI64(l / r),
+                    (VF32(l), Div, VF32(r)) => VF32(l / r),
+                    (VF64(l), Div, VF64(r)) => VF64(l / r),
                     // Pow
-                    (I8(l), Pow, I32(r)) => I8(l.pow(r as u32)),
-                    (I16(l), Pow, I32(r)) => I16(l.pow(r as u32)),
-                    (I32(l), Pow, I32(r)) => I32(l.pow(r as u32)),
-                    (I64(l), Pow, I32(r)) => I64(l.pow(r as u32)),
-                    (F32(l), Pow, I32(r)) => F32(l.powi(r)),
-                    (F64(l), Pow, I32(r)) => F64(l.powi(r)),
-                    (F32(l), Pow, F32(r)) => F32(l.powf(r)),
-                    (F64(l), Pow, F64(r)) => F64(l.powf(r)),
+                    (VI8(l), Pow, VI32(r)) => VI8(l.pow(r as u32)),
+                    (VI16(l), Pow, VI32(r)) => VI16(l.pow(r as u32)),
+                    (VI32(l), Pow, VI32(r)) => VI32(l.pow(r as u32)),
+                    (VI64(l), Pow, VI32(r)) => VI64(l.pow(r as u32)),
+                    (VF32(l), Pow, VI32(r)) => VF32(l.powi(r)),
+                    (VF64(l), Pow, VI32(r)) => VF64(l.powi(r)),
+                    (VF32(l), Pow, VF32(r)) => VF32(l.powf(r)),
+                    (VF64(l), Pow, VF64(r)) => VF64(l.powf(r)),
                     // Equ
-                    (I8(l), Equ, I8(r)) => Bool(l == r),
-                    (I16(l), Equ, I16(r)) => Bool(l == r),
-                    (I32(l), Equ, I32(r)) => Bool(l == r),
-                    (I64(l), Equ, I64(r)) => Bool(l == r),
-                    (Unit, Equ, Unit) => Bool(true),
+                    (VI8(l), Equ, VI8(r)) => VBool(l == r),
+                    (VI16(l), Equ, VI16(r)) => VBool(l == r),
+                    (VI32(l), Equ, VI32(r)) => VBool(l == r),
+                    (VI64(l), Equ, VI64(r)) => VBool(l == r),
+                    (VUnit, Equ, VUnit) => VBool(true),
                     // Neq
-                    (I8(l), Neq, I8(r)) => Bool(l == r),
-                    (I16(l), Neq, I16(r)) => Bool(l == r),
-                    (I32(l), Neq, I32(r)) => Bool(l == r),
-                    (I64(l), Neq, I64(r)) => Bool(l == r),
-                    (Unit, Neq, Unit) => Bool(false),
+                    (VI8(l), Neq, VI8(r)) => VBool(l == r),
+                    (VI16(l), Neq, VI16(r)) => VBool(l == r),
+                    (VI32(l), Neq, VI32(r)) => VBool(l == r),
+                    (VI64(l), Neq, VI64(r)) => VBool(l == r),
+                    (VUnit, Neq, VUnit) => VBool(false),
                     // Or
-                    (Bool(l), Or, Bool(r)) => Bool(l || r),
+                    (VBool(l), Or, VBool(r)) => VBool(l || r),
                     // And
-                    (Bool(l), And, Bool(r)) => Bool(l && r),
+                    (VBool(l), And, VBool(r)) => VBool(l && r),
                     // Gt
-                    (I8(l), Gt, I8(r)) => Bool(l > r),
-                    (I16(l), Gt, I16(r)) => Bool(l > r),
-                    (I32(l), Gt, I32(r)) => Bool(l > r),
-                    (I64(l), Gt, I64(r)) => Bool(l > r),
-                    (F32(l), Gt, F32(r)) => Bool(l > r),
-                    (F64(l), Gt, F64(r)) => Bool(l > r),
+                    (VI8(l), Gt, VI8(r)) => VBool(l > r),
+                    (VI16(l), Gt, VI16(r)) => VBool(l > r),
+                    (VI32(l), Gt, VI32(r)) => VBool(l > r),
+                    (VI64(l), Gt, VI64(r)) => VBool(l > r),
+                    (VF32(l), Gt, VF32(r)) => VBool(l > r),
+                    (VF64(l), Gt, VF64(r)) => VBool(l > r),
                     // Lt
-                    (I8(l), Lt, I8(r)) => Bool(l < r),
-                    (I16(l), Lt, I16(r)) => Bool(l < r),
-                    (I32(l), Lt, I32(r)) => Bool(l < r),
-                    (I64(l), Lt, I64(r)) => Bool(l < r),
-                    (F32(l), Lt, F32(r)) => Bool(l < r),
-                    (F64(l), Lt, F64(r)) => Bool(l < r),
+                    (VI8(l), Lt, VI8(r)) => VBool(l < r),
+                    (VI16(l), Lt, VI16(r)) => VBool(l < r),
+                    (VI32(l), Lt, VI32(r)) => VBool(l < r),
+                    (VI64(l), Lt, VI64(r)) => VBool(l < r),
+                    (VF32(l), Lt, VF32(r)) => VBool(l < r),
+                    (VF64(l), Lt, VF64(r)) => VBool(l < r),
                     // Geq
-                    (I8(l), Geq, I8(r)) => Bool(l >= r),
-                    (I16(l), Geq, I16(r)) => Bool(l >= r),
-                    (I32(l), Geq, I32(r)) => Bool(l >= r),
-                    (I64(l), Geq, I64(r)) => Bool(l >= r),
-                    (F32(l), Geq, F32(r)) => Bool(l >= r),
-                    (F64(l), Geq, F64(r)) => Bool(l >= r),
+                    (VI8(l), Geq, VI8(r)) => VBool(l >= r),
+                    (VI16(l), Geq, VI16(r)) => VBool(l >= r),
+                    (VI32(l), Geq, VI32(r)) => VBool(l >= r),
+                    (VI64(l), Geq, VI64(r)) => VBool(l >= r),
+                    (VF32(l), Geq, VF32(r)) => VBool(l >= r),
+                    (VF64(l), Geq, VF64(r)) => VBool(l >= r),
                     // Leq
-                    (I8(l), Leq, I8(r)) => Bool(l <= r),
-                    (I16(l), Leq, I16(r)) => Bool(l <= r),
-                    (I32(l), Leq, I32(r)) => Bool(l <= r),
-                    (I64(l), Leq, I64(r)) => Bool(l <= r),
-                    (F32(l), Leq, F32(r)) => Bool(l <= r),
-                    (F64(l), Leq, F64(r)) => Bool(l <= r),
+                    (VI8(l), Leq, VI8(r)) => VBool(l <= r),
+                    (VI16(l), Leq, VI16(r)) => VBool(l <= r),
+                    (VI32(l), Leq, VI32(r)) => VBool(l <= r),
+                    (VI64(l), Leq, VI64(r)) => VBool(l <= r),
+                    (VF32(l), Leq, VF32(r)) => VBool(l <= r),
+                    (VF64(l), Leq, VF64(r)) => VBool(l <= r),
                     // Staged
-                    (l, Pipe, r) => StagedPipe(l.into(), r.into()),
-                    (_, BinOpErr, _) => ValueErr,
+                    (l, Pipe, r) => VPipe(l.into(), r.into()),
+                    (_, BinOpErr, _) => VErr,
                     _ => unreachable!(),
                 }
             }
-            ExprErr => ValueErr,
+            ExprErr => VErr,
         }
     }
 }

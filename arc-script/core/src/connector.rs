@@ -1,4 +1,6 @@
+#![allow(clippy::useless_attribute)]
 use crate::prelude::*;
+
 use serde::Deserialize;
 use std::net::SocketAddr;
 use std::path::PathBuf;

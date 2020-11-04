@@ -7,4 +7,5 @@ pub struct Info<'i> {
     pub errors: Vec<CompilerError>,
     pub source: &'i str,
     pub typer: RefCell<Typer>,
+    pub opt: &'i Opt,
 }

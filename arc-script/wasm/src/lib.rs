@@ -13,12 +13,8 @@ static ALLOC: wee_alloc::WeeAlloc = wee_alloc::WeeAlloc::INIT;
 /// Basic function for compiling and generating source code
 fn compile(source: &str) -> String {
     let opt = Opt {
-        debug: false,
         mlir: true,
-        verbose: false,
-        subcmd: SubCmd::Lib,
-        connectors: Vec::new(),
-        check: false,
+        ..Default::default()
     };
     let script = arc_script::compile(source, &opt);
     if script.info.errors.is_empty() {

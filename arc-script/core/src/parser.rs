@@ -6,7 +6,6 @@ use {
     lalrpop_util::lalrpop_mod,
     num_traits::Num,
     regex::Regex,
-    std::collections::HashMap,
     std::{cell::RefCell, fmt::Display, str::FromStr},
 };
 
@@ -16,7 +15,7 @@ pub type ErrorRecovery<'i> = lalrpop_util::ErrorRecovery<usize, Token<'i>, Compi
 pub type ParseError<'i> = lalrpop_util::ParseError<usize, Token<'i>, CompilerError>;
 
 impl Script<'_> {
-    pub fn parse(source: &str) -> Script<'_> {
+    pub fn parse<'i>(source: &'i str, opt: &'i Opt) -> Script<'i> {
         let mut errors = Vec::new();
         let mut table = SymbolTable::new();
         let mut stack = SymbolStack::new();
@@ -24,7 +23,7 @@ impl Script<'_> {
         let mut taskdefs = HashMap::new();
         let mut tydefs = HashMap::new();
         let mut fundefs = HashMap::new();
-        let body = ScriptParser::new()
+        ScriptParser::new()
             .parse(
                 &mut errors,
                 &mut taskdefs,
@@ -41,8 +40,8 @@ impl Script<'_> {
             .map(|recovery| recovery.error)
             .map(Into::into)
             .collect();
-        let ast = SyntaxTree::new(taskdefs, tydefs, fundefs, body);
-        let info = Info::new(table, errors, source, RefCell::new(typer));
+        let ast = SyntaxTree::new(taskdefs, tydefs, fundefs);
+        let info = Info::new(table, errors, source, RefCell::new(typer), opt);
         Script::new(ast, info)
     }
 }
