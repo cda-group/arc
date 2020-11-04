@@ -1,4 +1,4 @@
-use crate::ast::Ident;
+use crate::prelude::*;
 use petgraph::dot::{Config, Dot};
 use petgraph::prelude::{Directed, Graph, NodeIndex};
 use std::io::Write;

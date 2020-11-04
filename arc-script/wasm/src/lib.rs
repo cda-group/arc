@@ -1,6 +1,6 @@
 mod utils;
 
-use arc_script::opt::*;
+use arc_script::prelude::*;
 use wasm_bindgen::prelude::*;
 use wasm_bindgen::JsCast;
 use xterm_js_rs::addons::fit::FitAddon;
@@ -16,7 +16,7 @@ fn compile(source: &str) -> String {
         mlir: true,
         ..Default::default()
     };
-    let script = arc_script::compile(source, &opt);
+    let script = compiler::compile(source, &opt);
     if script.info.errors.is_empty() {
         script.mlir()
     } else {
