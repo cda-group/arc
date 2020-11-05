@@ -38,6 +38,7 @@ manifest    = ["toml", "tempfile", "http", "http-serde"]
 incremental = ["salsa"]
 lsp         = ["tower-lsp", "tokio", "codespan-lsp", "trie-rs", "lazy_static", "async-trait", "serde_json"]
 cli         = ["clap", "serde_json"]
+mlir        = ["cmake"]
 
 [dependencies]
 spanned-derive     = { version = "0.1.0", path = "../macros/spanned-derive" }
@@ -60,6 +61,7 @@ serde_derive       = "1.0.117"
 flat_map           = "0.0.10"
 indoc              = "1.0.3"
 indexmap           = "1.6.0"
+petgraph           = "0.5.1"
 
 # -- Feature: cli
 clap               = { optional = true, git = "https://github.com/clap-rs/clap/", features = ["derive"]}
@@ -95,13 +97,14 @@ codespan-lsp       = { optional = true, version = "0.10.1" }
 trie-rs            = { optional = true, version = "0.1.1" }
 lazy_static        = { optional = true, version = "1.4.0" }
 async-trait        = { optional = true, version = "0.1.41" }
-petgraph           = "0.5.1"
 
 [target.'cfg(target_arch = "wasm32")'.dependencies]
 wasm-bindgen       = "0.2.68"
 
 [build-dependencies]
 lalrpop            = { version = "0.19.1", features = [ "lexer" ] }
+cmake              = { optional = true, version = "0.1.44" }
+fstrings           = "0.2.3"
 
 [dev-dependencies]
 criterion          = "0.3.3"
