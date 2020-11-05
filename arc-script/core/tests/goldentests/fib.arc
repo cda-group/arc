@@ -39,16 +39,16 @@ fun test() {
 
 --[MLIR] args: --mlir --check file
 --[MLIR] expected stdout:
---[MLIR] func @%x_1(i32) -> (i32) {
+--[MLIR] func @x_1(i32) -> (i32) {
 --[MLIR]     %x_3 = "arc.constant"() { value = 2 : i32 }: () -> i32
 --[MLIR]     %x_4 = "arc.cmpi "gt"  (%x_0,%x_3) : (i32,i32) -> i1
 --[MLIR]     %x_13 = "arc.if"(%x_4) ({
 --[MLIR]         %x_5 = "arc.constant"() { value = 1 : i32 }: () -> i32
 --[MLIR]         %x_6 = "arc.subi"(%x_0,%x_5) : (i32,i32) -> i32
---[MLIR]         %x_7 = call @%x_1(%x_6) (i32) -> i32
+--[MLIR]         %x_7 = call @x_1(%x_6) (i32) -> i32
 --[MLIR]         %x_8 = "arc.constant"() { value = 2 : i32 }: () -> i32
 --[MLIR]         %x_9 = "arc.subi"(%x_0,%x_8) : (i32,i32) -> i32
---[MLIR]         %x_10 = call @%x_1(%x_9) (i32) -> i32
+--[MLIR]         %x_10 = call @x_1(%x_9) (i32) -> i32
 --[MLIR]         %x_11 = "arc.addi"(%x_7,%x_10) : (i32,i32) -> i32
 --[MLIR]         "arc.yield"(%x_11) : (i32) -> ()
 --[MLIR]     },{
@@ -57,9 +57,9 @@ fun test() {
 --[MLIR]     }) : (i1) -> i32
 --[MLIR]     "std.return"(%x_13) : (i32) -> ()
 --[MLIR] }
---[MLIR] func @%x_2() -> (i32) {
+--[MLIR] func @x_2() -> (i32) {
 --[MLIR]     %x_14 = "arc.constant"() { value = 5 : i32 }: () -> i32
---[MLIR]     %x_15 = call @%x_1(%x_14) (i32) -> i32
+--[MLIR]     %x_15 = call @x_1(%x_14) (i32) -> i32
 --[MLIR]     "std.return"(%x_15) : (i32) -> ()
 --[MLIR] }
 

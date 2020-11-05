@@ -184,9 +184,9 @@ impl Expr {
                     }
                     (Call(args), Var(id)) => {
                         let ty = e.tv.to_ty(pr);
-                        let id = id.to_var();
+                        let sym = id.to_sym();
                         let args = args.iter().map(|arg| arg.to_var()).collect::<Vec<_>>().join(",");
-                        format!(r#"call @{id}({args}) {ty}"#, id=id, args=args, ty=ty)
+                        format!(r#"call {sym}({args}) {ty}"#, sym=sym, args=args, ty=ty)
                     },
                     x => todo!("{:?}", x)
                 }
@@ -216,6 +216,9 @@ impl Expr {
 impl Ident {
     fn to_var(&self) -> String {
         format!("%x_{}", self.0)
+    }
+    fn to_sym(&self) -> String {
+        format!("@x_{}", self.0)
     }
 }
 
@@ -284,8 +287,8 @@ impl FunDef {
         let ty = pr.lookup(tv);
         if let Fun(_, ret_tv) = ty.kind {
             format!(
-                "func @{id}({params}) -> ({ret_ty}) {{{body}}}",
-                id = self.id.to_var(),
+                "func {sym}({params}) -> ({ret_ty}) {{{body}}}",
+                sym = self.id.to_sym(),
                 params = self
                     .params
                     .iter()
