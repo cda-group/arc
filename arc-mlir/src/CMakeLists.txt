@@ -21,3 +21,6 @@ add_subdirectory(include)
 add_subdirectory(lib)
 add_subdirectory(tests)
 add_subdirectory(tools)
+add_subdirectory(corrosion)
+
+corrosion_import_crate(MANIFEST_PATH "${CMAKE_CURRENT_SOURCE_DIR}/../../arc-script/core/Cargo.toml")
