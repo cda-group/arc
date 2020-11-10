@@ -1,15 +1,21 @@
 [workspace]
 members = [
-  "core",
-  "macros/spanned-derive",
-  "wasm",
+  "arc-script-core",
+  "arc-script-macros",
+  "arc-script-quote",
+  "arc-script-bridge",
+  "arc-script-repl",
+  "arc-script-lsp",
+  "arc-script-cli",
+  "arc-script-web",
+  "arc-script-python",
 ]
 
 # -- The development profile, used for `cargo build`.
 [profile.dev]
 opt-level        = 0
-debug            = 2
-debug-assertions = true
+debug            = 0
+debug-assertions = false
 rpath            = false
 lto              = false
 panic            = 'unwind'
@@ -44,5 +50,5 @@ debug-assertions = false
 codegen-units    = 1
 
 # --- Optimize for small binaries when compiling for the web
-[profile.release.package.arc-script-wasm]
+[profile.release.package.arc-script-web]
 opt-level = "s"

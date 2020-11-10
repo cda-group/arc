@@ -1,0 +1,25 @@
+---
+source: arc-script-core/tests/insta/mod.rs
+expression: s
+input_file: arc-script-core/tests/insta/snapshot-tests/pattern.arc
+---
+module @toplevel {
+    func @main() -> i0 {
+        %x_3 = arc.constant 1 : i32
+        %x_4 = arc.constant 2 : i32
+        %x_5 = "arc.make_tuple"(%x_3, %x_4) : (i32, i32) -> tuple<i32, i32>
+        %x_6 = arc.constant 3 : i32
+        %x_7 = arc.constant 4 : i32
+        %x_8 = "arc.make_tuple"(%x_6, %x_7) : (i32, i32) -> tuple<i32, i32>
+        %x_9 = "arc.make_tuple"(%x_5, %x_8) : (tuple<i32, i32>, tuple<i32, i32>) -> tuple<tuple<i32, i32>, tuple<i32, i32>>
+        %x_A = "arc.index_tuple"(%x_9) { index = 0 } : tuple<tuple<i32, i32>, tuple<i32, i32>> -> tuple<i32, i32>
+        %x_B = "arc.index_tuple"(%x_A) { index = 0 } : tuple<i32, i32> -> i32
+        %x_C = "arc.index_tuple"(%x_A) { index = 1 } : tuple<i32, i32> -> i32
+        %x_D = "arc.index_tuple"(%x_9) { index = 1 } : tuple<tuple<i32, i32>, tuple<i32, i32>> -> tuple<i32, i32>
+        %x_E = "arc.index_tuple"(%x_D) { index = 0 } : tuple<i32, i32> -> i32
+        %x_F = "arc.index_tuple"(%x_D) { index = 1 } : tuple<i32, i32> -> i32
+        %x_G = arc.constant unit : i0
+        return %x_G : i0
+    }
+}
+

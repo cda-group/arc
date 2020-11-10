@@ -1,0 +1,24 @@
+---
+source: arc-script-core/tests/insta/mod.rs
+expression: s
+input_file: arc-script-core/tests/insta/snapshot-tests/fun.arc
+---
+error: Double use of value
+  ┌─ /home/klas/Workspace/arc/arc-script/arc-script-core/tests/insta/snapshot-tests/fun.arc:4:13
+  │
+4 │     let c = a > b in
+  │             ^
+5 │     if c {
+6 │         a
+  │         ^
+
+error: Double use of value
+  ┌─ /home/klas/Workspace/arc/arc-script/arc-script-core/tests/insta/snapshot-tests/fun.arc:4:17
+  │
+4 │     let c = a > b in
+  │                 ^
+  ·
+8 │         b
+  │         ^
+
+

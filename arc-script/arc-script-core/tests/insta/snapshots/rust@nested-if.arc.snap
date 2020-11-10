@@ -1,0 +1,23 @@
+---
+source: arc-script-core/tests/insta/mod.rs
+expression: s
+input_file: arc-script-core/tests/insta/snapshot-tests/nested-if.arc
+---
+pub fn test() -> i32 {
+    let a_i32_0: i32 = 65i32;
+    let b_i32_0: i32 = 66i32;
+    let c_i32_0: i32 = 67i32;
+    let true_bool_0: bool = true;
+    let false_bool_0: bool = false;
+    if true_bool_0 {
+        a_i32_0
+    } else {
+        if false_bool_0 {
+            b_i32_0
+        } else {
+            c_i32_0
+        }
+    }
+}
+
+

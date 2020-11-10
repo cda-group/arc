@@ -1,0 +1,16 @@
+---
+source: arc-script-core/tests/insta/mod.rs
+expression: s
+input_file: arc-script-core/tests/insta/snapshot-tests/pattern.arc
+---
+fun main() -> () {
+    let x_0: ((i32, i32), (i32, i32)) = ((1, 2), (3, 4)) in
+    let x_1: (i32, i32) = x_0.0 in
+    let a_0: i32 = x_1.0 in
+    let b_0: i32 = x_1.1 in
+    let x_2: (i32, i32) = x_0.1 in
+    let c_0: i32 = x_2.0 in
+    let d_0: i32 = x_2.1 in
+    ()
+}
+

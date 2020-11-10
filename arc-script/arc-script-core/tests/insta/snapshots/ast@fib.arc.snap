@@ -1,0 +1,16 @@
+---
+source: arc-script-core/tests/insta/mod.rs
+expression: s
+input_file: arc-script-core/tests/insta/snapshot-tests/fib.arc
+---
+fun fib(n: i32) {
+    if n > 2 {
+        fib(n - 1) + fib(n - 2)
+    } else {
+        0
+    }
+}
+fun test() {
+    fib(5)
+}
+

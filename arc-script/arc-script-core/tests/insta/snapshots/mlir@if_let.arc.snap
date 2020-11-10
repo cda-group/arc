@@ -1,0 +1,43 @@
+---
+source: arc-script-core/tests/insta/mod.rs
+expression: s
+input_file: arc-script-core/tests/insta/snapshot-tests/if_let.arc
+---
+module @toplevel {
+    func @x_3(%y_0: i32) -> i32 {
+        %x_4 = arc.constant 2 : i32
+        %x_5 = arc.addi %y_0, %x_4 : i32
+        return %x_5 : i32
+    }
+    func @test() -> i32 {
+        %x_6 = arc.constant 3 : i32
+        %x_7 = arc.constant 5 : i32
+        %x_8 = arc.constant 3 : i32
+        %x_9 = "arc.make_tuple"(%x_8, %x_6) : (i32, i32) -> tuple<i32, i32>
+        %x_A = arc.constant 1 : i32
+        %x_B = "arc.make_tuple"(%x_9, %x_A) : (tuple<i32, i32>, i32) -> tuple<tuple<i32, i32>, i32>
+        %x_C = "arc.index_tuple"(%x_B) { index = 0 } : tuple<tuple<i32, i32>, i32> -> tuple<i32, i32>
+        %x_D = "arc.index_tuple"(%x_C) { index = 0 } : tuple<i32, i32> -> i32
+        %x_E = arc.constant 1 : i32
+        %x_F = arc.cmpi "eq", %x_D, %x_E : i1
+        %x_O = "arc.if"(%x_F) ({
+            %x_G = "arc.index_tuple"(%x_C) { index = 1 } : tuple<i32, i32> -> i32
+            %x_H = "arc.index_tuple"(%x_B) { index = 1 } : tuple<tuple<i32, i32>, i32> -> i32
+            %x_I = arc.constant 1 : i32
+            %x_J = arc.cmpi "eq", %x_H, %x_I : i1
+            %x_M = "arc.if"(%x_J) ({
+                %x_K = arc.addi %x_G, %x_7 : i32
+                "arc.block.result"(%x_K) : i32 -> ()
+            },{
+                %x_L = call @x_3(%x_7) : (i32) -> i32
+                "arc.block.result"(%x_L) : i32 -> ()
+            }) : i1 -> i32
+            "arc.block.result"(%x_M) : i32 -> ()
+        },{
+            %x_N = call @x_3(%x_7) : (i32) -> i32
+            "arc.block.result"(%x_N) : i32 -> ()
+        }) : i1 -> i32
+        return %x_O : i32
+    }
+}
+

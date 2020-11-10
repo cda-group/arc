@@ -27,7 +27,7 @@ add_subdirectory(lib)
 add_subdirectory(tests)
 add_subdirectory(tools)
 
-corrosion_import_crate(MANIFEST_PATH "${CMAKE_CURRENT_SOURCE_DIR}/../../arc-script/core/Cargo.toml")
+corrosion_import_crate(MANIFEST_PATH "${CMAKE_CURRENT_SOURCE_DIR}/../../arc-script/arc-script-core/Cargo.toml")
 
 get_filename_component(ARC_CARGO_BIN "../../bin"
   REALPATH BASE_DIR ${CMAKE_CURRENT_BINARY_DIR} CACHE)

@@ -1,0 +1,17 @@
+[package]
+name = "arc-script-python"
+version = "0.1.0"
+authors = ["Klas Segeljakt <klasseg@kth.se>"]
+edition = "2018"
+
+[lib]
+name = "arc_script_python"
+crate-type = ["cdylib"]
+
+[dependencies]
+rustpython_vm = { git = "https://github.com/rickyhan/RustPython.git", version = "*" }
+# pyo3 = { version = "0.13.1", features = ["extension-module"] }
+
+# [dependencies.arc-script]
+# version = "0.1.0"
+# path = "../arc-script-core/"

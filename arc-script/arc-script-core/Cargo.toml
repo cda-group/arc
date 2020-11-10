@@ -1,0 +1,101 @@
+[package]      
+name           = "arc-script-core"
+version        = "0.1.0"
+authors        = ["Klas Segeljakt <klasseg@kth.se>"]
+description    = "The Arc-Script compiler."
+homepage       = "https://cda-group.github.io/"
+repository     = "https://www.github.com/segeljakt/arc-script"
+documentation  = "https://segeljakt.github.io/arc-script/"
+readme         = "README.md"
+keywords       = ["compiler", "data-science"]
+categories     = ["science", "database"]
+license        = "MIT"
+# license-file   = "" TODO
+edition        = "2018"
+build          = "build.rs"
+publish        = false
+
+[lib]
+name           = "arc_script_core"
+path           = "src/lib.rs"
+
+[[bench]]
+name           = "bench"
+harness        = false
+
+[features]
+default     = []
+all         = ["manifest"]
+shaper      = ["z3"]
+manifest    = ["toml"]
+
+[dependencies]
+arc-script-macros  = { path = "../arc-script-macros" }
+logos              = { version = "0.11.4" }
+regex              = { version = "1.4.3" }
+lalrpop-util       = { version = "0.19.4" }
+ena                = { version = "0.14.0"}
+codespan-reporting = { version = "=0.9.5" }
+derive_more        = { version = "0.99.11", default-features = false, features = ["constructor", "as_ref", "from", "into", "add", "mul", "not"] }
+num-traits         = { version = "0.2.14" }
+arrayvec           = { version = "0.5.2" }
+smartstring        = { version = "0.2.6" }
+educe              = { version = "0.4.13", default-features = false, features = ["Hash", "PartialEq", "Eq", "PartialOrd", "Ord", "Debug", "Default"] }
+time               = { version = "0.2.25" }
+lasso              = { version = "0.4.1" }
+anyhow             = { version = "1.0.37" }
+serde              = { version = "1.0.118", features = ["derive"] }
+linear-map         = { version = "1.2.0" }
+indoc              = { version = "1.0.3" }
+indexmap           = { version = "1.6.1" }
+shrinkwraprs       = { version = "0.3.0" }
+tracing            = { version = "0.1.22" }
+tracing-subscriber = { version = "0.2.15" }
+tracing-flame      = { version = "0.1.0" }
+bumpalo            = { version = "3.4.0", features = ["boxed", "collections"] }
+salsa              = { version = "0.16.0" }
+lexical-core       = { version = "0.7.4", features = ["format"] }
+crepe              = { version = "0.1.5" }
+petgraph           = { version = "0.5.1", package = "petgraph" }
+petgraph_4         = { version = "0.4.0", package = "petgraph" }
+pattern-compiler   = { package = "libeir_util_pattern_compiler", git = "https://github.com/eirproject/eir" }
+termcolor          = { git = "https://github.com/segeljakt/termcolor" }
+ryu                = { version = "1.0.5" }
+syn                = { version = "1.0.60", features = ["full"] }
+quote              = { version = "1.0.8" }
+proc-macro2        = { version = "1.0.24" }
+strum              = { version = "0.20", features = ["derive"] }
+tempfile           = { version = "3.1.0" }
+cfg-if             = { version = "1.0.0" }
+
+# -- Feature: shaper
+z3                 = { optional = true, version = "0.9.0" }
+
+# -- Feature: manifest
+toml               = { optional = true, version = "0.5.8" }
+
+[target.'cfg(target_arch = "wasm32")'.dependencies]
+wasm-bindgen       = "0.2.69"
+
+#[build]
+#rustflags = ["-C", "link-arg=-fuse-ld=lld"]
+#
+#[target.x86_64-unknown-linux-gnu]
+#linker = "lld"
+#
+[build-dependencies]
+lalrpop            = { version = "0.19.4", features = [ "lexer" ] }
+
+[dev-dependencies]
+arc-script-bridge  = { path = "../arc-script-bridge" }
+criterion          = { version = "0.3.3" }
+criterion-cpu-time = { version = "0.1.0" }
+include_dir        = { version = "0.6.0" }
+proptest           = { version = "0.10.1" }
+honggfuzz          = { version = "0.5.51" }
+goldentests        = { version = "0.3.7" }
+timed              = { version = "0.2.1" }
+#expect-test        = { version = "1.0.1" }
+#pretty_assertions  = { version = "0.6.1" }
+insta              = { version = "1.5.2", features = ["glob"] }
+trybuild           = { version = "1.0.39" }

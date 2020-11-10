@@ -1,0 +1,17 @@
+---
+source: arc-script-core/tests/insta/mod.rs
+expression: s
+input_file: arc-script-core/tests/insta/snapshot-tests/fun.arc
+---
+fun max(a: i32, b: i32) {
+    let c = a > b in
+    if c {
+        a
+    } else {
+        b
+    }
+}
+fun test() {
+    max(1, 2)
+}
+
