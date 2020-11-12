@@ -1,3 +1,7 @@
+# Required for the lit site config to specify the path to the
+# arc-script tool.
+set(ARC_SCRIPT_TOOLS_DIR ${CMAKE_CURRENT_BINARY_DIR}/..)
+
 # Stolen from the mlir repo
 
 configure_lit_site_cfg(
