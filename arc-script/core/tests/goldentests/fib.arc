@@ -1,3 +1,5 @@
+-- RUN: arc-script --mlir --check file %s | arc-mlir -arc-to-rust -crate %t && arc-cargo test -j 1 --manifest-path=%t/unknown/Cargo.toml
+
 fun fib(n: i32) {
     if n > 2 {
         fib(n-1) + fib(n-2)

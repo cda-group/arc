@@ -1,3 +1,7 @@
+-- Closures are not yet supported by arc-script
+-- XFAIL: *
+-- RUN: arc-script --mlir --check file %s | arc-mlir -arc-to-rust -crate %t && arc-cargo test -j 1 --manifest-path=%t/unknown/Cargo.toml
+
 fun test() {
   let increment = |i:i32| i + 1 in
   let foo = 1 in

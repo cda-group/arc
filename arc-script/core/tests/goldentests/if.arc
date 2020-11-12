@@ -1,3 +1,5 @@
+-- RUN: arc-script --mlir --check file %s | arc-mlir -arc-to-rust -crate %t && arc-cargo test -j 1 --manifest-path=%t/unknown/Cargo.toml
+
 fun test() {
   let c = true in
   let x = 3 in
