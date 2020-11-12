@@ -4,3 +4,6 @@
 [submodule "mlir/llvm-project"]
 	path = arc-mlir/llvm-project
 	url = https://github.com/llvm/llvm-project.git
+[submodule "arc-mlir/corrosion"]
+	path = arc-mlir/src/corrosion
+	url = https://github.com/AndrewGaspar/corrosion.git
