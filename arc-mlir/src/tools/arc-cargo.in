@@ -1,0 +1,8 @@
+#!/bin/bash
+
+export CARGO_TARGET_DIR='@ARC_CARGO_TARGET_DIR@'
+
+# Work around bug in cargo that makes crates.io updates fail.
+export CARGO_HTTP_DEBUG='true'
+
+exec cargo "$@"
