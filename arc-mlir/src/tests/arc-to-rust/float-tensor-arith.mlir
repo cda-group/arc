@@ -1,4 +1,4 @@
-// RUN: arc-mlir -arc-to-rust -crate %t -extra-rust-trailer %s.rust-tests %s && cargo test -j 1 --manifest-path=%t/toplevel/Cargo.toml
+// RUN: arc-mlir -arc-to-rust -crate %t -extra-rust-trailer %s.rust-tests %s && CARGO_HTTP_DEBUG=true cargo test -j 1 --manifest-path=%t/toplevel/Cargo.toml
 module @toplevel {
 func @addf_tensor2x2xf32(%a : tensor<2x2xf32>, %b : tensor<2x2xf32>) -> tensor<2x2xf32> {
   %c = std.addf %a, %b : tensor<2x2xf32>

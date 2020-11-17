@@ -1,5 +1,5 @@
-// RUN: arc-mlir -arc-to-rust -crate %t %s && cp -rpf %S/external_crate %t && cargo test -j 1 --manifest-path=%t/toplevel/Cargo.toml
-// RUN: arc-mlir -canonicalize -arc-to-rust -crate %t %s &&  cp -rpf %S/external_crate %t && cargo test -j 1 --manifest-path=%t/toplevel/Cargo.toml
+// RUN: arc-mlir -arc-to-rust -crate %t %s && cp -rpf %S/external_crate %t && CARGO_HTTP_DEBUG=true cargo test -j 1 --manifest-path=%t/toplevel/Cargo.toml
+// RUN: arc-mlir -canonicalize -arc-to-rust -crate %t %s &&  cp -rpf %S/external_crate %t && CARGO_HTTP_DEBUG=true cargo test -j 1 --manifest-path=%t/toplevel/Cargo.toml
 
 module @toplevel attributes {
 
