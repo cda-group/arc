@@ -17,6 +17,7 @@ configure_file(
     @ONLY
     )
 
+set(ENV{CARGO_HTTP_DEBUG} "true")
 add_subdirectory(include)
 add_subdirectory(lib)
 add_subdirectory(tests)
