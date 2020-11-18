@@ -309,7 +309,10 @@ LogicalResult IfOp::customVerify() {
   auto ResultTy = Op->getResult(0).getType();
   bool FoundErrors = false;
   auto CheckResultType = [this, ResultTy, &FoundErrors](ArcBlockResultOp R) {
-    if (R.getResult().getType() != ResultTy) {
+    if (R.getOperation()->getNumResults() !=
+        R.getOperation()->getNumOperands()) {
+      // This is an error, but the verifier for ArcBlockResultOp will flag it
+    } else if (R.getResult().getType() != ResultTy) {
       FoundErrors = true;
       emitOpError(
           "result type does not match the type of the parent: expected ")
