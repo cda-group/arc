@@ -306,7 +306,11 @@ impl FunDef {
                 params = self
                     .params
                     .iter()
-                    .map(|id| pr.info.table.get_decl(id).tv.to_ty(pr))
+                    .map(|id| format!(
+                        "{} : {}",
+                        id.to_var(),
+                        pr.info.table.get_decl(id).tv.to_ty(pr)
+                    ))
                     .collect::<Vec<_>>()
                     .join(","),
                 ret_ty = ret_tv.to_ty(&pr),
