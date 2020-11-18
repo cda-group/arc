@@ -18,10 +18,13 @@ configure_file(
     )
 
 set(ENV{CARGO_HTTP_DEBUG} "true")
+add_subdirectory(corrosion)
+get_filename_component(ARC_CARGO_TARGET_DIR "../../cargo/build"
+  REALPATH BASE_DIR ${CMAKE_CURRENT_BINARY_DIR} CACHE)
+
 add_subdirectory(include)
 add_subdirectory(lib)
 add_subdirectory(tests)
 add_subdirectory(tools)
-add_subdirectory(corrosion)
 
 corrosion_import_crate(MANIFEST_PATH "${CMAKE_CURRENT_SOURCE_DIR}/../../arc-script/core/Cargo.toml")

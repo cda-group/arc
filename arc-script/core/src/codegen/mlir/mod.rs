@@ -78,11 +78,11 @@ impl Expr {
             }
             Lit(LitF32(v)) => {
 		let t = self.tv.to_ty(pr);
-                format!(r#"constant {l} : {t}"#, l=v, t=t)
+                format!(r#"constant {l:.} : {t}"#, l=v, t=t)
             }
             Lit(LitF64(v)) => {
 		let t = self.tv.to_ty(pr);
-                format!(r#"constant {l} : {t}"#, l=v, t=t)
+                format!(r#"constant {l:.} : {t}"#, l=v, t=t)
             }
             Lit(kind) => {
                 let t = self.tv.to_ty(pr);
