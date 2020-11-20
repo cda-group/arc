@@ -16,5 +16,5 @@ let true_bool : bool = true;
 if(true_bool, a_i32, b_i32)
 
 #CHECK: {{%[^ ]+}} = "arc.if"([[COND]]) (
-#CHECK: {{%[^ ]+}} = "arc.block.result"([[A]])
-#CHECK: {{%[^ ]+}} = "arc.block.result"([[B]])
+#CHECK: "arc.block.result"([[A]])
+#CHECK: "arc.block.result"([[B]])

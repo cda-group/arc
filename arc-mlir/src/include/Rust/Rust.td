@@ -333,7 +333,7 @@ def Rust_RustCompOp : Rust_Op<"compop", [SameTypeOperands]> {
 
 def Rust_RustBlockResultOp
     : Rust_Op<"block.result",
-              [HasParent<"RustIfOp">, Terminator, SameOperandsAndResultType]> {
+              [HasParent<"RustIfOp">, Terminator]> {
   let summary = "specifies the value of a block";
   let description = [{
     "rust.block.result" is a special terminator operation for the block inside
@@ -341,11 +341,10 @@ def Rust_RustBlockResultOp
     parent if.
 
     ```mlir
-      "rust.block.result"(%b) : (!rust<"f64">) -> !rust<"f64">
+      "rust.block.result"(%b) : (!rust<"f64">) -> ()
     ```
   }];
   let arguments = (ins AnyRustType : $result);
-  let results = (outs AnyRustType);
   let extraClassDeclaration = [{
     // Write this operation as Rust code to the stream
     void writeRust(RustPrinterStream &);
