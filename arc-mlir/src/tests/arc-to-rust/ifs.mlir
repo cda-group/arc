@@ -6,17 +6,17 @@ module @toplevel {
     %1 = arc.constant 66 : si32
     %2 = constant 1 : i1
     %3 = "arc.if"(%2) ({
-      %4 = "arc.block.result"(%0) : (si32) -> si32
+      "arc.block.result"(%0) : (si32) -> ()
     }, {
-      %5 = "arc.block.result"(%1) : (si32) -> si32
+      "arc.block.result"(%1) : (si32) -> ()
     }) : (i1) -> si32
     return %3 : si32
   }
   func @test_1(%c: i1, %arg0: ui32, %arg1: ui32) -> ui32 {
     %3 = "arc.if"(%c) ({
-      %4 = "arc.block.result"(%arg0) : (ui32) -> ui32
+      "arc.block.result"(%arg0) : (ui32) -> ()
     }, {
-      %5 = "arc.block.result"(%arg1) : (ui32) -> ui32
+      "arc.block.result"(%arg1) : (ui32) -> ()
     }) : (i1) -> ui32
     return %3 : ui32
   }

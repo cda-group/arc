@@ -259,7 +259,7 @@ def IndexTupleOp : Arc_Op<"index_tuple", [NoSideEffect]> {
 
 def ArcBlockResultOp :
     Arc_Op<"block.result", [HasParent<"IfOp">,
-                            Terminator, SameOperandsAndResultType]> {
+                            Terminator]> {
   let summary = "specifies the value of a block";
   let description = [{
     "arc.block.result" is a special terminator operation for the block inside
@@ -267,11 +267,10 @@ def ArcBlockResultOp :
     parent if.
 
     ```mlir
-      "arc.block.result"(%b) : (f32) -> f64
+      "arc.block.result"(%b) : (f32) -> ()
     ```
   }];
   let arguments = (ins AnyType:$result);
-  let results = (outs AnyType);
 }
 
 def IfOp : Arc_Op<"if", [SingleBlockImplicitTerminator<"ArcBlockResultOp">]> {

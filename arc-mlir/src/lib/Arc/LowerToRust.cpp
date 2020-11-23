@@ -234,22 +234,15 @@ private:
 };
 
 struct BlockResultOpLowering : public ConversionPattern {
-  BlockResultOpLowering(MLIRContext *ctx, RustTypeConverter &typeConverter)
-      : ConversionPattern(arc::ArcBlockResultOp::getOperationName(), 1, ctx),
-        TypeConverter(typeConverter) {}
+  BlockResultOpLowering(MLIRContext *ctx)
+      : ConversionPattern(arc::ArcBlockResultOp::getOperationName(), 1, ctx) {}
 
   LogicalResult
   matchAndRewrite(Operation *op, ArrayRef<Value> operands,
                   ConversionPatternRewriter &rewriter) const final {
-    ArcBlockResultOp o = cast<ArcBlockResultOp>(op);
-    Type retTy = TypeConverter.convertType(o.getType());
-    rewriter.replaceOpWithNewOp<rust::RustBlockResultOp>(op, retTy,
-                                                         operands[0]);
+    rewriter.replaceOpWithNewOp<rust::RustBlockResultOp>(op, operands[0]);
     return success();
   };
-
-private:
-  RustTypeConverter &TypeConverter;
 };
 
 struct IfOpLowering : public ConversionPattern {
@@ -829,7 +822,7 @@ void ArcToRustLoweringPass::runOnOperation() {
 
   patterns.insert<IfOpLowering>(&getContext(), typeConverter);
   patterns.insert<IndexTupleOpLowering>(&getContext(), typeConverter);
-  patterns.insert<BlockResultOpLowering>(&getContext(), typeConverter);
+  patterns.insert<BlockResultOpLowering>(&getContext());
   patterns.insert<MakeTupleOpLowering>(&getContext(), typeConverter);
   patterns.insert<MakeTensorOpLowering>(&getContext(), typeConverter);
   patterns.insert<MakeStructOpLowering>(&getContext(), typeConverter);

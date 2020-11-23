@@ -9,9 +9,9 @@ module @toplevel {
     %c = constant 0.693 : f64
 
     "arc.if"(%a) ( {
-      "arc.block.result"(%b) : (f64) -> f64
+      "arc.block.result"(%b) : (f64) -> ()
     },  {
-      "arc.block.result"(%c) : (f64) -> f64
+      "arc.block.result"(%c) : (f64) -> ()
     }) : (i1) -> f64
     return
   }
@@ -25,8 +25,8 @@ module @toplevel {
     %f = constant 3.14 : f64
 
     // expected-error@+2 {{'arc.block.result' op expects parent op 'arc.if'}}
-    // expected-note@+1 {{see current operation: %0 = "arc.block.result"}}
-    "arc.block.result"(%f) : (f64) -> f64
+    // expected-note@+1 {{see current operation: "arc.block.result"}}
+    "arc.block.result"(%f) : (f64) -> ()
     return
   }
 }
@@ -39,12 +39,12 @@ module @toplevel {
     %b = constant 3.14 : f32
     %c = constant 0.693 : f64
 
+    // expected-error@+2 {{'arc.if' op result type does not match the type of the parent: expected 'f64' but found 'f32'}}
+    // expected-note@+1 {{see current operation: %0 = "arc.if"(%false)}}
     "arc.if"(%a) ( {
-    // expected-error@+2 {{'arc.block.result' op requires the same type for all operands and results}}
-    // expected-note@+1 {{see current operation}}
-      "arc.block.result"(%b) : (f32) -> f64
+    "arc.block.result"(%b) : (f32) -> ()
     },  {
-      "arc.block.result"(%c) : (f64) -> f64
+      "arc.block.result"(%c) : (f64) -> ()
     }) : (i1) -> f64
     return
   }
@@ -115,7 +115,7 @@ module @toplevel {
     // expected-error@+2 {{'arc.if' op region #1 ('elseRegion') failed to verify constraint: region with 1 blocks}}
     // expected-note@+1 {{see current operation: %0 = "arc.if"}}
     "arc.if"(%a) ({
-      "arc.block.result"(%b) : (f64) -> f64
+      "arc.block.result"(%b) : (f64) -> ()
     },{}) : (i1) -> f64
     return
   }
@@ -133,10 +133,10 @@ module @toplevel {
     // expected-note@+2 {{in custom textual format, the absence of terminator implies 'arc.block.result'}}
     // expected-note@+1 {{see current operation: %0 = "arc.if"}}
     "arc.if"(%a) ( {
-      "arc.block.result"(%b) : (f64) -> f64
+      "arc.block.result"(%b) : (f64) -> ()
       %1 = "arc.make_tuple"(%c, %c) : (f64, f64) -> tuple<f64,f64>
     },  {
-      "arc.block.result"(%c) : (f64) -> f64
+      "arc.block.result"(%c) : (f64) -> ()
     }) : (i1) -> f64
     return
   }
@@ -153,9 +153,9 @@ module @toplevel {
     // expected-error@+2 {{'arc.if' op result type does not match the type of the parent: expected 'f64' but found 'f32'}}
     // expected-note@+1 {{see current operation: %0 = "arc.if"}}
     "arc.if"(%a) ( {
-      "arc.block.result"(%b) : (f32) -> f32
+      "arc.block.result"(%b) : (f32) -> ()
     },  {
-      "arc.block.result"(%c) : (f64) -> f64
+      "arc.block.result"(%c) : (f64) -> ()
     }) : (i1) -> f64
     return
   }
@@ -171,9 +171,9 @@ module @toplevel {
     // expected-error@+2 {{'arc.if' op result type does not match the type of the parent: expected 'f64' but found 'f32'}}
     // expected-note@+1 {{see current operation: %0 = "arc.if"}}
     "arc.if"(%a) ( {
-      "arc.block.result"(%b) : (f32) -> f32
+      "arc.block.result"(%b) : (f32) -> ()
     },  {
-      "arc.block.result"(%c) : (f32) -> f32
+      "arc.block.result"(%c) : (f32) -> ()
     }) : (i1) -> f64
     return
   }

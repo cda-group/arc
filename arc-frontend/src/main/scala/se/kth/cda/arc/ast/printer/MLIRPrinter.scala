@@ -361,9 +361,9 @@ object MLIRPrinter {
 
       out.print(s"""${result} = "arc.if"(${condValue}) ({\n""")
       val onTrueResult = onTrue.toMLIR(identifiers)
-      out.print(s""" ${newTmp} = "arc.block.result"(${onTrueResult}) : (${ty.toMLIR}) -> ${ty.toMLIR}\n}, {\n""")
+      out.print(s""" "arc.block.result"(${onTrueResult}) : (${ty.toMLIR}) -> ()\n}, {\n""")
       val onFalseResult = onFalse.toMLIR(identifiers)
-      out.print(s"""  ${newTmp} = "arc.block.result"(${onFalseResult}) : (${ty.toMLIR}) -> ${ty.toMLIR}\n""")
+      out.print(s"""  "arc.block.result"(${onFalseResult}) : (${ty.toMLIR}) -> ()\n""")
       out.print(s"""}) : (${Bool.toMLIR}) -> ${ty.toMLIR}\n""")
       s"${result}"
     }

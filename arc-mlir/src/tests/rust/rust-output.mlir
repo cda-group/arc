@@ -44,9 +44,9 @@ module @"this_is_the_name_of_the_crate" {
    %all = "rust.if"(%arg0) ( {
        	%x = "rust.unaryop"(%r) {op="-"} : (!rust<"f64">) -> (!rust<"f64">)
        	%y = "rust.binaryop"(%arg1, %x) {op="+"} : (!rust<"f64">, !rust<"f64">) -> (!rust<"f64">)
-       	"rust.block.result"(%y) : (!rust<"f64">) -> !rust<"f64">
+       	"rust.block.result"(%y) : (!rust<"f64">) -> ()
        },  {
-       	"rust.block.result"(%r) : (!rust<"f64">) -> !rust<"f64">
+       	"rust.block.result"(%r) : (!rust<"f64">) -> ()
        }) : (!rust<"bool">) -> !rust<"f64">
  "rust.return"(%all) : (!rust<"f64">) -> ()
 
