@@ -6,33 +6,34 @@ module @toplevel attributes {
 arc.foreign.rust.dependency.external_crate = "{ path = \"../external_crate\", version = \"0.1.0\" }"
 } {
 
-  func @callee_void_void() -> () attributes {
+  func private @callee_void_void() -> () attributes {
        arc.foreign_language = "rust",
        arc.foreign.rust.crate = "external_crate"
   }
 
-  func @callee_si32_si32(%in : si32) -> si32 attributes {
+  func private @callee_si32_si32(%in : si32) -> si32 attributes {
        arc.foreign_language = "rust",
        arc.foreign.rust.crate = "external_crate"
   }
 
-  func @callee_si32_x2_si32(%a : si32, %b : si32) -> si32 attributes {
+  func private @callee_si32_x2_si32(%a : si32, %b : si32) -> si32 attributes {
        arc.foreign_language = "rust",
        arc.foreign.rust.crate = "external_crate"
   }
 
-  func @callee_struct(%in : !arc.struct<foo : si32>)
+  func private @callee_struct(%in : !arc.struct<foo : si32>)
        -> !arc.struct<foo : si32> attributes {
        arc.foreign_language = "rust",
        arc.foreign.rust.crate = "external_crate"
   }
 
-  func @callee_tuple(%in : tuple<si32,si32>) -> tuple<si32,si32> attributes {
+  func private @callee_tuple(%in : tuple<si32,si32>) ->
+       tuple<si32,si32> attributes {
        arc.foreign_language = "rust",
        arc.foreign.rust.crate = "external_crate"
  }
 
-  func @callee_mixed(%in : tuple<si32,si32,!arc.struct<a : si32>>)
+  func private @callee_mixed(%in : tuple<si32,si32,!arc.struct<a : si32>>)
        -> tuple<si32,si32,!arc.struct<a : si32>> attributes {
        arc.foreign_language = "rust",
        arc.foreign.rust.crate = "external_crate"
