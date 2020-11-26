@@ -139,7 +139,6 @@ arc-mlir/.guessed-arc-mlir
 book
 /target
 **/*.rs.bk
-Cargo.lock
 bin/
 pkg/
 package-lock.json

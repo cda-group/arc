@@ -62,7 +62,7 @@ indoc              = "1.0.3"
 indexmap           = "1.6.0"
 
 # -- Feature: cli
-clap               = { optional = true, git = "https://github.com/clap-rs/clap/", features = ["derive"]}
+clap               = { optional = true, git = "https://github.com/clap-rs/clap/", features = ["derive"], tag = "v3.0.0-beta.2"}
 serde_json         = { optional = true, version = "1.0.59" }
 
 # -- Feature: shaper
