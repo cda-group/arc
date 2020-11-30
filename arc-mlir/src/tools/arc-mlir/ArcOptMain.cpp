@@ -18,7 +18,6 @@
 #include "mlir/IR/Diagnostics.h"
 #include "mlir/IR/Location.h"
 #include "mlir/IR/MLIRContext.h"
-#include "mlir/IR/Module.h"
 #include "mlir/Parser.h"
 #include "mlir/Pass/Pass.h"
 #include "mlir/Pass/PassManager.h"
@@ -28,6 +27,7 @@
 #include "llvm/Support/FileUtilities.h"
 #include "llvm/Support/Regex.h"
 #include "llvm/Support/SourceMgr.h"
+#include <mlir/IR/BuiltinOps.h>
 
 using namespace mlir;
 using namespace llvm;
