@@ -28,3 +28,12 @@ add_subdirectory(tests)
 add_subdirectory(tools)
 
 corrosion_import_crate(MANIFEST_PATH "${CMAKE_CURRENT_SOURCE_DIR}/../../arc-script/core/Cargo.toml")
+
+get_filename_component(ARC_CARGO_BIN "../../bin"
+  REALPATH BASE_DIR ${CMAKE_CURRENT_BINARY_DIR} CACHE)
+
+get_filename_component(ARC_SCRIPT_SRC_DIR "../../arc-script"
+  REALPATH BASE_DIR ${CMAKE_CURRENT_SOURCE_DIR} CACHE)
+
+add_custom_target(arc-check DEPENDS check-arc-mlir
+  COMMAND ${ARC_CARGO_BIN}/arc-cargo test --manifest-path=${ARC_SCRIPT_SRC_DIR}/Cargo.toml)

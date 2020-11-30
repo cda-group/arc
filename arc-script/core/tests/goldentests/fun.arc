@@ -1,3 +1,5 @@
+-- RUN: arc-script --mlir --check file %s | arc-mlir -arc-to-rust -crate %t && arc-cargo test -j 1 --manifest-path=%t/unknown/Cargo.toml
+
 fun max(a: i32, b: i32) {
     let c = a > b in
     if c { a } else { b }
@@ -25,22 +27,3 @@ fun test() {
 --[ARC]     (let x9: i32 = ((max):(i32, i32) -> i32((x7):i32, (x8):i32)):i32 in
 --[ARC]     (x9):i32):i32):i32):i32
 --[ARC] }
-
---[MLIR] args: --mlir --check file
---[MLIR] expected stdout:
---[MLIR] func @x_2(i32,i32) -> (i32) {
---[MLIR]     %x_5 = "arc.cmpi "gt"  (%x_0,%x_1) : (i32,i32) -> i1
---[MLIR]     %x_6 = "arc.if"(%x_5) ({
---[MLIR]         "arc.yield"(%x_0) : (i32) -> ()
---[MLIR]     },{
---[MLIR]         "arc.yield"(%x_1) : (i32) -> ()
---[MLIR]     }) : (i1) -> i32
---[MLIR]     "std.return"(%x_6) : (i32) -> ()
---[MLIR] }
---[MLIR] func @x_4() -> (i32) {
---[MLIR]     %x_7 = "arc.constant"() { value = 1 : i32 }: () -> i32
---[MLIR]     %x_8 = "arc.constant"() { value = 2 : i32 }: () -> i32
---[MLIR]     %x_9 = call @x_2(%x_7,%x_8) (i32,i32) -> i32
---[MLIR]     "std.return"(%x_9) : (i32) -> ()
---[MLIR] }
-
