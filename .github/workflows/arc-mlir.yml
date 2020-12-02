@@ -24,6 +24,6 @@ jobs:
       run: |
         cd arc-mlir
         ./arc-mlir-build
-        ninja check-arc-mlir -C $A2M_BUILD/llvm-build/
+        ninja tools/arc-mlir/arc-check -C $A2M_BUILD/llvm-build/
       env:
         A2M_BUILD: ${{ format('{0}/build', runner.temp) }}
