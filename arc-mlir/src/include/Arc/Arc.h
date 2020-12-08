@@ -24,8 +24,8 @@
 #define ARC_DIALECT_H_
 
 #include <mlir/IR/Builders.h>
+#include <mlir/IR/BuiltinOps.h>
 #include <mlir/IR/Dialect.h>
-#include <mlir/IR/Function.h>
 #include <mlir/IR/Operation.h>
 #include <mlir/Interfaces/SideEffectInterfaces.h>
 

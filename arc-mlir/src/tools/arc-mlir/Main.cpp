@@ -34,8 +34,8 @@
 #include <llvm/Support/raw_ostream.h>
 #include <memory>
 #include <mlir/IR/AsmState.h>
+#include <mlir/IR/BuiltinOps.h>
 #include <mlir/IR/MLIRContext.h>
-#include <mlir/IR/Module.h>
 #include <mlir/InitAllDialects.h>
 #include <mlir/InitAllPasses.h>
 #include <mlir/Parser.h>

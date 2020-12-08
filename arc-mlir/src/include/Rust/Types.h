@@ -23,6 +23,7 @@
 #ifndef RUST_TYPES_H_
 #define RUST_TYPES_H_
 
+#include <mlir/IR/BuiltinAttributes.h>
 #include <mlir/IR/Dialect.h>
 #include <mlir/IR/StandardTypes.h>
 
