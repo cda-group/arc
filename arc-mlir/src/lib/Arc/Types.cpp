@@ -147,6 +147,49 @@ AppenderType::verifyConstructionInvariants(Location loc, Type mergeType,
 }
 
 //===----------------------------------------------------------------------===//
+// StreamType
+//===----------------------------------------------------------------------===//
+struct StreamTypeStorage : public mlir::TypeStorage {
+  using KeyTy = Type;
+
+  StreamTypeStorage(Type elementType) : elementType(elementType) {}
+
+  bool operator==(const KeyTy &key) const { return key == elementType; }
+
+  static StreamTypeStorage *construct(mlir::TypeStorageAllocator &allocator,
+                                      const KeyTy &key) {
+    return new (allocator.allocate<StreamTypeStorage>()) StreamTypeStorage(key);
+  }
+
+  mlir::Type elementType;
+};
+
+StreamType StreamType::get(mlir::Type elementType) {
+  mlir::MLIRContext *ctx = elementType.getContext();
+  return Base::get(ctx, elementType);
+}
+
+/// Returns the element type of this stream type.
+mlir::Type StreamType::getType() const { return getImpl()->elementType; }
+
+Type StreamType::parse(DialectAsmParser &parser) {
+  if (parser.parseLess())
+    return nullptr;
+
+  mlir::Type elementType;
+  if (parser.parseType(elementType))
+    return nullptr;
+
+  if (parser.parseGreater())
+    return Type();
+  return StreamType::get(elementType);
+}
+
+void StreamType::print(DialectAsmPrinter &os) const {
+  os << "stream<" << getImpl()->elementType << ">";
+}
+
+//===----------------------------------------------------------------------===//
 // StructType
 //===----------------------------------------------------------------------===//
 struct StructTypeStorage : public mlir::TypeStorage {

@@ -45,6 +45,7 @@ bool isBuilderType(Type type);
 
 struct BuilderTypeStorage;
 struct AppenderTypeStorage;
+struct StreamTypeStorage;
 struct StructTypeStorage;
 
 //===----------------------------------------------------------------------===//
@@ -71,6 +72,20 @@ public:
   static LogicalResult
   verifyConstructionInvariants(Location loc, Type mergeType,
                                RankedTensorType resultType);
+  static Type parse(DialectAsmParser &parser);
+  void print(DialectAsmPrinter &os) const;
+};
+
+class StreamType
+    : public mlir::Type::TypeBase<StreamType, mlir::Type, StreamTypeStorage> {
+public:
+  using Base::Base;
+
+  static StreamType get(mlir::Type elementType);
+
+  /// Returns the type of the stream elements
+  mlir::Type getType() const;
+
   static Type parse(DialectAsmParser &parser);
   void print(DialectAsmPrinter &os) const;
 };

@@ -46,6 +46,7 @@ void ArcDialect::initialize(void) {
 #include "Arc/Arc.cpp.inc"
       >();
   addTypes<AppenderType>();
+  addTypes<StreamType>();
   addTypes<StructType>();
 }
 
@@ -59,6 +60,8 @@ Type ArcDialect::parseType(DialectAsmParser &parser) const {
     return nullptr;
   if (keyword == "appender")
     return AppenderType::parse(parser);
+  if (keyword == "stream")
+    return StreamType::parse(parser);
   if (keyword == "struct")
     return StructType::parse(parser);
   parser.emitError(parser.getNameLoc(), "unknown type keyword " + keyword);
@@ -71,6 +74,8 @@ Type ArcDialect::parseType(DialectAsmParser &parser) const {
 
 void ArcDialect::printType(Type type, DialectAsmPrinter &os) const {
   if (auto t = type.dyn_cast<AppenderType>())
+    t.print(os);
+  else if (auto t = type.dyn_cast<StreamType>())
     t.print(os);
   else if (auto t = type.dyn_cast<StructType>())
     t.print(os);
