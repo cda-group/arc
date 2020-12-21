@@ -46,6 +46,7 @@ void ArcDialect::initialize(void) {
 #include "Arc/Arc.cpp.inc"
       >();
   addTypes<AppenderType>();
+  addTypes<ArconAppenderType>();
   addTypes<ArconValueType>();
   addTypes<StreamType>();
   addTypes<StructType>();
@@ -61,6 +62,8 @@ Type ArcDialect::parseType(DialectAsmParser &parser) const {
     return nullptr;
   if (keyword == "appender")
     return AppenderType::parse(parser);
+  if (keyword == "arcon.appender")
+    return ArconAppenderType::parse(parser);
   if (keyword == "arcon.value")
     return ArconValueType::parse(parser);
   if (keyword == "stream")
@@ -77,6 +80,8 @@ Type ArcDialect::parseType(DialectAsmParser &parser) const {
 
 void ArcDialect::printType(Type type, DialectAsmPrinter &os) const {
   if (auto t = type.dyn_cast<AppenderType>())
+    t.print(os);
+  else if (auto t = type.dyn_cast<ArconAppenderType>())
     t.print(os);
   else if (auto t = type.dyn_cast<ArconValueType>())
     t.print(os);
