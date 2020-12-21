@@ -550,6 +550,27 @@ OpFoldResult arc::XOrOp::fold(ArrayRef<Attribute> operands) {
 }
 
 //===----------------------------------------------------------------------===//
+// StateValue operations
+//===----------------------------------------------------------------------===//
+LogicalResult StateValueWriteOp::customVerify() {
+  auto ValTy = value().getType();
+  auto StateTy = state().getType().cast<ArconValueType>().getType();
+  if (ValTy != StateTy)
+    return emitOpError("Can't write a value of type ")
+           << ValTy << " to a state value of type" << StateTy;
+  return mlir::success();
+}
+
+LogicalResult StateValueReadOp::customVerify() {
+  auto Operation = this->getOperation();
+  auto ValTy = state().getType().cast<ArconValueType>().getType();
+  auto ResultTy = Operation->getResult(0).getType();
+  if (ValTy != ResultTy)
+    return emitOpError("Expected result type ") << ValTy << " not " << ResultTy;
+  return mlir::success();
+}
+
+//===----------------------------------------------------------------------===//
 // General helpers for comparison ops, stolen from the standard dialect
 //===----------------------------------------------------------------------===//
 

@@ -98,6 +98,8 @@ def AnyBuilder : Type<CPred<"$_self.isa<BuilderType>()">, "any builder">;
 def AnyAppender : Type<CPred<"$_self.isa<AppenderType>()">, "any appender">;
 def AnyStruct : Type<CPred<"$_self.isa<StructType>()">, "any struct">;
 def ArcStream : Type<CPred<"$_self.isa<StreamType>()">, "a stream">;
+def ArcStateValue : Type<CPred<"$_self.isa<ArconValueType>()">,
+                                "an arcon value type">;
 
 def StreamElementType : Type<Or<[
   FloatLike.predicate,
@@ -568,6 +570,30 @@ def Arc_RemIOp : ArcIntArithmeticOp<"remi"> {
 def Arc_XOrOp : ArcIntArithmeticOp<"xor", [Commutative]> {
   let summary = "integer binary xor";
   let hasFolder = 1;
+}
+
+// State values
+
+def Arc_StateValueWriteOp : Arc_Op<"value_write", []> {
+  let summary = "Set an Arcon state value";
+  let description = [{
+    Set an Arcon state value.
+  }];
+  let arguments = (ins ArcStateValue:$state, StreamElementType:$value);
+  let results = (outs);
+  let extraClassDeclaration = [{ LogicalResult customVerify(); }];
+  let verifier = [{ return customVerify(); }];
+}
+
+def Arc_StateValueReadOp : Arc_Op<"value_read", []> {
+  let summary = "Read an Arcon state value";
+  let description = [{
+    Read an Arcon state value.
+  }];
+  let arguments = (ins ArcStateValue:$state);
+  let results = (outs StreamElementType);
+  let extraClassDeclaration = [{ LogicalResult customVerify(); }];
+  let verifier = [{ return customVerify(); }];
 }
 
 #endif // ARC_OPS
