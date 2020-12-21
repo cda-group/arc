@@ -86,6 +86,43 @@ void ArconType::print(DialectAsmPrinter &os) const {
 }
 
 //===----------------------------------------------------------------------===//
+// ArconValueType
+//===----------------------------------------------------------------------===//
+struct ArconValueTypeStorage : public ArconTypeStorage {
+  using KeyTy = Type;
+
+  ArconValueTypeStorage(Type elementType)
+      : ArconTypeStorage(elementType, "arcon.value") {}
+
+  static ArconValueTypeStorage *construct(mlir::TypeStorageAllocator &allocator,
+                                          const KeyTy &key) {
+    return new (allocator.allocate<ArconValueTypeStorage>())
+        ArconValueTypeStorage(key);
+  }
+};
+
+ArconValueType ArconValueType::get(mlir::Type elementType) {
+  mlir::MLIRContext *ctx = elementType.getContext();
+  return Base::get(ctx, elementType);
+}
+
+/// Returns the element type of this stream type.
+mlir::Type ArconValueType::getType() const { return getContainedType(); }
+
+Type ArconValueType::parse(DialectAsmParser &parser) {
+  if (parser.parseLess())
+    return nullptr;
+
+  mlir::Type elementType;
+  if (parser.parseType(elementType))
+    return nullptr;
+
+  if (parser.parseGreater())
+    return Type();
+  return ArconValueType::get(elementType);
+}
+
+//===----------------------------------------------------------------------===//
 // BuilderType
 //===----------------------------------------------------------------------===//
 

@@ -44,6 +44,7 @@ bool isBuilderType(Type type);
 //===----------------------------------------------------------------------===//
 
 struct ArconTypeStorage;
+struct ArconValueTypeStorage;
 struct BuilderTypeStorage;
 struct AppenderTypeStorage;
 struct StreamTypeStorage;
@@ -86,6 +87,19 @@ public:
   Type getContainedType() const;
   StringRef getKeyword() const;
   virtual void print(DialectAsmPrinter &os) const;
+};
+
+class ArconValueType : public mlir::Type::TypeBase<ArconValueType, ArconType,
+                                                   ArconValueTypeStorage> {
+public:
+  using Base::Base;
+
+  static ArconValueType get(mlir::Type elementType);
+
+  /// Returns the type of the stream elements
+  mlir::Type getType() const;
+
+  static Type parse(DialectAsmParser &parser);
 };
 
 class StreamType
