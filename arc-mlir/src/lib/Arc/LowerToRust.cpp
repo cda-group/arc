@@ -14,8 +14,8 @@
 #include "Arc/Arc.h"
 #include "Arc/Passes.h"
 #include "Rust/Rust.h"
+#include "mlir/IR/BuiltinTypes.h"
 #include "mlir/IR/MLIRContext.h"
-#include "mlir/IR/StandardTypes.h"
 #include "mlir/Support/LLVM.h"
 #include "mlir/Support/LogicalResult.h"
 #include <mlir/Dialect/StandardOps/IR/Ops.h>
@@ -594,7 +594,7 @@ Type RustTypeConverter::convertFunctionType(FunctionType type) {
   if (failed(convertTypes(type.getResults(), results)))
     emitError(UnknownLoc::get(Ctx), "failed to convert function result types");
 
-  return FunctionType::get(inputs, results, Ctx);
+  return FunctionType::get(Ctx, inputs, results);
 }
 
 Type RustTypeConverter::convertIntegerType(IntegerType type) {

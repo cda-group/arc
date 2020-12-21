@@ -24,8 +24,8 @@
 #include "Rust/Rust.h"
 #include "Rust/RustPrinterStream.h"
 #include <llvm/Support/raw_ostream.h>
+#include <mlir/IR/BuiltinTypes.h>
 #include <mlir/IR/DialectImplementation.h>
-#include <mlir/IR/StandardTypes.h>
 
 using namespace mlir;
 using namespace rust;

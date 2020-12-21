@@ -23,8 +23,8 @@
 #include "Arc/Types.h"
 #include <llvm/Support/raw_ostream.h>
 #include <mlir/IR/Builders.h>
+#include <mlir/IR/BuiltinTypes.h>
 #include <mlir/IR/DialectImplementation.h>
-#include <mlir/IR/StandardTypes.h>
 
 using namespace mlir;
 using namespace arc;
@@ -127,7 +127,7 @@ Type AppenderType::parse(DialectAsmParser &parser) {
     return nullptr;
   if (parser.parseGreater())
     return nullptr;
-  auto resultType = RankedTensorType::getChecked({}, mergeType, loc);
+  auto resultType = RankedTensorType::getChecked(loc, {}, mergeType);
   return AppenderType::getChecked(mergeType, resultType, loc);
 }
 

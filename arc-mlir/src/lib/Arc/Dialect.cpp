@@ -24,9 +24,9 @@
 #include <llvm/ADT/StringSwitch.h>
 #include <llvm/Support/raw_ostream.h>
 #include <mlir/Dialect/CommonFolders.h>
+#include <mlir/IR/BuiltinTypes.h>
 #include <mlir/IR/DialectImplementation.h>
 #include <mlir/IR/Matchers.h>
-#include <mlir/IR/StandardTypes.h>
 
 #include "Arc/Arc.h"
 
@@ -186,7 +186,7 @@ OpFoldResult arc::CmpIOp::fold(ArrayRef<Attribute> operands) {
   bool isUnsigned = operands[0].getType().isUnsignedInteger();
   auto val = applyCmpPredicate(getPredicate(), isUnsigned, lhs.getValue(),
                                rhs.getValue());
-  return IntegerAttr::get(IntegerType::get(1, getContext()), APInt(1, val));
+  return IntegerAttr::get(IntegerType::get(getContext(), 1), APInt(1, val));
 }
 
 //===----------------------------------------------------------------------===//
@@ -520,7 +520,7 @@ OpFoldResult arc::XOrOp::fold(ArrayRef<Attribute> operands) {
 
 // Return the type of the same shape (scalar, vector or tensor) containing i1.
 static Type getCheckedI1SameShape(Type type) {
-  auto i1Type = IntegerType::get(1, type.getContext());
+  auto i1Type = IntegerType::get(type.getContext(), 1);
   if (type.isIntOrIndexOrFloat())
     return i1Type;
   if (auto tensorType = type.dyn_cast<RankedTensorType>())
