@@ -55,7 +55,35 @@ bool isValueType(Type type) {
   return false;
 }
 
+//===----------------------------------------------------------------------===//
+// ArconType
+//===----------------------------------------------------------------------===//
+
+struct ArconTypeStorage : public TypeStorage {
+  ArconTypeStorage(Type containedTy, std::string keyword)
+      : TypeStorage(), containedType(containedTy), keyword(keyword) {}
+
+  using KeyTy = Type;
+
+  bool operator==(const KeyTy &key) const { return key == containedType; }
+
+  Type containedType;
+  std::string keyword;
+};
+
+Type ArconType::getContainedType() const {
+  return static_cast<ImplType *>(impl)->containedType;
+}
+
+StringRef ArconType::getKeyword() const {
+  return static_cast<ImplType *>(impl)->keyword;
+}
+
 bool isBuilderType(Type type) { return type.isa<AppenderType>(); }
+
+void ArconType::print(DialectAsmPrinter &os) const {
+  os << getKeyword() << "<" << getContainedType() << ">";
+}
 
 //===----------------------------------------------------------------------===//
 // BuilderType
@@ -149,19 +177,16 @@ AppenderType::verifyConstructionInvariants(Location loc, Type mergeType,
 //===----------------------------------------------------------------------===//
 // StreamType
 //===----------------------------------------------------------------------===//
-struct StreamTypeStorage : public mlir::TypeStorage {
+struct StreamTypeStorage : public ArconTypeStorage {
   using KeyTy = Type;
 
-  StreamTypeStorage(Type elementType) : elementType(elementType) {}
-
-  bool operator==(const KeyTy &key) const { return key == elementType; }
+  StreamTypeStorage(Type elementType)
+      : ArconTypeStorage(elementType, "stream") {}
 
   static StreamTypeStorage *construct(mlir::TypeStorageAllocator &allocator,
                                       const KeyTy &key) {
     return new (allocator.allocate<StreamTypeStorage>()) StreamTypeStorage(key);
   }
-
-  mlir::Type elementType;
 };
 
 StreamType StreamType::get(mlir::Type elementType) {
@@ -170,7 +195,7 @@ StreamType StreamType::get(mlir::Type elementType) {
 }
 
 /// Returns the element type of this stream type.
-mlir::Type StreamType::getType() const { return getImpl()->elementType; }
+mlir::Type StreamType::getType() const { return getContainedType(); }
 
 Type StreamType::parse(DialectAsmParser &parser) {
   if (parser.parseLess())
@@ -183,10 +208,6 @@ Type StreamType::parse(DialectAsmParser &parser) {
   if (parser.parseGreater())
     return Type();
   return StreamType::get(elementType);
-}
-
-void StreamType::print(DialectAsmPrinter &os) const {
-  os << "stream<" << getImpl()->elementType << ">";
 }
 
 //===----------------------------------------------------------------------===//
