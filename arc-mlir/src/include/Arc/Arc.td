@@ -371,7 +371,7 @@ def Arc_ConstantIntOp : Arc_Op<"constant", [ConstantLike, NoSideEffect]> {
   let hasFolder = 1;
 
   let extraClassDeclaration = [{
-    Attribute getValue() { return getAttr("value"); }
+    Attribute getValue() { return (*this)->getAttr("value"); }
   }];
 
 }
@@ -413,7 +413,7 @@ def Arc_CmpIOp : Arc_Op<"cmpi",
 
     Arc_CmpIPredicate getPredicate() {
       return (Arc_CmpIPredicate)
-          getAttrOfType<IntegerAttr>(getPredicateAttrName())
+          (*this)->getAttrOfType<IntegerAttr>(getPredicateAttrName())
               .getInt();
     }
   }];

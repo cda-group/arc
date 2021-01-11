@@ -104,7 +104,7 @@ def RustCallOp : Rust_Op<"call", [CallOpInterface]> {
 
     /// Return the callee of this operation.
     CallInterfaceCallable getCallableForCallee() {
-      return getAttrOfType<SymbolRefAttr>("callee");
+      return (*this)->getAttrOfType<SymbolRefAttr>("callee");
     }
 
     // Write this op as Rust code to os
@@ -206,7 +206,7 @@ def Rust_RustConstantOp : Rust_Op<"constant", [NoSideEffect]> {
   let results = (outs AnyRustType);
 
   let extraClassDeclaration = [{
-    Attribute getValue() { return getAttr("value"); }
+    Attribute getValue() { return (*this)->getAttr("value"); }
     // Write this constant as Rust code to os
     void writeRust(RustPrinterStream &);
   }];
@@ -223,7 +223,7 @@ def Rust_RustFieldAccessOp : Rust_Op<"field_access", [NoSideEffect]> {
 
   let extraClassDeclaration = [{
     StringRef getField() {
-      return getAttr("field").dyn_cast<StringAttr>().getValue();
+      return (*this)->getAttrOfType<StringAttr>("field").getValue();
     }
     // Write this constant as Rust code to os
     void writeRust(RustPrinterStream &);
@@ -242,7 +242,7 @@ def Rust_RustUnaryOp : Rust_Op<"unaryop", [SameOperandsAndResultType]> {
 
   let extraClassDeclaration = [{
     StringRef getOperator() {
-      return getAttr("op").dyn_cast<StringAttr>().getValue();
+      return (*this)->getAttrOfType<StringAttr>("op").getValue();
     }
 
     // Write this operation as Rust code to the stream
@@ -262,7 +262,7 @@ def Rust_RustMethodCallOp : Rust_Op<"method_call", []> {
 
   let extraClassDeclaration = [{
     StringRef getMethod() {
-      return getAttr("method").dyn_cast<StringAttr>().getValue();
+      return (*this)->getAttrOfType<StringAttr>("method").getValue();
     }
 
     // Write this operation as Rust code to the stream
@@ -282,7 +282,7 @@ def Rust_RustBinaryOp : Rust_Op<"binaryop", [SameTypeOperands]> {
 
   let extraClassDeclaration = [{
     StringRef getOperator() {
-      return getAttr("op").dyn_cast<StringAttr>().getValue();
+      return (*this)->getAttrOfType<StringAttr>("op").getValue();
     }
 
     // Write this operation as Rust code to the stream
@@ -303,7 +303,7 @@ def Rust_RustBinaryRcOp : Rust_Op<"binaryrcop", [SameTypeOperands]> {
 
   let extraClassDeclaration = [{
     StringRef getOperator() {
-      return getAttr("op").dyn_cast<StringAttr>().getValue();
+      return (*this)->getAttrOfType<StringAttr>("op").getValue();
     }
 
     // Write this operation as Rust code to the stream
@@ -323,7 +323,7 @@ def Rust_RustCompOp : Rust_Op<"compop", [SameTypeOperands]> {
 
   let extraClassDeclaration = [{
     StringRef getOperator() {
-      return getAttr("op").dyn_cast<StringAttr>().getValue();
+      return (*this)->getAttrOfType<StringAttr>("op").getValue();
     }
 
     // Write this operation as Rust code to the stream
@@ -386,8 +386,8 @@ def Rust_RustDependencyOp : Rust_Op<"dependency", [NoSideEffect]> {
   let results = (outs);
 
   let extraClassDeclaration = [{
-    Attribute getCrate() { return getAttr("crate"); }
-    Attribute getVersion() { return getAttr("version"); }
+    Attribute getCrate() { return (*this)->getAttr("crate"); }
+    Attribute getVersion() { return (*this)->getAttr("version"); }
   }];
 }
 
@@ -416,8 +416,8 @@ def Rust_RustModuleDirectiveOp : Rust_Op<"module_directive", [NoSideEffect]> {
   let results = (outs);
 
   let extraClassDeclaration = [{
-    Attribute getKey() { return getAttr("key"); }
-    Attribute getStr() { return getAttr("str"); }
+    Attribute getKey() { return (*this)->getAttr("key"); }
+    Attribute getStr() { return (*this)->getAttr("str"); }
   }];
 }
 

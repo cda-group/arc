@@ -696,12 +696,12 @@ private:
                                  mlir::FuncOp &func, Operation *op,
                                  TypeConverter::SignatureConversion &sigConv,
                                  MLIRContext *ctx) const {
-    StringAttr lang = func.getAttr("arc.foreign_language").cast<StringAttr>();
+    StringAttr lang = func->getAttr("arc.foreign_language").cast<StringAttr>();
     auto prefix = (Twine("arc.foreign.") + lang.getValue() + ".").str();
     attributes.push_back(
         NamedAttribute(Identifier::get("language", ctx), lang));
 
-    for (auto a : func.getDialectAttrs()) {
+    for (auto a : func->getDialectAttrs()) {
       auto name = a.first.strref();
       if (name.consume_front(prefix)) {
         attributes.push_back(
@@ -720,7 +720,7 @@ private:
     /* Move all module-level arc-dialect dependency attributes over to
        their target dialect names */
     prefix = prefix + "dependency.";
-    auto parent = newOp.getParentOp();
+    auto parent = newOp->getParentOp();
 
     for (auto a : parent->getDialectAttrs()) {
       auto name = a.first.strref();
