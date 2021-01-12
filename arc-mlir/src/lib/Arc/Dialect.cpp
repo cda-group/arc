@@ -288,7 +288,8 @@ LogicalResult IndexTupleOp::customVerify() {
   auto Operation = this->getOperation();
   auto ResultTy = Operation->getResult(0).getType();
   auto TupleTy = Operation->getOperand(0).getType().cast<TupleType>();
-  auto Index = getAttrOfType<IntegerAttr>("index").getValue().getZExtValue();
+  auto Index =
+      (*this)->getAttrOfType<IntegerAttr>("index").getValue().getZExtValue();
   auto NumElems = TupleTy.size();
   if (Index >= NumElems)
     return emitOpError("index ")
@@ -355,7 +356,7 @@ LogicalResult StructAccessOp::customVerify() {
   auto Operation = this->getOperation();
   auto ResultTy = Operation->getResult(0).getType();
   auto StructTy = Operation->getOperand(0).getType().cast<StructType>();
-  auto Field = getAttrOfType<StringAttr>("field").getValue();
+  auto Field = (*this)->getAttrOfType<StringAttr>("field").getValue();
   for (auto &i : StructTy.getFields())
     if (i.first.getValue().equals(Field)) {
       if (i.second == ResultTy)
