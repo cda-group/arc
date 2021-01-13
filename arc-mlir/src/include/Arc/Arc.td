@@ -97,6 +97,14 @@ def ArcTensorElementType : Type<Or<[
 def AnyBuilder : Type<CPred<"$_self.isa<BuilderType>()">, "any builder">;
 def AnyAppender : Type<CPred<"$_self.isa<AppenderType>()">, "any appender">;
 def AnyStruct : Type<CPred<"$_self.isa<StructType>()">, "any struct">;
+def ArcStream : Type<CPred<"$_self.isa<StreamType>()">, "a stream">;
+
+def StreamElementType : Type<Or<[
+  FloatLike.predicate,
+  ArcIntegerLike.predicate,
+  AnyStruct.predicate,
+]>, "any type valid in a stream">;
+
 
 //===----------------------------------------------------------------------===//
 // Arc Traits
