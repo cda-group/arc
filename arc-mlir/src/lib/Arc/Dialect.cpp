@@ -217,6 +217,20 @@ OpFoldResult DivIOp::fold(ArrayRef<Attribute> operands) {
   return overflowOrDiv0 ? Attribute() : result;
 }
 
+//===----------------------------------------------------------------------===//
+// EmitOp
+//===----------------------------------------------------------------------===//
+LogicalResult EmitOp::customVerify() {
+  auto Operation = this->getOperation();
+  auto ElemTy = Operation->getOperand(0).getType();
+  auto StreamTy =
+      Operation->getOperand(1).getType().cast<StreamType>().getType();
+  if (ElemTy != StreamTy)
+    return emitOpError("Can't emit element of type ")
+           << ElemTy << " on stream of " << StreamTy;
+  return mlir::success();
+}
+
 LogicalResult MakeVectorOp::customVerify() {
   auto Operation = this->getOperation();
   auto NumOperands = Operation->getNumOperands();
