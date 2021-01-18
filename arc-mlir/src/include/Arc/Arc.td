@@ -97,6 +97,14 @@ def ArcTensorElementType : Type<Or<[
 def AnyBuilder : Type<CPred<"$_self.isa<BuilderType>()">, "any builder">;
 def AnyAppender : Type<CPred<"$_self.isa<AppenderType>()">, "any appender">;
 def AnyStruct : Type<CPred<"$_self.isa<StructType>()">, "any struct">;
+def ArcStream : Type<CPred<"$_self.isa<StreamType>()">, "a stream">;
+
+def StreamElementType : Type<Or<[
+  FloatLike.predicate,
+  ArcIntegerLike.predicate,
+  AnyStruct.predicate,
+]>, "any type valid in a stream">;
+
 
 //===----------------------------------------------------------------------===//
 // Arc Traits
@@ -423,6 +431,22 @@ def Arc_CmpIOp : Arc_Op<"cmpi",
   let hasFolder = 1;
 
   let assemblyFormat = "$predicate `,` $lhs `,` $rhs attr-dict `:` type($lhs)";
+}
+
+def Arc_EmitOp : Arc_Op<"emit", []> {
+  let summary = "Emit a value on a stream";
+  let description = [{
+    Emit a value on a stream
+  }];
+
+  let arguments = (ins
+      StreamElementType:$value,
+      ArcStream:$stream
+  );
+  let results = (outs);
+  let verifier = [{ return customVerify(); }];
+
+  let extraClassDeclaration = [{ LogicalResult customVerify(); }];
 }
 
 def Arc_SelectOp : Arc_Op<"select", [NoSideEffect, SameOperandsAndResultShape,

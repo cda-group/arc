@@ -46,6 +46,7 @@ void ArcDialect::initialize(void) {
 #include "Arc/Arc.cpp.inc"
       >();
   addTypes<AppenderType>();
+  addTypes<StreamType>();
   addTypes<StructType>();
 }
 
@@ -59,6 +60,8 @@ Type ArcDialect::parseType(DialectAsmParser &parser) const {
     return nullptr;
   if (keyword == "appender")
     return AppenderType::parse(parser);
+  if (keyword == "stream")
+    return StreamType::parse(parser);
   if (keyword == "struct")
     return StructType::parse(parser);
   parser.emitError(parser.getNameLoc(), "unknown type keyword " + keyword);
@@ -71,6 +74,8 @@ Type ArcDialect::parseType(DialectAsmParser &parser) const {
 
 void ArcDialect::printType(Type type, DialectAsmPrinter &os) const {
   if (auto t = type.dyn_cast<AppenderType>())
+    t.print(os);
+  else if (auto t = type.dyn_cast<StreamType>())
     t.print(os);
   else if (auto t = type.dyn_cast<StructType>())
     t.print(os);
@@ -210,6 +215,20 @@ OpFoldResult DivIOp::fold(ArrayRef<Attribute> operands) {
     return a.sdiv_ov(b, overflowOrDiv0);
   });
   return overflowOrDiv0 ? Attribute() : result;
+}
+
+//===----------------------------------------------------------------------===//
+// EmitOp
+//===----------------------------------------------------------------------===//
+LogicalResult EmitOp::customVerify() {
+  auto Operation = this->getOperation();
+  auto ElemTy = Operation->getOperand(0).getType();
+  auto StreamTy =
+      Operation->getOperand(1).getType().cast<StreamType>().getType();
+  if (ElemTy != StreamTy)
+    return emitOpError("Can't emit element of type ")
+           << ElemTy << " on stream of " << StreamTy;
+  return mlir::success();
 }
 
 LogicalResult MakeVectorOp::customVerify() {

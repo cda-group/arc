@@ -43,8 +43,10 @@ bool isBuilderType(Type type);
 // Arc Type Storages
 //===----------------------------------------------------------------------===//
 
+struct ArconTypeStorage;
 struct BuilderTypeStorage;
 struct AppenderTypeStorage;
+struct StreamTypeStorage;
 struct StructTypeStorage;
 
 //===----------------------------------------------------------------------===//
@@ -73,6 +75,30 @@ public:
                                RankedTensorType resultType);
   static Type parse(DialectAsmParser &parser);
   void print(DialectAsmPrinter &os) const;
+};
+
+class ArconType : public Type {
+public:
+  virtual ~ArconType(){};
+  using ImplType = ArconTypeStorage;
+  using Type::Type;
+
+  Type getContainedType() const;
+  StringRef getKeyword() const;
+  virtual void print(DialectAsmPrinter &os) const;
+};
+
+class StreamType
+    : public mlir::Type::TypeBase<StreamType, ArconType, StreamTypeStorage> {
+public:
+  using Base::Base;
+
+  static StreamType get(mlir::Type elementType);
+
+  /// Returns the type of the stream elements
+  mlir::Type getType() const;
+
+  static Type parse(DialectAsmParser &parser);
 };
 
 class StructType
