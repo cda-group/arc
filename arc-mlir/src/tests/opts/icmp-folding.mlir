@@ -792,7 +792,7 @@ module @toplevel {
 
 // Check that we don't fold anything that's not foldable
     %test_nofold = arc.cmpi "le", %arg0, %larger_ui64 : ui64
-// CHECK-DAG: [[NOFOLD:%[^ ]+]] = arc.cmpi "le", %arg0, [[LARGERU64]] : ui64
+// CHECK-DAG: [[NOFOLD:%[^ ]+]] = arc.cmpi le, %arg0, [[LARGERU64]] : ui64
     "arc.keep"(%test_nofold) : (i1) -> ()
 // CHECK: "arc.keep"([[NOFOLD]]) : (i1) -> ()
 
