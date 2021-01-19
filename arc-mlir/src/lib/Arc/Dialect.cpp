@@ -550,6 +550,62 @@ OpFoldResult arc::XOrOp::fold(ArrayRef<Attribute> operands) {
 }
 
 //===----------------------------------------------------------------------===//
+// StateAppender operations
+//===----------------------------------------------------------------------===//
+LogicalResult StateAppenderFoldOp::customVerify() {
+  auto InitTy = init().getType();
+  auto ResultTy = res().getType();
+  Operation *Callee =
+      ::mlir::SymbolTable::lookupNearestSymbolFrom(this->getOperation(), fun());
+  auto StateTy = state().getType().cast<ArconAppenderType>().getType();
+
+  FuncOp F = dyn_cast<FuncOp>(Callee);
+  FunctionType FT = F.type().dyn_cast<FunctionType>();
+
+  if (!F)
+    return emitOpError("fold function operand is not a function ");
+
+  if (FT.getNumInputs() != 2)
+    return emitOpError("folding function has the wrong number of operands, "
+                       "expected 2, found ")
+           << FT.getNumInputs();
+
+  if (FT.getNumResults() != 1)
+    return emitOpError("folding function has to return a single value, found ")
+           << FT.getNumResults() << " values";
+
+  if (InitTy != ResultTy)
+    return emitOpError("expected init type ")
+           << InitTy << " to match result type " << ResultTy;
+
+  if (InitTy != FT.getInput(0))
+    return emitOpError("expected type of accumulator initializer")
+           << " to match type of folding function accumulator, found "
+           << FT.getResult(0) << " expected " << InitTy;
+
+  if (FT.getResult(0) != FT.getInput(0))
+    return emitOpError("expected type of folding function accumulator to")
+           << " match folding function result type, found " << FT.getResult(0)
+           << " expected " << FT.getInput(0);
+
+  if (StateTy != FT.getInput(1))
+    return emitOpError("expected type of folding function input to")
+           << " match appender type, found " << FT.getResult(0) << " expected "
+           << FT.getInput(1);
+
+  return mlir::success();
+}
+
+LogicalResult StateAppenderPushOp::customVerify() {
+  auto ValTy = value().getType();
+  auto StateTy = state().getType().cast<ArconAppenderType>().getType();
+  if (ValTy != StateTy)
+    return emitOpError("can't push a value of type ")
+           << ValTy << " to an appender expecting type " << StateTy;
+  return mlir::success();
+}
+
+//===----------------------------------------------------------------------===//
 // StateValue operations
 //===----------------------------------------------------------------------===//
 LogicalResult StateValueWriteOp::customVerify() {

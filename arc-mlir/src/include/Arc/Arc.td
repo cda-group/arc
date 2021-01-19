@@ -25,6 +25,7 @@
 
 #ifndef OP_BASE
 include "../../mlir/include/mlir/IR/OpBase.td"
+include "../../mlir/include/mlir/Interfaces/CallInterfaces.td"
 include "../../mlir/include/mlir/Interfaces/SideEffectInterfaces.td"
 #endif // OP_BASE
 
@@ -100,6 +101,8 @@ def AnyStruct : Type<CPred<"$_self.isa<StructType>()">, "any struct">;
 def ArcStream : Type<CPred<"$_self.isa<StreamType>()">, "a stream">;
 def ArcStateValue : Type<CPred<"$_self.isa<ArconValueType>()">,
                                 "an arcon value type">;
+def ArcStateAppender : Type<CPred<"$_self.isa<ArconAppenderType>()">,
+                                  "an arcon appender type">;
 
 def StreamElementType : Type<Or<[
   FloatLike.predicate,
@@ -570,6 +573,36 @@ def Arc_RemIOp : ArcIntArithmeticOp<"remi"> {
 def Arc_XOrOp : ArcIntArithmeticOp<"xor", [Commutative]> {
   let summary = "integer binary xor";
   let hasFolder = 1;
+}
+
+// State appender
+
+def Arc_StateAppenderPushOp : Arc_Op<"appender_push", []> {
+  let summary = "Add a value to an Arcon appender";
+  let description = [{
+    Add a value to an Arcon appender.
+  }];
+  let arguments = (ins ArcStateAppender:$state, StreamElementType:$value);
+  let results = (outs);
+  let extraClassDeclaration = [{ LogicalResult customVerify(); }];
+  let verifier = [{ return customVerify(); }];
+}
+
+def Arc_StateAppenderFoldOp : Arc_Op<"appender_fold",
+    []> { // DeclareOpInterfaceMethods<CallOpInterface>
+  let summary = "Add a value to an Arcon appender";
+  let description = [{
+    Add a value to an Arcon appender.
+  }];
+  let arguments = (ins ArcStateAppender:$state, StreamElementType:$init,
+                       FlatSymbolRefAttr:$fun);
+  let results = (outs StreamElementType:$res);
+  let extraClassDeclaration = [{ LogicalResult customVerify(); }];
+  let verifier = [{ return customVerify(); }];
+  let builders = [
+    OpBuilderDAG<(ins "Value":$state, "Value":$init, "StringRef":$callee)>
+  ];
+
 }
 
 // State values
