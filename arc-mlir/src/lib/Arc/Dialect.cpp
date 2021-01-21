@@ -46,6 +46,9 @@ void ArcDialect::initialize(void) {
 #include "Arc/Arc.cpp.inc"
       >();
   addTypes<AppenderType>();
+  addTypes<ArconAppenderType>();
+  addTypes<ArconMapType>();
+  addTypes<ArconValueType>();
   addTypes<StreamType>();
   addTypes<StructType>();
 }
@@ -60,6 +63,12 @@ Type ArcDialect::parseType(DialectAsmParser &parser) const {
     return nullptr;
   if (keyword == "appender")
     return AppenderType::parse(parser);
+  if (keyword == "arcon.appender")
+    return ArconAppenderType::parse(parser);
+  if (keyword == "arcon.map")
+    return ArconMapType::parse(parser);
+  if (keyword == "arcon.value")
+    return ArconValueType::parse(parser);
   if (keyword == "stream")
     return StreamType::parse(parser);
   if (keyword == "struct")
@@ -74,6 +83,12 @@ Type ArcDialect::parseType(DialectAsmParser &parser) const {
 
 void ArcDialect::printType(Type type, DialectAsmPrinter &os) const {
   if (auto t = type.dyn_cast<AppenderType>())
+    t.print(os);
+  else if (auto t = type.dyn_cast<ArconAppenderType>())
+    t.print(os);
+  else if (auto t = type.dyn_cast<ArconMapType>())
+    t.print(os);
+  else if (auto t = type.dyn_cast<ArconValueType>())
     t.print(os);
   else if (auto t = type.dyn_cast<StreamType>())
     t.print(os);
@@ -532,6 +547,27 @@ OpFoldResult arc::XOrOp::fold(ArrayRef<Attribute> operands) {
 
   return constFoldBinaryOp<IntegerAttr>(operands,
                                         [](APInt a, APInt b) { return a ^ b; });
+}
+
+//===----------------------------------------------------------------------===//
+// StateValue operations
+//===----------------------------------------------------------------------===//
+LogicalResult StateValueWriteOp::customVerify() {
+  auto ValTy = value().getType();
+  auto StateTy = state().getType().cast<ArconValueType>().getType();
+  if (ValTy != StateTy)
+    return emitOpError("Can't write a value of type ")
+           << ValTy << " to a state value of type" << StateTy;
+  return mlir::success();
+}
+
+LogicalResult StateValueReadOp::customVerify() {
+  auto Operation = this->getOperation();
+  auto ValTy = state().getType().cast<ArconValueType>().getType();
+  auto ResultTy = Operation->getResult(0).getType();
+  if (ValTy != ResultTy)
+    return emitOpError("Expected result type ") << ValTy << " not " << ResultTy;
+  return mlir::success();
 }
 
 //===----------------------------------------------------------------------===//

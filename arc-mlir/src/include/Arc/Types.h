@@ -44,6 +44,9 @@ bool isBuilderType(Type type);
 //===----------------------------------------------------------------------===//
 
 struct ArconTypeStorage;
+struct ArconValueTypeStorage;
+struct ArconAppenderTypeStorage;
+struct ArconMapTypeStorage;
 struct BuilderTypeStorage;
 struct AppenderTypeStorage;
 struct StreamTypeStorage;
@@ -86,6 +89,47 @@ public:
   Type getContainedType() const;
   StringRef getKeyword() const;
   virtual void print(DialectAsmPrinter &os) const;
+};
+
+class ArconValueType : public mlir::Type::TypeBase<ArconValueType, ArconType,
+                                                   ArconValueTypeStorage> {
+public:
+  using Base::Base;
+
+  static ArconValueType get(mlir::Type elementType);
+
+  /// Returns the type of the stream elements
+  mlir::Type getType() const;
+
+  static Type parse(DialectAsmParser &parser);
+};
+
+class ArconAppenderType
+    : public mlir::Type::TypeBase<ArconAppenderType, ArconType,
+                                  ArconAppenderTypeStorage> {
+public:
+  using Base::Base;
+
+  static ArconAppenderType get(mlir::Type elementType);
+
+  /// Returns the type of the stream elements
+  mlir::Type getType() const;
+
+  static Type parse(DialectAsmParser &parser);
+};
+
+class ArconMapType : public mlir::Type::TypeBase<ArconMapType, ArconType,
+                                                 ArconMapTypeStorage> {
+public:
+  using Base::Base;
+
+  static ArconMapType get(mlir::Type keyType, mlir::Type elementType);
+
+  mlir::Type getKeyType() const;
+  mlir::Type getValueType() const;
+
+  static Type parse(DialectAsmParser &parser);
+  virtual void print(DialectAsmPrinter &os) const override;
 };
 
 class StreamType

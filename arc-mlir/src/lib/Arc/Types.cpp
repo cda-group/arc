@@ -86,6 +86,146 @@ void ArconType::print(DialectAsmPrinter &os) const {
 }
 
 //===----------------------------------------------------------------------===//
+// ArconAppenderType
+//===----------------------------------------------------------------------===//
+struct ArconAppenderTypeStorage : public ArconTypeStorage {
+  using KeyTy = Type;
+
+  ArconAppenderTypeStorage(Type elementType)
+      : ArconTypeStorage(elementType, "arcon.appender") {}
+
+  static ArconAppenderTypeStorage *
+  construct(mlir::TypeStorageAllocator &allocator, const KeyTy &key) {
+    return new (allocator.allocate<ArconValueTypeStorage>())
+        ArconAppenderTypeStorage(key);
+  }
+};
+
+ArconAppenderType ArconAppenderType::get(mlir::Type elementType) {
+  mlir::MLIRContext *ctx = elementType.getContext();
+  return Base::get(ctx, elementType);
+}
+
+/// Returns the element type of this stream type.
+mlir::Type ArconAppenderType::getType() const { return getContainedType(); }
+
+Type ArconAppenderType::parse(DialectAsmParser &parser) {
+  if (parser.parseLess())
+    return nullptr;
+
+  mlir::Type elementType;
+  if (parser.parseType(elementType))
+    return nullptr;
+
+  if (parser.parseGreater())
+    return Type();
+  return ArconAppenderType::get(elementType);
+}
+
+//===----------------------------------------------------------------------===//
+// ArconMapType
+//===----------------------------------------------------------------------===//
+struct ArconMapTypeStorage : public ArconTypeStorage {
+  using KeyTy = std::pair<Type, Type>;
+
+  ArconMapTypeStorage(Type keyType, Type valueType)
+      : ArconTypeStorage(keyType, "arcon.map"), valueType(valueType) {}
+
+  static llvm::hash_code hashKey(const KeyTy &key) {
+    return llvm::hash_combine(key.first, key.second);
+  }
+
+  static KeyTy getKey(Type keyType, Type valueType) {
+    return KeyTy(keyType, valueType);
+  }
+
+  bool operator==(const KeyTy &key) const {
+    return key.first == containedType && key.second == valueType;
+  }
+
+  static ArconMapTypeStorage *construct(mlir::TypeStorageAllocator &allocator,
+                                        const KeyTy &key) {
+    return new (allocator.allocate<ArconMapTypeStorage>())
+        ArconMapTypeStorage(key.first, key.second);
+  }
+
+  Type valueType;
+};
+
+ArconMapType ArconMapType::get(mlir::Type keyType, mlir::Type valueType) {
+  mlir::MLIRContext *ctx = keyType.getContext();
+  return Base::get(ctx, keyType, valueType);
+}
+
+mlir::Type ArconMapType::getKeyType() const { return getContainedType(); }
+
+mlir::Type ArconMapType::getValueType() const {
+
+  return static_cast<ImplType *>(impl)->valueType;
+}
+
+Type ArconMapType::parse(DialectAsmParser &parser) {
+  if (parser.parseLess())
+    return nullptr;
+
+  mlir::Type keyType;
+  if (parser.parseType(keyType))
+    return nullptr;
+
+  if (parser.parseComma())
+    return nullptr;
+
+  mlir::Type valueType;
+  if (parser.parseType(valueType))
+    return nullptr;
+
+  if (parser.parseGreater())
+    return Type();
+  return ArconMapType::get(keyType, valueType);
+}
+
+void ArconMapType::print(DialectAsmPrinter &os) const {
+  os << getKeyword() << "<" << getKeyType() << ", " << getValueType() << ">";
+}
+
+//===----------------------------------------------------------------------===//
+// ArconValueType
+//===----------------------------------------------------------------------===//
+struct ArconValueTypeStorage : public ArconTypeStorage {
+  using KeyTy = Type;
+
+  ArconValueTypeStorage(Type elementType)
+      : ArconTypeStorage(elementType, "arcon.value") {}
+
+  static ArconValueTypeStorage *construct(mlir::TypeStorageAllocator &allocator,
+                                          const KeyTy &key) {
+    return new (allocator.allocate<ArconValueTypeStorage>())
+        ArconValueTypeStorage(key);
+  }
+};
+
+ArconValueType ArconValueType::get(mlir::Type elementType) {
+  mlir::MLIRContext *ctx = elementType.getContext();
+  return Base::get(ctx, elementType);
+}
+
+/// Returns the element type of this stream type.
+mlir::Type ArconValueType::getType() const { return getContainedType(); }
+
+Type ArconValueType::parse(DialectAsmParser &parser) {
+  if (parser.parseLess())
+    return nullptr;
+
+  mlir::Type elementType;
+  if (parser.parseType(elementType))
+    return nullptr;
+
+  if (parser.parseGreater())
+    return Type();
+  return ArconValueType::get(elementType);
+}
+
+//===----------------------------------------------------------------------===//
 // BuilderType
 //===----------------------------------------------------------------------===//
 
