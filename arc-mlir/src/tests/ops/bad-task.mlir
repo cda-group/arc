@@ -91,3 +91,281 @@ module @toplevel {
   }
 }
 
+// -----
+
+module @toplevel {
+
+  func @MyOperator(// Imutables
+                   !arc.struct<p0 : f32, p1 : si32>,
+		   // State
+                   !arc.struct<state1 : !arc.arcon.value<!arc.struct<i : si32, f : f32>>,
+		               state2 : !arc.arcon.appender<!arc.struct<i : si32, f : f32>>,
+			       state3 : !arc.arcon.map<ui64, !arc.struct<i : si32, f : f32>>>,
+		   // Input element
+       		   !arc.struct<i : si32, f : f32>,
+                   // Ouput stream (repeated)
+		   !arc.stream<!arc.struct<i : si32, f : f32>>
+		   ) -> ()
+      attributes { arc.is_task, arc.in = "In" } {
+      ^bb0(%immutables: !arc.struct<p0 : f32, p1 : si32>,
+      	   %state: !arc.struct<state1 : !arc.arcon.value<!arc.struct<i : si32, f : f32>>,
+	                       state2 : !arc.arcon.appender<!arc.struct<i : si32, f : f32>>,
+			       state3 : !arc.arcon.map<ui64, !arc.struct<i : si32, f : f32>>>,
+           %input: !arc.struct<i : si32, f : f32>,
+	   %output0: !arc.stream<!arc.struct<i : si32, f : f32>>):
+
+	  %i = arc.constant 4 : si32
+	  %f = constant 3.14 : f32
+	  %s = arc.make_struct(%f, %i : f32, si32) : !arc.struct<f : f32, i : si32>
+	  %state2 = "arc.struct_access"(%state) { field = "state2" } : (!arc.struct<state1 : !arc.arcon.value<!arc.struct<i : si32, f : f32>>,
+	                       state2 : !arc.arcon.appender<!arc.struct<i : si32, f : f32>>,
+			       state3 : !arc.arcon.map<ui64, !arc.struct<i : si32, f : f32>>>) -> !arc.arcon.appender<!arc.struct<i : si32, f : f32>>
+	  // expected-error@+2 {{'arc.appender_push' op can't push a value of type '!arc.struct<f : f32, i : si32>' to an appender expecting type '!arc.struct<i : si32, f : f32>'}}
+	  // expected-note@+1 {{see current operation:}}
+	  "arc.appender_push"(%state2, %s) : (!arc.arcon.appender<!arc.struct<i : si32, f : f32>>, !arc.struct<f : f32, i : si32>) -> ()
+
+          return
+  }
+}
+
+// -----
+
+module @toplevel {
+  func @FoldFun() -> () {
+    return
+  }
+
+  func @MyOperator(// Imutables
+                   !arc.struct<p0 : f32, p1 : si32>,
+		   // State
+                   !arc.struct<state1 : !arc.arcon.value<!arc.struct<i : si32, f : f32>>,
+		               state2 : !arc.arcon.appender<!arc.struct<i : si32, f : f32>>,
+			       state3 : !arc.arcon.map<ui64, !arc.struct<i : si32, f : f32>>>,
+		   // Input element
+       		   !arc.struct<i : si32, f : f32>,
+                   // Ouput stream (repeated)
+		   !arc.stream<!arc.struct<i : si32, f : f32>>
+		   ) -> ()
+      attributes { arc.is_task, arc.in = "In" } {
+      ^bb0(%immutables: !arc.struct<p0 : f32, p1 : si32>,
+      	   %state: !arc.struct<state1 : !arc.arcon.value<!arc.struct<i : si32, f : f32>>,
+	                       state2 : !arc.arcon.appender<!arc.struct<i : si32, f : f32>>,
+			       state3 : !arc.arcon.map<ui64, !arc.struct<i : si32, f : f32>>>,
+           %input: !arc.struct<i : si32, f : f32>,
+	   %output0: !arc.stream<!arc.struct<i : si32, f : f32>>):
+	  "arc.emit"(%input, %output0) : (!arc.struct<i : si32, f : f32>, !arc.stream<!arc.struct<i : si32, f : f32>>) -> ()
+	  %state1 = "arc.struct_access"(%state) { field = "state1" } : (!arc.struct<state1 : !arc.arcon.value<!arc.struct<i : si32, f : f32>>,
+	                       state2 : !arc.arcon.appender<!arc.struct<i : si32, f : f32>>,
+			       state3 : !arc.arcon.map<ui64, !arc.struct<i : si32, f : f32>>>) -> !arc.arcon.value<!arc.struct<i : si32, f : f32>>
+	  %i = arc.constant 4 : si32
+	  %f = constant 3.14 : f32
+	  %s = arc.make_struct(%i, %f : si32, f32) : !arc.struct<i : si32, f : f32>
+	  "arc.value_write"(%state1, %s) : (!arc.arcon.value<!arc.struct<i : si32, f : f32>>, !arc.struct<i : si32, f : f32>) -> ()
+	  %sr = "arc.value_read"(%state1) : (!arc.arcon.value<!arc.struct<i : si32, f : f32>>) -> !arc.struct<i : si32, f : f32>
+
+	  %state2 = "arc.struct_access"(%state) { field = "state2" } : (!arc.struct<state1 : !arc.arcon.value<!arc.struct<i : si32, f : f32>>,
+	                       state2 : !arc.arcon.appender<!arc.struct<i : si32, f : f32>>,
+			       state3 : !arc.arcon.map<ui64, !arc.struct<i : si32, f : f32>>>) -> !arc.arcon.appender<!arc.struct<i : si32, f : f32>>
+	  "arc.appender_push"(%state2, %s) : (!arc.arcon.appender<!arc.struct<i : si32, f : f32>>, !arc.struct<i : si32, f : f32>) -> ()
+	  // expected-error@+2 {{'arc.appender_fold' op folding function has the wrong number of operands, expected 2, found 0}}
+	  // expected-note@+1 {{see current operation:}}
+          "arc.appender_fold"(%state2, %f) {fun=@FoldFun} : (!arc.arcon.appender<!arc.struct<i : si32, f : f32>>, f32) -> f32
+          return
+  }
+}
+
+// -----
+
+module @toplevel {
+
+  func @FoldFun(si32, si32) -> () {
+  ^bb0(%a: si32, %b : si32):
+    return
+  }
+
+  func @MyOperator(// Imutables
+                   !arc.struct<p0 : f32, p1 : si32>,
+		   // State
+                   !arc.struct<state1 : !arc.arcon.value<!arc.struct<i : si32, f : f32>>,
+		               state2 : !arc.arcon.appender<!arc.struct<i : si32, f : f32>>,
+			       state3 : !arc.arcon.map<ui64, !arc.struct<i : si32, f : f32>>>,
+		   // Input element
+       		   !arc.struct<i : si32, f : f32>,
+                   // Ouput stream (repeated)
+		   !arc.stream<!arc.struct<i : si32, f : f32>>
+		   ) -> ()
+      attributes { arc.is_task, arc.in = "In" } {
+      ^bb0(%immutables: !arc.struct<p0 : f32, p1 : si32>,
+      	   %state: !arc.struct<state1 : !arc.arcon.value<!arc.struct<i : si32, f : f32>>,
+	                       state2 : !arc.arcon.appender<!arc.struct<i : si32, f : f32>>,
+			       state3 : !arc.arcon.map<ui64, !arc.struct<i : si32, f : f32>>>,
+           %input: !arc.struct<i : si32, f : f32>,
+	   %output0: !arc.stream<!arc.struct<i : si32, f : f32>>):
+	  "arc.emit"(%input, %output0) : (!arc.struct<i : si32, f : f32>, !arc.stream<!arc.struct<i : si32, f : f32>>) -> ()
+	  %state1 = "arc.struct_access"(%state) { field = "state1" } : (!arc.struct<state1 : !arc.arcon.value<!arc.struct<i : si32, f : f32>>,
+	                       state2 : !arc.arcon.appender<!arc.struct<i : si32, f : f32>>,
+			       state3 : !arc.arcon.map<ui64, !arc.struct<i : si32, f : f32>>>) -> !arc.arcon.value<!arc.struct<i : si32, f : f32>>
+	  %i = arc.constant 4 : si32
+	  %f = constant 3.14 : f32
+	  %s = arc.make_struct(%i, %f : si32, f32) : !arc.struct<i : si32, f : f32>
+	  "arc.value_write"(%state1, %s) : (!arc.arcon.value<!arc.struct<i : si32, f : f32>>, !arc.struct<i : si32, f : f32>) -> ()
+	  %sr = "arc.value_read"(%state1) : (!arc.arcon.value<!arc.struct<i : si32, f : f32>>) -> !arc.struct<i : si32, f : f32>
+
+	  %state2 = "arc.struct_access"(%state) { field = "state2" } : (!arc.struct<state1 : !arc.arcon.value<!arc.struct<i : si32, f : f32>>,
+	                       state2 : !arc.arcon.appender<!arc.struct<i : si32, f : f32>>,
+			       state3 : !arc.arcon.map<ui64, !arc.struct<i : si32, f : f32>>>) -> !arc.arcon.appender<!arc.struct<i : si32, f : f32>>
+	  "arc.appender_push"(%state2, %s) : (!arc.arcon.appender<!arc.struct<i : si32, f : f32>>, !arc.struct<i : si32, f : f32>) -> ()
+	  // expected-error@+2 {{'arc.appender_fold' op folding function has to return a single value, found 0 values}}
+	  // expected-note@+1 {{see current operation:}}
+	  "arc.appender_fold"(%state2, %f) {fun=@FoldFun} : (!arc.arcon.appender<!arc.struct<i : si32, f : f32>>, f32) -> f32
+          return
+  }
+}
+
+// -----
+
+module @toplevel {
+
+  func @FoldFun(si32, si32) -> si32 {
+  ^bb0(%a: si32, %b : si32):
+    %i = arc.constant 4 : si32
+    return %i : si32
+  }
+
+  func @MyOperator(// Imutables
+                   !arc.struct<p0 : f32, p1 : si32>,
+		   // State
+                   !arc.struct<state1 : !arc.arcon.value<!arc.struct<i : si32, f : f32>>,
+		               state2 : !arc.arcon.appender<!arc.struct<i : si32, f : f32>>,
+			       state3 : !arc.arcon.map<ui64, !arc.struct<i : si32, f : f32>>>,
+		   // Input element
+       		   !arc.struct<i : si32, f : f32>,
+                   // Ouput stream (repeated)
+		   !arc.stream<!arc.struct<i : si32, f : f32>>
+		   ) -> ()
+      attributes { arc.is_task, arc.in = "In" } {
+      ^bb0(%immutables: !arc.struct<p0 : f32, p1 : si32>,
+      	   %state: !arc.struct<state1 : !arc.arcon.value<!arc.struct<i : si32, f : f32>>,
+	                       state2 : !arc.arcon.appender<!arc.struct<i : si32, f : f32>>,
+			       state3 : !arc.arcon.map<ui64, !arc.struct<i : si32, f : f32>>>,
+           %input: !arc.struct<i : si32, f : f32>,
+	   %output0: !arc.stream<!arc.struct<i : si32, f : f32>>):
+	  "arc.emit"(%input, %output0) : (!arc.struct<i : si32, f : f32>, !arc.stream<!arc.struct<i : si32, f : f32>>) -> ()
+	  %state1 = "arc.struct_access"(%state) { field = "state1" } : (!arc.struct<state1 : !arc.arcon.value<!arc.struct<i : si32, f : f32>>,
+	                       state2 : !arc.arcon.appender<!arc.struct<i : si32, f : f32>>,
+			       state3 : !arc.arcon.map<ui64, !arc.struct<i : si32, f : f32>>>) -> !arc.arcon.value<!arc.struct<i : si32, f : f32>>
+	  %i = arc.constant 4 : si32
+	  %f = constant 3.14 : f32
+	  %s = arc.make_struct(%i, %f : si32, f32) : !arc.struct<i : si32, f : f32>
+	  "arc.value_write"(%state1, %s) : (!arc.arcon.value<!arc.struct<i : si32, f : f32>>, !arc.struct<i : si32, f : f32>) -> ()
+	  %sr = "arc.value_read"(%state1) : (!arc.arcon.value<!arc.struct<i : si32, f : f32>>) -> !arc.struct<i : si32, f : f32>
+
+	  %state2 = "arc.struct_access"(%state) { field = "state2" } : (!arc.struct<state1 : !arc.arcon.value<!arc.struct<i : si32, f : f32>>,
+	                       state2 : !arc.arcon.appender<!arc.struct<i : si32, f : f32>>,
+			       state3 : !arc.arcon.map<ui64, !arc.struct<i : si32, f : f32>>>) -> !arc.arcon.appender<!arc.struct<i : si32, f : f32>>
+	  "arc.appender_push"(%state2, %s) : (!arc.arcon.appender<!arc.struct<i : si32, f : f32>>, !arc.struct<i : si32, f : f32>) -> ()
+	  // expected-error@+2 {{'arc.appender_fold' op expected type of accumulator initializer to match type of folding function accumulator, found 'si32' expected 'f32'}}
+	  // expected-note@+1 {{see current operation:}}
+	  "arc.appender_fold"(%state2, %f) {fun=@FoldFun} : (!arc.arcon.appender<!arc.struct<i : si32, f : f32>>, f32) -> f32
+          return
+  }
+}
+
+// -----
+
+module @toplevel {
+
+  func @FoldFun(f32, si32) -> si32 {
+  ^bb0(%a: f32, %b : si32):
+    %i = arc.constant 4 : si32
+    return %i : si32
+  }
+
+  func @MyOperator(// Imutables
+                   !arc.struct<p0 : f32, p1 : si32>,
+		   // State
+                   !arc.struct<state1 : !arc.arcon.value<!arc.struct<i : si32, f : f32>>,
+		               state2 : !arc.arcon.appender<!arc.struct<i : si32, f : f32>>,
+			       state3 : !arc.arcon.map<ui64, !arc.struct<i : si32, f : f32>>>,
+		   // Input element
+       		   !arc.struct<i : si32, f : f32>,
+                   // Ouput stream (repeated)
+		   !arc.stream<!arc.struct<i : si32, f : f32>>
+		   ) -> ()
+      attributes { arc.is_task, arc.in = "In" } {
+      ^bb0(%immutables: !arc.struct<p0 : f32, p1 : si32>,
+      	   %state: !arc.struct<state1 : !arc.arcon.value<!arc.struct<i : si32, f : f32>>,
+	                       state2 : !arc.arcon.appender<!arc.struct<i : si32, f : f32>>,
+			       state3 : !arc.arcon.map<ui64, !arc.struct<i : si32, f : f32>>>,
+           %input: !arc.struct<i : si32, f : f32>,
+	   %output0: !arc.stream<!arc.struct<i : si32, f : f32>>):
+	  "arc.emit"(%input, %output0) : (!arc.struct<i : si32, f : f32>, !arc.stream<!arc.struct<i : si32, f : f32>>) -> ()
+	  %state1 = "arc.struct_access"(%state) { field = "state1" } : (!arc.struct<state1 : !arc.arcon.value<!arc.struct<i : si32, f : f32>>,
+	                       state2 : !arc.arcon.appender<!arc.struct<i : si32, f : f32>>,
+			       state3 : !arc.arcon.map<ui64, !arc.struct<i : si32, f : f32>>>) -> !arc.arcon.value<!arc.struct<i : si32, f : f32>>
+	  %i = arc.constant 4 : si32
+	  %f = constant 3.14 : f32
+	  %s = arc.make_struct(%i, %f : si32, f32) : !arc.struct<i : si32, f : f32>
+	  "arc.value_write"(%state1, %s) : (!arc.arcon.value<!arc.struct<i : si32, f : f32>>, !arc.struct<i : si32, f : f32>) -> ()
+	  %sr = "arc.value_read"(%state1) : (!arc.arcon.value<!arc.struct<i : si32, f : f32>>) -> !arc.struct<i : si32, f : f32>
+
+	  %state2 = "arc.struct_access"(%state) { field = "state2" } : (!arc.struct<state1 : !arc.arcon.value<!arc.struct<i : si32, f : f32>>,
+	                       state2 : !arc.arcon.appender<!arc.struct<i : si32, f : f32>>,
+			       state3 : !arc.arcon.map<ui64, !arc.struct<i : si32, f : f32>>>) -> !arc.arcon.appender<!arc.struct<i : si32, f : f32>>
+	  "arc.appender_push"(%state2, %s) : (!arc.arcon.appender<!arc.struct<i : si32, f : f32>>, !arc.struct<i : si32, f : f32>) -> ()
+	  // expected-error@+2 {{'arc.appender_fold' op expected type of folding function accumulator to match folding function result type, found 'si32' expected 'f32'}}
+	  // expected-note@+1 {{see current operation:}}
+	  "arc.appender_fold"(%state2, %f) {fun=@FoldFun} : (!arc.arcon.appender<!arc.struct<i : si32, f : f32>>, f32) -> f32
+          return
+  }
+}
+
+// -----
+
+module @toplevel {
+
+  func @FoldFun(f32, si32) -> f32 {
+  ^bb0(%a: f32, %b : si32):
+    %f = constant 3.14 : f32
+    return %f : f32
+  }
+
+  func @MyOperator(// Imutables
+                   !arc.struct<p0 : f32, p1 : si32>,
+		   // State
+                   !arc.struct<state1 : !arc.arcon.value<!arc.struct<i : si32, f : f32>>,
+		               state2 : !arc.arcon.appender<!arc.struct<i : si32, f : f32>>,
+			       state3 : !arc.arcon.map<ui64, !arc.struct<i : si32, f : f32>>>,
+		   // Input element
+       		   !arc.struct<i : si32, f : f32>,
+                   // Ouput stream (repeated)
+		   !arc.stream<!arc.struct<i : si32, f : f32>>
+		   ) -> ()
+      attributes { arc.is_task, arc.in = "In" } {
+      ^bb0(%immutables: !arc.struct<p0 : f32, p1 : si32>,
+      	   %state: !arc.struct<state1 : !arc.arcon.value<!arc.struct<i : si32, f : f32>>,
+	                       state2 : !arc.arcon.appender<!arc.struct<i : si32, f : f32>>,
+			       state3 : !arc.arcon.map<ui64, !arc.struct<i : si32, f : f32>>>,
+           %input: !arc.struct<i : si32, f : f32>,
+	   %output0: !arc.stream<!arc.struct<i : si32, f : f32>>):
+	  "arc.emit"(%input, %output0) : (!arc.struct<i : si32, f : f32>, !arc.stream<!arc.struct<i : si32, f : f32>>) -> ()
+	  %state1 = "arc.struct_access"(%state) { field = "state1" } : (!arc.struct<state1 : !arc.arcon.value<!arc.struct<i : si32, f : f32>>,
+	                       state2 : !arc.arcon.appender<!arc.struct<i : si32, f : f32>>,
+			       state3 : !arc.arcon.map<ui64, !arc.struct<i : si32, f : f32>>>) -> !arc.arcon.value<!arc.struct<i : si32, f : f32>>
+	  %i = arc.constant 4 : si32
+	  %f = constant 3.14 : f32
+	  %s = arc.make_struct(%i, %f : si32, f32) : !arc.struct<i : si32, f : f32>
+	  "arc.value_write"(%state1, %s) : (!arc.arcon.value<!arc.struct<i : si32, f : f32>>, !arc.struct<i : si32, f : f32>) -> ()
+	  %sr = "arc.value_read"(%state1) : (!arc.arcon.value<!arc.struct<i : si32, f : f32>>) -> !arc.struct<i : si32, f : f32>
+
+	  %state2 = "arc.struct_access"(%state) { field = "state2" } : (!arc.struct<state1 : !arc.arcon.value<!arc.struct<i : si32, f : f32>>,
+	                       state2 : !arc.arcon.appender<!arc.struct<i : si32, f : f32>>,
+			       state3 : !arc.arcon.map<ui64, !arc.struct<i : si32, f : f32>>>) -> !arc.arcon.appender<!arc.struct<i : si32, f : f32>>
+	  "arc.appender_push"(%state2, %s) : (!arc.arcon.appender<!arc.struct<i : si32, f : f32>>, !arc.struct<i : si32, f : f32>) -> ()
+  	  // expected-error@+2 {{'arc.appender_fold' op expected type of folding function input to match appender type, found 'f32' expected 'si32'}}
+	  // expected-note@+1 {{see current operation:}}
+	  "arc.appender_fold"(%state2, %f) {fun=@FoldFun} : (!arc.arcon.appender<!arc.struct<i : si32, f : f32>>, f32) -> f32
+          return
+  }
+}
+
