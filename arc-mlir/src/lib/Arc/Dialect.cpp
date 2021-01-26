@@ -606,6 +606,55 @@ LogicalResult StateAppenderPushOp::customVerify() {
 }
 
 //===----------------------------------------------------------------------===//
+// StateMap operations
+//===----------------------------------------------------------------------===//
+LogicalResult StateMapContainsOp::customVerify() {
+  auto KeyTy = key().getType();
+  auto ExpectedKeyTy = state().getType().cast<ArconMapType>().getKeyType();
+  if (KeyTy != ExpectedKeyTy)
+    return emitOpError("key type ")
+           << KeyTy << " does not match map key type " << ExpectedKeyTy;
+  return mlir::success();
+}
+
+LogicalResult StateMapGetOp::customVerify() {
+  auto ValTy = result().getType();
+  auto KeyTy = key().getType();
+  auto ExpectedKeyTy = state().getType().cast<ArconMapType>().getKeyType();
+  auto ExpectedValTy = state().getType().cast<ArconMapType>().getValueType();
+  if (KeyTy != ExpectedKeyTy)
+    return emitOpError("key type ")
+           << KeyTy << " does not match map key type " << ExpectedKeyTy;
+  if (ValTy != ExpectedValTy)
+    return emitOpError("result type ")
+           << ValTy << " does not match map value type " << ExpectedValTy;
+  return mlir::success();
+}
+
+LogicalResult StateMapInsertOp::customVerify() {
+  auto ValTy = value().getType();
+  auto KeyTy = key().getType();
+  auto ExpectedKeyTy = state().getType().cast<ArconMapType>().getKeyType();
+  auto ExpectedValTy = state().getType().cast<ArconMapType>().getValueType();
+  if (KeyTy != ExpectedKeyTy)
+    return emitOpError("key type ")
+           << KeyTy << " does not match map key type " << ExpectedKeyTy;
+  if (ValTy != ExpectedValTy)
+    return emitOpError("value type ")
+           << ValTy << " does not match map value type " << ExpectedValTy;
+  return mlir::success();
+}
+
+LogicalResult StateMapRemoveOp::customVerify() {
+  auto KeyTy = key().getType();
+  auto ExpectedKeyTy = state().getType().cast<ArconMapType>().getKeyType();
+  if (KeyTy != ExpectedKeyTy)
+    return emitOpError("key type ")
+           << KeyTy << " does not match map key type " << ExpectedKeyTy;
+  return mlir::success();
+}
+
+//===----------------------------------------------------------------------===//
 // StateValue operations
 //===----------------------------------------------------------------------===//
 LogicalResult StateValueWriteOp::customVerify() {

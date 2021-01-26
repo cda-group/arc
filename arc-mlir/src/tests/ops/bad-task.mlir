@@ -369,3 +369,267 @@ module @toplevel {
   }
 }
 
+// -----
+
+module @toplevel {
+
+  func @FoldFun(f32, !arc.struct<i : si32, f : f32>) -> f32 {
+  ^bb0(%a: f32, %b : !arc.struct<i : si32, f : f32>):
+    %f = constant 3.14 : f32
+    return %f : f32
+  }
+
+  func @MyOperator(// Imutables
+                   !arc.struct<p0 : f32, p1 : si32>,
+		   // State
+                   !arc.struct<state1 : !arc.arcon.value<!arc.struct<i : si32, f : f32>>,
+		               state2 : !arc.arcon.appender<!arc.struct<i : si32, f : f32>>,
+			       state3 : !arc.arcon.map<ui64, !arc.struct<i : si32, f : f32>>>,
+		   // Input element
+       		   !arc.struct<i : si32, f : f32>,
+                   // Ouput stream (repeated)
+		   !arc.stream<!arc.struct<i : si32, f : f32>>
+		   ) -> ()
+      attributes { arc.is_task, arc.in = "In" } {
+      ^bb0(%immutables: !arc.struct<p0 : f32, p1 : si32>,
+      	   %state: !arc.struct<state1 : !arc.arcon.value<!arc.struct<i : si32, f : f32>>,
+	                       state2 : !arc.arcon.appender<!arc.struct<i : si32, f : f32>>,
+			       state3 : !arc.arcon.map<ui64, !arc.struct<i : si32, f : f32>>>,
+           %input: !arc.struct<i : si32, f : f32>,
+	   %output0: !arc.stream<!arc.struct<i : si32, f : f32>>):
+	  "arc.emit"(%input, %output0) : (!arc.struct<i : si32, f : f32>, !arc.stream<!arc.struct<i : si32, f : f32>>) -> ()
+	  %i = arc.constant 4 : si32
+	  %f = constant 3.14 : f32
+	  %s = arc.make_struct(%i, %f : si32, f32) : !arc.struct<i : si32, f : f32>
+
+	  %state3 = "arc.struct_access"(%state) { field = "state3" } : (!arc.struct<state1 : !arc.arcon.value<!arc.struct<i : si32, f : f32>>,
+	                       state2 : !arc.arcon.appender<!arc.struct<i : si32, f : f32>>,
+			       state3 : !arc.arcon.map<ui64, !arc.struct<i : si32, f : f32>>>) -> !arc.arcon.map<ui64, !arc.struct<i : si32, f : f32>>
+
+	  // expected-error@+2 {{'arc.map_insert' op key type 'f32' does not match map key type 'ui64'}}
+	  // expected-note@+1 {{see current operation:}}
+          "arc.map_insert"(%state3, %f, %f) : (!arc.arcon.map<ui64, !arc.struct<i : si32, f : f32>>, f32, f32) -> ()
+
+          return
+  }
+}
+
+// -----
+module @toplevel {
+
+  func @FoldFun(f32, !arc.struct<i : si32, f : f32>) -> f32 {
+  ^bb0(%a: f32, %b : !arc.struct<i : si32, f : f32>):
+    %f = constant 3.14 : f32
+    return %f : f32
+  }
+
+  func @MyOperator(// Imutables
+                   !arc.struct<p0 : f32, p1 : si32>,
+		   // State
+                   !arc.struct<state1 : !arc.arcon.value<!arc.struct<i : si32, f : f32>>,
+		               state2 : !arc.arcon.appender<!arc.struct<i : si32, f : f32>>,
+			       state3 : !arc.arcon.map<ui64, !arc.struct<i : si32, f : f32>>>,
+		   // Input element
+       		   !arc.struct<i : si32, f : f32>,
+                   // Ouput stream (repeated)
+		   !arc.stream<!arc.struct<i : si32, f : f32>>
+		   ) -> ()
+      attributes { arc.is_task, arc.in = "In" } {
+      ^bb0(%immutables: !arc.struct<p0 : f32, p1 : si32>,
+      	   %state: !arc.struct<state1 : !arc.arcon.value<!arc.struct<i : si32, f : f32>>,
+	                       state2 : !arc.arcon.appender<!arc.struct<i : si32, f : f32>>,
+			       state3 : !arc.arcon.map<ui64, !arc.struct<i : si32, f : f32>>>,
+           %input: !arc.struct<i : si32, f : f32>,
+	   %output0: !arc.stream<!arc.struct<i : si32, f : f32>>):
+	  "arc.emit"(%input, %output0) : (!arc.struct<i : si32, f : f32>, !arc.stream<!arc.struct<i : si32, f : f32>>) -> ()
+	  %i = arc.constant 4 : si32
+  	  %u = arc.constant 8 : ui64
+	  %f = constant 3.14 : f32
+	  %s = arc.make_struct(%i, %f : si32, f32) : !arc.struct<i : si32, f : f32>
+
+	  %state3 = "arc.struct_access"(%state) { field = "state3" } : (!arc.struct<state1 : !arc.arcon.value<!arc.struct<i : si32, f : f32>>,
+	                       state2 : !arc.arcon.appender<!arc.struct<i : si32, f : f32>>,
+			       state3 : !arc.arcon.map<ui64, !arc.struct<i : si32, f : f32>>>) -> !arc.arcon.map<ui64, !arc.struct<i : si32, f : f32>>
+
+	  // expected-error@+2 {{'arc.map_insert' op value type 'f32' does not match map value type '!arc.struct<i : si32, f : f32>'}}
+	  // expected-note@+1 {{see current operation:}}
+          "arc.map_insert"(%state3, %u, %f) : (!arc.arcon.map<ui64, !arc.struct<i : si32, f : f32>>, ui64, f32) -> ()
+
+          return
+  }
+}
+
+// -----
+module @toplevel {
+
+  func @FoldFun(f32, !arc.struct<i : si32, f : f32>) -> f32 {
+  ^bb0(%a: f32, %b : !arc.struct<i : si32, f : f32>):
+    %f = constant 3.14 : f32
+    return %f : f32
+  }
+
+  func @MyOperator(// Imutables
+                   !arc.struct<p0 : f32, p1 : si32>,
+		   // State
+                   !arc.struct<state1 : !arc.arcon.value<!arc.struct<i : si32, f : f32>>,
+		               state2 : !arc.arcon.appender<!arc.struct<i : si32, f : f32>>,
+			       state3 : !arc.arcon.map<ui64, !arc.struct<i : si32, f : f32>>>,
+		   // Input element
+       		   !arc.struct<i : si32, f : f32>,
+                   // Ouput stream (repeated)
+		   !arc.stream<!arc.struct<i : si32, f : f32>>
+		   ) -> ()
+      attributes { arc.is_task, arc.in = "In" } {
+      ^bb0(%immutables: !arc.struct<p0 : f32, p1 : si32>,
+      	   %state: !arc.struct<state1 : !arc.arcon.value<!arc.struct<i : si32, f : f32>>,
+	                       state2 : !arc.arcon.appender<!arc.struct<i : si32, f : f32>>,
+			       state3 : !arc.arcon.map<ui64, !arc.struct<i : si32, f : f32>>>,
+           %input: !arc.struct<i : si32, f : f32>,
+	   %output0: !arc.stream<!arc.struct<i : si32, f : f32>>):
+	  "arc.emit"(%input, %output0) : (!arc.struct<i : si32, f : f32>, !arc.stream<!arc.struct<i : si32, f : f32>>) -> ()
+	  %i = arc.constant 4 : si32
+	  %u = arc.constant 8 : ui64
+	  %f = constant 3.14 : f32
+	  %s = arc.make_struct(%i, %f : si32, f32) : !arc.struct<i : si32, f : f32>
+	  %state3 = "arc.struct_access"(%state) { field = "state3" } : (!arc.struct<state1 : !arc.arcon.value<!arc.struct<i : si32, f : f32>>,
+	                       state2 : !arc.arcon.appender<!arc.struct<i : si32, f : f32>>,
+			       state3 : !arc.arcon.map<ui64, !arc.struct<i : si32, f : f32>>>) -> !arc.arcon.map<ui64, !arc.struct<i : si32, f : f32>>
+
+	  // expected-error@+2 {{'arc.map_remove' op key type 'f32' does not match map key type 'ui64'}}
+	  // expected-note@+1 {{see current operation:}}
+          "arc.map_remove"(%state3, %f) : (!arc.arcon.map<ui64, !arc.struct<i : si32, f : f32>>, f32) -> ()
+
+return
+  }
+}
+
+// -----
+module @toplevel {
+
+  func @FoldFun(f32, !arc.struct<i : si32, f : f32>) -> f32 {
+  ^bb0(%a: f32, %b : !arc.struct<i : si32, f : f32>):
+    %f = constant 3.14 : f32
+    return %f : f32
+  }
+
+  func @MyOperator(// Imutables
+                   !arc.struct<p0 : f32, p1 : si32>,
+		   // State
+                   !arc.struct<state1 : !arc.arcon.value<!arc.struct<i : si32, f : f32>>,
+		               state2 : !arc.arcon.appender<!arc.struct<i : si32, f : f32>>,
+			       state3 : !arc.arcon.map<ui64, !arc.struct<i : si32, f : f32>>>,
+		   // Input element
+       		   !arc.struct<i : si32, f : f32>,
+                   // Ouput stream (repeated)
+		   !arc.stream<!arc.struct<i : si32, f : f32>>
+		   ) -> ()
+      attributes { arc.is_task, arc.in = "In" } {
+      ^bb0(%immutables: !arc.struct<p0 : f32, p1 : si32>,
+      	   %state: !arc.struct<state1 : !arc.arcon.value<!arc.struct<i : si32, f : f32>>,
+	                       state2 : !arc.arcon.appender<!arc.struct<i : si32, f : f32>>,
+			       state3 : !arc.arcon.map<ui64, !arc.struct<i : si32, f : f32>>>,
+           %input: !arc.struct<i : si32, f : f32>,
+	   %output0: !arc.stream<!arc.struct<i : si32, f : f32>>):
+	  "arc.emit"(%input, %output0) : (!arc.struct<i : si32, f : f32>, !arc.stream<!arc.struct<i : si32, f : f32>>) -> ()
+	  %i = arc.constant 4 : si32
+	  %u = arc.constant 8 : ui64
+	  %f = constant 3.14 : f32
+	  %s = arc.make_struct(%i, %f : si32, f32) : !arc.struct<i : si32, f : f32>
+	  %state3 = "arc.struct_access"(%state) { field = "state3" } : (!arc.struct<state1 : !arc.arcon.value<!arc.struct<i : si32, f : f32>>,
+	                       state2 : !arc.arcon.appender<!arc.struct<i : si32, f : f32>>,
+			       state3 : !arc.arcon.map<ui64, !arc.struct<i : si32, f : f32>>>) -> !arc.arcon.map<ui64, !arc.struct<i : si32, f : f32>>
+	  // expected-error@+2 {{'arc.map_get' op key type 'f32' does not match map key type 'ui64'}}
+	  // expected-note@+1 {{see current operation:}}
+	  "arc.map_get"(%state3, %f) : (!arc.arcon.map<ui64, !arc.struct<i : si32, f : f32>>, f32) -> (!arc.struct<i : si32, f : f32>)
+
+return
+  }
+}
+
+// -----
+module @toplevel {
+
+  func @FoldFun(f32, !arc.struct<i : si32, f : f32>) -> f32 {
+  ^bb0(%a: f32, %b : !arc.struct<i : si32, f : f32>):
+    %f = constant 3.14 : f32
+    return %f : f32
+  }
+
+  func @MyOperator(// Imutables
+                   !arc.struct<p0 : f32, p1 : si32>,
+		   // State
+                   !arc.struct<state1 : !arc.arcon.value<!arc.struct<i : si32, f : f32>>,
+		               state2 : !arc.arcon.appender<!arc.struct<i : si32, f : f32>>,
+			       state3 : !arc.arcon.map<ui64, !arc.struct<i : si32, f : f32>>>,
+		   // Input element
+       		   !arc.struct<i : si32, f : f32>,
+                   // Ouput stream (repeated)
+		   !arc.stream<!arc.struct<i : si32, f : f32>>
+		   ) -> ()
+      attributes { arc.is_task, arc.in = "In" } {
+      ^bb0(%immutables: !arc.struct<p0 : f32, p1 : si32>,
+      	   %state: !arc.struct<state1 : !arc.arcon.value<!arc.struct<i : si32, f : f32>>,
+	                       state2 : !arc.arcon.appender<!arc.struct<i : si32, f : f32>>,
+			       state3 : !arc.arcon.map<ui64, !arc.struct<i : si32, f : f32>>>,
+           %input: !arc.struct<i : si32, f : f32>,
+	   %output0: !arc.stream<!arc.struct<i : si32, f : f32>>):
+	  "arc.emit"(%input, %output0) : (!arc.struct<i : si32, f : f32>, !arc.stream<!arc.struct<i : si32, f : f32>>) -> ()
+	  %i = arc.constant 4 : si32
+	  %u = arc.constant 8 : ui64
+	  %f = constant 3.14 : f32
+	  %s = arc.make_struct(%i, %f : si32, f32) : !arc.struct<i : si32, f : f32>
+	  %state3 = "arc.struct_access"(%state) { field = "state3" } : (!arc.struct<state1 : !arc.arcon.value<!arc.struct<i : si32, f : f32>>,
+	                       state2 : !arc.arcon.appender<!arc.struct<i : si32, f : f32>>,
+			       state3 : !arc.arcon.map<ui64, !arc.struct<i : si32, f : f32>>>) -> !arc.arcon.map<ui64, !arc.struct<i : si32, f : f32>>
+
+	  // expected-error@+2 {{'arc.map_get' op result type 'f32' does not match map value type '!arc.struct<i : si32, f : f32>'}}
+	  // expected-note@+1 {{see current operation:}}
+	  "arc.map_get"(%state3, %u) : (!arc.arcon.map<ui64, !arc.struct<i : si32, f : f32>>, ui64) -> (f32)
+
+return
+  }
+}
+
+// -----
+module @toplevel {
+
+  func @FoldFun(f32, !arc.struct<i : si32, f : f32>) -> f32 {
+  ^bb0(%a: f32, %b : !arc.struct<i : si32, f : f32>):
+    %f = constant 3.14 : f32
+    return %f : f32
+  }
+
+  func @MyOperator(// Imutables
+                   !arc.struct<p0 : f32, p1 : si32>,
+		   // State
+                   !arc.struct<state1 : !arc.arcon.value<!arc.struct<i : si32, f : f32>>,
+		               state2 : !arc.arcon.appender<!arc.struct<i : si32, f : f32>>,
+			       state3 : !arc.arcon.map<ui64, !arc.struct<i : si32, f : f32>>>,
+		   // Input element
+       		   !arc.struct<i : si32, f : f32>,
+                   // Ouput stream (repeated)
+		   !arc.stream<!arc.struct<i : si32, f : f32>>
+		   ) -> ()
+      attributes { arc.is_task, arc.in = "In" } {
+      ^bb0(%immutables: !arc.struct<p0 : f32, p1 : si32>,
+      	   %state: !arc.struct<state1 : !arc.arcon.value<!arc.struct<i : si32, f : f32>>,
+	                       state2 : !arc.arcon.appender<!arc.struct<i : si32, f : f32>>,
+			       state3 : !arc.arcon.map<ui64, !arc.struct<i : si32, f : f32>>>,
+           %input: !arc.struct<i : si32, f : f32>,
+	   %output0: !arc.stream<!arc.struct<i : si32, f : f32>>):
+	  "arc.emit"(%input, %output0) : (!arc.struct<i : si32, f : f32>, !arc.stream<!arc.struct<i : si32, f : f32>>) -> ()
+	  %i = arc.constant 4 : si32
+	  %u = arc.constant 8 : ui64
+	  %f = constant 3.14 : f32
+	  %s = arc.make_struct(%i, %f : si32, f32) : !arc.struct<i : si32, f : f32>
+	  %state3 = "arc.struct_access"(%state) { field = "state3" } : (!arc.struct<state1 : !arc.arcon.value<!arc.struct<i : si32, f : f32>>,
+	                       state2 : !arc.arcon.appender<!arc.struct<i : si32, f : f32>>,
+			       state3 : !arc.arcon.map<ui64, !arc.struct<i : si32, f : f32>>>) -> !arc.arcon.map<ui64, !arc.struct<i : si32, f : f32>>
+
+	  // expected-error@+2 {{'arc.map_contains' op key type 'f32' does not match map key type 'ui64'}}
+	  // expected-note@+1 {{see current operation:}}
+	  "arc.map_contains"(%state3, %f) : (!arc.arcon.map<ui64, !arc.struct<i : si32, f : f32>>, f32) -> i1
+
+return
+  }
+}

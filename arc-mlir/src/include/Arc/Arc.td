@@ -103,6 +103,8 @@ def ArcStateValue : Type<CPred<"$_self.isa<ArconValueType>()">,
                                 "an arcon value type">;
 def ArcStateAppender : Type<CPred<"$_self.isa<ArconAppenderType>()">,
                                   "an arcon appender type">;
+def ArcStateMap : Type<CPred<"$_self.isa<ArconMapType>()">,
+                             "an arcon map type">;
 
 def StreamElementType : Type<Or<[
   FloatLike.predicate,
@@ -603,6 +605,54 @@ def Arc_StateAppenderFoldOp : Arc_Op<"appender_fold",
     OpBuilderDAG<(ins "Value":$state, "Value":$init, "StringRef":$callee)>
   ];
 
+}
+
+// State maps
+
+class Arc_KeyedStateMapOp<string mnemonic,
+                          list<OpTrait> traits = []>
+    : Arc_Op<mnemonic, traits> {
+  let arguments = (ins ArcStateMap:$state,
+                       StreamElementType:$key);
+  let extraClassDeclaration = [{ LogicalResult customVerify(); }];
+  let verifier = [{ return customVerify(); }];
+}
+
+def Arc_StateMapContainsOp : Arc_KeyedStateMapOp<"map_contains", []> {
+  let summary = "Check if a value is in an Arcon state map";
+  let description = [{
+    Check if a value is in an Arcon state map.
+  }];
+  let results = (outs BoolLike:$result);
+}
+
+def Arc_StateMapGetOp : Arc_KeyedStateMapOp<"map_get", []> {
+  let summary = "Look up a value in an Arcon state map";
+  let description = [{
+    Look up a value in an Arcon state map.
+  }];
+  let results = (outs StreamElementType:$result);
+}
+
+def Arc_StateMapInsertOp : Arc_Op<"map_insert", []> {
+  let summary = "Insert a value into a an Arcon state map";
+  let description = [{
+    Insert a value into a an Arcon state map.
+  }];
+  let arguments = (ins ArcStateMap:$state,
+                       StreamElementType:$key,
+                       StreamElementType:$value);
+  let results = (outs);
+  let extraClassDeclaration = [{ LogicalResult customVerify(); }];
+  let verifier = [{ return customVerify(); }];
+}
+
+def Arc_StateMapRemoveOp : Arc_KeyedStateMapOp<"map_remove", []> {
+  let summary = "Remove a value from an Arcon state map";
+  let description = [{
+    Remove a value from an Arcon state map.
+  }];
+  let results = (outs);
 }
 
 // State values
