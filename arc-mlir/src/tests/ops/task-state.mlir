@@ -59,6 +59,7 @@ module @toplevel {
 	                       state2 : !arc.arcon.appender<!arc.struct<i : si32, f : f32>>,
 			       state3 : !arc.arcon.map<ui64, !arc.struct<i : si32, f : f32>>>) -> !arc.arcon.value<!arc.struct<i : si32, f : f32>>
 	  %i = arc.constant 4 : si32
+	  %u = arc.constant 8 : ui64
 	  %f = constant 3.14 : f32
 	  %s = arc.make_struct(%i, %f : si32, f32) : !arc.struct<i : si32, f : f32>
 	  "arc.value_write"(%state1, %s) : (!arc.arcon.value<!arc.struct<i : si32, f : f32>>, !arc.struct<i : si32, f : f32>) -> ()
@@ -69,7 +70,17 @@ module @toplevel {
 			       state3 : !arc.arcon.map<ui64, !arc.struct<i : si32, f : f32>>>) -> !arc.arcon.appender<!arc.struct<i : si32, f : f32>>
 	  "arc.appender_push"(%state2, %s) : (!arc.arcon.appender<!arc.struct<i : si32, f : f32>>, !arc.struct<i : si32, f : f32>) -> ()
 	  "arc.appender_fold"(%state2, %f) {fun=@FoldFun} : (!arc.arcon.appender<!arc.struct<i : si32, f : f32>>, f32) -> f32
-          return
+
+	  %state3 = "arc.struct_access"(%state) { field = "state3" } : (!arc.struct<state1 : !arc.arcon.value<!arc.struct<i : si32, f : f32>>,
+	                       state2 : !arc.arcon.appender<!arc.struct<i : si32, f : f32>>,
+			       state3 : !arc.arcon.map<ui64, !arc.struct<i : si32, f : f32>>>) -> !arc.arcon.map<ui64, !arc.struct<i : si32, f : f32>>
+
+          "arc.map_insert"(%state3, %u, %s) : (!arc.arcon.map<ui64, !arc.struct<i : si32, f : f32>>, ui64, !arc.struct<i : si32, f : f32>) -> ()
+          "arc.map_remove"(%state3, %u) : (!arc.arcon.map<ui64, !arc.struct<i : si32, f : f32>>, ui64) -> ()
+	  "arc.map_get"(%state3, %u) : (!arc.arcon.map<ui64, !arc.struct<i : si32, f : f32>>, ui64) -> (!arc.struct<i : si32, f : f32>)
+  	  "arc.map_contains"(%state3, %u) : (!arc.arcon.map<ui64, !arc.struct<i : si32, f : f32>>, ui64) -> i1
+
+return
   }
 }
 
