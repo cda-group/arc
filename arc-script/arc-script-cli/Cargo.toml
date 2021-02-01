@@ -22,3 +22,4 @@ clap               = { git = "https://github.com/clap-rs/clap/", features = ["de
 serde_json         = { version = "1.0.61" }
 codespan-reporting = { version = "=0.9.5" }
 derive_more        = { version = "0.99.11", default-features = false, features = ["constructor", "from", "into"] }
+strum              = { version = "0.20.0", features = ["derive"] }

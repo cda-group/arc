@@ -1,4 +1,4 @@
-use crate::repr::{Check, Opt, Parse, Run, SubCmd, Test};
+use crate::repr::{Opt, Run, SubCmd};
 use arc_script_core::prelude::modes::{Input, Mode, Output};
 use arc_script_core::prelude::Result;
 
@@ -8,23 +8,8 @@ use std::io::prelude::*;
 impl From<Opt> for Result<Mode> {
     fn from(opt: Opt) -> Result<Mode> {
         let mut mode = match opt.subcmd {
-            SubCmd::Parse(cmd) => Mode {
-                output: Output::AST,
-                input: Input::File(cmd.main),
-                ..Default::default()
-            },
-            SubCmd::Check(cmd) => Mode {
-                output: Output::HIR,
-                input: Input::File(cmd.main),
-                ..Default::default()
-            },
             SubCmd::Run(cmd) => Mode {
                 output: Output::DFG,
-                input: Input::File(cmd.main),
-                ..Default::default()
-            },
-            SubCmd::Test(cmd) => Mode {
-                output: Output::Rust,
                 input: Input::File(cmd.main),
                 ..Default::default()
             },

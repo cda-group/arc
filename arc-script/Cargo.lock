@@ -76,6 +76,7 @@ dependencies = [
  "codespan-reporting",
  "derive_more",
  "serde_json",
+ "strum",
 ]
 
 [[package]]
