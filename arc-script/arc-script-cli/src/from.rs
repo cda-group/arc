@@ -1,4 +1,4 @@
-use crate::repr::{Opt, Run, SubCmd};
+use crate::repr::{self as opt, Opt, Run, SubCmd};
 use arc_script_core::prelude::modes::{Input, Mode, Output};
 use arc_script_core::prelude::Result;
 
@@ -9,7 +9,13 @@ impl From<Opt> for Result<Mode> {
     fn from(opt: Opt) -> Result<Mode> {
         let mut mode = match opt.subcmd {
             SubCmd::Run(cmd) => Mode {
-                output: Output::DFG,
+                output: match cmd.output {
+                    opt::Output::AST => Output::AST,
+                    opt::Output::HIR => Output::HIR,
+                    opt::Output::DFG => Output::DFG,
+                    opt::Output::Rust => Output::Rust,
+                    opt::Output::MLIR => Output::MLIR,
+                },
                 input: Input::File(cmd.main),
                 ..Default::default()
             },
