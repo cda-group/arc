@@ -100,6 +100,7 @@ impl AST {
     ///     mod.rs   <-- path (::foo)
     ///     bar/
     ///       mod.rs <-- path (::foo::bar)
+    /// NB: Assumes that `use` is the only way to refer to items in other files.
     #[cfg(not(target_arch = "wasm32"))]
     fn import(&mut self, root_path: &PathBuf, mut module_path: PathBuf, info: &mut Info) {
         tracing::debug!("Importing {:?} ...", module_path);
