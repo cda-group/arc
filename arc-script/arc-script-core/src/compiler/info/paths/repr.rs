@@ -35,3 +35,9 @@ impl PathInterner {
         self.store.get_index(*id).map(|(buf, _)| buf).unwrap()
     }
 }
+
+pub(crate) fn extend(path: &PathBuf, name: Name) -> PathBuf {
+    let mut path = path.clone();
+    path.push(name);
+    path
+}

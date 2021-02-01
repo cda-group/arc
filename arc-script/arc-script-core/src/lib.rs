@@ -4,6 +4,8 @@
 #![deny(unsafe_code)]
 // #![deny(missing_docs)]
 
+#![feature(option_result_contains)]
+
 #[macro_use]
 extern crate shrinkwraprs;
 #[macro_use]

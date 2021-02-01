@@ -2,7 +2,7 @@ use crate::compiler::ast::{self, AST};
 use crate::compiler::hir;
 use crate::compiler::hir::Name;
 use crate::compiler::info::diags::Error;
-use crate::compiler::info::paths::{PathBuf, PathId};
+use crate::compiler::info::paths::{extend, PathBuf, PathId};
 use crate::compiler::info::{self, Info};
 
 use std::collections::{HashMap as Map, HashSet as Set};
@@ -81,12 +81,6 @@ impl SymbolTable {
         let real = self.imports.get(&path).unwrap_or(&path);
         self.declarations.get(real).cloned()
     }
-}
-
-fn extend(path: &PathBuf, name: Name) -> PathBuf {
-    let mut path = path.clone();
-    path.push(name);
-    path
 }
 
 /// `Declare` adds all item-declarations and imports in `&self` to the symbol table

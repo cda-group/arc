@@ -43,6 +43,6 @@ pub(crate) enum ValueKind {
     Vector(Vec<Value>),
     Tuple(Vec<Value>),
     Array(Vec<Value>),
-    Variant(PathId, NameId, Box<Value>),
+    Variant(Path, Box<Value>),
     Struct(VecMap<NameId, Value>),
 }

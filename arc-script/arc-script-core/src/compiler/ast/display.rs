@@ -279,6 +279,7 @@ impl<'i> Display for Pretty<'i, ast::Expr, State<'_>> {
             ast::ExprKind::Emit(e) => write!(f, "emit {}", e.pretty(ctx)),
             ast::ExprKind::Log(e) => write!(f, "log {}", e.pretty(ctx)),
             ast::ExprKind::Unwrap(x, e) => write!(f, "unwrap[{}]({})", x.pretty(ctx), e.pretty(ctx)),
+            ast::ExprKind::Enwrap(x, e) => write!(f, "enwrap[{}]({})", x.pretty(ctx), e.pretty(ctx)),
             ast::ExprKind::Is(x, e) => write!(f, "is[{}]({})",x.pretty(ctx), e.pretty(ctx)),
             ast::ExprKind::Array(es) => write!(f, "[{}]", es.all_pretty(", ", ctx)),
             ast::ExprKind::Struct(fs) => {

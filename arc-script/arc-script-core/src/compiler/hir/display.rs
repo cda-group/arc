@@ -38,12 +38,13 @@ impl<'i> Display for Pretty<'i, hir::Item, State<'_>> {
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
         let Pretty(item, ctx) = self;
         match &item.kind {
-            hir::ItemKind::Fun(item)    => write!(f, "{}", item.pretty(ctx)),
-            hir::ItemKind::Alias(item)  => write!(f, "{}", item.pretty(ctx)),
-            hir::ItemKind::Enum(item)   => write!(f, "{}", item.pretty(ctx)),
-            hir::ItemKind::Task(item)   => write!(f, "{}", item.pretty(ctx)),
-            hir::ItemKind::State(item)  => write!(f, "{}", item.pretty(ctx)),
-            hir::ItemKind::Extern(item) => write!(f, "{}", item.pretty(ctx)),
+            hir::ItemKind::Fun(item)     => write!(f, "{}", item.pretty(ctx)),
+            hir::ItemKind::Alias(item)   => write!(f, "{}", item.pretty(ctx)),
+            hir::ItemKind::Enum(item)    => write!(f, "{}", item.pretty(ctx)),
+            hir::ItemKind::Task(item)    => write!(f, "{}", item.pretty(ctx)),
+            hir::ItemKind::State(item)   => write!(f, "{}", item.pretty(ctx)),
+            hir::ItemKind::Extern(item)  => write!(f, "{}", item.pretty(ctx)),
+            hir::ItemKind::Variant(item) => write!(f, "{}", item.pretty(ctx)),
         }
     }
 }
@@ -242,8 +243,8 @@ impl<'i> Display for Pretty<'i, hir::Expr, State<'_>> {
                 s1 = ctx.indent(),
             ),
             hir::ExprKind::Break => write!(f, "break"),
-            hir::ExprKind::Enwrap(x0, x1, e0) => write!(f, "{}::{}({})", x0.pretty(ctx), x1.pretty(ctx), e0.pretty(ctx)),
             hir::ExprKind::Unwrap(x0, e0) => write!(f, "unwrap[{}]({})", e0.pretty(ctx), x0.pretty(ctx)),
+            hir::ExprKind::Enwrap(x0, e0) => write!(f, "enwrap[{}]({})", x0.pretty(ctx), e0.pretty(ctx)),
             hir::ExprKind::Is(x0, e0) => write!(f, "check[{}]({})", x0.pretty(ctx), e0.pretty(ctx)),
             hir::ExprKind::Var(x) => write!(f, "{}", x.pretty(ctx)),
             hir::ExprKind::Item(x) => write!(f, "{}", x.pretty(ctx)), 

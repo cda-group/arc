@@ -104,6 +104,7 @@ extern {
         "task"   => Token::Task,
         "type"   => Token::Type,
         "unwrap" => Token::Unwrap,
+        "enwrap" => Token::Enwrap,
         "use"    => Token::Use,
         "xor"    => Token::Xor,
 //=============================================================================
@@ -401,6 +402,7 @@ ExprKind12: ExprKind = {
     "break"                                                             => ExprKind::Break,
     "for" <Pat0> "in" <Expr0> <Brace<Expr0>>                            => ExprKind::For(<>),
     "unwrap" <Brack<Name>> <Paren<Expr0>>                               => ExprKind::Unwrap(<>),
+    "enwrap" <Brack<Path>> <Paren<Expr0>>                               => ExprKind::Enwrap(<>),
     "is" <Brack<Name>> <Paren<Expr0>>                                   => ExprKind::Is(<>),
     "???"                                                               => ExprKind::Err,
     Err                                                                 => ExprKind::Err,

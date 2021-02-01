@@ -152,6 +152,9 @@ impl ToCodespan for Error {
                     .with_message("Runtime error")
                     .with_labels(labels)
             }
+            Error::PathIsNotVariant { loc } => Codespan::error()
+                .with_message("Path is not referring to a variant")
+                .with_labels(vec![label(loc)?]),
         }
         .into()
     }

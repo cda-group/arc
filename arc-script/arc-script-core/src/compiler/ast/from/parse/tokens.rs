@@ -91,6 +91,7 @@ pub(crate) enum LogosToken {
     #[token("task")] Task,
     #[token("type")] Type,
     #[token("unwrap")] Unwrap,
+    #[token("enwrap")] Enwrap,
     #[token("use")] Use,
     #[token("xor")] Xor,
 //=============================================================================

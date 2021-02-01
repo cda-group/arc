@@ -48,7 +48,7 @@ impl ast::AST {
     }
 }
 
-#[derive(New)]
+#[derive(New, Debug)]
 pub(crate) struct Context<'i> {
     pub(crate) res: &'i mut resolve::Resolver,
     pub(crate) ast: &'i ast::AST,
@@ -247,25 +247,32 @@ impl Lower<(Path, hir::ItemKind), Context<'_>> for ast::Alias {
 
 impl Lower<(Path, hir::ItemKind), Context<'_>> for ast::Enum {
     fn lower(&self, ctx: &mut Context) -> (Path, hir::ItemKind) {
-        let mut path = ctx.res.path.clone();
-        path.push(self.name);
-        let path = ctx.info.paths.intern(&path);
+        ctx.res.path.push(self.name);
+        let path = ctx.info.paths.intern(&ctx.res.path.clone());
         let variants = self.variants.lower(ctx);
+        ctx.res.path.pop();
         let item = hir::Enum::new(self.name, variants);
         (path.into(), hir::ItemKind::Enum(item))
     }
 }
 
-impl Lower<hir::Variant, Context<'_>> for ast::Variant {
-    fn lower(&self, ctx: &mut Context) -> hir::Variant {
-        hir::Variant::new(
+impl Lower<Path, Context<'_>> for ast::Variant {
+    fn lower(&self, ctx: &mut Context) -> Path {
+        let mut path = ctx.res.path.clone();
+        path.push(self.name);
+        let path = ctx.info.paths.intern(path).into();
+        let item = hir::Variant::new(
             self.name,
             self.ty
                 .as_ref()
                 .map(|ty| ty.lower(ctx))
                 .unwrap_or_else(|| ctx.info.types.intern(hir::ScalarKind::Unit)),
             self.loc.into(),
-        )
+        );
+        ctx.hir
+            .defs
+            .insert(path, hir::Item::new(hir::ItemKind::Variant(item), self.loc));
+        path
     }
 }
 
@@ -287,6 +294,7 @@ impl Lower<hir::Expr, Context<'_>> for ast::Expr {
             ast::ExprKind::Let(p, e0, e1)       => return let_in::lower(p, e0, e1, ctx),
             ast::ExprKind::Emit(e)              => hir::ExprKind::Emit(e.lower(ctx).into()),
             ast::ExprKind::Unwrap(x, e)         => hir::ExprKind::Unwrap(*x, e.lower(ctx).into()),
+            ast::ExprKind::Enwrap(x, e)         => call::lower_enwrap(x, e, self.loc, ctx),
             ast::ExprKind::Is(x, e)             => hir::ExprKind::Is(*x, e.lower(ctx).into()),
             ast::ExprKind::Log(e)               => hir::ExprKind::Log(e.lower(ctx).into()),
             ast::ExprKind::For(p, e0, e1)       => todo!(),

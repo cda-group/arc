@@ -184,6 +184,7 @@ impl<'i> Display for Pretty<'i, mlir::Op, State<'_>> {
     }
 }
 
+#[rustfmt::skip]
 impl<'i> Display for Pretty<'i, mlir::OpKind, State<'_>> {
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
         let Pretty(kind, ctx) = self;
@@ -307,9 +308,27 @@ impl<'i> Display for Pretty<'i, mlir::OpKind, State<'_>> {
                     .values()
                     .map_pretty(|v, f| write!(f, "{}", v.tv.pretty(ctx)), ", "),
             ),
-            mlir::OpKind::Enwrap(_, _, _) => todo!(),
-            mlir::OpKind::Unwrap(_, _) => todo!(),
-            mlir::OpKind::IsA(_, _) => todo!(),
+            mlir::OpKind::Enwrap(x0, x1) => write!(
+                f,
+                r#""arc.enwrap"{} {{ variant = {} }} : {} ->"#,
+                x1.pretty(ctx),
+                x0.pretty(ctx),
+                x1.tv.pretty(ctx),
+            ),
+            mlir::OpKind::Unwrap(x0, x1) => write!(
+                f,
+                r#""arc.unwrap"{} {{ variant = {} }} : {} ->"#,
+                x1.pretty(ctx),
+                x0.pretty(ctx),
+                x1.tv.pretty(ctx),
+            ),
+            mlir::OpKind::Is(x0, x1) => write!(
+                f,
+                r#""arc.is"{} {{ variant = {} }} : {} ->"#,
+                x1.pretty(ctx),
+                x0.pretty(ctx),
+                x1.tv.pretty(ctx),
+            ),
             mlir::OpKind::Tuple(xs) => write!(
                 f,
                 r#""arc.make_tuple"({xs}) : ({ts}) ->"#,
@@ -442,7 +461,7 @@ impl<'i> Display for Pretty<'i, hir::Type, State<'_>> {
                     write!(f, "!arc.struct<{fs}>",
                         fs = fs.map_pretty(|(x, e), f| write!(f, "{} : {}", x.pretty(ctx), e.pretty(ctx)), ", "))
             }
-            Nominal(x)     => todo!(),
+            Nominal(x)     => write!(f, "{}", x.pretty(ctx)),
             Array(ty, sh)  => todo!(),
             Stream(ty)     => todo!(),
             Map(ty0, ty1)  => todo!(),

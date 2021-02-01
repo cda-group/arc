@@ -15,6 +15,7 @@ where
     W: Write + WriteColor,
 {
     better_panic::install();
+    tracing::debug!("{:?}", mode);
 
     tracing::debug!("{:#?}", mode);
     tracing::debug!("Parsing AST...");

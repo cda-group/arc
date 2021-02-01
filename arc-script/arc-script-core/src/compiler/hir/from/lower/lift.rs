@@ -70,7 +70,7 @@ impl FreeVars for hir::Expr {
             hir::ExprKind::Lit(_) => {}
             hir::ExprKind::Array(es) => es.fv(union)?,
             hir::ExprKind::Struct(efs) => efs.fv(union)?,
-            hir::ExprKind::Enwrap(_, _, e) => e.fv(union)?,
+            hir::ExprKind::Enwrap(_, e) => e.fv(union)?,
             hir::ExprKind::Unwrap(_, e) => e.fv(union)?,
             hir::ExprKind::Is(_, e) => e.fv(union)?,
             hir::ExprKind::Tuple(es) => es.fv(union)?,

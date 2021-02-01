@@ -148,6 +148,9 @@ pub enum Error {
     /// Error when placing a type in value position.
     TypeInValuePosition { loc: Option<Loc> },
 
+    /// Error when enwrapping a non-variant path.
+    PathIsNotVariant { loc: Option<Loc> },
+
     /// Error when placing a certain pattern inside a let-expression.
     RefutablePattern { loc: Option<Loc> },
 

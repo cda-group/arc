@@ -19,13 +19,27 @@ impl Lower<(), Context<'_>> for hir::Item {
     #[rustfmt::skip]
     fn lower(&self, ctx: &mut Context<'_>) {
         match &self.kind {
-            hir::ItemKind::Alias(i)  => unreachable!(),
-            hir::ItemKind::Enum(i)   => unreachable!(),
-            hir::ItemKind::Fun(i)    => i.lower(ctx),
-            hir::ItemKind::State(i)  => todo!(),
-            hir::ItemKind::Task(i)   => i.lower(ctx),
-            hir::ItemKind::Extern(_) => {}
+            hir::ItemKind::Alias(i)   => unreachable!(),
+            hir::ItemKind::Enum(i)    => i.lower(ctx),
+            hir::ItemKind::Fun(i)     => i.lower(ctx),
+            hir::ItemKind::State(i)   => todo!(),
+            hir::ItemKind::Task(i)    => i.lower(ctx),
+            hir::ItemKind::Extern(i)  => {}
+            hir::ItemKind::Variant(i) => {}
         }
+    }
+}
+
+impl Lower<(), Context<'_>> for hir::Enum {
+    fn lower(&self, ctx: &mut Context<'_>) -> () {
+        let name = self.name.lower(ctx);
+        let variants = self.variants.iter().map(|v| v.lower(ctx));
+        let enum_item = syn::parse_quote! {
+            pub enum #name {
+                #(#variants),*
+            }
+        };
+        ctx.rust.items.push(syn::Item::Enum(enum_item));
     }
 }
 
@@ -202,11 +216,10 @@ impl Lower<proc_macro2::TokenStream, Context<'_>> for hir::Expr {
                 let x = x.lower(ctx);
                 quote!(#x)
             }
-            hir::ExprKind::Enwrap(x0, x1, e) => {
-                let x0 = x0.lower(ctx);
-                let x1 = x1.lower(ctx);
+            hir::ExprKind::Enwrap(x, e) => {
+                let x = x.lower(ctx);
                 let e = e.lower(ctx);
-                quote!(#x0::#x1(#e))
+                quote!(#x(#e))
             }
             hir::ExprKind::Unwrap(x, e) => {
                 let x = x.lower(ctx);
