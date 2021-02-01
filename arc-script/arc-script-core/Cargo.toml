@@ -67,6 +67,7 @@ proc-macro2        = { version = "1.0.24" }
 strum              = { version = "0.20", features = ["derive"] }
 tempfile           = { version = "3.1.0" }
 cfg-if             = { version = "1.0.0" }
+better-panic       = { version = "0.2.0" }
 
 # -- Feature: shaper
 z3                 = { optional = true, version = "0.9.0" }
