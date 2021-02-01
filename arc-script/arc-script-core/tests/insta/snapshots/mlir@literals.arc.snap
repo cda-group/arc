@@ -1,0 +1,30 @@
+---
+source: arc-script-core/tests/insta/mod.rs
+expression: s
+input_file: arc-script-core/tests/insta/snapshot-tests/literals.arc
+---
+module @toplevel {
+    func @test() -> i32 {
+        %x_0 = constant 127 : i8
+        %x_1 = constant -128 : i8
+        %x_2 = constant 32767 : i16
+        %x_3 = constant -32768 : i16
+        %x_4 = arc.constant 2147483647 : i32
+        %x_5 = arc.constant -2147483648 : i32
+        %x_6 = arc.constant 9223372036854775807 : i64
+        %x_7 = arc.constant -9223372036854775808 : i64
+        %x_8 = constant 255 : u8
+        %x_9 = constant 65535 : u16
+        %x_A = arc.constant 4294967295 : u32
+        %x_B = arc.constant 18446744073709551615 : u64
+        %x_C = constant 3.4028235e38 f32
+        %x_D = constant -3.4028235e38 f32
+        %x_E = constant 1.7976931348623157e308 f64
+        %x_F = constant -1.7976931348623157e308 f64
+        %x_G = constant 1 : i1
+        %x_H = constant 0 : i1
+        %x_I = arc.constant 4711 : i32
+        return %x_I : i32
+    }
+}
+

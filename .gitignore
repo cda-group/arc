@@ -145,3 +145,5 @@ package-lock.json
 wasm-pack.log
 dist/
 .bin/
+corpus/
+artifacts/

@@ -1,0 +1,14 @@
+[package]
+name = "arc-script-repl"
+version = "0.1.0"
+authors = ["Klas Segeljakt <klasseg@kth.se>"]
+edition = "2018"
+
+[lib]
+name = "arc_script_repl"
+path = "src/lib.rs"
+
+[dependencies]
+arc-script-core = { path = "../arc-script-core" }
+rustyline       = { version = "7.1.0" }
+anyhow          = { version = "1.0.37" }

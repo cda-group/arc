@@ -1,0 +1,13 @@
+[package]
+name = "arc-script-macros"
+version = "0.1.0"
+authors = ["Klas Segeljakt <klasseg@kth.se>"]
+edition = "2018"
+
+[lib]
+proc-macro = true
+
+[dependencies]
+syn         = { version = "1.0.41", features = ["full"] }
+quote       = { version = "1.0.7" }
+proc-macro2 = { version = "1.0.21" }

@@ -1,0 +1,29 @@
+---
+source: arc-script-core/tests/insta/mod.rs
+expression: s
+input_file: arc-script-core/tests/insta/snapshot-tests/if.arc
+---
+module @toplevel {
+    func @test() -> i32 {
+        %x_0 = constant 1 : i1
+        %x_1 = constant 0 : i1
+        %x_2 = arc.constant 3 : i32
+        %x_5 = "arc.if"(%x_0) ({
+            %x_3 = "arc.if"(%x_1) ({
+                "arc.block.result"(%x_2) : i32 -> ()
+            },{
+                "arc.block.result"(%x_2) : i32 -> ()
+            }) : i1 -> i32
+            "arc.block.result"(%x_3) : i32 -> ()
+        },{
+            %x_4 = "arc.if"(%x_1) ({
+                "arc.block.result"(%x_2) : i32 -> ()
+            },{
+                "arc.block.result"(%x_2) : i32 -> ()
+            }) : i1 -> i32
+            "arc.block.result"(%x_4) : i32 -> ()
+        }) : i1 -> i32
+        return %x_5 : i32
+    }
+}
+

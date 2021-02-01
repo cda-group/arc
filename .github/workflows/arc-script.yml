@@ -42,6 +42,9 @@ jobs:
     - name: cargo-test
       run: cargo test --all-features
 
+    - name: cargo-fuzz
+      run: cargo fuzz run parse -- -runs=10000 -only-ascii
+
     - name: cargo-clippy
       run: cargo clippy --all-features
 

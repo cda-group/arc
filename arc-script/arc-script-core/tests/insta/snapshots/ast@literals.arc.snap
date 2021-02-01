@@ -1,0 +1,27 @@
+---
+source: arc-script-core/tests/insta/mod.rs
+expression: s
+input_file: arc-script-core/tests/insta/snapshot-tests/literals.arc
+---
+fun test() {
+    let pos_i8: i8 = 127i8 in
+    let neg_i8: i8 = -128i8 in
+    let pos_i16: i16 = 32767i16 in
+    let neg_i16: i16 = -32768i16 in
+    let pos_i32: i32 = 2147483647 in
+    let neg_i32: i32 = -2147483648 in
+    let pos_i64: i64 = 9223372036854775807i64 in
+    let neg_i64: i64 = -9223372036854775808i64 in
+    let pos_u8: u8 = 255u8 in
+    let pos_u16: u16 = 65535u16 in
+    let pos_u32: u32 = 4294967295u32 in
+    let pos_u64: u64 = 18446744073709551615u64 in
+    let pos_f32: f32 = 3.4028235e38f32 in
+    let neg_f32: f32 = -3.4028235e38f32 in
+    let pos_f64: f64 = 1.7976931348623157e308 in
+    let neg_f64: f64 = -1.7976931348623157e308 in
+    let true_bool: bool = true in
+    let false_bool: bool = false in
+    4711
+}
+

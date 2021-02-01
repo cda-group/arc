@@ -1,0 +1,24 @@
+---
+source: arc-script-core/tests/insta/mod.rs
+expression: s
+input_file: arc-script-core/tests/insta/snapshot-tests/if.arc
+---
+fun test() -> i32 {
+    let c0_0: bool = true in
+    let c1_0: bool = false in
+    let v_0: i32 = 3 in
+    if c0_0 {
+        if c1_0 {
+            v_0
+        } else {
+            v_0
+        }
+    } else {
+        if c1_0 {
+            v_0
+        } else {
+            v_0
+        }
+    }
+}
+
