@@ -34,8 +34,8 @@ impl Unify<TypeId, TypeId> for Context<'_> {
     fn unify(&mut self, tv0: TypeId, tv1: TypeId) {
         let ty0 = self.info.types.resolve(tv0);
         let ty1 = self.info.types.resolve(tv1);
-        use TypeKind::*;
         use ScalarKind::*;
+        use TypeKind::*;
         match (&ty0.kind, &ty1.kind) {
             // Unify Unknown types
             (Unknown, Unknown) => self.info.types.union(tv0, tv1),

@@ -9,11 +9,11 @@ use crate::compiler::info::files::{FileId, Loc, Span};
 use crate::compiler::info::names::{NameId, NameInterner};
 use crate::compiler::shared::New;
 
-use time::Duration;
 use lexical_core::parse_format;
 use lexical_core::NumberFormat;
 use logos::Lexer as LogosLexer;
 use logos::Logos;
+use time::Duration;
 
 pub(crate) const TABSIZE: usize = 4;
 

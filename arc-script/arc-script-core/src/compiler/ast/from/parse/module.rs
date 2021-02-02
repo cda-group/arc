@@ -1,11 +1,11 @@
 use crate::compiler::ast;
 use crate::compiler::ast::from::parse::grammar::ModuleParser;
 use crate::compiler::ast::from::parse::lexer::Lexer;
+use crate::compiler::ast::ExprInterner;
 use crate::compiler::ast::{Item, Spanned};
 use crate::compiler::info::diags::{DiagInterner, Diagnostic, Error, Result};
 use crate::compiler::info::files::Loc;
 use crate::compiler::info::Info;
-use crate::compiler::ast::ExprInterner;
 
 /// Parses a module
 pub(crate) fn parse_module(

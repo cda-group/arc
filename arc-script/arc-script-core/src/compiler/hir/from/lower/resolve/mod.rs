@@ -1,6 +1,6 @@
+mod display;
 mod stack;
 mod table;
-mod display;
 
 use crate::compiler::ast::{self, AST};
 use crate::compiler::hir::{self, Name};

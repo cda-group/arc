@@ -1,6 +1,4 @@
-use crate::compiler::ast::repr::{
-    Index, Item, ItemKind, Module, Path, TaskItemKind, AST,
-};
+use crate::compiler::ast::repr::{Index, Item, ItemKind, Module, Path, TaskItemKind, AST};
 use crate::compiler::hir;
 use crate::compiler::hir::Name;
 use crate::compiler::info;
@@ -32,7 +30,9 @@ impl Module {
         let mut imports = Vec::new();
         for item in self.items.iter() {
             match &item.kind {
-                ItemKind::Use(item) if item.path.is_absolute(info) => imports.push(item.path.clone()),
+                ItemKind::Use(item) if item.path.is_absolute(info) => {
+                    imports.push(item.path.clone())
+                }
                 ItemKind::Task(item) => {
                     for item in &item.items {
                         if let TaskItemKind::Use(item) = &item.kind {

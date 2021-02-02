@@ -1,7 +1,7 @@
 use arc_script_bridge::arc_script;
 
 #[arc_script("script.arc")]
-mod script { }
+mod script {}
 
 #[test]
 fn test() {

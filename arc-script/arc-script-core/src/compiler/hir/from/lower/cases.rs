@@ -114,7 +114,7 @@ pub(crate) fn lower_cases(cases: &Vec<ast::Case>, ctx: &mut Context) -> hir::Exp
     let decision_tree = pattern_compiler::to_decision_tree(&mut pattern_tree);
     let root = decision_tree.entry;
     println!("{:#?}", decision_tree);
-//     let expr = convert_to_expr(decision_tree.entry);
+    //     let expr = convert_to_expr(decision_tree.entry);
     for node_index in decision_tree.graph.node_indices() {
         let node = &decision_tree.graph[node_index];
         match node {

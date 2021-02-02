@@ -1,4 +1,3 @@
-
 /// This is a test-suite for testing if compilation fails or succeeds
 #[test]
 fn trybuild() {

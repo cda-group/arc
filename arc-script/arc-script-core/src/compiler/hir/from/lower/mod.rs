@@ -254,7 +254,11 @@ impl Lower<(Path, hir::ItemKind), Context<'_>> for ast::Enum {
 
 impl Lower<Path, Context<'_>> for ast::Variant {
     fn lower(&self, ctx: &mut Context) -> Path {
-        let path: Path = ctx.info.paths.intern_child(ctx.res.path_id, self.name).into();
+        let path: Path = ctx
+            .info
+            .paths
+            .intern_child(ctx.res.path_id, self.name)
+            .into();
         let item = hir::Variant::new(
             self.name,
             self.ty

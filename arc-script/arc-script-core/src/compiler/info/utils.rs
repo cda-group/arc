@@ -14,7 +14,12 @@ impl std::fmt::Display for Info {
 
         writeln!(f, "  Paths: [")?;
         self.paths.path_to_id.values().try_for_each(|id| {
-            writeln!(f, r#"    {:?}: "{}","#, id, self.resolve_to_names(*id).join("::"))
+            writeln!(
+                f,
+                r#"    {:?}: "{}","#,
+                id,
+                self.resolve_to_names(*id).join("::")
+            )
         })?;
         writeln!(f, "  ],")?;
 

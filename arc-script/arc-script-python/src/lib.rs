@@ -5,8 +5,8 @@
 
 #[test]
 fn test() {
-//     let mut vm = VirtualMachine::new();
-//     let builtin = vm.get_builtin_scope();
-//     let scope = vm.new_scope(Some(builtin));
-//     vm.run_code_obj(code, scope);
+    //     let mut vm = VirtualMachine::new();
+    //     let builtin = vm.get_builtin_scope();
+    //     let scope = vm.new_scope(Some(builtin));
+    //     vm.run_code_obj(code, scope);
 }

@@ -1,7 +1,7 @@
 use crate::compiler::info::diags::DiagInterner;
 use crate::compiler::info::files::{ByteIndex, FileId, Loc, Span};
-use crate::compiler::info::names::NameId;
 use crate::compiler::info::modes::Mode;
+use crate::compiler::info::names::NameId;
 use crate::compiler::info::paths::PathBuf;
 use crate::compiler::info::paths::PathId;
 use crate::compiler::info::Info;
@@ -10,8 +10,8 @@ use crate::compiler::shared::{Map, New};
 // use bumpalo::collections::Vec;
 // use bumpalo::boxed::Box;
 use arc_script_macros::Spanned;
-use time::Duration;
 use std::fmt::Debug;
+use time::Duration;
 
 /// A structure which keeps the start and end position of an AST node plus its source file.
 /// NB: The FileId could probably be kept in a nicer place to take up less space.
