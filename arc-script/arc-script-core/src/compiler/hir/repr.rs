@@ -47,6 +47,7 @@ pub(crate) enum ItemKind {
     State(State),
     Task(Task),
     Extern(Extern),
+    Variant(Variant),
 }
 
 pub(crate) use ast::Name;
@@ -96,7 +97,7 @@ pub(crate) enum ParamKind {
 #[derive(New, Debug)]
 pub(crate) struct Enum {
     pub(crate) name: Name,
-    pub(crate) variants: Vec<Variant>,
+    pub(crate) variants: Vec<Path>,
 }
 
 #[derive(New, Spanned, Debug)]
@@ -202,9 +203,9 @@ pub(crate) enum ExprKind {
     Tuple(Vec<Expr>),
     UnOp(UnOp, Box<Expr>),
     Var(Name),
-    Enwrap(Path, Name, Box<Expr>), // Construct a variant
-    Unwrap(Name, Box<Expr>),       // Deconstruct a variant
-    Is(Name, Box<Expr>),           // Check a variant
+    Enwrap(Path, Box<Expr>), // Construct a variant
+    Unwrap(Name, Box<Expr>), // Deconstruct a variant
+    Is(Name, Box<Expr>),     // Check a variant
     Return(Box<Expr>),
     Err,
 }

@@ -8,13 +8,13 @@ impl std::fmt::Debug for Info {
         writeln!(f, "  Names: [")?;
         self.names
             .store
-            .strings()
-            .try_for_each(|name| writeln!(f, r#"    "{}","#, name))?;
+            .iter()
+            .try_for_each(|(id, name)| writeln!(f, r#"    {:?}: "{}","#, id, name))?;
         writeln!(f, "  ],")?;
 
         writeln!(f, "  Paths: [")?;
-        self.paths.store.values().try_for_each(|path| {
-            writeln!(f, r#"    "{}","#, self.resolve_to_names(*path).join("::"))
+        self.paths.store.values().try_for_each(|id| {
+            writeln!(f, r#"    {:?}: "{}","#, id, self.resolve_to_names(*id).join("::"))
         })?;
         writeln!(f, "  ],")?;
 
@@ -26,7 +26,7 @@ impl std::fmt::Debug for Info {
         writeln!(f, "  Types: [")?;
         (tvs.start.0..tvs.end.0)
             .map(TypeId)
-            .try_for_each(|tv| writeln!(f, "    Type: {:?},", self.types.resolve(tv)))?;
+            .try_for_each(|tv| writeln!(f, "    {:?}: {:?},", tv, self.types.resolve(tv)))?;
         writeln!(f, "  ]")?;
 
         writeln!(f, "}}")?;

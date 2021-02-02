@@ -1,6 +1,8 @@
 use crate::compiler::ast::{self, AST};
 use crate::compiler::hir;
-use crate::compiler::info::paths::{PathBuf, PathId};
+use crate::compiler::hir::Name;
+use crate::compiler::info::diags::Error;
+use crate::compiler::info::paths::{extend, PathBuf, PathId};
 use crate::compiler::info::{self, Info};
 
 use std::collections::{HashMap as Map, HashSet as Set};
@@ -16,6 +18,8 @@ pub(crate) enum ItemDeclKind {
     Fun,
     Task,
     Extern,
+    Variant,
+    State,
 }
 
 /// A symbol table which stores both an import graph, which can be used to track
@@ -96,97 +100,141 @@ impl Declare for ast::Module {
 
 /// Declare an item and its sub-items.
 impl Declare for ast::Item {
+    #[rustfmt::skip]
     fn declare(&self, path: &PathBuf, table: &mut SymbolTable, info: &mut Info) {
         match &self.kind {
-            ast::ItemKind::Fun(item) => {
-                let mut path = path.clone();
-                path.push(item.name);
-                table
-                    .declarations
-                    .insert(info.paths.intern(path), ItemDeclKind::Fun);
-            }
-            ast::ItemKind::Alias(item) => {
-                let mut path = path.clone();
-                path.push(item.name);
-                table
-                    .declarations
-                    .insert(info.paths.intern(path), ItemDeclKind::Alias);
-            }
-            ast::ItemKind::Enum(item) => {
-                let mut path = path.clone();
-                path.push(item.name);
-                table
-                    .declarations
-                    .insert(info.paths.intern(path), ItemDeclKind::Enum);
-            }
-            ast::ItemKind::Task(item) => {
-                let mut path = path.clone();
-                path.push(item.name);
-                for item in &item.items {
-                    item.declare(&path, table, info);
-                }
-                table
-                    .declarations
-                    .insert(info.paths.intern(path), ItemDeclKind::Task);
-            }
-            ast::ItemKind::Use(item) => {
-                let name = if let Some(alias) = item.alias {
-                    alias.clone()
-                } else {
-                    info.paths.resolve(item.path.id).last().unwrap().clone()
-                };
-                let mut use_path = path.clone();
-                use_path.push(name);
-                table
-                    .imports
-                    .insert(info.paths.intern(use_path), item.path.id);
-            }
-            ast::ItemKind::Err => {}
-            ast::ItemKind::Extern(item) => {
-                let mut path = path.clone();
-                path.push(item.name);
-                table
-                    .declarations
-                    .insert(info.paths.intern(path), ItemDeclKind::Extern);
-            }
+            ast::ItemKind::Fun(item)    => item.declare(path, table, info),
+            ast::ItemKind::Alias(item)  => item.declare(path, table, info),
+            ast::ItemKind::Enum(item)   => item.declare(path, table, info),
+            ast::ItemKind::Task(item)   => item.declare(path, table, info),
+            ast::ItemKind::Use(item)    => item.declare(path, table, info),
+            ast::ItemKind::Extern(item) => item.declare(path, table, info),
+            ast::ItemKind::Err          => {}
         }
     }
 }
 
 /// Declare a task-item and its sub-items.
 impl Declare for ast::TaskItem {
+    #[rustfmt::skip]
     fn declare(&self, path: &PathBuf, table: &mut SymbolTable, info: &mut Info) {
         match &self.kind {
-            ast::TaskItemKind::Fun(item) => {
-                let mut path = path.clone();
-                path.push(item.name);
-                table
-                    .declarations
-                    .insert(info.paths.intern(path), ItemDeclKind::Fun);
+            ast::TaskItemKind::Fun(item)   => item.declare(path, table, info),
+            ast::TaskItemKind::Alias(item) => item.declare(path, table, info),
+            ast::TaskItemKind::Use(item)   => item.declare(path, table, info),
+            ast::TaskItemKind::Enum(item)  => item.declare(path, table, info),
+            ast::TaskItemKind::State(item) => item.declare(path, table, info),
+            ast::TaskItemKind::On(_)       => {}
+            ast::TaskItemKind::Err         => {}
+        }
+    }
+}
+
+impl Declare for ast::Fun {
+    fn declare(&self, path: &PathBuf, table: &mut SymbolTable, info: &mut Info) {
+        let path = extend(path, self.name);
+        let id = info.paths.intern(path);
+        if table.declarations.insert(id, ItemDeclKind::Fun).is_some() {
+            info.diags.intern(Error::NameClash { name: self.name })
+        }
+    }
+}
+
+impl Declare for ast::Alias {
+    fn declare(&self, path: &PathBuf, table: &mut SymbolTable, info: &mut Info) {
+        let path = extend(path, self.name);
+        let id = info.paths.intern(path);
+        if table.declarations.insert(id, ItemDeclKind::Alias).is_some() {
+            info.diags.intern(Error::NameClash { name: self.name })
+        }
+    }
+}
+
+impl Declare for ast::Enum {
+    fn declare(&self, path: &PathBuf, table: &mut SymbolTable, info: &mut Info) {
+        let path = extend(path, self.name);
+        let id = info.paths.intern(path.clone());
+        if table.declarations.insert(id, ItemDeclKind::Enum).is_some() {
+            info.diags.intern(Error::NameClash { name: self.name })
+        } else {
+            for variant in &self.variants {
+                variant.declare(&path, table, info)
             }
-            ast::TaskItemKind::Alias(item) => {
-                let mut path = path.clone();
-                path.push(item.name);
-                table
-                    .declarations
-                    .insert(info.paths.intern(path), ItemDeclKind::Alias);
+        }
+    }
+}
+
+impl Declare for ast::Task {
+    fn declare(&self, path: &PathBuf, table: &mut SymbolTable, info: &mut Info) {
+        let path = extend(path, self.name);
+        let id = info.paths.intern(path.clone());
+        if table.declarations.insert(id, ItemDeclKind::Task).is_some() {
+            info.diags.intern(Error::NameClash { name: self.name })
+        } else {
+            for item in &self.items {
+                item.declare(&path, table, info);
             }
-            ast::TaskItemKind::Use(item) => {
-                let name = if let Some(alias) = item.alias {
-                    alias.clone()
-                } else {
-                    info.paths.resolve(item.path.id).last().unwrap().clone()
-                };
-                let mut use_path = path.clone();
-                use_path.push(name);
-                table
-                    .imports
-                    .insert(info.paths.intern(use_path), item.path.id);
+            for variant in &self.iports {
+                variant.declare(&path, table, info)
             }
-            ast::TaskItemKind::Enum(id) => todo!(),
-            ast::TaskItemKind::State(item) => todo!(),
-            ast::TaskItemKind::On(_) => {}
-            ast::TaskItemKind::Err => {}
+            for variant in &self.oports {
+                variant.declare(&path, table, info)
+            }
+        }
+    }
+}
+
+impl Declare for ast::Use {
+    fn declare(&self, path: &PathBuf, table: &mut SymbolTable, info: &mut Info) {
+        let name = if let Some(alias) = self.alias {
+            alias.clone()
+        } else {
+            info.paths.resolve(self.path.id).last().unwrap().clone()
+        };
+        let use_path = extend(path, name);
+        let id = info.paths.intern(use_path);
+        if table.declarations.contains_key(&id) {
+            info.diags.intern(Error::NameClash { name: name })
+        } else {
+            table.imports.insert(id, self.path.id);
+        }
+    }
+}
+
+impl Declare for ast::Extern {
+    fn declare(&self, path: &PathBuf, table: &mut SymbolTable, info: &mut Info) {
+        let path = extend(path, self.name);
+        let id = info.paths.intern(path);
+        if table
+            .declarations
+            .insert(id, ItemDeclKind::Extern)
+            .is_some()
+        {
+            info.diags.intern(Error::NameClash { name: self.name })
+        }
+    }
+}
+
+impl Declare for ast::Variant {
+    fn declare(&self, path: &PathBuf, table: &mut SymbolTable, info: &mut Info) {
+        let path = extend(path, self.name);
+        let id = info.paths.intern(path);
+        if table
+            .declarations
+            .insert(id, ItemDeclKind::Variant)
+            .is_some()
+        {
+            info.diags.intern(Error::NameClash { name: self.name })
+        }
+    }
+}
+
+impl Declare for ast::State {
+    fn declare(&self, path: &PathBuf, table: &mut SymbolTable, info: &mut Info) {
+        let path = extend(path, self.name);
+        let id = info.paths.intern(path);
+        if table.declarations.insert(id, ItemDeclKind::State).is_some() {
+            info.diags.intern(Error::NameClash { name: self.name })
         }
     }
 }

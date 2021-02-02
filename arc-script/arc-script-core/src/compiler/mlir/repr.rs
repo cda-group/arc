@@ -133,9 +133,9 @@ pub(crate) enum OpKind {
     Struct(VecMap<Name, Var>),
     Tuple(Vec<Var>),
     UnOp(UnOp, Var),
-    Enwrap(Path, Name, Var),
+    Enwrap(Path, Var),
     Unwrap(Name, Var),
-    IsA(Name, Var),
+    Is(Name, Var),
     // Dataflow-ops
     Edge((Var, usize), (Var, usize)),
     Node(Path, Vec<Var>),

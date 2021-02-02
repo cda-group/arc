@@ -97,14 +97,36 @@ impl BigStep for Expr {
                     .map(|(x, e)| Ok((x.id, e.eval(ctx)?)))
                     .collect::<Result<_, _>>()?,
             ),
-            ExprKind::Tuple(es) => Tuple(
-                es.iter()
-                    .map(|e| e.eval(ctx))
-                    .collect::<Result<_, _>>()?,
-            ),
-            ExprKind::Enwrap(x0, x1, e0) => todo!(),
-            ExprKind::Unwrap(x1, e0) => todo!(),
-            ExprKind::Is(x1, e0) => todo!(),
+            ExprKind::Tuple(es) => Tuple(es.iter().map(|e| e.eval(ctx)).collect::<Result<_, _>>()?),
+            ExprKind::Enwrap(x0, e0) => ValueKind::Variant(*x0, e0.eval(ctx)?.into()),
+            ExprKind::Unwrap(x0, e0) => {
+                let v0 = e0.eval(ctx)?;
+                match v0.kind {
+                    ValueKind::Variant(x1, v) => {
+                        let x = ctx.info.paths.resolve(x1.id);
+                        if x.iter().last().contains(&x0) {
+                            return Ok(*v);
+                        } else {
+                            return ControlFlow(Panic(self.loc))?;
+                        }
+                    }
+                    _ => return ControlFlow(Panic(self.loc))?,
+                }
+            }
+            ExprKind::Is(x0, e0) => {
+                let v0 = e0.eval(ctx)?;
+                match v0.kind {
+                    ValueKind::Variant(x1, v) => {
+                        let x = ctx.info.paths.resolve(x1.id);
+                        if x.iter().last().contains(&x0) {
+                            ValueKind::Bool(true)
+                        } else {
+                            return ControlFlow(Panic(self.loc))?;
+                        }
+                    }
+                    _ => return ControlFlow(Panic(self.loc))?,
+                }
+            }
             ExprKind::If(e0, e1, e2) => {
                 let v0 = e0.eval(ctx)?;
                 match v0.kind {
@@ -227,7 +249,7 @@ impl BigStep for Expr {
                 _ => unreachable!(),
             },
             ExprKind::Emit(e) => match e.eval(ctx)?.kind {
-                Variant(x0, x1, v) => todo!(),
+                Variant(x0, v) => todo!(),
                 _ => unreachable!(),
             },
             ExprKind::Log(e) => todo!(),

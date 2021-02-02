@@ -9,15 +9,16 @@ use crate::compiler::info::files::Loc;
 pub(super) fn lower(path: &ast::Path, loc: Option<Loc>, ctx: &mut Context) -> hir::ExprKind {
     match ctx.res.resolve(path, ctx.info).unwrap() {
         resolve::DeclKind::Item(x, kind) => match kind {
-            resolve::ItemDeclKind::Alias | resolve::ItemDeclKind::Enum => {
-                ctx.info
-                    .diags
-                    .intern(Error::TypeInValuePosition { loc });
+            resolve::ItemDeclKind::Variant
+            | resolve::ItemDeclKind::Alias
+            | resolve::ItemDeclKind::Enum => {
+                ctx.info.diags.intern(Error::TypeInValuePosition { loc });
                 hir::ExprKind::Err
             }
-            resolve::ItemDeclKind::Fun => hir::ExprKind::Item(x),
-            resolve::ItemDeclKind::Task => hir::ExprKind::Item(x),
-            resolve::ItemDeclKind::Extern => hir::ExprKind::Item(x),
+            resolve::ItemDeclKind::Fun
+            | resolve::ItemDeclKind::Task
+            | resolve::ItemDeclKind::Extern
+            | resolve::ItemDeclKind::State => hir::ExprKind::Item(x),
         },
         resolve::DeclKind::Var(x) => hir::ExprKind::Var(x),
     }

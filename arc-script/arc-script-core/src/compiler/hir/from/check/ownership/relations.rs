@@ -116,8 +116,6 @@ impl From<&'_ hir::HIR> for Ownership {
 impl hir::Item {
     fn collect(&self, places: &mut Ownership) {
         match &self.kind {
-            hir::ItemKind::Alias(_) => {}
-            hir::ItemKind::Enum(_) => {}
             hir::ItemKind::Fun(i) => {
                 i.body.collect_root(places);
             }
@@ -127,7 +125,10 @@ impl hir::Item {
             hir::ItemKind::Task(i) => {
                 i.on.body.collect_root(places);
             }
+            hir::ItemKind::Alias(_) => {}
+            hir::ItemKind::Enum(_) => {}
             hir::ItemKind::Extern(_) => {}
+            hir::ItemKind::Variant(_) => {}
         }
     }
 }
@@ -194,7 +195,7 @@ impl hir::Expr {
             hir::ExprKind::Emit(e0) => e0.collect_use(b0, owner),
             hir::ExprKind::Log(e0) => e0.collect_use(b0, owner),
             hir::ExprKind::UnOp(_, e0) => e0.collect_use(b0, owner),
-            hir::ExprKind::Enwrap(_, _, e0) => e0.collect_use(b0, owner),
+            hir::ExprKind::Enwrap(_, e0) => e0.collect_use(b0, owner),
             hir::ExprKind::Unwrap(_, e0) => e0.collect_use(b0, owner),
             hir::ExprKind::Is(_, e0) => e0.collect_use(b0, owner),
             hir::ExprKind::Return(e0) => e0.collect_use(b0, owner),

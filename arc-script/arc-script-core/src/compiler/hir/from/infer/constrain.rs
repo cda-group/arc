@@ -1,7 +1,7 @@
 use crate::compiler::hir::from::infer::unify::Unify;
 use crate::compiler::hir::{
     self, BinOpKind, Dim, DimKind, Expr, ExprKind, Fun, Item, ItemKind, LitKind, Param, ParamKind,
-    ScalarKind, Shape, State, Task, Type, TypeKind, UnOpKind, HIR,
+    Path, ScalarKind, Shape, State, Task, Type, TypeKind, UnOpKind, HIR,
 };
 use crate::compiler::info::diags::{Diagnostic, Error, Warning};
 use crate::compiler::info::files::Loc;
@@ -30,6 +30,7 @@ impl Constrain<'_> for Item {
             ItemKind::Alias(_)    => {}
             ItemKind::Enum(_)     => {}
             ItemKind::Extern(_)   => todo!(),
+            ItemKind::Variant(_)  => {}
         }
     }
 }
@@ -104,9 +105,10 @@ impl Constrain<'_> for Expr {
                     ItemKind::Fun(item)   => ctx.unify(self.tv, item.tv),
                     ItemKind::Task(item)  => ctx.unify(self.tv, item.tv),
                     ItemKind::State(item) => ctx.unify(self.tv, item.tv),
+                    ItemKind::Extern(_)   => todo!(),
                     ItemKind::Alias(_)    => unreachable!(),
                     ItemKind::Enum(_)     => unreachable!(),
-                    ItemKind::Extern(_)   => todo!(),
+                    ItemKind::Variant(_)  => unreachable!(),
                 }
             },
             #[rustfmt::skip]
@@ -147,13 +149,64 @@ impl Constrain<'_> for Expr {
                 ctx.unify(self.tv, TypeKind::Struct(fields));
                 fs.constrain(ctx);
             }
-            ExprKind::Enwrap(x0, x1, e) => {
-                e.constrain(ctx);
-                todo!()
-                //                 ctx.unify(self.tv, Enum(vec![(*sym, arg.tv)].into_iter().collect()))
+            ExprKind::Enwrap(x, e) => {
+                let item = &ctx.defs.get(x).unwrap().kind;
+                if let ItemKind::Variant(item) = item {
+                    e.constrain(ctx);
+                    ctx.unify(e.tv, item.tv);
+                    let mut pathbuf = ctx.info.paths.resolve(x.id).clone();
+                    pathbuf.pop();
+                    let id = ctx.info.paths.intern(pathbuf).into();
+                    let item = ctx.defs.get(&id).unwrap();
+                    if let ItemKind::Enum(item) = &item.kind {
+                        ctx.unify(self.tv, TypeKind::Nominal(id));
+                    } else {
+                        unreachable!(); // TODO: [Error]: Types must be known at this point
+                    }
+                } else {
+                    unreachable!();
+                }
             }
-            ExprKind::Unwrap(_, _) => {}
-            ExprKind::Is(_, _) => {}
+            ExprKind::Unwrap(x, e) => {
+                e.constrain(ctx);
+                let ty = ctx.info.types.resolve(e.tv);
+                if let TypeKind::Nominal(path) = ty.kind {
+                    let item = ctx.defs.get(&path).unwrap();
+                    if let ItemKind::Enum(item) = &item.kind {
+                        let mut pathbuf = ctx.info.paths.resolve(path.id).clone();
+                        pathbuf.push(*x);
+                        let id: Path = ctx.info.paths.intern(pathbuf).into();
+                        let item = ctx.defs.get(&id).unwrap();
+                        if let ItemKind::Variant(item) = &item.kind {
+                            ctx.unify(self.tv, item.tv);
+                        } else {
+                            unreachable!();
+                        }
+                    }
+                } else {
+                    unreachable!();
+                }
+            }
+            ExprKind::Is(x, e) => {
+                e.constrain(ctx);
+                let ty = ctx.info.types.resolve(e.tv);
+                if let TypeKind::Nominal(path) = ty.kind {
+                    let item = ctx.defs.get(&path).unwrap();
+                    if let ItemKind::Enum(item) = &item.kind {
+                        let mut pathbuf = ctx.info.paths.resolve(path.id).clone();
+                        pathbuf.push(*x);
+                        let id: Path = ctx.info.paths.intern(pathbuf).into();
+                        let item = ctx.defs.get(&id).unwrap();
+                        if let ItemKind::Variant(item) = &item.kind {
+                            ctx.unify(self.tv, Bool);
+                        } else {
+                            unreachable!();
+                        }
+                    }
+                } else {
+                    unreachable!();
+                }
+            }
             ExprKind::Tuple(es) => {
                 let tvs = es.iter().map(|arg| arg.tv).collect();
                 ctx.unify(self.tv, TypeKind::Tuple(tvs));

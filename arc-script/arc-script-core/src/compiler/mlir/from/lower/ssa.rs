@@ -104,9 +104,9 @@ impl SSA<Var> for Expr {
                 let fs = fs.ssa(ctx, env, ops);
                 OpKind::Struct(fs)
             }
-            ExprKind::Enwrap(x0, x1, e2) => {
-                let x2 = e2.ssa(ctx, env, ops);
-                OpKind::Enwrap(*x0, *x1, x2)
+            ExprKind::Enwrap(x0, e1) => {
+                let x1 = e1.ssa(ctx, env, ops);
+                OpKind::Enwrap(*x0, x1)
             }
             ExprKind::Unwrap(x0, e1) => {
                 let x1 = e1.ssa(ctx, env, ops);
@@ -114,7 +114,7 @@ impl SSA<Var> for Expr {
             }
             ExprKind::Is(x0, e1) => {
                 let x1 = e1.ssa(ctx, env, ops);
-                OpKind::IsA(*x0, x1)
+                OpKind::Is(*x0, x1)
             }
             ExprKind::Tuple(es) => {
                 let xs = es.ssa(ctx, env, ops);

@@ -9,18 +9,19 @@ use crate::compiler::shared::{Lower, Map, New};
 use super::Context;
 
 /// TODO: For now, only lower functions.
-impl Lower<mlir::Item, Context<'_>> for hir::Item {
-    fn lower(&self, ctx: &mut Context<'_>) -> mlir::Item {
+impl Lower<Option<mlir::Item>, Context<'_>> for hir::Item {
+    fn lower(&self, ctx: &mut Context<'_>) -> Option<mlir::Item> {
         #[rustfmt::skip]
         let kind = match &self.kind {
-            hir::ItemKind::Fun(item)    => mlir::ItemKind::Fun(item.lower(ctx)),
-            hir::ItemKind::Alias(item)  => todo!(),
-            hir::ItemKind::Enum(item)   => todo!(),
-            hir::ItemKind::Task(item)   => todo!(),
-            hir::ItemKind::State(item)  => todo!(),
-            hir::ItemKind::Extern(item) => todo!(),
+            hir::ItemKind::Fun(item)     => mlir::ItemKind::Fun(item.lower(ctx)),
+            hir::ItemKind::Alias(item)   => todo!(),
+            hir::ItemKind::Enum(item)    => None?,
+            hir::ItemKind::Task(item)    => todo!(),
+            hir::ItemKind::State(item)   => todo!(),
+            hir::ItemKind::Extern(item)  => todo!(),
+            hir::ItemKind::Variant(item) => None?,
         };
-        mlir::Item::new(kind, self.loc)
+        Some(mlir::Item::new(kind, self.loc))
     }
 }
 

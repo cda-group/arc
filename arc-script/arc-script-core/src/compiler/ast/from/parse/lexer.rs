@@ -96,6 +96,7 @@ pub enum Token {
     Break,
     Bxor,
     Else,
+    Enwrap,
     Emit,
     Extern,
     Unwrap,
@@ -334,6 +335,7 @@ impl<'i> Lexer<'i> {
                 LogosToken::Then       => Token::Then,
                 LogosToken::Type       => Token::Type,
                 LogosToken::Unwrap     => Token::Unwrap,
+                LogosToken::Enwrap     => Token::Enwrap,
                 LogosToken::Use        => Token::Use,
                 LogosToken::Xor        => Token::Xor,
 //=============================================================================

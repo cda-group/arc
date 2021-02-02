@@ -231,6 +231,7 @@ pub enum ExprKind {
     Reduce(Pat, Expr, ReduceKind),
     Unwrap(Name, Expr),
     Is(Name, Expr),
+    Enwrap(Path, Expr),
     Match(Expr, Vec<Case>),
     Path(Path),
     Project(Expr, Index),

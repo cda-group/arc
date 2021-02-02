@@ -15,7 +15,7 @@ impl MLIR {
         let defs = hir
             .items
             .iter()
-            .map(|x| (*x, hir.defs.get(x).unwrap().lower(ctx)))
+            .filter_map(|x| Some((*x, hir.defs.get(x).unwrap().lower(ctx)?)))
             .collect::<Map<_, _>>();
         let main = dfg.lower(ctx);
         MLIR::new(hir.items, defs, main)

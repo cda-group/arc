@@ -2,6 +2,8 @@ use super::{Context, Lower};
 use crate::compiler::ast;
 use crate::compiler::hir;
 use crate::compiler::hir::from::lower::resolve;
+use crate::compiler::info::diags::Error;
+use crate::compiler::info::files::Loc;
 
 /// Call-expression are ambiguous and need to be analyzed in order to determine
 /// their meaning. In particular, the expression `foo(1)` could either be:
@@ -11,13 +13,9 @@ use crate::compiler::hir::from::lower::resolve;
 pub(super) fn lower(expr: &ast::Expr, args: &Vec<ast::Expr>, ctx: &mut Context) -> hir::ExprKind {
     if let ast::ExprKind::Path(path) = ctx.ast.exprs.resolve(expr.id) {
         let decl = ctx.res.resolve(path, ctx.info).unwrap();
-        if let resolve::DeclKind::Item(path, resolve::ItemDeclKind::Enum) = decl {
+        if let resolve::DeclKind::Item(path, resolve::ItemDeclKind::Variant) = decl {
             if let [arg] = args.as_slice() {
-                let mut names = ctx.info.paths.resolve(path.id).clone();
-                let variant = names.pop().unwrap();
-                let id = ctx.info.paths.intern(names);
-                let path = hir::Path::new(id, path.loc);
-                return hir::ExprKind::Enwrap(path, variant, arg.lower(ctx).into());
+                return hir::ExprKind::Enwrap(path, arg.lower(ctx).into());
             } else {
                 panic!("[FIXME] Expected exactly one argument to variant constructor")
             }
@@ -26,4 +24,19 @@ pub(super) fn lower(expr: &ast::Expr, args: &Vec<ast::Expr>, ctx: &mut Context) 
     // If the path does not point to a Variant, then it might be a function call.
     // Since functions are values, they process it separately.
     hir::ExprKind::Call(expr.lower(ctx).into(), args.lower(ctx))
+}
+
+pub(super) fn lower_enwrap(
+    path: &ast::Path,
+    arg: &ast::Expr,
+    loc: Option<Loc>,
+    ctx: &mut Context,
+) -> hir::ExprKind {
+    let decl = ctx.res.resolve(path, ctx.info).unwrap();
+    if let resolve::DeclKind::Item(path, resolve::ItemDeclKind::Variant) = decl {
+        hir::ExprKind::Enwrap(path, arg.lower(ctx).into())
+    } else {
+        ctx.info.diags.intern(Error::TypeInValuePosition { loc });
+        hir::ExprKind::Err
+    }
 }
