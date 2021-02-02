@@ -1,5 +1,5 @@
 use crate::compiler::ast::*;
-use crate::compiler::info::files::FileId;
+use crate::compiler::info::files::{FileId, ByteIndex};
 use crate::compiler::info::paths::{PathInterner, PathId};
 use crate::compiler::info::names::{NameInterner, NameId};
 use crate::compiler::info::diags::{DiagInterner, Diagnostic};
@@ -20,7 +20,7 @@ grammar(
 
 extern {
     type Error = ();
-    type Location = usize;
+    type Location = ByteIndex;
 
     enum Token {
         Indent => Token::Indent,

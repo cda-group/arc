@@ -34,7 +34,7 @@ pub fn derive_spanned(input: TokenStream) -> TokenStream {
             quote! {
                 impl #impl_generics From<Spanned<(#(#tys),*)>> for #id #ty_generics #where_clause {
                     fn from(Spanned(file, lhs, (#(#ids),*), rhs): Spanned<(#(#tys),*)>) -> Self {
-                        Self { #(#ids),*, loc: Some(Loc::new(file, lhs..rhs)) }
+                        Self { #(#ids),*, loc: Some(Loc::from_range(file, lhs..rhs)) }
                     }
                 }
                 impl #impl_generics #id #ty_generics #where_clause {
