@@ -161,6 +161,7 @@ dependencies = [
  "codespan-lsp",
  "codespan-reporting",
  "lazy_static",
+ "log 0.4.13",
  "serde_json",
  "tokio",
  "tower-lsp",

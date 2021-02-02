@@ -2,12 +2,12 @@
 use crate::compiler::hir;
 use crate::compiler::hir::{Name, Path};
 use crate::compiler::info;
+use crate::compiler::info::paths::PathId;
 use crate::compiler::info::types::TypeId;
 use crate::compiler::info::Info;
 use crate::compiler::mlir;
 use crate::compiler::shared::display::format::Context;
 use crate::compiler::shared::display::pretty::*;
-use crate::compiler::info::paths::PathId;
 
 use std::fmt::{self, Display, Formatter};
 
@@ -147,9 +147,10 @@ impl<'i> Display for Pretty<'i, PathId, State<'_>> {
 impl<'i> Display for Pretty<'i, mlir::Enum, State<'_>> {
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
         let Pretty(item, ctx) = self;
+        // TODO: Find way to represent enums in MLIR
         write!(
             f,
-            "enum {id} of {variants}",
+            "arc.enum<{id}> of {variants}",
             id = item.name.pretty(ctx),
             variants = item
                 .variants

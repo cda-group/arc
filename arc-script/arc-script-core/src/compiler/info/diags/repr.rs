@@ -1,13 +1,15 @@
 use crate::compiler::ast::Name;
 use crate::compiler::hir;
 use crate::compiler::hir::Path;
-use crate::compiler::info::diags::to_codespan::ToCodespan;
+use crate::compiler::hir::HIR;
+use crate::compiler::info::diags::to_codespan::{Context, ToCodespan};
 use crate::compiler::info::files::Loc;
 use crate::compiler::info::paths::PathId;
 use crate::compiler::info::types::TypeId;
 use crate::compiler::info::Info;
 
 use std::io;
+use std::io::Write;
 use std::str;
 
 use codespan_reporting::diagnostic::{self, Label};
@@ -176,14 +178,20 @@ impl DiagInterner {
         std::mem::take(self)
     }
     /// Emits diagnostics to stdout.
-    pub(crate) fn emit_to_stdout<W>(&self, info: &Info, f: &mut W) -> std::io::Result<()>
+    pub(crate) fn emit_to_stdout<W>(
+        &self,
+        info: &Info,
+        hir: Option<&HIR>,
+        f: &mut W,
+    ) -> io::Result<()>
     where
-        W: std::io::Write + codespan_reporting::term::termcolor::WriteColor,
+        W: Write + WriteColor,
     {
         let files = &info.files.store;
         let config = &Config::default();
+        let ctx = &Context { info, hir };
         self.iter()
-            .filter_map(|diag| diag.to_codespan(info))
+            .filter_map(|diag| diag.to_codespan(ctx))
             .try_for_each(|diag| term::emit(f, config, files, &diag))
     }
 }

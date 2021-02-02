@@ -1,5 +1,6 @@
 use arc_script_core::compiler::info::diags;
 use arc_script_core::compiler::info::diags::to_codespan::ToCodespan;
+use arc_script_core::compiler::info::diags::to_codespan::{Codespan, Report};
 use arc_script_core::compiler::info::files;
 use arc_script_core::compiler::info::Info;
 
@@ -8,10 +9,10 @@ use codespan_reporting::diagnostic::{Diagnostic, Label, Severity};
 use tower_lsp::lsp_types as lsp;
 
 #[rustfmt::skip]
-pub fn to_lsp(info: &Info) -> Vec<lsp::Diagnostic> {
-    info.diags
-        .iter()
-        .filter_map(|diag| diag.to_codespan(&info))
+pub fn to_lsp(report: Report) -> Vec<lsp::Diagnostic> {
+    let (diags, info) = report.into();
+    diags
+        .into_iter()
         .flat_map(
             |Diagnostic {
                  severity,

@@ -1,11 +1,13 @@
 use crate::compiler::ast;
 use crate::compiler::hir;
+use crate::compiler::hir::HIR;
 use crate::compiler::info::diags::{Diagnostic, Error, Note, Warning};
 use crate::compiler::info::files::{FileId, Loc};
 use crate::compiler::info::paths::PathId;
 use crate::compiler::info::types::TypeId;
 use crate::compiler::info::Info;
 use crate::compiler::shared::display::pretty::AsPretty;
+use crate::compiler::shared::New;
 
 use codespan_reporting::diagnostic::{self, Label};
 use codespan_reporting::files;
@@ -15,37 +17,76 @@ use std::borrow::Borrow;
 use std::io;
 use std::str;
 
-type Codespan = diagnostic::Diagnostic<FileId>;
+pub type Codespan = diagnostic::Diagnostic<FileId>;
+
+pub struct Report {
+    info: Info,
+    hir: Option<HIR>,
+}
+
+impl Report {
+    pub(crate) fn new(info: Info, hir: Option<HIR>) -> Self {
+        Self { info, hir }
+    }
+    pub fn is_ok(&self) -> bool {
+        self.info.diags.is_empty()
+    }
+}
+
+impl From<Report> for (Vec<Codespan>, Info) {
+    fn from(mut report: Report) -> Self {
+        let Report { mut info, hir } = report;
+        let diags = info.diags.take();
+        let ctx = &Context {
+            hir: hir.as_ref(),
+            info: &info,
+        };
+        let codepan = diags
+            .store
+            .into_iter()
+            .filter_map(|diag| diag.to_codespan(ctx))
+            .collect();
+        (codepan, info)
+    }
+}
+
+/// Hacky solution, HIR can optionally be omitted to
+/// print diagnostics from before it was constructed.
+#[derive(Copy, Clone)]
+pub struct Context<'i> {
+    pub(crate) info: &'i Info,
+    pub(crate) hir: Option<&'i HIR>,
+}
 
 /// Converterts `Self` into a pretty `Codespan` diagnostic.
 pub trait ToCodespan {
-    fn to_codespan(&self, info: &Info) -> Option<Codespan>;
+    fn to_codespan(&self, ctx: &Context) -> Option<Codespan>;
 }
 
 impl ToCodespan for Diagnostic {
-    fn to_codespan(&self, info: &Info) -> Option<Codespan> {
+    fn to_codespan(&self, ctx: &Context) -> Option<Codespan> {
         match self {
-            Diagnostic::Error(diag) => diag.to_codespan(info),
-            Diagnostic::Warning(diag) => diag.to_codespan(info),
-            Diagnostic::Note(diag) => diag.to_codespan(info),
+            Diagnostic::Error(diag) => diag.to_codespan(ctx),
+            Diagnostic::Warning(diag) => diag.to_codespan(ctx),
+            Diagnostic::Note(diag) => diag.to_codespan(ctx),
         }
     }
 }
 
 impl ToCodespan for Note {
-    fn to_codespan(&self, info: &Info) -> Option<Codespan> {
+    fn to_codespan(&self, ctx: &Context) -> Option<Codespan> {
         todo!()
     }
 }
 
 impl ToCodespan for Warning {
-    fn to_codespan(&self, info: &Info) -> Option<Codespan> {
+    fn to_codespan(&self, ctx: &Context) -> Option<Codespan> {
         todo!()
     }
 }
 
 impl ToCodespan for Error {
-    fn to_codespan(&self, info: &Info) -> Option<Codespan> {
+    fn to_codespan(&self, ctx: &Context) -> Option<Codespan> {
         match self {
             Error::FileNotFound => Codespan::error().with_message("Source file not found."),
             Error::BadLiteral { msg, loc } => Codespan::error()
@@ -75,13 +116,13 @@ impl ToCodespan for Error {
                 .with_message("Type mismatch")
                 .with_labels(vec![label(loc)?.with_message(format!(
                     "{} != {}",
-                    hir::pretty(lhs, info),
-                    hir::pretty(rhs, info)
+                    hir::pretty(lhs, ctx.hir.unwrap(), ctx.info),
+                    hir::pretty(rhs, ctx.hir.unwrap(), ctx.info)
                 ))]),
             Error::PathNotFound { path, loc } => Codespan::error()
                 .with_message(format!(
                     "Identifier `{}` not bound to anything",
-                    hir::pretty(path, info),
+                    hir::pretty(path, ctx.hir.unwrap(), ctx.info),
                 ))
                 .with_labels(vec![label(loc)?.with_message("Used here")]),
             Error::DisallowedDimExpr { loc } => Codespan::error()
@@ -101,14 +142,16 @@ impl ToCodespan for Error {
             }
             Error::FieldClash { name } => Codespan::error()
                 .with_message("Found duplicate key")
-                .with_labels(vec![
-                    label(name.loc)?.with_message(format!("{}", hir::pretty(&name.id, info)))
-                ]),
+                .with_labels(vec![label(name.loc)?.with_message(format!(
+                    "{}",
+                    hir::pretty(&name.id, ctx.hir.unwrap(), ctx.info)
+                ))]),
             Error::VariantClash { name } => Codespan::error()
                 .with_message("Found duplicate key")
-                .with_labels(vec![
-                    label(name.loc)?.with_message(format!("{}", hir::pretty(&name.id, info)))
-                ]),
+                .with_labels(vec![label(name.loc)?.with_message(format!(
+                    "{}",
+                    hir::pretty(&name.id, ctx.hir.unwrap(), ctx.info)
+                ))]),
             Error::OutOfBoundsProject { loc } => Codespan::error()
                 .with_message("Out of bounds projection")
                 .with_labels(vec![label(loc)?]),
@@ -145,7 +188,7 @@ impl ToCodespan for Error {
             Error::Panic { loc, trace } => {
                 let mut labels = vec![label(loc)?];
                 labels.extend(trace.into_iter().enumerate().filter_map(|(i, path)| {
-                    let name = info.resolve_to_names(path.id);
+                    let name = ctx.info.resolve_to_names(path.id);
                     label(path.loc).map(|l| l.with_message(format!("message")))
                 }));
                 Codespan::error()

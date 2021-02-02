@@ -1,5 +1,6 @@
 #![allow(clippy::useless_format)]
 use crate::compiler::hir;
+use crate::compiler::hir::HIR;
 use crate::compiler::info::names::NameId;
 use crate::compiler::info::paths::PathId;
 use crate::compiler::info::types::TypeId;
@@ -10,13 +11,18 @@ use crate::compiler::shared::New;
 
 use std::fmt::{self, Display, Formatter};
 
-#[derive(New, From, Copy, Clone)]
+#[derive(New, Copy, Clone)]
 pub(crate) struct State<'i> {
     info: &'i Info,
+    hir: &'i HIR,
 }
 
-pub(crate) fn pretty<'i, 'j, Node>(node: &'i Node, info: &'j Info) -> Pretty<'i, Node, State<'j>> {
-    node.to_pretty(State::from(info))
+pub(crate) fn pretty<'i, 'j, Node>(
+    node: &'i Node,
+    hir: &'j HIR,
+    info: &'j Info,
+) -> Pretty<'i, Node, State<'j>> {
+    node.to_pretty(State::new(info, hir))
 }
 
 impl<'i> Display for Pretty<'i, hir::HIR, State<'_>> {
@@ -150,7 +156,12 @@ impl<'i> Display for Pretty<'i, hir::Task, State<'_>> {
             iports = item.iports.iter().all_pretty(", ", ctx),
             oports = item.oports.iter().all_pretty(", ", ctx),
             items = item.items.iter().map_pretty(
-                |i, f| write!(f, "{s0}{}", i.pretty(ctx.indent()), s0 = ctx.indent()),
+                |x, f| write!(
+                    f,
+                    "{s0}{}",
+                    ctx.state.hir.defs.get(x).unwrap().pretty(ctx.indent()),
+                    s0 = ctx.indent()
+                ),
                 ""
             ),
             s0 = ctx,
@@ -181,9 +192,18 @@ impl<'i> Display for Pretty<'i, hir::Enum, State<'_>> {
         let Pretty(item, ctx) = self;
         write!(
             f,
-            "enum {id} {{ {variants} }}",
+            "enum {id} {{{variants}{s0}}}",
             id = item.name.pretty(ctx),
-            variants = item.variants.iter().all_pretty(", ", ctx)
+            variants = item.variants.iter().map_pretty(
+                |v, f| write!(
+                    f,
+                    "{s1}{v}",
+                    v = ctx.state.hir.defs.get(v).unwrap().pretty(ctx),
+                    s1 = ctx.indent()
+                ),
+                ","
+            ),
+            s0 = ctx
         )
     }
 }
