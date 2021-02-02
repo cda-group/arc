@@ -1,5 +1,5 @@
 use crate::compiler::ast::repr::{
-    Index, Item, ItemKind, Module, Path, PathKind, TaskItemKind, AST,
+    Index, Item, ItemKind, Module, Path, TaskItemKind, AST,
 };
 use crate::compiler::hir;
 use crate::compiler::hir::Name;
@@ -18,8 +18,10 @@ impl Path {
         let path = names[..names.len() - 1].join("/");
         std::path::PathBuf::from(path)
     }
-    pub(crate) fn is_absolute(&self) -> bool {
-        matches!(self.kind, PathKind::Absolute)
+    /// TODO: Improve name resolution algorithm so this code is not needed
+    pub(crate) fn is_absolute(&self, info: &Info) -> bool {
+        let names = info.resolve_to_names(self.id);
+        names[0] == "crate"
     }
 }
 
@@ -30,11 +32,11 @@ impl Module {
         let mut imports = Vec::new();
         for item in self.items.iter() {
             match &item.kind {
-                ItemKind::Use(item) if item.path.is_absolute() => imports.push(item.path.clone()),
+                ItemKind::Use(item) if item.path.is_absolute(info) => imports.push(item.path.clone()),
                 ItemKind::Task(item) => {
                     for item in &item.items {
                         if let TaskItemKind::Use(item) = &item.kind {
-                            if item.path.is_absolute() {
+                            if item.path.is_absolute(info) {
                                 imports.push(item.path.clone())
                             }
                         }

@@ -62,6 +62,10 @@ impl PathInterner {
         })
     }
 
+    pub(crate) fn intern_orphan(&mut self, name: Name) -> PathId {
+        self.intern(PathBuf { pred: None, name })
+    }
+
     fn join_rec(&mut self, pred: PathId, child_path: PathId) -> PathId {
         let child_path_buf = *self.resolve(child_path);
         if let Some(child_pred) = child_path_buf.pred {

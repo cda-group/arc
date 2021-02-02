@@ -191,13 +191,14 @@ Field<T>: Field<T> = Spanned<(<Name> ":" <T>)>         => Field::from(<>);
 Variant:  Variant  = Spanned<(<Name> <Paren<Type0>?>)> => Variant::from(<>);
 Case:     Case     = Spanned<(<Pat0> "=>" <Expr0>)>    => Case::from(<>);
 Name:     Name     = Spanned<NameId>                   => Name::from(<>);
-Path:     Path     = Spanned<PathKind>                 => Path::from(<>);
+Path:     Path     = Spanned<PathId>                   => Path::from(<>);
 Index:    Index    = Spanned<LitUsize>                 => Index::from(<>);
 LitUsize: usize    = LitI32                            => <> as usize;
 
-PathKind: (PathId, PathKind) = {
-                  SepNonEmpty<Name, "::">  => (paths.intern_rel_vec(<>), PathKind::Relative),
-    "crate" "::" <SepNonEmpty<Name, "::">> => (paths.intern_abs_vec(<>), PathKind::Absolute),
+PathId: PathId = {
+    <PathId> "::" <Name> => paths.intern_child(<>),
+    Name                 => paths.intern_orphan(<>),
+    "crate"              => paths.root,
 };
 
 //-----------------------------------------------------------------------------

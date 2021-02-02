@@ -53,14 +53,7 @@ pub enum SettingKind {
 #[derive(Debug, Spanned, Clone)]
 pub struct Path {
     pub id: PathId,
-    pub kind: PathKind,
     pub loc: Option<Loc>,
-}
-
-#[derive(Debug, Clone)]
-pub enum PathKind {
-    Absolute,
-    Relative,
 }
 
 /// An identifier.

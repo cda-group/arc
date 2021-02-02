@@ -382,10 +382,7 @@ impl<'i> Display for Pretty<'i, ast::BinOp, State<'_>> {
 impl<'i> Display for Pretty<'i, ast::Path, State<'_>> {
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
         let Pretty(mut path, ctx) = self;
-        match &path.kind {
-            ast::PathKind::Relative => write!(f, "{}", path.id.pretty(ctx)),
-            ast::PathKind::Absolute => write!(f, "crate::{}", path.id.pretty(ctx)),
-        }
+        write!(f, "{}", path.id.pretty(ctx))
     }
 }
 
