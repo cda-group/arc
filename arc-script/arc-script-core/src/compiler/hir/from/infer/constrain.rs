@@ -149,17 +149,15 @@ impl Constrain<'_> for Expr {
                 ctx.unify(self.tv, TypeKind::Struct(fields));
                 fs.constrain(ctx);
             }
-            ExprKind::Enwrap(x, e) => {
-                let item = &ctx.defs.get(x).unwrap().kind;
+            ExprKind::Enwrap(x0, e) => {
+                let item = &ctx.defs.get(x0).unwrap().kind;
                 if let ItemKind::Variant(item) = item {
                     e.constrain(ctx);
                     ctx.unify(e.tv, item.tv);
-                    let mut pathbuf = ctx.info.paths.resolve(x.id).clone();
-                    pathbuf.pop();
-                    let id = ctx.info.paths.intern(pathbuf).into();
-                    let item = ctx.defs.get(&id).unwrap();
+                    let x1 = ctx.info.paths.resolve(x0.id).pred.unwrap().into();
+                    let item = ctx.defs.get(&x1).unwrap();
                     if let ItemKind::Enum(item) = &item.kind {
-                        ctx.unify(self.tv, TypeKind::Nominal(id));
+                        ctx.unify(self.tv, TypeKind::Nominal(x1));
                     } else {
                         unreachable!(); // TODO: [Error]: Types must be known at this point
                     }
@@ -167,16 +165,14 @@ impl Constrain<'_> for Expr {
                     unreachable!();
                 }
             }
-            ExprKind::Unwrap(x, e) => {
+            ExprKind::Unwrap(x0, e) => {
                 e.constrain(ctx);
                 let ty = ctx.info.types.resolve(e.tv);
                 if let TypeKind::Nominal(path) = ty.kind {
                     let item = ctx.defs.get(&path).unwrap();
                     if let ItemKind::Enum(item) = &item.kind {
-                        let mut pathbuf = ctx.info.paths.resolve(path.id).clone();
-                        pathbuf.push(*x);
-                        let id: Path = ctx.info.paths.intern(pathbuf).into();
-                        let item = ctx.defs.get(&id).unwrap();
+                        let x1: Path = ctx.info.paths.intern_child(path.id, *x0).into();
+                        let item = ctx.defs.get(&x1).unwrap();
                         if let ItemKind::Variant(item) = &item.kind {
                             ctx.unify(self.tv, item.tv);
                         } else {
@@ -187,16 +183,14 @@ impl Constrain<'_> for Expr {
                     unreachable!();
                 }
             }
-            ExprKind::Is(x, e) => {
+            ExprKind::Is(x0, e) => {
                 e.constrain(ctx);
                 let ty = ctx.info.types.resolve(e.tv);
                 if let TypeKind::Nominal(path) = ty.kind {
                     let item = ctx.defs.get(&path).unwrap();
                     if let ItemKind::Enum(item) = &item.kind {
-                        let mut pathbuf = ctx.info.paths.resolve(path.id).clone();
-                        pathbuf.push(*x);
-                        let id: Path = ctx.info.paths.intern(pathbuf).into();
-                        let item = ctx.defs.get(&id).unwrap();
+                        let x1: Path = ctx.info.paths.intern_child(path.id, *x0).into();
+                        let item = ctx.defs.get(&x1).unwrap();
                         if let ItemKind::Variant(item) = &item.kind {
                             ctx.unify(self.tv, Bool);
                         } else {

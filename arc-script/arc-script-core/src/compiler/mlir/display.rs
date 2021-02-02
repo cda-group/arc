@@ -7,6 +7,7 @@ use crate::compiler::info::Info;
 use crate::compiler::mlir;
 use crate::compiler::shared::display::format::Context;
 use crate::compiler::shared::display::pretty::*;
+use crate::compiler::info::paths::PathId;
 
 use std::fmt::{self, Display, Formatter};
 
@@ -128,7 +129,18 @@ impl<'i> Display for Pretty<'i, Path, State<'_>> {
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
         let Pretty(path, ctx) = self;
         let buf = ctx.state.info.paths.resolve(path.id);
-        write!(f, "@{}", buf.iter().all_pretty("_", ctx))
+        write!(f, "{}", path.id.pretty(ctx))
+    }
+}
+
+impl<'i> Display for Pretty<'i, PathId, State<'_>> {
+    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
+        let Pretty(mut path, ctx) = self;
+        let path = ctx.state.info.paths.resolve(*path);
+        if let Some(id) = path.pred {
+            write!(f, "{}_", id.pretty(ctx))?;
+        }
+        write!(f, "{}", path.name.pretty(ctx))
     }
 }
 

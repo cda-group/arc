@@ -81,6 +81,7 @@ extern {
         "bor"    => Token::Bor,
         "bxor"   => Token::Bxor,
         "break"  => Token::Break,
+        "crate"  => Token::Crate,
         "else"   => Token::Else,
         "emit"   => Token::Emit,
         "enum"   => Token::Enum,
@@ -195,8 +196,8 @@ Index:    Index    = Spanned<LitUsize>                 => Index::from(<>);
 LitUsize: usize    = LitI32                            => <> as usize;
 
 PathKind: (PathId, PathKind) = {
-          SepNonEmpty<Name, "::">  => (paths.intern(<>), PathKind::Relative),
-    "::" <SepNonEmpty<Name, "::">> => (paths.intern(<>), PathKind::Absolute),
+                  SepNonEmpty<Name, "::">  => (paths.intern_rel_vec(<>), PathKind::Relative),
+    "crate" "::" <SepNonEmpty<Name, "::">> => (paths.intern_abs_vec(<>), PathKind::Absolute),
 };
 
 //-----------------------------------------------------------------------------

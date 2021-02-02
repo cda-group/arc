@@ -57,7 +57,7 @@ impl AST {
     pub(crate) fn parse_source(&mut self, source: String, info: &mut Info) {
         // Read the file, parse it, and construct the module.
         let name = MAIN_FILENAME.to_owned();
-        let id = info.names.intern(&name);
+        let mod_name = info.names.intern(&name);
         let items = module::parse_module(name, source, &mut self.exprs, info);
         let module = Module::new(items);
 
@@ -65,8 +65,8 @@ impl AST {
             panic!();
         }
 
-        let module_path_id = info.paths.intern(&vec![id.into()]);
-        self.modules.insert(module_path_id, module);
+        let mod_path = info.paths.intern_child(info.paths.root, mod_name.into());
+        self.modules.insert(mod_path, module);
     }
     /// Parses main and all its dependencies modules from the project root.
     #[cfg(not(target_arch = "wasm32"))]
@@ -125,7 +125,6 @@ impl AST {
         if !dependency_paths.is_empty() {
             tracing::debug!("Found dependencies {:#?}", dependency_paths);
         }
-
         module_path.pop();
 
         let module_path_id = info.intern_ospath(&module_path);

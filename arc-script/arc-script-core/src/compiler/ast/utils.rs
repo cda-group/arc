@@ -1,4 +1,6 @@
-use crate::compiler::ast::repr::{Index, Item, ItemKind, Module, Path, PathKind, TaskItemKind, AST};
+use crate::compiler::ast::repr::{
+    Index, Item, ItemKind, Module, Path, PathKind, TaskItemKind, AST,
+};
 use crate::compiler::hir;
 use crate::compiler::hir::Name;
 use crate::compiler::info;

@@ -1,6 +1,7 @@
 use crate::compiler::ast;
 use crate::compiler::info;
 use crate::compiler::info::names::NameId;
+use crate::compiler::info::paths::PathId;
 use crate::compiler::info::Info;
 use crate::compiler::shared::display::format::Context;
 use crate::compiler::shared::display::pretty::*;
@@ -380,12 +381,22 @@ impl<'i> Display for Pretty<'i, ast::BinOp, State<'_>> {
 
 impl<'i> Display for Pretty<'i, ast::Path, State<'_>> {
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
-        let Pretty(path, ctx) = self;
-        let names = ctx.state.info.paths.resolve(path.id).all_pretty("::", ctx);
+        let Pretty(mut path, ctx) = self;
         match &path.kind {
-            ast::PathKind::Relative => write!(f, "{}", names),
-            ast::PathKind::Absolute => write!(f, "::{}", names),
+            ast::PathKind::Relative => write!(f, "{}", path.id.pretty(ctx)),
+            ast::PathKind::Absolute => write!(f, "crate::{}", path.id.pretty(ctx)),
         }
+    }
+}
+
+impl<'i> Display for Pretty<'i, PathId, State<'_>> {
+    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
+        let Pretty(mut path, ctx) = self;
+        let path = ctx.state.info.paths.resolve(*path);
+        if let Some(id) = path.pred {
+            write!(f, "{}::", id.pretty(ctx))?;
+        }
+        write!(f, "{}", path.name.pretty(ctx))
     }
 }
 

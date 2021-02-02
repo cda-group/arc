@@ -14,15 +14,15 @@ pub fn compile<W>(mode: Mode, mut f: W) -> anyhow::Result<Info>
 where
     W: Write + WriteColor,
 {
-    better_panic::install();
+//     better_panic::install();
     tracing::debug!("{:?}", mode);
 
-    tracing::debug!("{:#?}", mode);
-    tracing::debug!("Parsing AST...");
-
     let mut info = Info::from(mode);
+
+    tracing::debug!("Parsing AST...");
     let mut ast = AST::from(&mut info);
-    tracing::trace!("{:#?}", ast);
+    tracing::debug!("{}", info);
+    tracing::debug!("{}", ast.debug(&info));
 
     if info.mode.fail_fast && !info.diags.is_empty() {
         if !info.mode.suppress_diags {
@@ -39,11 +39,11 @@ where
         return Ok(info);
     }
 
-    tracing::debug!("{:?}", info);
+    tracing::debug!("{}", info);
     tracing::debug!("Lowering AST to HIR...");
 
     let mut hir = HIR::from(&ast, &mut info);
-    tracing::trace!("{:#?}", hir);
+    tracing::trace!("{}", hir.debug(&info));
 
     if !info.diags.is_empty() {
         if !info.mode.suppress_diags {

@@ -68,6 +68,7 @@ pub(crate) enum LogosToken {
     #[token("band")] Band,
     #[token("bor")] Bor,
     #[token("bxor")] Bxor,
+    #[token("crate")] Crate,
     #[token("else")] Else,
     #[token("emit")] Emit,
     #[token("enum")] Enum,

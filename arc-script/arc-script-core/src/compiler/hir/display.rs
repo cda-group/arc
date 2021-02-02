@@ -1,6 +1,7 @@
 #![allow(clippy::useless_format)]
 use crate::compiler::hir;
 use crate::compiler::info::names::NameId;
+use crate::compiler::info::paths::PathId;
 use crate::compiler::info::types::TypeId;
 use crate::compiler::info::Info;
 use crate::compiler::shared::display::format::Context;
@@ -160,8 +161,18 @@ impl<'i> Display for Pretty<'i, hir::Task, State<'_>> {
 impl<'i> Display for Pretty<'i, hir::Path, State<'_>> {
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
         let Pretty(path, ctx) = self;
-        let path = ctx.state.info.paths.resolve(path.id);
-        write!(f, "{}", path.iter().all_pretty("::", ctx))
+        write!(f, "{}", path.id.pretty(ctx))
+    }
+}
+
+impl<'i> Display for Pretty<'i, PathId, State<'_>> {
+    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
+        let Pretty(mut path, ctx) = self;
+        let path = ctx.state.info.paths.resolve(*path);
+        if let Some(id) = path.pred {
+            write!(f, "{}::", id.pretty(ctx))?;
+        }
+        write!(f, "{}", path.name.pretty(ctx))
     }
 }
 
@@ -243,9 +254,9 @@ impl<'i> Display for Pretty<'i, hir::Expr, State<'_>> {
                 s1 = ctx.indent(),
             ),
             hir::ExprKind::Break => write!(f, "break"),
-            hir::ExprKind::Unwrap(x0, e0) => write!(f, "unwrap[{}]({})", e0.pretty(ctx), x0.pretty(ctx)),
+            hir::ExprKind::Unwrap(x0, e0) => write!(f, "unwrap[{}]({})", x0.pretty(ctx), e0.pretty(ctx)),
             hir::ExprKind::Enwrap(x0, e0) => write!(f, "enwrap[{}]({})", x0.pretty(ctx), e0.pretty(ctx)),
-            hir::ExprKind::Is(x0, e0) => write!(f, "check[{}]({})", x0.pretty(ctx), e0.pretty(ctx)),
+            hir::ExprKind::Is(x0, e0) => write!(f, "is[{}]({})", x0.pretty(ctx), e0.pretty(ctx)),
             hir::ExprKind::Var(x) => write!(f, "{}", x.pretty(ctx)),
             hir::ExprKind::Item(x) => write!(f, "{}", x.pretty(ctx)), 
             hir::ExprKind::Err => write!(f, "☇"),

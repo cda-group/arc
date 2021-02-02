@@ -29,12 +29,12 @@ module @toplevel {
                 %x_K = arc.addi %x_G, %x_7 : i32
                 "arc.block.result"(%x_K) : i32 -> ()
             },{
-                %x_L = call @x_3(%x_7) : (i32) -> i32
+                %x_L = call crate_x_3(%x_7) : (i32) -> i32
                 "arc.block.result"(%x_L) : i32 -> ()
             }) : i1 -> i32
             "arc.block.result"(%x_M) : i32 -> ()
         },{
-            %x_N = call @x_3(%x_7) : (i32) -> i32
+            %x_N = call crate_x_3(%x_7) : (i32) -> i32
             "arc.block.result"(%x_N) : i32 -> ()
         }) : i1 -> i32
         return %x_O : i32
