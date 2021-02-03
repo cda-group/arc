@@ -453,14 +453,14 @@ impl<'i> Display for Pretty<'i, hir::Type, State<'_>> {
         use hir::{TypeKind::*, ScalarKind::*};
         match &ty.kind {
             Scalar(kind) => match kind {
-                I8   => write!(f, "i8"),
-                I16  => write!(f, "i16"),
-                I32  => write!(f, "i32"),
-                I64  => write!(f, "i64"),
-                U8   => write!(f, "u8"),
-                U16  => write!(f, "u16"),
-                U32  => write!(f, "u32"),
-                U64  => write!(f, "u64"),
+                I8   => write!(f, "si8"),
+                I16  => write!(f, "si16"),
+                I32  => write!(f, "si32"),
+                I64  => write!(f, "si64"),
+                U8   => write!(f, "ui8"),
+                U16  => write!(f, "ui16"),
+                U32  => write!(f, "ui32"),
+                U64  => write!(f, "ui64"),
                 F32  => write!(f, "f32"),
                 F64  => write!(f, "f64"),
                 Bool => write!(f, "i1"),
