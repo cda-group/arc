@@ -396,7 +396,7 @@ impl<'i> Display for Pretty<'i, mlir::OpKind, State<'_>> {
             ),
             mlir::OpKind::Res(x) => write!(
                 f,
-                r#""arc.block.result"({x}) : {t} -> (){s0}"#,
+                r#""arc.block.result"({x}) : ({t}) -> (){s0}"#,
                 x = x.pretty(ctx),
                 t = x.tv.pretty(ctx),
                 s0 = ctx
