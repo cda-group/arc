@@ -70,9 +70,6 @@ half               = { version = "1.7.1", features = ["num-traits"] }
 # z3                 = { optional = true, version = "0.9.0" }
 # toml               = { optional = true, version = "0.5.8" }
 
-[target.'cfg(target_arch = "wasm32")'.dependencies]
-wasm-bindgen       = "0.2.69"
-
 #[build]
 #rustflags = ["-C", "link-arg=-fuse-ld=lld"]
 
@@ -83,15 +80,6 @@ wasm-bindgen       = "0.2.69"
 lalrpop            = { version = "0.19.4", features = [ "lexer" ] }
 
 [dev-dependencies]
-arc-script-bridge  = { path = "../arc-script-bridge" }
 criterion          = { version = "0.3.3" }
 criterion-cpu-time = { version = "0.1.0" }
 include_dir        = { version = "0.6.0" }
-proptest           = { version = "0.10.1" }
-honggfuzz          = { version = "0.5.51" }
-goldentests        = { version = "0.3.7" }
-timed              = { version = "0.2.1" }
-#expect-test        = { version = "1.0.1" }
-#pretty_assertions  = { version = "0.6.1" }
-insta              = { version = "1.5.2", features = ["glob"] }
-trybuild           = { version = "1.0.39" }
