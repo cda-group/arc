@@ -16,6 +16,10 @@ fun test() {
     let pos_u16: u16 = 65535u16 in
     let pos_u32: u32 = 4294967295u32 in
     let pos_u64: u64 = 18446744073709551615u64 in
+    let pos_bf16: bf16 = 338953140000000000000000000000000000000bf16 in
+    let neg_bf16: bf16 = -117636680000000000000000000000000000000bf16 in
+    let pos_f16: f16 = 65504f16 in
+    let neg_f16: f16 = -65504f16 in
     let pos_f32: f32 = 3.4028235e38f32 in
     let neg_f32: f32 = -3.4028235e38f32 in
     let pos_f64: f64 = 1.7976931348623157e308 in

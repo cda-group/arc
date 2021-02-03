@@ -11,6 +11,9 @@ use crate::compiler::info::paths::PathId;
 use crate::compiler::info::types::TypeId;
 use crate::compiler::shared::{New, VecMap};
 
+use half::bf16;
+use half::f16;
+
 #[derive(Clone, Debug, New)]
 pub(crate) struct Value {
     pub(crate) kind: ValueKind,
@@ -32,6 +35,8 @@ pub(crate) enum ValueKind {
     U16(u16),
     U32(u32),
     U64(u64),
+    Bf16(bf16),
+    F16(f16),
     F32(f32),
     F64(f64),
     Char(char),

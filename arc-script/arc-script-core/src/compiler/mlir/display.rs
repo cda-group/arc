@@ -217,6 +217,8 @@ impl<'i> Display for Pretty<'i, mlir::OpKind, State<'_>> {
             mlir::OpKind::Const(c) => match c {
                 mlir::ConstKind::Bool(true)  => write!(f, r#"constant true"#),
                 mlir::ConstKind::Bool(false) => write!(f, r#"constant false"#),
+                mlir::ConstKind::Bf16(l)     => write!(f, r#"constant {} :"#, ryu::Buffer::new().format(l.to_f32())),
+                mlir::ConstKind::F16(l)      => write!(f, r#"constant {} :"#, ryu::Buffer::new().format(l.to_f32())),
                 mlir::ConstKind::F32(l)      => write!(f, r#"constant {} :"#, ryu::Buffer::new().format(*l)),
                 mlir::ConstKind::F64(l)      => write!(f, r#"constant {} :"#, ryu::Buffer::new().format(*l)),
                 mlir::ConstKind::I8(v)       => write!(f, r#"arc.constant {} :"#, v),
@@ -472,6 +474,8 @@ impl<'i> Display for Pretty<'i, hir::Type, State<'_>> {
                 U16  => write!(f, "ui16"),
                 U32  => write!(f, "ui32"),
                 U64  => write!(f, "ui64"),
+                Bf16 => write!(f, "bf16"),
+                F16  => write!(f, "f16"),
                 F32  => write!(f, "f32"),
                 F64  => write!(f, "f64"),
                 Bool => write!(f, "i1"),

@@ -4,23 +4,23 @@ expression: s
 input_file: arc-script-core/tests/insta/snapshot-tests/nested-if.arc
 ---
 module @toplevel {
-    func @test() -> i32 {
-        %x_0 = arc.constant 65 : i32
-        %x_1 = arc.constant 66 : i32
-        %x_2 = arc.constant 67 : i32
-        %x_3 = constant 1 : i1
-        %x_4 = constant 0 : i1
+    func @test() -> si32 {
+        %x_0 = arc.constant 65 : si32
+        %x_1 = arc.constant 66 : si32
+        %x_2 = arc.constant 67 : si32
+        %x_3 = constant true
+        %x_4 = constant false
         %x_6 = "arc.if"(%x_3) ({
-            "arc.block.result"(%x_0) : i32 -> ()
+            "arc.block.result"(%x_0) : (si32) -> ()
         },{
             %x_5 = "arc.if"(%x_4) ({
-                "arc.block.result"(%x_1) : i32 -> ()
+                "arc.block.result"(%x_1) : (si32) -> ()
             },{
-                "arc.block.result"(%x_2) : i32 -> ()
-            }) : i1 -> i32
-            "arc.block.result"(%x_5) : i32 -> ()
-        }) : i1 -> i32
-        return %x_6 : i32
+                "arc.block.result"(%x_2) : (si32) -> ()
+            }) : (i1) -> si32
+            "arc.block.result"(%x_5) : (si32) -> ()
+        }) : (i1) -> si32
+        return %x_6 : si32
     }
 }
 

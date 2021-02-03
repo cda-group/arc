@@ -122,6 +122,8 @@ impl Constrain<'_> for Expr {
                     LitKind::U16(_)  => U16,
                     LitKind::U32(_)  => U32,
                     LitKind::U64(_)  => U64,
+                    LitKind::Bf16(_) => Bf16,
+                    LitKind::F16(_)  => F16,
                     LitKind::F32(_)  => F32,
                     LitKind::F64(_)  => F64,
                     LitKind::Bool(_) => Bool,

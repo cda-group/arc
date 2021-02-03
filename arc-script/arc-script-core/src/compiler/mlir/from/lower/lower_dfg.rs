@@ -26,6 +26,8 @@ impl Lower<ConstKind, Context<'_>> for ValueKind {
             ValueKind::U16(v)        => ConstKind::U16(*v),
             ValueKind::U32(v)        => ConstKind::U32(*v),
             ValueKind::U64(v)        => ConstKind::U64(*v),
+            ValueKind::Bf16(v)       => ConstKind::Bf16(*v),
+            ValueKind::F16(v)        => ConstKind::F16(*v),
             ValueKind::F32(v)        => ConstKind::F32(*v),
             ValueKind::F64(v)        => ConstKind::F64(*v),
             ValueKind::Char(v)       => ConstKind::Char(*v),
