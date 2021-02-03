@@ -362,7 +362,7 @@ impl<'i> Display for Pretty<'i, mlir::OpKind, State<'_>> {
             mlir::OpKind::UnOp(_, _) => todo!(),
             mlir::OpKind::If(x, r0, r1) => write!(
                 f,
-                r#""arc.if"({x}) ({r0},{r1}) : i1 ->"#,
+                r#""arc.if"({x}) ({r0},{r1}) : (i1) ->"#,
                 x = x.pretty(ctx),
                 r0 = r0.pretty(ctx),
                 r1 = r1.pretty(ctx),
