@@ -10,6 +10,9 @@ use crate::compiler::shared::{Map, New};
 // use bumpalo::collections::Vec;
 // use bumpalo::boxed::Box;
 use arc_script_macros::Spanned;
+
+use half::bf16;
+use half::f16;
 use std::fmt::Debug;
 use time::Duration;
 
@@ -246,6 +249,8 @@ pub enum ReduceKind {
 pub enum LitKind {
     Bool(bool),
     Char(char),
+    Bf16(bf16),
+    F16(f16),
     F32(f32),
     F64(f64),
     I8(i8),
@@ -392,6 +397,8 @@ pub enum TypeKind {
 pub enum ScalarKind {
     Bool,
     Char,
+    Bf16,
+    F16,
     F32,
     F64,
     I8,

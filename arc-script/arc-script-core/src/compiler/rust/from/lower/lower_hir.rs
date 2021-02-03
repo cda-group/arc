@@ -288,6 +288,8 @@ impl Lower<syn::Type, Context<'_>> for hir::ScalarKind {
         match self {
             hir::ScalarKind::Bool => parse_quote!(bool),
             hir::ScalarKind::Char => parse_quote!(char),
+            hir::ScalarKind::Bf16 => parse_quote!(bf16),
+            hir::ScalarKind::F16  => parse_quote!(f16),
             hir::ScalarKind::F32  => parse_quote!(f32),
             hir::ScalarKind::F64  => parse_quote!(f64),
             hir::ScalarKind::I8   => parse_quote!(i8),
@@ -351,8 +353,44 @@ impl Lower<proc_macro2::TokenStream, Context<'_>> for hir::LitKind {
         match self {
             hir::LitKind::Bool(v) => quote!(#v),
             hir::LitKind::Char(v) => quote!(#v),
-            hir::LitKind::F32(v)  => quote!(#v),
-            hir::LitKind::F64(v)  => quote!(#v),
+            hir::LitKind::Bf16(v) => {
+                let v = v.to_f32();
+                if v.is_nan() {
+                    quote!(half::bf16::NAN)
+                } else if v.is_infinite() {
+                    quote!(half::bf16::INFINITE)
+                } else {
+                    quote!(half::bf16::from_f32(#v))
+                }
+            },
+            hir::LitKind::F16(v) => {
+                let v = v.to_f32();
+                if v.is_nan() {
+                    quote!(half::f16::NAN)
+                } else if v.is_infinite() {
+                    quote!(half::f16::INFINITE)
+                } else {
+                    quote!(half::f16::from_f32(#v))
+                }
+            },
+            hir::LitKind::F32(v) => {
+                if v.is_nan() {
+                    quote!(f32::NAN)
+                } else if v.is_infinite() {
+                    quote!(f32::INFINITE)
+                } else {
+                    quote!(#v)
+                }
+            },
+            hir::LitKind::F64(v) => {
+                if v.is_nan() {
+                    quote!(f64::NAN)
+                } else if v.is_infinite() {
+                    quote!(f64::INFINITE)
+                } else {
+                    quote!(#v)
+                }
+            },
             hir::LitKind::I8(v)   => quote!(#v),
             hir::LitKind::I16(v)  => quote!(#v),
             hir::LitKind::I32(v)  => quote!(#v),

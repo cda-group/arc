@@ -34,6 +34,18 @@ fun test() -> i32 {
 # As MLIR does not support hex floating point values we only check the
 # f32 to 6 significant digits and f64 to 15.
 
+  let pos_bf16: bf16 = 3.38953139e38bf16 in
+#CHECK: {{%[^ ]+}} = constant 3.38953139{{[0-9]+[Ee]\+?}}38 : bf16
+
+  let neg_bf16: bf16 = -1.175494351e38bf16 in
+#CHECK: {{%[^ ]+}} = constant -1.175494351{{[0-9]+[Ee]\+?}}38 : bf16
+
+  let pos_f16: f16 = 6.5504e4f16 in
+#CHECK: {{%[^ ]+}} = constant 6.55{{[0-9]+[Ee]\+?}}4 : f16
+
+  let neg_f16: f16 = -6.550e4f16 in
+#CHECK: {{%[^ ]+}} = constant -6.550{{[0-9]+[Ee]\+?}}4 : f16
+
   let pos_f32: f32 = 3.4028234664e38f32 in
 #CHECK: {{%[^ ]+}} = constant 3.40282{{[0-9]+[Ee]\+?}}38 : f32
 

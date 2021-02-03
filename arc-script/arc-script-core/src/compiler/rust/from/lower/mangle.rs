@@ -95,24 +95,27 @@ impl hir::Name {
 }
 
 impl hir::ScalarKind {
+    #[rustfmt::skip]
     fn as_str(&self, ctx: &mut Context) -> &'static str {
         match self {
             hir::ScalarKind::Bool => "bool",
             hir::ScalarKind::Char => "char",
-            hir::ScalarKind::F32 => "f32",
-            hir::ScalarKind::F64 => "f64",
-            hir::ScalarKind::I8 => "i8",
-            hir::ScalarKind::I16 => "i16",
-            hir::ScalarKind::I32 => "i32",
-            hir::ScalarKind::I64 => "i64",
-            hir::ScalarKind::U8 => "u8",
-            hir::ScalarKind::U16 => "u16",
-            hir::ScalarKind::U32 => "u32",
-            hir::ScalarKind::U64 => "u64",
+            hir::ScalarKind::Bf16 => "bf16",
+            hir::ScalarKind::F16  => "f16",
+            hir::ScalarKind::F32  => "f32",
+            hir::ScalarKind::F64  => "f64",
+            hir::ScalarKind::I8   => "i8",
+            hir::ScalarKind::I16  => "i16",
+            hir::ScalarKind::I32  => "i32",
+            hir::ScalarKind::I64  => "i64",
+            hir::ScalarKind::U8   => "u8",
+            hir::ScalarKind::U16  => "u16",
+            hir::ScalarKind::U32  => "u32",
+            hir::ScalarKind::U64  => "u64",
             hir::ScalarKind::Null => todo!(),
-            hir::ScalarKind::Str => todo!(),
+            hir::ScalarKind::Str  => todo!(),
             hir::ScalarKind::Unit => "()",
-            hir::ScalarKind::Bot => todo!(),
+            hir::ScalarKind::Bot  => todo!(),
         }
     }
 }

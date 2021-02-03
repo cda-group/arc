@@ -6,6 +6,8 @@ use crate::compiler::info::diags::{DiagInterner, Diagnostic};
 use crate::compiler::ast::from::parse::lexer::Token;
 use lalrpop_util::ErrorRecovery;
 use time::Duration;
+use half::f16;
+use half::bf16;
 
 //=============================================================================
 // Grammar
@@ -122,6 +124,8 @@ extern {
 // Primitive Types
 //=============================================================================
         "bool" => Token::Bool,
+        "bf16" => Token::Bf16,
+        "f16"  => Token::F16,
         "f32"  => Token::F32,
         "f64"  => Token::F64,
         "i8"   => Token::I8,
@@ -147,6 +151,8 @@ extern {
         LitU16  => Token::LitU16(<u16>),
         LitU32  => Token::LitU32(<u32>),
         LitU64  => Token::LitU64(<u64>),
+        LitBf16 => Token::LitBf16(<bf16>),
+        LitF16  => Token::LitF16(<f16>),
         LitF32  => Token::LitF32(<f32>),
         LitF64  => Token::LitF64(<f64>),
         LitBool => Token::LitBool(<bool>),
@@ -430,6 +436,8 @@ LitKind: LitKind = {
     LitU16  => LitKind::U16(<>),
     LitU32  => LitKind::U32(<>),
     LitU64  => LitKind::U64(<>),
+    LitBf16 => LitKind::Bf16(<>),
+    LitF16  => LitKind::F16(<>),
     LitF32  => LitKind::F32(<>),
     LitF64  => LitKind::F64(<>),
     LitStr  => LitKind::Str(<>),
@@ -500,6 +508,8 @@ TypeKind2: TypeKind = {
 
 ScalarKind: ScalarKind = {
     "bool" => ScalarKind::Bool,
+    "bf16" => ScalarKind::Bf16,
+    "f16"  => ScalarKind::F16,
     "f32"  => ScalarKind::F32,
     "f64"  => ScalarKind::F64,
     "i8"   => ScalarKind::I8,

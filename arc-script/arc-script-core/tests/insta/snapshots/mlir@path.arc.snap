@@ -5,7 +5,7 @@ input_file: arc-script-core/tests/insta/snapshot-tests/path.arc
 ---
 module @toplevel {
     func @main() -> i0 {
-        %x_1 = arc.constant 1 : i32
+        %x_1 = arc.constant 1 : si32
         %x_2 = arc.constant unit : i0
         return %x_2 : i0
     }

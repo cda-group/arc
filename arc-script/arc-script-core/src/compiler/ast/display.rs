@@ -337,6 +337,8 @@ impl<'i> Display for Pretty<'i, ast::LitKind, State<'_>> {
             ast::LitKind::U16(l)  => write!(f, "{}u16", l),
             ast::LitKind::U32(l)  => write!(f, "{}u32", l),
             ast::LitKind::U64(l)  => write!(f, "{}u64", l),
+            ast::LitKind::Bf16(l) => write!(f, "{}bf16", l),
+            ast::LitKind::F16(l)  => write!(f, "{}f16", l),
             ast::LitKind::F32(l)  => write!(f, "{}f32", ryu::Buffer::new().format(*l)),
             ast::LitKind::F64(l)  => write!(f, "{}", ryu::Buffer::new().format(*l)),
             ast::LitKind::Bool(l) => write!(f, "{}", l),
@@ -404,6 +406,8 @@ impl<'i> Display for Pretty<'i, ast::ScalarKind, State<'_>> {
         match kind {
             ast::ScalarKind::Bool => write!(f, "bool"),
             ast::ScalarKind::Char => write!(f, "char"),
+            ast::ScalarKind::Bf16 => write!(f, "bf16"),
+            ast::ScalarKind::F16  => write!(f, "f16"),
             ast::ScalarKind::F32  => write!(f, "f32"),
             ast::ScalarKind::F64  => write!(f, "f64"),
             ast::ScalarKind::I8   => write!(f, "i8"),
