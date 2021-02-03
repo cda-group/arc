@@ -1,0 +1,34 @@
+---
+source: arc-script-test-insta/src/lib.rs
+expression: s
+input_file: arc-script-test-insta/src/expect-pass/literals.arc
+---
+module @toplevel {
+    func @test() -> si32 {
+        %x_0 = arc.constant 127 : si8
+        %x_1 = arc.constant -128 : si8
+        %x_2 = arc.constant 32767 : si16
+        %x_3 = arc.constant -32768 : si16
+        %x_4 = arc.constant 2147483647 : si32
+        %x_5 = arc.constant -2147483648 : si32
+        %x_6 = arc.constant 9223372036854775807 : si64
+        %x_7 = arc.constant -9223372036854775808 : si64
+        %x_8 = arc.constant 255 : ui8
+        %x_9 = arc.constant 65535 : ui16
+        %x_A = arc.constant 4294967295 : ui32
+        %x_B = arc.constant 18446744073709551615 : ui64
+        %x_C = constant 3.3895314e38 : bf16
+        %x_D = constant -1.1763668e38 : bf16
+        %x_E = constant 65504.0 : f16
+        %x_F = constant -65504.0 : f16
+        %x_G = constant 3.4028235e38 : f32
+        %x_H = constant -3.4028235e38 : f32
+        %x_I = constant 1.7976931348623157e308 : f64
+        %x_J = constant -1.7976931348623157e308 : f64
+        %x_K = constant true
+        %x_L = constant false
+        %x_M = arc.constant 4711 : si32
+        return %x_M : si32
+    }
+}
+

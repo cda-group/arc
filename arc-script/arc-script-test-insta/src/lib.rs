@@ -1,3 +1,5 @@
+#![cfg_attr(not(test), allow(dead_code, unused_imports))]
+
 use arc_script_core::prelude::compiler::compile;
 use arc_script_core::prelude::diags::Buffer;
 use arc_script_core::prelude::modes::{Input, Mode, Output};
@@ -12,7 +14,7 @@ fn snapshot(output: Output) {
     settings.remove_snapshot_suffix();
     let mut sink = Buffer::no_color();
     settings.bind(|| {
-        insta::glob!("snapshot-tests/*", |path| {
+        insta::glob!("{expect-pass, expect-fail}/*", |path| {
             println!("Testing {}", path.display());
             let mode = Mode {
                 input: Input::File(Some(path.into())),

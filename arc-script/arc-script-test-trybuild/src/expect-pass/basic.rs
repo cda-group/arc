@@ -1,9 +1,8 @@
 use arc_script_bridge::arc_script;
 
-#[arc_script("script.arc")]
+#[arc_script("basic.arc")]
 mod script {}
 
-#[test]
-fn test() {
+fn main() {
     assert_eq!(1, script::test());
 }

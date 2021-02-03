@@ -2,6 +2,6 @@
 #[test]
 fn trybuild() {
     let t = trybuild::TestCases::new();
-    t.compile_fail("tests/trybuild/expect-fail/*.rs");
-    t.pass("tests/trybuild/expect-pass/*.rs");
+    t.compile_fail("src/expect-fail/*.rs");
+    t.pass("src/expect-pass/*.rs");
 }

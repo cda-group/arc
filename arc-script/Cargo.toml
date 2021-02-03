@@ -9,6 +9,8 @@ members = [
   "arc-script-cli",
   "arc-script-web",
   "arc-script-python",
+  "arc-script-test-insta",
+  "arc-script-test-trybuild",
 ]
 
 # -- The development profile, used for `cargo build`.
