@@ -1,5 +1,5 @@
-# RUN: arc-to-mlir -i %s | FileCheck %s
-# RUN: arc-to-mlir -i %s | arc-mlir | FileCheck %s
+# RUN: arc-script run --output=MLIR %s | FileCheck %s
+# RUN: arc-script run --output=MLIR %s | arc-mlir | FileCheck %s
 
 fun test() -> i32 {
 

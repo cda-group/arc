@@ -183,16 +183,27 @@ impl<'i> Display for Pretty<'i, mlir::Op, State<'_>> {
     #[allow(clippy::many_single_char_names)]
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
         let Pretty(op, ctx) = self;
-        if let Some(var) = &op.var {
-            write!(
-                f,
-                "{var} = {kind} {ty}",
-                var = var.pretty(ctx),
-                kind = op.kind.pretty(ctx),
-                ty = var.tv.pretty(ctx)
-            )
-        } else {
-            write!(f, "{kind}", kind = op.kind.pretty(ctx),)
+        use mlir::ConstKind::*;
+        use mlir::OpKind::*;
+        match op.var {
+            Some(var) if matches!(op.kind, Const(Bool(_))) => {
+                write!(
+                    f,
+                    "{var} = {kind}",
+                    var = var.pretty(ctx),
+                    kind = op.kind.pretty(ctx),
+                )
+            }
+            Some(var) => {
+                write!(
+                    f,
+                    "{var} = {kind} {ty}",
+                    var = var.pretty(ctx),
+                    kind = op.kind.pretty(ctx),
+                    ty = var.tv.pretty(ctx)
+                )
+            }
+            None => write!(f, "{kind}", kind = op.kind.pretty(ctx)),
         }
     }
 }
@@ -204,16 +215,16 @@ impl<'i> Display for Pretty<'i, mlir::OpKind, State<'_>> {
         use mlir::{BinOpKind::*, ConstKind::*, OpKind};
         match kind {
             mlir::OpKind::Const(c) => match c {
-                mlir::ConstKind::Bool(true)  => write!(f, r#"constant 1 :"#),
-                mlir::ConstKind::Bool(false) => write!(f, r#"constant 0 :"#),
-                mlir::ConstKind::F32(l)      => write!(f, r#"constant {}"#, ryu::Buffer::new().format(*l)),
-                mlir::ConstKind::F64(l)      => write!(f, r#"constant {}"#, ryu::Buffer::new().format(*l)),
-                mlir::ConstKind::I8(v)       => write!(f, r#"constant {} :"#, v),
-                mlir::ConstKind::I16(v)      => write!(f, r#"constant {} :"#, v),
+                mlir::ConstKind::Bool(true)  => write!(f, r#"constant true"#),
+                mlir::ConstKind::Bool(false) => write!(f, r#"constant false"#),
+                mlir::ConstKind::F32(l)      => write!(f, r#"constant {} :"#, ryu::Buffer::new().format(*l)),
+                mlir::ConstKind::F64(l)      => write!(f, r#"constant {} :"#, ryu::Buffer::new().format(*l)),
+                mlir::ConstKind::I8(v)       => write!(f, r#"arc.constant {} :"#, v),
+                mlir::ConstKind::I16(v)      => write!(f, r#"arc.constant {} :"#, v),
                 mlir::ConstKind::I32(v)      => write!(f, r#"arc.constant {} :"#, v),
                 mlir::ConstKind::I64(v)      => write!(f, r#"arc.constant {} :"#, v),
-                mlir::ConstKind::U8(v)       => write!(f, r#"constant {} :"#, v),
-                mlir::ConstKind::U16(v)      => write!(f, r#"constant {} :"#, v),
+                mlir::ConstKind::U8(v)       => write!(f, r#"arc.constant {} :"#, v),
+                mlir::ConstKind::U16(v)      => write!(f, r#"arc.constant {} :"#, v),
                 mlir::ConstKind::U32(v)      => write!(f, r#"arc.constant {} :"#, v),
                 mlir::ConstKind::U64(v)      => write!(f, r#"arc.constant {} :"#, v),
                 mlir::ConstKind::Fun(x)      => write!(f, r#"constant {} :"#, x.pretty(ctx)),
@@ -351,7 +362,7 @@ impl<'i> Display for Pretty<'i, mlir::OpKind, State<'_>> {
             mlir::OpKind::UnOp(_, _) => todo!(),
             mlir::OpKind::If(x, r0, r1) => write!(
                 f,
-                r#""arc.if"({x}) ({r0},{r1}) : i1 ->"#,
+                r#""arc.if"({x}) ({r0},{r1}) : (i1) ->"#,
                 x = x.pretty(ctx),
                 r0 = r0.pretty(ctx),
                 r1 = r1.pretty(ctx),
@@ -385,7 +396,7 @@ impl<'i> Display for Pretty<'i, mlir::OpKind, State<'_>> {
             ),
             mlir::OpKind::Res(x) => write!(
                 f,
-                r#""arc.block.result"({x}) : {t} -> (){s0}"#,
+                r#""arc.block.result"({x}) : ({t}) -> (){s0}"#,
                 x = x.pretty(ctx),
                 t = x.tv.pretty(ctx),
                 s0 = ctx
@@ -453,14 +464,14 @@ impl<'i> Display for Pretty<'i, hir::Type, State<'_>> {
         use hir::{TypeKind::*, ScalarKind::*};
         match &ty.kind {
             Scalar(kind) => match kind {
-                I8   => write!(f, "i8"),
-                I16  => write!(f, "i16"),
-                I32  => write!(f, "i32"),
-                I64  => write!(f, "i64"),
-                U8   => write!(f, "u8"),
-                U16  => write!(f, "u16"),
-                U32  => write!(f, "u32"),
-                U64  => write!(f, "u64"),
+                I8   => write!(f, "si8"),
+                I16  => write!(f, "si16"),
+                I32  => write!(f, "si32"),
+                I64  => write!(f, "si64"),
+                U8   => write!(f, "ui8"),
+                U16  => write!(f, "ui16"),
+                U32  => write!(f, "ui32"),
+                U64  => write!(f, "ui64"),
                 F32  => write!(f, "f32"),
                 F64  => write!(f, "f64"),
                 Bool => write!(f, "i1"),
