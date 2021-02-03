@@ -141,15 +141,14 @@ dependencies = [
  "syn 1.0.60",
  "tempfile",
  "termcolor 1.1.2 (git+https://github.com/segeljakt/termcolor)",
+ "text-size",
  "time 0.2.25",
  "timed",
- "toml",
  "tracing",
  "tracing-flame",
  "tracing-subscriber",
  "trybuild",
  "wasm-bindgen",
- "z3",
 ]
 
 [[package]]
@@ -161,6 +160,7 @@ dependencies = [
  "codespan-lsp",
  "codespan-reporting",
  "lazy_static",
+ "log 0.4.13",
  "serde_json",
  "tokio",
  "tower-lsp",
@@ -3067,6 +3067,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "text-size"
+version = "1.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "288cb548dbe72b652243ea797201f3d481a0609a967980fcc5b2315ea811560a"
+
+[[package]]
 name = "textwrap"
 version = "0.11.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -3750,20 +3756,3 @@ checksum = "56c1936c4cc7a1c9ab21a1ebb602eb942ba868cbd44a99cb7cdc5892335e1c85"
 dependencies = [
  "linked-hash-map",
 ]
-
-[[package]]
-name = "z3"
-version = "0.9.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "0c5bdc8c9e19d1b983c5584cd4baf6fbd71f3ca5c83283b9d46ad7780d67bd3b"
-dependencies = [
- "lazy_static",
- "log 0.4.13",
- "z3-sys",
-]
-
-[[package]]
-name = "z3-sys"
-version = "0.6.3"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "afa18ba5fbd4933e41ffb440c3fd91f91fe9cdb7310cce3ddfb6648563811de0"

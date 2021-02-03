@@ -115,6 +115,7 @@ impl Lower<syn::Ident, Context<'_>> for hir::Name {
 impl Lower<syn::Ident, Context<'_>> for hir::Path {
     fn lower(&self, ctx: &mut Context<'_>) -> syn::Ident {
         let path = ctx.info.resolve_to_names(self.id);
+        let (_, path) = path.split_at(1);
         let name = path.join("_");
         let span = proc_macro2::Span::call_site();
         syn::Ident::new(&name, span)

@@ -103,8 +103,8 @@ impl BigStep for Expr {
                 let v0 = e0.eval(ctx)?;
                 match v0.kind {
                     ValueKind::Variant(x1, v) => {
-                        let x = ctx.info.paths.resolve(x1.id);
-                        if x.iter().last().contains(&x0) {
+                        let x1 = ctx.info.paths.resolve(x1.id);
+                        if x1.name == *x0 {
                             return Ok(*v);
                         } else {
                             return ControlFlow(Panic(self.loc))?;
@@ -117,8 +117,8 @@ impl BigStep for Expr {
                 let v0 = e0.eval(ctx)?;
                 match v0.kind {
                     ValueKind::Variant(x1, v) => {
-                        let x = ctx.info.paths.resolve(x1.id);
-                        if x.iter().last().contains(&x0) {
+                        let x1 = ctx.info.paths.resolve(x1.id);
+                        if x1.name == *x0 {
                             ValueKind::Bool(true)
                         } else {
                             return ControlFlow(Panic(self.loc))?;

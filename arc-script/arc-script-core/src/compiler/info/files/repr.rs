@@ -17,40 +17,24 @@ impl Default for FileInterner {
     }
 }
 
-#[derive(Debug, Clone, Copy, New)]
-pub struct Span(ByteIndex, ByteIndex);
-
-impl From<Span> for Range<ByteIndex> {
-    fn from(span: Span) -> Self {
-        span.0..span.1
-    }
-}
-
+pub use text_size::TextRange as Span;
+pub use text_size::TextSize as ByteIndex;
 pub type FileId = usize;
 
-/// A position in the source code.
-pub type ByteIndex = usize;
-
 /// A structure which stores a code location.
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone, Copy, New)]
 pub struct Loc {
     pub file: FileId,
     pub span: Span,
 }
 
 impl Loc {
-    pub(crate) fn new(file: FileId, range: Range<ByteIndex>) -> Self {
-        Self {
-            file,
-            span: Span::new(range.start, range.end),
-        }
+    pub(crate) fn from_range(file: FileId, range: Range<ByteIndex>) -> Self {
+        Self::new(file, Span::new(range.start, range.end))
     }
 
     pub(crate) fn join(self, other: Loc) -> Self {
-        Self {
-            file: self.file,
-            span: Span(self.span.0, other.span.1),
-        }
+        Self::new(self.file, self.span.cover(other.span))
     }
 }
 

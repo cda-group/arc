@@ -10,7 +10,7 @@ use crate::compiler::mlir::MLIR;
 use crate::compiler::shared::{Lower, Map, New};
 
 impl MLIR {
-    pub(crate) fn from(hir: HIR, dfg: DFG, info: &mut Info) -> Self {
+    pub(crate) fn from(hir: &HIR, dfg: DFG, info: &mut Info) -> Self {
         let ctx = &mut lower::Context::new(&hir, info);
         let defs = hir
             .items
@@ -18,6 +18,6 @@ impl MLIR {
             .filter_map(|x| Some((*x, hir.defs.get(x).unwrap().lower(ctx)?)))
             .collect::<Map<_, _>>();
         let main = dfg.lower(ctx);
-        MLIR::new(hir.items, defs, main)
+        MLIR::new(hir.items.clone(), defs, main)
     }
 }

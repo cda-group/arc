@@ -5,15 +5,17 @@ use crate::compiler::ast::from::parse::tokens::LogosToken;
 use crate::compiler::info::diags::DiagInterner;
 use crate::compiler::info::diags::Error;
 use crate::compiler::info::diags::Result;
-use crate::compiler::info::files::{FileId, Loc, Span};
+use crate::compiler::info::files::{ByteIndex, FileId, Loc, Span};
 use crate::compiler::info::names::{NameId, NameInterner};
 use crate::compiler::shared::New;
 
-use time::Duration;
 use lexical_core::parse_format;
 use lexical_core::NumberFormat;
 use logos::Lexer as LogosLexer;
 use logos::Logos;
+use time::Duration;
+
+use std::convert::TryFrom;
 
 pub(crate) const TABSIZE: usize = 4;
 
@@ -94,6 +96,7 @@ pub enum Token {
     Band,
     Bor,
     Break,
+    Crate,
     Bxor,
     Else,
     Enwrap,
@@ -230,9 +233,17 @@ impl<'i> Lexer<'i> {
     /// Returns the current location.
     #[inline]
     fn loc(&self) -> Loc {
-        let span = self.logos.span();
         let file = self.file;
+        let span = self.span();
         Loc::new(file, span)
+    }
+    /// Returns the current span.
+    #[inline]
+    fn span(&self) -> Span {
+        let span = self.logos.span();
+        let start = ByteIndex::try_from(span.start).unwrap();
+        let end = ByteIndex::try_from(span.end).unwrap();
+        Span::new(start, end)
     }
     /// Returns the next token or an error.
     #[rustfmt::skip]
@@ -311,6 +322,7 @@ impl<'i> Lexer<'i> {
                 LogosToken::Bor        => Token::Bor,
                 LogosToken::Bxor       => Token::Bxor,
                 LogosToken::Break      => Token::Break,
+                LogosToken::Crate      => Token::Crate,
                 LogosToken::Else       => Token::Else,
                 LogosToken::Emit       => Token::Emit,
                 LogosToken::Enum       => Token::Enum,
@@ -406,14 +418,14 @@ impl<'i> Lexer<'i> {
 }
 
 impl Iterator for Lexer<'_> {
-    type Item = (usize, Token, usize);
+    type Item = (ByteIndex, Token, ByteIndex);
     fn next(&mut self) -> Option<Self::Item> {
         loop {
             match self.token() {
                 Ok(token) => {
                     break token.map(|token| {
-                        let span = self.logos.span();
-                        (span.start, token, span.end)
+                        let span = self.span();
+                        (span.start(), token, span.end())
                     })
                 }
                 Err(e) => self.diags.intern(e),

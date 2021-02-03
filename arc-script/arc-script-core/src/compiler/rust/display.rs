@@ -6,12 +6,12 @@ use crate::compiler::shared::New;
 
 use quote::quote;
 
+use std::fmt::Write as FmtWrite;
 use std::fmt::{self, Display, Formatter};
 use std::fs;
 use std::io;
 use std::io::BufRead;
 use std::io::Write;
-use std::fmt::Write as FmtWrite;
 use std::path::Path;
 use std::process::Command;
 

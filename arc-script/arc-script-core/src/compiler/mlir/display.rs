@@ -2,6 +2,7 @@
 use crate::compiler::hir;
 use crate::compiler::hir::{Name, Path};
 use crate::compiler::info;
+use crate::compiler::info::paths::PathId;
 use crate::compiler::info::types::TypeId;
 use crate::compiler::info::Info;
 use crate::compiler::mlir;
@@ -128,16 +129,28 @@ impl<'i> Display for Pretty<'i, Path, State<'_>> {
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
         let Pretty(path, ctx) = self;
         let buf = ctx.state.info.paths.resolve(path.id);
-        write!(f, "@{}", buf.iter().all_pretty("_", ctx))
+        write!(f, "{}", path.id.pretty(ctx))
+    }
+}
+
+impl<'i> Display for Pretty<'i, PathId, State<'_>> {
+    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
+        let Pretty(mut path, ctx) = self;
+        let path = ctx.state.info.paths.resolve(*path);
+        if let Some(id) = path.pred {
+            write!(f, "{}_", id.pretty(ctx))?;
+        }
+        write!(f, "{}", path.name.pretty(ctx))
     }
 }
 
 impl<'i> Display for Pretty<'i, mlir::Enum, State<'_>> {
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
         let Pretty(item, ctx) = self;
+        // TODO: Find way to represent enums in MLIR
         write!(
             f,
-            "enum {id} of {variants}",
+            "arc.enum<{id}> of {variants}",
             id = item.name.pretty(ctx),
             variants = item
                 .variants

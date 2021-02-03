@@ -10,7 +10,7 @@ module @toplevel {
         return %x_2 : i32
     }
     func @test() -> i32 {
-        %x_3 = constant @x_0 : (i32) -> i32
+        %x_3 = constant crate_x_0 : (i32) -> i32
         %x_4 = arc.constant 1 : i32
         %x_5 = call_indirect %x_3(%x_4) : (i32) -> i32
         return %x_5 : i32

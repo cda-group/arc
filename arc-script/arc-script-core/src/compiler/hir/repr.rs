@@ -4,8 +4,8 @@ use crate::compiler::info::files::Loc;
 use crate::compiler::info::Info;
 use crate::compiler::shared::{Map, New, Set, VecMap};
 
-use time::Duration;
 use educe::Educe;
+use time::Duration;
 
 use crate::prelude::ast::Spanned;
 use arc_script_macros::Spanned;
@@ -147,7 +147,7 @@ pub(crate) struct Task {
     ///     on I(c) => emit Out(foo() + c)
     /// }
     ///
-//     pub(crate) constructor: Path,
+    //     pub(crate) constructor: Path,
     /// Input ports to the task. TODO: Should be variants when Arcon supports it
     pub(crate) iports: Vec<TypeId>,
     /// Output ports of the task.

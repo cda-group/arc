@@ -1,13 +1,13 @@
 use crate::compiler::ast;
 use crate::compiler::ast::from::parse::lexer::Token;
 use crate::compiler::info::diags::{Diagnostic, Error};
-use crate::compiler::info::files::{FileId, Loc};
+use crate::compiler::info::files::{FileId, Loc, ByteIndex};
 
 /// Dropped tokens + errors produced while parsing with LALRPOP.
-pub(crate) type ErrorRecovery<'i> = lalrpop_util::ErrorRecovery<usize, Token, ()>;
+pub(crate) type ErrorRecovery<'i> = lalrpop_util::ErrorRecovery<ByteIndex, Token, ()>;
 
 /// Errors produced while parsing with LALRPOP.
-pub(crate) type ParseError<'i> = lalrpop_util::ParseError<usize, Token, ()>;
+pub(crate) type ParseError<'i> = lalrpop_util::ParseError<ByteIndex, Token, ()>;
 
 impl Diagnostic {
     /// Converts an LALRPOP `ErrorRecovery` into a `Diagnostic`.
@@ -16,18 +16,18 @@ impl Diagnostic {
             ParseError::User { .. } => unreachable!(),
             ParseError::ExtraToken { token: (l, t, r) } => Error::ExtraToken {
                 found: format!("{:?}", t),
-                loc: Loc::new(file, l..r).into(),
+                loc: Loc::from_range(file, l..r).into(),
             }
             .into(),
             ParseError::InvalidToken { location: l } => Error::InvalidToken {
-                loc: Loc::new(file, l..l).into(),
+                loc: Loc::from_range(file, l..l).into(),
             }
             .into(),
             ParseError::UnrecognizedEOF {
                 location: l,
                 expected,
             } => Error::UnrecognizedEOF {
-                loc: Loc::new(file, l..l).into(),
+                loc: Loc::from_range(file, l..l).into(),
                 expected,
             }
             .into(),
@@ -36,7 +36,7 @@ impl Diagnostic {
                 expected,
             } => Error::UnrecognizedToken {
                 found: format!("{:?}", t),
-                loc: Loc::new(file, l..r).into(),
+                loc: Loc::from_range(file, l..r).into(),
                 expected,
             }
             .into(),

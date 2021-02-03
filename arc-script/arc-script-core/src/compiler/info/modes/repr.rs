@@ -27,7 +27,7 @@ impl Default for Input {
     }
 }
 
-/// Run until 
+/// Run until
 #[derive(Debug, Clone, Copy)]
 pub enum Output {
     AST,

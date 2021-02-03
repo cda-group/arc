@@ -3,14 +3,17 @@ source: arc-script-core/tests/insta/mod.rs
 expression: s
 input_file: arc-script-core/tests/insta/snapshot-tests/enums.arc
 ---
-enum Foo { Foo::Bar, Foo::Baz }
+enum Foo {
+    Bar(u32),
+    Baz(f32)
+}
 fun main() -> () {
     let a_0: u32 = 200u32 in
     let b_0: f32 = 2.0f32 in
-    let c_0: Foo = enwrap[Foo::Bar](a_0) in
-    let d_0: u32 = unwrap[c_0](Bar) in
-    let e_0: Foo = enwrap[Foo::Baz](b_0) in
-    let f_0: bool = check[Baz](e_0) in
+    let c_0: crate::Foo = enwrap[crate::Foo::Bar](a_0) in
+    let d_0: u32 = unwrap[Bar](c_0) in
+    let e_0: crate::Foo = enwrap[crate::Foo::Baz](b_0) in
+    let f_0: bool = is[Baz](e_0) in
     ()
 }
 

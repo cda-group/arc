@@ -15,16 +15,13 @@ use std::fs;
 /// }
 pub fn arc_script(attr: pm::TokenStream, item: pm::TokenStream) -> pm::TokenStream {
     if let syn::Item::Mod(module) = syn::parse(item).expect("Expected `mod` item") {
-        let (_, items) = module
-            .content
-            .expect("Expected `mod { ... }` found `mod;`");
+        let (_, items) = module.content.expect("Expected `mod { ... }` found `mod;`");
         let mut args = attr.into_iter();
         let arg = args.next().expect("Expected attribute");
         args.next()
             .expect_none("Only one attribute expected, found multiple");
-        let lit = syn::parse(arg.into()).expect(
-            "Expected a string literal attribute containing the filepath to an arc-script",
-        );
+        let lit = syn::parse(arg.into())
+            .expect("Expected a string literal attribute containing the filepath to an arc-script");
         if let syn::Lit::Str(v) = lit {
             let mut path = pm::Span::call_site().source_file().path();
             path.pop();
@@ -39,9 +36,9 @@ pub fn arc_script(attr: pm::TokenStream, item: pm::TokenStream) -> pm::TokenStre
                 ..Default::default()
             };
 
-            let info = compile(opt, &mut sink).expect("Internal compiler error");
+            let report = compile(opt, &mut sink).expect("Internal compiler error");
             let output = std::str::from_utf8(sink.as_slice()).expect("Internal compiler error");
-            if info.diags.is_empty() {
+            if report.is_ok() {
                 let rust: syn::File = syn::parse_str(output).expect("Internal compiler error");
                 let id = module.ident;
                 quote!(mod #id { #(#items);* #rust }).into()

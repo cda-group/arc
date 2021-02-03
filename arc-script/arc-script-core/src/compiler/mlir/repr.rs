@@ -6,8 +6,8 @@ use crate::compiler::info::types::TypeId;
 use crate::compiler::info::Info;
 use crate::compiler::shared::{Map, New, Set, VecMap};
 
-use time::Duration;
 use educe::Educe;
+use time::Duration;
 
 /// MLIR is a Multi-Level Intermediate Representation which is the final
 /// representation within the Arc-Script compiler. In contrast to the HIR,

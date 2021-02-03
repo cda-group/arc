@@ -1,6 +1,6 @@
 pub mod repr;
-pub mod to_codespan;
 pub mod sink;
+pub mod to_codespan;
 pub(crate) mod utils;
 
 pub use repr::*;

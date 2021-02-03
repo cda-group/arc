@@ -1,4 +1,3 @@
-
 use derive_more::Constructor as New;
 use derive_more::From;
 

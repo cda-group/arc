@@ -11,6 +11,7 @@ path = "src/lib.rs"
 [dependencies]
 arc-script-core    = { path = "../arc-script-core" }
 
+log = "0.4.13"
 tower-lsp          = { version = "=0.13.3" }
 # lspower            = { version = "0.6.0" }
 tokio              = { version = "=0.2", features = ["io-std", "io-util", "macros", "net", "test-util"] }

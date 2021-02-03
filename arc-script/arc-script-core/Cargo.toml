@@ -25,9 +25,6 @@ harness        = false
 
 [features]
 default     = []
-all         = ["manifest"]
-shaper      = ["z3"]
-manifest    = ["toml"]
 
 [dependencies]
 arc-script-macros  = { path = "../arc-script-macros" }
@@ -68,22 +65,19 @@ strum              = { version = "0.20", features = ["derive"] }
 tempfile           = { version = "3.1.0" }
 cfg-if             = { version = "1.0.0" }
 better-panic       = { version = "0.2.0" }
-
-# -- Feature: shaper
-z3                 = { optional = true, version = "0.9.0" }
-
-# -- Feature: manifest
-toml               = { optional = true, version = "0.5.8" }
+text-size          = { version = "1.1.0" }
+# z3                 = { optional = true, version = "0.9.0" }
+# toml               = { optional = true, version = "0.5.8" }
 
 [target.'cfg(target_arch = "wasm32")'.dependencies]
 wasm-bindgen       = "0.2.69"
 
 #[build]
 #rustflags = ["-C", "link-arg=-fuse-ld=lld"]
-#
+
 #[target.x86_64-unknown-linux-gnu]
 #linker = "lld"
-#
+
 [build-dependencies]
 lalrpop            = { version = "0.19.4", features = [ "lexer" ] }
 

@@ -8,6 +8,7 @@ pub(crate) mod from;
 
 mod utils;
 
+pub(crate) mod debug;
 pub(crate) mod display;
 
 pub(crate) use display::pretty;

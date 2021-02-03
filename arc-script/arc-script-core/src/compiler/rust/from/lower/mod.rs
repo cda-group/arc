@@ -1,10 +1,10 @@
-mod lower_hir;
 mod lower_dfg;
+mod lower_hir;
 pub(crate) mod mangle;
 
 use crate::compiler::dfg::DFG;
-use crate::compiler::hir::HIR;
 use crate::compiler::hir;
+use crate::compiler::hir::HIR;
 use crate::compiler::info::Info;
 use crate::compiler::rust::Rust;
 use crate::compiler::shared::{Lower, Map, New};

@@ -36,12 +36,10 @@ use crate::compiler::shared::{Lower, Map, New, VecMap};
 impl ast::AST {
     pub(crate) fn lower(&self, info: &mut info::Info) -> hir::HIR {
         let res = &mut resolve::Resolver::from(self, info);
-        tracing::debug!("{:#?}", res);
         let mut hir = hir::HIR::default();
         let ctx = &mut Context::new(res, self, &mut hir, info);
         for (path_id, module) in &self.modules {
-            let path = ctx.info.paths.resolve(*path_id);
-            ctx.res.path = path.clone();
+            ctx.res.path_id = *path_id;
             module.lower(ctx);
         }
         hir
@@ -126,8 +124,8 @@ impl Lower<Option<(Name, hir::Expr)>, Context<'_>> for ast::TaskItem {
 impl Lower<(Path, hir::ItemKind), Context<'_>> for ast::Task {
     fn lower(&self, ctx: &mut Context) -> (Path, hir::ItemKind) {
         tracing::trace!("Lowering Task");
-        ctx.res.push_namespace(self.name);
-        let mut task_path = ctx.info.paths.intern(&ctx.res.path).into();
+        ctx.res.push_namespace(self.name, ctx.info);
+        let mut task_path = ctx.res.path_id;
         let (mut task_params, cases) = pattern::lower_params(&self.params, ctx);
         // If the task's parameter patterns are nested, a function must be created to
         // flatten them. The function is then used in-place of the task.
@@ -136,12 +134,13 @@ impl Lower<(Path, hir::ItemKind), Context<'_>> for ast::Task {
             task_params = pattern::params(&self.params, ctx);
             let task_args = pattern::params_to_args(&task_params);
 
-            let fun_path = task_path;
-            let mut path = ctx.res.path.clone();
-            let name = path.pop().unwrap();
-            let name = ctx.info.names.fresh_with_base(name);
-            path.push(name);
-            task_path = ctx.info.paths.intern(path).into();
+            let fun_path = task_path.into();
+            let pathbuf = *ctx.info.paths.resolve(task_path);
+            let task_name = ctx.info.names.fresh_with_base(pathbuf.name);
+            task_path = ctx
+                .info
+                .paths
+                .intern_child(pathbuf.pred.unwrap(), task_name);
 
             let ttv = ctx.info.types.fresh();
             let rtv = ctx.info.types.fresh();
@@ -149,7 +148,7 @@ impl Lower<(Path, hir::ItemKind), Context<'_>> for ast::Task {
 
             let call = hir::Expr::syn(
                 hir::ExprKind::Call(
-                    hir::Expr::syn(hir::ExprKind::Item(task_path), ttv).into(),
+                    hir::Expr::syn(hir::ExprKind::Item(task_path.into()), ttv).into(),
                     task_args,
                 ),
                 rtv,
@@ -191,9 +190,9 @@ impl Lower<(Path, hir::ItemKind), Context<'_>> for ast::Task {
             .filter_map(|item| item.lower(ctx))
             .collect::<Vec<Path>>();
         let tv = ctx.info.types.fresh();
-        ctx.res.pop_namespace();
+        ctx.res.pop_namespace(ctx.info);
         let task = hir::Task::new(self.name, tv, task_params, iports, oports, handler, items);
-        (task_path, hir::ItemKind::Task(task))
+        (task_path.into(), hir::ItemKind::Task(task))
     }
 }
 
@@ -201,9 +200,7 @@ impl Lower<(Path, hir::ItemKind), Context<'_>> for ast::Fun {
     fn lower(&self, ctx: &mut Context) -> (Path, hir::ItemKind) {
         tracing::trace!("Lowering Fun");
         ctx.res.stack.push_frame();
-        let mut path = ctx.res.path.clone();
-        path.push(self.name);
-        let path = ctx.info.paths.intern(&path);
+        let path = ctx.info.paths.intern_child(ctx.res.path_id, self.name);
         let (ps, cases) = pattern::lower_params(&self.params, ctx);
         let e = self.body.lower(ctx);
         let e = pattern::fold_cases(e, None, cases);
@@ -236,9 +233,7 @@ impl Lower<hir::On, Context<'_>> for ast::On {
 
 impl Lower<(Path, hir::ItemKind), Context<'_>> for ast::Alias {
     fn lower(&self, ctx: &mut Context) -> (Path, hir::ItemKind) {
-        let mut path = ctx.res.path.clone();
-        path.push(self.name);
-        let path = ctx.info.paths.intern(&path);
+        let path = ctx.info.paths.intern_child(ctx.res.path_id, self.name);
         let tv = self.ty.lower(ctx);
         let item = hir::Alias::new(self.name, tv);
         (path.into(), hir::ItemKind::Alias(item))
@@ -247,20 +242,23 @@ impl Lower<(Path, hir::ItemKind), Context<'_>> for ast::Alias {
 
 impl Lower<(Path, hir::ItemKind), Context<'_>> for ast::Enum {
     fn lower(&self, ctx: &mut Context) -> (Path, hir::ItemKind) {
-        ctx.res.path.push(self.name);
-        let path = ctx.info.paths.intern(&ctx.res.path.clone());
+        let path = ctx.res.path_id;
+        let enum_path = ctx.info.paths.intern_child(ctx.res.path_id, self.name);
+        ctx.res.path_id = enum_path;
         let variants = self.variants.lower(ctx);
-        ctx.res.path.pop();
+        ctx.res.path_id = path;
         let item = hir::Enum::new(self.name, variants);
-        (path.into(), hir::ItemKind::Enum(item))
+        (enum_path.into(), hir::ItemKind::Enum(item))
     }
 }
 
 impl Lower<Path, Context<'_>> for ast::Variant {
     fn lower(&self, ctx: &mut Context) -> Path {
-        let mut path = ctx.res.path.clone();
-        path.push(self.name);
-        let path = ctx.info.paths.intern(path).into();
+        let path: Path = ctx
+            .info
+            .paths
+            .intern_child(ctx.res.path_id, self.name)
+            .into();
         let item = hir::Variant::new(
             self.name,
             self.ty

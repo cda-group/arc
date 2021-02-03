@@ -1,8 +1,8 @@
-pub use std::io::Write;
-pub use codespan_reporting::term::termcolor::StandardStream;
-pub use codespan_reporting::term::termcolor::ColorChoice;
 pub use codespan_reporting::term::termcolor::Buffer;
+pub use codespan_reporting::term::termcolor::ColorChoice;
+pub use codespan_reporting::term::termcolor::StandardStream;
 pub use codespan_reporting::term::termcolor::WriteColor;
+pub use std::io::Write;
 
 use crate::compiler::shared::New;
 
@@ -35,4 +35,3 @@ impl Write for Sink {
         Ok(())
     }
 }
-

@@ -26,10 +26,10 @@ pub mod diags;
 pub mod files;
 /// Module for logging debug information.
 pub mod logger;
-/// Module for interning names.
-pub(crate) mod names;
 /// Module for representing modes of compilation.
 pub mod modes;
+/// Module for interning names.
+pub(crate) mod names;
 /// Module for interning paths.
 pub(crate) mod paths;
 /// Module for interning and unifying types.
@@ -40,6 +40,7 @@ pub(crate) mod types;
 // pub(crate) mod exprs;
 
 /// Info which is shared between the AST, HIR, and DFG.
+#[derive(Debug)]
 pub struct Info {
     /// Command-line options
     pub mode: Mode,
@@ -59,14 +60,16 @@ pub struct Info {
 
 impl From<modes::Mode> for Info {
     fn from(mode: modes::Mode) -> Self {
+        let mut names = NameInterner::default();
+        let root: Name = names.intern("crate").into();
+        let paths = PathInterner::from(root);
         Self {
             mode,
+            names,
+            paths,
             diags: Default::default(),
             files: Default::default(),
-            names: Default::default(),
-            paths: Default::default(),
             types: Default::default(),
-            //             exprs: Default::default(),
         }
     }
 }
@@ -79,21 +82,30 @@ impl Info {
             .components()
             .map(|c| self.names.intern(c.as_os_str().to_str().unwrap()).into())
             .collect::<Vec<_>>();
-        self.paths.intern(buf)
+        self.paths.intern_abs_vec(buf)
     }
-    /// Resolves a `PathId` to a `Vec<Name>`.
-    pub(crate) fn resolve_to_names(&self, id: PathId) -> Vec<&str> {
-        self.paths
-            .resolve(id)
-            .iter()
-            .map(|name| self.names.resolve(name.id))
-            .collect()
+
+    /// Resolves a `PathId` to a `Vec<NameBuf>`.
+    pub(crate) fn resolve_to_names(&self, mut id: PathId) -> Vec<&str> {
+        let mut names = Vec::new();
+        loop {
+            let path = self.paths.resolve(id);
+            let name = self.names.resolve(path.name.id);
+            names.push(name);
+            if let Some(pred) = path.pred {
+                id = pred;
+            } else {
+                break;
+            }
+        }
+        names.reverse();
+        names
     }
 
     /// Generates a fresh PathId.
     pub(crate) fn fresh_name_path(&mut self) -> (Name, Path) {
         let name = self.names.fresh();
-        let path = self.paths.intern(vec![name]).into();
+        let path = self.paths.intern_child(self.paths.root, name).into();
         (name, path)
     }
 }

@@ -189,8 +189,8 @@ async fn report(client: &Client, uri: Url, source: String) {
         ..Default::default()
     };
     let sink = Sink::default();
-    if let Ok(info) = compiler::compile(mode, sink) {
-        let diagnostics = linter::to_lsp(&info);
+    if let Ok(report) = compiler::compile(mode, sink) {
+        let diagnostics = linter::to_lsp(report);
         client
             .publish_diagnostics(uri.clone(), diagnostics, None)
             .await
