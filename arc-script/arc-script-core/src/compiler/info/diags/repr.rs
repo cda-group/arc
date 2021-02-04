@@ -177,13 +177,7 @@ impl DiagInterner {
     pub(crate) fn take(&mut self) -> DiagInterner {
         std::mem::take(self)
     }
-    /// Emits diagnostics to stdout.
-    pub(crate) fn emit_to_stdout<W>(
-        &self,
-        info: &Info,
-        hir: Option<&HIR>,
-        f: &mut W,
-    ) -> io::Result<()>
+    pub(crate) fn emit<W>(&self, info: &Info, hir: Option<&HIR>, f: &mut W) -> io::Result<()>
     where
         W: Write + WriteColor,
     {

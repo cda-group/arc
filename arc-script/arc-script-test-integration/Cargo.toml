@@ -1,0 +1,11 @@
+[package]
+name = "arc-script-test-integration"
+version = "0.1.0"
+authors = ["Klas Segeljakt <klasseg@kth.se>"]
+edition = "2018"
+
+[dependencies]
+arc-script = { path = "../" }
+
+[build-dependencies]
+arc-script = { path = "../" }

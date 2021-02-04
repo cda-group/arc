@@ -27,7 +27,7 @@ where
 
     if info.mode.fail_fast && !info.diags.is_empty() {
         if !info.mode.suppress_diags {
-            info.diags.emit_to_stdout(&info, None, &mut f);
+            info.diags.emit(&info, None, &mut f);
         }
         if info.mode.force_output {
             writeln!(f, "{}", ast.pretty(&ast, &mut info))?;
@@ -48,7 +48,7 @@ where
 
     if !info.diags.is_empty() {
         if !info.mode.suppress_diags {
-            info.diags.emit_to_stdout(&info, Some(&hir), &mut f);
+            info.diags.emit(&info, Some(&hir), &mut f);
         }
         if info.mode.force_output {
             writeln!(f, "{}", ast.pretty(&ast, &mut info))?;
@@ -64,7 +64,7 @@ where
     tracing::debug!("Lowering HIR to DFG...");
     // Lower HIR into DFG
     let dfg = DFG::from(&hir, &mut info).unwrap_or_else(|diags| {
-        diags.emit_to_stdout(&info, Some(&hir), &mut f);
+        diags.emit(&info, Some(&hir), &mut f);
         std::process::exit(-1);
     });
 
