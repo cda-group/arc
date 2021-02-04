@@ -43,3 +43,27 @@ fn rustfmt(rs: &rust::Rust) -> io::Result<String> {
 
     std::fs::read_to_string(&tmp)
 }
+
+// TODO: Use this code as soon as https://github.com/rust-lang/rust/issues/76904 is fixed.
+// use rustfmt_nightly as rustfmt;
+// impl<'i> Display for Pretty<'i, rust::Rust, Stateless> {
+//     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
+//         let Pretty(rs, ctx) = self;
+//         let sink = crate::compiler::info::diags::sink::Buffer::no_color();
+//         rs.items
+//             .iter()
+//             .try_for_each(|item| write!(sink, "{}", quote!(#item)))
+//             .unwrap();
+//         let source = std::str::from_utf8(sink.as_slice()).unwrap();
+//         let input = rustfmt::Input::Text(source.to_string());
+//         let config = rustfmt::Config::default();
+//         let setting = rustfmt::OperationSetting::default();
+//
+//         let formatted = rustfmt::format(input, config, setting).expect("Internal error");
+//         formatted
+//             .format_result()
+//             .into_iter()
+//             .try_for_each(|(name, result)| writeln!(f, "{}", result.formatted_text()))?;
+//         Ok(())
+//     }
+// }
