@@ -147,3 +147,4 @@ dist/
 .bin/
 corpus/
 artifacts/
+history.txt
