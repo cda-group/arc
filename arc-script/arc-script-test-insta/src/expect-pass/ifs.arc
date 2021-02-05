@@ -1,10 +1,13 @@
 # RUN: arc-to-mlir -i %s | FileCheck %s
 # RUN: arc-to-mlir -i %s | arc-mlir | FileCheck %s
 
-let a_i32 : i32 = 65;
-let b_i32 : i32 = 66;
+fun main() { () }
 
-let true_bool : bool = true;
+fun test() -> i32 {
+  let a_i32: i32 = 65 in
+  let b_i32: i32 = 66 in
+
+  let true_bool: bool = true in
 
 # Check that the conditional ends up in the right place and that the
 # results in the two branches are correct
@@ -13,7 +16,12 @@ let true_bool : bool = true;
 #CHECK-DAG: [[B:%[^ ]+]] = arc.constant 66 : si32
 #CHECK-DAG: [[COND:%[^ ]+]] = constant true
 
-if(true_bool, a_i32, b_i32)
+  if true_bool {
+      a_i32
+  } else {
+      b_i32
+  }
+}
 
 #CHECK: {{%[^ ]+}} = "arc.if"([[COND]]) (
 #CHECK: "arc.block.result"([[A]])
