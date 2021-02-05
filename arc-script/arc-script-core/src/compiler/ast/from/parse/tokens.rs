@@ -35,6 +35,7 @@ pub(crate) enum LogosToken {
     #[token("^")] Caret,
     #[token(":")] Colon,
     #[token("::")] ColonColon,
+    #[token(":=")] ColonEq,
     #[token(",")] Comma,
     #[token(".")] Dot,
     #[token("..")] DotDot,

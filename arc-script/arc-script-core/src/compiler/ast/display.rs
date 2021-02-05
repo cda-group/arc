@@ -375,6 +375,7 @@ impl<'i> Display for Pretty<'i, ast::BinOp, State<'_>> {
             ast::BinOpKind::Bor  => write!(f, " bor "),
             ast::BinOpKind::Bxor => write!(f, " bxor "),
             ast::BinOpKind::Pipe => write!(f, " |> "),
+            ast::BinOpKind::Mut  => write!(f, " := "),
             ast::BinOpKind::Seq  => write!(f, ";{}", ctx),
             ast::BinOpKind::Err  => write!(f, " ☇ "),
         }

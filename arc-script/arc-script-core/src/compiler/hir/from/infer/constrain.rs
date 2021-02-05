@@ -248,6 +248,7 @@ impl Constrain<'_> for Expr {
                         ctx.unify(self.tv, e1.tv);
                     }
                     Pipe => todo!(),
+                    Mut => todo!(),
                     Seq => ctx.unify(self.tv, e1.tv),
                     BinOpKind::Err => {}
                 }

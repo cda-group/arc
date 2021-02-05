@@ -321,6 +321,7 @@ pub enum BinOpKind {
     Neq,
     Or,
     Pipe,
+    Mut,
     Pow,
     Seq,
     Sub,

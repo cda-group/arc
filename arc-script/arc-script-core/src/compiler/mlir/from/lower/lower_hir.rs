@@ -81,6 +81,7 @@ impl Lower<mlir::BinOp, Context<'_>> for hir::BinOp {
             hir::BinOpKind::Geq  => mlir::BinOpKind::Geq,
             hir::BinOpKind::Leq  => mlir::BinOpKind::Leq,
             hir::BinOpKind::Pipe => unreachable!(),
+            hir::BinOpKind::Mut  => mlir::BinOpKind::Mut,
             hir::BinOpKind::Seq  => unreachable!(),
             hir::BinOpKind::Err  => unreachable!(),
         };

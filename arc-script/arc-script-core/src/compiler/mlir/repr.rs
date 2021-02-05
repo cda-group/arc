@@ -179,6 +179,7 @@ pub(crate) enum BinOpKind {
     Pow,
     Sub,
     Xor,
+    Mut,
 }
 
 #[derive(Debug, New)]
