@@ -5,17 +5,18 @@ use arc_script_core::prelude::compiler;
 use arc_script_core::prelude::diags::Sink;
 use arc_script_core::prelude::modes::{Input, Mode, Output};
 
+use derive_more::Constructor as New;
+use lspower::jsonrpc::Result;
+use lspower::lsp::*;
+use lspower::{Client, LanguageServer, LspService, Server};
 use serde_json::{Number, Value};
-use tower_lsp::jsonrpc::Result;
-use tower_lsp::lsp_types::*;
-use tower_lsp::{Client, LanguageServer, LspService, Server};
 
-#[derive(Debug)]
+#[derive(Debug, New)]
 pub(crate) struct Backend {
     pub(crate) client: Client,
 }
 
-#[tower_lsp::async_trait]
+#[lspower::async_trait]
 impl LanguageServer for Backend {
     async fn initialize(&self, _: InitializeParams) -> Result<InitializeResult> {
         Ok(InitializeResult {
@@ -41,19 +42,18 @@ impl LanguageServer for Backend {
                     retrigger_characters: None,
                     work_done_progress_options: Default::default(),
                 }),
-                document_highlight_provider: Some(true),
-                workspace_symbol_provider: Some(true),
+                document_highlight_provider: Some(OneOf::Left(true)),
+                workspace_symbol_provider: Some(OneOf::Left(true)),
                 execute_command_provider: Some(ExecuteCommandOptions {
                     commands: vec!["dummy.do_something".to_string()],
                     work_done_progress_options: Default::default(),
                 }),
-                workspace: Some(WorkspaceCapability {
-                    workspace_folders: Some(WorkspaceFolderCapability {
+                workspace: Some(WorkspaceServerCapabilities {
+                    workspace_folders: Some(WorkspaceFoldersServerCapabilities {
                         supported: Some(true),
-                        change_notifications: Some(
-                            WorkspaceFolderCapabilityChangeNotifications::Bool(true),
-                        ),
+                        change_notifications: Some(OneOf::Left(true)),
                     }),
+                    ..Default::default()
                 }),
                 ..ServerCapabilities::default()
             },
@@ -92,8 +92,8 @@ impl LanguageServer for Backend {
         if let (Some(Value::Number(n)), Some(text)) = (p.data.clone(), p.detail.clone()) {
             p.insert_text_format = Some(InsertTextFormat::PlainText);
             let n = n.as_u64().unwrap();
-            let a = Position::new(1, n - 1);
-            let b = Position::new(1, n + text.chars().count() as u64 - 1);
+            let a = Position::new(1, (n - 1) as u32);
+            let b = Position::new(1, (n + text.chars().count() as u64 - 1) as u32);
             p.text_edit = Some(CompletionTextEdit::Edit(TextEdit {
                 range: Range { start: a, end: b },
                 new_text: text,
@@ -137,7 +137,7 @@ impl LanguageServer for Backend {
             .log_message(MessageType::Info, "command executed!")
             .await;
 
-        match self.client.apply_edit(WorkspaceEdit::default()).await {
+        match self.client.apply_edit(WorkspaceEdit::default(), None).await {
             Ok(res) if res.applied => {
                 self.client
                     .log_message(MessageType::Info, "edit applied")
@@ -195,16 +195,4 @@ async fn report(client: &Client, uri: Url, source: String) {
             .publish_diagnostics(uri.clone(), diagnostics, None)
             .await
     }
-}
-
-#[tokio::main]
-pub async fn start(mode: Mode) {
-    let stdin = tokio::io::stdin();
-    let stdout = tokio::io::stdout();
-
-    let (service, messages) = LspService::new(|client| Backend { client });
-    Server::new(stdin, stdout)
-        .interleave(messages)
-        .serve(service)
-        .await;
 }

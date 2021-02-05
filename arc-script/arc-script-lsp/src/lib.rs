@@ -2,6 +2,7 @@
 
 pub(crate) mod completer;
 pub(crate) mod linter;
-pub mod server;
+pub(crate) mod server;
+pub mod runtime;
 
-pub use server::*;
+pub use runtime::start;

@@ -16,6 +16,8 @@ use codespan_reporting::diagnostic::{self, Label};
 use codespan_reporting::term::termcolor::{Buffer, ColorChoice, StandardStream, WriteColor};
 use codespan_reporting::term::{self, Config};
 
+type CodespanResult = std::result::Result<(), codespan_reporting::files::Error>;
+
 #[derive(Shrinkwrap, Debug, Default)]
 #[shrinkwrap(mutable)]
 pub struct DiagInterner {
@@ -177,7 +179,7 @@ impl DiagInterner {
     pub(crate) fn take(&mut self) -> DiagInterner {
         std::mem::take(self)
     }
-    pub(crate) fn emit<W>(&self, info: &Info, hir: Option<&HIR>, f: &mut W) -> io::Result<()>
+    pub(crate) fn emit<W>(&self, info: &Info, hir: Option<&HIR>, f: &mut W) -> CodespanResult
     where
         W: Write + WriteColor,
     {
