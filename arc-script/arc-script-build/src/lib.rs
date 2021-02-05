@@ -1,5 +1,3 @@
-extern crate derive_more;
-
 mod fun;
 mod script;
 mod val;

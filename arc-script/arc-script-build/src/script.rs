@@ -35,18 +35,11 @@ impl Script {
             output: Output::Rust,
             ..Default::default()
         };
-        let out_dir = PathBuf::from(env::var("OUT_DIR").expect("$OUT_DIR env-var was not set"));
         let mut sink = Buffer::no_color();
         if let Ok(report) = compiler::compile(mode, &mut sink) {
             let output = sink.as_slice();
             if report.is_ok() {
-                let mut path = out_dir.join(self.path);
-                path.set_extension("rs");
-                let parent = path.parent().expect("Path has no parent");
-                fs::create_dir_all(parent).expect("Failed creating directories");
-                let mut file = fs::File::create(path).expect("Failed creating file");
-                file.write_all(output).expect("Failed writing file");
-                Ok(())
+                self.generate(output)
             } else {
                 let message = std::str::from_utf8(output).expect("Internal Error");
                 println!("cargo:warning={}", message);
@@ -56,5 +49,20 @@ impl Script {
             println!("cargo:warning=Internal compiler error");
             Err(())
         }
+    }
+    fn generate(self, source: &[u8]) -> Result<(), ()> {
+        let out_dir = PathBuf::from(env::var("OUT_DIR").expect("$OUT_DIR env-var was not set"));
+
+        let mut path = out_dir.join(self.path.clone());
+        path.set_extension("rs");
+        let parent = path.parent().expect("Path has no parent");
+        fs::create_dir_all(parent).expect("Failed creating directories");
+        let mut file = fs::File::create(path).expect("Failed creating file");
+        file.write_all(source).expect("Failed writing file");
+        built::write_built_file().expect("Failed to acquire build-time information");
+
+        println!("cargo:rerun-if-changed={:?}", self.path);
+        println!("cargo:rerun-if-changed=build.rs");
+        Ok(())
     }
 }
