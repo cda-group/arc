@@ -1,7 +1,7 @@
 ---
-source: arc-script-core/tests/insta/mod.rs
+source: arc-script-test-insta/src/lib.rs
 expression: s
-input_file: arc-script-core/tests/insta/snapshot-tests/literals.arc
+input_file: arc-script-test-insta/src/expect-pass/literals.arc
 ---
 module @toplevel {
     func @test() -> si32 {
