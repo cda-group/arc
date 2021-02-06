@@ -36,6 +36,7 @@ impl From<Opt> for Result<Mode> {
         mode.debug = opt.debug;
         mode.fail_fast = opt.fail_fast;
         mode.suppress_diags = opt.suppress_diags;
+        mode.force_output = opt.force_output;
         Ok(mode)
     }
 }
