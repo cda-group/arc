@@ -1,5 +1,5 @@
 [package]
-name = "arc-script-web"
+name = "arc-script-web-repl"
 version = "0.1.0"
 authors = ["Klas Segeljakt <klasseg@kth.se>"]
 edition = "2018"

@@ -14,6 +14,7 @@ use std::io::BufRead;
 use std::io::Write;
 use std::path::Path;
 use std::process::Command;
+use cfg_if::cfg_if;
 
 #[derive(New, From, Copy, Clone)]
 pub(crate) struct Stateless;
@@ -25,11 +26,20 @@ pub(crate) fn pretty<'i, Node>(node: &'i Node) -> Pretty<'i, Node, Stateless> {
 impl<'i> Display for Pretty<'i, rust::Rust, Stateless> {
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
         let Pretty(rs, ctx) = self;
-        write!(f, "{}", rustfmt(rs).unwrap())?;
+        cfg_if! {
+            if #[cfg(not(target_arch = "wasm32"))] {
+                write!(f, "{}", rustfmt(rs).unwrap())?;
+            } else {
+                rs.items
+                    .iter()
+                    .try_for_each(|item| write!(f, "{}", quote!(#item)))?;
+            }
+        }
         Ok(())
     }
 }
 
+#[cfg(not(target_arch = "wasm32"))]
 fn rustfmt(rs: &rust::Rust) -> io::Result<String> {
     let tmp = tempfile::NamedTempFile::new()?;
     let fw = &mut std::io::BufWriter::new(&tmp);

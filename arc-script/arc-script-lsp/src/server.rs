@@ -12,8 +12,9 @@ use lspower::{Client, LanguageServer, LspService, Server};
 use serde_json::{Number, Value};
 
 #[derive(Debug, New)]
-pub(crate) struct Backend {
+pub struct Backend {
     pub(crate) client: Client,
+    pub(crate) mode: Mode,
 }
 
 #[lspower::async_trait]
@@ -166,7 +167,7 @@ impl LanguageServer for Backend {
             .await;
         let uri = params.text_document.uri;
         let source = params.content_changes.into_iter().next().unwrap().text;
-        report(&self.client, uri, source).await;
+        report(self.mode.clone(), &self.client, uri, source).await;
     }
 
     async fn did_save(&self, _: DidSaveTextDocumentParams) {
@@ -182,11 +183,11 @@ impl LanguageServer for Backend {
     }
 }
 
-async fn report(client: &Client, uri: Url, source: String) {
+async fn report(mode: Mode, client: &Client, uri: Url, source: String) {
     let mode = Mode {
         input: Input::Code(source),
         output: Output::Silent,
-        ..Default::default()
+        ..mode
     };
     let sink = Sink::default();
     if let Ok(report) = compiler::compile(mode, sink) {

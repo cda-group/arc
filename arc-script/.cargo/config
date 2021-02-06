@@ -1,12 +1,14 @@
 [alias]
-run-ast  = "run --package=arc-script-cli -- --force-output run --output=AST"
-run-hir  = "run --package=arc-script-cli -- --force-output run --output=HIR"
-run-dfg  = "run --package=arc-script-cli -- --force-output run --output=DFG"
-run-mlir = "run --package=arc-script-cli -- --force-output run --output=MLIR"
-run-rust = "run --package=arc-script-cli -- --force-output run --output=Rust"
-run-lsp  = "run --manifest-path=arc-script-cli/Cargo.toml --features=lsp -- lsp"
-run-repl = "run --manifest-path=arc-script-cli/Cargo.toml --features=repl -- repl"
-debug    = "run --package=arc-script-cli -- --force-output --debug -vv run --output=Rust"
+run-ast        = "run --package=arc-script-cli -- --force-output run --output=AST"
+run-hir        = "run --package=arc-script-cli -- --force-output run --output=HIR"
+run-dfg        = "run --package=arc-script-cli -- --force-output run --output=DFG"
+run-mlir       = "run --package=arc-script-cli -- --force-output run --output=MLIR"
+run-rust       = "run --package=arc-script-cli -- --force-output run --output=Rust"
+run-lsp        = "run --manifest-path=arc-script-cli/Cargo.toml --features=lsp -- lsp"
+run-repl       = "run --manifest-path=arc-script-cli/Cargo.toml --features=repl -- repl"
+check-web-lsp  = "check --manifest-path=arc-script-web-lsp/Cargo.toml  --target=wasm32-unknown-unknown"
+check-web-repl = "check --manifest-path=arc-script-web-repl/Cargo.toml --target=wasm32-unknown-unknown"
+debug          = "run --package=arc-script-cli -- --force-output --debug -vv run --output=Rust"
 
 [build]
 # jobs = 1                  # number of parallel jobs, defaults to # of CPUs

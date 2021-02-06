@@ -59,7 +59,6 @@ impl Script {
         fs::create_dir_all(parent).expect("Failed creating directories");
         let mut file = fs::File::create(path).expect("Failed creating file");
         file.write_all(source).expect("Failed writing file");
-        built::write_built_file().expect("Failed to acquire build-time information");
 
         println!("cargo:rerun-if-changed={:?}", self.path);
         println!("cargo:rerun-if-changed=build.rs");

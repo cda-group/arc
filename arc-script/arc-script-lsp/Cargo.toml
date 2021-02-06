@@ -8,6 +8,10 @@ edition = "2018"
 name = "arc_script_lsp"
 path = "src/lib.rs"
 
+[[bin]]
+name = "arc-script-lsp"
+path = "src/main.rs"
+
 [features]
 default            = [ "runtime-tokio" ]
 runtime-futures    = [ "lspower/runtime-agnostic", "futures", "blocking" ]

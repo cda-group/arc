@@ -8,4 +8,3 @@ edition = "2018"
 [dependencies]
 arc-script-core = { path = "../arc-script-core" }
 derive_more     = { version = "0.99.11", features = ["from"] }
-built           = { version = "0.4.4" }

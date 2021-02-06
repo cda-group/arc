@@ -34,7 +34,8 @@ members = [
   "arc-script-repl",
   "arc-script-lsp",
   "arc-script-cli",
-  "arc-script-web",
+  "arc-script-web-repl",
+#   "arc-script-web-lsp",
   "arc-script-python",
   "arc-script-test-insta",
   "arc-script-test-trybuild",
@@ -43,7 +44,9 @@ members = [
 ]
 
 exclude = [
-  "fuzz"
+  "fuzz",
+#   "arc-script-web-repl",
+  "arc-script-web-lsp"
 ]
 
 # -- The development profile, used for `cargo build`.
@@ -95,5 +98,8 @@ codegen-units    = 1
 rpath            = false
 
 # --- Optimize for small binaries when compiling for the web
-[profile.release.package.arc-script-web]
+[profile.release.package.arc-script-web-repl]
 opt-level = "z"
+
+# [profile.release.package.arc-script-web-lsp]
+# opt-level = "z"

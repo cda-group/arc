@@ -27,7 +27,7 @@
   },
   "homepage": "https://github.com/rustwasm/create-wasm-app#readme",
   "dependencies": {
-    "arc-script-wasm": "file:../pkg",
+    "arc-script-web-repl": "file:../pkg",
     "xterm": "^4.5.0",
     "xterm-addon-fit": "^0.3.0"
   },
