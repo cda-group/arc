@@ -245,7 +245,6 @@ pub enum TypeKind {
     Set(TypeId),
     Stream(TypeId),
     Struct(VecMap<Name, TypeId>),
-    Task(Vec<TypeId>, Vec<TypeId>),
     Tuple(Vec<TypeId>),
     Unknown,
     Vector(TypeId),

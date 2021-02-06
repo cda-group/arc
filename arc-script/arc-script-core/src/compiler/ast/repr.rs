@@ -388,7 +388,6 @@ pub enum TypeKind {
     Set(Box<Type>),
     Stream(Box<Type>),
     Struct(Vec<Field<Type>>),
-    Task(Vec<Type>, Vec<Type>),
     Tuple(Vec<Type>),
     Vector(Box<Type>),
     Err,

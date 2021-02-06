@@ -430,7 +430,6 @@ impl Lower<TypeId, Context<'_>> for ast::Type {
             ast::TypeKind::Tuple(ts)     => hir::TypeKind::Tuple(ts.lower(ctx)),
             ast::TypeKind::Struct(fs)    => hir::TypeKind::Struct(fs.lower(ctx)),
             ast::TypeKind::Map(t0, t1)   => hir::TypeKind::Map(t0.lower(ctx), t1.lower(ctx)),
-            ast::TypeKind::Task(t0, t1)  => hir::TypeKind::Task(t0.lower(ctx), t1.lower(ctx)),
             ast::TypeKind::Err           => hir::TypeKind::Err,
         };
         ctx.info.types.intern(kind)

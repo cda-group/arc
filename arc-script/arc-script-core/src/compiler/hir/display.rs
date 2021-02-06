@@ -426,7 +426,6 @@ impl<'i> Display for Pretty<'i, hir::Type, State<'_>> {
             hir::TypeKind::Tuple(tys)     => write!(f, "({})", tys.iter().all_pretty(", ", ctx)),
             hir::TypeKind::Optional(ty)   => write!(f, "{}?", ty.pretty(ctx)),
             hir::TypeKind::Fun(args, ty)  => write!(f, "fun({}) -> {}", args.all_pretty(", ", ctx), ty.pretty(ctx)),
-            hir::TypeKind::Task(ty0, ty1) => write!(f, "task({}) -> ({})", ty0.all_pretty(", ", ctx), ty1.all_pretty(", ", ctx)),
             hir::TypeKind::Err            => write!(f, "☇"),
             hir::TypeKind::Unknown        => write!(f, "?"),
         }

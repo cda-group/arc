@@ -485,7 +485,6 @@ Type<Kind>: Type = Spanned<Kind> => Type::from(<>);
 
 TypeKind0: TypeKind = {
     "fun" <ParenVec<Type0>> "->" <Box<Type0>>       => TypeKind::Fun(<>),
-    "task" <ParenVec<Type0>> "->" <ParenVec<Type0>> => TypeKind::Task(<>),
     "~" <Box<Type0>>                                => TypeKind::Stream(<>),
     TypeKind1,
 };

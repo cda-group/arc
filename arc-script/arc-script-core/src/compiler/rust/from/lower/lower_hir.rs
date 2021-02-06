@@ -271,7 +271,6 @@ impl Lower<syn::Type, Context<'_>> for hir::Type {
             hir::TypeKind::Set(t) => todo!(),
             hir::TypeKind::Stream(t) => todo!(),
             hir::TypeKind::Struct(fts) => todo!(),
-            hir::TypeKind::Task(ts0, ts1) => todo!(),
             hir::TypeKind::Tuple(ts) => {
                 let ts = ts.iter().map(|t| t.lower(ctx));
                 parse_quote!((#(#ts),*))

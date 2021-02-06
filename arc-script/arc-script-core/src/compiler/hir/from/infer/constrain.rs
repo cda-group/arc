@@ -62,9 +62,27 @@ impl Constrain<'_> for Task {
     fn constrain(&self, ctx: &mut Context) {
         self.on.body.constrain(ctx);
         let tvs = self.params.iter().map(|x| x.tv).collect();
-        let iptvs = self.itys.clone();
-        let optvs = self.otys.clone();
-        let ttv = ctx.info.types.intern(TypeKind::Task(iptvs, optvs));
+        let itvs = self
+            .itys
+            .iter()
+            .map(|tv| ctx.info.types.intern(TypeKind::Stream(*tv)))
+            .collect();
+        let otv = match self.otys.len() {
+            0 => ctx.info.types.intern(ScalarKind::Unit),
+            1 => {
+                let otv = *self.otys.iter().next().unwrap();
+                ctx.info.types.intern(TypeKind::Stream(otv))
+            }
+            _ => {
+                let otvs = self
+                    .otys
+                    .iter()
+                    .map(|tv| ctx.info.types.intern(TypeKind::Stream(*tv)))
+                    .collect();
+                ctx.info.types.intern(TypeKind::Tuple(otvs))
+            }
+        };
+        let ttv = ctx.info.types.intern(TypeKind::Fun(itvs, otv));
         ctx.unify(self.tv, TypeKind::Fun(tvs, ttv));
     }
 }
@@ -103,9 +121,7 @@ impl Constrain<'_> for Expr {
             ExprKind::Item(x) => {
                 match &ctx.defs.get(x).unwrap().kind {
                     ItemKind::Fun(item)   => ctx.unify(self.tv, item.tv),
-                    ItemKind::Task(item)  => {
-                        ctx.unify(self.tv, item.tv);
-                    },
+                    ItemKind::Task(item)  => ctx.unify(self.tv, item.tv),
                     ItemKind::State(item) => ctx.unify(self.tv, item.tv),
                     ItemKind::Extern(_)   => todo!(),
                     ItemKind::Alias(_)    => unreachable!(),
@@ -250,28 +266,8 @@ impl Constrain<'_> for Expr {
             ExprKind::Call(e, es) => {
                 e.constrain(ctx);
                 es.constrain(ctx);
-                match ctx.info.types.resolve(e.tv).kind {
-                    TypeKind::Fun(itvs, otv) => {
-                        let tvs = es.iter().map(|e| e.tv).collect();
-                        ctx.unify(e.tv, TypeKind::Fun(tvs, self.tv));
-                    }
-                    TypeKind::Task(itvs, otvs) => {
-                        for (e, tv) in es.iter().zip(itvs) {
-                            ctx.unify(e.tv, TypeKind::Stream(tv));
-                        }
-                        let otvs = otvs
-                            .iter()
-                            .map(|tv| ctx.info.types.intern(TypeKind::Stream(*tv)))
-                            .collect::<Vec<TypeId>>();
-                        if let [otv] = otvs[..] {
-                            ctx.unify(self.tv, otv);
-                        } else {
-                            ctx.unify(self.tv, TypeKind::Tuple(otvs))
-                        }
-                        //                         ctx.unify(e.tv, TypeKind::Task(tvs, vec![self.tv]));
-                    }
-                    _ => {}
-                }
+                let tvs = es.iter().map(|e| e.tv).collect();
+                ctx.unify(e.tv, TypeKind::Fun(tvs, self.tv));
             }
             ExprKind::Project(e, i) => {
                 e.constrain(ctx);

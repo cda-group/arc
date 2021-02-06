@@ -57,7 +57,6 @@ impl Equal<TypeId, TypeId> for Context<'_> {
             (Set(t0), Set(t1))                   => self.eq(t0, t1),
             (Stream(t0), Stream(t1))             => self.eq(t0, t1),
             (Struct(ft0), Struct(ft1))           => self.eq(ft0, ft1),
-            (Task(ts00, ts01), Task(ts10, ts11)) => self.eq(ts00, ts10) && self.eq(ts01, ts11),
             (Tuple(ts0), Tuple(ts1))             => self.eq(ts0, ts1),
             (Vector(t0), Vector(t1))             => self.eq(t0, t1),
             (Unknown, Unknown)                   => true,
