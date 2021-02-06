@@ -4,22 +4,54 @@ use crate::compiler::hir;
 use crate::compiler::hir::from::lower::resolve;
 use crate::compiler::info::diags::Error;
 use crate::compiler::info::files::Loc;
+use crate::compiler::shared::Lower;
+
+use resolve::DeclKind::*;
+use resolve::ItemDeclKind::*;
 
 /// A bare-path (which is not the operand of a call expression) can resolve into different things.
-pub(super) fn lower(path: &ast::Path, loc: Option<Loc>, ctx: &mut Context) -> hir::ExprKind {
+pub(super) fn lower_path_expr(
+    path: &ast::Path,
+    loc: Option<Loc>,
+    ctx: &mut Context,
+) -> hir::ExprKind {
     match ctx.res.resolve(path, ctx.info).unwrap() {
-        resolve::DeclKind::Item(x, kind) => match kind {
-            resolve::ItemDeclKind::Variant
-            | resolve::ItemDeclKind::Alias
-            | resolve::ItemDeclKind::Enum => {
+        Item(x, kind) => match kind {
+            Variant | Alias | Enum => {
                 ctx.info.diags.intern(Error::TypeInValuePosition { loc });
                 hir::ExprKind::Err
             }
-            resolve::ItemDeclKind::Fun
-            | resolve::ItemDeclKind::Task
-            | resolve::ItemDeclKind::Extern
-            | resolve::ItemDeclKind::State => hir::ExprKind::Item(x),
+            Fun | Task | Extern | State => hir::ExprKind::Item(x),
         },
-        resolve::DeclKind::Var(x) => hir::ExprKind::Var(x),
+        Var(x) => hir::ExprKind::Var(x),
+    }
+}
+
+pub(super) fn lower_is(path: &ast::Path, expr: &ast::Expr, ctx: &mut Context) -> hir::ExprKind {
+    lower_variant(path, ctx)
+        .map(|path| hir::ExprKind::Is(path, expr.lower(ctx).into()))
+        .unwrap_or(hir::ExprKind::Err)
+}
+
+pub(super) fn lower_unwrap(path: &ast::Path, expr: &ast::Expr, ctx: &mut Context) -> hir::ExprKind {
+    lower_variant(path, ctx)
+        .map(|path| hir::ExprKind::Unwrap(path, expr.lower(ctx).into()))
+        .unwrap_or(hir::ExprKind::Err)
+}
+
+pub(super) fn lower_enwrap(path: &ast::Path, expr: &ast::Expr, ctx: &mut Context) -> hir::ExprKind {
+    lower_variant(path, ctx)
+        .map(|path| hir::ExprKind::Enwrap(path, expr.lower(ctx).into()))
+        .unwrap_or(hir::ExprKind::Err)
+}
+
+pub(super) fn lower_variant(path: &ast::Path, ctx: &mut Context) -> Option<hir::Path> {
+    if let Item(x, Variant) = ctx.res.resolve(path, ctx.info).unwrap() {
+        Some(x)
+    } else {
+        ctx.info
+            .diags
+            .intern(Error::PathIsNotVariant { loc: path.loc });
+        None
     }
 }

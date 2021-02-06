@@ -463,7 +463,6 @@ fn test() {
     "};
     let file = 0;
     let mut names = NameInterner::default();
-    println!("{}", source);
     let mut lexer = Lexer::new(source, 0, &mut names);
 
     assert!(matches!(lexer.next(), Some((_, Token::If, _))));

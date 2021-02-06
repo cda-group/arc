@@ -1,4 +1,4 @@
-mod display;
+mod debug;
 mod stack;
 mod table;
 
@@ -55,7 +55,7 @@ impl Resolver {
         // Otherwise it might be stored in the symbol table
         let path = info.paths.join(self.path_id, path.id);
         let true_path = self.table.resolve(path);
-        Some(DeclKind::Item(true_path.into(), self.table.get(true_path)?))
+        Some(DeclKind::Item(true_path.into(), self.table.get_decl(true_path)?))
     }
 
     /// Pushes a namespace onto the path.

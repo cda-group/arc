@@ -51,7 +51,7 @@ where
             info.diags.emit(&info, Some(&hir), &mut f);
         }
         if info.mode.force_output {
-            writeln!(f, "{}", ast.pretty(&ast, &mut info))?;
+            writeln!(f, "{}", hir::pretty(&hir, &hir, &mut info))?;
         }
         return Ok(Report::new(info, Some(hir)));
     }

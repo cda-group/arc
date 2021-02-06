@@ -146,12 +146,14 @@ pub(crate) struct Task {
     ///     fun foo() { a + b }
     ///     on I(c) => emit Out(foo() + c)
     /// }
-    ///
-    //     pub(crate) constructor: Path,
-    /// Input ports to the task. TODO: Should be variants when Arcon supports it
-    pub(crate) iports: Vec<TypeId>,
-    /// Output ports of the task.
-    pub(crate) oports: Vec<TypeId>,
+    /// Input port-types to the task.
+    pub(crate) itys: Vec<TypeId>,
+    /// Output port-types of the task.
+    pub(crate) otys: Vec<TypeId>,
+    /// Input port-enum of the task.
+    pub(crate) ipath: Path,
+    /// Output port-enum of the task.
+    pub(crate) opath: Path,
     /// Event handler.
     pub(crate) on: On,
     /// Items of the task.
@@ -204,9 +206,10 @@ pub(crate) enum ExprKind {
     UnOp(UnOp, Box<Expr>),
     Var(Name),
     Enwrap(Path, Box<Expr>), // Construct a variant
-    Unwrap(Name, Box<Expr>), // Deconstruct a variant
-    Is(Name, Box<Expr>),     // Check a variant
+    Unwrap(Path, Box<Expr>), // Deconstruct a variant
+    Is(Path, Box<Expr>),     // Check a variant
     Return(Box<Expr>),
+    Todo,
     Err,
 }
 

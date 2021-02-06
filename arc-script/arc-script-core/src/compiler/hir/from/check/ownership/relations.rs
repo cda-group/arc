@@ -197,12 +197,23 @@ impl hir::Expr {
             hir::ExprKind::UnOp(_, e0) => e0.collect_use(b0, owner),
             hir::ExprKind::Enwrap(_, e0) => e0.collect_use(b0, owner),
             hir::ExprKind::Unwrap(_, e0) => e0.collect_use(b0, owner),
-            hir::ExprKind::Is(_, e0) => e0.collect_use(b0, owner),
             hir::ExprKind::Return(e0) => e0.collect_use(b0, owner),
             hir::ExprKind::Item(_) => {}
             hir::ExprKind::Lit(_) => {}
             hir::ExprKind::Break => {}
+            hir::ExprKind::Todo => {}
             hir::ExprKind::Err => {}
+            // NOTE: Ownership breaks for the following transformation:
+            // if let Some(x) = Some(y) {
+            //     ...
+            // }
+            // (Becomes)
+            // if is[Some](y) {
+            //     let x = unwrap[Some](y);
+            //     ...
+            // }
+            // Therefore, `is` is a by-reference expression
+            hir::ExprKind::Is(_, e0) => {},
         }
         None
     }

@@ -107,8 +107,7 @@ impl BigStep for Expr {
                 let v0 = e0.eval(ctx)?;
                 match v0.kind {
                     ValueKind::Variant(x1, v) => {
-                        let x1 = ctx.info.paths.resolve(x1.id);
-                        if x1.name == *x0 {
+                        if x1 == *x0 {
                             return Ok(*v);
                         } else {
                             return ControlFlow(Panic(self.loc))?;
@@ -121,8 +120,7 @@ impl BigStep for Expr {
                 let v0 = e0.eval(ctx)?;
                 match v0.kind {
                     ValueKind::Variant(x1, v) => {
-                        let x1 = ctx.info.paths.resolve(x1.id);
-                        if x1.name == *x0 {
+                        if x1 == *x0 {
                             ValueKind::Bool(true)
                         } else {
                             return ControlFlow(Panic(self.loc))?;
@@ -232,7 +230,7 @@ impl BigStep for Expr {
                     match &item.kind {
                         ItemKind::Task(item) => {
                             let streams = item
-                                .oports
+                                .otys
                                 .iter()
                                 .enumerate()
                                 .map(|(i, oport)| Value::new(Stream(target, i), *oport))
@@ -388,6 +386,7 @@ impl BigStep for Expr {
                     _ => unreachable!(),
                 }
             }
+            ExprKind::Todo => todo!(),
             ExprKind::Err => unreachable!(),
         };
         Ok(Value::new(kind, self.tv))

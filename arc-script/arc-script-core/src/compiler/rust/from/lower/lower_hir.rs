@@ -73,8 +73,8 @@ impl Lower<(), Context<'_>> for hir::Task {
                 #(#[ephemeral] pub #params),*
             }
         };
-        let ity = self.iports.first().unwrap().lower(ctx);
-        let oty = self.iports.first().unwrap().lower(ctx);
+        let ity = self.itys.first().unwrap().lower(ctx);
+        let oty = self.itys.first().unwrap().lower(ctx);
         let elem_id = self.on.param.kind.lower(ctx);
         let body = self.on.body.lower(ctx);
         let impl_item = syn::parse_quote! {
@@ -234,6 +234,7 @@ impl Lower<proc_macro2::TokenStream, Context<'_>> for hir::Expr {
             }
             hir::ExprKind::Return(e) => quote!(return;),
             hir::ExprKind::Break => quote!(break;),
+            hir::ExprKind::Todo => quote!(todo!()),
             hir::ExprKind::Err => unreachable!(),
         }
     }

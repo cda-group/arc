@@ -411,10 +411,10 @@ ExprKind12: ExprKind = {
     "loop" <Brace<Expr0>>                                               => ExprKind::Loop(<>),
     "break"                                                             => ExprKind::Break,
     "for" <Pat0> "in" <Expr0> <Brace<Expr0>>                            => ExprKind::For(<>),
-    "unwrap" <Brack<Name>> <Paren<Expr0>>                               => ExprKind::Unwrap(<>),
+    "unwrap" <Brack<Path>> <Paren<Expr0>>                               => ExprKind::Unwrap(<>),
     "enwrap" <Brack<Path>> <Paren<Expr0>>                               => ExprKind::Enwrap(<>),
-    "is" <Brack<Name>> <Paren<Expr0>>                                   => ExprKind::Is(<>),
-    "???"                                                               => ExprKind::Err,
+    "is" <Brack<Path>> <Paren<Expr0>>                                   => ExprKind::Is(<>),
+    "???"                                                               => ExprKind::Todo,
     Err                                                                 => ExprKind::Err,
 };
 
@@ -465,7 +465,7 @@ PatKind0: PatKind = {
 PatKind1: PatKind = {
     LitKind                  => PatKind::Val(<>),
     Name                     => PatKind::Var(<>),
-    Name Paren<Box<Pat0>>    => PatKind::Variant(<>),
+    Path Paren<Box<Pat0>>    => PatKind::Variant(<>),
     Paren<VecNonEmpty<Pat0>> => PatKind::Tuple(<>),
     Brace<Vec<FieldPat>>     => PatKind::Struct(<>),
     "_"                      => PatKind::Ignore,

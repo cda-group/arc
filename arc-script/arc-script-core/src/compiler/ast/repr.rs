@@ -225,8 +225,8 @@ pub enum ExprKind {
     Log(Expr),
     Loop(Expr),
     Reduce(Pat, Expr, ReduceKind),
-    Unwrap(Name, Expr),
-    Is(Name, Expr),
+    Unwrap(Path, Expr),
+    Is(Path, Expr),
     Enwrap(Path, Expr),
     Match(Expr, Vec<Case>),
     Path(Path),
@@ -235,6 +235,7 @@ pub enum ExprKind {
     Tuple(Vec<Expr>),
     UnOp(UnOp, Expr),
     Return(Option<Expr>),
+    Todo,
     Err,
 }
 
@@ -291,7 +292,7 @@ pub enum PatKind {
     Tuple(Vec<Pat>),
     Val(LitKind),
     Var(Name),
-    Variant(Name, Box<Pat>),
+    Variant(Path, Box<Pat>),
     Err,
 }
 

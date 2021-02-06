@@ -25,18 +25,3 @@ pub(super) fn lower(expr: &ast::Expr, args: &Vec<ast::Expr>, ctx: &mut Context) 
     // Since functions are values, they process it separately.
     hir::ExprKind::Call(expr.lower(ctx).into(), args.lower(ctx))
 }
-
-pub(super) fn lower_enwrap(
-    path: &ast::Path,
-    arg: &ast::Expr,
-    loc: Option<Loc>,
-    ctx: &mut Context,
-) -> hir::ExprKind {
-    let decl = ctx.res.resolve(path, ctx.info).unwrap();
-    if let resolve::DeclKind::Item(path, resolve::ItemDeclKind::Variant) = decl {
-        hir::ExprKind::Enwrap(path, arg.lower(ctx).into())
-    } else {
-        ctx.info.diags.intern(Error::TypeInValuePosition { loc });
-        hir::ExprKind::Err
-    }
-}

@@ -13,7 +13,9 @@ use std::io::Write;
 use std::str;
 
 use codespan_reporting::diagnostic::{self, Label};
-use codespan_reporting::term::termcolor::{Buffer, ColorChoice, StandardStream, WriteColor};
+use codespan_reporting::term::termcolor::{
+    Buffer, Color, ColorChoice, ColorSpec, StandardStream, WriteColor,
+};
 use codespan_reporting::term::{self, Config};
 
 type CodespanResult = std::result::Result<(), codespan_reporting::files::Error>;
@@ -183,6 +185,10 @@ impl DiagInterner {
     where
         W: Write + WriteColor,
     {
+        f.set_color(ColorSpec::new().set_fg(Some(Color::Red)));
+        writeln!(f, "[-- Found {} errors --],", self.len())?;
+        f.reset();
+
         let files = &info.files.store;
         let config = &Config::default();
         let ctx = &Context { info, hir };

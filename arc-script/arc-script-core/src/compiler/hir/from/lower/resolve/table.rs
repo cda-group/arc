@@ -41,7 +41,7 @@ impl SymbolTable {
         for (path, module) in &ast.modules {
             module.declare(*path, &mut table, info);
         }
-        tracing::debug!("{}", table.display(info));
+        tracing::debug!("{}", table.debug(info));
         table
     }
 }
@@ -77,7 +77,7 @@ impl SymbolTable {
         }
     }
     /// Returns the declaration kind of a path.
-    pub(crate) fn get(&mut self, path: PathId) -> Option<ItemDeclKind> {
+    pub(crate) fn get_decl(&mut self, path: PathId) -> Option<ItemDeclKind> {
         let real = self.imports.get(&path).unwrap_or(&path);
         self.declarations.get(real).cloned()
     }
@@ -182,14 +182,34 @@ impl Declare for ast::Task {
             for item in &self.items {
                 item.declare(path, table, info);
             }
+            let ipath = generate_port_enum("Source", &self.iports, path, table, info);
+            let opath = generate_port_enum("Sink", &self.oports, path, table, info);
             for variant in &self.iports {
-                variant.declare(path, table, info)
+                variant.declare(ipath, table, info);
             }
             for variant in &self.oports {
-                variant.declare(path, table, info)
+                variant.declare(opath, table, info);
             }
         }
     }
+}
+
+fn generate_port_enum(
+    name: &str,
+    ports: &[ast::Variant],
+    path: PathId,
+    table: &mut SymbolTable,
+    info: &mut Info,
+) -> PathId {
+    let enum_name = info.names.intern(name).into();
+    let enum_path = info.paths.intern_child(path, enum_name);
+    table.declarations.insert(enum_path, ItemDeclKind::Enum);
+    for variant in ports {
+        let alias_path = info.paths.intern_child(path, variant.name);
+        let port_path = info.paths.intern_child(enum_path, variant.name);
+        table.imports.insert(alias_path, port_path);
+    }
+    enum_path
 }
 
 impl Declare for ast::Use {

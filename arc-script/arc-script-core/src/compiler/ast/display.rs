@@ -300,6 +300,7 @@ impl<'i> Display for Pretty<'i, ast::Expr, State<'_>> {
             ast::ExprKind::Err => write!(f, "☇"),
             ast::ExprKind::Return(Some(e)) => write!(f, "return {};;", e.pretty(ctx)),
             ast::ExprKind::Return(None) => write!(f, "return;;"),
+            ast::ExprKind::Todo => write!(f, "???"),
         }?;
         Ok(())
     }
@@ -447,7 +448,7 @@ impl<'i> Display for Pretty<'i, ast::Type, State<'_>> {
             ast::TypeKind::Tuple(tys)          => write!(f, "({})", tys.iter().all_pretty(", ", ctx)),
             ast::TypeKind::Optional(ty)        => write!(f, "{}?", ty.pretty(ctx)),
             ast::TypeKind::Fun(args, ty)       => write!(f, "fun({}) -> {}", args.all_pretty(", ", ctx), ty.pretty(ctx)),
-            ast::TypeKind::Task(ty0, ty1)      => write!(f, "({}) => ({})", ty0.all_pretty(", ", ctx), ty1.all_pretty(", ", ctx)),
+            ast::TypeKind::Task(ty0, ty1)      => write!(f, "task({}) -> ({})", ty0.all_pretty(", ", ctx), ty1.all_pretty(", ", ctx)),
             ast::TypeKind::Err                 => write!(f, "☇"),
         }
     }
