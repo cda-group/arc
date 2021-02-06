@@ -213,7 +213,7 @@ impl hir::Expr {
             //     ...
             // }
             // Therefore, `is` is a by-reference expression
-            hir::ExprKind::Is(_, e0) => {},
+            hir::ExprKind::Is(_, e0) => {}
         }
         None
     }

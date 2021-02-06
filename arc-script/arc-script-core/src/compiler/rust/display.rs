@@ -6,6 +6,7 @@ use crate::compiler::shared::New;
 
 use quote::quote;
 
+use cfg_if::cfg_if;
 use std::fmt::Write as FmtWrite;
 use std::fmt::{self, Display, Formatter};
 use std::fs;
@@ -14,7 +15,6 @@ use std::io::BufRead;
 use std::io::Write;
 use std::path::Path;
 use std::process::Command;
-use cfg_if::cfg_if;
 
 #[derive(New, From, Copy, Clone)]
 pub(crate) struct Stateless;

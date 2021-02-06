@@ -93,20 +93,16 @@ from_tuple!(x0, x1, x2, x3, x4);
 from_tuple!(x0, x1, x2, x3, x4, x5);
 from_tuple!(x0, x1, x2, x3, x4, x5, x6);
 from_tuple!(x0, x1, x2, x3, x4, x5, x6, x7);
-from_tuple!(x0, x1, x2, x3, x4, x5, x6, x7, x8);
-from_tuple!(x0, x1, x2, x3, x4, x5, x6, x7, x8, x9);
 
 use Field as F;
-from_struct!(x0:F);
-from_struct!(x0:F, x1:F);
-from_struct!(x0:F, x1:F, x2:F);
-from_struct!(x0:F, x1:F, x2:F, x3:F);
-from_struct!(x0:F, x1:F, x2:F, x3:F, x4:F);
-from_struct!(x0:F, x1:F, x2:F, x3:F, x4:F, x5:F);
-from_struct!(x0:F, x1:F, x2:F, x3:F, x4:F, x5:F, x6:F);
-from_struct!(x0:F, x1:F, x2:F, x3:F, x4:F, x5:F, x6:F, x7:F);
-from_struct!(x0:F, x1:F, x2:F, x3:F, x4:F, x5:F, x6:F, x7:F, x8:F);
-from_struct!(x0:F, x1:F, x2:F, x3:F, x4:F, x5:F, x6:F, x7:F, x8:F, x9:F);
+from_struct!(x0: F);
+from_struct!(x0: F, x1: F);
+from_struct!(x0: F, x1: F, x2: F);
+from_struct!(x0: F, x1: F, x2: F, x3: F);
+from_struct!(x0: F, x1: F, x2: F, x3: F, x4: F);
+from_struct!(x0: F, x1: F, x2: F, x3: F, x4: F, x5: F);
+from_struct!(x0: F, x1: F, x2: F, x3: F, x4: F, x5: F, x6: F);
+from_struct!(x0: F, x1: F, x2: F, x3: F, x4: F, x5: F, x6: F, x7: F);
 
 impl From<&'_ str> for Value {
     fn from(s: &'_ str) -> Self {
@@ -143,4 +139,3 @@ impl Field {
         }
     }
 }
-
