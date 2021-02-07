@@ -146,18 +146,27 @@ pub(crate) struct Task {
     ///     fun foo() { a + b }
     ///     on I(c) => emit Out(foo() + c)
     /// }
-    /// Input port-types to the task.
-    pub(crate) itys: Vec<TypeId>,
-    /// Output port-types of the task.
-    pub(crate) otys: Vec<TypeId>,
-    /// Input port-enum of the task.
-    pub(crate) ipath: Path,
-    /// Output port-enum of the task.
-    pub(crate) opath: Path,
+    /// Input hub to the task.
+    pub(crate) ihub: Hub,
+    /// Input hub to the task.
+    pub(crate) ohub: Hub,
     /// Event handler.
     pub(crate) on: On,
     /// Items of the task.
     pub(crate) items: Vec<Path>,
+}
+
+#[derive(Debug, New, Spanned)]
+pub(crate) struct Hub {
+    pub(crate) tv: TypeId,
+    pub(crate) kind: HubKind,
+    pub(crate) loc: Option<Loc>,
+}
+
+#[derive(Debug)]
+pub(crate) enum HubKind {
+    Tagged(Path),
+    Single(TypeId),
 }
 
 #[derive(New, Spanned, Debug)]

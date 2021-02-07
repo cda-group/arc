@@ -51,39 +51,52 @@ impl Constrain<'_> for Fun {
 }
 
 impl Constrain<'_> for Task {
-    /// A task definition's type is a function which takes the task's parameters
-    /// and returns a task object. The task object is both a function which takes
-    /// a list of input streams and returns a list of output streams. It is also
-    /// an object
-    ///
-    /// This works well with the idea that tasks which contain patterns in their
-    /// parameters are lifted into functions which deconstruct those patterns and
-    /// construct the task.
+    /// On the outside, a task is nothing more than a function which returns a function.
     fn constrain(&self, ctx: &mut Context) {
         self.on.body.constrain(ctx);
         let tvs = self.params.iter().map(|x| x.tv).collect();
-        let itvs = self
-            .itys
-            .iter()
-            .map(|tv| ctx.info.types.intern(TypeKind::Stream(*tv)))
-            .collect();
-        let otv = match self.otys.len() {
+        let itvs = self.ihub.constrain(ctx);
+        ctx.unify(self.on.param.tv, self.ihub.tv);
+        let otvs = self.ohub.constrain(ctx);
+        let otv = match otvs.len() {
             0 => ctx.info.types.intern(ScalarKind::Unit),
-            1 => {
-                let otv = *self.otys.iter().next().unwrap();
-                ctx.info.types.intern(TypeKind::Stream(otv))
-            }
-            _ => {
-                let otvs = self
-                    .otys
-                    .iter()
-                    .map(|tv| ctx.info.types.intern(TypeKind::Stream(*tv)))
-                    .collect();
-                ctx.info.types.intern(TypeKind::Tuple(otvs))
-            }
+            1 => *otvs.iter().next().unwrap(),
+            _ => ctx.info.types.intern(TypeKind::Tuple(otvs)),
         };
         let ttv = ctx.info.types.intern(TypeKind::Fun(itvs, otv));
         ctx.unify(self.tv, TypeKind::Fun(tvs, ttv));
+    }
+}
+
+impl hir::Hub {
+    /// Constrains the internal port types of a hub and returns the external port types
+    fn constrain(&self, ctx: &mut Context) -> Vec<TypeId> {
+        match &self.kind {
+            hir::HubKind::Tagged(x) => {
+                let item = ctx.defs.get(x).unwrap();
+                let tvs = if let hir::ItemKind::Enum(item) = &item.kind {
+                    item.variants
+                        .iter()
+                        .map(|x| {
+                            let item = ctx.defs.get(x).unwrap();
+                            if let hir::ItemKind::Variant(v) = &item.kind {
+                                ctx.info.types.intern(hir::TypeKind::Stream(v.tv))
+                            } else {
+                                unreachable!()
+                            }
+                        })
+                        .collect::<Vec<_>>()
+                } else {
+                    unreachable!()
+                };
+                ctx.unify(self.tv, TypeKind::Nominal(*x));
+                tvs
+            }
+            hir::HubKind::Single(tv) => {
+                ctx.unify(self.tv, *tv);
+                vec![ctx.info.types.intern(TypeKind::Stream(*tv))]
+            }
+        }
     }
 }
 

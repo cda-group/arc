@@ -9,7 +9,7 @@ pub(crate) struct PathDebug<'a> {
 }
 
 impl PathId {
-    fn debug<'a>(&'a self, info: &'a Info) -> PathDebug<'a> {
+    pub(crate) fn debug<'a>(&'a self, info: &'a Info) -> PathDebug<'a> {
         PathDebug { path: self, info }
     }
 }

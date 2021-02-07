@@ -227,17 +227,35 @@ impl BigStep for Expr {
                         }
                     }
                     let item = ctx.hir.defs.get(&x).unwrap();
-                    match &item.kind {
-                        ItemKind::Task(item) => {
-                            let streams = item
-                                .otys
-                                .iter()
-                                .enumerate()
-                                .map(|(i, oport)| Value::new(Stream(target, i), *oport))
-                                .collect();
-                            Tuple(streams)
+                    if let ItemKind::Task(item) = &item.kind {
+                        match item.ohub.kind {
+                            hir::HubKind::Tagged(x) => {
+                                let item = ctx.hir.defs.get(&x).unwrap();
+                                if let ItemKind::Enum(item) = &item.kind {
+                                    let streams = item
+                                        .variants
+                                        .iter()
+                                        .enumerate()
+                                        .map(|(i, x)| {
+                                            let item = ctx.hir.defs.get(x).unwrap();
+                                            if let ItemKind::Variant(item) = &item.kind {
+                                                Value::new(Stream(target, i), item.tv)
+                                            } else {
+                                                unreachable!()
+                                            }
+                                        })
+                                        .collect::<Vec<_>>();
+                                    Tuple(streams)
+                                } else {
+                                    unreachable!()
+                                }
+                            }
+                            hir::HubKind::Single(tv) => {
+                                return Ok(Value::new(Stream(target, 0), tv))
+                            }
                         }
-                        _ => unreachable!(),
+                    } else {
+                        unreachable!()
                     }
                 }
                 _ => unreachable!(),

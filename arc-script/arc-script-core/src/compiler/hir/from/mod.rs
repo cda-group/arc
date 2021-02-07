@@ -8,6 +8,7 @@ pub(crate) mod lower;
 pub(crate) mod transform;
 
 use crate::compiler::ast::AST;
+use crate::compiler::hir;
 use crate::compiler::hir::HIR;
 use crate::compiler::info::Info;
 use crate::compiler::shared::Lower;
@@ -19,6 +20,8 @@ use crate::compiler::shared::Lower;
 impl HIR {
     pub(crate) fn from(ast: &AST, info: &mut Info) -> HIR {
         let mut hir = ast.lower(info);
+        tracing::debug!("{}", hir::pretty(&hir, &hir, info));
+        tracing::debug!("{}", hir.debug(info));
         hir.infer(info);
         hir.check(info);
         hir

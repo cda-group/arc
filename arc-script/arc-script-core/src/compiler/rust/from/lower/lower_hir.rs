@@ -73,8 +73,16 @@ impl Lower<(), Context<'_>> for hir::Task {
                 #(#[ephemeral] pub #params),*
             }
         };
-        let ity = self.itys.first().unwrap().lower(ctx);
-        let oty = self.itys.first().unwrap().lower(ctx);
+        let ity = if let hir::HubKind::Single(ity) = &self.ihub.kind {
+            ity.lower(ctx)
+        } else {
+            todo!();
+        };
+        let oty = if let hir::HubKind::Single(oty) = &self.ohub.kind {
+            oty.lower(ctx)
+        } else {
+            todo!();
+        };
         let elem_id = self.on.param.kind.lower(ctx);
         let body = self.on.body.lower(ctx);
         let impl_item = syn::parse_quote! {

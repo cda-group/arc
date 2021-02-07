@@ -9,7 +9,7 @@ pub(crate) struct NameDebug<'a> {
 }
 
 impl NameId {
-    fn debug<'a>(&'a self, info: &'a Info) -> NameDebug<'a> {
+    pub(crate) fn debug<'a>(&'a self, info: &'a Info) -> NameDebug<'a> {
         NameDebug { name: self, info }
     }
 }

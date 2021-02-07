@@ -123,17 +123,31 @@ impl<'i> Display for Pretty<'i, ast::Task, State<'_>> {
         let Pretty(item, ctx) = self;
         write!(
             f,
-            "task {name}({params}) ({iports}) -> ({oports}) {{{items}{s0}}}",
+            "task {name}({params}) ({ihub}) -> ({ohub}) {{{items}{s0}}}",
             name = item.name.pretty(ctx),
             params = item.params.iter().all_pretty(",", ctx),
-            iports = item.iports.iter().all_pretty(",", ctx),
-            oports = item.oports.iter().all_pretty(",", ctx),
+            ihub = item.ihub.pretty(ctx),
+            ohub = item.ohub.pretty(ctx),
             items = item.items.iter().map_pretty(
                 |i, f| write!(f, "{s0}{}", i.pretty(ctx.indent()), s0 = ctx.indent()),
                 ""
             ),
             s0 = ctx,
         )
+    }
+}
+
+impl<'i> Display for Pretty<'i, ast::Hub, State<'_>> {
+    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
+        let Pretty(item, ctx) = self;
+        match &item.kind {
+            ast::HubKind::Tagged(vs) => {
+                write!(f, "<{}>", vs.iter().all_pretty(", ", ctx))
+            }
+            ast::HubKind::Single(t) => {
+                write!(f, "{}", t.pretty(ctx))
+            }
+        }
     }
 }
 

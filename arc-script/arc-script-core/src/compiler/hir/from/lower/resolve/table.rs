@@ -182,34 +182,30 @@ impl Declare for ast::Task {
             for item in &self.items {
                 item.declare(path, table, info);
             }
-            let ipath = generate_port_enum("Source", &self.iports, path, table, info);
-            let opath = generate_port_enum("Sink", &self.oports, path, table, info);
-            for variant in &self.iports {
-                variant.declare(ipath, table, info);
-            }
-            for variant in &self.oports {
-                variant.declare(opath, table, info);
-            }
+            self.ihub.declare("Source", path, table, info);
+            self.ohub.declare("Sink", path, table, info);
         }
     }
 }
 
-fn generate_port_enum(
-    name: &str,
-    ports: &[ast::Variant],
-    path: PathId,
-    table: &mut SymbolTable,
-    info: &mut Info,
-) -> PathId {
-    let enum_name = info.names.intern(name).into();
-    let enum_path = info.paths.intern_child(path, enum_name);
-    table.declarations.insert(enum_path, ItemDeclKind::Enum);
-    for variant in ports {
-        let alias_path = info.paths.intern_child(path, variant.name);
-        let port_path = info.paths.intern_child(enum_path, variant.name);
-        table.imports.insert(alias_path, port_path);
+impl ast::Hub {
+    fn declare(&self, name: &str, path: PathId, table: &mut SymbolTable, info: &mut Info) {
+        match &self.kind {
+            ast::HubKind::Tagged(ports) => {
+                // Declare the enum of a tagged hub
+                let hub_name = info.names.intern(name).into();
+                let hub_path = info.paths.intern_child(path, hub_name);
+                table.declarations.insert(hub_path, ItemDeclKind::Enum);
+                for variant in ports {
+                    let alias_path = info.paths.intern_child(path, variant.name);
+                    let port_path = info.paths.intern_child(hub_path, variant.name);
+                    table.imports.insert(alias_path, port_path);
+                    variant.declare(hub_path, table, info);
+                }
+            }
+            ast::HubKind::Single(_) => {}
+        }
     }
-    enum_path
 }
 
 impl Declare for ast::Use {

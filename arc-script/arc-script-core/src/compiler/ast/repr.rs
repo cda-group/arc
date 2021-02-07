@@ -115,9 +115,23 @@ pub enum TaskItemKind {
 pub struct Task {
     pub name: Name,
     pub params: Vec<Param>,
-    pub iports: Vec<Variant>,
-    pub oports: Vec<Variant>,
+    pub ihub: Hub,
+    pub ohub: Hub,
     pub items: Vec<TaskItem>,
+}
+
+/// A hub of a task.
+#[derive(Debug, New, Spanned)]
+pub struct Hub {
+    pub kind: HubKind,
+    pub loc: Option<Loc>,
+}
+
+/// A kind of hub.
+#[derive(Debug)]
+pub enum HubKind {
+    Tagged(Vec<Variant>),
+    Single(Type),
 }
 
 /// A function.

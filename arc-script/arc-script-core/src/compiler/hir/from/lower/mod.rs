@@ -159,37 +159,12 @@ impl Lower<(Path, hir::ItemKind), Context<'_>> for ast::Task {
             ctx.hir.defs.insert(fun_path, item);
             ctx.hir.items.push(fun_path);
         }
-        // Generate port enums
-        let path_id = ctx.res.path_id;
-        let iname = ctx.info.names.intern("Source").into();
-        let oname = ctx.info.names.intern("Sink").into();
-        let ipath: Path = ctx.info.paths.intern_child(ctx.res.path_id, iname).into();
-        let opath: Path = ctx.info.paths.intern_child(ctx.res.path_id, oname).into();
-        ctx.res.path_id = ipath.id;
-        let iports = self.iports.iter().map(|v| v.lower(ctx)).collect();
-        ctx.res.path_id = opath.id;
-        let oports = self.oports.iter().map(|v| v.lower(ctx)).collect();
-        ctx.res.path_id = path_id;
-        let ienum = hir::Enum::new(iname, iports);
-        let oenum = hir::Enum::new(oname, oports);
-        let iitem = hir::Item::syn(hir::ItemKind::Enum(ienum));
-        let oitem = hir::Item::syn(hir::ItemKind::Enum(oenum));
-        ctx.hir.defs.insert(ipath, iitem);
-        ctx.hir.defs.insert(opath, oitem);
+        // NOTE: These names need to match those which are declared
+        let ihub = self.ihub.lower("Source", ctx);
+        let ohub = self.ohub.lower("Sink", ctx);
 
-        // Get port types
-        let itys = self
-            .iports
-            .iter()
-            .map(|p| p.ty.as_ref().unwrap().lower(ctx))
-            .collect();
-        let otys = self
-            .iports
-            .iter()
-            .map(|p| p.ty.as_ref().unwrap().lower(ctx))
-            .collect();
         // TODO: Handle error when there is no handler
-        let handler = self
+        let on = self
             .items
             .iter()
             .filter_map(|item| {
@@ -212,15 +187,39 @@ impl Lower<(Path, hir::ItemKind), Context<'_>> for ast::Task {
         let task = hir::Task {
             name: self.name,
             tv,
+            ihub,
+            ohub,
             params: task_params,
-            itys,
-            otys,
-            ipath,
-            opath,
-            on: handler,
+            on,
             items,
         };
         (task_path.into(), hir::ItemKind::Task(task))
+    }
+}
+
+impl ast::Hub {
+    fn lower(&self, name: &str, ctx: &mut Context<'_>) -> hir::Hub {
+        tracing::trace!("Lowering Hub");
+        let kind = match &self.kind {
+            ast::HubKind::Tagged(vs) => {
+                // Construct enum for ports
+                let task_path = ctx.res.path_id;
+                let hub_name = ctx.info.names.intern(name).into();
+                let hub_path: Path = ctx.info.paths.intern_child(task_path, hub_name).into();
+                ctx.res.path_id = hub_path.id;
+                let ports = vs.iter().map(|v| v.lower(ctx)).collect::<Vec<_>>();
+                let hub_item = hir::Item::syn(hir::ItemKind::Enum(hir::Enum::new(hub_name, ports)));
+                ctx.hir.defs.insert(hub_path, hub_item);
+                ctx.res.path_id = task_path;
+                hir::HubKind::Tagged(hub_path)
+            }
+            ast::HubKind::Single(ty) => hir::HubKind::Single(ty.lower(ctx)),
+        };
+        hir::Hub {
+            tv: ctx.info.types.fresh(),
+            kind,
+            loc: self.loc,
+        }
     }
 }
 

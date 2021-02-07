@@ -1,4 +1,4 @@
-task Identity() (Input(i32)) -> (Output(i32)) {
+task Identity() <Input(i32)> -> <Output(i32)> {
     on Input(event) => emit Output(event)
 }
 

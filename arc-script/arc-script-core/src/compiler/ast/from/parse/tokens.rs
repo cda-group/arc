@@ -46,6 +46,7 @@ pub(crate) enum LogosToken {
     #[token("=>")] Imply,
     #[token("<=")] Leq,
     #[token("<")] Lt,
+    #[token("<>")] LtGt,
     #[token("-")] Minus,
     #[token("!=")] Neq,
     #[token("%")] Percent,

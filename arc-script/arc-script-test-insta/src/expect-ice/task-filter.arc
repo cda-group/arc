@@ -1,7 +1,9 @@
-task Filter(p: fun(i32) -> bool) (Input(i32)) -> (Output(i32)) {
+task Filter(p: fun(i32) -> bool) <Input(i32)> -> <Output(i32)> {
     on Input(event) => {
         if p(event) {
             emit Output(event)
+        } else {
+            ()
         }
     }
 }

@@ -148,31 +148,13 @@ impl<'i> Display for Pretty<'i, TypeId, State<'_>> {
 impl<'i> Display for Pretty<'i, hir::Task, State<'_>> {
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
         let Pretty(item, ctx) = self;
-        let ienum = ctx.state.hir.defs.get(&item.ipath).unwrap();
-        let iports = if let hir::ItemKind::Enum(item) = &ienum.kind {
-            &item.variants
-        } else {
-            unreachable!()
-        };
-        let oenum = ctx.state.hir.defs.get(&item.opath).unwrap();
-        let oports = if let hir::ItemKind::Enum(item) = &oenum.kind {
-            &item.variants
-        } else {
-            unreachable!()
-        };
         write!(
             f,
-            "task {name}({params}) ({iports}) -> ({oports}) {{{items}{s1}{on}{s0}}}",
+            "task {name}({params}) {ihub} -> {ohub} {{{items}{s1}{on}{s0}}}",
             name = item.name.pretty(ctx),
             params = item.params.iter().all_pretty(", ", ctx),
-            iports = iports.iter().map_pretty(
-                |p, f| write!(f, "{}", ctx.state.hir.defs.get(p).unwrap().pretty(ctx)),
-                ", "
-            ),
-            oports = oports.iter().map_pretty(
-                |p, f| write!(f, "{}", ctx.state.hir.defs.get(p).unwrap().pretty(ctx)),
-                ", "
-            ),
+            ihub = item.ihub.pretty(ctx),
+            ohub = item.ohub.pretty(ctx),
             items = item.items.iter().map_pretty(
                 |x, f| write!(
                     f,
@@ -186,6 +168,30 @@ impl<'i> Display for Pretty<'i, hir::Task, State<'_>> {
             s0 = ctx,
             s1 = ctx.indent(),
         )
+    }
+}
+
+impl<'i> Display for Pretty<'i, hir::Hub, State<'_>> {
+    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
+        let Pretty(item, ctx) = self;
+        match item.kind {
+            hir::HubKind::Tagged(x) => {
+                let item = ctx.state.hir.defs.get(&x).unwrap();
+                if let hir::ItemKind::Enum(item) = &item.kind {
+                    write!(
+                        f,
+                        "<{}>",
+                        item.variants.iter().map_pretty(
+                            |v, f| write!(f, "{}", ctx.state.hir.defs.get(v).unwrap().pretty(ctx)),
+                            ", "
+                        )
+                    )
+                } else {
+                    unreachable!()
+                }
+            }
+            hir::HubKind::Single(tv) => write!(f, "{}", tv.pretty(ctx)),
+        }
     }
 }
 
