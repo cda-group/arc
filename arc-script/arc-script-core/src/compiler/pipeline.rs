@@ -18,10 +18,9 @@ where
     //     better_panic::install();
     tracing::debug!("{:?}", mode);
 
-    let mut info = Info::from(mode);
+    let mut info = tracing::info_span!("Mode => Info").in_scope(|| Info::from(mode));
 
-    tracing::debug!("Parsing AST...");
-    let mut ast = AST::from(&mut info);
+    let mut ast = tracing::debug_span!("Code => AST").in_scope(|| AST::from(&mut info));
     tracing::debug!("{}", info);
     tracing::debug!("{}", ast.debug(&info));
 
@@ -41,9 +40,8 @@ where
     }
 
     tracing::debug!("{}", info);
-    tracing::debug!("Lowering AST to HIR...");
 
-    let mut hir = HIR::from(&ast, &mut info);
+    let mut hir = tracing::debug_span!("AST => HIR").in_scope(|| HIR::from(&ast, &mut info));
     tracing::trace!("{}", hir.debug(&info));
 
     if !info.diags.is_empty() {
@@ -61,11 +59,12 @@ where
         return Ok(Report::new(info, Some(hir)));
     }
 
-    tracing::debug!("Lowering HIR to DFG...");
     // Lower HIR into DFG
-    let dfg = DFG::from(&hir, &mut info).unwrap_or_else(|diags| {
-        diags.emit(&info, Some(&hir), &mut f);
-        std::process::exit(-1);
+    let dfg = tracing::debug_span!("HIR => DFG").in_scope(|| {
+        DFG::from(&hir, &mut info).unwrap_or_else(|diags| {
+            diags.emit(&info, Some(&hir), &mut f);
+            std::process::exit(-1);
+        })
     });
 
     if matches!(info.mode.output, Output::DFG) {
@@ -74,18 +73,18 @@ where
     }
 
     if matches!(info.mode.output, Output::Rust) {
-        tracing::debug!("Lowering HIR and DFG into Rust...");
         // Lower HIR and DFG into Rust
-        let rust = Rust::from(&hir, &dfg, &info);
+        let rust =
+            tracing::debug_span!("HIR & DFG => Rust").in_scope(|| Rust::from(&hir, &dfg, &info));
 
         writeln!(f, "{}", rust::pretty(&rust))?;
         return Ok(Report::new(info, Some(hir)));
     }
 
     if matches!(info.mode.output, Output::MLIR) {
-        tracing::debug!("Lowering HIR and DFG into MLIR...");
         // Lower HIR and DFG into MLIR
-        let mlir = MLIR::from(&hir, dfg, &mut info);
+        let mlir =
+            tracing::debug_span!("HIR & DFG => MLIR").in_scope(|| MLIR::from(&hir, dfg, &mut info));
 
         writeln!(f, "{}", mlir::pretty(&mlir, &mut info))?;
         return Ok(Report::new(info, Some(hir)));
