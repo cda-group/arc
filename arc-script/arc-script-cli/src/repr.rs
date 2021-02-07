@@ -13,6 +13,10 @@ pub struct Opt {
     #[clap(short, long)]
     pub debug: bool,
 
+    /// Activate PROFILING mode.
+    #[clap(short, long)]
+    pub profile: bool,
+
     /// Fail after the first pass which produces an error.
     #[clap(long)]
     pub fail_fast: bool,

@@ -2,6 +2,7 @@
 #[derive(Debug, Clone, Default)]
 pub struct Mode {
     pub debug: bool,
+    pub profile: bool,
     pub verbosity: i32,
     pub suppress_diags: bool,
     pub fail_fast: bool,

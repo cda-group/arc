@@ -32,6 +32,7 @@ impl From<Opt> for Result<Mode> {
                 ..Default::default()
             },
         };
+        mode.profile = opt.profile;
         mode.verbosity = opt.verbosity;
         mode.debug = opt.debug;
         mode.fail_fast = opt.fail_fast;
