@@ -206,11 +206,12 @@ impl ast::Hub {
                 let task_path = ctx.res.path_id;
                 let hub_name = ctx.info.names.intern(name).into();
                 let hub_path: Path = ctx.info.paths.intern_child(task_path, hub_name).into();
-                ctx.res.path_id = hub_path.id;
-                let ports = vs.iter().map(|v| v.lower(ctx)).collect::<Vec<_>>();
+                let ports = vs
+                    .iter()
+                    .map(|v| v.lower(hub_path.id, ctx))
+                    .collect::<Vec<_>>();
                 let hub_item = hir::Item::syn(hir::ItemKind::Enum(hir::Enum::new(hub_name, ports)));
                 ctx.hir.defs.insert(hub_path, hub_item);
-                ctx.res.path_id = task_path;
                 hir::HubKind::Tagged(hub_path)
             }
             ast::HubKind::Single(ty) => hir::HubKind::Single(ty.lower(ctx)),
@@ -278,28 +279,26 @@ impl Lower<(Path, hir::ItemKind), Context<'_>> for ast::Enum {
     fn lower(&self, ctx: &mut Context) -> (Path, hir::ItemKind) {
         let path = ctx.res.path_id;
         let enum_path = ctx.info.paths.intern_child(ctx.res.path_id, self.name);
-        ctx.res.path_id = enum_path;
-        let variants = self.variants.lower(ctx);
-        ctx.res.path_id = path;
+        let variants = self
+            .variants
+            .iter()
+            .map(|v| v.lower(enum_path, ctx))
+            .collect::<Vec<_>>();
         let item = hir::Enum::new(self.name, variants);
         (enum_path.into(), hir::ItemKind::Enum(item))
     }
 }
 
-impl Lower<Path, Context<'_>> for ast::Variant {
-    fn lower(&self, ctx: &mut Context) -> Path {
-        let path: Path = ctx
-            .info
-            .paths
-            .intern_child(ctx.res.path_id, self.name)
-            .into();
+impl ast::Variant {
+    fn lower(&self, enum_path: hir::PathId, ctx: &mut Context) -> Path {
+        let path: Path = ctx.info.paths.intern_child(enum_path, self.name).into();
         let item = hir::Variant::new(
             self.name,
             self.ty
                 .as_ref()
                 .map(|ty| ty.lower(ctx))
                 .unwrap_or_else(|| ctx.info.types.intern(hir::ScalarKind::Unit)),
-            self.loc.into(),
+            self.loc,
         );
         ctx.hir
             .defs

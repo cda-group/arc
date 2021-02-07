@@ -275,19 +275,23 @@ fn ssa(
         ///   }
         ast::PatKind::Variant(x, p) if branching => {
             if let Some(x) = path::lower_variant(x, ctx) {
-                let x0 = ctx.info.names.fresh();
-                cases.push(Case::Bind {
-                    param: Param::syn(ParamKind::Var(x0), t0),
-                    expr: e0,
-                });
-                let v0 = Expr::syn(ExprKind::Var(x0), t0);
+                let v0 = if let ExprKind::Var(_) = e0.kind {
+                    e0
+                } else {
+                    let x0 = ctx.info.names.fresh();
+                    cases.push(Case::Bind {
+                        param: Param::syn(ParamKind::Var(x0), t0),
+                        expr: e0,
+                    });
+                    Expr::syn(ExprKind::Var(x0), t0)
+                };
                 cases.push(Case::Guard {
                     cond: Expr::syn(ExprKind::Is(x, v0.clone().into()), ctx.info.types.fresh()),
                 });
                 let x1 = ctx.info.names.fresh();
                 let t = ctx.info.types.fresh();
                 let e = Expr::syn(ExprKind::Unwrap(x, v0.into()), t);
-                ssa(p, e, t, false, ctx, cases);
+                ssa(p, e, t, branching, ctx, cases);
             }
         }
         _ => ctx
