@@ -30,6 +30,7 @@ impl<'i> Display for Pretty<'i, rust::Rust, Stateless> {
             if #[cfg(not(target_arch = "wasm32"))] {
                 write!(f, "{}", rustfmt(rs).unwrap())?;
             } else {
+                write!(f, "use arcon::prelude::*;");
                 rs.items
                     .iter()
                     .try_for_each(|item| write!(f, "{}", quote!(#item)))?;
@@ -44,6 +45,7 @@ fn rustfmt(rs: &rust::Rust) -> io::Result<String> {
     let tmp = tempfile::NamedTempFile::new()?;
     let fw = &mut std::io::BufWriter::new(&tmp);
 
+    write!(fw, "use arcon::prelude::*;");
     rs.items
         .iter()
         .try_for_each(|item| write!(fw, "{}", quote!(#item)))?;

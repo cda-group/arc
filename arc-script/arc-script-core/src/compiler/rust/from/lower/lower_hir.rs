@@ -67,6 +67,11 @@ impl Lower<(), Context<'_>> for hir::Task {
             .iter()
             .map(|p| p.kind.lower(ctx))
             .collect::<Vec<_>>();
+        let clone_params = if param_ids.is_empty() {
+            None
+        } else {
+            Some(quote!(let (#(#param_ids),*) = (#(self.#param_ids.clone()),*);))
+        };
         let struct_item = syn::parse_quote! {
             #[derive(ArconState)]
             pub struct #name {
@@ -86,7 +91,6 @@ impl Lower<(), Context<'_>> for hir::Task {
         let elem_id = self.on.param.kind.lower(ctx);
         let body = self.on.body.lower(ctx);
         let impl_item = syn::parse_quote! {
-            use arcon::prelude::*;
             impl Operator for #name {
                 type IN = #ity;
                 type OUT = #oty;
@@ -98,7 +102,7 @@ impl Lower<(), Context<'_>> for hir::Task {
                     #elem_id: ArconElement<Self::IN>,
                     mut ctx: OperatorContext<Self, impl Backend, impl ComponentDefinition>,
                 ) -> OperatorResult<()> {
-                    let (#(#param_ids),*) = (#(self.#param_ids.clone()),*);
+                    #clone_params
                     #body;
                     Ok(())
                 }
@@ -277,7 +281,10 @@ impl Lower<syn::Type, Context<'_>> for hir::Type {
                 parse_quote!(#s)
             }
             hir::TypeKind::Set(t) => todo!(),
-            hir::TypeKind::Stream(t) => todo!(),
+            hir::TypeKind::Stream(t) => {
+                let t = t.lower(ctx);
+                parse_quote!(Stream<#t>)
+            }
             hir::TypeKind::Struct(fts) => todo!(),
             hir::TypeKind::Tuple(ts) => {
                 let ts = ts.iter().map(|t| t.lower(ctx));
