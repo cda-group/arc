@@ -1,3 +1,7 @@
+cargo-features = [
+  "strip" # Allow stripping symbols / debuginfo from binary
+]
+
 [package]
 name           = "arc-script"
 version        = "0.1.0"
@@ -72,6 +76,7 @@ panic            = 'unwind'
 incremental      = false
 codegen-units    = 1
 rpath            = false
+strip            = "symbols"
 
 # -- The testing profile, used for `cargo test`.
 [profile.test]
@@ -96,6 +101,7 @@ lto              = true
 incremental      = false
 codegen-units    = 1
 rpath            = false
+strip            = "symbols"
 
 # --- Optimize for small binaries when compiling for the web
 [profile.release.package.arc-script-web-repl]

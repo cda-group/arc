@@ -17,11 +17,27 @@ debug          = "run --package=arc-script-cli -- --force-output --debug -vv run
 # rustdoc = "rustdoc"       # the doc generator tool
 # target = "triple"         # build for the target triple (ignored by `cargo install`)
 # target-dir = "target"     # path of where to place all generated artifacts
-# rustflags = ["…", "…"]    # custom flags to pass to all compiler invocations
+rustflags = [    # custom flags to pass to all compiler invocations
+  "-Z",          "debug-macros=yes", # Emit line numbers debug info inside macros
+  "-Z",                 "teach=yes", # Show extended diagnostic help
+  "-Z", "trim-diagnostic-paths=yes", # In diagnostics, use heuristics to shorten paths referring to items
+#  "-Z",           "fewer-names=yes", # Reduce memory use by retaining fewer names within compilation artifacts
+#  "-Z",        "share-generics=yes", # Make the current crate share its generic instantiations
+#  "-Z",          "self-profile=yes", # Run the self profiler and output the raw event data
+#  "-Z",                  "time=yes", # Measure time of rustc processes
+#  "-Z",           "time-passes=yes", # Measure time of each rustc pass
+#  "-Z",      "time-llvm-passes=yes", # Measure time of each LLVM pass
+]
 # rustdocflags = ["…", "…"] # custom flags to pass to rustdoc
 # incremental = true        # whether or not to enable incremental compilation
 # dep-info-basedir = "…"    # path for the base directory for targets in depfiles
 # pipelining = true         # rustc pipelining
+
+[unstable]
+multitarget         = true # Allow passing multiple target flags
+named-profiles      = true # Allow defining custom profiles
+namespaced-features = true # Allow features to be namespaced
+#timings             = ["info"] # Emit compile times of each dependency
 
 # [cargo-new]
 # name = "Your Name"        # name to use in `authors` field
