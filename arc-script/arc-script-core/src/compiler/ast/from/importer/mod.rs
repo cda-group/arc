@@ -1,4 +1,3 @@
-use crate::compiler::ast::from::parse::module;
 use crate::compiler::ast::repr::{Module, AST};
 use crate::compiler::info::diags::Error;
 use crate::compiler::info::modes::Mode;
@@ -58,8 +57,7 @@ impl AST {
         // Read the file, parse it, and construct the module.
         let name = MAIN_FILENAME.to_owned();
         let mod_name = info.names.intern(&name);
-        let items = module::parse_module(name, source, &mut self.exprs, info);
-        let module = Module::new(items);
+        let module = Module::parse(name, source, &mut self.exprs, info);
 
         if !module.imports(info).is_empty() {
             panic!();
@@ -117,8 +115,7 @@ impl AST {
         // Read the file, parse it, and construct the module.
         let name = full_path.to_str().unwrap().to_owned();
         let source = read_file(&full_path).unwrap();
-        let items = module::parse_module(name, source, &mut self.exprs, info);
-        let module = Module::new(items);
+        let module = Module::parse(name, source, &mut self.exprs, info);
 
         // Import any dependencies the module might have, if they have not already been imported.
         let dependency_paths = module.imports(info);

@@ -1,5 +1,5 @@
 use crate::compiler::ast;
-use crate::compiler::ast::from::parse::lexer::Token;
+use crate::compiler::ast::from::lexer::Token;
 use crate::compiler::info::diags::{Diagnostic, Error};
 use crate::compiler::info::files::{ByteIndex, FileId, Loc};
 
@@ -15,7 +15,7 @@ impl Diagnostic {
         match recovery.error {
             ParseError::User { .. } => unreachable!(),
             ParseError::ExtraToken { token: (l, t, r) } => Error::ExtraToken {
-                found: format!("{:?}", t),
+                found: t,
                 loc: Loc::from_range(file, l..r).into(),
             }
             .into(),
@@ -35,7 +35,7 @@ impl Diagnostic {
                 token: (l, t, r),
                 expected,
             } => Error::UnrecognizedToken {
-                found: format!("{:?}", t),
+                found: t,
                 loc: Loc::from_range(file, l..r).into(),
                 expected,
             }

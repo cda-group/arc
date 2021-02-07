@@ -1,3 +1,4 @@
+use crate::compiler::ast::from::lexer::Token;
 use crate::compiler::ast::Name;
 use crate::compiler::hir;
 use crate::compiler::hir::Path;
@@ -87,7 +88,7 @@ pub enum Error {
     BadLiteral { msg: String, loc: Option<Loc> },
 
     /// Error when the parser comes across an extra token.
-    ExtraToken { found: String, loc: Option<Loc> },
+    ExtraToken { found: Token, loc: Option<Loc> },
 
     /// Error when the parser comes across an invalid token.
     InvalidToken { loc: Option<Loc> },
@@ -100,7 +101,7 @@ pub enum Error {
 
     /// Error when the parser comes across an unexpected token.
     UnrecognizedToken {
-        found: String,
+        found: Token,
         loc: Option<Loc>,
         expected: Vec<String>,
     },

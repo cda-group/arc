@@ -1,7 +1,13 @@
 #![allow(unused)]
 
-use crate::compiler::ast::from::parse::numfmt;
-use crate::compiler::ast::from::parse::tokens::LogosToken;
+/// Module for displaying tokens.
+mod display;
+/// Module for defining the format of number literals.
+mod numfmt;
+/// Module for scanning raw tokens which are then post-processed by this module.
+mod tokens;
+
+use crate::compiler::ast::from::lexer::tokens::LogosToken;
 use crate::compiler::info::diags::DiagInterner;
 use crate::compiler::info::diags::Error;
 use crate::compiler::info::diags::Result;
