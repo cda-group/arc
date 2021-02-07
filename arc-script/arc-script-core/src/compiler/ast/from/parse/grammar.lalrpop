@@ -97,7 +97,6 @@ extern {
         "is"     => Token::Is,
         "let"    => Token::Let,
         "log"    => Token::Log,
-        "log"    => Token::Log,
         "loop"   => Token::Loop,
         "match"  => Token::Match,
         "not"    => Token::Not,
@@ -119,7 +118,7 @@ extern {
         "of"       => Token::Of,
         "shutdown" => Token::Shutdown,
         "sink"     => Token::Sink,
-        "sink"     => Token::Source,
+        "source"   => Token::Source,
         "then"     => Token::Then,
         "where"    => Token::Where,
 //=============================================================================
