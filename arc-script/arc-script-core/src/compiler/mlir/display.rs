@@ -389,6 +389,14 @@ impl<'i> Display for Pretty<'i, mlir::OpKind, State<'_>> {
                     .iter()
                     .map_pretty(|x, f| write!(f, "{}", x.tv.pretty(ctx)), ", "),
             ),
+            mlir::OpKind::Return(x)
+		if matches!(ctx.state.info.types.resolve(x.tv).kind,
+			    hir::TypeKind::Scalar(hir::ScalarKind::Unit)) =>
+		write!(
+                    f,
+                    r#"return {s0}"#,
+                    s0 = ctx
+		),
             mlir::OpKind::Return(x) => write!(
                 f,
                 r#"return {x} : {t}{s0}"#,
