@@ -657,7 +657,7 @@ struct FuncOpLowering : public ConversionPattern {
     attributes.push_back(
         NamedAttribute(Identifier::get("type", ctx), TypeAttr::get(funcType)));
     attributes.push_back(NamedAttribute(Identifier::get("sym_name", ctx),
-                                        StringAttr::get(func.getName(), ctx)));
+                                        StringAttr::get(ctx, func.getName())));
 
     if (func.isExternal())
       return buildExternalFun(rewriter, operands, attributes, func, op, sigConv,

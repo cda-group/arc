@@ -307,9 +307,8 @@ LogicalResult
 AppenderType::verifyConstructionInvariants(Location loc, Type mergeType,
                                            RankedTensorType resultType) {
   if (!isValueType(mergeType)) {
-    emitOptionalError(loc, "appender merge type must be a value type: found ",
-                      mergeType);
-    return failure();
+    return emitOptionalError(
+        loc, "appender merge type must be a value type: found ", mergeType);
   }
   return success();
 }
@@ -407,7 +406,7 @@ Type StructType::parse(DialectAsmParser &parser) {
       return nullptr;
 
     StructType::FieldTy elementType;
-    elementType.first = StringAttr::get(name, builder.getContext());
+    elementType.first = StringAttr::get(builder.getContext(), name);
     if (parser.parseType(elementType.second))
       return nullptr;
 
