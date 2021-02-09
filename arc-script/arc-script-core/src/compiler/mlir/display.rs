@@ -232,7 +232,7 @@ impl<'i> Display for Pretty<'i, mlir::OpKind, State<'_>> {
                 mlir::ConstKind::Fun(x)      => write!(f, r#"constant {} :"#, x.pretty(ctx)),
                 mlir::ConstKind::Char(_)     => todo!(),
                 mlir::ConstKind::Time(_)     => todo!(),
-                mlir::ConstKind::Unit        => write!(f, r#"arc.constant unit :"#),
+                mlir::ConstKind::Unit        => todo!(),
             },
             mlir::OpKind::BinOp(tv, l, op, r) => {
                 let ty = ctx.state.info.types.resolve(*tv);
