@@ -489,7 +489,7 @@ impl<'i> Display for Pretty<'i, hir::Type, State<'_>> {
                 Bool => write!(f, "i1"),
                 Null => todo!(),
                 Str  => todo!(),
-                Unit => write!(f, "i0"),
+                Unit => write!(f, "()"),
                 Char => todo!(),
                 Bot  => unreachable!(),
             }
