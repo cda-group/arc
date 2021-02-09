@@ -28,7 +28,15 @@ rustflags = [    # custom flags to pass to all compiler invocations
 #  "-Z",           "time-passes=yes", # Measure time of each rustc pass
 #  "-Z",      "time-llvm-passes=yes", # Measure time of each LLVM pass
 ]
-# rustdocflags = ["…", "…"] # custom flags to pass to rustdoc
+rustdocflags = [ # Custom flags to pass to rustdoc
+    "-Z", "unstable-options", # Enable unstable options
+#     "--index-page", # Provide a top-level landing page for docs
+    "--enable-index-page", # Generate a default index page for docs
+    "--persist-doctests", "target/rustdoctest", # Persist doctest executables after running
+    "--show-coverage", # Calculate the percentage of items with documentation
+    "--document-private-items", # Include private items when counting the percentage
+    "--default-theme", "rust", # Set default color theme
+]
 # incremental = true        # whether or not to enable incremental compilation
 # dep-info-basedir = "…"    # path for the base directory for targets in depfiles
 # pipelining = true         # rustc pipelining
