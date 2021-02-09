@@ -61,9 +61,11 @@ pub(crate) enum LogosToken {
     #[token("**")] StarStar,
     #[token("~")] Tilde,
     #[token("_")] Underscore,
+    #[token("$")] Dollar,
 //=============================================================================
 // Keywords
 //=============================================================================
+    #[token("after")] After,
     #[token("and")] And,
     #[token("as")] As,
     #[token("break")] Break,

@@ -52,6 +52,7 @@ extern {
         "::"  => Token::ColonColon,
         ":="  => Token::ColonEq,
         ","   => Token::Comma,
+        "$"   => Token::Dollar,
         "."   => Token::Dot,
         ".."  => Token::DotDot,
         "="   => Token::Equ,
@@ -114,6 +115,7 @@ extern {
 //=============================================================================
 // Reserved Keywords
 //=============================================================================
+        "after"    => Token::After,
         "end"      => Token::End,
         "of"       => Token::Of,
         "shutdown" => Token::Shutdown,

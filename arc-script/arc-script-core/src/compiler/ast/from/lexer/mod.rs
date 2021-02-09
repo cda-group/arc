@@ -74,6 +74,7 @@ pub enum Token {
     ColonColon,
     ColonEq,
     Comma,
+    Dollar,
     Dot,
     DotDot,
     Equ,
@@ -101,6 +102,7 @@ pub enum Token {
 //=============================================================================
 // Keywords
 //=============================================================================
+    After,
     And,
     As,
     Band,
@@ -304,6 +306,7 @@ impl<'i> Lexer<'i> {
                 LogosToken::ColonColon => Token::ColonColon,
                 LogosToken::ColonEq    => Token::ColonEq,
                 LogosToken::Comma      => Token::Comma,
+                LogosToken::Dollar     => Token::Dollar,
                 LogosToken::Dot        => Token::Dot,
                 LogosToken::DotDot     => Token::DotDot,
                 LogosToken::Equ        => Token::Equ,
@@ -332,6 +335,7 @@ impl<'i> Lexer<'i> {
 //=============================================================================
 // Keywords
 //=============================================================================
+                LogosToken::After      => Token::After,
                 LogosToken::And        => Token::And,
                 LogosToken::As         => Token::As,
                 LogosToken::Band       => Token::Band,
