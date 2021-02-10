@@ -1,12 +1,18 @@
+use crate::compiler::shared::New;
+
 pub use codespan_reporting::term::termcolor::Buffer;
 pub use codespan_reporting::term::termcolor::ColorChoice;
 pub use codespan_reporting::term::termcolor::StandardStream;
 pub use codespan_reporting::term::termcolor::WriteColor;
+
+use std::io::Result;
 pub use std::io::Write;
 
-use crate::compiler::shared::New;
+use codespan_reporting::term::termcolor::ColorSpec;
 
-#[derive(Default, New)]
+/// A writer which will move data into the void.
+/// Just like [`std::io::Sink`], but supports the `termcolor` library.
+#[derive(Debug, Default, New)]
 pub struct Sink;
 
 impl WriteColor for Sink {
@@ -14,24 +20,21 @@ impl WriteColor for Sink {
         true
     }
 
-    fn set_color(
-        &mut self,
-        _: &codespan_reporting::term::termcolor::ColorSpec,
-    ) -> std::io::Result<()> {
+    fn set_color(&mut self, _: &ColorSpec) -> Result<()> {
         Ok(())
     }
 
-    fn reset(&mut self) -> std::io::Result<()> {
+    fn reset(&mut self) -> Result<()> {
         Ok(())
     }
 }
 
 impl Write for Sink {
-    fn write(&mut self, _: &[u8]) -> std::io::Result<usize> {
+    fn write(&mut self, _: &[u8]) -> Result<usize> {
         Ok(0)
     }
 
-    fn flush(&mut self) -> std::io::Result<()> {
+    fn flush(&mut self) -> Result<()> {
         Ok(())
     }
 }

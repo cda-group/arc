@@ -159,6 +159,17 @@ fun pipeline_n(n: i32) (stream: ~i32) -> ~i32 {
 }
 ```
 
+# [TODO] Control-Flow
+
+```
+task Looper() <In(i32)> -> <Out(i32)> {
+    port Loop(i32);
+    on {
+      In(event) => emit Loop(event)
+    }
+}
+```
+
 ## Compilation
 
 Arc-Script programs are compiled in three stages.

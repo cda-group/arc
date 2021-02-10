@@ -1,3 +1,5 @@
+//! Macro implementation.
+
 use arc_script_core::compiler::compile;
 use arc_script_core::compiler::info::diags::sink::Buffer;
 use arc_script_core::prelude::modes::{Input, Mode, Output};
@@ -8,6 +10,7 @@ use quote::quote;
 use std::fs;
 use std::path::PathBuf;
 
+/// See [`super::include`] for documentation.
 pub(crate) fn expand(attr: pm::TokenStream, item: pm::TokenStream) -> pm::TokenStream {
     if let syn::Item::Mod(item) = syn::parse::<syn::Item>(item).unwrap() {
         let ident = item.ident;
@@ -16,7 +19,7 @@ pub(crate) fn expand(attr: pm::TokenStream, item: pm::TokenStream) -> pm::TokenS
         let (_, content) = item.content.expect("Error: Expected `{}`, found `;`");
         let mod_token = item.mod_token;
 
-        let mut file_path = PathBuf::from(pm::Span::call_site().source_file().path());
+        let mut file_path = pm::Span::call_site().source_file().path();
         let mut file_path = file_path.components();
         file_path.next();
         let mut file_path: PathBuf = file_path.collect();

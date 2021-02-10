@@ -3,13 +3,16 @@ use crate::compiler::info::Info;
 
 use std::fmt::{Display, Formatter, Result};
 
+/// A wrapper struct around `PathId` which implements `Display`.
+/// Will print debug information when displayed.
 pub(crate) struct PathDebug<'a> {
     path: &'a PathId,
     info: &'a Info,
 }
 
 impl PathId {
-    pub(crate) fn debug<'a>(&'a self, info: &'a Info) -> PathDebug<'a> {
+    /// Wraps `PathId` inside a `PathDebug` struct.
+    pub(crate) const fn debug<'a>(&'a self, info: &'a Info) -> PathDebug<'a> {
         PathDebug { path: self, info }
     }
 }

@@ -35,9 +35,9 @@ pub(crate) struct SymbolTable {
 }
 
 impl SymbolTable {
-    /// Constructs a SymbolTable from an AST.
+    /// Constructs a `SymbolTable` from an `AST`.
     pub(crate) fn from(ast: &AST, info: &mut Info) -> Self {
-        let mut table = SymbolTable::default();
+        let mut table = Self::default();
         for (path, module) in &ast.modules {
             module.declare(*path, &mut table, info);
         }
@@ -59,21 +59,18 @@ impl SymbolTable {
     ///   C -------/
     ///   E -> F --/
     pub(crate) fn resolve(&mut self, path: PathId) -> PathId {
-        if !self.compressed.contains(&path) {
+        if self.compressed.contains(&path) {
+            // Path has already been compressed
+            self.imports.get(&path).cloned().unwrap_or(path)
+        } else {
             // Mark path as compressed to avoid infinite cycles.
             self.compressed.insert(path);
-            if let Some(next) = self.imports.remove(&path) {
+            self.imports.remove(&path).map_or(path, |next| {
                 // `path` is an alias for `next`, keep compressing
                 let real = self.resolve(next);
                 self.imports.insert(path, real);
                 real
-            } else {
-                // Final destination reached
-                path
-            }
-        } else {
-            // Path has already been compressed
-            self.imports.get(&path).cloned().unwrap_or(path)
+            })
         }
     }
     /// Returns the declaration kind of a path.
@@ -210,14 +207,12 @@ impl ast::Hub {
 
 impl Declare for ast::Use {
     fn declare(&self, path: PathId, table: &mut SymbolTable, info: &mut Info) {
-        let name = if let Some(alias) = self.alias {
-            alias.clone()
-        } else {
-            info.paths.resolve(self.path.id).name
-        };
+        let name = self
+            .alias
+            .map_or_else(|| info.paths.resolve(self.path.id).name, |alias| alias);
         let use_path = info.paths.intern_child(path, name);
         if table.declarations.contains_key(&use_path) {
-            info.diags.intern(Error::NameClash { name: name })
+            info.diags.intern(Error::NameClash { name })
         } else {
             table.imports.insert(use_path, self.path.id);
         }

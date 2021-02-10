@@ -1,3 +1,5 @@
+//! Benchmarks of compilation time.
+
 use arc_script_core::prelude::compiler;
 use arc_script_core::prelude::diags::Sink;
 use arc_script_core::prelude::modes::{Input, Mode, Output};

@@ -1,3 +1,5 @@
+//! Macro implementation.
+
 use arc_script_core::compiler::compile;
 use arc_script_core::compiler::info::diags::sink::Buffer;
 use arc_script_core::prelude::modes::{Input, Mode, Output};
@@ -8,11 +10,7 @@ use quote::quote;
 
 use std::fs;
 
-/// #[arc_script("lib.arc")]
-/// mod script {
-///     use foo;
-///     use bar::baz;
-/// }
+/// See [`super::comptime`] for documentation.
 pub(crate) fn expand(attr: pm::TokenStream, item: pm::TokenStream) -> pm::TokenStream {
     if let syn::Item::Mod(module) = syn::parse(item).expect("Expected `mod` item") {
         let (_, items) = module.content.expect("Expected `mod { ... }` found `mod;`");

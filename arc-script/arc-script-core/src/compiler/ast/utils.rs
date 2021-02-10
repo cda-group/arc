@@ -28,16 +28,16 @@ impl Module {
     /// relative to the project root.
     pub(crate) fn imports(&self, info: &Info) -> Vec<Path> {
         let mut imports = Vec::new();
-        for item in self.items.iter() {
+        for item in &self.items {
             match &item.kind {
                 ItemKind::Use(item) if item.path.is_absolute(info) => {
-                    imports.push(item.path.clone())
+                    imports.push(item.path)
                 }
                 ItemKind::Task(item) => {
                     for item in &item.items {
                         if let TaskItemKind::Use(item) = &item.kind {
                             if item.path.is_absolute(info) {
-                                imports.push(item.path.clone())
+                                imports.push(item.path)
                             }
                         }
                     }
@@ -51,12 +51,12 @@ impl Module {
 
 impl From<NameId> for Name {
     fn from(id: NameId) -> Self {
-        Name::new(id, None)
+        Self::new(id, None)
     }
 }
 
 impl From<usize> for Index {
     fn from(id: usize) -> Self {
-        Index::new(id, None)
+        Self::new(id, None)
     }
 }

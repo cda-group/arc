@@ -31,19 +31,19 @@ impl Display for Tab {
 }
 
 impl SymbolTable {
-    pub(crate) fn debug<'a>(&'a self, info: &'a Info) -> SymbolTableDebug<'a> {
+    pub(crate) const fn debug<'a>(&'a self, info: &'a Info) -> SymbolTableDebug<'a> {
         SymbolTableDebug { table: self, info }
     }
 }
 
 impl SymbolStack {
-    pub(crate) fn debug<'a>(&'a self, info: &'a Info) -> SymbolStackDebug<'a> {
+    pub(crate) const fn debug<'a>(&'a self, info: &'a Info) -> SymbolStackDebug<'a> {
         SymbolStackDebug { stack: self, info }
     }
 }
 
 impl Resolver {
-    pub(crate) fn debug<'a>(&'a self, info: &'a Info) -> ResolverDebug<'a> {
+    pub(crate) const fn debug<'a>(&'a self, info: &'a Info) -> ResolverDebug<'a> {
         ResolverDebug { res: self, info }
     }
 }

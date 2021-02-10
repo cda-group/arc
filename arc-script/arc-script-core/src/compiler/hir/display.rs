@@ -25,7 +25,7 @@ pub(crate) fn pretty<'i, 'j, Node>(
     node.to_pretty(State::new(info, hir))
 }
 
-impl<'i> Display for Pretty<'i, hir::HIR, State<'_>> {
+impl<'i> Display for Pretty<'i, HIR, State<'_>> {
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
         let Pretty(hir, ctx) = self;
         write!(

@@ -1,3 +1,5 @@
+///! Module for constructing `AST`s in different ways.
+
 /// Module for lexing source code into tokens.
 pub mod lexer;
 /// Module for parsing tokens into modules.
@@ -10,10 +12,8 @@ use crate::compiler::info::Info;
 use crate::compiler::info::modes::Input;
 
 impl From<&'_ mut Info> for AST {
-    /// Constructs a AST from the command-line options.
     fn from(info: &mut Info) -> Self {
         let mut ast = Self::default();
-        // TODO: Post-process the opt instead of storing it in the Info as-is.
         match &mut info.mode.input {
             Input::Code(source) => {
                 let source = std::mem::take(source);

@@ -10,11 +10,15 @@ use crate::compiler::info::files::Loc;
 /// * An enum-variant constructor, if `foo` resolves to an enum declaration.
 /// * A function call, if `foo` resolves to a variable or function declaration.
 /// Since functions are values, we only need to consider the enum-variant case.
-pub(super) fn lower(expr: &ast::Expr, args: &Vec<ast::Expr>, ctx: &mut Context) -> hir::ExprKind {
+pub(super) fn lower(
+    expr: &ast::Expr,
+    args: &[ast::Expr],
+    ctx: &mut Context<'_>,
+) -> hir::ExprKind {
     if let ast::ExprKind::Path(path) = ctx.ast.exprs.resolve(expr.id) {
         let decl = ctx.res.resolve(path, ctx.info).unwrap();
         if let resolve::DeclKind::Item(path, resolve::ItemDeclKind::Variant) = decl {
-            if let [arg] = args.as_slice() {
+            if let [arg] = args {
                 return hir::ExprKind::Enwrap(path, arg.lower(ctx).into());
             } else {
                 panic!("[FIXME] Expected exactly one argument to variant constructor")

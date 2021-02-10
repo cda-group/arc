@@ -1,6 +1,9 @@
+//! Module which generates a `LogosLexer`.
+
 use logos::Lexer as LogosLexer;
 use logos::Logos;
 
+/// A raw token which carries no semantic information.
 #[rustfmt::skip]
 #[derive(Logos, Debug, PartialEq)]
 pub(crate) enum LogosToken {

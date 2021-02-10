@@ -45,10 +45,10 @@ impl Subtype<TypeId, TypeId> for Context<'_> {
     /// Returns `true` if `A` is a subtype of `B`.
     #[rustfmt::skip]
     fn subtype(&mut self, t0: TypeId, t1: TypeId) -> bool {
-        let ty0 = self.info.types.resolve(t0);
-        let ty1 = self.info.types.resolve(t1);
         use ScalarKind::*;
         use TypeKind::*;
+        let ty0 = self.info.types.resolve(t0);
+        let ty1 = self.info.types.resolve(t1);
         match (ty0.kind, ty1.kind) {
             (Fun(ts0, t0), Fun(ts1, t1)) => self.subtype(ts1, ts0) && self.subtype(t0, t1),
             (Scalar(Bot), _)             => true,

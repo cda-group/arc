@@ -4,9 +4,10 @@ use crate::compiler::shared::display::format::Context;
 use crate::compiler::shared::display::pretty::*;
 use crate::compiler::shared::New;
 
+use cfg_if::cfg_if;
+use derive_more::From;
 use quote::quote;
 
-use cfg_if::cfg_if;
 use std::fmt::Write as FmtWrite;
 use std::fmt::{self, Display, Formatter};
 use std::fs;
@@ -19,7 +20,7 @@ use std::process::Command;
 #[derive(New, From, Copy, Clone)]
 pub(crate) struct Stateless;
 
-pub(crate) fn pretty<'i, Node>(node: &'i Node) -> Pretty<'i, Node, Stateless> {
+pub(crate) fn pretty<Node>(node: &Node) -> Pretty<'_, Node, Stateless> {
     node.to_pretty(Stateless)
 }
 

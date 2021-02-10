@@ -17,30 +17,30 @@ impl Lower<ConstKind, Context<'_>> for ValueKind {
     #[rustfmt::skip]
     fn lower(&self, ctx: &mut Context<'_>) -> ConstKind {
         match self {
-            ValueKind::Unit          => ConstKind::Unit,
-            ValueKind::I8(v)         => ConstKind::I8(*v),
-            ValueKind::I16(v)        => ConstKind::I16(*v),
-            ValueKind::I32(v)        => ConstKind::I32(*v),
-            ValueKind::I64(v)        => ConstKind::I64(*v),
-            ValueKind::U8(v)         => ConstKind::U8(*v),
-            ValueKind::U16(v)        => ConstKind::U16(*v),
-            ValueKind::U32(v)        => ConstKind::U32(*v),
-            ValueKind::U64(v)        => ConstKind::U64(*v),
-            ValueKind::Bf16(v)       => ConstKind::Bf16(*v),
-            ValueKind::F16(v)        => ConstKind::F16(*v),
-            ValueKind::F32(v)        => ConstKind::F32(*v),
-            ValueKind::F64(v)        => ConstKind::F64(*v),
-            ValueKind::Char(v)       => ConstKind::Char(*v),
-            ValueKind::Str(_)        => todo!(),
-            ValueKind::Bool(v)       => todo!(),
-            ValueKind::Item(_)       => todo!(),
-            ValueKind::Task(_, _)    => todo!(),
-            ValueKind::Stream(_, _)  => todo!(),
-            ValueKind::Vector(_)     => todo!(),
-            ValueKind::Tuple(_)      => todo!(),
-            ValueKind::Array(_)      => todo!(),
-            ValueKind::Variant(_, _) => todo!(),
-            ValueKind::Struct(_)     => todo!(),
+            Self::Unit          => ConstKind::Unit,
+            Self::I8(v)         => ConstKind::I8(*v),
+            Self::I16(v)        => ConstKind::I16(*v),
+            Self::I32(v)        => ConstKind::I32(*v),
+            Self::I64(v)        => ConstKind::I64(*v),
+            Self::U8(v)         => ConstKind::U8(*v),
+            Self::U16(v)        => ConstKind::U16(*v),
+            Self::U32(v)        => ConstKind::U32(*v),
+            Self::U64(v)        => ConstKind::U64(*v),
+            Self::Bf16(v)       => ConstKind::Bf16(*v),
+            Self::F16(v)        => ConstKind::F16(*v),
+            Self::F32(v)        => ConstKind::F32(*v),
+            Self::F64(v)        => ConstKind::F64(*v),
+            Self::Char(v)       => ConstKind::Char(*v),
+            Self::Str(_)        => todo!(),
+            Self::Bool(v)       => todo!(),
+            Self::Item(_)       => todo!(),
+            Self::Task(_, _)    => todo!(),
+            Self::Stream(_, _)  => todo!(),
+            Self::Vector(_)     => todo!(),
+            Self::Tuple(_)      => todo!(),
+            Self::Array(_)      => todo!(),
+            Self::Variant(_, _) => todo!(),
+            Self::Struct(_)     => todo!(),
         }
     }
 }
@@ -63,11 +63,11 @@ impl Lower<mlir::Fun, Context<'_>> for DFG {
             let node_ty = ctx
                 .info
                 .types
-                .intern(hir::TypeKind::Nominal(node.path.into()));
+                .intern(hir::TypeKind::Nominal(node.path));
             ops.append(&mut args);
             ops.push(mlir::Op::new(
                 mlir::Var::new(node_name.into(), node_ty).into(),
-                mlir::OpKind::Node(node.path.into(), vars),
+                mlir::OpKind::Node(node.path, vars),
                 None,
             ));
         }
@@ -84,11 +84,11 @@ impl Lower<mlir::Fun, Context<'_>> for DFG {
             let origin_ty = ctx
                 .info
                 .types
-                .intern(hir::TypeKind::Nominal(origin.path.into()));
+                .intern(hir::TypeKind::Nominal(origin.path));
             let target_ty = ctx
                 .info
                 .types
-                .intern(hir::TypeKind::Nominal(target.path.into()));
+                .intern(hir::TypeKind::Nominal(target.path));
 
             let origin_var = mlir::Var::new(origin_name.into(), origin_ty);
             let target_var = mlir::Var::new(target_name.into(), target_ty);

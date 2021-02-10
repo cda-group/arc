@@ -15,7 +15,7 @@ pub(crate) struct HIRDebug<'a> {
 }
 
 impl HIR {
-    pub(crate) fn debug<'a>(&'a self, info: &'a Info) -> HIRDebug<'a> {
+    pub(crate) const fn debug<'a>(&'a self, info: &'a Info) -> HIRDebug<'a> {
         HIRDebug { hir: self, info }
     }
 }

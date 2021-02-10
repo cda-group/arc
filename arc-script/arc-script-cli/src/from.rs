@@ -1,3 +1,5 @@
+//! Conversions between `Opt` and `Mode`
+
 use crate::repr::{self as opt, Opt, Run, SubCmd};
 use arc_script_core::prelude::modes::{Input, Mode, Output};
 use arc_script_core::prelude::Result;

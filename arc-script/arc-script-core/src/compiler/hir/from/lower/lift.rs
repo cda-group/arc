@@ -13,7 +13,7 @@ use super::Context;
 /// the expression with a call to that function. Lifting is only possible if the
 /// expression does not contain any control-flow constructs. If lifting fails, the
 /// original expression is returned.
-pub(super) fn lift(body: hir::Expr, ctx: &mut Context) -> hir::Expr {
+pub(super) fn lift(body: hir::Expr, ctx: &mut Context<'_>) -> hir::Expr {
     let mut vars = Map::new();
     if body.fv(&mut vars).is_err() {
         body
@@ -101,8 +101,8 @@ impl FreeVars for hir::Expr {
             hir::ExprKind::Log(e) => e.fv(union)?,
             hir::ExprKind::Project(e, _) => e.fv(union)?,
             /// NOTE: Control-flow constructs make lifting impossible.
-            hir::ExprKind::Return(_) => Err(())?,
-            hir::ExprKind::Break => Err(())?,
+            hir::ExprKind::Return(_) => return Err(()),
+            hir::ExprKind::Break => return Err(()),
             hir::ExprKind::Todo => {}
             hir::ExprKind::Err => {}
         }

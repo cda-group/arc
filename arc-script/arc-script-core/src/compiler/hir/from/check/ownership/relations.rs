@@ -3,9 +3,12 @@ use crate::compiler::info::files::Loc;
 use crate::compiler::info::Info;
 use crate::compiler::shared::New;
 
+use educe::Educe;
+use shrinkwraprs::Shrinkwrap;
+
 use std::collections::HashMap;
 
-/// The PlaceId of a Place.
+/// The `PlaceId` of a `Place`.
 #[derive(Debug, Copy, Clone, Hash, Eq, PartialEq, PartialOrd, Ord)]
 pub(crate) struct PlaceId(pub(crate) usize);
 
@@ -107,7 +110,7 @@ impl Ownership {
 
 impl From<&'_ hir::HIR> for Ownership {
     fn from(hir: &hir::HIR) -> Self {
-        let mut owner = Ownership::default();
+        let mut owner = Self::default();
         hir.defs.values().for_each(|def| def.collect(&mut owner));
         owner
     }

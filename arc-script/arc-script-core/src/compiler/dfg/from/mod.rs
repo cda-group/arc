@@ -15,6 +15,7 @@ use crate::compiler::hir::{
 };
 use crate::compiler::info::diags::DiagInterner;
 use crate::compiler::info::diags::Error;
+use crate::compiler::info::diags::Panic;
 use crate::compiler::info::names::NameId;
 use crate::compiler::info::paths::PathId;
 use crate::compiler::info::types::TypeId;
@@ -23,7 +24,7 @@ use crate::compiler::shared::VecMap;
 
 fn call(path: Path, args: Vec<Expr>, ftv: TypeId, rtv: TypeId) -> Expr {
     Expr::syn(
-        ExprKind::Call(Expr::syn(ExprKind::Item(path), ftv).into(), vec![]),
+        ExprKind::Call(Expr::syn(ExprKind::Item(path), ftv).into(), args),
         rtv,
     )
 }
@@ -39,7 +40,7 @@ fn main_call(hir: &HIR, info: &mut Info) -> Option<Expr> {
         let ty = info.types.resolve(fun.tv);
         if let TypeKind::Fun(tvs, tv) = ty.kind {
             let ty = info.types.resolve(tv);
-            if matches!(ty.kind, TypeKind::Scalar(ScalarKind::Unit) if tvs.len() == 0) {
+            if matches!(ty.kind, TypeKind::Scalar(ScalarKind::Unit) if tvs.is_empty()) {
                 return Some(call(*path, vec![], fun.tv, tv));
             } else {
                 info.diags.intern(Error::MainWrongSign)
@@ -63,7 +64,7 @@ impl DFG {
             let mut ctx = Context::new(&mut stack, &mut dfg, hir, info);
             if let ControlFlow(Panic(loc)) = expr.eval(&mut ctx) {
                 let mut diags = DiagInterner::default();
-                diags.intern(Error::Panic {
+                diags.intern(Panic::Unwind {
                     loc,
                     trace: stack.iter().map(|frame| frame.path).collect(),
                 });

@@ -13,6 +13,8 @@ use petgraph_4::graph::NodeIndex as PatternNodeKey;
 use petgraph_4::graph::NodeIndex as CfgNodeKey;
 use petgraph_4::Direction;
 use petgraph_4::Graph;
+use shrinkwraprs::Shrinkwrap;
+
 use std::fmt;
 
 /// This module is compiles patterns into more basic expressions while also performing
@@ -104,7 +106,7 @@ use std::fmt;
 ///         else
 ///             e3
 /// ```
-pub(crate) fn lower_cases(cases: &Vec<ast::Case>, ctx: &mut Context) -> hir::ExprKind {
+pub(crate) fn lower_cases(cases: &[ast::Case], ctx: &mut Context<'_>) -> hir::ExprKind {
     let mut pattern_tree = PatternTree::default();
     for case in cases {
         let clause = pattern_tree.construct_tree(&case.pat);
@@ -170,11 +172,11 @@ impl PatternTree {
     /// - Any number of Match nodes. These nodes also take a Variable
     ///   as an argument, any outgoing edges from this is matched on that
     ///   variable. Outgoing edges from a Match node always contain:
-    ///     - A `kind`, the kind that the value must match for this branch
-    ///       to be taken.
-    ///     - `variable_binds`, the expansions of that matched value. An
-    ///       example would be a `cons`, which would expand to two values,
-    ///       `x`, the head and `y`, the tail.
+    ///   - A `kind`, the kind that the value must match for this branch
+    ///     to be taken.
+    ///   - `variable_binds`, the expansions of that matched value. An
+    ///     example would be a `cons`, which would expand to two values,
+    ///     `x`, the head and `y`, the tail.
     ///
     /// - M number of Leaf nodes, where M is the number of clauses in the
     ///   input pattern. Ending up at this node is a successful match on
@@ -183,13 +185,13 @@ impl PatternTree {
     /// - Fail nodes, ending up in this node means no clauses were matched.
     ///
     /// `leaf_bindings` contains a map for every node in the CFG, which maps
-    /// each visible PatternNodeKey of the input pattern to the CfgVariable
+    /// each visible `PatternNodeKey` of the input pattern to the `CfgVariable`
     /// that represents it. This enables you to refer back to things that
     /// were matched on in the pattern when lowering the resulting CFG back
     /// into your compiler IR.
     ///
     /// Exhaustiveness means the pattern is irrefutable.
-    /// A pattern is refutable if the DecisionTree contains a
+    /// A pattern is refutable if the `DecisionTree` contains a
     /// * Match-node which has a child Fail-node
     /// * Leaf-node which has a child Fail-Node which is guarded
     fn is_exhaustive(tree: &DecisionTree) -> bool {
@@ -249,7 +251,7 @@ impl PatternTree {
 impl Default for PatternTree {
     fn default() -> Self {
         let mut pattern = Graph::new();
-        PatternTree {
+        Self {
             ignore: pattern.add_node(PatternNodeKind::Ignore),
             pattern,
             clauses: Vec::new(),

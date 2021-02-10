@@ -39,7 +39,7 @@ use crate::compiler::info::names::NameId;
 use crate::compiler::info::types::TypeId;
 use crate::compiler::shared::Lower;
 
-pub(super) fn lower(p: &ast::Param, e0: &ast::Expr, e1: &ast::Expr, ctx: &mut Context) -> Expr {
+pub(super) fn lower(p: &ast::Param, e0: &ast::Expr, e1: &ast::Expr, ctx: &mut Context<'_>) -> Expr {
     let e0 = e0.lower(ctx);
     let clauses = super::pattern::lower_param_expr(p, e0, ctx);
     let e1 = e1.lower(ctx);

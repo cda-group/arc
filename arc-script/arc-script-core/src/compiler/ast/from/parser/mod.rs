@@ -1,6 +1,15 @@
+#![allow(macro_use_extern_crate)]
 /// Module for representing the context-free grammar of Arc-Script.
 pub(crate) mod grammar {
-    #[allow(clippy::all)]
+    #![allow(unused_extern_crates)]
+    #![allow(unreachable_pub)]
+    #![allow(clippy::correctness)]
+    #![allow(clippy::style)]
+    #![allow(clippy::complexity)]
+    #![allow(clippy::perf)]
+    #![allow(clippy::pedantic)]
+    #![allow(clippy::nursery)]
+    #![allow(clippy::cargo)]
     include!(concat!(
         env!("OUT_DIR"),
         "/compiler/ast/from/parser/grammar.rs"
@@ -19,14 +28,14 @@ use crate::compiler::info::files::Loc;
 use crate::compiler::info::Info;
 
 impl ast::Module {
-    /// Parses a module
+    /// Parses a source file with `name` that contains `text`.
     pub(crate) fn parse(
         name: String,
-        source: String,
+        text: String,
         exprs: &mut ExprInterner,
         info: &mut Info,
     ) -> Self {
-        let file_id = info.files.intern(name, source);
+        let file_id = info.files.intern(name, text);
         let source = info.files.resolve(file_id);
         let mut lexer = Lexer::new(source, file_id, &mut info.names);
         let items = ModuleParser::new()

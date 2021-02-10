@@ -8,16 +8,16 @@ use crate::compiler::shared::Lower;
 
 // Lambdas must for now be pure (cannot capture anything)
 pub(super) fn lower(
-    params: &Vec<ast::Param>,
+    params: &[ast::Param],
     body: &ast::Expr,
     loc: Option<Loc>,
-    ctx: &mut Context,
+    ctx: &mut Context<'_>,
 ) -> hir::ExprKind {
     ctx.res.stack.push_frame();
 
     let (name, path) = ctx.info.fresh_name_path();
     let (ps, cases) = super::pattern::lower_params(params, ctx);
-    let body: Expr = body.lower(ctx).into();
+    let body: Expr = body.lower(ctx);
 
     let body = super::pattern::fold_cases(body, None, cases);
 

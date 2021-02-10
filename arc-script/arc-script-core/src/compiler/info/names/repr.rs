@@ -1,5 +1,7 @@
 use crate::compiler::hir::Name;
 use crate::compiler::info::files::Loc;
+
+use shrinkwraprs::Shrinkwrap;
 use derive_more::From;
 use smartstring::{LazyCompact, SmartString};
 
@@ -10,7 +12,7 @@ pub(crate) struct NameInterner {
     buf: String,
 }
 
-pub type NameBuf = str;
+pub(crate) type NameBuf = str;
 
 /// The product of interning a `Name`.
 #[derive(Debug, Clone, Copy, From, Shrinkwrap, Eq, PartialEq, Ord, PartialOrd, Hash)]

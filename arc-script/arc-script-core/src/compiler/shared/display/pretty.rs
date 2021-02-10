@@ -5,25 +5,27 @@ use crate::compiler::shared::New;
 use std::cell::Cell;
 use std::fmt::{self, Display, Formatter};
 
-/// Wraps a single AST node to be printed.
+/// Wraps a generic node to be printed in a specific context.
+/// NB: This is a tuple struct since it makes the syntax more concise.
 #[derive(New)]
-pub(crate) struct Pretty<'i, Node, State: Copy + Clone>(
-    pub(crate) &'i Node,
-    pub(crate) Context<State>,
-);
+pub(crate) struct Pretty<'i, Node, State: Copy>(pub(crate) &'i Node, pub(crate) Context<State>);
 
 /// Creates a pretty format for an AST node.
 pub(crate) trait AsPretty: Sized {
-    fn pretty<State, T>(&self, ctx: T) -> Pretty<Self, State>
+    /// Wraps `Self` and context `T` inside a struct which can be pretty-printed.
+    fn pretty<State, T>(&self, ctx: T) -> Pretty<'_, Self, State>
     where
         T: AsRef<Context<State>>,
-        State: Copy + Clone,
+        State: Copy,
     {
         Pretty::new(self, *ctx.as_ref())
     }
-    fn to_pretty<State>(&self, state: State) -> Pretty<Self, State>
+
+    /// Wraps `Self` inside a struct which can be pretty-printed. This is similar to [`pretty`] but
+    /// initializes the pretty-printer context (i.e., gives it an initial indentation).
+    fn to_pretty<State>(&self, state: State) -> Pretty<'_, Self, State>
     where
-        State: Copy + Clone,
+        State: Copy,
     {
         Pretty::new(self, Context::with_state(state))
     }
@@ -36,7 +38,7 @@ impl<Node> AsPretty for Node {}
 #[derive(New)]
 pub(crate) struct AllPretty<'i, Iter, State>
 where
-    State: Copy + Clone,
+    State: Copy,
 {
     pub(crate) iter: Cell<Option<Iter>>,
     pub(crate) sep: &'i str,
@@ -45,11 +47,11 @@ where
 
 /// Pretty prints an iterator of AST nodes using a separator.
 pub(crate) trait ToAllPretty: Sized {
-    fn all_pretty<'i, Node, State, T>(self, sep: &'i str, ctx: T) -> AllPretty<'i, Self, State>
+    fn all_pretty<Node, State, T>(self, sep: &str, ctx: T) -> AllPretty<'_, Self, State>
     where
         Self: IntoIterator<Item = Node>,
         T: AsRef<Context<State>>,
-        State: Copy + Clone,
+        State: Copy,
     {
         AllPretty::new(Cell::new(Some(self)), sep, *ctx.as_ref())
     }
@@ -62,7 +64,7 @@ where
     Iter: IntoIterator<Item = &'i Node>,
     for<'x> Pretty<'x, Node, State>: Display,
     Node: 'i,
-    State: Copy + Clone,
+    State: Copy,
 {
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
         let mut iter = self.iter.take().unwrap().into_iter();
@@ -86,7 +88,7 @@ pub(crate) struct MapPretty<'i, Iter, Fun> {
 
 /// Pretty prints a list of nodes using a mapper function.
 pub(crate) trait ToMapPretty {
-    fn map_pretty<'i, Fun, Node>(self, fun: Fun, sep: &'i str) -> MapPretty<'i, Self, Fun>
+    fn map_pretty<Fun, Node>(self, fun: Fun, sep: &str) -> MapPretty<'_, Self, Fun>
     where
         Self: IntoIterator<Item = Node> + Sized,
         for<'r, 's> Fun: Fn(Node, &'r mut Formatter<'s>) -> fmt::Result,

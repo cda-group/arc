@@ -6,12 +6,15 @@ use crate::compiler::shared::New;
 
 use std::fmt::{self, Display, Formatter};
 
+/// State which is necessary for pretty printing tokens.
 #[derive(New, Copy, Clone)]
 pub(crate) struct State<'i> {
+    /// Info is needed to resolve symbols.
     info: &'i info::Info,
 }
 
 impl Token {
+    /// Wraps the token inside a which can be pretty-printed.
     pub(crate) fn pretty<'i, 'j>(&'i self, info: &'j info::Info) -> Pretty<'i, Self, State<'j>> {
         self.to_pretty(State::new(info))
     }
@@ -79,7 +82,7 @@ impl<'i> Display for Pretty<'i, Token, State<'_>> {
             Token::Bxor       => write!(f, "bxor"),
             Token::Else       => write!(f, "else"),
             Token::Enwrap     => write!(f, "enwrap"),
-            Token::Emit       => write!(f, "unwrap"),
+            Token::Emit       => write!(f, "emit"),
             Token::Extern     => write!(f, "extern"),
             Token::Unwrap     => write!(f, "unwrap"),
             Token::Is         => write!(f, "is"),

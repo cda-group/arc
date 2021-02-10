@@ -2,11 +2,14 @@ use crate::compiler::ast;
 use crate::compiler::info;
 use crate::compiler::shared::New;
 
+use shrinkwraprs::Shrinkwrap;
+
 use std::fmt::{self, Display, Formatter};
 
 /// A generic context which can be used during pretty printing to store indentation.
-#[derive(New, Copy, Clone)]
+#[derive(New, Copy, Clone, Shrinkwrap)]
 pub(crate) struct Context<T: Copy + Clone> {
+    #[shrinkwrap(main_field)]
     pub(crate) state: T,
     indentation: u32,
 }
@@ -17,6 +20,7 @@ impl<T: Copy + Clone> AsRef<Context<T>> for Context<T> {
     }
 }
 
+/// The space of a tab character.
 pub(crate) const TABSPACE: &str = "    ";
 
 impl<T: Copy + Clone> Display for Context<T> {

@@ -1,3 +1,5 @@
+//! Types for deriving a Clap command-line argument parser.
+
 use derive_more::Constructor as New;
 use derive_more::From;
 
@@ -73,12 +75,18 @@ pub struct Run {
     pub output: Output,
 }
 
+/// An output mode.
 #[derive(ArgEnum, Debug, Clone, EnumString)]
 pub enum Output {
+    /// Output AST.
     AST,
+    /// Output HIR.
     HIR,
+    /// Output DFG.
     DFG,
+    /// Output Rust.
     Rust,
+    /// Output MLIR.
     MLIR,
 }
 

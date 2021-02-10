@@ -11,6 +11,12 @@ use codespan_reporting::term::termcolor::WriteColor;
 use std::io::Write;
 
 /// Compiles according to `opt` and writes output to `f`.
+///
+/// # Errors
+///
+/// Will return `Err` only for errors which are out of control of the compiler. In particular:
+/// * Errors caused from writing to `f`.
+/// * Errors caused from interactions with the filesystem.
 pub fn compile<W>(mode: Mode, mut f: W) -> anyhow::Result<Report>
 where
     W: Write + WriteColor,
@@ -29,13 +35,13 @@ where
             info.diags.emit(&info, None, &mut f);
         }
         if info.mode.force_output {
-            writeln!(f, "{}", ast.pretty(&ast, &mut info))?;
+            writeln!(f, "{}", ast.pretty(&ast, &info))?;
         }
         return Ok(Report::new(info, None));
     }
 
     if matches!(info.mode.output, Output::AST) {
-        writeln!(f, "{}", ast.pretty(&ast, &mut info))?;
+        writeln!(f, "{}", ast.pretty(&ast, &info))?;
         return Ok(Report::new(info, None));
     }
 
@@ -49,13 +55,13 @@ where
             info.diags.emit(&info, Some(&hir), &mut f);
         }
         if info.mode.force_output {
-            writeln!(f, "{}", hir::pretty(&hir, &hir, &mut info))?;
+            writeln!(f, "{}", hir::pretty(&hir, &hir, &info))?;
         }
         return Ok(Report::new(info, Some(hir)));
     }
 
     if matches!(info.mode.output, Output::HIR) {
-        writeln!(f, "{}", hir::pretty(&hir, &hir, &mut info))?;
+        writeln!(f, "{}", hir::pretty(&hir, &hir, &info))?;
         return Ok(Report::new(info, Some(hir)));
     }
 
@@ -86,7 +92,7 @@ where
         let mlir =
             tracing::debug_span!("HIR & DFG => MLIR").in_scope(|| MLIR::from(&hir, dfg, &mut info));
 
-        writeln!(f, "{}", mlir::pretty(&mlir, &mut info))?;
+        writeln!(f, "{}", mlir::pretty(&mlir, &info))?;
         return Ok(Report::new(info, Some(hir)));
     }
 

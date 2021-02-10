@@ -18,7 +18,7 @@ use crate::compiler::shared::Lower;
 /// * Desugar syntactic abstractions
 /// * Infer types
 impl HIR {
-    pub(crate) fn from(ast: &AST, info: &mut Info) -> HIR {
+    pub(crate) fn from(ast: &AST, info: &mut Info) -> Self {
         let mut hir = ast.lower(info);
         tracing::debug!("{}", hir::pretty(&hir, &hir, info));
         tracing::debug!("{}", hir.debug(info));

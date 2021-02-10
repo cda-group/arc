@@ -1,3 +1,5 @@
+//! Module for displaying the `DFG`.
+
 #![allow(clippy::useless_format)]
 use crate::compiler::dfg;
 use crate::compiler::hir;
@@ -12,11 +14,13 @@ use crate::compiler::shared::New;
 use petgraph::Direction;
 use std::fmt::{self, Display, Formatter};
 
+/// State needed to display the `DFG`.
 #[derive(Copy, Clone, New)]
 pub(crate) struct State<'i> {
     info: &'i Info,
 }
 
+/// Wraps the `DFG` inside a struct which can be pretty printed.
 pub(crate) fn pretty<'i, 'j, Node>(node: &'i Node, info: &'j Info) -> Pretty<'i, Node, State<'j>> {
     node.to_pretty(State::new(info))
 }

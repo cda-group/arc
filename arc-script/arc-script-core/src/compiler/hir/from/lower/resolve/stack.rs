@@ -2,6 +2,8 @@ use crate::compiler::hir::Name;
 use crate::compiler::info::diags::{Error, Result};
 use crate::compiler::info::Info;
 
+use shrinkwraprs::Shrinkwrap;
+
 use std::collections::hash_map::Entry;
 use std::collections::HashMap as Map;
 

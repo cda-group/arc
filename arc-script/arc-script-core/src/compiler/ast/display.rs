@@ -1,3 +1,5 @@
+//! AST display utilities.
+
 use crate::compiler::ast;
 use crate::compiler::info;
 use crate::compiler::info::names::NameId;
@@ -9,13 +11,15 @@ use crate::compiler::shared::New;
 
 use std::fmt::{self, Display, Formatter};
 
+/// Struct which contains all the information needed for pretty printing `AST:s`.
 #[derive(New, Copy, Clone)]
 pub(crate) struct State<'i> {
-    info: &'i info::Info,
+    info: &'i Info,
     ast: &'i ast::AST,
 }
 
 impl ast::AST {
+    /// Returns a struct which can be used to pretty print `Node`.
     pub(crate) fn pretty<'i, 'j, Node>(
         &'j self,
         node: &'i Node,
@@ -454,7 +458,7 @@ impl<'i> Display for Pretty<'i, ast::Type, State<'_>> {
             }
             ast::TypeKind::Nominal(x)          => write!(f, "{}", x.pretty(ctx)),
             ast::TypeKind::Array(None, sh)     => write!(f, "[{}]", sh.pretty(ctx)),
-            ast::TypeKind::Array(Some(ty), sh) => write!(f, "[{}; {}]", ty.pretty(ctx), sh.pretty(ctx)),
+            ast::TypeKind::Array(Some(ty), sh) => write!(f, "[{}; {}]", ty.as_ref().pretty(ctx), sh.pretty(ctx)),
             ast::TypeKind::Stream(ty)          => write!(f, "~{}", ty.pretty(ctx)),
             ast::TypeKind::Map(ty0, ty1)       => write!(f, "{{{} => {}}}", ty0.pretty(ctx), ty1.pretty(ctx)),
             ast::TypeKind::Set(ty)             => write!(f, "{{{}}}", ty.pretty(ctx)),

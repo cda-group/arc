@@ -5,7 +5,7 @@ use crate::compiler::shared::{New, Set};
 use super::Context;
 
 trait Mangle {
-    fn mangled_ident(&self, ctx: &mut Context) -> syn::Ident {
+    fn mangled_ident(&self, ctx: &mut Context<'_>) -> syn::Ident {
         let tmp = std::mem::take(&mut ctx.buf);
         self.mangle(ctx);
         let name = std::mem::take(&mut ctx.buf);
@@ -13,13 +13,13 @@ trait Mangle {
         ctx.buf = tmp;
         syn::Ident::new(&name, span)
     }
-    fn mangle(&self, ctx: &mut Context) -> syn::Ident;
+    fn mangle(&self, ctx: &mut Context<'_>) -> syn::Ident;
 }
 
 /// Mangles an anonymous-struct into a nominal-struct, e.g.
 ///
-/// {a_i32_b: i32}   // Struct7a_i32_b3i32End
-/// {a: i32, b: i32} // Struct1a3i321b3i32End
+/// `{a_i32_b: i32}   => Struct7a_i32_b3i32End`
+/// `{a: i32, b: i32} => Struct1a3i321b3i32End`
 ///
 // pub(crate) fn mangle_expr_struct(
 //     fields: &VecMap<hir::Name, hir::Expr>,
@@ -29,8 +29,8 @@ trait Mangle {
 // }
 
 impl hir::TypeId {
-    fn mangle(&self, ctx: &mut Context) {
-        match ctx.info.types.resolve(*self).kind {
+    fn mangle(self, ctx: &mut Context<'_>) {
+        match ctx.info.types.resolve(self).kind {
             hir::TypeKind::Array(t, s) => {
                 ctx.buf.push_str("Array_");
                 t.mangle(ctx);
@@ -71,7 +71,7 @@ impl hir::TypeId {
                 fts.sort_by_key(|(x, _)| x.id);
                 fts.iter().for_each(|(f, t)| {
                     f.mangle(ctx);
-                    ctx.buf.push_str("_");
+                    ctx.buf.push('_');
                     t.mangle(ctx);
                 });
                 ctx.buf.push_str("_End");
@@ -83,11 +83,9 @@ impl hir::TypeId {
         }
     }
 }
-// {a:i32, {b:i32, c:i32}}
-// Struct_a_i32_Struct_b_i32_c_i32_End_End
 
 impl hir::Name {
-    fn mangle(&self, ctx: &mut Context) {
+    fn mangle(&self, ctx: &mut Context<'_>) {
         let name = ctx.info.names.resolve(self.id);
         ctx.buf.push_str(name);
     }
@@ -95,26 +93,26 @@ impl hir::Name {
 
 impl hir::ScalarKind {
     #[rustfmt::skip]
-    fn as_str(&self, ctx: &mut Context) -> &'static str {
+    fn as_str(self, ctx: &mut Context<'_>) -> &'static str {
         match self {
-            hir::ScalarKind::Bool => "bool",
-            hir::ScalarKind::Char => "char",
-            hir::ScalarKind::Bf16 => "bf16",
-            hir::ScalarKind::F16  => "f16",
-            hir::ScalarKind::F32  => "f32",
-            hir::ScalarKind::F64  => "f64",
-            hir::ScalarKind::I8   => "i8",
-            hir::ScalarKind::I16  => "i16",
-            hir::ScalarKind::I32  => "i32",
-            hir::ScalarKind::I64  => "i64",
-            hir::ScalarKind::U8   => "u8",
-            hir::ScalarKind::U16  => "u16",
-            hir::ScalarKind::U32  => "u32",
-            hir::ScalarKind::U64  => "u64",
-            hir::ScalarKind::Null => todo!(),
-            hir::ScalarKind::Str  => todo!(),
-            hir::ScalarKind::Unit => "()",
-            hir::ScalarKind::Bot  => todo!(),
+            Self::Bool => "bool",
+            Self::Char => "char",
+            Self::Bf16 => "bf16",
+            Self::F16  => "f16",
+            Self::F32  => "f32",
+            Self::F64  => "f64",
+            Self::I8   => "i8",
+            Self::I16  => "i16",
+            Self::I32  => "i32",
+            Self::I64  => "i64",
+            Self::U8   => "u8",
+            Self::U16  => "u16",
+            Self::U32  => "u32",
+            Self::U64  => "u64",
+            Self::Null => todo!(),
+            Self::Str  => todo!(),
+            Self::Unit => "()",
+            Self::Bot  => todo!(),
         }
     }
 }

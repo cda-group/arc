@@ -9,11 +9,19 @@ use std::fs::File;
 use std::io::prelude::*;
 use std::path::{Path, PathBuf};
 
+/// Name of an arc-script configuration file, in the same sense as a `Cargo.toml`.
 const MANIFEST_FILENAME: &str = "Arcon.toml";
+
+/// Name of an arc-script main-file.
 const MAIN_FILENAME: &str = "main.arc";
+
+/// Name of an arc-script source directory.
 const SRC_DIRNAME: &str = "src";
+
+/// Name of an arc-script module file.
 const MOD_FILENAME: &str = "mod.arc";
 
+/// Reads a file and returns its contents.
 pub(crate) fn read_file(path: &impl AsRef<Path>) -> Result<String> {
     let mut file = File::open(path)?;
     let mut source = String::new();
@@ -70,7 +78,6 @@ impl AST {
     #[cfg(not(target_arch = "wasm32"))]
     pub(crate) fn parse_path(&mut self, main: Option<PathBuf>, info: &mut Info) {
         let path = main
-            .clone()
             .filter(|path| path.is_file())
             .and_then(|path| path.canonicalize().ok())
             .or_else(|| {
@@ -93,14 +100,14 @@ impl AST {
     /// Imports a module into the AST.
     /// NB: For now only supports the following directory structure:
     /// src/         <-- root
-    ///   main.rs    <-- path (::)
+    ///   main.rs    <-- path (`::`)
     ///   foo/
-    ///     mod.rs   <-- path (::foo)
+    ///     mod.rs   <-- path (`::foo`)
     ///     bar/
-    ///       mod.rs <-- path (::foo::bar)
+    ///       mod.rs <-- path (`::foo::bar`)
     /// NB: Assumes that `use` is the only way to refer to items in other files.
     #[cfg(not(target_arch = "wasm32"))]
-    fn import(&mut self, root_path: &PathBuf, mut module_path: PathBuf, info: &mut Info) {
+    fn import(&mut self, root_path: &Path, mut module_path: PathBuf, info: &mut Info) {
         tracing::debug!("Importing {:?} ...", module_path);
 
         // Construct the full path of the module.
