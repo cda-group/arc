@@ -1,6 +1,8 @@
 use super::Context;
 use crate::compiler::hir::Name;
-use crate::compiler::hir::{Expr, ExprKind, ItemKind, Param, ParamKind, UnOp, UnOpKind, HIR};
+use crate::compiler::hir::{
+    Expr, ExprKind, ItemKind, Param, ParamKind, ScalarKind, TypeKind, UnOp, UnOpKind, HIR,
+};
 use crate::compiler::info::names::NameInterner;
 use crate::compiler::info::types::TypeInterner;
 use crate::compiler::info::Info;
@@ -137,7 +139,12 @@ impl SSA<Var> for Expr {
             ExprKind::Err => unreachable!(),
         };
         let x = Var::new(ctx.info.names.fresh(), self.tv);
-        ops.push(Op::new(Some(x), kind, self.loc));
+        if !matches!(
+            ctx.info.types.resolve(self.tv).kind,
+            TypeKind::Scalar(ScalarKind::Unit)
+        ) {
+            ops.push(Op::new(Some(x), kind, self.loc));
+        }
         x
     }
 }

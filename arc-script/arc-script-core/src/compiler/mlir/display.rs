@@ -232,7 +232,7 @@ impl<'i> Display for Pretty<'i, mlir::OpKind, State<'_>> {
                 mlir::ConstKind::Fun(x)      => write!(f, r#"constant {} :"#, x.pretty(ctx)),
                 mlir::ConstKind::Char(_)     => todo!(),
                 mlir::ConstKind::Time(_)     => todo!(),
-                mlir::ConstKind::Unit        => write!(f, r#"arc.constant unit :"#),
+                mlir::ConstKind::Unit        => todo!(),
             },
             mlir::OpKind::BinOp(tv, l, op, r) => {
                 let ty = ctx.state.info.types.resolve(*tv);
@@ -389,6 +389,14 @@ impl<'i> Display for Pretty<'i, mlir::OpKind, State<'_>> {
                     .iter()
                     .map_pretty(|x, f| write!(f, "{}", x.tv.pretty(ctx)), ", "),
             ),
+            mlir::OpKind::Return(x)
+		if matches!(ctx.state.info.types.resolve(x.tv).kind,
+			    hir::TypeKind::Scalar(hir::ScalarKind::Unit)) =>
+		write!(
+                    f,
+                    r#"return {s0}"#,
+                    s0 = ctx
+		),
             mlir::OpKind::Return(x) => write!(
                 f,
                 r#"return {x} : {t}{s0}"#,
@@ -481,7 +489,7 @@ impl<'i> Display for Pretty<'i, hir::Type, State<'_>> {
                 Bool => write!(f, "i1"),
                 Null => todo!(),
                 Str  => todo!(),
-                Unit => write!(f, "i0"),
+                Unit => write!(f, "()"),
                 Char => todo!(),
                 Bot  => unreachable!(),
             }
