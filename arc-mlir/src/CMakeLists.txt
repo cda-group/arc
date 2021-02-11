@@ -6,17 +6,6 @@ include_directories(${CMAKE_CURRENT_BINARY_DIR}/include/)
 
 set(MLIR_TABLEGEN_EXE ${LLVM_BINARY_DIR}/bin/mlir-tblgen)
 
-# Ugly hack to try to detect the jar of the arc scala tools in order
-# to make wrapper shell script
-file(GLOB ARC_JAR ${PROJECT_SOURCE_DIR}/../../../arc-frontend/target/scala-*/Arc-assembly-*.jar)
-message(STATUS "ARC_JAR => ${ARC_JAR}")
-
-configure_file(
-    ${ARC_MLIR_SOURCE_DIR}/arc-to-mlir.in
-    ${LLVM_BINARY_DIR}/bin/arc-to-mlir
-    @ONLY
-    )
-
 set(ENV{CARGO_HTTP_DEBUG} "true")
 add_subdirectory(corrosion)
 get_filename_component(ARC_CARGO_TARGET_DIR "../../cargo/build"
