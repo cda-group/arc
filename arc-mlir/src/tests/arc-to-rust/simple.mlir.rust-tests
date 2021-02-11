@@ -1,0 +1,20 @@
+#[cfg(test)]
+mod tests {
+  #[test]
+  fn it_works() {
+    assert_eq!(crate::returnf64(), hexf64!("0x1.91eb851eb851fp1"));
+    assert_eq!(crate::returnf32(), hexf32!("0x1.62e48ep-1"));
+    assert_eq!(crate::return_true(), true);
+    assert_eq!(crate::return_false(), false);
+
+    assert_eq!(crate::return_ui8(), 0xFF);
+    assert_eq!(crate::return_ui16(), 0xFFFF);
+    assert_eq!(crate::return_ui32(), 0xFFFFFFFF);
+    assert_eq!(crate::return_ui64(), 0xFFFFFFFFFFFFFFFF);
+
+    assert_eq!(crate::return_si8(), -128);
+    assert_eq!(crate::return_si16(), -32768);
+    assert_eq!(crate::return_si32(), -2147483648);
+    assert_eq!(crate::return_si64(), -9223372036854775808);
+  }
+}

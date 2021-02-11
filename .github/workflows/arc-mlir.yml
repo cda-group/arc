@@ -1,0 +1,25 @@
+name: arc-mlir
+
+on:
+  pull_request:
+    branches: [ mlir ]
+
+jobs:
+  build:
+    runs-on: self-hosted
+
+    steps:
+
+    - name: Checkout source
+      uses: actions/checkout@v2
+
+    - name: Update submodule
+      run: git submodule update --init --recursive
+
+    - name: Build and test arc-mlir
+      run: |
+        cd arc-mlir
+        ./arc-mlir-build
+        ninja tools/arc-mlir/arc-check -C $A2M_BUILD/llvm-build/
+      env:
+        A2M_BUILD: ${{ format('{0}/build', runner.temp) }}

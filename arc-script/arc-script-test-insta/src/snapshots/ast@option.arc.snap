@@ -1,0 +1,14 @@
+---
+source: arc-script-test-insta/src/lib.rs
+expression: s
+input_file: arc-script-test-insta/src/expect-pass/option.arc
+---
+enum Option { Some(i32), None }
+fun main() {
+    if let Option::Some(y) = Option::Some(3) {
+        ()
+    } else {
+        ()
+    }
+}
+

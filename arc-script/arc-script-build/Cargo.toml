@@ -1,0 +1,11 @@
+[package]
+name = "arc-script-build"
+version = "0.1.0"
+description = "API for compiling arc-script from a build.rs file."
+authors = ["Klas Segeljakt <klasseg@kth.se>"]
+edition = "2018"
+license = "MIT"
+
+[dependencies]
+arc-script-core = { path = "../arc-script-core" }
+derive_more     = { version = "0.99.11", features = ["from"] }

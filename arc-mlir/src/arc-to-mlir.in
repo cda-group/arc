@@ -1,0 +1,6 @@
+#!/bin/bash
+
+java -jar @ARC_JAR@ -f MLIR $@
+
+
+

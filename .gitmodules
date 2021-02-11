@@ -1,0 +1,9 @@
+[submodule "mlir/tensorflow-mlir"]
+	path = arc-mlir/tensorflow-mlir
+	url = https://github.com/tensorflow/mlir
+[submodule "mlir/llvm-project"]
+	path = arc-mlir/llvm-project
+	url = https://github.com/llvm/llvm-project.git
+[submodule "arc-mlir/corrosion"]
+	path = arc-mlir/src/corrosion
+	url = https://github.com/AndrewGaspar/corrosion.git

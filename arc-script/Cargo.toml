@@ -1,0 +1,111 @@
+cargo-features = [
+  "strip" # Allow stripping symbols / debuginfo from binary
+]
+
+[package]
+name           = "arc-script"
+version        = "0.1.0"
+authors        = [
+  "Klas Segeljakt <klasseg@kth.se>",
+  "Frej Drejhammar <frej.drejhammar@ri.se>"
+]
+edition        = "2018"
+description    = "The Arc-Script Programming Language."
+documentation  = "https://segeljakt.github.io/arc-script/"
+readme         = "README.md"
+homepage       = "https://cda-group.github.io/"
+repository     = "https://www.github.com/segeljakt/arc-script"
+license        = "MIT"
+# license-file   = "" TODO
+keywords       = ["compiler", "data-science"]
+categories     = ["science", "database"]
+publish        = false
+
+[lib]
+name = "arc_script"
+path = "src/lib.rs"
+
+[dependencies]
+arc-script-bridge = { path = "arc-script-bridge" }
+arc-script-build  = { path = "arc-script-build" }
+
+[workspace]
+members = [
+  "arc-script-core",
+  "arc-script-macros",
+  "arc-script-quote",
+  "arc-script-bridge",
+  "arc-script-repl",
+  "arc-script-lsp",
+  "arc-script-cli",
+  "arc-script-web-repl",
+#   "arc-script-web-lsp",
+  "arc-script-python",
+  "arc-script-test-insta",
+  "arc-script-test-trybuild",
+  "arc-script-test-integration",
+  "arc-script-build",
+]
+
+exclude = [
+  "fuzz",
+#   "arc-script-web-repl",
+  "arc-script-web-lsp"
+]
+
+# -- The development profile, used for `cargo build`.
+[profile.dev]
+opt-level        = 0
+debug            = 2
+debug-assertions = true
+overflow-checks  = true
+lto              = false
+panic            = 'unwind'
+incremental      = true
+codegen-units    = 256
+rpath            = false
+
+# -- The release profile, used for `cargo build --release`.
+[profile.release]
+opt-level        = 3
+debug            = 0
+debug-assertions = false
+overflow-checks  = false
+lto              = true
+panic            = 'unwind'
+incremental      = false
+codegen-units    = 1
+rpath            = false
+strip            = "symbols"
+
+# -- The testing profile, used for `cargo test`.
+[profile.test]
+opt-level        = 0
+debug            = 2
+debug-assertions = true
+overflow-checks  = true
+lto              = false
+# panic            = 'unwind'
+incremental      = true
+codegen-units    = 256
+rpath            = false
+
+# -- The benchmarking profile, used for `cargo bench`.
+[profile.bench]
+opt-level        = 3
+debug            = 0
+debug-assertions = false
+overflow-checks  = false
+lto              = true
+# panic            = 'unwind'
+incremental      = false
+codegen-units    = 1
+rpath            = false
+strip            = "symbols"
+
+# --- Optimize for small binaries when compiling for the web
+[profile.release.package.arc-script-web-repl]
+opt-level = "z"
+
+# [profile.release.package.arc-script-web-lsp]
+# opt-level = "z"

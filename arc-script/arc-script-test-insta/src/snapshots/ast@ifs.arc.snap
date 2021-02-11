@@ -1,0 +1,19 @@
+---
+source: arc-script-test-insta/src/lib.rs
+expression: s
+input_file: arc-script-test-insta/src/expect-pass/ifs.arc
+---
+fun main() {
+    ()
+}
+fun test() {
+    let a_i32: i32 = 65 in
+    let b_i32: i32 = 66 in
+    let true_bool: bool = true in
+    if true_bool {
+        a_i32
+    } else {
+        b_i32
+    }
+}
+

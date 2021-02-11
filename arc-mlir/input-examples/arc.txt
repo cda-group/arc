@@ -1,0 +1,64 @@
+|source_0: stream[{i64,f64,f64,f64}], sink_0: streamappender[?]|
+# preprocess
+let operator_1 = result(for(source_0, streamappender[?], |sb,si,se| if(
+let obj101 = (se);
+let obj102 = (obj101.$3);
+let obj103 = (obj102 > f64(0.0));
+let obj104 = (obj101.$3);
+let obj105 = (obj104 < f64(1.0));
+let obj106 = (obj103 && obj105);
+obj106
+, merge(sb, se), sb)));
+# extract timestamp
+let operator_2 = result(for(operator_1, streamappender[?], |sb,si,se| merge(sb,
+let obj107 = (se);
+let obj108 = ({ obj107.$1,obj107.$2,obj107.$3 });
+obj108
+)));
+# extract key
+let operator_3 = result(for(operator_2, streamappender[?], |sb,si,se| merge(sb,
+let obj110 = (se);
+let obj111 = (obj110.$0);
+let obj112 = (obj111 / f64(166L));
+let obj113 = (i64(obj112));
+let obj114 = (obj110.$1);
+let obj115 = (obj114 / f64(60L));
+let obj116 = (i64(obj115));
+let obj117 = (obj110.$2);
+let obj118 = ({ obj113,obj116 });
+let obj119 = ({ obj118,obj117 });
+obj119
+)));
+# add to pressure
+let operator_4 = result(for(operator_3, streamappender[?], |sb,si,se| merge(sb,
+let obj120 = (se);
+let obj121 = (obj120.$0);
+let obj122 = (obj120.$1);
+let obj123 = (obj122 + f64(0.1));
+let obj124 = ({ obj121,obj123 });
+obj124
+)));
+# create tumbling window
+let operator_5 = result(for(operator_4, windower[unit,appender[?],?,vec[?]](
+  |ts,windows,state| { [ts/60L], () },
+  	|wm,windows,state| { result(for(windows, appender, |b,i,e| if(i < wm, merge(b, i), b))), () },
+  	|agg| result(agg)
+), |sb,si,se| merge(sb, se)));
+# sum up pressures
+for(operator_5, sink_0, |sb,si,se|
+let groups = tovec(result(for(se, groupmerger, |b,i,e| merge(b,e))));
+let keyvals = result(for(groups, appender, |gb,gi,ge| merge(gb,{ge.$0,
+let obj127 = (ge.$1);
+let obj130 = (result(
+    for(
+        obj127,
+        merger[f64, +],
+        |b: merger[f64, +], i: i64, e: f64| 
+            merge(b, e)
+    )
+));
+obj130
+})));
+merge(sb, keyvals)
+)
+

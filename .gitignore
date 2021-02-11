@@ -127,3 +127,24 @@ modules.xml
 
 
 # End of https://www.gitignore.io/api/intellij
+
+# arc-to-llvm build system flag file
+arc-mlir/.guessed-arc-mlir
+
+# Editor backup files
+*~
+
+# Rust
+
+book
+/target
+**/*.rs.bk
+bin/
+pkg/
+package-lock.json
+wasm-pack.log
+dist/
+.bin/
+corpus/
+artifacts/
+history.txt

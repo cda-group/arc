@@ -1,0 +1,52 @@
+name: arc-script
+
+on:
+  pull_request:
+    branches: [ mlir ]
+
+env:
+  CARGO_TERM_COLOR: always
+
+defaults:
+  run:
+    working-directory: ./arc-script
+
+jobs:
+  build:
+
+    runs-on: self-hosted
+
+    steps:
+    - name: checkout
+      uses: actions/checkout@v2
+    
+    - name: cargo-fetch
+      run: |
+        cargo fetch
+
+    - name: cargo-check
+      run: cargo check --all-features
+
+    - name: cargo-check-bins
+      run: cargo check --all-features --bins
+
+    - name: cargo-check-tests
+      run: cargo check --all-features --tests
+
+    - name: cargo-check-examples
+      run: cargo check --all-features --examples
+
+    - name: cargo-check-benches
+      run: cargo check --all-features --benches
+    
+    - name: cargo-test
+      run: cargo test --all-features
+
+    - name: cargo-fuzz
+      run: cargo fuzz run parse -- -runs=10000 -only-ascii
+
+    - name: cargo-clippy
+      run: cargo clippy --all-features
+
+#    - name: cargo-fmt
+#      run: cargo fmt -- -v --check

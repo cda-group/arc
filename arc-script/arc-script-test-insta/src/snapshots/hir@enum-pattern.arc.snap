@@ -1,0 +1,22 @@
+---
+source: arc-script-test-insta/src/lib.rs
+expression: s
+input_file: arc-script-test-insta/src/expect-pass/enum-pattern.arc
+---
+enum Option {
+    Some(i32),
+    None
+}
+fun x_3() -> () {
+    ()
+}
+fun main() -> () {
+    let x_0: crate::Option = enwrap[crate::Option::Some](5) in
+    if is[crate::Option::Some](x_0) {
+        let x_2: i32 = unwrap[crate::Option::Some](x_0) in
+        ()
+    } else {
+        crate::x_3()
+    }
+}
+
