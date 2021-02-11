@@ -16,11 +16,6 @@ jobs:
     - name: Update submodule
       run: git submodule update --init --recursive
 
-    - name: Build and test arc-frontend
-      run: |
-        cd arc-frontend
-        sbt test assembly
-
     - name: Build and test arc-mlir
       run: |
         cd arc-mlir

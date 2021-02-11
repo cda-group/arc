@@ -33,11 +33,11 @@ cd arc/
 
 git submodule update --init --recursive
 
-# Compile arc-frontend
-cd arc-frontend; sbt assembly; cd -
+# Compile arc-script
+cd arc-script/; cargo build --release --workspace; cd -
 
 # Compile arc-mlir
-cd arc-mlir/; ./arc-to-mlir-build; cd -
+cd arc-mlir/; ./arc-mlir-build; cd -
 
 # Run tests
 cd arc-mlir/build/llvm-build/; ninja check-arc-mlir; cd -
