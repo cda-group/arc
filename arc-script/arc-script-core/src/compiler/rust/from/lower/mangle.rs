@@ -76,7 +76,6 @@ impl hir::TypeId {
                 });
                 ctx.buf.push_str("_End");
             }
-            hir::TypeKind::Task(ts0, ts1) => {}
             hir::TypeKind::Tuple(t) => {}
             hir::TypeKind::Unknown => {}
             hir::TypeKind::Vector(t) => {}

@@ -150,11 +150,11 @@ impl<'i> Display for Pretty<'i, hir::Task, State<'_>> {
         let Pretty(item, ctx) = self;
         write!(
             f,
-            "task {name}({params}) ({iports}) -> ({oports}) {{{items}{s0}}}",
+            "task {name}({params}) {ihub} -> {ohub} {{{items}{s1}{on}{s0}}}",
             name = item.name.pretty(ctx),
             params = item.params.iter().all_pretty(", ", ctx),
-            iports = item.iports.iter().all_pretty(", ", ctx),
-            oports = item.oports.iter().all_pretty(", ", ctx),
+            ihub = item.ihub.pretty(ctx),
+            ohub = item.ohub.pretty(ctx),
             items = item.items.iter().map_pretty(
                 |x, f| write!(
                     f,
@@ -164,7 +164,48 @@ impl<'i> Display for Pretty<'i, hir::Task, State<'_>> {
                 ),
                 ""
             ),
+            on = item.on.pretty(ctx.indent()),
             s0 = ctx,
+            s1 = ctx.indent(),
+        )
+    }
+}
+
+impl<'i> Display for Pretty<'i, hir::Hub, State<'_>> {
+    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
+        let Pretty(item, ctx) = self;
+        match item.kind {
+            hir::HubKind::Tagged(x) => {
+                let item = ctx.state.hir.defs.get(&x).unwrap();
+                if let hir::ItemKind::Enum(item) = &item.kind {
+                    write!(
+                        f,
+                        "<{}>",
+                        item.variants.iter().map_pretty(
+                            |v, f| write!(f, "{}", ctx.state.hir.defs.get(v).unwrap().pretty(ctx)),
+                            ", "
+                        )
+                    )
+                } else {
+                    unreachable!()
+                }
+            }
+            hir::HubKind::Single(tv) => write!(f, "{}", tv.pretty(ctx)),
+        }
+    }
+}
+
+impl<'i> Display for Pretty<'i, hir::On, State<'_>> {
+    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
+        let Pretty(on, ctx) = self;
+        write!(
+            f,
+            "on {{{s1}{param} => {{{s2}{body}{s1}}}{s0}}}",
+            param = on.param.pretty(ctx),
+            body = on.body.pretty(ctx.indent().indent()),
+            s0 = ctx,
+            s1 = ctx.indent(),
+            s2 = ctx.indent().indent()
         )
     }
 }
@@ -252,9 +293,9 @@ impl<'i> Display for Pretty<'i, hir::Expr, State<'_>> {
                 e1 = e1.pretty(ctx)
             ),
             hir::ExprKind::UnOp(op, e0) => match &op.kind {
-                hir::UnOpKind::Not        => write!(f, "not {}", e0.pretty(ctx)),
-                hir::UnOpKind::Neg        => write!(f, "-{}", e0.pretty(ctx)),
-                hir::UnOpKind::Err        => write!(f, "☇{}", e0.pretty(ctx)),
+                hir::UnOpKind::Not => write!(f, "not {}", e0.pretty(ctx)),
+                hir::UnOpKind::Neg => write!(f, "-{}", e0.pretty(ctx)),
+                hir::UnOpKind::Err => write!(f, "☇{}", e0.pretty(ctx)),
             },
             hir::ExprKind::Project(e, i) => write!(f, "{}.{}", e.pretty(ctx), i.id),
             hir::ExprKind::Access(e, x) => write!(f, "{}.{}", e.pretty(ctx), x.pretty(ctx)),
@@ -281,6 +322,7 @@ impl<'i> Display for Pretty<'i, hir::Expr, State<'_>> {
             hir::ExprKind::Item(x) => write!(f, "{}", x.pretty(ctx)), 
             hir::ExprKind::Err => write!(f, "☇"),
             hir::ExprKind::Return(e) => write!(f, "return {};;", e.pretty(ctx)),
+            hir::ExprKind::Todo => write!(f, "???"),
         }?;
         Ok(())
     }
@@ -337,6 +379,7 @@ impl<'i> Display for Pretty<'i, hir::BinOp, State<'_>> {
             hir::BinOpKind::Bor  => write!(f, " bor "),
             hir::BinOpKind::Bxor => write!(f, " bxor "),
             hir::BinOpKind::Pipe => write!(f, " |> "),
+            hir::BinOpKind::Mut  => write!(f, " := "),
             hir::BinOpKind::Seq  => write!(f, ";{}", ctx),
             hir::BinOpKind::Err  => write!(f, " ☇ "),
         }
@@ -389,7 +432,6 @@ impl<'i> Display for Pretty<'i, hir::Type, State<'_>> {
             hir::TypeKind::Tuple(tys)     => write!(f, "({})", tys.iter().all_pretty(", ", ctx)),
             hir::TypeKind::Optional(ty)   => write!(f, "{}?", ty.pretty(ctx)),
             hir::TypeKind::Fun(args, ty)  => write!(f, "fun({}) -> {}", args.all_pretty(", ", ctx), ty.pretty(ctx)),
-            hir::TypeKind::Task(ty0, ty1) => write!(f, "({}) => ({})", ty0.all_pretty(", ", ctx), ty1.all_pretty(", ", ctx)),
             hir::TypeKind::Err            => write!(f, "☇"),
             hir::TypeKind::Unknown        => write!(f, "?"),
         }

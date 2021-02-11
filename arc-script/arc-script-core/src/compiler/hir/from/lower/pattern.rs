@@ -1,10 +1,12 @@
 use super::Context;
 use crate::compiler::ast;
-use crate::compiler::hir::{self, Expr, ExprKind, Param, ParamKind};
+use crate::compiler::hir::{self, Expr, ExprKind, Param, ParamKind, HIR};
 use crate::compiler::info::diags::Error;
 use crate::compiler::info::names::NameId;
 use crate::compiler::info::types::TypeId;
 use crate::compiler::shared::Lower;
+
+use crate::compiler::hir::from::lower::path;
 
 /// Lowers parameters but requires them to contain no patterns.
 pub(super) fn lower_params_basic(ps: &Vec<ast::Param>, ctx: &mut Context) -> Vec<Param> {
@@ -53,7 +55,7 @@ pub(super) fn lower_pat(p: &ast::Pat, ctx: &mut Context) -> (Param, Vec<Case>) {
         let x = ctx.info.names.fresh();
         let ux = ctx.res.stack.bind(x, ctx.info).unwrap();
         let v = Expr::syn(ExprKind::Var(ux), tv);
-        ssa(&p, v, tv, false, ctx, &mut cases);
+        ssa(&p, v, tv, true, ctx, &mut cases);
         Param::syn(ParamKind::Var(ux), tv)
     };
     (param, cases)
@@ -102,9 +104,55 @@ pub(super) fn fold_cases(then_branch: Expr, else_branch: Option<Expr>, cases: Ve
         })
 }
 
+#[derive(Debug)]
 pub(super) enum Case {
     Guard { cond: Expr },
     Bind { param: Param, expr: Expr },
+}
+
+pub(super) struct CaseDebug<'a> {
+    case: &'a Case,
+    info: &'a Info,
+    hir: &'a HIR,
+}
+
+impl Case {
+    pub(super) fn debug<'a>(&'a self, info: &'a Info, hir: &'a HIR) -> CaseDebug<'a> {
+        CaseDebug {
+            case: self,
+            info,
+            hir,
+        }
+    }
+}
+
+use crate::compiler::info::Info;
+use std::fmt::Display;
+
+impl<'a> Display for CaseDebug<'a> {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        writeln!(f, "CaseDebug: {{")?;
+        match self.case {
+            Case::Guard { cond } => {
+                writeln!(f, "    true == {}", hir::pretty(cond, self.hir, self.info))?
+            }
+            Case::Bind { param, expr } => match &param.kind {
+                ParamKind::Var(name) => writeln!(
+                    f,
+                    "    {} => {}",
+                    self.info.names.resolve(name.id),
+                    hir::pretty(expr, self.hir, self.info)
+                )?,
+                ParamKind::Ignore => {
+                    writeln!(f, "    _ => {}", hir::pretty(expr, self.hir, self.info))?
+                }
+                _ => writeln!(f, "<error>")?,
+            },
+            _ => {}
+        }
+        writeln!(f, "}}")?;
+        Ok(())
+    }
 }
 
 /// Transforms
@@ -226,20 +274,25 @@ fn ssa(
         ///       1
         ///   }
         ast::PatKind::Variant(x, p) if branching => {
-            let x0 = ctx.info.names.fresh();
-            cases.push(Case::Bind {
-                param: Param::syn(ParamKind::Var(x0), t0),
-                expr: e0,
-            });
-            let v0 = Expr::syn(ExprKind::Var(x0), t0);
-            cases.push(Case::Guard {
-                cond: Expr::syn(ExprKind::Is(*x, v0.clone().into()), ctx.info.types.fresh()),
-            });
-            let x1 = ctx.info.names.fresh();
-            cases.push(Case::Bind {
-                param: Param::syn(ParamKind::Var(x1), t0),
-                expr: Expr::syn(ExprKind::Unwrap(*x, v0.into()), ctx.info.types.fresh()),
-            });
+            if let Some(x) = path::lower_variant(x, ctx) {
+                let v0 = if let ExprKind::Var(_) = e0.kind {
+                    e0
+                } else {
+                    let x0 = ctx.info.names.fresh();
+                    cases.push(Case::Bind {
+                        param: Param::syn(ParamKind::Var(x0), t0),
+                        expr: e0,
+                    });
+                    Expr::syn(ExprKind::Var(x0), t0)
+                };
+                cases.push(Case::Guard {
+                    cond: Expr::syn(ExprKind::Is(x, v0.clone().into()), ctx.info.types.fresh()),
+                });
+                let x1 = ctx.info.names.fresh();
+                let t = ctx.info.types.fresh();
+                let e = Expr::syn(ExprKind::Unwrap(x, v0.into()), t);
+                ssa(p, e, t, branching, ctx, cases);
+            }
         }
         _ => ctx
             .info

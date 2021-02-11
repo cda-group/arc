@@ -13,8 +13,12 @@ pub struct Opt {
     #[clap(short, long)]
     pub debug: bool,
 
-    /// Fail after the first pass which produces an error.
+    /// Activate PROFILING mode.
     #[clap(short, long)]
+    pub profile: bool,
+
+    /// Fail after the first pass which produces an error.
+    #[clap(long)]
     pub fail_fast: bool,
 
     /// Mute all diagnostics messages.
@@ -24,6 +28,10 @@ pub struct Opt {
     /// Print AST with type information and parentheses
     #[clap(short, long, parse(from_occurrences))]
     pub verbosity: i32,
+
+    /// Print result even if there are errors.
+    #[clap(long)]
+    pub force_output: bool,
 
     /// Sub-command
     #[clap(subcommand)]

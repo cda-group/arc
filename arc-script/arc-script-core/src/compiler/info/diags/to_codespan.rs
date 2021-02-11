@@ -8,6 +8,7 @@ use crate::compiler::info::types::TypeId;
 use crate::compiler::info::Info;
 use crate::compiler::shared::display::pretty::AsPretty;
 use crate::compiler::shared::New;
+use crate::compiler::ast::from::lexer;
 
 use codespan_reporting::diagnostic::{self, Label};
 use codespan_reporting::files;
@@ -93,7 +94,7 @@ impl ToCodespan for Error {
                 .with_message("Bad literal.")
                 .with_labels(vec![label(loc)?.with_message(msg)]),
             Error::ExtraToken { found, loc } => Codespan::error()
-                .with_message(format!("Extraneous token {}", found))
+                .with_message(format!("Extraneous token {}", found.pretty(ctx.info)))
                 .with_labels(vec![label(loc)?]),
             Error::InvalidToken { loc } => Codespan::error()
                 .with_message("Invalid token")
@@ -108,7 +109,7 @@ impl ToCodespan for Error {
                 expected,
                 loc,
             } => Codespan::error()
-                .with_message(format!("Unrecognized token {}", found))
+                .with_message(format!("Unrecognized token {}", found.pretty(ctx.info)))
                 .with_labels(vec![
                     label(loc)?.with_message(format!("expected {}", expected.join(", ")))
                 ]),

@@ -14,7 +14,7 @@ fn snapshot(output: Output) {
     settings.remove_snapshot_suffix();
     let mut sink = Buffer::no_color();
     settings.bind(|| {
-        insta::glob!("{expect-pass, expect-fail}/*", |path| {
+        insta::glob!("{expect-pass, expect-fail, expect-fail-todo}/*", |path| {
             println!("Testing {}", path.display());
             let mode = Mode {
                 input: Input::File(Some(path.into())),

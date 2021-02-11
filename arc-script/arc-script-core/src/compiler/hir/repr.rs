@@ -146,16 +146,27 @@ pub(crate) struct Task {
     ///     fun foo() { a + b }
     ///     on I(c) => emit Out(foo() + c)
     /// }
-    ///
-    //     pub(crate) constructor: Path,
-    /// Input ports to the task. TODO: Should be variants when Arcon supports it
-    pub(crate) iports: Vec<TypeId>,
-    /// Output ports of the task.
-    pub(crate) oports: Vec<TypeId>,
+    /// Input hub to the task.
+    pub(crate) ihub: Hub,
+    /// Input hub to the task.
+    pub(crate) ohub: Hub,
     /// Event handler.
     pub(crate) on: On,
     /// Items of the task.
     pub(crate) items: Vec<Path>,
+}
+
+#[derive(Debug, New, Spanned)]
+pub(crate) struct Hub {
+    pub(crate) tv: TypeId,
+    pub(crate) kind: HubKind,
+    pub(crate) loc: Option<Loc>,
+}
+
+#[derive(Debug)]
+pub(crate) enum HubKind {
+    Tagged(Path),
+    Single(TypeId),
 }
 
 #[derive(New, Spanned, Debug)]
@@ -204,9 +215,10 @@ pub(crate) enum ExprKind {
     UnOp(UnOp, Box<Expr>),
     Var(Name),
     Enwrap(Path, Box<Expr>), // Construct a variant
-    Unwrap(Name, Box<Expr>), // Deconstruct a variant
-    Is(Name, Box<Expr>),     // Check a variant
+    Unwrap(Path, Box<Expr>), // Deconstruct a variant
+    Is(Path, Box<Expr>),     // Check a variant
     Return(Box<Expr>),
+    Todo,
     Err,
 }
 
@@ -242,7 +254,6 @@ pub enum TypeKind {
     Set(TypeId),
     Stream(TypeId),
     Struct(VecMap<Name, TypeId>),
-    Task(Vec<TypeId>, Vec<TypeId>),
     Tuple(Vec<TypeId>),
     Unknown,
     Vector(TypeId),

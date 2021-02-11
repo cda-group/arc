@@ -8,10 +8,10 @@ fun main() {
     let b = 2.0f32 in
 
     let c = Foo::Bar(a) in
-    let d = unwrap[Bar](c) in
+    let d = unwrap[Foo::Bar](c) in
 
     let e = enwrap[Foo::Baz](b) in
-    let f = is[Baz](e) in
+    let f = is[Foo::Baz](e) in
 
     ()
 }

@@ -136,6 +136,7 @@ impl SSA<Var> for Expr {
             }
             ExprKind::Break => OpKind::Break,
             ExprKind::Return(e) => todo!(),
+            ExprKind::Todo => todo!(),
             ExprKind::Err => unreachable!(),
         };
         let x = Var::new(ctx.info.names.fresh(), self.tv);

@@ -73,14 +73,6 @@ impl Unify<TypeId, TypeId> for Context<'_> {
                 self.unify(*tv00, *tv10);
                 self.unify(*tv01, *tv11);
             }
-            (Task(tvs00, tvs01), Task(tvs10, tvs11)) => {
-                for (tv0, tv1) in tvs00.iter().zip(tvs10) {
-                    self.unify(*tv0, *tv1);
-                }
-                for (tv0, tv1) in tvs00.iter().zip(tvs10) {
-                    self.unify(*tv0, *tv1);
-                }
-            }
             _ => self.info.diags.intern(Error::TypeMismatch {
                 lhs: tv0,
                 rhs: tv1,

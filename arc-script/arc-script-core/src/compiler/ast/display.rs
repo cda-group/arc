@@ -123,17 +123,31 @@ impl<'i> Display for Pretty<'i, ast::Task, State<'_>> {
         let Pretty(item, ctx) = self;
         write!(
             f,
-            "task {name}({params}) ({iports}) -> ({oports}) {{{items}{s0}}}",
+            "task {name}({params}) ({ihub}) -> ({ohub}) {{{items}{s0}}}",
             name = item.name.pretty(ctx),
             params = item.params.iter().all_pretty(",", ctx),
-            iports = item.iports.iter().all_pretty(",", ctx),
-            oports = item.oports.iter().all_pretty(",", ctx),
+            ihub = item.ihub.pretty(ctx),
+            ohub = item.ohub.pretty(ctx),
             items = item.items.iter().map_pretty(
                 |i, f| write!(f, "{s0}{}", i.pretty(ctx.indent()), s0 = ctx.indent()),
                 ""
             ),
             s0 = ctx,
         )
+    }
+}
+
+impl<'i> Display for Pretty<'i, ast::Hub, State<'_>> {
+    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
+        let Pretty(item, ctx) = self;
+        match &item.kind {
+            ast::HubKind::Tagged(vs) => {
+                write!(f, "<{}>", vs.iter().all_pretty(", ", ctx))
+            }
+            ast::HubKind::Single(t) => {
+                write!(f, "{}", t.pretty(ctx))
+            }
+        }
     }
 }
 
@@ -300,6 +314,7 @@ impl<'i> Display for Pretty<'i, ast::Expr, State<'_>> {
             ast::ExprKind::Err => write!(f, "☇"),
             ast::ExprKind::Return(Some(e)) => write!(f, "return {};;", e.pretty(ctx)),
             ast::ExprKind::Return(None) => write!(f, "return;;"),
+            ast::ExprKind::Todo => write!(f, "???"),
         }?;
         Ok(())
     }
@@ -375,6 +390,7 @@ impl<'i> Display for Pretty<'i, ast::BinOp, State<'_>> {
             ast::BinOpKind::Bor  => write!(f, " bor "),
             ast::BinOpKind::Bxor => write!(f, " bxor "),
             ast::BinOpKind::Pipe => write!(f, " |> "),
+            ast::BinOpKind::Mut  => write!(f, " := "),
             ast::BinOpKind::Seq  => write!(f, ";{}", ctx),
             ast::BinOpKind::Err  => write!(f, " ☇ "),
         }
@@ -446,7 +462,6 @@ impl<'i> Display for Pretty<'i, ast::Type, State<'_>> {
             ast::TypeKind::Tuple(tys)          => write!(f, "({})", tys.iter().all_pretty(", ", ctx)),
             ast::TypeKind::Optional(ty)        => write!(f, "{}?", ty.pretty(ctx)),
             ast::TypeKind::Fun(args, ty)       => write!(f, "fun({}) -> {}", args.all_pretty(", ", ctx), ty.pretty(ctx)),
-            ast::TypeKind::Task(ty0, ty1)      => write!(f, "({}) => ({})", ty0.all_pretty(", ", ctx), ty1.all_pretty(", ", ctx)),
             ast::TypeKind::Err                 => write!(f, "☇"),
         }
     }

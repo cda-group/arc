@@ -1,0 +1,26 @@
+---
+source: arc-script-test-insta/src/lib.rs
+expression: s
+input_file: arc-script-test-insta/src/expect-pass/enum-pattern.arc
+---
+module @toplevel {
+    func @x_3() -> i0 {
+        %x_4 = arc.constant unit : i0
+        return %x_4 : i0
+    }
+    func @main() -> i0 {
+        %x_5 = arc.constant 5 : si32
+        %x_6 = "arc.enwrap"%x_5 { variant = crate_Option_Some } : si32 -> crate_Option
+        %x_7 = "arc.is"%x_6 { variant = crate_Option_Some } : crate_Option -> i1
+        %x_B = "arc.if"(%x_7) ({
+            %x_8 = "arc.unwrap"%x_6 { variant = crate_Option_Some } : crate_Option -> si32
+            %x_9 = arc.constant unit : i0
+            "arc.block.result"(%x_9) : (i0) -> ()
+        },{
+            %x_A = call crate_x_3() : () -> i0
+            "arc.block.result"(%x_A) : (i0) -> ()
+        }) : (i1) -> i0
+        return %x_B : i0
+    }
+}
+

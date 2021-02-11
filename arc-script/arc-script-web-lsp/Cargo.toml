@@ -1,0 +1,28 @@
+[package]
+name = "arc-script-web-lsp"
+version = "0.1.0"
+authors = ["Klas Segeljakt <klasseg@kth.se>"]
+edition = "2018"
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[features]
+default = ["console_error_panic_hook"]
+
+[dependencies]
+arc-script-core          = { path = "../arc-script-core" }
+arc-script-lsp           = { path = "../arc-script-lsp", default-features = false, features = ["runtime-futures"] }
+
+wasm-bindgen             = { version = "0.2.67" }
+js-sys                   = { version = "0.3.39" }
+js-sys-futures           = { version = "0.3.0" }
+node-sys                 = { version = "0.4.2" }
+# lspower                  = { version = "0.6.0", default-features = false, features = ["runtime-agnostic"] }
+
+console_error_panic_hook = { version = "0.1.6", optional = true }
+wee_alloc                = { version = "0.4.5", optional = true }
+
+[dev-dependencies]
+wasm-bindgen-futures     = { version = "0.4.20" }
+wasm-bindgen-test        = { version = "0.3.17" }

@@ -6,7 +6,7 @@ use arc_script_core::compiler::info::Info;
 
 use codespan_lsp::byte_index_to_position;
 use codespan_reporting::diagnostic::{Diagnostic, Label, Severity};
-use tower_lsp::lsp_types as lsp;
+use lspower::lsp;
 
 #[rustfmt::skip]
 pub fn to_lsp(report: Report) -> Vec<lsp::Diagnostic> {
@@ -40,6 +40,8 @@ pub fn to_lsp(report: Report) -> Vec<lsp::Diagnostic> {
                         message,
                         related_information: None,
                         tags: None,
+                        code_description: None,
+                        data: None,
                     })
                     .collect::<Vec<lsp::Diagnostic>>()
             },

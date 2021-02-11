@@ -1,5 +1,5 @@
 [package]
-name = "arc-script-lsp"
+name    = "arc-script-lsp"
 version = "0.1.0"
 authors = ["Klas Segeljakt <klasseg@kth.se>"]
 edition = "2018"
@@ -8,16 +8,32 @@ edition = "2018"
 name = "arc_script_lsp"
 path = "src/lib.rs"
 
+[[bin]]
+name = "arc-script-lsp"
+path = "src/main.rs"
+
+[features]
+default            = [ "runtime-tokio" ]
+runtime-futures    = [ "lspower/runtime-agnostic", "futures", "blocking" ]
+runtime-smol       = [ "lspower/runtime-agnostic", "smol" ]
+runtime-tokio      = [ "lspower/runtime-tokio", "tokio" ]
+
 [dependencies]
 arc-script-core    = { path = "../arc-script-core" }
 
-log = "0.4.13"
-tower-lsp          = { version = "=0.13.3" }
-# lspower            = { version = "0.6.0" }
-tokio              = { version = "=0.2", features = ["io-std", "io-util", "macros", "net", "test-util"] }
-codespan-lsp       = { version = "=0.10.1" }
-codespan-reporting = { version = "=0.9.5" }
+log                = { version = "0.4.13" }
+lspower            = { version = "0.6.0", default-features = false }
+codespan-lsp       = { git = "https://github.com/brendanzab/codespan" }
+codespan-reporting = { git = "https://github.com/brendanzab/codespan" }
 trie-rs            = { version = "0.1.1" }
 lazy_static        = { version = "1.4.0" }
 async-trait        = { version = "0.1.42" }
 serde_json         = { version = "1.0.61" }
+anyhow             = { version = "1.0.37" }
+derive_more        = { version = "0.99.11", features = ["constructor"] }
+
+# Runtimes
+blocking           = { optional = true, version = "1.0" }
+tokio              = { optional = true, version = "1.0", features = ["io-std", "macros", "rt", "rt-multi-thread", "sync"] }
+smol               = { optional = true, version = "1.2" }
+futures            = { optional = true, version = "1.11", package = "futures-lite" }

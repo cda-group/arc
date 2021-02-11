@@ -1,3 +1,4 @@
+use crate::compiler::ast::from::lexer::Token;
 use crate::compiler::ast::Name;
 use crate::compiler::hir;
 use crate::compiler::hir::Path;
@@ -13,8 +14,12 @@ use std::io::Write;
 use std::str;
 
 use codespan_reporting::diagnostic::{self, Label};
-use codespan_reporting::term::termcolor::{Buffer, ColorChoice, StandardStream, WriteColor};
+use codespan_reporting::term::termcolor::{
+    Buffer, Color, ColorChoice, ColorSpec, StandardStream, WriteColor,
+};
 use codespan_reporting::term::{self, Config};
+
+type CodespanResult = std::result::Result<(), codespan_reporting::files::Error>;
 
 #[derive(Shrinkwrap, Debug, Default)]
 #[shrinkwrap(mutable)]
@@ -83,7 +88,7 @@ pub enum Error {
     BadLiteral { msg: String, loc: Option<Loc> },
 
     /// Error when the parser comes across an extra token.
-    ExtraToken { found: String, loc: Option<Loc> },
+    ExtraToken { found: Token, loc: Option<Loc> },
 
     /// Error when the parser comes across an invalid token.
     InvalidToken { loc: Option<Loc> },
@@ -96,7 +101,7 @@ pub enum Error {
 
     /// Error when the parser comes across an unexpected token.
     UnrecognizedToken {
-        found: String,
+        found: Token,
         loc: Option<Loc>,
         expected: Vec<String>,
     },
@@ -177,16 +182,14 @@ impl DiagInterner {
     pub(crate) fn take(&mut self) -> DiagInterner {
         std::mem::take(self)
     }
-    /// Emits diagnostics to stdout.
-    pub(crate) fn emit_to_stdout<W>(
-        &self,
-        info: &Info,
-        hir: Option<&HIR>,
-        f: &mut W,
-    ) -> io::Result<()>
+    pub(crate) fn emit<W>(&self, info: &Info, hir: Option<&HIR>, f: &mut W) -> CodespanResult
     where
         W: Write + WriteColor,
     {
+        f.set_color(ColorSpec::new().set_fg(Some(Color::Red)));
+        writeln!(f, "[-- Found {} errors --],", self.len())?;
+        f.reset();
+
         let files = &info.files.store;
         let config = &Config::default();
         let ctx = &Context { info, hir };

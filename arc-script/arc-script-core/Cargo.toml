@@ -1,30 +1,20 @@
 [package]      
-name           = "arc-script-core"
-version        = "0.1.0"
-authors        = ["Klas Segeljakt <klasseg@kth.se>"]
-description    = "The Arc-Script compiler."
-homepage       = "https://cda-group.github.io/"
-repository     = "https://www.github.com/segeljakt/arc-script"
-documentation  = "https://segeljakt.github.io/arc-script/"
-readme         = "README.md"
-keywords       = ["compiler", "data-science"]
-categories     = ["science", "database"]
-license        = "MIT"
-# license-file   = "" TODO
-edition        = "2018"
-build          = "build.rs"
-publish        = false
+name    = "arc-script-core"
+version = "0.1.0"
+authors = ["Klas Segeljakt <klasseg@kth.se>"]
+edition = "2018"
+build   = "build.rs"
 
 [lib]
-name           = "arc_script_core"
-path           = "src/lib.rs"
+name    = "arc_script_core"
+path    = "src/lib.rs"
 
 [[bench]]
-name           = "bench"
-harness        = false
+name    = "bench"
+harness = false
 
 [features]
-default     = []
+default = []
 
 [dependencies]
 arc-script-macros  = { path = "../arc-script-macros" }
@@ -32,7 +22,7 @@ logos              = { version = "0.11.4" }
 regex              = { version = "1.4.3" }
 lalrpop-util       = { version = "0.19.4" }
 ena                = { version = "0.14.0"}
-codespan-reporting = { version = "=0.9.5" }
+codespan-reporting = { git = "https://github.com/brendanzab/codespan" }
 derive_more        = { version = "0.99.11", default-features = false, features = ["constructor", "as_ref", "from", "into", "add", "mul", "not"] }
 num-traits         = { version = "0.2.14" }
 arrayvec           = { version = "0.5.2" }
@@ -50,7 +40,6 @@ tracing            = { version = "0.1.22" }
 tracing-subscriber = { version = "0.2.15" }
 tracing-flame      = { version = "0.1.0" }
 bumpalo            = { version = "3.4.0", features = ["boxed", "collections"] }
-salsa              = { version = "0.16.0" }
 lexical-core       = { version = "0.7.4", features = ["format"] }
 crepe              = { version = "0.1.5" }
 petgraph           = { version = "0.5.1", package = "petgraph" }
@@ -62,13 +51,18 @@ syn                = { version = "1.0.60", features = ["full"] }
 quote              = { version = "1.0.8" }
 proc-macro2        = { version = "1.0.24" }
 strum              = { version = "0.20", features = ["derive"] }
-tempfile           = { version = "3.1.0" }
 cfg-if             = { version = "1.0.0" }
 better-panic       = { version = "0.2.0" }
 text-size          = { version = "1.1.0" }
 half               = { version = "1.7.1", features = ["num-traits"] }
+# rustfmt-nightly    = { git = "https://github.com/rust-lang/rustfmt" }
 # z3                 = { optional = true, version = "0.9.0" }
 # toml               = { optional = true, version = "0.5.8" }
+
+
+[target.'cfg(not(target_arch = "wasm32"))'.dependencies]
+tempfile           = { version = "3.1.0" }
+salsa              = { version = "0.16.0" }
 
 #[build]
 #rustflags = ["-C", "link-arg=-fuse-ld=lld"]

@@ -13,7 +13,7 @@ use std::fs;
 ///     use foo;
 ///     use bar::baz;
 /// }
-pub fn arc_script(attr: pm::TokenStream, item: pm::TokenStream) -> pm::TokenStream {
+pub(crate) fn expand(attr: pm::TokenStream, item: pm::TokenStream) -> pm::TokenStream {
     if let syn::Item::Mod(module) = syn::parse(item).expect("Expected `mod` item") {
         let (_, items) = module.content.expect("Expected `mod { ... }` found `mod;`");
         let mut args = attr.into_iter();

@@ -159,19 +159,12 @@ impl Lower<(Path, hir::ItemKind), Context<'_>> for ast::Task {
             ctx.hir.defs.insert(fun_path, item);
             ctx.hir.items.push(fun_path);
         }
-        // TODO: These should be enums
-        let iports = self
-            .iports
-            .iter()
-            .map(|p| p.ty.as_ref().unwrap().lower(ctx))
-            .collect();
-        let oports = self
-            .iports
-            .iter()
-            .map(|p| p.ty.as_ref().unwrap().lower(ctx))
-            .collect();
+        // NOTE: These names need to match those which are declared
+        let ihub = self.ihub.lower("Source", ctx);
+        let ohub = self.ohub.lower("Sink", ctx);
+
         // TODO: Handle error when there is no handler
-        let handler = self
+        let on = self
             .items
             .iter()
             .filter_map(|item| {
@@ -184,15 +177,50 @@ impl Lower<(Path, hir::ItemKind), Context<'_>> for ast::Task {
             .next()
             .unwrap()
             .lower(ctx);
-        let items = self
+        let mut items = self
             .items
             .iter()
             .filter_map(|item| item.lower(ctx))
             .collect::<Vec<Path>>();
         let tv = ctx.info.types.fresh();
         ctx.res.pop_namespace(ctx.info);
-        let task = hir::Task::new(self.name, tv, task_params, iports, oports, handler, items);
+        let task = hir::Task {
+            name: self.name,
+            tv,
+            ihub,
+            ohub,
+            params: task_params,
+            on,
+            items,
+        };
         (task_path.into(), hir::ItemKind::Task(task))
+    }
+}
+
+impl ast::Hub {
+    fn lower(&self, name: &str, ctx: &mut Context<'_>) -> hir::Hub {
+        tracing::trace!("Lowering Hub");
+        let kind = match &self.kind {
+            ast::HubKind::Tagged(vs) => {
+                // Construct enum for ports
+                let task_path = ctx.res.path_id;
+                let hub_name = ctx.info.names.intern(name).into();
+                let hub_path: Path = ctx.info.paths.intern_child(task_path, hub_name).into();
+                let ports = vs
+                    .iter()
+                    .map(|v| v.lower(hub_path.id, ctx))
+                    .collect::<Vec<_>>();
+                let hub_item = hir::Item::syn(hir::ItemKind::Enum(hir::Enum::new(hub_name, ports)));
+                ctx.hir.defs.insert(hub_path, hub_item);
+                hir::HubKind::Tagged(hub_path)
+            }
+            ast::HubKind::Single(ty) => hir::HubKind::Single(ty.lower(ctx)),
+        };
+        hir::Hub {
+            tv: ctx.info.types.fresh(),
+            kind,
+            loc: self.loc,
+        }
     }
 }
 
@@ -219,14 +247,21 @@ impl Lower<(Path, hir::ItemKind), Context<'_>> for ast::Fun {
     }
 }
 
+/// For now, assume there is a single-case
 impl Lower<hir::On, Context<'_>> for ast::On {
     fn lower(&self, ctx: &mut Context) -> hir::On {
-        /// For now, assume there is a single-case
+        ctx.res.stack.push_scope();
         let mut iter = self.cases.iter();
         let case = iter.next().unwrap();
         let (param, cases) = pattern::lower_pat(&case.pat, ctx);
+        for case in cases.iter() {
+            tracing::debug!("{}", case.debug(ctx.info, ctx.hir));
+        }
         let body = case.body.lower(ctx);
-        let body = pattern::fold_cases(body, None, cases);
+        let tv = ctx.info.types.fresh();
+        let else_branch = hir::Expr::syn(hir::ExprKind::Todo, tv);
+        let body = pattern::fold_cases(body, Some(else_branch), cases);
+        ctx.res.stack.pop_scope();
         hir::On::syn(param, body)
     }
 }
@@ -244,28 +279,26 @@ impl Lower<(Path, hir::ItemKind), Context<'_>> for ast::Enum {
     fn lower(&self, ctx: &mut Context) -> (Path, hir::ItemKind) {
         let path = ctx.res.path_id;
         let enum_path = ctx.info.paths.intern_child(ctx.res.path_id, self.name);
-        ctx.res.path_id = enum_path;
-        let variants = self.variants.lower(ctx);
-        ctx.res.path_id = path;
+        let variants = self
+            .variants
+            .iter()
+            .map(|v| v.lower(enum_path, ctx))
+            .collect::<Vec<_>>();
         let item = hir::Enum::new(self.name, variants);
         (enum_path.into(), hir::ItemKind::Enum(item))
     }
 }
 
-impl Lower<Path, Context<'_>> for ast::Variant {
-    fn lower(&self, ctx: &mut Context) -> Path {
-        let path: Path = ctx
-            .info
-            .paths
-            .intern_child(ctx.res.path_id, self.name)
-            .into();
+impl ast::Variant {
+    fn lower(&self, enum_path: hir::PathId, ctx: &mut Context) -> Path {
+        let path: Path = ctx.info.paths.intern_child(enum_path, self.name).into();
         let item = hir::Variant::new(
             self.name,
             self.ty
                 .as_ref()
                 .map(|ty| ty.lower(ctx))
                 .unwrap_or_else(|| ctx.info.types.intern(hir::ScalarKind::Unit)),
-            self.loc.into(),
+            self.loc,
         );
         ctx.hir
             .defs
@@ -278,7 +311,7 @@ impl Lower<hir::Expr, Context<'_>> for ast::Expr {
     #[rustfmt::skip]
     fn lower(&self, ctx: &mut Context) -> hir::Expr {
         let kind = match ctx.ast.exprs.resolve(self.id) {
-            ast::ExprKind::Path(x)              => path::lower(x, self.loc, ctx),
+            ast::ExprKind::Path(x)              => path::lower_path_expr(x, self.loc, ctx),
             ast::ExprKind::Lit(kind)            => hir::ExprKind::Lit(kind.lower(ctx)),
             ast::ExprKind::Array(es)            => hir::ExprKind::Array(es.lower(ctx)),
             ast::ExprKind::Struct(fs)           => hir::ExprKind::Struct(fs.lower(ctx)),
@@ -291,9 +324,9 @@ impl Lower<hir::Expr, Context<'_>> for ast::Expr {
             ast::ExprKind::IfLet(p, e0, e1, e2) => return if_let::lower(p, e0, e1, e2, ctx),
             ast::ExprKind::Let(p, e0, e1)       => return let_in::lower(p, e0, e1, ctx),
             ast::ExprKind::Emit(e)              => hir::ExprKind::Emit(e.lower(ctx).into()),
-            ast::ExprKind::Unwrap(x, e)         => hir::ExprKind::Unwrap(*x, e.lower(ctx).into()),
-            ast::ExprKind::Enwrap(x, e)         => call::lower_enwrap(x, e, self.loc, ctx),
-            ast::ExprKind::Is(x, e)             => hir::ExprKind::Is(*x, e.lower(ctx).into()),
+            ast::ExprKind::Unwrap(x, e)         => path::lower_unwrap(x, e, ctx),
+            ast::ExprKind::Enwrap(x, e)         => path::lower_enwrap(x, e, ctx),
+            ast::ExprKind::Is(x, e)             => path::lower_is(x, e, ctx),
             ast::ExprKind::Log(e)               => hir::ExprKind::Log(e.lower(ctx).into()),
             ast::ExprKind::For(p, e0, e1)       => todo!(),
             ast::ExprKind::Match(e, cs)         => todo!(), //refutable::lower_cases(cs, ctx),
@@ -318,6 +351,7 @@ impl Lower<hir::Expr, Context<'_>> for ast::Expr {
             ast::ExprKind::Reduce(p, e, r)   => todo!(),
             ast::ExprKind::Access(e, f)      => hir::ExprKind::Access(e.lower(ctx).into(), *f),
             ast::ExprKind::Project(e, i)     => hir::ExprKind::Project(e.lower(ctx).into(), *i),
+            ast::ExprKind::Todo              => hir::ExprKind::Todo,
             ast::ExprKind::Err               => hir::ExprKind::Err,
         };
         hir::Expr::new(kind, ctx.info.types.fresh(), self.loc.into())
@@ -394,7 +428,6 @@ impl Lower<TypeId, Context<'_>> for ast::Type {
             ast::TypeKind::Tuple(ts)     => hir::TypeKind::Tuple(ts.lower(ctx)),
             ast::TypeKind::Struct(fs)    => hir::TypeKind::Struct(fs.lower(ctx)),
             ast::TypeKind::Map(t0, t1)   => hir::TypeKind::Map(t0.lower(ctx), t1.lower(ctx)),
-            ast::TypeKind::Task(t0, t1)  => hir::TypeKind::Task(t0.lower(ctx), t1.lower(ctx)),
             ast::TypeKind::Err           => hir::TypeKind::Err,
         };
         ctx.info.types.intern(kind)

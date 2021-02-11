@@ -41,7 +41,7 @@ impl SymbolTable {
         for (path, module) in &ast.modules {
             module.declare(*path, &mut table, info);
         }
-        tracing::debug!("{}", table.display(info));
+        tracing::debug!("{}", table.debug(info));
         table
     }
 }
@@ -77,7 +77,7 @@ impl SymbolTable {
         }
     }
     /// Returns the declaration kind of a path.
-    pub(crate) fn get(&mut self, path: PathId) -> Option<ItemDeclKind> {
+    pub(crate) fn get_decl(&mut self, path: PathId) -> Option<ItemDeclKind> {
         let real = self.imports.get(&path).unwrap_or(&path);
         self.declarations.get(real).cloned()
     }
@@ -182,12 +182,28 @@ impl Declare for ast::Task {
             for item in &self.items {
                 item.declare(path, table, info);
             }
-            for variant in &self.iports {
-                variant.declare(path, table, info)
+            self.ihub.declare("Source", path, table, info);
+            self.ohub.declare("Sink", path, table, info);
+        }
+    }
+}
+
+impl ast::Hub {
+    fn declare(&self, name: &str, path: PathId, table: &mut SymbolTable, info: &mut Info) {
+        match &self.kind {
+            ast::HubKind::Tagged(ports) => {
+                // Declare the enum of a tagged hub
+                let hub_name = info.names.intern(name).into();
+                let hub_path = info.paths.intern_child(path, hub_name);
+                table.declarations.insert(hub_path, ItemDeclKind::Enum);
+                for variant in ports {
+                    let alias_path = info.paths.intern_child(path, variant.name);
+                    let port_path = info.paths.intern_child(hub_path, variant.name);
+                    table.imports.insert(alias_path, port_path);
+                    variant.declare(hub_path, table, info);
+                }
             }
-            for variant in &self.oports {
-                variant.declare(path, table, info)
-            }
+            ast::HubKind::Single(_) => {}
         }
     }
 }

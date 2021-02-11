@@ -115,9 +115,23 @@ pub enum TaskItemKind {
 pub struct Task {
     pub name: Name,
     pub params: Vec<Param>,
-    pub iports: Vec<Variant>,
-    pub oports: Vec<Variant>,
+    pub ihub: Hub,
+    pub ohub: Hub,
     pub items: Vec<TaskItem>,
+}
+
+/// A hub of a task.
+#[derive(Debug, New, Spanned)]
+pub struct Hub {
+    pub kind: HubKind,
+    pub loc: Option<Loc>,
+}
+
+/// A kind of hub.
+#[derive(Debug)]
+pub enum HubKind {
+    Tagged(Vec<Variant>),
+    Single(Type),
 }
 
 /// A function.
@@ -225,8 +239,8 @@ pub enum ExprKind {
     Log(Expr),
     Loop(Expr),
     Reduce(Pat, Expr, ReduceKind),
-    Unwrap(Name, Expr),
-    Is(Name, Expr),
+    Unwrap(Path, Expr),
+    Is(Path, Expr),
     Enwrap(Path, Expr),
     Match(Expr, Vec<Case>),
     Path(Path),
@@ -235,6 +249,7 @@ pub enum ExprKind {
     Tuple(Vec<Expr>),
     UnOp(UnOp, Expr),
     Return(Option<Expr>),
+    Todo,
     Err,
 }
 
@@ -291,7 +306,7 @@ pub enum PatKind {
     Tuple(Vec<Pat>),
     Val(LitKind),
     Var(Name),
-    Variant(Name, Box<Pat>),
+    Variant(Path, Box<Pat>),
     Err,
 }
 
@@ -321,6 +336,7 @@ pub enum BinOpKind {
     Neq,
     Or,
     Pipe,
+    Mut,
     Pow,
     Seq,
     Sub,
@@ -386,7 +402,6 @@ pub enum TypeKind {
     Set(Box<Type>),
     Stream(Box<Type>),
     Struct(Vec<Field<Type>>),
-    Task(Vec<Type>, Vec<Type>),
     Tuple(Vec<Type>),
     Vector(Box<Type>),
     Err,

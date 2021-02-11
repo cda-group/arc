@@ -97,13 +97,14 @@ impl FreeVars for hir::Expr {
             hir::ExprKind::Loop(e) => {
                 e.fv(union)?;
             }
-            hir::ExprKind::Err => {}
             hir::ExprKind::Access(e, _) => e.fv(union)?,
             hir::ExprKind::Log(e) => e.fv(union)?,
             hir::ExprKind::Project(e, _) => e.fv(union)?,
             /// NOTE: Control-flow constructs make lifting impossible.
             hir::ExprKind::Return(_) => Err(())?,
             hir::ExprKind::Break => Err(())?,
+            hir::ExprKind::Todo => {}
+            hir::ExprKind::Err => {}
         }
         Ok(())
     }

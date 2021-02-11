@@ -136,8 +136,8 @@ pub(crate) enum OpKind {
     Tuple(Vec<Var>),
     UnOp(UnOp, Var),
     Enwrap(Path, Var),
-    Unwrap(Name, Var),
-    Is(Name, Var),
+    Unwrap(Path, Var),
+    Is(Path, Var),
     // Dataflow-ops
     Edge((Var, usize), (Var, usize)),
     Node(Path, Vec<Var>),
@@ -179,6 +179,7 @@ pub(crate) enum BinOpKind {
     Pow,
     Sub,
     Xor,
+    Mut,
 }
 
 #[derive(Debug, New)]

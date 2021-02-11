@@ -1,16 +1,16 @@
 ---
-source: arc-script-core/tests/insta/mod.rs
+source: arc-script-test-insta/src/lib.rs
 expression: s
-input_file: arc-script-core/tests/insta/snapshot-tests/enums.arc
+input_file: arc-script-test-insta/src/expect-pass/enums.arc
 ---
 enum Foo { Bar(u32), Baz(f32) }
 fun main() {
     let a = 200u32 in
     let b = 2.0f32 in
     let c = Foo::Bar(a) in
-    let d = unwrap[Bar](c) in
+    let d = unwrap[Foo::Bar](c) in
     let e = enwrap[Foo::Baz](b) in
-    let f = is[Baz](e) in
+    let f = is[Foo::Baz](e) in
     ()
 }
 

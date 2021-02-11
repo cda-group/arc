@@ -506,7 +506,6 @@ impl<'i> Display for Pretty<'i, hir::Type, State<'_>> {
             Tuple(tys)     => write!(f, "tuple<{tys}>", tys = tys.all_pretty(", ", ctx)),
             Optional(ty)   => todo!(),
             Fun(tys, ty)   => write!(f, "({tys}) -> {ty}", tys = tys.all_pretty(", ", ctx), ty = ty.pretty(ctx)),
-            Task(ty0, ty1) => todo!(),
             Unknown        => unreachable!(),
             Err            => unreachable!(),
         }

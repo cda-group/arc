@@ -9,6 +9,6 @@ use std::fs;
 
 /// #[arc_script(runtime, "lib.arc")]
 /// mod script;
-pub fn arc_script(attr: pm::TokenStream, item: pm::TokenStream) -> pm::TokenStream {
+pub(crate) fn expand(attr: pm::TokenStream, item: pm::TokenStream) -> pm::TokenStream {
     todo!()
 }
