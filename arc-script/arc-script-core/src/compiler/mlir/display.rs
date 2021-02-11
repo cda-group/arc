@@ -379,7 +379,7 @@ impl<'i> Display for Pretty<'i, mlir::OpKind, Context<'_>> {
             ),
             mlir::OpKind::Project(x, i) => write!(
                 f,
-                r#""arc.index_tuple"({x}) {{ index = {i} }} : {t} ->"#,
+                r#""arc.index_tuple"({x}) {{ index = {i} }} : ({t}) ->"#,
                 x = x.pretty(fmt),
                 t = x.tv.pretty(fmt),
                 i = i,
