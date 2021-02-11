@@ -2,11 +2,11 @@
 /// using Big-Step operational semantics.
 pub(crate) mod eval;
 
+use crate::compiler::dfg::from::eval::control::Control;
+use crate::compiler::dfg::from::eval::control::ControlKind::*;
 use crate::compiler::dfg::from::eval::stack::Stack;
 use crate::compiler::dfg::from::eval::value::ValueKind;
-use crate::compiler::dfg::from::eval::ControlFlow;
-use crate::compiler::dfg::from::eval::ControlFlowKind::*;
-use crate::compiler::dfg::from::eval::{BigStep, Context};
+use crate::compiler::dfg::from::eval::Context;
 use crate::compiler::dfg::DFG;
 use crate::compiler::hir::Path;
 use crate::compiler::hir::{
@@ -62,7 +62,7 @@ impl DFG {
         if let Some(expr) = main_call(hir, info) {
             let mut stack = Stack::default();
             let mut ctx = Context::new(&mut stack, &mut dfg, hir, info);
-            if let ControlFlow(Panic(loc)) = expr.eval(&mut ctx) {
+            if let Control(Panic(loc)) = expr.eval(&mut ctx) {
                 let mut diags = DiagInterner::default();
                 diags.intern(Panic::Unwind {
                     loc,

@@ -2,7 +2,11 @@
 pub(crate) mod stack;
 /// Module for representing the possible values an Arc-Script can evaluate into.
 pub(crate) mod value;
+/// Module for representing control-flow constructs.
+pub(crate) mod control;
 
+use crate::compiler::dfg::from::eval::control::EvalResult;
+use crate::compiler::dfg::from::eval::control::{Control, ControlKind, Unwind};
 use crate::compiler::dfg::from::eval::stack::Stack;
 use crate::compiler::dfg::from::eval::value::{Value, ValueKind};
 use crate::compiler::dfg::{EdgeData, Node, NodeData, Port, DFG};
@@ -24,51 +28,17 @@ use std::collections::HashMap;
 
 /// Context needed while evaluating the `HIR`.
 #[derive(New)]
-pub(super) struct Context<'a> {
+pub(crate) struct Context<'a> {
     stack: &'a mut Stack,
     dfg: &'a mut DFG,
     hir: &'a HIR,
     info: &'a Info,
 }
 
-/// Trait for panicking the interpreter through unwinding the stackframes.
-trait Unwind<T> {
-    /// Unwinds if the value contained inside is a `None` or `Err`.
-    fn or_unwind(self, loc: Option<Loc>) -> Result<T, ControlFlowKind>;
-}
-
-impl<T> Unwind<T> for Option<T> {
-    fn or_unwind(self, loc: Option<Loc>) -> Result<T, ControlFlowKind> {
-        self.map_or(ControlFlow(Panic(loc)), Ok)
-    }
-}
-
-/// Result of evaluating a script.
-pub(super) type EvalResult = Result<Value, ControlFlowKind>;
-
-/// Control-flow is managed through Rust-exceptions.
-pub(super) use std::result::Result::Err as ControlFlow;
-
-/// Different kinds of control-flow instructions (exceptions).
-pub(super) enum ControlFlowKind {
-    /// Returns value by popping the current stack-frame.
-    Return(Value),
-    /// Breaks value out of the current loop.
-    Break(Value),
-    /// Panics and unwinds all stack-frames.
-    Panic(Option<Loc>),
-}
-
-use ControlFlowKind::*;
-
-/// A Big-Step evaluator.
-pub(super) trait BigStep {
+impl Expr {
     /// Evaluates an expression `Self` in the context `ctx`.
-    fn eval(&self, ctx: &mut Context<'_>) -> EvalResult;
-}
-
-impl BigStep for Expr {
-    fn eval(&self, ctx: &mut Context<'_>) -> EvalResult {
+    pub(crate) fn eval(&self, ctx: &mut Context<'_>) -> EvalResult {
+        use ControlKind::*;
         use ValueKind::*;
         let kind = match &self.kind {
             ExprKind::Lit(kind) => match kind {
@@ -120,10 +90,10 @@ impl BigStep for Expr {
                         if x1 == *x0 {
                             return Ok(*v);
                         } else {
-                            return ControlFlow(Panic(self.loc))?;
+                            return Control(Panic(self.loc))?;
                         }
                     }
-                    _ => return ControlFlow(Panic(self.loc))?,
+                    _ => return Control(Panic(self.loc))?,
                 }
             }
             ExprKind::Is(x0, e0) => {
@@ -133,10 +103,10 @@ impl BigStep for Expr {
                         if x1 == *x0 {
                             Bool(true)
                         } else {
-                            return ControlFlow(Panic(self.loc))?;
+                            return Control(Panic(self.loc))?;
                         }
                     }
-                    _ => return ControlFlow(Panic(self.loc))?,
+                    _ => return Control(Panic(self.loc))?,
                 }
             }
             ExprKind::If(e0, e1, e2) => {
@@ -149,14 +119,14 @@ impl BigStep for Expr {
             }
             ExprKind::Loop(e) => loop {
                 let v = e.eval(ctx);
-                if let ControlFlow(Break(v)) = v {
+                if let Control(Break(v)) = v {
                     return Ok(v);
                 } else {
                     v?;
                 }
             },
-            ExprKind::Break => return ControlFlow(Break(Value::new(Unit, self.tv))),
-            ExprKind::Return(e) => return ControlFlow(Return(e.eval(ctx)?)),
+            ExprKind::Break => return Control(Break(Value::new(Unit, self.tv))),
+            ExprKind::Return(e) => return Control(Return(e.eval(ctx)?)),
             ExprKind::UnOp(op, e) => {
                 let v = e.eval(ctx)?;
                 match &op.kind {
@@ -191,7 +161,7 @@ impl BigStep for Expr {
                                 }
                             }
                             let v = item.body.eval(ctx);
-                            if let ControlFlow(Return(v)) = v {
+                            if let Control(Return(v)) = v {
                                 ctx.stack.pop_frame();
                                 return Ok(v);
                             } else {
