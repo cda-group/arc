@@ -12,18 +12,23 @@ use crate::compiler::shared::{Lower, Map, New, VecMap};
 type Env = Map<Name, Var>;
 
 trait SSA<T> {
-    fn ssa(&self, ctx: &mut Context, env: &mut Env, ops: &mut Vec<Op>) -> T;
+    fn ssa(&self, ctx: &mut Context<'_>, env: &mut Env, ops: &mut Vec<Op>) -> T;
 }
 
 impl Lower<Region, Context<'_>> for Expr {
-    fn lower(&self, ctx: &mut Context) -> Region {
+    fn lower(&self, ctx: &mut Context<'_>) -> Region {
         let mut env = Map::default();
         self.to_region(ctx, &mut env, OpKind::Return)
     }
 }
 
 impl Expr {
-    fn to_region(&self, ctx: &mut Context, env: &mut Env, term: impl Fn(Var) -> OpKind) -> Region {
+    fn to_region(
+        &self,
+        ctx: &mut Context<'_>,
+        env: &mut Env,
+        term: impl Fn(Var) -> OpKind,
+    ) -> Region {
         let mut ops = Vec::new();
         let x = self.ssa(ctx, env, &mut ops);
         ops.push(Op::new(None, term(x), self.loc));
@@ -43,7 +48,7 @@ impl Expr {
 
 impl SSA<Var> for Expr {
     /// Turns an expression into an SSA operation.
-    fn ssa(&self, ctx: &mut Context, env: &mut Env, ops: &mut Vec<Op>) -> Var {
+    fn ssa(&self, ctx: &mut Context<'_>, env: &mut Env, ops: &mut Vec<Op>) -> Var {
         let kind = match &self.kind {
             ExprKind::Let(x, e0, e1) => {
                 if let ParamKind::Var(x) = x.kind {
@@ -151,13 +156,13 @@ impl SSA<Var> for Expr {
 }
 
 impl SSA<Vec<Var>> for Vec<Expr> {
-    fn ssa(&self, ctx: &mut Context, env: &mut Env, ops: &mut Vec<Op>) -> Vec<Var> {
-        self.into_iter().map(|e| e.ssa(ctx, env, ops)).collect()
+    fn ssa(&self, ctx: &mut Context<'_>, env: &mut Env, ops: &mut Vec<Op>) -> Vec<Var> {
+        self.iter().map(|e| e.ssa(ctx, env, ops)).collect()
     }
 }
 
 impl SSA<VecMap<Name, Var>> for VecMap<Name, Expr> {
-    fn ssa(&self, ctx: &mut Context, env: &mut Env, ops: &mut Vec<Op>) -> VecMap<Name, Var> {
+    fn ssa(&self, ctx: &mut Context<'_>, env: &mut Env, ops: &mut Vec<Op>) -> VecMap<Name, Var> {
         self.into_iter()
             .map(|(f, e)| {
                 let x = e.ssa(ctx, env, ops);

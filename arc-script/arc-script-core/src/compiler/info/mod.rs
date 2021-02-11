@@ -45,7 +45,7 @@ pub struct Info {
     /// Command-line options
     pub mode: Mode,
     /// Interner for diagnostics.
-    pub diags: DiagInterner,
+    pub(crate) diags: DiagInterner,
     /// Interner for files.
     pub files: FileInterner,
     /// Interner for names.
@@ -77,7 +77,7 @@ impl From<modes::Mode> for Info {
 impl Info {
     /// Converts an OS-Path into a syntactic path and then interns it.
     #[cfg(not(target_arch = "wasm32"))]
-    pub(crate) fn intern_ospath(&mut self, buf: &std::path::PathBuf) -> PathId {
+    pub(crate) fn intern_ospath(&mut self, buf: &std::path::Path) -> PathId {
         let buf = buf
             .components()
             .map(|c| self.names.intern(c.as_os_str().to_str().unwrap()).into())
@@ -102,7 +102,7 @@ impl Info {
         names
     }
 
-    /// Generates a fresh PathId.
+    /// Generates a fresh `PathId`.
     pub(crate) fn fresh_name_path(&mut self) -> (Name, Path) {
         let name = self.names.fresh();
         let path = self.paths.intern_child(self.paths.root, name).into();

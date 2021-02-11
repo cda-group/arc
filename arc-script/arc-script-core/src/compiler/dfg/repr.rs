@@ -7,6 +7,7 @@ use crate::compiler::shared::New;
 
 use petgraph::dot::{Config, Dot};
 use petgraph::prelude::{Directed, Graph};
+use shrinkwraprs::Shrinkwrap;
 
 use std::io::Write;
 use std::process::{Command, Stdio};
@@ -27,7 +28,7 @@ pub(crate) struct NodeData {
     pub(crate) frame: Frame,
 }
 
-pub type Port = usize;
+pub(crate) type Port = usize;
 
 #[derive(New, Debug)]
 pub(crate) struct EdgeData {

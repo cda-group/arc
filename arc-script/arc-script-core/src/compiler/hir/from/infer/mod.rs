@@ -30,7 +30,7 @@ pub(crate) struct Context<'i> {
 
 impl HIR {
     /// Infers the types of all type variables in the HIR.
-    pub fn infer(&self, info: &mut Info) {
+    pub(crate) fn infer(&self, info: &mut Info) {
         self.items.iter().for_each(|item| {
             let item = self.defs.get(item).unwrap();
             let env = &mut Map::new();

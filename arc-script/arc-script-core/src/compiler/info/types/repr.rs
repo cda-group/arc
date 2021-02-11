@@ -1,8 +1,15 @@
-use crate::compiler::hir::{Type, TypeKind};
+use crate::compiler::hir::Type;
+use crate::compiler::hir::TypeKind;
+
 use educe::Educe;
-use ena::unify::{
-    InPlace, NoError, Snapshot, UnificationStoreMut, UnificationTable, UnifyKey, UnifyValue,
-};
+use ena::unify::InPlace;
+use ena::unify::NoError;
+use ena::unify::Snapshot;
+use ena::unify::UnificationStoreMut;
+use ena::unify::UnificationTable;
+use ena::unify::UnifyKey;
+use ena::unify::UnifyValue;
+use shrinkwraprs::Shrinkwrap;
 
 use std::cell::RefCell;
 use std::collections::hash_map::Entry;
@@ -86,8 +93,8 @@ impl UnifyKey for TypeId {
         **self
     }
 
-    fn from_index(id: u32) -> TypeId {
-        TypeId(id)
+    fn from_index(id: u32) -> Self {
+        Self(id)
     }
 
     fn tag() -> &'static str {

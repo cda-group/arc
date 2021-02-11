@@ -22,6 +22,7 @@ use half::{bf16, f16};
 
 use std::collections::HashMap;
 
+/// Context needed while evaluating the `HIR`.
 #[derive(New)]
 pub(super) struct Context<'a> {
     stack: &'a mut Stack,
@@ -30,22 +31,31 @@ pub(super) struct Context<'a> {
     info: &'a Info,
 }
 
+/// Trait for panicking the interpreter through unwinding the stackframes.
 trait Unwind<T> {
-    fn unwind(self, loc: Option<Loc>) -> std::result::Result<T, ControlFlowKind>;
+    /// Unwinds if the value contained inside is a `None` or `Err`.
+    fn or_unwind(self, loc: Option<Loc>) -> Result<T, ControlFlowKind>;
 }
 
 impl<T> Unwind<T> for Option<T> {
-    fn unwind(self, loc: Option<Loc>) -> std::result::Result<T, ControlFlowKind> {
-        self.map(Ok).unwrap_or(ControlFlow(Panic(loc)))
+    fn or_unwind(self, loc: Option<Loc>) -> Result<T, ControlFlowKind> {
+        self.map_or(ControlFlow(Panic(loc)), Ok)
     }
 }
 
-pub(super) type EvalResult = std::result::Result<Value, ControlFlowKind>;
+/// Result of evaluating a script.
+pub(super) type EvalResult = Result<Value, ControlFlowKind>;
+
+/// Control-flow is managed through Rust-exceptions.
 pub(super) use std::result::Result::Err as ControlFlow;
 
+/// Different kinds of control-flow instructions (exceptions).
 pub(super) enum ControlFlowKind {
+    /// Returns value by popping the current stack-frame.
     Return(Value),
+    /// Breaks value out of the current loop.
     Break(Value),
+    /// Panics and unwinds all stack-frames.
     Panic(Option<Loc>),
 }
 
@@ -54,11 +64,11 @@ use ControlFlowKind::*;
 /// A Big-Step evaluator.
 pub(super) trait BigStep {
     /// Evaluates an expression `Self` in the context `ctx`.
-    fn eval(&self, ctx: &mut Context) -> EvalResult;
+    fn eval(&self, ctx: &mut Context<'_>) -> EvalResult;
 }
 
 impl BigStep for Expr {
-    fn eval(&self, ctx: &mut Context) -> EvalResult {
+    fn eval(&self, ctx: &mut Context<'_>) -> EvalResult {
         use ValueKind::*;
         let kind = match &self.kind {
             ExprKind::Lit(kind) => match kind {
@@ -102,11 +112,11 @@ impl BigStep for Expr {
                     .collect::<Result<_, _>>()?,
             ),
             ExprKind::Tuple(es) => Tuple(es.iter().map(|e| e.eval(ctx)).collect::<Result<_, _>>()?),
-            ExprKind::Enwrap(x0, e0) => ValueKind::Variant(*x0, e0.eval(ctx)?.into()),
+            ExprKind::Enwrap(x0, e0) => Variant(*x0, e0.eval(ctx)?.into()),
             ExprKind::Unwrap(x0, e0) => {
                 let v0 = e0.eval(ctx)?;
                 match v0.kind {
-                    ValueKind::Variant(x1, v) => {
+                    Variant(x1, v) => {
                         if x1 == *x0 {
                             return Ok(*v);
                         } else {
@@ -119,9 +129,9 @@ impl BigStep for Expr {
             ExprKind::Is(x0, e0) => {
                 let v0 = e0.eval(ctx)?;
                 match v0.kind {
-                    ValueKind::Variant(x1, v) => {
+                    Variant(x1, v) => {
                         if x1 == *x0 {
-                            ValueKind::Bool(true)
+                            Bool(true)
                         } else {
                             return ControlFlow(Panic(self.loc))?;
                         }
@@ -155,10 +165,10 @@ impl BigStep for Expr {
                         _ => unreachable!(),
                     },
                     Neg => match v.kind {
-                        I8(v) => I8(v.checked_neg().unwind(self.loc)?),
-                        I16(v) => I16(v.checked_neg().unwind(self.loc)?),
-                        I32(v) => I32(v.checked_neg().unwind(self.loc)?),
-                        I64(v) => I64(v.checked_neg().unwind(self.loc)?),
+                        I8(v) => I8(v.checked_neg().or_unwind(self.loc)?),
+                        I16(v) => I16(v.checked_neg().or_unwind(self.loc)?),
+                        I32(v) => I32(v.checked_neg().or_unwind(self.loc)?),
+                        I64(v) => I64(v.checked_neg().or_unwind(self.loc)?),
                         F32(v) => F32(-v),
                         F64(v) => F64(-v),
                         _ => unreachable!(),
@@ -200,12 +210,9 @@ impl BigStep for Expr {
                             }
                             for x in &item.items {
                                 let item = ctx.hir.defs.get(x).unwrap();
-                                match &item.kind {
-                                    ItemKind::State(item) => {
-                                        let v = e.eval(ctx)?;
-                                        ctx.stack.insert(item.name.id, v);
-                                    }
-                                    _ => {}
+                                if let ItemKind::State(item) = &item.kind {
+                                    let v = e.eval(ctx)?;
+                                    ctx.stack.insert(item.name.id, v);
                                 }
                             }
                             let frame = ctx.stack.take_frame();
@@ -297,55 +304,55 @@ impl BigStep for Expr {
                 let v1 = e1.eval(ctx)?;
                 match (v0.kind, &op.kind, v1.kind) {
                     // Add
-                    (I8(l),   Add, I8(r))   => I8(l.checked_add(r).unwind(self.loc)?),
-                    (I16(l),  Add, I16(r))  => I16(l.checked_add(r).unwind(self.loc)?),
-                    (I32(l),  Add, I32(r))  => I32(l.checked_add(r).unwind(self.loc)?),
-                    (I64(l),  Add, I64(r))  => I64(l.checked_add(r).unwind(self.loc)?),
+                    (I8(l),   Add, I8(r))   => I8(l.checked_add(r).or_unwind(self.loc)?),
+                    (I16(l),  Add, I16(r))  => I16(l.checked_add(r).or_unwind(self.loc)?),
+                    (I32(l),  Add, I32(r))  => I32(l.checked_add(r).or_unwind(self.loc)?),
+                    (I64(l),  Add, I64(r))  => I64(l.checked_add(r).or_unwind(self.loc)?),
                     (Bf16(l), Add, Bf16(r)) => Bf16(bf16::from_f32(l.to_f32() + r.to_f32())),
                     (F16(l),  Add, F16(r))  => F16(f16::from_f32(l.to_f32() + r.to_f32())),
                     (F32(l),  Add, F32(r))  => F32(l + r),
                     (F64(l),  Add, F64(r))  => F64(l + r),
                     // Sub
-                    (I8(l),   Sub, I8(r))   => I8(l.checked_sub(r).unwind(self.loc)?),
-                    (I16(l),  Sub, I16(r))  => I16(l.checked_sub(r).unwind(self.loc)?),
-                    (I32(l),  Sub, I32(r))  => I32(l.checked_sub(r).unwind(self.loc)?),
-                    (I64(l),  Sub, I64(r))  => I64(l.checked_sub(r).unwind(self.loc)?),
+                    (I8(l),   Sub, I8(r))   => I8(l.checked_sub(r).or_unwind(self.loc)?),
+                    (I16(l),  Sub, I16(r))  => I16(l.checked_sub(r).or_unwind(self.loc)?),
+                    (I32(l),  Sub, I32(r))  => I32(l.checked_sub(r).or_unwind(self.loc)?),
+                    (I64(l),  Sub, I64(r))  => I64(l.checked_sub(r).or_unwind(self.loc)?),
                     (Bf16(l), Sub, Bf16(r)) => Bf16(bf16::from_f32(l.to_f32() - r.to_f32())),
                     (F16(l),  Sub, F16(r))  => F16(f16::from_f32(l.to_f32() - r.to_f32())),
                     (F32(l),  Sub, F32(r))  => F32(l - r),
                     (F64(l),  Sub, F64(r))  => F64(l - r),
                     // Mul
-                    (I8(l),   Mul, I8(r))   => I8(l.checked_mul(r).unwind(self.loc)?),
-                    (I16(l),  Mul, I16(r))  => I16(l.checked_mul(r).unwind(self.loc)?),
-                    (I32(l),  Mul, I32(r))  => I32(l.checked_mul(r).unwind(self.loc)?),
-                    (I64(l),  Mul, I64(r))  => I64(l.checked_mul(r).unwind(self.loc)?),
+                    (I8(l),   Mul, I8(r))   => I8(l.checked_mul(r).or_unwind(self.loc)?),
+                    (I16(l),  Mul, I16(r))  => I16(l.checked_mul(r).or_unwind(self.loc)?),
+                    (I32(l),  Mul, I32(r))  => I32(l.checked_mul(r).or_unwind(self.loc)?),
+                    (I64(l),  Mul, I64(r))  => I64(l.checked_mul(r).or_unwind(self.loc)?),
                     (Bf16(l), Mul, Bf16(r)) => Bf16(bf16::from_f32(l.to_f32() * r.to_f32())),
                     (F16(l),  Mul, F16(r))  => F16(f16::from_f32(l.to_f32() * r.to_f32())),
                     (F32(l),  Mul, F32(r))  => F32(l * r),
                     (F64(l),  Mul, F64(r))  => F64(l * r),
                     // Div
-                    (I8(l),   Div, I8(r))   => I8(l.checked_div(r).unwind(self.loc)?),
-                    (I16(l),  Div, I16(r))  => I16(l.checked_div(r).unwind(self.loc)?),
-                    (I32(l),  Div, I32(r))  => I32(l.checked_div(r).unwind(self.loc)?),
-                    (I64(l),  Div, I64(r))  => I64(l.checked_div(r).unwind(self.loc)?),
+                    (I8(l),   Div, I8(r))   => I8(l.checked_div(r).or_unwind(self.loc)?),
+                    (I16(l),  Div, I16(r))  => I16(l.checked_div(r).or_unwind(self.loc)?),
+                    (I32(l),  Div, I32(r))  => I32(l.checked_div(r).or_unwind(self.loc)?),
+                    (I64(l),  Div, I64(r))  => I64(l.checked_div(r).or_unwind(self.loc)?),
                     (Bf16(l), Div, Bf16(r)) => Bf16(bf16::from_f32(l.to_f32() / r.to_f32())),
                     (F16(l),  Div, F16(r))  => F16(f16::from_f32(l.to_f32() / r.to_f32())),
                     (F32(l),  Div, F32(r))  => F32(l / r),
                     (F64(l),  Div, F64(r))  => F64(l / r),
                     // Pow
-                    (I8(l),   Pow, I32(r))  => I8(l.checked_pow(r as u32).unwind(self.loc)?),
-                    (I16(l),  Pow, I32(r))  => I16(l.checked_pow(r as u32).unwind(self.loc)?),
-                    (I32(l),  Pow, I32(r))  => I32(l.checked_pow(r as u32).unwind(self.loc)?),
-                    (I64(l),  Pow, I32(r))  => I64(l.checked_pow(r as u32).unwind(self.loc)?),
+                    (I8(l),   Pow, I32(r))  => I8(l.checked_pow(r as u32).or_unwind(self.loc)?),
+                    (I16(l),  Pow, I32(r))  => I16(l.checked_pow(r as u32).or_unwind(self.loc)?),
+                    (I32(l),  Pow, I32(r))  => I32(l.checked_pow(r as u32).or_unwind(self.loc)?),
+                    (I64(l),  Pow, I32(r))  => I64(l.checked_pow(r as u32).or_unwind(self.loc)?),
                     (F32(l),  Pow, I32(r))  => F32(l.powi(r)),
                     (F64(l),  Pow, I32(r))  => F64(l.powi(r)),
                     (F32(l),  Pow, F32(r))  => F32(l.powf(r)),
                     (F64(l),  Pow, F64(r))  => F64(l.powf(r)),
                     // Pow
-                    (I8(l),   Mod,  I8(r))  => I8(l.checked_rem(r).unwind(self.loc)?),
-                    (I16(l),  Mod, I16(r))  => I16(l.checked_rem(r).unwind(self.loc)?),
-                    (I32(l),  Mod, I32(r))  => I32(l.checked_rem(r).unwind(self.loc)?),
-                    (I64(l),  Mod, I64(r))  => I64(l.checked_rem(r).unwind(self.loc)?),
+                    (I8(l),   Mod,  I8(r))  => I8(l.checked_rem(r).or_unwind(self.loc)?),
+                    (I16(l),  Mod, I16(r))  => I16(l.checked_rem(r).or_unwind(self.loc)?),
+                    (I32(l),  Mod, I32(r))  => I32(l.checked_rem(r).or_unwind(self.loc)?),
+                    (I64(l),  Mod, I64(r))  => I64(l.checked_rem(r).or_unwind(self.loc)?),
                     (F32(l),  Mod, I32(r))  => F32(l.powi(r)),
                     (F64(l),  Mod, I32(r))  => F64(l.powi(r)),
                     (F32(l),  Mod, F32(r))  => F32(l.powf(r)),

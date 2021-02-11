@@ -11,6 +11,7 @@ use crate::compiler::info::paths::PathId;
 use crate::compiler::shared::{New, VecMap};
 
 use derive_more::Constructor;
+use shrinkwraprs::Shrinkwrap;
 use std::collections::HashMap;
 
 /// A stack frame of variables and their values. Corresponds to the scope
@@ -59,9 +60,7 @@ impl Stack {
     }
     /// Mutates a variable in the outermost frame of the stack.
     pub(crate) fn update(&mut self, k: NameId, v: Value) {
-        debug_assert!(self
-            .last_mut()
-            .and_then((|frame| frame.insert(k, v)))
-            .is_some())
+        let res = self.last_mut().and_then(|frame| frame.insert(k, v));
+        debug_assert!(res.is_some())
     }
 }

@@ -3,13 +3,16 @@ use crate::compiler::info::Info;
 
 use std::fmt::{Display, Formatter, Result};
 
+/// A wrapper struct around `NameId` which implements `Display`.
+/// Will display debug information when printed.
 pub(crate) struct NameDebug<'a> {
     name: &'a NameId,
     info: &'a Info,
 }
 
 impl NameId {
-    pub(crate) fn debug<'a>(&'a self, info: &'a Info) -> NameDebug<'a> {
+    /// Wraps `NameId` inside a `NameDebug` struct.
+    pub(crate) const fn debug<'a>(&'a self, info: &'a Info) -> NameDebug<'a> {
         NameDebug { name: self, info }
     }
 }

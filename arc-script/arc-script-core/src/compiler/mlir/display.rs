@@ -9,7 +9,11 @@ use crate::compiler::mlir;
 use crate::compiler::shared::display::format::Context;
 use crate::compiler::shared::display::pretty::*;
 
-use std::fmt::{self, Display, Formatter};
+use derive_more::From;
+
+use std::fmt;
+use std::fmt::Formatter;
+use std::fmt::Display;
 
 #[derive(From, Copy, Clone)]
 pub(crate) struct State<'i> {

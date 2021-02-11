@@ -3,6 +3,7 @@ name = "arc-script-macros"
 version = "0.1.0"
 authors = ["Klas Segeljakt <klasseg@kth.se>"]
 edition = "2018"
+license = "MIT"
 
 [lib]
 proc-macro = true

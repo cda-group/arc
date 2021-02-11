@@ -32,10 +32,10 @@ impl<T: Into<Type>> Unify<TypeId, T> for Context<'_> {
 impl Unify<TypeId, TypeId> for Context<'_> {
     /// Unifies two polytypes, i.e., types which may contain type variables
     fn unify(&mut self, tv0: TypeId, tv1: TypeId) {
-        let ty0 = self.info.types.resolve(tv0);
-        let ty1 = self.info.types.resolve(tv1);
         use ScalarKind::*;
         use TypeKind::*;
+        let ty0 = self.info.types.resolve(tv0);
+        let ty1 = self.info.types.resolve(tv1);
         match (&ty0.kind, &ty1.kind) {
             // Unify Unknown types
             (Unknown, Unknown) => self.info.types.union(tv0, tv1),
@@ -63,7 +63,7 @@ impl Unify<TypeId, TypeId> for Context<'_> {
                 }
             }
             (Struct(fs0), Struct(fs1)) => {
-                for (f0, f1) in fs0.into_iter() {
+                for (f0, f1) in fs0 {
                     if let Some(tv2) = fs1.get(f0) {
                         self.unify(*f1, *tv2);
                     }
@@ -76,7 +76,7 @@ impl Unify<TypeId, TypeId> for Context<'_> {
             _ => self.info.diags.intern(Error::TypeMismatch {
                 lhs: tv0,
                 rhs: tv1,
-                loc: self.loc.into(),
+                loc: self.loc,
             }),
         }
     }

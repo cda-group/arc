@@ -3,7 +3,7 @@ use crate::compiler::ast;
 use crate::compiler::hir;
 use crate::compiler::hir::from::lower::resolve;
 
-pub(crate) fn desugar(path: &ast::Path, ctx: &mut Context) -> hir::TypeKind {
+pub(crate) fn desugar(path: &ast::Path, ctx: &mut Context<'_>) -> hir::TypeKind {
     let decl = ctx.res.resolve(path, ctx.info).unwrap();
     if let resolve::DeclKind::Item(path, kind) = decl {
         match kind {

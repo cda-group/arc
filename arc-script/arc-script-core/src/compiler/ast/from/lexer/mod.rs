@@ -2,7 +2,7 @@
 
 /// Module for displaying tokens.
 mod display;
-/// Module for defining the format of number literals.
+/// Module for defining the format of numeric literals.
 mod numfmt;
 /// Module for scanning raw tokens which are then post-processed by this module.
 mod tokens;
@@ -25,25 +25,39 @@ use time::Duration;
 
 use std::convert::TryFrom;
 
+/// Number of tabs used in semantic indentation.
 pub(crate) const TABSIZE: usize = 4;
 
+/// A token for used for representing semantic indentation.
 #[derive(Debug, PartialEq)]
 pub(crate) enum Scope {
+    /// Indentation level has dropped by N since last token.
     Dedent(usize),
+    /// Indentation level has increased by 1 since last token.
     Indent,
+    /// Indenation level is unchanged since last token.
     Unchanged,
 }
 
+/// A lexer for scanning Arc-Script semantic tokens.
 pub(crate) struct Lexer<'i> {
+    /// Underlying generated lexer DFA for scanning raw tokens.
     logos: LogosLexer<'i, LogosToken>,
+    /// Number of levels to un-indent.
     dedents: usize,
+    /// Current indentation.
     indents: usize,
+    /// Format used by [`lexical_core`] for parsing numeric literals.
     numfmt: NumberFormat,
+    /// Map which stores all symbolic names encountered during lexing.
     names: &'i mut NameInterner,
+    /// Identifier of the file which the scanned source code belongs to.
     file: FileId,
+    /// Map which stores diagnostics encountered during scanning.
     pub(crate) diags: DiagInterner,
 }
 
+/// A semantic token extracted from a `LogosToken` by `Lexer`.
 #[rustfmt::skip]
 #[derive(Debug, Clone)]
 pub enum Token {
@@ -188,7 +202,8 @@ pub enum Token {
 }
 
 impl<'i> Lexer<'i> {
-    pub fn new(source: &'i str, file: FileId, names: &'i mut NameInterner) -> Self {
+    /// Returns a new lexer with an initial state.
+    pub(crate) fn new(source: &'i str, file: FileId, names: &'i mut NameInterner) -> Self {
         Self {
             logos: LogosToken::lexer(source),
             dedents: 0,
@@ -200,6 +215,7 @@ impl<'i> Lexer<'i> {
         }
     }
 
+    /// Scans semantic indentation.
     #[inline]
     fn newline(&mut self) -> Result<Scope> {
         // Offset to the last newline
@@ -232,7 +248,7 @@ impl<'i> Lexer<'i> {
             .into())
         }
     }
-    /// Parses a literal.
+    /// Scans a numeric literal using `lexical_core`.
     fn lit<N: lexical_core::FromLexicalFormat>(
         &mut self,
         prefix: usize,
@@ -246,20 +262,25 @@ impl<'i> Lexer<'i> {
             .into()
         })
     }
-    /// Returns the current location.
+    /// Returns the current location of the lexer.
     #[inline]
     fn loc(&self) -> Loc {
         let file = self.file;
         let span = self.span();
         Loc::new(file, span)
     }
-    /// Returns the current span.
+    /// Returns the current span of the lexer.
     #[inline]
     fn span(&self) -> Span {
         let span = self.logos.span();
         let start = ByteIndex::try_from(span.start).unwrap();
         let end = ByteIndex::try_from(span.end).unwrap();
         Span::new(start, end)
+    }
+    /// Trims the lexer's current slice by stripping its prefix and suffix. Used to for example
+    /// strip quotes from strings.
+    fn trim(&self, prefix: usize, suffix: usize) -> &str {
+        &self.logos.slice()[prefix..self.logos.span().len() - suffix]
     }
     /// Returns the next token or an error.
     #[rustfmt::skip]
@@ -271,9 +292,8 @@ impl<'i> Lexer<'i> {
 //         }
         while let Some(token) = self.logos.next() {
             let token = match token {
-                LogosToken::Error      => Err(Error::InvalidToken { loc: self.loc().into() }.into())?,
-                LogosToken::Comment    => continue,
-                LogosToken::Newline    => continue,
+                LogosToken::Error      => return Err(Error::InvalidToken { loc: self.loc().into() }.into()),
+                LogosToken::Comment | LogosToken::Newline => continue,
 //                 match self.newline()? {
 //                     Scope::Dedent(dedents) => {
 //                         self.dedents = dedents - 1;
@@ -435,10 +455,6 @@ impl<'i> Lexer<'i> {
 //             Ok(None)
 //         }
     }
-
-    fn trim(&self, prefix: usize, suffix: usize) -> &str {
-        &self.logos.slice()[prefix..self.logos.span().len() - suffix]
-    }
 }
 
 impl Iterator for Lexer<'_> {
@@ -458,6 +474,7 @@ impl Iterator for Lexer<'_> {
     }
 }
 
+/// Test for lexing Python-style semantic indentation.
 // #[test]
 fn test() {
     let source = indoc::indoc! {"

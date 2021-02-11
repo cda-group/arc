@@ -1,3 +1,5 @@
+//! Script builder implementation.
+
 use arc_script_core::prelude::compiler;
 use arc_script_core::prelude::diags::sink::Buffer;
 use arc_script_core::prelude::modes::Input;
@@ -29,7 +31,9 @@ impl Script {
         self
     }
     /// This function is assumed to be called from inside a `build.rs` build-script file.
-    pub fn compile(self) -> Result<(), ()> {
+    /// It compiles a `Script` into an `.rs` file and places it in the target directory.
+    /// The file can later be included as a module.
+    pub fn compile(self) {
         let mode = Mode {
             input: Input::File(Some(self.path.clone())),
             output: Output::Rust,
@@ -39,18 +43,17 @@ impl Script {
         if let Ok(report) = compiler::compile(mode, &mut sink) {
             let output = sink.as_slice();
             if report.is_ok() {
-                self.generate(output)
+                self.generate(output);
             } else {
                 let message = std::str::from_utf8(output).expect("Internal Error");
                 println!("cargo:warning={}", message);
-                Err(())
             }
         } else {
             println!("cargo:warning=Internal compiler error");
-            Err(())
         }
     }
-    fn generate(self, source: &[u8]) -> Result<(), ()> {
+    /// Saves a string of rust-source to the crate's `target/` directory.
+    fn generate(self, source: &[u8]) {
         let out_dir = PathBuf::from(env::var("OUT_DIR").expect("$OUT_DIR env-var was not set"));
 
         let mut path = out_dir.join(self.path.clone());
@@ -62,6 +65,5 @@ impl Script {
 
         println!("cargo:rerun-if-changed={:?}", self.path);
         println!("cargo:rerun-if-changed=build.rs");
-        Ok(())
     }
 }

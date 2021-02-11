@@ -1,6 +1,10 @@
 use anyhow::Result;
 
 /// Initializes a logger for debugging.
+///
+/// # Errors
+///
+/// Will return `Err` if `tracing` reports an initialisation error.
 pub fn init(verbosity: i32) -> Result<()> {
     let sub = tracing_subscriber::FmtSubscriber::builder()
         .compact()

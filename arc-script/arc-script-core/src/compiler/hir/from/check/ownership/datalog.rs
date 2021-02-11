@@ -66,6 +66,7 @@ crepe! {
         Jump(b0, b1),
         Reachable(b1, b2);
 
+    // Reachable: Reflexive-case
     Reachable(b0, b0) <-
         Jump(b0, _);
 

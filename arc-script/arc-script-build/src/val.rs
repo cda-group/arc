@@ -1,9 +1,11 @@
+//! Value builder implementation.
+
 use arc_script_core::prelude::bf16;
 use arc_script_core::prelude::f16;
 
 use derive_more::From;
 
-/// Arguments which can be passed to an arc-script when building it.
+/// Arguments which can be passed to an arc-script when staging it.
 #[derive(Clone, Debug)]
 pub enum Value {
     I8(i8),
@@ -28,6 +30,7 @@ pub enum Value {
     Tuple(Tuple),
 }
 
+/// Macro for deriving `impl From<Type> for Value { ... }` where `Type` is a primitive type.
 macro_rules! from_primitive {
     {
         $variant:ident($ty:ty)
@@ -40,6 +43,7 @@ macro_rules! from_primitive {
     }
 }
 
+/// Macro for deriving `impl From<Type> for Value { ... }` where `Type` is a tuple type.
 macro_rules! from_tuple {
     {
         $($x:ident),*
@@ -56,6 +60,7 @@ macro_rules! from_tuple {
     }
 }
 
+/// Macro for deriving `impl From<Type> for Value { ... }` where `Type` is a tuple of fields.
 macro_rules! from_struct {
     {
         $($x:ident : $t:ty),*
@@ -110,21 +115,27 @@ impl From<&'_ str> for Value {
     }
 }
 
+/// A tuple value.
 #[derive(Clone, Debug, From)]
 pub struct Tuple(Vec<Value>);
 
+/// A vector value.
 #[derive(Clone, Debug, From)]
 pub struct Vector(Vec<Value>);
 
+/// An array value.
 #[derive(Clone, Debug, From)]
 pub struct Array(Vec<Value>);
 
+/// A struct value.
 #[derive(Clone, Debug, From)]
 pub struct Struct(Vec<Field>);
 
+/// A variant of an enum.
 #[derive(Clone, Debug)]
 pub struct Variant(String, Box<Value>);
 
+/// A field of an anonymous struct.
 #[derive(Debug, Clone)]
 pub struct Field {
     name: String,
@@ -132,6 +143,7 @@ pub struct Field {
 }
 
 impl Field {
+    /// Creates a new field.
     pub fn new(name: impl Into<String>, val: impl Into<Value>) -> Self {
         Self {
             name: name.into(),

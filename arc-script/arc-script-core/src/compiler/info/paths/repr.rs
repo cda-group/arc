@@ -12,7 +12,7 @@ use std::collections::HashMap;
 pub struct PathId(usize);
 
 #[derive(Debug, Clone, Copy, Eq, PartialEq, Hash)]
-pub struct PathBuf {
+pub(crate) struct PathBuf {
     pub(crate) pred: Option<PathId>,
     pub(crate) name: Name,
 }
@@ -35,19 +35,18 @@ impl From<Name> for PathInterner {
         id_to_path.push(path_buf);
         id_to_path.insert(path_id.0, path_buf);
 
-        let mut interner = Self {
+        Self {
             path_to_id,
             id_to_path,
             root: path_id,
-        };
-        interner
+        }
     }
 }
 
 impl PathInterner {
     /// Interns a path and returns an id mapping to it.
     pub(crate) fn intern(&mut self, path: PathBuf) -> PathId {
-        self.path_to_id.get(&path).map(|id| *id).unwrap_or_else(|| {
+        self.path_to_id.get(&path).cloned().unwrap_or_else(|| {
             let id = PathId(self.id_to_path.len());
             self.id_to_path.push(path);
             self.path_to_id.insert(path, id);
@@ -92,7 +91,7 @@ impl PathInterner {
         };
         let mut id = self.intern(path);
         // Intern children
-        while let Some(name) = iter.next() {
+        for name in iter {
             path = PathBuf {
                 pred: Some(id),
                 name,

@@ -31,7 +31,7 @@ impl Lower<(), Context<'_>> for hir::Item {
 }
 
 impl Lower<(), Context<'_>> for hir::Enum {
-    fn lower(&self, ctx: &mut Context<'_>) -> () {
+    fn lower(&self, ctx: &mut Context<'_>) {
         let name = self.name.lower(ctx);
         let variants = self.variants.iter().map(|v| v.lower(ctx));
         let enum_item = syn::parse_quote! {
@@ -145,12 +145,12 @@ impl Lower<syn::FnArg, Context<'_>> for hir::Param {
 impl Lower<syn::Ident, Context<'_>> for hir::ParamKind {
     fn lower(&self, ctx: &mut Context<'_>) -> syn::Ident {
         match self {
-            hir::ParamKind::Var(x) => {
+            Self::Var(x) => {
                 let x = x.lower(ctx);
                 parse_quote!(#x)
             }
-            hir::ParamKind::Ignore => parse_quote!(_),
-            hir::ParamKind::Err => unreachable!(),
+            Self::Ignore => parse_quote!(_),
+            Self::Err => unreachable!(),
         }
     }
 }
@@ -301,24 +301,24 @@ impl Lower<syn::Type, Context<'_>> for hir::Type {
 impl Lower<syn::Type, Context<'_>> for hir::ScalarKind {
     fn lower(&self, ctx: &mut Context<'_>) -> syn::Type {
         match self {
-            hir::ScalarKind::Bool => parse_quote!(bool),
-            hir::ScalarKind::Char => parse_quote!(char),
-            hir::ScalarKind::Bf16 => parse_quote!(bf16),
-            hir::ScalarKind::F16  => parse_quote!(f16),
-            hir::ScalarKind::F32  => parse_quote!(f32),
-            hir::ScalarKind::F64  => parse_quote!(f64),
-            hir::ScalarKind::I8   => parse_quote!(i8),
-            hir::ScalarKind::I16  => parse_quote!(i16),
-            hir::ScalarKind::I32  => parse_quote!(i32),
-            hir::ScalarKind::I64  => parse_quote!(i64),
-            hir::ScalarKind::U8   => parse_quote!(u8),
-            hir::ScalarKind::U16  => parse_quote!(u16),
-            hir::ScalarKind::U32  => parse_quote!(u32),
-            hir::ScalarKind::U64  => parse_quote!(u64),
-            hir::ScalarKind::Null => todo!(),
-            hir::ScalarKind::Str  => todo!(),
-            hir::ScalarKind::Unit => parse_quote!(()),
-            hir::ScalarKind::Bot  => todo!(),
+            Self::Bool => parse_quote!(bool),
+            Self::Char => parse_quote!(char),
+            Self::Bf16 => parse_quote!(bf16),
+            Self::F16  => parse_quote!(f16),
+            Self::F32  => parse_quote!(f32),
+            Self::F64  => parse_quote!(f64),
+            Self::I8   => parse_quote!(i8),
+            Self::I16  => parse_quote!(i16),
+            Self::I32  => parse_quote!(i32),
+            Self::I64  => parse_quote!(i64),
+            Self::U8   => parse_quote!(u8),
+            Self::U16  => parse_quote!(u16),
+            Self::U32  => parse_quote!(u32),
+            Self::U64  => parse_quote!(u64),
+            Self::Null => todo!(),
+            Self::Str  => todo!(),
+            Self::Unit => parse_quote!(()),
+            Self::Bot  => todo!(),
         }
     }
 }
@@ -367,9 +367,9 @@ impl Lower<syn::UnOp, Context<'_>> for hir::UnOp {
 impl Lower<proc_macro2::TokenStream, Context<'_>> for hir::LitKind {
     fn lower(&self, ctx: &mut Context<'_>) -> proc_macro2::TokenStream {
         match self {
-            hir::LitKind::Bool(v) => quote!(#v),
-            hir::LitKind::Char(v) => quote!(#v),
-            hir::LitKind::Bf16(v) => {
+            Self::Bool(v) => quote!(#v),
+            Self::Char(v) => quote!(#v),
+            Self::Bf16(v) => {
                 let v = v.to_f32();
                 if v.is_nan() {
                     quote!(half::bf16::NAN)
@@ -379,7 +379,7 @@ impl Lower<proc_macro2::TokenStream, Context<'_>> for hir::LitKind {
                     quote!(half::bf16::from_f32(#v))
                 }
             },
-            hir::LitKind::F16(v) => {
+            Self::F16(v) => {
                 let v = v.to_f32();
                 if v.is_nan() {
                     quote!(half::f16::NAN)
@@ -389,7 +389,7 @@ impl Lower<proc_macro2::TokenStream, Context<'_>> for hir::LitKind {
                     quote!(half::f16::from_f32(#v))
                 }
             },
-            hir::LitKind::F32(v) => {
+            Self::F32(v) => {
                 if v.is_nan() {
                     quote!(f32::NAN)
                 } else if v.is_infinite() {
@@ -398,7 +398,7 @@ impl Lower<proc_macro2::TokenStream, Context<'_>> for hir::LitKind {
                     quote!(#v)
                 }
             },
-            hir::LitKind::F64(v) => {
+            Self::F64(v) => {
                 if v.is_nan() {
                     quote!(f64::NAN)
                 } else if v.is_infinite() {
@@ -407,18 +407,18 @@ impl Lower<proc_macro2::TokenStream, Context<'_>> for hir::LitKind {
                     quote!(#v)
                 }
             },
-            hir::LitKind::I8(v)   => quote!(#v),
-            hir::LitKind::I16(v)  => quote!(#v),
-            hir::LitKind::I32(v)  => quote!(#v),
-            hir::LitKind::I64(v)  => quote!(#v),
-            hir::LitKind::U8(v)   => quote!(#v),
-            hir::LitKind::U16(v)  => quote!(#v),
-            hir::LitKind::U32(v)  => quote!(#v),
-            hir::LitKind::U64(v)  => quote!(#v),
-            hir::LitKind::Str(v)  => todo!(),
-            hir::LitKind::Time(v) => todo!(),
-            hir::LitKind::Unit    => quote!(()),
-            hir::LitKind::Err     => unreachable!(),
+            Self::I8(v)   => quote!(#v),
+            Self::I16(v)  => quote!(#v),
+            Self::I32(v)  => quote!(#v),
+            Self::I64(v)  => quote!(#v),
+            Self::U8(v)   => quote!(#v),
+            Self::U16(v)  => quote!(#v),
+            Self::U32(v)  => quote!(#v),
+            Self::U64(v)  => quote!(#v),
+            Self::Str(v)  => todo!(),
+            Self::Time(v) => todo!(),
+            Self::Unit    => quote!(()),
+            Self::Err     => unreachable!(),
         }
     }
 }

@@ -43,10 +43,10 @@ impl Equal<VecMap<Name, TypeId>, VecMap<Name, TypeId>> for Context<'_> {
 impl Equal<TypeId, TypeId> for Context<'_> {
     #[rustfmt::skip]
     fn eq(&mut self, t0: TypeId, t1: TypeId) -> bool {
-        let ty0 = self.info.types.resolve(t0);
-        let ty1 = self.info.types.resolve(t1);
         use ScalarKind::*;
         use TypeKind::*;
+        let ty0 = self.info.types.resolve(t0);
+        let ty1 = self.info.types.resolve(t1);
         match (ty0.kind, ty1.kind) {
             (Array(t0, s0), Array(t1, s1))       => self.eq(t0, t1),
             (Fun(ts0, t0), Fun(ts1, t1))         => self.eq(ts0, ts1) && self.eq(t0,t1),

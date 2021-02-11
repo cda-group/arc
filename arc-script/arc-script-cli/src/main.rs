@@ -1,3 +1,5 @@
+//! Command-line interface.
+
 #![allow(unused)]
 
 mod from;
@@ -17,6 +19,11 @@ use std::io::prelude::*;
 
 use clap::Clap;
 
+/// Command-line interface of `arc-script`
+///
+/// # Errors
+///
+/// Returns an `Err` if either the `logger` of `Mode` fails to initialize.
 pub fn main() -> Result<()> {
     let mut opt = Opt::parse();
 

@@ -1,3 +1,5 @@
+//! AST debugging utilities.
+
 use crate::compiler::ast::repr::{Index, Item, ItemKind, Module, Path, TaskItemKind, AST};
 use crate::compiler::hir;
 use crate::compiler::hir::Name;
@@ -9,18 +11,21 @@ use crate::compiler::info::Info;
 
 use std::fmt::{Display, Formatter, Result};
 
+/// Wrapper around the AST which implements Display.
+/// Can be printed to display AST-debug information.
 pub(crate) struct ASTDebug<'a> {
     ast: &'a AST,
     info: &'a Info,
 }
 
 impl AST {
-    pub(crate) fn debug<'a>(&'a self, info: &'a Info) -> ASTDebug<'a> {
+    /// Wraps the AST inside an [`ASTDebug`].
+    pub(crate) const fn debug<'a>(&'a self, info: &'a Info) -> ASTDebug<'a> {
         ASTDebug { ast: self, info }
     }
 }
 
-impl<'a> Display for ASTDebug<'a> {
+impl Display for ASTDebug<'_> {
     #[rustfmt::skip]
     fn fmt(&self, f: &mut Formatter<'_>) -> Result {
         writeln!(f, "AST Modules [")?;
@@ -31,20 +36,20 @@ impl<'a> Display for ASTDebug<'a> {
                 self.info.resolve_to_names(*path).join("::")
             )?;
             for item in &module.items {
+                write!(f, "        ")?;
                 match &item.kind {
-                    ItemKind::Alias(x)  => writeln!(f, r#"        "{}","#, self.info.names.resolve(x.name.id))?,
-                    ItemKind::Enum(x)   => writeln!(f, r#"        "{}","#, self.info.names.resolve(x.name.id))?,
-                    ItemKind::Fun(x)    => writeln!(f, r#"        "{}","#, self.info.names.resolve(x.name.id))?,
-                    ItemKind::Extern(x) => writeln!(f, r#"        "{}","#, self.info.names.resolve(x.name.id))?,
-                    ItemKind::Task(x)   => writeln!(f, r#"        "{}","#, self.info.names.resolve(x.name.id))?,
-                    ItemKind::Use(x)    => writeln!(f, r#"        "{}","#, self.info.resolve_to_names(x.path.id).join("::"))?,
-                    ItemKind::Err       => writeln!(f, r#"        <Error>,"#)?,
+                    ItemKind::Alias(x)  => write!(f, "{}", x.name.id.debug(self.info))?,
+                    ItemKind::Enum(x)   => write!(f, "{}", x.name.id.debug(self.info))?,
+                    ItemKind::Fun(x)    => write!(f, "{}", x.name.id.debug(self.info))?,
+                    ItemKind::Extern(x) => write!(f, "{}", x.name.id.debug(self.info))?,
+                    ItemKind::Task(x)   => write!(f, "{}", x.name.id.debug(self.info))?,
+                    ItemKind::Use(x)    => write!(f, "{}", x.path.id.debug(self.info))?,
+                    ItemKind::Err       => write!(f, "<Error>")?,
                 }
+                writeln!(f, ",")?;
             }
-
             writeln!(f, "    ],")?;
         }
-        writeln!(f, "]")?;
-        Ok(())
+        writeln!(f, "]")
     }
 }

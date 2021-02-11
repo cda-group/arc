@@ -22,7 +22,7 @@ pub(crate) trait Constrain<'i> {
 
 impl Constrain<'_> for Item {
     #[rustfmt::skip]
-    fn constrain(&self, ctx: &mut Context) {
+    fn constrain(&self, ctx: &mut Context<'_>) {
         match &self.kind {
             ItemKind::Fun(item)   => item.constrain(ctx),
             ItemKind::Task(item)  => item.constrain(ctx),
@@ -36,7 +36,7 @@ impl Constrain<'_> for Item {
 }
 
 impl Constrain<'_> for Fun {
-    fn constrain(&self, ctx: &mut Context) {
+    fn constrain(&self, ctx: &mut Context<'_>) {
         let tvs = self.params.iter().map(|x| x.tv).collect();
         let tv = self.body.tv;
         ctx.unify(self.tv, TypeKind::Fun(tvs, tv));
@@ -52,7 +52,7 @@ impl Constrain<'_> for Fun {
 
 impl Constrain<'_> for Task {
     /// On the outside, a task is nothing more than a function which returns a function.
-    fn constrain(&self, ctx: &mut Context) {
+    fn constrain(&self, ctx: &mut Context<'_>) {
         self.on.body.constrain(ctx);
         let tvs = self.params.iter().map(|x| x.tv).collect();
         let itvs = self.ihub.constrain(ctx);
@@ -60,7 +60,7 @@ impl Constrain<'_> for Task {
         let otvs = self.ohub.constrain(ctx);
         let otv = match otvs.len() {
             0 => ctx.info.types.intern(ScalarKind::Unit),
-            1 => *otvs.iter().next().unwrap(),
+            1 => otvs[0],
             _ => ctx.info.types.intern(TypeKind::Tuple(otvs)),
         };
         let ttv = ctx.info.types.intern(TypeKind::Fun(itvs, otv));
@@ -70,7 +70,7 @@ impl Constrain<'_> for Task {
 
 impl hir::Hub {
     /// Constrains the internal port types of a hub and returns the external port types
-    fn constrain(&self, ctx: &mut Context) -> Vec<TypeId> {
+    fn constrain(&self, ctx: &mut Context<'_>) -> Vec<TypeId> {
         match &self.kind {
             hir::HubKind::Tagged(x) => {
                 let item = ctx.defs.get(x).unwrap();
@@ -101,7 +101,7 @@ impl hir::Hub {
 }
 
 impl Constrain<'_> for State {
-    fn constrain(&self, ctx: &mut Context) {
+    fn constrain(&self, ctx: &mut Context<'_>) {
         self.init.constrain(ctx);
         ctx.unify(self.tv, self.init.tv);
     }
@@ -109,7 +109,7 @@ impl Constrain<'_> for State {
 
 impl Constrain<'_> for Expr {
     /// Constrains an expression based on its subexpressions.
-    fn constrain(&self, ctx: &mut Context) {
+    fn constrain(&self, ctx: &mut Context<'_>) {
         use BinOpKind::*;
         use ScalarKind::*;
         use UnOpKind::*;

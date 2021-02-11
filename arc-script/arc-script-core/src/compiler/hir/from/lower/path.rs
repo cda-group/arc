@@ -13,7 +13,7 @@ use resolve::ItemDeclKind::*;
 pub(super) fn lower_path_expr(
     path: &ast::Path,
     loc: Option<Loc>,
-    ctx: &mut Context,
+    ctx: &mut Context<'_>,
 ) -> hir::ExprKind {
     match ctx.res.resolve(path, ctx.info).unwrap() {
         Item(x, kind) => match kind {
@@ -27,25 +27,33 @@ pub(super) fn lower_path_expr(
     }
 }
 
-pub(super) fn lower_is(path: &ast::Path, expr: &ast::Expr, ctx: &mut Context) -> hir::ExprKind {
+pub(super) fn lower_is(path: &ast::Path, expr: &ast::Expr, ctx: &mut Context<'_>) -> hir::ExprKind {
     lower_variant(path, ctx)
         .map(|path| hir::ExprKind::Is(path, expr.lower(ctx).into()))
         .unwrap_or(hir::ExprKind::Err)
 }
 
-pub(super) fn lower_unwrap(path: &ast::Path, expr: &ast::Expr, ctx: &mut Context) -> hir::ExprKind {
+pub(super) fn lower_unwrap(
+    path: &ast::Path,
+    expr: &ast::Expr,
+    ctx: &mut Context<'_>,
+) -> hir::ExprKind {
     lower_variant(path, ctx)
         .map(|path| hir::ExprKind::Unwrap(path, expr.lower(ctx).into()))
         .unwrap_or(hir::ExprKind::Err)
 }
 
-pub(super) fn lower_enwrap(path: &ast::Path, expr: &ast::Expr, ctx: &mut Context) -> hir::ExprKind {
+pub(super) fn lower_enwrap(
+    path: &ast::Path,
+    expr: &ast::Expr,
+    ctx: &mut Context<'_>,
+) -> hir::ExprKind {
     lower_variant(path, ctx)
         .map(|path| hir::ExprKind::Enwrap(path, expr.lower(ctx).into()))
         .unwrap_or(hir::ExprKind::Err)
 }
 
-pub(super) fn lower_variant(path: &ast::Path, ctx: &mut Context) -> Option<hir::Path> {
+pub(super) fn lower_variant(path: &ast::Path, ctx: &mut Context<'_>) -> Option<hir::Path> {
     if let Item(x, Variant) = ctx.res.resolve(path, ctx.info).unwrap() {
         Some(x)
     } else {

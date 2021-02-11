@@ -9,10 +9,10 @@ use crate::compiler::shared::Map;
 macro_rules! for_each_expr {
     { wrapper: $wrapper:ident, name: $name:ident, pre: $pre:literal, post: $post:literal, ($($ref:tt)*), $iter:ident } => {
         impl Expr {
-            pub(crate) fn $wrapper<F: FnMut($($ref)* Expr)>($($ref)* self, mut f: F) {
+            pub(crate) fn $wrapper<F: FnMut($($ref)* Self)>($($ref)* self, mut f: F) {
                 self.$name(&mut f);
             }
-            fn $name<F: FnMut($($ref)* Expr)>($($ref)* self, f: &mut F) {
+            fn $name<F: FnMut($($ref)* Self)>($($ref)* self, f: &mut F) {
                 if $pre {
                     f(self);
                 }

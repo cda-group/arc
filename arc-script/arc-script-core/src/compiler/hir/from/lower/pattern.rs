@@ -9,7 +9,7 @@ use crate::compiler::shared::Lower;
 use crate::compiler::hir::from::lower::path;
 
 /// Lowers parameters but requires them to contain no patterns.
-pub(super) fn lower_params_basic(ps: &Vec<ast::Param>, ctx: &mut Context) -> Vec<Param> {
+pub(super) fn lower_params_basic(ps: &[ast::Param], ctx: &mut Context<'_>) -> Vec<Param> {
     ps.iter()
         .map(|p| {
             let tv = p.ty.lower(ctx).unwrap_or_else(|| ctx.info.types.fresh());
@@ -23,7 +23,7 @@ pub(super) fn lower_params_basic(ps: &Vec<ast::Param>, ctx: &mut Context) -> Vec
         .collect()
 }
 
-pub(super) fn lower_params(ps: &Vec<ast::Param>, ctx: &mut Context) -> (Vec<Param>, Vec<Case>) {
+pub(super) fn lower_params(ps: &[ast::Param], ctx: &mut Context<'_>) -> (Vec<Param>, Vec<Case>) {
     let mut cases = Vec::new();
     let mut params = ps
         .iter()
@@ -45,7 +45,7 @@ pub(super) fn lower_params(ps: &Vec<ast::Param>, ctx: &mut Context) -> (Vec<Para
 }
 
 /// Lowers a single `<pat>`, e.g., `on <pat> => <expr>`
-pub(super) fn lower_pat(p: &ast::Pat, ctx: &mut Context) -> (Param, Vec<Case>) {
+pub(super) fn lower_pat(p: &ast::Pat, ctx: &mut Context<'_>) -> (Param, Vec<Case>) {
     let mut cases = Vec::new();
     let tv = ctx.info.types.fresh();
     let param = if let ast::PatKind::Var(x) = &p.kind {
@@ -55,29 +55,29 @@ pub(super) fn lower_pat(p: &ast::Pat, ctx: &mut Context) -> (Param, Vec<Case>) {
         let x = ctx.info.names.fresh();
         let ux = ctx.res.stack.bind(x, ctx.info).unwrap();
         let v = Expr::syn(ExprKind::Var(ux), tv);
-        ssa(&p, v, tv, true, ctx, &mut cases);
+        ssa(p, v, tv, true, ctx, &mut cases);
         Param::syn(ParamKind::Var(ux), tv)
     };
     (param, cases)
 }
 
-pub(super) fn lower_param_expr(p: &ast::Param, e: Expr, ctx: &mut Context) -> Vec<Case> {
+pub(super) fn lower_param_expr(p: &ast::Param, e: Expr, ctx: &mut Context<'_>) -> Vec<Case> {
     let mut cases = Vec::new();
     let tv = p.ty.lower(ctx).unwrap_or_else(|| ctx.info.types.fresh());
     ssa(&p.pat, e, tv, false, ctx, &mut cases);
     cases
 }
 
-pub(super) fn lower_branching_pat_expr(p: &ast::Pat, e: Expr, ctx: &mut Context) -> Vec<Case> {
+pub(super) fn lower_branching_pat_expr(p: &ast::Pat, e: Expr, ctx: &mut Context<'_>) -> Vec<Case> {
     let mut cases = Vec::new();
     let tv = ctx.info.types.fresh();
-    ssa(&p, e, tv, true, ctx, &mut cases);
+    ssa(p, e, tv, true, ctx, &mut cases);
     cases
 }
 
 /// Folds cases into a single expression. The `else_branch` should be specified if the
 /// pattern is refutable (i.e., contains guards).
-pub(super) fn fold_cases(then_branch: Expr, else_branch: Option<Expr>, cases: Vec<Case>) -> Expr {
+pub(super) fn fold_cases(then_branch: Expr, else_branch: Option<&Expr>, cases: Vec<Case>) -> Expr {
     cases
         .into_iter()
         .rev()
@@ -90,7 +90,7 @@ pub(super) fn fold_cases(then_branch: Expr, else_branch: Option<Expr>, cases: Ve
                 kind: ExprKind::If(
                     cond.into(),
                     body.into(),
-                    else_branch.clone().unwrap().into(),
+                    else_branch.cloned().unwrap().into(),
                 ),
             },
             // Case when the pattern is irrefutable, but still binds something:
@@ -117,7 +117,7 @@ pub(super) struct CaseDebug<'a> {
 }
 
 impl Case {
-    pub(super) fn debug<'a>(&'a self, info: &'a Info, hir: &'a HIR) -> CaseDebug<'a> {
+    pub(super) const fn debug<'a>(&'a self, info: &'a Info, hir: &'a HIR) -> CaseDebug<'a> {
         CaseDebug {
             case: self,
             info,
@@ -157,31 +157,35 @@ impl<'a> Display for CaseDebug<'a> {
 
 /// Transforms
 ///
-///   if let Some(Some(a)) = b {
-///       a+a
-///   } else {
-///       c+c
-///   }
+/// ```ignore
+/// if let Some(Some(a)) = b {
+///     a+a
+/// } else {
+///     c+c
+/// }
+/// ```
 ///
 /// Into:
 ///
-///   let x0 = b.is_some();
-///   if x0 {
-///       let x1 = b.unwrap();
-///       let x2 = x1.is_some();
-///       if x2 {
-///           let a = x1.unwrap();
-///           a
-///       } else {
-///           x3(c)
-///       }
-///   } else {
-///       x3(c)
-///   }
+/// ```ignore
+/// let x0 = b.is_some();
+/// if x0 {
+///     let x1 = b.unwrap();
+///     let x2 = x1.is_some();
+///     if x2 {
+///         let a = x1.unwrap();
+///         a
+///     } else {
+///         x3(c)
+///     }
+/// } else {
+///     x3(c)
+/// }
 ///
-///   fn x3(c: i32) -> i32 {
-///       c+c
-///   }
+/// fn x3(c: i32) -> i32 {
+///     c+c
+/// }
+/// ```
 ///
 fn ssa(
     // Left-hand-side of an SSA assignment
@@ -190,7 +194,7 @@ fn ssa(
     e0: Expr,
     t0: TypeId,
     branching: bool,
-    ctx: &mut Context,
+    ctx: &mut Context<'_>,
     cases: &mut Vec<Case>,
 ) {
     match &p0.kind {
@@ -302,14 +306,14 @@ fn ssa(
 }
 
 /// Extracts the parameters of a pattern
-pub(super) fn params(ps: &Vec<ast::Param>, ctx: &mut Context) -> Vec<hir::Param> {
+pub(super) fn params(ps: &[ast::Param], ctx: &mut Context<'_>) -> Vec<hir::Param> {
     let mut params = Vec::new();
     ps.iter().for_each(|p| p.pat.params(&mut params, ctx));
     params
 }
 
 impl ast::Pat {
-    fn params(&self, params: &mut Vec<hir::Param>, ctx: &mut Context) {
+    fn params(&self, params: &mut Vec<hir::Param>, ctx: &mut Context<'_>) {
         match &self.kind {
             ast::PatKind::Ignore => {}
             ast::PatKind::Struct(pfs) => pfs.iter().for_each(|f| {
@@ -335,7 +339,7 @@ impl ast::Pat {
     }
 }
 
-pub(super) fn params_to_args(params: &Vec<hir::Param>) -> Vec<hir::Expr> {
+pub(super) fn params_to_args(params: &[hir::Param]) -> Vec<hir::Expr> {
     params
         .iter()
         .map(|p| {

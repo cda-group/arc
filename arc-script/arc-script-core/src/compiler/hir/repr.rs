@@ -39,6 +39,7 @@ pub(crate) struct Item {
     pub(crate) loc: Option<Loc>,
 }
 
+#[allow(clippy::large_enum_variant)]
 #[derive(Debug)]
 pub(crate) enum ItemKind {
     Alias(Alias),
@@ -228,7 +229,7 @@ pub(crate) struct BinOp {
     pub(crate) loc: Option<Loc>,
 }
 
-pub use ast::BinOpKind;
+pub(crate) use ast::BinOpKind;
 
 #[derive(Debug, New, Clone, Spanned)]
 pub(crate) struct UnOp {
@@ -236,7 +237,7 @@ pub(crate) struct UnOp {
     pub(crate) loc: Option<Loc>,
 }
 
-pub use ast::UnOpKind;
+pub(crate) use ast::UnOpKind;
 
 #[derive(Debug, Clone, New)]
 pub struct Type {
@@ -260,7 +261,7 @@ pub enum TypeKind {
     Err,
 }
 
-pub use ast::ScalarKind;
+pub(crate) use ast::ScalarKind;
 
 #[derive(Debug, Clone, New)]
 pub struct Shape {

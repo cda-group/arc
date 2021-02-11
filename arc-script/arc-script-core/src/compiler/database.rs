@@ -1,3 +1,5 @@
+//! WIP module for incremental compilation.
+
 use std::path::PathBuf;
 use std::sync::Arc;
 

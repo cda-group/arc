@@ -1,6 +1,7 @@
 use arc_script::{Field, Fun, Script};
 
-fn main() -> Result<(), ()> {
+/// Test to see if `Script` works as intended.
+fn main() {
     // arc_script!("./script.arc")
     //     .compile_fun1(5i8, "foo");
     //     .compile_fun2(0i32, 0u8);
@@ -28,7 +29,5 @@ fn main() -> Result<(), ()> {
                 .arg("argz", 0i8)
                 .arg("baz", (("foo", 0i8), 0i8)),
         )
-        .compile()?;
-
-    Ok(())
+        .compile();
 }

@@ -1,3 +1,5 @@
+//! Library for compiling arc-scripts inside `build.rs` files.
+
 mod fun;
 mod script;
 mod val;

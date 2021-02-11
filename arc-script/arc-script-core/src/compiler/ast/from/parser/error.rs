@@ -1,19 +1,22 @@
+//! Module for converting errors emitted by `LALRPOP` into compiler diagnostics.
+
 use crate::compiler::ast;
 use crate::compiler::ast::from::lexer::Token;
 use crate::compiler::info::diags::{Diagnostic, Error};
 use crate::compiler::info::files::{ByteIndex, FileId, Loc};
 
 /// Dropped tokens + errors produced while parsing with LALRPOP.
-pub(crate) type ErrorRecovery<'i> = lalrpop_util::ErrorRecovery<ByteIndex, Token, ()>;
+pub(crate) type ErrorRecovery = lalrpop_util::ErrorRecovery<ByteIndex, Token, ()>;
 
 /// Errors produced while parsing with LALRPOP.
-pub(crate) type ParseError<'i> = lalrpop_util::ParseError<ByteIndex, Token, ()>;
+pub(crate) type ParseError = lalrpop_util::ParseError<ByteIndex, Token, ()>;
 
 impl Diagnostic {
     /// Converts an LALRPOP `ErrorRecovery` into a `Diagnostic`.
-    pub(crate) fn from(recovery: ErrorRecovery, file: FileId) -> Diagnostic {
+    pub(crate) fn from(recovery: ErrorRecovery, file: FileId) -> Self {
         match recovery.error {
-            ParseError::User { .. } => unreachable!(),
+            /// User errors (lexer errors) are handled by the lexer.
+            ParseError::User { error: () } => unreachable!(),
             ParseError::ExtraToken { token: (l, t, r) } => Error::ExtraToken {
                 found: t,
                 loc: Loc::from_range(file, l..r).into(),

@@ -1,3 +1,6 @@
+//! Internal representation of the `AST`. In comparison to the `HIR`, the `AST` does not have
+//! resolved names. Also, all expressions are interned (bump-allocated).
+
 use crate::compiler::info::diags::DiagInterner;
 use crate::compiler::info::files::{ByteIndex, FileId, Loc, Span};
 use crate::compiler::info::modes::Mode;
@@ -7,18 +10,17 @@ use crate::compiler::info::paths::PathId;
 use crate::compiler::info::Info;
 use crate::compiler::shared::{Map, New};
 
-// use bumpalo::collections::Vec;
-// use bumpalo::boxed::Box;
 use arc_script_macros::Spanned;
 
+use educe::Educe;
 use half::bf16;
 use half::f16;
 use std::fmt::Debug;
 use time::Duration;
 
 /// A structure which keeps the start and end position of an AST node plus its source file.
-/// NB: The FileId could probably be kept in a nicer place to take up less space.
-#[derive(New)]
+/// NB: The `FileId` could probably be kept in a nicer place to take up less space.
+#[derive(Debug, New)]
 pub struct Spanned<Node>(pub FileId, pub ByteIndex, pub Node, pub ByteIndex);
 
 /// An Arc-AST.
@@ -26,11 +28,6 @@ pub struct Spanned<Node>(pub FileId, pub ByteIndex, pub Node, pub ByteIndex);
 pub struct AST {
     pub modules: Map<PathId, Module>,
     pub exprs: ExprInterner,
-}
-
-#[derive(Debug, Default)]
-pub struct ModuleInterner {
-    pub(crate) store: Map<PathId, Module>,
 }
 
 /// A module which corresponds directly to a source file.
@@ -53,7 +50,8 @@ pub enum SettingKind {
     Calibrate(Name, LitKind),
 }
 
-#[derive(Debug, Spanned, Clone)]
+/// Path to an item or variable.
+#[derive(Debug, Spanned, Clone, Copy)]
 pub struct Path {
     pub id: PathId,
     pub loc: Option<Loc>,
@@ -193,11 +191,13 @@ pub struct TaskItem {
     pub loc: Option<Loc>,
 }
 
+/// Data structure which interns (bump-allocates) expressions.
 #[derive(Debug, Default)]
 pub struct ExprInterner {
     pub(crate) store: Vec<ExprKind>,
 }
 
+/// Id of an interned expression.
 #[derive(Debug, Copy, Clone)]
 pub struct ExprId(usize);
 
@@ -209,12 +209,15 @@ pub struct Expr {
 }
 
 impl ExprInterner {
+    /// Interns an expression and returns a reference to it.
     pub fn intern(&mut self, expr: ExprKind) -> ExprId {
         let id = ExprId(self.store.len());
         self.store.push(expr);
         id
     }
 
+    /// Resolves an `ExprId` into its associated `ExprKind`.
+    #[must_use]
     pub fn resolve(&self, id: ExprId) -> &ExprKind {
         self.store.get(id.0).unwrap()
     }
@@ -253,6 +256,7 @@ pub enum ExprKind {
     Err,
 }
 
+/// A kind of reduce-expression.
 #[derive(Debug)]
 pub enum ReduceKind {
     Loop(Expr),
@@ -408,7 +412,7 @@ pub enum TypeKind {
 }
 
 /// A kind of scalar type.
-#[derive(Debug, Clone, Eq, PartialEq)]
+#[derive(Debug, Clone, Eq, PartialEq, Copy)]
 pub enum ScalarKind {
     Bool,
     Char,
