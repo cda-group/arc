@@ -6,5 +6,5 @@ edition = "2018"
 license = "MIT"
 
 [dependencies]
-arc-script-core = { path = "../arc-script-core" }
+arc-script-core = { path = "../../arc-script-core" }
 insta           = { version = "1.5.2", features = ["glob"] }

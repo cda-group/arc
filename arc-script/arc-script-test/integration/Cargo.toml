@@ -7,7 +7,7 @@ license = "MIT"
 
 [dependencies]
 arcon = { git = "https://github.com/cda-group/arcon" }
-arc-script = { path = "../" }
+arc-script = { path = "../../" }
 
 [build-dependencies]
-arc-script = { path = "../" }
+arc-script = { path = "../../" }

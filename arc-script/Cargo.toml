@@ -41,9 +41,9 @@ members = [
   "arc-script-web-repl",
 #   "arc-script-web-lsp",
   "arc-script-python",
-  "arc-script-test-insta",
-  "arc-script-test-trybuild",
-  "arc-script-test-integration",
+  "arc-script-test/insta",
+  "arc-script-test/trybuild",
+  "arc-script-test/integration",
   "arc-script-build",
   "arc-script-template",
 ]

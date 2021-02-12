@@ -10,4 +10,4 @@ trybuild           = { version = "1.0.39" }
 
 [dev-dependencies]
 arcon       = { git = "https://github.com/cda-group/arcon" }
-arc-script  = { path = "../" }
+arc-script  = { path = "../../" }
