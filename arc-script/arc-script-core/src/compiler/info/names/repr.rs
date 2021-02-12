@@ -6,10 +6,20 @@ use shrinkwraprs::Shrinkwrap;
 use smartstring::{LazyCompact, SmartString};
 
 /// An interner for interning `Name`s into `NameId`s, and resolving the other way around.
-#[derive(Default, Debug)]
+#[derive(Debug)]
 pub(crate) struct NameInterner {
     pub(crate) store: lasso::Rodeo,
+    pub(crate) root: NameId,
     buf: String,
+}
+
+impl Default for NameInterner {
+    fn default() -> Self {
+        let mut store = lasso::Rodeo::default();
+        let buf = String::new();
+        let root = NameId(store.get_or_intern("crate"));
+        Self { store, buf, root }
+    }
 }
 
 pub(crate) type NameBuf = str;

@@ -58,10 +58,10 @@ pub struct Info {
     //     pub(crate) exprs: ExprInterner,
 }
 
-impl From<modes::Mode> for Info {
-    fn from(mode: modes::Mode) -> Self {
+impl From<Mode> for Info {
+    fn from(mode: Mode) -> Self {
         let mut names = NameInterner::default();
-        let root: Name = names.intern("crate").into();
+        let root: Name = names.root.into();
         let paths = PathInterner::from(root);
         Self {
             mode,
