@@ -294,14 +294,14 @@ TaskItemKind: TaskItemKind = {
     Err   => TaskItemKind::Err,
 };
 
-Extern: Extern = "extern" "fun" <Name> <Params> "->" <Type0> ";"                => Extern::new(<>);
-Fun:    Fun    = "fun" <Name> <Params> <("->" <Type0>)?> <Brace<Expr0>>         => Fun::new(<>);
-Alias:  Alias  = "type" <Name> "=" <Type0>                                      => Alias::new(<>);
-Enum:   Enum   = "enum" <Name> <Brace<Vec<Variant>>>                            => Enum::new(<>);
-Use:    Use    = "use" <Path> <("as" <Name>)?>                                  => Use::new(<>);
-Task:   Task   = "task" <Name> <Params> <Hub> "->" <Hub> <Brace<TaskItem*>> => Task::new(<>);
-On:     On     = "on" <Handler>                                                 => On::new(<>);
-State:  State  = "state" <Name> "=" <Expr0>                                     => State::new(<>);
+Extern: Extern = "extern" "fun" <Name> <Params> "->" <Type0> ";"                  => Extern::new(<>);
+Fun:    Fun    = "fun" <Name> <Params> <Params?> <("->" <Type0>)?> <Brace<Expr0>> => Fun::new(<>);
+Alias:  Alias  = "type" <Name> "=" <Type0>                                        => Alias::new(<>);
+Enum:   Enum   = "enum" <Name> <Brace<Vec<Variant>>>                              => Enum::new(<>);
+Use:    Use    = "use" <Path> <("as" <Name>)?>                                    => Use::new(<>);
+Task:   Task   = "task" <Name> <Params> <Hub> "->" <Hub> <Brace<TaskItem*>>       => Task::new(<>);
+On:     On     = "on" <Handler>                                                   => On::new(<>);
+State:  State  = "state" <Name> "=" <Expr0>                                       => State::new(<>);
 
 Handler = {
     Brace<VecNonEmpty<Case>>,

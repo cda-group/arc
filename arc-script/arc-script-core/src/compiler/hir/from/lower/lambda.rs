@@ -25,7 +25,7 @@ pub(super) fn lower(
     let rtv = ctx.info.types.fresh();
 
     let item = hir::Item::new(
-        hir::ItemKind::Fun(hir::Fun::new(name, ps, body, tv, rtv)),
+        hir::ItemKind::Fun(hir::Fun::new(name, ps, None, body, tv, rtv)),
         loc,
     );
 

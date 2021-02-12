@@ -137,6 +137,7 @@ pub enum HubKind {
 pub struct Fun {
     pub name: Name,
     pub params: Vec<Param>,
+    pub channels: Option<Vec<Param>>,
     pub return_ty: Option<Type>,
     pub body: Expr,
 }

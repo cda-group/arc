@@ -154,7 +154,7 @@ impl Lower<(Path, hir::ItemKind), Context<'_>> for ast::Task {
                 rtv,
             );
             let body = pattern::fold_cases(call, None, cases);
-            let fun = hir::Fun::new(self.name, fun_params, body, ftv, rtv);
+            let fun = hir::Fun::new(self.name, fun_params, None, body, ftv, rtv);
             let item = hir::Item::syn(hir::ItemKind::Fun(fun));
             ctx.hir.defs.insert(fun_path, item);
             ctx.hir.items.push(fun_path);
@@ -228,20 +228,27 @@ impl Lower<(Path, hir::ItemKind), Context<'_>> for ast::Fun {
         tracing::trace!("Lowering Fun");
         ctx.res.stack.push_frame();
         let path = ctx.info.paths.intern_child(ctx.res.path_id, self.name);
-        let (ps, cases) = pattern::lower_params(&self.params, ctx);
+        let (params, cases) = pattern::lower_params(&self.params, ctx);
         let e = self.body.lower(ctx);
         let e = pattern::fold_cases(e, None, cases);
+        let (channels, e) = if let Some(channels) = &self.channels {
+            let (channels, cases) = pattern::lower_params(&channels, ctx);
+            let e = pattern::fold_cases(e, None, cases);
+            (Some(channels), e)
+        } else {
+            (None, e)
+        };
         let rtv = self
             .return_ty
             .as_ref()
             .map(|ty| ty.lower(ctx))
             .unwrap_or_else(|| ctx.info.types.intern(hir::ScalarKind::Unit));
-        let tv = ctx
-            .info
-            .types
-            .intern(hir::TypeKind::Fun(ps.iter().map(|p| p.tv).collect(), rtv));
+        let tv = ctx.info.types.intern(hir::TypeKind::Fun(
+            params.iter().map(|p| p.tv).collect(),
+            rtv,
+        ));
         ctx.res.stack.pop_frame();
-        let item = hir::Fun::new(self.name, ps, e, tv, rtv);
+        let item = hir::Fun::new(self.name, params, channels, e, tv, rtv);
         (path.into(), hir::ItemKind::Fun(item))
     }
 }

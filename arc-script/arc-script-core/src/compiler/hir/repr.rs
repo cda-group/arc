@@ -68,6 +68,7 @@ pub struct Path {
 pub(crate) struct Fun {
     pub(crate) name: Name,
     pub(crate) params: Vec<Param>,
+    pub(crate) channels: Option<Vec<Param>>,
     pub(crate) body: Expr,
     pub(crate) tv: TypeId,
     pub(crate) rtv: TypeId,

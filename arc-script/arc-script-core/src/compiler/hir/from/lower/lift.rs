@@ -34,7 +34,7 @@ pub(super) fn lift(body: hir::Expr, ctx: &mut Context<'_>) -> hir::Expr {
         let loc = body.loc;
 
         let item = hir::Item::new(
-            hir::ItemKind::Fun(hir::Fun::new(name, params, body, tv, otv)),
+            hir::ItemKind::Fun(hir::Fun::new(name, params, None, body, tv, otv)),
             loc,
         );
 
