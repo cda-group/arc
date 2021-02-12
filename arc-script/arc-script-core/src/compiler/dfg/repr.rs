@@ -17,7 +17,7 @@ pub(crate) use petgraph::prelude::EdgeIndex as EdgeId;
 pub(crate) use petgraph::prelude::NodeIndex as NodeId;
 
 #[derive(Debug, Copy, Clone, New)]
-pub(crate) struct Node {
+pub struct Node {
     pub(crate) id: NodeId,
 }
 

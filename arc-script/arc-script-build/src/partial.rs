@@ -1,13 +1,20 @@
-//! Value builder implementation.
+//! Partial builder implementation.
 
 use arc_script_core::prelude::bf16;
 use arc_script_core::prelude::f16;
 
 use derive_more::From;
+use derive_more::Constructor as New;
+
+#[derive(Clone, Debug, New)]
+pub struct Partial {
+    pub(crate) kind: PartialKind,
+}
 
 /// Arguments which can be passed to an arc-script when staging it.
+/// This is translated into `arc_script_core::compiler::dfg::from::eval::value`
 #[derive(Clone, Debug)]
-pub enum Value {
+pub enum PartialKind {
     I8(i8),
     I16(i16),
     I32(i32),
@@ -30,45 +37,45 @@ pub enum Value {
     Tuple(Tuple),
 }
 
-/// Macro for deriving `impl From<Type> for Value { ... }` where `Type` is a primitive type.
+/// Macro for deriving `impl From<Type> for Partial { ... }` where `Type` is a primitive type.
 macro_rules! from_primitive {
     {
         $variant:ident($ty:ty)
     } => {
-        impl From<$ty> for Value {
+        impl From<$ty> for Partial {
             fn from(x: $ty) -> Self {
-                Self::$variant(x)
+                Self::new(PartialKind::$variant(x))
             }
         }
     }
 }
 
-/// Macro for deriving `impl From<Type> for Value { ... }` where `Type` is a tuple type.
+/// Macro for deriving `impl From<Type> for Partial { ... }` where `Type` is a tuple type.
 macro_rules! from_tuple {
     {
         $($x:ident),*
     } => {
         #[allow(non_camel_case_types)]
-        impl<$($x),*> From<($($x),*,)> for Value
+        impl<$($x),*> From<($($x),*,)> for Partial
         where
-            $($x: Into<Value>),*
+            $($x: Into<Partial>),*
         {
             fn from(($($x),*,): ($($x),*,)) -> Self {
-                Self::Tuple(Tuple(vec![$($x.into()),*]))
+                Self::new(PartialKind::Tuple(Tuple(vec![$($x.into()),*])))
             }
         }
     }
 }
 
-/// Macro for deriving `impl From<Type> for Value { ... }` where `Type` is a tuple of fields.
+/// Macro for deriving `impl From<Type> for Partial { ... }` where `Type` is a tuple of fields.
 macro_rules! from_struct {
     {
         $($x:ident : $t:ty),*
     } => {
         #[allow(non_camel_case_types)]
-        impl From<($($t),*,)> for Value {
+        impl From<($($t),*,)> for Partial {
             fn from(($($x),*,): ($($t),*,)) -> Self {
-                Self::Struct(Struct(vec![$($x),*]))
+                Self::new(PartialKind::Struct(Struct(vec![$($x),*])))
             }
         }
     }
@@ -109,42 +116,42 @@ from_struct!(x0: F, x1: F, x2: F, x3: F, x4: F, x5: F);
 from_struct!(x0: F, x1: F, x2: F, x3: F, x4: F, x5: F, x6: F);
 from_struct!(x0: F, x1: F, x2: F, x3: F, x4: F, x5: F, x6: F, x7: F);
 
-impl From<&'_ str> for Value {
+impl From<&'_ str> for Partial {
     fn from(s: &'_ str) -> Self {
-        Value::Str(s.into())
+        Self::new(PartialKind::Str(s.into()))
     }
 }
 
-/// A tuple value.
+/// A tuple Partial.
 #[derive(Clone, Debug, From)]
-pub struct Tuple(Vec<Value>);
+pub struct Tuple(pub Vec<Partial>);
 
-/// A vector value.
+/// A vector Partial.
 #[derive(Clone, Debug, From)]
-pub struct Vector(Vec<Value>);
+pub struct Vector(pub Vec<Partial>);
 
-/// An array value.
+/// An array Partial.
 #[derive(Clone, Debug, From)]
-pub struct Array(Vec<Value>);
+pub struct Array(pub Vec<Partial>);
 
-/// A struct value.
+/// A struct Partial.
 #[derive(Clone, Debug, From)]
-pub struct Struct(Vec<Field>);
+pub struct Struct(pub Vec<Field>);
 
 /// A variant of an enum.
 #[derive(Clone, Debug)]
-pub struct Variant(String, Box<Value>);
+pub struct Variant(pub String, pub Box<Partial>);
 
 /// A field of an anonymous struct.
 #[derive(Debug, Clone)]
 pub struct Field {
-    name: String,
-    val: Value,
+    pub name: String,
+    pub val: Partial,
 }
 
 impl Field {
     /// Creates a new field.
-    pub fn new(name: impl Into<String>, val: impl Into<Value>) -> Self {
+    pub fn new(name: impl Into<String>, val: impl Into<Partial>) -> Self {
         Self {
             name: name.into(),
             val: val.into(),

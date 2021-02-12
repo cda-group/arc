@@ -14,18 +14,23 @@ use crate::compiler::shared::{New, VecMap};
 use half::bf16;
 use half::f16;
 
+/// A value which a HIR expression evaluates into. Exported as public to allow
+/// staging of HIR functions. The compiler can partially evaluate a HIR function
+/// by providing it with partial inputs. Partial inputs are defined in
+/// `arc_script_build::val::Value` and can be anything but streams.
 #[derive(Clone, Debug, New)]
-pub(crate) struct Value {
+pub struct Value {
     pub(crate) kind: ValueKind,
     pub(crate) ty: TypeId,
 }
 
-/// A struct representing the possible values an Arc-Script can evaluate into.
+/// An enum representing the possible values an Arc-Script can evaluate into.
 ///
 /// NB: By the time expressions are evaluated, all closures will be converted
 /// into top-level items through lambda lifting.
+#[allow(missing_docs)]
 #[derive(Clone, Debug)]
-pub(crate) enum ValueKind {
+pub enum ValueKind {
     Unit,
     I8(i8),
     I16(i16),
