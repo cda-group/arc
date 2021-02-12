@@ -4,10 +4,9 @@ expression: s
 input_file: arc-script-test-insta/src/expect-pass/path.arc
 ---
 module @toplevel {
-    func @main() -> i0 {
+    func @main() -> () {
         %x_1 = arc.constant 1 : si32
-        %x_2 = arc.constant unit : i0
-        return %x_2 : i0
+        return 
     }
 }
 

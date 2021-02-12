@@ -65,23 +65,24 @@ where
         return Ok(Report::new(info, Some(hir)));
     }
 
+    // TODO: Staging is temporarily out of order, a service squad is on its way
+    //
     // Lower HIR into DFG
-    let dfg = tracing::debug_span!("HIR => DFG").in_scope(|| {
-        DFG::from(&hir, &mut info).unwrap_or_else(|diags| {
-            diags.emit(&info, Some(&hir), &mut f);
-            std::process::exit(-1);
-        })
-    });
-
-    if matches!(info.mode.output, Output::DFG) {
-        writeln!(f, "{}", dfg::pretty(&dfg, &info))?;
-        return Ok(Report::new(info, Some(hir)));
-    }
+    //     let dfg = tracing::debug_span!("HIR => DFG").in_scope(|| {
+    //         DFG::from(&hir, &mut info).unwrap_or_else(|diags| {
+    //             diags.emit(&info, Some(&hir), &mut f);
+    //             std::process::exit(-1);
+    //         })
+    //     });
+    //
+    //     if matches!(info.mode.output, Output::DFG) {
+    //         writeln!(f, "{}", dfg::pretty(&dfg, &info))?;
+    //         return Ok(Report::new(info, Some(hir)));
+    //     }
 
     if matches!(info.mode.output, Output::Rust) {
         // Lower HIR and DFG into Rust
-        let rust =
-            tracing::debug_span!("HIR & DFG => Rust").in_scope(|| Rust::from(&hir, &dfg, &info));
+        let rust = tracing::debug_span!("HIR & DFG => Rust").in_scope(|| Rust::from(&hir, &info));
 
         writeln!(f, "{}", rust::pretty(&rust))?;
         return Ok(Report::new(info, Some(hir)));
@@ -90,7 +91,7 @@ where
     if matches!(info.mode.output, Output::MLIR) {
         // Lower HIR and DFG into MLIR
         let mlir =
-            tracing::debug_span!("HIR & DFG => MLIR").in_scope(|| MLIR::from(&hir, dfg, &mut info));
+            tracing::debug_span!("HIR & DFG => MLIR").in_scope(|| MLIR::from(&hir, &mut info));
 
         writeln!(f, "{}", mlir::pretty(&mlir, &info))?;
         return Ok(Report::new(info, Some(hir)));

@@ -221,7 +221,8 @@ dependencies = [
 name = "arc-script-test-trybuild"
 version = "0.1.0"
 dependencies = [
- "arc-script-bridge",
+ "arc-script",
+ "arcon",
  "trybuild",
 ]
 

@@ -20,8 +20,8 @@ pub(crate) struct MLIR {
     pub(crate) items: Vec<Path>,
     /// Definitions of items.
     pub(crate) defs: Map<Path, Item>,
-    /// Main function for generating the dataflow.
-    pub(crate) main: Fun,
+//    /// Main function for generating the dataflow.
+//     pub(crate) main: Fun,
 }
 
 #[derive(New, Debug)]

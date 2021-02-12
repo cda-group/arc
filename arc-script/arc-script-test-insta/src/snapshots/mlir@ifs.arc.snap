@@ -4,9 +4,8 @@ expression: s
 input_file: arc-script-test-insta/src/expect-pass/ifs.arc
 ---
 module @toplevel {
-    func @main() -> i0 {
-        %x_0 = arc.constant unit : i0
-        return %x_0 : i0
+    func @main() -> () {
+        return 
     }
     func @test() -> si32 {
         %x_1 = arc.constant 65 : si32

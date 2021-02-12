@@ -1,11 +1,6 @@
 ---
-source: arc-script-core/tests/insta/mod.rs
+source: arc-script-test-insta/src/lib.rs
 expression: s
-input_file: arc-script-core/tests/insta/snapshot-tests/path.arc
+input_file: arc-script-test-insta/src/expect-pass/path.arc
 ---
--- DFG
-Sources:
-Sinks:
-Edges:
-
 

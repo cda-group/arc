@@ -9,4 +9,5 @@ license = "MIT"
 trybuild           = { version = "1.0.39" }
 
 [dev-dependencies]
-arc-script-bridge  = { path = "../arc-script-bridge" }
+arcon       = { git = "https://github.com/cda-group/arcon" }
+arc-script  = { path = "../" }

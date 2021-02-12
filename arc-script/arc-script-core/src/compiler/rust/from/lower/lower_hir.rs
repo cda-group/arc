@@ -60,7 +60,11 @@ impl Lower<(), Context<'_>> for hir::Fun {
 
 impl Lower<(), Context<'_>> for hir::Task {
     fn lower(&self, ctx: &mut Context<'_>) {
-        let name = self.name.lower(ctx);
+        let cons_name = self.name.lower(ctx);
+        let task_name = syn::Ident::new(
+            &format!("Task{}", cons_name),
+            proc_macro2::Span::call_site(),
+        );
         let params = self.params.iter().map(|p| p.lower(ctx)).collect::<Vec<_>>();
         let param_ids = self
             .params
@@ -74,7 +78,7 @@ impl Lower<(), Context<'_>> for hir::Task {
         };
         let struct_item = syn::parse_quote! {
             #[derive(ArconState)]
-            pub struct #name {
+            pub struct #task_name {
                 #(#[ephemeral] pub #params),*
             }
         };
@@ -91,8 +95,8 @@ impl Lower<(), Context<'_>> for hir::Task {
         let elem_id = self.on.param.kind.lower(ctx);
         let body = self.on.body.lower(ctx);
         let impl_item = syn::parse_quote! {
-            impl Operator for #name {
-                type IN = #ity;
+            impl Operator for #task_name {
+                type IN  = #ity;
                 type OUT = #oty;
                 type TimerState = ArconNever;
                 type OperatorState = Self;
@@ -111,8 +115,18 @@ impl Lower<(), Context<'_>> for hir::Task {
                 arcon::ignore_persist!();
             }
         };
+
+        let fn_item = syn::parse_quote! {
+            fn #cons_name(#(#params),*) -> OperatorBuilder<#task_name> {
+                OperatorBuilder {
+                    constructor: Arc::new(|b| #task_name { #(#params),* }),
+                    conf: Default::default(),
+                }
+            }
+        };
         ctx.rust.items.push(syn::Item::Struct(struct_item));
         ctx.rust.items.push(syn::Item::Impl(impl_item));
+        ctx.rust.items.push(syn::Item::Fn(fn_item));
     }
 }
 
@@ -174,9 +188,20 @@ impl Lower<proc_macro2::TokenStream, Context<'_>> for hir::Expr {
                 quote!(#e0 #op #e1)
             }
             hir::ExprKind::Call(e, es) => {
+                let t = ctx.info.types.resolve(e.tv);
                 let e = e.lower(ctx);
-                let es = es.iter().map(|e| e.lower(ctx));
-                quote!(#e(#(#es),*))
+                let es = es.iter().map(|e| e.lower(ctx)).collect::<Vec<_>>();
+                if let hir::TypeKind::Fun(_, rtv) = t.kind {
+                    if let hir::TypeKind::Stream(_) = ctx.info.types.resolve(rtv).kind {
+                        let stream = es.iter().next().unwrap();
+                        let task = e;
+                        quote!(Stream::operator(#stream, #task))
+                    } else {
+                        quote!(#e(#(#es),*))
+                    }
+                } else {
+                    unreachable!()
+                }
             }
             hir::ExprKind::Emit(e) => {
                 let e = e.lower(ctx);
@@ -204,7 +229,7 @@ impl Lower<proc_macro2::TokenStream, Context<'_>> for hir::Expr {
             }
             hir::ExprKind::Log(e) => {
                 let e = e.lower(ctx);
-                quote!(#e)
+                quote!(println!("{:?}", #e))
             }
             hir::ExprKind::Loop(e) => {
                 let e = e.lower(ctx);

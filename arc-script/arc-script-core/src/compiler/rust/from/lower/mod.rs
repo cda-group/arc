@@ -12,6 +12,7 @@ use crate::compiler::shared::{Lower, Map, New};
 #[derive(Debug, New)]
 pub(crate) struct Context<'i> {
     pub(crate) info: &'i Info,
+    pub(crate) hir: &'i HIR,
     pub(crate) rust: &'i mut Rust,
     /// Buffer for name mangling
     pub(crate) buf: String,

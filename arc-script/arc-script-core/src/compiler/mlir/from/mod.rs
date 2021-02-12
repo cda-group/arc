@@ -11,14 +11,13 @@ use crate::compiler::shared::{Lower, Map, New};
 
 impl MLIR {
     #[allow(clippy::needless_pass_by_value)] // Temporary
-    pub(crate) fn from(hir: &HIR, dfg: DFG, info: &mut Info) -> Self {
+    pub(crate) fn from(hir: &HIR, info: &mut Info) -> Self {
         let ctx = &mut lower::Context::new(hir, info);
         let defs = hir
             .items
             .iter()
             .filter_map(|x| Some((*x, hir.defs.get(x).unwrap().lower(ctx)?)))
             .collect::<Map<_, _>>();
-        let main = dfg.lower(ctx);
-        Self::new(hir.items.clone(), defs, main)
+        Self::new(hir.items.clone(), defs)
     }
 }

@@ -1,8 +1,9 @@
 ---
-source: arc-script-core/tests/insta/mod.rs
+source: arc-script-test-insta/src/lib.rs
 expression: s
-input_file: arc-script-core/tests/insta/snapshot-tests/pattern.arc
+input_file: arc-script-test-insta/src/expect-pass/pattern.arc
 ---
+use arcon::prelude::*;
 pub fn main() -> () {
     let x_0: ((i32, i32), (i32, i32)) = ((1i32, 2i32), (3i32, 4i32));
     let x_1: (i32, i32) = x_0.0;

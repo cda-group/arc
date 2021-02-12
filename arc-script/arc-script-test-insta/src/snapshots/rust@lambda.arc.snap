@@ -1,8 +1,9 @@
 ---
-source: arc-script-core/tests/insta/mod.rs
+source: arc-script-test-insta/src/lib.rs
 expression: s
-input_file: arc-script-core/tests/insta/snapshot-tests/lambda.arc
+input_file: arc-script-test-insta/src/expect-pass/lambda.arc
 ---
+use arcon::prelude::*;
 pub fn x_0(i_0: i32) -> i32 {
     i_0 + 1i32
 }

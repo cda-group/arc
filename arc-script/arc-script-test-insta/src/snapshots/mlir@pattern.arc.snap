@@ -4,7 +4,7 @@ expression: s
 input_file: arc-script-test-insta/src/expect-pass/pattern.arc
 ---
 module @toplevel {
-    func @main() -> i0 {
+    func @main() -> () {
         %x_3 = arc.constant 1 : si32
         %x_4 = arc.constant 2 : si32
         %x_5 = "arc.make_tuple"(%x_3, %x_4) : (si32, si32) -> tuple<si32, si32>
@@ -18,8 +18,7 @@ module @toplevel {
         %x_D = "arc.index_tuple"(%x_9) { index = 1 } : tuple<tuple<si32, si32>, tuple<si32, si32>> -> tuple<si32, si32>
         %x_E = "arc.index_tuple"(%x_D) { index = 0 } : tuple<si32, si32> -> si32
         %x_F = "arc.index_tuple"(%x_D) { index = 1 } : tuple<si32, si32> -> si32
-        %x_G = arc.constant unit : i0
-        return %x_G : i0
+        return 
     }
 }
 

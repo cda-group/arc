@@ -1,6 +1,6 @@
-use arc_script_bridge::arc_script;
+use arc_script;
 
-#[arc_script("nonexistent-file.arc")]
+#[arc_script::compile("nonexistent-file.arc")]
 mod arc {
 
 }

@@ -1,8 +1,9 @@
 ---
-source: arc-script-core/tests/insta/mod.rs
+source: arc-script-test-insta/src/lib.rs
 expression: s
-input_file: arc-script-core/tests/insta/snapshot-tests/if_let.arc
+input_file: arc-script-test-insta/src/expect-pass/if_let.arc
 ---
+use arcon::prelude::*;
 pub fn x_3(y_0: i32) -> i32 {
     y_0 + 2i32
 }
