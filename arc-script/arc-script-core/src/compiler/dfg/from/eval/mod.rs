@@ -41,25 +41,26 @@ impl Expr {
         use ControlKind::*;
         use ValueKind::*;
         let kind = match &self.kind {
+            #[rustfmt::skip]
             ExprKind::Lit(kind) => match kind {
-                LitKind::U8(v) => U8(*v),
-                LitKind::U16(v) => U16(*v),
-                LitKind::U32(v) => U32(*v),
-                LitKind::U64(v) => U64(*v),
-                LitKind::I8(v) => I8(*v),
-                LitKind::I16(v) => I16(*v),
-                LitKind::I32(v) => I32(*v),
-                LitKind::I64(v) => I64(*v),
+                LitKind::U8(v)   => U8(*v),
+                LitKind::U16(v)  => U16(*v),
+                LitKind::U32(v)  => U32(*v),
+                LitKind::U64(v)  => U64(*v),
+                LitKind::I8(v)   => I8(*v),
+                LitKind::I16(v)  => I16(*v),
+                LitKind::I32(v)  => I32(*v),
+                LitKind::I64(v)  => I64(*v),
                 LitKind::Bf16(v) => Bf16(*v),
-                LitKind::F16(v) => F16(*v),
-                LitKind::F32(v) => F32(*v),
-                LitKind::F64(v) => F64(*v),
+                LitKind::F16(v)  => F16(*v),
+                LitKind::F32(v)  => F32(*v),
+                LitKind::F64(v)  => F64(*v),
                 LitKind::Bool(v) => Bool(*v),
-                LitKind::Unit => Unit,
+                LitKind::Unit    => Unit,
                 LitKind::Char(v) => Char(*v),
-                LitKind::Str(v) => Str(v.clone()),
+                LitKind::Str(v)  => Str(v.clone()),
                 LitKind::Time(_) => todo!(),
-                LitKind::Err => unreachable!(),
+                LitKind::Err     => unreachable!(),
             },
             ExprKind::Var(x) => return Ok(ctx.stack.lookup(x.id).clone()),
             ExprKind::Item(x) => Item(*x),
@@ -96,10 +97,12 @@ impl Expr {
                     _ => return Control(Panic(self.loc))?,
                 }
             }
+            /// TODO: This is UB if e0 has side-effects.
+            /// Handle that in the type-checker.
             ExprKind::Is(x0, e0) => {
                 let v0 = e0.eval(ctx)?;
                 match v0.kind {
-                    Variant(x1, v) => {
+                    Variant(x1, _) => {
                         if x1 == *x0 {
                             Bool(true)
                         } else {
@@ -186,6 +189,12 @@ impl Expr {
                                 }
                             }
                             let frame = ctx.stack.take_frame();
+                            // Streams and tasks are represented as references (ids) to edges and
+                            // nodes respectively in the dataflow graph. This means that instances
+                            // of both can be re-used in different parts of the dataflow graph. In
+                            // consequence, streams can be multiplexed into and out of tasks.
+                            // Another option is to represent streams and tasks as values instead
+                            // of references. This would prevent the possibility of multiplexing.
                             let id = ctx.dfg.add_node(NodeData::new(x, frame));
                             Task(x, Node::new(id))
                         }
@@ -238,11 +247,11 @@ impl Expr {
                 _ => unreachable!(),
             },
             ExprKind::Access(e, x) => match e.eval(ctx)?.kind {
-                Struct(efs) => return Ok(efs.get(&x.id).unwrap().clone()),
+                Struct(vfs) => return Ok(vfs.get(&x.id).unwrap().clone()),
                 _ => unreachable!(),
             },
             ExprKind::Project(e, i) => match e.eval(ctx)?.kind {
-                Tuple(es) => return Ok(es.get(i.id).unwrap().clone()),
+                Tuple(vs) => return Ok(vs.get(i.id).unwrap().clone()),
                 _ => unreachable!(),
             },
             ExprKind::Emit(e) => match e.eval(ctx)?.kind {

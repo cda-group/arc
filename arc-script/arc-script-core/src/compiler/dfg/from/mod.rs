@@ -22,6 +22,7 @@ use crate::compiler::info::types::TypeId;
 use crate::compiler::info::Info;
 use crate::compiler::shared::VecMap;
 
+/// Constructs a call-expression
 fn call(path: Path, args: Vec<Expr>, ftv: TypeId, rtv: TypeId) -> Expr {
     Expr::syn(
         ExprKind::Call(Expr::syn(ExprKind::Item(path), ftv).into(), args),
@@ -29,8 +30,9 @@ fn call(path: Path, args: Vec<Expr>, ftv: TypeId, rtv: TypeId) -> Expr {
     )
 }
 
-/// Constructs an expression for calling the main-function
+/// Constructs an call-expression for calling the main-function
 fn main_call(hir: &HIR, info: &mut Info) -> Option<Expr> {
+    // Find the main function
     let main = info.names.intern("main").into();
     let main_fun = hir.defs.iter().find_map(|(path, item)| match &item.kind {
         ItemKind::Fun(item) if item.name == main => Some((path, item)),
@@ -57,7 +59,7 @@ fn main_call(hir: &HIR, info: &mut Info) -> Option<Expr> {
 /// Constructs a dataflow graph by evaluating the HIR. The HIR is not modified
 /// in the process.
 impl DFG {
-    pub(crate) fn from<'i>(hir: &'i HIR, info: &'i mut Info) -> Result<Self, DiagInterner> {
+    pub(crate) fn from(hir: &HIR, info: &mut Info) -> Result<Self, DiagInterner> {
         let mut dfg = Self::default();
         if let Some(expr) = main_call(hir, info) {
             let mut stack = Stack::default();

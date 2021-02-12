@@ -3,8 +3,9 @@
 /// NB: This module is public so that external libraries can construct ASTs
 /// without having to generate source code.
 pub mod ast;
-/// Module for representing Dataflow graphs.
-pub(crate) mod dfg;
+/// Module for representing Dataflow graphs. Exports data types for staging
+/// `HIR` functions.
+pub mod dfg;
 /// Module for representing Higher Order Intermediate Representations.
 pub(crate) mod hir;
 /// Module for representing side information.

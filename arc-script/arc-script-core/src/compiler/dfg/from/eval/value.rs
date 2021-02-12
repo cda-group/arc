@@ -43,7 +43,9 @@ pub(crate) enum ValueKind {
     Str(String),
     Bool(bool),
     Item(Path),
+    /// A `Task` is a `Node` in a dataflow graph which is defined by `Path`.
     Task(Path, Node),
+    /// A `Stream` is an edge in a dataflow graph which originates from `Node` at `Port`.
     Stream(Node, Port),
     Vector(Vec<Value>),
     Tuple(Vec<Value>),
