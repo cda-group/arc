@@ -145,11 +145,11 @@ impl<'i> Display for Pretty<'i, ast::Hub, State<'_>> {
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
         let Pretty(item, ctx) = self;
         match &item.kind {
-            ast::HubKind::Tagged(vs) => {
-                write!(f, "<{}>", vs.iter().all_pretty(", ", ctx))
+            ast::HubKind::Tagged(ports) => {
+                write!(f, "({})", ports.iter().all_pretty(", ", ctx))
             }
             ast::HubKind::Single(t) => {
-                write!(f, "{}", t.pretty(ctx))
+                write!(f, "({})", t.pretty(ctx))
             }
         }
     }
@@ -186,6 +186,13 @@ impl<'i> Display for Pretty<'i, ast::Variant, State<'_>> {
         } else {
             write!(f, "{}", variant.name.pretty(ctx))
         }
+    }
+}
+
+impl<'i> Display for Pretty<'i, ast::Port, State<'_>> {
+    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
+        let Pretty(port, ctx) = self;
+        write!(f, "{}({})", port.name.pretty(ctx), port.ty.pretty(ctx))
     }
 }
 

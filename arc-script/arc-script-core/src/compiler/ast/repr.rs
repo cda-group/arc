@@ -128,7 +128,7 @@ pub struct Hub {
 /// A kind of hub.
 #[derive(Debug)]
 pub enum HubKind {
-    Tagged(Vec<Variant>),
+    Tagged(Vec<Port>),
     Single(Type),
 }
 
@@ -372,11 +372,19 @@ pub struct Field<T: Debug> {
     pub loc: Option<Loc>,
 }
 
-/// A variant of an enum or port.
+/// A variant of an enum.
 #[derive(Debug, Spanned)]
 pub struct Variant {
     pub name: Name,
     pub ty: Option<Type>,
+    pub loc: Option<Loc>,
+}
+
+/// A port of a hub.
+#[derive(Debug, Spanned)]
+pub struct Port {
+    pub name: Name,
+    pub ty: Type,
     pub loc: Option<Loc>,
 }
 

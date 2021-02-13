@@ -1,4 +1,4 @@
-task Map(f: fun(i32) -> i32) <Input(i32)> -> <Output(i32)> {
+task Map(f: fun(i32) -> i32) (Input(i32)) -> (Output(i32)) {
     on Input(event) => emit Output(f(event))
 }
 

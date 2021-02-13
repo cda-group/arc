@@ -200,12 +200,12 @@ impl ast::Hub {
     fn lower(&self, name: &str, ctx: &mut Context<'_>) -> hir::Hub {
         tracing::trace!("Lowering Hub");
         let kind = match &self.kind {
-            ast::HubKind::Tagged(vs) => {
+            ast::HubKind::Tagged(ports) => {
                 // Construct enum for ports
                 let task_path = ctx.res.path_id;
                 let hub_name = ctx.info.names.intern(name).into();
                 let hub_path: Path = ctx.info.paths.intern_child(task_path, hub_name).into();
-                let ports = vs
+                let ports = ports
                     .iter()
                     .map(|v| v.lower(hub_path.id, ctx))
                     .collect::<Vec<_>>();
@@ -306,6 +306,17 @@ impl ast::Variant {
                 .unwrap_or_else(|| ctx.info.types.intern(hir::ScalarKind::Unit)),
             self.loc,
         );
+        ctx.hir
+            .defs
+            .insert(path, hir::Item::new(hir::ItemKind::Variant(item), self.loc));
+        path
+    }
+}
+
+impl ast::Port {
+    fn lower(&self, enum_path: hir::PathId, ctx: &mut Context<'_>) -> Path {
+        let path: Path = ctx.info.paths.intern_child(enum_path, self.name).into();
+        let item = hir::Variant::new(self.name, self.ty.lower(ctx), self.loc);
         ctx.hir
             .defs
             .insert(path, hir::Item::new(hir::ItemKind::Variant(item), self.loc));

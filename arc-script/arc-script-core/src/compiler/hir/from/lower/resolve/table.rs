@@ -245,6 +245,19 @@ impl Declare for ast::Variant {
     }
 }
 
+impl Declare for ast::Port {
+    fn declare(&self, path: PathId, table: &mut SymbolTable, info: &mut Info) {
+        let path = info.paths.intern_child(path, self.name);
+        if table
+            .declarations
+            .insert(path, ItemDeclKind::Variant)
+            .is_some()
+        {
+            info.diags.intern(Error::NameClash { name: self.name })
+        }
+    }
+}
+
 impl Declare for ast::State {
     fn declare(&self, path: PathId, table: &mut SymbolTable, info: &mut Info) {
         let path = info.paths.intern_child(path, self.name);

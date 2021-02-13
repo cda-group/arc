@@ -180,7 +180,7 @@ impl<'i> Display for Pretty<'i, hir::Hub, State<'_>> {
                 if let hir::ItemKind::Enum(item) = &item.kind {
                     write!(
                         f,
-                        "<{}>",
+                        "({})",
                         item.variants.iter().map_pretty(
                             |v, f| write!(f, "{}", ctx.state.hir.defs.get(v).unwrap().pretty(ctx)),
                             ", "
@@ -190,7 +190,7 @@ impl<'i> Display for Pretty<'i, hir::Hub, State<'_>> {
                     unreachable!()
                 }
             }
-            hir::HubKind::Single(tv) => write!(f, "{}", tv.pretty(ctx)),
+            hir::HubKind::Single(tv) => write!(f, "({})", tv.pretty(ctx)),
         }
     }
 }
