@@ -5,7 +5,7 @@ pub(crate) mod eval;
 use crate::compiler::dfg::from::eval::control::Control;
 use crate::compiler::dfg::from::eval::control::ControlKind::*;
 use crate::compiler::dfg::from::eval::stack::Stack;
-use crate::compiler::dfg::from::eval::value::ValueKind;
+
 use crate::compiler::dfg::from::eval::Context;
 use crate::compiler::dfg::DFG;
 use crate::compiler::hir::Path;
@@ -16,11 +16,9 @@ use crate::compiler::hir::{
 use crate::compiler::info::diags::DiagInterner;
 use crate::compiler::info::diags::Error;
 use crate::compiler::info::diags::Panic;
-use crate::compiler::info::names::NameId;
-use crate::compiler::info::paths::PathId;
+
 use crate::compiler::info::types::TypeId;
 use crate::compiler::info::Info;
-use crate::compiler::shared::VecMap;
 
 /// Constructs a call-expression
 fn call(path: Path, args: Vec<Expr>, ftv: TypeId, rtv: TypeId) -> Expr {

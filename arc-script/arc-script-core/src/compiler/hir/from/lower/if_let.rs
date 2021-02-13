@@ -1,9 +1,7 @@
 use super::Context;
 use crate::compiler::ast;
-use crate::compiler::hir::{Expr, ExprKind, Param, ParamKind};
-use crate::compiler::info::diags::Error;
-use crate::compiler::info::names::NameId;
-use crate::compiler::info::types::TypeId;
+use crate::compiler::hir::Expr;
+
 use crate::compiler::shared::Lower;
 
 pub(super) fn lower(

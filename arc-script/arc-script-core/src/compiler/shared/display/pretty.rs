@@ -1,4 +1,3 @@
-use crate::compiler::info::Info;
 use crate::compiler::shared::display::format::Context;
 use crate::compiler::shared::New;
 

@@ -91,7 +91,7 @@ pub fn main() -> Result<(), JsValue> {
             KEY_ENTER => {
                 if !line.is_empty() {
                     let code = compile(&mut line);
-                    term.writeln(&format!("{}", &code));
+                    term.writeln(&code);
                     term.writeln("");
                     line.clear();
                     cursor_col = 0;

@@ -1,13 +1,11 @@
-use crate::compiler::dfg::from::eval::stack::Frame;
-use crate::compiler::dfg::DFG;
 use crate::compiler::dfg::{Node, Port};
 use crate::compiler::hir::{
     BinOp, BinOpKind, BinOpKind::*, Expr, ExprKind, LitKind, Path, TypeKind, UnOp, UnOpKind,
     UnOpKind::*, HIR,
 };
-use crate::compiler::info::diags::Error;
+
 use crate::compiler::info::names::NameId;
-use crate::compiler::info::paths::PathId;
+
 use crate::compiler::info::types::TypeId;
 use crate::compiler::shared::{New, VecMap};
 

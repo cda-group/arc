@@ -1,10 +1,9 @@
 use crate::compiler::hir;
 use crate::compiler::info::files::Loc;
-use crate::compiler::info::Info;
+
 use crate::compiler::shared::New;
 
 use educe::Educe;
-use shrinkwraprs::Shrinkwrap;
 
 use std::collections::HashMap;
 
@@ -71,7 +70,6 @@ pub(crate) struct Ownership {
     pub(crate) jumps: Vec<(Branch, Branch)>,
 }
 
-use std::borrow::Borrow;
 use std::collections::hash_map::Entry;
 
 impl Ownership {
@@ -216,7 +214,7 @@ impl hir::Expr {
             //     ...
             // }
             // Therefore, `is` is a by-reference expression
-            hir::ExprKind::Is(_, e0) => {}
+            hir::ExprKind::Is(_, _e0) => {}
         }
         None
     }

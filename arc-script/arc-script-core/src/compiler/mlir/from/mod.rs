@@ -1,13 +1,11 @@
 /// Module for converting the [`crate::repr::dfg::DFG`] into MLIR.
 pub(crate) mod lower;
 
-use crate::compiler::dfg::DFG;
-use crate::compiler::hir;
 use crate::compiler::hir::HIR;
 use crate::compiler::info::Info;
-use crate::compiler::mlir;
+
 use crate::compiler::mlir::MLIR;
-use crate::compiler::shared::{Lower, Map, New};
+use crate::compiler::shared::{Lower, Map};
 
 impl MLIR {
     #[allow(clippy::needless_pass_by_value)] // Temporary

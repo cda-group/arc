@@ -1,8 +1,6 @@
 use crate::compiler::dfg::from::eval::stack::Frame;
 use crate::compiler::hir::Path;
-use crate::compiler::hir::HIR;
-use crate::compiler::info::names::NameId;
-use crate::compiler::info::paths::PathId;
+
 use crate::compiler::shared::New;
 
 use petgraph::dot::{Config, Dot};
@@ -11,9 +9,7 @@ use shrinkwraprs::Shrinkwrap;
 
 use std::io::Write;
 use std::process::{Command, Stdio};
-use std::rc::Rc;
 
-pub(crate) use petgraph::prelude::EdgeIndex as EdgeId;
 pub(crate) use petgraph::prelude::NodeIndex as NodeId;
 
 #[derive(Debug, Copy, Clone, New)]

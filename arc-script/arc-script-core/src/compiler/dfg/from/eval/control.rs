@@ -1,5 +1,5 @@
-use crate::compiler::info::files::Loc;
 use crate::compiler::dfg::from::eval::value::Value;
+use crate::compiler::info::files::Loc;
 
 /// Trait for panicking the interpreter through unwinding the stackframes.
 pub(crate) trait Unwind<T> {

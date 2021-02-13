@@ -4,15 +4,10 @@ use crate::compiler::hir::{
     Path, ScalarKind, Shape, State, Task, Type, TypeKind, UnOpKind, HIR,
 };
 use crate::compiler::info::diags::{Diagnostic, Error, Warning};
-use crate::compiler::info::files::Loc;
-use crate::compiler::info::names::NameId;
-use crate::compiler::info::paths::PathId;
-use crate::compiler::info::types::union::Union;
-use crate::compiler::info::types::{TypeId, TypeInterner};
-use crate::compiler::info::Info;
-use crate::compiler::shared::{Map, New, VecMap};
 
-use ena::unify::{InPlace, NoError, UnifyKey, UnifyValue};
+use crate::compiler::info::types::TypeId;
+
+use crate::compiler::shared::VecMap;
 
 use super::Context;
 
@@ -207,7 +202,7 @@ impl Constrain<'_> for Expr {
             ExprKind::Is(x0, e) => {
                 e.constrain(ctx);
                 let item = ctx.defs.get(x0).unwrap();
-                if let ItemKind::Variant(item) = &item.kind {
+                if let ItemKind::Variant(_item) = &item.kind {
                     let x1 = ctx.info.paths.resolve(x0.id).pred.unwrap().into();
                     ctx.unify(e.tv, TypeKind::Nominal(x1));
                     ctx.unify(self.tv, Bool);

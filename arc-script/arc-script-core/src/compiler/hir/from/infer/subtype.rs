@@ -2,17 +2,10 @@ use crate::compiler::hir::{
     self, BinOpKind, Dim, DimKind, Expr, ExprKind, Fun, LitKind, Name, Param, ScalarKind, Shape,
     Type, TypeKind, UnOpKind, HIR,
 };
-use crate::compiler::info::diags::{Diagnostic, Error, Warning};
-use crate::compiler::info::files::Loc;
-use crate::compiler::info::names::NameId;
-use crate::compiler::info::paths::PathId;
-use crate::compiler::info::types::union::Union;
-use crate::compiler::info::types::{TypeId, TypeInterner};
-use crate::compiler::info::Info;
-use crate::compiler::shared::{Map, VecMap};
 
-use derive_more::Constructor;
-use ena::unify::{InPlace, NoError, UnifyKey, UnifyValue};
+use crate::compiler::info::types::TypeId;
+
+use crate::compiler::shared::VecMap;
 
 use super::equality::Equal;
 use super::Context;

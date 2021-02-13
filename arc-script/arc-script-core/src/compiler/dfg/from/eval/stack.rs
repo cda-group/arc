@@ -1,16 +1,11 @@
-use crate::compiler::dfg::from::eval::value::{Value, ValueKind};
-use crate::compiler::dfg::DFG;
-use crate::compiler::hir::Path;
-use crate::compiler::hir::{
-    BinOp, BinOpKind, BinOpKind::*, Expr, ExprKind, LitKind, TypeKind, UnOp, UnOpKind, UnOpKind::*,
-    HIR,
-};
-use crate::compiler::info::diags::Error;
-use crate::compiler::info::names::NameId;
-use crate::compiler::info::paths::PathId;
-use crate::compiler::shared::{New, VecMap};
+use crate::compiler::dfg::from::eval::value::Value;
 
-use derive_more::Constructor;
+use crate::compiler::hir::Path;
+
+use crate::compiler::info::names::NameId;
+
+use crate::compiler::shared::New;
+
 use shrinkwraprs::Shrinkwrap;
 use std::collections::HashMap;
 

@@ -19,7 +19,7 @@ use crate::compiler::shared::Lower;
 /// * Infer types
 impl HIR {
     pub(crate) fn from(ast: &AST, info: &mut Info) -> Self {
-        let mut hir = ast.lower(info);
+        let hir = ast.lower(info);
         tracing::debug!("{}", hir::pretty(&hir, &hir, info));
         tracing::debug!("{}", hir.debug(info));
         hir.infer(info);

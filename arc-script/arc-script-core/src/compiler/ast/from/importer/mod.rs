@@ -1,6 +1,6 @@
 use crate::compiler::ast::repr::{Module, AST};
 use crate::compiler::info::diags::Error;
-use crate::compiler::info::modes::Mode;
+
 use crate::compiler::info::Info;
 
 use anyhow::Result;

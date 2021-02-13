@@ -1,8 +1,4 @@
-use crate::compiler::ast;
-use crate::compiler::hir;
 use crate::compiler::hir::from::lower::{Context, Lower};
-use crate::compiler::info::names::NameId;
-use crate::compiler::info::types::TypeId;
 
 impl<'i, AST: Lower<HIR, Context<'i>>, HIR> Lower<Vec<HIR>, Context<'i>> for &'_ [AST] {
     fn lower(&self, ctx: &mut Context<'i>) -> Vec<HIR> {

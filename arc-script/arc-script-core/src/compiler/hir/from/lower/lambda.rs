@@ -1,9 +1,9 @@
 use super::Context;
 use crate::compiler::ast;
 use crate::compiler::hir;
-use crate::compiler::hir::{Expr, ExprKind};
+use crate::compiler::hir::Expr;
 use crate::compiler::info::files::Loc;
-use crate::compiler::info::paths::PathId;
+
 use crate::compiler::shared::Lower;
 
 // Lambdas must for now be pure (cannot capture anything)

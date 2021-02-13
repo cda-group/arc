@@ -1,19 +1,19 @@
 #![allow(clippy::useless_format)]
 use crate::compiler::hir;
 use crate::compiler::hir::{Name, Path};
-use crate::compiler::info;
+
 use crate::compiler::info::paths::PathId;
 use crate::compiler::info::types::TypeId;
 use crate::compiler::info::Info;
 use crate::compiler::mlir;
-use crate::compiler::shared::display::format::Context;
+
 use crate::compiler::shared::display::pretty::*;
 
 use derive_more::From;
 
 use std::fmt;
-use std::fmt::Formatter;
 use std::fmt::Display;
+use std::fmt::Formatter;
 
 #[derive(From, Copy, Clone)]
 pub(crate) struct State<'i> {
@@ -132,14 +132,14 @@ impl<'i> Display for Pretty<'i, mlir::Task, State<'_>> {
 impl<'i> Display for Pretty<'i, Path, State<'_>> {
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
         let Pretty(path, ctx) = self;
-        let buf = ctx.state.info.paths.resolve(path.id);
+        let _buf = ctx.state.info.paths.resolve(path.id);
         write!(f, "{}", path.id.pretty(ctx))
     }
 }
 
 impl<'i> Display for Pretty<'i, PathId, State<'_>> {
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
-        let Pretty(mut path, ctx) = self;
+        let Pretty(path, ctx) = self;
         let path = ctx.state.info.paths.resolve(*path);
         if let Some(id) = path.pred {
             write!(f, "{}_", id.pretty(ctx))?;
@@ -216,7 +216,7 @@ impl<'i> Display for Pretty<'i, mlir::Op, State<'_>> {
 impl<'i> Display for Pretty<'i, mlir::OpKind, State<'_>> {
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
         let Pretty(kind, ctx) = self;
-        use mlir::{BinOpKind::*, ConstKind::*, OpKind};
+        use mlir::BinOpKind::*;
         match kind {
             mlir::OpKind::Const(c) => match c {
                 mlir::ConstKind::Bool(true)  => write!(f, r#"constant true"#),
@@ -502,13 +502,13 @@ impl<'i> Display for Pretty<'i, hir::Type, State<'_>> {
                         fs = fs.map_pretty(|(x, e), f| write!(f, "{} : {}", x.pretty(ctx), e.pretty(ctx)), ", "))
             }
             Nominal(x)     => write!(f, "{}", x.pretty(ctx)),
-            Array(ty, sh)  => todo!(),
-            Stream(ty)     => todo!(),
-            Map(ty0, ty1)  => todo!(),
-            Set(ty)        => todo!(),
-            Vector(ty)     => todo!(),
+            Array(_ty, _sh)  => todo!(),
+            Stream(_ty)     => todo!(),
+            Map(_ty0, _ty1)  => todo!(),
+            Set(_ty)        => todo!(),
+            Vector(_ty)     => todo!(),
             Tuple(tys)     => write!(f, "tuple<{tys}>", tys = tys.all_pretty(", ", ctx)),
-            Optional(ty)   => todo!(),
+            Optional(_ty)   => todo!(),
             Fun(tys, ty)   => write!(f, "({tys}) -> {ty}", tys = tys.all_pretty(", ", ctx), ty = ty.pretty(ctx)),
             Unknown        => unreachable!(),
             Err            => unreachable!(),

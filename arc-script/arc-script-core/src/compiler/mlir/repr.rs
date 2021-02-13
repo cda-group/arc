@@ -1,12 +1,11 @@
 use crate::compiler::ast;
-use crate::compiler::hir::{Name, Path, Type};
-use crate::compiler::info::diags::Diagnostic;
+use crate::compiler::hir::{Name, Path};
+
 use crate::compiler::info::files::Loc;
 use crate::compiler::info::types::TypeId;
-use crate::compiler::info::Info;
-use crate::compiler::shared::{Map, New, Set, VecMap};
 
-use educe::Educe;
+use crate::compiler::shared::{Map, New, VecMap};
+
 use half::bf16;
 use half::f16;
 use time::Duration;
@@ -20,8 +19,8 @@ pub(crate) struct MLIR {
     pub(crate) items: Vec<Path>,
     /// Definitions of items.
     pub(crate) defs: Map<Path, Item>,
-//    /// Main function for generating the dataflow.
-//     pub(crate) main: Fun,
+    //    /// Main function for generating the dataflow.
+    //     pub(crate) main: Fun,
 }
 
 #[derive(New, Debug)]

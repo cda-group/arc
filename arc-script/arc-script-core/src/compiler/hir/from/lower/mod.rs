@@ -29,9 +29,9 @@ use crate::compiler::ast;
 use crate::compiler::hir::{self, Name, Path};
 use crate::compiler::info;
 use crate::compiler::info::diags::Error;
-use crate::compiler::info::files::Loc;
+
 use crate::compiler::info::types::TypeId;
-use crate::compiler::shared::{Lower, Map, New, VecMap};
+use crate::compiler::shared::{Lower, New, VecMap};
 
 impl ast::AST {
     pub(crate) fn lower(&self, info: &mut info::Info) -> hir::HIR {
@@ -74,7 +74,7 @@ impl Lower<Option<Path>, Context<'_>> for ast::Item {
             ast::ItemKind::Fun(item)   => item.lower(ctx),
             ast::ItemKind::Alias(item) => item.lower(ctx),
             ast::ItemKind::Enum(item)  => item.lower(ctx),
-            ast::ItemKind::Use(item)   => None?,
+            ast::ItemKind::Use(_item)   => None?,
             ast::ItemKind::Err         => None?,
             ast::ItemKind::Extern(_)   => todo!(),
         };
@@ -108,9 +108,9 @@ impl Lower<Option<(Name, hir::Expr)>, Context<'_>> for ast::TaskItem {
     #[rustfmt::skip]
     fn lower(&self, ctx: &mut Context<'_>) -> Option<(Name, hir::Expr)> {
         let item = match &self.kind {
-            ast::TaskItemKind::Fun(item)   => None?,
-            ast::TaskItemKind::Alias(item) => None?,
-            ast::TaskItemKind::Enum(item)  => None?,
+            ast::TaskItemKind::Fun(_item)   => None?,
+            ast::TaskItemKind::Alias(_item) => None?,
+            ast::TaskItemKind::Enum(_item)  => None?,
             ast::TaskItemKind::On(_)       => None?,
             ast::TaskItemKind::Use(_)      => None?,
             ast::TaskItemKind::State(item) => (item.name, item.expr.lower(ctx)),
@@ -176,7 +176,7 @@ impl Lower<(Path, hir::ItemKind), Context<'_>> for ast::Task {
             })
             .unwrap()
             .lower(ctx);
-        let mut items = self
+        let items = self
             .items
             .iter()
             .filter_map(|item| item.lower(ctx))
@@ -232,7 +232,7 @@ impl Lower<(Path, hir::ItemKind), Context<'_>> for ast::Fun {
         let e = self.body.lower(ctx);
         let e = pattern::fold_cases(e, None, cases);
         let (channels, e) = if let Some(channels) = &self.channels {
-            let (channels, cases) = pattern::lower_params(&channels, ctx);
+            let (channels, cases) = pattern::lower_params(channels, ctx);
             let e = pattern::fold_cases(e, None, cases);
             (Some(channels), e)
         } else {
@@ -283,7 +283,7 @@ impl Lower<(Path, hir::ItemKind), Context<'_>> for ast::Alias {
 
 impl Lower<(Path, hir::ItemKind), Context<'_>> for ast::Enum {
     fn lower(&self, ctx: &mut Context<'_>) -> (Path, hir::ItemKind) {
-        let path = ctx.res.path_id;
+        let _path = ctx.res.path_id;
         let enum_path = ctx.info.paths.intern_child(ctx.res.path_id, self.name);
         let variants = self
             .variants
@@ -345,8 +345,8 @@ impl Lower<hir::Expr, Context<'_>> for ast::Expr {
             ast::ExprKind::Enwrap(x, e)         => path::lower_enwrap(x, e, ctx),
             ast::ExprKind::Is(x, e)             => path::lower_is(x, e, ctx),
             ast::ExprKind::Log(e)               => hir::ExprKind::Log(e.lower(ctx).into()),
-            ast::ExprKind::For(p, e0, e1)       => todo!(),
-            ast::ExprKind::Match(e, cs)         => todo!(), //refutable::lower_cases(cs, ctx),
+            ast::ExprKind::For(_p, _e0, _e1)       => todo!(),
+            ast::ExprKind::Match(_e, _cs)         => todo!(), //refutable::lower_cases(cs, ctx),
             ast::ExprKind::Loop(e0)             => hir::ExprKind::Loop(e0.scoped(ctx).into()),
             ast::ExprKind::Break                => hir::ExprKind::Break,
             ast::ExprKind::Return(e)            => {
@@ -365,7 +365,7 @@ impl Lower<hir::Expr, Context<'_>> for ast::Expr {
                 e.tv = ty.lower(ctx);
                 return e;
             }
-            ast::ExprKind::Reduce(p, e, r)   => todo!(),
+            ast::ExprKind::Reduce(_p, _e, _r)   => todo!(),
             ast::ExprKind::Access(e, f)      => hir::ExprKind::Access(e.lower(ctx).into(), *f),
             ast::ExprKind::Project(e, i)     => hir::ExprKind::Project(e.lower(ctx).into(), *i),
             ast::ExprKind::Todo              => hir::ExprKind::Todo,
@@ -386,7 +386,7 @@ impl ast::Expr {
 
 impl Lower<hir::UnOp, Context<'_>> for ast::UnOp {
     #[rustfmt::skip]
-    fn lower(&self, ctx: &mut Context<'_>) -> hir::UnOp {
+    fn lower(&self, _ctx: &mut Context<'_>) -> hir::UnOp {
         let kind = match &self.kind {
             ast::UnOpKind::Not        => hir::UnOpKind::Not,
             ast::UnOpKind::Neg        => hir::UnOpKind::Neg,

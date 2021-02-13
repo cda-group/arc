@@ -1,10 +1,5 @@
-use crate::compiler::hir;
 use crate::compiler::hir::repr::{Index, Item, ItemKind, Path, HIR};
-use crate::compiler::hir::Name;
-use crate::compiler::info;
-use crate::compiler::info::diags::Diagnostic;
-use crate::compiler::info::files::{ByteIndex, FileId, Loc};
-use crate::compiler::info::names::NameId;
+
 use crate::compiler::info::Info;
 
 use std::fmt::{Display, Formatter, Result};
@@ -31,13 +26,13 @@ impl<'a> Display for HIRDebug<'a> {
                 self.info.resolve_to_names(path.id).join("::")
             )?;
             match &item.kind {
-                ItemKind::Alias(x)   => writeln!(f, "alias,")?,
-                ItemKind::Enum(x)    => writeln!(f, "enum,")?,
-                ItemKind::Fun(x)     => writeln!(f, "fun,")?,
-                ItemKind::Extern(x)  => writeln!(f, "extern,")?,
-                ItemKind::Task(x)    => writeln!(f, "task,")?,
-                ItemKind::State(x)   => writeln!(f, "state,")?,
-                ItemKind::Variant(x) => writeln!(f, "variant,")?,
+                ItemKind::Alias(_x)   => writeln!(f, "alias,")?,
+                ItemKind::Enum(_x)    => writeln!(f, "enum,")?,
+                ItemKind::Fun(_x)     => writeln!(f, "fun,")?,
+                ItemKind::Extern(_x)  => writeln!(f, "extern,")?,
+                ItemKind::Task(_x)    => writeln!(f, "task,")?,
+                ItemKind::State(_x)   => writeln!(f, "state,")?,
+                ItemKind::Variant(_x) => writeln!(f, "variant,")?,
             }
 
         }

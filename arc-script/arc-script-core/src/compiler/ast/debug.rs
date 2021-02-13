@@ -1,12 +1,7 @@
 //! AST debugging utilities.
 
 use crate::compiler::ast::repr::{Index, Item, ItemKind, Module, Path, TaskItemKind, AST};
-use crate::compiler::hir;
-use crate::compiler::hir::Name;
-use crate::compiler::info;
-use crate::compiler::info::diags::Diagnostic;
-use crate::compiler::info::files::{ByteIndex, FileId, Loc};
-use crate::compiler::info::names::NameId;
+
 use crate::compiler::info::Info;
 
 use std::fmt::{Display, Formatter, Result};

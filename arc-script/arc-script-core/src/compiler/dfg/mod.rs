@@ -7,5 +7,4 @@ pub(crate) mod repr;
 /// Module for verifying the dataflow graph.
 pub(crate) mod verify;
 
-pub(crate) use display::pretty;
 pub(crate) use repr::*;

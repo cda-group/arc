@@ -1,12 +1,9 @@
 use crate::compiler::ast::repr::{Index, Item, ItemKind, Module, Path, TaskItemKind, AST};
-use crate::compiler::hir;
+
 use crate::compiler::hir::Name;
-use crate::compiler::info;
-use crate::compiler::info::diags::Diagnostic;
-use crate::compiler::info::files::{ByteIndex, FileId, Loc};
+
 use crate::compiler::info::names::NameId;
 use crate::compiler::info::Info;
-use std::ops::Range;
 
 impl Path {
     /// Converts the path into a path which points to an entry in the file system.
@@ -30,9 +27,7 @@ impl Module {
         let mut imports = Vec::new();
         for item in &self.items {
             match &item.kind {
-                ItemKind::Use(item) if item.path.is_absolute(info) => {
-                    imports.push(item.path)
-                }
+                ItemKind::Use(item) if item.path.is_absolute(info) => imports.push(item.path),
                 ItemKind::Task(item) => {
                     for item in &item.items {
                         if let TaskItemKind::Use(item) = &item.kind {

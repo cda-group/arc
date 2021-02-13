@@ -1,6 +1,6 @@
 #![allow(clippy::useless_format)]
 use crate::compiler::rust;
-use crate::compiler::shared::display::format::Context;
+
 use crate::compiler::shared::display::pretty::*;
 use crate::compiler::shared::New;
 
@@ -10,11 +10,11 @@ use quote::quote;
 
 use std::fmt::Write as FmtWrite;
 use std::fmt::{self, Display, Formatter};
-use std::fs;
+
 use std::io;
-use std::io::BufRead;
+
 use std::io::Write;
-use std::path::Path;
+
 use std::process::Command;
 
 #[derive(New, From, Copy, Clone)]
@@ -26,7 +26,7 @@ pub(crate) fn pretty<Node>(node: &Node) -> Pretty<'_, Node, Stateless> {
 
 impl<'i> Display for Pretty<'i, rust::Rust, Stateless> {
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
-        let Pretty(rs, ctx) = self;
+        let Pretty(rs, _ctx) = self;
         cfg_if! {
             if #[cfg(not(target_arch = "wasm32"))] {
                 write!(f, "{}", rustfmt(rs).unwrap())?;

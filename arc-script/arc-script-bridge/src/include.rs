@@ -22,7 +22,7 @@ pub(crate) fn expand(attr: pm::TokenStream, item: pm::TokenStream) -> pm::TokenS
         let mod_token = item.mod_token;
 
         let mut file_path: PathBuf = pm::Span::call_site().source_file().path();
-        let mut components = file_path.into_iter().peekable();
+        let mut components = file_path.iter().peekable();
 
         /// Find source directory
         while let Some(c) = components.peek() {

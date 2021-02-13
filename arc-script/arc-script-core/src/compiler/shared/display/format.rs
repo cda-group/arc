@@ -1,5 +1,3 @@
-use crate::compiler::ast;
-use crate::compiler::info;
 use crate::compiler::shared::New;
 
 use shrinkwraprs::Shrinkwrap;

@@ -1,8 +1,5 @@
-use crate::compiler::hir::{Name, Path};
-use crate::compiler::info::files::Loc;
-use crate::compiler::shared::New;
+use crate::compiler::hir::Name;
 
-use derive_more::From;
 use shrinkwraprs::Shrinkwrap;
 
 use std::borrow::Borrow;
@@ -27,9 +24,9 @@ pub(crate) struct PathInterner {
 
 impl From<Name> for PathInterner {
     fn from(name: Name) -> Self {
-        let mut path_to_id = HashMap::new();
+        let path_to_id = HashMap::new();
         let mut id_to_path = Vec::new();
-        let mut path_buf = PathBuf { pred: None, name };
+        let path_buf = PathBuf { pred: None, name };
         let path_id = PathId(id_to_path.len());
 
         id_to_path.push(path_buf);
@@ -106,7 +103,7 @@ impl PathInterner {
     }
 
     /// Interns a vector of names and returns an id mapping to it.
-    pub(crate) fn intern_rel_vec(&mut self, mut path: Vec<Name>) -> PathId {
+    pub(crate) fn intern_rel_vec(&mut self, path: Vec<Name>) -> PathId {
         self.intern_vec(None, path)
     }
 

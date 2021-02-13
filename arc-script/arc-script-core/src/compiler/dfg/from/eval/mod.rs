@@ -9,22 +9,16 @@ use crate::compiler::dfg::from::eval::control::EvalResult;
 use crate::compiler::dfg::from::eval::control::{Control, ControlKind, Unwind};
 use crate::compiler::dfg::from::eval::stack::Stack;
 use crate::compiler::dfg::from::eval::value::{Value, ValueKind};
-use crate::compiler::dfg::{EdgeData, Node, NodeData, Port, DFG};
+use crate::compiler::dfg::{EdgeData, Node, NodeData, DFG};
 use crate::compiler::hir::{
     self, BinOp, BinOpKind, BinOpKind::*, Expr, ExprKind, ItemKind, LitKind, ParamKind, TypeKind,
     UnOp, UnOpKind, UnOpKind::*, HIR,
 };
-use crate::compiler::info::diags::DiagInterner;
-use crate::compiler::info::diags::Error;
-use crate::compiler::info::files::Loc;
-use crate::compiler::info::names::NameId;
-use crate::compiler::info::paths::PathId;
+
 use crate::compiler::info::Info;
-use crate::compiler::shared::{Map, New};
+use crate::compiler::shared::New;
 
 use half::{bf16, f16};
-
-use std::collections::HashMap;
 
 /// Context needed while evaluating the `HIR`.
 #[derive(New)]
@@ -76,7 +70,7 @@ impl Expr {
                 }
                 ParamKind::Err => unreachable!(),
             },
-            ExprKind::Array(es) => todo!(),
+            ExprKind::Array(_es) => todo!(),
             ExprKind::Struct(fs) => Struct(
                 fs.iter()
                     .map(|(x, e)| Ok((x.id, e.eval(ctx)?)))
@@ -255,10 +249,10 @@ impl Expr {
                 _ => unreachable!(),
             },
             ExprKind::Emit(e) => match e.eval(ctx)?.kind {
-                Variant(x0, v) => todo!(),
+                Variant(_x0, _v) => todo!(),
                 _ => unreachable!(),
             },
-            ExprKind::Log(e) => todo!(),
+            ExprKind::Log(_e) => todo!(),
             // Short-circuit
             ExprKind::BinOp(e0, op, e1) if matches!(op.kind, And) => match e0.eval(ctx)?.kind {
                 v0 @ Bool(false) => v0,
@@ -386,7 +380,7 @@ impl Expr {
                     (F64(l),  Leq, F64(r))  => Bool(l <= r),
                     // Seq
                     (_, Seq, r) => r,
-                    (l, Pipe, r) => todo!(),
+                    (_l, Pipe, _r) => todo!(),
                     _ => unreachable!(),
                 }
             }

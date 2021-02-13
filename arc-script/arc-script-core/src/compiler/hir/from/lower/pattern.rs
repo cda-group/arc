@@ -2,7 +2,7 @@ use super::Context;
 use crate::compiler::ast;
 use crate::compiler::hir::{self, Expr, ExprKind, Param, ParamKind, HIR};
 use crate::compiler::info::diags::Error;
-use crate::compiler::info::names::NameId;
+
 use crate::compiler::info::types::TypeId;
 use crate::compiler::shared::Lower;
 
@@ -25,7 +25,7 @@ pub(super) fn lower_params_basic(ps: &[ast::Param], ctx: &mut Context<'_>) -> Ve
 
 pub(super) fn lower_params(ps: &[ast::Param], ctx: &mut Context<'_>) -> (Vec<Param>, Vec<Case>) {
     let mut cases = Vec::new();
-    let mut params = ps
+    let params = ps
         .iter()
         .map(|p| {
             let tv = p.ty.lower(ctx).unwrap_or_else(|| ctx.info.types.fresh());
@@ -250,7 +250,7 @@ fn ssa(
             param: Param::syn(ParamKind::Err, t0),
             expr: e0,
         }),
-        ast::PatKind::Or(p00, p01) => todo!(),
+        ast::PatKind::Or(_p00, _p01) => todo!(),
         ast::PatKind::Val(kind) if branching => cases.push(Case::Guard {
             cond: Expr::syn(
                 ExprKind::BinOp(
@@ -292,7 +292,7 @@ fn ssa(
                 cases.push(Case::Guard {
                     cond: Expr::syn(ExprKind::Is(x, v0.clone().into()), ctx.info.types.fresh()),
                 });
-                let x1 = ctx.info.names.fresh();
+                let _x1 = ctx.info.names.fresh();
                 let t = ctx.info.types.fresh();
                 let e = Expr::syn(ExprKind::Unwrap(x, v0.into()), t);
                 ssa(p, e, t, branching, ctx, cases);

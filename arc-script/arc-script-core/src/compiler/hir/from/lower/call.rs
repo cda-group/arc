@@ -2,8 +2,7 @@ use super::{Context, Lower};
 use crate::compiler::ast;
 use crate::compiler::hir;
 use crate::compiler::hir::from::lower::resolve;
-use crate::compiler::info::diags::Error;
-use crate::compiler::info::files::Loc;
+
 use resolve::DeclKind::Item;
 use resolve::ItemDeclKind::*;
 

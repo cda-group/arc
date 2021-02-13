@@ -1,19 +1,12 @@
-use crate::compiler::shared::New;
 use modes::Mode;
 
-use crate::compiler::ast;
-use crate::compiler::hir;
 use crate::compiler::hir::{Name, Path};
-use crate::compiler::info::diags::{Diagnostic, Error, Note, Warning};
-use crate::compiler::info::files::Loc;
-use crate::compiler::shared::display::pretty::AsPretty;
 
 use crate::compiler::info::diags::DiagInterner;
 use crate::compiler::info::files::FileInterner;
-use crate::compiler::info::names::{NameId, NameInterner};
+use crate::compiler::info::names::NameInterner;
 use crate::compiler::info::paths::{PathId, PathInterner};
 
-use std::io;
 use std::str;
 use types::TypeInterner;
 
@@ -60,7 +53,7 @@ pub struct Info {
 
 impl From<Mode> for Info {
     fn from(mode: Mode) -> Self {
-        let mut names = NameInterner::default();
+        let names = NameInterner::default();
         let root: Name = names.root.into();
         let paths = PathInterner::from(root);
         Self {

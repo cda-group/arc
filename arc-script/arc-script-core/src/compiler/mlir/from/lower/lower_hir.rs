@@ -1,10 +1,8 @@
-use crate::compiler::dfg::DFG;
 use crate::compiler::hir;
-use crate::compiler::hir::HIR;
-use crate::compiler::info::Info;
+
 use crate::compiler::mlir;
-use crate::compiler::mlir::MLIR;
-use crate::compiler::shared::{Lower, Map, New};
+
+use crate::compiler::shared::Lower;
 
 use super::Context;
 
@@ -14,12 +12,12 @@ impl Lower<Option<mlir::Item>, Context<'_>> for hir::Item {
         #[rustfmt::skip]
         let kind = match &self.kind {
             hir::ItemKind::Fun(item)     => mlir::ItemKind::Fun(item.lower(ctx)),
-            hir::ItemKind::Alias(item)   => todo!(),
-            hir::ItemKind::Enum(item)    => None?,
-            hir::ItemKind::Task(item)    => todo!(),
-            hir::ItemKind::State(item)   => todo!(),
-            hir::ItemKind::Extern(item)  => todo!(),
-            hir::ItemKind::Variant(item) => None?,
+            hir::ItemKind::Alias(_item)   => todo!(),
+            hir::ItemKind::Enum(_item)    => None?,
+            hir::ItemKind::Task(_item)    => todo!(),
+            hir::ItemKind::State(_item)   => todo!(),
+            hir::ItemKind::Extern(_item)  => todo!(),
+            hir::ItemKind::Variant(_item) => None?,
         };
         Some(mlir::Item::new(kind, self.loc))
     }
@@ -37,7 +35,7 @@ impl Lower<mlir::Fun, Context<'_>> for hir::Fun {
 }
 
 impl Lower<mlir::Var, Context<'_>> for hir::Param {
-    fn lower(&self, ctx: &mut Context<'_>) -> mlir::Var {
+    fn lower(&self, _ctx: &mut Context<'_>) -> mlir::Var {
         match &self.kind {
             hir::ParamKind::Ignore => todo!(),
             hir::ParamKind::Var(x) => mlir::Var::new(*x, self.tv),
@@ -47,7 +45,7 @@ impl Lower<mlir::Var, Context<'_>> for hir::Param {
 }
 
 impl Lower<mlir::UnOp, Context<'_>> for hir::UnOp {
-    fn lower(&self, ctx: &mut Context<'_>) -> mlir::UnOp {
+    fn lower(&self, _ctx: &mut Context<'_>) -> mlir::UnOp {
         #[rustfmt::skip]
         let kind = match &self.kind {
             hir::UnOpKind::Not => mlir::UnOpKind::Not,
@@ -59,7 +57,7 @@ impl Lower<mlir::UnOp, Context<'_>> for hir::UnOp {
 }
 
 impl Lower<mlir::BinOp, Context<'_>> for hir::BinOp {
-    fn lower(&self, ctx: &mut Context<'_>) -> mlir::BinOp {
+    fn lower(&self, _ctx: &mut Context<'_>) -> mlir::BinOp {
         #[rustfmt::skip]
         let kind = match self.kind {
             hir::BinOpKind::Add  => mlir::BinOpKind::Add,
@@ -91,7 +89,7 @@ impl Lower<mlir::BinOp, Context<'_>> for hir::BinOp {
 
 impl Lower<mlir::ConstKind, Context<'_>> for hir::LitKind {
     #[rustfmt::skip]
-    fn lower(&self, ctx: &mut Context<'_>) -> mlir::ConstKind {
+    fn lower(&self, _ctx: &mut Context<'_>) -> mlir::ConstKind {
         match self {
             Self::I8(v)   => mlir::ConstKind::I8(*v),
             Self::I16(v)  => mlir::ConstKind::I16(*v),
@@ -107,7 +105,7 @@ impl Lower<mlir::ConstKind, Context<'_>> for hir::LitKind {
             Self::F64(v)  => mlir::ConstKind::F64(*v),
             Self::Bool(v) => mlir::ConstKind::Bool(*v),
             Self::Char(v) => mlir::ConstKind::Char(*v),
-            Self::Str(v)  => todo!(),
+            Self::Str(_v)  => todo!(),
             Self::Time(v) => mlir::ConstKind::Time(*v),
             Self::Unit    => mlir::ConstKind::Unit,
             Self::Err     => unreachable!(),

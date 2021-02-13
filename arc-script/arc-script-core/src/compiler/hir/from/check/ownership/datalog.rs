@@ -95,8 +95,6 @@ crepe! {
         (u0 < u1);
 }
 
-use std::collections::HashSet;
-
 impl hir::HIR {
     pub(crate) fn check_ownership(&self, info: &mut Info) {
         let mut places = Ownership::from(self);
@@ -115,7 +113,7 @@ impl hir::HIR {
         errs0.sort();
         errs1.sort();
 
-        for UseOfMovedValue(p0, p1, u0) in errs0 {
+        for UseOfMovedValue(p0, p1, _u0) in errs0 {
             info.diags.intern(Error::UseOfMovedValue {
                 loc0: p0.loc,
                 loc1: p1.loc,

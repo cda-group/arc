@@ -1,11 +1,10 @@
 use crate::compiler::ast;
-use crate::compiler::info::diags::Diagnostic;
+
 use crate::compiler::info::files::Loc;
-use crate::compiler::info::Info;
-use crate::compiler::shared::{Map, New, Set, VecMap};
+
+use crate::compiler::shared::{Map, New, VecMap};
 
 use educe::Educe;
-use time::Duration;
 
 use crate::prelude::ast::Spanned;
 use arc_script_macros::Spanned;

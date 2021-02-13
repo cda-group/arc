@@ -1,9 +1,8 @@
 use crate::compiler::ast::{self, AST};
-use crate::compiler::hir;
-use crate::compiler::hir::Name;
+
 use crate::compiler::info::diags::Error;
-use crate::compiler::info::paths::{PathBuf, PathId};
-use crate::compiler::info::{self, Info};
+use crate::compiler::info::paths::PathId;
+use crate::compiler::info::Info;
 
 use std::collections::{HashMap as Map, HashSet as Set};
 

@@ -3,14 +3,11 @@ use crate::compiler::hir::{
     Type, TypeKind, UnOpKind, HIR,
 };
 use crate::compiler::hir::{Name, Path};
-use crate::compiler::info::diags::{Diagnostic, Error, Warning};
-use crate::compiler::info::files::Loc;
-use crate::compiler::info::types::union::Union;
-use crate::compiler::info::types::{TypeId, TypeInterner};
-use crate::compiler::info::Info;
-use crate::compiler::shared::{Map, New, VecMap};
 
-use ena::unify::{InPlace, NoError, UnifyKey, UnifyValue};
+use crate::compiler::info::files::Loc;
+
+use crate::compiler::info::Info;
+use crate::compiler::shared::{Map, New};
 
 pub(crate) mod constrain;
 pub(crate) mod equality;

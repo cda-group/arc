@@ -5,7 +5,7 @@ use educe::Educe;
 use ena::unify::InPlace;
 use ena::unify::NoError;
 use ena::unify::Snapshot;
-use ena::unify::UnificationStoreMut;
+
 use ena::unify::UnificationTable;
 use ena::unify::UnifyKey;
 use ena::unify::UnifyValue;
@@ -75,7 +75,7 @@ impl TypeInterner {
         for i in tvs.start.0..tvs.end.0 {
             let tv = TypeId(i);
             match map.entry(tv) {
-                Entry::Occupied(e) => {}
+                Entry::Occupied(_e) => {}
                 Entry::Vacant(e) => {
                     let ty = self.resolve(tv);
                     e.insert(ty);

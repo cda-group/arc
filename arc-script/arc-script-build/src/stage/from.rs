@@ -23,7 +23,7 @@ impl From<Partial> for Value {
             PartialKind::Str(v)     => ValueKind::Str(v),
             PartialKind::Bool(v)    => ValueKind::Bool(v),
             PartialKind::Vector(v)  => {
-                ValueKind::Vector(v.0.into_iter().map(|v| Value::from(v)).collect::<Vec<_>>())
+                ValueKind::Vector(v.0.into_iter().map(Value::from).collect::<Vec<_>>())
             }
             PartialKind::Array(v)   => todo!(),
             PartialKind::Variant(v) => todo!(),

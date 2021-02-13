@@ -8,8 +8,8 @@ pub(crate) mod parser;
 pub(crate) mod importer;
 
 use crate::compiler::ast::repr::AST;
-use crate::compiler::info::Info;
 use crate::compiler::info::modes::Input;
+use crate::compiler::info::Info;
 
 impl From<&'_ mut Info> for AST {
     fn from(info: &mut Info) -> Self {

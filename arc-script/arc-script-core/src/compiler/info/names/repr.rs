@@ -1,9 +1,7 @@
 use crate::compiler::hir::Name;
-use crate::compiler::info::files::Loc;
 
 use derive_more::From;
 use shrinkwraprs::Shrinkwrap;
-use smartstring::{LazyCompact, SmartString};
 
 /// An interner for interning `Name`s into `NameId`s, and resolving the other way around.
 #[derive(Debug)]

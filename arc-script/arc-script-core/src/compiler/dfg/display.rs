@@ -3,11 +3,9 @@
 #![allow(clippy::useless_format)]
 use crate::compiler::dfg;
 use crate::compiler::hir;
-use crate::compiler::info::names::NameId;
-use crate::compiler::info::paths::PathId;
-use crate::compiler::info::types::TypeId;
+
 use crate::compiler::info::Info;
-use crate::compiler::shared::display::format::Context;
+
 use crate::compiler::shared::display::pretty::*;
 use crate::compiler::shared::New;
 
@@ -59,16 +57,16 @@ impl<'i> Display for Pretty<'i, dfg::DFG, State<'_>> {
 }
 
 impl<'i> Display for Pretty<'i, hir::Path, State<'_>> {
-    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
-        let Pretty(x, ctx) = self;
+    fn fmt(&self, _f: &mut Formatter<'_>) -> fmt::Result {
+        let Pretty(_x, _ctx) = self;
         todo!()
         //         write!(f, "{}", crate::compiler::hir::display::State::new(ctx.state).pretty(ctx))
     }
 }
 
 impl<'i> Display for Pretty<'i, dfg::Port, State<'_>> {
-    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
-        let Pretty(x, ctx) = self;
+    fn fmt(&self, _f: &mut Formatter<'_>) -> fmt::Result {
+        let Pretty(_x, _ctx) = self;
         todo!()
         //         write!(f, "{}", crate::compiler::hir::display::State::new(ctx.state).pretty(ctx))
     }

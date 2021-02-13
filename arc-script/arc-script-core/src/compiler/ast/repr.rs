@@ -1,13 +1,12 @@
 //! Internal representation of the `AST`. In comparison to the `HIR`, the `AST` does not have
 //! resolved names. Also, all expressions are interned (bump-allocated).
 
-use crate::compiler::info::diags::DiagInterner;
-use crate::compiler::info::files::{ByteIndex, FileId, Loc, Span};
-use crate::compiler::info::modes::Mode;
+use crate::compiler::info::files::{ByteIndex, FileId, Loc};
+
 use crate::compiler::info::names::NameId;
-use crate::compiler::info::paths::PathBuf;
+
 use crate::compiler::info::paths::PathId;
-use crate::compiler::info::Info;
+
 use crate::compiler::shared::{Map, New};
 
 use arc_script_macros::Spanned;

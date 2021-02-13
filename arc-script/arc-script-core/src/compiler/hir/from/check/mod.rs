@@ -1,5 +1,3 @@
-use crate::compiler::hir::Index;
-use crate::compiler::hir::Name;
 use crate::compiler::hir::HIR;
 use crate::compiler::info::Info;
 

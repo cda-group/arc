@@ -1,9 +1,8 @@
-use crate::compiler::ast;
 use crate::compiler::hir;
 use crate::compiler::hir::Name;
-use crate::compiler::info::types::TypeId;
+
 use crate::compiler::shared::Map;
-use crate::compiler::shared::Set;
+
 use crate::compiler::shared::VecMap;
 
 use super::Context;

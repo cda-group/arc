@@ -1,5 +1,5 @@
-use crate::compiler::ast::{self, AST};
-use crate::compiler::dfg::{self, DFG};
+use crate::compiler::ast::AST;
+
 use crate::compiler::hir::{self, HIR};
 use crate::compiler::info::diags::to_codespan::Report;
 use crate::compiler::info::modes::{Mode, Output};
@@ -26,7 +26,7 @@ where
 
     let mut info = tracing::info_span!("Mode => Info").in_scope(|| Info::from(mode));
 
-    let mut ast = tracing::debug_span!("Code => AST").in_scope(|| AST::from(&mut info));
+    let ast = tracing::debug_span!("Code => AST").in_scope(|| AST::from(&mut info));
     tracing::debug!("{}", info);
     tracing::debug!("{}", ast.debug(&info));
 
@@ -47,7 +47,7 @@ where
 
     tracing::debug!("{}", info);
 
-    let mut hir = tracing::debug_span!("AST => HIR").in_scope(|| HIR::from(&ast, &mut info));
+    let hir = tracing::debug_span!("AST => HIR").in_scope(|| HIR::from(&ast, &mut info));
     tracing::trace!("{}", hir.debug(&info));
 
     if !info.diags.is_empty() {

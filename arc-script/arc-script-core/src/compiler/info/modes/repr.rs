@@ -44,7 +44,7 @@ pub enum Input {
     Empty,
 }
 
-/// The compiler can write 
+/// The compiler can write
 #[derive(Debug, Clone, Copy, Educe)]
 #[educe(Default)]
 pub enum Output {

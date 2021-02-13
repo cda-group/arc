@@ -1,11 +1,9 @@
 mod lower;
 
-use crate::compiler::dfg::DFG;
-use crate::compiler::hir;
 use crate::compiler::hir::HIR;
 use crate::compiler::info::Info;
 use crate::compiler::rust::Rust;
-use crate::compiler::shared::{Lower, Map, New};
+use crate::compiler::shared::{Lower, Map};
 
 impl Rust {
     pub(crate) fn from(hir: &HIR, info: &Info) -> Self {

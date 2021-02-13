@@ -5,7 +5,7 @@ use crate::compiler::info::names::NameId;
 use crate::compiler::info::paths::PathId;
 use crate::compiler::info::types::TypeId;
 use crate::compiler::info::Info;
-use crate::compiler::shared::display::format::Context;
+
 use crate::compiler::shared::display::pretty::*;
 use crate::compiler::shared::New;
 
@@ -219,7 +219,7 @@ impl<'i> Display for Pretty<'i, hir::Path, State<'_>> {
 
 impl<'i> Display for Pretty<'i, PathId, State<'_>> {
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
-        let Pretty(mut path, ctx) = self;
+        let Pretty(path, ctx) = self;
         let path = ctx.state.info.paths.resolve(*path);
         if let Some(id) = path.pred {
             write!(f, "{}::", id.pretty(ctx))?;
@@ -389,7 +389,7 @@ impl<'i> Display for Pretty<'i, hir::BinOp, State<'_>> {
 impl<'i> Display for Pretty<'i, hir::ScalarKind, State<'_>> {
     #[rustfmt::skip]
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
-        let Pretty(kind, ctx) = self;
+        let Pretty(kind, _ctx) = self;
         match kind {
             hir::ScalarKind::Bool => write!(f, "bool"),
             hir::ScalarKind::Char => write!(f, "char"),

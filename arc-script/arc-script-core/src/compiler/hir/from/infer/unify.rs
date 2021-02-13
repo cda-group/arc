@@ -3,16 +3,9 @@ use crate::compiler::hir::{
     TypeKind, UnOpKind, HIR,
 };
 use crate::compiler::info::diags::{Diagnostic, Error, Warning};
-use crate::compiler::info::files::Loc;
-use crate::compiler::info::names::NameId;
-use crate::compiler::info::paths::PathId;
-use crate::compiler::info::types::union::Union;
-use crate::compiler::info::types::{TypeId, TypeInterner};
-use crate::compiler::info::Info;
-use crate::compiler::shared::{Map, VecMap};
 
-use derive_more::Constructor;
-use ena::unify::{InPlace, NoError, UnifyKey, UnifyValue};
+use crate::compiler::info::types::union::Union;
+use crate::compiler::info::types::TypeId;
 
 use super::Context;
 
@@ -32,7 +25,6 @@ impl<T: Into<Type>> Unify<TypeId, T> for Context<'_> {
 impl Unify<TypeId, TypeId> for Context<'_> {
     /// Unifies two polytypes, i.e., types which may contain type variables
     fn unify(&mut self, tv0: TypeId, tv1: TypeId) {
-        use ScalarKind::*;
         use TypeKind::*;
         let ty0 = self.info.types.resolve(tv0);
         let ty1 = self.info.types.resolve(tv1);
