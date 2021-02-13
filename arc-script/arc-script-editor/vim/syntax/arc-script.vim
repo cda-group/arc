@@ -12,16 +12,24 @@ runtime! syntax/rust.vim syntax/rust/*.vim
 let b:current_syntax = "arc-script"
 
 "=============================================================================
+" Overrides
+"=============================================================================
+hi clear rustMacroVariable
+syn clear rustMacroVariable
+syn match rustSigil /&\s\+[&~@*$][^)= \t\r\n]/me=e-1,he=e-1  display
+syn match rustSigil /[&~@*$][^)= \t\r\n]/me=e-1,he=e-1  display
+"=============================================================================
 " Operators
 "=============================================================================
 syn keyword arcOperator <-
 syn keyword arcOperator :=
 syn keyword arcOperator <>
-syn keyword arcOperator |>
+syn keyword arcOperator \|>
 syn keyword arcOperator ???
 syn keyword arcOperator ;;
 syn keyword arcOperator **
 syn keyword arcOperator ~
+syn keyword arcOperator $
 syn keyword arcOperator and
 syn keyword arcOperator band
 syn keyword arcOperator bor
@@ -42,11 +50,14 @@ syn keyword arcStatement task
 syn keyword arcStatement on
 syn keyword arcStatement emit
 syn keyword arcStatement log
+syn keyword arcStatement exit
+syn keyword arcStatement port
 hi def link arcStatement Statement
 "=============================================================================
 " Conditionals
 "=============================================================================
 syn keyword arcConditional reduce
+syn keyword arcConditional after
 hi def link arcConditional Conditional
 "=============================================================================
 " Reserved Keywords
