@@ -46,6 +46,7 @@ members = [
   "arc-script-test/integration",
   "arc-script-build",
   "arc-script-template",
+  "arc-script-stdlib",
 ]
 
 exclude = [

@@ -202,6 +202,10 @@ dependencies = [
 ]
 
 [[package]]
+name = "arc-script-stdlib"
+version = "0.1.0"
+
+[[package]]
 name = "arc-script-template"
 version = "0.1.0"
 dependencies = [
