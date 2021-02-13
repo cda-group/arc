@@ -10,7 +10,7 @@ use quote::quote;
 
 use std::fs;
 
-/// See [`super::comptime`] for documentation.
+/// See [`super::compile`] for documentation.
 pub(crate) fn expand(attr: pm::TokenStream, item: pm::TokenStream) -> pm::TokenStream {
     if let syn::Item::Mod(module) = syn::parse(item).expect("Expected `mod` item") {
         let (_, items) = module.content.expect("Expected `mod { ... }` found `mod;`");
