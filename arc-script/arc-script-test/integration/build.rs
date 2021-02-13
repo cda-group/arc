@@ -1,7 +1,13 @@
 // use arc_script::{Field, Fun, Script};
+use arc_script::Builder;
 
 /// Test to see if `Script` works as intended.
 fn main() {
+    // This pre-builds any file in the crate whose filename is `main.arc`.
+    // Pre-building improves performance by caching build-artifacts, but
+    // does not do much else.
+    Builder::process_root();
+
     // arc_script!("./script.arc")
     //     .compile_fun1(5i8, "foo");
     //     .compile_fun2(0i32, 0u8);

@@ -9,3 +9,4 @@ license = "MIT"
 [dependencies]
 arc-script-core = { path = "../arc-script-core" }
 derive_more     = { version = "0.99.11", features = ["from"] }
+walkdir         = { version = "2.3.1" }

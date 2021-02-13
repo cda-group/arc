@@ -79,6 +79,7 @@ version = "0.1.0"
 dependencies = [
  "arc-script-core",
  "derive_more",
+ "walkdir",
 ]
 
 [[package]]

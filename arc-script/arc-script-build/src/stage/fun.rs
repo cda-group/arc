@@ -1,6 +1,6 @@
 //! Builder interface for staging functions.
 
-use crate::partial::Partial;
+use crate::stage::partial::Partial;
 
 /// A staged arc-script function.
 #[derive(Debug, Clone)]

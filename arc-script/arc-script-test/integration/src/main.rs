@@ -1,8 +1,13 @@
 use arcon::prelude::ArconTime;
 use arcon::prelude::Pipeline;
 
+/// Directly compiles and includes an Arc-program.
 #[arc_script::compile("script.arc")]
 mod script {}
+
+/// Includes a pre-built Arc-program
+#[arc_script::include("main.arc")]
+mod main {}
 
 fn main() {
     let pipeline = Pipeline::default();
@@ -19,3 +24,4 @@ fn main() {
     pipeline.start();
     pipeline.await_termination();
 }
+

@@ -1,6 +1,6 @@
 //! Module for converting staged inputs into HIR values.
-use crate::partial::Partial;
-use crate::partial::PartialKind;
+use crate::stage::partial::Partial;
+use crate::stage::partial::PartialKind;
 use arc_script_core::prelude::{Value, ValueKind};
 
 impl From<Partial> for Value {

@@ -7,7 +7,9 @@ use arc_script_core::prelude::modes::{Input, Mode, Output};
 use proc_macro as pm;
 use quote::quote;
 
+use std::ffi::OsStr;
 use std::fs;
+use std::path::Component;
 use std::path::PathBuf;
 
 /// See [`super::include`] for documentation.
@@ -19,12 +21,26 @@ pub(crate) fn expand(attr: pm::TokenStream, item: pm::TokenStream) -> pm::TokenS
         let (_, content) = item.content.expect("Error: Expected `{}`, found `;`");
         let mod_token = item.mod_token;
 
-        let mut file_path = pm::Span::call_site().source_file().path();
-        let mut file_path = file_path.components();
-        file_path.next();
-        let mut file_path: PathBuf = file_path.collect();
+        let mut file_path: PathBuf = pm::Span::call_site().source_file().path();
+        let mut components = file_path.into_iter().peekable();
 
+        /// Find source directory
+        while let Some(c) = components.peek() {
+            if c.to_str() == Some("src") {
+                break;
+            } else {
+                components.next().unwrap();
+            }
+        }
+
+        let mut file_path = PathBuf::from(
+            components
+                .map(|c| c.to_str().unwrap())
+                .collect::<Vec<_>>()
+                .join("/"),
+        );
         let out_dir = PathBuf::from(std::env::var("OUT_DIR").unwrap());
+
         let script_name = syn::parse::<syn::LitStr>(attr).unwrap();
 
         file_path.pop();

@@ -6,7 +6,7 @@ use arc_script_core::prelude::modes::Input;
 use arc_script_core::prelude::modes::Mode;
 use arc_script_core::prelude::modes::Output;
 
-use crate::fun::Fun;
+use crate::stage::fun::Fun;
 
 use std::env;
 use std::fs;
