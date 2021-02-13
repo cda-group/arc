@@ -1,6 +1,6 @@
 [package]      
 name    = "arc-script-core"
-version = "0.1.0"
+version = "0.0.0"
 authors = ["Klas Segeljakt <klasseg@kth.se>"]
 edition = "2018"
 build   = "build.rs"
@@ -14,29 +14,24 @@ path    = "src/lib.rs"
 default = []
 
 [dependencies]
-arc-script-macros  = { path = "../arc-script-macros" }
+arc-script-core-shared = { version = "=0.0.0", path = "src/shared/" }
+arc-script-core-macros = { version = "=0.0.0", path = "src/macros" }
+
 logos              = { version = "0.11.4" }
 regex              = { version = "1.4.3" }
 lalrpop-util       = { version = "0.19.4" }
 ena                = { version = "0.14.0"}
 codespan-reporting = { git = "https://github.com/brendanzab/codespan" }
-derive_more        = { version = "0.99.11", default-features = false, features = ["constructor", "as_ref", "from", "into", "add", "mul", "not"] }
 num-traits         = { version = "0.2.14" }
 arrayvec           = { version = "0.5.2" }
 smartstring        = { version = "0.2.6" }
-educe              = { version = "0.4.13", default-features = false, features = ["Hash", "PartialEq", "Eq", "PartialOrd", "Ord", "Debug", "Default"] }
 time               = { version = "0.2.25" }
 lasso              = { version = "0.4.1" }
-anyhow             = { version = "1.0.37" }
 serde              = { version = "1.0.118", features = ["derive"] }
-linear-map         = { version = "1.2.0" }
 indoc              = { version = "1.0.3" }
-indexmap           = { version = "1.6.1" }
-shrinkwraprs       = { version = "0.3.0" }
 tracing            = { version = "0.1.22" }
 tracing-subscriber = { version = "0.2.15" }
 tracing-flame      = { version = "0.1.0" }
-bumpalo            = { version = "3.4.0", features = ["boxed", "collections"] }
 lexical-core       = { version = "0.7.4", features = ["format"] }
 crepe              = { version = "0.1.5" }
 petgraph           = { version = "0.5.1", package = "petgraph" }
@@ -48,7 +43,6 @@ syn                = { version = "1.0.60", features = ["full"] }
 quote              = { version = "1.0.8" }
 proc-macro2        = { version = "1.0.24" }
 strum              = { version = "0.20", features = ["derive"] }
-cfg-if             = { version = "1.0.0" }
 better-panic       = { version = "0.2.0" }
 text-size          = { version = "1.1.0" }
 half               = { version = "1.7.1", features = ["num-traits"] }

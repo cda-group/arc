@@ -3,8 +3,7 @@ use crate::compiler::ast;
 use crate::compiler::hir;
 use crate::compiler::hir::Expr;
 use crate::compiler::info::files::Loc;
-
-use crate::compiler::shared::Lower;
+use arc_script_core_shared::Lower;
 
 // Lambdas must for now be pure (cannot capture anything)
 pub(super) fn lower(

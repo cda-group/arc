@@ -5,7 +5,7 @@ use crate::compiler::hir;
 use crate::compiler::mlir;
 use crate::compiler::mlir::ConstKind;
 
-use crate::compiler::shared::Lower;
+use arc_script_core_shared::Lower;
 
 use super::Context;
 

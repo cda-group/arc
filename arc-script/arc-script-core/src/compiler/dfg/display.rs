@@ -6,8 +6,8 @@ use crate::compiler::hir;
 
 use crate::compiler::info::Info;
 
-use crate::compiler::shared::display::pretty::*;
-use crate::compiler::shared::New;
+use crate::compiler::pretty::*;
+use arc_script_core_shared::New;
 
 use petgraph::Direction;
 use std::fmt::{self, Display, Formatter};

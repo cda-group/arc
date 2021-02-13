@@ -1,11 +1,11 @@
 use crate::compiler::ast::AST;
-
 use crate::compiler::hir::{self, HIR};
 use crate::compiler::info::diags::to_codespan::Report;
 use crate::compiler::info::modes::{Mode, Output};
 use crate::compiler::info::Info;
 use crate::compiler::mlir::{self, MLIR};
 use crate::compiler::rust::{self, Rust};
+use arc_script_core_shared::Result;
 
 use codespan_reporting::term::termcolor::WriteColor;
 use std::io::Write;
@@ -17,7 +17,7 @@ use std::io::Write;
 /// Will return `Err` only for errors which are out of control of the compiler. In particular:
 /// * Errors caused from writing to `f`.
 /// * Errors caused from interactions with the filesystem.
-pub fn compile<W>(mode: Mode, mut f: W) -> anyhow::Result<Report>
+pub fn compile<W>(mode: Mode, mut f: W) -> Result<Report>
 where
     W: Write + WriteColor,
 {

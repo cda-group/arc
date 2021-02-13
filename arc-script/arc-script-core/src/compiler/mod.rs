@@ -19,7 +19,7 @@ pub(crate) mod rust;
 // pub(crate) mod database;
 /// Module which assembles compilation-pipeline.
 pub mod pipeline;
-/// Shared items.
-pub mod shared;
+
+pub(crate) mod pretty;
 
 pub use pipeline::compile;

@@ -1,5 +1,5 @@
-use crate::compiler::shared::display::format::Context;
-use crate::compiler::shared::New;
+use arc_script_core_shared::Format;
+use arc_script_core_shared::New;
 
 use std::cell::Cell;
 use std::fmt::{self, Display, Formatter};
@@ -7,26 +7,26 @@ use std::fmt::{self, Display, Formatter};
 /// Wraps a generic node to be printed in a specific context.
 /// NB: This is a tuple struct since it makes the syntax more concise.
 #[derive(New)]
-pub(crate) struct Pretty<'i, Node, State: Copy>(pub(crate) &'i Node, pub(crate) Context<State>);
+pub(crate) struct Pretty<'i, Node, Context: Copy>(pub(crate) &'i Node, pub(crate) Format<Context>);
 
 /// Creates a pretty format for an AST node.
 pub(crate) trait AsPretty: Sized {
     /// Wraps `Self` and context `T` inside a struct which can be pretty-printed.
-    fn pretty<State, T>(&self, ctx: T) -> Pretty<'_, Self, State>
+    fn pretty<Context, T>(&self, ctx: T) -> Pretty<'_, Self, Context>
     where
-        T: AsRef<Context<State>>,
-        State: Copy,
+        T: AsRef<Format<Context>>,
+        Context: Copy,
     {
         Pretty::new(self, *ctx.as_ref())
     }
 
     /// Wraps `Self` inside a struct which can be pretty-printed. This is similar to [`pretty`] but
     /// initializes the pretty-printer context (i.e., gives it an initial indentation).
-    fn to_pretty<State>(&self, state: State) -> Pretty<'_, Self, State>
+    fn to_pretty<Context>(&self, ctx: Context) -> Pretty<'_, Self, Context>
     where
-        State: Copy,
+        Context: Copy,
     {
-        Pretty::new(self, Context::with_state(state))
+        Pretty::new(self, Format::with_ctx(ctx))
     }
 }
 
@@ -35,35 +35,35 @@ impl<Node> AsPretty for Node {}
 
 /// Wraps a list of AST nodes to be pretty printed.
 #[derive(New)]
-pub(crate) struct AllPretty<'i, Iter, State>
+pub(crate) struct AllPretty<'i, Iter, Context>
 where
-    State: Copy,
+    Context: Copy,
 {
     pub(crate) iter: Cell<Option<Iter>>,
     pub(crate) sep: &'i str,
-    pub(crate) ctx: Context<State>,
+    pub(crate) ctx: Format<Context>,
 }
 
 /// Pretty prints an iterator of AST nodes using a separator.
 pub(crate) trait ToAllPretty: Sized {
-    fn all_pretty<Node, State, T>(self, sep: &str, ctx: T) -> AllPretty<'_, Self, State>
+    fn all_pretty<Node, Context, T>(self, sep: &str, ts: T) -> AllPretty<'_, Self, Context>
     where
         Self: IntoIterator<Item = Node>,
-        T: AsRef<Context<State>>,
-        State: Copy,
+        T: AsRef<Format<Context>>,
+        Context: Copy,
     {
-        AllPretty::new(Cell::new(Some(self)), sep, *ctx.as_ref())
+        AllPretty::new(Cell::new(Some(self)), sep, *ts.as_ref())
     }
 }
 
 impl<Node> ToAllPretty for Node {}
 
-impl<'i, Iter, Node, State> Display for AllPretty<'i, Iter, State>
+impl<'i, Iter, Node, Context> Display for AllPretty<'i, Iter, Context>
 where
     Iter: IntoIterator<Item = &'i Node>,
-    for<'x> Pretty<'x, Node, State>: Display,
+    for<'x> Pretty<'x, Node, Context>: Display,
     Node: 'i,
-    State: Copy,
+    Context: Copy,
 {
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
         let mut iter = self.iter.take().unwrap().into_iter();

@@ -1,6 +1,6 @@
 use crate::compiler::hir::Name;
 
-use shrinkwraprs::Shrinkwrap;
+use arc_script_core_shared::Shrinkwrap;
 
 use std::borrow::Borrow;
 use std::collections::HashMap;

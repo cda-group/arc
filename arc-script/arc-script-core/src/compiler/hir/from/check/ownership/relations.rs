@@ -1,9 +1,8 @@
 use crate::compiler::hir;
 use crate::compiler::info::files::Loc;
 
-use crate::compiler::shared::New;
-
-use educe::Educe;
+use arc_script_core_shared::Educe;
+use arc_script_core_shared::New;
 
 use std::collections::HashMap;
 

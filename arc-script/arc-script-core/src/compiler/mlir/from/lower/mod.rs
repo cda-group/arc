@@ -7,7 +7,7 @@ pub(crate) mod ssa;
 use crate::compiler::hir::HIR;
 use crate::compiler::info::Info;
 
-use crate::compiler::shared::New;
+use arc_script_core_shared::New;
 
 #[derive(New)]
 pub(crate) struct Context<'i> {

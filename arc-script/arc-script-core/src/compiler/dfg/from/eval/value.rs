@@ -5,9 +5,9 @@ use crate::compiler::hir::{
 };
 
 use crate::compiler::info::names::NameId;
-
 use crate::compiler::info::types::TypeId;
-use crate::compiler::shared::{New, VecMap};
+use arc_script_core_shared::New;
+use arc_script_core_shared::VecMap;
 
 use half::bf16;
 use half::f16;

@@ -1,4 +1,4 @@
-use crate::compiler::shared::Lower;
+use arc_script_core_shared::Lower;
 
 use crate::compiler::hir;
 

@@ -1,4 +1,4 @@
-use anyhow::Result;
+use arc_script_core_shared::Result;
 
 /// Initializes a logger for debugging.
 ///

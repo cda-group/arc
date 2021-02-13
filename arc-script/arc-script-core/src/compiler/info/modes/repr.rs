@@ -1,4 +1,4 @@
-use educe::Educe;
+use arc_script_core_shared::Educe;
 
 /// Compiler settings.
 #[derive(Debug, Clone, Default)]

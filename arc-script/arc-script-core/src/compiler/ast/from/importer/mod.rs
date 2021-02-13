@@ -3,7 +3,7 @@ use crate::compiler::info::diags::Error;
 
 use crate::compiler::info::Info;
 
-use anyhow::Result;
+use arc_script_core_shared::Result;
 use std::fs;
 use std::fs::File;
 use std::io::prelude::*;

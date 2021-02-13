@@ -29,9 +29,10 @@ use crate::compiler::ast;
 use crate::compiler::hir::{self, Name, Path};
 use crate::compiler::info;
 use crate::compiler::info::diags::Error;
-
 use crate::compiler::info::types::TypeId;
-use crate::compiler::shared::{Lower, New, VecMap};
+use arc_script_core_shared::Lower;
+use arc_script_core_shared::New;
+use arc_script_core_shared::VecMap;
 
 impl ast::AST {
     pub(crate) fn lower(&self, info: &mut info::Info) -> hir::HIR {
@@ -410,7 +411,7 @@ where
     A: Lower<B, Context<'i>> + std::fmt::Debug,
 {
     fn lower(&self, ctx: &mut Context<'i>) -> VecMap<Name, B> {
-        use crate::compiler::shared::Entry;
+        use arc_script_core_shared::Entry;
         let mut map: VecMap<Name, B> = VecMap::new();
         for f in self {
             if let Entry::Vacant(entry) = map.entry(f.name) {

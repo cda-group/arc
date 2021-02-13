@@ -1,8 +1,7 @@
 use super::Context;
 use crate::compiler::ast;
 use crate::compiler::hir::Expr;
-
-use crate::compiler::shared::Lower;
+use arc_script_core_shared::Lower;
 
 pub(super) fn lower(
     p: &ast::Pat,

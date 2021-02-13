@@ -5,7 +5,7 @@ use crate::compiler::hir::{
 
 use crate::compiler::info::types::TypeId;
 
-use crate::compiler::shared::VecMap;
+use arc_script_core_shared::VecMap;
 
 use super::Context;
 

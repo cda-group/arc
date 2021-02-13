@@ -4,7 +4,7 @@ use crate::compiler::hir;
 use crate::compiler::hir::from::lower::resolve;
 use crate::compiler::info::diags::Error;
 use crate::compiler::info::files::Loc;
-use crate::compiler::shared::Lower;
+use arc_script_core_shared::Lower;
 
 use resolve::DeclKind::*;
 use resolve::ItemDeclKind::*;

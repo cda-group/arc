@@ -11,7 +11,7 @@ use crate::compiler::ast::AST;
 use crate::compiler::hir;
 use crate::compiler::hir::HIR;
 use crate::compiler::info::Info;
-use crate::compiler::shared::Lower;
+use arc_script_core_shared::Lower;
 
 /// Converts an AST into a HIR by doing the following:
 /// * Resolve names and paths

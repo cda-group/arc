@@ -1,7 +1,7 @@
 use crate::compiler::hir::Name;
 
-use derive_more::From;
-use shrinkwraprs::Shrinkwrap;
+use arc_script_core_shared::From;
+use arc_script_core_shared::Shrinkwrap;
 
 /// An interner for interning `Name`s into `NameId`s, and resolving the other way around.
 #[derive(Debug)]

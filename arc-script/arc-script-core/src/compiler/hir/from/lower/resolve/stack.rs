@@ -1,8 +1,6 @@
 use crate::compiler::hir::Name;
-
 use crate::compiler::info::Info;
-
-use shrinkwraprs::Shrinkwrap;
+use arc_script_core_shared::Shrinkwrap;
 
 use std::collections::hash_map::Entry;
 use std::collections::HashMap as Map;

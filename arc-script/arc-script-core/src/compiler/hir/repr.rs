@@ -2,12 +2,13 @@ use crate::compiler::ast;
 
 use crate::compiler::info::files::Loc;
 
-use crate::compiler::shared::{Map, New, VecMap};
-
-use educe::Educe;
+use arc_script_core_shared::Map;
+use arc_script_core_shared::New;
+use arc_script_core_shared::VecMap;
+use arc_script_core_shared::Educe;
+use arc_script_core_macros::Spanned;
 
 use crate::prelude::ast::Spanned;
-use arc_script_macros::Spanned;
 
 pub(crate) use crate::compiler::info::names::NameId;
 pub(crate) use crate::compiler::info::paths::PathId;

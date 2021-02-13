@@ -6,7 +6,7 @@ use crate::compiler::hir;
 use crate::compiler::hir::HIR;
 use crate::compiler::info::Info;
 use crate::compiler::rust::Rust;
-use crate::compiler::shared::{Map, New};
+use arc_script_core_shared::{Map, New};
 
 #[derive(Debug, New)]
 pub(crate) struct Context<'i> {

@@ -1,7 +1,9 @@
-use super::{Context, Lower};
+use super::Context;
 use crate::compiler::ast;
 use crate::compiler::hir;
 use crate::compiler::hir::from::lower::resolve;
+
+use arc_script_core_shared::Lower;
 
 use resolve::DeclKind::Item;
 use resolve::ItemDeclKind::*;

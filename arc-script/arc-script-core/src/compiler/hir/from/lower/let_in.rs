@@ -34,8 +34,7 @@
 use super::Context;
 use crate::compiler::ast;
 use crate::compiler::hir::Expr;
-
-use crate::compiler::shared::Lower;
+use arc_script_core_shared::Lower;
 
 pub(super) fn lower(p: &ast::Param, e0: &ast::Expr, e1: &ast::Expr, ctx: &mut Context<'_>) -> Expr {
     let e0 = e0.lower(ctx);

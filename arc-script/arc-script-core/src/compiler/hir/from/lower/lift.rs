@@ -1,9 +1,7 @@
 use crate::compiler::hir;
 use crate::compiler::hir::Name;
-
-use crate::compiler::shared::Map;
-
-use crate::compiler::shared::VecMap;
+use arc_script_core_shared::Map;
+use arc_script_core_shared::VecMap;
 
 use super::Context;
 

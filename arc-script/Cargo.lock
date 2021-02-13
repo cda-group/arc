@@ -56,7 +56,7 @@ checksum = "afddf7f520a80dbf76e6f50a35bca42a2331ef227a28b3b6dc5c2e2338d114b1"
 
 [[package]]
 name = "arc-script"
-version = "0.1.0"
+version = "0.0.0"
 dependencies = [
  "arc-script-bridge",
  "arc-script-build",
@@ -64,7 +64,7 @@ dependencies = [
 
 [[package]]
 name = "arc-script-bench"
-version = "0.1.0"
+version = "0.0.0"
 dependencies = [
  "arc-script-core",
  "criterion",
@@ -74,7 +74,7 @@ dependencies = [
 
 [[package]]
 name = "arc-script-bridge"
-version = "0.1.0"
+version = "0.0.0"
 dependencies = [
  "arc-script-core",
  "proc-macro-error",
@@ -85,7 +85,7 @@ dependencies = [
 
 [[package]]
 name = "arc-script-build"
-version = "0.1.0"
+version = "0.0.0"
 dependencies = [
  "arc-script-core",
  "derive_more",
@@ -94,7 +94,7 @@ dependencies = [
 
 [[package]]
 name = "arc-script-cli"
-version = "0.1.0"
+version = "0.0.0"
 dependencies = [
  "arc-script-core",
  "arc-script-lsp",
@@ -108,28 +108,22 @@ dependencies = [
 
 [[package]]
 name = "arc-script-core"
-version = "0.1.0"
+version = "0.0.0"
 dependencies = [
- "anyhow",
- "arc-script-macros",
+ "arc-script-core-macros",
+ "arc-script-core-shared",
  "arrayvec 0.5.2",
  "better-panic",
- "bumpalo",
- "cfg-if 1.0.0",
  "codespan-reporting 0.11.0",
  "crepe",
- "derive_more",
- "educe",
  "ena 0.14.0",
  "half",
- "indexmap",
  "indoc",
  "lalrpop 0.19.4",
  "lalrpop-util 0.19.4",
  "lasso",
  "lexical-core 0.7.4",
  "libeir_util_pattern_compiler",
- "linear-map",
  "logos",
  "num-traits",
  "petgraph 0.4.13",
@@ -140,7 +134,6 @@ dependencies = [
  "ryu",
  "salsa",
  "serde",
- "shrinkwraprs",
  "smartstring",
  "strum",
  "syn 1.0.60",
@@ -154,8 +147,30 @@ dependencies = [
 ]
 
 [[package]]
+name = "arc-script-core-macros"
+version = "0.0.0"
+dependencies = [
+ "proc-macro2 1.0.24",
+ "quote 1.0.8",
+ "syn 1.0.60",
+]
+
+[[package]]
+name = "arc-script-core-shared"
+version = "0.0.0"
+dependencies = [
+ "anyhow",
+ "cfg-if 1.0.0",
+ "derive_more",
+ "educe",
+ "indexmap",
+ "linear-map",
+ "shrinkwraprs",
+]
+
+[[package]]
 name = "arc-script-lsp"
-version = "0.1.0"
+version = "0.0.0"
 dependencies = [
  "anyhow",
  "arc-script-core",
@@ -175,24 +190,15 @@ dependencies = [
 ]
 
 [[package]]
-name = "arc-script-macros"
-version = "0.1.0"
-dependencies = [
- "proc-macro2 1.0.24",
- "quote 1.0.8",
- "syn 1.0.60",
-]
-
-[[package]]
 name = "arc-script-python"
-version = "0.1.0"
+version = "0.0.0"
 dependencies = [
  "rustpython_vm",
 ]
 
 [[package]]
 name = "arc-script-quote"
-version = "0.1.0"
+version = "0.0.0"
 dependencies = [
  "arc-script-core",
  "proc-macro2 1.0.24",
@@ -202,7 +208,7 @@ dependencies = [
 
 [[package]]
 name = "arc-script-repl"
-version = "0.1.0"
+version = "0.0.0"
 dependencies = [
  "anyhow",
  "arc-script-core",
@@ -211,11 +217,11 @@ dependencies = [
 
 [[package]]
 name = "arc-script-stdlib"
-version = "0.1.0"
+version = "0.0.0"
 
 [[package]]
 name = "arc-script-template"
-version = "0.1.0"
+version = "0.0.0"
 dependencies = [
  "arc-script",
  "arcon",
@@ -223,7 +229,7 @@ dependencies = [
 
 [[package]]
 name = "arc-script-test-insta"
-version = "0.1.0"
+version = "0.0.0"
 dependencies = [
  "arc-script-core",
  "insta",
@@ -231,7 +237,7 @@ dependencies = [
 
 [[package]]
 name = "arc-script-test-integration"
-version = "0.1.0"
+version = "0.0.0"
 dependencies = [
  "arc-script",
  "arcon",
@@ -239,7 +245,7 @@ dependencies = [
 
 [[package]]
 name = "arc-script-test-trybuild"
-version = "0.1.0"
+version = "0.0.0"
 dependencies = [
  "arc-script",
  "arcon",
@@ -248,7 +254,7 @@ dependencies = [
 
 [[package]]
 name = "arc-script-web-repl"
-version = "0.1.0"
+version = "0.0.0"
 dependencies = [
  "arc-script-core",
  "console_error_panic_hook",
@@ -4285,7 +4291,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "04f8ab788026715fa63b31960869617cba39117e520eb415b0139543e325ab59"
 dependencies = [
  "cfg-if 0.1.10",
- "rand 0.5.6",
+ "rand 0.7.3",
  "static_assertions 1.1.0",
 ]
 

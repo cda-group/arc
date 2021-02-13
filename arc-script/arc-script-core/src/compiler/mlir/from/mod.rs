@@ -5,7 +5,8 @@ use crate::compiler::hir::HIR;
 use crate::compiler::info::Info;
 
 use crate::compiler::mlir::MLIR;
-use crate::compiler::shared::{Lower, Map};
+use arc_script_core_shared::Lower;
+use arc_script_core_shared::Map;
 
 impl MLIR {
     #[allow(clippy::needless_pass_by_value)] // Temporary

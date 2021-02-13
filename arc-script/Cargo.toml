@@ -4,7 +4,7 @@ cargo-features = [
 
 [package]
 name           = "arc-script"
-version        = "0.1.0"
+version        = "0.0.0"
 authors        = [
   "Klas Segeljakt <klasseg@kth.se>",
   "Frej Drejhammar <frej.drejhammar@ri.se>"
@@ -26,13 +26,14 @@ name = "arc_script"
 path = "src/lib.rs"
 
 [dependencies]
-arc-script-bridge = { path = "arc-script-bridge" }
-arc-script-build  = { path = "arc-script-build" }
+arc-script-bridge = { version = "=0.0.0", path = "arc-script-bridge" }
+arc-script-build  = { version = "=0.0.0", path = "arc-script-build" }
 
 [workspace]
 members = [
   "arc-script-core",
-  "arc-script-macros",
+  "arc-script-core/src/shared",
+  "arc-script-core/src/macros",
   "arc-script-quote",
   "arc-script-bridge",
   "arc-script-repl",

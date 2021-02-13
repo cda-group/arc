@@ -3,11 +3,10 @@ use crate::compiler::hir::{
     Type, TypeKind, UnOpKind, HIR,
 };
 use crate::compiler::hir::{Name, Path};
-
 use crate::compiler::info::files::Loc;
-
 use crate::compiler::info::Info;
-use crate::compiler::shared::{Map, New};
+use arc_script_core_shared::Map;
+use arc_script_core_shared::New;
 
 pub(crate) mod constrain;
 pub(crate) mod equality;

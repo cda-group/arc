@@ -5,7 +5,9 @@ use crate::compiler::hir::{
 };
 
 use crate::compiler::mlir::{self, Block, ConstKind, Op, OpKind, Region, Var};
-use crate::compiler::shared::{Lower, Map, VecMap};
+use arc_script_core_shared::Lower;
+use arc_script_core_shared::Map;
+use arc_script_core_shared::VecMap;
 
 type Env = Map<Name, Var>;
 

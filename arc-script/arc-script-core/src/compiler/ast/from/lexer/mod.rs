@@ -13,7 +13,7 @@ use crate::compiler::info::diags::Error;
 use crate::compiler::info::diags::Result;
 use crate::compiler::info::files::{ByteIndex, FileId, Loc, Span};
 use crate::compiler::info::names::{NameId, NameInterner};
-use crate::compiler::shared::New;
+use arc_script_core_shared::New;
 
 use half::bf16;
 use half::f16;

@@ -1,11 +1,11 @@
 use crate::compiler::dfg::from::eval::stack::Frame;
 use crate::compiler::hir::Path;
 
-use crate::compiler::shared::New;
+use arc_script_core_shared::New;
+use arc_script_core_shared::Shrinkwrap;
 
 use petgraph::dot::{Config, Dot};
 use petgraph::prelude::{Directed, Graph};
-use shrinkwraprs::Shrinkwrap;
 
 use std::io::Write;
 use std::process::{Command, Stdio};

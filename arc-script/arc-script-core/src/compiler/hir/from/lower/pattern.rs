@@ -4,7 +4,7 @@ use crate::compiler::hir::{self, Expr, ExprKind, Param, ParamKind, HIR};
 use crate::compiler::info::diags::Error;
 
 use crate::compiler::info::types::TypeId;
-use crate::compiler::shared::Lower;
+use arc_script_core_shared::Lower;
 
 use crate::compiler::hir::from::lower::path;
 

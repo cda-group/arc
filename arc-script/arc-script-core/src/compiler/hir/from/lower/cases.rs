@@ -2,6 +2,7 @@ use super::Context;
 use crate::compiler::ast;
 use crate::compiler::hir;
 use crate::compiler::hir::Name;
+use arc_script_core_shared::Shrinkwrap;
 
 use pattern_compiler::CfgNodeKind;
 use pattern_compiler::EdgeRef;
@@ -12,7 +13,6 @@ use petgraph_4::graph::NodeIndex as PatternNodeKey;
 
 use petgraph_4::Direction;
 use petgraph_4::Graph;
-use shrinkwraprs::Shrinkwrap;
 
 /// This module is compiles patterns into more basic expressions while also performing
 /// exhaustiveness checks. Patterns are a form of syntactic sugar which can occur

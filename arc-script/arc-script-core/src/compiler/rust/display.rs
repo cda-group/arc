@@ -1,15 +1,16 @@
 #![allow(clippy::useless_format)]
+use crate::compiler::pretty::*;
 use crate::compiler::rust;
+use arc_script_core_shared::cfg_if;
+use arc_script_core_shared::From;
+use arc_script_core_shared::New;
 
-use crate::compiler::shared::display::pretty::*;
-use crate::compiler::shared::New;
-
-use cfg_if::cfg_if;
-use derive_more::From;
 use quote::quote;
 
+use std::fmt;
+use std::fmt::Display;
+use std::fmt::Formatter;
 use std::fmt::Write as FmtWrite;
-use std::fmt::{self, Display, Formatter};
 
 use std::io;
 

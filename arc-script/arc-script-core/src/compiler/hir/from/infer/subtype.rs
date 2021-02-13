@@ -2,10 +2,8 @@ use crate::compiler::hir::{
     self, BinOpKind, Dim, DimKind, Expr, ExprKind, Fun, LitKind, Name, Param, ScalarKind, Shape,
     Type, TypeKind, UnOpKind, HIR,
 };
-
 use crate::compiler::info::types::TypeId;
-
-use crate::compiler::shared::VecMap;
+use arc_script_core_shared::VecMap;
 
 use super::equality::Equal;
 use super::Context;

@@ -20,8 +20,8 @@ use codespan_reporting::term::termcolor::ColorSpec;
 
 use codespan_reporting::term::termcolor::WriteColor;
 use codespan_reporting::term::Config;
-use derive_more::From;
-use shrinkwraprs::Shrinkwrap;
+use arc_script_core_shared::From;
+use arc_script_core_shared::Shrinkwrap;
 
 type CodespanResult = std::result::Result<(), codespan_reporting::files::Error>;
 

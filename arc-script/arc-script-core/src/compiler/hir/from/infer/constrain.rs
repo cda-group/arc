@@ -4,10 +4,9 @@ use crate::compiler::hir::{
     Path, ScalarKind, Shape, State, Task, Type, TypeKind, UnOpKind, HIR,
 };
 use crate::compiler::info::diags::{Diagnostic, Error, Warning};
-
 use crate::compiler::info::types::TypeId;
 
-use crate::compiler::shared::VecMap;
+use arc_script_core_shared::VecMap;
 
 use super::Context;
 

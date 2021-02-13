@@ -1,8 +1,8 @@
 use crate::compiler::ast::from::lexer::Token;
 use crate::compiler::info;
-use crate::compiler::shared::display::pretty::AsPretty;
-use crate::compiler::shared::display::pretty::Pretty;
-use crate::compiler::shared::New;
+use crate::compiler::pretty::AsPretty;
+use crate::compiler::pretty::Pretty;
+use arc_script_core_shared::New;
 
 use std::fmt::{self, Display, Formatter};
 
@@ -23,7 +23,7 @@ impl Token {
 #[rustfmt::skip]
 impl<'i> Display for Pretty<'i, Token, State<'_>> {
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
-        let Pretty(token, ctx) = self;
+        let Pretty(token, fmt) = self;
         write!(f, "\"")?;
         match token {
             Token::Indent     => write!(f, "[Indent]"),
@@ -129,7 +129,7 @@ impl<'i> Display for Pretty<'i, Token, State<'_>> {
             Token::Null       => write!(f, "null"),
             Token::Str        => write!(f, "str"),
             Token::Unit       => write!(f, "()"),
-            Token::NameId(v)  => write!(f, "{}", ctx.state.info.names.resolve(*v)),
+            Token::NameId(v)  => write!(f, "{}", fmt.ctx.info.names.resolve(*v)),
             Token::LitI8(v)   => write!(f, "{}", v),
             Token::LitI16(v)  => write!(f, "{}", v),
             Token::LitI32(v)  => write!(f, "{}", v),

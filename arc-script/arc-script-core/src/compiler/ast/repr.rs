@@ -7,11 +7,11 @@ use crate::compiler::info::names::NameId;
 
 use crate::compiler::info::paths::PathId;
 
-use crate::compiler::shared::{Map, New};
+use arc_script_core_shared::Map;
+use arc_script_core_shared::New;
+use arc_script_core_shared::Educe;
+use arc_script_core_macros::Spanned;
 
-use arc_script_macros::Spanned;
-
-use educe::Educe;
 use half::bf16;
 use half::f16;
 use std::fmt::Debug;

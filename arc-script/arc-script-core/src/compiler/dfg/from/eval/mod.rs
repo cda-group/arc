@@ -16,7 +16,7 @@ use crate::compiler::hir::{
 };
 
 use crate::compiler::info::Info;
-use crate::compiler::shared::New;
+use arc_script_core_shared::New;
 
 use half::{bf16, f16};
 

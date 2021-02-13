@@ -1,15 +1,14 @@
 use crate::compiler::hir::Type;
 use crate::compiler::hir::TypeKind;
+use arc_script_core_shared::Shrinkwrap;
+use arc_script_core_shared::Educe;
 
-use educe::Educe;
 use ena::unify::InPlace;
 use ena::unify::NoError;
 use ena::unify::Snapshot;
-
 use ena::unify::UnificationTable;
 use ena::unify::UnifyKey;
 use ena::unify::UnifyValue;
-use shrinkwraprs::Shrinkwrap;
 
 use std::cell::RefCell;
 use std::collections::hash_map::Entry;

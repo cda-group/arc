@@ -1,13 +1,13 @@
 [package]
 name    = "arc-script-test-trybuild"
-version = "0.1.0"
+version = "0.0.0"
 authors = ["Klas Segeljakt <klasseg@kth.se>"]
 edition = "2018"
 license = "MIT"
 
 [dependencies]
-trybuild           = { version = "1.0.39" }
+trybuild = { version = "1.0.39" }
 
 [dev-dependencies]
 arcon       = { git = "https://github.com/cda-group/arcon" }
-arc-script  = { path = "../../" }
+arc-script  = { version = "=0.0.0", path = "../../" }

@@ -1,4 +1,4 @@
-use crate::compiler::shared::New;
+use arc_script_core_shared::New;
 
 use syn::Item;
 
