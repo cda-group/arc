@@ -10,10 +10,6 @@ license = "MIT"
 name    = "arc_script_core"
 path    = "src/lib.rs"
 
-[[bench]]
-name    = "bench"
-harness = false
-
 [features]
 default = []
 
@@ -73,8 +69,3 @@ salsa              = { version = "0.16.0" }
 
 [build-dependencies]
 lalrpop            = { version = "0.19.4", features = [ "lexer" ] }
-
-[dev-dependencies]
-criterion          = { version = "0.3.3" }
-criterion-cpu-time = { version = "0.1.0" }
-include_dir        = { version = "0.6.0" }
