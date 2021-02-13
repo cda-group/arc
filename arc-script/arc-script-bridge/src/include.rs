@@ -51,8 +51,8 @@ pub(crate) fn expand(attr: pm::TokenStream, item: pm::TokenStream) -> pm::TokenS
         let source_path_str = source_path.to_str().unwrap();
 
         quote!(
-            #[allow(unused)]
             #vis #mod_token #ident {
+                #![allow(unused, non_snake_case)]
                 #(#content),*
                 include!(#source_path_str);
             }

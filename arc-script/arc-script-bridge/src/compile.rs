@@ -12,8 +12,13 @@ use std::fs;
 
 /// See [`super::compile`] for documentation.
 pub(crate) fn expand(attr: pm::TokenStream, item: pm::TokenStream) -> pm::TokenStream {
-    if let syn::Item::Mod(module) = syn::parse(item).expect("Expected `mod` item") {
-        let (_, items) = module.content.expect("Expected `mod { ... }` found `mod;`");
+    if let syn::Item::Mod(item) = syn::parse(item).expect("Expected `mod` item") {
+        let ident = item.ident;
+        let attrs = item.attrs;
+        let vis = item.vis;
+        let (_, content) = item.content.expect("Error: Expected `{}`, found `;`");
+        let mod_token = item.mod_token;
+
         let mut args = attr.into_iter();
         let arg = args.next().expect("Expected attribute");
         args.next()
@@ -38,8 +43,15 @@ pub(crate) fn expand(attr: pm::TokenStream, item: pm::TokenStream) -> pm::TokenS
             let output = std::str::from_utf8(sink.as_slice()).expect("Internal compiler error");
             if report.is_ok() {
                 let rust: syn::File = syn::parse_str(output).expect("Internal compiler error");
-                let id = module.ident;
-                quote!(mod #id { #(#items);* #rust }).into()
+
+                quote!(
+                    #vis #mod_token #ident {
+                        #![allow(unused, non_snake_case)]
+                        #(#content),*
+                        #rust
+                    }
+                )
+                .into()
             } else {
                 panic!("{}", output);
             }
