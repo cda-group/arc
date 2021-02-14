@@ -1,10 +1,16 @@
 use crate::compiler::ast::AST;
-use crate::compiler::hir::{self, HIR};
+use crate::compiler::dfg;
+use crate::compiler::dfg::DFG;
+use crate::compiler::hir;
+use crate::compiler::hir::HIR;
 use crate::compiler::info::diags::to_codespan::Report;
-use crate::compiler::info::modes::{Mode, Output};
+use crate::compiler::info::modes::Mode;
+use crate::compiler::info::modes::Output;
 use crate::compiler::info::Info;
-use crate::compiler::mlir::{self, MLIR};
-use crate::compiler::rust::{self, Rust};
+use crate::compiler::mlir;
+use crate::compiler::mlir::MLIR;
+use crate::compiler::rust;
+use crate::compiler::rust::Rust;
 use arc_script_core_shared::Result;
 
 use codespan_reporting::term::termcolor::WriteColor;
@@ -22,13 +28,9 @@ where
     W: Write + WriteColor,
 {
     //     better_panic::install();
-    tracing::debug!("{:?}", mode);
+    let mut info = Info::from(mode);
 
-    let mut info = tracing::info_span!("Mode => Info").in_scope(|| Info::from(mode));
-
-    let ast = tracing::debug_span!("Code => AST").in_scope(|| AST::from(&mut info));
-    tracing::debug!("{}", info);
-    tracing::debug!("{}", ast.debug(&info));
+    let ast = AST::from(&mut info);
 
     if info.mode.fail_fast && !info.diags.is_empty() {
         if !info.mode.suppress_diags {
@@ -37,65 +39,59 @@ where
         if info.mode.force_output {
             writeln!(f, "{}", ast.pretty(&ast, &info))?;
         }
-        return Ok(Report::new(info, None));
+        return Ok(Report::syntactic(info));
     }
 
     if matches!(info.mode.output, Output::AST) {
         writeln!(f, "{}", ast.pretty(&ast, &info))?;
-        return Ok(Report::new(info, None));
+        return Ok(Report::syntactic(info));
     }
 
-    tracing::debug!("{}", info);
-
-    let hir = tracing::debug_span!("AST => HIR").in_scope(|| HIR::from(&ast, &mut info));
-    tracing::trace!("{}", hir.debug(&info));
+    let hir = HIR::from(&ast, &mut info);
 
     if !info.diags.is_empty() {
         if !info.mode.suppress_diags {
-            info.diags.emit(&info, Some(&hir), &mut f);
+            info.diags.emit(&info, &hir, &mut f);
         }
         if info.mode.force_output {
             writeln!(f, "{}", hir::pretty(&hir, &hir, &info))?;
         }
-        return Ok(Report::new(info, Some(hir)));
+        return Ok(Report::semantic(info, hir));
     }
 
     if matches!(info.mode.output, Output::HIR) {
         writeln!(f, "{}", hir::pretty(&hir, &hir, &info))?;
-        return Ok(Report::new(info, Some(hir)));
+        return Ok(Report::semantic(info, hir));
     }
 
     // TODO: Staging is temporarily out of order, a service squad is on its way
     //
     // Lower HIR into DFG
-    //     let dfg = tracing::debug_span!("HIR => DFG").in_scope(|| {
-    //         DFG::from(&hir, &mut info).unwrap_or_else(|diags| {
-    //             diags.emit(&info, Some(&hir), &mut f);
-    //             std::process::exit(-1);
-    //         })
+    //     let dfg = DFG::from(&hir, &mut info).unwrap_or_else(|diags| {
+    //         diags.emit(&info, &hir, &mut f);
+    //         std::process::exit(-1);
     //     });
     //
-    //     if matches!(info.mode.output, Output::DFG) {
-    //         writeln!(f, "{}", dfg::pretty(&dfg, &info))?;
-    //         return Ok(Report::new(info, Some(hir)));
-    //     }
+    // if matches!(info.mode.output, Output::DFG) {
+    //     writeln!(f, "{}", dfg::pretty(&dfg, &info))?;
+    //     return Ok(Report::new(info, hir));
+    // }
 
     if matches!(info.mode.output, Output::Rust) {
         // Lower HIR and DFG into Rust
-        let rust = tracing::debug_span!("HIR & DFG => Rust").in_scope(|| Rust::from(&hir, &info));
+        let rust = Rust::from(&hir, &info);
 
         writeln!(f, "{}", rust::pretty(&rust))?;
-        return Ok(Report::new(info, Some(hir)));
+        return Ok(Report::semantic(info, hir));
     }
 
     if matches!(info.mode.output, Output::MLIR) {
         // Lower HIR and DFG into MLIR
-        let mlir =
-            tracing::debug_span!("HIR & DFG => MLIR").in_scope(|| MLIR::from(&hir, &mut info));
+        let mlir = MLIR::from(&hir, &mut info);
 
         writeln!(f, "{}", mlir::pretty(&mlir, &info))?;
-        return Ok(Report::new(info, Some(hir)));
+        return Ok(Report::semantic(info, hir));
     }
 
-    Ok(Report::new(info, Some(hir)))
+    Ok(Report::semantic(info, hir))
 }

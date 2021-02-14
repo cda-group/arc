@@ -6,7 +6,10 @@ use crate::compiler::rust::Rust;
 use arc_script_core_shared::Lower;
 use arc_script_core_shared::Map;
 
+use tracing::instrument;
+
 impl Rust {
+    #[instrument(name = "HIR & Info => Rust", level = "debug", skip(hir, info))]
     pub(crate) fn from(hir: &HIR, info: &Info) -> Self {
         let mut rust = Self::default();
         let buf = String::default();

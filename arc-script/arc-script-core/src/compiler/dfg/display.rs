@@ -14,16 +14,16 @@ use std::fmt::{self, Display, Formatter};
 
 /// State needed to display the `DFG`.
 #[derive(Copy, Clone, New)]
-pub(crate) struct State<'i> {
+pub(crate) struct Context<'i> {
     info: &'i Info,
 }
 
 /// Wraps the `DFG` inside a struct which can be pretty printed.
-pub(crate) fn pretty<'i, 'j, Node>(node: &'i Node, info: &'j Info) -> Pretty<'i, Node, State<'j>> {
-    node.to_pretty(State::new(info))
+pub(crate) fn pretty<'i, 'j, Node>(node: &'i Node, info: &'j Info) -> Pretty<'i, Node, Context<'j>> {
+    node.to_pretty(Context::new(info))
 }
 
-impl<'i> Display for Pretty<'i, dfg::DFG, State<'_>> {
+impl<'i> Display for Pretty<'i, dfg::DFG, Context<'_>> {
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
         writeln!(f, "-- DFG")?;
         let Pretty(dfg, ctx) = self;
@@ -56,7 +56,7 @@ impl<'i> Display for Pretty<'i, dfg::DFG, State<'_>> {
     }
 }
 
-impl<'i> Display for Pretty<'i, hir::Path, State<'_>> {
+impl<'i> Display for Pretty<'i, hir::Path, Context<'_>> {
     fn fmt(&self, _f: &mut Formatter<'_>) -> fmt::Result {
         let Pretty(_x, _ctx) = self;
         todo!()
@@ -64,7 +64,7 @@ impl<'i> Display for Pretty<'i, hir::Path, State<'_>> {
     }
 }
 
-impl<'i> Display for Pretty<'i, dfg::Port, State<'_>> {
+impl<'i> Display for Pretty<'i, dfg::Port, Context<'_>> {
     fn fmt(&self, _f: &mut Formatter<'_>) -> fmt::Result {
         let Pretty(_x, _ctx) = self;
         todo!()

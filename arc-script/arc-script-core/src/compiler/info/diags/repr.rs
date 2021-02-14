@@ -18,10 +18,10 @@ use codespan_reporting::term::termcolor::Color;
 
 use codespan_reporting::term::termcolor::ColorSpec;
 
-use codespan_reporting::term::termcolor::WriteColor;
-use codespan_reporting::term::Config;
 use arc_script_core_shared::From;
 use arc_script_core_shared::Shrinkwrap;
+use codespan_reporting::term::termcolor::WriteColor;
+use codespan_reporting::term::Config;
 
 type CodespanResult = std::result::Result<(), codespan_reporting::files::Error>;
 
@@ -58,7 +58,12 @@ impl DiagInterner {
 
     /// Emits all diagnostics in the interner. The HIR does not need to be passed if the
     /// diagnostics were generated only while parsing.
-    pub(crate) fn emit<W>(&self, info: &Info, hir: Option<&HIR>, f: &mut W) -> CodespanResult
+    pub(crate) fn emit<'i, W>(
+        &self,
+        info: &Info,
+        hir: impl Into<Option<&'i HIR>>,
+        f: &mut W,
+    ) -> CodespanResult
     where
         W: Write + WriteColor,
     {
@@ -69,7 +74,7 @@ impl DiagInterner {
 
         let files = &info.files.store;
         let config = &Config::default();
-        let ctx = &Context::new(info, hir);
+        let ctx = &Context::new(info, hir.into());
         self.iter()
             .filter_map(|diag| diag.to_codespan(ctx))
             .try_for_each(|diag| term::emit(f, config, files, &diag))

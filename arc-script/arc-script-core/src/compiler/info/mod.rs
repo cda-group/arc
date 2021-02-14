@@ -7,6 +7,7 @@ use crate::compiler::info::files::FileInterner;
 use crate::compiler::info::names::NameInterner;
 use crate::compiler::info::paths::{PathId, PathInterner};
 
+use tracing::instrument;
 use std::str;
 use types::TypeInterner;
 
@@ -17,8 +18,6 @@ pub(crate) mod utils;
 pub mod diags;
 /// Module for interning files.
 pub mod files;
-/// Module for logging debug information.
-pub mod logger;
 /// Module for representing modes of compilation.
 pub mod modes;
 /// Module for interning names.
@@ -51,8 +50,10 @@ pub struct Info {
     //     pub(crate) exprs: ExprInterner,
 }
 
-impl From<Mode> for Info {
-    fn from(mode: Mode) -> Self {
+impl Info {
+    #[instrument(name = "Mode => Info", level = "debug")]
+    pub(crate) fn from(mode: Mode) -> Self {
+        tracing::debug!("{:?}", mode);
         let names = NameInterner::default();
         let root: Name = names.root.into();
         let paths = PathInterner::from(root);

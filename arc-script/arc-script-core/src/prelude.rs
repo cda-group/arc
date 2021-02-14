@@ -5,7 +5,6 @@ pub use crate::compiler::ast;
 pub use crate::compiler::dfg::from::eval::value::Value;
 pub use crate::compiler::dfg::from::eval::value::ValueKind;
 pub use crate::compiler::info::diags;
-pub use crate::compiler::info::logger;
 pub use crate::compiler::info::modes;
 pub use arc_script_core_shared::Result;
 

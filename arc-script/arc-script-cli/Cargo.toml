@@ -19,6 +19,10 @@ arc-script-core    = { version = "=0.0.0", path = "../arc-script-core" }
 arc-script-lsp     = { version = "=0.0.0", path = "../arc-script-lsp",  optional = true }
 arc-script-repl    = { version = "=0.0.0", path = "../arc-script-repl", optional = true }
 
+tracing            = { version = "0.2.0", git = "https://github.com/tokio-rs/tracing/" }
+tracing-subscriber = { version = "0.3.0", git = "https://github.com/tokio-rs/tracing/" }
+tracing-flame      = { version = "0.2.0", git = "https://github.com/tokio-rs/tracing/" }
+tracing-timing     = { version = "0.4.3" }
 clap               = { git = "https://github.com/clap-rs/clap/", features = ["derive"], tag = "v3.0.0-beta.2"}
 serde_json         = { version = "1.0.61" }
 codespan-reporting = { version = "=0.9.5" }

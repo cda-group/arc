@@ -19,13 +19,13 @@ use std::io::Write;
 use std::process::Command;
 
 #[derive(New, From, Copy, Clone)]
-pub(crate) struct Stateless;
+pub(crate) struct Context;
 
-pub(crate) fn pretty<Node>(node: &Node) -> Pretty<'_, Node, Stateless> {
-    node.to_pretty(Stateless)
+pub(crate) fn pretty<Node>(node: &Node) -> Pretty<'_, Node, Context> {
+    node.to_pretty(Context)
 }
 
-impl<'i> Display for Pretty<'i, rust::Rust, Stateless> {
+impl<'i> Display for Pretty<'i, rust::Rust, Context> {
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
         let Pretty(rs, _ctx) = self;
         cfg_if! {

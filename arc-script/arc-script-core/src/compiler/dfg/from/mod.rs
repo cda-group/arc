@@ -5,7 +5,6 @@ pub(crate) mod eval;
 use crate::compiler::dfg::from::eval::control::Control;
 use crate::compiler::dfg::from::eval::control::ControlKind::*;
 use crate::compiler::dfg::from::eval::stack::Stack;
-
 use crate::compiler::dfg::from::eval::Context;
 use crate::compiler::dfg::DFG;
 use crate::compiler::hir::Path;
@@ -16,9 +15,10 @@ use crate::compiler::hir::{
 use crate::compiler::info::diags::DiagInterner;
 use crate::compiler::info::diags::Error;
 use crate::compiler::info::diags::Panic;
-
 use crate::compiler::info::types::TypeId;
 use crate::compiler::info::Info;
+
+use tracing::instrument;
 
 /// Constructs a call-expression
 fn call(path: Path, args: Vec<Expr>, ftv: TypeId, rtv: TypeId) -> Expr {
@@ -57,6 +57,7 @@ fn main_call(hir: &HIR, info: &mut Info) -> Option<Expr> {
 /// Constructs a dataflow graph by evaluating the HIR. The HIR is not modified
 /// in the process.
 impl DFG {
+    #[instrument(name = "HIR & Info => DFG", level = "debug", skip(hir, info))]
     pub(crate) fn from(hir: &HIR, info: &mut Info) -> Result<Self, DiagInterner> {
         let mut dfg = Self::default();
         if let Some(expr) = main_call(hir, info) {

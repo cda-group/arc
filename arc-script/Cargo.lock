@@ -118,6 +118,10 @@ dependencies = [
  "derive_more",
  "serde_json",
  "strum",
+ "tracing 0.2.0",
+ "tracing-flame",
+ "tracing-subscriber 0.3.0",
+ "tracing-timing",
 ]
 
 [[package]]
@@ -152,9 +156,7 @@ dependencies = [
  "termcolor 1.1.2 (git+https://github.com/segeljakt/termcolor)",
  "text-size",
  "time 0.2.25",
- "tracing",
- "tracing-flame",
- "tracing-subscriber",
+ "tracing 0.2.0",
 ]
 
 [[package]]
@@ -583,6 +585,15 @@ dependencies = [
  "proc-macro2 1.0.24",
  "quote 1.0.8",
  "syn 1.0.60",
+]
+
+[[package]]
+name = "atomic-shim"
+version = "0.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "d20fdac7156779a1a30d970e838195558b4810dd06aa69e7c7461bdc518edf9b"
+dependencies = [
+ "crossbeam",
 ]
 
 [[package]]
@@ -1100,6 +1111,20 @@ dependencies = [
 ]
 
 [[package]]
+name = "crossbeam"
+version = "0.7.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "69323bff1fb41c635347b8ead484a5ca6c3f11914d784170b158d8449ab07f8e"
+dependencies = [
+ "cfg-if 0.1.10",
+ "crossbeam-channel 0.4.4",
+ "crossbeam-deque 0.7.3",
+ "crossbeam-epoch 0.8.2",
+ "crossbeam-queue 0.2.3",
+ "crossbeam-utils 0.7.2",
+]
+
+[[package]]
 name = "crossbeam-channel"
 version = "0.4.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1258,6 +1283,16 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "2b2466559f260f48ad25fe6317b3c8dac77b5bdb5763ac7d9d6103530663bc90"
 dependencies = [
  "memchr",
+]
+
+[[package]]
+name = "ctor"
+version = "0.1.19"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "e8f45d9ad417bcef4817d614a501ab55cdd96a6fdb24f49aab89a54acfd66b19"
+dependencies = [
+ "quote 1.0.8",
+ "syn 1.0.60",
 ]
 
 [[package]]
@@ -1861,6 +1896,20 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "d7afe4a420e3fe79967a00898cc1f4db7c8a49a9333a29f8a4bd76a253d5cd04"
 dependencies = [
  "ahash 0.4.7",
+]
+
+[[package]]
+name = "hdrhistogram"
+version = "7.2.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "af54a13c410de2b5e2d611475072834b86d7b2f835a2a8f7b1b1248d3e9bfbd8"
+dependencies = [
+ "base64 0.13.0",
+ "byteorder",
+ "crossbeam-channel 0.5.0",
+ "flate2",
+ "nom 6.1.0",
+ "num-traits",
 ]
 
 [[package]]
@@ -3001,6 +3050,18 @@ name = "puruspe"
 version = "0.1.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "3b7e158a385023d209d6d5f2585c4b468f6dcb3dd5aca9b75c4f1678c05bb375"
+
+[[package]]
+name = "quanta"
+version = "0.3.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "21484fda3d8ad7affee37755c77a5d0da527543f0af0c7f731c14e2215645d39"
+dependencies = [
+ "atomic-shim",
+ "ctor",
+ "libc",
+ "winapi",
+]
 
 [[package]]
 name = "quote"
@@ -4326,21 +4387,42 @@ checksum = "360dfd1d6d30e05fda32ace2c8c70e9c0a9da713275777f5a4dbb8a1893930c6"
 
 [[package]]
 name = "tracing"
-version = "0.1.22"
+version = "0.1.23"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "9f47026cdc4080c07e49b37087de021820269d996f581aac150ef9e5583eefe3"
+checksum = "f7d40a22fd029e33300d8d89a5cc8ffce18bb7c587662f54629e94c9de5487f3"
 dependencies = [
  "cfg-if 1.0.0",
  "pin-project-lite",
- "tracing-attributes",
- "tracing-core",
+ "tracing-attributes 0.1.12",
+ "tracing-core 0.1.17",
+]
+
+[[package]]
+name = "tracing"
+version = "0.2.0"
+source = "git+https://github.com/tokio-rs/tracing/#f81426b0d67e98082824e426425a9c74c844591b"
+dependencies = [
+ "cfg-if 1.0.0",
+ "pin-project-lite",
+ "tracing-attributes 0.2.0",
+ "tracing-core 0.2.0",
 ]
 
 [[package]]
 name = "tracing-attributes"
-version = "0.1.11"
+version = "0.1.12"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "80e0ccfc3378da0cce270c946b676a376943f5cd16aeba64568e7939806f4ada"
+checksum = "43f080ea7e4107844ef4766459426fa2d5c1ada2e47edba05dc7fa99d9629f47"
+dependencies = [
+ "proc-macro2 1.0.24",
+ "quote 1.0.8",
+ "syn 1.0.60",
+]
+
+[[package]]
+name = "tracing-attributes"
+version = "0.2.0"
+source = "git+https://github.com/tokio-rs/tracing/#f81426b0d67e98082824e426425a9c74c844591b"
 dependencies = [
  "proc-macro2 1.0.24",
  "quote 1.0.8",
@@ -4357,14 +4439,21 @@ dependencies = [
 ]
 
 [[package]]
-name = "tracing-flame"
-version = "0.1.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "bd520fe41c667b437952383f3a1ec14f1fa45d653f719a77eedd6e6a02d8fa54"
+name = "tracing-core"
+version = "0.2.0"
+source = "git+https://github.com/tokio-rs/tracing/#f81426b0d67e98082824e426425a9c74c844591b"
 dependencies = [
  "lazy_static",
- "tracing",
- "tracing-subscriber",
+]
+
+[[package]]
+name = "tracing-flame"
+version = "0.2.0"
+source = "git+https://github.com/tokio-rs/tracing/#f81426b0d67e98082824e426425a9c74c844591b"
+dependencies = [
+ "lazy_static",
+ "tracing 0.2.0",
+ "tracing-subscriber 0.3.0",
 ]
 
 [[package]]
@@ -4375,7 +4464,17 @@ checksum = "5e0f8c7178e13481ff6765bd169b33e8d554c5d2bbede5e32c356194be02b9b9"
 dependencies = [
  "lazy_static",
  "log",
- "tracing-core",
+ "tracing-core 0.1.17",
+]
+
+[[package]]
+name = "tracing-log"
+version = "0.2.0"
+source = "git+https://github.com/tokio-rs/tracing/#f81426b0d67e98082824e426425a9c74c844591b"
+dependencies = [
+ "lazy_static",
+ "log",
+ "tracing-core 0.2.0",
 ]
 
 [[package]]
@@ -4385,7 +4484,16 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "fb65ea441fbb84f9f6748fd496cf7f63ec9af5bca94dd86456978d055e8eb28b"
 dependencies = [
  "serde",
- "tracing-core",
+ "tracing-core 0.1.17",
+]
+
+[[package]]
+name = "tracing-serde"
+version = "0.2.0"
+source = "git+https://github.com/tokio-rs/tracing/#f81426b0d67e98082824e426425a9c74c844591b"
+dependencies = [
+ "serde",
+ "tracing-core 0.2.0",
 ]
 
 [[package]]
@@ -4404,10 +4512,48 @@ dependencies = [
  "sharded-slab",
  "smallvec",
  "thread_local",
- "tracing",
- "tracing-core",
- "tracing-log",
- "tracing-serde",
+ "tracing 0.1.23",
+ "tracing-core 0.1.17",
+ "tracing-log 0.1.1",
+ "tracing-serde 0.1.2",
+]
+
+[[package]]
+name = "tracing-subscriber"
+version = "0.3.0"
+source = "git+https://github.com/tokio-rs/tracing/#f81426b0d67e98082824e426425a9c74c844591b"
+dependencies = [
+ "ansi_term",
+ "chrono",
+ "lazy_static",
+ "matchers",
+ "regex",
+ "serde",
+ "serde_json",
+ "sharded-slab",
+ "smallvec",
+ "thread_local",
+ "tracing 0.2.0",
+ "tracing-core 0.2.0",
+ "tracing-log 0.2.0",
+ "tracing-serde 0.2.0",
+]
+
+[[package]]
+name = "tracing-timing"
+version = "0.4.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "27d1a1952e38b841a57607153a16689e1f44e6760de914ab1693bc341bb03f7e"
+dependencies = [
+ "crossbeam",
+ "doc-comment",
+ "fxhash",
+ "hdrhistogram",
+ "indexmap",
+ "quanta",
+ "slab",
+ "tracing-core 0.1.17",
+ "tracing-subscriber 0.2.15",
 ]
 
 [[package]]

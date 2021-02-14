@@ -28,9 +28,7 @@ codespan-reporting = { git = "https://github.com/brendanzab/codespan" }
 time               = { version = "0.2.25" }
 lasso              = { version = "0.4.1" }
 serde              = { version = "1.0.118", features = ["derive"] }
-tracing            = { version = "0.1.22" }
-tracing-subscriber = { version = "0.2.15" }
-tracing-flame      = { version = "0.1.0" }
+tracing            = { version = "0.2.0", git = "https://github.com/tokio-rs/tracing/" }
 lexical-core       = { version = "0.7.4", features = ["format"] }
 crepe              = { version = "0.1.5" }
 petgraph           = { version = "0.5.1", package = "petgraph" }

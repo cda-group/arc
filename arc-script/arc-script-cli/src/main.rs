@@ -2,15 +2,18 @@
 
 #![allow(unused)]
 
-mod from;
+/// Module for logging debug information.
+pub mod logger;
+/// Module for representing CLI options.
 mod repr;
+/// Module for converting CLI options to compiler `Mode`s.
+mod from;
 
+use crate::repr::Opt;
+use crate::repr::SubCmd;
 use arc_script_core::prelude::compiler;
-use arc_script_core::prelude::logger;
 use arc_script_core::prelude::modes::Mode;
 use arc_script_core::prelude::Result;
-
-use crate::repr::{Opt, SubCmd};
 
 use codespan_reporting::term::termcolor::{ColorChoice, StandardStream};
 
@@ -25,11 +28,19 @@ use clap::Clap;
 ///
 /// Returns an `Err` if either the `logger` of `Mode` fails to initialize.
 pub fn main() -> Result<()> {
+    run().and(Ok(()))
+}
+
+/// Wrapper on top of main which ensures that `guard` is dropped when the
+/// function returns.
+fn run() -> Result<Option<impl Drop>> {
     let mut opt = Opt::parse();
 
-    if opt.debug {
-        logger::init(opt.verbosity)?;
-    }
+    let guard = if opt.debug {
+        Some(logger::init(opt.verbosity)?)
+    } else {
+        None
+    };
 
     match opt.subcmd {
         #[cfg(feature = "lsp")]
@@ -49,5 +60,5 @@ pub fn main() -> Result<()> {
         }
     }
 
-    Ok(())
+    Ok(guard)
 }

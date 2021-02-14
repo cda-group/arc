@@ -13,7 +13,7 @@ use std::fmt::Display;
 use std::fmt::Formatter;
 
 #[derive(New, Copy, Clone)]
-pub(crate) struct State<'i> {
+pub(crate) struct Context<'i> {
     info: &'i Info,
     hir: &'i HIR,
 }
@@ -22,11 +22,11 @@ pub(crate) fn pretty<'i, 'j, Node>(
     node: &'i Node,
     hir: &'j HIR,
     info: &'j Info,
-) -> Pretty<'i, Node, State<'j>> {
-    node.to_pretty(State::new(info, hir))
+) -> Pretty<'i, Node, Context<'j>> {
+    node.to_pretty(Context::new(info, hir))
 }
 
-impl<'i> Display for Pretty<'i, HIR, State<'_>> {
+impl<'i> Display for Pretty<'i, HIR, Context<'_>> {
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
         let Pretty(hir, fmt) = self;
         write!(
@@ -41,7 +41,7 @@ impl<'i> Display for Pretty<'i, HIR, State<'_>> {
     }
 }
 
-impl<'i> Display for Pretty<'i, hir::Item, State<'_>> {
+impl<'i> Display for Pretty<'i, hir::Item, Context<'_>> {
     #[rustfmt::skip]
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
         let Pretty(item, fmt) = self;
@@ -57,7 +57,7 @@ impl<'i> Display for Pretty<'i, hir::Item, State<'_>> {
     }
 }
 
-impl<'i> Display for Pretty<'i, hir::Fun, State<'_>> {
+impl<'i> Display for Pretty<'i, hir::Fun, Context<'_>> {
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
         let Pretty(item, fmt) = self;
         write!(
@@ -73,7 +73,7 @@ impl<'i> Display for Pretty<'i, hir::Fun, State<'_>> {
     }
 }
 
-impl<'i> Display for Pretty<'i, hir::Extern, State<'_>> {
+impl<'i> Display for Pretty<'i, hir::Extern, Context<'_>> {
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
         let Pretty(item, fmt) = self;
         write!(
@@ -86,7 +86,7 @@ impl<'i> Display for Pretty<'i, hir::Extern, State<'_>> {
     }
 }
 
-impl<'i> Display for Pretty<'i, hir::Param, State<'_>> {
+impl<'i> Display for Pretty<'i, hir::Param, Context<'_>> {
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
         let Pretty(p, fmt) = self;
         match p.kind {
@@ -98,7 +98,7 @@ impl<'i> Display for Pretty<'i, hir::Param, State<'_>> {
     }
 }
 
-impl<'i> Display for Pretty<'i, hir::Name, State<'_>> {
+impl<'i> Display for Pretty<'i, hir::Name, Context<'_>> {
     #[rustfmt::skip]
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
         let Pretty(x, fmt) = self;
@@ -106,7 +106,7 @@ impl<'i> Display for Pretty<'i, hir::Name, State<'_>> {
     }
 }
 
-impl<'i> Display for Pretty<'i, NameId, State<'_>> {
+impl<'i> Display for Pretty<'i, NameId, Context<'_>> {
     #[rustfmt::skip]
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
         let Pretty(id, fmt) = self;
@@ -114,7 +114,7 @@ impl<'i> Display for Pretty<'i, NameId, State<'_>> {
     }
 }
 
-impl<'i> Display for Pretty<'i, hir::State, State<'_>> {
+impl<'i> Display for Pretty<'i, hir::State, Context<'_>> {
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
         let Pretty(item, fmt) = self;
         write!(
@@ -127,7 +127,7 @@ impl<'i> Display for Pretty<'i, hir::State, State<'_>> {
     }
 }
 
-impl<'i> Display for Pretty<'i, hir::Alias, State<'_>> {
+impl<'i> Display for Pretty<'i, hir::Alias, Context<'_>> {
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
         let Pretty(item, fmt) = self;
         write!(
@@ -139,14 +139,14 @@ impl<'i> Display for Pretty<'i, hir::Alias, State<'_>> {
     }
 }
 
-impl<'i> Display for Pretty<'i, TypeId, State<'_>> {
+impl<'i> Display for Pretty<'i, TypeId, Context<'_>> {
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
         let Pretty(tv, fmt) = self;
         write!(f, "{}", fmt.ctx.info.types.resolve(**tv).pretty(fmt))
     }
 }
 
-impl<'i> Display for Pretty<'i, hir::Task, State<'_>> {
+impl<'i> Display for Pretty<'i, hir::Task, Context<'_>> {
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
         let Pretty(item, fmt) = self;
         write!(
@@ -172,7 +172,7 @@ impl<'i> Display for Pretty<'i, hir::Task, State<'_>> {
     }
 }
 
-impl<'i> Display for Pretty<'i, hir::Hub, State<'_>> {
+impl<'i> Display for Pretty<'i, hir::Hub, Context<'_>> {
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
         let Pretty(item, fmt) = self;
         match item.kind {
@@ -196,7 +196,7 @@ impl<'i> Display for Pretty<'i, hir::Hub, State<'_>> {
     }
 }
 
-impl<'i> Display for Pretty<'i, hir::On, State<'_>> {
+impl<'i> Display for Pretty<'i, hir::On, Context<'_>> {
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
         let Pretty(on, fmt) = self;
         write!(
@@ -211,14 +211,14 @@ impl<'i> Display for Pretty<'i, hir::On, State<'_>> {
     }
 }
 
-impl<'i> Display for Pretty<'i, hir::Path, State<'_>> {
+impl<'i> Display for Pretty<'i, hir::Path, Context<'_>> {
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
         let Pretty(path, fmt) = self;
         write!(f, "{}", path.id.pretty(fmt))
     }
 }
 
-impl<'i> Display for Pretty<'i, PathId, State<'_>> {
+impl<'i> Display for Pretty<'i, PathId, Context<'_>> {
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
         let Pretty(path, fmt) = self;
         let path = fmt.ctx.info.paths.resolve(*path);
@@ -229,7 +229,7 @@ impl<'i> Display for Pretty<'i, PathId, State<'_>> {
     }
 }
 
-impl<'i> Display for Pretty<'i, hir::Enum, State<'_>> {
+impl<'i> Display for Pretty<'i, hir::Enum, Context<'_>> {
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
         let Pretty(item, fmt) = self;
         write!(
@@ -250,7 +250,7 @@ impl<'i> Display for Pretty<'i, hir::Enum, State<'_>> {
     }
 }
 
-impl<'i> Display for Pretty<'i, hir::Variant, State<'_>> {
+impl<'i> Display for Pretty<'i, hir::Variant, Context<'_>> {
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
         let Pretty(variant, fmt) = self;
         let ty = fmt.ctx.info.types.resolve(variant.tv);
@@ -262,7 +262,7 @@ impl<'i> Display for Pretty<'i, hir::Variant, State<'_>> {
     }
 }
 
-impl<'i> Display for Pretty<'i, hir::Expr, State<'_>> {
+impl<'i> Display for Pretty<'i, hir::Expr, Context<'_>> {
     #[allow(clippy::many_single_char_names)]
     #[rustfmt::skip]
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
@@ -329,7 +329,7 @@ impl<'i> Display for Pretty<'i, hir::Expr, State<'_>> {
     }
 }
 
-impl<'i> Display for Pretty<'i, hir::LitKind, State<'_>> {
+impl<'i> Display for Pretty<'i, hir::LitKind, Context<'_>> {
     #[rustfmt::skip]
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
         let Pretty(lit, _) = self;
@@ -356,7 +356,7 @@ impl<'i> Display for Pretty<'i, hir::LitKind, State<'_>> {
     }
 }
 
-impl<'i> Display for Pretty<'i, hir::BinOp, State<'_>> {
+impl<'i> Display for Pretty<'i, hir::BinOp, Context<'_>> {
     #[rustfmt::skip]
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
         let Pretty(op, fmt) = self;
@@ -387,7 +387,7 @@ impl<'i> Display for Pretty<'i, hir::BinOp, State<'_>> {
     }
 }
 
-impl<'i> Display for Pretty<'i, hir::ScalarKind, State<'_>> {
+impl<'i> Display for Pretty<'i, hir::ScalarKind, Context<'_>> {
     #[rustfmt::skip]
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
         let Pretty(kind, _fmt) = self;
@@ -414,7 +414,7 @@ impl<'i> Display for Pretty<'i, hir::ScalarKind, State<'_>> {
     }
 }
 
-impl<'i> Display for Pretty<'i, hir::Type, State<'_>> {
+impl<'i> Display for Pretty<'i, hir::Type, Context<'_>> {
     #[rustfmt::skip]
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
         let Pretty(ty, fmt) = self;
@@ -439,7 +439,7 @@ impl<'i> Display for Pretty<'i, hir::Type, State<'_>> {
     }
 }
 
-impl<'i> Display for Pretty<'i, hir::Shape, State<'_>> {
+impl<'i> Display for Pretty<'i, hir::Shape, Context<'_>> {
     #[rustfmt::skip]
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
         let Pretty(shape, fmt) = self;
@@ -447,7 +447,7 @@ impl<'i> Display for Pretty<'i, hir::Shape, State<'_>> {
     }
 }
 
-impl<'i> Display for Pretty<'i, hir::Dim, State<'_>> {
+impl<'i> Display for Pretty<'i, hir::Dim, Context<'_>> {
     #[rustfmt::skip]
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
         let Pretty(dim, fmt) = self;
@@ -460,7 +460,7 @@ impl<'i> Display for Pretty<'i, hir::Dim, State<'_>> {
     }
 }
 
-impl<'i> Display for Pretty<'i, hir::DimOp, State<'_>> {
+impl<'i> Display for Pretty<'i, hir::DimOp, Context<'_>> {
     #[rustfmt::skip]
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
         let Pretty(op, _fmt) = self;
@@ -475,14 +475,14 @@ impl<'i> Display for Pretty<'i, hir::DimOp, State<'_>> {
 
 // Box implementations (to avoid having to call .as_ref())
 
-impl<'i> Display for Pretty<'i, Box<hir::Expr>, State<'_>> {
+impl<'i> Display for Pretty<'i, Box<hir::Expr>, Context<'_>> {
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
         let Pretty(b, fmt) = self;
         write!(f, "{}", b.as_ref().pretty(fmt))
     }
 }
 
-impl<'i> Display for Pretty<'i, Box<hir::Dim>, State<'_>> {
+impl<'i> Display for Pretty<'i, Box<hir::Dim>, Context<'_>> {
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
         let Pretty(b, fmt) = self;
         write!(f, "{}", b.as_ref().pretty(fmt))

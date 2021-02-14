@@ -3,13 +3,14 @@ pub(crate) mod lower;
 
 use crate::compiler::hir::HIR;
 use crate::compiler::info::Info;
-
 use crate::compiler::mlir::MLIR;
 use arc_script_core_shared::Lower;
 use arc_script_core_shared::Map;
 
+use tracing::instrument;
+
 impl MLIR {
-    #[allow(clippy::needless_pass_by_value)] // Temporary
+    #[instrument(name = "HIR & Info => MLIR", level = "debug", skip(hir, info))]
     pub(crate) fn from(hir: &HIR, info: &mut Info) -> Self {
         let ctx = &mut lower::Context::new(hir, info);
         let defs = hir
