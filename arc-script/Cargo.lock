@@ -1345,12 +1345,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "0e25ea47919b1560c4e3b7fe0aaab9becf5b84a10325ddf7db0f0ba5e1026499"
 
 [[package]]
-name = "difference"
-version = "2.0.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "524cbf6897b527295dff137cec09ecf3a05f4fddffd7dfcd1585403449e74198"
-
-[[package]]
 name = "digest"
 version = "0.8.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2025,17 +2019,17 @@ dependencies = [
 
 [[package]]
 name = "insta"
-version = "1.5.2"
+version = "1.6.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "bca6f2bcc5e2ce13f3652ecd05a643b986d035add3f0c38fbabd78f723b5f7e9"
+checksum = "6b0d4f10636e7b40bf9eb71ecaf660498a120a86e9251bd4dea72a64ce9b8a93"
 dependencies = [
  "console 0.14.0",
- "difference",
  "globset",
  "lazy_static",
  "serde",
  "serde_json",
  "serde_yaml",
+ "similar",
  "uuid",
  "walkdir",
 ]
@@ -2252,13 +2246,13 @@ checksum = "e2abad23fbc42b3700f2f279844dc832adb2b2eb069b2df918f455c4e18cc646"
 
 [[package]]
 name = "lexical-core"
-version = "0.7.4"
+version = "0.7.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "db65c6da02e61f55dae90a0ae427b2a5f6b3e8db09f58d10efab23af92592616"
+checksum = "21f866863575d0e1d654fbeeabdc927292fdf862873dc3c96c6f753357e13374"
 dependencies = [
  "arrayvec",
  "bitflags",
- "cfg-if 0.1.10",
+ "cfg-if 1.0.0",
  "ryu",
  "static_assertions",
 ]
@@ -2372,9 +2366,9 @@ dependencies = [
 
 [[package]]
 name = "lspower"
-version = "0.6.0"
+version = "0.6.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "25b4cf901e2445b5f2e80bd380e0085f166692ee794953268af18f61cfad2e10"
+checksum = "8947e7faf8ee4db7459cc57414a2223aa0efbc90b07161c899ffa637c10f3448"
 dependencies = [
  "anyhow",
  "async-codec-lite",
@@ -3652,9 +3646,9 @@ checksum = "388a1df253eca08550bef6c72392cfe7c30914bf41df5269b68cbd6ff8f570a3"
 
 [[package]]
 name = "serde"
-version = "1.0.120"
+version = "1.0.123"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "166b2349061381baf54a58e4b13c89369feb0ef2eaa57198899e2312aac30aab"
+checksum = "92d5161132722baa40d802cc70b15262b98258453e85e5d1d365c757c73869ae"
 dependencies = [
  "serde_derive",
 ]
@@ -3671,9 +3665,9 @@ dependencies = [
 
 [[package]]
 name = "serde_derive"
-version = "1.0.120"
+version = "1.0.123"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "0ca2a8cb5805ce9e3b95435e3765b7b553cecc762d938d409434338386cb5775"
+checksum = "9391c295d64fc0abb2c556bad848f33cb8296276b1ad2677d1ae1ace4f258f31"
 dependencies = [
  "proc-macro2 1.0.24",
  "quote 1.0.8",
@@ -3806,6 +3800,12 @@ checksum = "16f1d0fef1604ba8f7a073c7e701f213e056707210e9020af4528e0101ce11a6"
 dependencies = [
  "libc",
 ]
+
+[[package]]
+name = "similar"
+version = "1.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "da916d7c5876bff6fbf5794bd1e64aba8f5f110b76b192d80bb264423c0736f6"
 
 [[package]]
 name = "siphasher"
@@ -4335,9 +4335,9 @@ checksum = "cda74da7e1a664f795bb1f8a87ec406fb89a02522cf6e50620d016add6dbbf5c"
 
 [[package]]
 name = "tokio"
-version = "1.1.1"
+version = "1.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "6714d663090b6b0acb0fa85841c6d66233d150cdb2602c8f9b8abb03370beb3f"
+checksum = "e8190d04c665ea9e6b6a0dc45523ade572c088d2e6566244c1122671dbf4ae3a"
 dependencies = [
  "autocfg",
  "num_cpus",
@@ -4347,9 +4347,9 @@ dependencies = [
 
 [[package]]
 name = "tokio-macros"
-version = "1.0.0"
+version = "1.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "42517d2975ca3114b22a16192634e8241dc5cc1f130be194645970cc1c371494"
+checksum = "caf7b11a536f46a809a8a9f0bb4237020f70ecbf115b842360afb127ea2fda57"
 dependencies = [
  "proc-macro2 1.0.24",
  "quote 1.0.8",
@@ -4972,9 +4972,9 @@ dependencies = [
 
 [[package]]
 name = "web-sys"
-version = "0.3.46"
+version = "0.3.47"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "222b1ef9334f92a21d3fb53dc3fd80f30836959a90f9274a626d7e06315ba3c3"
+checksum = "c40dc691fc48003eba817c38da7113c15698142da971298003cac3ef175680b3"
 dependencies = [
  "js-sys",
  "wasm-bindgen",

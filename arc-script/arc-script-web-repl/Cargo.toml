@@ -14,14 +14,14 @@ default = ["console_error_panic_hook"]
 [dependencies]
 arc-script-core          = { version = "=0.0.0", path = "../arc-script-core", default-features = false }
 
-xterm-js-rs              = { version = "0.1.0", features = ["xterm-addon-fit"] }
+xterm-js-rs              = { version = "0.1.1", features = ["xterm-addon-fit"] }
 js-sys                   = { version = "0.3.39" }
 wasm-bindgen             = { version = "0.2.67" }
 console_error_panic_hook = { version = "0.1.6", optional = true }
 wee_alloc                = { version = "0.4.5", optional = true }
 
 [dependencies.web-sys]
-version = "0.3.39"
+version = "0.3.47"
 features = [
   'Document',
   'Element',
@@ -35,4 +35,4 @@ features = [
 ]
 
 [dev-dependencies]
-wasm-bindgen-test = "0.3.17"
+wasm-bindgen-test = "0.3.20"

@@ -27,9 +27,9 @@ codespan-reporting = { git = "https://github.com/brendanzab/codespan" }
 # smartstring        = { version = "0.2.6" }
 time               = { version = "0.2.25" }
 lasso              = { version = "0.4.1" }
-serde              = { version = "1.0.118", features = ["derive"] }
+serde              = { version = "1.0.123", features = ["derive"] }
 tracing            = { version = "0.2.0", git = "https://github.com/tokio-rs/tracing/" }
-lexical-core       = { version = "0.7.4", features = ["format"] }
+lexical-core       = { version = "0.7.5", features = ["format"] }
 crepe              = { version = "0.1.5" }
 petgraph           = { version = "0.5.1", package = "petgraph" }
 petgraph_4         = { version = "0.4.0", package = "petgraph" }
@@ -39,26 +39,26 @@ ryu                = { version = "1.0.5" }
 syn                = { version = "1.0.60", features = ["full"] }
 quote              = { version = "1.0.8" }
 proc-macro2        = { version = "1.0.24" }
-strum              = { version = "0.20", features = ["derive"] }
+strum              = { version = "0.20.0", features = ["derive"] }
 better-panic       = { version = "0.2.0" }
 text-size          = { version = "1.1.0" }
 half               = { version = "1.7.1", features = ["num-traits"] }
 # rustfmt-nightly    = { git = "https://github.com/rust-lang/rustfmt" }
 # z3                 = { optional = true, version = "0.9.0" }
 # toml               = { optional = true, version = "0.5.8" }
-
-[dev-dependencies]
+            
+[dev-dependencies]           
 indoc              = { version = "1.0.3" }
-
+           
 [target.'cfg(not(target_arch = "wasm32"))'.dependencies]
 tempfile           = { version = "3.1.0" }
 salsa              = { version = "0.16.0" }
-
-#[build]
+           
+#[build]         
 #rustflags = ["-C", "link-arg=-fuse-ld=lld"]
-
-#[target.x86_64-unknown-linux-gnu]
-#linker = "lld"
-
-[build-dependencies]
+        
+#[target.x86_64-unknown-linux-gnu]    
+#linker = "lld"     
+     
+[build-dependencies]     
 lalrpop            = { version = "0.19.4", features = [ "lexer" ] }

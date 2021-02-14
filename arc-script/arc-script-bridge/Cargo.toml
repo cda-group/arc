@@ -12,7 +12,7 @@ proc-macro = true
 [dependencies]
 arc-script-core  = { version = "=0.0.0", path = "../arc-script-core" }
 
-syn              = { version = "1.0.41", features = ["full"] }
+syn              = { version = "1.0.60", features = ["full"] }
 quote            = { version = "1.0.7" }
 proc-macro2      = { version = "1.0.21" }
 proc-macro-error = { version = "1.0.4" }

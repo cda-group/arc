@@ -7,4 +7,4 @@ license = "MIT"
 
 [dependencies]
 arc-script-core = { version = "=0.0.0", path = "../../arc-script-core" }
-insta           = { version = "1.5.2", features = ["glob"] }
+insta           = { version = "1.6.0", features = ["glob"] }
