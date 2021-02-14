@@ -475,7 +475,7 @@ impl Iterator for Lexer<'_> {
 }
 
 /// Test for lexing Python-style semantic indentation.
-// #[test]
+#[cfg(test)] // Ignore for now
 fn test() {
     let source = indoc::indoc! {"
         if true:

@@ -22,13 +22,12 @@ regex              = { version = "1.4.3" }
 lalrpop-util       = { version = "0.19.4" }
 ena                = { version = "0.14.0"}
 codespan-reporting = { git = "https://github.com/brendanzab/codespan" }
-num-traits         = { version = "0.2.14" }
-arrayvec           = { version = "0.5.2" }
-smartstring        = { version = "0.2.6" }
+# num-traits         = { version = "0.2.14" }
+# arrayvec           = { version = "0.5.2" }
+# smartstring        = { version = "0.2.6" }
 time               = { version = "0.2.25" }
 lasso              = { version = "0.4.1" }
 serde              = { version = "1.0.118", features = ["derive"] }
-indoc              = { version = "1.0.3" }
 tracing            = { version = "0.1.22" }
 tracing-subscriber = { version = "0.2.15" }
 tracing-flame      = { version = "0.1.0" }
@@ -50,6 +49,8 @@ half               = { version = "1.7.1", features = ["num-traits"] }
 # z3                 = { optional = true, version = "0.9.0" }
 # toml               = { optional = true, version = "0.5.8" }
 
+[dev-dependencies]
+indoc              = { version = "1.0.3" }
 
 [target.'cfg(not(target_arch = "wasm32"))'.dependencies]
 tempfile           = { version = "3.1.0" }
