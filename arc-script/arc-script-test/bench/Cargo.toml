@@ -9,7 +9,7 @@ name    = "bench"
 harness = false
 
 [dependencies]
-arc-script-core = { version = "=0.0.0", path = "../arc-script-core" }
+arc-script-core = { version = "=0.0.0", path = "../../arc-script-core" }
 
 [dev-dependencies]
 criterion          = { version = "0.3.3" }
