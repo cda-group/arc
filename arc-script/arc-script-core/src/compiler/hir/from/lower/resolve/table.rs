@@ -1,10 +1,11 @@
-use crate::compiler::ast::{self, AST};
+use crate::compiler::ast;
+use crate::compiler::ast::AST;
 
 use crate::compiler::info::diags::Error;
 use crate::compiler::info::paths::PathId;
 use crate::compiler::info::Info;
-
-use std::collections::{HashMap as Map, HashSet as Set};
+use arc_script_core_shared::Map;
+use arc_script_core_shared::Set;
 
 /// Every symbol is some kind of declaration. The symbol's declaration kind
 /// determines in which table of the HIR the definition of the symbol is stored.

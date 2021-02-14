@@ -411,10 +411,10 @@ where
     A: Lower<B, Context<'i>> + std::fmt::Debug,
 {
     fn lower(&self, ctx: &mut Context<'i>) -> VecMap<Name, B> {
-        use arc_script_core_shared::Entry;
+        use arc_script_core_shared::VecMapEntry;
         let mut map: VecMap<Name, B> = VecMap::new();
         for f in self {
-            if let Entry::Vacant(entry) = map.entry(f.name) {
+            if let VecMapEntry::Vacant(entry) = map.entry(f.name) {
                 entry.insert(f.val.lower(ctx));
             } else {
                 ctx.info.diags.intern(Error::FieldClash { name: f.name });

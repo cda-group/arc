@@ -69,6 +69,12 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "afddf7f520a80dbf76e6f50a35bca42a2331ef227a28b3b6dc5c2e2338d114b1"
 
 [[package]]
+name = "arbitrary"
+version = "0.4.7"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "db55d72333851e17d572bec876e390cd3b11eb1ef53ae821dd9f3b653d2b4569"
+
+[[package]]
 name = "arc-script"
 version = "0.0.0"
 dependencies = [
@@ -128,6 +134,7 @@ dependencies = [
 name = "arc-script-core"
 version = "0.0.0"
 dependencies = [
+ "arbitrary",
  "arc-script-core-macros",
  "arc-script-core-shared",
  "better-panic",
@@ -153,7 +160,6 @@ dependencies = [
  "strum",
  "syn 1.0.60",
  "tempfile",
- "termcolor 1.1.2 (git+https://github.com/segeljakt/termcolor)",
  "text-size",
  "time 0.2.25",
  "tracing 0.2.0",
@@ -176,6 +182,7 @@ dependencies = [
  "cfg-if 1.0.0",
  "derive_more",
  "educe",
+ "fxhash",
  "indexmap",
  "linear-map",
  "shrinkwraprs",
@@ -915,7 +922,7 @@ dependencies = [
  "lazy_static",
  "os_str_bytes",
  "strsim",
- "termcolor 1.1.2 (registry+https://github.com/rust-lang/crates.io-index)",
+ "termcolor",
  "textwrap 0.12.1",
  "unicode-width",
  "vec_map",
@@ -961,7 +968,7 @@ version = "0.9.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "6e0762455306b1ed42bc651ef6a2197aabda5e1d4a43c34d5eab5c1a3634e81d"
 dependencies = [
- "termcolor 1.1.2 (registry+https://github.com/rust-lang/crates.io-index)",
+ "termcolor",
  "unicode-width",
 ]
 
@@ -970,7 +977,7 @@ name = "codespan-reporting"
 version = "0.11.0"
 source = "git+https://github.com/brendanzab/codespan#d7213c4fd98165fb86744617ee60cffa8a7357cf"
 dependencies = [
- "termcolor 1.1.2 (registry+https://github.com/rust-lang/crates.io-index)",
+ "termcolor",
  "unicode-width",
 ]
 
@@ -4156,14 +4163,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "termcolor"
-version = "1.1.2"
-source = "git+https://github.com/segeljakt/termcolor#8154b6add01c1b168cfa52b65744e50a26972cf9"
-dependencies = [
- "winapi-util",
-]
-
-[[package]]
 name = "terminal_size"
 version = "0.1.16"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -4575,7 +4574,7 @@ dependencies = [
  "lazy_static",
  "serde",
  "serde_json",
- "termcolor 1.1.2 (registry+https://github.com/rust-lang/crates.io-index)",
+ "termcolor",
  "toml",
 ]
 

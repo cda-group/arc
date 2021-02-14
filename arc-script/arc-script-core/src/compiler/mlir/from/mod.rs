@@ -5,7 +5,7 @@ use crate::compiler::hir::HIR;
 use crate::compiler::info::Info;
 use crate::compiler::mlir::MLIR;
 use arc_script_core_shared::Lower;
-use arc_script_core_shared::Map;
+use arc_script_core_shared::OrdMap;
 
 use tracing::instrument;
 
@@ -17,7 +17,7 @@ impl MLIR {
             .items
             .iter()
             .filter_map(|x| Some((*x, hir.defs.get(x).unwrap().lower(ctx)?)))
-            .collect::<Map<_, _>>();
+            .collect::<OrdMap<_, _>>();
         Self::new(hir.items.clone(), defs)
     }
 }

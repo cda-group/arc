@@ -2,11 +2,11 @@ use crate::compiler::ast;
 
 use crate::compiler::info::files::Loc;
 
-use arc_script_core_shared::Map;
-use arc_script_core_shared::New;
-use arc_script_core_shared::VecMap;
-use arc_script_core_shared::Educe;
 use arc_script_core_macros::Spanned;
+use arc_script_core_shared::Educe;
+use arc_script_core_shared::New;
+use arc_script_core_shared::OrdMap;
+use arc_script_core_shared::VecMap;
 
 use crate::prelude::ast::Spanned;
 
@@ -30,7 +30,7 @@ pub(crate) struct HIR {
     /// Top-level items
     pub(crate) items: Vec<Path>,
     /// Definitions of items.
-    pub(crate) defs: Map<Path, Item>,
+    pub(crate) defs: OrdMap<Path, Item>,
 }
 
 #[derive(New, Spanned, Debug)]

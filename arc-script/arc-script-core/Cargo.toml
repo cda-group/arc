@@ -34,7 +34,6 @@ crepe              = { version = "0.1.5" }
 petgraph           = { version = "0.5.1", package = "petgraph" }
 petgraph_4         = { version = "0.4.0", package = "petgraph" }
 pattern-compiler   = { package = "libeir_util_pattern_compiler", git = "https://github.com/eirproject/eir" }
-termcolor          = { git = "https://github.com/segeljakt/termcolor" }
 ryu                = { version = "1.0.5" }
 syn                = { version = "1.0.60", features = ["full"] }
 quote              = { version = "1.0.8" }
@@ -49,6 +48,7 @@ half               = { version = "1.7.1", features = ["num-traits"] }
             
 [dev-dependencies]           
 indoc              = { version = "1.0.3" }
+arbitrary          = { version = "0.4.7" }
            
 [target.'cfg(not(target_arch = "wasm32"))'.dependencies]
 tempfile           = { version = "3.1.0" }

@@ -11,7 +11,7 @@ use super::Context;
 /// expression does not contain any control-flow constructs. If lifting fails, the
 /// original expression is returned.
 pub(super) fn lift(body: hir::Expr, ctx: &mut Context<'_>) -> hir::Expr {
-    let mut vars = Map::new();
+    let mut vars = Map::default();
     if body.fv(&mut vars).is_err() {
         body
     } else {

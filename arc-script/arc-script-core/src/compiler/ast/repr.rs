@@ -7,7 +7,7 @@ use crate::compiler::info::names::NameId;
 
 use crate::compiler::info::paths::PathId;
 
-use arc_script_core_shared::Map;
+use arc_script_core_shared::OrdMap;
 use arc_script_core_shared::New;
 use arc_script_core_shared::Educe;
 use arc_script_core_macros::Spanned;
@@ -25,7 +25,7 @@ pub struct Spanned<Node>(pub FileId, pub ByteIndex, pub Node, pub ByteIndex);
 /// An Arc-AST.
 #[derive(Debug, Default)]
 pub struct AST {
-    pub modules: Map<PathId, Module>,
+    pub modules: OrdMap<PathId, Module>,
     pub exprs: ExprInterner,
 }
 

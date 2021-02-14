@@ -1,9 +1,9 @@
 use crate::compiler::hir::Name;
 
 use arc_script_core_shared::Shrinkwrap;
+use arc_script_core_shared::Map;
 
 use std::borrow::Borrow;
-use std::collections::HashMap;
 
 #[derive(Debug, Clone, Copy, Shrinkwrap, Eq, PartialEq, Hash)]
 pub struct PathId(usize);
@@ -17,14 +17,14 @@ pub(crate) struct PathBuf {
 /// An interner for interning `Path`s into `PathId`s, and resolving the other way around.
 #[derive(Debug)]
 pub(crate) struct PathInterner {
-    pub(crate) path_to_id: HashMap<PathBuf, PathId>,
+    pub(crate) path_to_id: Map<PathBuf, PathId>,
     pub(crate) id_to_path: Vec<PathBuf>,
     pub(crate) root: PathId,
 }
 
 impl From<Name> for PathInterner {
     fn from(name: Name) -> Self {
-        let path_to_id = HashMap::new();
+        let path_to_id = Map::default();
         let mut id_to_path = Vec::new();
         let path_buf = PathBuf { pred: None, name };
         let path_id = PathId(id_to_path.len());

@@ -3,11 +3,12 @@ use crate::repr::info::files::Loc;
 use crate::repr::info::names::NameId;
 use crate::repr::info::paths::PathId;
 use derive_more::From;
-use std::collections::HashMap;
+
+use arc_script_core_shared::Map;
 
 #[derive(Default, Debug)]
 pub(crate) struct LocInterner {
-    store: HashMap<LocId, Loc>,
+    store: Map<LocId, Loc>,
 }
 
 #[derive(Debug, Hash, Eq, PartialEq, From)]

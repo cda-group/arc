@@ -4,7 +4,7 @@ use crate::compiler::hir::{Name, Path};
 use crate::compiler::info::files::Loc;
 use crate::compiler::info::types::TypeId;
 
-use arc_script_core_shared::Map;
+use arc_script_core_shared::OrdMap;
 use arc_script_core_shared::New;
 use arc_script_core_shared::VecMap;
 
@@ -20,7 +20,7 @@ pub(crate) struct MLIR {
     /// Top-level items
     pub(crate) items: Vec<Path>,
     /// Definitions of items.
-    pub(crate) defs: Map<Path, Item>,
+    pub(crate) defs: OrdMap<Path, Item>,
     //    /// Main function for generating the dataflow.
     //     pub(crate) main: Fun,
 }

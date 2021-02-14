@@ -3,7 +3,6 @@
 
 use crate::compiler::hir::{Expr, ExprKind, Fun, Task, UnOpKind, HIR};
 use crate::compiler::info::paths::PathId;
-use arc_script_core_shared::Map;
 
 /// Macro for generating pre- and post-order visitors of expressions.
 macro_rules! for_each_expr {
