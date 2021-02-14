@@ -9,7 +9,7 @@ license = "MIT"
 proc-macro = true
 
 [dependencies]
-arc-script-core = { version = "=0.0.0", path = "../arc-script-core" }
+arc-script-core = { version = "=0.0.0", path = "../../arc-script-core" }
 
 syn             = { version = "1.0.60", features = ["full"] }
 quote           = { version = "1.0.7" }

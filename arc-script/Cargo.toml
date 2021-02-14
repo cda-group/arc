@@ -26,27 +26,27 @@ name = "arc_script"
 path = "src/lib.rs"
 
 [dependencies]
-arc-script-bridge = { version = "=0.0.0", path = "arc-script-bridge" }
-arc-script-build  = { version = "=0.0.0", path = "arc-script-build" }
+arc-script-bridge = { version = "=0.0.0", path = "arc-script-api/bridge" }
+arc-script-build  = { version = "=0.0.0", path = "arc-script-api/build" }
 
 [workspace]
 members = [
   "arc-script-core",
   "arc-script-core/src/shared",
   "arc-script-core/src/macros",
-  "arc-script-quote",
-  "arc-script-bridge",
+  "arc-script-api/quote",
+  "arc-script-api/bridge",
+  "arc-script-api/python",
+  "arc-script-api/build",
   "arc-script-repl",
   "arc-script-lsp",
   "arc-script-cli",
   "arc-script-web-repl",
 #   "arc-script-web-lsp",
-  "arc-script-python",
   "arc-script-bench",
   "arc-script-test/insta",
   "arc-script-test/trybuild",
   "arc-script-test/integration",
-  "arc-script-build",
   "arc-script-template",
   "arc-script-stdlib",
 ]
