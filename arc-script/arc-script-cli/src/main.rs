@@ -36,11 +36,7 @@ pub fn main() -> Result<()> {
 fn run() -> Result<Option<impl Drop>> {
     let mut opt = Opt::parse();
 
-    let guard = if opt.debug {
-        Some(logger::init(opt.verbosity)?)
-    } else {
-        None
-    };
+    let guard = logger::init(&opt)?;
 
     match opt.subcmd {
         #[cfg(feature = "lsp")]
