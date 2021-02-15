@@ -18,6 +18,7 @@
 #include "mlir/IR/MLIRContext.h"
 #include "mlir/Support/LLVM.h"
 #include "mlir/Support/LogicalResult.h"
+#include <mlir/Dialect/Math/IR/Math.h>
 #include <mlir/Dialect/StandardOps/IR/Ops.h>
 #include <mlir/Transforms/DialectConversion.h>
 
@@ -792,9 +793,9 @@ void ArcToRustLoweringPass::runOnOperation() {
   patterns.insert<ArcCmpIOpLowering>(&getContext(), typeConverter);
   patterns.insert<StdCmpFOpLowering>(&getContext(), typeConverter);
 
-  patterns.insert<ArcUnaryFloatOpLowering<mlir::SinOp, ArcUnaryFloatOp::sin>>(
+  patterns.insert<ArcUnaryFloatOpLowering<math::SinOp, ArcUnaryFloatOp::sin>>(
       &getContext(), typeConverter);
-  patterns.insert<ArcUnaryFloatOpLowering<mlir::CosOp, ArcUnaryFloatOp::cos>>(
+  patterns.insert<ArcUnaryFloatOpLowering<math::CosOp, ArcUnaryFloatOp::cos>>(
       &getContext(), typeConverter);
   patterns.insert<ArcUnaryFloatOpLowering<arc::TanOp, ArcUnaryFloatOp::tan>>(
       &getContext(), typeConverter);
@@ -803,21 +804,21 @@ void ArcToRustLoweringPass::runOnOperation() {
       &getContext(), typeConverter);
   patterns.insert<ArcUnaryFloatOpLowering<arc::AcosOp, ArcUnaryFloatOp::acos>>(
       &getContext(), typeConverter);
-  patterns.insert<ArcUnaryFloatOpLowering<mlir::AtanOp, ArcUnaryFloatOp::atan>>(
+  patterns.insert<ArcUnaryFloatOpLowering<math::AtanOp, ArcUnaryFloatOp::atan>>(
       &getContext(), typeConverter);
 
   patterns.insert<ArcUnaryFloatOpLowering<arc::SinhOp, ArcUnaryFloatOp::sinh>>(
       &getContext(), typeConverter);
   patterns.insert<ArcUnaryFloatOpLowering<arc::CoshOp, ArcUnaryFloatOp::cosh>>(
       &getContext(), typeConverter);
-  patterns.insert<ArcUnaryFloatOpLowering<mlir::TanhOp, ArcUnaryFloatOp::tanh>>(
+  patterns.insert<ArcUnaryFloatOpLowering<math::TanhOp, ArcUnaryFloatOp::tanh>>(
       &getContext(), typeConverter);
 
-  patterns.insert<ArcUnaryFloatOpLowering<mlir::LogOp, ArcUnaryFloatOp::log>>(
+  patterns.insert<ArcUnaryFloatOpLowering<math::LogOp, ArcUnaryFloatOp::log>>(
       &getContext(), typeConverter);
-  patterns.insert<ArcUnaryFloatOpLowering<mlir::ExpOp, ArcUnaryFloatOp::exp>>(
+  patterns.insert<ArcUnaryFloatOpLowering<math::ExpOp, ArcUnaryFloatOp::exp>>(
       &getContext(), typeConverter);
-  patterns.insert<ArcUnaryFloatOpLowering<mlir::SqrtOp, ArcUnaryFloatOp::sqrt>>(
+  patterns.insert<ArcUnaryFloatOpLowering<math::SqrtOp, ArcUnaryFloatOp::sqrt>>(
       &getContext(), typeConverter);
 
   patterns.insert<IfOpLowering>(&getContext(), typeConverter);
