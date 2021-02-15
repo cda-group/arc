@@ -1,0 +1,16 @@
+[package]
+name = "arcorn"
+version = "0.0.0"
+authors = ["Klas Segeljakt <klasseg@kth.se>"]
+edition = "2018"
+description = "A bridge between MLIR and Arcon."
+license = "MIT"
+
+[dependencies]
+arcorn-macros = { version = "0.0.0", path = "./macros" }
+
+arcon         = { version = "0.1.3", git = "https://github.com/cda-group/arcon" }
+arcon_macros  = { version = "0.1.3", git = "https://github.com/cda-group/arcon" }
+shrinkwraprs  = { version = "0.3.0" }
+prost         = { version = "0.7" }
+derive_more   = { version = "0.99.11" }

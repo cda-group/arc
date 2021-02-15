@@ -38,6 +38,8 @@ members = [
   "arc-script-api/bridge",
   "arc-script-api/python",
   "arc-script-api/build",
+  "arc-script-api/arcorn",
+  "arc-script-api/arcorn/macros",
   "arc-script-repl",
   "arc-script-lsp",
   "arc-script-cli",
