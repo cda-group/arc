@@ -15,7 +15,7 @@ pub(super) fn lift(body: hir::Expr, ctx: &mut Context<'_>) -> hir::Expr {
     if body.fv(&mut vars).is_err() {
         body
     } else {
-        let (name, path) = ctx.info.fresh_name_path();
+        let (_, path) = ctx.info.fresh_name_path();
         let vars = vars.into_iter().collect::<Vec<_>>();
 
         let params = vars
@@ -31,7 +31,7 @@ pub(super) fn lift(body: hir::Expr, ctx: &mut Context<'_>) -> hir::Expr {
         let loc = body.loc;
 
         let item = hir::Item::new(
-            hir::ItemKind::Fun(hir::Fun::new(name, params, None, body, tv, otv)),
+            hir::ItemKind::Fun(hir::Fun::new(path, params, None, body, tv, otv)),
             loc,
         );
 

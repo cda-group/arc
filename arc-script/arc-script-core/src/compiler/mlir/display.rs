@@ -57,7 +57,7 @@ impl<'i> Display for Pretty<'i, mlir::Fun, Context<'_>> {
         write!(
             f,
             "func @{id}({params}) -> {ty} {body}",
-            id = item.name.pretty(fmt),
+            id = item.path.pretty(fmt),
             params = item.params.iter().map_pretty(
                 |x, f| write!(f, "{}: {}", x.pretty(fmt), x.tv.pretty(fmt)),
                 ", "
@@ -82,7 +82,7 @@ impl<'i> Display for Pretty<'i, mlir::State, Context<'_>> {
         write!(
             f,
             "state {name}: {ty} = {init};",
-            name = item.name.pretty(fmt),
+            name = item.path.pretty(fmt),
             ty = item.tv.pretty(fmt),
             init = item.init.pretty(fmt)
         )
@@ -95,7 +95,7 @@ impl<'i> Display for Pretty<'i, mlir::Alias, Context<'_>> {
         write!(
             f,
             "type {id} = {ty}",
-            id = item.name.pretty(fmt),
+            id = item.path.pretty(fmt),
             ty = item.tv.pretty(fmt),
         )
     }
@@ -114,7 +114,7 @@ impl<'i> Display for Pretty<'i, mlir::Task, Context<'_>> {
         write!(
             f,
             "task {name}({params}) ({iports}) -> ({oports}) {{{items}{s0}{s0}}}",
-            name = item.name.pretty(fmt),
+            name = item.path.pretty(fmt),
             params = item.params.iter().all_pretty(", ", fmt),
             iports = item.iports.pretty(fmt),
             oports = item.oports.pretty(fmt),
@@ -153,7 +153,7 @@ impl<'i> Display for Pretty<'i, mlir::Enum, Context<'_>> {
         write!(
             f,
             "arc.enum<{id}> of {variants}",
-            id = item.name.pretty(fmt),
+            id = item.path.pretty(fmt),
             variants = item
                 .variants
                 .iter()
@@ -168,7 +168,7 @@ impl<'i> Display for Pretty<'i, mlir::Variant, Context<'_>> {
         write!(
             f,
             "{}({})",
-            variant.name.pretty(fmt),
+            variant.path.pretty(fmt),
             variant.tv.pretty(fmt)
         )
     }

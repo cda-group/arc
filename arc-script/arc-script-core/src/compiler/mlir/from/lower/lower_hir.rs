@@ -24,7 +24,7 @@ impl Lower<Option<mlir::Item>, Context<'_>> for hir::Item {
 impl Lower<mlir::Fun, Context<'_>> for hir::Fun {
     fn lower(&self, ctx: &mut Context<'_>) -> mlir::Fun {
         mlir::Fun::new(
-            self.name,
+            self.path,
             self.params.iter().map(|p| p.lower(ctx)).collect::<Vec<_>>(),
             self.body.lower(ctx),
             self.body.tv,

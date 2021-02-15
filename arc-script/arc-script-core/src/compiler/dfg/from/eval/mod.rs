@@ -179,7 +179,8 @@ impl Expr {
                                 let item = ctx.hir.defs.get(x).unwrap();
                                 if let ItemKind::State(item) = &item.kind {
                                     let v = e.eval(ctx)?;
-                                    ctx.stack.insert(item.name.id, v);
+                                    let x = ctx.info.paths.resolve(item.path.id).name.id;
+                                    ctx.stack.insert(x, v);
                                 }
                             }
                             let frame = ctx.stack.take_frame();

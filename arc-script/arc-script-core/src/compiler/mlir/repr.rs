@@ -41,7 +41,7 @@ pub(crate) enum ItemKind {
 
 #[derive(New, Debug)]
 pub(crate) struct Fun {
-    pub(crate) name: Name,
+    pub(crate) path: Path,
     pub(crate) params: Vec<Var>,
     pub(crate) body: Region,
     pub(crate) tv: TypeId,
@@ -55,26 +55,26 @@ pub(crate) struct Var {
 
 #[derive(New, Debug)]
 pub(crate) struct Enum {
-    pub(crate) name: Name,
+    pub(crate) path: Path,
     pub(crate) variants: Vec<Variant>,
 }
 
 #[derive(New, Debug)]
 pub(crate) struct Variant {
-    pub(crate) name: Name,
+    pub(crate) path: Path,
     pub(crate) tv: TypeId,
     pub(crate) loc: Option<Loc>,
 }
 
 #[derive(New, Debug)]
 pub(crate) struct Alias {
-    pub(crate) name: Name,
+    pub(crate) path: Path,
     pub(crate) tv: TypeId,
 }
 
 #[derive(New, Debug)]
 pub(crate) struct State {
-    pub(crate) name: Name,
+    pub(crate) path: Path,
     pub(crate) tv: TypeId,
     pub(crate) init: Op,
 }
@@ -82,7 +82,7 @@ pub(crate) struct State {
 /// A task is a generic low-level primitive which resembles a node in the dataflow graph.
 #[derive(New, Debug)]
 pub(crate) struct Task {
-    pub(crate) name: Name,
+    pub(crate) path: Path,
     /// Type of the task.
     pub(crate) tv: TypeId,
     /// Side-input parameters to the task.

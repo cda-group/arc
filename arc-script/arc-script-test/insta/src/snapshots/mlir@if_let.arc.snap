@@ -1,15 +1,15 @@
 ---
-source: arc-script-test-insta/src/lib.rs
+source: arc-script-test/insta/src/lib.rs
 expression: s
-input_file: arc-script-test-insta/src/expect-pass/if_let.arc
+input_file: arc-script-test/insta/src/expect-pass/if_let.arc
 ---
 module @toplevel {
-    func @x_3(%y_0: si32) -> si32 {
+    func @crate_x_3(%y_0: si32) -> si32 {
         %x_4 = arc.constant 2 : si32
         %x_5 = arc.addi %y_0, %x_4 : si32
         return %x_5 : si32
     }
-    func @test() -> si32 {
+    func @crate_test() -> si32 {
         %x_6 = arc.constant 3 : si32
         %x_7 = arc.constant 5 : si32
         %x_8 = arc.constant 3 : si32

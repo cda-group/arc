@@ -14,7 +14,7 @@ pub(super) fn lower(
 ) -> hir::ExprKind {
     ctx.res.stack.push_frame();
 
-    let (name, path) = ctx.info.fresh_name_path();
+    let (_, path) = ctx.info.fresh_name_path();
     let (ps, cases) = super::pattern::lower_params(params, ctx);
     let body: Expr = body.lower(ctx);
 
@@ -24,7 +24,7 @@ pub(super) fn lower(
     let rtv = ctx.info.types.fresh();
 
     let item = hir::Item::new(
-        hir::ItemKind::Fun(hir::Fun::new(name, ps, None, body, tv, rtv)),
+        hir::ItemKind::Fun(hir::Fun::new(path, ps, None, body, tv, rtv)),
         loc,
     );
 

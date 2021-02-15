@@ -32,8 +32,9 @@ fn call(path: Path, args: Vec<Expr>, ftv: TypeId, rtv: TypeId) -> Expr {
 fn main_call(hir: &HIR, info: &mut Info) -> Option<Expr> {
     // Find the main function
     let main = info.names.intern("main").into();
+    let main = info.paths.intern_child(info.paths.root, main);
     let main_fun = hir.defs.iter().find_map(|(path, item)| match &item.kind {
-        ItemKind::Fun(item) if item.name == main => Some((path, item)),
+        ItemKind::Fun(item) if item.path.id == main => Some((path, item)),
         _ => None,
     });
     if let Some((path, fun)) = main_fun {

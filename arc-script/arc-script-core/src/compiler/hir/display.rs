@@ -60,10 +60,11 @@ impl<'i> Display for Pretty<'i, hir::Item, Context<'_>> {
 impl<'i> Display for Pretty<'i, hir::Fun, Context<'_>> {
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
         let Pretty(item, fmt) = self;
+        let name = fmt.ctx.info.paths.resolve(item.path.id).name;
         write!(
             f,
             "fun {id}({params}) -> {ty} {{{s1}{body}{s0}}}",
-            id = item.name.pretty(fmt),
+            id = name.pretty(fmt),
             params = item.params.iter().all_pretty(", ", fmt),
             ty = item.rtv.pretty(fmt),
             body = item.body.pretty(&fmt.indent()),
@@ -76,10 +77,11 @@ impl<'i> Display for Pretty<'i, hir::Fun, Context<'_>> {
 impl<'i> Display for Pretty<'i, hir::Extern, Context<'_>> {
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
         let Pretty(item, fmt) = self;
+        let name = fmt.ctx.info.paths.resolve(item.path.id).name;
         write!(
             f,
             "extern fun {id}({params}) -> {ty};",
-            id = item.name.pretty(fmt),
+            id = name.pretty(fmt),
             params = item.params.iter().all_pretty(", ", fmt),
             ty = item.rtv.pretty(fmt),
         )
@@ -117,10 +119,11 @@ impl<'i> Display for Pretty<'i, NameId, Context<'_>> {
 impl<'i> Display for Pretty<'i, hir::State, Context<'_>> {
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
         let Pretty(item, fmt) = self;
+        let name = fmt.ctx.info.paths.resolve(item.path.id).name;
         write!(
             f,
             "state {name}: {ty} = {init};",
-            name = item.name.pretty(fmt),
+            name = name.pretty(fmt),
             ty = item.tv.pretty(fmt),
             init = item.init.pretty(fmt)
         )
@@ -130,10 +133,11 @@ impl<'i> Display for Pretty<'i, hir::State, Context<'_>> {
 impl<'i> Display for Pretty<'i, hir::Alias, Context<'_>> {
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
         let Pretty(item, fmt) = self;
+        let name = fmt.ctx.info.paths.resolve(item.path.id).name;
         write!(
             f,
             "type {id} = {ty}",
-            id = item.name.pretty(fmt),
+            id = name.pretty(fmt),
             ty = item.tv.pretty(fmt),
         )
     }
@@ -149,10 +153,11 @@ impl<'i> Display for Pretty<'i, TypeId, Context<'_>> {
 impl<'i> Display for Pretty<'i, hir::Task, Context<'_>> {
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
         let Pretty(item, fmt) = self;
+        let name = fmt.ctx.info.paths.resolve(item.path.id).name;
         write!(
             f,
             "task {name}({params}) {ihub} -> {ohub} {{{items}{s1}{on}{s0}}}",
-            name = item.name.pretty(fmt),
+            name = name.pretty(fmt),
             params = item.params.iter().all_pretty(", ", fmt),
             ihub = item.ihub.pretty(fmt),
             ohub = item.ohub.pretty(fmt),
@@ -232,10 +237,11 @@ impl<'i> Display for Pretty<'i, PathId, Context<'_>> {
 impl<'i> Display for Pretty<'i, hir::Enum, Context<'_>> {
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
         let Pretty(item, fmt) = self;
+        let name = fmt.ctx.info.paths.resolve(item.path.id).name;
         write!(
             f,
             "enum {id} {{{variants}{s0}}}",
-            id = item.name.pretty(fmt),
+            id = name.pretty(fmt),
             variants = item.variants.iter().map_pretty(
                 |v, f| write!(
                     f,
@@ -252,12 +258,13 @@ impl<'i> Display for Pretty<'i, hir::Enum, Context<'_>> {
 
 impl<'i> Display for Pretty<'i, hir::Variant, Context<'_>> {
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
-        let Pretty(variant, fmt) = self;
-        let ty = fmt.ctx.info.types.resolve(variant.tv);
+        let Pretty(item, fmt) = self;
+        let ty = fmt.ctx.info.types.resolve(item.tv);
+        let name = fmt.ctx.info.paths.resolve(item.path.id).name;
         if let hir::TypeKind::Scalar(hir::ScalarKind::Unit) = ty.kind {
-            write!(f, "{}", variant.name.pretty(fmt),)
+            write!(f, "{}", name.pretty(fmt),)
         } else {
-            write!(f, "{}({})", variant.name.pretty(fmt), ty.pretty(fmt))
+            write!(f, "{}({})", name.pretty(fmt), ty.pretty(fmt))
         }
     }
 }

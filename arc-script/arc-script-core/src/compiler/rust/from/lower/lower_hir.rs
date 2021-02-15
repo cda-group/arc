@@ -30,7 +30,7 @@ impl Lower<(), Context<'_>> for hir::Item {
 
 impl Lower<(), Context<'_>> for hir::Enum {
     fn lower(&self, ctx: &mut Context<'_>) {
-        let name = self.name.lower(ctx);
+        let name = self.path.lower(ctx);
         let variants = self.variants.iter().map(|v| v.lower(ctx));
         let enum_item = syn::parse_quote! {
             pub enum #name {
@@ -43,7 +43,7 @@ impl Lower<(), Context<'_>> for hir::Enum {
 
 impl Lower<(), Context<'_>> for hir::Fun {
     fn lower(&self, ctx: &mut Context<'_>) {
-        let name = self.name.lower(ctx);
+        let name = self.path.lower(ctx);
         let rtv = self.rtv.lower(ctx);
         let body = self.body.lower(ctx);
         let params = self.params.iter().map(|p| p.lower(ctx));
@@ -58,7 +58,7 @@ impl Lower<(), Context<'_>> for hir::Fun {
 
 impl Lower<(), Context<'_>> for hir::Task {
     fn lower(&self, ctx: &mut Context<'_>) {
-        let cons_name = self.name.lower(ctx);
+        let cons_name = self.path.lower(ctx);
         let task_name = syn::Ident::new(
             &format!("Task{}", cons_name),
             proc_macro2::Span::call_site(),

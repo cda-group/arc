@@ -1,10 +1,10 @@
 ---
-source: arc-script-test-insta/src/lib.rs
+source: arc-script-test/insta/src/lib.rs
 expression: s
-input_file: arc-script-test-insta/src/expect-pass/nested-if.arc
+input_file: arc-script-test/insta/src/expect-pass/nested-if.arc
 ---
 module @toplevel {
-    func @test() -> si32 {
+    func @crate_test() -> si32 {
         %x_0 = arc.constant 65 : si32
         %x_1 = arc.constant 66 : si32
         %x_2 = arc.constant 67 : si32
