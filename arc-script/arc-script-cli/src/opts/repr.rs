@@ -1,15 +1,12 @@
 //! Types for deriving a Clap command-line argument parser.
 
-use derive_more::Constructor as New;
-use derive_more::From;
+pub use clap::ArgEnum;
+pub use clap::Clap;
 
 use std::path::PathBuf;
 
-pub use clap::{ArgEnum, Clap};
-use strum::EnumString;
-
 /// Specification of the Arc-script command-line interface (CLI).
-#[derive(Clap, Debug, Clone, Default)]
+#[derive(Clap, Debug, Clone)]
 pub struct Opt {
     /// Activate DEBUG mode
     #[clap(short, long)]
@@ -41,7 +38,7 @@ pub struct Opt {
 }
 
 /// Sub-commands of the CLI.
-#[derive(Clap, Debug, Clone, From)]
+#[derive(Clap, Debug, Clone)]
 pub enum SubCmd {
     /// Run in REPL mode
     #[cfg(feature = "repl")]
@@ -56,27 +53,25 @@ pub enum SubCmd {
     /// Compile and execute source file
     #[clap(name = "run")]
     Run(Run),
-}
 
-impl Default for SubCmd {
-    fn default() -> Self {
-        Self::Run(Run::default())
-    }
+    /// Generate command-line completions
+    #[clap(name = "completions")]
+    Completions(Completions),
 }
 
 /// Configuration parameters for the `run` subcommand.
-#[derive(Clap, Default, Debug, Clone, New)]
+#[derive(Clap, Debug, Clone)]
 pub struct Run {
-    /// Path to main file
+    /// Path to main file.
     #[clap(parse(from_os_str))]
     pub main: Option<PathBuf>,
-    /// Output mode: [AST|HIR|DFG|Rust|MLIR]
-    #[clap(long)]
+    /// Select output mode.
+    #[clap(long, short, arg_enum, value_name = "FORMAT")]
     pub output: Output,
 }
 
 /// An output mode.
-#[derive(ArgEnum, Debug, Clone, EnumString)]
+#[derive(ArgEnum, Debug, Clone)]
 pub enum Output {
     /// Output AST.
     AST,
@@ -86,12 +81,29 @@ pub enum Output {
     DFG,
     /// Output Rust.
     Rust,
-    /// Output MLIR.
+    /// Output MLIR (Default).
     MLIR,
 }
 
-impl Default for Output {
-    fn default() -> Self {
-        Self::MLIR
-    }
+/// Configuration parameters for the `completions` command.
+#[derive(Clap, Debug, Clone)]
+pub struct Completions {
+    /// Shell to generate completions for.
+    #[clap(long, arg_enum, value_name = "SHELL")]
+    pub shell: Shell,
+}
+
+/// Different types of shells.
+#[derive(ArgEnum, Debug, Clone)]
+pub enum Shell {
+    /// Bourne Again Shell (Default).
+    Bash,
+    /// Z Shell.
+    Zsh,
+    /// Fish Shell.
+    Fish,
+    /// Elvish Shell.
+    Elvish,
+    /// Power Shell.
+    PowerShell,
 }

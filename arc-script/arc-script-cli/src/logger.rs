@@ -1,4 +1,4 @@
-use crate::Opt;
+use crate::opts::Opt;
 use arc_script_core::prelude::Result;
 
 use tracing::Level;

@@ -1,6 +1,9 @@
-//! Conversions between `Opt` and `Mode`
+//! Conversions from `Opt` into `Mode`
 
-use crate::repr::{self as opt, Opt, Run, SubCmd};
+use crate::opts;
+use crate::opts::Opt;
+use crate::opts::Run;
+use crate::opts::SubCmd;
 use arc_script_core::prelude::modes::{Input, Mode, Output};
 use arc_script_core::prelude::Result;
 
@@ -12,11 +15,11 @@ impl From<Opt> for Result<Mode> {
         let mut mode = match opt.subcmd {
             SubCmd::Run(cmd) => Mode {
                 output: match cmd.output {
-                    opt::Output::AST => Output::AST,
-                    opt::Output::HIR => Output::HIR,
-                    opt::Output::DFG => Output::DFG,
-                    opt::Output::Rust => Output::Rust,
-                    opt::Output::MLIR => Output::MLIR,
+                    opts::Output::AST => Output::AST,
+                    opts::Output::HIR => Output::HIR,
+                    opts::Output::DFG => Output::DFG,
+                    opts::Output::Rust => Output::Rust,
+                    opts::Output::MLIR => Output::MLIR,
                 },
                 input: Input::File(cmd.main),
                 ..Default::default()
@@ -33,6 +36,7 @@ impl From<Opt> for Result<Mode> {
                 input: Input::Empty,
                 ..Default::default()
             },
+            SubCmd::Completions(_) => unreachable!(),
         };
         mode.profile = opt.profile;
         mode.verbosity = opt.verbosity;

@@ -4,23 +4,29 @@
 
 /// Module for logging debug information.
 pub mod logger;
-/// Module for representing CLI options.
-mod repr;
-/// Module for converting CLI options to compiler `Mode`s.
-mod from;
+mod opts;
 
-use crate::repr::Opt;
-use crate::repr::SubCmd;
+use crate::opts::Opt;
+use crate::opts::Shell;
+use crate::opts::SubCmd;
 use arc_script_core::prelude::compiler;
 use arc_script_core::prelude::modes::Mode;
 use arc_script_core::prelude::Result;
 
-use codespan_reporting::term::termcolor::{ColorChoice, StandardStream};
+use clap::App;
+use clap::Clap;
+use clap::IntoApp;
+use clap_generate::generate;
+use clap_generate::generators::Bash;
+use clap_generate::generators::Elvish;
+use clap_generate::generators::Fish;
+use clap_generate::generators::PowerShell;
+use clap_generate::generators::Zsh;
+use codespan_reporting::term::termcolor::ColorChoice;
+use codespan_reporting::term::termcolor::StandardStream;
 
 use std::io;
 use std::io::prelude::*;
-
-use clap::Clap;
 
 /// Command-line interface of `arc-script`
 ///
@@ -49,7 +55,8 @@ fn run() -> Result<Option<impl Drop>> {
             let mode: Result<Mode> = opt.into();
             arc_script_repl::start(mode?)?;
         }
-        _ => {
+        SubCmd::Completions(subcmd) => subcmd.generate(),
+        SubCmd::Run(_) => {
             let sink = StandardStream::stdout(ColorChoice::Always);
             let mode: Result<Mode> = opt.into();
             compiler::compile(mode?, sink);
