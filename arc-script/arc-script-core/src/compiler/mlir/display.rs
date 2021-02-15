@@ -205,7 +205,7 @@ impl<'i> Display for Pretty<'i, mlir::Op, Context<'_>> {
                     "{var} = {kind} {ty}",
                     var = var.pretty(fmt),
                     kind = op.kind.pretty(fmt),
-                    ty = var.tv.pretty(fmt)
+                    ty = op.kind.get_type_specifier(var.tv).pretty(fmt)
                 )
             }
             None => write!(f, "{kind}", kind = op.kind.pretty(fmt)),
