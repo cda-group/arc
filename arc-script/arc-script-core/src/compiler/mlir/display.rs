@@ -18,7 +18,10 @@ pub(crate) struct Context<'i> {
     info: &'i Info,
 }
 
-pub(crate) fn pretty<'i, 'j, Node>(node: &'i Node, info: &'j Info) -> Pretty<'i, Node, Context<'j>> {
+pub(crate) fn pretty<'i, 'j, Node>(
+    node: &'i Node,
+    info: &'j Info,
+) -> Pretty<'i, Node, Context<'j>> {
     node.to_pretty(Context::from(info))
 }
 
