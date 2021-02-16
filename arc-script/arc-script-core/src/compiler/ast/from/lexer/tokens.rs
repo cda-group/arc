@@ -75,6 +75,7 @@ pub(crate) enum LogosToken {
     #[token("box")] Box,
     #[token("bor")] Bor,
     #[token("bxor")] Bxor,
+    #[token("by")] By,
     #[token("crate")] Crate,
     #[token("else")] Else,
     #[token("emit")] Emit,

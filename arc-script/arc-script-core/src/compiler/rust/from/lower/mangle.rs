@@ -79,9 +79,10 @@ impl hir::TypeId {
                 });
                 ctx.buf.push_str("_End");
             }
-            hir::TypeKind::Tuple(_t) => {}
+            hir::TypeKind::Tuple(_t) => todo!(),
             hir::TypeKind::Unknown => {}
-            hir::TypeKind::Vector(_t) => {}
+            hir::TypeKind::Vector(_t) => todo!(),
+            hir::TypeKind::By(_t0, _1) => todo!(),
             hir::TypeKind::Err => {}
         }
     }

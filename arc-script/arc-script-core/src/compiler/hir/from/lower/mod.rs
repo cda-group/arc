@@ -454,6 +454,7 @@ impl Lower<TypeId, Context<'_>> for ast::Type {
             ast::TypeKind::Struct(fs)    => hir::TypeKind::Struct(fs.lower(ctx)),
             ast::TypeKind::Map(t0, t1)   => hir::TypeKind::Map(t0.lower(ctx), t1.lower(ctx)),
             ast::TypeKind::Boxed(ty)     => hir::TypeKind::Boxed(ty.lower(ctx)),
+            ast::TypeKind::By(t0, t1)    => hir::TypeKind::By(t0.lower(ctx), t1.lower(ctx)),
             ast::TypeKind::Err           => hir::TypeKind::Err,
         };
         ctx.info.types.intern(kind)

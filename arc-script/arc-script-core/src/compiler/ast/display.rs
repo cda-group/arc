@@ -401,6 +401,7 @@ impl<'i> Display for Pretty<'i, ast::BinOp, Context<'_>> {
             ast::BinOpKind::Band => write!(f, " band "),
             ast::BinOpKind::Bor  => write!(f, " bor "),
             ast::BinOpKind::Bxor => write!(f, " bxor "),
+            ast::BinOpKind::By   => write!(f, " by "),
             ast::BinOpKind::Pipe => write!(f, " |> "),
             ast::BinOpKind::Mut  => write!(f, " = "),
             ast::BinOpKind::Seq  => write!(f, ";{}", fmt),
@@ -475,6 +476,7 @@ impl<'i> Display for Pretty<'i, ast::Type, Context<'_>> {
             ast::TypeKind::Optional(ty)        => write!(f, "{}?", ty.pretty(fmt)),
             ast::TypeKind::Fun(args, ty)       => write!(f, "fun({}) -> {}", args.all_pretty(", ", fmt), ty.pretty(fmt)),
             ast::TypeKind::Boxed(ty)           => write!(f, "box {}", ty.pretty(fmt)),
+            ast::TypeKind::By(ty0, ty1)        => write!(f, "{} by {}", ty0.pretty(fmt), ty1.pretty(fmt)),
             ast::TypeKind::Err                 => write!(f, "☇"),
         }
     }

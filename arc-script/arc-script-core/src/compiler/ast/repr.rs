@@ -329,6 +329,7 @@ pub enum BinOpKind {
     Band,
     Bor,
     Bxor,
+    By,
     Div,
     Equ,
     Geq,
@@ -418,6 +419,7 @@ pub enum TypeKind {
     Tuple(Vec<Type>),
     Vector(Box<Type>),
     Boxed(Box<Type>),
+    By(Box<Type>, Box<Type>),
     Err,
 }
 

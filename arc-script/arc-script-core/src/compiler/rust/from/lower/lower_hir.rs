@@ -328,6 +328,11 @@ impl Lower<syn::Type, Context<'_>> for hir::Type {
                 let t = t.lower(ctx);
                 parse_quote!(Box<#t>)
             }
+            hir::TypeKind::By(t0, t1) => {
+                let t0 = t0.lower(ctx);
+                let t1 = t1.lower(ctx);
+                todo!()
+            }
             hir::TypeKind::Err => unreachable!(),
         }
     }
@@ -368,6 +373,7 @@ impl Lower<syn::BinOp, Context<'_>> for hir::BinOp {
             hir::BinOpKind::Band => parse_quote!(&),
             hir::BinOpKind::Bor  => parse_quote!(|),
             hir::BinOpKind::Bxor => parse_quote!(^),
+            hir::BinOpKind::By   => unreachable!(),
             hir::BinOpKind::Div  => parse_quote!(/),
             hir::BinOpKind::Equ  => parse_quote!(==),
             hir::BinOpKind::Geq  => parse_quote!(>=),

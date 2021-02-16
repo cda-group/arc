@@ -387,6 +387,7 @@ impl<'i> Display for Pretty<'i, hir::BinOp, Context<'_>> {
             hir::BinOpKind::Band => write!(f, " band "),
             hir::BinOpKind::Bor  => write!(f, " bor "),
             hir::BinOpKind::Bxor => write!(f, " bxor "),
+            hir::BinOpKind::By   => write!(f, " by "),
             hir::BinOpKind::Pipe => write!(f, " |> "),
             hir::BinOpKind::Mut  => write!(f, " = "),
             hir::BinOpKind::Seq  => write!(f, ";{}", fmt),
@@ -442,6 +443,7 @@ impl<'i> Display for Pretty<'i, hir::Type, Context<'_>> {
             hir::TypeKind::Optional(ty)   => write!(f, "{}?", ty.pretty(fmt)),
             hir::TypeKind::Fun(args, ty)  => write!(f, "fun({}) -> {}", args.all_pretty(", ", fmt), ty.pretty(fmt)),
             hir::TypeKind::Boxed(ty)      => write!(f, "box {}", ty.pretty(fmt)),
+            hir::TypeKind::By(ty0, ty1)   => write!(f, "{} by {}", ty0.pretty(fmt), ty1.pretty(fmt)),
             hir::TypeKind::Err            => write!(f, "☇"),
             hir::TypeKind::Unknown        => write!(f, "?"),
         }

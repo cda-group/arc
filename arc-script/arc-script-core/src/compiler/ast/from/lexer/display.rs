@@ -78,6 +78,7 @@ impl<'i> Display for Pretty<'i, Token, State<'_>> {
             Token::Bor        => write!(f, "bor"),
             Token::Box        => write!(f, "box"),
             Token::Break      => write!(f, "break"),
+            Token::By         => write!(f, "by"),
             Token::Crate      => write!(f, "crate"),
             Token::Bxor       => write!(f, "bxor"),
             Token::Else       => write!(f, "else"),

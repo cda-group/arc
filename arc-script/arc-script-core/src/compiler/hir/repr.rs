@@ -260,6 +260,7 @@ pub enum TypeKind {
     Unknown,
     Vector(TypeId),
     Boxed(TypeId),
+    By(TypeId, TypeId),
     Err,
 }
 
