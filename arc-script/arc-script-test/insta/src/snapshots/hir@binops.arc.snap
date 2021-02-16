@@ -139,6 +139,7 @@ fun main() -> () {
     let ne_f64_0: bool = c_f64_0 != c_f64_0 in
     let land_0: bool = c_bool_0 and c_bool_0 in
     let lor_0: bool = c_bool_0 or c_bool_0 in
+    let lxor_0: bool = c_bool_0 xor c_bool_0 in
     let band_i8_0: i8 = c_i8_0 band c_i8_0 in
     let band_i16_0: i16 = c_i16_0 band c_i16_0 in
     let band_i32_0: i32 = c_i32_0 band c_i32_0 in

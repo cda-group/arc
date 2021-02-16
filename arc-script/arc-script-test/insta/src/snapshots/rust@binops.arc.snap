@@ -140,6 +140,7 @@ pub fn main() -> () {
     let ne_f64_0: bool = c_f64_0 != c_f64_0;
     let land_0: bool = c_bool_0 + c_bool_0;
     let lor_0: bool = c_bool_0 || c_bool_0;
+    let lxor_0: bool = c_bool_0 ^ c_bool_0;
     let band_i8_0: i8 = c_i8_0 & c_i8_0;
     let band_i16_0: i16 = c_i16_0 & c_i16_0;
     let band_i32_0: i32 = c_i32_0 & c_i32_0;

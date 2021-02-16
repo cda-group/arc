@@ -374,7 +374,7 @@ impl Lower<syn::BinOp, Context<'_>> for hir::BinOp {
             hir::BinOpKind::Pow  => unreachable!(),
             hir::BinOpKind::Seq  => todo!(),
             hir::BinOpKind::Sub  => parse_quote!(-),
-            hir::BinOpKind::Xor  => todo!(),
+            hir::BinOpKind::Xor  => parse_quote!(^),
             hir::BinOpKind::Mut  => parse_quote!(=),
             hir::BinOpKind::Err  => unreachable!(),
         }

@@ -139,6 +139,7 @@ fun main() {
     let ne_f64: bool = c_f64 != c_f64 in
     let land: bool = c_bool and c_bool in
     let lor: bool = c_bool or c_bool in
+    let lxor: bool = c_bool xor c_bool in
     let band_i8: i8 = c_i8 band c_i8 in
     let band_i16: i16 = c_i16 band c_i16 in
     let band_i32: i32 = c_i32 band c_i32 in

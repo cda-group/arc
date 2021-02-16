@@ -274,6 +274,7 @@ impl<'i> Display for Pretty<'i, mlir::OpKind, Context<'_>> {
                     Neq  if tv.is_bool(info)  => write!(f, r#"std.cmpi "eq", {l}, {r} :"#, l = l, r = r),
                     And  if tv.is_bool(info)  => write!(f, r#"arc.and {l}, {r} :"#, l = l, r = r),
                     Or   if tv.is_bool(info)  => write!(f, r#"arc.or {l}, {r} :"#, l = l, r = r),
+                    Xor  if tv.is_bool(info)  => write!(f, r#"std.xor {l}, {r} :"#, l = l, r = r),
                     Band if tv.is_int(info)   => write!(f, r#"arc.and {l}, {r} :"#, l = l, r = r),
                     Bor  if tv.is_int(info)   => write!(f, r#"arc.or {l}, {r} :"#, l = l, r = r),
                     Bxor if tv.is_int(info)   => write!(f, r#"arc.xor {l}, {r} :"#, l = l, r = r),
