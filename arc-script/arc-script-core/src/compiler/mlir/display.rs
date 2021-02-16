@@ -237,94 +237,47 @@ impl<'i> Display for Pretty<'i, mlir::OpKind, Context<'_>> {
                 mlir::ConstKind::Unit        => todo!(),
             },
             mlir::OpKind::BinOp(tv, l, op, r) => {
-                let ty = fmt.ctx.info.types.resolve(*tv);
                 let l = l.pretty(fmt);
                 let r = r.pretty(fmt);
+                let info = fmt.ctx.info;
                 use hir::ScalarKind::*;
                 use hir::TypeKind::*;
-                match (&op.kind, ty.kind) {
-                    // Add
-                    (Add, Scalar(I8)) => write!(f, r#"arc.addi {l}, {r} :"#, l = l, r = r),
-                    (Add, Scalar(I16)) => write!(f, r#"arc.addi {l}, {r} :"#, l = l, r = r),
-                    (Add, Scalar(I32)) => write!(f, r#"arc.addi {l}, {r} :"#, l = l, r = r),
-                    (Add, Scalar(I64)) => write!(f, r#"arc.addi {l}, {r} :"#, l = l, r = r),
-                    (Add, Scalar(F32)) => write!(f, r#"std.addf {l}, {r} :"#, l = l, r = r),
-                    (Add, Scalar(F64)) => write!(f, r#"std.addf {l}, {r} :"#, l = l, r = r),
-                    // Sub
-                    (Sub, Scalar(I8)) => write!(f, r#"arc.subi {l},{r} :"#, l = l, r = r),
-                    (Sub, Scalar(I16)) => write!(f, r#"arc.subi {l},{r} :"#, l = l, r = r),
-                    (Sub, Scalar(I32)) => write!(f, r#"arc.subi {l},{r} :"#, l = l, r = r),
-                    (Sub, Scalar(I64)) => write!(f, r#"arc.subi {l},{r} :"#, l = l, r = r),
-                    (Sub, Scalar(F32)) => write!(f, r#"std.subf {l},{r} :"#, l = l, r = r),
-                    (Sub, Scalar(F64)) => write!(f, r#"std.subf {l},{r} :"#, l = l, r = r),
-                    // Mul
-                    (Mul, Scalar(I8)) => write!(f, r#"arc.muli {l},{r} :"#, l = l, r = r),
-                    (Mul, Scalar(I16)) => write!(f, r#"arc.muli {l},{r} :"#, l = l, r = r),
-                    (Mul, Scalar(I32)) => write!(f, r#"arc.muli {l},{r} :"#, l = l, r = r),
-                    (Mul, Scalar(I64)) => write!(f, r#"arc.muli {l},{r} :"#, l = l, r = r),
-                    (Mul, Scalar(F32)) => write!(f, r#"std.mulf {l},{r} :"#, l = l, r = r),
-                    (Mul, Scalar(F64)) => write!(f, r#"std.mulf {l},{r} :"#, l = l, r = r),
-                    // Div
-                    (Div, Scalar(I8)) => write!(f, r#"arc.divi {l},{r} :"#, l = l, r = r),
-                    (Div, Scalar(I16)) => write!(f, r#"arc.divi {l},{r} :"#, l = l, r = r),
-                    (Div, Scalar(I32)) => write!(f, r#"arc.divi {l},{r} :"#, l = l, r = r),
-                    (Div, Scalar(I64)) => write!(f, r#"arc.divi {l},{r} :"#, l = l, r = r),
-                    (Div, Scalar(F32)) => write!(f, r#"std.divf {l},{r} :"#, l = l, r = r),
-                    (Div, Scalar(F64)) => write!(f, r#"std.divf {l},{r} :"#, l = l, r = r),
-                    // Div
-                    (Pow, Scalar(I8)) => write!(f, r#"arc.powi {l},{r} :"#, l = l, r = r),
-                    (Pow, Scalar(I16)) => write!(f, r#"arc.powi {l},{r} :"#, l = l, r = r),
-                    (Pow, Scalar(I32)) => write!(f, r#"arc.powi {l},{r} :"#, l = l, r = r),
-                    (Pow, Scalar(I64)) => write!(f, r#"arc.powi {l},{r} :"#, l = l, r = r),
-                    (Pow, Scalar(F32)) => write!(f, r#"std.powf {l},{r} :"#, l = l, r = r),
-                    (Pow, Scalar(F64)) => write!(f, r#"std.powf {l},{r} :"#, l = l, r = r),
-                    // Lt
-                    (Lt, Scalar(I8)) => write!(f, r#"arc.cmpi "lt", {l}, {r} :"#, l = l, r = r),
-                    (Lt, Scalar(I16)) => write!(f, r#"arc.cmpi "lt", {l}, {r} :"#, l = l, r = r),
-                    (Lt, Scalar(I32)) => write!(f, r#"arc.cmpi "lt", {l}, {r} :"#, l = l, r = r),
-                    (Lt, Scalar(I64)) => write!(f, r#"arc.cmpi "lt", {l}, {r} :"#, l = l, r = r),
-                    (Lt, Scalar(F32)) => write!(f, r#"std.cmpf "olt", {l}, {r} :"#, l = l, r = r),
-                    (Lt, Scalar(F64)) => write!(f, r#"std.cmpf "olt", {l}, {r} :"#, l = l, r = r),
-                    // Leq
-                    (Leq, Scalar(I8)) => write!(f, r#"arc.cmpi "le", {l}, {r} :"#, l = l, r = r),
-                    (Leq, Scalar(I16)) => write!(f, r#"arc.cmpi "le", {l}, {r} :"#, l = l, r = r),
-                    (Leq, Scalar(I32)) => write!(f, r#"arc.cmpi "le", {l}, {r} :"#, l = l, r = r),
-                    (Leq, Scalar(I64)) => write!(f, r#"arc.cmpi "le", {l}, {r} :"#, l = l, r = r),
-                    (Leq, Scalar(F32)) => write!(f, r#"std.cmpf "ole", {l}, {r} :"#, l = l, r = r),
-                    (Leq, Scalar(F64)) => write!(f, r#"std.cmpf "ole", {l}, {r} :"#, l = l, r = r),
-                    // Gt
-                    (Gt, Scalar(I8)) => write!(f, r#"arc.cmpi "gt", {l}, {r} :"#, l = l, r = r),
-                    (Gt, Scalar(I16)) => write!(f, r#"arc.cmpi "gt", {l}, {r} :"#, l = l, r = r),
-                    (Gt, Scalar(I32)) => write!(f, r#"arc.cmpi "gt", {l}, {r} :"#, l = l, r = r),
-                    (Gt, Scalar(I64)) => write!(f, r#"arc.cmpi "gt", {l}, {r} :"#, l = l, r = r),
-                    (Gt, Scalar(F32)) => write!(f, r#"std.cmpf "ogt", {l}, {r} :"#, l = l, r = r),
-                    (Gt, Scalar(F64)) => write!(f, r#"std.cmpf "ogt", {l}, {r} :"#, l = l, r = r),
-                    // Geq
-                    (Geq, Scalar(I8)) => write!(f, r#"arc.cmpi "ge", {l}, {r} :"#, l = l, r = r),
-                    (Geq, Scalar(I16)) => write!(f, r#"arc.cmpi "ge", {l}, {r} :"#, l = l, r = r),
-                    (Geq, Scalar(I32)) => write!(f, r#"arc.cmpi "ge", {l}, {r} :"#, l = l, r = r),
-                    (Geq, Scalar(I64)) => write!(f, r#"arc.cmpi "ge", {l}, {r} :"#, l = l, r = r),
-                    (Geq, Scalar(F32)) => write!(f, r#"std.cmpf "oge", {l}, {r} :"#, l = l, r = r),
-                    (Geq, Scalar(F64)) => write!(f, r#"std.cmpf "oge", {l}, {r} :"#, l = l, r = r),
-                    // Equ
-                    (Equ, Scalar(I8)) => write!(f, r#"arc.cmpi "eq", {l}, {r} :"#, l = l, r = r),
-                    (Equ, Scalar(I16)) => write!(f, r#"arc.cmpi "eq", {l}, {r} :"#, l = l, r = r),
-                    (Equ, Scalar(I32)) => write!(f, r#"arc.cmpi "eq", {l}, {r} :"#, l = l, r = r),
-                    (Equ, Scalar(I64)) => write!(f, r#"arc.cmpi "eq", {l}, {r} :"#, l = l, r = r),
-                    (Equ, Scalar(F32)) => write!(f, r#"std.cmpf "oeq", {l}, {r} :"#, l = l, r = r),
-                    (Equ, Scalar(F64)) => write!(f, r#"std.cmpf "oeq", {l}, {r} :"#, l = l, r = r),
-                    // Neq
-                    (Neq, Scalar(I8)) => write!(f, r#"arc.cmpi "ne", {l}, {r} :"#, l = l, r = r),
-                    (Neq, Scalar(I16)) => write!(f, r#"arc.cmpi "ne", {l}, {r} :"#, l = l, r = r),
-                    (Neq, Scalar(I32)) => write!(f, r#"arc.cmpi "ne", {l}, {r} :"#, l = l, r = r),
-                    (Neq, Scalar(I64)) => write!(f, r#"arc.cmpi "ne", {l}, {r} :"#, l = l, r = r),
-                    (Neq, Scalar(F32)) => write!(f, r#"std.cmpf "one", {l}, {r} :"#, l = l, r = r),
-                    (Neq, Scalar(F64)) => write!(f, r#"std.cmpf "one", {l}, {r} :"#, l = l, r = r),
-                    // And
-                    (And, _) => write!(f, r#"arc.and {l}, {r} :"#, l = l, r = r),
-                    // Or
-                    (Or, _) => write!(f, r#"arc.or  {l}, {r} :"#, l = l, r = r),
-                    _ => unreachable!(),
+                match &op.kind {
+                    Add  if tv.is_int(info)   => write!(f, r#"arc.addi {l}, {r} :"#, l = l, r = r),
+                    Add  if tv.is_float(info) => write!(f, r#"std.addf {l}, {r} :"#, l = l, r = r),
+                    Sub  if tv.is_int(info)   => write!(f, r#"arc.subi {l}, {r} :"#, l = l, r = r),
+                    Sub  if tv.is_float(info) => write!(f, r#"std.subf {l}, {r} :"#, l = l, r = r),
+                    Mul  if tv.is_int(info)   => write!(f, r#"arc.muli {l}, {r} :"#, l = l, r = r),
+                    Mul  if tv.is_float(info) => write!(f, r#"std.mulf {l}, {r} :"#, l = l, r = r),
+                    Div  if tv.is_int(info)   => write!(f, r#"arc.divi {l}, {r} :"#, l = l, r = r),
+                    Div  if tv.is_float(info) => write!(f, r#"std.divf {l}, {r} :"#, l = l, r = r),
+                    Mod  if tv.is_int(info)   => write!(f, r#"arc.modf {l}, {r} :"#, l = l, r = r),
+                    Mod  if tv.is_float(info) => write!(f, r#"std.modf {l}, {r} :"#, l = l, r = r),
+                    Pow  if tv.is_int(info)   => write!(f, r#"arc.powi {l}, {r} :"#, l = l, r = r),
+                    Pow  if tv.is_float(info) => write!(f, r#"std.powf {l}, {r} :"#, l = l, r = r),
+                    Lt   if tv.is_int(info)   => write!(f, r#"arc.cmpi "lt", {l}, {r} :"#, l = l, r = r),
+                    Lt   if tv.is_float(info) => write!(f, r#"std.cmpf "olt", {l}, {r} :"#, l = l, r = r),
+                    Leq  if tv.is_int(info)   => write!(f, r#"arc.cmpi "le", {l}, {r} :"#, l = l, r = r),
+                    Leq  if tv.is_float(info) => write!(f, r#"std.cmpf "ole", {l}, {r} :"#, l = l, r = r),
+                    Gt   if tv.is_int(info)   => write!(f, r#"arc.cmpi "gt", {l}, {r} :"#, l = l, r = r),
+                    Gt   if tv.is_float(info) => write!(f, r#"std.cmpf "ogt", {l}, {r} :"#, l = l, r = r),
+                    Geq  if tv.is_int(info)   => write!(f, r#"arc.cmpi "ge", {l}, {r} :"#, l = l, r = r),
+                    Geq  if tv.is_float(info) => write!(f, r#"std.cmpf "oge", {l}, {r} :"#, l = l, r = r),
+                    Equ  if tv.is_int(info)   => write!(f, r#"arc.cmpi "eq", {l}, {r} :"#, l = l, r = r),
+                    Equ  if tv.is_float(info) => write!(f, r#"std.cmpf "oeq", {l}, {r} :"#, l = l, r = r),
+                    Equ  if tv.is_bool(info)  => write!(f, r#"std.cmpi "eq", {l}, {r} :"#, l = l, r = r),
+                    Neq  if tv.is_int(info)   => write!(f, r#"arc.cmpi "ne", {l}, {r} :"#, l = l, r = r),
+                    Neq  if tv.is_float(info) => write!(f, r#"std.cmpf "one", {l}, {r} :"#, l = l, r = r),
+                    Neq  if tv.is_bool(info)  => write!(f, r#"std.cmpi "eq", {l}, {r} :"#, l = l, r = r),
+                    And  if tv.is_bool(info)  => write!(f, r#"arc.and {l}, {r} :"#, l = l, r = r),
+                    Or   if tv.is_bool(info)  => write!(f, r#"arc.or {l}, {r} :"#, l = l, r = r),
+                    Band if tv.is_int(info)   => write!(f, r#"arc.and {l}, {r} :"#, l = l, r = r),
+                    Bor  if tv.is_int(info)   => write!(f, r#"arc.or {l}, {r} :"#, l = l, r = r),
+                    Bxor if tv.is_int(info)   => write!(f, r#"arc.xor {l}, {r} :"#, l = l, r = r),
+                    op => {
+                        let ty = info.types.resolve(*tv);
+                        unreachable!("Undefined op: {:?} for {:?}", op, ty)
+                    },
                 }
             }
             mlir::OpKind::Array(_) => todo!(),
