@@ -1,24 +1,17 @@
 ---
-source: arc-script-core/tests/insta/mod.rs
+source: arc-script-test/insta/src/lib.rs
 expression: s
-input_file: arc-script-core/tests/insta/snapshot-tests/fun.arc
+input_file: arc-script-test/insta/src/expect-pass/fun.arc
 ---
-error: Double use of value
-  ┌─ /home/klas/Workspace/arc/arc-script/arc-script-core/tests/insta/snapshot-tests/fun.arc:4:13
-  │
-4 │     let c = a > b in
-  │             ^
-5 │     if c {
-6 │         a
-  │         ^
-
-error: Double use of value
-  ┌─ /home/klas/Workspace/arc/arc-script/arc-script-core/tests/insta/snapshot-tests/fun.arc:4:17
-  │
-4 │     let c = a > b in
-  │                 ^
-  ·
-8 │         b
-  │         ^
-
+fun max(a_0: i32, b_0: i32) -> i32 {
+    let c_0: bool = a_0 > b_0 in
+    if c_0 {
+        a_0
+    } else {
+        b_0
+    }
+}
+fun test() -> i32 {
+    crate::max(1, 2)
+}
 
