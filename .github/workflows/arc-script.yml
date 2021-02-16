@@ -2,7 +2,7 @@ name: arc-script
 
 on:
   pull_request:
-    branches: [ mlir ]
+    branches: [ master ]
 
 env:
   CARGO_TERM_COLOR: always

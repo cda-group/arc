@@ -99,8 +99,7 @@ static LogicalResult processBuffer(raw_ostream &os,
   sourceMgr.AddNewSourceBuffer(std::move(ownedBuffer), SMLoc());
 
   // Parse the input file.
-  MLIRContext context;
-  registry.appendTo(context.getDialectRegistry());
+  MLIRContext context(registry);
 
   // If we are in verify diagnostics mode then we have a lot of work to do,
   // otherwise just perform the actions without worrying about it.
