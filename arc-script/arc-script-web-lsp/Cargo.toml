@@ -13,7 +13,7 @@ default = ["console_error_panic_hook"]
 
 [dependencies]
 arc-script-core          = { version = "=0.0.0", path = "../arc-script-core" }
-arc-script-lsp           = { version = "=0.0.0", path = "../arc-script-lsp", default-features = false, features = ["runtime-futures"] }
+arc-script-lsp           = { version = "=0.0.0", path = "../arc-script-lsp", default-features = false, features = ["runtime-smol"] }
 
 wasm-bindgen             = { version = "0.2.67" }
 js-sys                   = { version = "0.3.39" }
