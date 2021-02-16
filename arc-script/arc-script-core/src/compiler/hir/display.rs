@@ -387,7 +387,7 @@ impl<'i> Display for Pretty<'i, hir::BinOp, Context<'_>> {
             hir::BinOpKind::Bor  => write!(f, " bor "),
             hir::BinOpKind::Bxor => write!(f, " bxor "),
             hir::BinOpKind::Pipe => write!(f, " |> "),
-            hir::BinOpKind::Mut  => write!(f, " := "),
+            hir::BinOpKind::Mut  => write!(f, " = "),
             hir::BinOpKind::Seq  => write!(f, ";{}", fmt),
             hir::BinOpKind::Err  => write!(f, " ☇ "),
         }

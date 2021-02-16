@@ -50,7 +50,6 @@ extern {
         "^"   => Token::Caret,
         ":"   => Token::Colon,
         "::"  => Token::ColonColon,
-        ":="  => Token::ColonEq,
         ","   => Token::Comma,
         "$"   => Token::Dollar,
         "."   => Token::Dot,
@@ -333,7 +332,7 @@ Op0: BinOpKind = {
 
 Op1: BinOpKind = {
     "|>" => BinOpKind::Pipe,
-    ":=" => BinOpKind::Mut,
+    "=" => BinOpKind::Mut,
 };
 
 Op2: BinOpKind = {

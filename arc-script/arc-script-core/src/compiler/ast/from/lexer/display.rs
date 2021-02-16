@@ -45,7 +45,6 @@ impl<'i> Display for Pretty<'i, Token, State<'_>> {
             Token::Caret      => write!(f, "^"),
             Token::Colon      => write!(f, ":"),
             Token::ColonColon => write!(f, "::"),
-            Token::ColonEq    => write!(f, ":="),
             Token::Comma      => write!(f, ","),
             Token::Dollar     => write!(f, "$"),
             Token::Dot        => write!(f, "."),
