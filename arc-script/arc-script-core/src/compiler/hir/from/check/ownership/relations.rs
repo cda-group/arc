@@ -1,4 +1,5 @@
 use crate::compiler::hir;
+use crate::compiler::hir::TypeId;
 use crate::compiler::info::files::Loc;
 
 use arc_script_core_shared::Educe;
@@ -14,6 +15,9 @@ pub(crate) struct PlaceId(pub(crate) usize);
 #[educe(PartialEq, Eq, Hash, PartialOrd, Ord)]
 pub(crate) struct Place {
     id: PlaceId,
+    #[educe(PartialEq(ignore), Eq(ignore), Hash(ignore))]
+    #[educe(PartialOrd(ignore), Ord(ignore))]
+    pub(crate) tv: TypeId,
     #[educe(PartialEq(ignore), Eq(ignore), Hash(ignore))]
     #[educe(PartialOrd(ignore), Ord(ignore))]
     pub(crate) loc: Option<Loc>,
@@ -63,7 +67,7 @@ pub(crate) struct Ownership {
     use_counter: usize,
     branch_counter: usize,
     place_to_id: Map<PlaceKind, PlaceId>,
-    pub(crate) roots: Vec<(Place, hir::NameId)>,
+    pub(crate) roots: Vec<(hir::NameId, Place)>,
     pub(crate) parents: Vec<(Place, Place)>,
     pub(crate) uses: Vec<(Place, Use, Branch)>,
     pub(crate) jumps: Vec<(Branch, Branch)>,
@@ -93,7 +97,7 @@ impl Ownership {
         self.uses.push((p0, Use::new(id, loc), b0));
     }
     pub(crate) fn add_root(&mut self, p0: Place, x0: hir::Name) {
-        self.roots.push((p0, x0.id))
+        self.roots.push((x0.id, p0))
     }
     pub(crate) fn add_parent(&mut self, p0: Place, p1: Place) {
         self.parents.push((p0, p1))
@@ -141,21 +145,28 @@ impl hir::Expr {
             /// Place-expressions
             hir::ExprKind::Access(e, x) => {
                 if let Some(p0) = e.collect(b0, owner) {
-                    let p1 = Place::new(owner.intern_place(PlaceKind::Access(p0.id, *x)), self.loc);
+                    let p1 = Place::new(
+                        owner.intern_place(PlaceKind::Access(p0.id, *x)),
+                        self.tv,
+                        self.loc,
+                    );
                     owner.add_parent(p0, p1);
                     return Some(p1);
                 }
             }
             hir::ExprKind::Project(e, i) => {
                 if let Some(p0) = e.collect(b0, owner) {
-                    let p1 =
-                        Place::new(owner.intern_place(PlaceKind::Project(p0.id, *i)), self.loc);
+                    let p1 = Place::new(
+                        owner.intern_place(PlaceKind::Project(p0.id, *i)),
+                        self.tv,
+                        self.loc,
+                    );
                     owner.add_parent(p0, p1);
                     return Some(p1);
                 }
             }
             hir::ExprKind::Var(x) => {
-                let p = Place::new(owner.intern_place(PlaceKind::Var(*x)), self.loc);
+                let p = Place::new(owner.intern_place(PlaceKind::Var(*x)), self.tv, self.loc);
                 owner.add_root(p, *x);
                 return Some(p);
             }
