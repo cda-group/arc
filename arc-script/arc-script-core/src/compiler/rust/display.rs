@@ -1,32 +1,33 @@
 #![allow(clippy::useless_format)]
+use crate::compiler::pretty::*;
 use crate::compiler::rust;
-use crate::compiler::shared::display::format::Context;
-use crate::compiler::shared::display::pretty::*;
-use crate::compiler::shared::New;
+use arc_script_core_shared::cfg_if;
+use arc_script_core_shared::From;
+use arc_script_core_shared::New;
 
-use cfg_if::cfg_if;
-use derive_more::From;
 use quote::quote;
 
+use std::fmt;
+use std::fmt::Display;
+use std::fmt::Formatter;
 use std::fmt::Write as FmtWrite;
-use std::fmt::{self, Display, Formatter};
-use std::fs;
+
 use std::io;
-use std::io::BufRead;
+
 use std::io::Write;
-use std::path::Path;
+
 use std::process::Command;
 
 #[derive(New, From, Copy, Clone)]
-pub(crate) struct Stateless;
+pub(crate) struct Context;
 
-pub(crate) fn pretty<Node>(node: &Node) -> Pretty<'_, Node, Stateless> {
-    node.to_pretty(Stateless)
+pub(crate) fn pretty<Node>(node: &Node) -> Pretty<'_, Node, Context> {
+    node.to_pretty(Context)
 }
 
-impl<'i> Display for Pretty<'i, rust::Rust, Stateless> {
+impl<'i> Display for Pretty<'i, rust::Rust, Context> {
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
-        let Pretty(rs, ctx) = self;
+        let Pretty(rs, _ctx) = self;
         cfg_if! {
             if #[cfg(not(target_arch = "wasm32"))] {
                 write!(f, "{}", rustfmt(rs).unwrap())?;

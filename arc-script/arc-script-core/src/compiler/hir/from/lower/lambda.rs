@@ -1,10 +1,9 @@
 use super::Context;
 use crate::compiler::ast;
 use crate::compiler::hir;
-use crate::compiler::hir::{Expr, ExprKind};
+use crate::compiler::hir::Expr;
 use crate::compiler::info::files::Loc;
-use crate::compiler::info::paths::PathId;
-use crate::compiler::shared::Lower;
+use arc_script_core_shared::Lower;
 
 // Lambdas must for now be pure (cannot capture anything)
 pub(super) fn lower(
@@ -15,7 +14,7 @@ pub(super) fn lower(
 ) -> hir::ExprKind {
     ctx.res.stack.push_frame();
 
-    let (name, path) = ctx.info.fresh_name_path();
+    let (_, path) = ctx.info.fresh_name_path();
     let (ps, cases) = super::pattern::lower_params(params, ctx);
     let body: Expr = body.lower(ctx);
 
@@ -25,7 +24,7 @@ pub(super) fn lower(
     let rtv = ctx.info.types.fresh();
 
     let item = hir::Item::new(
-        hir::ItemKind::Fun(hir::Fun::new(name, ps, body, tv, rtv)),
+        hir::ItemKind::Fun(hir::Fun::new(path, ps, None, body, tv, rtv)),
         loc,
     );
 

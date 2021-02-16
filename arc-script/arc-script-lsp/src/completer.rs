@@ -325,7 +325,7 @@ pub const LATEX: &[(&str, &str)] = &[
     (r":interrobang:"                     ,  "⁉"),
     (r"\pppprime"                         ,  "⁗"),
     (r"\tricolon"                         ,  "⁝"),
-    (r"\nolinebreak"                      ,  "⁠"),
+    (r"\nolinebreak"                      ,  "\u{2060}"),
     (r"\^0"                               ,  "⁰"),
     (r"\^i"                               ,  "ⁱ"),
     (r"\^4"                               ,  "⁴"),

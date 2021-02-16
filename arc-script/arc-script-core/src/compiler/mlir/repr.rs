@@ -1,12 +1,13 @@
 use crate::compiler::ast;
-use crate::compiler::hir::{Name, Path, Type};
-use crate::compiler::info::diags::Diagnostic;
+use crate::compiler::hir::{Name, Path};
+
 use crate::compiler::info::files::Loc;
 use crate::compiler::info::types::TypeId;
-use crate::compiler::info::Info;
-use crate::compiler::shared::{Map, New, Set, VecMap};
 
-use educe::Educe;
+use arc_script_core_shared::OrdMap;
+use arc_script_core_shared::New;
+use arc_script_core_shared::VecMap;
+
 use half::bf16;
 use half::f16;
 use time::Duration;
@@ -19,9 +20,9 @@ pub(crate) struct MLIR {
     /// Top-level items
     pub(crate) items: Vec<Path>,
     /// Definitions of items.
-    pub(crate) defs: Map<Path, Item>,
-    /// Main function for generating the dataflow.
-    pub(crate) main: Fun,
+    pub(crate) defs: OrdMap<Path, Item>,
+    //    /// Main function for generating the dataflow.
+    //     pub(crate) main: Fun,
 }
 
 #[derive(New, Debug)]
@@ -40,7 +41,7 @@ pub(crate) enum ItemKind {
 
 #[derive(New, Debug)]
 pub(crate) struct Fun {
-    pub(crate) name: Name,
+    pub(crate) path: Path,
     pub(crate) params: Vec<Var>,
     pub(crate) body: Region,
     pub(crate) tv: TypeId,
@@ -54,26 +55,26 @@ pub(crate) struct Var {
 
 #[derive(New, Debug)]
 pub(crate) struct Enum {
-    pub(crate) name: Name,
+    pub(crate) path: Path,
     pub(crate) variants: Vec<Variant>,
 }
 
 #[derive(New, Debug)]
 pub(crate) struct Variant {
-    pub(crate) name: Name,
+    pub(crate) path: Path,
     pub(crate) tv: TypeId,
     pub(crate) loc: Option<Loc>,
 }
 
 #[derive(New, Debug)]
 pub(crate) struct Alias {
-    pub(crate) name: Name,
+    pub(crate) path: Path,
     pub(crate) tv: TypeId,
 }
 
 #[derive(New, Debug)]
 pub(crate) struct State {
-    pub(crate) name: Name,
+    pub(crate) path: Path,
     pub(crate) tv: TypeId,
     pub(crate) init: Op,
 }
@@ -81,7 +82,7 @@ pub(crate) struct State {
 /// A task is a generic low-level primitive which resembles a node in the dataflow graph.
 #[derive(New, Debug)]
 pub(crate) struct Task {
-    pub(crate) name: Name,
+    pub(crate) path: Path,
     /// Type of the task.
     pub(crate) tv: TypeId,
     /// Side-input parameters to the task.

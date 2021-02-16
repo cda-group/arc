@@ -1,10 +1,7 @@
-use crate::compiler::ast;
 use crate::compiler::hir;
 use crate::compiler::hir::Name;
-use crate::compiler::info::types::TypeId;
-use crate::compiler::shared::Map;
-use crate::compiler::shared::Set;
-use crate::compiler::shared::VecMap;
+use arc_script_core_shared::Map;
+use arc_script_core_shared::VecMap;
 
 use super::Context;
 
@@ -14,11 +11,11 @@ use super::Context;
 /// expression does not contain any control-flow constructs. If lifting fails, the
 /// original expression is returned.
 pub(super) fn lift(body: hir::Expr, ctx: &mut Context<'_>) -> hir::Expr {
-    let mut vars = Map::new();
+    let mut vars = Map::default();
     if body.fv(&mut vars).is_err() {
         body
     } else {
-        let (name, path) = ctx.info.fresh_name_path();
+        let (_, path) = ctx.info.fresh_name_path();
         let vars = vars.into_iter().collect::<Vec<_>>();
 
         let params = vars
@@ -34,7 +31,7 @@ pub(super) fn lift(body: hir::Expr, ctx: &mut Context<'_>) -> hir::Expr {
         let loc = body.loc;
 
         let item = hir::Item::new(
-            hir::ItemKind::Fun(hir::Fun::new(name, params, body, tv, otv)),
+            hir::ItemKind::Fun(hir::Fun::new(path, params, None, body, tv, otv)),
             loc,
         );
 

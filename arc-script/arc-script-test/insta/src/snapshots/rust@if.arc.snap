@@ -1,0 +1,26 @@
+---
+source: arc-script-test-insta/src/lib.rs
+expression: s
+input_file: arc-script-test-insta/src/expect-pass/if.arc
+---
+use arcon::prelude::*;
+pub fn test() -> i32 {
+    let c0_0: bool = true;
+    let c1_0: bool = false;
+    let v_0: i32 = 3i32;
+    if c0_0 {
+        if c1_0 {
+            v_0
+        } else {
+            v_0
+        }
+    } else {
+        if c1_0 {
+            v_0
+        } else {
+            v_0
+        }
+    }
+}
+
+

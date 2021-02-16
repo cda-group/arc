@@ -1,0 +1,13 @@
+[package]
+name    = "arc-script-test-integration"
+version = "0.0.0"
+authors = ["Klas Segeljakt <klasseg@kth.se>"]
+edition = "2018"
+license = "MIT"
+
+[dependencies]
+arc-script = { version = "=0.0.0", path = "../../" }
+arcon      = { git = "https://github.com/cda-group/arcon" }
+
+[build-dependencies]
+arc-script = { version = "=0.0.0", path = "../../" }

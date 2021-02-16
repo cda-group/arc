@@ -23,7 +23,7 @@ pub(crate) struct Tab(usize);
 
 impl Display for Tab {
     fn fmt(&self, f: &mut Formatter<'_>) -> Result {
-        for i in 0..self.0 {
+        for _i in 0..self.0 {
             write!(f, "    ")?;
         }
         Ok(())
@@ -86,7 +86,7 @@ impl<'a> Display for SymbolTableDebug<'a> {
 }
 
 fn indent(i: usize, f: &mut Formatter<'_>) -> Result {
-    for x in 0..i {
+    for _x in 0..i {
         write!(f, "    ")?;
     }
     Ok(())
@@ -109,11 +109,11 @@ impl<'a> Display for SymbolStackDebug<'a> {
                     )?;
                 }
             }
-            for (j, scope) in frame.iter().enumerate().rev() {
+            for (j, _scope) in frame.iter().enumerate().rev() {
                 writeln!(f, "{}}}", Tab(i + j + 2))?;
             }
         }
-        for (i, frame) in self.stack.iter().enumerate().rev() {
+        for (i, _frame) in self.stack.iter().enumerate().rev() {
             writeln!(f, "{}}}", Tab(i + 1))?;
         }
         writeln!(f, "}}")?;

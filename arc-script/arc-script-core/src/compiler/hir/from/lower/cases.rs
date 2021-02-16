@@ -2,7 +2,7 @@ use super::Context;
 use crate::compiler::ast;
 use crate::compiler::hir;
 use crate::compiler::hir::Name;
-use crate::compiler::shared::New;
+use arc_script_core_shared::Shrinkwrap;
 
 use pattern_compiler::CfgNodeKind;
 use pattern_compiler::EdgeRef;
@@ -10,12 +10,9 @@ use pattern_compiler::ExpandedClauseNodes;
 use pattern_compiler::PatternCfg as PatCfg;
 use pattern_compiler::PatternProvider as PatProvider;
 use petgraph_4::graph::NodeIndex as PatternNodeKey;
-use petgraph_4::graph::NodeIndex as CfgNodeKey;
+
 use petgraph_4::Direction;
 use petgraph_4::Graph;
-use shrinkwraprs::Shrinkwrap;
-
-use std::fmt;
 
 /// This module is compiles patterns into more basic expressions while also performing
 /// exhaustiveness checks. Patterns are a form of syntactic sugar which can occur
@@ -106,7 +103,7 @@ use std::fmt;
 ///         else
 ///             e3
 /// ```
-pub(crate) fn lower_cases(cases: &[ast::Case], ctx: &mut Context<'_>) -> hir::ExprKind {
+pub(crate) fn lower_cases(cases: &[ast::Case], _ctx: &mut Context<'_>) -> hir::ExprKind {
     let mut pattern_tree = PatternTree::default();
     for case in cases {
         let clause = pattern_tree.construct_tree(&case.pat);
@@ -114,18 +111,18 @@ pub(crate) fn lower_cases(cases: &[ast::Case], ctx: &mut Context<'_>) -> hir::Ex
     }
     println!("{:#?}", pattern_tree);
     let decision_tree = pattern_compiler::to_decision_tree(&mut pattern_tree);
-    let root = decision_tree.entry;
+    let _root = decision_tree.entry;
     println!("{:#?}", decision_tree);
     //     let expr = convert_to_expr(decision_tree.entry);
     for node_index in decision_tree.graph.node_indices() {
         let node = &decision_tree.graph[node_index];
         match node {
             CfgNodeKind::Root => {}
-            CfgNodeKind::Match(x) => {}
+            CfgNodeKind::Match(_x) => {}
             CfgNodeKind::Fail => {}
-            CfgNodeKind::Leaf(x) => {}
+            CfgNodeKind::Leaf(_x) => {}
         }
-        if let Some(bindings) = decision_tree.leaf_bindings.get(&node_index) {}
+        if let Some(_bindings) = decision_tree.leaf_bindings.get(&node_index) {}
     }
     todo!()
 }
@@ -148,7 +145,7 @@ impl PatternTree {
             }
             ast::PatKind::Var(x) => self.pattern.add_node(PatternNodeKind::Var(*x)),
             ast::PatKind::Ignore => self.pattern.add_node(PatternNodeKind::Ignore),
-            ast::PatKind::Val(v) => self.pattern.add_node(PatternNodeKind::Val),
+            ast::PatKind::Val(_v) => self.pattern.add_node(PatternNodeKind::Val),
             ast::PatKind::Or(p1, p2) => {
                 let node = self.pattern.add_node(PatternNodeKind::Or);
                 let child1 = self.construct_tree(p1);

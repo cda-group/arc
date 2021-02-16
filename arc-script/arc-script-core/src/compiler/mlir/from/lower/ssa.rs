@@ -3,11 +3,11 @@ use crate::compiler::hir::Name;
 use crate::compiler::hir::{
     Expr, ExprKind, ItemKind, Param, ParamKind, ScalarKind, TypeKind, UnOp, UnOpKind, HIR,
 };
-use crate::compiler::info::names::NameInterner;
-use crate::compiler::info::types::TypeInterner;
-use crate::compiler::info::Info;
+
 use crate::compiler::mlir::{self, Block, ConstKind, Op, OpKind, Region, Var};
-use crate::compiler::shared::{Lower, Map, New, VecMap};
+use arc_script_core_shared::Lower;
+use arc_script_core_shared::Map;
+use arc_script_core_shared::VecMap;
 
 type Env = Map<Name, Var>;
 
@@ -140,7 +140,7 @@ impl SSA<Var> for Expr {
                 OpKind::Loop(x)
             }
             ExprKind::Break => OpKind::Break,
-            ExprKind::Return(e) => todo!(),
+            ExprKind::Return(_e) => todo!(),
             ExprKind::Todo => todo!(),
             ExprKind::Err => unreachable!(),
         };

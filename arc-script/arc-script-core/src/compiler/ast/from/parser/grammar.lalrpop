@@ -201,6 +201,7 @@ Spanned<T>:        Spanned<T> = @L T @R => Spanned::new(file, <>);
 
 Field<T>: Field<T> = Spanned<(<Name> ":" <T>)>         => Field::from(<>);
 Variant:  Variant  = Spanned<(<Name> <Paren<Type0>?>)> => Variant::from(<>);
+Port:     Port     = Spanned<(<Name> <Paren<Type0>>)>  => Port::from(<>);
 Case:     Case     = Spanned<(<Pat0> "=>" <Expr0>)>    => Case::from(<>);
 Name:     Name     = Spanned<NameId>                   => Name::from(<>);
 Path:     Path     = Spanned<PathId>                   => Path::from(<>);
@@ -253,21 +254,20 @@ Setting: Setting = Spanned<SettingKind> => Setting::from(<>);
 
 SettingKind: SettingKind = {
     Name Paren<LitKind> => SettingKind::Calibrate(<>),
-    Name              => SettingKind::Activate(<>),
+    Name                => SettingKind::Activate(<>),
 };
 
 //=============================================================================
 // Items
 //=============================================================================
 
-Params  = ParenVec<Param>;
-Ports   = AngleVec<Variant>;
+Params = ParenVec<Param>;
 
 Hub: Hub = Spanned<HubKind> => Hub::from(<>);
 
 HubKind: HubKind = {
-    Ports => HubKind::Tagged(<>),
-    Type0 => HubKind::Single(<>),
+    ParenVec<Port> => HubKind::Tagged(<>),
+    Paren<Type0>   => HubKind::Single(<>),
 };
 
 Item: Item = Spanned<Swap<Settings?, ItemKind>> => Item::from(<>);
@@ -294,14 +294,14 @@ TaskItemKind: TaskItemKind = {
     Err   => TaskItemKind::Err,
 };
 
-Extern: Extern = "extern" "fun" <Name> <Params> "->" <Type0> ";"                => Extern::new(<>);
-Fun:    Fun    = "fun" <Name> <Params> <("->" <Type0>)?> <Brace<Expr0>>         => Fun::new(<>);
-Alias:  Alias  = "type" <Name> "=" <Type0>                                      => Alias::new(<>);
-Enum:   Enum   = "enum" <Name> <Brace<Vec<Variant>>>                            => Enum::new(<>);
-Use:    Use    = "use" <Path> <("as" <Name>)?>                                  => Use::new(<>);
-Task:   Task   = "task" <Name> <Params> <Hub> "->" <Hub> <Brace<TaskItem*>> => Task::new(<>);
-On:     On     = "on" <Handler>                                                 => On::new(<>);
-State:  State  = "state" <Name> "=" <Expr0>                                     => State::new(<>);
+Extern: Extern = "extern" "fun" <Name> <Params> "->" <Type0> ";"                  => Extern::new(<>);
+Fun:    Fun    = "fun" <Name> <Params> <Params?> <("->" <Type0>)?> <Brace<Expr0>> => Fun::new(<>);
+Alias:  Alias  = "type" <Name> "=" <Type0>                                        => Alias::new(<>);
+Enum:   Enum   = "enum" <Name> <Brace<Vec<Variant>>>                              => Enum::new(<>);
+Use:    Use    = "use" <Path> <("as" <Name>)?>                                    => Use::new(<>);
+Task:   Task   = "task" <Name> <Params> <Hub> "->" <Hub> <Brace<TaskItem*>>       => Task::new(<>);
+On:     On     = "on" <Handler>                                                   => On::new(<>);
+State:  State  = "state" <Name> "=" <Expr0>                                       => State::new(<>);
 
 Handler = {
     Brace<VecNonEmpty<Case>>,

@@ -1,6 +1,6 @@
 [package]
 name = "arc-script-web-lsp"
-version = "0.1.0"
+version = "0.0.0"
 authors = ["Klas Segeljakt <klasseg@kth.se>"]
 edition = "2018"
 license = "MIT"
@@ -12,8 +12,8 @@ crate-type = ["cdylib", "rlib"]
 default = ["console_error_panic_hook"]
 
 [dependencies]
-arc-script-core          = { path = "../arc-script-core" }
-arc-script-lsp           = { path = "../arc-script-lsp", default-features = false, features = ["runtime-futures"] }
+arc-script-core          = { version = "=0.0.0", path = "../arc-script-core" }
+arc-script-lsp           = { version = "=0.0.0", path = "../arc-script-lsp", default-features = false, features = ["runtime-futures"] }
 
 wasm-bindgen             = { version = "0.2.67" }
 js-sys                   = { version = "0.3.39" }

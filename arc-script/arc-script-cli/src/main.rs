@@ -2,22 +2,31 @@
 
 #![allow(unused)]
 
-mod from;
-mod repr;
+/// Module for logging debug information.
+pub mod logger;
+mod opts;
 
+use crate::opts::Opt;
+use crate::opts::Shell;
+use crate::opts::SubCmd;
 use arc_script_core::prelude::compiler;
-use arc_script_core::prelude::logger;
 use arc_script_core::prelude::modes::Mode;
 use arc_script_core::prelude::Result;
 
-use crate::repr::{Opt, SubCmd};
-
-use codespan_reporting::term::termcolor::{ColorChoice, StandardStream};
+use clap::App;
+use clap::Clap;
+use clap::IntoApp;
+use clap_generate::generate;
+use clap_generate::generators::Bash;
+use clap_generate::generators::Elvish;
+use clap_generate::generators::Fish;
+use clap_generate::generators::PowerShell;
+use clap_generate::generators::Zsh;
+use codespan_reporting::term::termcolor::ColorChoice;
+use codespan_reporting::term::termcolor::StandardStream;
 
 use std::io;
 use std::io::prelude::*;
-
-use clap::Clap;
 
 /// Command-line interface of `arc-script`
 ///
@@ -25,11 +34,15 @@ use clap::Clap;
 ///
 /// Returns an `Err` if either the `logger` of `Mode` fails to initialize.
 pub fn main() -> Result<()> {
+    run().and(Ok(()))
+}
+
+/// Wrapper on top of main which ensures that `guard` is dropped when the
+/// function returns.
+fn run() -> Result<Option<impl Drop>> {
     let mut opt = Opt::parse();
 
-    if opt.debug {
-        logger::init(opt.verbosity)?;
-    }
+    let guard = logger::init(&opt)?;
 
     match opt.subcmd {
         #[cfg(feature = "lsp")]
@@ -42,12 +55,13 @@ pub fn main() -> Result<()> {
             let mode: Result<Mode> = opt.into();
             arc_script_repl::start(mode?)?;
         }
-        _ => {
+        SubCmd::Completions(subcmd) => subcmd.generate(),
+        SubCmd::Run(_) => {
             let sink = StandardStream::stdout(ColorChoice::Always);
             let mode: Result<Mode> = opt.into();
             compiler::compile(mode?, sink);
         }
     }
 
-    Ok(())
+    Ok(guard)
 }

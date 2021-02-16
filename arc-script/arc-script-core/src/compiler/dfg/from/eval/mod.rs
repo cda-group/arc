@@ -2,94 +2,59 @@
 pub(crate) mod stack;
 /// Module for representing the possible values an Arc-Script can evaluate into.
 pub(crate) mod value;
+/// Module for representing control-flow constructs.
+pub(crate) mod control;
 
+use crate::compiler::dfg::from::eval::control::EvalResult;
+use crate::compiler::dfg::from::eval::control::{Control, ControlKind, Unwind};
 use crate::compiler::dfg::from::eval::stack::Stack;
 use crate::compiler::dfg::from::eval::value::{Value, ValueKind};
-use crate::compiler::dfg::{EdgeData, Node, NodeData, Port, DFG};
+use crate::compiler::dfg::{EdgeData, Node, NodeData, DFG};
 use crate::compiler::hir::{
     self, BinOp, BinOpKind, BinOpKind::*, Expr, ExprKind, ItemKind, LitKind, ParamKind, TypeKind,
     UnOp, UnOpKind, UnOpKind::*, HIR,
 };
-use crate::compiler::info::diags::DiagInterner;
-use crate::compiler::info::diags::Error;
-use crate::compiler::info::files::Loc;
-use crate::compiler::info::names::NameId;
-use crate::compiler::info::paths::PathId;
+
 use crate::compiler::info::Info;
-use crate::compiler::shared::{Map, New};
+use arc_script_core_shared::New;
 
 use half::{bf16, f16};
 
-use std::collections::HashMap;
-
 /// Context needed while evaluating the `HIR`.
 #[derive(New)]
-pub(super) struct Context<'a> {
+pub(crate) struct Context<'a> {
     stack: &'a mut Stack,
     dfg: &'a mut DFG,
     hir: &'a HIR,
     info: &'a Info,
 }
 
-/// Trait for panicking the interpreter through unwinding the stackframes.
-trait Unwind<T> {
-    /// Unwinds if the value contained inside is a `None` or `Err`.
-    fn or_unwind(self, loc: Option<Loc>) -> Result<T, ControlFlowKind>;
-}
-
-impl<T> Unwind<T> for Option<T> {
-    fn or_unwind(self, loc: Option<Loc>) -> Result<T, ControlFlowKind> {
-        self.map_or(ControlFlow(Panic(loc)), Ok)
-    }
-}
-
-/// Result of evaluating a script.
-pub(super) type EvalResult = Result<Value, ControlFlowKind>;
-
-/// Control-flow is managed through Rust-exceptions.
-pub(super) use std::result::Result::Err as ControlFlow;
-
-/// Different kinds of control-flow instructions (exceptions).
-pub(super) enum ControlFlowKind {
-    /// Returns value by popping the current stack-frame.
-    Return(Value),
-    /// Breaks value out of the current loop.
-    Break(Value),
-    /// Panics and unwinds all stack-frames.
-    Panic(Option<Loc>),
-}
-
-use ControlFlowKind::*;
-
-/// A Big-Step evaluator.
-pub(super) trait BigStep {
+impl Expr {
     /// Evaluates an expression `Self` in the context `ctx`.
-    fn eval(&self, ctx: &mut Context<'_>) -> EvalResult;
-}
-
-impl BigStep for Expr {
-    fn eval(&self, ctx: &mut Context<'_>) -> EvalResult {
+    pub(crate) fn eval(&self, ctx: &mut Context<'_>) -> EvalResult {
+        use ControlKind::*;
         use ValueKind::*;
         let kind = match &self.kind {
+            #[rustfmt::skip]
             ExprKind::Lit(kind) => match kind {
-                LitKind::U8(v) => U8(*v),
-                LitKind::U16(v) => U16(*v),
-                LitKind::U32(v) => U32(*v),
-                LitKind::U64(v) => U64(*v),
-                LitKind::I8(v) => I8(*v),
-                LitKind::I16(v) => I16(*v),
-                LitKind::I32(v) => I32(*v),
-                LitKind::I64(v) => I64(*v),
+                LitKind::U8(v)   => U8(*v),
+                LitKind::U16(v)  => U16(*v),
+                LitKind::U32(v)  => U32(*v),
+                LitKind::U64(v)  => U64(*v),
+                LitKind::I8(v)   => I8(*v),
+                LitKind::I16(v)  => I16(*v),
+                LitKind::I32(v)  => I32(*v),
+                LitKind::I64(v)  => I64(*v),
                 LitKind::Bf16(v) => Bf16(*v),
-                LitKind::F16(v) => F16(*v),
-                LitKind::F32(v) => F32(*v),
-                LitKind::F64(v) => F64(*v),
+                LitKind::F16(v)  => F16(*v),
+                LitKind::F32(v)  => F32(*v),
+                LitKind::F64(v)  => F64(*v),
                 LitKind::Bool(v) => Bool(*v),
-                LitKind::Unit => Unit,
+                LitKind::Unit    => Unit,
                 LitKind::Char(v) => Char(*v),
-                LitKind::Str(v) => Str(v.clone()),
+                LitKind::Str(v)  => Str(v.clone()),
                 LitKind::Time(_) => todo!(),
-                LitKind::Err => unreachable!(),
+                LitKind::Err     => unreachable!(),
             },
             ExprKind::Var(x) => return Ok(ctx.stack.lookup(x.id).clone()),
             ExprKind::Item(x) => Item(*x),
@@ -105,7 +70,7 @@ impl BigStep for Expr {
                 }
                 ParamKind::Err => unreachable!(),
             },
-            ExprKind::Array(es) => todo!(),
+            ExprKind::Array(_es) => todo!(),
             ExprKind::Struct(fs) => Struct(
                 fs.iter()
                     .map(|(x, e)| Ok((x.id, e.eval(ctx)?)))
@@ -120,23 +85,25 @@ impl BigStep for Expr {
                         if x1 == *x0 {
                             return Ok(*v);
                         } else {
-                            return ControlFlow(Panic(self.loc))?;
+                            return Control(Panic(self.loc))?;
                         }
                     }
-                    _ => return ControlFlow(Panic(self.loc))?,
+                    _ => return Control(Panic(self.loc))?,
                 }
             }
+            /// TODO: This is UB if e0 has side-effects.
+            /// Handle that in the type-checker.
             ExprKind::Is(x0, e0) => {
                 let v0 = e0.eval(ctx)?;
                 match v0.kind {
-                    Variant(x1, v) => {
+                    Variant(x1, _) => {
                         if x1 == *x0 {
                             Bool(true)
                         } else {
-                            return ControlFlow(Panic(self.loc))?;
+                            return Control(Panic(self.loc))?;
                         }
                     }
-                    _ => return ControlFlow(Panic(self.loc))?,
+                    _ => return Control(Panic(self.loc))?,
                 }
             }
             ExprKind::If(e0, e1, e2) => {
@@ -149,14 +116,14 @@ impl BigStep for Expr {
             }
             ExprKind::Loop(e) => loop {
                 let v = e.eval(ctx);
-                if let ControlFlow(Break(v)) = v {
+                if let Control(Break(v)) = v {
                     return Ok(v);
                 } else {
                     v?;
                 }
             },
-            ExprKind::Break => return ControlFlow(Break(Value::new(Unit, self.tv))),
-            ExprKind::Return(e) => return ControlFlow(Return(e.eval(ctx)?)),
+            ExprKind::Break => return Control(Break(Value::new(Unit, self.tv))),
+            ExprKind::Return(e) => return Control(Return(e.eval(ctx)?)),
             ExprKind::UnOp(op, e) => {
                 let v = e.eval(ctx)?;
                 match &op.kind {
@@ -191,7 +158,7 @@ impl BigStep for Expr {
                                 }
                             }
                             let v = item.body.eval(ctx);
-                            if let ControlFlow(Return(v)) = v {
+                            if let Control(Return(v)) = v {
                                 ctx.stack.pop_frame();
                                 return Ok(v);
                             } else {
@@ -212,10 +179,17 @@ impl BigStep for Expr {
                                 let item = ctx.hir.defs.get(x).unwrap();
                                 if let ItemKind::State(item) = &item.kind {
                                     let v = e.eval(ctx)?;
-                                    ctx.stack.insert(item.name.id, v);
+                                    let x = ctx.info.paths.resolve(item.path.id).name.id;
+                                    ctx.stack.insert(x, v);
                                 }
                             }
                             let frame = ctx.stack.take_frame();
+                            // Streams and tasks are represented as references (ids) to edges and
+                            // nodes respectively in the dataflow graph. This means that instances
+                            // of both can be re-used in different parts of the dataflow graph. In
+                            // consequence, streams can be multiplexed into and out of tasks.
+                            // Another option is to represent streams and tasks as values instead
+                            // of references. This would prevent the possibility of multiplexing.
                             let id = ctx.dfg.add_node(NodeData::new(x, frame));
                             Task(x, Node::new(id))
                         }
@@ -268,18 +242,18 @@ impl BigStep for Expr {
                 _ => unreachable!(),
             },
             ExprKind::Access(e, x) => match e.eval(ctx)?.kind {
-                Struct(efs) => return Ok(efs.get(&x.id).unwrap().clone()),
+                Struct(vfs) => return Ok(vfs.get(&x.id).unwrap().clone()),
                 _ => unreachable!(),
             },
             ExprKind::Project(e, i) => match e.eval(ctx)?.kind {
-                Tuple(es) => return Ok(es.get(i.id).unwrap().clone()),
+                Tuple(vs) => return Ok(vs.get(i.id).unwrap().clone()),
                 _ => unreachable!(),
             },
             ExprKind::Emit(e) => match e.eval(ctx)?.kind {
-                Variant(x0, v) => todo!(),
+                Variant(_x0, _v) => todo!(),
                 _ => unreachable!(),
             },
-            ExprKind::Log(e) => todo!(),
+            ExprKind::Log(_e) => todo!(),
             // Short-circuit
             ExprKind::BinOp(e0, op, e1) if matches!(op.kind, And) => match e0.eval(ctx)?.kind {
                 v0 @ Bool(false) => v0,
@@ -407,7 +381,7 @@ impl BigStep for Expr {
                     (F64(l),  Leq, F64(r))  => Bool(l <= r),
                     // Seq
                     (_, Seq, r) => r,
-                    (l, Pipe, r) => todo!(),
+                    (_l, Pipe, _r) => todo!(),
                     _ => unreachable!(),
                 }
             }

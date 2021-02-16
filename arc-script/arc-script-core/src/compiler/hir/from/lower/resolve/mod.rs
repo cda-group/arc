@@ -4,9 +4,9 @@ mod table;
 
 use crate::compiler::ast::{self, AST};
 use crate::compiler::hir::{self, Name};
-use crate::compiler::info::names::NameId;
-use crate::compiler::info::paths::{PathBuf, PathId};
-use crate::compiler::info::{self, Info};
+
+use crate::compiler::info::paths::PathId;
+use crate::compiler::info::Info;
 
 use stack::SymbolStack;
 use table::SymbolTable;

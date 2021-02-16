@@ -1,31 +1,27 @@
 use crate::compiler::ast::from::lexer::Token;
 use crate::compiler::ast::Name;
-use crate::compiler::hir;
+
 use crate::compiler::hir::Path;
 use crate::compiler::hir::HIR;
 use crate::compiler::info::diags::to_codespan::Context;
 use crate::compiler::info::diags::to_codespan::ToCodespan;
 use crate::compiler::info::files::Loc;
-use crate::compiler::info::paths::PathId;
+
 use crate::compiler::info::types::TypeId;
 use crate::compiler::info::Info;
 
-use std::io;
 use std::io::Write;
-use std::str;
 
-use codespan_reporting::diagnostic;
-use codespan_reporting::diagnostic::Label;
 use codespan_reporting::term;
-use codespan_reporting::term::termcolor::Buffer;
+
 use codespan_reporting::term::termcolor::Color;
-use codespan_reporting::term::termcolor::ColorChoice;
+
 use codespan_reporting::term::termcolor::ColorSpec;
-use codespan_reporting::term::termcolor::StandardStream;
+
+use arc_script_core_shared::From;
+use arc_script_core_shared::Shrinkwrap;
 use codespan_reporting::term::termcolor::WriteColor;
 use codespan_reporting::term::Config;
-use derive_more::From;
-use shrinkwraprs::Shrinkwrap;
 
 type CodespanResult = std::result::Result<(), codespan_reporting::files::Error>;
 
@@ -62,7 +58,12 @@ impl DiagInterner {
 
     /// Emits all diagnostics in the interner. The HIR does not need to be passed if the
     /// diagnostics were generated only while parsing.
-    pub(crate) fn emit<W>(&self, info: &Info, hir: Option<&HIR>, f: &mut W) -> CodespanResult
+    pub(crate) fn emit<'i, W>(
+        &self,
+        info: &Info,
+        hir: impl Into<Option<&'i HIR>>,
+        f: &mut W,
+    ) -> CodespanResult
     where
         W: Write + WriteColor,
     {
@@ -73,7 +74,7 @@ impl DiagInterner {
 
         let files = &info.files.store;
         let config = &Config::default();
-        let ctx = &Context::new(info, hir);
+        let ctx = &Context::new(info, hir.into());
         self.iter()
             .filter_map(|diag| diag.to_codespan(ctx))
             .try_for_each(|diag| term::emit(f, config, files, &diag))

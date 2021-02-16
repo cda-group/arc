@@ -1,14 +1,14 @@
 use crate::compiler::ast;
-use crate::compiler::info::diags::Diagnostic;
-use crate::compiler::info::files::Loc;
-use crate::compiler::info::Info;
-use crate::compiler::shared::{Map, New, Set, VecMap};
 
-use educe::Educe;
-use time::Duration;
+use crate::compiler::info::files::Loc;
+
+use arc_script_core_macros::Spanned;
+use arc_script_core_shared::Educe;
+use arc_script_core_shared::New;
+use arc_script_core_shared::OrdMap;
+use arc_script_core_shared::VecMap;
 
 use crate::prelude::ast::Spanned;
-use arc_script_macros::Spanned;
 
 pub(crate) use crate::compiler::info::names::NameId;
 pub(crate) use crate::compiler::info::paths::PathId;
@@ -30,7 +30,7 @@ pub(crate) struct HIR {
     /// Top-level items
     pub(crate) items: Vec<Path>,
     /// Definitions of items.
-    pub(crate) defs: Map<Path, Item>,
+    pub(crate) defs: OrdMap<Path, Item>,
 }
 
 #[derive(New, Spanned, Debug)]
@@ -66,8 +66,9 @@ pub struct Path {
 
 #[derive(New, Debug)]
 pub(crate) struct Fun {
-    pub(crate) name: Name,
+    pub(crate) path: Path,
     pub(crate) params: Vec<Param>,
+    pub(crate) channels: Option<Vec<Param>>,
     pub(crate) body: Expr,
     pub(crate) tv: TypeId,
     pub(crate) rtv: TypeId,
@@ -75,7 +76,7 @@ pub(crate) struct Fun {
 
 #[derive(New, Debug)]
 pub(crate) struct Extern {
-    pub(crate) name: Name,
+    pub(crate) path: Path,
     pub(crate) params: Vec<Param>,
     pub(crate) tv: TypeId,
     pub(crate) rtv: TypeId,
@@ -97,26 +98,26 @@ pub(crate) enum ParamKind {
 
 #[derive(New, Debug)]
 pub(crate) struct Enum {
-    pub(crate) name: Name,
+    pub(crate) path: Path,
     pub(crate) variants: Vec<Path>,
 }
 
 #[derive(New, Spanned, Debug)]
 pub(crate) struct Variant {
-    pub(crate) name: Name,
+    pub(crate) path: Path,
     pub(crate) tv: TypeId,
     pub(crate) loc: Option<Loc>,
 }
 
 #[derive(New, Debug)]
 pub(crate) struct Alias {
-    pub(crate) name: Name,
+    pub(crate) path: Path,
     pub(crate) tv: TypeId,
 }
 
 #[derive(New, Debug)]
 pub(crate) struct State {
-    pub(crate) name: Name,
+    pub(crate) path: Path,
     pub(crate) tv: TypeId,
     pub(crate) init: Expr,
 }
@@ -124,7 +125,7 @@ pub(crate) struct State {
 /// A task is a generic low-level primitive which resembles a node in the dataflow graph.
 #[derive(New, Debug)]
 pub(crate) struct Task {
-    pub(crate) name: Name,
+    pub(crate) path: Path,
     /// Type of the task.
     pub(crate) tv: TypeId,
     /// Side-input parameters to the task.

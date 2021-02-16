@@ -2,11 +2,10 @@
 /// using Big-Step operational semantics.
 pub(crate) mod eval;
 
+use crate::compiler::dfg::from::eval::control::Control;
+use crate::compiler::dfg::from::eval::control::ControlKind::*;
 use crate::compiler::dfg::from::eval::stack::Stack;
-use crate::compiler::dfg::from::eval::value::ValueKind;
-use crate::compiler::dfg::from::eval::ControlFlow;
-use crate::compiler::dfg::from::eval::ControlFlowKind::*;
-use crate::compiler::dfg::from::eval::{BigStep, Context};
+use crate::compiler::dfg::from::eval::Context;
 use crate::compiler::dfg::DFG;
 use crate::compiler::hir::Path;
 use crate::compiler::hir::{
@@ -16,12 +15,12 @@ use crate::compiler::hir::{
 use crate::compiler::info::diags::DiagInterner;
 use crate::compiler::info::diags::Error;
 use crate::compiler::info::diags::Panic;
-use crate::compiler::info::names::NameId;
-use crate::compiler::info::paths::PathId;
 use crate::compiler::info::types::TypeId;
 use crate::compiler::info::Info;
-use crate::compiler::shared::VecMap;
 
+use tracing::instrument;
+
+/// Constructs a call-expression
 fn call(path: Path, args: Vec<Expr>, ftv: TypeId, rtv: TypeId) -> Expr {
     Expr::syn(
         ExprKind::Call(Expr::syn(ExprKind::Item(path), ftv).into(), args),
@@ -29,11 +28,13 @@ fn call(path: Path, args: Vec<Expr>, ftv: TypeId, rtv: TypeId) -> Expr {
     )
 }
 
-/// Constructs an expression for calling the main-function
+/// Constructs an call-expression for calling the main-function
 fn main_call(hir: &HIR, info: &mut Info) -> Option<Expr> {
+    // Find the main function
     let main = info.names.intern("main").into();
+    let main = info.paths.intern_child(info.paths.root, main);
     let main_fun = hir.defs.iter().find_map(|(path, item)| match &item.kind {
-        ItemKind::Fun(item) if item.name == main => Some((path, item)),
+        ItemKind::Fun(item) if item.path.id == main => Some((path, item)),
         _ => None,
     });
     if let Some((path, fun)) = main_fun {
@@ -57,12 +58,13 @@ fn main_call(hir: &HIR, info: &mut Info) -> Option<Expr> {
 /// Constructs a dataflow graph by evaluating the HIR. The HIR is not modified
 /// in the process.
 impl DFG {
-    pub(crate) fn from<'i>(hir: &'i HIR, info: &'i mut Info) -> Result<Self, DiagInterner> {
+    #[instrument(name = "HIR & Info => DFG", level = "debug", skip(hir, info))]
+    pub(crate) fn from(hir: &HIR, info: &mut Info) -> Result<Self, DiagInterner> {
         let mut dfg = Self::default();
         if let Some(expr) = main_call(hir, info) {
             let mut stack = Stack::default();
             let mut ctx = Context::new(&mut stack, &mut dfg, hir, info);
-            if let ControlFlow(Panic(loc)) = expr.eval(&mut ctx) {
+            if let Control(Panic(loc)) = expr.eval(&mut ctx) {
                 let mut diags = DiagInterner::default();
                 diags.intern(Panic::Unwind {
                     loc,

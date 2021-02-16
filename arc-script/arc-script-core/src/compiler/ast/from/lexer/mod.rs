@@ -13,7 +13,7 @@ use crate::compiler::info::diags::Error;
 use crate::compiler::info::diags::Result;
 use crate::compiler::info::files::{ByteIndex, FileId, Loc, Span};
 use crate::compiler::info::names::{NameId, NameInterner};
-use crate::compiler::shared::New;
+use arc_script_core_shared::New;
 
 use half::bf16;
 use half::f16;
@@ -475,7 +475,7 @@ impl Iterator for Lexer<'_> {
 }
 
 /// Test for lexing Python-style semantic indentation.
-// #[test]
+#[cfg(test)] // Ignore for now
 fn test() {
     let source = indoc::indoc! {"
         if true:

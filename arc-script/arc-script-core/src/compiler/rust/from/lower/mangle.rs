@@ -1,6 +1,4 @@
 use crate::compiler::hir;
-use crate::compiler::shared::VecMap;
-use crate::compiler::shared::{New, Set};
 
 use super::Context;
 
@@ -31,7 +29,7 @@ trait Mangle {
 impl hir::TypeId {
     fn mangle(self, ctx: &mut Context<'_>) {
         match ctx.info.types.resolve(self).kind {
-            hir::TypeKind::Array(t, s) => {
+            hir::TypeKind::Array(t, _s) => {
                 ctx.buf.push_str("Array_");
                 t.mangle(ctx);
                 ctx.buf.push_str("_End");
@@ -43,8 +41,8 @@ impl hir::TypeId {
                 ctx.buf.push_str("_End");
                 t.mangle(ctx);
             }
-            hir::TypeKind::Map(t0, t1) => todo!(),
-            hir::TypeKind::Nominal(x) => todo!(),
+            hir::TypeKind::Map(_t0, _t1) => todo!(),
+            hir::TypeKind::Nominal(_x) => todo!(),
             hir::TypeKind::Optional(t) => {
                 ctx.buf.push_str("Optional_");
                 t.mangle(ctx);
@@ -65,7 +63,7 @@ impl hir::TypeId {
                 ctx.buf.push_str("_End");
             }
             hir::TypeKind::Struct(fts) => {
-                let buf = std::mem::take(&mut ctx.buf);
+                let _buf = std::mem::take(&mut ctx.buf);
                 ctx.buf.push_str("Struct_");
                 let mut fts = fts.into_iter().collect::<Vec<_>>();
                 fts.sort_by_key(|(x, _)| x.id);
@@ -76,9 +74,9 @@ impl hir::TypeId {
                 });
                 ctx.buf.push_str("_End");
             }
-            hir::TypeKind::Tuple(t) => {}
+            hir::TypeKind::Tuple(_t) => {}
             hir::TypeKind::Unknown => {}
-            hir::TypeKind::Vector(t) => {}
+            hir::TypeKind::Vector(_t) => {}
             hir::TypeKind::Err => {}
         }
     }
@@ -93,7 +91,7 @@ impl hir::Name {
 
 impl hir::ScalarKind {
     #[rustfmt::skip]
-    fn as_str(self, ctx: &mut Context<'_>) -> &'static str {
+    fn as_str(self, _ctx: &mut Context<'_>) -> &'static str {
         match self {
             Self::Bool => "bool",
             Self::Char => "char",

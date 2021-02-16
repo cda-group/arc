@@ -8,11 +8,15 @@ pub(crate) mod parser;
 pub(crate) mod importer;
 
 use crate::compiler::ast::repr::AST;
-use crate::compiler::info::Info;
 use crate::compiler::info::modes::Input;
+use crate::compiler::info::Info;
 
-impl From<&'_ mut Info> for AST {
-    fn from(info: &mut Info) -> Self {
+use tracing::instrument;
+
+impl AST {
+    #[instrument(name = "Info => AST", level = "debug", skip(info))]
+    pub(crate) fn from(info: &mut Info) -> Self {
+        tracing::debug!("{}", info);
         let mut ast = Self::default();
         match &mut info.mode.input {
             Input::Code(source) => {
@@ -26,6 +30,7 @@ impl From<&'_ mut Info> for AST {
             }
             Input::Empty => {}
         }
+        tracing::debug!("{}", ast.debug(&info));
         ast
     }
 }

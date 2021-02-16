@@ -1,11 +1,8 @@
 use crate::compiler::hir::Name;
-use crate::compiler::info::diags::{Error, Result};
 use crate::compiler::info::Info;
-
-use shrinkwraprs::Shrinkwrap;
-
-use std::collections::hash_map::Entry;
-use std::collections::HashMap as Map;
+use arc_script_core_shared::Map;
+use arc_script_core_shared::MapEntry;
+use arc_script_core_shared::Shrinkwrap;
 
 /// A scope which maps variable names to unique variable names.
 #[derive(Debug, Default, Shrinkwrap)]
@@ -82,12 +79,12 @@ impl SymbolStack {
     /// occur if for example two variables are bound in the same pattern.
     pub(crate) fn bind(&mut self, name: Name, info: &mut Info) -> Option<Name> {
         match self.innermost_mut().last_mut().unwrap().entry(name) {
-            Entry::Vacant(entry) => {
+            MapEntry::Vacant(entry) => {
                 let uid = info.names.fresh_with_base(name);
                 entry.insert(uid);
                 Some(uid)
             }
-            Entry::Occupied(_) => None,
+            MapEntry::Occupied(_) => None,
         }
     }
 

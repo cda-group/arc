@@ -2,7 +2,6 @@ use crate::compiler::ast;
 use crate::compiler::hir;
 use crate::compiler::info::paths::PathId;
 use crate::compiler::info::types::TypeId;
-use crate::compiler::info::Info;
 
 impl Default for hir::Expr {
     /// Returns an error-expression. This method is solely meant to be used for

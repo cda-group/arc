@@ -1,0 +1,8 @@
+[package]
+name = "arc-script-template"
+version = "0.0.0"
+edition = "2018"
+
+[dependencies]
+arcon      = { git = "https://github.com/cda-group/arcon" }
+arc-script = { version = "=0.0.0", path = "../../" }

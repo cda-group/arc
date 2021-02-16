@@ -22,9 +22,7 @@ use crate::compiler::ast;
 use crate::compiler::ast::from::lexer::Lexer;
 use crate::compiler::ast::from::parser::grammar::ModuleParser;
 use crate::compiler::ast::ExprInterner;
-use crate::compiler::ast::{Item, Spanned};
-use crate::compiler::info::diags::{DiagInterner, Diagnostic, Error, Result};
-use crate::compiler::info::files::Loc;
+
 use crate::compiler::info::Info;
 
 impl ast::Module {

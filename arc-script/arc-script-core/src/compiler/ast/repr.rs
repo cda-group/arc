@@ -1,18 +1,17 @@
 //! Internal representation of the `AST`. In comparison to the `HIR`, the `AST` does not have
 //! resolved names. Also, all expressions are interned (bump-allocated).
 
-use crate::compiler::info::diags::DiagInterner;
-use crate::compiler::info::files::{ByteIndex, FileId, Loc, Span};
-use crate::compiler::info::modes::Mode;
+use crate::compiler::info::files::{ByteIndex, FileId, Loc};
+
 use crate::compiler::info::names::NameId;
-use crate::compiler::info::paths::PathBuf;
+
 use crate::compiler::info::paths::PathId;
-use crate::compiler::info::Info;
-use crate::compiler::shared::{Map, New};
 
-use arc_script_macros::Spanned;
+use arc_script_core_shared::OrdMap;
+use arc_script_core_shared::New;
+use arc_script_core_shared::Educe;
+use arc_script_core_macros::Spanned;
 
-use educe::Educe;
 use half::bf16;
 use half::f16;
 use std::fmt::Debug;
@@ -26,7 +25,7 @@ pub struct Spanned<Node>(pub FileId, pub ByteIndex, pub Node, pub ByteIndex);
 /// An Arc-AST.
 #[derive(Debug, Default)]
 pub struct AST {
-    pub modules: Map<PathId, Module>,
+    pub modules: OrdMap<PathId, Module>,
     pub exprs: ExprInterner,
 }
 
@@ -128,7 +127,7 @@ pub struct Hub {
 /// A kind of hub.
 #[derive(Debug)]
 pub enum HubKind {
-    Tagged(Vec<Variant>),
+    Tagged(Vec<Port>),
     Single(Type),
 }
 
@@ -137,6 +136,7 @@ pub enum HubKind {
 pub struct Fun {
     pub name: Name,
     pub params: Vec<Param>,
+    pub channels: Option<Vec<Param>>,
     pub return_ty: Option<Type>,
     pub body: Expr,
 }
@@ -371,11 +371,19 @@ pub struct Field<T: Debug> {
     pub loc: Option<Loc>,
 }
 
-/// A variant of an enum or port.
+/// A variant of an enum.
 #[derive(Debug, Spanned)]
 pub struct Variant {
     pub name: Name,
     pub ty: Option<Type>,
+    pub loc: Option<Loc>,
+}
+
+/// A port of a hub.
+#[derive(Debug, Spanned)]
+pub struct Port {
+    pub name: Name,
+    pub ty: Type,
     pub loc: Option<Loc>,
 }
 

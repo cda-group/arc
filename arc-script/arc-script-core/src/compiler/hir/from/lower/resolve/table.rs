@@ -1,11 +1,11 @@
-use crate::compiler::ast::{self, AST};
-use crate::compiler::hir;
-use crate::compiler::hir::Name;
-use crate::compiler::info::diags::Error;
-use crate::compiler::info::paths::{PathBuf, PathId};
-use crate::compiler::info::{self, Info};
+use crate::compiler::ast;
+use crate::compiler::ast::AST;
 
-use std::collections::{HashMap as Map, HashSet as Set};
+use crate::compiler::info::diags::Error;
+use crate::compiler::info::paths::PathId;
+use crate::compiler::info::Info;
+use arc_script_core_shared::Map;
+use arc_script_core_shared::Set;
 
 /// Every symbol is some kind of declaration. The symbol's declaration kind
 /// determines in which table of the HIR the definition of the symbol is stored.
@@ -233,6 +233,19 @@ impl Declare for ast::Extern {
 }
 
 impl Declare for ast::Variant {
+    fn declare(&self, path: PathId, table: &mut SymbolTable, info: &mut Info) {
+        let path = info.paths.intern_child(path, self.name);
+        if table
+            .declarations
+            .insert(path, ItemDeclKind::Variant)
+            .is_some()
+        {
+            info.diags.intern(Error::NameClash { name: self.name })
+        }
+    }
+}
+
+impl Declare for ast::Port {
     fn declare(&self, path: PathId, table: &mut SymbolTable, info: &mut Info) {
         let path = info.paths.intern_child(path, self.name);
         if table

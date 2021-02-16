@@ -2,13 +2,13 @@
 
 #![allow(clippy::useless_attribute)]
 
-use derive_more::Constructor;
+use arc_script_core_shared::New;
 use serde::Deserialize;
 use std::net::SocketAddr;
 use std::path::PathBuf;
 
 /// A connector is a generalisation of sources and sinks.
-#[derive(Deserialize, Debug, Constructor, Clone)]
+#[derive(Deserialize, Debug, New, Clone)]
 pub struct Connector {
     /// Name of the connector.
     name: String,

@@ -1,31 +1,34 @@
-use crate::compiler::dfg::from::eval::stack::Frame;
-use crate::compiler::dfg::DFG;
 use crate::compiler::dfg::{Node, Port};
 use crate::compiler::hir::{
     BinOp, BinOpKind, BinOpKind::*, Expr, ExprKind, LitKind, Path, TypeKind, UnOp, UnOpKind,
     UnOpKind::*, HIR,
 };
-use crate::compiler::info::diags::Error;
+
 use crate::compiler::info::names::NameId;
-use crate::compiler::info::paths::PathId;
 use crate::compiler::info::types::TypeId;
-use crate::compiler::shared::{New, VecMap};
+use arc_script_core_shared::New;
+use arc_script_core_shared::VecMap;
 
 use half::bf16;
 use half::f16;
 
+/// A value which a HIR expression evaluates into. Exported as public to allow
+/// staging of HIR functions. The compiler can partially evaluate a HIR function
+/// by providing it with partial inputs. Partial inputs are defined in
+/// `arc_script_build::val::Value` and can be anything but streams.
 #[derive(Clone, Debug, New)]
-pub(crate) struct Value {
+pub struct Value {
     pub(crate) kind: ValueKind,
     pub(crate) ty: TypeId,
 }
 
-/// A struct representing the possible values an Arc-Script can evaluate into.
+/// An enum representing the possible values an Arc-Script can evaluate into.
 ///
 /// NB: By the time expressions are evaluated, all closures will be converted
 /// into top-level items through lambda lifting.
+#[allow(missing_docs)]
 #[derive(Clone, Debug)]
-pub(crate) enum ValueKind {
+pub enum ValueKind {
     Unit,
     I8(i8),
     I16(i16),
@@ -43,7 +46,9 @@ pub(crate) enum ValueKind {
     Str(String),
     Bool(bool),
     Item(Path),
+    /// A `Task` is a `Node` in a dataflow graph which is defined by `Path`.
     Task(Path, Node),
+    /// A `Stream` is an edge in a dataflow graph which originates from `Node` at `Port`.
     Stream(Node, Port),
     Vector(Vec<Value>),
     Tuple(Vec<Value>),

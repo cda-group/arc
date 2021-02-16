@@ -1,19 +1,18 @@
 use crate::compiler::hir::Type;
 use crate::compiler::hir::TypeKind;
+use arc_script_core_shared::Educe;
+use arc_script_core_shared::Map;
+use arc_script_core_shared::MapEntry;
+use arc_script_core_shared::Shrinkwrap;
 
-use educe::Educe;
 use ena::unify::InPlace;
 use ena::unify::NoError;
 use ena::unify::Snapshot;
-use ena::unify::UnificationStoreMut;
 use ena::unify::UnificationTable;
 use ena::unify::UnifyKey;
 use ena::unify::UnifyValue;
-use shrinkwraprs::Shrinkwrap;
 
 use std::cell::RefCell;
-use std::collections::hash_map::Entry;
-use std::collections::HashMap;
 
 /// A data structure for interning and unifying types of the [`crate::repr::hir`].
 ///
@@ -68,15 +67,15 @@ impl TypeInterner {
         self.store.borrow_mut().find(tv)
     }
 
-    /// Collects all types in the unification-table into a hashmap.
-    pub(crate) fn collect(&mut self) -> HashMap<TypeId, Type> {
+    /// Collects all types in the unification-table into a map.
+    pub(crate) fn collect(&mut self) -> Map<TypeId, Type> {
         let tvs = self.store.get_mut().vars_since_snapshot(&self.snapshot);
-        let mut map = HashMap::new();
+        let mut map = Map::default();
         for i in tvs.start.0..tvs.end.0 {
             let tv = TypeId(i);
             match map.entry(tv) {
-                Entry::Occupied(e) => {}
-                Entry::Vacant(e) => {
+                MapEntry::Occupied(_e) => {}
+                MapEntry::Vacant(e) => {
                     let ty = self.resolve(tv);
                     e.insert(ty);
                 }

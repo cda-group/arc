@@ -1,9 +1,9 @@
 use crate::compiler::ast::repr::{Module, AST};
 use crate::compiler::info::diags::Error;
-use crate::compiler::info::modes::Mode;
+
 use crate::compiler::info::Info;
 
-use anyhow::Result;
+use arc_script_core_shared::Result;
 use std::fs;
 use std::fs::File;
 use std::io::prelude::*;
@@ -63,16 +63,14 @@ impl AST {
     /// Parses a single source string and gives error if it contains imports.
     pub(crate) fn parse_source(&mut self, source: String, info: &mut Info) {
         // Read the file, parse it, and construct the module.
-        let name = MAIN_FILENAME.to_owned();
-        let mod_name = info.names.intern(&name);
+        let name = info.names.resolve(info.names.root).to_string();
         let module = Module::parse(name, source, &mut self.exprs, info);
 
         if !module.imports(info).is_empty() {
             panic!();
         }
 
-        let mod_path = info.paths.intern_child(info.paths.root, mod_name.into());
-        self.modules.insert(mod_path, module);
+        self.modules.insert(info.paths.root, module);
     }
     /// Parses main and all its dependencies modules from the project root.
     #[cfg(not(target_arch = "wasm32"))]

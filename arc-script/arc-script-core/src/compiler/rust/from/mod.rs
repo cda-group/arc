@@ -1,18 +1,20 @@
 mod lower;
 
-use crate::compiler::dfg::DFG;
-use crate::compiler::hir;
 use crate::compiler::hir::HIR;
 use crate::compiler::info::Info;
 use crate::compiler::rust::Rust;
-use crate::compiler::shared::{Lower, Map, New};
+use arc_script_core_shared::Lower;
+use arc_script_core_shared::Map;
+
+use tracing::instrument;
 
 impl Rust {
-    pub(crate) fn from(hir: &HIR, dfg: &DFG, info: &Info) -> Self {
+    #[instrument(name = "HIR & Info => Rust", level = "debug", skip(hir, info))]
+    pub(crate) fn from(hir: &HIR, info: &Info) -> Self {
         let mut rust = Self::default();
         let buf = String::default();
         let mangled = Map::default();
-        let ctx = &mut lower::Context::new(info, &mut rust, buf, mangled);
+        let ctx = &mut lower::Context::new(info, hir, &mut rust, buf, mangled);
         hir.lower(ctx);
         rust
     }

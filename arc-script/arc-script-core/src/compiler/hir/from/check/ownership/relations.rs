@@ -1,12 +1,10 @@
 use crate::compiler::hir;
 use crate::compiler::info::files::Loc;
-use crate::compiler::info::Info;
-use crate::compiler::shared::New;
 
-use educe::Educe;
-use shrinkwraprs::Shrinkwrap;
-
-use std::collections::HashMap;
+use arc_script_core_shared::Educe;
+use arc_script_core_shared::Map;
+use arc_script_core_shared::MapEntry;
+use arc_script_core_shared::New;
 
 /// The `PlaceId` of a `Place`.
 #[derive(Debug, Copy, Clone, Hash, Eq, PartialEq, PartialOrd, Ord)]
@@ -64,21 +62,18 @@ pub(crate) struct Ownership {
     place_counter: usize,
     use_counter: usize,
     branch_counter: usize,
-    place_to_id: HashMap<PlaceKind, PlaceId>,
+    place_to_id: Map<PlaceKind, PlaceId>,
     pub(crate) roots: Vec<(Place, hir::NameId)>,
     pub(crate) parents: Vec<(Place, Place)>,
     pub(crate) uses: Vec<(Place, Use, Branch)>,
     pub(crate) jumps: Vec<(Branch, Branch)>,
 }
 
-use std::borrow::Borrow;
-use std::collections::hash_map::Entry;
-
 impl Ownership {
     pub(crate) fn intern_place(&mut self, place: PlaceKind) -> PlaceId {
         match self.place_to_id.entry(place) {
-            Entry::Occupied(e) => *e.get(),
-            Entry::Vacant(e) => {
+            MapEntry::Occupied(e) => *e.get(),
+            MapEntry::Vacant(e) => {
                 let id = PlaceId(self.place_counter);
                 e.insert(id);
                 self.place_counter += 1;
@@ -216,7 +211,7 @@ impl hir::Expr {
             //     ...
             // }
             // Therefore, `is` is a by-reference expression
-            hir::ExprKind::Is(_, e0) => {}
+            hir::ExprKind::Is(_, _e0) => {}
         }
         None
     }

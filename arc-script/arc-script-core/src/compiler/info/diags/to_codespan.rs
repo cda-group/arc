@@ -1,5 +1,3 @@
-use crate::compiler::ast;
-use crate::compiler::ast::from::lexer;
 use crate::compiler::hir;
 use crate::compiler::hir::HIR;
 use crate::compiler::info::diags::Diagnostic;
@@ -9,24 +7,15 @@ use crate::compiler::info::diags::Panic;
 use crate::compiler::info::diags::Warning;
 use crate::compiler::info::files::FileId;
 use crate::compiler::info::files::Loc;
-use crate::compiler::info::paths::PathId;
-use crate::compiler::info::types::TypeId;
+
 use crate::compiler::info::Info;
-use crate::compiler::shared::display::pretty::AsPretty;
-use crate::compiler::shared::New;
+use crate::compiler::pretty::AsPretty;
 
 use codespan_reporting::diagnostic;
 use codespan_reporting::diagnostic::Label;
-use codespan_reporting::files;
-use codespan_reporting::term;
-use codespan_reporting::term::termcolor::Buffer;
-use codespan_reporting::term::termcolor::ColorChoice;
-use codespan_reporting::term::termcolor::StandardStream;
-use codespan_reporting::term::termcolor::WriteColor;
-use codespan_reporting::term::Config;
 
 use std::borrow::Borrow;
-use std::io;
+
 use std::str;
 
 /// A [`codespan`] diagnostic.
@@ -43,8 +32,14 @@ pub struct Report {
 impl Report {
     /// Constructs a new `Report` by taking ownership of the Arc-Script compiler's output.
     /// Reports can only be constructed within the compiler, therefore this is `pub(crate)`.
-    pub(crate) const fn new(info: Info, hir: Option<HIR>) -> Self {
-        Self { info, hir }
+    pub(crate) fn semantic(info: Info, hir: HIR) -> Self {
+        Self {
+            info,
+            hir: Some(hir),
+        }
+    }
+    pub(crate) fn syntactic(info: Info) -> Self {
+        Self { info, hir: None }
     }
     /// Returns `true` if there are no diagnostics to be reported, otherwise `false`.
     pub fn is_ok(&self) -> bool {
@@ -53,7 +48,7 @@ impl Report {
 }
 
 impl From<Report> for (Vec<Codespan>, Info) {
-    fn from(mut report: Report) -> Self {
+    fn from(report: Report) -> Self {
         let Report { mut info, hir } = report;
         let diags = info.diags.take();
         let ctx = &Context {
@@ -102,13 +97,13 @@ impl ToCodespan for Diagnostic {
 }
 
 impl ToCodespan for Note {
-    fn to_codespan(&self, ctx: &Context<'_>) -> Option<Codespan> {
+    fn to_codespan(&self, _ctx: &Context<'_>) -> Option<Codespan> {
         todo!()
     }
 }
 
 impl ToCodespan for Warning {
-    fn to_codespan(&self, ctx: &Context<'_>) -> Option<Codespan> {
+    fn to_codespan(&self, _ctx: &Context<'_>) -> Option<Codespan> {
         todo!()
     }
 }
@@ -222,8 +217,8 @@ impl ToCodespan for Panic {
         match self {
             Self::Unwind { loc, trace } => {
                 let mut labels = vec![label(loc)?];
-                labels.extend(trace.iter().enumerate().filter_map(|(i, path)| {
-                    let name = ctx.info.resolve_to_names(path.id);
+                labels.extend(trace.iter().enumerate().filter_map(|(_i, path)| {
+                    let _name = ctx.info.resolve_to_names(path.id);
                     label(path.loc).map(|l| l.with_message("Runtime error thrown here"))
                 }));
                 Codespan::error()

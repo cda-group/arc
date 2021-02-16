@@ -1,22 +1,37 @@
 use crate::compiler::hir::Name;
-use crate::compiler::info::files::Loc;
 
-use shrinkwraprs::Shrinkwrap;
-use derive_more::From;
-use smartstring::{LazyCompact, SmartString};
+use arc_script_core_shared::From;
+use arc_script_core_shared::Hasher;
+use arc_script_core_shared::Shrinkwrap;
+
+use lasso::MicroSpur;
+use lasso::Rodeo;
+
+pub(crate) type Key = MicroSpur;
+pub(crate) type Store = Rodeo<Key, Hasher>;
 
 /// An interner for interning `Name`s into `NameId`s, and resolving the other way around.
-#[derive(Default, Debug)]
+#[derive(Debug)]
 pub(crate) struct NameInterner {
-    pub(crate) store: lasso::Rodeo,
+    pub(crate) store: Store,
+    pub(crate) root: NameId,
     buf: String,
+}
+
+impl Default for NameInterner {
+    fn default() -> Self {
+        let mut store = Store::with_hasher(Hasher::default());
+        let buf = String::new();
+        let root = NameId(store.get_or_intern("crate"));
+        Self { store, buf, root }
+    }
 }
 
 pub(crate) type NameBuf = str;
 
 /// The product of interning a `Name`.
 #[derive(Debug, Clone, Copy, From, Shrinkwrap, Eq, PartialEq, Ord, PartialOrd, Hash)]
-pub struct NameId(lasso::Spur);
+pub struct NameId(Key);
 
 impl NameInterner {
     /// Interns a `Name` to a `NameId`.

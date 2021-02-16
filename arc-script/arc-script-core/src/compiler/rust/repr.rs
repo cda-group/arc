@@ -1,6 +1,4 @@
-use crate::compiler::shared::Map;
-use crate::compiler::shared::New;
-use crate::compiler::shared::Set;
+use arc_script_core_shared::New;
 
 use syn::Item;
 

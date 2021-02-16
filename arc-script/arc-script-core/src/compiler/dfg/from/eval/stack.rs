@@ -1,18 +1,10 @@
-use crate::compiler::dfg::from::eval::value::{Value, ValueKind};
-use crate::compiler::dfg::DFG;
+use crate::compiler::dfg::from::eval::value::Value;
 use crate::compiler::hir::Path;
-use crate::compiler::hir::{
-    BinOp, BinOpKind, BinOpKind::*, Expr, ExprKind, LitKind, TypeKind, UnOp, UnOpKind, UnOpKind::*,
-    HIR,
-};
-use crate::compiler::info::diags::Error;
 use crate::compiler::info::names::NameId;
-use crate::compiler::info::paths::PathId;
-use crate::compiler::shared::{New, VecMap};
 
-use derive_more::Constructor;
-use shrinkwraprs::Shrinkwrap;
-use std::collections::HashMap;
+use arc_script_core_shared::New;
+use arc_script_core_shared::Shrinkwrap;
+use arc_script_core_shared::Map;
 
 /// A stack frame of variables and their values. Corresponds to the scope
 /// of a function.
@@ -22,7 +14,7 @@ use std::collections::HashMap;
 pub(crate) struct Frame {
     pub(crate) path: Path,
     #[shrinkwrap(main_field)]
-    pub(crate) data: HashMap<NameId, Value>,
+    pub(crate) data: Map<NameId, Value>,
 }
 
 /// A stack for storing frames. Each frame stores a map of variables.
@@ -36,7 +28,7 @@ pub(crate) struct Stack(pub(crate) Vec<Frame>);
 impl Stack {
     /// Pushes a frame onto the stack.
     pub(crate) fn push_frame(&mut self, path: Path) {
-        self.push(Frame::new(path, HashMap::new()));
+        self.push(Frame::new(path, Map::default()));
     }
     /// Pops a frame offof the stack.
     pub(crate) fn pop_frame(&mut self) {

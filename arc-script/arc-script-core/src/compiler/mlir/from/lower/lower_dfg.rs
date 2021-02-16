@@ -1,21 +1,17 @@
 use crate::compiler::dfg::from::eval::value::ValueKind;
 use crate::compiler::dfg::DFG;
 use crate::compiler::hir;
-use crate::compiler::hir::HIR;
-use crate::compiler::info::Info;
+
 use crate::compiler::mlir;
 use crate::compiler::mlir::ConstKind;
-use crate::compiler::mlir::MLIR;
-use crate::compiler::shared::{Lower, Map, New};
 
-use petgraph::Direction;
-use std::fmt::{self, Display, Formatter};
+use arc_script_core_shared::Lower;
 
 use super::Context;
 
 impl Lower<ConstKind, Context<'_>> for ValueKind {
     #[rustfmt::skip]
-    fn lower(&self, ctx: &mut Context<'_>) -> ConstKind {
+    fn lower(&self, _ctx: &mut Context<'_>) -> ConstKind {
         match self {
             Self::Unit          => ConstKind::Unit,
             Self::I8(v)         => ConstKind::I8(*v),
@@ -32,7 +28,7 @@ impl Lower<ConstKind, Context<'_>> for ValueKind {
             Self::F64(v)        => ConstKind::F64(*v),
             Self::Char(v)       => ConstKind::Char(*v),
             Self::Str(_)        => todo!(),
-            Self::Bool(v)       => todo!(),
+            Self::Bool(_v)       => todo!(),
             Self::Item(_)       => todo!(),
             Self::Task(_, _)    => todo!(),
             Self::Stream(_, _)  => todo!(),
@@ -60,10 +56,7 @@ impl Lower<mlir::Fun, Context<'_>> for DFG {
                     (var, mlir::Op::new(var.into(), kind, None))
                 })
                 .unzip();
-            let node_ty = ctx
-                .info
-                .types
-                .intern(hir::TypeKind::Nominal(node.path));
+            let node_ty = ctx.info.types.intern(hir::TypeKind::Nominal(node.path));
             ops.append(&mut args);
             ops.push(mlir::Op::new(
                 mlir::Var::new(node_name.into(), node_ty).into(),
@@ -81,14 +74,8 @@ impl Lower<mlir::Fun, Context<'_>> for DFG {
             let origin = self.graph.node_weight(origin).unwrap();
             let target = self.graph.node_weight(target).unwrap();
 
-            let origin_ty = ctx
-                .info
-                .types
-                .intern(hir::TypeKind::Nominal(origin.path));
-            let target_ty = ctx
-                .info
-                .types
-                .intern(hir::TypeKind::Nominal(target.path));
+            let origin_ty = ctx.info.types.intern(hir::TypeKind::Nominal(origin.path));
+            let target_ty = ctx.info.types.intern(hir::TypeKind::Nominal(target.path));
 
             let origin_var = mlir::Var::new(origin_name.into(), origin_ty);
             let target_var = mlir::Var::new(target_name.into(), target_ty);
@@ -100,10 +87,11 @@ impl Lower<mlir::Fun, Context<'_>> for DFG {
             ));
         }
 
-        let main = ctx.info.names.intern("main");
+        let main = ctx.info.names.intern("main").into();
+        let main = ctx.info.paths.intern_child(ctx.info.paths.root, main).into();
         let vars = vec![];
         let body = mlir::Region::new(vec![mlir::Block::new(ops)]);
         let ty = ctx.info.types.intern(hir::ScalarKind::Unit);
-        mlir::Fun::new(main.into(), vars, body, ty)
+        mlir::Fun::new(main, vars, body, ty)
     }
 }

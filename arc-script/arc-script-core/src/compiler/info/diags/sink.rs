@@ -1,4 +1,4 @@
-use crate::compiler::shared::New;
+use arc_script_core_shared::New;
 
 pub use codespan_reporting::term::termcolor::Buffer;
 pub use codespan_reporting::term::termcolor::ColorChoice;
