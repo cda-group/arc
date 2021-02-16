@@ -76,6 +76,7 @@ impl<'i> Display for Pretty<'i, Token, State<'_>> {
             Token::As         => write!(f, "as"),
             Token::Band       => write!(f, "band"),
             Token::Bor        => write!(f, "bor"),
+            Token::Box        => write!(f, "box"),
             Token::Break      => write!(f, "break"),
             Token::Crate      => write!(f, "crate"),
             Token::Bxor       => write!(f, "bxor"),

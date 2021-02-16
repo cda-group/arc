@@ -301,6 +301,7 @@ impl<'i> Display for Pretty<'i, hir::Expr, Context<'_>> {
                 e1 = e1.pretty(fmt)
             ),
             hir::ExprKind::UnOp(op, e0) => match &op.kind {
+                hir::UnOpKind::Boxed => write!(f, "box {}", e0.pretty(fmt)),
                 hir::UnOpKind::Not => write!(f, "not {}", e0.pretty(fmt)),
                 hir::UnOpKind::Neg => write!(f, "-{}", e0.pretty(fmt)),
                 hir::UnOpKind::Err => write!(f, "☇{}", e0.pretty(fmt)),
@@ -440,6 +441,7 @@ impl<'i> Display for Pretty<'i, hir::Type, Context<'_>> {
             hir::TypeKind::Tuple(tys)     => write!(f, "({})", tys.iter().all_pretty(", ", fmt)),
             hir::TypeKind::Optional(ty)   => write!(f, "{}?", ty.pretty(fmt)),
             hir::TypeKind::Fun(args, ty)  => write!(f, "fun({}) -> {}", args.all_pretty(", ", fmt), ty.pretty(fmt)),
+            hir::TypeKind::Boxed(ty)      => write!(f, "box {}", ty.pretty(fmt)),
             hir::TypeKind::Err            => write!(f, "☇"),
             hir::TypeKind::Unknown        => write!(f, "?"),
         }

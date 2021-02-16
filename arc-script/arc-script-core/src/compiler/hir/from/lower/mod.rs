@@ -400,12 +400,7 @@ impl ast::Expr {
 impl Lower<hir::UnOp, Context<'_>> for ast::UnOp {
     #[rustfmt::skip]
     fn lower(&self, _ctx: &mut Context<'_>) -> hir::UnOp {
-        let kind = match &self.kind {
-            ast::UnOpKind::Not        => hir::UnOpKind::Not,
-            ast::UnOpKind::Neg        => hir::UnOpKind::Neg,
-            ast::UnOpKind::Err        => hir::UnOpKind::Err,
-        };
-        hir::UnOp::new(kind, self.loc)
+        hir::UnOp::new(self.kind.clone(), self.loc)
     }
 }
 
@@ -458,6 +453,7 @@ impl Lower<TypeId, Context<'_>> for ast::Type {
             ast::TypeKind::Tuple(ts)     => hir::TypeKind::Tuple(ts.as_slice().lower(ctx)),
             ast::TypeKind::Struct(fs)    => hir::TypeKind::Struct(fs.lower(ctx)),
             ast::TypeKind::Map(t0, t1)   => hir::TypeKind::Map(t0.lower(ctx), t1.lower(ctx)),
+            ast::TypeKind::Boxed(ty)     => hir::TypeKind::Boxed(ty.lower(ctx)),
             ast::TypeKind::Err           => hir::TypeKind::Err,
         };
         ctx.info.types.intern(kind)

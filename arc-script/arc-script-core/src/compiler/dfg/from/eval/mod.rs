@@ -127,6 +127,7 @@ impl Expr {
             ExprKind::UnOp(op, e) => {
                 let v = e.eval(ctx)?;
                 match &op.kind {
+                    Boxed => todo!(),
                     Not => match v.kind {
                         Bool(v) => Bool(!v),
                         _ => unreachable!(),

@@ -248,6 +248,10 @@ impl Lower<proc_macro2::TokenStream, Context<'_>> for hir::Expr {
                 let es = es.iter().map(|e| e.lower(ctx));
                 quote!((#(#es),*))
             }
+            hir::ExprKind::UnOp(op, e) if matches!(op.kind, hir::UnOpKind::Boxed) => {
+                let e = e.lower(ctx);
+                quote!(Box::new(#e))
+            }
             hir::ExprKind::UnOp(op, e) => {
                 let op = op.lower(ctx);
                 let e = e.lower(ctx);
@@ -320,6 +324,10 @@ impl Lower<syn::Type, Context<'_>> for hir::Type {
             }
             hir::TypeKind::Unknown => unreachable!(),
             hir::TypeKind::Vector(_t) => todo!(),
+            hir::TypeKind::Boxed(t) => {
+                let t = t.lower(ctx);
+                parse_quote!(Box<#t>)
+            }
             hir::TypeKind::Err => unreachable!(),
         }
     }
@@ -384,6 +392,7 @@ impl Lower<syn::BinOp, Context<'_>> for hir::BinOp {
 impl Lower<syn::UnOp, Context<'_>> for hir::UnOp {
     fn lower(&self, _ctx: &mut Context<'_>) -> syn::UnOp {
         match self.kind {
+            hir::UnOpKind::Boxed => unreachable!(),
             hir::UnOpKind::Neg => parse_quote!(-),
             hir::UnOpKind::Not => parse_quote!(!),
             hir::UnOpKind::Err => unreachable!(),

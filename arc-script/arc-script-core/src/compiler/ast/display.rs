@@ -294,6 +294,7 @@ impl<'i> Display for Pretty<'i, ast::Expr, Context<'_>> {
                 e1 = e1.pretty(fmt)
             ),
             ast::ExprKind::UnOp(op, e0) => match &op.kind {
+                ast::UnOpKind::Boxed => write!(f, "box {}", e0.pretty(fmt)),
                 ast::UnOpKind::Not => write!(f, "not {}", e0.pretty(fmt)),
                 ast::UnOpKind::Neg => write!(f, "-{}", e0.pretty(fmt)),
                 ast::UnOpKind::Err => write!(f, "☇{}", e0.pretty(fmt)),
@@ -473,6 +474,7 @@ impl<'i> Display for Pretty<'i, ast::Type, Context<'_>> {
             ast::TypeKind::Tuple(tys)          => write!(f, "({})", tys.iter().all_pretty(", ", fmt)),
             ast::TypeKind::Optional(ty)        => write!(f, "{}?", ty.pretty(fmt)),
             ast::TypeKind::Fun(args, ty)       => write!(f, "fun({}) -> {}", args.all_pretty(", ", fmt), ty.pretty(fmt)),
+            ast::TypeKind::Boxed(ty)           => write!(f, "box {}", ty.pretty(fmt)),
             ast::TypeKind::Err                 => write!(f, "☇"),
         }
     }

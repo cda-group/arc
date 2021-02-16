@@ -83,6 +83,7 @@ extern {
         "as"     => Token::As,
         "band"   => Token::Band,
         "bor"    => Token::Bor,
+        "box"    => Token::Box,
         "bxor"   => Token::Bxor,
         "break"  => Token::Break,
         "crate"  => Token::Crate,
@@ -368,6 +369,7 @@ Op6: BinOpKind = {
 };
 
 Op7: UnOpKind = {
+    "box" => UnOpKind::Boxed,
     "not" => UnOpKind::Not,
     "-" => UnOpKind::Neg,
 };
@@ -495,8 +497,9 @@ Type2 = Type<TypeKind2>;
 Type<Kind>: Type = Spanned<Kind> => Type::from(<>);
 
 TypeKind0: TypeKind = {
-    "fun" <ParenVec<Type0>> "->" <Box<Type0>>       => TypeKind::Fun(<>),
-    "~" <Box<Type0>>                                => TypeKind::Stream(<>),
+    "fun" <ParenVec<Type0>> "->" <Box<Type0>> => TypeKind::Fun(<>),
+    "~" <Box<Type0>>                          => TypeKind::Stream(<>),
+    "box" <Box<Type0>>                        => TypeKind::Boxed(<>),
     TypeKind1,
 };
 

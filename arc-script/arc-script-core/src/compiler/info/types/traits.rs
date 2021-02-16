@@ -26,6 +26,7 @@ impl TypeId {
             Tuple(ts)   => ts.iter().all(|t| t.is_copyable(info)),
             Unknown     => false,
             Vector(_)   => false,
+            Boxed(_)    => false,
             Err         => true,
         }
     }

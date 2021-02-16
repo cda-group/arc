@@ -262,6 +262,7 @@ impl Constrain<'_> for Expr {
             ExprKind::UnOp(op, e) => {
                 e.constrain(ctx);
                 match &op.kind {
+                    Boxed => ctx.unify(self.tv, TypeKind::Boxed(e.tv)),
                     Not => {
                         ctx.unify(self.tv, e.tv);
                         ctx.unify(e.tv, Bool);
