@@ -7,26 +7,29 @@ use crate::compiler::info::diags::Error;
 use crate::compiler::info::Info;
 use crepe::crepe;
 
+use arc_script_core_shared::From;
+use arc_script_core_shared::Hasher;
+
 crepe! {
 
     @input
     // NameId is the direct root of Place, e.g. Root(a, a.b)
-    #[derive(Debug)]
+    #[derive(Debug, From)]
     pub(crate) struct Root(hir::NameId, Place);
 
     @input
     // Place is a direct parent of Place, e.g. Parent(a.b, a.b.c)
-    #[derive(Debug)]
+    #[derive(Debug, From)]
     pub(crate) struct Parent(Place, Place);
 
     // Place is used in Use of Branch, e.g. Used(a.b, <id>, ..) where let x = <id> in e
     @input
-    #[derive(Debug)]
+    #[derive(Debug, From)]
     pub(crate) struct Used(Place, Use, Branch);
 
     // Branch has a direct jump to Branch, e.g. Jump(if x { 1 } else { 2 }, { 1 })
     @input
-    #[derive(Debug)]
+    #[derive(Debug, From)]
     pub(crate) struct Jump(Branch, Branch);
 
     // NameId is the transitive root of Place, e.g. Origin(a, a.b.c)
@@ -100,32 +103,37 @@ impl hir::HIR {
         let mut places = Ownership::from(self);
         let mut runtime = Crepe::new();
 
-        runtime.extend(places.roots.drain(..).map(|(x0, p0)| Root(p0, x0)));
-        runtime.extend(places.uses.drain(..).map(|(p0, u0, b0)| Used(p0, u0, b0)));
-        runtime.extend(places.parents.drain(..).map(|(p0, p1)| Parent(p0, p1)));
-        runtime.extend(places.jumps.drain(..).map(|(b0, b1)| Jump(b0, b1)));
+        runtime.extend(places.roots.into_iter().map(Root::from));
+        runtime.extend(places.uses.into_iter().map(Used::from));
+        runtime.extend(places.parents.into_iter().map(Parent::from));
+        runtime.extend(places.jumps.into_iter().map(Jump::from));
 
-        let (errs0, errs1) = runtime.run();
+        let (errs0, errs1) = runtime.run_with_hasher::<Hasher>();
 
         let mut errs0 = errs0.into_iter().collect::<Vec<_>>();
         let mut errs1 = errs1.into_iter().collect::<Vec<_>>();
 
+        // Sort to make the output deterministic
         errs0.sort();
         errs1.sort();
 
         for UseOfMovedValue(p0, p1, _u0) in errs0 {
-            info.diags.intern(Error::UseOfMovedValue {
-                loc0: p0.loc,
-                loc1: p1.loc,
-            })
+            if !p0.tv.is_copyable(info) {
+                info.diags.intern(Error::UseOfMovedValue {
+                    loc0: p0.loc,
+                    loc1: p1.loc,
+                })
+            }
         }
 
         for DoubleUse(p0, u0, u1) in errs1 {
-            info.diags.intern(Error::DoubleUse {
-                loc0: p0.loc,
-                loc1: u0.loc,
-                loc2: u1.loc,
-            })
+            if !p0.tv.is_copyable(info) {
+                info.diags.intern(Error::DoubleUse {
+                    loc0: p0.loc,
+                    loc1: u0.loc,
+                    loc2: u1.loc,
+                })
+            }
         }
     }
 }

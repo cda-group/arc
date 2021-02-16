@@ -179,6 +179,11 @@ impl Lower<proc_macro2::TokenStream, Context<'_>> for hir::Expr {
                 let es = es.iter().map(|e| e.lower(ctx));
                 quote!([#(#es),*])
             }
+            hir::ExprKind::BinOp(e0, op, e1) if matches!(op.kind, hir::BinOpKind::Pow) => {
+                let e0 = e0.lower(ctx);
+                let e1 = e1.lower(ctx);
+                quote!(#e0.pow(#e1))
+            }
             hir::ExprKind::BinOp(e0, op, e1) => {
                 let e0 = e0.lower(ctx);
                 let op = op.lower(ctx);
@@ -366,10 +371,10 @@ impl Lower<syn::BinOp, Context<'_>> for hir::BinOp {
             hir::BinOpKind::Neq  => parse_quote!(!=),
             hir::BinOpKind::Or   => parse_quote!(||),
             hir::BinOpKind::Pipe => todo!(),
-            hir::BinOpKind::Pow  => todo!(),
+            hir::BinOpKind::Pow  => unreachable!(),
             hir::BinOpKind::Seq  => todo!(),
             hir::BinOpKind::Sub  => parse_quote!(-),
-            hir::BinOpKind::Xor  => todo!(),
+            hir::BinOpKind::Xor  => parse_quote!(^),
             hir::BinOpKind::Mut  => parse_quote!(=),
             hir::BinOpKind::Err  => unreachable!(),
         }

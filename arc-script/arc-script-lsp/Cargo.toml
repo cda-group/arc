@@ -14,10 +14,10 @@ name = "arc-script-lsp"
 path = "src/main.rs"
 
 [features]
-default            = [ "runtime-tokio" ]
-runtime-futures    = [ "lspower/runtime-agnostic", "futures", "blocking" ]
+default            = [ "runtime-smol" ]
+#runtime-futures    = [ "lspower/runtime-agnostic", "futures", "blocking" ]
 runtime-smol       = [ "lspower/runtime-agnostic", "smol" ]
-runtime-tokio      = [ "lspower/runtime-tokio", "tokio" ]
+#runtime-tokio      = [ "lspower/runtime-tokio", "tokio" ]
 
 [dependencies]
 arc-script-core    = { version = "=0.0.0", path = "../arc-script-core" }
@@ -34,7 +34,7 @@ anyhow             = { version = "1.0.37" }
 derive_more        = { version = "0.99.11", features = ["constructor"] }
        
 # Runtimes      
-blocking           = { optional = true, version = "1.0.2" }
-tokio              = { optional = true, version = "1.2.0", features = ["io-std", "macros", "rt", "rt-multi-thread", "sync"] }
+#blocking           = { optional = true, version = "1.0.2" }
+#tokio              = { optional = true, version = "1.2.0", features = ["io-std", "macros", "rt", "rt-multi-thread", "sync"] }
 smol               = { optional = true, version = "1.2.5" }
-futures            = { optional = true, version = "1.11", package = "futures-lite" }
+#futures            = { optional = true, version = "1.11", package = "futures-lite" }

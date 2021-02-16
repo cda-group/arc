@@ -265,6 +265,8 @@ fun main() {
 #CHECK: {{%[^ ]+}} = and {{%[^ ]+}}, {{%[^ ]+}} : i1
     let lor: bool = c_bool or c_bool in
 #CHECK: {{%[^ ]+}} = or {{%[^ ]+}}, {{%[^ ]+}} : i1
+    let lxor: bool = c_bool xor c_bool in
+#CHECK: {{%[^ ]+}} = std.xor {{%[^ ]+}}, {{%[^ ]+}} : i1
 
     let band_i8: i8 = c_i8 band c_i8 in
 #CHECK: {{%[^ ]+}} = arc.and {{%[^ ]+}}, {{%[^ ]+}} : si8

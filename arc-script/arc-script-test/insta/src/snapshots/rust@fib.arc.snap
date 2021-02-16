@@ -1,28 +1,18 @@
 ---
-source: arc-script-core/tests/insta/mod.rs
+source: arc-script-test/insta/src/lib.rs
 expression: s
-input_file: arc-script-core/tests/insta/snapshot-tests/fib.arc
+input_file: arc-script-test/insta/src/expect-pass/fib.arc
 ---
-error: Double use of value
-  ┌─ /home/klas/Workspace/arc/arc-script/arc-script-core/tests/insta/snapshot-tests/fib.arc:4:8
-  │
-4 │     if n > 2 {
-  │        ^
-5 │         fib(n - 1) + fib(n - 2)
-  │             ^
-
-error: Double use of value
-  ┌─ /home/klas/Workspace/arc/arc-script/arc-script-core/tests/insta/snapshot-tests/fib.arc:4:8
-  │
-4 │     if n > 2 {
-  │        ^
-5 │         fib(n - 1) + fib(n - 2)
-  │                          ^
-
-error: Double use of value
-  ┌─ /home/klas/Workspace/arc/arc-script/arc-script-core/tests/insta/snapshot-tests/fib.arc:5:13
-  │
-5 │         fib(n - 1) + fib(n - 2)
-  │             ^            ^
+use arcon::prelude::*;
+pub fn fib(n_0: i32) -> i32 {
+    if n_0 > 2i32 {
+        fib(n_0 - 1i32) + fib(n_0 - 2i32)
+    } else {
+        0i32
+    }
+}
+pub fn test() -> i32 {
+    fib(5i32)
+}
 
 

@@ -66,7 +66,7 @@ pub struct Run {
     #[clap(parse(from_os_str))]
     pub main: Option<PathBuf>,
     /// Select output mode.
-    #[clap(long, short, arg_enum, value_name = "FORMAT")]
+    #[clap(long, short, arg_enum, case_insensitive(true), value_name = "FORMAT")]
     pub output: Output,
 }
 
@@ -89,7 +89,7 @@ pub enum Output {
 #[derive(Clap, Debug, Clone)]
 pub struct Completions {
     /// Shell to generate completions for.
-    #[clap(long, arg_enum, value_name = "SHELL")]
+    #[clap(long, arg_enum, case_insensitive(true), value_name = "SHELL")]
     pub shell: Shell,
 }
 

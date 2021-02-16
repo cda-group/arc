@@ -1,24 +1,23 @@
 ---
-source: arc-script-core/tests/insta/mod.rs
+source: arc-script-test/insta/src/lib.rs
 expression: s
-input_file: arc-script-core/tests/insta/snapshot-tests/fun.arc
+input_file: arc-script-test/insta/src/expect-pass/fun.arc
 ---
-error: Double use of value
-  ┌─ /home/klas/Workspace/arc/arc-script/arc-script-core/tests/insta/snapshot-tests/fun.arc:4:13
-  │
-4 │     let c = a > b in
-  │             ^
-5 │     if c {
-6 │         a
-  │         ^
-
-error: Double use of value
-  ┌─ /home/klas/Workspace/arc/arc-script/arc-script-core/tests/insta/snapshot-tests/fun.arc:4:17
-  │
-4 │     let c = a > b in
-  │                 ^
-  ·
-8 │         b
-  │         ^
-
+module @toplevel {
+    func @crate_max(%a_0: si32, %b_0: si32) -> si32 {
+        %x_0 = arc.cmpi "gt", %a_0, %b_0 : i1
+        %x_1 = "arc.if"(%x_0) ({
+            "arc.block.result"(%a_0) : (si32) -> ()
+        },{
+            "arc.block.result"(%b_0) : (si32) -> ()
+        }) : (i1) -> si32
+        return %x_1 : si32
+    }
+    func @crate_test() -> si32 {
+        %x_2 = arc.constant 1 : si32
+        %x_3 = arc.constant 2 : si32
+        %x_4 = call crate_max(%x_2, %x_3) : (si32, si32) -> si32
+        return %x_4 : si32
+    }
+}
 

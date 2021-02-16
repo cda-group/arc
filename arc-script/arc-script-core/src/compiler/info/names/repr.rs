@@ -4,10 +4,12 @@ use arc_script_core_shared::From;
 use arc_script_core_shared::Hasher;
 use arc_script_core_shared::Shrinkwrap;
 
-use lasso::MicroSpur;
+use lasso::MiniSpur;
 use lasso::Rodeo;
 
-pub(crate) type Key = MicroSpur;
+/// A key which can represent 2^16 names.
+pub(crate) type Key = MiniSpur;
+/// A store for interning names.
 pub(crate) type Store = Rodeo<Key, Hasher>;
 
 /// An interner for interning `Name`s into `NameId`s, and resolving the other way around.
