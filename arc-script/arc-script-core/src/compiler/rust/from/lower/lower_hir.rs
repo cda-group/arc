@@ -4,66 +4,82 @@ use crate::compiler::hir;
 
 use super::Context;
 
-use quote::quote;
-use syn::parse_quote;
 use proc_macro2 as pm2;
+use proc_macro2::TokenStream as Tokens;
+use quote::quote;
 
-impl Lower<(), Context<'_>> for hir::HIR {
-    fn lower(&self, ctx: &mut Context<'_>) {
-        self.defs.values().for_each(|item| item.lower(ctx));
-    }
-}
-
-impl Lower<(), Context<'_>> for hir::Item {
-    #[rustfmt::skip]
-    fn lower(&self, ctx: &mut Context<'_>) {
-        match &self.kind {
-            hir::ItemKind::Alias(_i)   => unreachable!(),
-            hir::ItemKind::Enum(i)    => i.lower(ctx),
-            hir::ItemKind::Fun(i)     => i.lower(ctx),
-            hir::ItemKind::State(_i)   => todo!(),
-            hir::ItemKind::Task(i)    => i.lower(ctx),
-            hir::ItemKind::Extern(_i)  => {}
-            hir::ItemKind::Variant(_i) => {}
+impl Lower<Tokens, Context<'_>> for hir::HIR {
+    fn lower(&self, ctx: &mut Context<'_>) -> Tokens {
+        let defs = self
+            .items
+            .iter()
+            .map(|item| self.defs.get(item).unwrap().lower(ctx));
+        quote!{
+            #(#defs)*
         }
     }
 }
 
-impl Lower<(), Context<'_>> for hir::Enum {
-    fn lower(&self, ctx: &mut Context<'_>) {
-        let name = self.path.lower(ctx);
-        let variants = self.variants.iter().map(|v| v.lower(ctx));
-        let enum_item = syn::parse_quote! {
-            pub enum #name {
-                #(#variants),*
-            }
-        };
-        ctx.rust.items.push(syn::Item::Enum(enum_item));
+impl Lower<Tokens, Context<'_>> for hir::Item {
+    #[rustfmt::skip]
+    fn lower(&self, ctx: &mut Context<'_>) -> Tokens {
+        match &self.kind {
+            hir::ItemKind::Alias(_i)  => unreachable!(),
+            hir::ItemKind::Enum(i)    => i.lower(ctx),
+            hir::ItemKind::Fun(i)     => i.lower(ctx),
+            hir::ItemKind::State(_i)  => todo!(),
+            hir::ItemKind::Task(i)    => i.lower(ctx),
+            hir::ItemKind::Extern(_i) => quote!(),
+            hir::ItemKind::Variant(i) => i.lower(ctx),
+        }
     }
 }
 
-impl Lower<(), Context<'_>> for hir::Fun {
-    fn lower(&self, ctx: &mut Context<'_>) {
+impl Lower<Tokens, Context<'_>> for hir::Enum {
+    fn lower(&self, ctx: &mut Context<'_>) -> Tokens {
+        let name = self.path.lower(ctx);
+        let variants = self
+            .variants
+            .iter()
+            .map(|v| ctx.hir.defs.get(v).unwrap().lower(ctx));
+        quote! {
+            arcorn::declare_enum! {
+                enum #name {
+                    #(#variants),*
+                }
+            }
+        }
+    }
+}
+
+impl Lower<Tokens, Context<'_>> for hir::Variant {
+    fn lower(&self, ctx: &mut Context<'_>) -> Tokens {
+        let name = self.path.lower(ctx);
+        let ty = self.tv.lower(ctx);
+        quote! {
+            #name(#ty)
+        }
+    }
+}
+
+impl Lower<Tokens, Context<'_>> for hir::Fun {
+    fn lower(&self, ctx: &mut Context<'_>) -> Tokens {
         let name = self.path.lower(ctx);
         let rtv = self.rtv.lower(ctx);
         let body = self.body.lower(ctx);
         let params = self.params.iter().map(|p| p.lower(ctx));
-        let fn_item = syn::parse_quote! {
+        quote! {
             pub fn #name(#(#params),*) -> #rtv {
                 #body
             }
-        };
-        ctx.rust.items.push(syn::Item::Fn(fn_item));
+        }
     }
 }
 
-impl Lower<(), Context<'_>> for hir::Task {
-    fn lower(&self, ctx: &mut Context<'_>) {
+impl Lower<Tokens, Context<'_>> for hir::Task {
+    fn lower(&self, ctx: &mut Context<'_>) -> Tokens {
         let cons_name = self.path.lower(ctx);
-        let task_name = syn::Ident::new(
-            &format!("Task{}", cons_name),
-            pm2::Span::call_site(),
-        );
+        let task_name = syn::Ident::new(&format!("Task{}", cons_name), pm2::Span::call_site());
         let params = self.params.iter().map(|p| p.lower(ctx)).collect::<Vec<_>>();
         let param_ids = self
             .params
@@ -75,7 +91,7 @@ impl Lower<(), Context<'_>> for hir::Task {
         } else {
             Some(quote!(let (#(#param_ids),*) = (#(self.#param_ids.clone()),*);))
         };
-        let struct_item = syn::parse_quote! {
+        let item_struct = quote! {
             #[derive(ArconState)]
             pub struct #task_name {
                 #(#[ephemeral] pub #params),*
@@ -93,7 +109,7 @@ impl Lower<(), Context<'_>> for hir::Task {
         };
         let elem_id = self.on.param.kind.lower(ctx);
         let body = self.on.body.lower(ctx);
-        let impl_item = syn::parse_quote! {
+        let item_impl = quote! {
             impl Operator for #task_name {
                 type IN  = #ity;
                 type OUT = #oty;
@@ -115,7 +131,7 @@ impl Lower<(), Context<'_>> for hir::Task {
             }
         };
 
-        let fn_item = syn::parse_quote! {
+        let item_fn = quote! {
             fn #cons_name(#(#params),*) -> OperatorBuilder<#task_name> {
                 OperatorBuilder {
                     constructor: Arc::new(|b| #task_name { #(#params),* }),
@@ -123,53 +139,58 @@ impl Lower<(), Context<'_>> for hir::Task {
                 }
             }
         };
-        ctx.rust.items.push(syn::Item::Struct(struct_item));
-        ctx.rust.items.push(syn::Item::Impl(impl_item));
-        ctx.rust.items.push(syn::Item::Fn(fn_item));
+
+        quote! {
+            #item_struct
+            #item_impl
+            #item_fn
+        }
     }
 }
 
-impl Lower<syn::Ident, Context<'_>> for hir::Name {
-    fn lower(&self, ctx: &mut Context<'_>) -> syn::Ident {
+impl Lower<Tokens, Context<'_>> for hir::Name {
+    fn lower(&self, ctx: &mut Context<'_>) -> Tokens {
         let name = ctx.info.names.resolve(self.id);
         let span = pm2::Span::call_site();
-        syn::Ident::new(name, span)
+        let ident = syn::Ident::new(name, span);
+        quote!(#ident)
     }
 }
 
-impl Lower<syn::Ident, Context<'_>> for hir::Path {
-    fn lower(&self, ctx: &mut Context<'_>) -> syn::Ident {
+impl Lower<Tokens, Context<'_>> for hir::Path {
+    fn lower(&self, ctx: &mut Context<'_>) -> Tokens {
         let path = ctx.info.resolve_to_names(self.id);
         let (_, path) = path.split_at(1);
         let name = path.join("_");
         let span = pm2::Span::call_site();
-        syn::Ident::new(&name, span)
+        let ident = syn::Ident::new(&name, span);
+        quote!(#ident)
     }
 }
 
-impl Lower<syn::FnArg, Context<'_>> for hir::Param {
-    fn lower(&self, ctx: &mut Context<'_>) -> syn::FnArg {
+impl Lower<Tokens, Context<'_>> for hir::Param {
+    fn lower(&self, ctx: &mut Context<'_>) -> Tokens {
         let ty = self.tv.lower(ctx);
         let id = self.kind.lower(ctx);
-        parse_quote!(#id: #ty)
+        quote!(#id: #ty)
     }
 }
 
-impl Lower<syn::Ident, Context<'_>> for hir::ParamKind {
-    fn lower(&self, ctx: &mut Context<'_>) -> syn::Ident {
+impl Lower<Tokens, Context<'_>> for hir::ParamKind {
+    fn lower(&self, ctx: &mut Context<'_>) -> Tokens {
         match self {
             Self::Var(x) => {
                 let x = x.lower(ctx);
-                parse_quote!(#x)
+                quote!(#x)
             }
-            Self::Ignore => parse_quote!(_),
+            Self::Ignore => quote!(_),
             Self::Err => unreachable!(),
         }
     }
 }
 
-impl Lower<pm2::TokenStream, Context<'_>> for hir::Expr {
-    fn lower(&self, ctx: &mut Context<'_>) -> pm2::TokenStream {
+impl Lower<Tokens, Context<'_>> for hir::Expr {
+    fn lower(&self, ctx: &mut Context<'_>) -> Tokens {
         match &self.kind {
             hir::ExprKind::Access(e, f) => {
                 let e = e.lower(ctx);
@@ -285,58 +306,58 @@ impl Lower<pm2::TokenStream, Context<'_>> for hir::Expr {
     }
 }
 
-impl Lower<syn::Type, Context<'_>> for hir::TypeId {
-    fn lower(&self, ctx: &mut Context<'_>) -> syn::Type {
+impl Lower<Tokens, Context<'_>> for hir::TypeId {
+    fn lower(&self, ctx: &mut Context<'_>) -> Tokens {
         ctx.info.types.resolve(*self).lower(ctx)
     }
 }
 
-impl Lower<syn::Type, Context<'_>> for hir::Type {
-    fn lower(&self, ctx: &mut Context<'_>) -> syn::Type {
+impl Lower<Tokens, Context<'_>> for hir::Type {
+    fn lower(&self, ctx: &mut Context<'_>) -> Tokens {
         match &self.kind {
             hir::TypeKind::Array(_t, _s) => todo!(),
             hir::TypeKind::Fun(ts, t) => {
                 let t = t.lower(ctx);
                 let ts = ts.iter().map(|t| t.lower(ctx));
-                parse_quote!(fn(#(#ts),*) -> #t)
+                quote!(fn(#(#ts),*) -> #t)
             }
             hir::TypeKind::Map(t0, t1) => {
                 let t0 = t0.lower(ctx);
                 let t1 = t1.lower(ctx);
-                parse_quote!(Map<#t0, #t1>)
-            },
+                quote!(Map<#t0, #t1>)
+            }
             hir::TypeKind::Nominal(x) => {
                 let x = x.lower(ctx);
-                parse_quote!(#x)
+                quote!(#x)
             }
             hir::TypeKind::Optional(t) => {
                 let t = t.lower(ctx);
-                parse_quote!(Option<#t>)
+                quote!(Option<#t>)
             }
             hir::TypeKind::Scalar(s) => {
                 let s = s.lower(ctx);
-                parse_quote!(#s)
+                quote!(#s)
             }
             hir::TypeKind::Set(t) => {
                 let t = t.lower(ctx);
-                parse_quote!(Set<T>)
-            },
+                quote!(Set<T>)
+            }
             hir::TypeKind::Stream(t) => {
                 let t = t.lower(ctx);
-                parse_quote!(Stream<#t>)
+                quote!(Stream<#t>)
             }
             hir::TypeKind::Struct(_fts) => todo!(),
             hir::TypeKind::Tuple(ts) => {
                 let ts = ts.iter().map(|t| t.lower(ctx));
-                parse_quote!((#(#ts),*))
+                quote!((#(#ts),*))
             }
             hir::TypeKind::Vector(t) => {
                 let t = t.lower(ctx);
-                parse_quote!(Vec<#t>)
-            },
+                quote!(Vec<#t>)
+            }
             hir::TypeKind::Boxed(t) => {
                 let t = t.lower(ctx);
-                parse_quote!(Box<#t>)
+                quote!(Box<#t>)
             }
             hir::TypeKind::By(t0, t1) => {
                 let t0 = t0.lower(ctx);
@@ -350,76 +371,76 @@ impl Lower<syn::Type, Context<'_>> for hir::Type {
 }
 
 #[rustfmt::skip]
-impl Lower<syn::Type, Context<'_>> for hir::ScalarKind {
-    fn lower(&self, _ctx: &mut Context<'_>) -> syn::Type {
+impl Lower<Tokens, Context<'_>> for hir::ScalarKind {
+    fn lower(&self, _ctx: &mut Context<'_>) -> Tokens {
         match self {
-            Self::Bool => parse_quote!(bool),
-            Self::Char => parse_quote!(char),
-            Self::Bf16 => parse_quote!(bf16),
-            Self::F16  => parse_quote!(f16),
-            Self::F32  => parse_quote!(f32),
-            Self::F64  => parse_quote!(f64),
-            Self::I8   => parse_quote!(i8),
-            Self::I16  => parse_quote!(i16),
-            Self::I32  => parse_quote!(i32),
-            Self::I64  => parse_quote!(i64),
-            Self::U8   => parse_quote!(u8),
-            Self::U16  => parse_quote!(u16),
-            Self::U32  => parse_quote!(u32),
-            Self::U64  => parse_quote!(u64),
+            Self::Bool => quote!(bool),
+            Self::Char => quote!(char),
+            Self::Bf16 => quote!(bf16),
+            Self::F16  => quote!(f16),
+            Self::F32  => quote!(f32),
+            Self::F64  => quote!(f64),
+            Self::I8   => quote!(i8),
+            Self::I16  => quote!(i16),
+            Self::I32  => quote!(i32),
+            Self::I64  => quote!(i64),
+            Self::U8   => quote!(u8),
+            Self::U16  => quote!(u16),
+            Self::U32  => quote!(u32),
+            Self::U64  => quote!(u64),
             Self::Null => todo!(),
             Self::Str  => todo!(),
-            Self::Unit => parse_quote!(()),
+            Self::Unit => quote!(()),
             Self::Bot  => todo!(),
         }
     }
 }
 
 #[rustfmt::skip]
-impl Lower<pm2::TokenStream, Context<'_>> for hir::BinOp {
-    fn lower(&self, _ctx: &mut Context<'_>) -> pm2::TokenStream {
+impl Lower<Tokens, Context<'_>> for hir::BinOp {
+    fn lower(&self, _ctx: &mut Context<'_>) -> Tokens {
         match self.kind {
-            hir::BinOpKind::Add  => parse_quote!(+),
-            hir::BinOpKind::And  => parse_quote!(+),
-            hir::BinOpKind::Band => parse_quote!(&),
-            hir::BinOpKind::Bor  => parse_quote!(|),
-            hir::BinOpKind::Bxor => parse_quote!(^),
+            hir::BinOpKind::Add  => quote!(+),
+            hir::BinOpKind::And  => quote!(+),
+            hir::BinOpKind::Band => quote!(&),
+            hir::BinOpKind::Bor  => quote!(|),
+            hir::BinOpKind::Bxor => quote!(^),
             hir::BinOpKind::By   => unreachable!(),
-            hir::BinOpKind::Div  => parse_quote!(/),
-            hir::BinOpKind::Equ  => parse_quote!(==),
-            hir::BinOpKind::Geq  => parse_quote!(>=),
-            hir::BinOpKind::Gt   => parse_quote!(>),
-            hir::BinOpKind::Leq  => parse_quote!(<),
-            hir::BinOpKind::Lt   => parse_quote!(<=),
-            hir::BinOpKind::Mul  => parse_quote!(*),
-            hir::BinOpKind::Mod  => parse_quote!(%),
-            hir::BinOpKind::Neq  => parse_quote!(!=),
-            hir::BinOpKind::Or   => parse_quote!(||),
+            hir::BinOpKind::Div  => quote!(/),
+            hir::BinOpKind::Equ  => quote!(==),
+            hir::BinOpKind::Geq  => quote!(>=),
+            hir::BinOpKind::Gt   => quote!(>),
+            hir::BinOpKind::Leq  => quote!(<),
+            hir::BinOpKind::Lt   => quote!(<=),
+            hir::BinOpKind::Mul  => quote!(*),
+            hir::BinOpKind::Mod  => quote!(%),
+            hir::BinOpKind::Neq  => quote!(!=),
+            hir::BinOpKind::Or   => quote!(||),
             hir::BinOpKind::Pipe => unreachable!(),
             hir::BinOpKind::Pow  => unreachable!(),
-            hir::BinOpKind::Seq  => parse_quote!(;),
-            hir::BinOpKind::Sub  => parse_quote!(-),
-            hir::BinOpKind::Xor  => parse_quote!(^),
-            hir::BinOpKind::Mut  => parse_quote!(=),
+            hir::BinOpKind::Seq  => quote!(;),
+            hir::BinOpKind::Sub  => quote!(-),
+            hir::BinOpKind::Xor  => quote!(^),
+            hir::BinOpKind::Mut  => quote!(=),
             hir::BinOpKind::Err  => unreachable!(),
         }
     }
 }
 
-impl Lower<syn::UnOp, Context<'_>> for hir::UnOp {
-    fn lower(&self, _ctx: &mut Context<'_>) -> syn::UnOp {
+impl Lower<Tokens, Context<'_>> for hir::UnOp {
+    fn lower(&self, _ctx: &mut Context<'_>) -> Tokens {
         match self.kind {
             hir::UnOpKind::Boxed => unreachable!(),
-            hir::UnOpKind::Neg => parse_quote!(-),
-            hir::UnOpKind::Not => parse_quote!(!),
+            hir::UnOpKind::Neg => quote!(-),
+            hir::UnOpKind::Not => quote!(!),
             hir::UnOpKind::Err => unreachable!(),
         }
     }
 }
 
 #[rustfmt::skip]
-impl Lower<pm2::TokenStream, Context<'_>> for hir::LitKind {
-    fn lower(&self, _ctx: &mut Context<'_>) -> pm2::TokenStream {
+impl Lower<Tokens, Context<'_>> for hir::LitKind {
+    fn lower(&self, _ctx: &mut Context<'_>) -> Tokens {
         match self {
             Self::Bool(v) => quote!(#v),
             Self::Char(v) => quote!(#v),
