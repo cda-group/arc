@@ -332,7 +332,7 @@ impl<'i> Display for Pretty<'i, mlir::OpKind, Context<'_>> {
             mlir::OpKind::Loop(_) => todo!(),
             mlir::OpKind::Call(x, xs) => write!(
                 f,
-                r#"call {callee}({args}) : ({tys}) ->"#,
+                r#"call @{callee}({args}) : ({tys}) ->"#,
                 callee = x.pretty(fmt),
                 args = xs.iter().all_pretty(", ", fmt),
                 tys = xs
