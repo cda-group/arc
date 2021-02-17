@@ -205,7 +205,7 @@ impl<'i> Display for Pretty<'i, mlir::Op, Context<'_>> {
                     "{var} = {kind} {ty}",
                     var = var.pretty(fmt),
                     kind = op.kind.pretty(fmt),
-                    ty = var.tv.pretty(fmt)
+                    ty = op.kind.get_type_specifier(var.tv).pretty(fmt)
                 )
             }
             None => write!(f, "{kind}", kind = op.kind.pretty(fmt)),
@@ -379,7 +379,7 @@ impl<'i> Display for Pretty<'i, mlir::OpKind, Context<'_>> {
             ),
             mlir::OpKind::Project(x, i) => write!(
                 f,
-                r#""arc.index_tuple"({x}) {{ index = {i} }} : {t} ->"#,
+                r#""arc.index_tuple"({x}) {{ index = {i} }} : ({t}) ->"#,
                 x = x.pretty(fmt),
                 t = x.tv.pretty(fmt),
                 i = i,
