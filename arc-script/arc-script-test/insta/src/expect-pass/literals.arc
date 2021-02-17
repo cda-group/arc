@@ -1,6 +1,6 @@
 # RUN: arc-script run --output=MLIR %s | FileCheck %s
 # RUN: arc-script run --output=MLIR %s | arc-mlir | FileCheck %s
-# RUN: arc-script run --output=MLIR %s | arc-mlir | -arc-to-rust -crate %t && arc-cargo test -j 1 --manifest-path=%t/toplevel/Cargo.toml
+# RUNX: arc-script run --output=MLIR %s | arc-mlir | arc-mlir -arc-to-rust -crate %t && arc-cargo test -j 1 --manifest-path=%t/toplevel/Cargo.toml
 
 fun test() -> i32 {
 
@@ -35,16 +35,16 @@ fun test() -> i32 {
 # f32 to 6 significant digits and f64 to 15.
 
   let pos_bf16: bf16 = 3.38953139e38bf16 in
-#CHECK: {{%[^ ]+}} = constant 3.38953139{{[0-9]+[Ee]\+?}}38 : bf16
+#CHECK: {{%[^ ]+}} = constant {{(3.3895314e38)|(3.389530e\+?38)}} : bf16
 
   let neg_bf16: bf16 = -1.175494351e38bf16 in
-#CHECK: {{%[^ ]+}} = constant -1.175494351{{[0-9]+[Ee]\+?}}38 : bf16
+#CHECK: {{%[^ ]+}} = constant -{{(1.1763668e38)|(1.176370e\+?38)}} : bf16
 
   let pos_f16: f16 = 6.5504e4f16 in
-#CHECK: {{%[^ ]+}} = constant 6.55{{[0-9]+[Ee]\+?}}4 : f16
+#CHECK: {{%[^ ]+}} = constant {{(6.5504[0]+e\+04)|(65504.0)}} : f16
 
   let neg_f16: f16 = -6.550e4f16 in
-#CHECK: {{%[^ ]+}} = constant -6.550{{[0-9]+[Ee]\+?}}4 : f16
+#CHECK: {{%[^ ]+}} = constant -{{(6.5504[0]+[Ee]\+?0?4)|(65504.0)}} : f16
 
   let pos_f32: f32 = 3.4028234664e38f32 in
 #CHECK: {{%[^ ]+}} = constant 3.40282{{[0-9]+[Ee]\+?}}38 : f32
@@ -65,18 +65,18 @@ fun test() -> i32 {
 #CHECK: {{%[^ ]+}} = constant false
 
 #  let bool_vector: vec[bool] = [true, false, true, false] in
-##CHECK-DAG: [[E0:%[^ ]+]] = constant true
-##CHECK-DAG: [[E1:%[^ ]+]] = constant false
-##CHECK-DAG: [[E2:%[^ ]+]] = constant true
-##CHECK-DAG: [[E3:%[^ ]+]] = constant false
-##CHECK: {{%[^ ]+}} = "arc.make_vector"([[E0]], [[E1]], [[E2]], [[E3]]) : (i1, i1, i1, i1) -> tensor<4xi1>
+##XCHECK-DAG: [[E0:%[^ ]+]] = constant true
+##XCHECK-DAG: [[E1:%[^ ]+]] = constant false
+##XCHECK-DAG: [[E2:%[^ ]+]] = constant true
+##XCHECK-DAG: [[E3:%[^ ]+]] = constant false
+##XCHECK: {{%[^ ]+}} = "arc.make_vector"([[E0]], [[E1]], [[E2]], [[E3]]) : (i1, i1, i1, i1) -> tensor<4xi1>
 #
 #  let f64_vector: vec[f64] = [0.694, 1.0, 1.4142, 3.14] in
-##CHECK-DAG: [[E4:%[^ ]+]] = constant {{[^:]+}} : f64
-##CHECK-DAG: [[E5:%[^ ]+]] = constant {{[^:]+}} : f64
-##CHECK-DAG: [[E6:%[^ ]+]] = constant {{[^:]+}} : f64
-##CHECK-DAG: [[E7:%[^ ]+]] = constant {{[^:]+}} : f64
-##CHECK: {{%[^ ]+}} = "arc.make_vector"([[E4]], [[E5]], [[E6]], [[E7]]) : (f64, f64, f64, f64) -> tensor<4xf64>
+##XCHECK-DAG: [[E4:%[^ ]+]] = constant {{[^:]+}} : f64
+##XCHECK-DAG: [[E5:%[^ ]+]] = constant {{[^:]+}} : f64
+##XCHECK-DAG: [[E6:%[^ ]+]] = constant {{[^:]+}} : f64
+##XCHECK-DAG: [[E7:%[^ ]+]] = constant {{[^:]+}} : f64
+##XCHECK: {{%[^ ]+}} = "arc.make_vector"([[E4]], [[E5]], [[E6]], [[E7]]) : (f64, f64, f64, f64) -> tensor<4xf64>
   4711
 
 }
