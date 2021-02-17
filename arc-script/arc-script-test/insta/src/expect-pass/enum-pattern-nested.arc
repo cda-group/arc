@@ -1,3 +1,6 @@
+# XFAIL: *
+# RUN: arc-script run --output=MLIR %s | arc-mlir
+
 enum Baz {
     Some(i32),
     None,
