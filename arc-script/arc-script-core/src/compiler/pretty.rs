@@ -12,12 +12,12 @@ pub(crate) struct Pretty<'i, Node, Context: Copy>(pub(crate) &'i Node, pub(crate
 /// Creates a pretty format for an AST node.
 pub(crate) trait AsPretty: Sized {
     /// Wraps `Self` and context `T` inside a struct which can be pretty-printed.
-    fn pretty<Context, T>(&self, ctx: T) -> Pretty<'_, Self, Context>
+    fn pretty<Context, T>(&self, fmt: T) -> Pretty<'_, Self, Context>
     where
         T: AsRef<Format<Context>>,
         Context: Copy,
     {
-        Pretty::new(self, *ctx.as_ref())
+        Pretty::new(self, *fmt.as_ref())
     }
 
     /// Wraps `Self` inside a struct which can be pretty-printed. This is similar to [`pretty`] but
