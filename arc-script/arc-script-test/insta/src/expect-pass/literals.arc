@@ -65,18 +65,18 @@ fun test() -> i32 {
 #CHECK: {{%[^ ]+}} = constant false
 
 #  let bool_vector: vec[bool] = [true, false, true, false] in
-##CHECK-DAG: [[E0:%[^ ]+]] = constant true
-##CHECK-DAG: [[E1:%[^ ]+]] = constant false
-##CHECK-DAG: [[E2:%[^ ]+]] = constant true
-##CHECK-DAG: [[E3:%[^ ]+]] = constant false
-##CHECK: {{%[^ ]+}} = "arc.make_vector"([[E0]], [[E1]], [[E2]], [[E3]]) : (i1, i1, i1, i1) -> tensor<4xi1>
+##XCHECK-DAG: [[E0:%[^ ]+]] = constant true
+##XCHECK-DAG: [[E1:%[^ ]+]] = constant false
+##XCHECK-DAG: [[E2:%[^ ]+]] = constant true
+##XCHECK-DAG: [[E3:%[^ ]+]] = constant false
+##XCHECK: {{%[^ ]+}} = "arc.make_vector"([[E0]], [[E1]], [[E2]], [[E3]]) : (i1, i1, i1, i1) -> tensor<4xi1>
 #
 #  let f64_vector: vec[f64] = [0.694, 1.0, 1.4142, 3.14] in
-##CHECK-DAG: [[E4:%[^ ]+]] = constant {{[^:]+}} : f64
-##CHECK-DAG: [[E5:%[^ ]+]] = constant {{[^:]+}} : f64
-##CHECK-DAG: [[E6:%[^ ]+]] = constant {{[^:]+}} : f64
-##CHECK-DAG: [[E7:%[^ ]+]] = constant {{[^:]+}} : f64
-##CHECK: {{%[^ ]+}} = "arc.make_vector"([[E4]], [[E5]], [[E6]], [[E7]]) : (f64, f64, f64, f64) -> tensor<4xf64>
+##XCHECK-DAG: [[E4:%[^ ]+]] = constant {{[^:]+}} : f64
+##XCHECK-DAG: [[E5:%[^ ]+]] = constant {{[^:]+}} : f64
+##XCHECK-DAG: [[E6:%[^ ]+]] = constant {{[^:]+}} : f64
+##XCHECK-DAG: [[E7:%[^ ]+]] = constant {{[^:]+}} : f64
+##XCHECK: {{%[^ ]+}} = "arc.make_vector"([[E4]], [[E5]], [[E6]], [[E7]]) : (f64, f64, f64, f64) -> tensor<4xf64>
   4711
 
 }
