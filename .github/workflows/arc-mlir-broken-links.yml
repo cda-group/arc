@@ -1,0 +1,23 @@
+name: arc-mlir-broken-links
+
+on:
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+    runs-on: self-hosted
+
+    steps:
+
+    - name: Checkout source
+      uses: actions/checkout@v2
+
+    - name: Update submodule
+      run: git submodule update --init --recursive
+
+    - name: Check for broken symlinks
+      run: |
+        ./check-for-broken-links
+      env:
+        A2M_BUILD: ${{ format('{0}/build', runner.temp) }}

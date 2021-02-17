@@ -1,0 +1,10 @@
+#!/bin/bash
+
+# Check if there are broken symlinks in the tree.
+
+BROKEN_LINKS=$(find . -type l ! -exec test -e {} \; -print)
+if [[ ${BROKEN_LINKS} ]]; then
+    echo "There are broken symlinks in the repo:"
+    echo ${BROKEN_LINKS}
+    exit 1
+fi
