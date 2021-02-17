@@ -1,36 +1,61 @@
 //! Macros for using arbitrary enums without having to
 //! implement a bunch of boilerplate methods.
 //!
-//! The assumptions are:
+//! Requirements which must be satisfied by arc-script:
 //! * Each enum variant has exactly one field.
-//! * Each enum is wrapped inside a struct (prost requirement).
-//! * Each enum implements a method `.wrap()` to wrap it inside the struct.
-//! * Each enum variant identifier is unique and in the global namspace.
+//! * Each enum variant identifier is globally unique.
 //!
 //! All of these assumptions will be ensured by the Arcorn interface.
+
+/// Declares a new enum which is compatible with the `arcorn::{enwrap, unwrap, is}` API.
+///
+/// Any expansion of the macro satisfies the following properties:
+/// * Each enum is wrapped inside a struct (prost requirement).
+/// * Each enum implements a method `.wrap()` to wrap it inside the struct.
+/// * Each enum variants is imported into the global namespace.
+///
+/// ```
+/// arcorn::declare_enum! {
+///     enum Foo {
+///         FooBar(i32),
+///         FooBaz(i32)
+///     }
+/// }
+/// ```
+#[macro_export]
+macro_rules! declare_enum {
+    {
+        enum $name:ident {
+            $($variant:ident($ty:ty)),*
+        }
+    } => {
+        paste::paste! {
+            pub struct $name {
+                this: [<$name Enum>]
+            }
+            pub enum [<$name Enum>] {
+                $($variant($ty)),*
+            }
+            use [<$name Enum>]::*;
+            impl [<$name Enum>] {
+                fn wrap(self) -> $name {
+                    $name { this: self }
+                }
+            }
+        }
+    }
+}
 
 /// Enwraps a value into an enum-variant.
 ///
 /// ```
-/// use arcorn::enwrap;
-/// use derive_more::From;
-/// struct Foo {
-///     this: FooEnum
-/// }
-/// impl FooEnum {
-///     fn wrap(self) -> Foo {
-///         Foo {
-///             this: self
-///         }
+/// arcorn::declare_enum! {
+///     enum Foo {
+///         FooBar(i32),
+///         FooBaz(i32)
 ///     }
 /// }
-/// enum FooEnum {
-///     FooBar(i32),
-///     FooBaz(i32)
-/// }
-/// use FooEnum::*;
-///
-/// let foo = enwrap!(FooBar, 5);
+/// let foo = arcorn::enwrap!(FooBar, 5);
 /// ```
 #[macro_export]
 macro_rules! enwrap {
@@ -44,28 +69,15 @@ macro_rules! enwrap {
 /// Returns `true` if enum is a certain variant, else `false`.
 ///
 /// ```
-/// use arcorn::enwrap;
-/// use arcorn::is;
-/// use derive_more::From;
-/// #[derive(From)]
-/// struct Foo {
-///     this: FooEnum
-/// }
-/// impl FooEnum {
-///     fn wrap(self) -> Foo {
-///         Foo {
-///             this: self
-///         }
+/// arcorn::declare_enum! {
+///     enum Foo {
+///         FooBar(i32),
+///         FooBaz(i32)
 ///     }
 /// }
-/// enum FooEnum {
-///     FooBar(i32),
-///     FooBaz(i32)
-/// }
-/// use FooEnum::*;
 ///
-/// let foo = enwrap!(FooBar, 5);
-/// assert!(is!(FooBar, foo));
+/// let foo = arcorn::enwrap!(FooBar, 5);
+/// assert!(arcorn::is!(FooBar, foo));
 /// ```
 #[macro_export]
 macro_rules! is {
@@ -83,28 +95,15 @@ macro_rules! is {
 /// Unwraps a value out of an enum-variant.
 ///
 /// ```
-/// use arcorn::enwrap;
-/// use arcorn::unwrap;
-/// use derive_more::From;
-/// #[derive(From)]
-/// struct Foo {
-///     this: FooEnum
-/// }
-/// impl FooEnum {
-///     fn wrap(self) -> Foo {
-///         Foo {
-///             this: self
-///         }
+/// arcorn::declare_enum! {
+///     enum FooEnum {
+///         FooBar(i32),
+///         FooBaz(i32)
 ///     }
 /// }
-/// enum FooEnum {
-///     FooBar(i32),
-///     FooBaz(i32)
-/// }
-/// use FooEnum::*;
 ///
-/// let foo = enwrap!(FooBar, 5);
-/// let bar = unwrap!(FooBar, foo);
+/// let foo = arcorn::enwrap!(FooBar, 5);
+/// let bar = arcorn::unwrap!(FooBar, foo);
 /// ```
 #[macro_export]
 macro_rules! unwrap {
