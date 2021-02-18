@@ -254,7 +254,15 @@ dependencies = [
 ]
 
 [[package]]
-name = "arc-script-test-integration"
+name = "arc-script-test-integration-dynamic"
+version = "0.0.0"
+dependencies = [
+ "arc-script",
+ "arcon",
+]
+
+[[package]]
+name = "arc-script-test-integration-dynamic-cached"
 version = "0.0.0"
 dependencies = [
  "arc-script",
