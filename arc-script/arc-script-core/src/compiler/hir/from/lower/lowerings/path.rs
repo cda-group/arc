@@ -10,7 +10,7 @@ use resolve::DeclKind::*;
 use resolve::ItemDeclKind::*;
 
 /// A bare-path (which is not the operand of a call expression) can resolve into different things.
-pub(super) fn lower_path_expr(
+pub(crate) fn lower_path_expr(
     path: &ast::Path,
     loc: Option<Loc>,
     ctx: &mut Context<'_>,
@@ -27,13 +27,13 @@ pub(super) fn lower_path_expr(
     }
 }
 
-pub(super) fn lower_is(path: &ast::Path, expr: &ast::Expr, ctx: &mut Context<'_>) -> hir::ExprKind {
+pub(crate) fn lower_is(path: &ast::Path, expr: &ast::Expr, ctx: &mut Context<'_>) -> hir::ExprKind {
     lower_variant(path, ctx)
         .map(|path| hir::ExprKind::Is(path, expr.lower(ctx).into()))
         .unwrap_or(hir::ExprKind::Err)
 }
 
-pub(super) fn lower_unwrap(
+pub(crate) fn lower_unwrap(
     path: &ast::Path,
     expr: &ast::Expr,
     ctx: &mut Context<'_>,
@@ -43,7 +43,7 @@ pub(super) fn lower_unwrap(
         .unwrap_or(hir::ExprKind::Err)
 }
 
-pub(super) fn lower_enwrap(
+pub(crate) fn lower_enwrap(
     path: &ast::Path,
     expr: &ast::Expr,
     ctx: &mut Context<'_>,
@@ -53,7 +53,7 @@ pub(super) fn lower_enwrap(
         .unwrap_or(hir::ExprKind::Err)
 }
 
-pub(super) fn lower_variant(path: &ast::Path, ctx: &mut Context<'_>) -> Option<hir::Path> {
+pub(crate) fn lower_variant(path: &ast::Path, ctx: &mut Context<'_>) -> Option<hir::Path> {
     if let Item(x, Variant) = ctx.res.resolve(path, ctx.info).unwrap() {
         Some(x)
     } else {

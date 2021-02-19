@@ -13,7 +13,7 @@ use resolve::ItemDeclKind::*;
 /// * An enum-variant constructor, if `foo` resolves to an enum declaration.
 /// * A function call, if `foo` resolves to a variable or function declaration.
 /// Since functions are values, we only need to consider the enum-variant case.
-pub(super) fn lower(expr: &ast::Expr, args: &[ast::Expr], ctx: &mut Context<'_>) -> hir::ExprKind {
+pub(crate) fn lower(expr: &ast::Expr, args: &[ast::Expr], ctx: &mut Context<'_>) -> hir::ExprKind {
     if let ast::ExprKind::Path(path) = ctx.ast.exprs.resolve(expr.id) {
         if let Some(decl) = ctx.res.resolve(path, ctx.info) {
             if let Item(path, Variant) = decl {

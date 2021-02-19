@@ -36,7 +36,7 @@ use crate::compiler::ast;
 use crate::compiler::hir::Expr;
 use arc_script_core_shared::Lower;
 
-pub(super) fn lower(p: &ast::Param, e0: &ast::Expr, e1: &ast::Expr, ctx: &mut Context<'_>) -> Expr {
+pub(crate) fn lower(p: &ast::Param, e0: &ast::Expr, e1: &ast::Expr, ctx: &mut Context<'_>) -> Expr {
     let e0 = e0.lower(ctx);
     let clauses = super::pattern::lower_param_expr(p, e0, ctx);
     let e1 = e1.lower(ctx);

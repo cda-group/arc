@@ -1,32 +1,34 @@
-/// Module for lowering call-expressions.
-mod call;
-/// Module for lowering call-expressions.
-mod cases;
-/// Module for lowering if-let-expressions patterns.
-mod if_let;
-/// Module for lowering pure lambdas into first-class functions.
-mod lambda;
-/// Module for lowering let-expressions patterns.
-mod let_in;
-/// Module for lifting expressions into functions.
-mod lift;
-/// Module for lowering nominal types.
-mod nominal;
-/// Module for lowering on clauses.
-mod on;
-/// Module for lowering path expressions.
-mod path;
-/// Module for lowering patterns.
-mod pattern;
-/// Module for lowering ports.
-mod ports;
+mod lowerings {
+    pub(crate) use super::Context;
+    /// Module for lowering call-expressions.
+    pub(crate) mod call;
+    /// Module for lowering call-expressions.
+    pub(crate) mod cases;
+    /// Module for lowering if-let-expressions patterns.
+    pub(crate) mod if_let;
+    /// Module for lowering pure lambdas into first-class functions.
+    pub(crate) mod lambda;
+    /// Module for lowering let-expressions patterns.
+    pub(crate) mod let_in;
+    /// Module for lifting expressions into functions.
+    pub(crate) mod lift;
+    /// Module for lowering nominal types.
+    pub(crate) mod nominal;
+    /// Module for lowering path expressions.
+    pub(crate) mod path;
+    /// Module for lowering patterns.
+    pub(crate) mod pattern;
+}
+
 /// Module for lowering names and paths of the AST.
 mod resolve;
-/// Module for lowering common types.
-mod utils;
+
+use lowerings::*;
 
 use crate::compiler::ast;
-use crate::compiler::hir::{self, Name, Path};
+use crate::compiler::hir;
+use crate::compiler::hir::Name;
+use crate::compiler::hir::Path;
 use crate::compiler::info;
 use crate::compiler::info::diags::Error;
 use crate::compiler::info::types::TypeId;
@@ -398,14 +400,12 @@ impl ast::Expr {
 }
 
 impl Lower<hir::UnOp, Context<'_>> for ast::UnOp {
-    #[rustfmt::skip]
     fn lower(&self, _ctx: &mut Context<'_>) -> hir::UnOp {
         hir::UnOp::new(self.kind.clone(), self.loc)
     }
 }
 
 impl Lower<hir::BinOp, Context<'_>> for ast::BinOp {
-    #[rustfmt::skip]
     fn lower(&self, _: &mut Context<'_>) -> hir::BinOp {
         hir::BinOp::new(self.kind.clone(), self.loc)
     }
@@ -432,7 +432,6 @@ where
 }
 
 impl Lower<hir::LitKind, Context<'_>> for ast::LitKind {
-    #[rustfmt::skip]
     fn lower(&self, _: &mut Context<'_>) -> Self {
         self.clone()
     }
