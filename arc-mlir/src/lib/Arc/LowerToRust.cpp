@@ -138,6 +138,20 @@ private:
     Type ty = attr.getType();
     Type rustTy = TypeConverter.convertType(ty);
     APFloat f = attr.getValue();
+    unsigned width = ty.getIntOrFloatBitWidth();
+    std::string rustTyName =
+        "f" + Twine(width).str(); // TODO: handle bf16 and f16
+
+    if (f.isInfinity()) {
+      if (f.isNegative())
+        rustTyName += "::NEG_INFINITY";
+      else
+        rustTyName += "::INFINITY";
+      return returnResult(op, rustTy, rustTyName, rewriter);
+    }
+    if (f.isNaN())
+      return returnResult(op, rustTy, rustTyName + "::NAN", rewriter);
+
     char hex[256];
     f.convertToHexString(hex, 0, false, llvm::APFloat::rmNearestTiesToEven);
 
@@ -152,7 +166,6 @@ private:
       }
     }
 
-    unsigned width = ty.getIntOrFloatBitWidth();
     Twine str = "hexf" + Twine(width) + "!(\"" + hex + "\")";
     std::string directive =
         "#[macro_use] extern crate " + ArcToRustLoweringPass::hexfCrate + ";";
