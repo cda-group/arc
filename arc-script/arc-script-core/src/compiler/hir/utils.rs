@@ -3,15 +3,6 @@ use crate::compiler::hir;
 use crate::compiler::info::paths::PathId;
 use crate::compiler::info::types::TypeId;
 
-impl Default for hir::Expr {
-    /// Returns an error-expression. This method is solely meant to be used for
-    /// [`std::mem::replace`] to make in-place modifications to the HIR, for
-    /// example in [`crate::passes::pruner`].
-    fn default() -> Self {
-        Self::new(hir::ExprKind::Err, TypeId::default(), None)
-    }
-}
-
 impl Default for hir::Type {
     fn default() -> Self {
         Self::new(hir::TypeKind::Unknown)
