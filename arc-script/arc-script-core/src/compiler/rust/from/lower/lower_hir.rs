@@ -2,6 +2,7 @@ use arc_script_core_shared::get;
 use arc_script_core_shared::Lower;
 
 use crate::compiler::hir;
+use crate::compiler::rust::from::lower::lowerings::structs;
 
 use super::Context;
 
@@ -14,9 +15,12 @@ impl Lower<Tokens, Context<'_>> for hir::HIR {
         let defs = self
             .items
             .iter()
-            .map(|item| self.defs.get(item).unwrap().lower(ctx));
+            .map(|item| self.defs.get(item).unwrap().lower(ctx))
+            .collect::<Vec<_>>();
+        let mangled_defs = ctx.mangled_defs.values();
         quote! {
             #(#defs)*
+            #(#mangled_defs)*
         }
     }
 }
@@ -134,6 +138,7 @@ impl Lower<Tokens, Context<'_>> for hir::Task {
         };
 
         quote! {
+            #[arcorn::rewrite]
             #item_struct
             #item_impl
             #item_fn
@@ -260,7 +265,18 @@ impl Lower<Tokens, Context<'_>> for hir::Expr {
                 let i = syn::Index::from(i.id);
                 quote!(#e.#i)
             }
-            hir::ExprKind::Struct(_efs) => todo!(),
+            hir::ExprKind::Struct(efs) => {
+                let ident = structs::mangle(self.tv, ctx);
+                let efs = efs
+                    .iter()
+                    .map(|(x, e)| {
+                        let x = x.lower(ctx);
+                        let e = e.lower(ctx);
+                        quote!(#x: #e)
+                    })
+                    .collect::<Vec<_>>();
+                quote!(#ident { #(#efs),* })
+            }
             hir::ExprKind::Tuple(es) => {
                 let es = es.iter().map(|e| e.lower(ctx));
                 quote!((#(#es),*))
@@ -303,13 +319,8 @@ impl Lower<Tokens, Context<'_>> for hir::Expr {
 
 impl Lower<Tokens, Context<'_>> for hir::TypeId {
     fn lower(&self, ctx: &mut Context<'_>) -> Tokens {
-        ctx.info.types.resolve(*self).lower(ctx)
-    }
-}
-
-impl Lower<Tokens, Context<'_>> for hir::Type {
-    fn lower(&self, ctx: &mut Context<'_>) -> Tokens {
-        match &self.kind {
+        let ty = ctx.info.types.resolve(*self);
+        match &ty.kind {
             hir::TypeKind::Array(_t, _s) => todo!(),
             hir::TypeKind::Fun(ts, t) => {
                 let t = t.lower(ctx);
@@ -341,7 +352,27 @@ impl Lower<Tokens, Context<'_>> for hir::Type {
                 let t = t.lower(ctx);
                 quote!(Stream<#t>)
             }
-            hir::TypeKind::Struct(_fts) => todo!(),
+            hir::TypeKind::Struct(fts) => {
+                let ident = structs::mangle(*self, ctx);
+                if !ctx.mangled_defs.contains_key(&ident) {
+                    let fts = fts
+                        .iter()
+                        .map(|(f, t)| {
+                            let f = f.lower(ctx);
+                            let t = t.lower(ctx);
+                            quote!(#f : #t)
+                        })
+                        .collect::<Vec<_>>();
+                    let def = quote! {
+                        #[arcorn::rewrite]
+                        struct #ident {
+                            #(#fts),*
+                        }
+                    };
+                    ctx.mangled_defs.insert(ident.clone(), def);
+                }
+                quote!(#ident)
+            }
             hir::TypeKind::Tuple(ts) => {
                 let ts = ts.iter().map(|t| t.lower(ctx));
                 quote!((#(#ts),*))
