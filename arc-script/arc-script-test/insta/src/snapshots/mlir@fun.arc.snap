@@ -5,7 +5,7 @@ input_file: arc-script-test/insta/src/expect-pass/fun.arc
 ---
 module @toplevel {
     func @crate_max(%a_0: si32, %b_0: si32) -> si32 {
-        %x_0 = arc.cmpi "gt", %a_0, %b_0 : i1
+        %x_0 = arc.cmpi gt, %a_0, %b_0 : si32
         %x_1 = "arc.if"(%x_0) ({
             "arc.block.result"(%a_0) : (si32) -> ()
         },{
@@ -16,7 +16,7 @@ module @toplevel {
     func @crate_test() -> si32 {
         %x_2 = arc.constant 1 : si32
         %x_3 = arc.constant 2 : si32
-        %x_4 = call crate_max(%x_2, %x_3) : (si32, si32) -> si32
+        %x_4 = call @crate_max(%x_2, %x_3) : (si32, si32) -> si32
         return %x_4 : si32
     }
 }
