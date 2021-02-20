@@ -69,24 +69,16 @@ impl hir::Hub {
     fn constrain(&self, ctx: &mut Context<'_>) -> Vec<TypeId> {
         match &self.kind {
             hir::HubKind::Tagged(x) => {
-                let item = ctx.defs.get(x).unwrap();
-                let tvs = if let hir::ItemKind::Enum(item) = &item.kind {
-                    item.variants
-                        .iter()
-                        .map(|x| {
-                            let item = ctx.defs.get(x).unwrap();
-                            if let hir::ItemKind::Variant(v) = &item.kind {
-                                ctx.info.types.intern(hir::TypeKind::Stream(v.tv))
-                            } else {
-                                unreachable!()
-                            }
-                        })
-                        .collect::<Vec<_>>()
-                } else {
-                    unreachable!()
-                };
                 ctx.unify(self.tv, TypeKind::Nominal(*x));
-                tvs
+                let item = ctx.defs.get(x).unwrap();
+                let item = get!(&item.kind, hir::ItemKind::Enum(x));
+                item.variants
+                    .iter()
+                    .map(|x| {
+                        let item = ctx.defs.get(x).unwrap();
+                        get!(&item.kind, hir::ItemKind::Variant(x)).tv
+                    })
+                    .collect::<Vec<_>>()
             }
             hir::HubKind::Single(tv) => {
                 ctx.unify(self.tv, *tv);
