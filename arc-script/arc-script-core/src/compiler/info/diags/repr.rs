@@ -220,6 +220,12 @@ pub enum Error {
         name: Name,
     },
 
+    /// Error when an enum variant is constructed with too many arguments.
+    VariantWrongArity {
+        /// Path of the enum variant.
+        path: Path,
+    },
+
     /// Error when a tuple is indexed with an out-of-bounds index.
     OutOfBoundsProject {
         /// Location of the error.

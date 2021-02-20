@@ -19,7 +19,8 @@ pub(crate) fn lower(expr: &ast::Expr, args: &[ast::Expr], ctx: &mut Context<'_>)
                 if let [arg] = args {
                     return hir::ExprKind::Enwrap(path, arg.lower(ctx).into());
                 } else {
-                    panic!("[FIXME] Expected exactly one argument to variant constructor")
+                    ctx.info.diags.intern(Error::VariantWrongArity { path });
+                    return hir::ExprKind::Err;
                 }
             }
         } else {

@@ -56,12 +56,17 @@ impl Resolver {
             }
         }
         // Otherwise it might be stored in the symbol table
-        let path = info.paths.join(self.path_id, path.id);
-        let true_path = self.table.resolve(path);
-        Some(DeclKind::Item(
-            true_path.into(),
-            self.table.get_decl(true_path)?,
-        ))
+        let rel_path = info.paths.join(self.path_id, path.id);
+        let abs_path = self.table.resolve(rel_path);
+        if let Some(decl) = self.table.get_decl(abs_path) {
+            Some(DeclKind::Item(abs_path.into(), decl))
+        } else {
+            info.diags.intern(Error::PathNotFound {
+                path: rel_path.into(),
+                loc: path.loc,
+            });
+            None
+        }
     }
 
     /// Pushes a namespace onto the path.
