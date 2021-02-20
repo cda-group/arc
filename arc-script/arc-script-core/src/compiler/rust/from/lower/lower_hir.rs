@@ -202,9 +202,14 @@ impl Lower<Tokens, Context<'_>> for hir::Expr {
                 quote!([#(#es),*])
             }
             hir::ExprKind::BinOp(e0, op, e1) if matches!(op.kind, hir::BinOpKind::Pow) => {
+                let tv = e1.tv;
                 let e0 = e0.lower(ctx);
                 let e1 = e1.lower(ctx);
-                quote!(#e0.pow(#e1))
+                match tv {
+                    _ if tv.is_float(ctx.info) => quote!(#e0.powf(#e1)),
+                    _ if tv.is_int(ctx.info) => quote!(#e0.powi(#e1)),
+                    _ => unreachable!(),
+                }
             }
             hir::ExprKind::BinOp(e0, op, e1) => {
                 let e0 = e0.lower(ctx);
