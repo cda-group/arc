@@ -1,9 +1,15 @@
 use super::Context;
 use crate::compiler::ast;
-use crate::compiler::hir::{self, Expr, ExprKind, Param, ParamKind, HIR};
+use crate::compiler::hir;
+use crate::compiler::hir::Expr;
+use crate::compiler::hir::ExprKind;
+use crate::compiler::hir::Param;
+use crate::compiler::hir::ParamKind;
+use crate::compiler::hir::HIR;
 use crate::compiler::info::diags::Error;
 
 use crate::compiler::info::types::TypeId;
+use arc_script_core_shared::get;
 use arc_script_core_shared::Lower;
 
 use crate::compiler::hir::from::lower::path;
@@ -344,11 +350,7 @@ pub(crate) fn params_to_args(params: &[hir::Param]) -> Vec<hir::Expr> {
         .iter()
         .map(|p| {
             let tv = p.tv;
-            let x = if let hir::ParamKind::Var(x) = p.kind {
-                x
-            } else {
-                unreachable!();
-            };
+            let x = get!(p.kind, hir::ParamKind::Var(x));
             hir::Expr::syn(hir::ExprKind::Var(x), tv)
         })
         .collect::<Vec<_>>()

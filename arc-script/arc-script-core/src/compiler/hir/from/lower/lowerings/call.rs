@@ -1,12 +1,11 @@
 use super::Context;
 use crate::compiler::ast;
 use crate::compiler::hir;
-use crate::compiler::hir::from::lower::resolve;
+use crate::compiler::hir::from::lower::resolve::DeclKind::Item;
+use crate::compiler::hir::from::lower::resolve::ItemDeclKind::*;
+use crate::compiler::info::diags::Error;
 
 use arc_script_core_shared::Lower;
-
-use resolve::DeclKind::Item;
-use resolve::ItemDeclKind::*;
 
 /// Call-expression are ambiguous and need to be analyzed in order to determine
 /// their meaning. In particular, the expression `foo(1)` could either be:

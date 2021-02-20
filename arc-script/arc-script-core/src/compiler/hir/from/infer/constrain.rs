@@ -10,6 +10,8 @@ use arc_script_core_shared::VecMap;
 
 use super::Context;
 
+use arc_script_core_shared::get;
+
 pub(crate) trait Constrain<'i> {
     fn constrain(&self, ctx: &mut Context<'i>);
 }
@@ -179,35 +181,26 @@ impl Constrain<'_> for Expr {
             ExprKind::Enwrap(x0, e) => {
                 e.constrain(ctx);
                 let item = &ctx.defs.get(x0).unwrap().kind;
-                if let ItemKind::Variant(item) = item {
-                    let x1 = ctx.info.paths.resolve(x0.id).pred.unwrap().into();
-                    ctx.unify(e.tv, item.tv);
-                    ctx.unify(self.tv, TypeKind::Nominal(x1));
-                } else {
-                    unreachable!();
-                }
+                let item = get!(item, ItemKind::Variant(x));
+                let x1 = ctx.info.paths.resolve(x0.id).pred.unwrap().into();
+                ctx.unify(e.tv, item.tv);
+                ctx.unify(self.tv, TypeKind::Nominal(x1));
             }
             ExprKind::Unwrap(x0, e) => {
                 e.constrain(ctx);
                 let item = ctx.defs.get(x0).unwrap();
-                if let ItemKind::Variant(item) = &item.kind {
-                    let x1 = ctx.info.paths.resolve(x0.id).pred.unwrap().into();
-                    ctx.unify(e.tv, TypeKind::Nominal(x1));
-                    ctx.unify(self.tv, item.tv);
-                } else {
-                    unreachable!();
-                }
+                let item = get!(&item.kind, ItemKind::Variant(x));
+                let x1 = ctx.info.paths.resolve(x0.id).pred.unwrap().into();
+                ctx.unify(e.tv, TypeKind::Nominal(x1));
+                ctx.unify(self.tv, item.tv);
             }
             ExprKind::Is(x0, e) => {
                 e.constrain(ctx);
                 let item = ctx.defs.get(x0).unwrap();
-                if let ItemKind::Variant(_item) = &item.kind {
-                    let x1 = ctx.info.paths.resolve(x0.id).pred.unwrap().into();
-                    ctx.unify(e.tv, TypeKind::Nominal(x1));
-                    ctx.unify(self.tv, Bool);
-                } else {
-                    unreachable!();
-                }
+                let _item = get!(&item.kind, ItemKind::Variant(x));
+                let x1 = ctx.info.paths.resolve(x0.id).pred.unwrap().into();
+                ctx.unify(e.tv, TypeKind::Nominal(x1));
+                ctx.unify(self.tv, Bool);
             }
             ExprKind::Tuple(es) => {
                 let tvs = es.iter().map(|arg| arg.tv).collect();

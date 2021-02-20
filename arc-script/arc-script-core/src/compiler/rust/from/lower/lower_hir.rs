@@ -1,3 +1,4 @@
+use arc_script_core_shared::get;
 use arc_script_core_shared::Lower;
 
 use crate::compiler::hir;
@@ -14,7 +15,7 @@ impl Lower<Tokens, Context<'_>> for hir::HIR {
             .items
             .iter()
             .map(|item| self.defs.get(item).unwrap().lower(ctx));
-        quote!{
+        quote! {
             #(#defs)*
         }
     }
@@ -97,16 +98,8 @@ impl Lower<Tokens, Context<'_>> for hir::Task {
                 #(#[ephemeral] pub #params),*
             }
         };
-        let ity = if let hir::HubKind::Single(ity) = &self.ihub.kind {
-            ity.lower(ctx)
-        } else {
-            todo!();
-        };
-        let oty = if let hir::HubKind::Single(oty) = &self.ohub.kind {
-            oty.lower(ctx)
-        } else {
-            todo!();
-        };
+        let ity = get!(&self.ihub.kind, hir::HubKind::Single(x)).lower(ctx);
+        let oty = get!(&self.ohub.kind, hir::HubKind::Single(x)).lower(ctx);
         let elem_id = self.on.param.kind.lower(ctx);
         let body = self.on.body.lower(ctx);
         let item_impl = quote! {
@@ -221,16 +214,13 @@ impl Lower<Tokens, Context<'_>> for hir::Expr {
                 let t = ctx.info.types.resolve(e.tv);
                 let e = e.lower(ctx);
                 let es = es.iter().map(|e| e.lower(ctx)).collect::<Vec<_>>();
-                if let hir::TypeKind::Fun(_, rtv) = t.kind {
-                    if let hir::TypeKind::Stream(_) = ctx.info.types.resolve(rtv).kind {
-                        let stream = es.get(0).unwrap();
-                        let task = e;
-                        quote!(Stream::operator(#stream, #task))
-                    } else {
-                        quote!(#e(#(#es),*))
-                    }
+                let (_, rtv) = get!(t.kind, hir::TypeKind::Fun(tvs, rtv));
+                if let hir::TypeKind::Stream(_) = ctx.info.types.resolve(rtv).kind {
+                    let stream = es.get(0).unwrap();
+                    let task = e;
+                    quote!(Stream::operator(#stream, #task))
                 } else {
-                    unreachable!()
+                    quote!(#e(#(#es),*))
                 }
             }
             hir::ExprKind::Emit(e) => {

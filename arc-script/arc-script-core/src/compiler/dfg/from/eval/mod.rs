@@ -16,6 +16,7 @@ use crate::compiler::hir::{
 };
 
 use crate::compiler::info::Info;
+use arc_script_core_shared::get;
 use arc_script_core_shared::New;
 
 use half::{bf16, f16};
@@ -209,35 +210,24 @@ impl Expr {
                         }
                     }
                     let item = ctx.hir.defs.get(&x).unwrap();
-                    if let ItemKind::Task(item) = &item.kind {
-                        match item.ohub.kind {
-                            hir::HubKind::Tagged(x) => {
-                                let item = ctx.hir.defs.get(&x).unwrap();
-                                if let ItemKind::Enum(item) = &item.kind {
-                                    let streams = item
-                                        .variants
-                                        .iter()
-                                        .enumerate()
-                                        .map(|(i, x)| {
-                                            let item = ctx.hir.defs.get(x).unwrap();
-                                            if let ItemKind::Variant(item) = &item.kind {
-                                                Value::new(Stream(target, i), item.tv)
-                                            } else {
-                                                unreachable!()
-                                            }
-                                        })
-                                        .collect::<Vec<_>>();
-                                    Tuple(streams)
-                                } else {
-                                    unreachable!()
-                                }
-                            }
-                            hir::HubKind::Single(tv) => {
-                                return Ok(Value::new(Stream(target, 0), tv))
-                            }
+                    let item = get!(&item.kind, ItemKind::Task(item));
+                    match item.ohub.kind {
+                        hir::HubKind::Tagged(x) => {
+                            let item = ctx.hir.defs.get(&x).unwrap();
+                            let item = get!(&item.kind, ItemKind::Enum(item));
+                            let streams = item
+                                .variants
+                                .iter()
+                                .enumerate()
+                                .map(|(i, x)| {
+                                    let item = ctx.hir.defs.get(x).unwrap();
+                                    let item = get!(&item.kind, ItemKind::Variant(item));
+                                    Value::new(Stream(target, i), item.tv)
+                                })
+                                .collect::<Vec<_>>();
+                            Tuple(streams)
                         }
-                    } else {
-                        unreachable!()
+                        hir::HubKind::Single(tv) => return Ok(Value::new(Stream(target, 0), tv)),
                     }
                 }
                 _ => unreachable!(),

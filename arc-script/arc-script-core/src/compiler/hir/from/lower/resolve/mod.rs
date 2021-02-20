@@ -2,8 +2,11 @@ mod debug;
 mod stack;
 mod table;
 
-use crate::compiler::ast::{self, AST};
-use crate::compiler::hir::{self, Name};
+use crate::compiler::ast;
+use crate::compiler::ast::AST;
+use crate::compiler::hir;
+use crate::compiler::hir::Name;
+use crate::compiler::info::diags::Error;
 
 use crate::compiler::info::paths::PathId;
 use crate::compiler::info::Info;

@@ -32,6 +32,7 @@ use crate::compiler::hir::Path;
 use crate::compiler::info;
 use crate::compiler::info::diags::Error;
 use crate::compiler::info::types::TypeId;
+use arc_script_core_shared::map;
 use arc_script_core_shared::Lower;
 use arc_script_core_shared::New;
 use arc_script_core_shared::VecMap;
@@ -171,13 +172,7 @@ impl Lower<(Path, hir::ItemKind), Context<'_>> for ast::Task {
         let on = self
             .items
             .iter()
-            .find_map(|item| {
-                if let ast::TaskItemKind::On(item) = &item.kind {
-                    Some(item)
-                } else {
-                    None
-                }
-            })
+            .find_map(|item| map!(&item.kind, ast::TaskItemKind::On(_)))
             .unwrap()
             .lower(ctx);
         let items = self

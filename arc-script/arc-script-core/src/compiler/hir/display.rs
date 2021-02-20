@@ -6,6 +6,7 @@ use crate::compiler::info::paths::PathId;
 use crate::compiler::info::types::TypeId;
 use crate::compiler::info::Info;
 use crate::compiler::pretty::*;
+use arc_script_core_shared::get;
 use arc_script_core_shared::New;
 
 use std::fmt;
@@ -183,18 +184,15 @@ impl<'i> Display for Pretty<'i, hir::Hub, Context<'_>> {
         match item.kind {
             hir::HubKind::Tagged(x) => {
                 let item = fmt.ctx.hir.defs.get(&x).unwrap();
-                if let hir::ItemKind::Enum(item) = &item.kind {
-                    write!(
-                        f,
-                        "({})",
-                        item.variants.iter().map_pretty(
-                            |v, f| write!(f, "{}", fmt.ctx.hir.defs.get(v).unwrap().pretty(fmt)),
-                            ", "
-                        )
+                let item = get!(&item.kind, hir::ItemKind::Enum(item));
+                write!(
+                    f,
+                    "({})",
+                    item.variants.iter().map_pretty(
+                        |v, f| write!(f, "{}", fmt.ctx.hir.defs.get(v).unwrap().pretty(fmt)),
+                        ", "
                     )
-                } else {
-                    unreachable!()
-                }
+                )
             }
             hir::HubKind::Single(tv) => write!(f, "({})", tv.pretty(fmt)),
         }
