@@ -1,7 +1,7 @@
 # RUN: arc-script run --output=MLIR %s | FileCheck %s
 # RUN: arc-script run --output=MLIR %s | arc-mlir | FileCheck %s
 
-fun main() { () }
+fun main() { unit }
 
 fun test() -> i32 {
   let a_i32: i32 = 65 in

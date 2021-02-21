@@ -12,7 +12,7 @@ use arc_script_core_shared::{Map, New};
 
 #[derive(Debug, New)]
 pub(crate) struct Context<'i> {
-    pub(crate) info: &'i Info,
+    pub(crate) info: &'i mut Info,
     pub(crate) hir: &'i HIR,
     /// Already mangled (root) type-variables.
     pub(crate) mangled_names: Map<hir::TypeId, String>,

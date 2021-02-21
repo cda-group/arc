@@ -1,5 +1,5 @@
 [package]
-name = "arcorn"
+name = "arc-script-arcorn"
 version = "0.0.0"
 authors = ["Klas Segeljakt <klasseg@kth.se>"]
 edition = "2018"
@@ -14,5 +14,9 @@ arcon_macros  = { version = "0.1.3", git = "https://github.com/cda-group/arcon" 
 shrinkwraprs  = { version = "0.3.0" }
 prost         = { version = "0.7" }
 derive_more   = { version = "0.99.11" }
-
 paste         = { version = "1.0.4" }
+
+[dev-dependencies]
+arcon         = { git = "https://github.com/cda-group/arcon" }
+prost         = { version = "0.7.0" }
+arc-script    = { version = "=0.0.0", path = "../../" }

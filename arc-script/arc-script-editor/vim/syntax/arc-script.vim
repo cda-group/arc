@@ -75,6 +75,7 @@ hi def link arcKeyword Keyword
 "=============================================================================
 syn keyword arcType bf16
 syn keyword arcType f16
+syn keyword arcType unit
 hi def link arcType Type
 "=============================================================================
 " Floats

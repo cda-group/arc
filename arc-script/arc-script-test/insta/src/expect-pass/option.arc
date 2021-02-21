@@ -8,8 +8,8 @@ enum Option {
 
 fun main() {
     if let Option::Some(y) = Option::Some(3) {
-        ()
+        unit
     } else {
-        ()
+        unit
     }
 }

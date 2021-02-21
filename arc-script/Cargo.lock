@@ -78,8 +78,23 @@ checksum = "db55d72333851e17d572bec876e390cd3b11eb1ef53ae821dd9f3b653d2b4569"
 name = "arc-script"
 version = "0.0.0"
 dependencies = [
+ "arc-script-arcorn",
  "arc-script-bridge",
  "arc-script-build",
+]
+
+[[package]]
+name = "arc-script-arcorn"
+version = "0.0.0"
+dependencies = [
+ "arc-script",
+ "arcon",
+ "arcon_macros",
+ "arcorn-macros",
+ "derive_more",
+ "paste 1.0.4",
+ "prost",
+ "shrinkwraprs",
 ]
 
 [[package]]
@@ -243,6 +258,7 @@ version = "0.0.0"
 dependencies = [
  "arc-script",
  "arcon",
+ "prost",
 ]
 
 [[package]]
@@ -259,6 +275,7 @@ version = "0.0.0"
 dependencies = [
  "arc-script",
  "arcon",
+ "prost",
 ]
 
 [[package]]
@@ -267,6 +284,7 @@ version = "0.0.0"
 dependencies = [
  "arc-script",
  "arcon",
+ "prost",
 ]
 
 [[package]]
@@ -372,19 +390,6 @@ dependencies = [
  "proc-macro2 1.0.24",
  "quote 1.0.8",
  "syn 1.0.60",
-]
-
-[[package]]
-name = "arcorn"
-version = "0.0.0"
-dependencies = [
- "arcon",
- "arcon_macros",
- "arcorn-macros",
- "derive_more",
- "paste 1.0.4",
- "prost",
- "shrinkwraprs",
 ]
 
 [[package]]

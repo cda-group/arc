@@ -35,12 +35,13 @@ fn rewrite_enum(mut item: syn::ItemEnum) -> pm::TokenStream {
     let struct_ident = std::mem::replace(&mut item.ident, enum_ident.clone());
     let enum_ident_str = syn::LitStr::new(&enum_ident.to_string(), enum_ident.span());
     quote!(
-        #[derive(prost::Message)]
+        #[derive(prost::Message, arcon::prelude::Arcon, Clone, arc_script::arcorn::derive_more::From)]
+        #[arcon(reliable_ser_id = 13, version = 1)]
         struct #struct_ident {
             #[prost(oneof = #enum_ident_str, tags = #tags)]
             pub this: Option<#enum_ident>
         }
-        #[derive(prost::Oneof)]
+        #[derive(prost::Oneof, Clone)]
         #item
         use #enum_ident::*;
         impl #enum_ident {
@@ -58,7 +59,8 @@ fn rewrite_struct(mut item: syn::ItemStruct) -> pm::TokenStream {
         field.attrs.push(ty_to_prost_attr(&field.ty, None));
     });
     quote!(
-        #[derive(prost::Message)]
+        #[derive(prost::Message, arcon::prelude::Arcon, Clone, arc_script::arcorn::derive_more::From)]
+        #[arcon(reliable_ser_id = 13, version = 1)]
         #item
     )
     .into()

@@ -82,7 +82,7 @@ impl hir::Hub {
             }
             hir::HubKind::Single(tv) => {
                 ctx.unify(self.tv, *tv);
-                vec![ctx.info.types.intern(TypeKind::Stream(*tv))]
+                vec![*tv]
             }
         }
     }

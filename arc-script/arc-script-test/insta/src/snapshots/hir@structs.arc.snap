@@ -3,8 +3,8 @@ source: arc-script-test/insta/src/lib.rs
 expression: s
 input_file: arc-script-test/insta/src/expect-pass/structs.arc
 ---
-fun test() -> () {
+fun test() -> unit {
     let x_0: { a: { c: i32, b: i32 }, xyz: i32, d: { b: i32, c: i32 } } = { a: { c: 1, b: 5 }, xyz: 2, d: { b: 4, c: 2 } } in
-    ()
+    unit
 }
 

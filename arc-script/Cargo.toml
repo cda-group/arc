@@ -28,6 +28,7 @@ path = "src/lib.rs"
 [dependencies]
 arc-script-bridge = { version = "=0.0.0", path = "arc-script-api/bridge" }
 arc-script-build  = { version = "=0.0.0", path = "arc-script-api/build" }
+arc-script-arcorn = { version = "=0.0.0", path = "arc-script-api/arcorn" }
 
 [workspace]
 members = [

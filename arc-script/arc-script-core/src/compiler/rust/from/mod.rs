@@ -10,7 +10,7 @@ use tracing::instrument;
 
 impl Rust {
     #[instrument(name = "HIR & Info => Rust", level = "debug", skip(hir, info))]
-    pub(crate) fn from(hir: &HIR, info: &Info) -> Self {
+    pub(crate) fn from(hir: &HIR, info: &mut Info) -> Self {
         let mangled_idents = Map::default();
         let mangled_defs = Map::default();
         let ctx = &mut lower::Context::new(info, hir, mangled_idents, mangled_defs);

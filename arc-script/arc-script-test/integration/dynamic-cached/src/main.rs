@@ -1,5 +1,6 @@
 use arcon::prelude::ArconTime;
 use arcon::prelude::Pipeline;
+use arc_script::arcorn::operators::*;
 
 /// Includes a pre-built Arc-program
 #[arc_script::include("main.arc")]
@@ -11,7 +12,7 @@ fn main() {
     let data = vec![1, 2, 3];
     let stream0 = pipeline.collection(data, |conf| {
         conf.set_arcon_time(ArconTime::Process);
-    });
+    }).convert();
 
     let stream1 = main::pipe(stream0);
 

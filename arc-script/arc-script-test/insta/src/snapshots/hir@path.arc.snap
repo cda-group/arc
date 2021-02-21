@@ -1,11 +1,11 @@
 ---
-source: arc-script-core/tests/insta/mod.rs
+source: arc-script-test/insta/src/lib.rs
 expression: s
-input_file: arc-script-core/tests/insta/snapshot-tests/path.arc
+input_file: arc-script-test/insta/src/expect-pass/path.arc
 ---
-fun main() -> () {
+fun main() -> unit {
     let x_0: i32 = 1 in
     let y_0: i32 = x_0 in
-    ()
+    unit
 }
 

@@ -1,3 +1,4 @@
+use arc_script::arcorn::operators::*;
 use arcon::prelude::ArconTime;
 use arcon::prelude::Pipeline;
 
@@ -9,9 +10,11 @@ fn main() {
 
     let data = vec![1, 2, 3];
 
-    let stream = pipeline.collection(data, |conf| {
-        conf.set_arcon_time(ArconTime::Process);
-    });
+    let stream = pipeline
+        .collection(data, |conf| {
+            conf.set_arcon_time(ArconTime::Process);
+        })
+        .convert();
 
     let stream = script::pipe(stream);
 
@@ -20,4 +23,3 @@ fn main() {
     pipeline.start();
     pipeline.await_termination();
 }
-
