@@ -356,7 +356,7 @@ impl<'i> Display for Pretty<'i, hir::LitKind, Context<'_>> {
             hir::LitKind::Char(l) => write!(f, "'{}'", l),
             hir::LitKind::Str(l)  => write!(f, r#""{}""#, l),
             hir::LitKind::Time(l) => write!(f, "{}", l.as_seconds_f64()),
-            hir::LitKind::Unit    => write!(f, "()"),
+            hir::LitKind::Unit    => write!(f, "unit"),
             hir::LitKind::Err     => write!(f, "☇"),
         }
     }
@@ -415,7 +415,7 @@ impl<'i> Display for Pretty<'i, hir::ScalarKind, Context<'_>> {
             hir::ScalarKind::U64  => write!(f, "u64"),
             hir::ScalarKind::Null => write!(f, "null"),
             hir::ScalarKind::Str  => write!(f, "str"),
-            hir::ScalarKind::Unit => write!(f, "()"),
+            hir::ScalarKind::Unit => write!(f, "unit"),
             hir::ScalarKind::Bot  => todo!(),
         }
     }

@@ -1,9 +1,9 @@
-task Unique() (Input(i32)) -> (Output(i32)) {
-    state map: {i32} = {};
-    on Input(event) => {
-        if !contains(map, event) {
+task Unique() ~i32 -> ~i32 {
+    state set: {i32} = {};
+    on event => {
+        if not contains(map, event) {
             insert(map, event)
-            emit Output(map)
+            emit event
         }
     }
 }

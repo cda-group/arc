@@ -20,6 +20,7 @@ pub(crate) enum LogosToken {
 //=============================================================================
     #[token("(")] ParenL,
     #[token(")")] ParenR,
+    #[token("()")] ParenLR,
     #[token("[")] BrackL,
     #[token("]")] BrackR,
     #[token("{")] BraceL,
@@ -131,7 +132,7 @@ pub(crate) enum LogosToken {
     #[token("u64")] U64,
     #[token("null")] Null,
     #[token("str")] Str,
-    #[token("()")] Unit,
+    #[token("unit")] Unit,
 //=============================================================================
 // Identifiers and Literals
 //=============================================================================

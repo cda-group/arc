@@ -36,6 +36,7 @@ extern {
         "]"    => Token::BrackR,
         "("    => Token::ParenL,
         ")"    => Token::ParenR,
+        "()"   => Token::ParenLR,
 //=============================================================================
 // Operators
 //=============================================================================
@@ -142,7 +143,7 @@ extern {
         "u64"  => Token::U64,
         "null" => Token::Null,
         "str"  => Token::Str,
-        "()"   => Token::Unit,
+        "unit" => Token::Unit,
 //=============================================================================
 // Identifiers and Literals
 //=============================================================================
@@ -268,7 +269,7 @@ Hub: Hub = Spanned<HubKind> => Hub::from(<>);
 
 HubKind: HubKind = {
     ParenVec<Port> => HubKind::Tagged(<>),
-    Paren<Type0>   => HubKind::Single(<>),
+    Type0          => HubKind::Single(<>),
 };
 
 Item: Item = Spanned<Swap<Settings?, ItemKind>> => Item::from(<>);
@@ -459,7 +460,7 @@ LitKind: LitKind = {
     LitF64  => LitKind::F64(<>),
     LitStr  => LitKind::Str(<>),
     LitTime => LitKind::Time(<>),
-    "()"    => LitKind::Unit,
+    "unit"  => LitKind::Unit,
 };
 
 //=============================================================================
@@ -543,7 +544,7 @@ ScalarKind: ScalarKind = {
     "u64"  => ScalarKind::U64,
     "null" => ScalarKind::Null,
     "str"  => ScalarKind::Str,
-    "()"   => ScalarKind::Unit,
+    "unit" => ScalarKind::Unit,
     "!"    => ScalarKind::Bot,
 };
 
