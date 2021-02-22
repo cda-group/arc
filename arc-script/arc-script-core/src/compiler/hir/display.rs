@@ -1,6 +1,7 @@
 #![allow(clippy::useless_format)]
 use crate::compiler::hir;
 use crate::compiler::hir::HIR;
+use crate::compiler::info::modes::Verbosity;
 use crate::compiler::info::names::NameId;
 use crate::compiler::info::paths::PathId;
 use crate::compiler::info::types::TypeId;
@@ -272,6 +273,9 @@ impl<'i> Display for Pretty<'i, hir::Expr, Context<'_>> {
     #[rustfmt::skip]
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
         let Pretty(expr, fmt) = self;
+        if fmt.ctx.info.mode.verbosity >= Verbosity::Debug {
+            write!(f, "(")?;
+        }
         match &expr.kind {
             hir::ExprKind::If(e0, e1, e2) => write!(
                 f,
@@ -331,6 +335,9 @@ impl<'i> Display for Pretty<'i, hir::Expr, Context<'_>> {
             hir::ExprKind::Return(e) => write!(f, "return {};;", e.pretty(fmt)),
             hir::ExprKind::Todo => write!(f, "???"),
         }?;
+        if fmt.ctx.info.mode.verbosity >= Verbosity::Debug {
+            write!(f, "):{}", expr.tv.pretty(fmt))?;
+        }
         Ok(())
     }
 }

@@ -4,7 +4,7 @@ use crate::opts;
 use crate::opts::Opt;
 use crate::opts::Run;
 use crate::opts::SubCmd;
-use arc_script_core::prelude::modes::{Input, Mode, Output};
+use arc_script_core::prelude::modes::{Input, Mode, Output, Verbosity};
 use arc_script_core::prelude::Result;
 
 use std::io;
@@ -39,7 +39,13 @@ impl From<Opt> for Result<Mode> {
             SubCmd::Completions(_) => unreachable!(),
         };
         mode.profile = opt.profile;
-        mode.verbosity = opt.verbosity;
+        mode.verbosity = match opt.verbosity {
+            0 => Verbosity::Error,
+            1 => Verbosity::Warn,
+            2 => Verbosity::Info,
+            3 => Verbosity::Debug,
+            _ => Verbosity::Trace,
+        };
         mode.debug = opt.debug;
         mode.fail_fast = opt.fail_fast;
         mode.suppress_diags = opt.suppress_diags;
