@@ -265,15 +265,17 @@ pub enum Error {
         loc: Option<Loc>,
     },
 
-    /// Error when moving a used value.
+    /// Error when moving a used value, and the moved value does not implement Copy.
     UseOfMovedValue {
         /// Location of the parent value.
         loc0: Option<Loc>,
         /// Location of the second value.
         loc1: Option<Loc>,
+        /// Type which does not implement Copy.
+        tv: TypeId,
     },
 
-    /// Error when using the same value twice.
+    /// Error when using the same value twice, and the used value does not implement Copy.
     DoubleUse {
         /// Location of the place expression declaration.
         loc0: Option<Loc>,
@@ -281,6 +283,8 @@ pub enum Error {
         loc1: Option<Loc>,
         /// Location of the second use.
         loc2: Option<Loc>,
+        /// Type which does not implement Copy.
+        tv: TypeId,
     },
 }
 
