@@ -3,7 +3,7 @@ mod lowerings {
     /// Module for lowering call-expressions.
     pub(crate) mod call;
     /// Module for lowering call-expressions.
-    pub(crate) mod cases;
+//     pub(crate) mod cases;
     /// Module for lowering if-let-expressions patterns.
     pub(crate) mod if_let;
     /// Module for lowering pure lambdas into first-class functions.

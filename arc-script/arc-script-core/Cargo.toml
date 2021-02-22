@@ -32,8 +32,6 @@ tracing            = { version = "0.2.0", git = "https://github.com/tokio-rs/tra
 lexical-core       = { version = "0.7.5", features = ["format"] }
 crepe              = { version = "0.1.5" }
 petgraph           = { version = "0.5.1", package = "petgraph" }
-petgraph_4         = { version = "0.4.0", package = "petgraph" }
-pattern-compiler   = { package = "libeir_util_pattern_compiler", git = "https://github.com/eirproject/eir" }
 ryu                = { version = "1.0.5" }
 syn                = { version = "1.0.60", features = ["full"] }
 quote              = { version = "1.0.8" }
