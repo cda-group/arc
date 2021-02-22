@@ -3,7 +3,7 @@ task Filter(p: fun(i32) -> bool) ~i32 -> ~i32 {
         if p(event) {
             emit event
         } else {
-            ()
+            unit
         }
     }
 }

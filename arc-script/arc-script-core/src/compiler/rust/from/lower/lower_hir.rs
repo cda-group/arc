@@ -147,7 +147,7 @@ impl Lower<Tokens, Context<'_>> for hir::Task {
                 OperatorBuilder {
                     constructor: Arc::new(|b| #task_name { 
                         timestamp: None,
-                        #(#params),*
+                        #(#param_ids),*
                     }),
                     conf: Default::default(),
                 }
