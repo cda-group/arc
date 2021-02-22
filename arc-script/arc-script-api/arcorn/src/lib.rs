@@ -4,4 +4,4 @@ pub mod state;
 pub mod enums;
 
 /// Protobuf derives
-pub use arcorn_macros::conv;
+pub use arcorn_macros::rewrite;

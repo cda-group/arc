@@ -465,6 +465,8 @@ impl<'i> Display for Pretty<'i, hir::Type, Context<'_>> {
             Tuple(tys)      => write!(f, "tuple<{tys}>", tys = tys.all_pretty(", ", fmt)),
             Optional(_ty)   => todo!(),
             Fun(tys, ty)    => write!(f, "({tys}) -> {ty}", tys = tys.all_pretty(", ", fmt), ty = ty.pretty(fmt)),
+            Boxed(ty)       => write!(f, "box {}", ty.pretty(fmt)),
+            By(t0, t1)      => write!(f, "{} by {}", t0.pretty(fmt), t1.pretty(fmt)),
             Unknown         => unreachable!(),
             Err             => unreachable!(),
         }

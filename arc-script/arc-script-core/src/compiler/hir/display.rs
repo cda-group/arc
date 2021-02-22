@@ -6,6 +6,7 @@ use crate::compiler::info::paths::PathId;
 use crate::compiler::info::types::TypeId;
 use crate::compiler::info::Info;
 use crate::compiler::pretty::*;
+use arc_script_core_shared::get;
 use arc_script_core_shared::New;
 
 use std::fmt;
@@ -183,18 +184,15 @@ impl<'i> Display for Pretty<'i, hir::Hub, Context<'_>> {
         match item.kind {
             hir::HubKind::Tagged(x) => {
                 let item = fmt.ctx.hir.defs.get(&x).unwrap();
-                if let hir::ItemKind::Enum(item) = &item.kind {
-                    write!(
-                        f,
-                        "({})",
-                        item.variants.iter().map_pretty(
-                            |v, f| write!(f, "{}", fmt.ctx.hir.defs.get(v).unwrap().pretty(fmt)),
-                            ", "
-                        )
+                let item = get!(&item.kind, hir::ItemKind::Enum(item));
+                write!(
+                    f,
+                    "({})",
+                    item.variants.iter().map_pretty(
+                        |v, f| write!(f, "{}", fmt.ctx.hir.defs.get(v).unwrap().pretty(fmt)),
+                        ", "
                     )
-                } else {
-                    unreachable!()
-                }
+                )
             }
             hir::HubKind::Single(tv) => write!(f, "({})", tv.pretty(fmt)),
         }
@@ -301,6 +299,7 @@ impl<'i> Display for Pretty<'i, hir::Expr, Context<'_>> {
                 e1 = e1.pretty(fmt)
             ),
             hir::ExprKind::UnOp(op, e0) => match &op.kind {
+                hir::UnOpKind::Boxed => write!(f, "box {}", e0.pretty(fmt)),
                 hir::UnOpKind::Not => write!(f, "not {}", e0.pretty(fmt)),
                 hir::UnOpKind::Neg => write!(f, "-{}", e0.pretty(fmt)),
                 hir::UnOpKind::Err => write!(f, "☇{}", e0.pretty(fmt)),
@@ -386,8 +385,9 @@ impl<'i> Display for Pretty<'i, hir::BinOp, Context<'_>> {
             hir::BinOpKind::Band => write!(f, " band "),
             hir::BinOpKind::Bor  => write!(f, " bor "),
             hir::BinOpKind::Bxor => write!(f, " bxor "),
+            hir::BinOpKind::By   => write!(f, " by "),
             hir::BinOpKind::Pipe => write!(f, " |> "),
-            hir::BinOpKind::Mut  => write!(f, " := "),
+            hir::BinOpKind::Mut  => write!(f, " = "),
             hir::BinOpKind::Seq  => write!(f, ";{}", fmt),
             hir::BinOpKind::Err  => write!(f, " ☇ "),
         }
@@ -440,6 +440,8 @@ impl<'i> Display for Pretty<'i, hir::Type, Context<'_>> {
             hir::TypeKind::Tuple(tys)     => write!(f, "({})", tys.iter().all_pretty(", ", fmt)),
             hir::TypeKind::Optional(ty)   => write!(f, "{}?", ty.pretty(fmt)),
             hir::TypeKind::Fun(args, ty)  => write!(f, "fun({}) -> {}", args.all_pretty(", ", fmt), ty.pretty(fmt)),
+            hir::TypeKind::Boxed(ty)      => write!(f, "box {}", ty.pretty(fmt)),
+            hir::TypeKind::By(ty0, ty1)   => write!(f, "{} by {}", ty0.pretty(fmt), ty1.pretty(fmt)),
             hir::TypeKind::Err            => write!(f, "☇"),
             hir::TypeKind::Unknown        => write!(f, "?"),
         }

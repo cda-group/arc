@@ -6,7 +6,7 @@ use crate::compiler::info::files::Loc;
 use arc_script_core_shared::Lower;
 
 // Lambdas must for now be pure (cannot capture anything)
-pub(super) fn lower(
+pub(crate) fn lower(
     params: &[ast::Param],
     body: &ast::Expr,
     loc: Option<Loc>,

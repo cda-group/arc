@@ -1,15 +1,21 @@
 use super::Context;
 use crate::compiler::ast;
-use crate::compiler::hir::{self, Expr, ExprKind, Param, ParamKind, HIR};
+use crate::compiler::hir;
+use crate::compiler::hir::Expr;
+use crate::compiler::hir::ExprKind;
+use crate::compiler::hir::Param;
+use crate::compiler::hir::ParamKind;
+use crate::compiler::hir::HIR;
 use crate::compiler::info::diags::Error;
 
 use crate::compiler::info::types::TypeId;
+use arc_script_core_shared::get;
 use arc_script_core_shared::Lower;
 
 use crate::compiler::hir::from::lower::path;
 
 /// Lowers parameters but requires them to contain no patterns.
-pub(super) fn lower_params_basic(ps: &[ast::Param], ctx: &mut Context<'_>) -> Vec<Param> {
+pub(crate) fn lower_params_basic(ps: &[ast::Param], ctx: &mut Context<'_>) -> Vec<Param> {
     ps.iter()
         .map(|p| {
             let tv = p.ty.lower(ctx).unwrap_or_else(|| ctx.info.types.fresh());
@@ -23,7 +29,7 @@ pub(super) fn lower_params_basic(ps: &[ast::Param], ctx: &mut Context<'_>) -> Ve
         .collect()
 }
 
-pub(super) fn lower_params(ps: &[ast::Param], ctx: &mut Context<'_>) -> (Vec<Param>, Vec<Case>) {
+pub(crate) fn lower_params(ps: &[ast::Param], ctx: &mut Context<'_>) -> (Vec<Param>, Vec<Case>) {
     let mut cases = Vec::new();
     let params = ps
         .iter()
@@ -45,7 +51,7 @@ pub(super) fn lower_params(ps: &[ast::Param], ctx: &mut Context<'_>) -> (Vec<Par
 }
 
 /// Lowers a single `<pat>`, e.g., `on <pat> => <expr>`
-pub(super) fn lower_pat(p: &ast::Pat, ctx: &mut Context<'_>) -> (Param, Vec<Case>) {
+pub(crate) fn lower_pat(p: &ast::Pat, ctx: &mut Context<'_>) -> (Param, Vec<Case>) {
     let mut cases = Vec::new();
     let tv = ctx.info.types.fresh();
     let param = if let ast::PatKind::Var(x) = &p.kind {
@@ -61,14 +67,14 @@ pub(super) fn lower_pat(p: &ast::Pat, ctx: &mut Context<'_>) -> (Param, Vec<Case
     (param, cases)
 }
 
-pub(super) fn lower_param_expr(p: &ast::Param, e: Expr, ctx: &mut Context<'_>) -> Vec<Case> {
+pub(crate) fn lower_param_expr(p: &ast::Param, e: Expr, ctx: &mut Context<'_>) -> Vec<Case> {
     let mut cases = Vec::new();
     let tv = p.ty.lower(ctx).unwrap_or_else(|| ctx.info.types.fresh());
     ssa(&p.pat, e, tv, false, ctx, &mut cases);
     cases
 }
 
-pub(super) fn lower_branching_pat_expr(p: &ast::Pat, e: Expr, ctx: &mut Context<'_>) -> Vec<Case> {
+pub(crate) fn lower_branching_pat_expr(p: &ast::Pat, e: Expr, ctx: &mut Context<'_>) -> Vec<Case> {
     let mut cases = Vec::new();
     let tv = ctx.info.types.fresh();
     ssa(p, e, tv, true, ctx, &mut cases);
@@ -77,7 +83,7 @@ pub(super) fn lower_branching_pat_expr(p: &ast::Pat, e: Expr, ctx: &mut Context<
 
 /// Folds cases into a single expression. The `else_branch` should be specified if the
 /// pattern is refutable (i.e., contains guards).
-pub(super) fn fold_cases(then_branch: Expr, else_branch: Option<&Expr>, cases: Vec<Case>) -> Expr {
+pub(crate) fn fold_cases(then_branch: Expr, else_branch: Option<&Expr>, cases: Vec<Case>) -> Expr {
     cases
         .into_iter()
         .rev()
@@ -105,19 +111,19 @@ pub(super) fn fold_cases(then_branch: Expr, else_branch: Option<&Expr>, cases: V
 }
 
 #[derive(Debug)]
-pub(super) enum Case {
+pub(crate) enum Case {
     Guard { cond: Expr },
     Bind { param: Param, expr: Expr },
 }
 
-pub(super) struct CaseDebug<'a> {
+pub(crate) struct CaseDebug<'a> {
     case: &'a Case,
     info: &'a Info,
     hir: &'a HIR,
 }
 
 impl Case {
-    pub(super) const fn debug<'a>(&'a self, info: &'a Info, hir: &'a HIR) -> CaseDebug<'a> {
+    pub(crate) const fn debug<'a>(&'a self, info: &'a Info, hir: &'a HIR) -> CaseDebug<'a> {
         CaseDebug {
             case: self,
             info,
@@ -306,7 +312,7 @@ fn ssa(
 }
 
 /// Extracts the parameters of a pattern
-pub(super) fn params(ps: &[ast::Param], ctx: &mut Context<'_>) -> Vec<hir::Param> {
+pub(crate) fn params(ps: &[ast::Param], ctx: &mut Context<'_>) -> Vec<hir::Param> {
     let mut params = Vec::new();
     ps.iter().for_each(|p| p.pat.params(&mut params, ctx));
     params
@@ -339,16 +345,12 @@ impl ast::Pat {
     }
 }
 
-pub(super) fn params_to_args(params: &[hir::Param]) -> Vec<hir::Expr> {
+pub(crate) fn params_to_args(params: &[hir::Param]) -> Vec<hir::Expr> {
     params
         .iter()
         .map(|p| {
             let tv = p.tv;
-            let x = if let hir::ParamKind::Var(x) = p.kind {
-                x
-            } else {
-                unreachable!();
-            };
+            let x = get!(p.kind, hir::ParamKind::Var(x));
             hir::Expr::syn(hir::ExprKind::Var(x), tv)
         })
         .collect::<Vec<_>>()

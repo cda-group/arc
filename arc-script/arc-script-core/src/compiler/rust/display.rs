@@ -47,10 +47,10 @@ fn rustfmt(rs: &rust::Rust) -> io::Result<String> {
     let tmp = tempfile::NamedTempFile::new()?;
     let fw = &mut std::io::BufWriter::new(&tmp);
 
+    let file = &rs.file;
+
     write!(fw, "use arcon::prelude::*;");
-    rs.items
-        .iter()
-        .try_for_each(|item| write!(fw, "{}", quote!(#item)))?;
+    write!(fw, "{}", quote::quote!(#file))?;
     fw.flush();
 
     Command::new("rustfmt").arg(tmp.path()).spawn()?.wait()?;

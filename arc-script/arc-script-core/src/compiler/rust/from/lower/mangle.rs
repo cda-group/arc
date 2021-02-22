@@ -29,6 +29,11 @@ trait Mangle {
 impl hir::TypeId {
     fn mangle(self, ctx: &mut Context<'_>) {
         match ctx.info.types.resolve(self).kind {
+            hir::TypeKind::Boxed(t) => {
+                ctx.buf.push_str("Box_");
+                t.mangle(ctx);
+                ctx.buf.push_str("_End");
+            }
             hir::TypeKind::Array(t, _s) => {
                 ctx.buf.push_str("Array_");
                 t.mangle(ctx);
@@ -74,9 +79,10 @@ impl hir::TypeId {
                 });
                 ctx.buf.push_str("_End");
             }
-            hir::TypeKind::Tuple(_t) => {}
+            hir::TypeKind::Tuple(_t) => todo!(),
             hir::TypeKind::Unknown => {}
-            hir::TypeKind::Vector(_t) => {}
+            hir::TypeKind::Vector(_t) => todo!(),
+            hir::TypeKind::By(_t0, _1) => todo!(),
             hir::TypeKind::Err => {}
         }
     }

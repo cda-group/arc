@@ -1,5 +1,6 @@
 pub mod lower;
 pub mod format;
+pub mod macros;
 
 pub use format::Format;
 pub use lower::Lower;

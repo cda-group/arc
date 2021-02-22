@@ -10,6 +10,8 @@ use arc_script_core_shared::VecMap;
 
 use super::Context;
 
+use arc_script_core_shared::get;
+
 pub(crate) trait Constrain<'i> {
     fn constrain(&self, ctx: &mut Context<'i>);
 }
@@ -67,24 +69,16 @@ impl hir::Hub {
     fn constrain(&self, ctx: &mut Context<'_>) -> Vec<TypeId> {
         match &self.kind {
             hir::HubKind::Tagged(x) => {
-                let item = ctx.defs.get(x).unwrap();
-                let tvs = if let hir::ItemKind::Enum(item) = &item.kind {
-                    item.variants
-                        .iter()
-                        .map(|x| {
-                            let item = ctx.defs.get(x).unwrap();
-                            if let hir::ItemKind::Variant(v) = &item.kind {
-                                ctx.info.types.intern(hir::TypeKind::Stream(v.tv))
-                            } else {
-                                unreachable!()
-                            }
-                        })
-                        .collect::<Vec<_>>()
-                } else {
-                    unreachable!()
-                };
                 ctx.unify(self.tv, TypeKind::Nominal(*x));
-                tvs
+                let item = ctx.defs.get(x).unwrap();
+                let item = get!(&item.kind, hir::ItemKind::Enum(x));
+                item.variants
+                    .iter()
+                    .map(|x| {
+                        let item = ctx.defs.get(x).unwrap();
+                        get!(&item.kind, hir::ItemKind::Variant(x)).tv
+                    })
+                    .collect::<Vec<_>>()
             }
             hir::HubKind::Single(tv) => {
                 ctx.unify(self.tv, *tv);
@@ -179,35 +173,26 @@ impl Constrain<'_> for Expr {
             ExprKind::Enwrap(x0, e) => {
                 e.constrain(ctx);
                 let item = &ctx.defs.get(x0).unwrap().kind;
-                if let ItemKind::Variant(item) = item {
-                    let x1 = ctx.info.paths.resolve(x0.id).pred.unwrap().into();
-                    ctx.unify(e.tv, item.tv);
-                    ctx.unify(self.tv, TypeKind::Nominal(x1));
-                } else {
-                    unreachable!();
-                }
+                let item = get!(item, ItemKind::Variant(x));
+                let x1 = ctx.info.paths.resolve(x0.id).pred.unwrap().into();
+                ctx.unify(e.tv, item.tv);
+                ctx.unify(self.tv, TypeKind::Nominal(x1));
             }
             ExprKind::Unwrap(x0, e) => {
                 e.constrain(ctx);
                 let item = ctx.defs.get(x0).unwrap();
-                if let ItemKind::Variant(item) = &item.kind {
-                    let x1 = ctx.info.paths.resolve(x0.id).pred.unwrap().into();
-                    ctx.unify(e.tv, TypeKind::Nominal(x1));
-                    ctx.unify(self.tv, item.tv);
-                } else {
-                    unreachable!();
-                }
+                let item = get!(&item.kind, ItemKind::Variant(x));
+                let x1 = ctx.info.paths.resolve(x0.id).pred.unwrap().into();
+                ctx.unify(e.tv, TypeKind::Nominal(x1));
+                ctx.unify(self.tv, item.tv);
             }
             ExprKind::Is(x0, e) => {
                 e.constrain(ctx);
                 let item = ctx.defs.get(x0).unwrap();
-                if let ItemKind::Variant(_item) = &item.kind {
-                    let x1 = ctx.info.paths.resolve(x0.id).pred.unwrap().into();
-                    ctx.unify(e.tv, TypeKind::Nominal(x1));
-                    ctx.unify(self.tv, Bool);
-                } else {
-                    unreachable!();
-                }
+                let _item = get!(&item.kind, ItemKind::Variant(x));
+                let x1 = ctx.info.paths.resolve(x0.id).pred.unwrap().into();
+                ctx.unify(e.tv, TypeKind::Nominal(x1));
+                ctx.unify(self.tv, Bool);
             }
             ExprKind::Tuple(es) => {
                 let tvs = es.iter().map(|arg| arg.tv).collect();
@@ -254,6 +239,7 @@ impl Constrain<'_> for Expr {
                         ctx.unify(self.tv, e1.tv);
                     }
                     Pipe => todo!(),
+                    By => ctx.unify(self.tv, TypeKind::By(e0.tv, e1.tv)),
                     Mut => todo!(),
                     Seq => ctx.unify(self.tv, e1.tv),
                     BinOpKind::Err => {}
@@ -262,6 +248,7 @@ impl Constrain<'_> for Expr {
             ExprKind::UnOp(op, e) => {
                 e.constrain(ctx);
                 match &op.kind {
+                    Boxed => ctx.unify(self.tv, TypeKind::Boxed(e.tv)),
                     Not => {
                         ctx.unify(self.tv, e.tv);
                         ctx.unify(e.tv, Bool);

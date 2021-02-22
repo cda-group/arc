@@ -329,6 +329,7 @@ pub enum BinOpKind {
     Band,
     Bor,
     Bxor,
+    By,
     Div,
     Equ,
     Geq,
@@ -358,6 +359,7 @@ pub struct UnOp {
 /// A kind of unary operator.
 #[derive(Debug, Clone)]
 pub enum UnOpKind {
+    Boxed,
     Neg,
     Not,
     Err,
@@ -416,6 +418,8 @@ pub enum TypeKind {
     Struct(Vec<Field<Type>>),
     Tuple(Vec<Type>),
     Vector(Box<Type>),
+    Boxed(Box<Type>),
+    By(Box<Type>, Box<Type>),
     Err,
 }
 

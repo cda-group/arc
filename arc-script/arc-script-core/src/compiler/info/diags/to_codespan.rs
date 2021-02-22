@@ -171,6 +171,12 @@ impl ToCodespan for Error {
                     "{}",
                     hir::pretty(&name.id, ctx.hir.unwrap(), ctx.info)
                 ))]),
+            Self::VariantWrongArity { path } => Codespan::error()
+                .with_message("Variant constructors expect exactly one argument.")
+                .with_labels(vec![label(path.loc)?.with_message(format!(
+                    "{}",
+                    hir::pretty(&path.id, ctx.hir.unwrap(), ctx.info)
+                ))]),
             Self::OutOfBoundsProject { loc } => Codespan::error()
                 .with_message("Out of bounds projection")
                 .with_labels(vec![label(loc)?]),

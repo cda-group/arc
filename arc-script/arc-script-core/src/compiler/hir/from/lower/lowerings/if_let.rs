@@ -3,7 +3,7 @@ use crate::compiler::ast;
 use crate::compiler::hir::Expr;
 use arc_script_core_shared::Lower;
 
-pub(super) fn lower(
+pub(crate) fn lower(
     p: &ast::Pat,
     e0: &ast::Expr,
     e1: &ast::Expr,

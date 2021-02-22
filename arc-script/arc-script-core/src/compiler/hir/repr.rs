@@ -259,6 +259,8 @@ pub enum TypeKind {
     Tuple(Vec<TypeId>),
     Unknown,
     Vector(TypeId),
+    Boxed(TypeId),
+    By(TypeId, TypeId),
     Err,
 }
 

@@ -25,6 +25,9 @@ fun test() -> i32 {
     let c1_f32: f32 = 3.4028234664e37f32 in
     let c1_f64: f64 = 1.7976931348623156e308 in
 
+    let not_bool: bool = not c_bool in
+#CHECK: {{%[^ ]+}} = not {{%[^ ]+}} : bool
+
     let exp_f32: f32 = exp(c_f32) in
 #CHECK: {{%[^ ]+}} = exp {{%[^ ]+}} : f32
 

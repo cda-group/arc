@@ -50,7 +50,6 @@ extern {
         "^"   => Token::Caret,
         ":"   => Token::Colon,
         "::"  => Token::ColonColon,
-        ":="  => Token::ColonEq,
         ","   => Token::Comma,
         "$"   => Token::Dollar,
         "."   => Token::Dot,
@@ -84,7 +83,9 @@ extern {
         "as"     => Token::As,
         "band"   => Token::Band,
         "bor"    => Token::Bor,
+        "box"    => Token::Box,
         "bxor"   => Token::Bxor,
+        "by"     => Token::By,
         "break"  => Token::Break,
         "crate"  => Token::Crate,
         "else"   => Token::Else,
@@ -333,7 +334,8 @@ Op0: BinOpKind = {
 
 Op1: BinOpKind = {
     "|>" => BinOpKind::Pipe,
-    ":=" => BinOpKind::Mut,
+    "="  => BinOpKind::Mut,
+    "by" => BinOpKind::By,
 };
 
 Op2: BinOpKind = {
@@ -369,6 +371,7 @@ Op6: BinOpKind = {
 };
 
 Op7: UnOpKind = {
+    "box" => UnOpKind::Boxed,
     "not" => UnOpKind::Not,
     "-" => UnOpKind::Neg,
 };
@@ -403,7 +406,7 @@ ExprKind9:  ExprKind =                 UnaryPrefix<UnOp<Op7>,  ExprKind10>;
 ExprKind10: ExprKind = BinaryInfixRightAssociative<BinOp<Op8>, ExprKind11>;
 ExprKind11: ExprKind = {
     <Expr11> <ParenVec<Expr2>>  => ExprKind::Call(<>),
-    <Expr11> "as" <Type0>       => ExprKind::Cast(<>),
+    <Expr11> "as" <Type1>       => ExprKind::Cast(<>),
     <Expr11> "." <Name>         => ExprKind::Access(<>),
     <Expr11> "." <Index>        => ExprKind::Project(<>),
     ExprKind12,
@@ -496,17 +499,23 @@ Type2 = Type<TypeKind2>;
 Type<Kind>: Type = Spanned<Kind> => Type::from(<>);
 
 TypeKind0: TypeKind = {
-    "fun" <ParenVec<Type0>> "->" <Box<Type0>>       => TypeKind::Fun(<>),
-    "~" <Box<Type0>>                                => TypeKind::Stream(<>),
+    <Box<Type0>> "by" <Box<Type1>> => TypeKind::By(<>),
     TypeKind1,
-};
+}
 
 TypeKind1: TypeKind = {
-    <Box<Type1>> "?" => TypeKind::Optional(<>),
+    "fun" <ParenVec<Type0>> "->" <Box<Type1>> => TypeKind::Fun(<>),
+    "~" <Box<Type1>>                          => TypeKind::Stream(<>),
+    "box" <Box<Type1>>                        => TypeKind::Boxed(<>),
     TypeKind2,
 };
 
 TypeKind2: TypeKind = {
+    <Box<Type2>> "?" => TypeKind::Optional(<>),
+    TypeKind3,
+};
+
+TypeKind3: TypeKind = {
     ScalarKind                              => TypeKind::Scalar(<>),
     Path                                    => TypeKind::Nominal(<>),
     Brace<<Vec<Field<Type0>>>>              => TypeKind::Struct(<>),

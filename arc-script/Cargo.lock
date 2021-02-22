@@ -254,7 +254,15 @@ dependencies = [
 ]
 
 [[package]]
-name = "arc-script-test-integration"
+name = "arc-script-test-integration-dynamic"
+version = "0.0.0"
+dependencies = [
+ "arc-script",
+ "arcon",
+]
+
+[[package]]
+name = "arc-script-test-integration-dynamic-cached"
 version = "0.0.0"
 dependencies = [
  "arc-script",
@@ -374,6 +382,7 @@ dependencies = [
  "arcon_macros",
  "arcorn-macros",
  "derive_more",
+ "paste 1.0.4",
  "prost",
  "shrinkwraprs",
 ]
@@ -2813,6 +2822,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "paste"
+version = "1.0.4"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "c5d65c4d95931acda4498f675e332fcbdc9a06705cd07086c510e9b6009cd1c1"
+
+[[package]]
 name = "paste-impl"
 version = "0.1.18"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -3511,7 +3526,7 @@ dependencies = [
  "num_cpus",
  "num_enum",
  "parking_lot",
- "paste",
+ "paste 0.1.18",
  "puruspe",
  "rand 0.8.3",
  "rand_core 0.6.1",

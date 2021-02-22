@@ -46,6 +46,7 @@ impl Lower<mlir::UnOp, Context<'_>> for hir::UnOp {
     fn lower(&self, _ctx: &mut Context<'_>) -> mlir::UnOp {
         #[rustfmt::skip]
         let kind = match &self.kind {
+            hir::UnOpKind::Boxed => todo!(),
             hir::UnOpKind::Not => mlir::UnOpKind::Not,
             hir::UnOpKind::Neg => mlir::UnOpKind::Neg,
             hir::UnOpKind::Err => unreachable!(),
@@ -78,6 +79,7 @@ impl Lower<mlir::BinOp, Context<'_>> for hir::BinOp {
             hir::BinOpKind::Leq  => mlir::BinOpKind::Leq,
             hir::BinOpKind::Pipe => unreachable!(),
             hir::BinOpKind::Mut  => mlir::BinOpKind::Mut,
+            hir::BinOpKind::By   => todo!(),
             hir::BinOpKind::Seq  => unreachable!(),
             hir::BinOpKind::Err  => unreachable!(),
         };

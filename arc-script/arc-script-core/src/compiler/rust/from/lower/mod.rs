@@ -12,7 +12,6 @@ use arc_script_core_shared::{Map, New};
 pub(crate) struct Context<'i> {
     pub(crate) info: &'i Info,
     pub(crate) hir: &'i HIR,
-    pub(crate) rust: &'i mut Rust,
     /// Buffer for name mangling
     pub(crate) buf: String,
     /// Already mangled (root) type-variables.
