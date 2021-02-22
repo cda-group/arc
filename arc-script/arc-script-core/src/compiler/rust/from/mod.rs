@@ -15,6 +15,7 @@ impl Rust {
         let mangled_defs = Map::default();
         let ctx = &mut lower::Context::new(info, hir, mangled_idents, mangled_defs);
         let items: proc_macro2::TokenStream = hir.lower(ctx);
+        tracing::debug!("{}", items);
         let file: syn::File = syn::parse_quote!(#items);
         let rust = Rust::new(file);
         rust
