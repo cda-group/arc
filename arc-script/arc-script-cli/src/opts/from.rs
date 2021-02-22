@@ -4,7 +4,11 @@ use crate::opts;
 use crate::opts::Opt;
 use crate::opts::Run;
 use crate::opts::SubCmd;
-use arc_script_core::prelude::modes::{Input, Mode, Output, Verbosity};
+use arc_script_core::prelude::modes::Input;
+use arc_script_core::prelude::modes::Lang;
+use arc_script_core::prelude::modes::Mode;
+use arc_script_core::prelude::modes::Output;
+use arc_script_core::prelude::modes::Verbosity;
 use arc_script_core::prelude::Result;
 
 use std::io;
@@ -12,7 +16,18 @@ use std::io::prelude::*;
 
 impl From<Opt> for Result<Mode> {
     fn from(opt: Opt) -> Result<Mode> {
-        let mut mode = match opt.subcmd {
+        let Opt {
+            lang,
+            debug,
+            profile,
+            fail_fast,
+            suppress_diags,
+            verbosity,
+            force_output,
+            subcmd,
+        } = opt;
+
+        let mut mode = match subcmd {
             SubCmd::Run(cmd) => Mode {
                 output: match cmd.output {
                     opts::Output::AST => Output::AST,
@@ -38,7 +53,11 @@ impl From<Opt> for Result<Mode> {
             },
             SubCmd::Completions(_) => unreachable!(),
         };
-        mode.profile = opt.profile;
+        mode.lang = match lang {
+            opts::Lang::Arc => Lang::Arc,
+            opts::Lang::Arq => Lang::Arq,
+        };
+        mode.profile = profile;
         mode.verbosity = match opt.verbosity {
             0 => Verbosity::Error,
             1 => Verbosity::Warn,
@@ -46,10 +65,10 @@ impl From<Opt> for Result<Mode> {
             3 => Verbosity::Debug,
             _ => Verbosity::Trace,
         };
-        mode.debug = opt.debug;
-        mode.fail_fast = opt.fail_fast;
-        mode.suppress_diags = opt.suppress_diags;
-        mode.force_output = opt.force_output;
+        mode.debug = debug;
+        mode.fail_fast = fail_fast;
+        mode.suppress_diags = suppress_diags;
+        mode.force_output = force_output;
         Ok(mode)
     }
 }

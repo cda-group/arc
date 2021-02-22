@@ -12,15 +12,15 @@ pub(crate) mod grammar {
     #![allow(clippy::cargo)]
     include!(concat!(
         env!("OUT_DIR"),
-        "/compiler/ast/from/parser/grammar.rs"
+        "/compiler/ast/from/source/parser/grammar.rs"
     ));
 }
 /// Module for translating LALRPOP's [`ParsingError`]s to Arc-[`Diagnostics`].
 pub(crate) mod error;
 
 use crate::compiler::ast;
-use crate::compiler::ast::from::lexer::Lexer;
-use crate::compiler::ast::from::parser::grammar::ModuleParser;
+use crate::compiler::ast::from::source::lexer::Lexer;
+use crate::compiler::ast::from::source::parser::grammar::ModuleParser;
 use crate::compiler::ast::ExprInterner;
 
 use crate::compiler::info::Info;

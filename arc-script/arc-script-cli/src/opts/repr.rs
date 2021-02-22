@@ -8,7 +8,11 @@ use std::path::PathBuf;
 /// Specification of the Arc-script command-line interface (CLI).
 #[derive(Clap, Debug, Clone)]
 pub struct Opt {
-    /// Activate DEBUG mode
+    /// Set LANGUAGE mode.
+    #[clap(long, arg_enum, case_insensitive(true), value_name = "LANG", default_value("arc"))]
+    pub lang: Lang,
+
+    /// Activate DEBUG mode.
     #[clap(short, long)]
     pub debug: bool,
 
@@ -24,7 +28,7 @@ pub struct Opt {
     #[clap(short, long)]
     pub suppress_diags: bool,
 
-    /// Print AST with type information and parentheses
+    /// Print AST with type information and parentheses.
     #[clap(short, long, parse(from_occurrences))]
     pub verbosity: i32,
 
@@ -32,7 +36,7 @@ pub struct Opt {
     #[clap(long)]
     pub force_output: bool,
 
-    /// Sub-command
+    /// Sub-command.
     #[clap(subcommand)]
     pub subcmd: SubCmd,
 }
@@ -40,21 +44,21 @@ pub struct Opt {
 /// Sub-commands of the CLI.
 #[derive(Clap, Debug, Clone)]
 pub enum SubCmd {
-    /// Run in REPL mode
+    /// Run in REPL mode.
     #[cfg(feature = "repl")]
     #[cfg_attr(feature = "repl", clap(name = "repl"))]
     Repl,
 
-    /// Run in LSP mode
+    /// Run in LSP mode.
     #[cfg(feature = "lsp")]
     #[cfg_attr(feature = "lsp", clap(name = "lsp"))]
     Lsp,
 
-    /// Compile and execute source file
+    /// Compile and execute source file.
     #[clap(name = "run")]
     Run(Run),
 
-    /// Generate command-line completions
+    /// Generate command-line completions.
     #[clap(name = "completions")]
     Completions(Completions),
 }
@@ -66,8 +70,17 @@ pub struct Run {
     #[clap(parse(from_os_str))]
     pub main: Option<PathBuf>,
     /// Select output mode.
-    #[clap(long, short, arg_enum, case_insensitive(true), value_name = "FORMAT")]
+    #[clap(long, short, arg_enum, case_insensitive(true), value_name = "FORMAT", default_value("rust"))]
     pub output: Output,
+}
+
+/// Mode which selects which language to use.
+#[derive(ArgEnum, Debug, Clone, Copy)]
+pub enum Lang {
+    /// Arc-Query Language. A higher-level language which translates into Arc-Script.
+    Arq,
+    /// Arc-Script Language. A dataflow-language which translates into Arcon.
+    Arc,
 }
 
 /// An output mode.

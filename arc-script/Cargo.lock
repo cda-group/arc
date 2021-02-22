@@ -153,7 +153,6 @@ dependencies = [
  "arbitrary",
  "arc-script-core-macros",
  "arc-script-core-shared",
- "better-panic",
  "codespan-reporting 0.11.0",
  "crepe",
  "ena",
@@ -171,7 +170,7 @@ dependencies = [
  "ryu",
  "salsa",
  "serde",
- "strum",
+ "sqlparser",
  "syn",
  "tempfile",
  "text-size",
@@ -709,16 +708,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "474a626a67200bd107d44179bb3d4fc61891172d11696609264589be6a0e6a43"
 
 [[package]]
-name = "better-panic"
-version = "0.2.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "3d12a680cc74d8c4a44ee08be4a00dedf671b089c2440b2e3fdaa776cd468476"
-dependencies = [
- "backtrace",
- "console 0.9.2",
-]
-
-[[package]]
 name = "bincode"
 version = "1.3.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -984,18 +973,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "clicolors-control"
-version = "1.0.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "90082ee5dcdd64dc4e9e0d37fbf3ee325419e39c0092191e0393df65518f741e"
-dependencies = [
- "atty",
- "lazy_static",
- "libc",
- "winapi",
-]
-
-[[package]]
 name = "codespan-lsp"
 version = "0.11.0"
 source = "git+https://github.com/brendanzab/codespan#d7213c4fd98165fb86744617ee60cffa8a7357cf"
@@ -1031,21 +1008,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "30ed07550be01594c6026cff2a1d7fe9c8f683caa798e12b68694ac9e88286a3"
 dependencies = [
  "cache-padded",
-]
-
-[[package]]
-name = "console"
-version = "0.9.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "45e0f3986890b3acbc782009e2629dfe2baa430ac091519ce3be26164a2ae6c0"
-dependencies = [
- "clicolors-control",
- "encode_unicode",
- "lazy_static",
- "libc",
- "regex",
- "termios",
- "winapi",
 ]
 
 [[package]]
@@ -2056,7 +2018,7 @@ version = "1.6.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "6b0d4f10636e7b40bf9eb71ecaf660498a120a86e9251bd4dea72a64ce9b8a93"
 dependencies = [
- "console 0.14.0",
+ "console",
  "globset",
  "lazy_static",
  "serde",
@@ -3914,6 +3876,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "sqlparser"
+version = "0.8.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "8b929a9577d01ee7cddb820696ed536868d81557d3c14363a7514d71add1d058"
+dependencies = [
+ "log",
+]
+
+[[package]]
 name = "sre-engine"
 version = "0.1.0"
 source = "git+https://github.com/RustPython/sre-engine#65c477414b2db1caa84a404b35704d1c5e9d0c75"
@@ -4143,15 +4114,6 @@ checksum = "86ca8ced750734db02076f44132d802af0b33b09942331f4459dde8636fd2406"
 dependencies = [
  "libc",
  "winapi",
-]
-
-[[package]]
-name = "termios"
-version = "0.3.3"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "411c5bf740737c7918b8b1fe232dca4dc9f8e754b8ad5e20966814001ed0ac6b"
-dependencies = [
- "libc",
 ]
 
 [[package]]

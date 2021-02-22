@@ -36,10 +36,11 @@ ryu                = { version = "1.0.5" }
 syn                = { version = "1.0.60", features = ["full"] }
 quote              = { version = "1.0.8" }
 proc-macro2        = { version = "1.0.24" }
-strum              = { version = "0.20.0", features = ["derive"] }
-better-panic       = { version = "0.2.0" }
+# strum              = { version = "0.20.0", features = ["derive"] }
+# better-panic       = { version = "0.2.0" }
 text-size          = { version = "1.1.0" }
 half               = { version = "1.7.1", features = ["num-traits"] }
+sqlparser          = { version = "0.8.0" }
 # rustfmt-nightly    = { git = "https://github.com/rust-lang/rustfmt" }
 # z3                 = { optional = true, version = "0.9.0" }
 # toml               = { optional = true, version = "0.5.8" }
