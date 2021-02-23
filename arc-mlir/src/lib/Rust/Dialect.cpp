@@ -23,6 +23,7 @@
 
 #include "Rust/Rust.h"
 #include "Rust/RustPrinterStream.h"
+#include <llvm/Support/CommandLine.h>
 #include <llvm/Support/FileSystem.h>
 #include <llvm/Support/Path.h>
 #include <llvm/Support/raw_ostream.h>
@@ -33,6 +34,11 @@
 using namespace mlir;
 using namespace rust;
 using namespace types;
+
+static llvm::cl::opt<std::string>
+    crateNameOverride("rustcratename",
+                      llvm::cl::desc("Override name of output crate"),
+                      llvm::cl::value_desc("cratename"));
 
 //===----------------------------------------------------------------------===//
 // RustDialect
@@ -294,11 +300,16 @@ static bool writeTypesToml(StringRef filename, StringRef crateName,
 LogicalResult rust::writeModuleAsCrates(ModuleOp module, std::string top_dir,
                                         std::string rustTrailer,
                                         llvm::raw_ostream &o) {
-  llvm::errs() << "writing crates \"" << module.getName() << "\" to " << top_dir
-               << "\n";
 
   // Create the files for the main rust crate
   StringRef crateName = module.getName().getValueOr("unknown");
+
+  if (!crateNameOverride.getValue().empty())
+    crateName = crateNameOverride;
+
+  llvm::errs() << "writing crate \"" << crateName << "\" to " << top_dir
+               << "\n";
+
   SmallString<128> crate_dir(top_dir);
   llvm::sys::path::append(crate_dir, crateName);
   SmallString<128> src_dir(crate_dir);
