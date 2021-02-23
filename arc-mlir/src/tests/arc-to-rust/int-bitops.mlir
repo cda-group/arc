@@ -1,6 +1,6 @@
-// RUN: arc-mlir -arc-to-rust -crate %t -extra-rust-trailer %s.rust-tests %s && CARGO_HTTP_DEBUG=true cargo test -j 1 --manifest-path=%t/toplevel/Cargo.toml
+// RUN: arc-mlir -arc-to-rust -crate %t -extra-rust-trailer %s.rust-tests %s && CARGO_HTTP_DEBUG=true cargo test -j 1 --manifest-path=%t/arctorustintbitops/Cargo.toml
 
-module @toplevel {
+module @arctorustintbitops {
   func @and_ui8(%arg0: ui8, %arg1: ui8) -> ui8 {
     %0 = arc.and %arg0, %arg1 : ui8
     return %0 : ui8

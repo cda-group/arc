@@ -1,6 +1,6 @@
 # RUN: arc-script run --output=MLIR %s | FileCheck %s
 # RUN: arc-script run --output=MLIR %s | arc-mlir | FileCheck %s
-# RUNX: arc-script run --output=MLIR %s | arc-mlir | arc-mlir -arc-to-rust -crate %t && arc-cargo test -j 1 --manifest-path=%t/toplevel/Cargo.toml
+# RUNX: arc-script run --output=MLIR %s | arc-mlir | arc-mlir -rustcratename expectpassliterals -arc-to-rust -crate %t && arc-cargo test -j 1 --manifest-path=%t/expectpassliterals/Cargo.toml
 
 fun test() -> i32 {
 

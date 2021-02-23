@@ -16,11 +16,11 @@ pub fn callee_tuple(x : Rc<(i32, i32, )>) -> Rc<(i32, i32, )> {
 }
 
 
-pub fn callee_struct(x : toplevel_types::ArcStructFfooTi32) -> toplevel_types::ArcStructFfooTi32 {
+pub fn callee_struct(x : arctorustforeigncalls_types::ArcStructFfooTi32) -> arctorustforeigncalls_types::ArcStructFfooTi32 {
     return x
 }
 
-pub fn callee_mixed(x : Rc<(i32,i32, toplevel_types::ArcStructFaTi32)>)
-		    -> Rc<(i32,i32, toplevel_types::ArcStructFaTi32)> {
+pub fn callee_mixed(x : Rc<(i32,i32, arctorustforeigncalls_types::ArcStructFaTi32)>)
+		    -> Rc<(i32,i32, arctorustforeigncalls_types::ArcStructFaTi32)> {
     return x
 }

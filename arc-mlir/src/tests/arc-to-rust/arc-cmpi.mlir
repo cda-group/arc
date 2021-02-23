@@ -1,5 +1,5 @@
-// RUN: arc-mlir -arc-to-rust -crate %t -extra-rust-trailer %s.rust-tests %s && CARGO_HTTP_DEBUG=true cargo test -j 1 --manifest-path=%t/toplevel/Cargo.toml
-module @toplevel {
+// RUN: arc-mlir -arc-to-rust -crate %t -extra-rust-trailer %s.rust-tests %s && CARGO_HTTP_DEBUG=true cargo test -j 1 --manifest-path=%t/arctorustcmpi/Cargo.toml
+module @arctorustcmpi {
 func @eq_ui8(%a : ui8, %b : ui8) -> i1 {
   %r = arc.cmpi "eq", %a, %b : ui8
   return %r : i1

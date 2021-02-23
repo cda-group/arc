@@ -1,6 +1,6 @@
-// RUN: arc-mlir -arc-to-rust -crate %t -extra-rust-trailer %s.rust-tests %s && CARGO_HTTP_DEBUG=true cargo test -j 1 --manifest-path=%t/toplevel/Cargo.toml
+// RUN: arc-mlir -arc-to-rust -crate %t -extra-rust-trailer %s.rust-tests %s && CARGO_HTTP_DEBUG=true cargo test -j 1 --manifest-path=%t/arctorustifs/Cargo.toml
 
-module @toplevel {
+module @arctorustifs {
   func @test_0() -> si32 {
     %0 = arc.constant 65 : si32
     %1 = arc.constant 66 : si32
