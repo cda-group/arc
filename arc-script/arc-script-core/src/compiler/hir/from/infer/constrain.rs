@@ -49,6 +49,14 @@ impl Constrain<'_> for Fun {
 impl Constrain<'_> for Task {
     /// On the outside, a task is nothing more than a function which returns a function.
     fn constrain(&self, ctx: &mut Context<'_>) {
+        for p in &self.params {
+            if let ParamKind::Var(x) = &p.kind {
+                ctx.env.insert(*x, *p);
+            }
+        }
+        if let ParamKind::Var(x) = &self.on.param.kind {
+            ctx.env.insert(*x, self.on.param);
+        }
         self.on.body.constrain(ctx);
         let tvs = self.params.iter().map(|x| x.tv).collect();
         let itvs = self.ihub.constrain(ctx);
@@ -81,8 +89,8 @@ impl hir::Hub {
                     .collect::<Vec<_>>()
             }
             hir::HubKind::Single(tv) => {
-                ctx.unify(self.tv, *tv);
-                vec![ctx.info.types.intern(TypeKind::Stream(*tv))]
+                ctx.unify(*tv, hir::TypeKind::Stream(self.tv));
+                vec![*tv]
             }
         }
     }

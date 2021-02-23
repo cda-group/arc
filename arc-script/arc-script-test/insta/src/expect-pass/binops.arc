@@ -405,5 +405,5 @@ fun main() {
     let pow_f64: f64 = c_f64 ** c1_f64 in
 #CHECK: {{%[^ ]+}} = math.powf {{%[^ ]+}}, {{%[^ ]+}} : f64
 
-    ()
+    unit
 }

@@ -1,9 +1,9 @@
-task Split(p: fun(i32) -> bool) (A(i32)) -> (B(i32), C(i32)) {
-    on Input(event) => {
+task Split(p: fun(i32) -> bool) ~i32 -> (A(~i32), B(~i32)) {
+    on event => {
         if p(event) {
-            emit B(event)
+            emit A(event)
         } else {
-            emit C(event)
+            emit B(event)
         }
     }
 }

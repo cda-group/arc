@@ -16,5 +16,5 @@ fun main() {
     let e = enwrap[Foo::Baz](b) in
     let f = is[Foo::Baz](e) in
 
-    ()
+    unit
 }

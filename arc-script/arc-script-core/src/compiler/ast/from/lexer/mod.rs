@@ -72,6 +72,7 @@ pub enum Token {
     BrackR,
     ParenL,
     ParenR,
+    ParenLR,
 //=============================================================================
 // Operators
 //=============================================================================
@@ -312,6 +313,7 @@ impl<'i> Lexer<'i> {
                 LogosToken::BrackR     => Token::BrackR,
                 LogosToken::ParenL     => Token::ParenL,
                 LogosToken::ParenR     => Token::ParenR,
+                LogosToken::ParenLR    => Token::ParenLR,
 //=============================================================================
 // Operators
 //=============================================================================

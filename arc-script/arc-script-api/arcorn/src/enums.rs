@@ -10,6 +10,7 @@
 /// Enwraps a value into an enum-variant.
 ///
 /// ```
+/// use arc_script::arcorn;
 /// #[arcorn::rewrite]
 /// enum Foo {
 ///     FooBar(i32),
@@ -29,6 +30,7 @@ macro_rules! enwrap {
 /// Returns `true` if enum is a certain variant, else `false`.
 ///
 /// ```
+/// use arc_script::arcorn;
 /// #[arcorn::rewrite]
 /// enum Foo {
 ///     FooBar(i32),
@@ -54,6 +56,7 @@ macro_rules! is {
 /// Unwraps a value out of an enum-variant.
 ///
 /// ```
+/// use arc_script::arcorn;
 /// #[arcorn::rewrite]
 /// enum FooEnum {
 ///     FooBar(i32),

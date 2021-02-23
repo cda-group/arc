@@ -204,11 +204,22 @@ impl ToCodespan for Error {
             Self::LexicalCore { err, loc } => Codespan::error()
                 .with_message(lex_err(err))
                 .with_labels(vec![label(loc)?]),
-            Self::UseOfMovedValue { loc0, loc1 } => Codespan::error()
-                .with_message("Use of moved value")
+            Self::UseOfMovedValue { loc0, loc1, tv } => Codespan::error()
+                .with_message(format!(
+                    "Use of moved value, where moved value is of non-copyable type {}",
+                    hir::pretty(tv, ctx.hir.unwrap(), ctx.info)
+                ))
                 .with_labels(vec![label(loc0)?, label(loc1)?]),
-            Self::DoubleUse { loc0, loc1, loc2 } => Codespan::error()
-                .with_message("Double use of value")
+            Self::DoubleUse {
+                loc0,
+                loc1,
+                loc2,
+                tv,
+            } => Codespan::error()
+                .with_message(format!(
+                    "Double use of value of non-copyable type {}",
+                    hir::pretty(tv, ctx.hir.unwrap(), ctx.info)
+                ))
                 .with_labels(vec![label(loc0)?, label(loc1)?, label(loc2)?]),
             Self::PathIsNotVariant { loc } => Codespan::error()
                 .with_message("Path is not referring to a variant")

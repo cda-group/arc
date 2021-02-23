@@ -1,11 +1,11 @@
-task Repeat(v: i32, d: duration) () -> (Output(i32)) {
+task Repeat(v: i32, d: duration) () -> (Output(~i32)) {
 
-    trigger Trigger(());
+    trigger Trigger(unit);
 
     start_timer();
 
     fun start_timer() {
-        after d |_| emit Trigger(())
+        after d |_| emit Trigger(unit)
     }
 
     on Trigger(_) => {

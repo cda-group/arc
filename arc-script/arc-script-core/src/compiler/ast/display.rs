@@ -372,7 +372,7 @@ impl<'i> Display for Pretty<'i, ast::LitKind, Context<'_>> {
             ast::LitKind::Char(l) => write!(f, "'{}'", l),
             ast::LitKind::Str(l)  => write!(f, r#""{}""#, l),
             ast::LitKind::Time(l) => write!(f, "{}", l.as_seconds_f64()),
-            ast::LitKind::Unit    => write!(f, "()"),
+            ast::LitKind::Unit    => write!(f, "unit"),
             ast::LitKind::Err     => write!(f, "☇"),
         }
     }
@@ -449,7 +449,7 @@ impl<'i> Display for Pretty<'i, ast::ScalarKind, Context<'_>> {
             ast::ScalarKind::U64  => write!(f, "u64"),
             ast::ScalarKind::Null => write!(f, "null"),
             ast::ScalarKind::Str  => write!(f, "str"),
-            ast::ScalarKind::Unit => write!(f, "()"),
+            ast::ScalarKind::Unit => write!(f, "unit"),
             ast::ScalarKind::Bot  => write!(f, "!"),
         }
     }

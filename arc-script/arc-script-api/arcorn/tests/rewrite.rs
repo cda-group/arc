@@ -1,4 +1,4 @@
-use arcorn;
+use arc_script::arcorn;
 
 #[arcorn::rewrite]
 struct Point {

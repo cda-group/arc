@@ -1,7 +1,7 @@
-task Tee() (A(i32)) -> (B(i32), C(i32)) {
-    on A(event) => {
-        emit C(event);
-        emit C(event)
+task Tee() ~i32 -> (A(~i32), B(~i32)) {
+    on event => {
+        emit A(event);
+        emit B(event)
     }
 }
 

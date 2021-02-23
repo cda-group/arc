@@ -1,5 +1,5 @@
-task Map(f: fun(i32) -> i32) (Input(i32)) -> (Output(i32)) {
-    on Input(event) => emit Output(f(event))
+task Map(f: fun(i32) -> i32) ~i32 -> ~i32 {
+    on event => emit f(event)
 }
 
 fun main(input: ~i32) -> ~i32 {

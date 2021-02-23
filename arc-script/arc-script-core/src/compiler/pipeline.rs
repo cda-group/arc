@@ -79,7 +79,7 @@ where
 
     if matches!(info.mode.output, Output::Rust) {
         // Lower HIR and DFG into Rust
-        let rust = Rust::from(&hir, &info);
+        let rust = Rust::from(&hir, &mut info);
 
         writeln!(f, "{}", rust::pretty(&rust))?;
         return Ok(Report::semantic(info, hir));

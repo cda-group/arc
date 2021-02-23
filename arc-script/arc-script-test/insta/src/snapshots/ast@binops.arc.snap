@@ -166,6 +166,6 @@ fun main() {
     let bxor_u64: u64 = c_u64 bxor c_u64 in
     let pow_f32: f32 = c_f32 ** c1_f32 in
     let pow_f64: f64 = c_f64 ** c1_f64 in
-    ()
+    unit
 }
 

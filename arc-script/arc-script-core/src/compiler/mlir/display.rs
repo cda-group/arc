@@ -287,7 +287,7 @@ impl<'i> Display for Pretty<'i, mlir::OpKind, Context<'_>> {
             mlir::OpKind::Array(_) => todo!(),
             mlir::OpKind::Struct(xfs) => write!(
                 f,
-                r#""arc.make_struct"({xfs} : {ts})" :"#,
+                r#"arc.make_struct({xfs} : {ts}) :"#,
                 xfs = xfs.values().all_pretty(", ", fmt),
                 ts = xfs
                     .values()

@@ -12,12 +12,12 @@ module @toplevel {
         %x_7 = arc.constant 4 : si32
         %x_8 = "arc.make_tuple"(%x_6, %x_7) : (si32, si32) -> tuple<si32, si32>
         %x_9 = "arc.make_tuple"(%x_5, %x_8) : (tuple<si32, si32>, tuple<si32, si32>) -> tuple<tuple<si32, si32>, tuple<si32, si32>>
-        %x_A = "arc.index_tuple"(%x_9) { index = 0 } : tuple<tuple<si32, si32>, tuple<si32, si32>> -> tuple<si32, si32>
-        %x_B = "arc.index_tuple"(%x_A) { index = 0 } : tuple<si32, si32> -> si32
-        %x_C = "arc.index_tuple"(%x_A) { index = 1 } : tuple<si32, si32> -> si32
-        %x_D = "arc.index_tuple"(%x_9) { index = 1 } : tuple<tuple<si32, si32>, tuple<si32, si32>> -> tuple<si32, si32>
-        %x_E = "arc.index_tuple"(%x_D) { index = 0 } : tuple<si32, si32> -> si32
-        %x_F = "arc.index_tuple"(%x_D) { index = 1 } : tuple<si32, si32> -> si32
+        %x_A = "arc.index_tuple"(%x_9) { index = 0 } : (tuple<tuple<si32, si32>, tuple<si32, si32>>) -> tuple<si32, si32>
+        %x_B = "arc.index_tuple"(%x_A) { index = 0 } : (tuple<si32, si32>) -> si32
+        %x_C = "arc.index_tuple"(%x_A) { index = 1 } : (tuple<si32, si32>) -> si32
+        %x_D = "arc.index_tuple"(%x_9) { index = 1 } : (tuple<tuple<si32, si32>, tuple<si32, si32>>) -> tuple<si32, si32>
+        %x_E = "arc.index_tuple"(%x_D) { index = 0 } : (tuple<si32, si32>) -> si32
+        %x_F = "arc.index_tuple"(%x_D) { index = 1 } : (tuple<si32, si32>) -> si32
         return 
     }
 }

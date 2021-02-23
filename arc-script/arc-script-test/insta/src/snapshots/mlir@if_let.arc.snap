@@ -16,25 +16,25 @@ module @toplevel {
         %x_9 = "arc.make_tuple"(%x_8, %x_6) : (si32, si32) -> tuple<si32, si32>
         %x_A = arc.constant 1 : si32
         %x_B = "arc.make_tuple"(%x_9, %x_A) : (tuple<si32, si32>, si32) -> tuple<tuple<si32, si32>, si32>
-        %x_C = "arc.index_tuple"(%x_B) { index = 0 } : tuple<tuple<si32, si32>, si32> -> tuple<si32, si32>
-        %x_D = "arc.index_tuple"(%x_C) { index = 0 } : tuple<si32, si32> -> si32
+        %x_C = "arc.index_tuple"(%x_B) { index = 0 } : (tuple<tuple<si32, si32>, si32>) -> tuple<si32, si32>
+        %x_D = "arc.index_tuple"(%x_C) { index = 0 } : (tuple<si32, si32>) -> si32
         %x_E = arc.constant 1 : si32
-        %x_F = arc.cmpi "eq", %x_D, %x_E : i1
+        %x_F = arc.cmpi eq, %x_D, %x_E : si32
         %x_O = "arc.if"(%x_F) ({
-            %x_G = "arc.index_tuple"(%x_C) { index = 1 } : tuple<si32, si32> -> si32
-            %x_H = "arc.index_tuple"(%x_B) { index = 1 } : tuple<tuple<si32, si32>, si32> -> si32
+            %x_G = "arc.index_tuple"(%x_C) { index = 1 } : (tuple<si32, si32>) -> si32
+            %x_H = "arc.index_tuple"(%x_B) { index = 1 } : (tuple<tuple<si32, si32>, si32>) -> si32
             %x_I = arc.constant 1 : si32
-            %x_J = arc.cmpi "eq", %x_H, %x_I : i1
+            %x_J = arc.cmpi eq, %x_H, %x_I : si32
             %x_M = "arc.if"(%x_J) ({
                 %x_K = arc.addi %x_G, %x_7 : si32
                 "arc.block.result"(%x_K) : (si32) -> ()
             },{
-                %x_L = call crate_x_3(%x_7) : (si32) -> si32
+                %x_L = call @crate_x_3(%x_7) : (si32) -> si32
                 "arc.block.result"(%x_L) : (si32) -> ()
             }) : (i1) -> si32
             "arc.block.result"(%x_M) : (si32) -> ()
         },{
-            %x_N = call crate_x_3(%x_7) : (si32) -> si32
+            %x_N = call @crate_x_3(%x_7) : (si32) -> si32
             "arc.block.result"(%x_N) : (si32) -> ()
         }) : (i1) -> si32
         return %x_O : si32

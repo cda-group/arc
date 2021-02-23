@@ -9,15 +9,8 @@ pub struct Mode {
     /// If true, activate profiling mode. Profiling mode measures and emits the execution time of each
     /// compilation phase.
     pub profile: bool,
-    /// Configures the verbosity level of the compiler. The levels correspond to [`tracing::Level`]
-    /// and are:
-    ///
-    /// 5 (Trace) - Designates very low priority, often extremely verbose, information.
-    /// 4 (Debug) - Designates lower priority information.
-    /// 3 (Info)  - Designates useful information.
-    /// 2 (Warn)  - Designates hazardous situations.
-    /// 1 (Error) - Designates very serious errors.
-    pub verbosity: i32,
+    /// Configures the verbosity level of the compiler. The levels correspond to [`tracing::Level`].
+    pub verbosity: Verbosity,
     /// Suppresses diagnostics from being printed. Can be useful when using the compiler as a library.
     pub suppress_diags: bool,
     /// Fails compilation as soon as a compilation phase emits an error.
@@ -28,6 +21,27 @@ pub struct Mode {
     pub input: Input,
     /// Configures what kind of output the compiler writes.
     pub output: Output,
+}
+
+/// Verbosity levels
+#[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
+pub enum Verbosity {
+    /// Designates very serious errors.
+    Error,
+    /// Designates hazardous situations.
+    Warn,
+    /// Designates useful information.
+    Info,
+    /// Designates lower priority information.
+    Debug,
+    /// Designates very low priority, often extremely verbose, information.
+    Trace,
+}
+
+impl Default for Verbosity {
+    fn default() -> Self {
+        Self::Error
+    }
 }
 
 /// The compiler can read input from different sources.

@@ -122,6 +122,7 @@ impl hir::HIR {
                 info.diags.intern(Error::UseOfMovedValue {
                     loc0: p0.loc,
                     loc1: p1.loc,
+                    tv: p0.tv,
                 })
             }
         }
@@ -132,6 +133,7 @@ impl hir::HIR {
                     loc0: p0.loc,
                     loc1: u0.loc,
                     loc2: u1.loc,
+                    tv: p0.tv,
                 })
             }
         }
