@@ -40,7 +40,7 @@ jobs:
       run: cargo check --all-features --benches
     
     - name: cargo-test
-      run: cargo test --all-features
+      run: cargo insta test
 
     - name: cargo-fuzz
       run: cargo fuzz run parse -- -runs=10000 -only-ascii
