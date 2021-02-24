@@ -1,0 +1,62 @@
+---
+source: arc-script-test/insta/src/lib.rs
+expression: s
+input_file: arc-script-test/insta/src/expect-mlir-fail-todo/task-filter.arc
+---
+use arc_script::arcorn;
+use arcon::prelude::*;
+#[derive(ArconState)]
+pub struct TaskFilter {
+    #[ephemeral]
+    timestamp: Option<u64>,
+    #[ephemeral]
+    pub p_0: fn(i32) -> bool,
+}
+impl Operator for TaskFilter {
+    type IN = Struct5valuei32End;
+    type OUT = Struct5valuei32End;
+    type TimerState = ArconNever;
+    type OperatorState = Self;
+    fn handle_element(
+        &mut self,
+        elem: ArconElement<Self::IN>,
+        mut ctx: OperatorContext<Self, impl Backend, impl ComponentDefinition>,
+    ) -> OperatorResult<()> {
+        self.timestamp = elem.timestamp;
+        let event_0 = elem.data.value;
+        let (p_0) = (self.p_0.clone());
+        if p_0(event_0) {
+            ctx.output(ArconElement {
+                data: Self::OUT { value: event_0 },
+                timestamp: self.timestamp,
+            })
+        } else {
+            ()
+        };
+        Ok(())
+    }
+    arcon::ignore_timeout!();
+    arcon::ignore_persist!();
+}
+fn Filter(p_0: fn(i32) -> bool) -> OperatorBuilder<TaskFilter> {
+    OperatorBuilder {
+        constructor: Arc::new(|b| TaskFilter {
+            timestamp: None,
+            p_0,
+        }),
+        conf: Default::default(),
+    }
+}
+pub fn x_0(x_1: i32) -> bool {
+    x_1 % 2i32 == 0i32
+}
+pub fn main(stream0_0: Stream<Struct5valuei32End>) -> Stream<Struct5valuei32End> {
+    let stream1_0: Stream<Struct5valuei32End> = Stream::operator(stream0_0, Filter(x_0));
+    stream1_0
+}
+#[arcorn::rewrite]
+pub struct Struct5valuei32End {
+    value: i32,
+}
+
+
