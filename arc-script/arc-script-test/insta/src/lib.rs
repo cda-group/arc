@@ -6,7 +6,7 @@ use arc_script_core::prelude::modes::{Input, Mode, Output};
 
 use std::env;
 
-fn snapshot(output: Output) {
+fn snapshot(paths: &str, output: Output) {
     env::set_var("INSTA_OUTPUT", "summary");
     env::set_var("INSTA_FORCE_PASS", "1");
     let mut settings = insta::Settings::clone_current();
@@ -14,7 +14,7 @@ fn snapshot(output: Output) {
     settings.remove_snapshot_suffix();
     let mut sink = Buffer::no_color();
     settings.bind(|| {
-        insta::glob!("{expect-pass, expect-fail, expect-fail-todo}/*", |path| {
+        insta::glob!(paths, |path| {
             println!("Testing {}", path.display());
             let mode = Mode {
                 input: Input::File(Some(path.into())),
@@ -31,25 +31,40 @@ fn snapshot(output: Output) {
 
 #[test]
 fn test_ast() {
-    snapshot(Output::AST);
+    snapshot(
+        "{expect-pass, expect-fail, expect-fail-todo, expect-mlir-fail-todo}/*",
+        Output::AST,
+    );
 }
 
 #[test]
 fn test_hir() {
-    snapshot(Output::HIR);
+    snapshot(
+        "{expect-pass, expect-fail, expect-fail-todo, expect-mlir-fail-todo}/*",
+        Output::HIR,
+    );
 }
 
 #[test]
 fn test_dfg() {
-    snapshot(Output::DFG);
+    snapshot(
+        "{expect-pass, expect-fail, expect-fail-todo, expect-mlir-fail-todo}/*",
+        Output::DFG,
+    );
 }
 
 #[test]
 fn test_rust() {
-    snapshot(Output::Rust);
+    snapshot(
+        "{expect-pass, expect-fail, expect-fail-todo, expect-mlir-fail-todo}/*",
+        Output::Rust,
+    );
 }
 
 #[test]
 fn test_mlir() {
-    snapshot(Output::MLIR);
+    snapshot(
+        "{expect-pass, expect-fail, expect-fail-todo}/*",
+        Output::MLIR,
+    );
 }
