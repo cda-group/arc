@@ -1,4 +1,4 @@
-# RUN: arc-script run --output=MLIR %s | arc-mlir -arc-to-rust -crate %t && arc-cargo test -j 1 --manifest-path=%t/toplevel/Cargo.toml
+# RUN: arc-script run --output=MLIR %s | arc-mlir -rustcratename expectpassbasic -arc-to-rust -crate %t && arc-cargo test -j 1 --manifest-path=%t/expectpassbasic/Cargo.toml
 
 fun main() {
   unit

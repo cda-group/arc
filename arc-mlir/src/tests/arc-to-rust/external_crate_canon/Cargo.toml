@@ -5,4 +5,4 @@ authors = ["Frej Drejhammar <frej.drejhammar@gmail.com>"]
 edition = "2018"
 
 [dependencies]
-arctorustforeigncalls_types = {path = "../arctorustforeigncalls_types"}
+arctorustforeigncallscanon_types = {path = "../arctorustforeigncallscanon_types"}

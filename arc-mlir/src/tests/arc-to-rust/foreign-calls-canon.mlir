@@ -1,8 +1,8 @@
-// RUN: arc-mlir -rustcratename arctorustforeigncalls -arc-to-rust -crate %t %s && cp -rpf %S/external_crate %t && CARGO_HTTP_DEBUG=true cargo test -j 1 --manifest-path=%t/arctorustforeigncalls/Cargo.toml
+// RUN: arc-mlir -rustcratename arctorustforeigncallscanon -canonicalize -arc-to-rust -crate %t %s &&  cp -rpf %S/external_crate_canon %t && CARGO_HTTP_DEBUG=true cargo test -j 1 --manifest-path=%t/arctorustforeigncallscanon/Cargo.toml
 
 module @arctorustforeigncalls attributes {
 
-arc.foreign.rust.dependency.external_crate = "{ path = \"../external_crate\", version = \"0.1.0\" }"
+arc.foreign.rust.dependency.external_crate = "{ path = \"../external_crate_canon\", version = \"0.1.0\" }"
 } {
 
   func private @callee_void_void() -> () attributes {

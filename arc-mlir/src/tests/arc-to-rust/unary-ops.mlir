@@ -1,5 +1,5 @@
-// RUN: arc-mlir -arc-to-rust -crate %t -extra-rust-trailer %s.rust-tests %s && CARGO_HTTP_DEBUG=true cargo test -j 1 --manifest-path=%t/toplevel/Cargo.toml
-module @toplevel {
+// RUN: arc-mlir -arc-to-rust -crate %t -extra-rust-trailer %s.rust-tests %s && CARGO_HTTP_DEBUG=true cargo test -j 1 --manifest-path=%t/arctorustunaryops/Cargo.toml
+module @arctorustunaryops {
 func @acos_f32(%a : f32) -> f32 {
   %r = arc.acos %a : f32
   return %r : f32

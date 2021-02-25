@@ -1,6 +1,6 @@
-// RUN: arc-mlir -arc-to-rust -crate %t -extra-rust-trailer %s.rust-tests %s && CARGO_HTTP_DEBUG=true cargo test -j 1 --manifest-path=%t/toplevel/Cargo.toml
+// RUN: arc-mlir -arc-to-rust -crate %t -extra-rust-trailer %s.rust-tests %s && CARGO_HTTP_DEBUG=true cargo test -j 1 --manifest-path=%t/arctorustfuncarguments/Cargo.toml
 
-module @toplevel {
+module @arctorustfuncarguments {
   func @zero_args() -> ui16 {
     %t = arc.constant 4711 : ui16
     return %t : ui16

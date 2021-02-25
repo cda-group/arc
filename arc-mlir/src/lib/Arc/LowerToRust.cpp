@@ -138,6 +138,20 @@ private:
     Type ty = attr.getType();
     Type rustTy = TypeConverter.convertType(ty);
     APFloat f = attr.getValue();
+    unsigned width = ty.getIntOrFloatBitWidth();
+    std::string rustTyName =
+        "f" + Twine(width).str(); // TODO: handle bf16 and f16
+
+    if (f.isInfinity()) {
+      if (f.isNegative())
+        rustTyName += "::NEG_INFINITY";
+      else
+        rustTyName += "::INFINITY";
+      return returnResult(op, rustTy, rustTyName, rewriter);
+    }
+    if (f.isNaN())
+      return returnResult(op, rustTy, rustTyName + "::NAN", rewriter);
+
     char hex[256];
     f.convertToHexString(hex, 0, false, llvm::APFloat::rmNearestTiesToEven);
 
@@ -152,7 +166,6 @@ private:
       }
     }
 
-    unsigned width = ty.getIntOrFloatBitWidth();
     Twine str = "hexf" + Twine(width) + "!(\"" + hex + "\")";
     std::string directive =
         "#[macro_use] extern crate " + ArcToRustLoweringPass::hexfCrate + ";";
@@ -451,6 +464,36 @@ struct StdArithmeticOpLowering : public ConversionPattern {
 private:
   RustTypeConverter &TypeConverter;
   const char *opStr[StdArithmeticOp::LAST] = {"+", "/", "*", "-", "%"};
+};
+
+namespace OpAsMethod {
+typedef enum { PowFOp = 0, LAST } Op;
+};
+
+template <class T, OpAsMethod::Op theOp>
+struct OpAsMethodLowering : public ConversionPattern {
+  OpAsMethodLowering(MLIRContext *ctx, RustTypeConverter &typeConverter)
+      : ConversionPattern(T::getOperationName(), 1, ctx),
+        TypeConverter(typeConverter) {}
+
+  LogicalResult
+  matchAndRewrite(Operation *op, ArrayRef<Value> operands,
+                  ConversionPatternRewriter &rewriter) const final {
+    T o = cast<T>(op);
+    Type rustTy = TypeConverter.convertType(o.getType());
+    SmallVector<mlir::Value, 1> args;
+
+    for (unsigned i = 1; i < operands.size(); i++)
+      args.push_back(operands[i]);
+
+    rewriter.replaceOpWithNewOp<rust::RustMethodCallOp>(
+        op, rustTy, opStr[theOp], operands[0], args);
+    return success();
+  };
+
+private:
+  RustTypeConverter &TypeConverter;
+  const char *opStr[StdArithmeticOp::LAST] = {"powf"};
 };
 
 struct StdCmpFOpLowering : public ConversionPattern {
@@ -789,6 +832,8 @@ void ArcToRustLoweringPass::runOnOperation() {
   patterns
       .insert<StdArithmeticOpLowering<mlir::RemFOp, StdArithmeticOp::RemFOp>>(
           &getContext(), typeConverter);
+  patterns.insert<OpAsMethodLowering<math::PowFOp, OpAsMethod::PowFOp>>(
+      &getContext(), typeConverter);
 
   patterns.insert<ArcCmpIOpLowering>(&getContext(), typeConverter);
   patterns.insert<StdCmpFOpLowering>(&getContext(), typeConverter);

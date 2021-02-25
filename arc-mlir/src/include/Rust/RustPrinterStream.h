@@ -75,6 +75,7 @@ public:
 
   void flush() {
     OS << "#![allow(non_snake_case)]\n#![allow(non_camel_case_types)]\n";
+    OS << "#![allow(arithmetic_overflow)]\n";
     Types << "#![allow(non_snake_case)]\n#![allow(non_camel_case_types)]\n";
 
     for (auto i : CrateDirectives)

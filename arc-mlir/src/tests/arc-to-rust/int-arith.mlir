@@ -1,5 +1,5 @@
-// RUN: arc-mlir -arc-to-rust -crate %t -extra-rust-trailer %s.rust-tests %s && CARGO_HTTP_DEBUG=true cargo test -j 1 --manifest-path=%t/toplevel/Cargo.toml
-module @toplevel {
+// RUN: arc-mlir -arc-to-rust -crate %t -extra-rust-trailer %s.rust-tests %s && CARGO_HTTP_DEBUG=true cargo test -j 1 --manifest-path=%t/arctorustintarith/Cargo.toml
+module @arctorustintarith {
 func @addi_ui8(%a : ui8, %b : ui8) -> ui8 {
   %c = arc.addi %a, %b : ui8
   return %c : ui8

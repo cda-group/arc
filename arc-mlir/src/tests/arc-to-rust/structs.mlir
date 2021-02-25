@@ -1,7 +1,7 @@
-// RUN: arc-mlir -arc-to-rust -crate %t -extra-rust-trailer %s.rust-tests %s && CARGO_HTTP_DEBUG=true cargo test -j 1 --manifest-path=%t/toplevel/Cargo.toml
-// RUN: arc-mlir -canonicalize -arc-to-rust -crate %t -extra-rust-trailer %s.rust-tests %s && CARGO_HTTP_DEBUG=true cargo test -j 1 --manifest-path=%t/toplevel/Cargo.toml
+// RUN: arc-mlir -rustcratename arctoruststructs -arc-to-rust -crate %t -extra-rust-trailer %s.rust-tests %s && CARGO_HTTP_DEBUG=true cargo test -j 1 --manifest-path=%t/arctoruststructs/Cargo.toml
+// RUN: arc-mlir -rustcratename arctoruststructscanon -canonicalize -arc-to-rust -crate %t -extra-rust-trailer %s.rust-tests %s && CARGO_HTTP_DEBUG=true cargo test -j 1 --manifest-path=%t/arctoruststructscanon/Cargo.toml
 
-module @toplevel {
+module @arctoruststructs {
 
   func @ok0(%in : !arc.struct<foo : si32>) -> !arc.struct<foo : si32> {
     return %in : !arc.struct<foo : si32>
