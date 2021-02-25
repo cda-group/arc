@@ -40,7 +40,7 @@ impl Operator for TaskFilter {
 }
 fn Filter(p_0: fn(i32) -> bool) -> OperatorBuilder<TaskFilter> {
     OperatorBuilder {
-        constructor: Arc::new(|b| TaskFilter {
+        constructor: Arc::new(move |b| TaskFilter {
             timestamp: None,
             p_0,
         }),

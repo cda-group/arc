@@ -33,7 +33,7 @@ impl Operator for TaskIdentity {
 }
 fn Identity() -> OperatorBuilder<TaskIdentity> {
     OperatorBuilder {
-        constructor: Arc::new(|b| TaskIdentity { timestamp: None }),
+        constructor: Arc::new(move |b| TaskIdentity { timestamp: None }),
         conf: Default::default(),
     }
 }

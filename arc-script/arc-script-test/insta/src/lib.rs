@@ -6,7 +6,7 @@ use arc_script_core::prelude::modes::{Input, Mode, Output};
 
 use std::env;
 
-fn snapshot(paths: &str, output: Output) {
+fn snapshot(output: Output, paths: &str) {
     env::set_var("INSTA_OUTPUT", "summary");
     env::set_var("INSTA_FORCE_PASS", "1");
     let mut settings = insta::Settings::clone_current();
@@ -31,40 +31,39 @@ fn snapshot(paths: &str, output: Output) {
 
 #[test]
 fn test_ast() {
-    snapshot(
-        "{expect-pass, expect-fail, expect-fail-todo, expect-mlir-fail-todo}/*",
-        Output::AST,
-    );
+    snapshot(Output::AST, "expect-mlir-fail-todo/*");
+    snapshot(Output::AST, "expect-pass/*");
+    snapshot(Output::AST, "expect-fail/*");
+    snapshot(Output::AST, "expect-fail-todo/*");
 }
 
 #[test]
 fn test_hir() {
-    snapshot(
-        "{expect-pass, expect-fail, expect-fail-todo, expect-mlir-fail-todo}/*",
-        Output::HIR,
-    );
+    snapshot(Output::HIR, "expect-mlir-fail-todo/*");
+    snapshot(Output::HIR, "expect-pass/*");
+    snapshot(Output::HIR, "expect-fail/*");
+    snapshot(Output::HIR, "expect-fail-todo/*");
 }
 
 #[test]
 fn test_dfg() {
-    snapshot(
-        "{expect-pass, expect-fail, expect-fail-todo, expect-mlir-fail-todo}/*",
-        Output::DFG,
-    );
+    snapshot(Output::DFG, "expect-mlir-fail-todo/*");
+    snapshot(Output::DFG, "expect-pass/*");
+    snapshot(Output::DFG, "expect-fail/*");
+    snapshot(Output::DFG, "expect-fail-todo/*");
 }
 
 #[test]
 fn test_rust() {
-    snapshot(
-        "{expect-pass, expect-fail, expect-fail-todo, expect-mlir-fail-todo}/*",
-        Output::Rust,
-    );
+    snapshot(Output::Rust, "expect-mlir-fail-todo/*");
+    snapshot(Output::Rust, "expect-pass/*");
+    snapshot(Output::Rust, "expect-fail/*");
+    snapshot(Output::Rust, "expect-fail-todo/*");
 }
 
 #[test]
 fn test_mlir() {
-    snapshot(
-        "{expect-pass, expect-fail, expect-fail-todo}/*",
-        Output::MLIR,
-    );
+    snapshot(Output::MLIR, "expect-pass/*");
+    snapshot(Output::MLIR, "expect-fail/*");
+    snapshot(Output::MLIR, "expect-fail-todo/*");
 }

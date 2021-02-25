@@ -1,12 +1,9 @@
 ---
-source: arc-script-core/tests/insta/mod.rs
+source: arc-script-test/insta/src/lib.rs
 expression: s
-input_file: arc-script-core/tests/insta/snapshot-tests/ownership.arc
+input_file: arc-script-test/insta/src/expect-fail/ownership.arc
 ---
-fun main() {
-    let x = (((3, 2), 1), 0) in
-    let y = x.0 in
-    let z = x.0 in
-    ()
+fun main(s0: ~i32) {
+    (s0, s0)
 }
 

@@ -38,7 +38,7 @@ impl Operator for TaskMap {
 }
 fn Map(f_0: fn(i32) -> i32) -> OperatorBuilder<TaskMap> {
     OperatorBuilder {
-        constructor: Arc::new(|b| TaskMap {
+        constructor: Arc::new(move |b| TaskMap {
             timestamp: None,
             f_0,
         }),

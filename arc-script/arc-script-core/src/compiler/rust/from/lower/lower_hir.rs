@@ -145,7 +145,7 @@ impl Lower<Tokens, Context<'_>> for hir::Task {
         let item_fn = quote! {
             fn #cons_name(#(#params),*) -> OperatorBuilder<#task_name> {
                 OperatorBuilder {
-                    constructor: Arc::new(|b| #task_name { 
+                    constructor: Arc::new(move |b| #task_name { 
                         timestamp: None,
                         #(#param_ids),*
                     }),

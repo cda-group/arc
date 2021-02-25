@@ -1,6 +1,3 @@
-fun main() {
-    let x = (((3,2),1),0) in
-    let y = x.0 in
-    let z = x.0 in
-    ()
+fun main(s0: ~i32) -> (~i32, ~i32) {
+    (s0, s0)
 }
