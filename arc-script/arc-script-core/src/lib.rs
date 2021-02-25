@@ -14,6 +14,7 @@
 #![deny(clippy::nursery)]
 #![deny(clippy::cargo)]
 // Exceptions
+#![allow(clippy::upper_case_acronyms)]
 #![allow(clippy::similar_names)]
 #![allow(clippy::redundant_else)]
 #![allow(clippy::struct_excessive_bools)]

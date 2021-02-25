@@ -20,7 +20,7 @@ pub(crate) fn mangle(tv: TypeId, ctx: &mut Context<'_>) -> syn::Ident {
 
 fn mangle_fields(tv: TypeId, fts: &VecMap<Name, TypeId>, ctx: &mut Context<'_>, name: &mut String) {
     let root = ctx.info.types.root(tv);
-    let ident = if let Some(ident) = ctx.mangled_names.get(&root) {
+    if let Some(ident) = ctx.mangled_names.get(&root) {
         name.push_str(ident);
     } else {
         let mut inner = String::new();
@@ -37,7 +37,7 @@ fn mangle_fields(tv: TypeId, fts: &VecMap<Name, TypeId>, ctx: &mut Context<'_>, 
         inner.push_str("End");
         ctx.mangled_names.insert(root, inner.clone());
         name.push_str(&inner);
-    };
+    }
 }
 
 impl hir::TypeId {

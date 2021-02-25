@@ -61,10 +61,6 @@ impl TypeId {
     }
     /// Returns `true` if type is a boolean, else `false`.
     pub(crate) fn is_bool(self, info: &Info) -> bool {
-        if let Scalar(Bool) = info.types.resolve(self).kind {
-            true
-        } else {
-            false
-        }
+        matches!(info.types.resolve(self).kind, Scalar(Bool))
     }
 }

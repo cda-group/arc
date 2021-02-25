@@ -30,7 +30,7 @@ impl AST {
             }
             Input::Empty => {}
         }
-        tracing::debug!("{}", ast.debug(&info));
+        tracing::debug!("{}", ast.debug(info));
         ast
     }
 }

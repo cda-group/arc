@@ -17,7 +17,6 @@ impl Rust {
         let items: proc_macro2::TokenStream = hir.lower(ctx);
         tracing::debug!("{}", items);
         let file: syn::File = syn::parse_quote!(#items);
-        let rust = Rust::new(file);
-        rust
+        Self::new(file)
     }
 }
