@@ -280,10 +280,12 @@ AppenderType AppenderType::get(Type mergeType, RankedTensorType resultType) {
   return Base::get(mergeType.getContext(), mergeType, resultType);
 }
 
-AppenderType AppenderType::getChecked(Type mergeType,
-                                      RankedTensorType resultType,
-                                      Location loc) {
-  return Base::getChecked(loc, mergeType, resultType);
+AppenderType
+AppenderType::getChecked(function_ref<InFlightDiagnostic()> emitError,
+                         Type mergeType, RankedTensorType resultType,
+                         Location loc) {
+  return Base::getChecked(emitError, mergeType.getContext(), mergeType,
+                          resultType);
 }
 
 Type AppenderType::parse(DialectAsmParser &parser) {
@@ -295,20 +297,25 @@ Type AppenderType::parse(DialectAsmParser &parser) {
     return nullptr;
   if (parser.parseGreater())
     return nullptr;
-  auto resultType = RankedTensorType::getChecked(loc, {}, mergeType);
-  return AppenderType::getChecked(mergeType, resultType, loc);
+
+  ArrayRef<int64_t> shape = {};
+  RankedTensorType resultType = RankedTensorType::getChecked(
+      mlir::detail::getDefaultDiagnosticEmitFn(loc), shape, mergeType);
+
+  return AppenderType::getChecked(mlir::detail::getDefaultDiagnosticEmitFn(loc),
+                                  mergeType, resultType, loc);
 }
 
 void AppenderType::print(DialectAsmPrinter &os) const {
   os << "appender" << '<' << getMergeType() << '>';
 }
 
-LogicalResult
-AppenderType::verifyConstructionInvariants(Location loc, Type mergeType,
-                                           RankedTensorType resultType) {
+LogicalResult AppenderType::verify(function_ref<InFlightDiagnostic()> emitError,
+                                   Type mergeType,
+                                   RankedTensorType resultType) {
   if (!isValueType(mergeType)) {
-    return emitOptionalError(
-        loc, "appender merge type must be a value type: found ", mergeType);
+    return emitError() << "appender merge type must be a value type: found "
+                       << mergeType;
   }
   return success();
 }
