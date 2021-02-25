@@ -1,3 +1,5 @@
+/// Module for representing Arc Queries.
+pub(crate) mod query;
 /// Module for representing the Abstract Syntax Tree.
 ///
 /// NB: This module is public so that external libraries can construct ASTs

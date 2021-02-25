@@ -17,10 +17,27 @@ pub struct Mode {
     pub fail_fast: bool,
     /// Forces the compiler to emit its internal representation (e.g., AST) even if it has errors.
     pub force_output: bool,
+    /// Configures what kind of language the compiler expects its input source code to be written in.
+    pub lang: Lang,
     /// Configures what kind of input the compiler reads.
     pub input: Input,
     /// Configures what kind of output the compiler writes.
     pub output: Output,
+}
+
+#[derive(Debug, Clone)]
+/// Language modes.
+pub enum Lang {
+    /// Arc-Query
+    Arq,
+    /// Arc-Script
+    Arc,
+}
+
+impl Default for Lang {
+    fn default() -> Self {
+        Self::Arc
+    }
 }
 
 /// Verbosity levels

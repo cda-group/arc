@@ -1,4 +1,4 @@
-use crate::compiler::ast::from::lexer::Token;
+use crate::compiler::ast::from::source::lexer::Token;
 use crate::compiler::info;
 use crate::compiler::pretty::AsPretty;
 use crate::compiler::pretty::Pretty;
