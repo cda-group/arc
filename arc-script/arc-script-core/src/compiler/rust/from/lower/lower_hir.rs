@@ -3,6 +3,7 @@ use arc_script_core_shared::Bool;
 use arc_script_core_shared::Lower;
 
 use crate::compiler::hir;
+use crate::compiler::info::Info;
 use crate::compiler::rust::from::lower::lowerings::structs;
 
 use super::Context;
@@ -148,7 +149,7 @@ impl Lower<Tokens, Context<'_>> for hir::Task {
         let item_fn = quote! {
             fn #cons_name(#(#params),*) -> OperatorBuilder<#task_name> {
                 OperatorBuilder {
-                    constructor: Arc::new(move |b| #task_name { 
+                    constructor: Arc::new(move |b| #task_name {
                         timestamp: None,
                         #(#param_ids),*
                     }),
@@ -384,8 +385,13 @@ impl Lower<Tokens, Context<'_>> for hir::TypeId {
                             quote!(#f : #t)
                         })
                         .collect::<Vec<_>>();
+                    let derive_copy = self
+                        .is_copyable((ctx.info as &Info, ctx.hir))
+                        .as_option()
+                        .map(|_| quote!(#[derive(Copy)]));
                     let def = quote! {
                         #[arcorn::rewrite]
+                        #derive_copy
                         pub struct #ident {
                             #(#fts),*
                         }

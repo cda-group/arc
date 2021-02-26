@@ -15,11 +15,13 @@ pub fn test() -> () {
     ()
 }
 #[arcorn::rewrite]
+#[derive(Copy)]
 pub struct Struct1ci321bi32End {
     c: i32,
     b: i32,
 }
 #[arcorn::rewrite]
+#[derive(Copy)]
 pub struct Struct1aStruct1ci321bi32End3xyzi321dStruct1ci321bi32EndEnd {
     a: Struct1ci321bi32End,
     xyz: i32,

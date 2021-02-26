@@ -1,29 +1,61 @@
 //! Built-in traits for different kinds of types.
 
+use crate::compiler::hir::ItemKind;
+use crate::compiler::hir::Path;
 use crate::compiler::hir::ScalarKind;
 use crate::compiler::hir::Type;
 use crate::compiler::hir::TypeId;
 use crate::compiler::hir::TypeKind;
+use crate::compiler::hir::HIR;
 use crate::compiler::info::Info;
+use arc_script_core_shared::From;
 
 use ScalarKind::*;
 use TypeKind::*;
 
+#[derive(From, Copy, Clone)]
+pub(crate) struct Context<'i> {
+    info: &'i Info,
+    hir: &'i HIR,
+}
+
+impl Path {
+    /// Returns `true` if a path points to something which can be copied, else `false`.
+    /// NOTE: Function pointers and external function pointers are copyable.
+    #[rustfmt::skip]
+    fn is_copyable<'a>(&self, ctx: impl Into<Context<'a>>) -> bool {
+        let ctx = ctx.into();
+        ctx.hir.defs.get(self).map(|item| {
+            match &item.kind {
+                ItemKind::Alias(item)   => item.tv.is_copyable(ctx),
+                ItemKind::Enum(item)    => item.variants.iter().all(|v| v.is_copyable(ctx)),
+                ItemKind::Fun(item)     => true,
+                ItemKind::State(item)   => false,
+                ItemKind::Task(item)    => false,
+                ItemKind::Extern(item)  => true,
+                ItemKind::Variant(item) => item.tv.is_copyable(ctx),
+            }
+        }).unwrap_or(true)
+    }
+}
+
 impl TypeId {
     /// Returns `true` if type can be copied, else `false`.
     #[rustfmt::skip]
-    pub fn is_copyable(self, info: &Info) -> bool {
-        match info.types.resolve(self).kind {
+    pub(crate) fn is_copyable<'a>(self, ctx: impl Into<Context<'a>>) -> bool {
+        let ctx = ctx.into();
+        match ctx.info.types.resolve(self).kind {
             Array(_, _) => false,
-            Fun(_, _)   => false,
+            Fun(_, _)   => true,
             Map(_, _)   => false,
-            Nominal(_)  => false,
-            Optional(t) => t.is_copyable(info),
+            Nominal(x)  => false,
+            Optional(t) => t.is_copyable(ctx),
+            Scalar(Str) => false,
             Scalar(_)   => true,
             Set(_)      => false,
             Stream(_)   => false,
-            Struct(fs)  => fs.values().all(|t| t.is_copyable(info)),
-            Tuple(ts)   => ts.iter().all(|t| t.is_copyable(info)),
+            Struct(fs)  => fs.values().all(|t| t.is_copyable(ctx)),
+            Tuple(ts)   => ts.iter().all(|t| t.is_copyable(ctx)),
             Unknown     => false,
             Vector(_)   => false,
             Boxed(_)    => false,

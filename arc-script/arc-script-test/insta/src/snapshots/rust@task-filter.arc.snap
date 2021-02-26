@@ -55,6 +55,7 @@ pub fn main(stream0_0: Stream<Struct5valuei32End>) -> Stream<Struct5valuei32End>
     stream1_0
 }
 #[arcorn::rewrite]
+#[derive(Copy)]
 pub struct Struct5valuei32End {
     value: i32,
 }
