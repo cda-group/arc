@@ -200,18 +200,21 @@ impl<'i> Display for Pretty<'i, hir::Hub, Context<'_>> {
     }
 }
 
-impl<'i> Display for Pretty<'i, hir::On, Context<'_>> {
+impl<'i> Display for Pretty<'i, Option<hir::On>, Context<'_>> {
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
-        let Pretty(on, fmt) = self;
-        write!(
-            f,
-            "on {{{s1}{param} => {{{s2}{body}{s1}}}{s0}}}",
-            param = on.param.pretty(fmt),
-            body = on.body.pretty(fmt.indent().indent()),
-            s0 = fmt,
-            s1 = fmt.indent(),
-            s2 = fmt.indent().indent()
-        )
+        if let Pretty(Some(on), fmt) = self {
+            write!(
+                f,
+                "on {{{s1}{param} => {{{s2}{body}{s1}}}{s0}}}",
+                param = on.param.pretty(fmt),
+                body = on.body.pretty(fmt.indent().indent()),
+                s0 = fmt,
+                s1 = fmt.indent(),
+                s2 = fmt.indent().indent()
+            )
+        } else {
+            Ok(())
+        }
     }
 }
 

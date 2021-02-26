@@ -168,13 +168,11 @@ impl Lower<(Path, hir::ItemKind), Context<'_>> for ast::Task {
         let ihub = self.ihub.lower("Source", ctx);
         let ohub = self.ohub.lower("Sink", ctx);
 
-        // TODO: Handle error when there is no handler
         let on = self
             .items
             .iter()
             .find_map(|item| map!(&item.kind, ast::TaskItemKind::On(_)))
-            .unwrap()
-            .lower(ctx);
+            .map(|item| item.lower(ctx));
         let items = self
             .items
             .iter()

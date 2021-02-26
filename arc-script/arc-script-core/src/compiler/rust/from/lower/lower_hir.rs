@@ -1,4 +1,5 @@
 use arc_script_core_shared::get;
+use arc_script_core_shared::Bool;
 use arc_script_core_shared::Lower;
 
 use crate::compiler::hir;
@@ -116,8 +117,10 @@ impl Lower<Tokens, Context<'_>> for hir::Task {
         let fs = vec![(x, otv)].into_iter().collect();
         let oty = ctx.info.types.intern(hir::TypeKind::Struct(fs)).lower(ctx);
 
-        let event = self.on.param.kind.lower(ctx);
-        let body = self.on.body.lower(ctx);
+        let on = get!(&self.on, Some(on));
+        let event = on.param.kind.lower(ctx);
+        let body = on.body.lower(ctx);
+
         let item_impl = quote! {
             impl Operator for #task_name {
                 type IN  = #ity;

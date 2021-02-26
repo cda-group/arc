@@ -14,3 +14,4 @@ anyhow       = { version = "1.0.37" }
 educe        = { version = "0.4.13", default-features = false, features = ["Hash", "PartialEq", "Eq", "PartialOrd", "Ord", "Debug", "Default"] }
 cfg-if       = { version = "1.0.0" }
 fxhash       = { version = "0.2.1" }
+boolinator   = { version = "2.4.0" }

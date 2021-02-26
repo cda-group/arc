@@ -13,6 +13,7 @@ pub use educe::Educe;
 pub use fxhash::FxBuildHasher as Hasher;
 pub use linear_map::Entry;
 pub use shrinkwraprs::Shrinkwrap;
+pub use boolinator::Boolinator as Bool;
 
 pub use indexmap::map::Entry as OrdMapEntry;
 pub use linear_map::Entry as VecMapEntry;

@@ -125,7 +125,9 @@ impl hir::Item {
                 i.init.collect_root(places);
             }
             hir::ItemKind::Task(i) => {
-                i.on.body.collect_root(places);
+                if let Some(on) = &i.on {
+                    on.body.collect_root(places);
+                }
             }
             hir::ItemKind::Alias(_) => {}
             hir::ItemKind::Enum(_) => {}

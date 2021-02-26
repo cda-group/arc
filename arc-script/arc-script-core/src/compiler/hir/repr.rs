@@ -153,7 +153,7 @@ pub(crate) struct Task {
     /// Input hub to the task.
     pub(crate) ohub: Hub,
     /// Event handler.
-    pub(crate) on: On,
+    pub(crate) on: Option<On>,
     /// Items of the task.
     pub(crate) items: Vec<Path>,
 }
