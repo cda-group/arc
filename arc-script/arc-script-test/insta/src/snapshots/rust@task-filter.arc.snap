@@ -24,8 +24,7 @@ impl Operator for TaskFilter {
     ) -> OperatorResult<()> {
         self.timestamp = elem.timestamp;
         let event_0 = elem.data.value;
-        let (p_0) = (self.p_0.clone());
-        if p_0(event_0) {
+        if (self.p_0)(event_0) {
             ctx.output(ArconElement {
                 data: Self::OUT { value: event_0 },
                 timestamp: self.timestamp,
@@ -47,6 +46,7 @@ fn Filter(p_0: fn(i32) -> bool) -> OperatorBuilder<TaskFilter> {
         conf: Default::default(),
     }
 }
+impl TaskFilter {}
 pub fn x_0(x_1: i32) -> bool {
     x_1 % 2i32 == 0i32
 }

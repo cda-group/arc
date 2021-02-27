@@ -1,18 +1,18 @@
 ---
 source: arc-script-test/insta/src/lib.rs
 expression: s
-input_file: arc-script-test/insta/src/expect-mlir-fail-todo/task-map.arc
+input_file: arc-script-test/insta/src/expect-mlir-fail-todo/task-with-funs.arc
 ---
 use arc_script::arcorn;
 use arcon::prelude::*;
 #[derive(ArconState)]
-pub struct TaskMap {
+pub struct TaskTest {
     #[ephemeral]
     timestamp: Option<u64>,
     #[ephemeral]
-    pub f_0: fn(i32) -> i32,
+    pub x_0: i32,
 }
-impl Operator for TaskMap {
+impl Operator for TaskTest {
     type IN = Struct5valuei32End;
     type OUT = Struct5valuei32End;
     type TimerState = ArconNever;
@@ -26,7 +26,7 @@ impl Operator for TaskMap {
         let event_0 = elem.data.value;
         ctx.output(ArconElement {
             data: Self::OUT {
-                value: (self.f_0)(event_0),
+                value: Test_add(event_0),
             },
             timestamp: self.timestamp,
         });
@@ -35,22 +35,24 @@ impl Operator for TaskMap {
     arcon::ignore_timeout!();
     arcon::ignore_persist!();
 }
-fn Map(f_0: fn(i32) -> i32) -> OperatorBuilder<TaskMap> {
+fn Test(x_0: i32) -> OperatorBuilder<TaskTest> {
     OperatorBuilder {
-        constructor: Arc::new(move |b| TaskMap {
+        constructor: Arc::new(move |b| TaskTest {
             timestamp: None,
-            f_0,
+            x_0,
         }),
         conf: Default::default(),
     }
 }
-impl TaskMap {}
-pub fn x_0(x_1: i32) -> i32 {
-    x_1 + 1i32
-}
-pub fn main(input_0: Stream<Struct5valuei32End>) -> Stream<Struct5valuei32End> {
-    let output_0: Stream<Struct5valuei32End> = Stream::operator(input_0, Map(x_0));
-    output_0
+impl TaskTest {
+    fn Test_add(
+        &mut self,
+        ctx: &mut OperatorContext<Self, impl Backend, impl ComponentDefinition>,
+        y_0: i32,
+    ) -> i32 {
+        let z_0: i32 = (self.x_0) + y_0;
+        z_0
+    }
 }
 #[arcorn::rewrite]
 #[derive(Copy)]

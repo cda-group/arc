@@ -167,7 +167,7 @@ impl hir::Expr {
                     return Some(p1);
                 }
             }
-            hir::ExprKind::Var(x) => {
+            hir::ExprKind::Var(x, _) => {
                 let p = Place::new(owner.intern_place(PlaceKind::Var(*x)), self.tv, self.loc);
                 owner.add_root(p, *x);
                 return Some(p);

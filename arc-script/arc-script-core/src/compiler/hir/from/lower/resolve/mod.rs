@@ -30,7 +30,7 @@ pub(crate) struct Resolver {
 #[derive(Debug)]
 pub(crate) enum DeclKind {
     Item(hir::Path, ItemDeclKind),
-    Var(hir::Name),
+    Var(hir::Name, hir::VarKind),
 }
 
 impl Resolver {
@@ -51,22 +51,23 @@ impl Resolver {
         // First check if the symbol is stored as a variable on the symbol stack
         let path_buf = *info.paths.resolve(path.id);
         if path_buf.pred.is_none() {
-            if let Some(name) = self.stack.resolve(path_buf.name) {
-                return Some(DeclKind::Var(name));
+            if let Some((name, kind)) = self.stack.resolve(path_buf.name) {
+                return Some(DeclKind::Var(name, kind));
             }
         }
         // Otherwise it might be stored in the symbol table
         let rel_path = info.paths.join(self.path_id, path.id);
-        let abs_path = self.table.resolve(rel_path);
-        if let Some(decl) = self.table.get_decl(abs_path) {
-            Some(DeclKind::Item(abs_path.into(), decl))
-        } else {
-            info.diags.intern(Error::PathNotFound {
-                path: rel_path.into(),
-                loc: path.loc,
-            });
-            None
-        }
+        let abs_path = self.table.absolute(rel_path);
+        self.table
+            .get_decl(abs_path)
+            .map(|decl| DeclKind::Item(abs_path.into(), decl))
+            .or_else(|| {
+                info.diags.intern(Error::PathNotFound {
+                    path: rel_path.into(),
+                    loc: path.loc,
+                });
+                None
+            })
     }
 
     /// Pushes a namespace onto the path.

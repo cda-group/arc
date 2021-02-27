@@ -2,6 +2,7 @@ mod lower_dfg;
 mod lower_hir;
 pub(crate) mod lowerings {
     pub(crate) mod structs;
+    pub(crate) mod tasks;
 }
 
 use crate::compiler::hir;

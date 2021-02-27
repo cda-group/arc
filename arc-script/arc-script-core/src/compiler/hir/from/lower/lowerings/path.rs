@@ -15,16 +15,19 @@ pub(crate) fn lower_path_expr(
     loc: Option<Loc>,
     ctx: &mut Context<'_>,
 ) -> hir::ExprKind {
-    match ctx.res.resolve(path, ctx.info).unwrap() {
-        Item(x, kind) => match kind {
-            Variant | Alias | Enum => {
-                ctx.info.diags.intern(Error::TypeInValuePosition { loc });
-                hir::ExprKind::Err
-            }
-            Fun | Task | Extern | State => hir::ExprKind::Item(x),
-        },
-        Var(x) => hir::ExprKind::Var(x),
-    }
+    ctx.res
+        .resolve(path, ctx.info)
+        .map(|decl| match decl {
+            Item(x, kind) => match kind {
+                Variant | Alias | Enum => {
+                    ctx.info.diags.intern(Error::TypeInValuePosition { loc });
+                    hir::ExprKind::Err
+                }
+                Fun | Task | Extern | State => hir::ExprKind::Item(x),
+            },
+            Var(x, kind) => hir::ExprKind::Var(x, kind),
+        })
+        .unwrap_or(hir::ExprKind::Err)
 }
 
 pub(crate) fn lower_is(path: &ast::Path, expr: &ast::Expr, ctx: &mut Context<'_>) -> hir::ExprKind {

@@ -61,6 +61,10 @@ impl Constrain<'_> for Task {
             on.body.constrain(ctx);
             ctx.unify(on.param.tv, self.ihub.tv);
         }
+        self.items.iter().for_each(|item| {
+            let item = ctx.defs.get(item).unwrap();
+            item.constrain(ctx)
+        });
         let tvs = self.params.iter().map(|x| x.tv).collect();
         let itvs = self.ihub.constrain(ctx);
         let otvs = self.ohub.constrain(ctx);
@@ -123,7 +127,7 @@ impl Constrain<'_> for Expr {
                     e1.constrain(ctx);
                 }
             }
-            ExprKind::Var(x) => {
+            ExprKind::Var(x, _) => {
                 if let Some(x) = ctx.env.get(x).cloned() {
                     ctx.unify(self.tv, x.tv);
                 }

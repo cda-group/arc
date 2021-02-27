@@ -87,23 +87,27 @@ impl Lower<Tokens, Context<'_>> for hir::Task {
     fn lower(&self, ctx: &mut Context<'_>) -> Tokens {
         let cons_name = self.path.lower(ctx);
         let task_name = syn::Ident::new(&format!("Task{}", cons_name), pm2::Span::call_site());
-        let params = self.params.iter().map(|p| p.lower(ctx)).collect::<Vec<_>>();
+        let param_decls = self.params.iter().map(|p| p.lower(ctx)).collect::<Vec<_>>();
         let param_ids = self
             .params
             .iter()
             .map(|p| p.kind.lower(ctx))
             .collect::<Vec<_>>();
-        let clone_params = if param_ids.is_empty() {
-            None
-        } else {
-            Some(quote!(let (#(#param_ids),*) = (#(self.#param_ids.clone()),*);))
-        };
+        let (state_decls, state_inits): (Vec<_>, Vec<_>) =
+            self.items.iter().filter_map(|x| x.lower_state(ctx)).unzip();
         let item_struct = quote! {
             #[derive(ArconState)]
             pub struct #task_name {
+                #(#state_decls),*
                 #[ephemeral]
                 timestamp: Option<u64>,
-                #(#[ephemeral] pub #params),*
+                #(#[ephemeral] pub #param_decls),*
+            }
+        };
+        let methods = self.items.iter().filter_map(|item| item.lower_method(ctx));
+        let item_methods = quote! {
+            impl #task_name {
+                #(#methods)*
             }
         };
         let x = ctx.info.names.intern("value").into();
@@ -136,7 +140,6 @@ impl Lower<Tokens, Context<'_>> for hir::Task {
                 ) -> OperatorResult<()> {
                     self.timestamp = elem.timestamp;
                     let #event = elem.data.value;
-                    #clone_params
                     #body;
                     Ok(())
                 }
@@ -147,9 +150,10 @@ impl Lower<Tokens, Context<'_>> for hir::Task {
         };
 
         let item_fn = quote! {
-            fn #cons_name(#(#params),*) -> OperatorBuilder<#task_name> {
+            fn #cons_name(#(#param_decls),*) -> OperatorBuilder<#task_name> {
                 OperatorBuilder {
                     constructor: Arc::new(move |b| #task_name {
+                        #(#state_inits),*
                         timestamp: None,
                         #(#param_ids),*
                     }),
@@ -162,6 +166,7 @@ impl Lower<Tokens, Context<'_>> for hir::Task {
             #item_struct
             #item_impl
             #item_fn
+            #item_methods
         }
     }
 }
@@ -258,20 +263,20 @@ impl Lower<Tokens, Context<'_>> for hir::Expr {
                 let e2 = e2.lower(ctx);
                 quote!(if #e0 { #e1 } else { #e2 })
             }
-            hir::ExprKind::Item(x) => {
-                let x = x.lower(ctx);
-                quote!(#x)
-            }
+            hir::ExprKind::Item(x) => match &ctx.hir.defs.get(x).unwrap().kind {
+                hir::ItemKind::Fun(item) if matches!(item.kind, hir::FunKind::Method) => {
+                    let x = x.lower(ctx);
+                    quote!(self.#x)
+                }
+                _ => x.lower(ctx),
+            },
             hir::ExprKind::Let(x, e0, e1) => {
                 let x = x.lower(ctx);
                 let e0 = e0.lower(ctx);
                 let e1 = e1.lower(ctx);
                 quote!(let #x = #e0; #e1)
             }
-            hir::ExprKind::Lit(l) => {
-                let l = l.lower(ctx);
-                quote!(#l)
-            }
+            hir::ExprKind::Lit(l) => l.lower(ctx),
             hir::ExprKind::Log(e) => {
                 let e = e.lower(ctx);
                 quote!(println!("{:?}", #e))
@@ -310,9 +315,12 @@ impl Lower<Tokens, Context<'_>> for hir::Expr {
                 let e = e.lower(ctx);
                 quote!(#op #e)
             }
-            hir::ExprKind::Var(x) => {
+            hir::ExprKind::Var(x, kind) => {
                 let x = x.lower(ctx);
-                quote!(#x)
+                match kind {
+                    hir::VarKind::Local => x,
+                    hir::VarKind::Member => quote!((self.#x)),
+                }
             }
             hir::ExprKind::Enwrap(x, e) => {
                 let x = x.lower(ctx);

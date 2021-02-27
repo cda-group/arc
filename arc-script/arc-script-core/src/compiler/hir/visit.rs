@@ -29,7 +29,7 @@ macro_rules! for_each_expr {
                     ExprKind::Tuple(ps) => ps.$iter().for_each(|p| p.$name(f)),
                     ExprKind::Struct(fs) => fs.$iter().for_each(|(_, v)| v.$name(f)),
                     ExprKind::Lit(_) => {}
-                    ExprKind::Var(_) => {}
+                    ExprKind::Var(_, _) => {}
                     ExprKind::Item(_) => {}
                     ExprKind::Emit(_) => {}
                     ExprKind::BinOp(l, _, r) => {

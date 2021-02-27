@@ -332,7 +332,7 @@ impl<'i> Display for Pretty<'i, hir::Expr, Context<'_>> {
             hir::ExprKind::Unwrap(x0, e0) => write!(f, "unwrap[{}]({})", x0.pretty(fmt), e0.pretty(fmt)),
             hir::ExprKind::Enwrap(x0, e0) => write!(f, "enwrap[{}]({})", x0.pretty(fmt), e0.pretty(fmt)),
             hir::ExprKind::Is(x0, e0) => write!(f, "is[{}]({})", x0.pretty(fmt), e0.pretty(fmt)),
-            hir::ExprKind::Var(x) => write!(f, "{}", x.pretty(fmt)),
+            hir::ExprKind::Var(x, _) => write!(f, "{}", x.pretty(fmt)),
             hir::ExprKind::Item(x) => write!(f, "{}", x.pretty(fmt)), 
             hir::ExprKind::Err => write!(f, "☇"),
             hir::ExprKind::Return(e) => write!(f, "return {};;", e.pretty(fmt)),

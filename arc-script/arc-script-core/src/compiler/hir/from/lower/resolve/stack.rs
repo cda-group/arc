@@ -1,15 +1,17 @@
 use crate::compiler::hir::Name;
+use crate::compiler::hir::VarKind;
 use crate::compiler::info::Info;
 use arc_script_core_shared::Map;
 use arc_script_core_shared::MapEntry;
+use arc_script_core_shared::New;
 use arc_script_core_shared::Shrinkwrap;
 
 /// A scope which maps variable names to unique variable names.
-#[derive(Debug, Default, Shrinkwrap)]
+#[derive(Debug, Default, Clone, Shrinkwrap)]
 #[shrinkwrap(mutable)]
-pub(crate) struct Scope(pub(crate) Map<Name, Name>);
+pub(crate) struct Scope(pub(crate) Map<Name, (Name, VarKind)>);
 
-#[derive(Debug, Default, Shrinkwrap)]
+#[derive(Debug, Default, Clone, Shrinkwrap, New)]
 #[shrinkwrap(mutable)]
 pub(crate) struct Frame(pub(crate) Vec<Scope>);
 
@@ -56,7 +58,7 @@ impl Default for SymbolStack {
 
 impl SymbolStack {
     /// Returns the true name of a symbol.
-    pub(crate) fn resolve(&self, name: Name) -> Option<Name> {
+    pub(crate) fn resolve(&self, name: Name) -> Option<(Name, VarKind)> {
         self.innermost()
             .iter()
             .rev()
@@ -77,11 +79,11 @@ impl SymbolStack {
     /// Binds a local variable to a name in the innermost scope. Returns an error
     /// if there is already a variable in that scope with the same name. This might
     /// occur if for example two variables are bound in the same pattern.
-    pub(crate) fn bind(&mut self, name: Name, info: &mut Info) -> Option<Name> {
+    pub(crate) fn bind(&mut self, name: Name, kind: VarKind, info: &mut Info) -> Option<Name> {
         match self.innermost_mut().last_mut().unwrap().entry(name) {
             MapEntry::Vacant(entry) => {
                 let uid = info.names.fresh_with_base(name);
-                entry.insert(uid);
+                entry.insert((uid, kind));
                 Some(uid)
             }
             MapEntry::Occupied(_) => None,
@@ -104,6 +106,7 @@ impl SymbolStack {
         self.push_scope();
     }
 
+    /// Pops the innermost frame off of the stack.
     pub(crate) fn pop_frame(&mut self) {
         self.pop();
     }

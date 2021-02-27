@@ -57,7 +57,7 @@ impl SSA<Var> for Expr {
                 }
                 return e1.ssa(ctx, env, ops);
             }
-            ExprKind::Var(mut x) => {
+            ExprKind::Var(mut x, _) => {
                 while let Some(next) = env.get(&x) {
                     x = next.name;
                 }
