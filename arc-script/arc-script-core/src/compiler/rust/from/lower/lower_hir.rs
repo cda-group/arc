@@ -461,7 +461,7 @@ impl Lower<Tokens, Context<'_>> for hir::BinOp {
     fn lower(&self, _ctx: &mut Context<'_>) -> Tokens {
         match self.kind {
             hir::BinOpKind::Add  => quote!(+),
-            hir::BinOpKind::And  => quote!(+),
+            hir::BinOpKind::And  => quote!(&&),
             hir::BinOpKind::Band => quote!(&),
             hir::BinOpKind::Bor  => quote!(|),
             hir::BinOpKind::Bxor => quote!(^),
