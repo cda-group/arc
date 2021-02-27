@@ -6,6 +6,15 @@ run-mlir       = "run --package=arc-script-cli -- --force-output run --output=ML
 run-rust       = "run --package=arc-script-cli -- --force-output run --output=Rust"
 run-lsp        = "run --manifest-path=arc-script-cli/Cargo.toml --features=lsp -- lsp"
 run-repl       = "run --manifest-path=arc-script-cli/Cargo.toml --features=repl -- repl"
+
+rrun-ast       = "run --release --package=arc-script-cli -- --force-output run --output=AST"
+rrun-hir       = "run --release --package=arc-script-cli -- --force-output run --output=HIR"
+rrun-dfg       = "run --release --package=arc-script-cli -- --force-output run --output=DFG"
+rrun-mlir      = "run --release --package=arc-script-cli -- --force-output run --output=MLIR"
+rrun-rust      = "run --release --package=arc-script-cli -- --force-output run --output=Rust"
+rrun-lsp       = "run --release --manifest-path=arc-script-cli/Cargo.toml --features=lsp -- lsp"
+rrun-repl      = "run --release --manifest-path=arc-script-cli/Cargo.toml --features=repl -- repl"
+
 check-web-lsp  = "check --manifest-path=arc-script-web-lsp/Cargo.toml  --target=wasm32-unknown-unknown"
 check-web-repl = "check --manifest-path=arc-script-web-repl/Cargo.toml --target=wasm32-unknown-unknown"
 debug          = "run --package=arc-script-cli -- --force-output --debug -v run --output=HIR"
