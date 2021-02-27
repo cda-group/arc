@@ -224,21 +224,20 @@ impl Lower<Tokens, Context<'_>> for hir::Expr {
                 let es = es.iter().map(|e| e.lower(ctx));
                 quote!([#(#es),*])
             }
-            hir::ExprKind::BinOp(e0, op, e1) if matches!(op.kind, hir::BinOpKind::Pow) => {
+            hir::ExprKind::BinOp(e0, op, e1) => {
                 let tv = e1.tv;
                 let e0 = e0.lower(ctx);
                 let e1 = e1.lower(ctx);
-                match tv {
-                    _ if tv.is_float(ctx.info) => quote!(#e0.powf(#e1)),
-                    _ if tv.is_int(ctx.info) => quote!(#e0.powi(#e1)),
-                    _ => unreachable!(),
+                if let hir::BinOpKind::Pow = op.kind {
+                    match tv {
+                        _ if tv.is_float(ctx.info) => quote!(#e0.powf(#e1)),
+                        _ if tv.is_int(ctx.info) => quote!(#e0.powi(#e1)),
+                        _ => unreachable!(),
+                    }
+                } else {
+                    let op = op.lower(ctx);
+                    quote!(#e0 #op #e1)
                 }
-            }
-            hir::ExprKind::BinOp(e0, op, e1) => {
-                let e0 = e0.lower(ctx);
-                let op = op.lower(ctx);
-                let e1 = e1.lower(ctx);
-                quote!(#e0 #op #e1)
             }
             hir::ExprKind::Call(e, es) => {
                 let t = ctx.info.types.resolve(e.tv);
@@ -306,14 +305,14 @@ impl Lower<Tokens, Context<'_>> for hir::Expr {
                 let es = es.iter().map(|e| e.lower(ctx));
                 quote!((#(#es),*))
             }
-            hir::ExprKind::UnOp(op, e) if matches!(op.kind, hir::UnOpKind::Boxed) => {
-                let e = e.lower(ctx);
-                quote!(Box::new(#e))
-            }
             hir::ExprKind::UnOp(op, e) => {
-                let op = op.lower(ctx);
                 let e = e.lower(ctx);
-                quote!(#op #e)
+                if let hir::UnOpKind::Boxed = &op.kind {
+                    quote!(Box::new(#e))
+                } else {
+                    let op = op.lower(ctx);
+                    quote!(#op #e)
+                }
             }
             hir::ExprKind::Var(x, kind) => {
                 let x = x.lower(ctx);
