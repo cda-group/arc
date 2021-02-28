@@ -6,9 +6,9 @@ input_file: arc-script-test/compile/src/expect-pass/path.arc
 use arc_script::arcorn;
 use arcon::prelude::*;
 pub fn main() -> () {
-    let x_0: i32 = 1i32;
-    let y_0: i32 = x_0;
-    ()
+    let y_1_0 = 1i32;
+    let y_1_1 = ();
+    y_1_1
 }
 
 

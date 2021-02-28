@@ -6,17 +6,15 @@ input_file: arc-script-test/compile/src/expect-pass/ifs.arc
 use arc_script::arcorn;
 use arcon::prelude::*;
 pub fn main() -> () {
-    ()
+    let y_1_0 = ();
+    y_1_0
 }
 pub fn test() -> i32 {
-    let a_i32_0: i32 = 65i32;
-    let b_i32_0: i32 = 66i32;
-    let true_bool_0: bool = true;
-    if true_bool_0 {
-        a_i32_0
-    } else {
-        b_i32_0
-    }
+    let y_1_0 = 65i32;
+    let y_1_1 = 66i32;
+    let y_1_2 = true;
+    let y_1_3 = if y_1_2 { y_1_0 } else { y_1_1 };
+    y_1_3
 }
 
 

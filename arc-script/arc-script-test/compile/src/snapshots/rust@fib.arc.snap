@@ -6,14 +6,27 @@ input_file: arc-script-test/compile/src/expect-pass/fib.arc
 use arc_script::arcorn;
 use arcon::prelude::*;
 pub fn fib(n_0: i32) -> i32 {
-    if n_0 > 2i32 {
-        fib(n_0 - 1i32) + fib(n_0 - 2i32)
+    let y_1_0 = 2i32;
+    let y_1_1 = n_0 > y_1_0;
+    let y_1_2 = if y_1_1 {
+        let y_2_0 = 1i32;
+        let y_2_1 = n_0 - y_2_0;
+        let y_2_2 = fib(y_2_1);
+        let y_2_3 = 2i32;
+        let y_2_4 = n_0 - y_2_3;
+        let y_2_5 = fib(y_2_4);
+        let y_2_6 = y_2_2 + y_2_5;
+        y_2_6
     } else {
-        0i32
-    }
+        let y_2_0 = 0i32;
+        y_2_0
+    };
+    y_1_2
 }
 pub fn test() -> i32 {
-    fib(5i32)
+    let y_1_0 = 5i32;
+    let y_1_1 = fib(y_1_0);
+    y_1_1
 }
 
 

@@ -11,13 +11,14 @@ pub enum Foo {
     Foo_Baz(f32),
 }
 pub fn main() -> () {
-    let a_0: u32 = 200u32;
-    let b_0: f32 = 2f32;
-    let c_0: Foo = arcorn::enwrap!(Foo_Bar, a_0);
-    let d_0: u32 = arcorn::unwrap!(Foo_Bar, c_0);
-    let e_0: Foo = arcorn::enwrap!(Foo_Baz, b_0);
-    let f_0: bool = arcorn::is!(Foo_Baz, e_0);
-    ()
+    let y_1_0 = 200u32;
+    let y_1_1 = 2f32;
+    let y_1_2 = arcorn::enwrap!(Foo_Bar, y_1_0);
+    let y_1_3 = arcorn::unwrap!(Foo_Bar, y_1_2);
+    let y_1_4 = arcorn::enwrap!(Foo_Baz, y_1_1);
+    let y_1_5 = arcorn::is!(Foo_Baz, y_1_4);
+    let y_1_6 = ();
+    y_1_6
 }
 
 

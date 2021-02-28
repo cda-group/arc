@@ -6,20 +6,18 @@ input_file: arc-script-test/compile/src/expect-pass/nested-if.arc
 use arc_script::arcorn;
 use arcon::prelude::*;
 pub fn test() -> i32 {
-    let a_i32_0: i32 = 65i32;
-    let b_i32_0: i32 = 66i32;
-    let c_i32_0: i32 = 67i32;
-    let true_bool_0: bool = true;
-    let false_bool_0: bool = false;
-    if true_bool_0 {
-        a_i32_0
+    let y_1_0 = 65i32;
+    let y_1_1 = 66i32;
+    let y_1_2 = 67i32;
+    let y_1_3 = true;
+    let y_1_4 = false;
+    let y_1_5 = if y_1_3 {
+        y_1_0
     } else {
-        if false_bool_0 {
-            b_i32_0
-        } else {
-            c_i32_0
-        }
-    }
+        let y_2_0 = if y_1_4 { y_1_1 } else { y_1_2 };
+        y_2_0
+    };
+    y_1_5
 }
 
 

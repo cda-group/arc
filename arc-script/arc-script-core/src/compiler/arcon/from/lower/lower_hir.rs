@@ -1,6 +1,7 @@
 use arc_script_core_shared::get;
 use arc_script_core_shared::Bool;
 use arc_script_core_shared::Lower;
+use arc_script_core_shared::Map;
 
 use crate::compiler::arcon::from::lower::lowerings::structs;
 use crate::compiler::hir;
@@ -242,20 +243,76 @@ impl Lower<Tokens, Context<'_>> for hir::ParamKind {
 
 impl Lower<Tokens, Context<'_>> for hir::Expr {
     fn lower(&self, ctx: &mut Context<'_>) -> Tokens {
-        match &self.kind {
+        let mut env = Map::default();
+        self.block(ctx, &mut env, 0)
+    }
+}
+
+fn new_id(pos: usize, depth: usize) -> Tokens {
+    let id = syn::Ident::new(&format!("y_{}_{}", depth, pos), pm2::Span::call_site());
+    quote!(#id)
+}
+
+impl hir::Expr {
+    fn block(
+        &self,
+        ctx: &mut Context<'_>,
+        env: &mut Map<syn::Ident, syn::Ident>,
+        depth: usize,
+    ) -> Tokens {
+        let depth = depth + 1;
+        let mut ops = Vec::new();
+        let id = self.ssa(ctx, env, &mut ops, depth);
+        ops.iter().enumerate().rev().fold(id, |acc, (i, x)| {
+            let id = new_id(i, depth);
+            quote!(let #id = #x; #acc)
+        })
+    }
+
+    fn ssa(
+        &self,
+        ctx: &mut Context<'_>,
+        env: &mut Map<syn::Ident, syn::Ident>,
+        ops: &mut Vec<Tokens>,
+        depth: usize,
+    ) -> Tokens {
+        let expr = match &self.kind {
+            hir::ExprKind::Let(x, e0, e1) => {
+                if let hir::ParamKind::Var(x) = x.kind {
+                    let x0 = e0.ssa(ctx, env, ops, depth);
+                    let x0 = syn::parse_quote!(#x0);
+                    let x = x.lower(ctx);
+                    let x = syn::parse_quote!(#x);
+                    env.insert(x, x0);
+                }
+                return e1.ssa(ctx, env, ops, depth);
+            }
+            hir::ExprKind::Var(x, kind) => {
+                let x = x.lower(ctx);
+                match kind {
+                    hir::VarKind::Local => {
+                        let mut x = syn::parse_quote!(#x);
+                        while let Some(next) = env.get(&x) {
+                            x = next.clone();
+                        }
+                        return quote!(#x);
+                    }
+                    hir::VarKind::Member => quote!((self.op.#x)),
+                }
+            }
             hir::ExprKind::Access(e, f) => {
-                let e = e.lower(ctx);
+                let e = e.ssa(ctx, env, ops, depth);
                 let f = f.lower(ctx);
                 quote!(#e.#f)
             }
             hir::ExprKind::Array(es) => {
-                let es = es.iter().map(|e| e.lower(ctx));
+                let es = es.iter().map(|e| e.ssa(ctx, env, ops, depth));
                 quote!([#(#es),*])
             }
             hir::ExprKind::BinOp(e0, op, e1) => {
                 let tv = e1.tv;
-                let e0 = e0.lower(ctx);
-                let e1 = e1.lower(ctx);
+                let e0 = e0.ssa(ctx, env, ops, depth);
+                let e1 = e1.ssa(ctx, env, ops, depth);
                 if let hir::BinOpKind::Pow = op.kind {
                     match tv {
                         _ if tv.is_float(ctx.info) => quote!(#e0.powf(#e1)),
@@ -269,8 +326,11 @@ impl Lower<Tokens, Context<'_>> for hir::Expr {
             }
             hir::ExprKind::Call(e, es) => {
                 let t = ctx.info.types.resolve(e.tv);
-                let e = e.lower(ctx);
-                let es = es.iter().map(|e| e.lower(ctx)).collect::<Vec<_>>();
+                let e = e.ssa(ctx, env, ops, depth);
+                let es = es
+                    .iter()
+                    .map(|e| e.ssa(ctx, env, ops, depth))
+                    .collect::<Vec<_>>();
                 let (_, rtv) = get!(t.kind, hir::TypeKind::Fun(tvs, rtv));
                 if let hir::TypeKind::Stream(_) = ctx.info.types.resolve(rtv).kind {
                     let stream = es.get(0).unwrap();
@@ -281,60 +341,57 @@ impl Lower<Tokens, Context<'_>> for hir::Expr {
                 }
             }
             hir::ExprKind::Emit(e) => {
-                let e = e.lower(ctx);
+                let e = e.ssa(ctx, env, ops, depth);
                 quote!(self.emit(#e))
             }
             hir::ExprKind::If(e0, e1, e2) => {
-                let e0 = e0.lower(ctx);
-                let e1 = e1.lower(ctx);
-                let e2 = e2.lower(ctx);
+                let e0 = e0.ssa(ctx, env, ops, depth);
+                let e1 = e1.block(ctx, env, depth);
+                let e2 = e2.block(ctx, env, depth);
                 quote!(if #e0 { #e1 } else { #e2 })
             }
+            // NOTE: Don't assign items to variables
             hir::ExprKind::Item(x) => match &ctx.hir.defs.get(x).unwrap().kind {
                 hir::ItemKind::Fun(item) if matches!(item.kind, hir::FunKind::Method) => {
                     let x = x.lower(ctx);
-                    quote!(self.#x)
+                    return quote!(self.#x);
                 }
-                _ => x.lower(ctx),
+                _ => return x.lower(ctx),
             },
-            hir::ExprKind::Let(x, e0, e1) => {
-                let x = x.lower(ctx);
-                let e0 = e0.lower(ctx);
-                let e1 = e1.lower(ctx);
-                quote!(let #x = #e0; #e1)
-            }
             hir::ExprKind::Lit(l) => l.lower(ctx),
             hir::ExprKind::Log(e) => {
-                let e = e.lower(ctx);
+                let e = e.ssa(ctx, env, ops, depth);
                 quote!(println!("{:?}", #e))
             }
             hir::ExprKind::Loop(e) => {
-                let e = e.lower(ctx);
+                let e = e.ssa(ctx, env, ops, depth);
                 quote!(loop { #e })
             }
             hir::ExprKind::Project(e, i) => {
-                let e = e.lower(ctx);
+                let e = e.ssa(ctx, env, ops, depth);
                 let i = syn::Index::from(i.id);
                 quote!(#e.#i)
             }
             hir::ExprKind::Struct(efs) => {
+                // NOTE: Lower here to ensure that the type definition is interned
+                self.tv.lower(ctx);
                 let ident = structs::mangle(self.tv, ctx);
                 let efs = efs
                     .iter()
                     .map(|(x, e)| {
                         let x = x.lower(ctx);
-                        let e = e.lower(ctx);
+                        let e = e.ssa(ctx, env, ops, depth);
                         quote!(#x: #e)
                     })
                     .collect::<Vec<_>>();
                 quote!(#ident { #(#efs),* })
             }
             hir::ExprKind::Tuple(es) => {
-                let es = es.iter().map(|e| e.lower(ctx));
+                let es = es.iter().map(|e| e.ssa(ctx, env, ops, depth));
                 quote!((#(#es),*))
             }
             hir::ExprKind::UnOp(op, e) => {
-                let e = e.lower(ctx);
+                let e = e.ssa(ctx, env, ops, depth);
                 if let hir::UnOpKind::Boxed = &op.kind {
                     quote!(Box::new(#e))
                 } else {
@@ -342,33 +399,34 @@ impl Lower<Tokens, Context<'_>> for hir::Expr {
                     quote!(#op #e)
                 }
             }
-            hir::ExprKind::Var(x, kind) => {
-                let x = x.lower(ctx);
-                match kind {
-                    hir::VarKind::Local => x,
-                    hir::VarKind::Member => quote!((self.op.#x)),
-                }
-            }
             hir::ExprKind::Enwrap(x, e) => {
                 let x = x.lower(ctx);
-                let e = e.lower(ctx);
+                let e = e.ssa(ctx, env, ops, depth);
                 quote!(arcorn::enwrap!(#x, #e))
             }
             hir::ExprKind::Unwrap(x, e) => {
                 let x = x.lower(ctx);
-                let e = e.lower(ctx);
+                let e = e.ssa(ctx, env, ops, depth);
                 quote!(arcorn::unwrap!(#x, #e))
             }
             hir::ExprKind::Is(x, e) => {
                 let x = x.lower(ctx);
-                let e = e.lower(ctx);
+                let e = e.ssa(ctx, env, ops, depth);
                 quote!(arcorn::is!(#x, #e))
             }
-            hir::ExprKind::Return(_e) => quote!(return;),
-            hir::ExprKind::Break => quote!(break;),
+            hir::ExprKind::Return(e) => {
+                let e = e.ssa(ctx, env, ops, depth);
+                quote!({return #e;})
+            }
+            hir::ExprKind::Break => quote!({
+                break;
+            }),
             hir::ExprKind::Todo => quote!(todo!()),
             hir::ExprKind::Err => unreachable!(),
-        }
+        };
+        let id = new_id(ops.len(), depth);
+        ops.push(expr);
+        quote!(#id)
     }
 }
 

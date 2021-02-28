@@ -11,16 +11,22 @@ pub enum Opt {
     Opt_None(()),
 }
 pub fn x_2() -> () {
-    ()
+    let y_1_0 = ();
+    y_1_0
 }
 pub fn main() -> () {
-    let x_0: Opt = arcorn::enwrap!(Opt_Some, 3i32);
-    if arcorn::is!(Opt_Some, x_0) {
-        let y_0: i32 = arcorn::unwrap!(Opt_Some, x_0);
-        ()
+    let y_1_0 = 3i32;
+    let y_1_1 = arcorn::enwrap!(Opt_Some, y_1_0);
+    let y_1_2 = arcorn::is!(Opt_Some, y_1_1);
+    let y_1_3 = if y_1_2 {
+        let y_2_0 = arcorn::unwrap!(Opt_Some, y_1_1);
+        let y_2_1 = ();
+        y_2_1
     } else {
-        x_2()
-    }
+        let y_2_0 = x_2();
+        y_2_0
+    };
+    y_1_3
 }
 
 

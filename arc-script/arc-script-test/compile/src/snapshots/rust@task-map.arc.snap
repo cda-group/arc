@@ -56,7 +56,10 @@ impl<'i, 'source, 'timer, 'channel, B: Backend, C: ComponentDefinition>
     HandlerMap<'i, 'source, 'timer, 'channel, TaskMap, B, C>
 {
     fn handle(&mut self, event_0: i32) -> OperatorResult<()> {
-        self.emit((self.op.f_0)(event_0));
+        let y_1_0 = (self.op.f_0);
+        let y_1_1 = y_1_0(event_0);
+        let y_1_2 = self.emit(y_1_1);
+        y_1_2;
         Ok(())
     }
     fn emit(&mut self, event_0: i32) {
@@ -69,11 +72,14 @@ impl<'i, 'source, 'timer, 'channel, B: Backend, C: ComponentDefinition>
     }
 }
 pub fn x_0(x_1: i32) -> i32 {
-    x_1 + 1i32
+    let y_1_0 = 1i32;
+    let y_1_1 = x_1 + y_1_0;
+    y_1_1
 }
 pub fn main(input_0: Stream<Struct5valuei32End>) -> Stream<Struct5valuei32End> {
-    let output_0: Stream<Struct5valuei32End> = Stream::operator(input_0, Map(x_0));
-    output_0
+    let y_1_0 = Map(x_0);
+    let y_1_1 = Stream::operator(input_0, y_1_0);
+    y_1_1
 }
 #[arcorn::rewrite]
 #[derive(Copy)]

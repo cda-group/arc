@@ -53,7 +53,8 @@ impl<'i, 'source, 'timer, 'channel, B: Backend, C: ComponentDefinition>
     HandlerIdentity<'i, 'source, 'timer, 'channel, TaskIdentity, B, C>
 {
     fn handle(&mut self, event_0: i32) -> OperatorResult<()> {
-        self.emit(event_0);
+        let y_1_0 = self.emit(event_0);
+        y_1_0;
         Ok(())
     }
     fn emit(&mut self, event_0: i32) {
@@ -66,8 +67,9 @@ impl<'i, 'source, 'timer, 'channel, B: Backend, C: ComponentDefinition>
     }
 }
 pub fn main(input_0: Stream<Struct5valuei32End>) -> Stream<Struct5valuei32End> {
-    let output_0: Stream<Struct5valuei32End> = Stream::operator(input_0, Identity());
-    output_0
+    let y_1_0 = Identity();
+    let y_1_1 = Stream::operator(input_0, y_1_0);
+    y_1_1
 }
 #[arcorn::rewrite]
 #[derive(Copy)]

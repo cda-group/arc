@@ -4,7 +4,6 @@ task Test(x: i32) ~i32 -> ~i32 {
         z
     }
     on event => {
-      let x = add(event) in
-      emit x
+        emit add(event)
     }
 }

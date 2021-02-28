@@ -6,12 +6,14 @@ input_file: arc-script-test/compile/src/expect-pass/lambda.arc
 use arc_script::arcorn;
 use arcon::prelude::*;
 pub fn x_0(i_0: i32) -> i32 {
-    i_0 + 1i32
+    let y_1_0 = 1i32;
+    let y_1_1 = i_0 + y_1_0;
+    y_1_1
 }
 pub fn test() -> i32 {
-    let increment_0: fn(i32) -> i32 = x_0;
-    let foo_0: i32 = 1i32;
-    increment_0(foo_0)
+    let y_1_0 = 1i32;
+    let y_1_1 = x_0(y_1_0);
+    y_1_1
 }
 
 
