@@ -1,7 +1,7 @@
 use crate::compiler::hir;
 use crate::compiler::hir::Name;
 use crate::compiler::hir::TypeId;
-use crate::compiler::rust::from::lower::Context;
+use crate::compiler::arcon::from::lower::Context;
 use arc_script_core_shared::get;
 use arc_script_core_shared::VecMap;
 

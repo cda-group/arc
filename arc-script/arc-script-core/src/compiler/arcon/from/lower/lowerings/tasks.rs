@@ -4,7 +4,7 @@ use arc_script_core_shared::Lower;
 
 use crate::compiler::hir;
 use crate::compiler::info::Info;
-use crate::compiler::rust::from::lower::lowerings::structs;
+use crate::compiler::arcon::from::lower::lowerings::structs;
 
 use super::super::Context;
 

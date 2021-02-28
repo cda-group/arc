@@ -9,8 +9,8 @@ use crate::compiler::info::modes::Output;
 use crate::compiler::info::Info;
 use crate::compiler::mlir;
 use crate::compiler::mlir::MLIR;
-use crate::compiler::rust;
-use crate::compiler::rust::Rust;
+use crate::compiler::arcon;
+use crate::compiler::arcon::Arcon;
 use arc_script_core_shared::Result;
 
 use codespan_reporting::term::termcolor::WriteColor;
@@ -79,9 +79,9 @@ where
 
     if matches!(info.mode.output, Output::Rust) {
         // Lower HIR and DFG into Rust
-        let rust = Rust::from(&hir, &mut info);
+        let rust = Arcon::from(&hir, &mut info);
 
-        writeln!(f, "{}", rust::pretty(&rust))?;
+        writeln!(f, "{}", arcon::pretty(&rust))?;
         return Ok(Report::semantic(info, hir));
     }
 

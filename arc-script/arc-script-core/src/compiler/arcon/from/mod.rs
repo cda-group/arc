@@ -2,13 +2,13 @@ mod lower;
 
 use crate::compiler::hir::HIR;
 use crate::compiler::info::Info;
-use crate::compiler::rust::Rust;
+use crate::compiler::arcon::Arcon;
 use arc_script_core_shared::Lower;
 use arc_script_core_shared::Map;
 
 use tracing::instrument;
 
-impl Rust {
+impl Arcon {
     #[instrument(name = "HIR & Info => Rust", level = "debug", skip(hir, info))]
     pub(crate) fn from(hir: &HIR, info: &mut Info) -> Self {
         let mangled_idents = Map::default();

@@ -8,14 +8,14 @@ pub mod ast;
 /// Module for representing Dataflow graphs. Exports data types for staging
 /// `HIR` functions.
 pub mod dfg;
-/// Module for representing Higher Order Intermediate Representations.
+/// Module for representing Higher Order Intermediate Representation code.
 pub(crate) mod hir;
 /// Module for representing side information.
 pub mod info;
-/// Module for representing the Multi-Level Intermediate Representation.
+/// Module for representing Multi-Level Intermediate Representation code.
 pub(crate) mod mlir;
-/// Module for representing the Rust code.
-pub(crate) mod rust;
+/// Module for representing Arcon code.
+pub(crate) mod arcon;
 
 // Module for incremental compilation.
 // pub(crate) mod database;

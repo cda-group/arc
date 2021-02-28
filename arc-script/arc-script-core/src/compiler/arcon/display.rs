@@ -1,6 +1,6 @@
 #![allow(clippy::useless_format)]
 use crate::compiler::pretty::*;
-use crate::compiler::rust;
+use crate::compiler::arcon;
 use arc_script_core_shared::cfg_if;
 use arc_script_core_shared::From;
 use arc_script_core_shared::New;
@@ -25,7 +25,7 @@ pub(crate) fn pretty<Node>(node: &Node) -> Pretty<'_, Node, Context> {
     node.to_pretty(Context)
 }
 
-impl<'i> Display for Pretty<'i, rust::Rust, Context> {
+impl<'i> Display for Pretty<'i, arcon::Arcon, Context> {
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
         let Pretty(rs, _ctx) = self;
         cfg_if! {
@@ -43,7 +43,7 @@ impl<'i> Display for Pretty<'i, rust::Rust, Context> {
 }
 
 #[cfg(not(target_arch = "wasm32"))]
-fn rustfmt(rs: &rust::Rust) -> io::Result<String> {
+fn rustfmt(rs: &arcon::Arcon) -> io::Result<String> {
     let tmp = tempfile::NamedTempFile::new()?;
     let fw = &mut std::io::BufWriter::new(&tmp);
 
