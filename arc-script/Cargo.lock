@@ -94,6 +94,7 @@ dependencies = [
  "arcon_macros",
  "arcorn-macros",
  "derive_more",
+ "half",
  "paste 1.0.4",
  "prost",
  "shrinkwraprs",
@@ -262,11 +263,15 @@ dependencies = [
 ]
 
 [[package]]
-name = "arc-script-test-insta"
+name = "arc-script-test-compile"
 version = "0.0.0"
 dependencies = [
+ "arc-script",
  "arc-script-core",
+ "arcon",
  "insta",
+ "prost",
+ "trybuild",
 ]
 
 [[package]]
@@ -285,15 +290,6 @@ dependencies = [
  "arc-script",
  "arcon",
  "prost",
-]
-
-[[package]]
-name = "arc-script-test-trybuild"
-version = "0.0.0"
-dependencies = [
- "arc-script",
- "arcon",
- "trybuild",
 ]
 
 [[package]]

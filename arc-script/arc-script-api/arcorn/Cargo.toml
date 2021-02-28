@@ -15,6 +15,7 @@ shrinkwraprs  = { version = "0.3.0" }
 prost         = { version = "0.7" }
 derive_more   = { version = "0.99.11" }
 paste         = { version = "1.0.4" }
+half          = { version = "1.7.1", features = ["num-traits"] }
 
 [dev-dependencies]
 arcon         = { git = "https://github.com/cda-group/arcon" }

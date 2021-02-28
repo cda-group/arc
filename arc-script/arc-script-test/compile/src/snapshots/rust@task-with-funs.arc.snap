@@ -1,0 +1,63 @@
+---
+source: arc-script-test/compile/src/insta.rs
+expression: s
+input_file: arc-script-test/compile/src/expect-mlir-fail-todo/task-with-funs.arc
+---
+use arc_script::arcorn;
+use arcon::prelude::*;
+#[derive(ArconState)]
+pub struct TaskTest {
+    #[ephemeral]
+    timestamp: Option<u64>,
+    #[ephemeral]
+    pub x_0: i32,
+}
+impl Operator for TaskTest {
+    type IN = Struct5valuei32End;
+    type OUT = Struct5valuei32End;
+    type TimerState = ArconNever;
+    type OperatorState = Self;
+    fn handle_element(
+        &mut self,
+        elem: ArconElement<Self::IN>,
+        mut ctx: OperatorContext<Self, impl Backend, impl ComponentDefinition>,
+    ) -> OperatorResult<()> {
+        self.timestamp = elem.timestamp;
+        let event_0 = elem.data.value;
+        ctx.output(ArconElement {
+            data: Self::OUT {
+                value: self.Test_add(event_0),
+            },
+            timestamp: self.timestamp,
+        });
+        Ok(())
+    }
+    arcon::ignore_timeout!();
+    arcon::ignore_persist!();
+}
+fn Test(x_0: i32) -> OperatorBuilder<TaskTest> {
+    OperatorBuilder {
+        constructor: Arc::new(move |b| TaskTest {
+            timestamp: None,
+            x_0,
+        }),
+        conf: Default::default(),
+    }
+}
+impl TaskTest {
+    fn Test_add(
+        &mut self,
+        ctx: &mut OperatorContext<Self, impl Backend, impl ComponentDefinition>,
+        y_0: i32,
+    ) -> i32 {
+        let z_0: i32 = (self.x_0) + y_0;
+        z_0
+    }
+}
+#[arcorn::rewrite]
+#[derive(Copy)]
+pub struct Struct5valuei32End {
+    value: i32,
+}
+
+

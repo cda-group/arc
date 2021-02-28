@@ -324,17 +324,17 @@ impl Lower<Tokens, Context<'_>> for hir::Expr {
             hir::ExprKind::Enwrap(x, e) => {
                 let x = x.lower(ctx);
                 let e = e.lower(ctx);
-                quote!(#x(#e))
+                quote!(arcorn::enwrap!(#x, #e))
             }
             hir::ExprKind::Unwrap(x, e) => {
                 let x = x.lower(ctx);
                 let e = e.lower(ctx);
-                quote!(arcorn::unwrap!(#e, #x))
+                quote!(arcorn::unwrap!(#x, #e))
             }
             hir::ExprKind::Is(x, e) => {
                 let x = x.lower(ctx);
                 let e = e.lower(ctx);
-                quote!(arcorn::is!(#e, #x))
+                quote!(arcorn::is!(#x, #e))
             }
             hir::ExprKind::Return(_e) => quote!(return;),
             hir::ExprKind::Break => quote!(break;),
@@ -436,8 +436,8 @@ impl Lower<Tokens, Context<'_>> for hir::ScalarKind {
         match self {
             Self::Bool => quote!(bool),
             Self::Char => quote!(char),
-            Self::Bf16 => quote!(bf16),
-            Self::F16  => quote!(f16),
+            Self::Bf16 => quote!(arcorn::bf16),
+            Self::F16  => quote!(arcorn::f16),
             Self::F32  => quote!(f32),
             Self::F64  => quote!(f64),
             Self::I8   => quote!(i8),
@@ -507,21 +507,21 @@ impl Lower<Tokens, Context<'_>> for hir::LitKind {
             Self::Bf16(v) => {
                 let v = v.to_f32();
                 if v.is_nan() {
-                    quote!(half::bf16::NAN)
+                    quote!(arcorn::bf16::NAN)
                 } else if v.is_infinite() {
-                    quote!(half::bf16::INFINITE)
+                    quote!(arcorn::bf16::INFINITE)
                 } else {
-                    quote!(half::bf16::from_f32(#v))
+                    quote!(arcorn::bf16::from_f32(#v))
                 }
             },
             Self::F16(v) => {
                 let v = v.to_f32();
                 if v.is_nan() {
-                    quote!(half::f16::NAN)
+                    quote!(arcorn::f16::NAN)
                 } else if v.is_infinite() {
-                    quote!(half::f16::INFINITE)
+                    quote!(arcorn::f16::INFINITE)
                 } else {
-                    quote!(half::f16::from_f32(#v))
+                    quote!(arcorn::f16::from_f32(#v))
                 }
             },
             Self::F32(v) => {

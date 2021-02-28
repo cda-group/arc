@@ -23,6 +23,8 @@ build-lsp      = "build --release --package=arc-script-lsp"
 build-repl     = "build --release --package=arc-script-repl"
 build-cli      = "build --release --package=arc-script-cli"
 
+ctest          = "test --package=arc-script-test-compile"
+
 [build]
 # jobs = 1                  # number of parallel jobs, defaults to # of CPUs
 # rustc = "rustc"           # the rust compiler tool
