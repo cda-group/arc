@@ -2,9 +2,9 @@ use arc_script_core_shared::get;
 use arc_script_core_shared::Bool;
 use arc_script_core_shared::Lower;
 
+use crate::compiler::arcon::from::lower::lowerings::structs;
 use crate::compiler::hir;
 use crate::compiler::info::Info;
-use crate::compiler::arcon::from::lower::lowerings::structs;
 
 use super::Context;
 
@@ -87,6 +87,9 @@ impl Lower<Tokens, Context<'_>> for hir::Task {
     fn lower(&self, ctx: &mut Context<'_>) -> Tokens {
         let cons_name = self.path.lower(ctx);
         let task_name = syn::Ident::new(&format!("Task{}", cons_name), pm2::Span::call_site());
+        let handler_name =
+            syn::Ident::new(&format!("Handler{}", cons_name), pm2::Span::call_site());
+
         let param_decls = self.params.iter().map(|p| p.lower(ctx)).collect::<Vec<_>>();
         let param_ids = self
             .params
@@ -95,78 +98,106 @@ impl Lower<Tokens, Context<'_>> for hir::Task {
             .collect::<Vec<_>>();
         let (state_decls, state_inits): (Vec<_>, Vec<_>) =
             self.items.iter().filter_map(|x| x.lower_state(ctx)).unzip();
-        let item_struct = quote! {
-            #[derive(ArconState)]
-            pub struct #task_name {
-                #(#state_decls),*
-                #[ephemeral]
-                timestamp: Option<u64>,
-                #(#[ephemeral] pub #param_decls),*
-            }
-        };
-        let methods = self.items.iter().filter_map(|item| item.lower_method(ctx));
-        let item_methods = quote! {
-            impl #task_name {
-                #(#methods)*
-            }
-        };
+        let methods = self
+            .items
+            .iter()
+            .filter_map(|item| item.lower_method(ctx))
+            .collect::<Vec<_>>();
         let x = ctx.info.names.intern("value").into();
 
         let itv = get!(&self.ihub.kind, hir::HubKind::Single(x));
         let itv = get!(ctx.info.types.resolve(*itv).kind, hir::TypeKind::Stream(x));
         let fs = vec![(x, itv)].into_iter().collect();
-        let ity = ctx.info.types.intern(hir::TypeKind::Struct(fs)).lower(ctx);
+
+        let ity = itv.lower(ctx);
+        let struct_ity = ctx.info.types.intern(hir::TypeKind::Struct(fs)).lower(ctx);
 
         let otv = get!(&self.ohub.kind, hir::HubKind::Single(x));
         let otv = get!(ctx.info.types.resolve(*otv).kind, hir::TypeKind::Stream(x));
         let fs = vec![(x, otv)].into_iter().collect();
-        let oty = ctx.info.types.intern(hir::TypeKind::Struct(fs)).lower(ctx);
+
+        let oty = otv.lower(ctx);
+        let struct_oty = ctx.info.types.intern(hir::TypeKind::Struct(fs)).lower(ctx);
 
         let on = get!(&self.on, Some(on));
         let event = on.param.kind.lower(ctx);
         let body = on.body.lower(ctx);
 
-        let item_impl = quote! {
+        quote! {
+
+            pub struct #handler_name<
+                'i,
+                'source,
+                'timer,
+                'channel,
+                O: 'static + Operator,
+                B: Backend,
+                C: ComponentDefinition,
+            > {
+                pub op: &'i mut O,
+                pub ctx: &'i mut OperatorContext<'source, 'timer, 'channel, O, B, C>,
+                pub timestamp: Option<u64>,
+            }
+
+            #[derive(ArconState)]
+            pub struct #task_name {
+                #(#state_decls),*
+                #(#[ephemeral] pub #param_decls),*
+            }
+
+            fn #cons_name(#(#param_decls),*) -> OperatorBuilder<#task_name> {
+                OperatorBuilder {
+                    constructor: Arc::new(move |b| #task_name {
+                        #(#state_inits),*
+                        #(#param_ids),*
+                    }),
+                    conf: Default::default(),
+                }
+            }
+
             impl Operator for #task_name {
-                type IN  = #ity;
-                type OUT = #oty;
+                type IN  = #struct_ity;
+                type OUT = #struct_oty;
                 type TimerState = ArconNever;
                 type OperatorState = Self;
 
                 fn handle_element(
                     &mut self,
                     elem: ArconElement<Self::IN>,
-                    mut ctx: OperatorContext<Self, impl Backend, impl ComponentDefinition>,
+                    ref mut ctx: OperatorContext<Self, impl Backend, impl ComponentDefinition>,
                 ) -> OperatorResult<()> {
-                    self.timestamp = elem.timestamp;
-                    let #event = elem.data.value;
-                    #body;
+                    let ArconElement { timestamp, data } = elem;
+                    let event = data.value;
+                    let mut handler = #handler_name {
+                        op: self,
+                        ctx,
+                        timestamp
+                    };
+                    handler.handle(event);
                     Ok(())
                 }
 
                 arcon::ignore_timeout!();
                 arcon::ignore_persist!();
             }
-        };
 
-        let item_fn = quote! {
-            fn #cons_name(#(#param_decls),*) -> OperatorBuilder<#task_name> {
-                OperatorBuilder {
-                    constructor: Arc::new(move |b| #task_name {
-                        #(#state_inits),*
-                        timestamp: None,
-                        #(#param_ids),*
-                    }),
-                    conf: Default::default(),
+            impl<'i, 'source, 'timer, 'channel, B: Backend, C: ComponentDefinition>
+                #handler_name<'i, 'source, 'timer, 'channel, #task_name, B, C>
+            {
+                fn handle(&mut self, #event: #ity) -> OperatorResult<()> {
+                    #body;
+                    Ok(())
                 }
-            }
-        };
 
-        quote! {
-            #item_struct
-            #item_impl
-            #item_fn
-            #item_methods
+                fn emit(&mut self, #event: #oty) {
+                    let data = #struct_oty { value: #event };
+                    let elem = ArconElement { data, timestamp: self.timestamp };
+                    self.ctx.output(elem);
+                }
+
+                #(#methods)*
+            }
+
         }
     }
 }
@@ -202,10 +233,7 @@ impl Lower<Tokens, Context<'_>> for hir::Param {
 impl Lower<Tokens, Context<'_>> for hir::ParamKind {
     fn lower(&self, ctx: &mut Context<'_>) -> Tokens {
         match self {
-            Self::Var(x) => {
-                let x = x.lower(ctx);
-                quote!(#x)
-            }
+            Self::Var(x) => x.lower(ctx),
             Self::Ignore => quote!(_),
             Self::Err => unreachable!(),
         }
@@ -254,7 +282,7 @@ impl Lower<Tokens, Context<'_>> for hir::Expr {
             }
             hir::ExprKind::Emit(e) => {
                 let e = e.lower(ctx);
-                quote!(ctx.output(ArconElement { data: Self::OUT { value: #e }, timestamp: self.timestamp }))
+                quote!(self.emit(#e))
             }
             hir::ExprKind::If(e0, e1, e2) => {
                 let e0 = e0.lower(ctx);
@@ -318,7 +346,7 @@ impl Lower<Tokens, Context<'_>> for hir::Expr {
                 let x = x.lower(ctx);
                 match kind {
                     hir::VarKind::Local => x,
-                    hir::VarKind::Member => quote!((self.#x)),
+                    hir::VarKind::Member => quote!((self.op.#x)),
                 }
             }
             hir::ExprKind::Enwrap(x, e) => {

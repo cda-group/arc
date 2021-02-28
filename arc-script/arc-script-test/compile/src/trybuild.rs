@@ -2,6 +2,7 @@
 #[test]
 fn trybuild() {
     let t = trybuild::TestCases::new();
-    t.compile_fail("src/expect-fail/**/*.rs");
-    t.pass("src/expect-pass/**/*.rs");
+    t.compile_fail("src/expect-fail/*.rs");
+    t.pass("src/expect-pass/*.rs");
+    t.pass("src/expect-mlir-fail-todo/*.rs");
 }

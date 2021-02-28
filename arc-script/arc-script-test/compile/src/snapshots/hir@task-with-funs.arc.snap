@@ -10,7 +10,8 @@ task Test(x_0: i32) (~i32) -> (~i32) {
     }
     on {
         event_0: i32 => {
-            emit crate::Test::add(event_0)
+            let x_1: i32 = crate::Test::add(event_0) in
+            emit x_1
         }
     }
 }

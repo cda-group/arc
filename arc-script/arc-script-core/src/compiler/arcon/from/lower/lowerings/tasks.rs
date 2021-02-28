@@ -2,9 +2,9 @@ use arc_script_core_shared::get;
 use arc_script_core_shared::Bool;
 use arc_script_core_shared::Lower;
 
+use crate::compiler::arcon::from::lower::lowerings::structs;
 use crate::compiler::hir;
 use crate::compiler::info::Info;
-use crate::compiler::arcon::from::lower::lowerings::structs;
 
 use super::super::Context;
 
@@ -35,7 +35,7 @@ impl hir::Fun {
         let body = self.body.lower(ctx);
         let params = self.params.iter().map(|p| p.lower(ctx));
         quote! {
-            fn #name(&mut self, ctx: &mut OperatorContext<Self, impl Backend, impl ComponentDefinition>, #(#params),*) -> #rtv {
+            fn #name(&mut self, #(#params),*) -> #rtv {
                 #body
             }
         }

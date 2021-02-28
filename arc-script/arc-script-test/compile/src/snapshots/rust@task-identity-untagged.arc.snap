@@ -5,10 +5,26 @@ input_file: arc-script-test/compile/src/expect-mlir-fail-todo/task-identity-unta
 ---
 use arc_script::arcorn;
 use arcon::prelude::*;
+pub struct HandlerIdentity<
+    'i,
+    'source,
+    'timer,
+    'channel,
+    O: 'static + Operator,
+    B: Backend,
+    C: ComponentDefinition,
+> {
+    pub op: &'i mut O,
+    pub ctx: &'i mut OperatorContext<'source, 'timer, 'channel, O, B, C>,
+    pub timestamp: Option<u64>,
+}
 #[derive(ArconState)]
-pub struct TaskIdentity {
-    #[ephemeral]
-    timestamp: Option<u64>,
+pub struct TaskIdentity {}
+fn Identity() -> OperatorBuilder<TaskIdentity> {
+    OperatorBuilder {
+        constructor: Arc::new(move |b| TaskIdentity {}),
+        conf: Default::default(),
+    }
 }
 impl Operator for TaskIdentity {
     type IN = Struct5valuei32End;
@@ -18,26 +34,37 @@ impl Operator for TaskIdentity {
     fn handle_element(
         &mut self,
         elem: ArconElement<Self::IN>,
-        mut ctx: OperatorContext<Self, impl Backend, impl ComponentDefinition>,
+        ref mut ctx: OperatorContext<Self, impl Backend, impl ComponentDefinition>,
     ) -> OperatorResult<()> {
-        self.timestamp = elem.timestamp;
-        let event_0 = elem.data.value;
-        ctx.output(ArconElement {
-            data: Self::OUT { value: event_0 },
-            timestamp: self.timestamp,
-        });
+        let ArconElement { timestamp, data } = elem;
+        let event = data.value;
+        let mut handler = HandlerIdentity {
+            op: self,
+            ctx,
+            timestamp,
+        };
+        handler.handle(event);
         Ok(())
     }
     arcon::ignore_timeout!();
     arcon::ignore_persist!();
 }
-fn Identity() -> OperatorBuilder<TaskIdentity> {
-    OperatorBuilder {
-        constructor: Arc::new(move |b| TaskIdentity { timestamp: None }),
-        conf: Default::default(),
+impl<'i, 'source, 'timer, 'channel, B: Backend, C: ComponentDefinition>
+    HandlerIdentity<'i, 'source, 'timer, 'channel, TaskIdentity, B, C>
+{
+    fn handle(&mut self, event_0: i32) -> OperatorResult<()> {
+        self.emit(event_0);
+        Ok(())
+    }
+    fn emit(&mut self, event_0: i32) {
+        let data = Struct5valuei32End { value: event_0 };
+        let elem = ArconElement {
+            data,
+            timestamp: self.timestamp,
+        };
+        self.ctx.output(elem);
     }
 }
-impl TaskIdentity {}
 pub fn main(input_0: Stream<Struct5valuei32End>) -> Stream<Struct5valuei32End> {
     let output_0: Stream<Struct5valuei32End> = Stream::operator(input_0, Identity());
     output_0
