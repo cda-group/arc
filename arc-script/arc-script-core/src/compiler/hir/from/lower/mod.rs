@@ -391,6 +391,9 @@ impl Lower<hir::Expr, Context<'_>> for ast::Expr {
             ast::ExprKind::Lambda(ps, e)        => lambda::lower(ps, e, self.loc, ctx),
             ast::ExprKind::Call(e, es)          => call::lower(e, es, ctx),
             ast::ExprKind::UnOp(op, e)          => hir::ExprKind::UnOp(op.lower(ctx), e.lower(ctx).into()),
+            ast::ExprKind::BinOp(e0, op, e1) if matches!(op.kind, ast::BinOpKind::Pipe) => {
+                hir::ExprKind::Call(e1.lower(ctx).into(), vec![e0.lower(ctx)])
+            }
             ast::ExprKind::BinOp(e0, op, e1)    => hir::ExprKind::BinOp(e0.lower(ctx).into(), op.lower(ctx), e1.lower(ctx).into()),
             ast::ExprKind::If(e0, e1, e2)       => hir::ExprKind::If(e0.lower(ctx).into(), e1.scoped(ctx).into(), e2.scoped(ctx).into()),
             ast::ExprKind::IfLet(p, e0, e1, e2) => return if_let::lower(p, e0, e1, e2, ctx),
