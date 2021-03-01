@@ -91,7 +91,7 @@ impl Lower<Option<Path>, Context<'_>> for ast::Item {
         .map(|(path, kind)| {
             let item = hir::Item::new(kind, self.loc);
             ctx.hir.defs.insert(path, item);
-            path.into()
+            path
         })
     }
 }
@@ -119,7 +119,7 @@ impl Lower<Option<Path>, Context<'_>> for ast::TaskItem {
         .map(|(path, kind)| {
             let item = hir::Item::new(kind, self.loc);
             ctx.hir.defs.insert(path, item);
-            path.into()
+            path
         })
     }
 }
@@ -128,7 +128,7 @@ impl Lower<Option<Path>, Context<'_>> for ast::TaskItem {
 impl Lower<Option<(Name, hir::Expr)>, Context<'_>> for ast::TaskItem {
     fn lower(&self, ctx: &mut Context<'_>) -> Option<(Name, hir::Expr)> {
         map!(&self.kind, ast::TaskItemKind::State(_))
-            .map(|item| (item.name, item.expr.lower(ctx)).into())
+            .map(|item| (item.name, item.expr.lower(ctx)))
     }
 }
 
