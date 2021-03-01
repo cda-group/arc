@@ -71,11 +71,11 @@ public:
   using Base::Base;
 
   static AppenderType get(Type mergeType, RankedTensorType resultType);
-  static AppenderType getChecked(Type mergeType, RankedTensorType resultType,
+  static AppenderType getChecked(function_ref<InFlightDiagnostic()> emitError,
+                                 Type mergeType, RankedTensorType resultType,
                                  Location loc);
-  static LogicalResult
-  verifyConstructionInvariants(Location loc, Type mergeType,
-                               RankedTensorType resultType);
+  static LogicalResult verify(function_ref<InFlightDiagnostic()> emitError,
+                              Type mergeType, RankedTensorType resultType);
   static Type parse(DialectAsmParser &parser);
   void print(DialectAsmPrinter &os) const;
 };
