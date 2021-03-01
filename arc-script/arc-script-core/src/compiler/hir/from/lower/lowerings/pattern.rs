@@ -5,65 +5,66 @@ use crate::compiler::hir::Expr;
 use crate::compiler::hir::ExprKind;
 use crate::compiler::hir::Param;
 use crate::compiler::hir::ParamKind;
+use crate::compiler::hir::VarKind;
 use crate::compiler::hir::HIR;
 use crate::compiler::info::diags::Error;
 
 use crate::compiler::info::types::TypeId;
 use arc_script_core_shared::get;
+use arc_script_core_shared::map;
 use arc_script_core_shared::Lower;
 
 use crate::compiler::hir::from::lower::path;
 
-/// Lowers parameters but requires them to contain no patterns.
-pub(crate) fn lower_params_basic(ps: &[ast::Param], ctx: &mut Context<'_>) -> Vec<Param> {
-    ps.iter()
-        .map(|p| {
-            let tv = p.ty.lower(ctx).unwrap_or_else(|| ctx.info.types.fresh());
-            if let ast::PatKind::Var(x) = &p.pat.kind {
-                let ux = ctx.res.stack.bind(*x, ctx.info).unwrap();
-                Param::syn(ParamKind::Var(ux), tv)
-            } else {
-                Param::syn(ParamKind::Err, tv)
-            }
-        })
-        .collect()
-}
-
-pub(crate) fn lower_params(ps: &[ast::Param], ctx: &mut Context<'_>) -> (Vec<Param>, Vec<Case>) {
+/// Lowers a list of parameters which may contain patterns into a list of primitive parameters which
+/// contain no patterns. A list of cases are also returned for unfolding the patterns.
+pub(crate) fn lower_params(
+    params: &[ast::Param],
+    kind: VarKind,
+    ctx: &mut Context<'_>,
+) -> (Vec<Param>, Vec<Case>) {
     let mut cases = Vec::new();
-    let params = ps
+
+    let params = params
         .iter()
         .map(|p| {
             let tv = p.ty.lower(ctx).unwrap_or_else(|| ctx.info.types.fresh());
-            if let ast::PatKind::Var(x) = &p.pat.kind {
-                let ux = ctx.res.stack.bind(*x, ctx.info).unwrap();
-                Param::syn(ParamKind::Var(ux), tv)
-            } else {
-                let x = ctx.info.names.fresh();
-                let ux = ctx.res.stack.bind(x, ctx.info).unwrap();
-                let v = Expr::syn(ExprKind::Var(ux), tv);
-                ssa(&p.pat, v, tv, false, ctx, &mut cases);
-                Param::syn(ParamKind::Var(ux), tv)
-            }
+            map!(&p.pat.kind, ast::PatKind::Var(_))
+                .map(|x| {
+                    let ux = ctx.res.stack.bind(*x, kind, ctx.info).unwrap();
+                    Param::syn(ParamKind::Var(ux), tv)
+                })
+                .unwrap_or_else(|| {
+                    let x = ctx.info.names.fresh();
+                    let ux = ctx.res.stack.bind(x, kind, ctx.info).unwrap();
+                    let v = Expr::syn(ExprKind::Var(ux, kind), tv);
+                    ssa(&p.pat, v, tv, false, ctx, &mut cases);
+                    Param::syn(ParamKind::Var(ux), tv)
+                })
         })
         .collect();
+
     (params, cases)
 }
 
 /// Lowers a single `<pat>`, e.g., `on <pat> => <expr>`
-pub(crate) fn lower_pat(p: &ast::Pat, ctx: &mut Context<'_>) -> (Param, Vec<Case>) {
+pub(crate) fn lower_pat(p: &ast::Pat, kind: VarKind, ctx: &mut Context<'_>) -> (Param, Vec<Case>) {
     let mut cases = Vec::new();
     let tv = ctx.info.types.fresh();
-    let param = if let ast::PatKind::Var(x) = &p.kind {
-        let ux = ctx.res.stack.bind(*x, ctx.info).unwrap();
-        Param::syn(ParamKind::Var(ux), tv)
-    } else {
-        let x = ctx.info.names.fresh();
-        let ux = ctx.res.stack.bind(x, ctx.info).unwrap();
-        let v = Expr::syn(ExprKind::Var(ux), tv);
-        ssa(p, v, tv, true, ctx, &mut cases);
-        Param::syn(ParamKind::Var(ux), tv)
-    };
+
+    let param = map!(&p.kind, ast::PatKind::Var(_))
+        .map(|x| {
+            let ux = ctx.res.stack.bind(*x, kind, ctx.info).unwrap();
+            Param::syn(ParamKind::Var(ux), tv)
+        })
+        .unwrap_or_else(|| {
+            let x = ctx.info.names.fresh();
+            let ux = ctx.res.stack.bind(x, kind, ctx.info).unwrap();
+            let v = Expr::syn(ExprKind::Var(ux, kind), tv);
+            ssa(p, v, tv, true, ctx, &mut cases);
+            Param::syn(ParamKind::Var(ux), tv)
+        });
+
     (param, cases)
 }
 
@@ -212,11 +213,11 @@ fn ssa(
                 expr: e0,
             });
             for f in fs {
-                let v0 = Expr::syn(ExprKind::Var(x0), t0);
+                let v0 = Expr::syn(ExprKind::Var(x0, VarKind::Local), t0);
                 let t1 = ctx.info.types.fresh();
                 let e1 = Expr::syn(ExprKind::Access(v0.into(), f.name), t1);
                 if let Some(p1) = &f.val {
-                    ssa(p1, e1, ctx.info.types.fresh(), branching, ctx, cases)
+                    ssa(p1, e1, ctx.info.types.fresh(), branching, ctx, cases);
                 } else {
                     cases.push(Case::Bind {
                         param: Param::syn(ParamKind::Var(f.name), t1),
@@ -232,14 +233,14 @@ fn ssa(
                 expr: e0,
             });
             for (i, p1) in ps.iter().enumerate() {
-                let v0 = Expr::syn(ExprKind::Var(x0), t0);
+                let v0 = Expr::syn(ExprKind::Var(x0, VarKind::Local), t0);
                 let t1 = ctx.info.types.fresh();
                 let e1 = Expr::syn(ExprKind::Project(v0.into(), i.into()), t1);
                 ssa(p1, e1, ctx.info.types.fresh(), branching, ctx, cases)
             }
         }
         ast::PatKind::Var(x) => {
-            if let Some(x0) = ctx.res.stack.bind(*x, ctx.info) {
+            if let Some(x0) = ctx.res.stack.bind(*x, VarKind::Local, ctx.info) {
                 cases.push(Case::Bind {
                     param: Param::syn(ParamKind::Var(x0), t0),
                     expr: e0,
@@ -285,7 +286,7 @@ fn ssa(
         ///   }
         ast::PatKind::Variant(x, p) if branching => {
             if let Some(x) = path::lower_variant(x, ctx) {
-                let v0 = if let ExprKind::Var(_) = e0.kind {
+                let v0 = if let ExprKind::Var(_, _) = e0.kind {
                     e0
                 } else {
                     let x0 = ctx.info.names.fresh();
@@ -293,7 +294,7 @@ fn ssa(
                         param: Param::syn(ParamKind::Var(x0), t0),
                         expr: e0,
                     });
-                    Expr::syn(ExprKind::Var(x0), t0)
+                    Expr::syn(ExprKind::Var(x0, VarKind::Local), t0)
                 };
                 cases.push(Case::Guard {
                     cond: Expr::syn(ExprKind::Is(x, v0.clone().into()), ctx.info.types.fresh()),
@@ -345,13 +346,13 @@ impl ast::Pat {
     }
 }
 
-pub(crate) fn params_to_args(params: &[hir::Param]) -> Vec<hir::Expr> {
+pub(crate) fn params_to_args(params: &[hir::Param], kind: hir::VarKind) -> Vec<hir::Expr> {
     params
         .iter()
         .map(|p| {
             let tv = p.tv;
             let x = get!(p.kind, hir::ParamKind::Var(x));
-            hir::Expr::syn(hir::ExprKind::Var(x), tv)
+            hir::Expr::syn(hir::ExprKind::Var(x, kind), tv)
         })
         .collect::<Vec<_>>()
 }

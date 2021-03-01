@@ -1,0 +1,15 @@
+---
+source: arc-script-test/compile/src/insta.rs
+expression: s
+input_file: arc-script-test/compile/src/expect-pass/enum-pattern-nested.arc
+---
+enum Baz { Some(i32), None }
+enum Foo { Bar(Baz), None }
+fun main() {
+    if let Foo::Bar(Baz::Some(x)) = Foo::Bar(Baz::Some(5)) {
+        unit
+    } else {
+        unit
+    }
+}
+

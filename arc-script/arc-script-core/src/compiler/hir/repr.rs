@@ -66,12 +66,19 @@ pub struct Path {
 
 #[derive(New, Debug)]
 pub(crate) struct Fun {
+    pub(crate) kind: FunKind,
     pub(crate) path: Path,
     pub(crate) params: Vec<Param>,
     pub(crate) channels: Option<Vec<Param>>,
     pub(crate) body: Expr,
     pub(crate) tv: TypeId,
     pub(crate) rtv: TypeId,
+}
+
+#[derive(Debug)]
+pub(crate) enum FunKind {
+    Global,
+    Method,
 }
 
 #[derive(New, Debug)]
@@ -153,7 +160,7 @@ pub(crate) struct Task {
     /// Input hub to the task.
     pub(crate) ohub: Hub,
     /// Event handler.
-    pub(crate) on: On,
+    pub(crate) on: Option<On>,
     /// Items of the task.
     pub(crate) items: Vec<Path>,
 }
@@ -215,13 +222,20 @@ pub(crate) enum ExprKind {
     Struct(VecMap<Name, Expr>),
     Tuple(Vec<Expr>),
     UnOp(UnOp, Box<Expr>),
-    Var(Name),
+    Var(Name, VarKind),
     Enwrap(Path, Box<Expr>), // Construct a variant
     Unwrap(Path, Box<Expr>), // Deconstruct a variant
     Is(Path, Box<Expr>),     // Check a variant
     Return(Box<Expr>),
     Todo,
     Err,
+}
+
+#[derive(Debug, Clone, Copy)]
+pub(crate) enum VarKind {
+    Local,
+    Member,
+    // Global,
 }
 
 #[derive(Debug, New, Clone, Spanned)]

@@ -99,13 +99,14 @@ impl<'a> Display for SymbolStackDebug<'a> {
             writeln!(f, "{}Frame: {{", Tab(i + 1))?;
             for (j, scope) in frame.iter().enumerate() {
                 writeln!(f, "{}Scope: {{", Tab(i + j + 2))?;
-                for (name, unique_name) in scope.iter() {
+                for (name, (unique_name, kind)) in scope.iter() {
                     writeln!(
                         f,
-                        "{}{} => {}",
+                        "{}{} => {} ({:?})",
                         Tab(i + j + 3),
                         self.info.names.resolve(name.id),
                         self.info.names.resolve(unique_name.id),
+                        kind,
                     )?;
                 }
             }

@@ -216,9 +216,9 @@ pub(crate) enum ConstKind {
 }
 
 impl OpKind {
-    pub(crate) fn get_type_specifier(&self, t: TypeId) -> TypeId {
+    pub(crate) const fn get_type_specifier(&self, t: TypeId) -> TypeId {
         match self {
-            OpKind::BinOp(st, _, op, _) => {
+            Self::BinOp(st, _, op, _) => {
                 use BinOpKind::*;
                 match op.kind {
                     Equ | Geq | Gt | Leq | Lt | Neq => *st,

@@ -125,7 +125,9 @@ impl hir::Item {
                 i.init.collect_root(places);
             }
             hir::ItemKind::Task(i) => {
-                i.on.body.collect_root(places);
+                if let Some(on) = &i.on {
+                    on.body.collect_root(places);
+                }
             }
             hir::ItemKind::Alias(_) => {}
             hir::ItemKind::Enum(_) => {}
@@ -165,7 +167,7 @@ impl hir::Expr {
                     return Some(p1);
                 }
             }
-            hir::ExprKind::Var(x) => {
+            hir::ExprKind::Var(x, _) => {
                 let p = Place::new(owner.intern_place(PlaceKind::Var(*x)), self.tv, self.loc);
                 owner.add_root(p, *x);
                 return Some(p);

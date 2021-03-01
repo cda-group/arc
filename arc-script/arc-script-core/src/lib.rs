@@ -14,6 +14,7 @@
 #![deny(clippy::nursery)]
 #![deny(clippy::cargo)]
 // Exceptions
+#![allow(clippy::upper_case_acronyms)]
 #![allow(clippy::similar_names)]
 #![allow(clippy::redundant_else)]
 #![allow(clippy::struct_excessive_bools)]
@@ -58,7 +59,7 @@
 #![deny(pointer_structural_match)]
 #![deny(private_doc_tests)]
 #![allow(single_use_lifetimes)] // Results in bugs when enabled
-#![deny(trivial_casts)]
+#![allow(trivial_casts)] // Gets in the way when upcasting &mut to &
 #![deny(trivial_numeric_casts)]
 #![deny(unaligned_references)]
 #![deny(unreachable_pub)]

@@ -54,13 +54,19 @@ impl Constrain<'_> for Task {
                 ctx.env.insert(*x, *p);
             }
         }
-        if let ParamKind::Var(x) = &self.on.param.kind {
-            ctx.env.insert(*x, self.on.param);
+        if let Some(on) = &self.on {
+            if let ParamKind::Var(x) = &on.param.kind {
+                ctx.env.insert(*x, on.param);
+            }
+            on.body.constrain(ctx);
+            ctx.unify(on.param.tv, self.ihub.tv);
         }
-        self.on.body.constrain(ctx);
+        self.items.iter().for_each(|item| {
+            let item = ctx.defs.get(item).unwrap();
+            item.constrain(ctx)
+        });
         let tvs = self.params.iter().map(|x| x.tv).collect();
         let itvs = self.ihub.constrain(ctx);
-        ctx.unify(self.on.param.tv, self.ihub.tv);
         let otvs = self.ohub.constrain(ctx);
         let otv = match otvs.len() {
             0 => ctx.info.types.intern(ScalarKind::Unit),
@@ -121,7 +127,7 @@ impl Constrain<'_> for Expr {
                     e1.constrain(ctx);
                 }
             }
-            ExprKind::Var(x) => {
+            ExprKind::Var(x, _) => {
                 if let Some(x) = ctx.env.get(x).cloned() {
                     ctx.unify(self.tv, x.tv);
                 }

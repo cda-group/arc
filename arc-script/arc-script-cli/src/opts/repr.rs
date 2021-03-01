@@ -85,6 +85,7 @@ pub enum Lang {
 
 /// An output mode.
 #[derive(ArgEnum, Debug, Clone)]
+#[allow(clippy::upper_case_acronyms)]
 pub enum Output {
     /// Output AST.
     AST,

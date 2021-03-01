@@ -1,4 +1,5 @@
 use crate::compiler::hir;
+use crate::compiler::hir::FunKind::Global;
 use crate::compiler::hir::Name;
 use arc_script_core_shared::Map;
 use arc_script_core_shared::VecMap;
@@ -26,12 +27,12 @@ pub(super) fn lift(body: hir::Expr, ctx: &mut Context<'_>) -> hir::Expr {
         let args = vars.into_iter().map(|(_, e)| e).collect::<Vec<_>>();
 
         let itvs = args.iter().map(|arg| arg.tv).collect();
-        let otv = body.tv;
-        let tv = ctx.info.types.intern(hir::TypeKind::Fun(itvs, otv));
+        let rtv = body.tv;
+        let tv = ctx.info.types.intern(hir::TypeKind::Fun(itvs, rtv));
         let loc = body.loc;
 
         let item = hir::Item::new(
-            hir::ItemKind::Fun(hir::Fun::new(path, params, None, body, tv, otv)),
+            hir::ItemKind::Fun(hir::Fun::new(Global, path, params, None, body, tv, rtv)),
             loc,
         );
 
@@ -40,7 +41,7 @@ pub(super) fn lift(body: hir::Expr, ctx: &mut Context<'_>) -> hir::Expr {
 
         hir::Expr::syn(
             hir::ExprKind::Call(hir::Expr::syn(hir::ExprKind::Item(path), tv).into(), args),
-            otv,
+            rtv,
         )
     }
 }
@@ -61,7 +62,7 @@ impl FreeVars for hir::Expr {
                     union.remove(x);
                 }
             }
-            hir::ExprKind::Var(x) => {
+            hir::ExprKind::Var(x, _) => {
                 union.insert(*x, self.clone());
             }
             hir::ExprKind::Lit(_) => {}

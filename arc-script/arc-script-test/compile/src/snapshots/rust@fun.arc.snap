@@ -1,0 +1,20 @@
+---
+source: arc-script-test/compile/src/insta.rs
+expression: s
+input_file: arc-script-test/compile/src/expect-pass/fun.arc
+---
+use arc_script::arcorn;
+use arcon::prelude::*;
+pub fn max(a_0: i32, b_0: i32) -> i32 {
+    let y_1_0 = a_0 > b_0;
+    let y_1_1 = if y_1_0 { a_0 } else { b_0 };
+    y_1_1
+}
+pub fn test() -> i32 {
+    let y_1_0 = 1i32;
+    let y_1_1 = 2i32;
+    let y_1_2 = max(y_1_0, y_1_1);
+    y_1_2
+}
+
+

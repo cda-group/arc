@@ -1,0 +1,15 @@
+---
+source: arc-script-test/compile/src/insta.rs
+expression: s
+input_file: arc-script-test/compile/src/expect-pass/if_let.arc
+---
+fun test() {
+    let x = 3 in
+    let y = 5 in
+    if let ((1, z), 1) = ((3, x), 1) {
+        z + y
+    } else {
+        y + 2
+    }
+}
+

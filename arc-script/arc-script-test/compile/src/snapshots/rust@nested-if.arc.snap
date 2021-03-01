@@ -1,0 +1,23 @@
+---
+source: arc-script-test/compile/src/insta.rs
+expression: s
+input_file: arc-script-test/compile/src/expect-pass/nested-if.arc
+---
+use arc_script::arcorn;
+use arcon::prelude::*;
+pub fn test() -> i32 {
+    let y_1_0 = 65i32;
+    let y_1_1 = 66i32;
+    let y_1_2 = 67i32;
+    let y_1_3 = true;
+    let y_1_4 = false;
+    let y_1_5 = if y_1_3 {
+        y_1_0
+    } else {
+        let y_2_0 = if y_1_4 { y_1_1 } else { y_1_2 };
+        y_2_0
+    };
+    y_1_5
+}
+
+

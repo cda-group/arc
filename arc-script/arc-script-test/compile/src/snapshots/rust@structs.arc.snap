@@ -1,0 +1,38 @@
+---
+source: arc-script-test/compile/src/insta.rs
+expression: s
+input_file: arc-script-test/compile/src/expect-pass/structs.arc
+---
+use arc_script::arcorn;
+use arcon::prelude::*;
+pub fn test() -> () {
+    let y_1_0 = 1i32;
+    let y_1_1 = 5i32;
+    let y_1_2 = Struct1ci321bi32End { c: y_1_0, b: y_1_1 };
+    let y_1_3 = 2i32;
+    let y_1_4 = 4i32;
+    let y_1_5 = 2i32;
+    let y_1_6 = Struct1ci321bi32End { b: y_1_4, c: y_1_5 };
+    let y_1_7 = Struct1aStruct1ci321bi32End3xyzi321dStruct1ci321bi32EndEnd {
+        a: y_1_2,
+        xyz: y_1_3,
+        d: y_1_6,
+    };
+    let y_1_8 = ();
+    y_1_8
+}
+#[arcorn::rewrite]
+#[derive(Copy)]
+pub struct Struct1ci321bi32End {
+    c: i32,
+    b: i32,
+}
+#[arcorn::rewrite]
+#[derive(Copy)]
+pub struct Struct1aStruct1ci321bi32End3xyzi321dStruct1ci321bi32EndEnd {
+    a: Struct1ci321bi32End,
+    xyz: i32,
+    d: Struct1ci321bi32End,
+}
+
+

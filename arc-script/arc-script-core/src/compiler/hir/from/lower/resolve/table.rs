@@ -58,7 +58,7 @@ impl SymbolTable {
     ///   A -> B -> D
     ///   C -------/
     ///   E -> F --/
-    pub(crate) fn resolve(&mut self, path: PathId) -> PathId {
+    pub(crate) fn absolute(&mut self, path: PathId) -> PathId {
         if self.compressed.contains(&path) {
             // Path has already been compressed
             self.imports.get(&path).cloned().unwrap_or(path)
@@ -67,7 +67,7 @@ impl SymbolTable {
             self.compressed.insert(path);
             self.imports.remove(&path).map_or(path, |next| {
                 // `path` is an alias for `next`, keep compressing
-                let real = self.resolve(next);
+                let real = self.absolute(next);
                 self.imports.insert(path, real);
                 real
             })
@@ -127,7 +127,7 @@ impl Declare for ast::TaskItem {
     }
 }
 
-impl Declare for ast::Fun {
+impl ast::Fun {
     fn declare(&self, path: PathId, table: &mut SymbolTable, info: &mut Info) {
         let path = info.paths.intern_child(path, self.name);
         if table.declarations.insert(path, ItemDeclKind::Fun).is_some() {

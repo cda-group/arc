@@ -57,7 +57,7 @@ impl Expr {
                 LitKind::Time(_) => todo!(),
                 LitKind::Err     => unreachable!(),
             },
-            ExprKind::Var(x) => return Ok(ctx.stack.lookup(x.id).clone()),
+            ExprKind::Var(x, _) => return Ok(ctx.stack.lookup(x.id).clone()),
             ExprKind::Item(x) => Item(*x),
             ExprKind::Let(p, e0, e1) => match p.kind {
                 ParamKind::Var(x) => {

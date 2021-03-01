@@ -32,13 +32,13 @@ pub struct Report {
 impl Report {
     /// Constructs a new `Report` by taking ownership of the Arc-Script compiler's output.
     /// Reports can only be constructed within the compiler, therefore this is `pub(crate)`.
-    pub(crate) fn semantic(info: Info, hir: HIR) -> Self {
+    pub(crate) const fn semantic(info: Info, hir: HIR) -> Self {
         Self {
             info,
             hir: Some(hir),
         }
     }
-    pub(crate) fn syntactic(info: Info) -> Self {
+    pub(crate) const fn syntactic(info: Info) -> Self {
         Self { info, hir: None }
     }
     /// Returns `true` if there are no diagnostics to be reported, otherwise `false`.

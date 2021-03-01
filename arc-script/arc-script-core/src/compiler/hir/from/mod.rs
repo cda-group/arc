@@ -29,7 +29,7 @@ impl HIR {
         hir.infer(info);
         tracing::debug!("Inferred: {}", hir.debug(info));
         hir.check(info);
-        tracing::trace!("Checked: {}", hir.debug(&info));
+        tracing::trace!("Checked: {}", hir.debug(info));
         hir
     }
 }

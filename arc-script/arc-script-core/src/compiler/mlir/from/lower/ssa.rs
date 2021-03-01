@@ -57,7 +57,7 @@ impl SSA<Var> for Expr {
                 }
                 return e1.ssa(ctx, env, ops);
             }
-            ExprKind::Var(mut x) => {
+            ExprKind::Var(mut x, _) => {
                 while let Some(next) = env.get(&x) {
                     x = next.name;
                 }
@@ -145,10 +145,8 @@ impl SSA<Var> for Expr {
             ExprKind::Err => unreachable!(),
         };
         let x = Var::new(ctx.info.names.fresh(), self.tv);
-        if !matches!(
-            ctx.info.types.resolve(self.tv).kind,
-            TypeKind::Scalar(ScalarKind::Unit)
-        ) {
+        let ty = ctx.info.types.resolve(self.tv);
+        if !matches!(&ty.kind, TypeKind::Scalar(ScalarKind::Unit)) {
             ops.push(Op::new(Some(x), kind, self.loc));
         }
         x

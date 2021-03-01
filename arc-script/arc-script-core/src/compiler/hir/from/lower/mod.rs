@@ -3,7 +3,7 @@ mod lowerings {
     /// Module for lowering call-expressions.
     pub(crate) mod call;
     /// Module for lowering call-expressions.
-//     pub(crate) mod cases;
+    //     pub(crate) mod cases;
     /// Module for lowering if-let-expressions patterns.
     pub(crate) mod if_let;
     /// Module for lowering pure lambdas into first-class functions.
@@ -27,6 +27,7 @@ use lowerings::*;
 
 use crate::compiler::ast;
 use crate::compiler::hir;
+use crate::compiler::hir::FunKind::Global;
 use crate::compiler::hir::Name;
 use crate::compiler::hir::Path;
 use crate::compiler::info;
@@ -75,10 +76,15 @@ impl Lower<Option<Path>, Context<'_>> for ast::Item {
     fn lower(&self, ctx: &mut Context<'_>) -> Option<Path> {
         let (path, kind) = match &self.kind {
             ast::ItemKind::Task(item)  => item.lower(ctx),
-            ast::ItemKind::Fun(item)   => item.lower(ctx),
+            ast::ItemKind::Fun(item)   => {
+                ctx.res.stack.push_frame();
+                let item = item.lower(ctx, hir::FunKind::Global);
+                ctx.res.stack.pop_frame();
+                item
+            },
             ast::ItemKind::Alias(item) => item.lower(ctx),
             ast::ItemKind::Enum(item)  => item.lower(ctx),
-            ast::ItemKind::Use(_item)   => None?,
+            ast::ItemKind::Use(_)      => None?,
             ast::ItemKind::Err         => None?,
             ast::ItemKind::Extern(_)   => todo!(),
         };
@@ -93,7 +99,12 @@ impl Lower<Option<Path>, Context<'_>> for ast::TaskItem {
     #[rustfmt::skip]
     fn lower(&self, ctx: &mut Context<'_>) -> Option<Path> {
         let (path, kind) = match &self.kind {
-            ast::TaskItemKind::Fun(item)   => item.lower(ctx),
+            ast::TaskItemKind::Fun(item)   => {
+                ctx.res.stack.push_scope(); // Methods capture their task-environment
+                let item = item.lower(ctx, hir::FunKind::Method);
+                ctx.res.stack.pop_scope();
+                item
+            },
             ast::TaskItemKind::Alias(item) => item.lower(ctx),
             ast::TaskItemKind::Enum(item)  => item.lower(ctx),
             ast::TaskItemKind::On(_)       => None?,
@@ -130,22 +141,24 @@ impl Lower<(Path, hir::ItemKind), Context<'_>> for ast::Task {
         tracing::trace!("Lowering Task");
         ctx.res.push_namespace(self.name, ctx.info);
         let mut task_path: Path = ctx.res.path_id.into();
-        let (mut task_params, cases) = pattern::lower_params(&self.params, ctx);
+        let (mut task_params, cases) =
+            pattern::lower_params(&self.params, hir::VarKind::Member, ctx);
         // If the task's parameter patterns are nested, a function must be created to
         // flatten them. The function is then used in-place of the task.
         if !cases.is_empty() {
-            let fun_params = task_params;
-            task_params = pattern::params(&self.params, ctx);
-            let task_args = pattern::params_to_args(&task_params);
+            let fun_params =
+                std::mem::replace(&mut task_params, pattern::params(&self.params, ctx));
+            let task_args = pattern::params_to_args(&task_params, hir::VarKind::Local);
 
-            let fun_path = task_path;
-            let pathbuf = *ctx.info.paths.resolve(task_path.id);
-            let task_name = ctx.info.names.fresh_with_base(pathbuf.name);
-            task_path = ctx
-                .info
-                .paths
-                .intern_child(pathbuf.pred.unwrap(), task_name)
-                .into();
+            let path = *ctx.info.paths.resolve(task_path.id);
+            let task_name = ctx.info.names.fresh_with_base(path.name);
+            let fun_path = std::mem::replace(
+                &mut task_path,
+                ctx.info
+                    .paths
+                    .intern_child(path.pred.unwrap(), task_name)
+                    .into(),
+            );
 
             let ttv = ctx.info.types.fresh();
             let rtv = ctx.info.types.fresh();
@@ -159,7 +172,7 @@ impl Lower<(Path, hir::ItemKind), Context<'_>> for ast::Task {
                 rtv,
             );
             let body = pattern::fold_cases(call, None, cases);
-            let fun = hir::Fun::new(fun_path, fun_params, None, body, ftv, rtv);
+            let fun = hir::Fun::new(Global, fun_path, fun_params, None, body, ftv, rtv);
             let item = hir::Item::syn(hir::ItemKind::Fun(fun));
             ctx.hir.defs.insert(fun_path, item);
             ctx.hir.items.push(fun_path);
@@ -168,13 +181,11 @@ impl Lower<(Path, hir::ItemKind), Context<'_>> for ast::Task {
         let ihub = self.ihub.lower("Source", ctx);
         let ohub = self.ohub.lower("Sink", ctx);
 
-        // TODO: Handle error when there is no handler
         let on = self
             .items
             .iter()
             .find_map(|item| map!(&item.kind, ast::TaskItemKind::On(_)))
-            .unwrap()
-            .lower(ctx);
+            .map(|item| item.lower(ctx));
         let items = self
             .items
             .iter()
@@ -222,20 +233,19 @@ impl ast::Hub {
     }
 }
 
-impl Lower<(Path, hir::ItemKind), Context<'_>> for ast::Fun {
-    fn lower(&self, ctx: &mut Context<'_>) -> (Path, hir::ItemKind) {
+impl ast::Fun {
+    fn lower(&self, ctx: &mut Context<'_>, kind: hir::FunKind) -> (Path, hir::ItemKind) {
         tracing::trace!("Lowering Fun");
-        ctx.res.stack.push_frame();
         let path = ctx
             .info
             .paths
             .intern_child(ctx.res.path_id, self.name)
             .into();
-        let (params, cases) = pattern::lower_params(&self.params, ctx);
+        let (params, cases) = pattern::lower_params(&self.params, hir::VarKind::Local, ctx);
         let e = self.body.lower(ctx);
         let e = pattern::fold_cases(e, None, cases);
         let (channels, e) = if let Some(channels) = &self.channels {
-            let (channels, cases) = pattern::lower_params(channels, ctx);
+            let (channels, cases) = pattern::lower_params(channels, hir::VarKind::Local, ctx);
             let e = pattern::fold_cases(e, None, cases);
             (Some(channels), e)
         } else {
@@ -250,8 +260,7 @@ impl Lower<(Path, hir::ItemKind), Context<'_>> for ast::Fun {
             params.iter().map(|p| p.tv).collect(),
             rtv,
         ));
-        ctx.res.stack.pop_frame();
-        let item = hir::Fun::new(path, params, channels, e, tv, rtv);
+        let item = hir::Fun::new(kind, path, params, channels, e, tv, rtv);
         (path, hir::ItemKind::Fun(item))
     }
 }
@@ -262,7 +271,7 @@ impl Lower<hir::On, Context<'_>> for ast::On {
         ctx.res.stack.push_scope();
         let mut iter = self.cases.iter();
         let case = iter.next().unwrap();
-        let (param, cases) = pattern::lower_pat(&case.pat, ctx);
+        let (param, cases) = pattern::lower_pat(&case.pat, hir::VarKind::Local, ctx);
         for case in cases.iter() {
             tracing::debug!("{}", case.debug(ctx.info, ctx.hir));
         }

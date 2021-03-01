@@ -1,0 +1,19 @@
+---
+source: arc-script-test/compile/src/insta.rs
+expression: s
+input_file: arc-script-test/compile/src/expect-pass/structs.arc
+---
+module @toplevel {
+    func @crate_test() -> () {
+        %x_1 = arc.constant 1 : si32
+        %x_2 = arc.constant 5 : si32
+        %x_3 = arc.make_struct(%x_1, %x_2 : si32, si32) : !arc.struct<c : si32, b : si32>
+        %x_4 = arc.constant 2 : si32
+        %x_5 = arc.constant 4 : si32
+        %x_6 = arc.constant 2 : si32
+        %x_7 = arc.make_struct(%x_5, %x_6 : si32, si32) : !arc.struct<b : si32, c : si32>
+        %x_8 = arc.make_struct(%x_3, %x_4, %x_7 : !arc.struct<c : si32, b : si32>, si32, !arc.struct<b : si32, c : si32>) : !arc.struct<a : !arc.struct<c : si32, b : si32>, xyz : si32, d : !arc.struct<b : si32, c : si32>>
+        return 
+    }
+}
+

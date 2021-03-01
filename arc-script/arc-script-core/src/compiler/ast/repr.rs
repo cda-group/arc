@@ -218,6 +218,7 @@ impl ExprInterner {
 
     /// Resolves an `ExprId` into its associated `ExprKind`.
     #[must_use]
+    #[allow(clippy::missing_panics_doc)]
     pub fn resolve(&self, id: ExprId) -> &ExprKind {
         self.store.get(id.0).unwrap()
     }
