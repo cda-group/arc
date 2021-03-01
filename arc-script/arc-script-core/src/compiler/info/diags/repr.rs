@@ -286,6 +286,12 @@ pub enum Error {
         /// Type which does not implement Copy.
         tv: TypeId,
     },
+
+    /// Error when an extern function contains a parameter which is a pattern.
+    PatternInExternFun {
+        /// Location of the extern function.
+        loc: Option<Loc>,
+    },
 }
 
 /// Runtime errors reported by the compiler.

@@ -64,13 +64,14 @@ impl<'i> Display for Pretty<'i, ast::TaskItem, Context<'_>> {
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
         let Pretty(item, fmt) = self;
         match &item.kind {
-            ast::TaskItemKind::Fun(item)   => write!(f, "{}", item.pretty(*fmt)),
-            ast::TaskItemKind::Alias(item) => write!(f, "{}", item.pretty(*fmt)),
-            ast::TaskItemKind::Use(item)   => write!(f, "{}", item.pretty(*fmt)),
-            ast::TaskItemKind::Enum(item)  => write!(f, "{}", item.pretty(*fmt)),
-            ast::TaskItemKind::On(item)    => write!(f, "{}", item.pretty(*fmt)),
-            ast::TaskItemKind::State(item) => write!(f, "{}", item.pretty(*fmt)),
-            ast::TaskItemKind::Err         => write!(f, "☇"),
+            ast::TaskItemKind::Fun(item)    => write!(f, "{}", item.pretty(fmt)),
+            ast::TaskItemKind::Extern(item) => write!(f, "{}", item.pretty(fmt)),
+            ast::TaskItemKind::Alias(item)  => write!(f, "{}", item.pretty(fmt)),
+            ast::TaskItemKind::Use(item)    => write!(f, "{}", item.pretty(fmt)),
+            ast::TaskItemKind::Enum(item)   => write!(f, "{}", item.pretty(fmt)),
+            ast::TaskItemKind::On(item)     => write!(f, "{}", item.pretty(fmt)),
+            ast::TaskItemKind::State(item)  => write!(f, "{}", item.pretty(fmt)),
+            ast::TaskItemKind::Err          => write!(f, "☇"),
         }
     }
 }

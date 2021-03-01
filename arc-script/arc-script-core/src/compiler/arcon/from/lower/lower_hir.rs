@@ -29,18 +29,19 @@ impl Lower<Tokens, Context<'_>> for hir::HIR {
     }
 }
 
-impl Lower<Tokens, Context<'_>> for hir::Item {
+impl Lower<Option<Tokens>, Context<'_>> for hir::Item {
     #[rustfmt::skip]
-    fn lower(&self, ctx: &mut Context<'_>) -> Tokens {
-        match &self.kind {
+    fn lower(&self, ctx: &mut Context<'_>) -> Option<Tokens> {
+        let item = match &self.kind {
             hir::ItemKind::Alias(_i)  => unreachable!(),
             hir::ItemKind::Enum(i)    => i.lower(ctx),
             hir::ItemKind::Fun(i)     => i.lower(ctx),
             hir::ItemKind::State(_i)  => todo!(),
             hir::ItemKind::Task(i)    => i.lower(ctx),
-            hir::ItemKind::Extern(_i) => quote!(),
+            hir::ItemKind::Extern(i)  => None?,
             hir::ItemKind::Variant(i) => i.lower(ctx),
-        }
+        };
+        Some(item)
     }
 }
 
@@ -76,10 +77,40 @@ impl Lower<Tokens, Context<'_>> for hir::Fun {
         let rtv = self.rtv.lower(ctx);
         let body = self.body.lower(ctx);
         let params = self.params.iter().map(|p| p.lower(ctx));
-        quote! {
-            pub fn #name(#(#params),*) -> #rtv {
-                #body
-            }
+        match self.kind {
+            hir::FunKind::Global => quote! {
+                pub fn #name(#(#params),*) -> #rtv {
+                    #body
+                }
+            },
+            hir::FunKind::Method => quote! {
+                pub fn #name(&mut self, #(#params),*) -> #rtv {
+                    #body
+                }
+            },
+        }
+    }
+}
+
+impl Lower<Tokens, Context<'_>> for hir::Extern {
+    fn lower(&self, ctx: &mut Context<'_>) -> Tokens {
+        let name = self.path.lower(ctx);
+        let extern_name = ctx.info.paths.resolve(self.path.id).name;
+        let extern_name = extern_name.lower(ctx);
+        let rtv = self.rtv.lower(ctx);
+        let params = self.params.iter().map(|p| p.lower(ctx)).collect::<Vec<_>>();
+        let param_ids = self.params.iter().map(|p| p.kind.lower(ctx));
+        match self.kind {
+            hir::FunKind::Global => quote! {
+                pub fn #name(#(#params),*) -> #rtv {
+                    #extern_name(#(#param_ids),*)
+                }
+            },
+            hir::FunKind::Method => quote! {
+                pub fn #name(&mut self, #(#params),*) -> #rtv {
+                    self.#extern_name(#(#param_ids),*)
+                }
+            },
         }
     }
 }
@@ -350,14 +381,24 @@ impl hir::Expr {
                 let e2 = e2.block(ctx, env, depth);
                 quote!(if #e0 { #e1 } else { #e2 })
             }
-            // NOTE: Don't assign items to variables
-            hir::ExprKind::Item(x) => match &ctx.hir.defs.get(x).unwrap().kind {
-                hir::ItemKind::Fun(item) if matches!(item.kind, hir::FunKind::Method) => {
-                    let x = x.lower(ctx);
-                    return quote!(self.#x);
+            // NOTE: Don't assign items to variables since it might break ownership.
+            //       In other words, return early!
+            hir::ExprKind::Item(path) => {
+                let item = &ctx.hir.defs.get(path).unwrap();
+                match &item.kind {
+                    hir::ItemKind::Fun(item) if matches!(item.kind, hir::FunKind::Method) => {
+                        let path = path.lower(ctx);
+                        return quote!(self.#path);
+                    }
+                    // Do not mangle extern items
+                    hir::ItemKind::Extern(item) if matches!(item.kind, hir::FunKind::Method) => {
+                        let name = ctx.info.paths.resolve(path.id).name;
+                        let name = name.lower(ctx);
+                        return quote!(self.#name);
+                    }
+                    _ => return path.lower(ctx),
                 }
-                _ => return x.lower(ctx),
-            },
+            }
             hir::ExprKind::Lit(l) => l.lower(ctx),
             hir::ExprKind::Log(e) => {
                 let e = e.ssa(ctx, env, ops, depth);

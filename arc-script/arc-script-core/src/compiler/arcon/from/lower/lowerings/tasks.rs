@@ -1,4 +1,5 @@
 use arc_script_core_shared::get;
+use arc_script_core_shared::map;
 use arc_script_core_shared::Bool;
 use arc_script_core_shared::Lower;
 
@@ -13,48 +14,16 @@ use proc_macro2::TokenStream as Tokens;
 use quote::quote;
 
 impl hir::Path {
-    #[rustfmt::skip]
     pub(crate) fn lower_method(&self, ctx: &mut Context<'_>) -> Option<Tokens> {
         let item = ctx.hir.defs.get(self).unwrap();
-        match &item.kind {
-            hir::ItemKind::Alias(item)   => None,
-            hir::ItemKind::Enum(item)    => None,
-            hir::ItemKind::Fun(item)     => Some(item.lower_method(ctx)),
-            hir::ItemKind::State(item)   => None,
-            hir::ItemKind::Task(item)    => None,
-            hir::ItemKind::Extern(item)  => None,
-            hir::ItemKind::Variant(item) => None,
-        }
-    }
-}
-
-impl hir::Fun {
-    fn lower_method(&self, ctx: &mut Context<'_>) -> Tokens {
-        let name = self.path.lower(ctx);
-        let rtv = self.rtv.lower(ctx);
-        let body = self.body.lower(ctx);
-        let params = self.params.iter().map(|p| p.lower(ctx));
-        quote! {
-            fn #name(&mut self, #(#params),*) -> #rtv {
-                #body
-            }
-        }
+        map!(&item.kind, hir::ItemKind::Fun(_)).map(|item| item.lower(ctx))
     }
 }
 
 impl hir::Path {
-    #[rustfmt::skip]
     pub(crate) fn lower_state(&self, ctx: &mut Context<'_>) -> Option<(Tokens, Tokens)> {
         let item = ctx.hir.defs.get(self).unwrap();
-        match &item.kind {
-            hir::ItemKind::Alias(item)   => None,
-            hir::ItemKind::Enum(item)    => None,
-            hir::ItemKind::Fun(item)     => None,
-            hir::ItemKind::State(item)   => Some(item.lower_state(ctx)),
-            hir::ItemKind::Task(item)    => None,
-            hir::ItemKind::Extern(item)  => None,
-            hir::ItemKind::Variant(item) => None,
-        }
+        map!(&item.kind, hir::ItemKind::State(_)).map(|item| item.lower_state(ctx))
     }
 }
 

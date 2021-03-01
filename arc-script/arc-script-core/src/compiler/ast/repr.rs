@@ -101,6 +101,7 @@ pub enum TaskItemKind {
     Alias(Alias),
     Enum(Enum),
     Fun(Fun),
+    Extern(Extern),
     On(On),
     State(State),
     Use(Use),

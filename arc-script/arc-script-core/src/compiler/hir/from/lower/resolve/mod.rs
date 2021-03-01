@@ -48,6 +48,7 @@ impl Resolver {
 impl Resolver {
     /// Returns the declaration kind of a path.
     pub(crate) fn resolve(&mut self, path: &ast::Path, info: &mut Info) -> Option<DeclKind> {
+        tracing::trace!("{}", path.id.debug(info));
         // First check if the symbol is stored as a variable on the symbol stack
         let path_buf = *info.paths.resolve(path.id);
         if path_buf.pred.is_none() {

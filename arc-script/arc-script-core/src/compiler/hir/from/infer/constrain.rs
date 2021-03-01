@@ -1,7 +1,7 @@
 use crate::compiler::hir::from::infer::unify::Unify;
 use crate::compiler::hir::{
-    self, BinOpKind, Dim, DimKind, Expr, ExprKind, Fun, Item, ItemKind, LitKind, Param, ParamKind,
-    Path, ScalarKind, Shape, State, Task, Type, TypeKind, UnOpKind, HIR,
+    self, BinOpKind, Dim, DimKind, Expr, ExprKind, Extern, Fun, Item, ItemKind, LitKind, Param,
+    ParamKind, Path, ScalarKind, Shape, State, Task, Type, TypeKind, UnOpKind, HIR,
 };
 use crate::compiler::info::diags::{Diagnostic, Error, Warning};
 use crate::compiler::info::types::TypeId;
@@ -25,7 +25,7 @@ impl Constrain<'_> for Item {
             ItemKind::State(item) => item.constrain(ctx),
             ItemKind::Alias(_)    => {}
             ItemKind::Enum(_)     => {}
-            ItemKind::Extern(_)   => todo!(),
+            ItemKind::Extern(_)   => {}
             ItemKind::Variant(_)  => {}
         }
     }
@@ -135,13 +135,13 @@ impl Constrain<'_> for Expr {
             #[rustfmt::skip]
             ExprKind::Item(x) => {
                 match &ctx.defs.get(x).unwrap().kind {
-                    ItemKind::Fun(item)   => ctx.unify(self.tv, item.tv),
-                    ItemKind::Task(item)  => ctx.unify(self.tv, item.tv),
-                    ItemKind::State(item) => ctx.unify(self.tv, item.tv),
-                    ItemKind::Extern(_)   => todo!(),
-                    ItemKind::Alias(_)    => unreachable!(),
-                    ItemKind::Enum(_)     => unreachable!(),
-                    ItemKind::Variant(_)  => unreachable!(),
+                    ItemKind::Fun(item)    => ctx.unify(self.tv, item.tv),
+                    ItemKind::Task(item)   => ctx.unify(self.tv, item.tv),
+                    ItemKind::State(item)  => ctx.unify(self.tv, item.tv),
+                    ItemKind::Extern(item) => ctx.unify(self.tv, item.tv),
+                    ItemKind::Alias(_)     => unreachable!(),
+                    ItemKind::Enum(_)      => unreachable!(),
+                    ItemKind::Variant(_)   => unreachable!(),
                 }
             },
             #[rustfmt::skip]
