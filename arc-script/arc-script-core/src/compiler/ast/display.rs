@@ -3,6 +3,7 @@
 use crate::compiler::ast;
 use crate::compiler::info::names::NameId;
 use crate::compiler::info::paths::PathId;
+use crate::compiler::info::modes::Verbosity;
 use crate::compiler::info::Info;
 use crate::compiler::pretty::*;
 use arc_script_core_shared::New;
@@ -232,6 +233,9 @@ impl<'i> Display for Pretty<'i, ast::Expr, Context<'_>> {
     #[rustfmt::skip]
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
         let Pretty(expr, fmt) = self;
+        if fmt.ctx.info.mode.verbosity >= Verbosity::Debug {
+            write!(f, "(")?;
+        }
         match &fmt.ctx.ast.exprs.resolve(expr.id) {
             ast::ExprKind::If(e0, e1, e2) => write!(
                 f,
@@ -329,6 +333,9 @@ impl<'i> Display for Pretty<'i, ast::Expr, Context<'_>> {
             ast::ExprKind::Return(None) => write!(f, "return;;"),
             ast::ExprKind::Todo => write!(f, "???"),
         }?;
+        if fmt.ctx.info.mode.verbosity >= Verbosity::Debug {
+            write!(f, ")")?;
+        }
         Ok(())
     }
 }
