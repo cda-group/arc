@@ -74,7 +74,7 @@ impl Lower<(), Context<'_>> for ast::Module {
 impl Lower<Option<Path>, Context<'_>> for ast::Item {
     #[rustfmt::skip]
     fn lower(&self, ctx: &mut Context<'_>) -> Option<Path> {
-        let result = match &self.kind {
+        match &self.kind {
             ast::ItemKind::Task(item)   => item.lower(ctx),
             ast::ItemKind::Fun(item)    => {
                 ctx.res.stack.push_frame();
@@ -87,14 +87,12 @@ impl Lower<Option<Path>, Context<'_>> for ast::Item {
             ast::ItemKind::Extern(item) => item.lower(ctx, hir::FunKind::Global),
             ast::ItemKind::Use(_)       => None?,
             ast::ItemKind::Err          => None?,
-        };
-        if let Some((path, kind)) = result {
+        }
+        .map(|(path, kind)| {
             let item = hir::Item::new(kind, self.loc);
             ctx.hir.defs.insert(path, item);
             path.into()
-        } else {
-            None
-        }
+        })
     }
 }
 
@@ -102,7 +100,7 @@ impl Lower<Option<Path>, Context<'_>> for ast::Item {
 impl Lower<Option<Path>, Context<'_>> for ast::TaskItem {
     #[rustfmt::skip]
     fn lower(&self, ctx: &mut Context<'_>) -> Option<Path> {
-        let result = match &self.kind {
+        match &self.kind {
             ast::TaskItemKind::Fun(item)    => {
                 // NOTE: Methods capture their task-environment
                 ctx.res.stack.push_scope();
@@ -117,26 +115,20 @@ impl Lower<Option<Path>, Context<'_>> for ast::TaskItem {
             ast::TaskItemKind::Use(_)       => None?,
             ast::TaskItemKind::State(_)     => None?,
             ast::TaskItemKind::Err          => None?,
-        };
-        if let Some((path, kind)) = result {
+        }
+        .map(|(path, kind)| {
             let item = hir::Item::new(kind, self.loc);
             ctx.hir.defs.insert(path, item);
             path.into()
-        } else {
-            None
-        }
+        })
     }
 }
 
 /// Resolve a task state variable.
 impl Lower<Option<(Name, hir::Expr)>, Context<'_>> for ast::TaskItem {
-    #[rustfmt::skip]
     fn lower(&self, ctx: &mut Context<'_>) -> Option<(Name, hir::Expr)> {
-        if let ast::TaskItemKind::State(item) = &self.kind {
-            (item.name, item.expr.lower(ctx)).into()
-        } else {
-            None?
-        }
+        map!(&self.kind, ast::TaskItemKind::State(_))
+            .map(|item| (item.name, item.expr.lower(ctx)).into())
     }
 }
 
