@@ -1,6 +1,7 @@
+// compile-flags: --error-format=human
+
 use arcon::prelude::ComponentDefinition;
 use arcon::prelude::Backend;
-
 
 #[arc_script::compile("extern-fun.arc")]
 mod script {

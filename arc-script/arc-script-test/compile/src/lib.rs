@@ -1,2 +1,8 @@
+#[cfg(test)]
 mod insta;
-mod trybuild;
+
+// #[cfg(test)]
+// mod trybuild;
+
+#[cfg(test)]
+mod compiletest;

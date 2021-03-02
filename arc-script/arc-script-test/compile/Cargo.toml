@@ -7,9 +7,11 @@ license     = "MIT"
 description = "Tests to see if arc-scripts compile"
 
 [dependencies]
-trybuild        = { version = "1.0.39" }
+# trybuild        = { version = "1.0.39" }
 arc-script-core = { version = "=0.0.0", path = "../../arc-script-core" }
 insta           = { version = "1.6.0", features = ["glob"] }
+compiletest     = { version = "0.6.0", package = "compiletest_rs", features = ["tmp"] }
+cargo_toml      = { version = "0.8.1" }
 
 [dev-dependencies]
 arcon           = { git = "https://github.com/cda-group/arcon" }

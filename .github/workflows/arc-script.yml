@@ -24,6 +24,15 @@ jobs:
       run: |
         cargo fetch
 
+    - name: cargo-clean
+      run: cargo clean
+
+    - name: cargo-test
+      run: cargo insta test --package=arc-script-test-compile
+
+    - name: cargo-clippy
+      run: cargo clippy --all-features
+
     - name: cargo-check
       run: cargo check --all-features
 
@@ -39,14 +48,8 @@ jobs:
     - name: cargo-check-benches
       run: cargo check --all-features --benches
     
-    - name: cargo-test
-      run: cargo insta test
-
     - name: cargo-fuzz
       run: cargo fuzz run parse -- -runs=10000 -only-ascii
-
-    - name: cargo-clippy
-      run: cargo clippy --all-features
 
 #    - name: cargo-fmt
 #      run: cargo fmt -- -v --check
