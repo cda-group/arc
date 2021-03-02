@@ -15,9 +15,9 @@ fn compiletest() {
     let config = &mut default_config();
     config.clean_rmeta();
 
-    run(config, Mode::RunPass, "src/expect-pass");
-    run(config, Mode::Ui, "src/expect-fail");
-    run(config, Mode::RunPass, "src/expect-mlir-fail-todo");
+    run(config, Mode::RunPass, "src/tests/expect-pass");
+    run(config, Mode::Ui, "src/tests/expect-fail");
+    run(config, Mode::RunPass, "src/tests/expect-mlir-fail-todo");
 }
 
 /// Executes a `compiletest`.

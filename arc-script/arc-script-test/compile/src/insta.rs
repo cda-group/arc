@@ -31,39 +31,39 @@ fn snapshot(output: Output, paths: &str) {
 
 #[test]
 fn test_ast() {
-    snapshot(Output::AST, "expect-mlir-fail-todo/*.arc");
-    snapshot(Output::AST, "expect-pass/*.arc");
-    snapshot(Output::AST, "expect-fail/*.arc");
-    snapshot(Output::AST, "expect-fail-todo/*.arc");
+    snapshot(Output::AST, "tests/expect-mlir-fail-todo/*.arc");
+    snapshot(Output::AST, "tests/expect-pass/*.arc");
+    snapshot(Output::AST, "tests/expect-fail/*.arc");
+    snapshot(Output::AST, "tests/expect-fail-todo/*.arc");
 }
 
 #[test]
 fn test_hir() {
-    snapshot(Output::HIR, "expect-mlir-fail-todo/*.arc");
-    snapshot(Output::HIR, "expect-pass/*.arc");
-    snapshot(Output::HIR, "expect-fail/*.arc");
-    snapshot(Output::HIR, "expect-fail-todo/*.arc");
+    snapshot(Output::HIR, "tests/expect-mlir-fail-todo/*.arc");
+    snapshot(Output::HIR, "tests/expect-pass/*.arc");
+    snapshot(Output::HIR, "tests/expect-fail/*.arc");
+    snapshot(Output::HIR, "tests/expect-fail-todo/*.arc");
 }
 
 #[test]
 fn test_dfg() {
-    snapshot(Output::DFG, "expect-mlir-fail-todo/*.arc");
-    snapshot(Output::DFG, "expect-pass/*.arc");
-    snapshot(Output::DFG, "expect-fail/*.arc");
-    snapshot(Output::DFG, "expect-fail-todo/*.arc");
+    snapshot(Output::DFG, "tests/expect-mlir-fail-todo/*.arc");
+    snapshot(Output::DFG, "tests/expect-pass/*.arc");
+    snapshot(Output::DFG, "tests/expect-fail/*.arc");
+    snapshot(Output::DFG, "tests/expect-fail-todo/*.arc");
 }
 
 #[test]
 fn test_rust() {
-    snapshot(Output::Rust, "expect-mlir-fail-todo/*.arc");
-    snapshot(Output::Rust, "expect-pass/*.arc");
-    snapshot(Output::Rust, "expect-fail/*.arc");
-    snapshot(Output::Rust, "expect-fail-todo/*.arc");
+    snapshot(Output::Rust, "tests/expect-mlir-fail-todo/*.arc");
+    snapshot(Output::Rust, "tests/expect-pass/*.arc");
+    snapshot(Output::Rust, "tests/expect-fail/*.arc");
+    snapshot(Output::Rust, "tests/expect-fail-todo/*.arc");
 }
 
 #[test]
 fn test_mlir() {
-    snapshot(Output::MLIR, "expect-pass/*.arc");
-    snapshot(Output::MLIR, "expect-fail/*.arc");
-    snapshot(Output::MLIR, "expect-fail-todo/*.arc");
+    snapshot(Output::MLIR, "tests/expect-pass/*.arc");
+    snapshot(Output::MLIR, "tests/expect-fail/*.arc");
+    snapshot(Output::MLIR, "tests/expect-fail-todo/*.arc");
 }
