@@ -139,7 +139,7 @@ impl Lower<Tokens, Context<'_>> for hir::Task {
             .iter()
             .filter_map(|x| {
                 let item = ctx.hir.defs.get(x).unwrap();
-                map!(&item.kind, hir::ItemKind::State(_)).map(|item| item.lower_state(backend, ctx))
+                map!(&item.kind, hir::ItemKind::State).map(|item| item.lower_state(backend, ctx))
             })
             .unzip_n_vec();
 

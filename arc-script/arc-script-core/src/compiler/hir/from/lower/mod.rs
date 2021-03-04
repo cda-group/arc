@@ -142,7 +142,7 @@ impl Lower<Option<(Path, hir::ItemKind)>, Context<'_>> for ast::Task {
             .items
             .iter()
             .filter_map(|item| {
-                map!(&item.kind, ast::TaskItemKind::State(_)).map(|item| item.lower(ctx))
+                map!(&item.kind, ast::TaskItemKind::State).map(|item| item.lower(ctx))
             })
             .collect();
         // If the task's parameter patterns are nested, a function must be created to
@@ -186,7 +186,7 @@ impl Lower<Option<(Path, hir::ItemKind)>, Context<'_>> for ast::Task {
         let on = self
             .items
             .iter()
-            .find_map(|item| map!(&item.kind, ast::TaskItemKind::On(_)))
+            .find_map(|item| map!(&item.kind, ast::TaskItemKind::On))
             .map(|item| item.lower(ctx));
         let items = self
             .items
@@ -279,7 +279,7 @@ impl ast::Extern {
                 .params
                 .iter()
                 .filter_map(|p| {
-                    map!(&p.pat.kind, ast::PatKind::Var(_)).map(|x| {
+                    map!(&p.pat.kind, ast::PatKind::Var).map(|x| {
                         let tv = p.ty.as_ref().unwrap().lower(ctx);
                         hir::Param::new(hir::ParamKind::Var(*x), tv, p.loc)
                     })

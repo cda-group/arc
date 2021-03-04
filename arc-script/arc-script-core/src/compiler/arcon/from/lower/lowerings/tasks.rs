@@ -16,7 +16,7 @@ use quote::quote;
 impl hir::Path {
     pub(crate) fn lower_method(&self, ctx: &mut Context<'_>) -> Option<Tokens> {
         let item = ctx.hir.defs.get(self).unwrap();
-        map!(&item.kind, hir::ItemKind::Fun(_)).map(|item| item.lower(ctx))
+        map!(&item.kind, hir::ItemKind::Fun).map(|item| item.lower(ctx))
     }
 }
 

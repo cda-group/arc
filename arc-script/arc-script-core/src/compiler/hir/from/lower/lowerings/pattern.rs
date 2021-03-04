@@ -29,7 +29,7 @@ pub(crate) fn lower_params(
         .iter()
         .map(|p| {
             let tv = p.ty.lower(ctx).unwrap_or_else(|| ctx.info.types.fresh());
-            map!(&p.pat.kind, ast::PatKind::Var(_))
+            map!(&p.pat.kind, ast::PatKind::Var)
                 .map(|x| {
                     let ux = ctx.res.stack.bind(*x, kind, ctx.info).unwrap();
                     Param::syn(ParamKind::Var(ux), tv)
@@ -52,7 +52,7 @@ pub(crate) fn lower_pat(p: &ast::Pat, kind: VarKind, ctx: &mut Context<'_>) -> (
     let mut cases = Vec::new();
     let tv = ctx.info.types.fresh();
 
-    let param = map!(&p.kind, ast::PatKind::Var(_))
+    let param = map!(&p.kind, ast::PatKind::Var)
         .map(|x| {
             let ux = ctx.res.stack.bind(*x, kind, ctx.info).unwrap();
             Param::syn(ParamKind::Var(ux), tv)
