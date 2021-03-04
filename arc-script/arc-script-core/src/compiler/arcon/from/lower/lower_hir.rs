@@ -1,4 +1,5 @@
 use arc_script_core_shared::get;
+use arc_script_core_shared::map;
 use arc_script_core_shared::Bool;
 use arc_script_core_shared::Lower;
 use arc_script_core_shared::Map;
@@ -12,6 +13,9 @@ use super::Context;
 use proc_macro2 as pm2;
 use proc_macro2::TokenStream as Tokens;
 use quote::quote;
+use unzip_n::unzip_n;
+
+unzip_n!(pub 3);
 
 impl Lower<Tokens, Context<'_>> for hir::HIR {
     fn lower(&self, ctx: &mut Context<'_>) -> Tokens {
@@ -117,10 +121,11 @@ impl Lower<Tokens, Context<'_>> for hir::Extern {
 
 impl Lower<Tokens, Context<'_>> for hir::Task {
     fn lower(&self, ctx: &mut Context<'_>) -> Tokens {
-        let cons_name = self.path.lower(ctx);
-        let task_name = syn::Ident::new(&format!("Task{}", cons_name), pm2::Span::call_site());
-        let handler_name =
-            syn::Ident::new(&format!("Handler{}", cons_name), pm2::Span::call_site());
+        let task_name = self.path.lower(ctx);
+        let data_name = syn::Ident::new(&format!("{}Data", task_name), pm2::Span::call_site());
+        let state_name = syn::Ident::new(&format!("{}State", task_name), pm2::Span::call_site());
+
+        let backend = &quote!(arcon::prelude::Sled);
 
         let param_decls = self.params.iter().map(|p| p.lower(ctx)).collect::<Vec<_>>();
         let param_ids = self
@@ -128,25 +133,40 @@ impl Lower<Tokens, Context<'_>> for hir::Task {
             .iter()
             .map(|p| p.kind.lower(ctx))
             .collect::<Vec<_>>();
-        let (state_decls, state_inits): (Vec<_>, Vec<_>) =
-            self.items.iter().filter_map(|x| x.lower_state(ctx)).unzip();
+
+        let (state_decls, state_inits, state_ids) = self
+            .items
+            .iter()
+            .filter_map(|x| {
+                let item = ctx.hir.defs.get(x).unwrap();
+                map!(&item.kind, hir::ItemKind::State(_)).map(|item| item.lower_state(backend, ctx))
+            })
+            .unzip_n_vec();
+
         let methods = self
             .items
             .iter()
             .filter_map(|item| item.lower_method(ctx))
             .collect::<Vec<_>>();
-        let x = ctx.info.names.intern("value").into();
 
-        let itv = get!(&self.ihub.kind, hir::HubKind::Single(x));
-        let itv = get!(ctx.info.types.resolve(*itv).kind, hir::TypeKind::Stream(x));
-        let fs = vec![(x, itv)].into_iter().collect();
+        let value_name = ctx.info.names.intern("value").into();
+
+        let itv = get!(&self.ihub.kind, hir::HubKind::Single(itv));
+        let itv = get!(
+            ctx.info.types.resolve(*itv).kind,
+            hir::TypeKind::Stream(itv)
+        );
+        let fs = vec![(value_name, itv)].into_iter().collect();
 
         let ity = itv.lower(ctx);
         let struct_ity = ctx.info.types.intern(hir::TypeKind::Struct(fs)).lower(ctx);
 
-        let otv = get!(&self.ohub.kind, hir::HubKind::Single(x));
-        let otv = get!(ctx.info.types.resolve(*otv).kind, hir::TypeKind::Stream(x));
-        let fs = vec![(x, otv)].into_iter().collect();
+        let otv = get!(&self.ohub.kind, hir::HubKind::Single(otv));
+        let otv = get!(
+            ctx.info.types.resolve(*otv).kind,
+            hir::TypeKind::Stream(otv)
+        );
+        let fs = vec![(value_name, otv)].into_iter().collect();
 
         let oty = otv.lower(ctx);
         let struct_oty = ctx.info.types.intern(hir::TypeKind::Struct(fs)).lower(ctx);
@@ -157,41 +177,36 @@ impl Lower<Tokens, Context<'_>> for hir::Task {
 
         quote! {
 
-            pub struct #handler_name<
-                'i,
-                'source,
-                'timer,
-                'channel,
-                O: 'static + Operator,
-                B: Backend,
-                C: ComponentDefinition,
-            > {
-                pub op: &'i mut O,
-                pub ctx: &'i mut OperatorContext<'source, 'timer, 'channel, O, B, C>,
+            pub struct #task_name<'i, 'source, 'timer, 'channel, B: Backend, C: ComponentDefinition> {
+                pub data: &'i mut #data_name,
+                pub ctx: &'i mut OperatorContext<'source, 'timer, 'channel, #data_name, B, C>,
                 pub timestamp: Option<u64>,
             }
 
-            #[derive(ArconState)]
-            pub struct #task_name {
-                #(#state_decls),*
-                #(#[ephemeral] pub #param_decls),*
+            pub struct #data_name {
+                pub state: #state_name,
+                #(pub #param_decls),*
             }
 
-            fn #cons_name(#(#param_decls),*) -> OperatorBuilder<#task_name> {
-                OperatorBuilder {
-                    constructor: Arc::new(move |b| #task_name {
-                        #(#state_inits),*
-                        #(#param_ids),*
-                    }),
-                    conf: Default::default(),
+            #[derive(ArconState)]
+            pub struct #state_name {
+                #(pub #state_decls<#backend>,)*
+            }
+
+            impl StateConstructor for #state_name {
+                type BackendType = #backend;
+                fn new(backend: Arc<Self::BackendType>) -> Self {
+                    Self {
+                        #(#state_decls::new(#state_ids, backend.clone())),*
+                    }
                 }
             }
 
-            impl Operator for #task_name {
+            impl Operator for #data_name {
                 type IN  = #struct_ity;
                 type OUT = #struct_oty;
                 type TimerState = ArconNever;
-                type OperatorState = Self;
+                type OperatorState = #state_name;
 
                 fn handle_element(
                     &mut self,
@@ -200,21 +215,39 @@ impl Lower<Tokens, Context<'_>> for hir::Task {
                 ) -> OperatorResult<()> {
                     let ArconElement { timestamp, data } = elem;
                     let event = data.value;
-                    let mut handler = #handler_name {
-                        op: self,
+                    let mut task = #task_name {
+                        data: self,
                         ctx,
                         timestamp
                     };
-                    handler.handle(event);
+                    task.handle(event);
                     Ok(())
+                }
+
+                fn state(&mut self) -> &mut Self::OperatorState {
+                    &mut self.state
                 }
 
                 arcon::ignore_timeout!();
                 arcon::ignore_persist!();
             }
 
+            impl #data_name {
+                fn new(#(#param_decls),*) -> OperatorBuilder<#data_name> {
+                    OperatorBuilder {
+                        constructor: Arc::new(move |b| #data_name {
+                            state: #state_name {
+                                #(#state_inits),*
+                            },
+                            #(#param_ids),*
+                        }),
+                        conf: Default::default(),
+                    }
+                }
+            }
+
             impl<'i, 'source, 'timer, 'channel, B: Backend, C: ComponentDefinition>
-                #handler_name<'i, 'source, 'timer, 'channel, #task_name, B, C>
+                #task_name<'i, 'source, 'timer, 'channel, B, C>
             {
                 fn handle(&mut self, #event: #ity) -> OperatorResult<()> {
                     #body;
@@ -227,9 +260,9 @@ impl Lower<Tokens, Context<'_>> for hir::Task {
                     self.ctx.output(elem);
                 }
 
+
                 #(#methods)*
             }
-
         }
     }
 }
@@ -328,7 +361,7 @@ impl hir::Expr {
                         }
                         return quote!(#x);
                     }
-                    hir::VarKind::Member => quote!((self.op.#x)),
+                    hir::VarKind::Member => quote!((self.data.#x)),
                 }
             }
             hir::ExprKind::Access(e, f) => {
@@ -395,6 +428,13 @@ impl hir::Expr {
                         let name = ctx.info.paths.resolve(path.id).name;
                         let name = name.lower(ctx);
                         return quote!(self.#name);
+                    }
+                    // "Filter" expands to its data constructor "FilterData::new"
+                    hir::ItemKind::Task(item) => {
+                        let task_name = ctx.info.paths.resolve(path.id).name;
+                        let task_name = task_name.lower(ctx);
+                        let data_name = syn::Ident::new(&format!("{}Data", task_name), pm2::Span::call_site());
+                        return quote!(#data_name::new);
                     }
                     _ => return path.lower(ctx),
                 }

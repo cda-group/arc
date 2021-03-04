@@ -3,15 +3,8 @@ use arcon::prelude::*;
 /// An operator for converting one stream into another.
 #[derive(Default)]
 pub struct Convert<I, O> {
+    state: (),
     _marker: std::marker::PhantomData<(I, O)>,
-}
-
-impl<I, O> Convert<I, O> {
-    pub fn new() -> Self {
-        Self {
-            _marker: std::marker::PhantomData,
-        }
-    }
 }
 
 pub trait ConvertStream<O: ArconType> {
@@ -24,7 +17,7 @@ where
 {
     fn convert(self) -> Stream<O> {
         self.operator(OperatorBuilder {
-            constructor: Arc::new(|_| Convert::new()),
+            constructor: Arc::new(|_| Convert::default()),
             conf: Default::default(),
         })
     }
@@ -53,4 +46,8 @@ where
 
     arcon::ignore_timeout!();
     arcon::ignore_persist!();
+
+    fn state(&mut self) -> &mut Self::OperatorState {
+        &mut self.state
+    }
 }

@@ -20,18 +20,37 @@ impl hir::Path {
     }
 }
 
-impl hir::Path {
-    pub(crate) fn lower_state(&self, ctx: &mut Context<'_>) -> Option<(Tokens, Tokens)> {
-        let item = ctx.hir.defs.get(self).unwrap();
-        map!(&item.kind, hir::ItemKind::State(_)).map(|item| item.lower_state(ctx))
-    }
-}
-
 impl hir::State {
-    fn lower_state(&self, ctx: &mut Context<'_>) -> (Tokens, Tokens) {
+    pub(crate) fn lower_state(
+        &self,
+        backend: &Tokens,
+        ctx: &mut Context<'_>,
+    ) -> (Tokens, Tokens, Tokens) {
+        let ty = ctx.info.types.resolve(self.tv);
         let name = self.path.lower(ctx);
-        let tv = self.tv.lower(ctx);
         let init = self.init.lower(ctx);
-        (quote!(#name : #tv), quote!(#name : #init))
+        let ty = match ty.kind {
+            hir::TypeKind::Map(t0, t1) => {
+                let t0 = t0.lower(ctx);
+                let t1 = t1.lower(ctx);
+                quote!(arc_script::arcorn::Map<#t0, #t1, #backend>)
+            }
+            hir::TypeKind::Vector(t0) => {
+                let t0 = t0.lower(ctx);
+                quote!(arc_script::arcorn::Appender<#t0, #backend>)
+            }
+            hir::TypeKind::Set(t0) => {
+                let t0 = t0.lower(ctx);
+                quote!(arc_script::arcorn::Set<#t0, #backend>)
+            }
+            _ => {
+                let t0 = self.tv.lower(ctx);
+                quote!(arc_script::arcorn::Value<#t0, #backend>)
+            }
+        };
+        let state_decl = quote!(#name : #ty);
+        let state_init = quote!(#name : #init);
+        let state_id = quote!(#name);
+        (state_decl, state_init, state_id)
     }
 }

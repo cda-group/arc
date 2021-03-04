@@ -181,6 +181,7 @@ pub struct On {
 #[derive(Debug, New)]
 pub struct State {
     pub name: Name,
+    pub ty: Type,
     pub expr: Expr,
 }
 

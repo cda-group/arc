@@ -41,6 +41,7 @@ proc-macro2        = { version = "1.0.24" }
 text-size          = { version = "1.1.0" }
 half               = { version = "1.7.1", features = ["num-traits"] }
 sqlparser          = { version = "0.8.0" }
+unzip-n            = { version = "0.1.2" }
 # rustfmt-nightly    = { git = "https://github.com/rust-lang/rustfmt" }
 # z3                 = { optional = true, version = "0.9.0" }
 # toml               = { optional = true, version = "0.5.8" }

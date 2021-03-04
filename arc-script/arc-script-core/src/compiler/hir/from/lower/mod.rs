@@ -124,11 +124,9 @@ impl Lower<Option<Path>, Context<'_>> for ast::TaskItem {
     }
 }
 
-/// Resolve a task state variable.
-impl Lower<Option<(Name, hir::Expr)>, Context<'_>> for ast::TaskItem {
-    fn lower(&self, ctx: &mut Context<'_>) -> Option<(Name, hir::Expr)> {
-        map!(&self.kind, ast::TaskItemKind::State(_))
-            .map(|item| (item.name, item.expr.lower(ctx)))
+impl Lower<hir::State, Context<'_>> for ast::State {
+    fn lower(&self, ctx: &mut Context<'_>) -> hir::State {
+        todo!()
     }
 }
 
@@ -140,6 +138,13 @@ impl Lower<Option<(Path, hir::ItemKind)>, Context<'_>> for ast::Task {
         let mut task_path: Path = ctx.res.path_id.into();
         let (mut task_params, cases) =
             pattern::lower_params(&self.params, hir::VarKind::Member, ctx);
+        let state_vars: Vec<hir::State> = self
+            .items
+            .iter()
+            .filter_map(|item| {
+                map!(&item.kind, ast::TaskItemKind::State(_)).map(|item| item.lower(ctx))
+            })
+            .collect();
         // If the task's parameter patterns are nested, a function must be created to
         // flatten them. The function is then used in-place of the task.
         if !cases.is_empty() {

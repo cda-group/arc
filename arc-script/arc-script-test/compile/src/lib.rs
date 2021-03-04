@@ -32,6 +32,7 @@ mod tests {
     mod expect_mlir_fail_todo {
         mod extern_fun;
         mod pipe;
+        mod stateful;
         mod task_filter;
         mod task_identity_untagged;
         mod task_map;
