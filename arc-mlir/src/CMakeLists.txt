@@ -25,4 +25,6 @@ get_filename_component(ARC_SCRIPT_SRC_DIR "../../arc-script"
   REALPATH BASE_DIR ${CMAKE_CURRENT_SOURCE_DIR} CACHE)
 
 add_custom_target(arc-check DEPENDS check-arc-mlir
-  COMMAND ${ARC_CARGO_BIN}/arc-cargo test --manifest-path=${ARC_SCRIPT_SRC_DIR}/Cargo.toml)
+  COMMAND cd ${ARC_SCRIPT_SRC_DIR}; ${ARC_CARGO_BIN}/arc-cargo clean
+  COMMAND cd ${ARC_SCRIPT_SRC_DIR}; ${ARC_CARGO_BIN}/arc-cargo test --package=arc-script-test-compile
+)

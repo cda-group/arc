@@ -83,6 +83,7 @@ pub(crate) enum FunKind {
 
 #[derive(New, Debug)]
 pub(crate) struct Extern {
+    pub(crate) kind: FunKind,
     pub(crate) path: Path,
     pub(crate) params: Vec<Param>,
     pub(crate) tv: TypeId,

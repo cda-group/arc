@@ -287,13 +287,14 @@ ItemKind: ItemKind = {
 TaskItem: TaskItem = Spanned<Swap<Settings?, TaskItemKind>> => TaskItem::from(<>);
 
 TaskItemKind: TaskItemKind = {
-    Fun   => TaskItemKind::Fun(<>),
-    Alias => TaskItemKind::Alias(<>),
-    Use   => TaskItemKind::Use(<>),
-    On    => TaskItemKind::On(<>),
-    State => TaskItemKind::State(<>),
-    Enum  => TaskItemKind::Enum(<>),
-    Err   => TaskItemKind::Err,
+    Fun    => TaskItemKind::Fun(<>),
+    Extern => TaskItemKind::Extern(<>),
+    Alias  => TaskItemKind::Alias(<>),
+    Use    => TaskItemKind::Use(<>),
+    On     => TaskItemKind::On(<>),
+    State  => TaskItemKind::State(<>),
+    Enum   => TaskItemKind::Enum(<>),
+    Err    => TaskItemKind::Err,
 };
 
 Extern: Extern = "extern" "fun" <Name> <Params> "->" <Type0> ";"                  => Extern::new(<>);

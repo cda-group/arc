@@ -116,18 +116,19 @@ impl Declare for ast::TaskItem {
     #[rustfmt::skip]
     fn declare(&self, path: PathId, table: &mut SymbolTable, info: &mut Info) {
         match &self.kind {
-            ast::TaskItemKind::Fun(item)   => item.declare(path, table, info),
-            ast::TaskItemKind::Alias(item) => item.declare(path, table, info),
-            ast::TaskItemKind::Use(item)   => item.declare(path, table, info),
-            ast::TaskItemKind::Enum(item)  => item.declare(path, table, info),
-            ast::TaskItemKind::State(item) => item.declare(path, table, info),
-            ast::TaskItemKind::On(_)       => {}
-            ast::TaskItemKind::Err         => {}
+            ast::TaskItemKind::Fun(item)    => item.declare(path, table, info),
+            ast::TaskItemKind::Extern(item) => item.declare(path, table, info),
+            ast::TaskItemKind::Alias(item)  => item.declare(path, table, info),
+            ast::TaskItemKind::Use(item)    => item.declare(path, table, info),
+            ast::TaskItemKind::Enum(item)   => item.declare(path, table, info),
+            ast::TaskItemKind::State(item)  => item.declare(path, table, info),
+            ast::TaskItemKind::On(_)        => {}
+            ast::TaskItemKind::Err          => {}
         }
     }
 }
 
-impl ast::Fun {
+impl Declare for ast::Fun {
     fn declare(&self, path: PathId, table: &mut SymbolTable, info: &mut Info) {
         let path = info.paths.intern_child(path, self.name);
         if table.declarations.insert(path, ItemDeclKind::Fun).is_some() {

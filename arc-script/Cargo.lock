@@ -269,9 +269,10 @@ dependencies = [
  "arc-script",
  "arc-script-core",
  "arcon",
+ "cargo_toml",
+ "compiletest_rs",
  "insta",
  "prost",
- "trybuild",
 ]
 
 [[package]]
@@ -871,6 +872,17 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "631ae5198c9be5e753e5cc215e1bd73c2b466a3565173db433f52bb9d3e66dba"
 
 [[package]]
+name = "cargo_toml"
+version = "0.8.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "513d17226888c7b8283ac02a1c1b0d8a9d4cbf6db65dfadb79f598f5d7966fe9"
+dependencies = [
+ "serde",
+ "serde_derive",
+ "toml",
+]
+
+[[package]]
 name = "caseless"
 version = "0.2.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1004,6 +1016,29 @@ source = "git+https://github.com/brendanzab/codespan#d7213c4fd98165fb86744617ee6
 dependencies = [
  "termcolor",
  "unicode-width",
+]
+
+[[package]]
+name = "compiletest_rs"
+version = "0.6.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "0086d6ad78cf409c3061618cd98e2789d5c9ce598fc9651611cf62eae0a599cb"
+dependencies = [
+ "diff",
+ "filetime",
+ "getopts",
+ "lazy_static",
+ "libc",
+ "log",
+ "miow",
+ "regex",
+ "rustfix",
+ "serde",
+ "serde_derive",
+ "serde_json",
+ "tempfile",
+ "tester",
+ "winapi",
 ]
 
 [[package]]
@@ -1618,6 +1653,18 @@ dependencies = [
 ]
 
 [[package]]
+name = "filetime"
+version = "0.2.14"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "1d34cfa13a63ae058bfa601fe9e313bbdb3746427c1459185464ce0fcf62e1e8"
+dependencies = [
+ "cfg-if 1.0.0",
+ "libc",
+ "redox_syscall 0.2.4",
+ "winapi",
+]
+
+[[package]]
 name = "fixedbitset"
 version = "0.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1810,6 +1857,15 @@ checksum = "e692e296bfac1d2533ef168d0b60ff5897b8b70a4009276834014dd8924cc028"
 dependencies = [
  "libc",
  "winapi",
+]
+
+[[package]]
+name = "getopts"
+version = "0.2.21"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "14dbbfd5c71d70241ecf9e6f13737f7b5ce823821063188d7e46c41d371eebd5"
+dependencies = [
+ "unicode-width",
 ]
 
 [[package]]
@@ -3281,6 +3337,18 @@ dependencies = [
 ]
 
 [[package]]
+name = "rustfix"
+version = "0.5.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "f2c50b74badcddeb8f7652fa8323ce440b95286f8e4b64ebfd871c609672704e"
+dependencies = [
+ "anyhow",
+ "log",
+ "serde",
+ "serde_json",
+]
+
+[[package]]
 name = "rustpython-ast"
 version = "0.1.0"
 source = "git+https://github.com/RustPython/RustPython.git#6e7de79c85d9fb3efa5b423167acb579a22374a6"
@@ -4122,6 +4190,19 @@ dependencies = [
 ]
 
 [[package]]
+name = "tester"
+version = "0.9.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "0639d10d8f4615f223a57275cf40f9bdb7cfbb806bcb7f7cc56e3beb55a576eb"
+dependencies = [
+ "cfg-if 1.0.0",
+ "getopts",
+ "libc",
+ "num_cpus",
+ "term 0.7.0",
+]
+
+[[package]]
 name = "text-size"
 version = "1.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -4465,20 +4546,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "5096c019d49566aff57593a06e401c7f588da84e9a575d0ed2ac0913f51928c0"
 dependencies = [
  "louds-rs",
-]
-
-[[package]]
-name = "trybuild"
-version = "1.0.39"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "1c9594b802f041389d2baac680663573dde3103bb4a4926d61d6aba689465978"
-dependencies = [
- "glob",
- "lazy_static",
- "serde",
- "serde_json",
- "termcolor",
- "toml",
 ]
 
 [[package]]

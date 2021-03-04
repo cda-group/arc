@@ -224,6 +224,9 @@ impl ToCodespan for Error {
             Self::PathIsNotVariant { loc } => Codespan::error()
                 .with_message("Path is not referring to a variant")
                 .with_labels(vec![label(loc)?]),
+            Self::PatternInExternFun { loc } => Codespan::error()
+                .with_message("Extern functions may only take parameters which are not patterns")
+                .with_labels(vec![label(loc)?]),
         }
         .into()
     }
