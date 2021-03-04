@@ -68,7 +68,7 @@ default-members = [
   "arc-script-cli",
   "arc-script-web-repl",
 #   "arc-script-web-lsp",
-  "arc-script-test/compile",
+#   "arc-script-test/compile",
   "arc-script-test/integration/dynamic",
   "arc-script-test/integration/dynamic-cached",
   "arc-script-test/bench",
