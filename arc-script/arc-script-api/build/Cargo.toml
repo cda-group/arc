@@ -7,6 +7,6 @@ edition = "2018"
 license = "MIT"
 
 [dependencies]
-arc-script-core = { version = "=0.0.0", path = "../../arc-script-core" }
-derive_more     = { version = "0.99.11", features = ["from"] }
-walkdir         = { version = "2.3.1" }
+arc-script-core   = { version = "=0.0.0", path = "../../arc-script-core" }
+derive_more       = { version = "0.99.11", features = ["from"] }
+walkdir           = { version = "2.3.1" }

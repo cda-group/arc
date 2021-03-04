@@ -26,9 +26,10 @@ name = "arc_script"
 path = "src/lib.rs"
 
 [dependencies]
-arc-script-bridge = { version = "=0.0.0", path = "arc-script-api/bridge" }
-arc-script-build  = { version = "=0.0.0", path = "arc-script-api/build" }
-arc-script-arcorn = { version = "=0.0.0", path = "arc-script-api/arcorn" }
+arc-script-bridge  = { version = "=0.0.0", path = "arc-script-api/include/bridge" }
+arc-script-build   = { version = "=0.0.0", path = "arc-script-api/build" }
+arc-script-include = { version = "=0.0.0", path = "arc-script-api/include" }
+arc-script-arcorn  = { version = "=0.0.0", path = "arc-script-api/arcorn" }
 
 [workspace]
 members = [
@@ -36,9 +37,10 @@ members = [
   "arc-script-core/src/shared",
   "arc-script-core/src/macros",
   "arc-script-api/quote",
-  "arc-script-api/bridge",
-  "arc-script-api/python",
+  "arc-script-api/include/bridge",
+#   "arc-script-api/python",
   "arc-script-api/build",
+  "arc-script-api/include",
   "arc-script-api/arcorn",
   "arc-script-api/arcorn/macros",
   "arc-script-repl",
@@ -47,20 +49,20 @@ members = [
   "arc-script-web-repl",
 #   "arc-script-web-lsp",
   "arc-script-test/compile",
-  "arc-script-test/integration/dynamic",
-  "arc-script-test/integration/dynamic-cached",
   "arc-script-test/bench",
   "arc-script-test/template",
   "arc-script-test/stdlib",
 ]
+
 default-members = [
   "arc-script-core",
   "arc-script-core/src/shared",
   "arc-script-core/src/macros",
   "arc-script-api/quote",
-  "arc-script-api/bridge",
-  "arc-script-api/python",
+  "arc-script-api/include/bridge",
+#   "arc-script-api/python",
   "arc-script-api/build",
+  "arc-script-api/include",
   "arc-script-api/arcorn",
   "arc-script-api/arcorn/macros",
   "arc-script-repl",
@@ -69,17 +71,20 @@ default-members = [
   "arc-script-web-repl",
 #   "arc-script-web-lsp",
 #   "arc-script-test/compile",
-  "arc-script-test/integration/dynamic",
-  "arc-script-test/integration/dynamic-cached",
+#   "arc-script-test/integration/dynamic",
+#   "arc-script-test/integration/dynamic-cached",
   "arc-script-test/bench",
   "arc-script-test/template",
   "arc-script-test/stdlib",
 ]
 
 exclude = [
+  "arc-script-test/integration/dynamic",
+  "arc-script-test/integration/dynamic-cached",
   "fuzz",
 #   "arc-script-web-repl",
-  "arc-script-web-lsp"
+  "arc-script-web-lsp",
+  "arc-script-api/python",
 ]
 
 # -- The development profile, used for `cargo build`.

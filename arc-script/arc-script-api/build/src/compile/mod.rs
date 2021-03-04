@@ -1,66 +1,61 @@
 //! Macro implementation.
+use super::Builder;
 
 use arc_script_core::compiler::compile;
 use arc_script_core::compiler::info::diags::sink::Buffer;
-use arc_script_core::prelude::modes::{Input, Mode, Output};
+use arc_script_core::prelude::modes::Input;
+use arc_script_core::prelude::modes::Mode;
+use arc_script_core::prelude::modes::Output;
 
 use std::env;
 use std::fs;
 use std::io::BufWriter;
 use std::io::Write;
-use std::path::{Path, PathBuf};
+use std::path::Path;
+use std::path::PathBuf;
 use walkdir::WalkDir;
 
 /// See [`super::process_root`].
-pub fn process_root() {
-    let root = &std::env::var("CARGO_MANIFEST_DIR").expect("$CARGO_MANIFEST_DIR was not set");
-    let out = &env::var("OUT_DIR").expect("$OUT_DIR env-var was not set");
+pub fn process_root(builder: Builder) {
+    let cargo_dir = &std::env::var("CARGO_MANIFEST_DIR").unwrap();
+    let out_dir = &env::var("OUT_DIR").unwrap();
 
-    for entry in WalkDir::new(root).into_iter().filter_map(|e| e.ok()) {
+    for entry in WalkDir::new(cargo_dir).into_iter().filter_map(Result::ok) {
         let mut path = entry.path();
         if let Some(name) = path.file_name() {
-            if name == "main.arc" {
-                // Create /a/b/c/my-project/src/x/y/z/main.arc
-                let arc_path = PathBuf::from(path);
-                println!("cargo-warning={}", arc_path.display());
-
-                // Create /a/b/c/my-project/target/build/my-project-xxx/out/src/x/y/z/main.rs
-                let mut rust_path = arc_path.clone();
-                rust_path.set_extension("rs");
-                println!("cargo-warning=intial: {}", rust_path.display());
-                println!("cargo-warning=root: {:?}", root);
-                let rust_path = rust_path.strip_prefix(root).expect("Failed stripping root");
-                let out_dir = PathBuf::from(out);
-                println!("cargo-warning=out_dir: {}", out_dir.display());
-                let rust_path = out_dir.join(rust_path);
-                println!("cargo-warning=rust_path: {}", rust_path.display());
+            if name == "main.arc" || builder.compile_all {
+                // Path to /a/b/c/my-project/src/x/y/z/main.arc
+                let input_path = PathBuf::from(path);
 
                 // Compile file
                 let mut sink = Buffer::no_color();
                 let mode = Mode {
-                    input: Input::File(Some(arc_path.clone())),
+                    input: Input::File(Some(input_path.clone())),
                     output: Output::Rust,
                     ..Default::default()
                 };
 
-                // If successful, write it to the target directory
-                if let Ok(report) = compile(mode, &mut sink) {
-                    let output = sink.as_slice();
-                    dbg!(&output);
-                    if report.is_ok() {
-                        let parent = rust_path.parent().expect("Path has no parent");
-                        fs::create_dir_all(parent).expect("Failed creating directories");
-                        let mut file = fs::File::create(rust_path).expect("Failed creating file");
-                        file.write_all(output).expect("Failed writing file");
+                let report = compile(mode, &mut sink).expect("Internal Compiler Error");
 
-                        println!("cargo:rerun-if-changed={}", arc_path.display());
-                        println!("cargo:rerun-if-changed=build.rs");
-                    } else {
-                        let message = std::str::from_utf8(output).expect("Internal Error");
-                        println!("cargo:warning={}", message);
-                    }
+                if report.is_ok() {
+                    // Path to /a/b/c/my-project/target/build/my-project-xxx/out/src/x/y/z/main.rs
+                    let mut output_path = input_path.clone();
+                    output_path.set_extension("rs");
+                    let output_path = output_path.strip_prefix(cargo_dir).unwrap();
+                    let output_path = PathBuf::from(out_dir).join(output_path);
+
+                    let output_dir = output_path.parent().unwrap();
+                    fs::create_dir_all(output_dir).unwrap();
+
+                    fs::File::create(output_path)
+                        .unwrap()
+                        .write_all(sink.as_slice())
+                        .unwrap();
+
+                    println!("cargo:rerun-if-changed={}", input_path.display());
+                    println!("cargo:rerun-if-changed=build.rs");
                 } else {
-                    println!("cargo:warning=Internal compiler error");
+                    panic!("{}", std::str::from_utf8(sink.as_slice()).unwrap());
                 }
             }
         }
