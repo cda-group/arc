@@ -25,6 +25,8 @@ impl Builder {
     /// * All main.arc files are compiled, even unused ones. However, other files ending with .arc
     /// are only compiled if they are depended on directly or transitively by a main.arc file.
     pub fn build(self) {
+        println!("cargo:rerun-if-changed=build.rs");
+
         let cargo_dir = &std::env::var("CARGO_MANIFEST_DIR").unwrap();
         let out_dir = &env::var("OUT_DIR").unwrap();
 
@@ -42,6 +44,7 @@ impl Builder {
                     if name == "main.arc" || has_extension(path, "arc") && self.no_exclude {
                         // Path to /a/b/c/my-project/src/x/y/z/main.arc
                         let input_path = PathBuf::from(path);
+                        println!("cargo:rerun-if-changed={}", input_path.display());
 
                         // Compile file
                         let mut sink = Buffer::no_color();
@@ -67,9 +70,6 @@ impl Builder {
                                 .unwrap()
                                 .write_all(sink.as_slice())
                                 .unwrap();
-
-                            println!("cargo:rerun-if-changed={}", input_path.display());
-                            println!("cargo:rerun-if-changed=build.rs");
                         } else {
                             panic!("{}", std::str::from_utf8(sink.as_slice()).unwrap());
                         }
