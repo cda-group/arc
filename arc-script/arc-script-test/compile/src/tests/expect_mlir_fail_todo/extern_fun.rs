@@ -3,8 +3,8 @@
 use arcon::prelude::Backend;
 use arcon::prelude::ComponentDefinition;
 
-#[arc_script::compile("extern_fun.arc")]
 mod script {
+    arc_script::include!("src/tests/expect_mlir_fail_todo/extern_fun.rs");
     use super::increment;
 }
 

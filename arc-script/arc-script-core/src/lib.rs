@@ -45,19 +45,19 @@
 #![deny(deprecated_in_future)]
 #![deny(elided_lifetimes_in_paths)]
 #![deny(explicit_outlives_requirements)]
-#![deny(invalid_html_tags)]
+#![deny(rustdoc::invalid_html_tags)]
 #![deny(keyword_idents)]
 #![deny(macro_use_extern_crate)]
 #![deny(meta_variable_misuse)]
 #![deny(missing_abi)]
 #![allow(missing_copy_implementations)] // In some cases, we do not want Copy nor Clone
-#![deny(missing_crate_level_docs)]
+#![deny(rustdoc::missing_crate_level_docs)]
 #![deny(missing_debug_implementations)]
 #![deny(missing_docs)]
-#![deny(missing_doc_code_examples)]
+#![deny(rustdoc::missing_doc_code_examples)]
 #![deny(non_ascii_idents)]
 #![deny(pointer_structural_match)]
-#![deny(private_doc_tests)]
+#![deny(rustdoc::private_doc_tests)]
 #![allow(single_use_lifetimes)] // Results in bugs when enabled
 #![allow(trivial_casts)] // Gets in the way when upcasting &mut to &
 #![deny(trivial_numeric_casts)]

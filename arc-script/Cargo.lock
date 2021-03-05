@@ -58,8 +58,6 @@ name = "arc-script"
 version = "0.0.0"
 dependencies = [
  "arc-script-arcorn",
- "arc-script-bridge",
- "arc-script-build",
  "arc-script-include",
 ]
 
@@ -86,17 +84,6 @@ dependencies = [
  "criterion",
  "criterion-cpu-time",
  "include_dir",
-]
-
-[[package]]
-name = "arc-script-bridge"
-version = "0.0.0"
-dependencies = [
- "arc-script-core",
- "proc-macro-error",
- "proc-macro2",
- "quote",
- "syn",
 ]
 
 [[package]]
@@ -187,6 +174,20 @@ dependencies = [
 [[package]]
 name = "arc-script-include"
 version = "0.0.0"
+dependencies = [
+ "arc-script-include-proc",
+]
+
+[[package]]
+name = "arc-script-include-proc"
+version = "0.0.0"
+dependencies = [
+ "arc-script-core",
+ "proc-macro-error",
+ "proc-macro2",
+ "quote",
+ "syn",
+]
 
 [[package]]
 name = "arc-script-lsp"

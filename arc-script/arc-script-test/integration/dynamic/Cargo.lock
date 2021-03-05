@@ -61,15 +61,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "arc-script-build"
-version = "0.0.0"
-dependencies = [
- "arc-script-core",
- "derive_more",
- "walkdir",
-]
-
-[[package]]
 name = "arc-script-core"
 version = "0.0.0"
 dependencies = [
@@ -127,13 +118,26 @@ dependencies = [
 [[package]]
 name = "arc-script-include"
 version = "0.0.0"
+dependencies = [
+ "arc-script-include-proc",
+]
 
 [[package]]
-name = "arc-script-test-integration-dynamic-cached"
+name = "arc-script-include-proc"
+version = "0.0.0"
+dependencies = [
+ "arc-script-core",
+ "proc-macro-error",
+ "proc-macro2",
+ "quote",
+ "syn",
+]
+
+[[package]]
+name = "arc-script-test-integration-dynamic"
 version = "0.0.0"
 dependencies = [
  "arc-script",
- "arc-script-build",
  "arcon",
  "prost",
 ]
@@ -1409,9 +1413,9 @@ dependencies = [
 
 [[package]]
 name = "libc"
-version = "0.2.87"
+version = "0.2.88"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "265d751d31d6780a3f956bb5b8022feba2d94eeee5a84ba64f4212eedca42213"
+checksum = "03b07a082330a35e43f63177cc01689da34fbffa0105e1246cf0311472cac73a"
 
 [[package]]
 name = "linear-map"
@@ -1562,9 +1566,9 @@ dependencies = [
 
 [[package]]
 name = "num-bigint"
-version = "0.3.1"
+version = "0.3.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "5e9a41747ae4633fce5adffb4d2e81ffc5e89593cb19917f8fb2cc5ff76507bf"
+checksum = "7d0a3d5e207573f948a9e5376662aa743a2ea13f7c50a554d7af443a73fbfeba"
 dependencies = [
  "autocfg",
  "num-integer",
@@ -2038,15 +2042,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "same-file"
-version = "1.0.6"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "93fc1dc3aaa9bfed95e02e6eadabb4baf7e3078b0bd1b4d7b6b0b68378900502"
-dependencies = [
- "winapi-util",
-]
-
-[[package]]
 name = "scopeguard"
 version = "1.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2316,9 +2311,9 @@ dependencies = [
 
 [[package]]
 name = "syn"
-version = "1.0.60"
+version = "1.0.61"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c700597eca8a5a762beb35753ef6b94df201c81cca676604f547495a0d7f0081"
+checksum = "ed22b90a0e734a23a7610f4283ac9e5acfb96cbb30dfefa540d66f866f1c09c5"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -2481,7 +2476,7 @@ dependencies = [
 [[package]]
 name = "tracing"
 version = "0.2.0"
-source = "git+https://github.com/tokio-rs/tracing/#ba7a7f782a079bbf062352d6c3ed3441cecaba81"
+source = "git+https://github.com/tokio-rs/tracing/#fe59f7720342b3d313fe11bd3c7490b0e10aef2c"
 dependencies = [
  "cfg-if 1.0.0",
  "pin-project-lite",
@@ -2492,7 +2487,7 @@ dependencies = [
 [[package]]
 name = "tracing-attributes"
 version = "0.2.0"
-source = "git+https://github.com/tokio-rs/tracing/#ba7a7f782a079bbf062352d6c3ed3441cecaba81"
+source = "git+https://github.com/tokio-rs/tracing/#fe59f7720342b3d313fe11bd3c7490b0e10aef2c"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -2502,7 +2497,7 @@ dependencies = [
 [[package]]
 name = "tracing-core"
 version = "0.2.0"
-source = "git+https://github.com/tokio-rs/tracing/#ba7a7f782a079bbf062352d6c3ed3441cecaba81"
+source = "git+https://github.com/tokio-rs/tracing/#fe59f7720342b3d313fe11bd3c7490b0e10aef2c"
 dependencies = [
  "lazy_static",
 ]
@@ -2594,17 +2589,6 @@ name = "waker-fn"
 version = "1.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "9d5b2c62b4012a3e1eca5a7e077d13b3bf498c4073e33ccd58626607748ceeca"
-
-[[package]]
-name = "walkdir"
-version = "2.3.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "777182bc735b6424e1a57516d35ed72cb8019d85c8c9bf536dccb3445c1a2f7d"
-dependencies = [
- "same-file",
- "winapi",
- "winapi-util",
-]
 
 [[package]]
 name = "wasi"

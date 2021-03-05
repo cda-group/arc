@@ -1,5 +1,5 @@
 // use arc_script::{Field, Fun, Script};
-use arc_script::Builder;
+use arc_script_build::Builder;
 
 /// Test to see if `Script` works as intended.
 fn main() {

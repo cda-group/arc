@@ -1,7 +1,6 @@
 // compile-flags: --error-format=human
-#[arc_script::compile("nonexistent_file.arc")]
-mod arc {
-
+mod script {
+    arc_script::include!("non-existent-file.arc")
 }
 
 fn main() {

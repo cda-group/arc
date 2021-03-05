@@ -25,9 +25,10 @@ publish        = false
 name = "arc_script"
 path = "src/lib.rs"
 
+[features]
+proc = ["arc-script-include/proc"]
+
 [dependencies]
-arc-script-bridge  = { version = "=0.0.0", path = "arc-script-api/include/bridge" }
-arc-script-build   = { version = "=0.0.0", path = "arc-script-api/build" }
 arc-script-include = { version = "=0.0.0", path = "arc-script-api/include" }
 arc-script-arcorn  = { version = "=0.0.0", path = "arc-script-api/arcorn" }
 
@@ -37,7 +38,7 @@ members = [
   "arc-script-core/src/shared",
   "arc-script-core/src/macros",
   "arc-script-api/quote",
-  "arc-script-api/include/bridge",
+  "arc-script-api/include/proc",
 #   "arc-script-api/python",
   "arc-script-api/build",
   "arc-script-api/include",
@@ -59,7 +60,7 @@ default-members = [
   "arc-script-core/src/shared",
   "arc-script-core/src/macros",
   "arc-script-api/quote",
-  "arc-script-api/include/bridge",
+  "arc-script-api/include/proc",
 #   "arc-script-api/python",
   "arc-script-api/build",
   "arc-script-api/include",
