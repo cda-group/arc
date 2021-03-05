@@ -3,32 +3,30 @@
 #![allow(unused)]
 
 // mod stage;
-mod compile;
+mod build;
 
-pub use compile::process_root;
 // pub use stage::fun::Fun;
 // pub use stage::partial::Field;
 // pub use stage::script::Script;
 
 #[derive(Default)]
 pub struct Builder {
-    compile_all: bool,
+    no_exclude: bool,
+    source_dirs: Vec<String>,
 }
 
 impl Builder {
-    /// Overrides so all scripts are compiled, regardless of whether they are used or not.
-    pub fn compile_all(self, compile_all: bool) -> Self {
+    /// Compiles all scripts, regardless of whether they are used or not.
+    pub fn no_exclude(self, no_exclude: bool) -> Self {
+        Self { no_exclude, ..self }
+    }
+    /// Start compiling from these directories. By default, compilation starts from the
+    /// build-script's directory.
+    pub fn source_dirs<'i>(self, source_dirs: impl AsRef<[&'i str]>) -> Self {
         Self {
-            compile_all,
+            source_dirs: source_dirs.as_ref().iter().map(|x| x.to_string()).collect(),
             ..self
         }
-    }
-    /// Finds all main.arc files in the crate and compiles them. Currently, there are two caveats:
-    /// * All scripts are compiled if one is changed.
-    /// * All main.arc files are compiled, even unused ones. However, other files ending with .arc
-    /// are only compiled if they are depended on directly or transitively by a main.arc file.
-    pub fn process_root(self) {
-        compile::process_root(self);
     }
 
     //     pub fn stage(path: &str) -> Script {

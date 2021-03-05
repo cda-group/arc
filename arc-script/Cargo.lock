@@ -243,6 +243,7 @@ name = "arc-script-test-compile"
 version = "0.0.0"
 dependencies = [
  "arc-script",
+ "arc-script-build",
  "arc-script-core",
  "arcon",
  "insta",

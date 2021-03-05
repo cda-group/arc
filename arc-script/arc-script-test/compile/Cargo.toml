@@ -5,6 +5,7 @@ authors     = ["Klas Segeljakt <klasseg@kth.se>"]
 edition     = "2018"
 license     = "MIT"
 description = "Tests to see if arc-scripts compile"
+build       = "build.rs"
 
 [dependencies]
 # trybuild        = { version = "1.0.39" }
@@ -16,7 +17,8 @@ arcon           = { git = "https://github.com/cda-group/arcon" }
 arc-script      = { version = "=0.0.0", path = "../../" }
 prost           = { version = "0.7.0" }
 
-# [dev-dependencies]
+[build-dependencies]
+arc-script-build = { version = "=0.0.0", path = "../../arc-script-api/build" }
 # arcon           = { git = "https://github.com/cda-group/arcon" }
 # arc-script      = { version = "=0.0.0", path = "../../" }
 # prost           = { version = "0.7.0" }
