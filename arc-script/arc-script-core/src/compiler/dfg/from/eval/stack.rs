@@ -2,9 +2,9 @@ use crate::compiler::dfg::from::eval::value::Value;
 use crate::compiler::hir::Path;
 use crate::compiler::info::names::NameId;
 
+use arc_script_core_shared::Map;
 use arc_script_core_shared::New;
 use arc_script_core_shared::Shrinkwrap;
-use arc_script_core_shared::Map;
 
 /// A stack frame of variables and their values. Corresponds to the scope
 /// of a function.

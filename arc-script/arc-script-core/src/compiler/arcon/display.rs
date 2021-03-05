@@ -1,6 +1,6 @@
 #![allow(clippy::useless_format)]
-use crate::compiler::pretty::*;
 use crate::compiler::arcon;
+use crate::compiler::pretty::*;
 use arc_script_core_shared::cfg_if;
 use arc_script_core_shared::From;
 use arc_script_core_shared::New;

@@ -173,9 +173,7 @@ impl hir::Expr {
                     owner.add_root(p, *x);
                     return Some(p);
                 }
-                hir::VarKind::State => {
-
-                }
+                hir::VarKind::State => {}
             },
             /// Branch/Use-expressions
             hir::ExprKind::If(e0, e1, e2) => {

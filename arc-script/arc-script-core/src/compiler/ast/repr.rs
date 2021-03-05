@@ -7,10 +7,10 @@ use crate::compiler::info::names::NameId;
 
 use crate::compiler::info::paths::PathId;
 
-use arc_script_core_shared::OrdMap;
-use arc_script_core_shared::New;
-use arc_script_core_shared::Educe;
 use arc_script_core_macros::Spanned;
+use arc_script_core_shared::Educe;
+use arc_script_core_shared::New;
+use arc_script_core_shared::OrdMap;
 
 use half::bf16;
 use half::f16;

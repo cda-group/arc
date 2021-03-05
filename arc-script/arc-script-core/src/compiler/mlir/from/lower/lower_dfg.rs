@@ -88,7 +88,11 @@ impl Lower<mlir::Fun, Context<'_>> for DFG {
         }
 
         let main = ctx.info.names.intern("main").into();
-        let main = ctx.info.paths.intern_child(ctx.info.paths.root, main).into();
+        let main = ctx
+            .info
+            .paths
+            .intern_child(ctx.info.paths.root, main)
+            .into();
         let vars = vec![];
         let body = mlir::Region::new(vec![mlir::Block::new(ops)]);
         let ty = ctx.info.types.intern(hir::ScalarKind::Unit);

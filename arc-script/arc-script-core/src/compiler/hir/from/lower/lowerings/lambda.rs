@@ -1,9 +1,9 @@
 use super::Context;
 use crate::compiler::ast;
 use crate::compiler::hir;
-use crate::compiler::hir::VarKind;
 use crate::compiler::hir::Expr;
 use crate::compiler::hir::FunKind::Global;
+use crate::compiler::hir::VarKind;
 use crate::compiler::info::files::Loc;
 use arc_script_core_shared::Lower;
 

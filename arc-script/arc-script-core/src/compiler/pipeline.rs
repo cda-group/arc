@@ -1,3 +1,5 @@
+use crate::compiler::arcon;
+use crate::compiler::arcon::Arcon;
 use crate::compiler::ast::AST;
 use crate::compiler::dfg;
 use crate::compiler::dfg::DFG;
@@ -9,8 +11,6 @@ use crate::compiler::info::modes::Output;
 use crate::compiler::info::Info;
 use crate::compiler::mlir;
 use crate::compiler::mlir::MLIR;
-use crate::compiler::arcon;
-use crate::compiler::arcon::Arcon;
 use arc_script_core_shared::Result;
 
 use codespan_reporting::term::termcolor::WriteColor;

@@ -428,7 +428,7 @@ impl hir::Expr {
                         let ty = ctx.info.types.resolve(e0.tv);
                         let x = x.lower(ctx);
                         let e1 = e1.ssa(ctx, env, ops, depth);
-                        return quote!(#x.write(#e1))
+                        return quote!(#x.write(#e1));
                     }
                     x => unreachable!("{:?}", x),
                 },

@@ -7,8 +7,8 @@ use crate::compiler::info::files::FileInterner;
 use crate::compiler::info::names::NameInterner;
 use crate::compiler::info::paths::{PathId, PathInterner};
 
-use tracing::instrument;
 use std::str;
+use tracing::instrument;
 use types::TypeInterner;
 
 pub(crate) mod utils;

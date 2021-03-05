@@ -9,7 +9,13 @@ use std::path::PathBuf;
 #[derive(Clap, Debug, Clone)]
 pub struct Opt {
     /// Set LANGUAGE mode.
-    #[clap(long, arg_enum, case_insensitive(true), value_name = "LANG", default_value("arc"))]
+    #[clap(
+        long,
+        arg_enum,
+        case_insensitive(true),
+        value_name = "LANG",
+        default_value("arc")
+    )]
     pub lang: Lang,
 
     /// Activate DEBUG mode.
@@ -70,7 +76,14 @@ pub struct Run {
     #[clap(parse(from_os_str))]
     pub main: Option<PathBuf>,
     /// Select output mode.
-    #[clap(long, short, arg_enum, case_insensitive(true), value_name = "FORMAT", default_value("rust"))]
+    #[clap(
+        long,
+        short,
+        arg_enum,
+        case_insensitive(true),
+        value_name = "FORMAT",
+        default_value("rust")
+    )]
     pub output: Output,
 }
 

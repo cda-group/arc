@@ -4,8 +4,8 @@ use crate::compiler::hir::{Name, Path};
 use crate::compiler::info::files::Loc;
 use crate::compiler::info::types::TypeId;
 
-use arc_script_core_shared::OrdMap;
 use arc_script_core_shared::New;
+use arc_script_core_shared::OrdMap;
 use arc_script_core_shared::VecMap;
 
 use half::bf16;

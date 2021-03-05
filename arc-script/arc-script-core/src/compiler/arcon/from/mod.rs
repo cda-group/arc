@@ -1,8 +1,8 @@
 mod lower;
 
+use crate::compiler::arcon::Arcon;
 use crate::compiler::hir::HIR;
 use crate::compiler::info::Info;
-use crate::compiler::arcon::Arcon;
 use arc_script_core_shared::Lower;
 use arc_script_core_shared::Map;
 

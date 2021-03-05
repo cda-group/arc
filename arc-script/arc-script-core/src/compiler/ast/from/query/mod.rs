@@ -1,5 +1,5 @@
-use crate::compiler::info::Info;
 use crate::compiler::ast::AST;
+use crate::compiler::info::Info;
 use crate::compiler::query::Query;
 use arc_script_core_shared::Lower;
 

@@ -1,9 +1,9 @@
 //! AST display utilities.
 
 use crate::compiler::ast;
+use crate::compiler::info::modes::Verbosity;
 use crate::compiler::info::names::NameId;
 use crate::compiler::info::paths::PathId;
-use crate::compiler::info::modes::Verbosity;
 use crate::compiler::info::Info;
 use crate::compiler::pretty::*;
 use arc_script_core_shared::New;

@@ -12,4 +12,3 @@ use super::super::Context;
 use proc_macro2 as pm2;
 use proc_macro2::TokenStream as Tokens;
 use quote::quote;
-

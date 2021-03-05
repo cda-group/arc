@@ -5,10 +5,10 @@ pub(crate) mod lowerings {
     pub(crate) mod tasks;
 }
 
+use crate::compiler::arcon::Arcon;
 use crate::compiler::hir;
 use crate::compiler::hir::HIR;
 use crate::compiler::info::Info;
-use crate::compiler::arcon::Arcon;
 use arc_script_core_shared::{Map, New};
 
 #[derive(Debug, New)]
