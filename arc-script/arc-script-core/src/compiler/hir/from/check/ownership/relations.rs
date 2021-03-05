@@ -121,10 +121,10 @@ impl hir::Item {
             hir::ItemKind::Fun(i) => {
                 i.body.collect_root(places);
             }
-            hir::ItemKind::State(i) => {
-                i.init.collect_root(places);
-            }
             hir::ItemKind::Task(i) => {
+                for state in &i.states {
+                    state.init.collect_root(places);
+                }
                 if let Some(on) = &i.on {
                     on.body.collect_root(places);
                 }
@@ -167,11 +167,16 @@ impl hir::Expr {
                     return Some(p1);
                 }
             }
-            hir::ExprKind::Var(x, _) => {
-                let p = Place::new(owner.intern_place(PlaceKind::Var(*x)), self.tv, self.loc);
-                owner.add_root(p, *x);
-                return Some(p);
-            }
+            hir::ExprKind::Var(x, kind) => match kind {
+                hir::VarKind::Member | hir::VarKind::Local => {
+                    let p = Place::new(owner.intern_place(PlaceKind::Var(*x)), self.tv, self.loc);
+                    owner.add_root(p, *x);
+                    return Some(p);
+                }
+                hir::VarKind::State => {
+
+                }
+            },
             /// Branch/Use-expressions
             hir::ExprKind::If(e0, e1, e2) => {
                 e0.collect_use(b0, owner);
@@ -193,6 +198,10 @@ impl hir::Expr {
                 e1.collect_use(b0, owner);
             }
             hir::ExprKind::Call(e0, es) => {
+                e0.collect_use(b0, owner);
+                es.iter().for_each(|e| e.collect_use(b0, owner));
+            }
+            hir::ExprKind::Select(e0, es) => {
                 e0.collect_use(b0, owner);
                 es.iter().for_each(|e| e.collect_use(b0, owner));
             }

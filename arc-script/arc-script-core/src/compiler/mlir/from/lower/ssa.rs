@@ -77,6 +77,7 @@ impl SSA<Var> for Expr {
                     mlir::OpKind::CallIndirect(x, xs)
                 }
             }
+            ExprKind::Select(_e, _es) => todo!(),
             ExprKind::Lit(l) => OpKind::Const(l.lower(ctx)),
             ExprKind::BinOp(e0, op, e1) => {
                 let x0 = e0.ssa(ctx, env, ops);

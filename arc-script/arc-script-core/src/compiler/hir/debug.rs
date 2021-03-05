@@ -31,7 +31,6 @@ impl<'a> Display for HIRDebug<'a> {
                 ItemKind::Fun(_x)     => writeln!(f, "fun,")?,
                 ItemKind::Extern(_x)  => writeln!(f, "extern,")?,
                 ItemKind::Task(_x)    => writeln!(f, "task,")?,
-                ItemKind::State(_x)   => writeln!(f, "state,")?,
                 ItemKind::Variant(_x) => writeln!(f, "variant,")?,
             }
 

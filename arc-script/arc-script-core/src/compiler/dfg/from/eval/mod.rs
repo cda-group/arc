@@ -17,6 +17,7 @@ use crate::compiler::hir::{
 
 use crate::compiler::info::Info;
 use arc_script_core_shared::get;
+use arc_script_core_shared::map;
 use arc_script_core_shared::New;
 
 use half::{bf16, f16};
@@ -171,19 +172,12 @@ impl Expr {
                             ctx.stack.push_frame(x);
                             for (p, e) in item.params.iter().zip(es.iter()) {
                                 let v = e.eval(ctx)?;
-                                match p.kind {
-                                    ParamKind::Var(x) => ctx.stack.insert(x.id, v),
-                                    ParamKind::Ignore => {}
-                                    ParamKind::Err => unreachable!(),
-                                }
+                                map!(p.kind, ParamKind::Var).map(|x| ctx.stack.insert(x.id, v));
                             }
-                            for x in &item.items {
-                                let item = ctx.hir.defs.get(x).unwrap();
-                                if let ItemKind::State(item) = &item.kind {
-                                    let v = e.eval(ctx)?;
-                                    let x = ctx.info.paths.resolve(item.path.id).name.id;
-                                    ctx.stack.insert(x, v);
-                                }
+                            for state in &item.states {
+                                let v = state.init.eval(ctx)?;
+                                map!(state.param.kind, ParamKind::Var)
+                                    .map(|x| ctx.stack.insert(x.id, v));
                             }
                             let frame = ctx.stack.take_frame();
                             // Streams and tasks are represented as references (ids) to edges and
@@ -232,6 +226,7 @@ impl Expr {
                 }
                 _ => unreachable!(),
             },
+            ExprKind::Select(e, es) => todo!(),
             ExprKind::Access(e, x) => match e.eval(ctx)?.kind {
                 Struct(vfs) => return Ok(vfs.get(&x.id).unwrap().clone()),
                 _ => unreachable!(),

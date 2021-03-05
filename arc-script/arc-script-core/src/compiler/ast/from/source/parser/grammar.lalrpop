@@ -37,6 +37,7 @@ extern {
         "("    => Token::ParenL,
         ")"    => Token::ParenR,
         "()"   => Token::ParenLR,
+        "[]"   => Token::BrackLR,
 //=============================================================================
 // Operators
 //=============================================================================
@@ -189,9 +190,11 @@ Bar<T>:            T      = "|" <T> "|";
 Brace<T>:          T      = "{" <T> "}";
 Brack<T>:          T      = "[" <T> "]";
 ParenSep<T, S>:    Vec<T> = { "()" => Vec::new(), Paren<Sep<T, S>> }
+BrackSep<T, S>:    Vec<T> = { "[]" => Vec::new(), Brack<Sep<T, S>> }
 AngleSep<T, S>:    Vec<T> = { "<>" => Vec::new(), Angle<Sep<T, S>> }
 BarSep<T, S>:      Vec<T> = { "||" => Vec::new(), Bar<Sep<T, S>> }
 ParenVec<T>:       Vec<T> = ParenSep<T, ",">;
+BrackVec<T>:       Vec<T> = BrackSep<T, ",">;
 AngleVec<T>:       Vec<T> = AngleSep<T, ",">;
 BarVec<T>:         Vec<T> = BarSep<T, ",">;
 Swap<A, B>:        (B, A) = <a:A> <b:B> => (b, a);
@@ -304,7 +307,7 @@ Enum:   Enum   = "enum" <Name> <Brace<Vec<Variant>>>                            
 Use:    Use    = "use" <Path> <("as" <Name>)?>                                    => Use::new(<>);
 Task:   Task   = "task" <Name> <Params> <Hub> "->" <Hub> <Brace<TaskItem*>>       => Task::new(<>);
 On:     On     = "on" <Handler>                                                   => On::new(<>);
-State:  State  = "state" <Name> ":" <Type0> "=" <Expr0>                           => State::new(<>);
+State:  State  = "state" <Param> "=" <Expr0>                                      => State::new(<>);
 
 Handler = {
     Brace<VecNonEmpty<Case>>,
@@ -408,6 +411,7 @@ ExprKind9:  ExprKind =                 UnaryPrefix<UnOp<Op7>,  ExprKind10>;
 ExprKind10: ExprKind = BinaryInfixRightAssociative<BinOp<Op8>, ExprKind11>;
 ExprKind11: ExprKind = {
     <Expr11> <ParenVec<Expr2>>  => ExprKind::Call(<>),
+    <Expr11> <BrackVec<Expr2>>  => ExprKind::Select(<>),
     <Expr11> "as" <Type1>       => ExprKind::Cast(<>),
     <Expr11> "." <Name>         => ExprKind::Access(<>),
     <Expr11> "." <Index>        => ExprKind::Project(<>),

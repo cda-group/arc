@@ -23,6 +23,7 @@ pub(crate) enum LogosToken {
     #[token("()")] ParenLR,
     #[token("[")] BrackL,
     #[token("]")] BrackR,
+    #[token("[]")] BrackLR,
     #[token("{")] BraceL,
     #[token("}")] BraceR,
 //=============================================================================

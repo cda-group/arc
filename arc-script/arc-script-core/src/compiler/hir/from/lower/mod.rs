@@ -126,7 +126,14 @@ impl Lower<Option<Path>, Context<'_>> for ast::TaskItem {
 
 impl Lower<hir::State, Context<'_>> for ast::State {
     fn lower(&self, ctx: &mut Context<'_>) -> hir::State {
-        todo!()
+        let (mut param, cases) = pattern::lower_pat(&self.param.pat, hir::VarKind::State, ctx);
+        param.tv = self
+            .param
+            .ty
+            .lower(ctx)
+            .unwrap_or_else(|| ctx.info.types.fresh());
+        let init = self.expr.lower(ctx);
+        hir::State { param, init }
     }
 }
 
@@ -138,7 +145,7 @@ impl Lower<Option<(Path, hir::ItemKind)>, Context<'_>> for ast::Task {
         let mut task_path: Path = ctx.res.path_id.into();
         let (mut task_params, cases) =
             pattern::lower_params(&self.params, hir::VarKind::Member, ctx);
-        let state_vars: Vec<hir::State> = self
+        let states: Vec<hir::State> = self
             .items
             .iter()
             .filter_map(|item| {
@@ -201,6 +208,7 @@ impl Lower<Option<(Path, hir::ItemKind)>, Context<'_>> for ast::Task {
             ihub,
             ohub,
             params: task_params,
+            states,
             on,
             items,
         };
@@ -395,6 +403,7 @@ impl Lower<hir::Expr, Context<'_>> for ast::Expr {
             ast::ExprKind::Tuple(es)            => hir::ExprKind::Tuple(es.as_slice().lower(ctx)),
             ast::ExprKind::Lambda(ps, e)        => lambda::lower(ps, e, self.loc, ctx),
             ast::ExprKind::Call(e, es)          => call::lower(e, es, ctx),
+            ast::ExprKind::Select(e, es)        => hir::ExprKind::Select(e.lower(ctx).into(), es.as_slice().lower(ctx)),
             ast::ExprKind::UnOp(op, e)          => hir::ExprKind::UnOp(op.lower(ctx), e.lower(ctx).into()),
             ast::ExprKind::BinOp(e0, op, e1) if matches!(op.kind, ast::BinOpKind::Pipe) => {
                 hir::ExprKind::Call(e1.lower(ctx).into(), vec![e0.lower(ctx)])

@@ -180,8 +180,7 @@ pub struct On {
 /// A state variable.
 #[derive(Debug, New)]
 pub struct State {
-    pub name: Name,
-    pub ty: Type,
+    pub param: Param,
     pub expr: Expr,
 }
 
@@ -234,6 +233,7 @@ pub enum ExprKind {
     BinOp(Expr, BinOp, Expr),
     Break,
     Call(Expr, Vec<Expr>),
+    Select(Expr, Vec<Expr>),
     Cast(Expr, Type),
     Emit(Expr),
     For(Pat, Expr, Expr),

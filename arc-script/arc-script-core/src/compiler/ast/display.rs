@@ -214,8 +214,8 @@ impl<'i> Display for Pretty<'i, ast::State, Context<'_>> {
         let Pretty(item, fmt) = self;
         write!(
             f,
-            "state {sym} = {expr}",
-            sym = item.name.pretty(fmt),
+            "state {param} = {expr}",
+            param = item.param.pretty(fmt),
             expr = item.expr.pretty(fmt),
         )
     }
@@ -305,6 +305,7 @@ impl<'i> Display for Pretty<'i, ast::Expr, Context<'_>> {
                 ast::UnOpKind::Err => write!(f, "☇{}", e0.pretty(fmt)),
             },
             ast::ExprKind::Call(e, es) => write!(f, "{}({})", e.pretty(fmt), es.iter().all_pretty(", ", fmt)),
+            ast::ExprKind::Select(e, es) => write!(f, "{}[{}]", e.pretty(fmt), es.iter().all_pretty(", ", fmt)),
             ast::ExprKind::Cast(e, ty) => write!(f, "{} as {}", e.pretty(fmt), ty.pretty(fmt)),
             ast::ExprKind::Project(e, i) => write!(f, "{}.{}", e.pretty(fmt), i.id),
             ast::ExprKind::Access(e, x) => write!(f, "{}.{}", e.pretty(fmt), x.id.pretty(fmt)),

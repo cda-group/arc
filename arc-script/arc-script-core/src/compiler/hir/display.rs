@@ -52,7 +52,6 @@ impl<'i> Display for Pretty<'i, hir::Item, Context<'_>> {
             hir::ItemKind::Alias(item)   => write!(f, "{}", item.pretty(fmt)),
             hir::ItemKind::Enum(item)    => write!(f, "{}", item.pretty(fmt)),
             hir::ItemKind::Task(item)    => write!(f, "{}", item.pretty(fmt)),
-            hir::ItemKind::State(item)   => write!(f, "{}", item.pretty(fmt)),
             hir::ItemKind::Extern(item)  => write!(f, "{}", item.pretty(fmt)),
             hir::ItemKind::Variant(item) => write!(f, "{}", item.pretty(fmt)),
         }
@@ -121,12 +120,10 @@ impl<'i> Display for Pretty<'i, NameId, Context<'_>> {
 impl<'i> Display for Pretty<'i, hir::State, Context<'_>> {
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
         let Pretty(item, fmt) = self;
-        let name = fmt.ctx.info.paths.resolve(item.path.id).name;
         write!(
             f,
-            "state {name}: {ty} = {init};",
-            name = name.pretty(fmt),
-            ty = item.tv.pretty(fmt),
+            "state {param} = {init}",
+            param = item.param.pretty(fmt),
             init = item.init.pretty(fmt)
         )
     }
@@ -158,7 +155,7 @@ impl<'i> Display for Pretty<'i, hir::Task, Context<'_>> {
         let name = fmt.ctx.info.paths.resolve(item.path.id).name;
         write!(
             f,
-            "task {name}({params}) {ihub} -> {ohub} {{{items}{s1}{on}{s0}}}",
+            "task {name}({params}) {ihub} -> {ohub} {{{s1}{state}{items}{s1}{on}{s0}}}",
             name = name.pretty(fmt),
             params = item.params.iter().all_pretty(", ", fmt),
             ihub = item.ihub.pretty(fmt),
@@ -172,6 +169,7 @@ impl<'i> Display for Pretty<'i, hir::Task, Context<'_>> {
                 ),
                 ""
             ),
+            state = item.states.iter().all_pretty(",", fmt),
             on = item.on.pretty(fmt.indent()),
             s0 = fmt,
             s1 = fmt.indent(),
@@ -314,6 +312,7 @@ impl<'i> Display for Pretty<'i, hir::Expr, Context<'_>> {
             hir::ExprKind::Project(e, i) => write!(f, "{}.{}", e.pretty(fmt), i.id),
             hir::ExprKind::Access(e, x) => write!(f, "{}.{}", e.pretty(fmt), x.pretty(fmt)),
             hir::ExprKind::Call(e, es) => write!(f, "{}({})", e.pretty(fmt), es.iter().all_pretty(", ", fmt)),
+            hir::ExprKind::Select(e, es) => write!(f, "{}[{}]", e.pretty(fmt), es.iter().all_pretty(", ", fmt)),
             hir::ExprKind::Emit(e) => write!(f, "emit {e}", e = e.pretty(fmt)),
             hir::ExprKind::Log(e) => write!(f, "log {e}", e = e.pretty(fmt)),
             hir::ExprKind::Array(es) => write!(f, "[{es}]", es = es.all_pretty(", ", fmt)),

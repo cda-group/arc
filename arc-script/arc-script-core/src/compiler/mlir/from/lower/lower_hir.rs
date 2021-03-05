@@ -13,7 +13,6 @@ impl Lower<Option<mlir::Item>, Context<'_>> for hir::Item {
             hir::ItemKind::Alias(_item)   => todo!(),
             hir::ItemKind::Enum(_item)    => None?,
             hir::ItemKind::Task(_item)    => todo!(),
-            hir::ItemKind::State(_item)   => todo!(),
             hir::ItemKind::Extern(_item)  => todo!(),
             hir::ItemKind::Variant(_item) => None?,
         };

@@ -13,6 +13,13 @@ use std::collections::HashSet;
 use std::hash::Hash;
 use std::sync::Arc;
 
+/// Arc collections
+pub type ArcRef<T, B> = LazyValue<T, B>;
+pub type ArcVec<T, B> = EagerAppender<T, B>;
+pub type ArcMap<K, V, B> = HashTable<K, V, B>;
+pub type ArcSet<K, B> = HashTable<K, (), B>;
+
+/// Arc values (elements of collections)
 trait ArcValue: ArconValue {}
 trait ArcKey: ArconKey + Hash + Eq {}
 
@@ -20,7 +27,7 @@ impl<T: ArconValue> ArcValue for T {}
 impl<T: ArconKey + Hash + Eq> ArcKey for T {}
 
 /// Arc interface to Arcon value-state.
-trait ValueOps<T: ArcValue, B: Backend>: Sized {
+trait RefOps<T: ArcValue, B: Backend>: Sized {
     /// Initializes a new value-state.
     fn new(name: &str, handle: Arc<B>, init: T) -> OperatorResult<Self>;
 
@@ -31,9 +38,9 @@ trait ValueOps<T: ArcValue, B: Backend>: Sized {
     fn read(&mut self) -> OperatorResult<T>;
 }
 
-impl<T: ArcValue, B: Backend> ValueOps<T, B> for LazyValue<T, B> {
+impl<T: ArcValue, B: Backend> RefOps<T, B> for ArcRef<T, B> {
     fn new(name: &str, handle: Arc<B>, init: T) -> OperatorResult<Self> {
-        let mut state = LazyValue::new(name, handle);
+        let mut state = ArcRef::new(name, handle);
         state.write(init)?;
         Ok(state)
     }
@@ -44,11 +51,11 @@ impl<T: ArcValue, B: Backend> ValueOps<T, B> for LazyValue<T, B> {
     }
 
     fn read(&mut self) -> OperatorResult<T> {
-        Ok(self.get().unwrap().unwrap().to_mut().clone())
+        Ok(self.get()?.unwrap().to_mut().clone())
     }
 }
 
-trait AppenderOps<T: ArcValue, B: Backend>: Sized {
+trait VecOps<T: ArcValue, B: Backend>: Sized {
     /// Initializes a new appender state.
     fn new(name: &str, handle: Arc<B>, init: Vec<T>) -> OperatorResult<Self>;
 
@@ -60,9 +67,9 @@ trait AppenderOps<T: ArcValue, B: Backend>: Sized {
     fn fold<A>(&mut self, init: A, folder: fn(A, T) -> A) -> OperatorResult<A>;
 }
 
-impl<T: ArcValue, B: Backend> AppenderOps<T, B> for EagerAppender<T, B> {
+impl<T: ArcValue, B: Backend> VecOps<T, B> for ArcVec<T, B> {
     fn new(name: &str, handle: Arc<B>, init: Vec<T>) -> OperatorResult<Self> {
-        let mut state = EagerAppender::new(name, handle);
+        let mut state = ArcVec::new(name, handle);
         init.into_iter().try_for_each(|v| state.push(v))?;
         Ok(state)
     }
@@ -96,9 +103,9 @@ trait MapOps<K: ArcKey, V: ArcValue, B: Backend>: Sized {
 }
 
 /// Arc Map abstraction
-impl<K: ArcKey, V: ArcValue, B: Backend> MapOps<K, V, B> for HashTable<K, V, B> {
+impl<K: ArcKey, V: ArcValue, B: Backend> MapOps<K, V, B> for ArcMap<K, V, B> {
     fn new(name: &str, handle: Arc<B>, init: HashMap<K, V>) -> OperatorResult<Self> {
-        let mut state = HashTable::new(name, handle);
+        let mut state = ArcMap::new(name, handle);
         init.into_iter().try_for_each(|(k, v)| state.put(k, v))?;
         Ok(state)
     }
@@ -137,9 +144,9 @@ trait SetOps<K: ArcKey, B: Backend>: Sized {
     fn remove(&mut self, key: K) -> OperatorResult<()>;
 }
 
-impl<K: ArcKey, B: Backend> SetOps<K, B> for HashTable<K, (), B> {
+impl<K: ArcKey, B: Backend> SetOps<K, B> for ArcSet<K, B> {
     fn new(name: &str, handle: Arc<B>, init: HashSet<K>) -> OperatorResult<Self> {
-        let mut state = HashTable::new(name, handle);
+        let mut state = ArcSet::new(name, handle);
         init.into_iter().try_for_each(|k| state.put(k, ()))?;
         Ok(state)
     }

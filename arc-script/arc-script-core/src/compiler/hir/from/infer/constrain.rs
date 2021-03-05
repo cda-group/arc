@@ -6,6 +6,7 @@ use crate::compiler::hir::{
 use crate::compiler::info::diags::{Diagnostic, Error, Warning};
 use crate::compiler::info::types::TypeId;
 
+use arc_script_core_shared::map;
 use arc_script_core_shared::VecMap;
 
 use super::Context;
@@ -22,7 +23,6 @@ impl Constrain<'_> for Item {
         match &self.kind {
             ItemKind::Fun(item)   => item.constrain(ctx),
             ItemKind::Task(item)  => item.constrain(ctx),
-            ItemKind::State(item) => item.constrain(ctx),
             ItemKind::Alias(_)    => {}
             ItemKind::Enum(_)     => {}
             ItemKind::Extern(_)   => {}
@@ -49,11 +49,18 @@ impl Constrain<'_> for Fun {
 impl Constrain<'_> for Task {
     /// On the outside, a task is nothing more than a function which returns a function.
     fn constrain(&self, ctx: &mut Context<'_>) {
-        for p in &self.params {
+        self.params.iter().for_each(|p| {
             if let ParamKind::Var(x) = &p.kind {
                 ctx.env.insert(*x, *p);
             }
-        }
+        });
+        self.states.iter().for_each(|s| {
+            let p = &s.param;
+            ctx.unify(p.tv, s.init.tv);
+            if let ParamKind::Var(x) = &p.kind {
+                ctx.env.insert(*x, *p);
+            }
+        });
         if let Some(on) = &self.on {
             if let ParamKind::Var(x) = &on.param.kind {
                 ctx.env.insert(*x, on.param);
@@ -105,7 +112,7 @@ impl hir::Hub {
 impl Constrain<'_> for State {
     fn constrain(&self, ctx: &mut Context<'_>) {
         self.init.constrain(ctx);
-        ctx.unify(self.tv, self.init.tv);
+        ctx.unify(self.param.tv, self.init.tv);
     }
 }
 
@@ -137,7 +144,6 @@ impl Constrain<'_> for Expr {
                 match &ctx.defs.get(x).unwrap().kind {
                     ItemKind::Fun(item)    => ctx.unify(self.tv, item.tv),
                     ItemKind::Task(item)   => ctx.unify(self.tv, item.tv),
-                    ItemKind::State(item)  => ctx.unify(self.tv, item.tv),
                     ItemKind::Extern(item) => ctx.unify(self.tv, item.tv),
                     ItemKind::Alias(_)     => unreachable!(),
                     ItemKind::Enum(_)      => unreachable!(),
@@ -254,7 +260,10 @@ impl Constrain<'_> for Expr {
                     }
                     Pipe => todo!(),
                     By => ctx.unify(self.tv, TypeKind::By(e0.tv, e1.tv)),
-                    Mut => todo!(),
+                    Mut => {
+                        ctx.unify(self.tv, Unit);
+                        ctx.unify(e0.tv, e1.tv);
+                    }
                     Seq => ctx.unify(self.tv, e1.tv),
                     BinOpKind::Err => {}
                 }
@@ -277,6 +286,14 @@ impl Constrain<'_> for Expr {
                 let tvs = es.iter().map(|e| e.tv).collect();
                 ctx.unify(e.tv, TypeKind::Fun(tvs, self.tv));
             }
+            ExprKind::Select(e0, es) => match es.as_slice() {
+                [e1] => {
+                    e0.constrain(ctx);
+                    e1.constrain(ctx);
+                    ctx.unify(e0.tv, TypeKind::Map(e1.tv, self.tv));
+                }
+                _ => todo!("Probably support arrow-tables?"),
+            },
             ExprKind::Project(e, i) => {
                 e.constrain(ctx);
                 if let TypeKind::Tuple(tvs) = ctx.info.types.resolve(e.tv).kind {

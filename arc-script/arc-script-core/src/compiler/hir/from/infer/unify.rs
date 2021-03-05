@@ -37,6 +37,7 @@ impl Unify<TypeId, TypeId> for Context<'_> {
             (Nominal(x0), Nominal(x1)) if x0 == x1 => {}
             (Scalar(kind0), Scalar(kind1)) if kind0 == kind1 => {}
             (Optional(tv0), Optional(tv1)) => self.unify(*tv0, *tv1),
+            (Boxed(tv0), Boxed(tv1)) => self.unify(*tv0, *tv1),
             (Stream(tv0), Stream(tv1)) => self.unify(*tv0, *tv1),
             (Set(tv0), Set(tv1)) => self.unify(*tv0, *tv1),
             (Vector(tv0), Vector(tv1)) => self.unify(*tv0, *tv1),

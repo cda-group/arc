@@ -117,8 +117,6 @@ impl hir::HIR {
         errs0.sort();
         errs1.sort();
 
-        use crate::compiler::info::types::traits::Context;
-
         for UseOfMovedValue(p0, p1, _u0) in errs0 {
             if !p0.tv.is_copyable((info as &Info, self)) {
                 info.diags.intern(Error::UseOfMovedValue {

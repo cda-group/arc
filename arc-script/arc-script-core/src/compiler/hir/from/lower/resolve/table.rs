@@ -121,7 +121,7 @@ impl Declare for ast::TaskItem {
             ast::TaskItemKind::Alias(item)  => item.declare(path, table, info),
             ast::TaskItemKind::Use(item)    => item.declare(path, table, info),
             ast::TaskItemKind::Enum(item)   => item.declare(path, table, info),
-            ast::TaskItemKind::State(item)  => item.declare(path, table, info),
+            ast::TaskItemKind::State(_)     => {},
             ast::TaskItemKind::On(_)        => {}
             ast::TaskItemKind::Err          => {}
         }
@@ -252,19 +252,6 @@ impl Declare for ast::Port {
         if table
             .declarations
             .insert(path, ItemDeclKind::Variant)
-            .is_some()
-        {
-            info.diags.intern(Error::NameClash { name: self.name })
-        }
-    }
-}
-
-impl Declare for ast::State {
-    fn declare(&self, path: PathId, table: &mut SymbolTable, info: &mut Info) {
-        let path = info.paths.intern_child(path, self.name);
-        if table
-            .declarations
-            .insert(path, ItemDeclKind::State)
             .is_some()
         {
             info.diags.intern(Error::NameClash { name: self.name })
