@@ -63,7 +63,7 @@ impl AST {
     /// Parses a single source string and gives error if it contains imports.
     pub(crate) fn parse_source(&mut self, source: String, info: &mut Info) {
         // Read the file, parse it, and construct the module.
-        let name = info.names.resolve(info.names.root).to_string();
+        let name = info.names.resolve(info.names.common.root).to_string();
         let module = Module::parse(name, source, &mut self.exprs, info);
 
         if !module.imports(info).is_empty() {

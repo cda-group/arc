@@ -55,7 +55,7 @@ impl Info {
     pub(crate) fn from(mode: Mode) -> Self {
         tracing::debug!("{:?}", mode);
         let names = NameInterner::default();
-        let root: Name = names.root.into();
+        let root: Name = names.common.root.into();
         let paths = PathInterner::from(root);
         Self {
             mode,

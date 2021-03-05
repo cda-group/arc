@@ -148,7 +148,7 @@ impl Lower<Tokens, Context<'_>> for hir::Task {
             })
             .collect::<Vec<_>>();
 
-        let value_name = ctx.info.names.intern("value").into();
+        let value_name = ctx.info.names.common.value.into();
 
         let itv = get!(&self.ihub.kind, hir::HubKind::Single(itv));
         let itv = get!(ctx.info.types.resolve(*itv).kind, hir::TypeKind::Stream(tv));
@@ -603,7 +603,7 @@ impl Lower<Tokens, Context<'_>> for hir::TypeId {
                 quote!(Set<T>)
             }
             hir::TypeKind::Stream(t) => {
-                let x = ctx.info.names.intern("value").into();
+                let x = ctx.info.names.common.value.into();
                 let fs = vec![(x, *t)].into_iter().collect();
                 let t = ctx.info.types.intern(hir::TypeKind::Struct(fs)).lower(ctx);
                 quote!(Stream<#t>)

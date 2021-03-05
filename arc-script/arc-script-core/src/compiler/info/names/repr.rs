@@ -16,16 +16,26 @@ pub(crate) type Store = Rodeo<Key, Hasher>;
 #[derive(Debug)]
 pub(crate) struct NameInterner {
     pub(crate) store: Store,
-    pub(crate) root: NameId,
+    pub(crate) common: Common,
     buf: String,
+}
+
+/// Commonly occurring names.
+#[derive(Debug)]
+pub(crate) struct Common {
+    pub(crate) root: NameId,
+    pub(crate) value: NameId,
 }
 
 impl Default for NameInterner {
     fn default() -> Self {
         let mut store = Store::with_hasher(Hasher::default());
         let buf = String::new();
-        let root = NameId(store.get_or_intern("crate"));
-        Self { store, buf, root }
+        let common = Common {
+            root: NameId(store.get_or_intern("crate")),
+            value: NameId(store.get_or_intern("value")),
+        };
+        Self { store, common, buf }
     }
 }
 
