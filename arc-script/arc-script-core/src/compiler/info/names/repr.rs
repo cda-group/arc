@@ -36,12 +36,12 @@ pub(crate) type NameBuf = str;
 pub struct NameId(Key);
 
 impl NameInterner {
-    /// Interns a `Name` to a `NameId`.
+    /// Interns a `NameBuf` to a `NameId`.
     pub(crate) fn intern(&mut self, name: impl AsRef<NameBuf>) -> NameId {
         self.store.get_or_intern(name).into()
     }
 
-    /// Resolves a `Name` to a `NameId`.
+    /// Resolves a `NameId` to a `NameBuf`.
     pub(crate) fn resolve(&self, id: NameId) -> &NameBuf {
         self.store.resolve(&id)
     }

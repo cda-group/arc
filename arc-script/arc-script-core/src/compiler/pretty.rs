@@ -46,13 +46,13 @@ where
 
 /// Pretty prints an iterator of AST nodes using a separator.
 pub(crate) trait ToAllPretty: Sized {
-    fn all_pretty<Node, Context, T>(self, sep: &str, ts: T) -> AllPretty<'_, Self, Context>
+    fn all_pretty<Node, Context, T>(self, sep: &str, fmt: T) -> AllPretty<'_, Self, Context>
     where
         Self: IntoIterator<Item = Node>,
         T: AsRef<Format<Context>>,
         Context: Copy,
     {
-        AllPretty::new(Cell::new(Some(self)), sep, *ts.as_ref())
+        AllPretty::new(Cell::new(Some(self)), sep, *fmt.as_ref())
     }
 }
 
