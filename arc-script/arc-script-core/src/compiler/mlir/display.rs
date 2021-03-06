@@ -234,7 +234,7 @@ impl<'i> Display for Pretty<'i, mlir::OpKind, Context<'_>> {
                 mlir::ConstKind::U16(v)      => write!(f, r#"arc.constant {} :"#, v),
                 mlir::ConstKind::U32(v)      => write!(f, r#"arc.constant {} :"#, v),
                 mlir::ConstKind::U64(v)      => write!(f, r#"arc.constant {} :"#, v),
-                mlir::ConstKind::Fun(x)      => write!(f, r#"constant {} :"#, x.pretty(fmt)),
+                mlir::ConstKind::Fun(x)      => write!(f, r#"constant @{} :"#, x.pretty(fmt)),
                 mlir::ConstKind::Char(_)     => todo!(),
                 mlir::ConstKind::Time(_)     => todo!(),
                 mlir::ConstKind::Unit        => todo!(),
