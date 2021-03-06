@@ -2,6 +2,7 @@
 source: arc-script-test/compile/src/insta.rs
 expression: s
 input_file: arc-script-test/compile/src/tests/expect_pass/literals.arc
+
 ---
 fun test() {
     let pos_i8: i8 = 127i8 in

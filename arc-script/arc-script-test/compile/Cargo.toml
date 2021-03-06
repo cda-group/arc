@@ -11,6 +11,8 @@ build       = "build.rs"
 # trybuild        = { version = "1.0.39" }
 arc-script-core = { version = "=0.0.0", path = "../../arc-script-core" }
 insta           = { version = "1.6.0", features = ["glob"] }
+regex           = { version = "1.4.3" }
+lazy_static     = { version = "1.4.0" }
 # compiletest     = { version = "0.6.0", package = "compiletest_rs", features = ["tmp"] }
 # cargo_toml      = { version = "0.8.1" }
 arcon           = { git = "https://github.com/cda-group/arcon" }

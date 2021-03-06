@@ -249,7 +249,9 @@ dependencies = [
  "arc-script-core",
  "arcon",
  "insta",
+ "lazy_static",
  "prost",
+ "regex",
 ]
 
 [[package]]

@@ -2,6 +2,7 @@
 source: arc-script-test/compile/src/insta.rs
 expression: s
 input_file: arc-script-test/compile/src/tests/expect_pass/ifs.arc
+
 ---
 fun main() {
     unit
