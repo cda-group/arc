@@ -65,6 +65,7 @@ impl FreeVars for hir::Expr {
             hir::ExprKind::Var(x, _) => {
                 union.insert(*x, self.clone());
             }
+            hir::ExprKind::Empty => {}
             hir::ExprKind::Lit(_) => {}
             hir::ExprKind::Array(es) => es.fv(union)?,
             hir::ExprKind::Struct(efs) => efs.fv(union)?,

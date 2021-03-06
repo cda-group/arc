@@ -219,6 +219,7 @@ impl hir::Expr {
             hir::ExprKind::Item(_) => {}
             hir::ExprKind::Lit(_) => {}
             hir::ExprKind::Break => {}
+            hir::ExprKind::Empty => {}
             hir::ExprKind::Todo => {}
             hir::ExprKind::Err => {}
             // NOTE: Ownership breaks for the following transformation:

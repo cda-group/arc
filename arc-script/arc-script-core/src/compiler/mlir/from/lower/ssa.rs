@@ -78,6 +78,7 @@ impl SSA<Var> for Expr {
                 }
             }
             ExprKind::Select(_e, _es) => todo!(),
+            ExprKind::Empty => todo!(),
             ExprKind::Lit(l) => OpKind::Const(l.lower(ctx)),
             ExprKind::BinOp(e0, op, e1) => {
                 let x0 = e0.ssa(ctx, env, ops);

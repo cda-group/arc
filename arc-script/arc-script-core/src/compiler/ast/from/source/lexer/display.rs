@@ -30,6 +30,7 @@ impl<'i> Display for Pretty<'i, Token, State<'_>> {
             Token::Dedent     => write!(f, "[Dedent]"),
             Token::BraceL     => write!(f, "{{"),
             Token::BraceR     => write!(f, "}}"),
+            Token::BraceLR    => write!(f, "{{}}"),
             Token::BrackL     => write!(f, "["),
             Token::BrackR     => write!(f, "]"),
             Token::BrackLR    => write!(f, "[]"),

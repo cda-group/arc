@@ -337,6 +337,7 @@ impl Constrain<'_> for Expr {
             ExprKind::Loop(_) => todo!(),
             ExprKind::Break => todo!(),
             ExprKind::Return(_) => todo!(),
+            ExprKind::Empty => {}
             ExprKind::Todo => {}
             ExprKind::Err => {}
         }

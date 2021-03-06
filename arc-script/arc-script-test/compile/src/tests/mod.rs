@@ -31,6 +31,7 @@ mod expect_mlir_fail_todo {
     test!(t02, "src/tests/expect_mlir_fail_todo/task_id_untagged.rs");
     test!(t03, "src/tests/expect_mlir_fail_todo/task_map.rs");
     test!(t04, "src/tests/expect_mlir_fail_todo/task_with_funs.rs");
+    test!(t05, "src/tests/expect_mlir_fail_todo/map_state.rs");
 
     // Integration tests
     mod extern_fun;

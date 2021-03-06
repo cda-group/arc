@@ -38,6 +38,7 @@ extern {
         ")"    => Token::ParenR,
         "()"   => Token::ParenLR,
         "[]"   => Token::BrackLR,
+        "{}"   => Token::BraceLR,
 //=============================================================================
 // Operators
 //=============================================================================
@@ -192,10 +193,17 @@ Brack<T>:          T      = "[" <T> "]";
 ParenSep<T, S>:    Vec<T> = { "()" => Vec::new(), Paren<Sep<T, S>> }
 BrackSep<T, S>:    Vec<T> = { "[]" => Vec::new(), Brack<Sep<T, S>> }
 AngleSep<T, S>:    Vec<T> = { "<>" => Vec::new(), Angle<Sep<T, S>> }
+BraceSep<T, S>:    Vec<T> = { "{}" => Vec::new(), Brace<Sep<T, S>> }
 BarSep<T, S>:      Vec<T> = { "||" => Vec::new(), Bar<Sep<T, S>> }
+ParenPair:             () = { "()" => () , "(" ")" => ()  }
+BrackPair:             () = { "[]" => () , "[" "]" => ()  }
+AnglePair:             () = { "<>" => () , "<" ">" => ()  }
+BracePair:             () = { "{}" => () , "{" "}" => ()  }
+BarPair:               () = { "||" => () , "|" "|" => ()  }
 ParenVec<T>:       Vec<T> = ParenSep<T, ",">;
 BrackVec<T>:       Vec<T> = BrackSep<T, ",">;
 AngleVec<T>:       Vec<T> = AngleSep<T, ",">;
+BraceVec<T>:       Vec<T> = BraceSep<T, ",">;
 BarVec<T>:         Vec<T> = BarSep<T, ",">;
 Swap<A, B>:        (B, A) = <a:A> <b:B> => (b, a);
 Spanned<T>:        Spanned<T> = @L T @R => Spanned::new(file, <>);
@@ -425,6 +433,7 @@ ExprKind12: ExprKind = {
     Brack<VecNonEmpty<Expr0>>                                           => ExprKind::Array(<>),
     Paren<VecMulti<Expr0>>                                              => ExprKind::Tuple(<>),
     Brace<Vec<Field<Expr0>>>                                            => ExprKind::Struct(<>),
+    "{}"                                                                => ExprKind::Empty,
     "if" <Expr2> <Brace<Expr0>> "else" <Brace<Expr0>>                   => ExprKind::If(<>),
     "if" "let" <Pat0> "=" <Expr2> <Brace<Expr0>> "else" <Brace<Expr0>>  => ExprKind::IfLet(<>),
     "match" <Expr0> <Brace<Vec<Case>>>                                  => ExprKind::Match(<>),

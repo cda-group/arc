@@ -68,6 +68,7 @@ pub enum Token {
 //=============================================================================
     BraceL,
     BraceR,
+    BraceLR,
     BrackL,
     BrackR,
     BrackLR,
@@ -310,6 +311,7 @@ impl<'i> Lexer<'i> {
 //=============================================================================
                 LogosToken::BraceL     => Token::BraceL,
                 LogosToken::BraceR     => Token::BraceR,
+                LogosToken::BraceLR    => Token::BraceLR,
                 LogosToken::BrackL     => Token::BrackL,
                 LogosToken::BrackR     => Token::BrackR,
                 LogosToken::BrackLR    => Token::BrackLR,

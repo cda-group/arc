@@ -371,6 +371,7 @@ impl Expr {
                     _ => unreachable!(),
                 }
             }
+            ExprKind::Empty => todo!(),
             ExprKind::Todo => todo!(),
             ExprKind::Err => unreachable!(),
         };

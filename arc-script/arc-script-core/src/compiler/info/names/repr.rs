@@ -25,6 +25,8 @@ pub(crate) struct NameInterner {
 pub(crate) struct Common {
     pub(crate) root: NameId,
     pub(crate) value: NameId,
+    pub(crate) sink: NameId,
+    pub(crate) source: NameId,
 }
 
 impl Default for NameInterner {
@@ -32,8 +34,10 @@ impl Default for NameInterner {
         let mut store = Store::with_hasher(Hasher::default());
         let buf = String::new();
         let common = Common {
-            root: NameId(store.get_or_intern("crate")),
-            value: NameId(store.get_or_intern("value")),
+            root: NameId(store.get_or_intern_static("crate")),
+            value: NameId(store.get_or_intern_static("value")),
+            sink: NameId(store.get_or_intern_static("sink")),
+            source: NameId(store.get_or_intern_static("Source")),
         };
         Self { store, common, buf }
     }

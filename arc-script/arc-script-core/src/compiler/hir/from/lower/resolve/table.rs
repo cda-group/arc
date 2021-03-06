@@ -1,6 +1,7 @@
 use crate::compiler::ast;
 use crate::compiler::ast::AST;
 
+use crate::compiler::hir::Name;
 use crate::compiler::info::diags::Error;
 use crate::compiler::info::paths::PathId;
 use crate::compiler::info::Info;
@@ -180,18 +181,19 @@ impl Declare for ast::Task {
             for item in &self.items {
                 item.declare(path, table, info);
             }
-            self.ihub.declare("Source", path, table, info);
-            self.ohub.declare("Sink", path, table, info);
+            self.ihub
+                .declare(info.names.common.source.into(), path, table, info);
+            self.ohub
+                .declare(info.names.common.sink.into(), path, table, info);
         }
     }
 }
 
 impl ast::Hub {
-    fn declare(&self, name: &str, path: PathId, table: &mut SymbolTable, info: &mut Info) {
+    fn declare(&self, hub_name: Name, path: PathId, table: &mut SymbolTable, info: &mut Info) {
         match &self.kind {
             ast::HubKind::Tagged(ports) => {
                 // Declare the enum of a tagged hub
-                let hub_name = info.names.intern(name).into();
                 let hub_path = info.paths.intern_child(path, hub_name);
                 table.declarations.insert(hub_path, ItemDeclKind::Enum);
                 for variant in ports {

@@ -15,7 +15,7 @@ use proc_macro2::TokenStream as Tokens;
 use quote::quote;
 use unzip_n::unzip_n;
 
-unzip_n!(pub 3);
+unzip_n!(pub 4);
 
 impl Lower<Tokens, Context<'_>> for hir::HIR {
     fn lower(&self, ctx: &mut Context<'_>) -> Tokens {
@@ -27,6 +27,7 @@ impl Lower<Tokens, Context<'_>> for hir::HIR {
         let mangled_defs = ctx.mangled_defs.values();
         quote! {
             use arc_script::arcorn;
+            use arc_script::arcorn::state::{MapOps, SetOps, VecOps, RefOps};
             #(#defs)*
             #(#mangled_defs)*
         }
@@ -133,7 +134,7 @@ impl Lower<Tokens, Context<'_>> for hir::Task {
             .map(|p| p.kind.lower(ctx))
             .collect::<Vec<_>>();
 
-        let (state_ids, state_tys, state_inits) = self
+        let (state_ids, state_names, state_tys, state_inits) = self
             .states
             .iter()
             .map(|state| state.lower(backend, ctx))
@@ -190,7 +191,7 @@ impl Lower<Tokens, Context<'_>> for hir::Task {
                 type BackendType = #backend;
                 fn new(backend: Arc<Self::BackendType>) -> Self {
                     Self {
-                        #(#state_ids: <#state_tys>::new(#state_ids, backend.clone())),*
+                        #(#state_ids: <#state_tys>::arc_default(#state_names, backend.clone()).unwrap()),*
                     }
                 }
             }
@@ -198,9 +199,9 @@ impl Lower<Tokens, Context<'_>> for hir::Task {
             impl #data_name {
                 fn new(#(#param_decls),*) -> OperatorBuilder<#data_name> {
                     OperatorBuilder {
-                        constructor: Arc::new(move |b| #data_name {
+                        constructor: Arc::new(move |backend| #data_name {
                             state: #state_name {
-                                #(#state_ids: <#state_tys>::new(#state_inits, backend.clone())),*
+                                #(#state_ids: <#state_tys>::arc_new(#state_names, backend.clone(), #state_inits).unwrap()),*
                             },
                             #(#param_ids),*
                         }),
@@ -264,30 +265,32 @@ impl hir::State {
         &self,
         backend: &Tokens,
         ctx: &mut Context<'_>,
-    ) -> (Tokens, Tokens, Tokens) {
+    ) -> (Tokens, Tokens, Tokens, Tokens) {
         let ty = ctx.info.types.resolve(self.param.tv);
-        let name = self.param.kind.lower(ctx);
+        let id = self.param.kind.lower(ctx);
+        let name = syn::LitStr::new(&id.to_string(), pm2::Span::call_site());
+        let name = quote!(#name);
         let init = self.init.lower(ctx);
         let ty = match ty.kind {
             hir::TypeKind::Map(t0, t1) => {
                 let t0 = t0.lower(ctx);
                 let t1 = t1.lower(ctx);
-                quote!(arc_script::arcorn::ArcMap<#t0, #t1, #backend>)
+                quote!(arc_script::arcorn::state::ArcMap<#t0, #t1, #backend>)
             }
             hir::TypeKind::Set(t0) => {
                 let t0 = t0.lower(ctx);
-                quote!(arc_script::arcorn::ArcSet<#t0, #backend>)
+                quote!(arc_script::arcorn::state::ArcSet<#t0, #backend>)
             }
             hir::TypeKind::Vector(t0) => {
                 let t0 = t0.lower(ctx);
-                quote!(arc_script::arcorn::ArcVec<#t0, #backend>)
+                quote!(arc_script::arcorn::state::ArcVec<#t0, #backend>)
             }
             _ => {
                 let t0 = self.param.tv.lower(ctx);
-                quote!(arc_script::arcorn::ArcRef<#t0, #backend>)
+                quote!(arc_script::arcorn::state::ArcRef<#t0, #backend>)
             }
         };
-        (name, ty, init)
+        (id, name, ty, init)
     }
 }
 
@@ -389,7 +392,7 @@ impl hir::Expr {
                     hir::VarKind::Member => quote!(self.data.#x),
                     hir::VarKind::State => {
                         debug_assert!(self.tv.is_copyable((ctx.info as &Info, ctx.hir)));
-                        quote!(self.data.state.#x.read())
+                        quote!(self.data.state.#x.arc_read().unwrap())
                     }
                 }
             }
@@ -414,21 +417,21 @@ impl hir::Expr {
                     }
                 }
                 hir::BinOpKind::Mut => match &e0.kind {
-                    hir::ExprKind::Select(e2, es) => match es.as_slice() {
-                        [e3] => {
+                    hir::ExprKind::Select(e2, es) => match (&e2.kind, es.as_slice()) {
+                        (hir::ExprKind::Var(x, hir::VarKind::State), [e3]) => {
                             let e1 = e1.ssa(ctx, env, ops, depth);
-                            let e2 = e2.ssa(ctx, env, ops, depth);
+                            let x = x.lower(ctx);
                             let e3 = e3.ssa(ctx, env, ops, depth);
-                            quote!(#e2.insert(#e3, #e1))
+                            return quote!(self.data.state.#x.arc_insert(#e3, #e1).unwrap());
                         }
                         _ => todo!("Add dataframes?"),
                     },
-                    hir::ExprKind::Var(x, kind) if matches!(kind, hir::VarKind::State) => {
+                    hir::ExprKind::Var(x, hir::VarKind::State) => {
                         debug_assert!(self.tv.is_copyable((ctx.info as &Info, ctx.hir)));
                         let ty = ctx.info.types.resolve(e0.tv);
                         let x = x.lower(ctx);
                         let e1 = e1.ssa(ctx, env, ops, depth);
-                        return quote!(#x.write(#e1));
+                        return quote!(self.data.state.#x.arc_write(#e1).unwrap());
                     }
                     x => unreachable!("{:?}", x),
                 },
@@ -455,13 +458,25 @@ impl hir::Expr {
                     quote!(#e(#(#es),*))
                 }
             }
-            hir::ExprKind::Select(e0, es) => match es.as_slice() {
-                [e1] => {
-                    let e0 = e0.ssa(ctx, env, ops, depth);
+            hir::ExprKind::Select(e0, es) => match (&e0.kind, es.as_slice()) {
+                (hir::ExprKind::Var(x, hir::VarKind::State), [e1]) => {
+                    let x = x.lower(ctx);
                     let e1 = e1.ssa(ctx, env, ops, depth);
-                    quote!(#e0.get_unchecked(#e1))
+                    quote!(self.data.state.#x.arc_get_unchecked(#e1).unwrap())
                 }
                 _ => todo!(),
+            },
+            hir::ExprKind::Empty => match ctx.info.types.resolve(self.tv).kind {
+                hir::TypeKind::Set(tv0) => {
+                    let tv0 = tv0.lower(ctx);
+                    quote!(<::std::collections::HashSet<#tv0>>::new())
+                }
+                hir::TypeKind::Map(tv0, tv1) => {
+                    let tv0 = tv0.lower(ctx);
+                    let tv1 = tv1.lower(ctx);
+                    quote!(<::std::collections::HashMap<#tv0, #tv1>>::new())
+                }
+                _ => unreachable!(),
             },
             hir::ExprKind::Emit(e) => {
                 let e = e.ssa(ctx, env, ops, depth);

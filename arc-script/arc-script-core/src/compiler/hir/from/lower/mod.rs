@@ -187,8 +187,8 @@ impl Lower<Option<(Path, hir::ItemKind)>, Context<'_>> for ast::Task {
             ctx.hir.items.push(fun_path);
         }
         // NOTE: These names need to match those which are declared
-        let ihub = self.ihub.lower("Source", ctx);
-        let ohub = self.ohub.lower("Sink", ctx);
+        let ihub = self.ihub.lower(ctx.info.names.common.source.into(), ctx);
+        let ohub = self.ohub.lower(ctx.info.names.common.sink.into(), ctx);
 
         let on = self
             .items
@@ -217,13 +217,12 @@ impl Lower<Option<(Path, hir::ItemKind)>, Context<'_>> for ast::Task {
 }
 
 impl ast::Hub {
-    fn lower(&self, name: &str, ctx: &mut Context<'_>) -> hir::Hub {
+    fn lower(&self, hub_name: Name, ctx: &mut Context<'_>) -> hir::Hub {
         tracing::trace!("Lowering Hub");
         let kind = match &self.kind {
             ast::HubKind::Tagged(ports) => {
                 // Construct enum for ports
                 let task_path = ctx.res.path_id;
-                let hub_name = ctx.info.names.intern(name).into();
                 let hub_path: Path = ctx.info.paths.intern_child(task_path, hub_name).into();
                 let ports = ports
                     .iter()
@@ -440,6 +439,7 @@ impl Lower<hir::Expr, Context<'_>> for ast::Expr {
             ast::ExprKind::Reduce(_p, _e, _r)   => todo!(),
             ast::ExprKind::Access(e, f)      => hir::ExprKind::Access(e.lower(ctx).into(), *f),
             ast::ExprKind::Project(e, i)     => hir::ExprKind::Project(e.lower(ctx).into(), *i),
+            ast::ExprKind::Empty             => hir::ExprKind::Empty,
             ast::ExprKind::Todo              => hir::ExprKind::Todo,
             ast::ExprKind::Err               => hir::ExprKind::Err,
         };

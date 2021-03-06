@@ -234,6 +234,7 @@ pub enum ExprKind {
     Break,
     Call(Expr, Vec<Expr>),
     Select(Expr, Vec<Expr>),
+    Empty,
     Cast(Expr, Type),
     Emit(Expr),
     For(Pat, Expr, Expr),

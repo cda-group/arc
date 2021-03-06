@@ -332,6 +332,7 @@ impl<'i> Display for Pretty<'i, ast::Expr, Context<'_>> {
             ast::ExprKind::Err => write!(f, "☇"),
             ast::ExprKind::Return(Some(e)) => write!(f, "return {};;", e.pretty(fmt)),
             ast::ExprKind::Return(None) => write!(f, "return;;"),
+            ast::ExprKind::Empty => write!(f, "{{}}"),
             ast::ExprKind::Todo => write!(f, "???"),
         }?;
         if fmt.ctx.info.mode.verbosity >= Verbosity::Debug {
