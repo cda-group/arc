@@ -39,7 +39,7 @@ where
     ) -> OperatorResult<()> {
         let ArconElement { timestamp, data } = element;
         let data = data.into();
-        let element = ArconElement { timestamp, data };
+        let element = ArconElement { data, timestamp };
         ctx.output(element);
         Ok(())
     }
