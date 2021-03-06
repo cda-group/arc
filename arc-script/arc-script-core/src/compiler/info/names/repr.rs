@@ -20,25 +20,38 @@ pub(crate) struct NameInterner {
     buf: String,
 }
 
+macro_rules! common {
+    {
+        aliased_names: [$($aliased:ident:$alias:literal),*],
+        literal_names: [$($literal:ident),*]
+    } => {
+        #[derive(Debug)]
+        pub(crate) struct Common {
+            $(pub(crate) $aliased: NameId,)*
+            $(pub(crate) $literal: NameId),*
+        }
+        impl Common {
+            fn new(store: &mut Store) -> Self {
+                Self {
+                    $($aliased: NameId(store.get_or_intern_static($alias)),)*
+                    $($literal: NameId(store.get_or_intern_static((stringify!($literal))))),*
+                }
+            }
+        }
+    }
+}
+
 /// Commonly occurring names.
-#[derive(Debug)]
-pub(crate) struct Common {
-    pub(crate) root: NameId,
-    pub(crate) value: NameId,
-    pub(crate) sink: NameId,
-    pub(crate) source: NameId,
+common! {
+    aliased_names: [root: "crate"],
+    literal_names: [value, sink, source, push, pop, fold, add, remove, len, clear]
 }
 
 impl Default for NameInterner {
     fn default() -> Self {
         let mut store = Store::with_hasher(Hasher::default());
         let buf = String::new();
-        let common = Common {
-            root: NameId(store.get_or_intern_static("crate")),
-            value: NameId(store.get_or_intern_static("value")),
-            sink: NameId(store.get_or_intern_static("sink")),
-            source: NameId(store.get_or_intern_static("Source")),
-        };
+        let common = Common::new(&mut store);
         Self { store, common, buf }
     }
 }

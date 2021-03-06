@@ -1,0 +1,91 @@
+---
+source: arc-script-test/compile/src/insta.rs
+expression: s
+input_file: arc-script-test/compile/src/tests/expect_mlir_fail_todo/task_id_untagged.arc
+
+---
+use arc_script::arcorn;
+use arc_script::arcorn::state::{ArcMapOps, ArcRefOps, ArcSetOps, ArcVecOps};
+use arcon::prelude::*;
+pub struct Identity<'i, 'source, 'timer, 'channel, B: Backend, C: ComponentDefinition> {
+    pub data: &'i mut IdentityData,
+    pub ctx: &'i mut OperatorContext<'source, 'timer, 'channel, IdentityData, B, C>,
+    pub timestamp: Option<u64>,
+}
+pub struct IdentityData {
+    pub state: IdentityState,
+}
+#[derive(ArconState)]
+pub struct IdentityState {}
+impl StateConstructor for IdentityState {
+    type BackendType = arcon::prelude::Sled;
+    fn new(backend: Arc<Self::BackendType>) -> Self {
+        Self {}
+    }
+}
+impl IdentityData {
+    fn new() -> OperatorBuilder<IdentityData> {
+        OperatorBuilder {
+            constructor: Arc::new(move |backend| IdentityData {
+                state: IdentityState {},
+            }),
+            conf: Default::default(),
+        }
+    }
+}
+impl Operator for IdentityData {
+    type IN = Struct5valuei32End;
+    type OUT = Struct5valuei32End;
+    type TimerState = ArconNever;
+    type OperatorState = IdentityState;
+    fn handle_element(
+        &mut self,
+        elem: ArconElement<Self::IN>,
+        ref mut ctx: OperatorContext<Self, impl Backend, impl ComponentDefinition>,
+    ) -> OperatorResult<()> {
+        let ArconElement { timestamp, data } = elem;
+        let event = data.value;
+        let mut task = Identity {
+            data: self,
+            ctx,
+            timestamp,
+        };
+        task.handle(event);
+        Ok(())
+    }
+    fn state(&mut self) -> &mut Self::OperatorState {
+        &mut self.state
+    }
+    arcon::ignore_timeout!();
+    arcon::ignore_persist!();
+}
+impl<'i, 'source, 'timer, 'channel, B: Backend, C: ComponentDefinition>
+    Identity<'i, 'source, 'timer, 'channel, B, C>
+{
+    fn handle(&mut self, event_0: i32) -> OperatorResult<()> {
+        {
+            self.emit(event_0)
+        };
+        Ok(())
+    }
+    fn emit(&mut self, event_0: i32) {
+        let data = Struct5valuei32End { value: event_0 };
+        let elem = ArconElement {
+            data,
+            timestamp: self.timestamp,
+        };
+        self.ctx.output(elem);
+    }
+}
+pub fn main(input_0: Stream<Struct5valuei32End>) -> Stream<Struct5valuei32End> {
+    let y_1_0 = IdentityData::new();
+    let y_1_1 = Stream::operator(input_0, y_1_0);
+    y_1_1
+}
+#[arcorn::rewrite]
+#[derive(Copy)]
+pub struct Struct5valuei32End {
+    value: i32,
+}
+
+

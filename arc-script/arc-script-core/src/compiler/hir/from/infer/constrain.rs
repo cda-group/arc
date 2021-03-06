@@ -121,7 +121,6 @@ impl Constrain<'_> for Expr {
     fn constrain(&self, ctx: &mut Context<'_>) {
         use BinOpKind::*;
         use ScalarKind::*;
-        use UnOpKind::*;
         let loc = ctx.loc;
         ctx.loc = self.loc;
         match &self.kind {
@@ -258,26 +257,47 @@ impl Constrain<'_> for Expr {
                         ctx.unify(e0.tv, e1.tv);
                         ctx.unify(self.tv, e1.tv);
                     }
-                    Pipe => todo!(),
+                    Pipe => unreachable!(),
                     By => ctx.unify(self.tv, TypeKind::By(e0.tv, e1.tv)),
                     Mut => {
                         ctx.unify(self.tv, Unit);
                         ctx.unify(e0.tv, e1.tv);
                     }
                     Seq => ctx.unify(self.tv, e1.tv),
+                    In => ctx.unify(self.tv, Bool),
+                    NotIn => ctx.unify(self.tv, Bool),
                     BinOpKind::Err => {}
                 }
             }
-            ExprKind::UnOp(op, e) => {
-                e.constrain(ctx);
-                match &op.kind {
-                    Boxed => ctx.unify(self.tv, TypeKind::Boxed(e.tv)),
-                    Not => {
-                        ctx.unify(self.tv, e.tv);
-                        ctx.unify(e.tv, Bool);
+            ExprKind::UnOp(op, e0) => {
+                match (&op.kind, &e0.kind) {
+                    (UnOpKind::Boxed, _) => {
+                        e0.constrain(ctx);
+                        ctx.unify(self.tv, TypeKind::Boxed(e0.tv))
+                    },
+                    (UnOpKind::Not, _) => {
+                        e0.constrain(ctx);
+                        ctx.unify(self.tv, e0.tv);
+                        ctx.unify(e0.tv, Bool);
                     }
-                    Neg => ctx.unify(self.tv, e.tv),
-                    UnOpKind::Err => {}
+                    (UnOpKind::Neg, _) => ctx.unify(self.tv, e0.tv),
+                    (UnOpKind::Add, ExprKind::Select(e1, es))
+                    | (UnOpKind::Del, ExprKind::Select(e1, es)) => match es.as_slice() {
+                        [e2] => {
+                            e1.constrain(ctx);
+                            let ty = ctx.info.types.resolve(e1.tv);
+                            if let TypeKind::Map(tv0, _) | TypeKind::Set(tv0) = ty.kind {
+                                ctx.unify(tv0, e2.tv);
+                            } else {
+                                panic!("Types must be known at this point");
+                            }
+                            e2.constrain(ctx);
+                            ctx.unify(e0.tv, Never);
+                            ctx.unify(self.tv, Unit);
+                        }
+                        _ => todo!(),
+                    },
+                    _ => unreachable!()
                 }
             }
             ExprKind::Call(e, es) => {

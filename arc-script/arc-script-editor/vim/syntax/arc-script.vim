@@ -35,7 +35,6 @@ syn keyword arcOperator band
 syn keyword arcOperator bor
 syn keyword arcOperator bxor
 syn keyword arcOperator is
-syn keyword arcOperator not
 syn keyword arcOperator or
 syn keyword arcOperator unwrap
 syn keyword arcOperator enwrap
@@ -52,6 +51,11 @@ syn keyword arcStatement emit
 syn keyword arcStatement log
 syn keyword arcStatement exit
 syn keyword arcStatement port
+" Not statements, but looks nice syntactically
+syn keyword arcStatement not
+syn keyword arcStatement in
+syn keyword arcStatement add
+syn keyword arcStatement del
 hi def link arcStatement Statement
 "=============================================================================
 " Conditionals

@@ -2,38 +2,44 @@
 source: arc-script-test/compile/src/insta.rs
 expression: s
 input_file: arc-script-test/compile/src/tests/expect_mlir_fail_todo/task_map.arc
+
 ---
 use arc_script::arcorn;
+use arc_script::arcorn::state::{ArcMapOps, ArcRefOps, ArcSetOps, ArcVecOps};
 use arcon::prelude::*;
-pub struct HandlerMap<
-    'i,
-    'source,
-    'timer,
-    'channel,
-    O: 'static + Operator,
-    B: Backend,
-    C: ComponentDefinition,
-> {
-    pub op: &'i mut O,
-    pub ctx: &'i mut OperatorContext<'source, 'timer, 'channel, O, B, C>,
+pub struct Map<'i, 'source, 'timer, 'channel, B: Backend, C: ComponentDefinition> {
+    pub data: &'i mut MapData,
+    pub ctx: &'i mut OperatorContext<'source, 'timer, 'channel, MapData, B, C>,
     pub timestamp: Option<u64>,
 }
-#[derive(ArconState)]
-pub struct TaskMap {
-    #[ephemeral]
+pub struct MapData {
+    pub state: MapState,
     pub f_0: fn(i32) -> i32,
 }
-fn Map(f_0: fn(i32) -> i32) -> OperatorBuilder<TaskMap> {
-    OperatorBuilder {
-        constructor: Arc::new(move |b| TaskMap { f_0 }),
-        conf: Default::default(),
+#[derive(ArconState)]
+pub struct MapState {}
+impl StateConstructor for MapState {
+    type BackendType = arcon::prelude::Sled;
+    fn new(backend: Arc<Self::BackendType>) -> Self {
+        Self {}
     }
 }
-impl Operator for TaskMap {
+impl MapData {
+    fn new(f_0: fn(i32) -> i32) -> OperatorBuilder<MapData> {
+        OperatorBuilder {
+            constructor: Arc::new(move |backend| MapData {
+                state: MapState {},
+                f_0,
+            }),
+            conf: Default::default(),
+        }
+    }
+}
+impl Operator for MapData {
     type IN = Struct5valuei32End;
     type OUT = Struct5valuei32End;
     type TimerState = ArconNever;
-    type OperatorState = Self;
+    type OperatorState = MapState;
     fn handle_element(
         &mut self,
         elem: ArconElement<Self::IN>,
@@ -41,25 +47,29 @@ impl Operator for TaskMap {
     ) -> OperatorResult<()> {
         let ArconElement { timestamp, data } = elem;
         let event = data.value;
-        let mut handler = HandlerMap {
-            op: self,
+        let mut task = Map {
+            data: self,
             ctx,
             timestamp,
         };
-        handler.handle(event);
+        task.handle(event);
         Ok(())
+    }
+    fn state(&mut self) -> &mut Self::OperatorState {
+        &mut self.state
     }
     arcon::ignore_timeout!();
     arcon::ignore_persist!();
 }
 impl<'i, 'source, 'timer, 'channel, B: Backend, C: ComponentDefinition>
-    HandlerMap<'i, 'source, 'timer, 'channel, TaskMap, B, C>
+    Map<'i, 'source, 'timer, 'channel, B, C>
 {
     fn handle(&mut self, event_0: i32) -> OperatorResult<()> {
-        let y_1_0 = (self.op.f_0);
-        let y_1_1 = y_1_0(event_0);
-        let y_1_2 = self.emit(y_1_1);
-        y_1_2;
+        {
+            let y_1_0 = self.data.f_0;
+            let y_1_1 = y_1_0(event_0);
+            self.emit(y_1_1)
+        };
         Ok(())
     }
     fn emit(&mut self, event_0: i32) {
@@ -77,7 +87,7 @@ pub fn x_0(x_1: i32) -> i32 {
     y_1_1
 }
 pub fn main(input_0: Stream<Struct5valuei32End>) -> Stream<Struct5valuei32End> {
-    let y_1_0 = Map(x_0);
+    let y_1_0 = MapData::new(x_0);
     let y_1_1 = Stream::operator(input_0, y_1_0);
     y_1_1
 }

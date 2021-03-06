@@ -2,38 +2,44 @@
 source: arc-script-test/compile/src/insta.rs
 expression: s
 input_file: arc-script-test/compile/src/tests/expect_mlir_fail_todo/task_filter.arc
+
 ---
 use arc_script::arcorn;
+use arc_script::arcorn::state::{ArcMapOps, ArcRefOps, ArcSetOps, ArcVecOps};
 use arcon::prelude::*;
-pub struct HandlerFilter<
-    'i,
-    'source,
-    'timer,
-    'channel,
-    O: 'static + Operator,
-    B: Backend,
-    C: ComponentDefinition,
-> {
-    pub op: &'i mut O,
-    pub ctx: &'i mut OperatorContext<'source, 'timer, 'channel, O, B, C>,
+pub struct Filter<'i, 'source, 'timer, 'channel, B: Backend, C: ComponentDefinition> {
+    pub data: &'i mut FilterData,
+    pub ctx: &'i mut OperatorContext<'source, 'timer, 'channel, FilterData, B, C>,
     pub timestamp: Option<u64>,
 }
-#[derive(ArconState)]
-pub struct TaskFilter {
-    #[ephemeral]
+pub struct FilterData {
+    pub state: FilterState,
     pub p_0: fn(i32) -> bool,
 }
-fn Filter(p_0: fn(i32) -> bool) -> OperatorBuilder<TaskFilter> {
-    OperatorBuilder {
-        constructor: Arc::new(move |b| TaskFilter { p_0 }),
-        conf: Default::default(),
+#[derive(ArconState)]
+pub struct FilterState {}
+impl StateConstructor for FilterState {
+    type BackendType = arcon::prelude::Sled;
+    fn new(backend: Arc<Self::BackendType>) -> Self {
+        Self {}
     }
 }
-impl Operator for TaskFilter {
+impl FilterData {
+    fn new(p_0: fn(i32) -> bool) -> OperatorBuilder<FilterData> {
+        OperatorBuilder {
+            constructor: Arc::new(move |backend| FilterData {
+                state: FilterState {},
+                p_0,
+            }),
+            conf: Default::default(),
+        }
+    }
+}
+impl Operator for FilterData {
     type IN = Struct5valuei32End;
     type OUT = Struct5valuei32End;
     type TimerState = ArconNever;
-    type OperatorState = Self;
+    type OperatorState = FilterState;
     fn handle_element(
         &mut self,
         elem: ArconElement<Self::IN>,
@@ -41,31 +47,35 @@ impl Operator for TaskFilter {
     ) -> OperatorResult<()> {
         let ArconElement { timestamp, data } = elem;
         let event = data.value;
-        let mut handler = HandlerFilter {
-            op: self,
+        let mut task = Filter {
+            data: self,
             ctx,
             timestamp,
         };
-        handler.handle(event);
+        task.handle(event);
         Ok(())
+    }
+    fn state(&mut self) -> &mut Self::OperatorState {
+        &mut self.state
     }
     arcon::ignore_timeout!();
     arcon::ignore_persist!();
 }
 impl<'i, 'source, 'timer, 'channel, B: Backend, C: ComponentDefinition>
-    HandlerFilter<'i, 'source, 'timer, 'channel, TaskFilter, B, C>
+    Filter<'i, 'source, 'timer, 'channel, B, C>
 {
     fn handle(&mut self, event_0: i32) -> OperatorResult<()> {
-        let y_1_0 = (self.op.p_0);
-        let y_1_1 = y_1_0(event_0);
-        let y_1_2 = if y_1_1 {
-            let y_2_0 = self.emit(event_0);
-            y_2_0
-        } else {
-            let y_2_0 = ();
-            y_2_0
+        {
+            let y_1_0 = self.data.p_0;
+            let y_1_1 = y_1_0(event_0);
+            let y_1_2 = if y_1_1 {
+                self.emit(event_0)
+            } else {
+                let y_2_0 = ();
+                y_2_0
+            };
+            y_1_2
         };
-        y_1_2;
         Ok(())
     }
     fn emit(&mut self, event_0: i32) {
@@ -85,7 +95,7 @@ pub fn x_0(x_1: i32) -> bool {
     y_1_3
 }
 pub fn main(stream0_0: Stream<Struct5valuei32End>) -> Stream<Struct5valuei32End> {
-    let y_1_0 = Filter(x_0);
+    let y_1_0 = FilterData::new(x_0);
     let y_1_1 = Stream::operator(stream0_0, y_1_0);
     y_1_1
 }

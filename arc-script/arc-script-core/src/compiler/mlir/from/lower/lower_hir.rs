@@ -45,10 +45,12 @@ impl Lower<mlir::UnOp, Context<'_>> for hir::UnOp {
     fn lower(&self, _ctx: &mut Context<'_>) -> mlir::UnOp {
         #[rustfmt::skip]
         let kind = match &self.kind {
+            hir::UnOpKind::Add   => unreachable!(),
             hir::UnOpKind::Boxed => todo!(),
-            hir::UnOpKind::Not => mlir::UnOpKind::Not,
-            hir::UnOpKind::Neg => mlir::UnOpKind::Neg,
-            hir::UnOpKind::Err => unreachable!(),
+            hir::UnOpKind::Not   => mlir::UnOpKind::Not,
+            hir::UnOpKind::Neg   => mlir::UnOpKind::Neg,
+            hir::UnOpKind::Del   => unreachable!(),
+            hir::UnOpKind::Err   => unreachable!(),
         };
         mlir::UnOp::new(kind)
     }
@@ -58,29 +60,31 @@ impl Lower<mlir::BinOp, Context<'_>> for hir::BinOp {
     fn lower(&self, _ctx: &mut Context<'_>) -> mlir::BinOp {
         #[rustfmt::skip]
         let kind = match self.kind {
-            hir::BinOpKind::Add  => mlir::BinOpKind::Add,
-            hir::BinOpKind::Sub  => mlir::BinOpKind::Sub,
-            hir::BinOpKind::Mul  => mlir::BinOpKind::Mul,
-            hir::BinOpKind::Div  => mlir::BinOpKind::Div,
-            hir::BinOpKind::Mod  => mlir::BinOpKind::Mod,
-            hir::BinOpKind::Pow  => mlir::BinOpKind::Pow,
-            hir::BinOpKind::Equ  => mlir::BinOpKind::Equ,
-            hir::BinOpKind::Neq  => mlir::BinOpKind::Neq,
-            hir::BinOpKind::Or   => mlir::BinOpKind::Or,
-            hir::BinOpKind::And  => mlir::BinOpKind::And,
-            hir::BinOpKind::Xor  => mlir::BinOpKind::Xor,
-            hir::BinOpKind::Band => mlir::BinOpKind::Band,
-            hir::BinOpKind::Bor  => mlir::BinOpKind::Bor,
-            hir::BinOpKind::Bxor => mlir::BinOpKind::Bxor,
-            hir::BinOpKind::Gt   => mlir::BinOpKind::Gt,
-            hir::BinOpKind::Lt   => mlir::BinOpKind::Lt,
-            hir::BinOpKind::Geq  => mlir::BinOpKind::Geq,
-            hir::BinOpKind::Leq  => mlir::BinOpKind::Leq,
-            hir::BinOpKind::Pipe => unreachable!(),
-            hir::BinOpKind::Mut  => mlir::BinOpKind::Mut,
-            hir::BinOpKind::By   => todo!(),
-            hir::BinOpKind::Seq  => unreachable!(),
-            hir::BinOpKind::Err  => unreachable!(),
+            hir::BinOpKind::Add   => mlir::BinOpKind::Add,
+            hir::BinOpKind::Sub   => mlir::BinOpKind::Sub,
+            hir::BinOpKind::Mul   => mlir::BinOpKind::Mul,
+            hir::BinOpKind::Div   => mlir::BinOpKind::Div,
+            hir::BinOpKind::Mod   => mlir::BinOpKind::Mod,
+            hir::BinOpKind::Pow   => mlir::BinOpKind::Pow,
+            hir::BinOpKind::Equ   => mlir::BinOpKind::Equ,
+            hir::BinOpKind::Neq   => mlir::BinOpKind::Neq,
+            hir::BinOpKind::Or    => mlir::BinOpKind::Or,
+            hir::BinOpKind::And   => mlir::BinOpKind::And,
+            hir::BinOpKind::Xor   => mlir::BinOpKind::Xor,
+            hir::BinOpKind::Band  => mlir::BinOpKind::Band,
+            hir::BinOpKind::Bor   => mlir::BinOpKind::Bor,
+            hir::BinOpKind::Bxor  => mlir::BinOpKind::Bxor,
+            hir::BinOpKind::Gt    => mlir::BinOpKind::Gt,
+            hir::BinOpKind::Lt    => mlir::BinOpKind::Lt,
+            hir::BinOpKind::Geq   => mlir::BinOpKind::Geq,
+            hir::BinOpKind::Leq   => mlir::BinOpKind::Leq,
+            hir::BinOpKind::Pipe  => unreachable!(),
+            hir::BinOpKind::Mut   => mlir::BinOpKind::Mut,
+            hir::BinOpKind::By    => todo!(),
+            hir::BinOpKind::Seq   => unreachable!(),
+            hir::BinOpKind::In    => todo!(),
+            hir::BinOpKind::NotIn => todo!(),
+            hir::BinOpKind::Err   => unreachable!(),
         };
         mlir::BinOp::new(kind)
     }

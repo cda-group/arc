@@ -334,6 +334,8 @@ pub enum BinOpKind {
     Bor,
     Bxor,
     By,
+    In,
+    NotIn,
     Div,
     Equ,
     Geq,
@@ -363,7 +365,9 @@ pub struct UnOp {
 /// A kind of unary operator.
 #[derive(Debug, Clone)]
 pub enum UnOpKind {
+    Add,
     Boxed,
+    Del,
     Neg,
     Not,
     Err,
@@ -447,6 +451,7 @@ pub enum ScalarKind {
     Null,
     Str,
     Unit,
+    Never,
     Bot,
 }
 

@@ -91,6 +91,8 @@ extern {
         "by"     => Token::By,
         "break"  => Token::Break,
         "crate"  => Token::Crate,
+        "del"    => Token::Del,
+        "add"    => Token::Add,
         "else"   => Token::Else,
         "emit"   => Token::Emit,
         "enum"   => Token::Enum,
@@ -346,9 +348,11 @@ Op0: BinOpKind = {
 };
 
 Op1: BinOpKind = {
-    "|>" => BinOpKind::Pipe,
-    "="  => BinOpKind::Mut,
-    "by" => BinOpKind::By,
+    "|>"       => BinOpKind::Pipe,
+    "="        => BinOpKind::Mut,
+    "by"       => BinOpKind::By,
+//  "in"       => BinOpKind::In,
+    "not" "in" => BinOpKind::NotIn,
 };
 
 Op2: BinOpKind = {
@@ -386,7 +390,9 @@ Op6: BinOpKind = {
 Op7: UnOpKind = {
     "box" => UnOpKind::Boxed,
     "not" => UnOpKind::Not,
-    "-" => UnOpKind::Neg,
+    "-"   => UnOpKind::Neg,
+    "del" => UnOpKind::Del,
+    "add" => UnOpKind::Add,
 };
 
 Op8: BinOpKind = {

@@ -12,7 +12,7 @@ use crate::compiler::dfg::from::eval::value::{Value, ValueKind};
 use crate::compiler::dfg::{EdgeData, Node, NodeData, DFG};
 use crate::compiler::hir::{
     self, BinOp, BinOpKind, BinOpKind::*, Expr, ExprKind, ItemKind, LitKind, ParamKind, TypeKind,
-    UnOp, UnOpKind, UnOpKind::*, HIR,
+    UnOp, UnOpKind, HIR,
 };
 
 use crate::compiler::info::Info;
@@ -129,12 +129,14 @@ impl Expr {
             ExprKind::UnOp(op, e) => {
                 let v = e.eval(ctx)?;
                 match &op.kind {
-                    Boxed => todo!(),
-                    Not => match v.kind {
+                    UnOpKind::Add => todo!(),
+                    UnOpKind::Boxed => todo!(),
+                    UnOpKind::Del => todo!(),
+                    UnOpKind::Not => match v.kind {
                         Bool(v) => Bool(!v),
                         _ => unreachable!(),
                     },
-                    Neg => match v.kind {
+                    UnOpKind::Neg => match v.kind {
                         I8(v) => I8(v.checked_neg().or_unwind(self.loc)?),
                         I16(v) => I16(v.checked_neg().or_unwind(self.loc)?),
                         I32(v) => I32(v.checked_neg().or_unwind(self.loc)?),

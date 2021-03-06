@@ -2,35 +2,42 @@
 source: arc-script-test/compile/src/insta.rs
 expression: s
 input_file: arc-script-test/compile/src/tests/expect_mlir_fail_todo/extern_fun.arc
+
 ---
 use arc_script::arcorn;
+use arc_script::arcorn::state::{ArcMapOps, ArcRefOps, ArcSetOps, ArcVecOps};
 use arcon::prelude::*;
-pub struct HandlerAdder<
-    'i,
-    'source,
-    'timer,
-    'channel,
-    O: 'static + Operator,
-    B: Backend,
-    C: ComponentDefinition,
-> {
-    pub op: &'i mut O,
-    pub ctx: &'i mut OperatorContext<'source, 'timer, 'channel, O, B, C>,
+pub struct Adder<'i, 'source, 'timer, 'channel, B: Backend, C: ComponentDefinition> {
+    pub data: &'i mut AdderData,
+    pub ctx: &'i mut OperatorContext<'source, 'timer, 'channel, AdderData, B, C>,
     pub timestamp: Option<u64>,
 }
+pub struct AdderData {
+    pub state: AdderState,
+}
 #[derive(ArconState)]
-pub struct TaskAdder {}
-fn Adder() -> OperatorBuilder<TaskAdder> {
-    OperatorBuilder {
-        constructor: Arc::new(move |b| TaskAdder {}),
-        conf: Default::default(),
+pub struct AdderState {}
+impl StateConstructor for AdderState {
+    type BackendType = arcon::prelude::Sled;
+    fn new(backend: Arc<Self::BackendType>) -> Self {
+        Self {}
     }
 }
-impl Operator for TaskAdder {
+impl AdderData {
+    fn new() -> OperatorBuilder<AdderData> {
+        OperatorBuilder {
+            constructor: Arc::new(move |backend| AdderData {
+                state: AdderState {},
+            }),
+            conf: Default::default(),
+        }
+    }
+}
+impl Operator for AdderData {
     type IN = Struct5valuei32End;
     type OUT = Struct5valuei32End;
     type TimerState = ArconNever;
-    type OperatorState = Self;
+    type OperatorState = AdderState;
     fn handle_element(
         &mut self,
         elem: ArconElement<Self::IN>,
@@ -38,24 +45,28 @@ impl Operator for TaskAdder {
     ) -> OperatorResult<()> {
         let ArconElement { timestamp, data } = elem;
         let event = data.value;
-        let mut handler = HandlerAdder {
-            op: self,
+        let mut task = Adder {
+            data: self,
             ctx,
             timestamp,
         };
-        handler.handle(event);
+        task.handle(event);
         Ok(())
+    }
+    fn state(&mut self) -> &mut Self::OperatorState {
+        &mut self.state
     }
     arcon::ignore_timeout!();
     arcon::ignore_persist!();
 }
 impl<'i, 'source, 'timer, 'channel, B: Backend, C: ComponentDefinition>
-    HandlerAdder<'i, 'source, 'timer, 'channel, TaskAdder, B, C>
+    Adder<'i, 'source, 'timer, 'channel, B, C>
 {
     fn handle(&mut self, event_0: i32) -> OperatorResult<()> {
-        let y_1_0 = self.addition(event_0, event_0);
-        let y_1_1 = self.emit(y_1_0);
-        y_1_1;
+        {
+            let y_1_0 = self.addition(event_0, event_0);
+            self.emit(y_1_0)
+        };
         Ok(())
     }
     fn emit(&mut self, event_0: i32) {
@@ -73,11 +84,11 @@ pub fn pipe(s_0: Stream<Struct5valuei32End>) -> Stream<Struct5valuei32End> {
     let y_1_2 = 2i32;
     let y_1_3 = y_1_1 == y_1_2;
     let y_1_4 = if y_1_3 {
-        let y_2_0 = Adder();
+        let y_2_0 = AdderData::new();
         let y_2_1 = Stream::operator(s_0, y_2_0);
         y_2_1
     } else {
-        let y_2_0 = Adder();
+        let y_2_0 = AdderData::new();
         let y_2_1 = Stream::operator(s_0, y_2_0);
         y_2_1
     };

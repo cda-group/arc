@@ -15,7 +15,7 @@ use proc_macro2::TokenStream as Tokens;
 use quote::quote;
 use unzip_n::unzip_n;
 
-unzip_n!(pub 4);
+unzip_n!(pub 6);
 
 impl Lower<Tokens, Context<'_>> for hir::HIR {
     fn lower(&self, ctx: &mut Context<'_>) -> Tokens {
@@ -27,7 +27,7 @@ impl Lower<Tokens, Context<'_>> for hir::HIR {
         let mangled_defs = ctx.mangled_defs.values();
         quote! {
             use arc_script::arcorn;
-            use arc_script::arcorn::state::{MapOps, SetOps, VecOps, RefOps};
+            use arc_script::arcorn::state::{ArcRefOps, ArcVecOps, ArcMapOps, ArcSetOps};
             #(#defs)*
             #(#mangled_defs)*
         }
@@ -83,14 +83,10 @@ impl Lower<Tokens, Context<'_>> for hir::Fun {
         let params = self.params.iter().map(|p| p.lower(ctx));
         match self.kind {
             hir::FunKind::Global => quote! {
-                pub fn #name(#(#params),*) -> #rtv {
-                    #body
-                }
+                pub fn #name(#(#params),*) -> #rtv #body
             },
             hir::FunKind::Method => quote! {
-                pub fn #name(&mut self, #(#params),*) -> #rtv {
-                    #body
-                }
+                pub fn #name(&mut self, #(#params),*) -> #rtv #body
             },
         }
     }
@@ -134,7 +130,7 @@ impl Lower<Tokens, Context<'_>> for hir::Task {
             .map(|p| p.kind.lower(ctx))
             .collect::<Vec<_>>();
 
-        let (state_ids, state_names, state_tys, state_inits) = self
+        let (state_ids, state_names, state_tys, state_inits, state_default, state_new) = self
             .states
             .iter()
             .map(|state| state.lower(backend, ctx))
@@ -191,7 +187,7 @@ impl Lower<Tokens, Context<'_>> for hir::Task {
                 type BackendType = #backend;
                 fn new(backend: Arc<Self::BackendType>) -> Self {
                     Self {
-                        #(#state_ids: <#state_tys>::arc_default(#state_names, backend.clone()).unwrap()),*
+                        #(#state_ids: <#state_tys>::#state_default(#state_names, backend.clone()).unwrap()),*
                     }
                 }
             }
@@ -201,7 +197,7 @@ impl Lower<Tokens, Context<'_>> for hir::Task {
                     OperatorBuilder {
                         constructor: Arc::new(move |backend| #data_name {
                             state: #state_name {
-                                #(#state_ids: <#state_tys>::arc_new(#state_names, backend.clone(), #state_inits).unwrap()),*
+                                #(#state_ids: <#state_tys>::#state_new(#state_names, backend.clone(), #state_inits).unwrap()),*
                             },
                             #(#param_ids),*
                         }),
@@ -265,32 +261,43 @@ impl hir::State {
         &self,
         backend: &Tokens,
         ctx: &mut Context<'_>,
-    ) -> (Tokens, Tokens, Tokens, Tokens) {
+    ) -> (Tokens, Tokens, Tokens, Tokens, Tokens, Tokens) {
         let ty = ctx.info.types.resolve(self.param.tv);
         let id = self.param.kind.lower(ctx);
         let name = syn::LitStr::new(&id.to_string(), pm2::Span::call_site());
         let name = quote!(#name);
         let init = self.init.lower(ctx);
-        let ty = match ty.kind {
+        match ty.kind {
             hir::TypeKind::Map(t0, t1) => {
                 let t0 = t0.lower(ctx);
                 let t1 = t1.lower(ctx);
-                quote!(arc_script::arcorn::state::ArcMap<#t0, #t1, #backend>)
+                let ty = quote!(arc_script::arcorn::state::ArcMap<#t0, #t1, #backend>);
+                let default = quote!(arc_map_default);
+                let new = quote!(arc_map_new);
+                (id, name, ty, init, default, new)
             }
             hir::TypeKind::Set(t0) => {
                 let t0 = t0.lower(ctx);
-                quote!(arc_script::arcorn::state::ArcSet<#t0, #backend>)
+                let ty = quote!(arc_script::arcorn::state::ArcSet<#t0, #backend>);
+                let default = quote!(arc_set_default);
+                let new = quote!(arc_set_new);
+                (id, name, ty, init, default, new)
             }
             hir::TypeKind::Vector(t0) => {
                 let t0 = t0.lower(ctx);
-                quote!(arc_script::arcorn::state::ArcVec<#t0, #backend>)
+                let ty = quote!(arc_script::arcorn::state::ArcVec<#t0, #backend>);
+                let default = quote!(arc_vec_default);
+                let new = quote!(arc_vec_new);
+                (id, name, ty, init, default, new)
             }
             _ => {
                 let t0 = self.param.tv.lower(ctx);
-                quote!(arc_script::arcorn::state::ArcRef<#t0, #backend>)
+                let ty = quote!(arc_script::arcorn::state::ArcRef<#t0, #backend>);
+                let default = quote!(arc_ref_default);
+                let new = quote!(arc_ref_new);
+                (id, name, ty, init, default, new)
             }
-        };
-        (id, name, ty, init)
+        }
     }
 }
 
@@ -391,8 +398,9 @@ impl hir::Expr {
                     }
                     hir::VarKind::Member => quote!(self.data.#x),
                     hir::VarKind::State => {
+                        println!("{}", self.tv.debug(ctx.hir, ctx.info as &Info));
                         debug_assert!(self.tv.is_copyable((ctx.info as &Info, ctx.hir)));
-                        quote!(self.data.state.#x.arc_read().unwrap())
+                        quote!(self.data.state.#x.arc_ref_read().unwrap())
                     }
                 }
             }
@@ -405,8 +413,8 @@ impl hir::Expr {
                 let es = es.iter().map(|e| e.ssa(ctx, env, ops, depth));
                 quote!([#(#es),*])
             }
-            hir::ExprKind::BinOp(e0, op, e1) => match op.kind {
-                hir::BinOpKind::Pow => {
+            hir::ExprKind::BinOp(e0, op, e1) => match (&e0.kind, &op.kind, &e1.kind) {
+                (_, hir::BinOpKind::Pow, _) => {
                     let tv = e1.tv;
                     let e0 = e0.ssa(ctx, env, ops, depth);
                     let e1 = e1.ssa(ctx, env, ops, depth);
@@ -416,25 +424,56 @@ impl hir::Expr {
                         x => unreachable!("{:?}", x),
                     }
                 }
-                hir::BinOpKind::Mut => match &e0.kind {
-                    hir::ExprKind::Select(e2, es) => match (&e2.kind, es.as_slice()) {
+                // x[e3] = e1
+                (hir::ExprKind::Select(e2, es), hir::BinOpKind::Mut, _) => {
+                    match (&e2.kind, es.as_slice()) {
                         (hir::ExprKind::Var(x, hir::VarKind::State), [e3]) => {
                             let e1 = e1.ssa(ctx, env, ops, depth);
                             let x = x.lower(ctx);
                             let e3 = e3.ssa(ctx, env, ops, depth);
-                            return quote!(self.data.state.#x.arc_insert(#e3, #e1).unwrap());
+                            let ty = ctx.info.types.resolve(e2.tv);
+                            let op = match ty.kind {
+                                hir::TypeKind::Map(..) => quote!(arc_map_insert),
+                                hir::TypeKind::Set(..) => quote!(arc_set_insert),
+                                _ => unreachable!(),
+                            };
+                            return quote!(self.data.state.#x.#op(#e3, #e1).unwrap());
                         }
                         _ => todo!("Add dataframes?"),
-                    },
-                    hir::ExprKind::Var(x, hir::VarKind::State) => {
-                        debug_assert!(self.tv.is_copyable((ctx.info as &Info, ctx.hir)));
-                        let ty = ctx.info.types.resolve(e0.tv);
-                        let x = x.lower(ctx);
-                        let e1 = e1.ssa(ctx, env, ops, depth);
-                        return quote!(self.data.state.#x.arc_write(#e1).unwrap());
                     }
-                    x => unreachable!("{:?}", x),
-                },
+                }
+                // x = e1
+                (hir::ExprKind::Var(x, hir::VarKind::State), hir::BinOpKind::Mut, _) => {
+                    debug_assert!(self.tv.is_copyable((ctx.info as &Info, ctx.hir)));
+                    let ty = ctx.info.types.resolve(e0.tv);
+                    let x = x.lower(ctx);
+                    let e1 = e1.ssa(ctx, env, ops, depth);
+                    return quote!(self.data.state.#x.arc_ref_write(#e1).unwrap());
+                }
+                // e0 in x
+                (_, hir::BinOpKind::In, hir::ExprKind::Var(x, hir::VarKind::State)) => {
+                    let x = x.lower(ctx);
+                    let e0 = e0.ssa(ctx, env, ops, depth);
+                    let ty = ctx.info.types.resolve(e1.tv);
+                    let op = match ty.kind {
+                        hir::TypeKind::Map(..) => quote!(arc_map_contains),
+                        hir::TypeKind::Set(..) => quote!(arc_set_contains),
+                        _ => unreachable!(),
+                    };
+                    return quote!(self.data.state.#x.#op(#e0).unwrap());
+                }
+                // e0 not in x
+                (_, hir::BinOpKind::NotIn, hir::ExprKind::Var(x, hir::VarKind::State)) => {
+                    let x = x.lower(ctx);
+                    let e0 = e0.ssa(ctx, env, ops, depth);
+                    let ty = ctx.info.types.resolve(e1.tv);
+                    let op = match ty.kind {
+                        hir::TypeKind::Map(..) => quote!(arc_map_contains),
+                        hir::TypeKind::Set(..) => quote!(arc_set_contains),
+                        _ => unreachable!(),
+                    };
+                    return quote!(!self.data.state.#x.#op(#e0).unwrap());
+                }
                 _ => {
                     let e0 = e0.ssa(ctx, env, ops, depth);
                     let op = op.lower(ctx);
@@ -458,11 +497,12 @@ impl hir::Expr {
                     quote!(#e(#(#es),*))
                 }
             }
+            // x[e1]
             hir::ExprKind::Select(e0, es) => match (&e0.kind, es.as_slice()) {
                 (hir::ExprKind::Var(x, hir::VarKind::State), [e1]) => {
                     let x = x.lower(ctx);
                     let e1 = e1.ssa(ctx, env, ops, depth);
-                    quote!(self.data.state.#x.arc_get_unchecked(#e1).unwrap())
+                    quote!(self.data.state.#x.arc_map_get_unchecked(#e1).unwrap())
                 }
                 _ => todo!(),
             },
@@ -486,7 +526,7 @@ impl hir::Expr {
                 let e0 = e0.ssa(ctx, env, ops, depth);
                 let e1 = e1.block(ctx, env, depth);
                 let e2 = e2.block(ctx, env, depth);
-                quote!(if #e0 { #e1 } else { #e2 })
+                quote!(if #e0 #e1 else #e2)
             }
             // NOTE: Don't assign items to variables since it might break ownership.
             //       In other words, return early!
@@ -546,15 +586,39 @@ impl hir::Expr {
                 let es = es.iter().map(|e| e.ssa(ctx, env, ops, depth));
                 quote!((#(#es),*))
             }
-            hir::ExprKind::UnOp(op, e) => {
-                let e = e.ssa(ctx, env, ops, depth);
-                if let hir::UnOpKind::Boxed = &op.kind {
-                    quote!(Box::new(#e))
-                } else {
-                    let op = op.lower(ctx);
-                    quote!(#op #e)
+            hir::ExprKind::UnOp(op, e0) => match (&op.kind, &e0.kind) {
+                (hir::UnOpKind::Boxed, _) => {
+                    let e0 = e0.ssa(ctx, env, ops, depth);
+                    quote!(Box::new(#e0))
                 }
-            }
+                // add x[e2]
+                (hir::UnOpKind::Add, hir::ExprKind::Select(e1, es)) => {
+                    match (&e1.kind, es.as_slice()) {
+                        (hir::ExprKind::Var(x, hir::VarKind::State), [e2]) => {
+                            let x = x.lower(ctx);
+                            let e2 = e2.lower(ctx);
+                            quote!(self.data.state.#x.arc_set_add(#e2).unwrap())
+                        }
+                        _ => todo!(),
+                    }
+                }
+                // del x[e2]
+                (hir::UnOpKind::Del, hir::ExprKind::Select(e1, es)) => {
+                    match (&e1.kind, es.as_slice()) {
+                        (hir::ExprKind::Var(x, hir::VarKind::State), [e2]) => {
+                            let x = x.lower(ctx);
+                            let e2 = e2.lower(ctx);
+                            quote!(self.data.state.#x.arc_set_del(#e2).unwrap())
+                        }
+                        _ => todo!(),
+                    }
+                }
+                _ => {
+                    let e0 = e0.ssa(ctx, env, ops, depth);
+                    let op = op.lower(ctx);
+                    quote!(#op #e0)
+                }
+            },
             hir::ExprKind::Enwrap(x, e) => {
                 let x = x.lower(ctx);
                 let e = e.ssa(ctx, env, ops, depth);
@@ -676,24 +740,25 @@ impl Lower<Tokens, Context<'_>> for hir::TypeId {
 impl Lower<Tokens, Context<'_>> for hir::ScalarKind {
     fn lower(&self, _ctx: &mut Context<'_>) -> Tokens {
         match self {
-            Self::Bool => quote!(bool),
-            Self::Char => quote!(char),
-            Self::Bf16 => quote!(arcorn::bf16),
-            Self::F16  => quote!(arcorn::f16),
-            Self::F32  => quote!(f32),
-            Self::F64  => quote!(f64),
-            Self::I8   => quote!(i8),
-            Self::I16  => quote!(i16),
-            Self::I32  => quote!(i32),
-            Self::I64  => quote!(i64),
-            Self::U8   => quote!(u8),
-            Self::U16  => quote!(u16),
-            Self::U32  => quote!(u32),
-            Self::U64  => quote!(u64),
-            Self::Null => todo!(),
-            Self::Str  => todo!(),
-            Self::Unit => quote!(()),
-            Self::Bot  => todo!(),
+            Self::Bool  => quote!(bool),
+            Self::Char  => quote!(char),
+            Self::Bf16  => quote!(arcorn::bf16),
+            Self::F16   => quote!(arcorn::f16),
+            Self::F32   => quote!(f32),
+            Self::F64   => quote!(f64),
+            Self::I8    => quote!(i8),
+            Self::I16   => quote!(i16),
+            Self::I32   => quote!(i32),
+            Self::I64   => quote!(i64),
+            Self::U8    => quote!(u8),
+            Self::U16   => quote!(u16),
+            Self::U32   => quote!(u32),
+            Self::U64   => quote!(u64),
+            Self::Null  => todo!(),
+            Self::Str   => todo!(),
+            Self::Unit  => quote!(()),
+            Self::Bot   => todo!(),
+            Self::Never => quote!(!),
         }
     }
 }
@@ -702,29 +767,31 @@ impl Lower<Tokens, Context<'_>> for hir::ScalarKind {
 impl Lower<Tokens, Context<'_>> for hir::BinOp {
     fn lower(&self, _ctx: &mut Context<'_>) -> Tokens {
         match self.kind {
-            hir::BinOpKind::Add  => quote!(+),
-            hir::BinOpKind::And  => quote!(&&),
-            hir::BinOpKind::Band => quote!(&),
-            hir::BinOpKind::Bor  => quote!(|),
-            hir::BinOpKind::Bxor => quote!(^),
-            hir::BinOpKind::By   => unreachable!(),
-            hir::BinOpKind::Div  => quote!(/),
-            hir::BinOpKind::Equ  => quote!(==),
-            hir::BinOpKind::Geq  => quote!(>=),
-            hir::BinOpKind::Gt   => quote!(>),
-            hir::BinOpKind::Leq  => quote!(<),
-            hir::BinOpKind::Lt   => quote!(<=),
-            hir::BinOpKind::Mul  => quote!(*),
-            hir::BinOpKind::Mod  => quote!(%),
-            hir::BinOpKind::Neq  => quote!(!=),
-            hir::BinOpKind::Or   => quote!(||),
-            hir::BinOpKind::Pipe => unreachable!(),
-            hir::BinOpKind::Pow  => unreachable!(),
-            hir::BinOpKind::Seq  => quote!(;),
-            hir::BinOpKind::Sub  => quote!(-),
-            hir::BinOpKind::Xor  => quote!(^),
-            hir::BinOpKind::Mut  => quote!(=),
-            hir::BinOpKind::Err  => unreachable!(),
+            hir::BinOpKind::Add   => quote!(+),
+            hir::BinOpKind::And   => quote!(&&),
+            hir::BinOpKind::Band  => quote!(&),
+            hir::BinOpKind::Bor   => quote!(|),
+            hir::BinOpKind::Bxor  => quote!(^),
+            hir::BinOpKind::By    => unreachable!(),
+            hir::BinOpKind::Div   => quote!(/),
+            hir::BinOpKind::Equ   => quote!(==),
+            hir::BinOpKind::Geq   => quote!(>=),
+            hir::BinOpKind::Gt    => quote!(>),
+            hir::BinOpKind::Leq   => quote!(<),
+            hir::BinOpKind::Lt    => quote!(<=),
+            hir::BinOpKind::In    => unreachable!(),
+            hir::BinOpKind::NotIn => unreachable!(),
+            hir::BinOpKind::Mul   => quote!(*),
+            hir::BinOpKind::Mod   => quote!(%),
+            hir::BinOpKind::Neq   => quote!(!=),
+            hir::BinOpKind::Or    => quote!(||),
+            hir::BinOpKind::Pipe  => unreachable!(),
+            hir::BinOpKind::Pow   => unreachable!(),
+            hir::BinOpKind::Seq   => quote!(;),
+            hir::BinOpKind::Sub   => quote!(-),
+            hir::BinOpKind::Xor   => quote!(^),
+            hir::BinOpKind::Mut   => quote!(=),
+            hir::BinOpKind::Err   => unreachable!(),
         }
     }
 }
@@ -732,7 +799,9 @@ impl Lower<Tokens, Context<'_>> for hir::BinOp {
 impl Lower<Tokens, Context<'_>> for hir::UnOp {
     fn lower(&self, _ctx: &mut Context<'_>) -> Tokens {
         match self.kind {
+            hir::UnOpKind::Add => unreachable!(),
             hir::UnOpKind::Boxed => unreachable!(),
+            hir::UnOpKind::Del => unreachable!(),
             hir::UnOpKind::Neg => quote!(-),
             hir::UnOpKind::Not => quote!(!),
             hir::UnOpKind::Err => unreachable!(),

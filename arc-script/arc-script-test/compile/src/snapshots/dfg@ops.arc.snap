@@ -2,12 +2,6 @@
 source: arc-script-test/compile/src/insta.rs
 expression: s
 input_file: arc-script-test/compile/src/tests/expect_fail_todo/ops.arc
----
-[-- Found 1 errors --],
-error: Type mismatch
-   ┌─ /home/klas/Workspace/arc/arc-script/arc-script-test/compile/src/tests/expect_fail_todo/ops.arc:17:8
-   │
-17 │     -- 1 as f32;
-   │        ^ f32 != i32
 
+---
 

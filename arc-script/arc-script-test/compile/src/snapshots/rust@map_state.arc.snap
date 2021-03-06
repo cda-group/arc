@@ -1,0 +1,94 @@
+---
+source: arc-script-test/compile/src/insta.rs
+expression: s
+input_file: arc-script-test/compile/src/tests/expect_mlir_fail_todo/map_state.arc
+
+---
+use arc_script::arcorn;
+use arc_script::arcorn::state::{ArcMapOps, ArcRefOps, ArcSetOps, ArcVecOps};
+use arcon::prelude::*;
+pub struct MapCount<'i, 'source, 'timer, 'channel, B: Backend, C: ComponentDefinition> {
+    pub data: &'i mut MapCountData,
+    pub ctx: &'i mut OperatorContext<'source, 'timer, 'channel, MapCountData, B, C>,
+    pub timestamp: Option<u64>,
+}
+pub struct MapCountData {
+    pub state: MapCountState,
+}
+#[derive(ArconState)]
+pub struct MapCountState {
+    pub c_0: arc_script::arcorn::state::ArcMap<i32, i32, arcon::prelude::Sled>,
+}
+impl StateConstructor for MapCountState {
+    type BackendType = arcon::prelude::Sled;
+    fn new(backend: Arc<Self::BackendType>) -> Self {
+        Self { c_0 : < arc_script :: arcorn :: state :: ArcMap < i32 , i32 , arcon :: prelude :: Sled > > :: arc_map_default ("c_0" , backend . clone ()) . unwrap () }
+    }
+}
+impl MapCountData {
+    fn new() -> OperatorBuilder<MapCountData> {
+        OperatorBuilder {
+            constructor: Arc::new(move |backend| {
+                MapCountData { state : MapCountState { c_0 : < arc_script :: arcorn :: state :: ArcMap < i32 , i32 , arcon :: prelude :: Sled > > :: arc_map_new ("c_0" , backend . clone () , { let y_1_0 = < :: std :: collections :: HashMap < i32 , i32 > > :: new () ; y_1_0 }) . unwrap () } , }
+            }),
+            conf: Default::default(),
+        }
+    }
+}
+impl Operator for MapCountData {
+    type IN = Struct5valuei32End;
+    type OUT = Struct5valuei32End;
+    type TimerState = ArconNever;
+    type OperatorState = MapCountState;
+    fn handle_element(
+        &mut self,
+        elem: ArconElement<Self::IN>,
+        ref mut ctx: OperatorContext<Self, impl Backend, impl ComponentDefinition>,
+    ) -> OperatorResult<()> {
+        let ArconElement { timestamp, data } = elem;
+        let event = data.value;
+        let mut task = MapCount {
+            data: self,
+            ctx,
+            timestamp,
+        };
+        task.handle(event);
+        Ok(())
+    }
+    fn state(&mut self) -> &mut Self::OperatorState {
+        &mut self.state
+    }
+    arcon::ignore_timeout!();
+    arcon::ignore_persist!();
+}
+impl<'i, 'source, 'timer, 'channel, B: Backend, C: ComponentDefinition>
+    MapCount<'i, 'source, 'timer, 'channel, B, C>
+{
+    fn handle(&mut self, event_0: i32) -> OperatorResult<()> {
+        {
+            let y_1_0 = self.data.state.c_0.arc_map_get_unchecked(event_0).unwrap();
+            let y_1_1 = 1i32;
+            let y_1_2 = y_1_0 + y_1_1;
+            let y_1_3 = self.data.state.c_0.arc_map_get_unchecked(event_0).unwrap();
+            let y_1_4 = self.data.state.c_0.arc_map_insert(event_0, y_1_2).unwrap();
+            self.emit(y_1_3);
+            y_1_4
+        };
+        Ok(())
+    }
+    fn emit(&mut self, event_0: i32) {
+        let data = Struct5valuei32End { value: event_0 };
+        let elem = ArconElement {
+            data,
+            timestamp: self.timestamp,
+        };
+        self.ctx.output(elem);
+    }
+}
+#[arcorn::rewrite]
+#[derive(Copy)]
+pub struct Struct5valuei32End {
+    value: i32,
+}
+
+
