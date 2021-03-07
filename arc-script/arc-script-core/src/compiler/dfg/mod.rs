@@ -2,6 +2,8 @@
 pub(crate) mod display;
 /// Module for evaluating the HIR into a DFG.
 pub(crate) mod from;
+/// Module for evaluating the HIR into a DFG.
+pub(crate) mod lower;
 /// Module for representing the dataflow graph.
 pub(crate) mod repr;
 /// Module for verifying the dataflow graph.

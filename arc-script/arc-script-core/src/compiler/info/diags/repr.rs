@@ -1,4 +1,4 @@
-use crate::compiler::ast::from::source::lexer::Token;
+use crate::compiler::ast::lower::source::lexer::Token;
 use crate::compiler::ast::Name;
 
 use crate::compiler::hir::Path;

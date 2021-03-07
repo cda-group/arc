@@ -1,4 +1,4 @@
-use crate::compiler::dfg::from::eval::stack::Frame;
+use crate::compiler::dfg::lower::hir::eval::stack::Frame;
 use crate::compiler::hir::Path;
 
 use arc_script_core_shared::New;
