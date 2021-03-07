@@ -108,6 +108,10 @@ impl FreeVars for hir::Expr {
             hir::ExprKind::Break => return Err(()),
             hir::ExprKind::Todo => {}
             hir::ExprKind::Err => {}
+            hir::ExprKind::Del(e0, e1) | hir::ExprKind::Add(e0, e1) => {
+                e0.fv(union)?;
+                e1.fv(union)?;
+            }
         }
         Ok(())
     }

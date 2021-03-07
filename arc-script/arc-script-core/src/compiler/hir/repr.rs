@@ -212,6 +212,8 @@ pub(crate) enum ExprKind {
     BinOp(Box<Expr>, BinOp, Box<Expr>),
     Break,
     Empty,
+    Del(Box<Expr>, Box<Expr>),
+    Add(Box<Expr>, Box<Expr>),
     Call(Box<Expr>, Vec<Expr>),
     Select(Box<Expr>, Vec<Expr>),
     Emit(Box<Expr>),

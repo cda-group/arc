@@ -477,18 +477,6 @@ impl hir::Expr {
                     };
                     return quote!(self.data.state.#x.#op(#e0).unwrap());
                 }
-                // e0 not in x
-                (_, hir::BinOpKind::NotIn, hir::ExprKind::Var(x, hir::VarKind::State)) => {
-                    let x = x.lower(ctx);
-                    let e0 = e0.ssa(ctx, env, ops, depth);
-                    let ty = ctx.info.types.resolve(e1.tv);
-                    let op = match ty.kind {
-                        hir::TypeKind::Map(..) => quote!(arc_map_contains),
-                        hir::TypeKind::Set(..) => quote!(arc_set_contains),
-                        _ => unreachable!(),
-                    };
-                    return quote!(!self.data.state.#x.#op(#e0).unwrap());
-                }
                 _ => {
                     let e0 = e0.ssa(ctx, env, ops, depth);
                     let op = op.lower(ctx);
@@ -601,39 +589,34 @@ impl hir::Expr {
                 let es = es.iter().map(|e| e.ssa(ctx, env, ops, depth));
                 quote!((#(#es),*))
             }
-            hir::ExprKind::UnOp(op, e0) => match (&op.kind, &e0.kind) {
-                (hir::UnOpKind::Boxed, _) => {
+            hir::ExprKind::UnOp(op, e0) => {
+                if let hir::UnOpKind::Boxed = &op.kind {
                     let e0 = e0.ssa(ctx, env, ops, depth);
                     quote!(Box::new(#e0))
-                }
-                // add x[e2]
-                (hir::UnOpKind::Add, hir::ExprKind::Select(e1, es)) => {
-                    match (&e1.kind, es.as_slice()) {
-                        (hir::ExprKind::Var(x, hir::VarKind::State), [e2]) => {
-                            let x = x.lower(ctx);
-                            let e2 = e2.lower(ctx);
-                            quote!(self.data.state.#x.arc_set_add(#e2).unwrap())
-                        }
-                        _ => todo!(),
-                    }
-                }
-                // del x[e2]
-                (hir::UnOpKind::Del, hir::ExprKind::Select(e1, es)) => {
-                    match (&e1.kind, es.as_slice()) {
-                        (hir::ExprKind::Var(x, hir::VarKind::State), [e2]) => {
-                            let x = x.lower(ctx);
-                            let e2 = e2.lower(ctx);
-                            quote!(self.data.state.#x.arc_set_del(#e2).unwrap())
-                        }
-                        _ => todo!(),
-                    }
-                }
-                _ => {
+                } else {
                     let e0 = e0.ssa(ctx, env, ops, depth);
                     let op = op.lower(ctx);
                     quote!(#op #e0)
                 }
-            },
+            }
+            hir::ExprKind::Add(e0, e1) => {
+                if let hir::ExprKind::Var(x, hir::VarKind::State) = &e0.kind {
+                    let x = x.lower(ctx);
+                    let e1 = e1.lower(ctx);
+                    quote!(self.data.state.#x.arc_set_add(#e1).unwrap())
+                } else {
+                    todo!()
+                }
+            }
+            hir::ExprKind::Del(e0, e1) => {
+                if let hir::ExprKind::Var(x, hir::VarKind::State) = &e0.kind {
+                    let x = x.lower(ctx);
+                    let e1 = e1.lower(ctx);
+                    quote!(self.data.state.#x.arc_set_del(#e1).unwrap())
+                } else {
+                    todo!()
+                }
+            }
             hir::ExprKind::Enwrap(x, e) => {
                 let x = x.lower(ctx);
                 let e = e.ssa(ctx, env, ops, depth);

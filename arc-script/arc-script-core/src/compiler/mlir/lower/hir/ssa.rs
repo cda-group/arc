@@ -145,6 +145,8 @@ impl SSA<Var> for Expr {
             ExprKind::Return(_e) => todo!(),
             ExprKind::Todo => todo!(),
             ExprKind::Err => unreachable!(),
+            ExprKind::Del(e0, e1) => todo!(),
+            ExprKind::Add(e0, e1) => todo!(),
         };
         let x = Var::new(ctx.info.names.fresh(), self.tv);
         let ty = ctx.info.types.resolve(self.tv);

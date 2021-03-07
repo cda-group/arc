@@ -304,12 +304,11 @@ impl<'i> Display for Pretty<'i, hir::Expr, Context<'_>> {
                 e1 = e1.pretty(fmt)
             ),
             hir::ExprKind::UnOp(op, e0) => match &op.kind {
-                hir::UnOpKind::Add => write!(f, "add {}", e0.pretty(fmt)),
                 hir::UnOpKind::Boxed => write!(f, "box {}", e0.pretty(fmt)),
                 hir::UnOpKind::Not => write!(f, "not {}", e0.pretty(fmt)),
                 hir::UnOpKind::Neg => write!(f, "-{}", e0.pretty(fmt)),
-                hir::UnOpKind::Del => write!(f, "del {}", e0.pretty(fmt)),
                 hir::UnOpKind::Err => write!(f, "☇{}", e0.pretty(fmt)),
+                _ => unreachable!()
             },
             hir::ExprKind::Project(e, i) => write!(f, "{}.{}", e.pretty(fmt), i.id),
             hir::ExprKind::Access(e, x) => write!(f, "{}.{}", e.pretty(fmt), x.pretty(fmt)),
@@ -339,6 +338,8 @@ impl<'i> Display for Pretty<'i, hir::Expr, Context<'_>> {
             hir::ExprKind::Return(e) => write!(f, "return {};;", e.pretty(fmt)),
             hir::ExprKind::Empty => write!(f, "{{}}"),
             hir::ExprKind::Todo => write!(f, "???"),
+            hir::ExprKind::Del(e0, e1) => write!(f, "del {}[{}]", e0.pretty(fmt), e1.pretty(fmt)),
+            hir::ExprKind::Add(e0, e1) => write!(f, "add {}[{}]", e0.pretty(fmt), e1.pretty(fmt)),
         }?;
         if fmt.ctx.info.mode.verbosity >= Verbosity::Debug {
             write!(f, "):{}", expr.tv.pretty(fmt))?;

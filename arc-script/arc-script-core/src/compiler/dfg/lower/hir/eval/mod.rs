@@ -375,6 +375,8 @@ impl Expr {
             }
             ExprKind::Empty => todo!(),
             ExprKind::Todo => todo!(),
+            ExprKind::Del(_, _) => todo!(),
+            ExprKind::Add(_, _) => todo!(),
             ExprKind::Err => unreachable!(),
         };
         Ok(Value::new(kind, self.tv))

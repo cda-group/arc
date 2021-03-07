@@ -222,6 +222,10 @@ impl hir::Expr {
             hir::ExprKind::Empty => {}
             hir::ExprKind::Todo => {}
             hir::ExprKind::Err => {}
+            hir::ExprKind::Add(e0, e1) | hir::ExprKind::Del(e0, e1) => {
+                e0.collect_use(b0, owner);
+                e1.collect_use(b0, owner)
+            }
             // NOTE: Ownership breaks for the following transformation:
             // if let Some(x) = Some(y) {
             //     ...

@@ -292,6 +292,26 @@ pub enum Error {
         /// Location of the extern function.
         loc: Option<Loc>,
     },
+
+    /// Error when an expression expects a selector (e.g., e1 not in e2[123]), but the selector is
+    /// not specified.
+    ExpectedSelector {
+        /// Location of the expression
+        loc: Option<Loc>,
+    },
+
+    /// Error when multiple selectors are specified. For now this is a hard-error, but will relaxed 
+    /// in the future.
+    MultipleSelectors {
+        /// Location of the expression
+        loc: Option<Loc>,
+    },
+
+    /// Error when using a non-selectable type (map, set) in a selector.
+    ExpectedSelectableType {
+        /// Location of the expression
+        loc: Option<Loc>,
+    },
 }
 
 /// Runtime errors reported by the compiler.

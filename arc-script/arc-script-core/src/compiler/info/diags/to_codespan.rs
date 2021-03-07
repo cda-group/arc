@@ -227,6 +227,15 @@ impl ToCodespan for Error {
             Self::PatternInExternFun { loc } => Codespan::error()
                 .with_message("Extern functions may only take parameters which are not patterns")
                 .with_labels(vec![label(loc)?]),
+            Self::ExpectedSelector { loc } => Codespan::error()
+                .with_message("Expected selector")
+                .with_labels(vec![label(loc)?]),
+            Self::MultipleSelectors { loc } => Codespan::error()
+                .with_message("Found multiple selectors, expected just one.")
+                .with_labels(vec![label(loc)?]),
+            Self::ExpectedSelectableType { loc } => Codespan::error()
+                .with_message("Expected selectable type.")
+                .with_labels(vec![label(loc)?]),
         }
         .into()
     }

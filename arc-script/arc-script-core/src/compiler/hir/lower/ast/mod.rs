@@ -18,6 +18,8 @@ mod lowerings {
     pub(crate) mod path;
     /// Module for lowering patterns.
     pub(crate) mod pattern;
+    /// Module for lowering binop-expressions.
+    pub(crate) mod ops;
 }
 
 /// Module for lowering names and paths of the AST.
@@ -403,11 +405,17 @@ impl Lower<hir::Expr, Context<'_>> for ast::Expr {
             ast::ExprKind::Lambda(ps, e)        => lambda::lower(ps, e, self.loc, ctx),
             ast::ExprKind::Call(e, es)          => call::lower(e, es, ctx),
             ast::ExprKind::Select(e, es)        => hir::ExprKind::Select(e.lower(ctx).into(), es.as_slice().lower(ctx)),
-            ast::ExprKind::UnOp(op, e)          => hir::ExprKind::UnOp(op.lower(ctx), e.lower(ctx).into()),
-            ast::ExprKind::BinOp(e0, op, e1) if matches!(op.kind, ast::BinOpKind::Pipe) => {
-                hir::ExprKind::Call(e1.lower(ctx).into(), vec![e0.lower(ctx)])
+            ast::ExprKind::UnOp(op, e) => match op.kind {
+                ast::UnOpKind::Add => ops::lower_add(e, self.loc, ctx),
+                ast::UnOpKind::Del => ops::lower_del(e, self.loc, ctx),
+                _ => hir::ExprKind::UnOp(op.lower(ctx), e.lower(ctx).into())
+            },
+            ast::ExprKind::BinOp(e0, op, e1) => match op.kind {
+                ast::BinOpKind::NotIn => ops::lower_not_in(e0, e1, self.loc, ctx),
+                ast::BinOpKind::Pipe  => ops::lower_pipe(e0, e1, self.loc, ctx),
+                _                     => hir::ExprKind::BinOp(e0.lower(ctx).into(), op.lower(ctx), e1.lower(ctx).into())
+
             }
-            ast::ExprKind::BinOp(e0, op, e1)    => hir::ExprKind::BinOp(e0.lower(ctx).into(), op.lower(ctx), e1.lower(ctx).into()),
             ast::ExprKind::If(e0, e1, e2)       => hir::ExprKind::If(e0.lower(ctx).into(), e1.scoped(ctx).into(), e2.scoped(ctx).into()),
             ast::ExprKind::IfLet(p, e0, e1, e2) => return if_let::lower(p, e0, e1, e2, ctx),
             ast::ExprKind::Let(p, e0, e1)       => return let_in::lower(p, e0, e1, ctx),
@@ -416,8 +424,8 @@ impl Lower<hir::Expr, Context<'_>> for ast::Expr {
             ast::ExprKind::Enwrap(x, e)         => path::lower_enwrap(x, e, ctx),
             ast::ExprKind::Is(x, e)             => path::lower_is(x, e, ctx),
             ast::ExprKind::Log(e)               => hir::ExprKind::Log(e.lower(ctx).into()),
-            ast::ExprKind::For(_p, _e0, _e1)       => todo!(),
-            ast::ExprKind::Match(_e, _cs)         => todo!(), //refutable::lower_cases(cs, ctx),
+            ast::ExprKind::For(_p, _e0, _e1)    => todo!(),
+            ast::ExprKind::Match(_e, _cs)       => todo!(), //refutable::lower_cases(cs, ctx),
             ast::ExprKind::Loop(e0)             => hir::ExprKind::Loop(e0.scoped(ctx).into()),
             ast::ExprKind::Break                => hir::ExprKind::Break,
             ast::ExprKind::Return(e)            => {

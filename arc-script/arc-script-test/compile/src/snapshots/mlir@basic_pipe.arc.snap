@@ -17,8 +17,8 @@ module @toplevel {
     }
     func @crate_test1() -> si32 {
         %x_8 = arc.constant 3 : si32
-        %x_9 = constant crate_x_0 : (si32) -> si32
-        %x_A = constant crate_x_2 : (si32) -> si32
+        %x_9 = constant @crate_x_0 : (si32) -> si32
+        %x_A = constant @crate_x_2 : (si32) -> si32
         %x_B = call_indirect %x_9(%x_8) : (si32) -> si32
         %x_C = call_indirect %x_A(%x_B) : (si32) -> si32
         return %x_C : si32
