@@ -236,6 +236,9 @@ impl ToCodespan for Error {
             Self::ExpectedSelectableType { loc } => Codespan::error()
                 .with_message("Expected selectable type.")
                 .with_labels(vec![label(loc)?]),
+            Self::TypeMustBeKnownAtThisPoint { loc } => Codespan::error()
+                .with_message("Type must be known at this point.")
+                .with_labels(vec![label(loc)?]),
         }
         .into()
     }

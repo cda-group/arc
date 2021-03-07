@@ -341,10 +341,24 @@ impl Constrain<'_> for Expr {
             ExprKind::Return(_) => ctx.unify(self.tv, Unit),
             ExprKind::Empty => {}
             ExprKind::Todo => {}
-            ExprKind::Del(e0, e1) | ExprKind::Add(e0, e1) => {
+            ExprKind::Add(e0, e1) => {
                 e0.constrain(ctx);
                 e1.constrain(ctx);
-                constrain_selector(e0.tv, e1.tv, ctx);
+                ctx.unify(e0.tv, hir::TypeKind::Set(e1.tv));
+                ctx.unify(self.tv, Unit);
+            }
+            ExprKind::Del(e0, e1) => {
+                e0.constrain(ctx);
+                e1.constrain(ctx);
+                match ctx.info.types.resolve(e0.tv).kind {
+                    hir::TypeKind::Map(tv, _) => ctx.unify(tv, e1.tv),
+                    hir::TypeKind::Set(tv) => ctx.unify(tv, e1.tv),
+                    hir::TypeKind::Unknown => unknown_err(ctx),
+                    _ => ctx
+                        .info
+                        .diags
+                        .intern(Error::ExpectedSelectableType { loc: ctx.loc }),
+                }
                 ctx.unify(self.tv, Unit);
             }
             ExprKind::Err => {}
@@ -353,16 +367,10 @@ impl Constrain<'_> for Expr {
     }
 }
 
-fn constrain_selector(collection_tv: TypeId, key_tv: TypeId, ctx: &mut Context<'_>) {
-    let ty = ctx.info.types.resolve(collection_tv);
-    match ty.kind {
-        hir::TypeKind::Map(tv, _) => ctx.unify(tv, key_tv),
-        hir::TypeKind::Set(tv) => ctx.unify(tv, key_tv),
-        _ => ctx
-            .info
-            .diags
-            .intern(Error::ExpectedSelectableType { loc: ctx.loc }),
-    }
+fn unknown_err(ctx: &mut Context<'_>) {
+    ctx.info
+        .diags
+        .intern(Error::TypeMustBeKnownAtThisPoint { loc: ctx.loc });
 }
 
 impl Constrain<'_> for Vec<Expr> {

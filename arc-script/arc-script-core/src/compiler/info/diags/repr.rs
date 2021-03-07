@@ -176,6 +176,12 @@ pub enum Error {
         loc: Option<Loc>,
     },
 
+    /// Error when type information is needed at a code location, but is not supplied.
+    TypeMustBeKnownAtThisPoint {
+        /// Location of the error.
+        loc: Option<Loc>,
+    },
+
     /// Error when a path does not reference anything.
     PathNotFound {
         /// Path which failed to resolve.
