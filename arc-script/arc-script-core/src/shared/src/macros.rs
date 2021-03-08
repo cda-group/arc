@@ -16,7 +16,7 @@ macro_rules! get {
 #[macro_export]
 macro_rules! map {
     {
-        $expr:expr , $head:ident$(::$tail:ident)*(_)
+        $expr:expr , $head:ident$(::$tail:ident)*
     } => {
         if let $head$(::$tail)*(x) = $expr {
             Some(x)

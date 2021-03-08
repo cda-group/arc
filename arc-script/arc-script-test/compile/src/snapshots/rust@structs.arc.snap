@@ -1,9 +1,11 @@
 ---
 source: arc-script-test/compile/src/insta.rs
 expression: s
-input_file: arc-script-test/compile/src/expect-pass/structs.arc
+input_file: arc-script-test/compile/src/tests/expect_pass/structs.arc
+
 ---
 use arc_script::arcorn;
+use arc_script::arcorn::state::{ArcMapOps, ArcRefOps, ArcSetOps, ArcVecOps};
 use arcon::prelude::*;
 pub fn test() -> () {
     let y_1_0 = 1i32;

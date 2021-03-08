@@ -1,4 +1,4 @@
-use crate::compiler::ast::from::source::lexer::Token;
+use crate::compiler::ast::lower::source::lexer::Token;
 use crate::compiler::ast::Name;
 
 use crate::compiler::hir::Path;
@@ -290,6 +290,26 @@ pub enum Error {
     /// Error when an extern function contains a parameter which is a pattern.
     PatternInExternFun {
         /// Location of the extern function.
+        loc: Option<Loc>,
+    },
+
+    /// Error when an expression expects a selector (e.g., e1 not in e2[123]), but the selector is
+    /// not specified.
+    ExpectedSelector {
+        /// Location of the expression
+        loc: Option<Loc>,
+    },
+
+    /// Error when multiple selectors are specified. For now this is a hard-error, but will relaxed 
+    /// in the future.
+    MultipleSelectors {
+        /// Location of the expression
+        loc: Option<Loc>,
+    },
+
+    /// Error when using a non-selectable type (map, set) in a selector.
+    ExpectedSelectableType {
+        /// Location of the expression
         loc: Option<Loc>,
     },
 }

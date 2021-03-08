@@ -6,6 +6,7 @@ pub use format::Format;
 pub use lower::Lower;
 
 pub use anyhow::Result;
+pub use boolinator::Boolinator as Bool;
 pub use cfg_if::cfg_if;
 pub use derive_more::Constructor as New;
 pub use derive_more::From;
@@ -13,7 +14,6 @@ pub use educe::Educe;
 pub use fxhash::FxBuildHasher as Hasher;
 pub use linear_map::Entry;
 pub use shrinkwraprs::Shrinkwrap;
-pub use boolinator::Boolinator as Bool;
 
 pub use indexmap::map::Entry as OrdMapEntry;
 pub use linear_map::Entry as VecMapEntry;

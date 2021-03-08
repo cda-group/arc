@@ -7,10 +7,10 @@ use crate::compiler::info::names::NameId;
 
 use crate::compiler::info::paths::PathId;
 
-use arc_script_core_shared::OrdMap;
-use arc_script_core_shared::New;
-use arc_script_core_shared::Educe;
 use arc_script_core_macros::Spanned;
+use arc_script_core_shared::Educe;
+use arc_script_core_shared::New;
+use arc_script_core_shared::OrdMap;
 
 use half::bf16;
 use half::f16;
@@ -180,7 +180,7 @@ pub struct On {
 /// A state variable.
 #[derive(Debug, New)]
 pub struct State {
-    pub name: Name,
+    pub param: Param,
     pub expr: Expr,
 }
 
@@ -233,6 +233,8 @@ pub enum ExprKind {
     BinOp(Expr, BinOp, Expr),
     Break,
     Call(Expr, Vec<Expr>),
+    Select(Expr, Vec<Expr>),
+    Empty,
     Cast(Expr, Type),
     Emit(Expr),
     For(Pat, Expr, Expr),
@@ -332,6 +334,8 @@ pub enum BinOpKind {
     Bor,
     Bxor,
     By,
+    In,
+    NotIn,
     Div,
     Equ,
     Geq,
@@ -361,7 +365,9 @@ pub struct UnOp {
 /// A kind of unary operator.
 #[derive(Debug, Clone)]
 pub enum UnOpKind {
+    Add,
     Boxed,
+    Del,
     Neg,
     Not,
     Err,
@@ -445,6 +451,7 @@ pub enum ScalarKind {
     Null,
     Str,
     Unit,
+    Never,
     Bot,
 }
 

@@ -30,7 +30,6 @@ impl Path {
                 ItemKind::Alias(item)   => item.tv.is_copyable(ctx),
                 ItemKind::Enum(item)    => item.variants.iter().all(|v| v.is_copyable(ctx)),
                 ItemKind::Fun(item)     => true,
-                ItemKind::State(item)   => false,
                 ItemKind::Task(item)    => false,
                 ItemKind::Extern(item)  => true,
                 ItemKind::Variant(item) => item.tv.is_copyable(ctx),

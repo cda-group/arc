@@ -37,6 +37,7 @@ impl LanguageServer for Backend {
                     work_done_progress_options: WorkDoneProgressOptions {
                         work_done_progress: Some(true),
                     },
+                    all_commit_characters: None,
                 }),
                 signature_help_provider: Some(SignatureHelpOptions {
                     trigger_characters: None,

@@ -1,6 +1,7 @@
 ---
 source: arc-script-test/compile/src/insta.rs
 expression: s
-input_file: arc-script-test/compile/src/expect-mlir-fail-todo/pipe.arc
+input_file: arc-script-test/compile/src/tests/expect_mlir_fail_todo/pipe.arc
+
 ---
 

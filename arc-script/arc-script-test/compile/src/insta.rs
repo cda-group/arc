@@ -4,11 +4,19 @@ use arc_script_core::prelude::compiler::compile;
 use arc_script_core::prelude::diags::Buffer;
 use arc_script_core::prelude::modes::{Input, Mode, Output};
 
+use lazy_static::lazy_static;
+use regex::Regex;
+
 use std::env;
+
+lazy_static! {
+    static ref FILE_LOC_REGEX: Regex = Regex::new(r#"/.*:[0-9]+:[0-9]+"#).unwrap();
+}
 
 fn snapshot(output: Output, paths: &str) {
     env::set_var("INSTA_OUTPUT", "summary");
     env::set_var("INSTA_FORCE_PASS", "1");
+
     let mut settings = insta::Settings::clone_current();
     settings.set_prepend_module_to_snapshot(false);
     settings.remove_snapshot_suffix();
@@ -23,6 +31,7 @@ fn snapshot(output: Output, paths: &str) {
             };
             compile(mode, &mut sink).unwrap();
             let s = std::str::from_utf8(sink.as_slice()).unwrap();
+            let s = FILE_LOC_REGEX.replace_all(s, regex::NoExpand("<FILE-NAME>"));
             insta::assert_snapshot!(s);
             sink.clear();
         })
@@ -31,39 +40,36 @@ fn snapshot(output: Output, paths: &str) {
 
 #[test]
 fn test_ast() {
-    snapshot(Output::AST, "tests/expect-mlir-fail-todo/*.arc");
-    snapshot(Output::AST, "tests/expect-pass/*.arc");
-    snapshot(Output::AST, "tests/expect-fail/*.arc");
-    snapshot(Output::AST, "tests/expect-fail-todo/*.arc");
+    snapshot(Output::AST, "tests/expect_mlir_fail_todo/*.arc");
+    snapshot(Output::AST, "tests/expect_pass/*.arc");
+    snapshot(Output::AST, "tests/expect_fail/*.arc");
+    snapshot(Output::AST, "tests/expect_fail_todo/*.arc");
 }
 
 #[test]
 fn test_hir() {
-    snapshot(Output::HIR, "tests/expect-mlir-fail-todo/*.arc");
-    snapshot(Output::HIR, "tests/expect-pass/*.arc");
-    snapshot(Output::HIR, "tests/expect-fail/*.arc");
-    snapshot(Output::HIR, "tests/expect-fail-todo/*.arc");
+    snapshot(Output::HIR, "tests/expect_mlir_fail_todo/*.arc");
+    snapshot(Output::HIR, "tests/expect_pass/*.arc");
+    snapshot(Output::HIR, "tests/expect_fail/*.arc");
+    snapshot(Output::HIR, "tests/expect_fail_todo/*.arc");
 }
 
 #[test]
 fn test_dfg() {
-    snapshot(Output::DFG, "tests/expect-mlir-fail-todo/*.arc");
-    snapshot(Output::DFG, "tests/expect-pass/*.arc");
-    snapshot(Output::DFG, "tests/expect-fail/*.arc");
-    snapshot(Output::DFG, "tests/expect-fail-todo/*.arc");
+    snapshot(Output::DFG, "tests/expect_mlir_fail_todo/*.arc");
+    snapshot(Output::DFG, "tests/expect_pass/*.arc");
+    snapshot(Output::DFG, "tests/expect_fail/*.arc");
 }
 
 #[test]
 fn test_rust() {
-    snapshot(Output::Rust, "tests/expect-mlir-fail-todo/*.arc");
-    snapshot(Output::Rust, "tests/expect-pass/*.arc");
-    snapshot(Output::Rust, "tests/expect-fail/*.arc");
-    snapshot(Output::Rust, "tests/expect-fail-todo/*.arc");
+    snapshot(Output::Rust, "tests/expect_mlir_fail_todo/*.arc");
+    snapshot(Output::Rust, "tests/expect_pass/*.arc");
+    snapshot(Output::Rust, "tests/expect_fail/*.arc");
 }
 
 #[test]
 fn test_mlir() {
-    snapshot(Output::MLIR, "tests/expect-pass/*.arc");
-    snapshot(Output::MLIR, "tests/expect-fail/*.arc");
-    snapshot(Output::MLIR, "tests/expect-fail-todo/*.arc");
+    snapshot(Output::MLIR, "tests/expect_pass/*.arc");
+    snapshot(Output::MLIR, "tests/expect_fail/*.arc");
 }

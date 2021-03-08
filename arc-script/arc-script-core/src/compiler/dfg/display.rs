@@ -19,7 +19,10 @@ pub(crate) struct Context<'i> {
 }
 
 /// Wraps the `DFG` inside a struct which can be pretty printed.
-pub(crate) fn pretty<'i, 'j, Node>(node: &'i Node, info: &'j Info) -> Pretty<'i, Node, Context<'j>> {
+pub(crate) fn pretty<'i, 'j, Node>(
+    node: &'i Node,
+    info: &'j Info,
+) -> Pretty<'i, Node, Context<'j>> {
     node.to_pretty(Context::new(info))
 }
 

@@ -52,7 +52,6 @@ impl<'i> Display for Pretty<'i, hir::Item, Context<'_>> {
             hir::ItemKind::Alias(item)   => write!(f, "{}", item.pretty(fmt)),
             hir::ItemKind::Enum(item)    => write!(f, "{}", item.pretty(fmt)),
             hir::ItemKind::Task(item)    => write!(f, "{}", item.pretty(fmt)),
-            hir::ItemKind::State(item)   => write!(f, "{}", item.pretty(fmt)),
             hir::ItemKind::Extern(item)  => write!(f, "{}", item.pretty(fmt)),
             hir::ItemKind::Variant(item) => write!(f, "{}", item.pretty(fmt)),
         }
@@ -121,12 +120,10 @@ impl<'i> Display for Pretty<'i, NameId, Context<'_>> {
 impl<'i> Display for Pretty<'i, hir::State, Context<'_>> {
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
         let Pretty(item, fmt) = self;
-        let name = fmt.ctx.info.paths.resolve(item.path.id).name;
         write!(
             f,
-            "state {name}: {ty} = {init};",
-            name = name.pretty(fmt),
-            ty = item.tv.pretty(fmt),
+            "state {param} = {init}",
+            param = item.param.pretty(fmt),
             init = item.init.pretty(fmt)
         )
     }
@@ -158,7 +155,7 @@ impl<'i> Display for Pretty<'i, hir::Task, Context<'_>> {
         let name = fmt.ctx.info.paths.resolve(item.path.id).name;
         write!(
             f,
-            "task {name}({params}) {ihub} -> {ohub} {{{items}{s1}{on}{s0}}}",
+            "task {name}({params}) {ihub} -> {ohub} {{{s1}{state}{items}{s1}{on}{s0}}}",
             name = name.pretty(fmt),
             params = item.params.iter().all_pretty(", ", fmt),
             ihub = item.ihub.pretty(fmt),
@@ -172,6 +169,7 @@ impl<'i> Display for Pretty<'i, hir::Task, Context<'_>> {
                 ),
                 ""
             ),
+            state = item.states.iter().all_pretty(",", fmt),
             on = item.on.pretty(fmt.indent()),
             s0 = fmt,
             s1 = fmt.indent(),
@@ -310,10 +308,12 @@ impl<'i> Display for Pretty<'i, hir::Expr, Context<'_>> {
                 hir::UnOpKind::Not => write!(f, "not {}", e0.pretty(fmt)),
                 hir::UnOpKind::Neg => write!(f, "-{}", e0.pretty(fmt)),
                 hir::UnOpKind::Err => write!(f, "☇{}", e0.pretty(fmt)),
+                _ => unreachable!()
             },
             hir::ExprKind::Project(e, i) => write!(f, "{}.{}", e.pretty(fmt), i.id),
             hir::ExprKind::Access(e, x) => write!(f, "{}.{}", e.pretty(fmt), x.pretty(fmt)),
             hir::ExprKind::Call(e, es) => write!(f, "{}({})", e.pretty(fmt), es.iter().all_pretty(", ", fmt)),
+            hir::ExprKind::Select(e, es) => write!(f, "{}[{}]", e.pretty(fmt), es.iter().all_pretty(", ", fmt)),
             hir::ExprKind::Emit(e) => write!(f, "emit {e}", e = e.pretty(fmt)),
             hir::ExprKind::Log(e) => write!(f, "log {e}", e = e.pretty(fmt)),
             hir::ExprKind::Array(es) => write!(f, "[{es}]", es = es.all_pretty(", ", fmt)),
@@ -336,7 +336,10 @@ impl<'i> Display for Pretty<'i, hir::Expr, Context<'_>> {
             hir::ExprKind::Item(x) => write!(f, "{}", x.pretty(fmt)), 
             hir::ExprKind::Err => write!(f, "☇"),
             hir::ExprKind::Return(e) => write!(f, "return {};;", e.pretty(fmt)),
+            hir::ExprKind::Empty => write!(f, "{{}}"),
             hir::ExprKind::Todo => write!(f, "???"),
+            hir::ExprKind::Del(e0, e1) => write!(f, "del {}[{}]", e0.pretty(fmt), e1.pretty(fmt)),
+            hir::ExprKind::Add(e0, e1) => write!(f, "add {}[{}]", e0.pretty(fmt), e1.pretty(fmt)),
         }?;
         if fmt.ctx.info.mode.verbosity >= Verbosity::Debug {
             write!(f, "):{}", expr.tv.pretty(fmt))?;
@@ -377,29 +380,31 @@ impl<'i> Display for Pretty<'i, hir::BinOp, Context<'_>> {
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
         let Pretty(op, fmt) = self;
         match &op.kind {
-            hir::BinOpKind::Add  => write!(f, " + "),
-            hir::BinOpKind::Sub  => write!(f, " - "),
-            hir::BinOpKind::Mul  => write!(f, " * "),
-            hir::BinOpKind::Div  => write!(f, " / "),
-            hir::BinOpKind::Mod  => write!(f, " % "),
-            hir::BinOpKind::Pow  => write!(f, " ** "),
-            hir::BinOpKind::Equ  => write!(f, " == "),
-            hir::BinOpKind::Neq  => write!(f, " != "),
-            hir::BinOpKind::Gt   => write!(f, " > "),
-            hir::BinOpKind::Lt   => write!(f, " < "),
-            hir::BinOpKind::Geq  => write!(f, " >= "),
-            hir::BinOpKind::Leq  => write!(f, " <= "),
-            hir::BinOpKind::Or   => write!(f, " or "),
-            hir::BinOpKind::And  => write!(f, " and "),
-            hir::BinOpKind::Xor  => write!(f, " xor "),
-            hir::BinOpKind::Band => write!(f, " band "),
-            hir::BinOpKind::Bor  => write!(f, " bor "),
-            hir::BinOpKind::Bxor => write!(f, " bxor "),
-            hir::BinOpKind::By   => write!(f, " by "),
-            hir::BinOpKind::Pipe => write!(f, " |> "),
-            hir::BinOpKind::Mut  => write!(f, " = "),
-            hir::BinOpKind::Seq  => write!(f, ";{}", fmt),
-            hir::BinOpKind::Err  => write!(f, " ☇ "),
+            hir::BinOpKind::Add   => write!(f, " + "),
+            hir::BinOpKind::Sub   => write!(f, " - "),
+            hir::BinOpKind::Mul   => write!(f, " * "),
+            hir::BinOpKind::Div   => write!(f, " / "),
+            hir::BinOpKind::Mod   => write!(f, " % "),
+            hir::BinOpKind::Pow   => write!(f, " ** "),
+            hir::BinOpKind::Equ   => write!(f, " == "),
+            hir::BinOpKind::Neq   => write!(f, " != "),
+            hir::BinOpKind::Gt    => write!(f, " > "),
+            hir::BinOpKind::Lt    => write!(f, " < "),
+            hir::BinOpKind::Geq   => write!(f, " >= "),
+            hir::BinOpKind::Leq   => write!(f, " <= "),
+            hir::BinOpKind::Or    => write!(f, " or "),
+            hir::BinOpKind::And   => write!(f, " and "),
+            hir::BinOpKind::Xor   => write!(f, " xor "),
+            hir::BinOpKind::Band  => write!(f, " band "),
+            hir::BinOpKind::Bor   => write!(f, " bor "),
+            hir::BinOpKind::Bxor  => write!(f, " bxor "),
+            hir::BinOpKind::By    => write!(f, " by "),
+            hir::BinOpKind::Pipe  => write!(f, " |> "),
+            hir::BinOpKind::Mut   => write!(f, " = "),
+            hir::BinOpKind::Seq   => write!(f, ";{}", fmt),
+            hir::BinOpKind::In    => write!(f, " in "),
+            hir::BinOpKind::NotIn => write!(f, " not in "),
+            hir::BinOpKind::Err   => write!(f, " ☇ "),
         }
     }
 }
@@ -409,24 +414,25 @@ impl<'i> Display for Pretty<'i, hir::ScalarKind, Context<'_>> {
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
         let Pretty(kind, _fmt) = self;
         match kind {
-            hir::ScalarKind::Bool => write!(f, "bool"),
-            hir::ScalarKind::Char => write!(f, "char"),
-            hir::ScalarKind::Bf16 => write!(f, "bf16"),
-            hir::ScalarKind::F16  => write!(f, "f16"),
-            hir::ScalarKind::F32  => write!(f, "f32"),
-            hir::ScalarKind::F64  => write!(f, "f64"),
-            hir::ScalarKind::I8   => write!(f, "i8"),
-            hir::ScalarKind::I16  => write!(f, "i16"),
-            hir::ScalarKind::I32  => write!(f, "i32"),
-            hir::ScalarKind::I64  => write!(f, "i64"),
-            hir::ScalarKind::U8   => write!(f, "u8"),
-            hir::ScalarKind::U16  => write!(f, "u16"),
-            hir::ScalarKind::U32  => write!(f, "u32"),
-            hir::ScalarKind::U64  => write!(f, "u64"),
-            hir::ScalarKind::Null => write!(f, "null"),
-            hir::ScalarKind::Str  => write!(f, "str"),
-            hir::ScalarKind::Unit => write!(f, "unit"),
-            hir::ScalarKind::Bot  => todo!(),
+            hir::ScalarKind::Bool  => write!(f, "bool"),
+            hir::ScalarKind::Char  => write!(f, "char"),
+            hir::ScalarKind::Bf16  => write!(f, "bf16"),
+            hir::ScalarKind::F16   => write!(f, "f16"),
+            hir::ScalarKind::F32   => write!(f, "f32"),
+            hir::ScalarKind::F64   => write!(f, "f64"),
+            hir::ScalarKind::I8    => write!(f, "i8"),
+            hir::ScalarKind::I16   => write!(f, "i16"),
+            hir::ScalarKind::I32   => write!(f, "i32"),
+            hir::ScalarKind::I64   => write!(f, "i64"),
+            hir::ScalarKind::U8    => write!(f, "u8"),
+            hir::ScalarKind::U16   => write!(f, "u16"),
+            hir::ScalarKind::U32   => write!(f, "u32"),
+            hir::ScalarKind::U64   => write!(f, "u64"),
+            hir::ScalarKind::Null  => write!(f, "null"),
+            hir::ScalarKind::Str   => write!(f, "str"),
+            hir::ScalarKind::Unit  => write!(f, "unit"),
+            hir::ScalarKind::Bot   => write!(f, "bot"),
+            hir::ScalarKind::Never => write!(f, "!"),
         }
     }
 }

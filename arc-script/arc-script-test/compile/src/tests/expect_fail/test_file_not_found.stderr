@@ -1,0 +1,10 @@
+error: custom attribute panicked
+ --> $DIR/test_file_not_found.rs:2:1
+  |
+2 | #[arc_script::compile("nonexistent_file.arc")]
+  | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  |
+  = help: message: File not found: Os { code: 2, kind: NotFound, message: "No such file or directory" }
+
+error: aborting due to previous error
+

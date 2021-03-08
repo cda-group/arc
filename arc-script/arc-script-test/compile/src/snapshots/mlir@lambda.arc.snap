@@ -1,7 +1,8 @@
 ---
 source: arc-script-test/compile/src/insta.rs
 expression: s
-input_file: arc-script-test/compile/src/expect-pass/lambda.arc
+input_file: arc-script-test/compile/src/tests/expect_pass/lambda.arc
+
 ---
 module @toplevel {
     func @crate_x_0(%i_0: si32) -> si32 {
@@ -10,7 +11,7 @@ module @toplevel {
         return %x_2 : si32
     }
     func @crate_test() -> si32 {
-        %x_3 = constant crate_x_0 : (si32) -> si32
+        %x_3 = constant @crate_x_0 : (si32) -> si32
         %x_4 = arc.constant 1 : si32
         %x_5 = call_indirect %x_3(%x_4) : (si32) -> si32
         return %x_5 : si32

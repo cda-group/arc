@@ -1,0 +1,18 @@
+---
+source: arc-script-test/compile/src/insta.rs
+expression: s
+input_file: arc-script-test/compile/src/tests/expect_pass/basic_pipe.arc
+
+---
+fun test1() {
+    let a = 3 in
+    let b = |x| {
+        x + 1
+    } in
+    let c = |x| {
+        x - 1
+    } in
+    let d: i32 = a |> b |> c in
+    d
+}
+

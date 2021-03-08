@@ -45,7 +45,6 @@ pub(crate) enum ItemKind {
     Alias(Alias),
     Enum(Enum),
     Fun(Fun),
-    State(State),
     Task(Task),
     Extern(Extern),
     Variant(Variant),
@@ -125,8 +124,7 @@ pub(crate) struct Alias {
 
 #[derive(New, Debug)]
 pub(crate) struct State {
-    pub(crate) path: Path,
-    pub(crate) tv: TypeId,
+    pub(crate) param: Param,
     pub(crate) init: Expr,
 }
 
@@ -136,8 +134,10 @@ pub(crate) struct Task {
     pub(crate) path: Path,
     /// Type of the task.
     pub(crate) tv: TypeId,
-    /// Side-input parameters to the task.
+    /// Initializer parameters of the task.
     pub(crate) params: Vec<Param>,
+    /// State variables of the task.
+    pub(crate) states: Vec<State>,
     /// Constructor which also flattens the input parameters of a task when initializing it.
     ///
     ///   task Foo((a, b): (i32, f32)) (I(i32)) -> (O(i32))
@@ -211,7 +211,11 @@ pub(crate) enum ExprKind {
     Array(Vec<Expr>),
     BinOp(Box<Expr>, BinOp, Box<Expr>),
     Break,
+    Empty,
+    Del(Box<Expr>, Box<Expr>),
+    Add(Box<Expr>, Box<Expr>),
     Call(Box<Expr>, Vec<Expr>),
+    Select(Box<Expr>, Vec<Expr>),
     Emit(Box<Expr>),
     If(Box<Expr>, Box<Expr>, Box<Expr>),
     Item(Path),
@@ -236,6 +240,7 @@ pub(crate) enum ExprKind {
 pub(crate) enum VarKind {
     Local,
     Member,
+    State,
     // Global,
 }
 

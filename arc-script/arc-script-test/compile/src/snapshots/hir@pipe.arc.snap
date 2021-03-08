@@ -1,7 +1,8 @@
 ---
 source: arc-script-test/compile/src/insta.rs
 expression: s
-input_file: arc-script-test/compile/src/expect-mlir-fail-todo/pipe.arc
+input_file: arc-script-test/compile/src/tests/expect_mlir_fail_todo/pipe.arc
+
 ---
 fun foo(x_0: i32) -> i32 {
     x_0 + x_0
@@ -10,6 +11,7 @@ fun bar(x_1: i32) -> i32 {
     crate::foo(crate::foo(x_1))
 }
 task Baz() (~i32) -> (~i32) {
+    
     on {
         event_0: i32 => {
             emit event_0

@@ -16,16 +16,43 @@ pub(crate) type Store = Rodeo<Key, Hasher>;
 #[derive(Debug)]
 pub(crate) struct NameInterner {
     pub(crate) store: Store,
-    pub(crate) root: NameId,
+    pub(crate) common: Common,
     buf: String,
+}
+
+macro_rules! common {
+    {
+        aliased_names: [$($aliased:ident:$alias:literal),*],
+        literal_names: [$($literal:ident),*]
+    } => {
+        #[derive(Debug)]
+        pub(crate) struct Common {
+            $(pub(crate) $aliased: NameId,)*
+            $(pub(crate) $literal: NameId),*
+        }
+        impl Common {
+            fn new(store: &mut Store) -> Self {
+                Self {
+                    $($aliased: NameId(store.get_or_intern_static($alias)),)*
+                    $($literal: NameId(store.get_or_intern_static((stringify!($literal))))),*
+                }
+            }
+        }
+    }
+}
+
+/// Commonly occurring names.
+common! {
+    aliased_names: [root: "crate"],
+    literal_names: [value, sink, source, push, pop, fold, add, remove, len, clear]
 }
 
 impl Default for NameInterner {
     fn default() -> Self {
         let mut store = Store::with_hasher(Hasher::default());
         let buf = String::new();
-        let root = NameId(store.get_or_intern("crate"));
-        Self { store, buf, root }
+        let common = Common::new(&mut store);
+        Self { store, common, buf }
     }
 }
 
@@ -36,12 +63,12 @@ pub(crate) type NameBuf = str;
 pub struct NameId(Key);
 
 impl NameInterner {
-    /// Interns a `Name` to a `NameId`.
+    /// Interns a `NameBuf` to a `NameId`.
     pub(crate) fn intern(&mut self, name: impl AsRef<NameBuf>) -> NameId {
         self.store.get_or_intern(name).into()
     }
 
-    /// Resolves a `Name` to a `NameId`.
+    /// Resolves a `NameId` to a `NameBuf`.
     pub(crate) fn resolve(&self, id: NameId) -> &NameBuf {
         self.store.resolve(&id)
     }

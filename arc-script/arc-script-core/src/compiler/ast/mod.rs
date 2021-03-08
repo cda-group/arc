@@ -7,6 +7,8 @@ pub(crate) mod debug;
 /// Module for pretty printing the `AST`.
 pub(crate) mod display;
 /// Module which parses files of source code into an `AST`.
+pub mod lower;
+/// Module implements the from conversion.
 pub mod from;
 /// Data representation of the `AST`.
 pub mod repr;

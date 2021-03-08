@@ -1,0 +1,19 @@
+---
+source: arc-script-test/compile/src/insta.rs
+expression: s
+input_file: arc-script-test/compile/src/tests/expect_pass/enum_pattern_nested.arc
+
+---
+module @toplevel {
+    func @crate_x_5() -> () {
+        return 
+    }
+    func @crate_main() -> () {
+        %x_7 = arc.constant 5 : si32
+        %x_8 = "arc.enwrap"%x_7 { variant = crate_Baz_Some } : si32 -> crate_Baz
+        %x_9 = "arc.enwrap"%x_8 { variant = crate_Foo_Bar } : crate_Baz -> crate_Foo
+        %x_A = "arc.is"%x_9 { variant = crate_Foo_Bar } : crate_Foo -> i1
+        return 
+    }
+}
+

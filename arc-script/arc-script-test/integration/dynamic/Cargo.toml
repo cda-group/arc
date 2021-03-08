@@ -6,6 +6,6 @@ edition = "2018"
 license = "MIT"
 
 [dependencies]
-arc-script = { version = "=0.0.0", path = "../../../" }
+arc-script = { version = "=0.0.0", path = "../../../", features = ["proc"] }
 arcon      = { git = "https://github.com/cda-group/arcon" }
 prost      = { version = "0.7.0" }

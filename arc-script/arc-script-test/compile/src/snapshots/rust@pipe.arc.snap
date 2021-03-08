@@ -1,9 +1,11 @@
 ---
 source: arc-script-test/compile/src/insta.rs
 expression: s
-input_file: arc-script-test/compile/src/expect-mlir-fail-todo/pipe.arc
+input_file: arc-script-test/compile/src/tests/expect_mlir_fail_todo/pipe.arc
+
 ---
 use arc_script::arcorn;
+use arc_script::arcorn::state::{ArcMapOps, ArcRefOps, ArcSetOps, ArcVecOps};
 use arcon::prelude::*;
 pub fn foo(x_0: i32) -> i32 {
     let y_1_0 = x_0 + x_0;
@@ -14,32 +16,35 @@ pub fn bar(x_1: i32) -> i32 {
     let y_1_1 = foo(y_1_0);
     y_1_1
 }
-pub struct HandlerBaz<
-    'i,
-    'source,
-    'timer,
-    'channel,
-    O: 'static + Operator,
-    B: Backend,
-    C: ComponentDefinition,
-> {
-    pub op: &'i mut O,
-    pub ctx: &'i mut OperatorContext<'source, 'timer, 'channel, O, B, C>,
+pub struct Baz<'i, 'source, 'timer, 'channel, B: Backend, C: ComponentDefinition> {
+    pub data: &'i mut BazData,
+    pub ctx: &'i mut OperatorContext<'source, 'timer, 'channel, BazData, B, C>,
     pub timestamp: Option<u64>,
 }
+pub struct BazData {
+    pub state: BazState,
+}
 #[derive(ArconState)]
-pub struct TaskBaz {}
-fn Baz() -> OperatorBuilder<TaskBaz> {
-    OperatorBuilder {
-        constructor: Arc::new(move |b| TaskBaz {}),
-        conf: Default::default(),
+pub struct BazState {}
+impl StateConstructor for BazState {
+    type BackendType = arcon::prelude::Sled;
+    fn new(backend: Arc<Self::BackendType>) -> Self {
+        Self {}
     }
 }
-impl Operator for TaskBaz {
+impl BazData {
+    fn new() -> OperatorBuilder<BazData> {
+        OperatorBuilder {
+            constructor: Arc::new(move |backend| BazData { state: BazState {} }),
+            conf: Default::default(),
+        }
+    }
+}
+impl Operator for BazData {
     type IN = Struct5valuei32End;
     type OUT = Struct5valuei32End;
     type TimerState = ArconNever;
-    type OperatorState = Self;
+    type OperatorState = BazState;
     fn handle_element(
         &mut self,
         elem: ArconElement<Self::IN>,
@@ -47,23 +52,27 @@ impl Operator for TaskBaz {
     ) -> OperatorResult<()> {
         let ArconElement { timestamp, data } = elem;
         let event = data.value;
-        let mut handler = HandlerBaz {
-            op: self,
+        let mut task = Baz {
+            data: self,
             ctx,
             timestamp,
         };
-        handler.handle(event);
+        task.handle(event);
         Ok(())
+    }
+    fn state(&mut self) -> &mut Self::OperatorState {
+        &mut self.state
     }
     arcon::ignore_timeout!();
     arcon::ignore_persist!();
 }
 impl<'i, 'source, 'timer, 'channel, B: Backend, C: ComponentDefinition>
-    HandlerBaz<'i, 'source, 'timer, 'channel, TaskBaz, B, C>
+    Baz<'i, 'source, 'timer, 'channel, B, C>
 {
     fn handle(&mut self, event_0: i32) -> OperatorResult<()> {
-        let y_1_0 = self.emit(event_0);
-        y_1_0;
+        {
+            self.emit(event_0)
+        };
         Ok(())
     }
     fn emit(&mut self, event_0: i32) {
@@ -76,8 +85,8 @@ impl<'i, 'source, 'timer, 'channel, B: Backend, C: ComponentDefinition>
     }
 }
 pub fn qux(s_0: Stream<Struct5valuei32End>) -> Stream<Struct5valuei32End> {
-    let y_1_0 = Baz();
-    let y_1_1 = Baz();
+    let y_1_0 = BazData::new();
+    let y_1_1 = BazData::new();
     let y_1_2 = Stream::operator(s_0, y_1_1);
     let y_1_3 = Stream::operator(y_1_2, y_1_0);
     y_1_3

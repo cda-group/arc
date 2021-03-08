@@ -4,7 +4,7 @@ use sqlparser::dialect::Dialect;
 
 #[derive(Debug, Clone, PartialEq)]
 pub(crate) struct Query {
-    stmts: Vec<Stmt>
+    stmts: Vec<Stmt>,
 }
 
 #[derive(Debug, Clone, PartialEq)]

@@ -1,7 +1,7 @@
 use crate::compiler::hir::Name;
 
-use arc_script_core_shared::Shrinkwrap;
 use arc_script_core_shared::Map;
+use arc_script_core_shared::Shrinkwrap;
 
 use std::borrow::Borrow;
 
