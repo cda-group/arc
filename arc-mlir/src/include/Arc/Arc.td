@@ -602,7 +602,7 @@ def Arc_StateAppenderFoldOp : Arc_Op<"appender_fold",
   let extraClassDeclaration = [{ LogicalResult customVerify(); }];
   let verifier = [{ return customVerify(); }];
   let builders = [
-    OpBuilderDAG<(ins "Value":$state, "Value":$init, "StringRef":$callee)>
+    OpBuilder<(ins "Value":$state, "Value":$init, "StringRef":$callee)>
   ];
 
 }
