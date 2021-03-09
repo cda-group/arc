@@ -77,13 +77,13 @@ def RustCallOp : Rust_Op<"call", [CallOpInterface]> {
   let results = (outs Variadic<AnyType>);
 
   let builders = [
-    OpBuilderDAG<(ins "SymbolRefAttr":$callee, "TypeRange":$results,
+    OpBuilder<(ins "SymbolRefAttr":$callee, "TypeRange":$results,
       CArg<"ValueRange", "{}">:$operands), [{
       $_state.addOperands(operands);
       $_state.addAttribute("callee", callee);
       $_state.addTypes(results);
     }]>,
-    OpBuilderDAG<(ins "StringRef":$callee, "TypeRange":$results,
+    OpBuilder<(ins "StringRef":$callee, "TypeRange":$results,
       CArg<"ValueRange", "{}">:$operands), [{
       build($_builder, $_state, $_builder.getSymbolRefAttr(callee), results,
             operands);
