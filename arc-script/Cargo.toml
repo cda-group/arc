@@ -53,6 +53,7 @@ members = [
   "arc-script-test/bench",
   "arc-script-test/template",
   "arc-script-test/stdlib",
+  "arc-script-test/arcon",
 ]
 
 default-members = [
@@ -82,6 +83,7 @@ default-members = [
 exclude = [
   "arc-script-test/integration/dynamic",
   "arc-script-test/integration/dynamic-cached",
+  "arc-script-test/arcon",
   "fuzz",
 #   "arc-script-web-repl",
   "arc-script-web-lsp",
