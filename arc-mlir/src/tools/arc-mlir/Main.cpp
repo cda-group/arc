@@ -109,6 +109,7 @@ int main(int argc, char **argv) {
     exit(1);
   }
 
+  output->keep();
   return failed(ArcOptMain(output->os(), std::move(file), passPipeline,
                            registry, splitInputFile, verifyDiagnostics,
                            verifyPasses));
