@@ -49,6 +49,13 @@ pub(crate) fn run_arc_mlir(infile: &std::path::Path, outfile: &std::path::Path) 
         .unwrap()
         .wait()
         .unwrap();
+
+    Command::new("rustfmt")
+        .arg(outfile)
+        .spawn()
+        .unwrap()
+        .wait()
+        .unwrap();
 }
 
 impl<'i> Display for Pretty<'i, mlir::MLIR, Context<'_>> {
