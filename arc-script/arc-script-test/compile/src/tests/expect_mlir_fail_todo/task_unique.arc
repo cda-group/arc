@@ -11,10 +11,10 @@ task UniqueSet() ~i32 -> ~i32 {
 }
 
 task UniqueMap() ~i32 -> ~i32 {
-    state map: {i32 => bool} = {}
+    state map: {i32 => unit} = {}
     on event => {
         if event not in map {
-            map[event] = true;
+            map[event] = unit;
             emit event
         } else {
             unit
