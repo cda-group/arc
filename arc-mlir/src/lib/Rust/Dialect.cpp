@@ -40,6 +40,13 @@ static llvm::cl::opt<std::string>
                       llvm::cl::desc("Override name of output crate"),
                       llvm::cl::value_desc("cratename"));
 
+static llvm::cl::opt<std::string>
+    rustModuleFile("rustfile",
+                   llvm::cl::desc("Write all rust output to a single file"),
+                   llvm::cl::value_desc("filename"));
+
+static bool outputIsToModule() { return !rustModuleFile.getValue().empty(); }
+
 //===----------------------------------------------------------------------===//
 // RustDialect
 //===----------------------------------------------------------------------===//
@@ -411,6 +418,30 @@ LogicalResult rust::writeModuleAsCrates(ModuleOp module, std::string top_dir,
 
   if (!writeTypesToml(types_toml_filename, crateName, PS))
     return failure();
+
+  return success();
+}
+
+LogicalResult rust::writeModuleAsInline(ModuleOp module, llvm::raw_ostream &o)
+{
+  std::string ms, ts;
+  llvm::raw_string_ostream m(ms), t(ts);
+
+  RustPrinterStream PS(m, t, "cratename", true);
+
+  for (Operation &operation : module) {
+    if (RustFuncOp op = dyn_cast<RustFuncOp>(operation))
+      op.writeRust(PS);
+    else if (RustExtFuncOp op = dyn_cast<RustExtFuncOp>(operation))
+      op.writeRust(PS);
+  }
+
+  PS.flush();
+  m.flush();
+  t.flush();
+
+  o.write(ts.data(), ts.size());
+  o.write(ms.data(), ms.size());
 
   return success();
 }

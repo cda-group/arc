@@ -66,17 +66,21 @@ class RustPrinterStream {
 
   std::string ModuleName;
 
+  bool InlineOuput;
+
 public:
   RustPrinterStream(llvm::raw_ostream &os, llvm::raw_ostream &types,
-                    std::string module_name)
+                    std::string module_name, bool inlineOutput = false)
       : OS(os), Types(types), Constants(ConstantsStr),
         NamedTypes(NamedTypesStr), TypeUses(UsesStr), Body(BodyStr), NextID(0),
-        NextConstID(0), ModuleName(module_name){};
+        NextConstID(0), ModuleName(module_name), InlineOuput(inlineOutput){};
 
   void flush() {
-    OS << "#![allow(non_snake_case)]\n#![allow(non_camel_case_types)]\n";
-    OS << "#![allow(arithmetic_overflow)]\n";
-    Types << "#![allow(non_snake_case)]\n#![allow(non_camel_case_types)]\n";
+    if (!InlineOuput) {
+      OS << "#![allow(non_snake_case)]\n#![allow(non_camel_case_types)]\n";
+      OS << "#![allow(arithmetic_overflow)]\n";
+      Types << "#![allow(non_snake_case)]\n#![allow(non_camel_case_types)]\n";
+    }
 
     for (auto i : CrateDirectives)
       OS << i.second << "\n";
