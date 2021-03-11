@@ -2,7 +2,7 @@
 
 use arc_script_core::compiler::compile;
 use arc_script_core::compiler::info::diags::sink::Buffer;
-use arc_script_core::prelude::modes::{Input, Mode, Output};
+use arc_script_core::prelude::modes::{get_rust_backend, Input, Mode, Output};
 
 use proc_macro as pm;
 use proc_macro2 as pm2;
@@ -35,7 +35,7 @@ pub(crate) fn expand(attr: pm::TokenStream, item: pm::TokenStream) -> pm::TokenS
             let mut sink = Buffer::no_color();
             let opt = Mode {
                 input: Input::Code(source),
-                output: Output::Rust,
+                output: get_rust_backend(),
                 ..Default::default()
             };
 

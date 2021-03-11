@@ -10,6 +10,7 @@ use crate::compiler::info::modes::Mode;
 use crate::compiler::info::modes::Output;
 use crate::compiler::info::Info;
 use crate::compiler::mlir;
+use crate::compiler::mlir::display::run_arc_mlir;
 use crate::compiler::mlir::MLIR;
 use arc_script_core_shared::Result;
 
@@ -82,6 +83,24 @@ where
         let rust = Arcon::from(&hir, &mut info);
 
         writeln!(f, "{}", arcon::pretty(&rust))?;
+        return Ok(Report::semantic(info, hir));
+    }
+
+    if matches!(info.mode.output, Output::RustMLIR) {
+        // Lower HIR and DFG into Rust via MLIR
+        let mlir = MLIR::from(&hir, &mut info);
+        let r = mlir::pretty(&mlir, &info);
+
+        let infile = tempfile::NamedTempFile::new().expect("Could not create temporary input file");
+        let outfile =
+            tempfile::NamedTempFile::new().expect("Could not create temporary output file");
+        let fw = &mut std::io::BufWriter::new(&infile);
+        writeln!(fw, "{}", r)?;
+        fw.flush();
+
+        run_arc_mlir(infile.path(), outfile.path());
+	let r = std::fs::read_to_string(&outfile)?;
+        write!(f, "{}", r)?;
         return Ok(Report::semantic(info, hir));
     }
 

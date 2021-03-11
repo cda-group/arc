@@ -2,6 +2,7 @@
 
 use arc_script_core::prelude::compiler;
 use arc_script_core::prelude::diags::sink::Buffer;
+use arc_script_core::prelude::modes::get_rust_backend;
 use arc_script_core::prelude::modes::Input;
 use arc_script_core::prelude::modes::Mode;
 use arc_script_core::prelude::modes::Output;
@@ -36,7 +37,7 @@ impl Script {
     pub fn compile(self) {
         let mode = Mode {
             input: Input::File(Some(self.path.clone())),
-            output: Output::Rust,
+            output: arc_script_core::prelude::modes::get_rust_backend(),
             ..Default::default()
         };
         let mut sink = Buffer::no_color();

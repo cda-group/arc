@@ -108,6 +108,8 @@ pub enum Output {
     DFG,
     /// Output Rust.
     Rust,
+    /// Output Rust via MLIR.
+    RustMLIR,
     /// Output MLIR (Default).
     MLIR,
 }

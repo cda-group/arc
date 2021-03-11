@@ -87,9 +87,27 @@ pub enum Output {
     DFG,
     /// Emit [`crate::compiler::rust::Rust`] as output (by first lowering the `HIR` and `DFG` into it).
     Rust,
+    /// Emit [`crate::compiler::rust::Rust`] as output via the MLIR route.
+    RustMLIR,
     /// Emit [`crate::compiler::mlir::MLIR`] as output (by first lowering the `HIR` and `DFG` into it).
     #[educe(Default)]
     MLIR,
     /// Emit no output.
     Silent,
+}
+
+/// Consult environment variables to determine the backend to use for
+/// rust output.
+#[must_use]
+pub fn get_rust_backend() -> Output {
+    let use_mlir_backend = match std::env::var("ARCSCRIPT_MLIR_BACKEND") {
+        Ok(val) => val.parse().unwrap_or(0) != 0,
+        Err(e) => false,
+    };
+
+    if use_mlir_backend {
+        Output::RustMLIR
+    } else {
+        Output::Rust
+    }
 }
