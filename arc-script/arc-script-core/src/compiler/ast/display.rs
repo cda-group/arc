@@ -368,24 +368,25 @@ impl<'i> Display for Pretty<'i, ast::LitKind, Context<'_>> {
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
         let Pretty(lit, _) = self;
         match lit {
-            ast::LitKind::I8(l)   => write!(f, "{}i8", l),
-            ast::LitKind::I16(l)  => write!(f, "{}i16", l),
-            ast::LitKind::I32(l)  => write!(f, "{}", l),
-            ast::LitKind::I64(l)  => write!(f, "{}i64", l),
-            ast::LitKind::U8(l)   => write!(f, "{}u8", l),
-            ast::LitKind::U16(l)  => write!(f, "{}u16", l),
-            ast::LitKind::U32(l)  => write!(f, "{}u32", l),
-            ast::LitKind::U64(l)  => write!(f, "{}u64", l),
-            ast::LitKind::Bf16(l) => write!(f, "{}bf16", l),
-            ast::LitKind::F16(l)  => write!(f, "{}f16", l),
-            ast::LitKind::F32(l)  => write!(f, "{}f32", ryu::Buffer::new().format(*l)),
-            ast::LitKind::F64(l)  => write!(f, "{}", ryu::Buffer::new().format(*l)),
-            ast::LitKind::Bool(l) => write!(f, "{}", l),
-            ast::LitKind::Char(l) => write!(f, "'{}'", l),
-            ast::LitKind::Str(l)  => write!(f, r#""{}""#, l),
-            ast::LitKind::Time(l) => write!(f, "{}", l.as_seconds_f64()),
-            ast::LitKind::Unit    => write!(f, "unit"),
-            ast::LitKind::Err     => write!(f, "☇"),
+            ast::LitKind::I8(l)       => write!(f, "{}i8", l),
+            ast::LitKind::I16(l)      => write!(f, "{}i16", l),
+            ast::LitKind::I32(l)      => write!(f, "{}", l),
+            ast::LitKind::I64(l)      => write!(f, "{}i64", l),
+            ast::LitKind::U8(l)       => write!(f, "{}u8", l),
+            ast::LitKind::U16(l)      => write!(f, "{}u16", l),
+            ast::LitKind::U32(l)      => write!(f, "{}u32", l),
+            ast::LitKind::U64(l)      => write!(f, "{}u64", l),
+            ast::LitKind::Bf16(l)     => write!(f, "{}bf16", l),
+            ast::LitKind::F16(l)      => write!(f, "{}f16", l),
+            ast::LitKind::F32(l)      => write!(f, "{}f32", ryu::Buffer::new().format(*l)),
+            ast::LitKind::F64(l)      => write!(f, "{}", ryu::Buffer::new().format(*l)),
+            ast::LitKind::Bool(l)     => write!(f, "{}", l),
+            ast::LitKind::Char(l)     => write!(f, "'{}'", l),
+            ast::LitKind::Str(l)      => write!(f, r#""{}""#, l),
+            ast::LitKind::Duration(l) => write!(f, "{}", l.as_seconds_f64()),
+            ast::LitKind::DateTime(l) => write!(f, "{}", l.to_string()),
+            ast::LitKind::Unit        => write!(f, "unit"),
+            ast::LitKind::Err         => write!(f, "☇"),
         }
     }
 }
@@ -395,6 +396,7 @@ impl<'i> Display for Pretty<'i, ast::BinOp, Context<'_>> {
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
         let Pretty(op, fmt) = self;
         match &op.kind {
+            ast::BinOpKind::After => write!(f, " after "),
             ast::BinOpKind::Add   => write!(f, " + "),
             ast::BinOpKind::Sub   => write!(f, " - "),
             ast::BinOpKind::Mul   => write!(f, " * "),
@@ -466,6 +468,8 @@ impl<'i> Display for Pretty<'i, ast::ScalarKind, Context<'_>> {
             ast::ScalarKind::Unit  => write!(f, "unit"),
             ast::ScalarKind::Bot   => write!(f, "bot"),
             ast::ScalarKind::Never => write!(f, "!"),
+            ast::ScalarKind::DateTime  => write!(f, "time"),
+            ast::ScalarKind::Duration  => write!(f, "duration"),
         }
     }
 }

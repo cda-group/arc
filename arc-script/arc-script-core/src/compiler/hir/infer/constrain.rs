@@ -166,7 +166,8 @@ impl Constrain<'_> for Expr {
                     LitKind::F64(_)  => F64,
                     LitKind::Bool(_) => Bool,
                     LitKind::Unit    => Unit,
-                    LitKind::Time(_) => todo!(),
+                    LitKind::DateTime(_) => DateTime,
+                    LitKind::Duration(_) => Duration,
                     LitKind::Char(_) => Char,
                     LitKind::Str(_)  => Str,
                     LitKind::Err     => return,
@@ -182,12 +183,9 @@ impl Constrain<'_> for Expr {
                 es.constrain(ctx);
             }
             ExprKind::Struct(fs) => {
-                let fields = fs
-                    .iter()
-                    .map(|(field, arg)| (*field, arg.tv))
-                    .collect::<VecMap<_, _>>();
-                ctx.unify(self.tv, TypeKind::Struct(fields));
                 fs.constrain(ctx);
+                let fs = fs.iter().map(|(x, e)| (*x, e.tv)).collect::<VecMap<_, _>>();
+                ctx.unify(self.tv, TypeKind::Struct(fs));
             }
             ExprKind::Enwrap(x0, e) => {
                 e.constrain(ctx);
@@ -207,8 +205,6 @@ impl Constrain<'_> for Expr {
             }
             ExprKind::Is(x0, e) => {
                 e.constrain(ctx);
-                let item = ctx.defs.get(x0).unwrap();
-                let _item = get!(&item.kind, ItemKind::Variant(x));
                 let x1 = ctx.info.paths.resolve(x0.id).pred.unwrap().into();
                 ctx.unify(e.tv, TypeKind::Nominal(x1));
                 ctx.unify(self.tv, Bool);
@@ -267,6 +263,7 @@ impl Constrain<'_> for Expr {
                     In => ctx.unify(self.tv, Bool),
                     NotIn => ctx.unify(self.tv, Bool),
                     BinOpKind::Err => {}
+                    After => unreachable!(),
                 }
             }
             ExprKind::UnOp(op, e0) => match &op.kind {
@@ -324,6 +321,12 @@ impl Constrain<'_> for Expr {
                 ctx.unify(self.tv, Unit);
                 e.constrain(ctx);
             }
+            ExprKind::EmitAfter(e0, e1) => {
+                e0.constrain(ctx);
+                e1.constrain(ctx);
+                ctx.unify(self.tv, Unit);
+                ctx.unify(e1.tv, DateTime);
+            },
             ExprKind::Log(e) => {
                 ctx.unify(self.tv, Unit);
                 e.constrain(ctx);

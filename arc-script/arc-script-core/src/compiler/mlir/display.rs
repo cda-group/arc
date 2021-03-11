@@ -495,11 +495,14 @@ impl<'i> Display for Pretty<'i, hir::Type, Context<'_>> {
                 Char  => todo!(),
                 Bot   => unreachable!(),
                 Never => unreachable!(),
+                DateTime  => unreachable!(),
+                Duration  => unreachable!(),
             }
             Struct(fs)     => {
                     write!(f, "!arc.struct<{fs}>",
                         fs = fs.map_pretty(|(x, e), f| write!(f, "{} : {}", x.pretty(fmt), e.pretty(fmt)), ", "))
             }
+            PortSet(_)      => unreachable!(),
             Nominal(x)      => write!(f, "{}", x.pretty(fmt)),
             Array(_ty, _sh) => todo!(),
             Stream(_ty)     => todo!(),

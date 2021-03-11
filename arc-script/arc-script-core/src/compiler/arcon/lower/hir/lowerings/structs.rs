@@ -134,6 +134,8 @@ impl hir::ScalarKind {
             Self::Unit  => "()",
             Self::Bot   => todo!(),
             Self::Never => "!",
+            Self::DateTime  => "time",
+            Self::Duration  => "duration",
         };
         name.push_str(s);
     }

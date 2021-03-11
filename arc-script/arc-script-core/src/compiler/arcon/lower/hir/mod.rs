@@ -768,6 +768,8 @@ impl Lower<Tokens, Context<'_>> for hir::ScalarKind {
             Self::Unit  => quote!(()),
             Self::Bot   => todo!(),
             Self::Never => quote!(!),
+            Self::DateTime  => quote!(u64),
+            Self::Duration  => quote!(u64),
         }
     }
 }
@@ -776,6 +778,7 @@ impl Lower<Tokens, Context<'_>> for hir::ScalarKind {
 impl Lower<Tokens, Context<'_>> for hir::BinOp {
     fn lower(&self, _ctx: &mut Context<'_>) -> Tokens {
         match self.kind {
+            hir::BinOpKind::After => unreachable!(),
             hir::BinOpKind::Add   => quote!(+),
             hir::BinOpKind::And   => quote!(&&),
             hir::BinOpKind::Band  => quote!(&),
@@ -871,7 +874,8 @@ impl Lower<Tokens, Context<'_>> for hir::LitKind {
             Self::U32(v)  => quote!(#v),
             Self::U64(v)  => quote!(#v),
             Self::Str(_v)  => todo!(),
-            Self::Time(_v) => todo!(),
+            Self::DateTime(_v) => todo!(),
+            Self::Duration(_) => todo!(),
             Self::Unit    => quote!(()),
             Self::Err     => unreachable!(),
         }

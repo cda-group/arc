@@ -131,6 +131,14 @@ pub enum Error {
         loc: Option<Loc>,
     },
 
+    /// Error produced by [`time`].
+    Time {
+        /// Error code.
+        err: time::ParseError,
+        /// Location of the error.
+        loc: Option<Loc>,
+    },
+
     /// Error when the parser comes across an extra token.
     ExtraToken {
         /// Extra token found while parsing.
@@ -318,6 +326,13 @@ pub enum Error {
         /// Location of the expression
         loc: Option<Loc>,
     },
+
+    /// Error when writing `after` without there being an `emit` before it. e.g.,
+    /// `expr0 after expr1` instead of `emit expr0 after expr1`
+    AfterNotPrecededByEmit {
+        /// Location of the expression
+        loc: Option<Loc>,
+    }
 }
 
 /// Runtime errors reported by the compiler.

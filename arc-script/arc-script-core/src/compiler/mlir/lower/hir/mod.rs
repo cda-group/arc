@@ -120,7 +120,8 @@ impl Lower<mlir::ConstKind, Context<'_>> for hir::LitKind {
             Self::Bool(v) => mlir::ConstKind::Bool(*v),
             Self::Char(v) => mlir::ConstKind::Char(*v),
             Self::Str(_)  => todo!(),
-            Self::Time(v) => mlir::ConstKind::Time(*v),
+            Self::DateTime(_) => todo!(),
+            Self::Duration(_) => todo!(),
             Self::Unit    => mlir::ConstKind::Unit,
             Self::Err     => unreachable!(),
         }

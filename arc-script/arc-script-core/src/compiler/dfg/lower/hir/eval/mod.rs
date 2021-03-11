@@ -55,7 +55,8 @@ impl Expr {
                 LitKind::Unit    => Unit,
                 LitKind::Char(v) => Char(*v),
                 LitKind::Str(v)  => Str(v.clone()),
-                LitKind::Time(_) => todo!(),
+                LitKind::DateTime(_) => todo!(),
+                LitKind::Duration(_) => todo!(),
                 LitKind::Err     => unreachable!(),
             },
             ExprKind::Var(x, _) => return Ok(ctx.stack.lookup(x.id).clone()),
@@ -241,6 +242,7 @@ impl Expr {
                 Variant(_x0, _v) => todo!(),
                 _ => unreachable!(),
             },
+            ExprKind::EmitAfter(_, _) => todo!(),
             ExprKind::Log(_e) => todo!(),
             // Short-circuit
             ExprKind::BinOp(e0, op, e1) if matches!(op.kind, And) => match e0.eval(ctx)?.kind {

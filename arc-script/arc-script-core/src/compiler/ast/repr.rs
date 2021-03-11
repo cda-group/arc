@@ -16,6 +16,7 @@ use half::bf16;
 use half::f16;
 use std::fmt::Debug;
 use time::Duration;
+use time::PrimitiveDateTime as DateTime;
 
 /// A structure which keeps the start and end position of an AST node plus its source file.
 /// NB: The `FileId` could probably be kept in a nicer place to take up less space.
@@ -105,6 +106,7 @@ pub enum TaskItemKind {
     On(On),
     State(State),
     Use(Use),
+    Port(InnerPort),
     Err,
 }
 
@@ -285,7 +287,8 @@ pub enum LitKind {
     U32(u32),
     U64(u64),
     Str(String),
-    Time(Duration),
+    DateTime(DateTime),
+    Duration(Duration),
     Unit,
     Err,
 }
@@ -328,6 +331,7 @@ pub struct BinOp {
 /// A kind of binary operator.
 #[derive(Debug, Clone)]
 pub enum BinOpKind {
+    After,
     Add,
     And,
     Band,
@@ -387,6 +391,13 @@ pub struct Variant {
     pub name: Name,
     pub ty: Option<Type>,
     pub loc: Option<Loc>,
+}
+
+/// An internal port of a task.
+#[derive(Debug, New)]
+pub struct InnerPort {
+    pub name: Name,
+    pub ty: Option<Type>,
 }
 
 /// A port of a hub.
@@ -453,6 +464,8 @@ pub enum ScalarKind {
     Unit,
     Never,
     Bot,
+    DateTime,
+    Duration,
 }
 
 /// A shape of an array.

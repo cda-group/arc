@@ -6,6 +6,7 @@ use crate::compiler::info::diags::{DiagInterner, Diagnostic};
 use crate::compiler::ast::lower::source::lexer::Token;
 use lalrpop_util::ErrorRecovery;
 use time::Duration;
+use time::PrimitiveDateTime as DateTime;
 use half::f16;
 use half::bf16;
 
@@ -82,6 +83,7 @@ extern {
 //=============================================================================
 // Keywords
 //=============================================================================
+        "after"  => Token::After,
         "and"    => Token::And,
         "as"     => Token::As,
         "band"   => Token::Band,
@@ -109,6 +111,7 @@ extern {
         "not"    => Token::Not,
         "on"     => Token::On,
         "or"     => Token::Or,
+        "port"   => Token::Port,
         "reduce" => Token::Reduce,
         "return" => Token::Return,
         "state"  => Token::State,
@@ -121,9 +124,9 @@ extern {
 //=============================================================================
 // Reserved Keywords
 //=============================================================================
-        "after"    => Token::After,
         "end"      => Token::End,
         "of"       => Token::Of,
+        "pub"      => Token::Pub,
         "shutdown" => Token::Shutdown,
         "sink"     => Token::Sink,
         "source"   => Token::Source,
@@ -151,23 +154,24 @@ extern {
 //=============================================================================
 // Identifiers and Literals
 //=============================================================================
-        NameId  => Token::NameId(<NameId>),
-        LitI8   => Token::LitI8(<i8>),
-        LitI16  => Token::LitI16(<i16>),
-        LitI32  => Token::LitI32(<i32>),
-        LitI64  => Token::LitI64(<i64>),
-        LitU8   => Token::LitU8(<u8>),
-        LitU16  => Token::LitU16(<u16>),
-        LitU32  => Token::LitU32(<u32>),
-        LitU64  => Token::LitU64(<u64>),
-        LitBf16 => Token::LitBf16(<bf16>),
-        LitF16  => Token::LitF16(<f16>),
-        LitF32  => Token::LitF32(<f32>),
-        LitF64  => Token::LitF64(<f64>),
-        LitBool => Token::LitBool(<bool>),
-        LitChar => Token::LitChar(<char>),
-        LitStr  => Token::LitStr(<String>),
-        LitTime => Token::LitTime(<Duration>),
+        NameId      => Token::NameId(<NameId>),
+        LitI8       => Token::LitI8(<i8>),
+        LitI16      => Token::LitI16(<i16>),
+        LitI32      => Token::LitI32(<i32>),
+        LitI64      => Token::LitI64(<i64>),
+        LitU8       => Token::LitU8(<u8>),
+        LitU16      => Token::LitU16(<u16>),
+        LitU32      => Token::LitU32(<u32>),
+        LitU64      => Token::LitU64(<u64>),
+        LitBf16     => Token::LitBf16(<bf16>),
+        LitF16      => Token::LitF16(<f16>),
+        LitF32      => Token::LitF32(<f32>),
+        LitF64      => Token::LitF64(<f64>),
+        LitBool     => Token::LitBool(<bool>),
+        LitChar     => Token::LitChar(<char>),
+        LitStr      => Token::LitStr(<String>),
+        LitDateTime => Token::LitDateTime(<DateTime>),
+        LitDuration => Token::LitDuration(<Duration>),
     }
 }
 
@@ -300,24 +304,26 @@ ItemKind: ItemKind = {
 TaskItem: TaskItem = Spanned<Swap<Settings?, TaskItemKind>> => TaskItem::from(<>);
 
 TaskItemKind: TaskItemKind = {
-    Fun    => TaskItemKind::Fun(<>),
-    Extern => TaskItemKind::Extern(<>),
-    Alias  => TaskItemKind::Alias(<>),
-    Use    => TaskItemKind::Use(<>),
-    On     => TaskItemKind::On(<>),
-    State  => TaskItemKind::State(<>),
-    Enum   => TaskItemKind::Enum(<>),
-    Err    => TaskItemKind::Err,
+    Fun       => TaskItemKind::Fun(<>),
+    Extern    => TaskItemKind::Extern(<>),
+    Alias     => TaskItemKind::Alias(<>),
+    Use       => TaskItemKind::Use(<>),
+    On        => TaskItemKind::On(<>),
+    State     => TaskItemKind::State(<>),
+    Enum      => TaskItemKind::Enum(<>),
+    InnerPort => TaskItemKind::Port(<>),
+    Err       => TaskItemKind::Err,
 };
 
-Extern: Extern = "extern" "fun" <Name> <Params> "->" <Type0>                      => Extern::new(<>);
-Fun:    Fun    = "fun" <Name> <Params> <Params?> <("->" <Type0>)?> <Brace<Expr0>> => Fun::new(<>);
-Alias:  Alias  = "type" <Name> "=" <Type0>                                        => Alias::new(<>);
-Enum:   Enum   = "enum" <Name> <Brace<Vec<Variant>>>                              => Enum::new(<>);
-Use:    Use    = "use" <Path> <("as" <Name>)?>                                    => Use::new(<>);
-Task:   Task   = "task" <Name> <Params> <Hub> "->" <Hub> <Brace<TaskItem*>>       => Task::new(<>);
-On:     On     = "on" <Handler>                                                   => On::new(<>);
-State:  State  = "state" <Param> "=" <Expr0>                                      => State::new(<>);
+Extern: Extern       = "extern" "fun" <Name> <Params> "->" <Type0>                      => Extern::new(<>);
+Fun:    Fun          = "fun" <Name> <Params> <Params?> <("->" <Type0>)?> <Brace<Expr0>> => Fun::new(<>);
+Alias:  Alias        = "type" <Name> "=" <Type0>                                        => Alias::new(<>);
+Enum:   Enum         = "enum" <Name> <Brace<Vec<Variant>>>                              => Enum::new(<>);
+Use:    Use          = "use" <Path> <("as" <Name>)?>                                    => Use::new(<>);
+Task:   Task         = "task" <Name> <Params> <Hub> "->" <Hub> <Brace<TaskItem*>>       => Task::new(<>);
+On:     On           = "on" <Handler>                                                   => On::new(<>);
+State:  State        = "state" <Param> "=" <Expr0>                                      => State::new(<>);
+InnerPort: InnerPort = "port" <Name> <Paren<Type0>?>                                    => InnerPort::new(<>);
 
 Handler = {
     Brace<VecNonEmpty<Case>>,
@@ -344,7 +350,8 @@ BinOp<Kind>: BinOp = Spanned<Kind> => BinOp::from(<>);
 UnOp<Kind>:  UnOp  = Spanned<Kind> => UnOp::from(<>);
 
 Op0: BinOpKind = {
-    ";" => BinOpKind::Seq,
+    ";"     => BinOpKind::Seq,
+    "after" => BinOpKind::After,
 };
 
 Op1: BinOpKind = {
@@ -464,23 +471,24 @@ ReduceKind: ReduceKind = {
 //=============================================================================
 
 LitKind: LitKind = {
-    LitBool => LitKind::Bool(<>),
-    LitChar => LitKind::Char(<>),
-    LitI8   => LitKind::I8(<>),
-    LitI16  => LitKind::I16(<>),
-    LitI32  => LitKind::I32(<>),
-    LitI64  => LitKind::I64(<>),
-    LitU8   => LitKind::U8(<>),
-    LitU16  => LitKind::U16(<>),
-    LitU32  => LitKind::U32(<>),
-    LitU64  => LitKind::U64(<>),
-    LitBf16 => LitKind::Bf16(<>),
-    LitF16  => LitKind::F16(<>),
-    LitF32  => LitKind::F32(<>),
-    LitF64  => LitKind::F64(<>),
-    LitStr  => LitKind::Str(<>),
-    LitTime => LitKind::Time(<>),
-    "unit"  => LitKind::Unit,
+    LitBool     => LitKind::Bool(<>),
+    LitChar     => LitKind::Char(<>),
+    LitI8       => LitKind::I8(<>),
+    LitI16      => LitKind::I16(<>),
+    LitI32      => LitKind::I32(<>),
+    LitI64      => LitKind::I64(<>),
+    LitU8       => LitKind::U8(<>),
+    LitU16      => LitKind::U16(<>),
+    LitU32      => LitKind::U32(<>),
+    LitU64      => LitKind::U64(<>),
+    LitBf16     => LitKind::Bf16(<>),
+    LitF16      => LitKind::F16(<>),
+    LitF32      => LitKind::F32(<>),
+    LitF64      => LitKind::F64(<>),
+    LitStr      => LitKind::Str(<>),
+    LitDateTime => LitKind::DateTime(<>),
+    LitDuration => LitKind::Duration(<>),
+    "unit"      => LitKind::Unit,
 };
 
 //=============================================================================

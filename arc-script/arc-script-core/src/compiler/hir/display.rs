@@ -353,24 +353,25 @@ impl<'i> Display for Pretty<'i, hir::LitKind, Context<'_>> {
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
         let Pretty(lit, _) = self;
         match lit {
-            hir::LitKind::I8(l)   => write!(f, "{}i8", l),
-            hir::LitKind::I16(l)  => write!(f, "{}i16", l),
-            hir::LitKind::I32(l)  => write!(f, "{}", l),
-            hir::LitKind::I64(l)  => write!(f, "{}i64", l),
-            hir::LitKind::U8(l)   => write!(f, "{}u8", l),
-            hir::LitKind::U16(l)  => write!(f, "{}u16", l),
-            hir::LitKind::U32(l)  => write!(f, "{}u32", l),
-            hir::LitKind::U64(l)  => write!(f, "{}u64", l),
-            hir::LitKind::Bf16(l) => write!(f, "{}bf16", l),
-            hir::LitKind::F16(l)  => write!(f, "{}f16", l),
-            hir::LitKind::F32(l)  => write!(f, "{}f32", ryu::Buffer::new().format(*l)),
-            hir::LitKind::F64(l)  => write!(f, "{}", ryu::Buffer::new().format(*l)),
-            hir::LitKind::Bool(l) => write!(f, "{}", l),
-            hir::LitKind::Char(l) => write!(f, "'{}'", l),
-            hir::LitKind::Str(l)  => write!(f, r#""{}""#, l),
-            hir::LitKind::Time(l) => write!(f, "{}", l.as_seconds_f64()),
-            hir::LitKind::Unit    => write!(f, "unit"),
-            hir::LitKind::Err     => write!(f, "☇"),
+            hir::LitKind::I8(l)       => write!(f, "{}i8", l),
+            hir::LitKind::I16(l)      => write!(f, "{}i16", l),
+            hir::LitKind::I32(l)      => write!(f, "{}", l),
+            hir::LitKind::I64(l)      => write!(f, "{}i64", l),
+            hir::LitKind::U8(l)       => write!(f, "{}u8", l),
+            hir::LitKind::U16(l)      => write!(f, "{}u16", l),
+            hir::LitKind::U32(l)      => write!(f, "{}u32", l),
+            hir::LitKind::U64(l)      => write!(f, "{}u64", l),
+            hir::LitKind::Bf16(l)     => write!(f, "{}bf16", l),
+            hir::LitKind::F16(l)      => write!(f, "{}f16", l),
+            hir::LitKind::F32(l)      => write!(f, "{}f32", ryu::Buffer::new().format(*l)),
+            hir::LitKind::F64(l)      => write!(f, "{}", ryu::Buffer::new().format(*l)),
+            hir::LitKind::Bool(l)     => write!(f, "{}", l),
+            hir::LitKind::Char(l)     => write!(f, "'{}'", l),
+            hir::LitKind::Str(l)      => write!(f, r#""{}""#, l),
+            hir::LitKind::DateTime(l) => write!(f, "{}", l.to_string()),
+            hir::LitKind::Duration(l) => write!(f, "{}", l.as_seconds_f64()),
+            hir::LitKind::Unit        => write!(f, "unit"),
+            hir::LitKind::Err         => write!(f, "☇"),
         }
     }
 }
@@ -399,12 +400,13 @@ impl<'i> Display for Pretty<'i, hir::BinOp, Context<'_>> {
             hir::BinOpKind::Bor   => write!(f, " bor "),
             hir::BinOpKind::Bxor  => write!(f, " bxor "),
             hir::BinOpKind::By    => write!(f, " by "),
-            hir::BinOpKind::Pipe  => write!(f, " |> "),
+            hir::BinOpKind::Pipe  => unreachable!(),
             hir::BinOpKind::Mut   => write!(f, " = "),
             hir::BinOpKind::Seq   => write!(f, ";{}", fmt),
             hir::BinOpKind::In    => write!(f, " in "),
             hir::BinOpKind::NotIn => write!(f, " not in "),
             hir::BinOpKind::Err   => write!(f, " ☇ "),
+            hir::BinOpKind::After => unreachable!(),
         }
     }
 }
@@ -433,6 +435,8 @@ impl<'i> Display for Pretty<'i, hir::ScalarKind, Context<'_>> {
             hir::ScalarKind::Unit  => write!(f, "unit"),
             hir::ScalarKind::Bot   => write!(f, "bot"),
             hir::ScalarKind::Never => write!(f, "!"),
+            hir::ScalarKind::DateTime  => write!(f, "time"),
+            hir::ScalarKind::Duration  => write!(f, "duration"),
         }
     }
 }
@@ -444,8 +448,12 @@ impl<'i> Display for Pretty<'i, hir::Type, Context<'_>> {
         match &ty.kind {
             hir::TypeKind::Scalar(kind) => write!(f, "{}", kind.pretty(fmt)),
             hir::TypeKind::Struct(fs) => {
-                write!(f, "{{ {fs} }}",
-                    fs = fs.map_pretty(|(x, tv), f| write!(f, "{}: {}", x.pretty(fmt), tv.pretty(fmt)), ", "))
+                write!(f, "{{ {} }}",
+                    fs.map_pretty(|(x, tv), f| write!(f, "{}: {}", x.pretty(fmt), tv.pretty(fmt)), ", "))
+            }
+            hir::TypeKind::PortSet(fs)    => {
+                write!(f, "({})",
+                    fs.map_pretty(|(x, tv), f| write!(f, "{}({})", x.pretty(fmt), tv.pretty(fmt)), ", "))
             }
             hir::TypeKind::Nominal(x)     => write!(f, "{}", x.pretty(fmt)),
             hir::TypeKind::Array(ty, sh)  => write!(f, "[{}; {}]", ty.pretty(fmt), sh.pretty(fmt)),

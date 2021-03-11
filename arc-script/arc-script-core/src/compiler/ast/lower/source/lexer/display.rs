@@ -151,7 +151,8 @@ impl<'i> Display for Pretty<'i, Token, State<'_>> {
             Token::LitBool(v) => write!(f, "{}", v),
             Token::LitChar(v) => write!(f, "{}", v),
             Token::LitStr(v)  => write!(f, "{}", v),
-            Token::LitTime(v) => write!(f, "{:?}", v),
+            Token::LitDateTime(v) => write!(f, "{:?}", v),
+            Token::LitDuration(v) => write!(f, "{:?}", v),
         }?;
         write!(f, "\"")?;
         Ok(())

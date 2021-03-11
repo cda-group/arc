@@ -22,6 +22,7 @@ use lexical_core::NumberFormat;
 use logos::Lexer as LogosLexer;
 use logos::Logos;
 use time::Duration;
+use time::PrimitiveDateTime as DateTime;
 
 use std::convert::TryFrom;
 
@@ -148,7 +149,7 @@ pub enum Token {
     Not,
     On,
     Or,
-    Pub,
+    Port,
     Reduce,
     Return,
     State,
@@ -161,6 +162,7 @@ pub enum Token {
 //=============================================================================
     End,
     Of,
+    Pub,
     Shutdown,
     Sink,
     Source,
@@ -204,7 +206,8 @@ pub enum Token {
     LitBool(bool),
     LitChar(char),
     LitStr(String),
-    LitTime(Duration),
+    LitDateTime(DateTime),
+    LitDuration(Duration),
 }
 
 impl<'i> Lexer<'i> {
@@ -262,6 +265,15 @@ impl<'i> Lexer<'i> {
     ) -> Result<N> {
         parse_format(self.trim(prefix, suffix).as_bytes(), self.numfmt).map_err(|msg| {
             Error::LexicalCore {
+                loc: self.loc().into(),
+                err: msg,
+            }
+            .into()
+        })
+    }
+    fn datetime(&mut self, format: &str) -> Result<DateTime> {
+        DateTime::parse(self.logos.slice(), format).map_err(|msg| {
+            Error::Time {
                 loc: self.loc().into(),
                 err: msg,
             }
@@ -391,6 +403,7 @@ impl<'i> Lexer<'i> {
                 LogosToken::On         => Token::On,
                 LogosToken::Or         => Token::Or,
                 LogosToken::Pub        => Token::Pub,
+                LogosToken::Port       => Token::Port,
                 LogosToken::Reduce     => Token::Reduce,
                 LogosToken::Return     => Token::Return,
                 LogosToken::State      => Token::State,
@@ -448,13 +461,18 @@ impl<'i> Lexer<'i> {
                 LogosToken::LitFalse   => Token::LitBool(false),
                 LogosToken::LitChar    => Token::LitChar(self.trim(1, 1).chars().next().unwrap()),
                 LogosToken::LitStr     => Token::LitStr(self.trim(1, 1).to_string()),
-                LogosToken::LitS       => Token::LitTime(Duration::seconds(self.lit(0, 1)?)),
-                LogosToken::LitUs      => Token::LitTime(Duration::microseconds(self.lit(0, 2)?)),
-                LogosToken::LitMs      => Token::LitTime(Duration::milliseconds(self.lit(0, 2)?)),
-                LogosToken::LitNs      => Token::LitTime(Duration::nanoseconds(self.lit(0, 2)?)),
-                LogosToken::LitMins    => Token::LitTime(Duration::minutes(self.lit(0, 3)?)),
-                LogosToken::LitHrs     => Token::LitTime(Duration::hours(self.lit(0, 1)?)),
-                LogosToken::NameId     => Token::NameId(self.names.intern(self.logos.slice())),
+                LogosToken::LitDate         => Token::LitDateTime(self.datetime("%F")?),
+                LogosToken::LitDateTime     => Token::LitDateTime(self.datetime("%FT%T")?),
+                LogosToken::LitDateTimeZone => Token::LitDateTime(self.datetime("%FT%T%Z")?),
+                LogosToken::LitDurationNs   => Token::LitDuration(Duration::seconds(self.lit(0, 1)?)),
+                LogosToken::LitDurationUs   => Token::LitDuration(Duration::microseconds(self.lit(0, 2)?)),
+                LogosToken::LitDurationMs   => Token::LitDuration(Duration::milliseconds(self.lit(0, 2)?)),
+                LogosToken::LitDurationS    => Token::LitDuration(Duration::nanoseconds(self.lit(0, 2)?)),
+                LogosToken::LitDurationM    => Token::LitDuration(Duration::minutes(self.lit(0, 3)?)),
+                LogosToken::LitDurationH    => Token::LitDuration(Duration::hours(self.lit(0, 1)?)),
+                LogosToken::LitDurationD    => Token::LitDuration(Duration::days(self.lit(0, 1)?)),
+                LogosToken::LitDurationW    => Token::LitDuration(Duration::weeks(self.lit(0, 1)?)),
+                LogosToken::NameId          => Token::NameId(self.names.intern(self.logos.slice())),
             };
             return Ok(Some(token));
         }

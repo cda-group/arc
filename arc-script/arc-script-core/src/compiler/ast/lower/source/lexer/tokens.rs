@@ -156,10 +156,21 @@ pub(crate) enum LogosToken {
     #[token("false")]      LitFalse,
     #[regex(r"'[^']'")]    LitChar,
     #[regex(r#""[^"]*""#)] LitStr,
-    #[regex(r"[0-9]+s")]   LitS,
-    #[regex(r"[0-9]+us")]  LitUs,
-    #[regex(r"[0-9]+ms")]  LitMs,
-    #[regex(r"[0-9]+ns")]  LitNs,
-    #[regex(r"[0-9]+min")] LitMins,
-    #[regex(r"[0-9]+h")]   LitHrs,
+    #[regex(r"[0-9]+ns")]  LitDurationNs,
+    #[regex(r"[0-9]+us")]  LitDurationUs,
+    #[regex(r"[0-9]+ms")]  LitDurationMs,
+    #[regex(r"[0-9]+s")]   LitDurationS,
+    #[regex(r"[0-9]+m")]   LitDurationM,
+    #[regex(r"[0-9]+h")]   LitDurationH,
+    #[regex(r"[0-9]+d")]   LitDurationD,
+    #[regex(r"[0-9]+w")]   LitDurationW,
+//     #[regex(r"[0-9]+mo")]  LitDurationMo,
+//     #[regex(r"[0-9]+y")]   LitDurationY,
+    #[regex(r"\d\{4}-\d\{2}-\d\{2}")]                                         LitDate,
+    #[regex(r"\d\{4}-\d\{2}-\d\{2}T\d\{2}:\d\{2}:\d\{2}")]                    LitDateTime,
+    #[regex(r"\d\{4}-\d\{2}-\d\{2}T\d\{2}:\d\{2}:\d\{2}(\+|-)\d\{2}:\d\{2}")] LitDateTimeZone,
 }
+
+// YYYY-MM-DD
+// YYYY-MM-DDT00:00:00Z
+// YYYY-MM-DDT00:00:00.000Z
