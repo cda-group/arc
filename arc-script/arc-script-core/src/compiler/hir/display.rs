@@ -155,7 +155,7 @@ impl<'i> Display for Pretty<'i, hir::Task, Context<'_>> {
         let name = fmt.ctx.info.paths.resolve(item.path.id).name;
         write!(
             f,
-            "task {name}({params}) {ihub} -> {ohub} {{{s1}{state}{items}{s1}{on}{s0}}}",
+            "task {name}({params}) {ihub} -> {ohub} {{{state}{items}{s1}{on}{s0}}}",
             name = name.pretty(fmt),
             params = item.params.iter().all_pretty(", ", fmt),
             ihub = item.ihub.pretty(fmt),
@@ -169,7 +169,10 @@ impl<'i> Display for Pretty<'i, hir::Task, Context<'_>> {
                 ),
                 ""
             ),
-            state = item.states.iter().all_pretty(",", fmt),
+            state = item.states.iter().map_pretty(
+                |x, f| write!(f, "{s0}{}", x.pretty(fmt), s0 = fmt.indent()),
+                ""
+            ),
             on = item.on.pretty(fmt.indent()),
             s0 = fmt,
             s1 = fmt.indent(),

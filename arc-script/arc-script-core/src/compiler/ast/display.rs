@@ -129,7 +129,7 @@ impl<'i> Display for Pretty<'i, ast::Task, Context<'_>> {
         let Pretty(item, fmt) = self;
         write!(
             f,
-            "task {name}({params}) ({ihub}) -> ({ohub}) {{{items}{s0}}}",
+            "task {name}({params}) {ihub} -> {ohub}) {{{items}{s0}}}",
             name = item.name.pretty(fmt),
             params = item.params.iter().all_pretty(",", fmt),
             ihub = item.ihub.pretty(fmt),
@@ -147,12 +147,8 @@ impl<'i> Display for Pretty<'i, ast::Hub, Context<'_>> {
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
         let Pretty(item, fmt) = self;
         match &item.kind {
-            ast::HubKind::Tagged(ports) => {
-                write!(f, "({})", ports.iter().all_pretty(", ", fmt))
-            }
-            ast::HubKind::Single(t) => {
-                write!(f, "({})", t.pretty(fmt))
-            }
+            ast::HubKind::Tagged(ps) => write!(f, "({})", ps.iter().all_pretty(", ", fmt)),
+            ast::HubKind::Single(t) => write!(f, "({})", t.pretty(fmt)),
         }
     }
 }
@@ -201,11 +197,18 @@ impl<'i> Display for Pretty<'i, ast::Port, Context<'_>> {
 impl<'i> Display for Pretty<'i, ast::On, Context<'_>> {
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
         let Pretty(item, fmt) = self;
-        write!(
-            f,
-            "on {cases}",
-            cases = item.cases.iter().all_pretty(",", fmt)
-        )
+        if let [case] = item.cases.as_slice() {
+            write!(f, "on {}", case.pretty(fmt))
+        } else {
+            write!(
+                f,
+                "on {{{}{}}}",
+                item.cases
+                    .iter()
+                    .map_pretty(|c, f| write!(f, "{}{}", fmt.indent(), c.pretty(fmt)), ","),
+                fmt
+            )
+        }
     }
 }
 
