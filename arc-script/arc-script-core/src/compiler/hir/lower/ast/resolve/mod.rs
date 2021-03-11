@@ -1,6 +1,7 @@
 mod debug;
 mod stack;
 mod table;
+pub(crate) mod declare;
 
 use crate::compiler::ast;
 use crate::compiler::ast::AST;

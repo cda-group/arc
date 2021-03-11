@@ -1,10 +1,11 @@
 use crate::compiler::ast;
 use crate::compiler::ast::AST;
-
+use crate::compiler::hir::lower::ast::resolve::declare::Declare;
 use crate::compiler::hir::Name;
 use crate::compiler::info::diags::Error;
 use crate::compiler::info::paths::PathId;
 use crate::compiler::info::Info;
+
 use arc_script_core_shared::Map;
 use arc_script_core_shared::Set;
 

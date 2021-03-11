@@ -2,9 +2,7 @@
 //! resolved names. Also, all expressions are interned (bump-allocated).
 
 use crate::compiler::info::files::{ByteIndex, FileId, Loc};
-
 use crate::compiler::info::names::NameId;
-
 use crate::compiler::info::paths::PathId;
 
 use arc_script_core_macros::Spanned;
