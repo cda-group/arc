@@ -29,7 +29,14 @@ pub(crate) fn pretty<'i, 'j, Node>(
 
 pub(crate) fn run_arc_mlir(infile: &std::path::Path, outfile: &std::path::Path) {
     let arc_script_bin = std::env::current_exe().unwrap();
-    let arc_mlir_bin = arc_script_bin
+
+    // We want arc-script to be able to find the arc-mlir binary
+    // without it being in the path, so we look for it relative to the
+    // current binary. As this won't work for the various
+    // cargo/rust-based tests, we fall back to the default search path
+    // when the relative lookup fails. The arc-cargo wrapper will set
+    // up PATH to include the directory of the arc-mlir binary.
+    let arc_mlir_bin = match arc_script_bin
         .parent()
         .unwrap()
         .join("..")
@@ -37,7 +44,10 @@ pub(crate) fn run_arc_mlir(infile: &std::path::Path, outfile: &std::path::Path) 
         .join("bin")
         .join("arc-mlir")
         .canonicalize()
-        .unwrap();
+    {
+        Ok(val) => val,
+        Err(_) => std::path::PathBuf::from("arc-mlir"),
+    };
 
     Command::new(arc_mlir_bin)
         .arg(infile)

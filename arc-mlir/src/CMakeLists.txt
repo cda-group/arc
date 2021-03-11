@@ -11,6 +11,9 @@ add_subdirectory(corrosion)
 get_filename_component(ARC_CARGO_TARGET_DIR "../../cargo/build"
   REALPATH BASE_DIR ${CMAKE_CURRENT_BINARY_DIR} CACHE)
 
+get_filename_component(ARC_TOOLS_BIN_DIR "../../bin"
+  REALPATH BASE_DIR ${CMAKE_CURRENT_BINARY_DIR} CACHE)
+
 add_subdirectory(include)
 add_subdirectory(lib)
 add_subdirectory(tests)
