@@ -109,8 +109,15 @@ pub(crate) struct Enum {
     pub(crate) variants: Vec<Path>,
 }
 
+#[derive(Debug)]
+pub(crate) enum Vis {
+    Private,
+    Public,
+}
+
 #[derive(New, Spanned, Debug)]
 pub(crate) struct Variant {
+    pub(crate) vis: Vis,
     pub(crate) path: Path,
     pub(crate) tv: TypeId,
     pub(crate) loc: Option<Loc>,
@@ -217,6 +224,7 @@ pub(crate) enum ExprKind {
     Call(Box<Expr>, Vec<Expr>),
     Select(Box<Expr>, Vec<Expr>),
     Emit(Box<Expr>),
+    EmitAfter(Box<Expr>, Box<Expr>),
     If(Box<Expr>, Box<Expr>, Box<Expr>),
     Item(Path),
     Let(Param, Box<Expr>, Box<Expr>),

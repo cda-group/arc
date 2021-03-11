@@ -72,6 +72,7 @@ impl<'i> Display for Pretty<'i, ast::TaskItem, Context<'_>> {
             ast::TaskItemKind::Enum(item)   => write!(f, "{}", item.pretty(fmt)),
             ast::TaskItemKind::On(item)     => write!(f, "{}", item.pretty(fmt)),
             ast::TaskItemKind::State(item)  => write!(f, "{}", item.pretty(fmt)),
+            ast::TaskItemKind::Port(item)   => write!(f, "{}", item.pretty(fmt)),
             ast::TaskItemKind::Err          => write!(f, "☇"),
         }
     }
@@ -162,6 +163,17 @@ impl<'i> Display for Pretty<'i, ast::Enum, Context<'_>> {
             id = item.name.pretty(fmt),
             variants = item.variants.iter().all_pretty(", ", fmt)
         )
+    }
+}
+
+impl<'i> Display for Pretty<'i, ast::InnerPort, Context<'_>> {
+    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
+        let Pretty(port, fmt) = self;
+        if let Some(ty) = &port.ty {
+            write!(f, "port {}({})", port.name.pretty(fmt), ty.pretty(fmt))
+        } else {
+            write!(f, "port {}", port.name.pretty(fmt))
+        }
     }
 }
 

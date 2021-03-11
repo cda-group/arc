@@ -32,9 +32,12 @@ use crate::compiler::hir;
 use crate::compiler::hir::FunKind::Global;
 use crate::compiler::hir::Name;
 use crate::compiler::hir::Path;
+use crate::compiler::hir::Vis;
 use crate::compiler::info;
 use crate::compiler::info::diags::Error;
+use crate::compiler::info::files::Loc;
 use crate::compiler::info::types::TypeId;
+
 use arc_script_core_shared::map;
 use arc_script_core_shared::Lower;
 use arc_script_core_shared::New;
@@ -113,6 +116,7 @@ impl Lower<Option<Path>, Context<'_>> for ast::TaskItem {
             ast::TaskItemKind::Extern(item) => item.lower(ctx, hir::FunKind::Method),
             ast::TaskItemKind::Alias(item)  => item.lower(ctx),
             ast::TaskItemKind::Enum(item)   => item.lower(ctx),
+            ast::TaskItemKind::Port(_)      => None?,
             ast::TaskItemKind::On(_)        => None?,
             ast::TaskItemKind::Use(_)       => None?,
             ast::TaskItemKind::State(_)     => None?,
@@ -189,8 +193,12 @@ impl Lower<Option<(Path, hir::ItemKind)>, Context<'_>> for ast::Task {
             ctx.hir.items.push(fun_path);
         }
         // NOTE: These names need to match those which are declared
-        let ihub = self.ihub.lower(ctx.info.names.common.source.into(), ctx);
-        let ohub = self.ohub.lower(ctx.info.names.common.sink.into(), ctx);
+        let ihub = self
+            .ihub
+            .lower(ctx.info.names.common.source.into(), &self.items, ctx);
+        let ohub = self
+            .ohub
+            .lower(ctx.info.names.common.sink.into(), &self.items, ctx);
 
         let on = self
             .items
@@ -219,17 +227,26 @@ impl Lower<Option<(Path, hir::ItemKind)>, Context<'_>> for ast::Task {
 }
 
 impl ast::Hub {
-    fn lower(&self, hub_name: Name, ctx: &mut Context<'_>) -> hir::Hub {
+    fn lower(
+        &self,
+        hub_name: Name,
+        task_items: &[ast::TaskItem],
+        ctx: &mut Context<'_>,
+    ) -> hir::Hub {
         tracing::trace!("Lowering Hub");
         let kind = match &self.kind {
             ast::HubKind::Tagged(ports) => {
                 // Construct enum for ports
                 let task_path = ctx.res.path_id;
                 let hub_path: Path = ctx.info.paths.intern_child(task_path, hub_name).into();
-                let ports = ports
+                let mut ports = ports
                     .iter()
                     .map(|v| v.lower(hub_path.id, ctx))
                     .collect::<Vec<_>>();
+                ports.extend(task_items.iter().filter_map(|item| {
+                    map!(&item.kind, ast::TaskItemKind::Port)
+                        .map(|v| v.lower(hub_path.id, item.loc, ctx))
+                }));
                 let hub_item = hir::Item::syn(hir::ItemKind::Enum(hir::Enum::new(hub_path, ports)));
                 ctx.hir.defs.insert(hub_path, hub_item);
                 hir::HubKind::Tagged(hub_path)
@@ -367,14 +384,12 @@ impl Lower<Option<(Path, hir::ItemKind)>, Context<'_>> for ast::Enum {
 impl ast::Variant {
     fn lower(&self, enum_path: hir::PathId, ctx: &mut Context<'_>) -> Path {
         let path: Path = ctx.info.paths.intern_child(enum_path, self.name).into();
-        let item = hir::Variant::new(
-            path,
-            self.ty
-                .as_ref()
-                .map(|ty| ty.lower(ctx))
-                .unwrap_or_else(|| ctx.info.types.intern(hir::ScalarKind::Unit)),
-            self.loc,
-        );
+        let tv = self
+            .ty
+            .as_ref()
+            .map(|ty| ty.lower(ctx))
+            .unwrap_or_else(|| ctx.info.types.intern(hir::ScalarKind::Unit));
+        let item = hir::Variant::new(Vis::Public, path, tv, self.loc);
         ctx.hir
             .defs
             .insert(path, hir::Item::new(hir::ItemKind::Variant(item), self.loc));
@@ -382,10 +397,22 @@ impl ast::Variant {
     }
 }
 
+impl ast::InnerPort {
+    fn lower(&self, enum_path: hir::PathId, loc: Option<Loc>, ctx: &mut Context<'_>) -> Path {
+        let path: Path = ctx.info.paths.intern_child(enum_path, self.name).into();
+        let tv = self.ty.lower(ctx).unwrap_or_else(|| ctx.info.types.fresh());
+        let item = hir::Variant::new(Vis::Private, path, tv, loc);
+        ctx.hir
+            .defs
+            .insert(path, hir::Item::new(hir::ItemKind::Variant(item), loc));
+        path
+    }
+}
+
 impl ast::Port {
     fn lower(&self, enum_path: hir::PathId, ctx: &mut Context<'_>) -> Path {
         let path: Path = ctx.info.paths.intern_child(enum_path, self.name).into();
-        let item = hir::Variant::new(path, self.ty.lower(ctx), self.loc);
+        let item = hir::Variant::new(Vis::Public, path, self.ty.lower(ctx), self.loc);
         ctx.hir
             .defs
             .insert(path, hir::Item::new(hir::ItemKind::Variant(item), self.loc));
@@ -413,6 +440,7 @@ impl Lower<hir::Expr, Context<'_>> for ast::Expr {
             ast::ExprKind::BinOp(e0, op, e1) => match op.kind {
                 ast::BinOpKind::NotIn => ops::lower_not_in(e0, e1, self.loc, ctx),
                 ast::BinOpKind::Pipe  => ops::lower_pipe(e0, e1, self.loc, ctx),
+                ast::BinOpKind::After => ops::lower_after(e0, e1, self.loc, ctx),
                 _                     => hir::ExprKind::BinOp(e0.lower(ctx).into(), op.lower(ctx), e1.lower(ctx).into())
 
             }

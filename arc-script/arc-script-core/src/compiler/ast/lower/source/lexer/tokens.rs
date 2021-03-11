@@ -97,6 +97,7 @@ pub(crate) enum LogosToken {
     #[token("not")] Not,
     #[token("on")] On,
     #[token("or")] Or,
+    #[token("port")] Port,
     #[token("pub")] Pub,
     #[token("reduce")] Reduce,
     #[token("return")] Return,

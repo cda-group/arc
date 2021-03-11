@@ -104,6 +104,7 @@ impl<'i> Display for Pretty<'i, Token, State<'_>> {
             Token::Not        => write!(f, "not"),
             Token::On         => write!(f, "on"),
             Token::Or         => write!(f, "or"),
+            Token::Port       => write!(f, "port"),
             Token::Pub        => write!(f, "pub"),
             Token::Reduce     => write!(f, "reduce"),
             Token::Return     => write!(f, "return"),

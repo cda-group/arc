@@ -264,8 +264,11 @@ impl<'i> Display for Pretty<'i, hir::Variant, Context<'_>> {
         let Pretty(item, fmt) = self;
         let ty = fmt.ctx.info.types.resolve(item.tv);
         let name = fmt.ctx.info.paths.resolve(item.path.id).name;
+        if let hir::Vis::Private = item.vis {
+            write!(f, "private ")?
+        }
         if let hir::TypeKind::Scalar(hir::ScalarKind::Unit) = ty.kind {
-            write!(f, "{}", name.pretty(fmt),)
+            write!(f, "{}", name.pretty(fmt))
         } else {
             write!(f, "{}({})", name.pretty(fmt), ty.pretty(fmt))
         }
@@ -317,7 +320,8 @@ impl<'i> Display for Pretty<'i, hir::Expr, Context<'_>> {
             hir::ExprKind::Access(e, x) => write!(f, "{}.{}", e.pretty(fmt), x.pretty(fmt)),
             hir::ExprKind::Call(e, es) => write!(f, "{}({})", e.pretty(fmt), es.iter().all_pretty(", ", fmt)),
             hir::ExprKind::Select(e, es) => write!(f, "{}[{}]", e.pretty(fmt), es.iter().all_pretty(", ", fmt)),
-            hir::ExprKind::Emit(e) => write!(f, "emit {e}", e = e.pretty(fmt)),
+            hir::ExprKind::Emit(e) => write!(f, "emit {}", e.pretty(fmt)),
+            hir::ExprKind::EmitAfter(e0, e1) => write!(f, "emit {} after {}", e0.pretty(fmt), e1.pretty(fmt)),
             hir::ExprKind::Log(e) => write!(f, "log {e}", e = e.pretty(fmt)),
             hir::ExprKind::Array(es) => write!(f, "[{es}]", es = es.all_pretty(", ", fmt)),
             hir::ExprKind::Struct(fs) => {
@@ -453,10 +457,6 @@ impl<'i> Display for Pretty<'i, hir::Type, Context<'_>> {
             hir::TypeKind::Struct(fs) => {
                 write!(f, "{{ {} }}",
                     fs.map_pretty(|(x, tv), f| write!(f, "{}: {}", x.pretty(fmt), tv.pretty(fmt)), ", "))
-            }
-            hir::TypeKind::PortSet(fs)    => {
-                write!(f, "({})",
-                    fs.map_pretty(|(x, tv), f| write!(f, "{}({})", x.pretty(fmt), tv.pretty(fmt)), ", "))
             }
             hir::TypeKind::Nominal(x)     => write!(f, "{}", x.pretty(fmt)),
             hir::TypeKind::Array(ty, sh)  => write!(f, "[{}; {}]", ty.pretty(fmt), sh.pretty(fmt)),
