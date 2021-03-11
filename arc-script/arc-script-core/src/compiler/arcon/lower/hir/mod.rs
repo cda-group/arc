@@ -424,7 +424,6 @@ impl hir::Expr {
                     }
                     hir::VarKind::Member => quote!(self.data.#x),
                     hir::VarKind::State => {
-                        println!("{}", self.tv.debug(ctx.hir, ctx.info as &Info));
                         debug_assert!(self.tv.is_copyable((ctx.info as &Info, ctx.hir)));
                         quote!(self.data.state.#x.arc_ref_read().unwrap())
                     }
