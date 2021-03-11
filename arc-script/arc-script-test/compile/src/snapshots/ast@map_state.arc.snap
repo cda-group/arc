@@ -4,7 +4,7 @@ expression: s
 input_file: arc-script-test/compile/src/tests/expect_mlir_fail_todo/map_state.arc
 
 ---
-task MapCount() ((~i32)) -> ((~i32)) {
+task MapCount() (~i32) -> (~i32)) {
     state c: {i32 => i32} = {}
     on event => c[event] = c[event] + 1;
     emit c[event]

@@ -72,3 +72,17 @@ pub(crate) fn lower_add(e: &ast::Expr, loc: Option<Loc>, ctx: &mut Context<'_>) 
         hir::ExprKind::Err
     }
 }
+
+pub(crate) fn lower_after(
+    e0: &ast::Expr,
+    e1: &ast::Expr,
+    loc: Option<Loc>,
+    ctx: &mut Context<'_>,
+) -> hir::ExprKind {
+    if let ast::ExprKind::Emit(e2) = ctx.ast.exprs.resolve(e0.id) {
+        hir::ExprKind::EmitAfter(e0.lower(ctx).into(), e1.lower(ctx).into())
+    } else {
+        ctx.info.diags.intern(Error::AfterNotPrecededByEmit { loc });
+        hir::ExprKind::Err
+    }
+}

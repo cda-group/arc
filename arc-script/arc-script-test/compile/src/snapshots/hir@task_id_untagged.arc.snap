@@ -5,7 +5,6 @@ input_file: arc-script-test/compile/src/tests/expect_mlir_fail_todo/task_id_unta
 
 ---
 task Identity() (~i32) -> (~i32) {
-    
     on {
         event_0: i32 => {
             emit event_0

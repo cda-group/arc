@@ -133,6 +133,7 @@ impl SSA<Var> for Expr {
                 let x = e.ssa(ctx, env, ops);
                 OpKind::Emit(x)
             }
+            ExprKind::EmitAfter(_, _) => todo!(),
             ExprKind::Log(e) => {
                 let x = e.ssa(ctx, env, ops);
                 OpKind::Log(x)

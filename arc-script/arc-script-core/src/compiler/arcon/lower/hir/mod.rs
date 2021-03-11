@@ -1,6 +1,5 @@
 pub(crate) mod lowerings {
     pub(crate) mod structs;
-    pub(crate) mod tasks;
 }
 
 use crate::compiler::arcon::lower::hir::lowerings::structs;
@@ -245,11 +244,7 @@ impl Lower<Tokens, Context<'_>> for hir::Task {
                 ) -> OperatorResult<()> {
                     let ArconElement { timestamp, data } = elem;
                     let event = data.value;
-                    let mut task = #task_name {
-                        data: self,
-                        ctx,
-                        timestamp
-                    };
+                    let mut task = #task_name { data: self, ctx, timestamp };
                     task.handle(event);
                     Ok(())
                 }
@@ -259,18 +254,31 @@ impl Lower<Tokens, Context<'_>> for hir::Task {
                 }
 
                 arcon::ignore_timeout!();
-                arcon::ignore_persist!();
+
+                // fn handle_timeout(
+                //     &mut self,
+                //     timeout: Self::TimerState,
+                //     ctx: OperatorContext<Self, impl Backend, impl ComponentDefinition>,
+                // ) -> OperatorResult<()> {
+                //     let mut task = #task_name { data: self, ctx, timestamp: None };
+                //     task.trigger(timeout);
+                //     Ok(())
+                // }
+
+                fn persist(&mut self) -> OperatorResult<()> {
+                    self.state.persist();
+                    Ok(())
+                }
             }
 
             impl<'i, 'source, 'timer, 'channel, B: Backend, C: ComponentDefinition>
-                #task_name<'i, 'source, 'timer, 'channel, B, C>
-            {
+                #task_name<'i, 'source, 'timer, 'channel, B, C> {
                 fn handle(&mut self, #event: #ity) -> OperatorResult<()> {
                     #body;
                     Ok(())
                 }
 
-                fn emit(&mut self, #event: #oty) {
+                fn emit(&mut self, #event: #oty, after: Option<u64>) {
                     let data = #struct_oty { value: #event };
                     let elem = ArconElement { data, timestamp: self.timestamp };
                     self.ctx.output(elem);
@@ -281,6 +289,37 @@ impl Lower<Tokens, Context<'_>> for hir::Task {
         }
     }
 }
+    //                 fn emit(&mut self, #event: #oty, after: Option<u64>) {
+    //                     if let Some(after) = after {
+    //                         match #event {
+    //                             #(#oport(#event) => {
+    //                                 self.ctx.schedule_at();
+    //                                 let data = #struct_oty { value: #event };
+    //                                 let elem = ArconElement { data, timestamp: self.timestamp };
+    //                                 self.ctx.output(elem);
+    //                             },)*
+    //                             #(#tport(#event) => {
+    //                                 let data = #struct_oty { value: #event };
+    //                                 let elem = ArconElement { data, timestamp: self.timestamp };
+    //                                 self.ctx.output(elem);
+    //                             }),*
+    //                         }
+    //                     } else {
+    //                         match #event {
+    //                             #(#oport(#event) => {
+    //                                 let data = #struct_oty { value: #event };
+    //                                 let elem = ArconElement { data, timestamp: self.timestamp };
+    //                                 self.ctx.output(elem);
+    //                             },)*
+    //                             #(#tport(#event) => {
+    //                                 let data = #struct_oty { value: #event };
+    //                                 let elem = ArconElement { data, timestamp: self.timestamp };
+    //                                 self.ctx.output(elem);
+    //                             }),*
+    //                         }
+    //                     }
+    //                 }
+
 
 impl hir::State {
     pub(crate) fn lower(
@@ -533,7 +572,12 @@ impl hir::Expr {
             },
             hir::ExprKind::Emit(e) => {
                 let e = e.ssa(ctx, env, ops, depth);
-                return quote!(self.emit(#e));
+                return quote!(self.emit(#e, None));
+            }
+            hir::ExprKind::EmitAfter(e0, e1) => {
+                let e0 = e0.ssa(ctx, env, ops, depth);
+                let e1 = e1.ssa(ctx, env, ops, depth);
+                return quote!(self.emit(#e0, Some(e1)));
             }
             hir::ExprKind::If(e0, e1, e2) => {
                 let e0 = e0.ssa(ctx, env, ops, depth);

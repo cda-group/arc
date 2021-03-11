@@ -97,6 +97,10 @@ impl FreeVars for hir::Expr {
             hir::ExprKind::Emit(e) => {
                 e.fv(union)?;
             }
+            hir::ExprKind::EmitAfter(e0, e1) => {
+                e0.fv(union)?;
+                e1.fv(union)?;
+            }
             hir::ExprKind::Loop(e) => {
                 e.fv(union)?;
             }

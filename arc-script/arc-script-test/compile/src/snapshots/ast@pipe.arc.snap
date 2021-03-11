@@ -10,7 +10,7 @@ fun foo(x: i32) {
 fun bar(x: i32) {
     x |> foo |> foo
 }
-task Baz() ((~i32)) -> ((~i32)) {
+task Baz() (~i32) -> (~i32)) {
     on event => emit event
 }
 fun qux(s: ~i32) {

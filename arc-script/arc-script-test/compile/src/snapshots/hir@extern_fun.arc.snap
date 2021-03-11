@@ -6,7 +6,6 @@ input_file: arc-script-test/compile/src/tests/expect_mlir_fail_todo/extern_fun.a
 ---
 extern fun increment(x: i32) -> i32;
 task Adder() (~i32) -> (~i32) {
-    
     extern fun addition(x: i32, y: i32) -> i32;
     on {
         event_0: i32 => {

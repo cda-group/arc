@@ -11,7 +11,6 @@ fun bar(x_1: i32) -> i32 {
     crate::foo(crate::foo(x_1))
 }
 task Baz() (~i32) -> (~i32) {
-    
     on {
         event_0: i32 => {
             emit event_0

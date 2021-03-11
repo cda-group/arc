@@ -5,7 +5,6 @@ input_file: arc-script-test/compile/src/tests/expect_mlir_fail_todo/task_with_fu
 
 ---
 task Test(x_0: i32) (~i32) -> (~i32) {
-    
     fun addx(y_0: i32) -> i32 {
         let z_0: i32 = x_0 + y_0 in
         z_0

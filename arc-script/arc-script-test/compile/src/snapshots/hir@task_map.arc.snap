@@ -5,7 +5,6 @@ input_file: arc-script-test/compile/src/tests/expect_mlir_fail_todo/task_map.arc
 
 ---
 task Map(f_0: fun(i32) -> i32) (~i32) -> (~i32) {
-    
     on {
         event_0: i32 => {
             emit f_0(event_0)

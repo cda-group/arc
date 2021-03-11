@@ -4,7 +4,7 @@ expression: s
 input_file: arc-script-test/compile/src/tests/expect_mlir_fail_todo/task_id_untagged.arc
 
 ---
-task Identity() ((~i32)) -> ((~i32)) {
+task Identity() (~i32) -> (~i32)) {
     on event => emit event
 }
 fun main(input: ~i32) {

@@ -18,11 +18,11 @@ task UniqueSet() (~i32) -> (~i32) {
     }
 }
 task UniqueMap() (~i32) -> (~i32) {
-    state map_0: {i32 => bool} = {}
+    state map_0: {i32 => unit} = {}
     on {
         event_1: i32 => {
             if not event_1 in map_0 {
-                map_0[event_1] = true;
+                map_0[event_1] = unit;
                 emit event_1
             } else {
                 unit

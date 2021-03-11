@@ -4,7 +4,7 @@ expression: s
 input_file: arc-script-test/compile/src/tests/expect_mlir_fail_todo/task_unique.arc
 
 ---
-task UniqueSet() ((~i32)) -> ((~i32)) {
+task UniqueSet() (~i32) -> (~i32)) {
     state set: {i32} = {}
     on event => if event not in set {
         add set[event];
@@ -13,10 +13,10 @@ task UniqueSet() ((~i32)) -> ((~i32)) {
         unit
     }
 }
-task UniqueMap() ((~i32)) -> ((~i32)) {
-    state map: {i32 => bool} = {}
+task UniqueMap() (~i32) -> (~i32)) {
+    state map: {i32 => unit} = {}
     on event => if event not in map {
-        map[event] = true;
+        map[event] = unit;
         emit event
     } else {
         unit
