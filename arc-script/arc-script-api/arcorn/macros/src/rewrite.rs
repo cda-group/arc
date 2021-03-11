@@ -14,43 +14,21 @@ pub(super) fn execute(item: pm::TokenStream) -> pm::TokenStream {
 fn rewrite_enum(mut item: syn::ItemEnum) -> pm::TokenStream {
     let enum_ident = syn::Ident::new(&format!("Enum{}", item.ident), pm2::Span::call_site());
     let struct_ident = std::mem::replace(&mut item.ident, enum_ident.clone());
-    let _macros = item
-        .variants
+    item.variants
         .iter_mut()
         .enumerate()
-        .map(|(tag, variant)| {
+        .for_each(|(tag, variant)| {
             assert!(
                 variant.fields.len() == 1,
                 "#[arcorn::rewrite] expects variant fields to take exactly one argument"
             );
             let field = variant.fields.iter_mut().next().unwrap();
-            let variant_ident = variant.ident.clone();
             let (attr, is_unit) = ty_to_prost_attr(&field.ty, Some(tag));
             variant.attrs.push(attr);
             if is_unit {
-                field.ty = syn::parse_quote!(arc_script::arcorn::Unit)
+                field.ty = syn::parse_quote!(arcorn::Unit)
             }
-            quote! {
-                { @enwrap, #variant_ident, $expr:expr } => {
-                    #struct_ident { this: Some(#enum_ident::#variant_ident($expr)) }
-                };
-                { @unwrap, #variant_ident, $expr:expr } => {
-                    if let #enum_ident::#variant_ident(v) = $expr.this.unwrap() {
-                        v
-                    } else {
-                        unreachable!()
-                    }
-                };
-                { @is, #variant_ident, $expr:expr } => {
-                    if let #enum_ident::#variant_ident(_) = $expr.this.unwrap() {
-                        true
-                    } else {
-                        false
-                    }
-                }
-            }
-        })
-        .collect::<Vec<_>>();
+        });
     let tags = item
         .variants
         .iter()
@@ -60,18 +38,8 @@ fn rewrite_enum(mut item: syn::ItemEnum) -> pm::TokenStream {
         .join(",");
     let tags = syn::LitStr::new(&tags, pm2::Span::call_site());
     let enum_ident_str = syn::LitStr::new(&enum_ident.to_string(), enum_ident.span());
-    //     let macros: Option<syn::Item> = if macros.is_empty() {
-    //         None
-    //     } else {
-    //         Some(quote! {
-    //             macro_rules! #struct_ident {
-    //                 #(#macros);*
-    //             }
-    //         })
-    //     };
     quote!(
-//         #macros
-        #[derive(prost::Message, arcon::prelude::Arcon, Clone, arc_script::arcorn::derive_more::From)]
+        #[derive(prost::Message, arcon::prelude::Arcon, Clone, arcorn::derive_more::From)]
         #[arcon(reliable_ser_id = 13, version = 1)]
         pub struct #struct_ident {
             #[prost(oneof = #enum_ident_str, tags = #tags)]
@@ -90,42 +58,30 @@ fn rewrite_enum(mut item: syn::ItemEnum) -> pm::TokenStream {
 }
 
 fn rewrite_struct(mut item: syn::ItemStruct) -> pm::TokenStream {
-    let (_getters, pair): (Vec<_>, Vec<_>) = item
+    let (params, args): (Vec<_>, Vec<_>) = item
         .fields
         .iter_mut()
         .map(|field| {
             let (attr, is_unit) = ty_to_prost_attr(&field.ty, None);
             field.attrs.push(attr);
             if is_unit {
-                field.ty = syn::parse_quote!(arc_script::arcorn::Unit)
+                field.ty = syn::parse_quote!(arcorn::Unit)
             }
             let ty = &field.ty.clone();
             let ident = field
                 .ident
                 .clone()
                 .expect("#[arcorn::rewrite] expects structs to have named fields");
-            let get = quote!({ @get, $struct:expr, #ident } => { $struct.#ident });
             let param = quote!(#ident:#ty);
             let arg = quote!(#ident);
-            (get, (param, arg))
+            (param, arg)
         })
         .unzip();
-    let (params, args): (Vec<_>, Vec<_>) = pair.into_iter().unzip();
     let ident = item.ident.clone();
-    //     let getters: Option<syn::Item> = if getters.is_empty() {
-    //         None
-    //     } else {
-    //         Some(quote! {
-    //             macro_rules! #ident {
-    //                 #(#getters);*
-    //             }
-    //         })
-    //     };
     quote!(
-        #[derive(prost::Message, arcon::prelude::Arcon, Clone, arc_script::arcorn::derive_more::From)]
+        #[derive(prost::Message, arcon::prelude::Arcon, Clone, arcorn::derive_more::From)]
         #[arcon(reliable_ser_id = 13, version = 1)]
         #item
-//         #getters
         impl #ident {
             fn new(#(#params),*) -> Self {
                 Self { #(#args),* }
@@ -161,10 +117,11 @@ fn ty_to_prost_attr(ty: &syn::Type, tag: Option<usize>) -> (syn::Attribute, bool
         _ => panic!("#[arcorn::rewrite] expects all types to be mangled and de-aliased."),
     };
     let ident = syn::Ident::new(&ty, pm2::Span::call_site());
-    if let Some(tag) = tag {
+    let attr = if let Some(tag) = tag {
         let lit = syn::LitStr::new(&format!("{}", tag), pm2::Span::call_site());
-        (syn::parse_quote!(#[prost(#ident, tag = #lit)]), is_unit)
+        syn::parse_quote!(#[prost(#ident, tag = #lit)])
     } else {
-        (syn::parse_quote!(#[prost(#ident, required)]), is_unit)
-    }
+        syn::parse_quote!(#[prost(#ident, required)])
+    };
+    (attr, is_unit)
 }
