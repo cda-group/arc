@@ -34,6 +34,7 @@ impl From<Opt> for Result<Mode> {
                     opts::Output::HIR => Output::HIR,
                     opts::Output::DFG => Output::DFG,
                     opts::Output::Rust => Output::Rust,
+		    opts::Output::RustMLIR => Output::RustMLIR,
                     opts::Output::MLIR => Output::MLIR,
                 },
                 input: Input::File(cmd.main),

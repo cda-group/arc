@@ -6,7 +6,7 @@ use proc_macro::{TokenStream, TokenTree};
 use arc_script_core::prelude::compiler;
 use arc_script_core::prelude::diags::ColorChoice;
 use arc_script_core::prelude::diags::StandardStream;
-use arc_script_core::prelude::modes::{Input, Mode, Output};
+use arc_script_core::prelude::modes::{get_rust_backend, Input, Mode, Output};
 
 pub(crate) fn compile_literal(input: TokenStream) {
     let mut iter: IntoIter = input.into_iter();
@@ -16,7 +16,7 @@ pub(crate) fn compile_literal(input: TokenStream) {
             let source = lit.to_string();
             let mode = Mode {
                 input: Input::Code(source),
-                output: Output::Rust,
+                output: get_rust_backend(),
                 ..Default::default()
             };
             let sink = StandardStream::stderr(ColorChoice::Never);

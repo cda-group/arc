@@ -7,7 +7,7 @@ fn main() {
     // Pre-building improves performance by caching build-artifacts, but
     // does not do much else.
     Builder::default().build();
-
+    println!("cargo:rerun-if-env-changed=ARCSCRIPT_MLIR_BACKEND");
     // arc_script!("./script.arc")
     //     .compile_fun1(5i8, "foo");
     //     .compile_fun2(0i32, 0u8);

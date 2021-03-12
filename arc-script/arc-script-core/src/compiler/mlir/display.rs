@@ -13,6 +13,8 @@ use std::fmt;
 use std::fmt::Display;
 use std::fmt::Formatter;
 
+use std::process::Command;
+
 #[derive(From, Copy, Clone)]
 pub(crate) struct Context<'i> {
     info: &'i Info,
@@ -23,6 +25,37 @@ pub(crate) fn pretty<'i, 'j, Node>(
     info: &'j Info,
 ) -> Pretty<'i, Node, Context<'j>> {
     node.to_pretty(Context::from(info))
+}
+
+pub(crate) fn run_arc_mlir(infile: &std::path::Path, outfile: &std::path::Path) {
+    let arc_script_bin = std::env::current_exe().unwrap();
+    let arc_mlir_bin = arc_script_bin
+        .parent()
+        .unwrap()
+        .join("..")
+        .join("..")
+        .join("bin")
+        .join("arc-mlir")
+        .canonicalize()
+        .unwrap();
+
+    Command::new(arc_mlir_bin)
+        .arg(infile)
+        .arg("-o")
+        .arg(outfile)
+        .arg("-arc-to-rust")
+        .arg("-inline-rust")
+        .spawn()
+        .unwrap()
+        .wait()
+        .unwrap();
+
+    Command::new("rustfmt")
+        .arg(outfile)
+        .spawn()
+        .unwrap()
+        .wait()
+        .unwrap();
 }
 
 impl<'i> Display for Pretty<'i, mlir::MLIR, Context<'_>> {
