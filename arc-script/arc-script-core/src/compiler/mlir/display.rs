@@ -342,14 +342,14 @@ impl<'i> Display for Pretty<'i, mlir::OpKind, Context<'_>> {
             ),
             mlir::OpKind::Enwrap(x0, x1) => write!(
                 f,
-                r#""arc.enwrap"{} {{ variant = {} }} : {} ->"#,
+                r#""arc.enwrap"({}) {{ variant = {} }} : {} ->"#,
                 x1.pretty(fmt),
                 x0.pretty(fmt),
                 x1.tv.pretty(fmt),
             ),
             mlir::OpKind::Unwrap(x0, x1) => write!(
                 f,
-                r#""arc.unwrap"{} {{ variant = {} }} : {} ->"#,
+                r#""arc.unwrap"({}) {{ variant = {} }} : {} ->"#,
                 x1.pretty(fmt),
                 x0.pretty(fmt),
                 x1.tv.pretty(fmt),
