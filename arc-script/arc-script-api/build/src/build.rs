@@ -54,24 +54,29 @@ impl Builder {
                             ..Default::default()
                         };
 
-                        let report = compile(mode, &mut sink).expect("Internal Compiler Error");
+                        match compile(mode, &mut sink) {
+                            Err(_) => {
+                                eprintln!(
+                                    "Internal compiler error when compiling : {:?}",
+                                    input_path.into_os_string()
+                                );
+                                panic!("{}", std::str::from_utf8(sink.as_slice()).unwrap())
+                            }
+                            Ok(val) => {
+                                // Path to /a/b/c/my-project/target/build/my-project-xxx/out/src/x/y/z/main.rs
+                                let mut output_path = input_path.clone();
+                                output_path.set_extension("rs");
+                                let output_path = output_path.strip_prefix(cargo_dir).unwrap();
+                                let output_path = PathBuf::from(out_dir).join(output_path);
 
-                        if report.is_ok() {
-                            // Path to /a/b/c/my-project/target/build/my-project-xxx/out/src/x/y/z/main.rs
-                            let mut output_path = input_path.clone();
-                            output_path.set_extension("rs");
-                            let output_path = output_path.strip_prefix(cargo_dir).unwrap();
-                            let output_path = PathBuf::from(out_dir).join(output_path);
+                                let output_dir = output_path.parent().unwrap();
+                                fs::create_dir_all(output_dir).unwrap();
 
-                            let output_dir = output_path.parent().unwrap();
-                            fs::create_dir_all(output_dir).unwrap();
-
-                            fs::File::create(output_path)
-                                .unwrap()
-                                .write_all(sink.as_slice())
-                                .unwrap();
-                        } else {
-                            panic!("{}", std::str::from_utf8(sink.as_slice()).unwrap());
+                                fs::File::create(output_path)
+                                    .unwrap()
+                                    .write_all(sink.as_slice())
+                                    .unwrap();
+                            }
                         }
                     }
                 }
