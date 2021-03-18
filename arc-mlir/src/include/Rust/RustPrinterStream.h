@@ -76,7 +76,12 @@ public:
         NextConstID(0), ModuleName(module_name), InlineOuput(inlineOutput){};
 
   void flush() {
-    if (!InlineOuput) {
+    if (InlineOuput) {
+      OS << "use arc_script::arcorn;\n";
+      OS << "use arc_script::arcorn::state::{ArcMapOps, ArcRefOps, ArcSetOps, "
+	"ArcVecOps};\n";
+      OS << "use arcon::prelude::*;\n";
+    } else {
       OS << "#![allow(non_snake_case)]\n#![allow(non_camel_case_types)]\n";
       OS << "#![allow(arithmetic_overflow)]\n";
       Types << "#![allow(non_snake_case)]\n#![allow(non_camel_case_types)]\n";
