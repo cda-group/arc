@@ -108,7 +108,7 @@ struct StdConstantOpLowering : public ConversionPattern {
 
   StdConstantOpLowering(MLIRContext *ctx, RustTypeConverter &typeConverter)
       : ConversionPattern(mlir::ConstantOp::getOperationName(), 1, ctx),
-        TypeConverter(typeConverter) {}
+        TypeConverter(typeConverter), Ctx(ctx) {}
 
   LogicalResult
   matchAndRewrite(Operation *op, ArrayRef<Value> operands,
@@ -125,6 +125,7 @@ struct StdConstantOpLowering : public ConversionPattern {
 
 private:
   RustTypeConverter &TypeConverter;
+  MLIRContext *Ctx;
 
   LogicalResult returnResult(Operation *op, Type ty, StringRef value,
                              ConversionPatternRewriter &rewriter) const {
@@ -139,8 +140,13 @@ private:
     Type rustTy = TypeConverter.convertType(ty);
     APFloat f = attr.getValue();
     unsigned width = ty.getIntOrFloatBitWidth();
-    std::string rustTyName =
-        "f" + Twine(width).str(); // TODO: handle bf16 and f16
+
+    Type f16 = rust::types::RustType::getFloat16Ty(
+        Ctx->getOrLoadDialect<rust::RustDialect>());
+    Type bf16 = rust::types::RustType::getBFloat16Ty(
+        Ctx->getOrLoadDialect<rust::RustDialect>());
+
+    std::string rustTyName = "f" + Twine(width).str();
 
     if (f.isInfinity()) {
       if (f.isNegative())
@@ -167,6 +173,18 @@ private:
     }
 
     Twine str = "hexf" + Twine(width) + "!(\"" + hex + "\")";
+    std::string cst = str.str();
+
+    // The 16 bit floats are printed as f32 hex and converted using
+    // arcorn.
+    if (rustTy == f16 || rustTy == bf16) {
+      cst = "arcorn::";
+      cst += (rustTy == bf16) ? "b" : "";
+      cst += "f16::from_f32(hexf32!(\"";
+      cst += hex;
+      cst += "\"))";
+    }
+
     std::string directive =
         "#[macro_use] extern crate " + ArcToRustLoweringPass::hexfCrate + ";";
     ArcToRustLoweringPass::emitCrateDependency(ArcToRustLoweringPass::hexfCrate,
@@ -174,7 +192,7 @@ private:
                                                op.getContext(), rewriter);
     ArcToRustLoweringPass::emitModuleDirective(
         ArcToRustLoweringPass::hexfCrate, directive, op.getContext(), rewriter);
-    return returnResult(op, rustTy, str.str(), rewriter);
+    return returnResult(op, rustTy, cst, rewriter);
   }
 
   LogicalResult convertInteger(mlir::ConstantOp op,
@@ -623,6 +641,10 @@ Type RustTypeConverter::convertFloatType(FloatType type) {
     return rust::types::RustType::getFloatTy(Dialect);
   if (type.isa<Float64Type>())
     return rust::types::RustType::getDoubleTy(Dialect);
+  if (type.isa<Float16Type>())
+    return rust::types::RustType::getFloat16Ty(Dialect);
+  if (type.isa<BFloat16Type>())
+    return rust::types::RustType::getBFloat16Ty(Dialect);
   if (type.isa<IntegerType>())
     return rust::types::RustType::getIntegerTy(Dialect,
                                                type.cast<IntegerType>());
