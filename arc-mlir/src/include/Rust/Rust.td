@@ -41,6 +41,7 @@ def Rust_Dialect : Dialect {
       Type parseType(DialectAsmParser &parser) const override;
       void printType(Type type, DialectAsmPrinter &os) const override;
       types::RustType floatTy, doubleTy, boolTy,
+                      float16Ty, bFloat16Ty,
                       i8Ty, i16Ty, i32Ty, i64Ty,
                       u8Ty, u16Ty, u32Ty, u64Ty;
   }];

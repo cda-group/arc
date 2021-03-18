@@ -65,6 +65,8 @@ void RustDialect::initialize() {
 
   floatTy = RustType::get(ctx, "f32");
   doubleTy = RustType::get(ctx, "f64");
+  float16Ty = RustType::get(ctx, "arcorn::f16");
+  bFloat16Ty = RustType::get(ctx, "arcorn::bf16");
   boolTy = RustType::get(ctx, "bool");
   i8Ty = RustType::get(ctx, "i8");
   i16Ty = RustType::get(ctx, "i16");
@@ -422,8 +424,7 @@ LogicalResult rust::writeModuleAsCrates(ModuleOp module, std::string top_dir,
   return success();
 }
 
-LogicalResult rust::writeModuleAsInline(ModuleOp module, llvm::raw_ostream &o)
-{
+LogicalResult rust::writeModuleAsInline(ModuleOp module, llvm::raw_ostream &o) {
   std::string ms, ts;
   llvm::raw_string_ostream m(ms), t(ts);
 
@@ -740,6 +741,14 @@ RustType RustType::getFloatTy(RustDialect *dialect) { return dialect->floatTy; }
 
 RustType RustType::getDoubleTy(RustDialect *dialect) {
   return dialect->doubleTy;
+}
+
+RustType RustType::getFloat16Ty(RustDialect *dialect) {
+  return dialect->float16Ty;
+}
+
+RustType RustType::getBFloat16Ty(RustDialect *dialect) {
+  return dialect->bFloat16Ty;
 }
 
 RustType RustType::getIntegerTy(RustDialect *dialect, IntegerType ty) {
