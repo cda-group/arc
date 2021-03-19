@@ -300,7 +300,7 @@ pub enum Error {
         loc: Option<Loc>,
     },
 
-    /// Error when multiple selectors are specified. For now this is a hard-error, but will relaxed 
+    /// Error when multiple selectors are specified. For now this is a hard-error, but will relaxed
     /// in the future.
     MultipleSelectors {
         /// Location of the expression
