@@ -44,6 +44,9 @@ static cl::opt<std::string> rustTrailer(
     cl::desc("Insert the given file at the end of the produced rust file"),
     cl::value_desc("filename"));
 
+static cl::opt<bool> rustOutputInline("inline-rust",
+                                      cl::desc("Produce an inline Rust module"),
+                                      cl::value_desc("filename"));
 /// Perform the actions on the input file indicated by the command line flags
 /// within the specified context.
 ///
@@ -78,6 +81,12 @@ static LogicalResult performActions(raw_ostream &os, bool verifyDiagnostics,
 
   if (!rustOutput.empty()) {
     if (failed(writeModuleAsCrates(module.get(), rustOutput, rustTrailer, os)))
+      return failure();
+    return success();
+  }
+
+  if (rustOutputInline) {
+    if (failed(writeModuleAsInline(module.get(), os)))
       return failure();
     return success();
   }
