@@ -4,91 +4,101 @@ expression: s
 input_file: arc-script-test/compile/src/tests/expect_mlir_fail_todo/task_with_funs.arc
 
 ---
-use arc_script::arcorn;
-use arc_script::arcorn::state::{ArcMapOps, ArcRefOps, ArcSetOps, ArcVecOps};
-use arcon::prelude::*;
-pub struct Test<'i, 'source, 'timer, 'channel, B: Backend, C: ComponentDefinition> {
-    pub data: &'i mut TestData,
-    pub ctx: &'i mut OperatorContext<'source, 'timer, 'channel, TestData, B, C>,
-    pub timestamp: Option<u64>,
-}
-pub struct TestData {
-    pub state: TestState,
-    pub x_0: i32,
-}
-#[derive(ArconState)]
-pub struct TestState {}
-impl StateConstructor for TestState {
-    type BackendType = arcon::prelude::Sled;
-    fn new(backend: Arc<Self::BackendType>) -> Self {
-        Self {}
+#[allow(non_snake_case)]
+#[allow(unused_must_use)]
+#[allow(dead_code)]
+#[allow(unused_variables)]
+#[allow(unused_imports)]
+#[allow(unused_braces)]
+pub mod defs {
+    use super::*;
+    pub use arc_script::arcorn;
+    pub use arc_script::arcorn::state::{ArcMapOps, ArcRefOps, ArcSetOps, ArcVecOps};
+    pub use arcon::prelude::*;
+    pub struct Test<'i, 'source, 'timer, 'channel, B: Backend, C: ComponentDefinition> {
+        pub data: &'i mut TestData,
+        pub ctx: &'i mut OperatorContext<'source, 'timer, 'channel, TestData, B, C>,
+        pub timestamp: Option<u64>,
     }
-}
-impl TestData {
-    fn new(x_0: i32) -> OperatorBuilder<TestData> {
-        OperatorBuilder {
-            constructor: Arc::new(move |backend| TestData {
-                state: TestState {},
-                x_0,
-            }),
-            conf: Default::default(),
+    pub struct TestData {
+        pub state: TestState,
+        pub x_0: i32,
+    }
+    #[derive(ArconState)]
+    pub struct TestState {}
+    impl StateConstructor for TestState {
+        type BackendType = Sled;
+        fn new(backend: Arc<Self::BackendType>) -> Self {
+            Self {}
         }
     }
+    impl TestData {
+        fn new(x_0: i32) -> OperatorBuilder<TestData> {
+            OperatorBuilder {
+                constructor: Arc::new(move |backend| TestData {
+                    state: TestState {},
+                    x_0,
+                }),
+                conf: Default::default(),
+            }
+        }
+    }
+    impl Operator for TestData {
+        type IN = Struct5valuei32End;
+        type OUT = Struct5valuei32End;
+        type TimerState = ArconNever;
+        type OperatorState = TestState;
+        fn handle_element(
+            &mut self,
+            elem: ArconElement<Self::IN>,
+            ref mut ctx: OperatorContext<Self, impl Backend, impl ComponentDefinition>,
+        ) -> OperatorResult<()> {
+            let ArconElement { timestamp, data } = elem;
+            let event = data.value;
+            let mut task = Test {
+                data: self,
+                ctx,
+                timestamp,
+            };
+            task.handle(event);
+            Ok(())
+        }
+        fn state(&mut self) -> &mut Self::OperatorState {
+            &mut self.state
+        }
+        arcon::ignore_timeout!();
+        arcon::ignore_persist!();
+    }
+    impl<'i, 'source, 'timer, 'channel, B: Backend, C: ComponentDefinition>
+        Test<'i, 'source, 'timer, 'channel, B, C>
+    {
+        fn handle(&mut self, event_0: i32) -> OperatorResult<()> {
+            {
+                let y_1_0 = self.Test_addx(event_0);
+                self.emit(y_1_0)
+            };
+            Ok(())
+        }
+        fn emit(&mut self, event_0: i32) {
+            let data = Struct5valuei32End { value: event_0 };
+            let elem = ArconElement {
+                data,
+                timestamp: self.timestamp,
+            };
+            self.ctx.output(elem);
+        }
+        pub fn Test_addx(&mut self, y_0: i32) -> i32 {
+            let y_1_0 = self.data.x_0;
+            let y_1_1 = y_1_0 + y_0;
+            y_1_1
+        }
+    }
+    #[arcorn::rewrite]
+    #[derive(Copy)]
+    pub struct Struct5valuei32End {
+        value: i32,
+    }
 }
-impl Operator for TestData {
-    type IN = Struct5valuei32End;
-    type OUT = Struct5valuei32End;
-    type TimerState = ArconNever;
-    type OperatorState = TestState;
-    fn handle_element(
-        &mut self,
-        elem: ArconElement<Self::IN>,
-        ref mut ctx: OperatorContext<Self, impl Backend, impl ComponentDefinition>,
-    ) -> OperatorResult<()> {
-        let ArconElement { timestamp, data } = elem;
-        let event = data.value;
-        let mut task = Test {
-            data: self,
-            ctx,
-            timestamp,
-        };
-        task.handle(event);
-        Ok(())
-    }
-    fn state(&mut self) -> &mut Self::OperatorState {
-        &mut self.state
-    }
-    arcon::ignore_timeout!();
-    arcon::ignore_persist!();
-}
-impl<'i, 'source, 'timer, 'channel, B: Backend, C: ComponentDefinition>
-    Test<'i, 'source, 'timer, 'channel, B, C>
-{
-    fn handle(&mut self, event_0: i32) -> OperatorResult<()> {
-        {
-            let y_1_0 = self.Test_addx(event_0);
-            self.emit(y_1_0)
-        };
-        Ok(())
-    }
-    fn emit(&mut self, event_0: i32) {
-        let data = Struct5valuei32End { value: event_0 };
-        let elem = ArconElement {
-            data,
-            timestamp: self.timestamp,
-        };
-        self.ctx.output(elem);
-    }
-    pub fn Test_addx(&mut self, y_0: i32) -> i32 {
-        let y_1_0 = self.data.x_0;
-        let y_1_1 = y_1_0 + y_0;
-        y_1_1
-    }
-}
-#[arcorn::rewrite]
-#[derive(Copy)]
-pub struct Struct5valuei32End {
-    value: i32,
-}
+pub use defs::*;
 
 

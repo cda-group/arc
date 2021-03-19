@@ -4,25 +4,35 @@ expression: s
 input_file: arc-script-test/compile/src/tests/expect_pass/pattern.arc
 
 ---
-use arc_script::arcorn;
-use arc_script::arcorn::state::{ArcMapOps, ArcRefOps, ArcSetOps, ArcVecOps};
-use arcon::prelude::*;
-pub fn main() -> () {
-    let y_1_0 = 1i32;
-    let y_1_1 = 2i32;
-    let y_1_2 = (y_1_0, y_1_1);
-    let y_1_3 = 3i32;
-    let y_1_4 = 4i32;
-    let y_1_5 = (y_1_3, y_1_4);
-    let y_1_6 = (y_1_2, y_1_5);
-    let y_1_7 = y_1_6.0;
-    let y_1_8 = y_1_7.0;
-    let y_1_9 = y_1_7.1;
-    let y_1_10 = y_1_6.1;
-    let y_1_11 = y_1_10.0;
-    let y_1_12 = y_1_10.1;
-    let y_1_13 = ();
-    y_1_13
+#[allow(non_snake_case)]
+#[allow(unused_must_use)]
+#[allow(dead_code)]
+#[allow(unused_variables)]
+#[allow(unused_imports)]
+#[allow(unused_braces)]
+pub mod defs {
+    use super::*;
+    pub use arc_script::arcorn;
+    pub use arc_script::arcorn::state::{ArcMapOps, ArcRefOps, ArcSetOps, ArcVecOps};
+    pub use arcon::prelude::*;
+    pub fn main() -> () {
+        let y_1_0 = 1i32;
+        let y_1_1 = 2i32;
+        let y_1_2 = (y_1_0, y_1_1);
+        let y_1_3 = 3i32;
+        let y_1_4 = 4i32;
+        let y_1_5 = (y_1_3, y_1_4);
+        let y_1_6 = (y_1_2, y_1_5);
+        let y_1_7 = y_1_6.0;
+        let y_1_8 = y_1_7.0;
+        let y_1_9 = y_1_7.1;
+        let y_1_10 = y_1_6.1;
+        let y_1_11 = y_1_10.0;
+        let y_1_12 = y_1_10.1;
+        let y_1_13 = ();
+        y_1_13
+    }
 }
+pub use defs::*;
 
 

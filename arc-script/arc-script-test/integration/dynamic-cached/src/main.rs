@@ -25,10 +25,11 @@ fn main() {
 }
 
 impl<B: arcon::Backend, C: arcon::prelude::ComponentDefinition>
-    script::Identity<'_, '_, '_, '_, B, C>
+    script::ExternTest<'_, '_, '_, '_, B, C>
 {
     fn rust_method(&mut self, x: i32) -> i32 {
-        self.Identity_arc_method(x);
+        self.ExternTest_arc_method(x);
+        self.ctx.output(arcon::prelude::ArconElement::new(x.into()));
         x + 5
     }
 }

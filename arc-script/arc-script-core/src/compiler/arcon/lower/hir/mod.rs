@@ -41,10 +41,21 @@ impl Lower<Tokens, Context<'_>> for hir::HIR {
             .collect::<Vec<_>>();
         let mangled_defs = ctx.mangled_defs.values();
         quote! {
-            use arc_script::arcorn;
-            use arc_script::arcorn::state::{ArcRefOps, ArcVecOps, ArcMapOps, ArcSetOps};
-            #(#defs)*
-            #(#mangled_defs)*
+            #[allow(non_snake_case)]
+            #[allow(unused_must_use)]
+            #[allow(dead_code)]
+            #[allow(unused_variables)]
+            #[allow(unused_imports)]
+            #[allow(unused_braces)]
+            pub mod defs {
+                use super::*;
+                pub use arcon::prelude::*;
+                pub use arc_script::arcorn;
+                pub use arc_script::arcorn::state::{ArcRefOps, ArcVecOps, ArcMapOps, ArcSetOps};
+                #(#defs)*
+                #(#mangled_defs)*
+            }
+            pub use defs::*;
         }
     }
 }
@@ -136,7 +147,7 @@ impl Lower<Tokens, Context<'_>> for hir::Task {
         let data_name = syn::Ident::new(&format!("{}Data", task_name), pm2::Span::call_site());
         let state_name = syn::Ident::new(&format!("{}State", task_name), pm2::Span::call_site());
 
-        let backend = &quote!(arcon::prelude::Sled);
+        let backend = &quote!(Sled);
 
         let param_decls = self.params.iter().map(|p| p.lower(ctx)).collect::<Vec<_>>();
         let param_ids = self

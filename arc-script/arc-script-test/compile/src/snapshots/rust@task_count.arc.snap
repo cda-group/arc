@@ -4,41 +4,47 @@ expression: s
 input_file: arc-script-test/compile/src/tests/expect_mlir_fail_todo/task_count.arc
 
 ---
-use arc_script::arcorn;
-use arc_script::arcorn::state::{ArcMapOps, ArcRefOps, ArcSetOps, ArcVecOps};
-use arcon::prelude::*;
-pub struct Count<'i, 'source, 'timer, 'channel, B: Backend, C: ComponentDefinition> {
-    pub data: &'i mut CountData,
-    pub ctx: &'i mut OperatorContext<'source, 'timer, 'channel, CountData, B, C>,
-    pub timestamp: Option<u64>,
-}
-pub struct CountData {
-    pub state: CountState,
-}
-#[derive(ArconState)]
-pub struct CountState {
-    pub count_0: arc_script::arcorn::state::ArcRef<i32, arcon::prelude::Sled>,
-}
-impl StateConstructor for CountState {
-    type BackendType = arcon::prelude::Sled;
-    fn new(backend: Arc<Self::BackendType>) -> Self {
-        Self {
-            count_0:
-                <arc_script::arcorn::state::ArcRef<i32, arcon::prelude::Sled>>::arc_ref_default(
+#[allow(non_snake_case)]
+#[allow(unused_must_use)]
+#[allow(dead_code)]
+#[allow(unused_variables)]
+#[allow(unused_imports)]
+#[allow(unused_braces)]
+pub mod defs {
+    use super::*;
+    pub use arc_script::arcorn;
+    pub use arc_script::arcorn::state::{ArcMapOps, ArcRefOps, ArcSetOps, ArcVecOps};
+    pub use arcon::prelude::*;
+    pub struct Count<'i, 'source, 'timer, 'channel, B: Backend, C: ComponentDefinition> {
+        pub data: &'i mut CountData,
+        pub ctx: &'i mut OperatorContext<'source, 'timer, 'channel, CountData, B, C>,
+        pub timestamp: Option<u64>,
+    }
+    pub struct CountData {
+        pub state: CountState,
+    }
+    #[derive(ArconState)]
+    pub struct CountState {
+        pub count_0: arc_script::arcorn::state::ArcRef<i32, Sled>,
+    }
+    impl StateConstructor for CountState {
+        type BackendType = Sled;
+        fn new(backend: Arc<Self::BackendType>) -> Self {
+            Self {
+                count_0: <arc_script::arcorn::state::ArcRef<i32, Sled>>::arc_ref_default(
                     "count_0",
                     backend.clone(),
                 )
                 .unwrap(),
+            }
         }
     }
-}
-impl CountData {
-    fn new() -> OperatorBuilder<CountData> {
-        OperatorBuilder {
-            constructor: Arc::new(move |backend| CountData {
-                state: CountState {
-                    count_0:
-                        <arc_script::arcorn::state::ArcRef<i32, arcon::prelude::Sled>>::arc_ref_new(
+    impl CountData {
+        fn new() -> OperatorBuilder<CountData> {
+            OperatorBuilder {
+                constructor: Arc::new(move |backend| CountData {
+                    state: CountState {
+                        count_0: <arc_script::arcorn::state::ArcRef<i32, Sled>>::arc_ref_new(
                             "count_0",
                             backend.clone(),
                             {
@@ -47,66 +53,68 @@ impl CountData {
                             },
                         )
                         .unwrap(),
-                },
-            }),
-            conf: Default::default(),
+                    },
+                }),
+                conf: Default::default(),
+            }
         }
     }
-}
-impl Operator for CountData {
-    type IN = Struct5valuei32End;
-    type OUT = Struct5valuei32End;
-    type TimerState = ArconNever;
-    type OperatorState = CountState;
-    fn handle_element(
-        &mut self,
-        elem: ArconElement<Self::IN>,
-        ref mut ctx: OperatorContext<Self, impl Backend, impl ComponentDefinition>,
-    ) -> OperatorResult<()> {
-        let ArconElement { timestamp, data } = elem;
-        let event = data.value;
-        let mut task = Count {
-            data: self,
-            ctx,
-            timestamp,
-        };
-        task.handle(event);
-        Ok(())
+    impl Operator for CountData {
+        type IN = Struct5valuei32End;
+        type OUT = Struct5valuei32End;
+        type TimerState = ArconNever;
+        type OperatorState = CountState;
+        fn handle_element(
+            &mut self,
+            elem: ArconElement<Self::IN>,
+            ref mut ctx: OperatorContext<Self, impl Backend, impl ComponentDefinition>,
+        ) -> OperatorResult<()> {
+            let ArconElement { timestamp, data } = elem;
+            let event = data.value;
+            let mut task = Count {
+                data: self,
+                ctx,
+                timestamp,
+            };
+            task.handle(event);
+            Ok(())
+        }
+        fn state(&mut self) -> &mut Self::OperatorState {
+            &mut self.state
+        }
+        arcon::ignore_timeout!();
+        arcon::ignore_persist!();
     }
-    fn state(&mut self) -> &mut Self::OperatorState {
-        &mut self.state
+    impl<'i, 'source, 'timer, 'channel, B: Backend, C: ComponentDefinition>
+        Count<'i, 'source, 'timer, 'channel, B, C>
+    {
+        fn handle(&mut self, event_0: i32) -> OperatorResult<()> {
+            {
+                let y_1_0 = self.data.state.count_0.arc_ref_read().unwrap();
+                let y_1_1 = 1i32;
+                let y_1_2 = y_1_0 + y_1_1;
+                let y_1_3 = self.data.state.count_0.arc_ref_read().unwrap();
+                let y_1_4 = self.data.state.count_0.arc_ref_write(y_1_2).unwrap();
+                self.emit(y_1_3);
+                y_1_4
+            };
+            Ok(())
+        }
+        fn emit(&mut self, event_0: i32) {
+            let data = Struct5valuei32End { value: event_0 };
+            let elem = ArconElement {
+                data,
+                timestamp: self.timestamp,
+            };
+            self.ctx.output(elem);
+        }
     }
-    arcon::ignore_timeout!();
-    arcon::ignore_persist!();
-}
-impl<'i, 'source, 'timer, 'channel, B: Backend, C: ComponentDefinition>
-    Count<'i, 'source, 'timer, 'channel, B, C>
-{
-    fn handle(&mut self, event_0: i32) -> OperatorResult<()> {
-        {
-            let y_1_0 = self.data.state.count_0.arc_ref_read().unwrap();
-            let y_1_1 = 1i32;
-            let y_1_2 = y_1_0 + y_1_1;
-            let y_1_3 = self.data.state.count_0.arc_ref_read().unwrap();
-            let y_1_4 = self.data.state.count_0.arc_ref_write(y_1_2).unwrap();
-            self.emit(y_1_3);
-            y_1_4
-        };
-        Ok(())
-    }
-    fn emit(&mut self, event_0: i32) {
-        let data = Struct5valuei32End { value: event_0 };
-        let elem = ArconElement {
-            data,
-            timestamp: self.timestamp,
-        };
-        self.ctx.output(elem);
+    #[arcorn::rewrite]
+    #[derive(Copy)]
+    pub struct Struct5valuei32End {
+        value: i32,
     }
 }
-#[arcorn::rewrite]
-#[derive(Copy)]
-pub struct Struct5valuei32End {
-    value: i32,
-}
+pub use defs::*;
 
 

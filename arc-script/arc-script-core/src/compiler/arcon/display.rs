@@ -32,7 +32,6 @@ impl<'i> Display for Pretty<'i, arcon::Arcon, Context> {
             if #[cfg(not(target_arch = "wasm32"))] {
                 write!(f, "{}", rustfmt(rs).unwrap())?;
             } else {
-                write!(f, "use arcon::prelude::*;");
                 rs.items
                     .iter()
                     .try_for_each(|item| write!(f, "{}", quote!(#item)))?;
@@ -49,7 +48,6 @@ fn rustfmt(rs: &arcon::Arcon) -> io::Result<String> {
 
     let file = &rs.file;
 
-    write!(fw, "use arcon::prelude::*;");
     write!(fw, "{}", quote::quote!(#file))?;
     fw.flush();
 
