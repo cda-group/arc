@@ -4,18 +4,28 @@ expression: s
 input_file: arc-script-test/compile/src/tests/expect_pass/lambda.arc
 
 ---
-use arc_script::arcorn;
-use arc_script::arcorn::state::{ArcMapOps, ArcRefOps, ArcSetOps, ArcVecOps};
-use arcon::prelude::*;
-pub fn x_0(i_0: i32) -> i32 {
-    let y_1_0 = 1i32;
-    let y_1_1 = i_0 + y_1_0;
-    y_1_1
+#[allow(non_snake_case)]
+#[allow(unused_must_use)]
+#[allow(dead_code)]
+#[allow(unused_variables)]
+#[allow(unused_imports)]
+#[allow(unused_braces)]
+pub mod defs {
+    use super::*;
+    pub use arc_script::arcorn;
+    pub use arc_script::arcorn::state::{ArcMapOps, ArcRefOps, ArcSetOps, ArcVecOps};
+    pub use arcon::prelude::*;
+    pub fn x_0(i_0: i32) -> i32 {
+        let y_1_0 = 1i32;
+        let y_1_1 = i_0 + y_1_0;
+        y_1_1
+    }
+    pub fn test() -> i32 {
+        let y_1_0 = 1i32;
+        let y_1_1 = x_0(y_1_0);
+        y_1_1
+    }
 }
-pub fn test() -> i32 {
-    let y_1_0 = 1i32;
-    let y_1_1 = x_0(y_1_0);
-    y_1_1
-}
+pub use defs::*;
 
 

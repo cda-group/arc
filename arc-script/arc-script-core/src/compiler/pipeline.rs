@@ -99,7 +99,7 @@ where
         fw.flush();
 
         run_arc_mlir(infile.path(), outfile.path());
-	let r = std::fs::read_to_string(&outfile)?;
+        let r = std::fs::read_to_string(&outfile)?;
         write!(f, "{}", r)?;
         return Ok(Report::semantic(info, hir));
     }

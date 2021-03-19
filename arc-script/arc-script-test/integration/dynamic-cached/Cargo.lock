@@ -116,6 +116,7 @@ dependencies = [
  "anyhow",
  "boolinator",
  "cfg-if 1.0.0",
+ "countme",
  "derive_more",
  "educe",
  "fxhash",
@@ -581,6 +582,12 @@ name = "constant_time_eq"
 version = "0.1.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "245097e9a4535ee1e3e3931fcfcd55a796a44c643e8596ff6566d68f09b87bbc"
+
+[[package]]
+name = "countme"
+version = "2.0.4"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "328b822bdcba4d4e402be8d9adb6eebf269f969f8eadef977a553ff3c4fbcb58"
 
 [[package]]
 name = "crc32fast"

@@ -4,45 +4,55 @@ expression: s
 input_file: arc-script-test/compile/src/tests/expect_pass/enum_pattern_nested.arc
 
 ---
-use arc_script::arcorn;
-use arc_script::arcorn::state::{ArcMapOps, ArcRefOps, ArcSetOps, ArcVecOps};
-use arcon::prelude::*;
-#[arcorn::rewrite]
-pub enum Baz {
-    Baz_Some(i32),
-    Baz_None(()),
-}
-#[arcorn::rewrite]
-pub enum Foo {
-    Foo_Bar(Baz),
-    Foo_None(()),
-}
-pub fn x_5() -> () {
-    let y_1_0 = ();
-    y_1_0
-}
-pub fn main() -> () {
-    let y_1_0 = 5i32;
-    let y_1_1 = arcorn::enwrap!(Baz_Some, y_1_0);
-    let y_1_2 = arcorn::enwrap!(Foo_Bar, y_1_1);
-    let y_1_3 = arcorn::is!(Foo_Bar, y_1_2);
-    let y_1_4 = if y_1_3 {
-        let y_2_0 = arcorn::unwrap!(Foo_Bar, y_1_2);
-        let y_2_1 = arcorn::is!(Baz_Some, y_2_0);
-        let y_2_2 = if y_2_1 {
-            let y_3_0 = arcorn::unwrap!(Baz_Some, y_2_0);
-            let y_3_1 = ();
-            y_3_1
+#[allow(non_snake_case)]
+#[allow(unused_must_use)]
+#[allow(dead_code)]
+#[allow(unused_variables)]
+#[allow(unused_imports)]
+#[allow(unused_braces)]
+pub mod defs {
+    use super::*;
+    pub use arc_script::arcorn;
+    pub use arc_script::arcorn::state::{ArcMapOps, ArcRefOps, ArcSetOps, ArcVecOps};
+    pub use arcon::prelude::*;
+    #[arcorn::rewrite]
+    pub enum Baz {
+        Baz_Some(i32),
+        Baz_None(()),
+    }
+    #[arcorn::rewrite]
+    pub enum Foo {
+        Foo_Bar(Baz),
+        Foo_None(()),
+    }
+    pub fn x_5() -> () {
+        let y_1_0 = ();
+        y_1_0
+    }
+    pub fn main() -> () {
+        let y_1_0 = 5i32;
+        let y_1_1 = arcorn::enwrap!(Baz_Some, y_1_0);
+        let y_1_2 = arcorn::enwrap!(Foo_Bar, y_1_1);
+        let y_1_3 = arcorn::is!(Foo_Bar, y_1_2);
+        let y_1_4 = if y_1_3 {
+            let y_2_0 = arcorn::unwrap!(Foo_Bar, y_1_2);
+            let y_2_1 = arcorn::is!(Baz_Some, y_2_0);
+            let y_2_2 = if y_2_1 {
+                let y_3_0 = arcorn::unwrap!(Baz_Some, y_2_0);
+                let y_3_1 = ();
+                y_3_1
+            } else {
+                let y_3_0 = x_5();
+                y_3_0
+            };
+            y_2_2
         } else {
-            let y_3_0 = x_5();
-            y_3_0
+            let y_2_0 = x_5();
+            y_2_0
         };
-        y_2_2
-    } else {
-        let y_2_0 = x_5();
-        y_2_0
-    };
-    y_1_4
+        y_1_4
+    }
 }
+pub use defs::*;
 
 
