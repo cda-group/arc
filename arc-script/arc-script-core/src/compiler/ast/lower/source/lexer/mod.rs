@@ -4,10 +4,13 @@
 mod display;
 /// Module for defining the format of numeric literals.
 mod numfmt;
-/// Module for scanning raw tokens which are then post-processed by this module.
-mod tokens;
+/// Module which contains raw logos tokens.
+mod raw_tokens;
+/// Module which contains semantic tokens.
+pub(crate) mod sem_tokens;
 
-use crate::compiler::ast::lower::source::lexer::tokens::LogosToken;
+use crate::compiler::ast::lower::source::lexer::raw_tokens::LogosToken;
+use crate::compiler::ast::lower::source::lexer::sem_tokens::Token;
 use crate::compiler::info::diags::DiagInterner;
 use crate::compiler::info::diags::Error;
 use crate::compiler::info::diags::Result;
@@ -57,163 +60,6 @@ pub(crate) struct Lexer<'i> {
     /// Map which stores diagnostics encountered during scanning.
     pub(crate) diags: DiagInterner,
 }
-
-/// A semantic token extracted from a `LogosToken` by `Lexer`.
-#[rustfmt::skip]
-#[derive(Debug, Clone)]
-pub enum Token {
-    Indent,
-    Dedent,
-//=============================================================================
-// Grouping
-//=============================================================================
-    BraceL,
-    BraceR,
-    BraceLR,
-    BrackL,
-    BrackR,
-    BrackLR,
-    ParenL,
-    ParenR,
-    ParenLR,
-//=============================================================================
-// Operators
-//=============================================================================
-    Amp,
-    AmpAmp,
-    ArrowL,
-    ArrowR,
-    AtSign,
-    Bang,
-    Bar,
-    BarBar,
-    Caret,
-    Colon,
-    ColonColon,
-    Comma,
-    Dollar,
-    Dot,
-    DotDot,
-    Equ,
-    EquEqu,
-    Geq,
-    Gt,
-    Imply,
-    Leq,
-    Lt,
-    LtGt,
-    Minus,
-    Neq,
-    Percent,
-    Pipe,
-    Plus,
-    Qm,
-    QmQmQm,
-    Semi,
-    SemiSemi,
-    Slash,
-    Star,
-    StarStar,
-    Tilde,
-    Underscore,
-//=============================================================================
-// Keywords
-//=============================================================================
-    Add,
-    After,
-    And,
-    As,
-    Band,
-    Bor,
-    Box,
-    Break,
-    By,
-    Crate,
-    Del,
-    Bxor,
-    Else,
-    Enwrap,
-    Emit,
-    Extern,
-    Unwrap,
-    Is,
-    Enum,
-    For,
-    Fun,
-    If,
-    In,
-    Let,
-    Log,
-    Loop,
-    Match,
-    Not,
-    On,
-    Or,
-    Port,
-    Reduce,
-    Return,
-    Startup,
-    State,
-    Task,
-    Timeout,
-    Timer,
-    Trigger,
-    Type,
-    Use,
-    Xor,
-//=============================================================================
-// Reserved Keywords
-//=============================================================================
-    End,
-    Of,
-    Pub,
-    Shutdown,
-    Sink,
-    Source,
-    Then,
-    Where,
-//=============================================================================
-// Primitive Types
-//=============================================================================
-    Bool,
-    Bf16,
-    F16,
-    F32,
-    F64,
-    I8,
-    I16,
-    I32,
-    I64,
-    U8,
-    U16,
-    U32,
-    U64,
-    Null,
-    Str,
-    Unit,
-//=============================================================================
-// Identifiers and Literals
-//=============================================================================
-    NameId(NameId),
-    LitI8(i8),
-    LitI16(i16),
-    LitI32(i32),
-    LitI64(i64),
-    LitU8(u8),
-    LitU16(u16),
-    LitU32(u32),
-    LitU64(u64),
-    LitBf16(bf16),
-    LitF16(f16),
-    LitF32(f32),
-    LitF64(f64),
-    LitBool(bool),
-    LitChar(char),
-    LitStr(String),
-    LitDateTime(DateTime),
-    LitDuration(Duration),
-}
-
 impl<'i> Lexer<'i> {
     /// Returns a new lexer with an initial state.
     pub(crate) fn new(source: &'i str, file: FileId, names: &'i mut NameInterner) -> Self {

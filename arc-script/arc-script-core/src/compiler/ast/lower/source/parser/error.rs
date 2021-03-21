@@ -1,6 +1,6 @@
 //! Module for converting errors emitted by `LALRPOP` into compiler diagnostics.
 
-use crate::compiler::ast::lower::source::lexer::Token;
+use crate::compiler::ast::lower::source::lexer::sem_tokens::Token;
 use crate::compiler::info::diags::{Diagnostic, Error};
 use crate::compiler::info::files::{ByteIndex, FileId, Loc};
 
