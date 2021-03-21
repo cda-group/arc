@@ -10,6 +10,7 @@ use crate::compiler::hir::VarKind;
 use crate::compiler::hir::HIR;
 use crate::compiler::info::diags::Error;
 use crate::compiler::info::types::TypeId;
+use crate::compiler::info::files::Loc;
 
 use arc_script_core_shared::get;
 use arc_script_core_shared::map;
@@ -103,7 +104,7 @@ pub(crate) fn fold_cases(then_branch: Expr, else_branch: Option<&Expr>, cases: V
             // let a = b { c } else { d }
             Case::Bind { param, expr } => Expr {
                 tv: body.tv,
-                loc: None,
+                loc: Loc::Fake,
                 kind: ExprKind::Let(param, expr.into(), body.into()),
             },
             _ => unreachable!(),

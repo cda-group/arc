@@ -114,13 +114,13 @@ pub enum Error {
     /// Error when the lexer encounters too many levels of indentation.
     TooMuchIndent {
         /// Location of the error.
-        loc: Option<Loc>,
+        loc: Loc,
     },
 
     /// Error when the lexer encounters indentation indivisible by TABSIZE.
     BadIndent {
         /// Location of the error.
-        loc: Option<Loc>,
+        loc: Loc,
     },
 
     /// Error produced by [`lexical_core`].
@@ -128,7 +128,7 @@ pub enum Error {
         /// Error code.
         err: lexical_core::Error,
         /// Location of the error.
-        loc: Option<Loc>,
+        loc: Loc,
     },
 
     /// Error produced by [`time`].
@@ -136,7 +136,7 @@ pub enum Error {
         /// Error code.
         err: time::ParseError,
         /// Location of the error.
-        loc: Option<Loc>,
+        loc: Loc,
     },
 
     /// Error when the parser comes across an extra token.
@@ -144,19 +144,19 @@ pub enum Error {
         /// Extra token found while parsing.
         found: Token,
         /// Location of the error.
-        loc: Option<Loc>,
+        loc: Loc,
     },
 
     /// Error when the parser comes across an invalid token.
     InvalidToken {
         /// Location of the error.
-        loc: Option<Loc>,
+        loc: Loc,
     },
 
     /// Error when the parser comes across an unrecognized end-of-file.
     UnrecognizedEOF {
         /// Location of the error.
-        loc: Option<Loc>,
+        loc: Loc,
         /// List of tokens expected by LALRPOP.
         expected: Vec<String>,
     },
@@ -169,7 +169,7 @@ pub enum Error {
         /// Unrecognized token found while parsing.
         found: Token,
         /// Location of the token.
-        loc: Option<Loc>,
+        loc: Loc,
         /// List of tokens expected by LALRPOP.
         expected: Vec<String>,
     },
@@ -181,13 +181,13 @@ pub enum Error {
         /// Type variable of the second type.
         rhs: TypeId,
         /// Location of the error.
-        loc: Option<Loc>,
+        loc: Loc,
     },
 
     /// Error when type information is needed at a code location, but is not supplied.
     TypeMustBeKnownAtThisPoint {
         /// Location of the error.
-        loc: Option<Loc>,
+        loc: Loc,
     },
 
     /// Error when a path does not reference anything.
@@ -195,13 +195,13 @@ pub enum Error {
         /// Path which failed to resolve.
         path: Path,
         /// Location of the error.
-        loc: Option<Loc>,
+        loc: Loc,
     },
 
     /// Error when trying to construct an array shape with an invalid dimension.
     DisallowedDimExpr {
         /// Location of the error.
-        loc: Option<Loc>,
+        loc: Loc,
     },
 
     /// Error when z3 cannot infer anything about a shape.
@@ -213,7 +213,7 @@ pub enum Error {
     /// Error when a match is non-exhaustive.
     NonExhaustiveMatch {
         /// Location of the error.
-        loc: Option<Loc>,
+        loc: Loc,
     },
 
     /// Error when two items in the same namespace have the same name.
@@ -243,13 +243,13 @@ pub enum Error {
     /// Error when a tuple is indexed with an out-of-bounds index.
     OutOfBoundsProject {
         /// Location of the error.
-        loc: Option<Loc>,
+        loc: Loc,
     },
 
     /// Error when a struct-field is accessed which does not exist.
     FieldNotFound {
         /// Location of the error.
-        loc: Option<Loc>,
+        loc: Loc,
     },
 
     /// Error when the main function has the wrong signature.
@@ -264,27 +264,27 @@ pub enum Error {
     /// Error when placing a type in value position.
     TypeInValuePosition {
         /// Location of the error.
-        loc: Option<Loc>,
+        loc: Loc,
     },
 
     /// Error when enwrapping a non-variant path.
     PathIsNotVariant {
         /// Location of the error.
-        loc: Option<Loc>,
+        loc: Loc,
     },
 
     /// Error when placing a certain pattern inside a let-expression.
     RefutablePattern {
         /// Location of the error.
-        loc: Option<Loc>,
+        loc: Loc,
     },
 
     /// Error when moving a used value, and the moved value does not implement Copy.
     UseOfMovedValue {
         /// Location of the parent value.
-        loc0: Option<Loc>,
+        loc0: Loc,
         /// Location of the second value.
-        loc1: Option<Loc>,
+        loc1: Loc,
         /// Type which does not implement Copy.
         tv: TypeId,
     },
@@ -292,11 +292,11 @@ pub enum Error {
     /// Error when using the same value twice, and the used value does not implement Copy.
     DoubleUse {
         /// Location of the place expression declaration.
-        loc0: Option<Loc>,
+        loc0: Loc,
         /// Location of the first use.
-        loc1: Option<Loc>,
+        loc1: Loc,
         /// Location of the second use.
-        loc2: Option<Loc>,
+        loc2: Loc,
         /// Type which does not implement Copy.
         tv: TypeId,
     },
@@ -304,27 +304,27 @@ pub enum Error {
     /// Error when an extern function contains a parameter which is a pattern.
     PatternInExternFun {
         /// Location of the extern function.
-        loc: Option<Loc>,
+        loc: Loc,
     },
 
     /// Error when an expression expects a selector (e.g., e1 not in e2[123]), but the selector is
     /// not specified.
     ExpectedSelector {
         /// Location of the expression
-        loc: Option<Loc>,
+        loc: Loc,
     },
 
     /// Error when multiple selectors are specified. For now this is a hard-error, but will relaxed
     /// in the future.
     MultipleSelectors {
         /// Location of the expression
-        loc: Option<Loc>,
+        loc: Loc,
     },
 
     /// Error when using a non-selectable type (map, set) in a selector.
     ExpectedSelectableType {
         /// Location of the expression
-        loc: Option<Loc>,
+        loc: Loc,
     },
 }
 
@@ -334,7 +334,7 @@ pub enum Panic {
     /// Stack-trace to code location which caused a panic.
     Unwind {
         /// Location of the runtime error.
-        loc: Option<Loc>,
+        loc: Loc,
         /// Path to each function in the call-stack.
         trace: Vec<Path>,
     },

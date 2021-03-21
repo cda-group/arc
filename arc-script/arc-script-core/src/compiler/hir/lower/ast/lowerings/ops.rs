@@ -18,7 +18,7 @@ use super::Context;
 pub(crate) fn lower_pipe(
     e0: &ast::Expr,
     e1: &ast::Expr,
-    loc: Option<Loc>,
+    loc: Loc,
     ctx: &mut Context<'_>,
 ) -> hir::ExprKind {
     hir::ExprKind::Call(e1.lower(ctx).into(), vec![e0.lower(ctx)])
@@ -27,7 +27,7 @@ pub(crate) fn lower_pipe(
 pub(crate) fn lower_not_in(
     e0: &ast::Expr,
     e1: &ast::Expr,
-    loc: Option<Loc>,
+    loc: Loc,
     ctx: &mut Context<'_>,
 ) -> hir::ExprKind {
     hir::ExprKind::UnOp(
@@ -45,7 +45,7 @@ pub(crate) fn lower_not_in(
     )
 }
 
-pub(crate) fn lower_del(e: &ast::Expr, loc: Option<Loc>, ctx: &mut Context<'_>) -> hir::ExprKind {
+pub(crate) fn lower_del(e: &ast::Expr, loc: Loc, ctx: &mut Context<'_>) -> hir::ExprKind {
     if let ast::ExprKind::Select(e0, es) = ctx.ast.exprs.resolve(e.id) {
         if let [e1] = es.as_slice() {
             hir::ExprKind::Del(e0.lower(ctx).into(), e1.lower(ctx).into())
@@ -59,7 +59,7 @@ pub(crate) fn lower_del(e: &ast::Expr, loc: Option<Loc>, ctx: &mut Context<'_>) 
     }
 }
 
-pub(crate) fn lower_add(e: &ast::Expr, loc: Option<Loc>, ctx: &mut Context<'_>) -> hir::ExprKind {
+pub(crate) fn lower_add(e: &ast::Expr, loc: Loc, ctx: &mut Context<'_>) -> hir::ExprKind {
     if let ast::ExprKind::Select(e0, es) = ctx.ast.exprs.resolve(e.id) {
         if let [e1] = es.as_slice() {
             hir::ExprKind::Add(e0.lower(ctx).into(), e1.lower(ctx).into())

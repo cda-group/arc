@@ -129,7 +129,7 @@ impl<'i> Lexer<'i> {
     fn loc(&self) -> Loc {
         let file = self.file;
         let span = self.span();
-        Loc::new(file, span)
+        Loc::Real(file, span)
     }
     /// Returns the current span of the lexer.
     #[inline]

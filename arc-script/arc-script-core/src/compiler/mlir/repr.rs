@@ -28,7 +28,7 @@ pub(crate) struct MLIR {
 #[derive(New, Debug)]
 pub(crate) struct Item {
     pub(crate) kind: ItemKind,
-    pub(crate) loc: Option<Loc>,
+    pub(crate) loc: Loc,
 }
 
 #[derive(Debug)]
@@ -63,7 +63,7 @@ pub(crate) struct Enum {
 pub(crate) struct Variant {
     pub(crate) path: Path,
     pub(crate) tv: TypeId,
-    pub(crate) loc: Option<Loc>,
+    pub(crate) loc: Loc,
 }
 
 #[derive(New, Debug)]
@@ -100,7 +100,7 @@ pub(crate) struct Task {
 #[derive(New, Debug)]
 pub(crate) struct Setting {
     pub(crate) kind: SettingKind,
-    pub(crate) loc: Option<Loc>,
+    pub(crate) loc: Loc,
 }
 
 #[derive(Debug)]
@@ -113,7 +113,7 @@ pub(crate) enum SettingKind {
 pub(crate) struct Op {
     pub(crate) var: Option<Var>,
     pub(crate) kind: OpKind,
-    pub(crate) loc: Option<Loc>,
+    pub(crate) loc: Loc,
 }
 
 #[derive(Debug)]

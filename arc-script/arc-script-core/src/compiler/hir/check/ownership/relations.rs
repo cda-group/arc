@@ -20,7 +20,7 @@ pub(crate) struct Place {
     pub(crate) tv: TypeId,
     #[educe(PartialEq(ignore), Eq(ignore), Hash(ignore))]
     #[educe(PartialOrd(ignore), Ord(ignore))]
-    pub(crate) loc: Option<Loc>,
+    pub(crate) loc: Loc,
 }
 
 /// A `Place` is an expression which refers to a memory location.
@@ -46,7 +46,7 @@ pub(crate) struct BranchId(usize);
 pub(crate) struct Branch {
     id: BranchId,
     #[educe(PartialEq(ignore), Eq(ignore), Hash(ignore))]
-    pub(crate) loc: Option<Loc>,
+    pub(crate) loc: Loc,
 }
 
 #[derive(Debug, Copy, Clone, Hash, Eq, PartialEq, Ord, PartialOrd)]
@@ -58,7 +58,7 @@ pub(crate) struct Use {
     id: UseId,
     #[educe(PartialEq(ignore), Eq(ignore), Hash(ignore))]
     #[educe(Ord(ignore), PartialOrd(ignore))]
-    pub(crate) loc: Option<Loc>,
+    pub(crate) loc: Loc,
 }
 
 #[derive(Default, Debug)]
@@ -85,13 +85,13 @@ impl Ownership {
             }
         }
     }
-    pub(crate) fn new_branch(&mut self, loc: Option<Loc>) -> Branch {
+    pub(crate) fn new_branch(&mut self, loc: Loc) -> Branch {
         let b = Branch::new(BranchId(self.branch_counter), loc);
         self.branch_counter += 1;
         self.jumps.push((b, b));
         b
     }
-    pub(crate) fn add_use(&mut self, p0: Place, b0: Branch, loc: Option<Loc>) {
+    pub(crate) fn add_use(&mut self, p0: Place, b0: Branch, loc: Loc) {
         let id = UseId(self.use_counter);
         self.use_counter += 1;
         self.uses.push((p0, Use::new(id, loc), b0));

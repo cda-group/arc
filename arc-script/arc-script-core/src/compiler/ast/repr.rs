@@ -5,7 +5,7 @@ use crate::compiler::info::files::{ByteIndex, FileId, Loc};
 use crate::compiler::info::names::NameId;
 use crate::compiler::info::paths::PathId;
 
-use arc_script_core_macros::Spanned;
+use arc_script_core_macros::Loc;
 use arc_script_core_shared::Educe;
 use arc_script_core_shared::New;
 use arc_script_core_shared::OrdMap;
@@ -35,10 +35,10 @@ pub struct Module {
 }
 
 /// A setting for an item.
-#[derive(Debug, Spanned)]
+#[derive(Debug, Loc)]
 pub struct Setting {
     pub kind: SettingKind,
-    pub loc: Option<Loc>,
+    pub loc: Loc,
 }
 
 /// A kind of setting for an item.
@@ -49,37 +49,37 @@ pub enum SettingKind {
 }
 
 /// Path to an item or variable.
-#[derive(Debug, Spanned, Clone, Copy)]
+#[derive(Debug, Loc, Clone, Copy)]
 pub struct Path {
     pub id: PathId,
-    pub loc: Option<Loc>,
+    pub loc: Loc,
 }
 
 /// An identifier.
-#[derive(Debug, Clone, Copy, Spanned, Educe, New)]
+#[derive(Debug, Clone, Copy, Loc, Educe, New)]
 #[educe(PartialEq, Eq, Hash, PartialOrd, Ord)]
 pub struct Name {
     pub id: NameId,
     #[educe(PartialEq(ignore), Eq(ignore), Hash(ignore))]
     #[educe(PartialOrd(ignore), Ord(ignore))]
-    pub loc: Option<Loc>,
+    pub loc: Loc,
 }
 
 /// An index into a tuple.
-#[derive(Debug, Copy, Clone, Educe, New, Spanned)]
+#[derive(Debug, Copy, Clone, Educe, New, Loc)]
 #[educe(PartialEq, Eq, Hash)]
 pub struct Index {
     pub id: usize,
     #[educe(PartialEq(ignore), Eq(ignore), Hash(ignore))]
-    pub loc: Option<Loc>,
+    pub loc: Loc,
 }
 
 /// An item declaration.
-#[derive(Debug, Spanned)]
+#[derive(Debug, Loc)]
 pub struct Item {
     pub kind: ItemKind,
     pub settings: Option<Vec<Setting>>,
-    pub loc: Option<Loc>,
+    pub loc: Loc,
 }
 
 /// A kind of item declaration.
@@ -121,10 +121,10 @@ pub struct Task {
 }
 
 /// A hub of a task.
-#[derive(Debug, New, Spanned)]
+#[derive(Debug, New, Loc)]
 pub struct Hub {
     pub kind: HubKind,
-    pub loc: Option<Loc>,
+    pub loc: Loc,
 }
 
 /// A kind of hub.
@@ -205,11 +205,11 @@ pub struct State {
 }
 
 /// An item declaration residing within a task.
-#[derive(Debug, Spanned)]
+#[derive(Debug, Loc)]
 pub struct TaskItem {
     pub kind: TaskItemKind,
     pub settings: Option<Vec<Setting>>,
-    pub loc: Option<Loc>,
+    pub loc: Loc,
 }
 
 /// Data structure which interns (bump-allocates) expressions.
@@ -223,10 +223,10 @@ pub struct ExprInterner {
 pub struct ExprId(usize);
 
 /// An expression.
-#[derive(Debug, Spanned)]
+#[derive(Debug, Loc)]
 pub struct Expr {
     pub id: ExprId,
-    pub loc: Option<Loc>,
+    pub loc: Loc,
 }
 
 impl ExprInterner {
@@ -313,18 +313,18 @@ pub enum LitKind {
 }
 
 /// The arm of a match expression.
-#[derive(Debug, Spanned)]
+#[derive(Debug, Loc)]
 pub struct Case {
     pub pat: Pat,
     pub body: Expr,
-    pub loc: Option<Loc>,
+    pub loc: Loc,
 }
 
 /// A pattern.
-#[derive(Debug, Spanned)]
+#[derive(Debug, Loc)]
 pub struct Pat {
     pub kind: PatKind,
-    pub loc: Option<Loc>,
+    pub loc: Loc,
 }
 
 /// A kind of pattern.
@@ -343,10 +343,10 @@ pub enum PatKind {
 }
 
 /// A binary operator.
-#[derive(Debug, Spanned)]
+#[derive(Debug, Loc)]
 pub struct BinOp {
     pub kind: BinOpKind,
-    pub loc: Option<Loc>,
+    pub loc: Loc,
 }
 
 /// A kind of binary operator.
@@ -381,10 +381,10 @@ pub enum BinOpKind {
 }
 
 /// A unary operator.
-#[derive(Debug, Spanned)]
+#[derive(Debug, Loc)]
 pub struct UnOp {
     pub kind: UnOpKind,
-    pub loc: Option<Loc>,
+    pub loc: Loc,
 }
 
 /// A kind of unary operator.
@@ -399,42 +399,42 @@ pub enum UnOpKind {
 }
 
 /// A field of a struct.
-#[derive(Debug, Spanned)]
+#[derive(Debug, Loc)]
 pub struct Field<T: Debug> {
     pub name: Name,
     pub val: T,
-    pub loc: Option<Loc>,
+    pub loc: Loc,
 }
 
 /// A variant of an enum.
-#[derive(Debug, Spanned)]
+#[derive(Debug, Loc)]
 pub struct Variant {
     pub name: Name,
     pub ty: Option<Type>,
-    pub loc: Option<Loc>,
+    pub loc: Loc,
 }
 
 /// A port of a hub.
-#[derive(Debug, Spanned)]
+#[derive(Debug, Loc)]
 pub struct Port {
     pub name: Name,
     pub ty: Type,
-    pub loc: Option<Loc>,
+    pub loc: Loc,
 }
 
 /// A parameter of a function, let-expression, etc.
-#[derive(Debug, Spanned)]
+#[derive(Debug, Loc)]
 pub struct Param {
     pub pat: Pat,
     pub ty: Option<Type>,
-    pub loc: Option<Loc>,
+    pub loc: Loc,
 }
 
 /// A type from a type annotation.
-#[derive(Debug, Spanned)]
+#[derive(Debug, Loc)]
 pub struct Type {
     pub kind: TypeKind,
-    pub loc: Option<Loc>,
+    pub loc: Loc,
 }
 
 /// A kind of type from a type annotation.
@@ -484,17 +484,17 @@ pub enum ScalarKind {
 }
 
 /// A shape of an array.
-#[derive(Debug, Spanned)]
+#[derive(Debug, Loc)]
 pub struct Shape {
     pub dims: Vec<Dim>,
-    pub loc: Option<Loc>,
+    pub loc: Loc,
 }
 
 /// A dimension of a shape.
-#[derive(Debug, Spanned)]
+#[derive(Debug, Loc)]
 pub struct Dim {
     pub kind: DimKind,
-    pub loc: Option<Loc>,
+    pub loc: Loc,
 }
 
 /// A kind of dimension of a shape.
@@ -507,10 +507,10 @@ pub enum DimKind {
 }
 
 /// A dimension operator.
-#[derive(Debug, Spanned)]
+#[derive(Debug, Loc)]
 pub struct DimOp {
     pub kind: DimOpKind,
-    pub loc: Option<Loc>,
+    pub loc: Loc,
 }
 
 /// A kind of dimension operator.

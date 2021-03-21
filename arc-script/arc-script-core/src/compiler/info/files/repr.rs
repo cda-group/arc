@@ -30,24 +30,28 @@ pub type Span = TextRange;
 /// An identifier of a source file. Can be used to access the source code of the source file.
 pub type FileId = usize;
 
-/// A struct which stores a code location.
-#[derive(Debug, Clone, Copy, New)]
-pub struct Loc {
-    /// The file of the code location.
-    pub file: FileId,
-    /// The span within the source file.
-    pub span: Span,
+/// Stores a code location.
+#[derive(Debug, Clone, Copy)]
+pub enum Loc {
+    /// A real location which maps to a span in a source file.
+    Real(FileId, Span),
+    /// A fake location, synthesized during compilation.
+    Fake,
 }
 
 impl Loc {
     /// Constructs a source file from a file and a byte index range.
     pub(crate) fn from_range(file: FileId, range: Range<ByteIndex>) -> Self {
-        Self::new(file, Span::new(range.start, range.end))
+        Self::Real(file, Span::new(range.start, range.end))
     }
 
     /// Joins two locations into a potentially larger location.
     pub(crate) fn join(self, other: Self) -> Self {
-        Self::new(self.file, self.span.cover(other.span))
+        match (self, other) {
+            (Loc::Real(file, span0), Loc::Real(_, span1)) => Self::Real(file, span0.cover(span1)),
+            (loc @ Loc::Real(..), Loc::Fake) | (Loc::Fake, loc @ Loc::Real(..)) => loc,
+            (Loc::Fake, Loc::Fake) => Loc::Fake
+        }
     }
 }
 

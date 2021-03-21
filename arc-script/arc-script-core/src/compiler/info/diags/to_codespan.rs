@@ -7,7 +7,6 @@ use crate::compiler::info::diags::Panic;
 use crate::compiler::info::diags::Warning;
 use crate::compiler::info::files::FileId;
 use crate::compiler::info::files::Loc;
-
 use crate::compiler::info::Info;
 
 use codespan_reporting::diagnostic;
@@ -288,6 +287,10 @@ fn lex_err(err: &lexical_core::Error) -> &'static str {
     }
 }
 
-fn label(loc: impl Borrow<Option<Loc>>) -> Option<Label<FileId>> {
-    loc.borrow().map(|loc| Label::primary(loc.file, loc.span))
+fn label(loc: impl Borrow<Loc>) -> Option<Label<FileId>> {
+    if let Loc::Real(file, span) = loc.borrow() {
+        Some(Label::primary(*file, *span))
+    } else {
+        None
+    }
 }

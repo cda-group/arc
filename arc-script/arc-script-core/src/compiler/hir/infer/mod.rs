@@ -22,7 +22,7 @@ pub(crate) struct Context<'i> {
     hir: &'i HIR,
     info: &'i mut Info,
     env: &'i mut Map<Name, Param>,
-    loc: Option<Loc>,
+    loc: Loc,
 }
 
 impl HIR {

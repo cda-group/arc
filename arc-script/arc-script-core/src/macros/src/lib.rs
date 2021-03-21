@@ -23,8 +23,8 @@ use syn::{parse_macro_input, DataStruct, DeriveInput, Type};
 ///         Self { bar, baz, loc: None }
 ///     }
 /// }
-#[proc_macro_derive(Spanned)]
-pub fn derive_spanned(input: TokenStream) -> TokenStream {
+#[proc_macro_derive(Loc)]
+pub fn derive_loc(input: TokenStream) -> TokenStream {
     let input = parse_macro_input!(input as DeriveInput);
     let id = &input.ident;
     let (impl_generics, ty_generics, where_clause) = input.generics.split_for_impl();
@@ -34,12 +34,12 @@ pub fn derive_spanned(input: TokenStream) -> TokenStream {
             quote! {
                 impl #impl_generics From<Spanned<(#(#tys),*)>> for #id #ty_generics #where_clause {
                     fn from(Spanned(file, lhs, (#(#ids),*), rhs): Spanned<(#(#tys),*)>) -> Self {
-                        Self { #(#ids),*, loc: Some(Loc::from_range(file, lhs..rhs)) }
+                        Self { #(#ids),*, loc: Loc::from_range(file, lhs..rhs) }
                     }
                 }
                 impl #impl_generics #id #ty_generics #where_clause {
                     pub(crate) fn syn(#(#tyids),*) -> Self {
-                        Self { #(#ids),*, loc: None }
+                        Self { #(#ids),*, loc: Loc::Fake }
                     }
                 }
             }
