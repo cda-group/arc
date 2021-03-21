@@ -1,11 +1,15 @@
 //! AST display utilities.
 
+#[path = "../pretty.rs"]
+pub(crate) mod pretty;
+
+use pretty::*;
+
 use crate::compiler::ast;
 use crate::compiler::info::modes::Verbosity;
 use crate::compiler::info::names::NameId;
 use crate::compiler::info::paths::PathId;
 use crate::compiler::info::Info;
-use crate::compiler::pretty::*;
 use arc_script_core_shared::New;
 
 use std::fmt;

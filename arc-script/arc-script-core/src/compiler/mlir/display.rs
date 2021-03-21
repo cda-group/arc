@@ -1,4 +1,9 @@
 #![allow(clippy::useless_format)]
+
+#[path = "../pretty.rs"]
+pub(crate) mod pretty;
+use pretty::*;
+
 use crate::compiler::hir;
 use crate::compiler::hir::{Name, Path};
 
@@ -6,7 +11,6 @@ use crate::compiler::info::paths::PathId;
 use crate::compiler::info::types::TypeId;
 use crate::compiler::info::Info;
 use crate::compiler::mlir;
-use crate::compiler::pretty::*;
 use arc_script_core_shared::From;
 
 use std::fmt;
@@ -393,13 +397,9 @@ impl<'i> Display for Pretty<'i, mlir::OpKind, Context<'_>> {
                     .map_pretty(|x, f| write!(f, "{}", x.tv.pretty(fmt)), ", "),
             ),
             mlir::OpKind::Return(x)
-		if matches!(fmt.ctx.info.types.resolve(x.tv).kind,
-			    hir::TypeKind::Scalar(hir::ScalarKind::Unit)) =>
-		write!(
-                    f,
-                    r#"return {s0}"#,
-                    s0 = fmt
-		),
+                if matches!(fmt.ctx.info.types.resolve(x.tv).kind,
+                    hir::TypeKind::Scalar(hir::ScalarKind::Unit)) =>
+                        write!(f, r#"return {s0}"#, s0 = fmt),
             mlir::OpKind::Return(x) => write!(
                 f,
                 r#"return {x} : {t}{s0}"#,

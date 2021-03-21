@@ -1,7 +1,11 @@
+#[path = "../../../../pretty.rs"]
+pub(crate) mod pretty;
+
+use pretty::AsPretty;
+use pretty::Pretty;
+
 use crate::compiler::ast::lower::source::lexer::Token;
 use crate::compiler::info;
-use crate::compiler::pretty::AsPretty;
-use crate::compiler::pretty::Pretty;
 use arc_script_core_shared::New;
 
 use std::fmt::{self, Display, Formatter};
@@ -20,8 +24,8 @@ impl Token {
     }
 }
 
-#[rustfmt::skip]
 impl<'i> Display for Pretty<'i, Token, State<'_>> {
+    #[rustfmt::skip]
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
         let Pretty(token, fmt) = self;
         write!(f, "\"")?;

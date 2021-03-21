@@ -1,6 +1,12 @@
 #![allow(clippy::useless_format)]
+
+#[path = "../pretty.rs"]
+pub(crate) mod pretty;
+
+use pretty::*;
+
 use crate::compiler::arcon;
-use crate::compiler::pretty::*;
+
 use arc_script_core_shared::cfg_if;
 use arc_script_core_shared::From;
 use arc_script_core_shared::New;
@@ -11,11 +17,8 @@ use std::fmt;
 use std::fmt::Display;
 use std::fmt::Formatter;
 use std::fmt::Write as FmtWrite;
-
 use std::io;
-
 use std::io::Write;
-
 use std::process::Command;
 
 #[derive(New, From, Copy, Clone)]

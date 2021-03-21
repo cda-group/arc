@@ -9,7 +9,6 @@ use crate::compiler::info::files::FileId;
 use crate::compiler::info::files::Loc;
 
 use crate::compiler::info::Info;
-use crate::compiler::pretty::AsPretty;
 
 use codespan_reporting::diagnostic;
 use codespan_reporting::diagnostic::Label;

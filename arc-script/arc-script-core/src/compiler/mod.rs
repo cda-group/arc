@@ -22,6 +22,4 @@ pub(crate) mod arcon;
 /// Module which assembles compilation-pipeline.
 pub mod pipeline;
 
-pub(crate) mod pretty;
-
 pub use pipeline::compile;
