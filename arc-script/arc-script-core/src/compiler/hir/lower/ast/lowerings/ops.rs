@@ -73,16 +73,35 @@ pub(crate) fn lower_add(e: &ast::Expr, loc: Option<Loc>, ctx: &mut Context<'_>) 
     }
 }
 
-pub(crate) fn lower_after(
-    e0: &ast::Expr,
-    e1: &ast::Expr,
-    loc: Option<Loc>,
-    ctx: &mut Context<'_>,
-) -> hir::ExprKind {
-    if let ast::ExprKind::Emit(e2) = ctx.ast.exprs.resolve(e0.id) {
-        hir::ExprKind::EmitAfter(e0.lower(ctx).into(), e1.lower(ctx).into())
-    } else {
-        ctx.info.diags.intern(Error::AfterNotPrecededByEmit { loc });
-        hir::ExprKind::Err
-    }
+/// Lowers a `e0 after e1` into a `{val: e0, dur: e1}`
+pub(crate) fn lower_after<'i, O, I: Lower<O, Context<'i>>>(
+    val: &I,
+    key: &I,
+    ctx: &mut Context<'i>,
+) -> VecMap<Name, O> {
+    lower_pair(val, key, ctx.info.names.common.dur, ctx)
+}
+
+/// Lowers a `e0 by e1` into a `{val: e0, key: e1}`
+pub(crate) fn lower_by<'i, O, I: Lower<O, Context<'i>>>(
+    val: &I,
+    key: &I,
+    ctx: &mut Context<'i>,
+) -> VecMap<Name, O> {
+    lower_pair(val, key, ctx.info.names.common.key, ctx)
+}
+
+/// Lowers a `e0 <key> e1` into a `{val: e0, <key>: e1}`
+pub(crate) fn lower_pair<'i, O, I: Lower<O, Context<'i>>>(
+    val: &I,
+    key: &I,
+    key_name: impl Into<Name>,
+    ctx: &mut Context<'i>,
+) -> VecMap<Name, O> {
+    let val = val.lower(ctx);
+    let key = key.lower(ctx);
+    let val_name = ctx.info.names.common.val.into();
+    vec![(val_name, val), (key_name.into(), key)]
+        .into_iter()
+        .collect()
 }

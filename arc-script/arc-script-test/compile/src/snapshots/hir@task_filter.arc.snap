@@ -4,22 +4,24 @@ expression: s
 input_file: arc-script-test/compile/src/tests/expect_mlir_fail_todo/task_filter.arc
 
 ---
-task Filter(p_0: fun(i32) -> bool) (~i32) -> (~i32) {
+task Filter(p_0: fun(i32) -> bool) ~{ val: i32, key: i32 } -> ~{ val: i32, key: i32 } {
     on {
-        event_0: i32 => {
+        x_0: { key: i32, val: i32 } => {
+            let event_0: i32 = x_0.val in
+            let key_0: i32 = x_0.key in
             if p_0(event_0) {
-                emit event_0
+                emit { val: event_0, key: key_0 }
             } else {
                 unit
             }
         }
     }
 }
-fun x_0(x_1: i32) -> bool {
-    x_1 % 2 == 0
+fun x_1(x_2: i32) -> bool {
+    x_2 % 2 == 0
 }
-fun main(stream0_0: ~i32) -> ~i32 {
-    let stream1_0: ~i32 = crate::Filter(crate::x_0)(stream0_0) in
+fun main(stream0_0: ~{ val: i32, key: i32 }) -> ~{ val: i32, key: i32 } {
+    let stream1_0: ~{ val: i32, key: i32 } = crate::Filter(crate::x_1)(stream0_0) in
     stream1_0
 }
 

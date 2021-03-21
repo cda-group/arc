@@ -65,15 +65,17 @@ impl<'i> Display for Pretty<'i, ast::TaskItem, Context<'_>> {
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
         let Pretty(item, fmt) = self;
         match &item.kind {
-            ast::TaskItemKind::Fun(item)    => write!(f, "{}", item.pretty(fmt)),
-            ast::TaskItemKind::Extern(item) => write!(f, "{}", item.pretty(fmt)),
-            ast::TaskItemKind::Alias(item)  => write!(f, "{}", item.pretty(fmt)),
-            ast::TaskItemKind::Use(item)    => write!(f, "{}", item.pretty(fmt)),
-            ast::TaskItemKind::Enum(item)   => write!(f, "{}", item.pretty(fmt)),
-            ast::TaskItemKind::On(item)     => write!(f, "{}", item.pretty(fmt)),
-            ast::TaskItemKind::State(item)  => write!(f, "{}", item.pretty(fmt)),
-            ast::TaskItemKind::Port(item)   => write!(f, "{}", item.pretty(fmt)),
-            ast::TaskItemKind::Err          => write!(f, "☇"),
+            ast::TaskItemKind::Fun(item)     => write!(f, "{}", item.pretty(fmt)),
+            ast::TaskItemKind::Extern(item)  => write!(f, "{}", item.pretty(fmt)),
+            ast::TaskItemKind::Alias(item)   => write!(f, "{}", item.pretty(fmt)),
+            ast::TaskItemKind::Use(item)     => write!(f, "{}", item.pretty(fmt)),
+            ast::TaskItemKind::Enum(item)    => write!(f, "{}", item.pretty(fmt)),
+            ast::TaskItemKind::On(item)      => write!(f, "{}", item.pretty(fmt)),
+            ast::TaskItemKind::Startup(item) => write!(f, "{}", item.pretty(fmt)),
+            ast::TaskItemKind::State(item)   => write!(f, "{}", item.pretty(fmt)),
+            ast::TaskItemKind::Timer(item)   => write!(f, "{}", item.pretty(fmt)),
+            ast::TaskItemKind::Timeout(item) => write!(f, "{}", item.pretty(fmt)),
+            ast::TaskItemKind::Err           => write!(f, "☇"),
         }
     }
 }
@@ -96,10 +98,14 @@ impl<'i> Display for Pretty<'i, ast::Fun, Context<'_>> {
         let Pretty(item, fmt) = self;
         write!(
             f,
-            "fun {id}({params}) {{{s1}{body}{s0}}}",
+            "fun {id}({params}) {rty} {{{s1}{body}{s0}}}",
             id = item.name.pretty(fmt),
             params = item.params.iter().all_pretty(", ", fmt),
             body = item.body.pretty(fmt.indent()),
+            rty = item
+                .return_ty
+                .iter()
+                .map_pretty(|t, f| write!(f, "-> {}", t.pretty(fmt)), ""),
             s0 = fmt,
             s1 = fmt.indent(),
         )
@@ -130,7 +136,7 @@ impl<'i> Display for Pretty<'i, ast::Task, Context<'_>> {
         let Pretty(item, fmt) = self;
         write!(
             f,
-            "task {name}({params}) {ihub} -> {ohub}) {{{items}{s0}}}",
+            "task {name}({params}) {ihub} -> {ohub} {{{items}{s0}}}",
             name = item.name.pretty(fmt),
             params = item.params.iter().all_pretty(",", fmt),
             ihub = item.ihub.pretty(fmt),
@@ -148,8 +154,8 @@ impl<'i> Display for Pretty<'i, ast::Hub, Context<'_>> {
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
         let Pretty(item, fmt) = self;
         match &item.kind {
-            ast::HubKind::Tagged(ps) => write!(f, "({})", ps.iter().all_pretty(", ", fmt)),
-            ast::HubKind::Single(t) => write!(f, "({})", t.pretty(fmt)),
+            ast::HubKind::Tagged(ps) => write!(f, "{}", ps.iter().all_pretty(", ", fmt)),
+            ast::HubKind::Single(t) => write!(f, "{}", t.pretty(fmt)),
         }
     }
 }
@@ -163,17 +169,6 @@ impl<'i> Display for Pretty<'i, ast::Enum, Context<'_>> {
             id = item.name.pretty(fmt),
             variants = item.variants.iter().all_pretty(", ", fmt)
         )
-    }
-}
-
-impl<'i> Display for Pretty<'i, ast::InnerPort, Context<'_>> {
-    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
-        let Pretty(port, fmt) = self;
-        if let Some(ty) = &port.ty {
-            write!(f, "port {}({})", port.name.pretty(fmt), ty.pretty(fmt))
-        } else {
-            write!(f, "port {}", port.name.pretty(fmt))
-        }
     }
 }
 
@@ -206,6 +201,31 @@ impl<'i> Display for Pretty<'i, ast::Port, Context<'_>> {
     }
 }
 
+impl<'i> Display for Pretty<'i, ast::Timer, Context<'_>> {
+    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
+        let Pretty(item, fmt) = self;
+        write!(f, "timer {}", item.ty.pretty(fmt))
+    }
+}
+
+impl<'i> Display for Pretty<'i, ast::Timeout, Context<'_>> {
+    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
+        let Pretty(item, fmt) = self;
+        if let [case] = item.cases.as_slice() {
+            write!(f, "timeout {}", case.pretty(fmt))
+        } else {
+            write!(
+                f,
+                "timeout {{{}{}}}",
+                item.cases
+                    .iter()
+                    .map_pretty(|c, f| write!(f, "{}{}", fmt.indent(), c.pretty(fmt)), ","),
+                fmt
+            )
+        }
+    }
+}
+
 impl<'i> Display for Pretty<'i, ast::On, Context<'_>> {
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
         let Pretty(item, fmt) = self;
@@ -224,6 +244,13 @@ impl<'i> Display for Pretty<'i, ast::On, Context<'_>> {
     }
 }
 
+impl<'i> Display for Pretty<'i, ast::Startup, Context<'_>> {
+    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
+        let Pretty(item, fmt) = self;
+        write!(f, "startup {expr}", expr = item.expr.pretty(fmt),)
+    }
+}
+
 impl<'i> Display for Pretty<'i, ast::State, Context<'_>> {
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
         let Pretty(item, fmt) = self;
@@ -239,7 +266,14 @@ impl<'i> Display for Pretty<'i, ast::State, Context<'_>> {
 impl<'i> Display for Pretty<'i, ast::Case, Context<'_>> {
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
         let Pretty(case, fmt) = self;
-        write!(f, "{} => {}", case.pat.pretty(fmt), case.body.pretty(fmt))
+        write!(
+            f,
+            "{} => {{{s1}{}{s0}}}",
+            case.pat.pretty(fmt),
+            case.body.pretty(fmt.indent()),
+            s0 = fmt,
+            s1 = fmt.indent()
+        )
     }
 }
 
@@ -327,6 +361,7 @@ impl<'i> Display for Pretty<'i, ast::Expr, Context<'_>> {
             ast::ExprKind::Project(e, i) => write!(f, "{}.{}", e.pretty(fmt), i.id),
             ast::ExprKind::Access(e, x) => write!(f, "{}.{}", e.pretty(fmt), x.id.pretty(fmt)),
             ast::ExprKind::Emit(e) => write!(f, "emit {}", e.pretty(fmt)),
+            ast::ExprKind::Trigger(e) => write!(f, "trigger {}", e.pretty(fmt)),
             ast::ExprKind::Log(e) => write!(f, "log {}", e.pretty(fmt)),
             ast::ExprKind::Unwrap(x, e) => write!(f, "unwrap[{}]({})", x.pretty(fmt), e.pretty(fmt)),
             ast::ExprKind::Enwrap(x, e) => write!(f, "enwrap[{}]({})", x.pretty(fmt), e.pretty(fmt)),
@@ -493,6 +528,9 @@ impl<'i> Display for Pretty<'i, ast::Type, Context<'_>> {
     #[rustfmt::skip]
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
         let Pretty(ty, fmt) = self;
+        if fmt.ctx.info.mode.verbosity >= Verbosity::Debug {
+            write!(f, "(")?;
+        }
         match &ty.kind {
             ast::TypeKind::Scalar(kind) => write!(f, "{}", kind.pretty(fmt)),
             ast::TypeKind::Struct(fs) => {
@@ -511,8 +549,13 @@ impl<'i> Display for Pretty<'i, ast::Type, Context<'_>> {
             ast::TypeKind::Fun(args, ty)       => write!(f, "fun({}) -> {}", args.all_pretty(", ", fmt), ty.pretty(fmt)),
             ast::TypeKind::Boxed(ty)           => write!(f, "box {}", ty.pretty(fmt)),
             ast::TypeKind::By(ty0, ty1)        => write!(f, "{} by {}", ty0.pretty(fmt), ty1.pretty(fmt)),
+            ast::TypeKind::After(ty0, ty1)     => write!(f, "{} after {}", ty0.pretty(fmt), ty1.pretty(fmt)),
             ast::TypeKind::Err                 => write!(f, "☇"),
+        }?;
+        if fmt.ctx.info.mode.verbosity >= Verbosity::Debug {
+            write!(f, ")")?;
         }
+        Ok(())
     }
 }
 
@@ -572,6 +615,8 @@ impl<'i> Display for Pretty<'i, ast::Pat, Context<'_>> {
         let Pretty(pat, fmt) = self;
         match &pat.kind {
             ast::PatKind::Or(p0, p1)    => write!(f, "{} | {}", p0.pretty(fmt), p1.pretty(fmt)),
+            ast::PatKind::By(p0, p1)    => write!(f, "{} by {}", p0.pretty(fmt), p1.pretty(fmt)),
+            ast::PatKind::After(p0, p1) => write!(f, "{} after {}", p0.pretty(fmt), p1.pretty(fmt)),
             ast::PatKind::Val(l)        => write!(f, "{}", l.pretty(fmt)),
             ast::PatKind::Var(x)        => write!(f, "{}", x.pretty(fmt)),
             ast::PatKind::Tuple(ps)     => write!(f, "({})", ps.all_pretty(", ", fmt)),

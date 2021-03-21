@@ -117,6 +117,13 @@ impl<'i> Display for Pretty<'i, NameId, Context<'_>> {
     }
 }
 
+impl<'i> Display for Pretty<'i, hir::Startup, Context<'_>> {
+    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
+        let Pretty(item, fmt) = self;
+        write!(f, "startup {expr}", expr = item.expr.pretty(fmt))
+    }
+}
+
 impl<'i> Display for Pretty<'i, hir::State, Context<'_>> {
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
         let Pretty(item, fmt) = self;
@@ -155,7 +162,7 @@ impl<'i> Display for Pretty<'i, hir::Task, Context<'_>> {
         let name = fmt.ctx.info.paths.resolve(item.path.id).name;
         write!(
             f,
-            "task {name}({params}) {ihub} -> {ohub} {{{state}{items}{s1}{on}{s0}}}",
+            "task {name}({params}) {ihub} -> {ohub} {{{startup}{timer}{timeout}{state}{items}{s1}{on}{s0}}}",
             name = name.pretty(fmt),
             params = item.params.iter().all_pretty(", ", fmt),
             ihub = item.ihub.pretty(fmt),
@@ -169,10 +176,16 @@ impl<'i> Display for Pretty<'i, hir::Task, Context<'_>> {
                 ),
                 ""
             ),
+            startup = item.startups.iter().map_pretty(
+                |x, f| write!(f, "{s0}{}", x.pretty(fmt), s0 = fmt.indent()),
+                ""
+            ),
             state = item.states.iter().map_pretty(
                 |x, f| write!(f, "{s0}{}", x.pretty(fmt), s0 = fmt.indent()),
                 ""
             ),
+            timer = item.timer.pretty(fmt.indent()),
+            timeout = item.timeout.pretty(fmt.indent()),
             on = item.on.pretty(fmt.indent()),
             s0 = fmt,
             s1 = fmt.indent(),
@@ -189,14 +202,42 @@ impl<'i> Display for Pretty<'i, hir::Hub, Context<'_>> {
                 let item = get!(&item.kind, hir::ItemKind::Enum(item));
                 write!(
                     f,
-                    "({})",
+                    "{}",
                     item.variants.iter().map_pretty(
                         |v, f| write!(f, "{}", fmt.ctx.hir.defs.get(v).unwrap().pretty(fmt)),
                         ", "
                     )
                 )
             }
-            hir::HubKind::Single(tv) => write!(f, "({})", tv.pretty(fmt)),
+            hir::HubKind::Single(tv) => write!(f, "{}", tv.pretty(fmt)),
+        }
+    }
+}
+
+impl<'i> Display for Pretty<'i, Option<hir::Timer>, Context<'_>> {
+    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
+        if let Pretty(Some(timer), fmt) = self {
+            write!(f, "{s0}timer {ty}", s0 = fmt, ty = timer.tv.pretty(fmt))
+        } else {
+            Ok(())
+        }
+    }
+}
+
+impl<'i> Display for Pretty<'i, Option<hir::Timeout>, Context<'_>> {
+    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
+        if let Pretty(Some(on), fmt) = self {
+            write!(
+                f,
+                "{s0}timeout {{{s1}{param} => {{{s2}{body}{s1}}}{s0}}}",
+                param = on.param.pretty(fmt),
+                body = on.body.pretty(fmt.indent().indent()),
+                s0 = fmt,
+                s1 = fmt.indent(),
+                s2 = fmt.indent().indent()
+            )
+        } else {
+            Ok(())
         }
     }
 }
@@ -320,8 +361,8 @@ impl<'i> Display for Pretty<'i, hir::Expr, Context<'_>> {
             hir::ExprKind::Access(e, x) => write!(f, "{}.{}", e.pretty(fmt), x.pretty(fmt)),
             hir::ExprKind::Call(e, es) => write!(f, "{}({})", e.pretty(fmt), es.iter().all_pretty(", ", fmt)),
             hir::ExprKind::Select(e, es) => write!(f, "{}[{}]", e.pretty(fmt), es.iter().all_pretty(", ", fmt)),
-            hir::ExprKind::Emit(e) => write!(f, "emit {}", e.pretty(fmt)),
-            hir::ExprKind::EmitAfter(e0, e1) => write!(f, "emit {} after {}", e0.pretty(fmt), e1.pretty(fmt)),
+            hir::ExprKind::Emit(e0) => write!(f, "emit {}", e0.pretty(fmt)),
+            hir::ExprKind::Trigger(e0) => write!(f, "trigger {}", e0.pretty(fmt)),
             hir::ExprKind::Log(e) => write!(f, "log {e}", e = e.pretty(fmt)),
             hir::ExprKind::Array(es) => write!(f, "[{es}]", es = es.all_pretty(", ", fmt)),
             hir::ExprKind::Struct(fs) => {
@@ -458,19 +499,18 @@ impl<'i> Display for Pretty<'i, hir::Type, Context<'_>> {
                 write!(f, "{{ {} }}",
                     fs.map_pretty(|(x, tv), f| write!(f, "{}: {}", x.pretty(fmt), tv.pretty(fmt)), ", "))
             }
-            hir::TypeKind::Nominal(x)     => write!(f, "{}", x.pretty(fmt)),
-            hir::TypeKind::Array(ty, sh)  => write!(f, "[{}; {}]", ty.pretty(fmt), sh.pretty(fmt)),
-            hir::TypeKind::Stream(ty)     => write!(f, "~{}", ty.pretty(fmt)),
-            hir::TypeKind::Map(ty0, ty1)  => write!(f, "{{{} => {}}}", ty0.pretty(fmt), ty1.pretty(fmt)),
-            hir::TypeKind::Set(ty)        => write!(f, "{{{}}}", ty.pretty(fmt)),
-            hir::TypeKind::Vector(ty)     => write!(f, "[{}]", ty.pretty(fmt)),
-            hir::TypeKind::Tuple(tys)     => write!(f, "({})", tys.iter().all_pretty(", ", fmt)),
-            hir::TypeKind::Optional(ty)   => write!(f, "{}?", ty.pretty(fmt)),
-            hir::TypeKind::Fun(args, ty)  => write!(f, "fun({}) -> {}", args.all_pretty(", ", fmt), ty.pretty(fmt)),
-            hir::TypeKind::Boxed(ty)      => write!(f, "box {}", ty.pretty(fmt)),
-            hir::TypeKind::By(ty0, ty1)   => write!(f, "{} by {}", ty0.pretty(fmt), ty1.pretty(fmt)),
-            hir::TypeKind::Err            => write!(f, "☇"),
-            hir::TypeKind::Unknown        => write!(f, "?"),
+            hir::TypeKind::Nominal(x)       => write!(f, "{}", x.pretty(fmt)),
+            hir::TypeKind::Array(ty, sh)    => write!(f, "[{}; {}]", ty.pretty(fmt), sh.pretty(fmt)),
+            hir::TypeKind::Stream(ty)       => write!(f, "~{}", ty.pretty(fmt)),
+            hir::TypeKind::Map(ty0, ty1)    => write!(f, "{{{} => {}}}", ty0.pretty(fmt), ty1.pretty(fmt)),
+            hir::TypeKind::Set(ty)          => write!(f, "{{{}}}", ty.pretty(fmt)),
+            hir::TypeKind::Vector(ty)       => write!(f, "[{}]", ty.pretty(fmt)),
+            hir::TypeKind::Tuple(tys)       => write!(f, "({})", tys.iter().all_pretty(", ", fmt)),
+            hir::TypeKind::Optional(ty)     => write!(f, "{}?", ty.pretty(fmt)),
+            hir::TypeKind::Fun(args, ty)    => write!(f, "fun({}) -> {}", args.all_pretty(", ", fmt), ty.pretty(fmt)),
+            hir::TypeKind::Boxed(ty)        => write!(f, "box {}", ty.pretty(fmt)),
+            hir::TypeKind::Err              => write!(f, "☇"),
+            hir::TypeKind::Unknown          => write!(f, "?"),
         }
     }
 }

@@ -152,8 +152,12 @@ pub enum Token {
     Port,
     Reduce,
     Return,
+    Startup,
     State,
     Task,
+    Timeout,
+    Timer,
+    Trigger,
     Type,
     Use,
     Xor,
@@ -245,16 +249,10 @@ impl<'i> Lexer<'i> {
                 new if new < old => Ok(Scope::Dedent(old - new)),
                 new if new == old + 1 => Ok(Scope::Indent),
                 new if new == old => Ok(Scope::Unchanged),
-                _ => Err(Error::TooMuchIndent {
-                    loc: self.loc().into(),
-                }
-                .into()),
+                _ => Err(Error::TooMuchIndent { loc: self.loc() }.into()),
             }
         } else {
-            Err(Error::BadIndent {
-                loc: self.loc().into(),
-            }
-            .into())
+            Err(Error::BadIndent { loc: self.loc() }.into())
         }
     }
     /// Scans a numeric literal using `lexical_core`.
@@ -265,7 +263,7 @@ impl<'i> Lexer<'i> {
     ) -> Result<N> {
         parse_format(self.trim(prefix, suffix).as_bytes(), self.numfmt).map_err(|msg| {
             Error::LexicalCore {
-                loc: self.loc().into(),
+                loc: self.loc(),
                 err: msg,
             }
             .into()
@@ -274,7 +272,7 @@ impl<'i> Lexer<'i> {
     fn datetime(&mut self, format: &str) -> Result<DateTime> {
         DateTime::parse(self.logos.slice(), format).map_err(|msg| {
             Error::Time {
-                loc: self.loc().into(),
+                loc: self.loc(),
                 err: msg,
             }
             .into()
@@ -310,7 +308,7 @@ impl<'i> Lexer<'i> {
 //         }
         while let Some(token) = self.logos.next() {
             let token = match token {
-                LogosToken::Error      => return Err(Error::InvalidToken { loc: self.loc().into() }.into()),
+                LogosToken::Error      => return Err(Error::InvalidToken { loc: self.loc() }.into()),
                 LogosToken::Comment | LogosToken::Newline => continue,
 //                 match self.newline()? {
 //                     Scope::Dedent(dedents) => {
@@ -406,8 +404,12 @@ impl<'i> Lexer<'i> {
                 LogosToken::Port       => Token::Port,
                 LogosToken::Reduce     => Token::Reduce,
                 LogosToken::Return     => Token::Return,
+                LogosToken::Startup    => Token::Startup,
                 LogosToken::State      => Token::State,
                 LogosToken::Task       => Token::Task,
+                LogosToken::Timeout    => Token::Timeout,
+                LogosToken::Timer      => Token::Timer,
+                LogosToken::Trigger    => Token::Trigger,
                 LogosToken::Then       => Token::Then,
                 LogosToken::Type       => Token::Type,
                 LogosToken::Unwrap     => Token::Unwrap,
@@ -464,11 +466,11 @@ impl<'i> Lexer<'i> {
                 LogosToken::LitDate         => Token::LitDateTime(self.datetime("%F")?),
                 LogosToken::LitDateTime     => Token::LitDateTime(self.datetime("%FT%T")?),
                 LogosToken::LitDateTimeZone => Token::LitDateTime(self.datetime("%FT%T%Z")?),
-                LogosToken::LitDurationNs   => Token::LitDuration(Duration::seconds(self.lit(0, 1)?)),
+                LogosToken::LitDurationNs   => Token::LitDuration(Duration::seconds(self.lit(0, 2)?)),
                 LogosToken::LitDurationUs   => Token::LitDuration(Duration::microseconds(self.lit(0, 2)?)),
                 LogosToken::LitDurationMs   => Token::LitDuration(Duration::milliseconds(self.lit(0, 2)?)),
-                LogosToken::LitDurationS    => Token::LitDuration(Duration::nanoseconds(self.lit(0, 2)?)),
-                LogosToken::LitDurationM    => Token::LitDuration(Duration::minutes(self.lit(0, 3)?)),
+                LogosToken::LitDurationS    => Token::LitDuration(Duration::nanoseconds(self.lit(0, 1)?)),
+                LogosToken::LitDurationM    => Token::LitDuration(Duration::minutes(self.lit(0, 1)?)),
                 LogosToken::LitDurationH    => Token::LitDuration(Duration::hours(self.lit(0, 1)?)),
                 LogosToken::LitDurationD    => Token::LitDuration(Duration::days(self.lit(0, 1)?)),
                 LogosToken::LitDurationW    => Token::LitDuration(Duration::weeks(self.lit(0, 1)?)),

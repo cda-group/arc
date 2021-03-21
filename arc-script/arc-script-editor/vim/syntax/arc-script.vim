@@ -44,13 +44,16 @@ hi def link arcOperator Operator
 " Statements
 "=============================================================================
 syn keyword arcStatement fun
+syn keyword arcStatement startup
 syn keyword arcStatement state
 syn keyword arcStatement task
 syn keyword arcStatement on
 syn keyword arcStatement emit
 syn keyword arcStatement log
 syn keyword arcStatement exit
-syn keyword arcStatement port
+syn keyword arcStatement timeout
+syn keyword arcStatement timer
+syn keyword arcStatement trigger
 " Not statements, but looks nice syntactically
 syn keyword arcStatement not
 syn keyword arcStatement in
@@ -62,6 +65,7 @@ hi def link arcStatement Statement
 "=============================================================================
 syn keyword arcConditional reduce
 syn keyword arcConditional after
+syn keyword arcConditional by
 hi def link arcConditional Conditional
 "=============================================================================
 " Reserved Keywords
@@ -90,11 +94,14 @@ hi def link arcFloat Float
 "=============================================================================
 " Constants
 "=============================================================================
-syn match arcConstant "[[:digit:]]\+s"
+syn match arcConstant "[[:digit:]]\+ns"
 syn match arcConstant "[[:digit:]]\+us"
 syn match arcConstant "[[:digit:]]\+ms"
-syn match arcConstant "[[:digit:]]\+min"
+syn match arcConstant "[[:digit:]]\+s"
+syn match arcConstant "[[:digit:]]\+m"
 syn match arcConstant "[[:digit:]]\+h"
+syn match arcConstant "[[:digit:]]\+d"
+syn match arcConstant "[[:digit:]]\+w"
 hi def link arcConstant Constant
 "=============================================================================
 " Comments

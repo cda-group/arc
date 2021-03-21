@@ -127,6 +127,7 @@ pub(crate) enum OpKind {
     CallIndirect(Var, Vec<Var>),
     Const(ConstKind),
     Emit(Var),
+    Trigger(Var),
     If(Var, Region, Region),
     Log(Var),
     Loop(Var),

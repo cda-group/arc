@@ -103,8 +103,10 @@ pub enum TaskItemKind {
     Extern(Extern),
     On(On),
     State(State),
+    Startup(Startup),
     Use(Use),
-    Port(InnerPort),
+    Timer(Timer),
+    Timeout(Timeout),
     Err,
 }
 
@@ -177,6 +179,24 @@ pub struct On {
     pub cases: Vec<Case>,
 }
 
+/// A timer declaration.
+#[derive(Debug, New)]
+pub struct Timer {
+    pub ty: Type,
+}
+
+/// A trigger handler.
+#[derive(Debug, New)]
+pub struct Timeout {
+    pub cases: Vec<Case>,
+}
+
+/// A timer declaration.
+#[derive(Debug, New)]
+pub struct Startup {
+    pub expr: Expr,
+}
+
 /// A state variable.
 #[derive(Debug, New)]
 pub struct State {
@@ -237,6 +257,7 @@ pub enum ExprKind {
     Empty,
     Cast(Expr, Type),
     Emit(Expr),
+    Trigger(Expr),
     For(Pat, Expr, Expr),
     If(Expr, Expr, Expr),
     IfLet(Pat, Expr, Expr, Expr),
@@ -316,6 +337,8 @@ pub enum PatKind {
     Val(LitKind),
     Var(Name),
     Variant(Path, Box<Pat>),
+    By(Box<Pat>, Box<Pat>),
+    After(Box<Pat>, Box<Pat>),
     Err,
 }
 
@@ -391,13 +414,6 @@ pub struct Variant {
     pub loc: Option<Loc>,
 }
 
-/// An internal port of a task.
-#[derive(Debug, New)]
-pub struct InnerPort {
-    pub name: Name,
-    pub ty: Option<Type>,
-}
-
 /// A port of a hub.
 #[derive(Debug, Spanned)]
 pub struct Port {
@@ -437,6 +453,7 @@ pub enum TypeKind {
     Vector(Box<Type>),
     Boxed(Box<Type>),
     By(Box<Type>, Box<Type>),
+    After(Box<Type>, Box<Type>),
     Err,
 }
 

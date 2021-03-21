@@ -47,15 +47,17 @@ impl Declare for ast::TaskItem {
     #[rustfmt::skip]
     fn declare(&self, path: PathId, table: &mut SymbolTable, info: &mut Info) {
         match &self.kind {
-            ast::TaskItemKind::Fun(item)    => item.declare(path, table, info),
-            ast::TaskItemKind::Extern(item) => item.declare(path, table, info),
-            ast::TaskItemKind::Alias(item)  => item.declare(path, table, info),
-            ast::TaskItemKind::Use(item)    => item.declare(path, table, info),
-            ast::TaskItemKind::Enum(item)   => item.declare(path, table, info),
-            ast::TaskItemKind::Port(item)   => {},
-            ast::TaskItemKind::State(_)     => {}
-            ast::TaskItemKind::On(_)        => {}
-            ast::TaskItemKind::Err          => {}
+            ast::TaskItemKind::Fun(item)     => item.declare(path, table, info),
+            ast::TaskItemKind::Extern(item)  => item.declare(path, table, info),
+            ast::TaskItemKind::Alias(item)   => item.declare(path, table, info),
+            ast::TaskItemKind::Use(item)     => item.declare(path, table, info),
+            ast::TaskItemKind::Enum(item)    => item.declare(path, table, info),
+            ast::TaskItemKind::Startup(_)    => {}
+            ast::TaskItemKind::State(_)      => {}
+            ast::TaskItemKind::On(_)         => {}
+            ast::TaskItemKind::Timeout(_)    => {},
+            ast::TaskItemKind::Timer(_)      => {},
+            ast::TaskItemKind::Err           => {}
         }
     }
 }
@@ -112,38 +114,16 @@ impl Declare for ast::Task {
             for item in &self.items {
                 item.declare(path, table, info);
             }
-            let inner_ports = self
-                .items
-                .iter()
-                .filter_map(|item| map!(&item.kind, ast::TaskItemKind::Port))
-                .collect::<Vec<_>>();
-            self.ihub.declare(
-                info.names.common.source.into(),
-                path,
-                &inner_ports,
-                table,
-                info,
-            );
-            self.ohub.declare(
-                info.names.common.sink.into(),
-                path,
-                &inner_ports,
-                table,
-                info,
-            );
+            self.ihub
+                .declare(info.names.common.source.into(), path, table, info);
+            self.ohub
+                .declare(info.names.common.sink.into(), path, table, info);
         }
     }
 }
 
 impl ast::Hub {
-    fn declare(
-        &self,
-        hub_name: Name,
-        path: PathId,
-        inner_ports: &[&ast::InnerPort],
-        table: &mut SymbolTable,
-        info: &mut Info,
-    ) {
+    fn declare(&self, hub_name: Name, path: PathId, table: &mut SymbolTable, info: &mut Info) {
         match &self.kind {
             ast::HubKind::Tagged(ports) => {
                 // Declare the enum of a tagged hub
@@ -153,10 +133,6 @@ impl ast::Hub {
                     let alias_path = info.paths.intern_child(path, variant.name);
                     let port_path = info.paths.intern_child(hub_path, variant.name);
                     table.imports.insert(alias_path, port_path);
-                    variant.declare(hub_path, table, info);
-                }
-                for variant in inner_ports {
-                    let port_path = info.paths.intern_child(hub_path, variant.name);
                     variant.declare(hub_path, table, info);
                 }
             }
@@ -206,19 +182,6 @@ impl Declare for ast::Variant {
 }
 
 impl Declare for ast::Port {
-    fn declare(&self, path: PathId, table: &mut SymbolTable, info: &mut Info) {
-        let path = info.paths.intern_child(path, self.name);
-        if table
-            .declarations
-            .insert(path, ItemDeclKind::Variant)
-            .is_some()
-        {
-            info.diags.intern(Error::NameClash { name: self.name })
-        }
-    }
-}
-
-impl Declare for ast::InnerPort {
     fn declare(&self, path: PathId, table: &mut SymbolTable, info: &mut Info) {
         let path = info.paths.intern_child(path, self.name);
         if table

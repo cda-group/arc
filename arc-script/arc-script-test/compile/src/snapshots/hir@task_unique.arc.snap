@@ -4,26 +4,30 @@ expression: s
 input_file: arc-script-test/compile/src/tests/expect_mlir_fail_todo/task_unique.arc
 
 ---
-task UniqueSet() (~i32) -> (~i32) {
+task UniqueSet() ~{ val: i32, key: i32 } -> ~{ val: i32, key: i32 } {
     state set_0: {i32} = {}
     on {
-        event_0: i32 => {
+        x_0: { key: i32, val: i32 } => {
+            let event_0: i32 = x_0.val in
+            let key_0: i32 = x_0.key in
             if not event_0 in set_0 {
                 add set_0[event_0];
-                emit event_0
+                emit { val: event_0, key: key_0 }
             } else {
                 unit
             }
         }
     }
 }
-task UniqueMap() (~i32) -> (~i32) {
+task UniqueMap() ~{ val: i32, key: i32 } -> ~{ val: i32, key: i32 } {
     state map_0: {i32 => unit} = {}
     on {
-        event_1: i32 => {
+        x_1: { key: i32, val: i32 } => {
+            let event_1: i32 = x_1.val in
+            let key_1: i32 = x_1.key in
             if not event_1 in map_0 {
                 map_0[event_1] = unit;
-                emit event_1
+                emit { val: event_1, key: key_1 }
             } else {
                 unit
             }

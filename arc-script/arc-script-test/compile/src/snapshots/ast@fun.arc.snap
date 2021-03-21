@@ -4,7 +4,7 @@ expression: s
 input_file: arc-script-test/compile/src/tests/expect_pass/fun.arc
 
 ---
-fun max(a: i32, b: i32) {
+fun max(a: i32, b: i32) -> i32 {
     let c = a > b in
     if c {
         a
@@ -12,7 +12,7 @@ fun max(a: i32, b: i32) {
         b
     }
 }
-fun test() {
+fun test() -> i32 {
     max(1, 2)
 }
 

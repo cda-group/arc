@@ -25,7 +25,7 @@ pub mod defs {
         Foo_Bar(Baz),
         Foo_None(()),
     }
-    pub fn x_5() -> () {
+    pub fn x_3() -> () {
         let y_1_0 = ();
         y_1_0
     }
@@ -42,12 +42,12 @@ pub mod defs {
                 let y_3_1 = ();
                 y_3_1
             } else {
-                let y_3_0 = x_5();
+                let y_3_0 = x_3();
                 y_3_0
             };
             y_2_2
         } else {
-            let y_2_0 = x_5();
+            let y_2_0 = x_3();
             y_2_0
         };
         y_1_4

@@ -44,7 +44,7 @@ macro_rules! common {
 /// Commonly occurring names.
 common! {
     aliased_names: [root: "crate", sink: "Sink", source: "Source"],
-    literal_names: [value, push, pop, fold, add, remove, len, clear]
+    literal_names: [val, key, dur, push, pop, fold, add, remove, len, clear]
 }
 
 impl Default for NameInterner {

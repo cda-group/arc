@@ -3,13 +3,14 @@ use crate::compiler::ast;
 use crate::compiler::hir;
 use crate::compiler::hir::Expr;
 use crate::compiler::hir::ExprKind;
+use crate::compiler::hir::Name;
 use crate::compiler::hir::Param;
 use crate::compiler::hir::ParamKind;
 use crate::compiler::hir::VarKind;
 use crate::compiler::hir::HIR;
 use crate::compiler::info::diags::Error;
-
 use crate::compiler::info::types::TypeId;
+
 use arc_script_core_shared::get;
 use arc_script_core_shared::map;
 use arc_script_core_shared::Lower;
@@ -31,15 +32,14 @@ pub(crate) fn lower_params(
             let tv = p.ty.lower(ctx).unwrap_or_else(|| ctx.info.types.fresh());
             map!(&p.pat.kind, ast::PatKind::Var)
                 .map(|x| {
-                    let ux = ctx.res.stack.bind(*x, kind, ctx.info).unwrap();
-                    Param::syn(ParamKind::Var(ux), tv)
+                    let x = ctx.res.stack.bind(*x, kind, ctx.info).unwrap();
+                    Param::syn(ParamKind::Var(x), tv)
                 })
                 .unwrap_or_else(|| {
                     let x = ctx.info.names.fresh();
-                    let ux = ctx.res.stack.bind(x, kind, ctx.info).unwrap();
-                    let v = Expr::syn(ExprKind::Var(ux, kind), tv);
+                    let v = Expr::syn(ExprKind::Var(x, kind), tv);
                     ssa(&p.pat, v, tv, false, ctx, &mut cases);
-                    Param::syn(ParamKind::Var(ux), tv)
+                    Param::syn(ParamKind::Var(x), tv)
                 })
         })
         .collect();
@@ -59,10 +59,9 @@ pub(crate) fn lower_pat(p: &ast::Pat, kind: VarKind, ctx: &mut Context<'_>) -> (
         })
         .unwrap_or_else(|| {
             let x = ctx.info.names.fresh();
-            let ux = ctx.res.stack.bind(x, kind, ctx.info).unwrap();
-            let v = Expr::syn(ExprKind::Var(ux, kind), tv);
+            let v = Expr::syn(ExprKind::Var(x, kind), tv);
             ssa(p, v, tv, true, ctx, &mut cases);
-            Param::syn(ParamKind::Var(ux), tv)
+            Param::syn(ParamKind::Var(x), tv)
         });
 
     (param, cases)
@@ -207,12 +206,8 @@ fn ssa(
     match &p0.kind {
         // Irrefutable patterns
         ast::PatKind::Struct(fs) => {
-            let x0 = ctx.info.names.fresh();
-            cases.push(Case::Bind {
-                param: Param::syn(ParamKind::Var(x0), t0),
-                expr: e0,
-            });
             for f in fs {
+                let x0 = get_or_fresh(&e0, t0, ctx, cases);
                 let v0 = Expr::syn(ExprKind::Var(x0, VarKind::Local), t0);
                 let t1 = ctx.info.types.fresh();
                 let e1 = Expr::syn(ExprKind::Access(v0.into(), f.name), t1);
@@ -226,12 +221,21 @@ fn ssa(
                 }
             }
         }
+        // p0 by p1 ==> {val:p0, key:p1} ==> let x0 = e0; let p1 = x0.val; let p1 = x0.key; ...
+        ast::PatKind::By(p0, p1) => {
+            let x0 = get_or_fresh(&e0, t0, ctx, cases);
+            let v0 = Box::new(Expr::syn(ExprKind::Var(x0, VarKind::Local), t0));
+            let x1 = ctx.info.names.common.val.into();
+            let x2 = ctx.info.names.common.key.into();
+            let t1 = ctx.info.types.fresh();
+            let t2 = ctx.info.types.fresh();
+            let e1 = Expr::syn(ExprKind::Access(v0.clone(), x1), t1);
+            let e2 = Expr::syn(ExprKind::Access(v0, x2), t2);
+            ssa(p0, e1, t1, branching, ctx, cases);
+            ssa(p1, e2, t2, branching, ctx, cases);
+        }
         ast::PatKind::Tuple(ps) => {
-            let x0 = ctx.info.names.fresh();
-            cases.push(Case::Bind {
-                param: Param::syn(ParamKind::Var(x0), t0),
-                expr: e0,
-            });
+            let x0 = get_or_fresh(&e0, t0, ctx, cases);
             for (i, p1) in ps.iter().enumerate() {
                 let v0 = Expr::syn(ExprKind::Var(x0, VarKind::Local), t0);
                 let t1 = ctx.info.types.fresh();
@@ -257,7 +261,7 @@ fn ssa(
             param: Param::syn(ParamKind::Err, t0),
             expr: e0,
         }),
-        ast::PatKind::Or(_p00, _p01) => todo!(),
+        ast::PatKind::Or(_p0, _p1) => todo!(),
         ast::PatKind::Val(kind) if branching => cases.push(Case::Guard {
             cond: Expr::syn(
                 ExprKind::BinOp(
@@ -289,17 +293,12 @@ fn ssa(
                 let v0 = if let ExprKind::Var(_, _) = e0.kind {
                     e0
                 } else {
-                    let x0 = ctx.info.names.fresh();
-                    cases.push(Case::Bind {
-                        param: Param::syn(ParamKind::Var(x0), t0),
-                        expr: e0,
-                    });
+                    let x0 = get_or_fresh(&e0, t0, ctx, cases);
                     Expr::syn(ExprKind::Var(x0, VarKind::Local), t0)
                 };
                 cases.push(Case::Guard {
                     cond: Expr::syn(ExprKind::Is(x, v0.clone().into()), ctx.info.types.fresh()),
                 });
-                let _x1 = ctx.info.names.fresh();
                 let t = ctx.info.types.fresh();
                 let e = Expr::syn(ExprKind::Unwrap(x, v0.into()), t);
                 ssa(p, e, t, branching, ctx, cases);
@@ -309,6 +308,24 @@ fn ssa(
             .info
             .diags
             .intern(Error::RefutablePattern { loc: p0.loc }),
+    }
+}
+
+fn get_or_fresh(
+    e0: &hir::Expr,
+    t0: hir::TypeId,
+    ctx: &mut Context<'_>,
+    cases: &mut Vec<Case>,
+) -> hir::Name {
+    if let hir::ExprKind::Var(x0, _) = e0.kind {
+        x0
+    } else {
+        let x0 = ctx.info.names.fresh();
+        cases.push(Case::Bind {
+            param: Param::syn(ParamKind::Var(x0), t0),
+            expr: e0.clone(),
+        });
+        x0
     }
 }
 
@@ -340,6 +357,14 @@ impl ast::Pat {
             }
             ast::PatKind::Val(_) => unreachable!(),
             ast::PatKind::Or(_, _) => unreachable!(),
+            ast::PatKind::By(p0, p1) => {
+                p0.params(params, ctx);
+                p1.params(params, ctx);
+            }
+            ast::PatKind::After(p0, p1) => {
+                p0.params(params, ctx);
+                p1.params(params, ctx);
+            }
             ast::PatKind::Variant(_, _) => {}
             ast::PatKind::Err => {}
         }

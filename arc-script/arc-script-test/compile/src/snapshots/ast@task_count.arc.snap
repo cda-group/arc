@@ -4,9 +4,11 @@ expression: s
 input_file: arc-script-test/compile/src/tests/expect_mlir_fail_todo/task_count.arc
 
 ---
-task Count() (~i32) -> (~i32)) {
+task Count() ~i32 by i32 -> ~i32 by i32 {
     state count: i32 = 0
-    on event => count = count + 1;
-    emit count
+    on event by key => {
+        count = count + 1;
+        emit count by key
+    }
 }
 

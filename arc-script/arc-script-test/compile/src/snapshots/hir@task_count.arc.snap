@@ -4,12 +4,14 @@ expression: s
 input_file: arc-script-test/compile/src/tests/expect_mlir_fail_todo/task_count.arc
 
 ---
-task Count() (~i32) -> (~i32) {
+task Count() ~{ val: i32, key: i32 } -> ~{ val: i32, key: i32 } {
     state count_0: i32 = 0
     on {
-        event_0: i32 => {
+        x_0: { key: i32, val: i32 } => {
+            let event_0: i32 = x_0.val in
+            let key_0: i32 = x_0.key in
             count_0 = count_0 + 1;
-            emit count_0
+            emit { val: count_0, key: key_0 }
         }
     }
 }

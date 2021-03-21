@@ -130,6 +130,11 @@ pub(crate) struct Alias {
 }
 
 #[derive(New, Debug)]
+pub(crate) struct Startup {
+    pub(crate) expr: Expr,
+}
+
+#[derive(New, Debug)]
 pub(crate) struct State {
     pub(crate) param: Param,
     pub(crate) init: Expr,
@@ -143,6 +148,8 @@ pub(crate) struct Task {
     pub(crate) tv: TypeId,
     /// Initializer parameters of the task.
     pub(crate) params: Vec<Param>,
+    /// Statements run at startup.
+    pub(crate) startups: Vec<Startup>,
     /// State variables of the task.
     pub(crate) states: Vec<State>,
     /// Constructor which also flattens the input parameters of a task when initializing it.
@@ -165,8 +172,12 @@ pub(crate) struct Task {
     /// }
     /// Input hub to the task.
     pub(crate) ihub: Hub,
-    /// Input hub to the task.
+    /// Output hub to the task.
     pub(crate) ohub: Hub,
+    /// Timer.
+    pub(crate) timer: Option<Timer>,
+    /// Timer handler.
+    pub(crate) timeout: Option<Timeout>,
     /// Event handler.
     pub(crate) on: Option<On>,
     /// Items of the task.
@@ -175,7 +186,7 @@ pub(crate) struct Task {
 
 #[derive(Debug, New, Spanned)]
 pub(crate) struct Hub {
-    pub(crate) tv: TypeId,
+    pub(crate) internal_tv: TypeId,
     pub(crate) kind: HubKind,
     pub(crate) loc: Option<Loc>,
 }
@@ -184,6 +195,19 @@ pub(crate) struct Hub {
 pub(crate) enum HubKind {
     Tagged(Path),
     Single(TypeId),
+}
+
+#[derive(New, Spanned, Debug)]
+pub(crate) struct Timeout {
+    pub(crate) param: Param,
+    pub(crate) body: Expr,
+    pub(crate) loc: Option<Loc>,
+}
+
+#[derive(New, Spanned, Debug)]
+pub(crate) struct Timer {
+    pub(crate) tv: TypeId,
+    pub(crate) loc: Option<Loc>,
 }
 
 #[derive(New, Spanned, Debug)]
@@ -224,7 +248,7 @@ pub(crate) enum ExprKind {
     Call(Box<Expr>, Vec<Expr>),
     Select(Box<Expr>, Vec<Expr>),
     Emit(Box<Expr>),
-    EmitAfter(Box<Expr>, Box<Expr>),
+    Trigger(Box<Expr>),
     If(Box<Expr>, Box<Expr>, Box<Expr>),
     Item(Path),
     Let(Param, Box<Expr>, Box<Expr>),
@@ -288,7 +312,6 @@ pub enum TypeKind {
     Unknown,
     Vector(TypeId),
     Boxed(TypeId),
-    By(TypeId, TypeId),
     Err,
 }
 

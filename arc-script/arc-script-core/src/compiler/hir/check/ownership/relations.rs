@@ -211,10 +211,7 @@ impl hir::Expr {
             hir::ExprKind::Array(es) => es.iter().for_each(|e| e.collect_use(b0, owner)),
             hir::ExprKind::Tuple(es) => es.iter().for_each(|e| e.collect_use(b0, owner)),
             hir::ExprKind::Emit(e0) => e0.collect_use(b0, owner),
-            hir::ExprKind::EmitAfter(e0, e1) => {
-                e0.collect_use(b0, owner);
-                e1.collect_use(b0, owner);
-            }
+            hir::ExprKind::Trigger(e0) => e0.collect_use(b0, owner),
             hir::ExprKind::Log(e0) => e0.collect_use(b0, owner),
             hir::ExprKind::UnOp(_, e0) => e0.collect_use(b0, owner),
             hir::ExprKind::Enwrap(_, e0) => e0.collect_use(b0, owner),

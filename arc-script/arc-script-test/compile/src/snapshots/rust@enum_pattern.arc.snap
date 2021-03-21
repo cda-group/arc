@@ -20,7 +20,7 @@ pub mod defs {
         Opt_Some(i32),
         Opt_None(()),
     }
-    pub fn x_3() -> () {
+    pub fn x_2() -> () {
         let y_1_0 = ();
         y_1_0
     }
@@ -33,7 +33,7 @@ pub mod defs {
             let y_2_1 = ();
             y_2_1
         } else {
-            let y_2_0 = x_3();
+            let y_2_0 = x_2();
             y_2_0
         };
         y_1_3

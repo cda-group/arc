@@ -4,6 +4,12 @@ pub(crate) struct InputData1 {
     pub(crate) key: i32,
 }
 
+#[derive(prost::Message)]
+pub(crate) struct Data {
+    #[prost(message, required)]
+    x: (),
+}
+
 #[arcorn::rewrite]
 pub(crate) struct InputData2 {
     pub(crate) val: InputValue2,

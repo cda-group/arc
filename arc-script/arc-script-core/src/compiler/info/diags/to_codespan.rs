@@ -242,9 +242,6 @@ impl ToCodespan for Error {
             Self::TypeMustBeKnownAtThisPoint { loc } => Codespan::error()
                 .with_message("Type must be known at this point.")
                 .with_labels(vec![label(loc)?]),
-            Self::AfterNotPrecededByEmit { loc } => Codespan::error()
-                .with_message("`after` must be preceded by `emit`, e.g., `emit expr0 after expr1`.")
-                .with_labels(vec![label(loc)?]),
         }
         .into()
     }

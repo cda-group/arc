@@ -19,6 +19,7 @@ pub mod defs {
         pub data: &'i mut FilterData,
         pub ctx: &'i mut OperatorContext<'source, 'timer, 'channel, FilterData, B, C>,
         pub timestamp: Option<u64>,
+        pub key: u64,
     }
     pub struct FilterData {
         pub state: FilterState,
@@ -44,73 +45,88 @@ pub mod defs {
         }
     }
     impl Operator for FilterData {
-        type IN = Struct5valuei32End;
-        type OUT = Struct5valuei32End;
+        type IN = Struct3vali323keyi32End;
+        type OUT = Struct3vali323keyi32End;
         type TimerState = ArconNever;
         type OperatorState = FilterState;
         fn handle_element(
             &mut self,
-            elem: ArconElement<Self::IN>,
+            element: ArconElement<Self::IN>,
             ref mut ctx: OperatorContext<Self, impl Backend, impl ComponentDefinition>,
         ) -> OperatorResult<()> {
-            let ArconElement { timestamp, data } = elem;
-            let event = data.value;
+            let ArconElement { timestamp, data } = element;
             let mut task = Filter {
                 data: self,
                 ctx,
                 timestamp,
+                key: data.get_key(),
             };
-            task.handle(event);
+            task.handle_element(data);
             Ok(())
         }
         fn state(&mut self) -> &mut Self::OperatorState {
             &mut self.state
         }
-        arcon::ignore_timeout!();
-        arcon::ignore_persist!();
+        fn handle_timeout(
+            &mut self,
+            timeout: Self::TimerState,
+            ref mut ctx: OperatorContext<Self, impl Backend, impl ComponentDefinition>,
+        ) -> OperatorResult<()> {
+            Ok(())
+        }
+        fn persist(&mut self) -> OperatorResult<()> {
+            self.state.persist();
+            Ok(())
+        }
     }
     impl<'i, 'source, 'timer, 'channel, B: Backend, C: ComponentDefinition>
         Filter<'i, 'source, 'timer, 'channel, B, C>
     {
-        fn handle(&mut self, event_0: i32) -> OperatorResult<()> {
+        fn handle_element(&mut self, x_0: Struct3vali323keyi32End) -> OperatorResult<()> {
             {
-                let y_1_0 = self.data.p_0;
-                let y_1_1 = y_1_0(event_0);
-                let y_1_2 = if y_1_1 {
-                    self.emit(event_0)
+                let y_1_0 = x_0.val;
+                let y_1_1 = x_0.key;
+                let y_1_2 = self.data.p_0;
+                let y_1_3 = y_1_2(y_1_0);
+                let y_1_4 = if y_1_3 {
+                    let y_2_0 = Struct3vali323keyi32End {
+                        val: y_1_0,
+                        key: y_1_1,
+                    };
+                    self.emit(y_2_0)
                 } else {
                     let y_2_0 = ();
                     y_2_0
                 };
-                y_1_2
+                y_1_4
             };
             Ok(())
         }
-        fn emit(&mut self, event_0: i32) {
-            let data = Struct5valuei32End { value: event_0 };
-            let elem = ArconElement {
+        fn emit(&mut self, data: Struct3vali323keyi32End) {
+            let element = ArconElement {
                 data,
                 timestamp: self.timestamp,
             };
-            self.ctx.output(elem);
+            self.ctx.output(element);
         }
     }
-    pub fn x_0(x_1: i32) -> bool {
+    pub fn x_1(x_2: i32) -> bool {
         let y_1_0 = 2i32;
-        let y_1_1 = x_1 % y_1_0;
+        let y_1_1 = x_2 % y_1_0;
         let y_1_2 = 0i32;
         let y_1_3 = y_1_1 == y_1_2;
         y_1_3
     }
-    pub fn main(stream0_0: Stream<Struct5valuei32End>) -> Stream<Struct5valuei32End> {
-        let y_1_0 = FilterData::new(x_0);
+    pub fn main(stream0_0: Stream<Struct3vali323keyi32End>) -> Stream<Struct3vali323keyi32End> {
+        let y_1_0 = FilterData::new(x_1);
         let y_1_1 = Stream::operator(stream0_0, y_1_0);
         y_1_1
     }
     #[arcorn::rewrite]
     #[derive(Copy)]
-    pub struct Struct5valuei32End {
-        value: i32,
+    pub struct Struct3vali323keyi32End {
+        val: i32,
+        key: i32,
     }
 }
 pub use defs::*;

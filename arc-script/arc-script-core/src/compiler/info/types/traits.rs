@@ -44,22 +44,21 @@ impl TypeId {
     pub(crate) fn is_copyable<'a>(self, ctx: impl Into<Context<'a>>) -> bool {
         let ctx = ctx.into();
         match ctx.info.types.resolve(self).kind {
-            Array(_, _) => false,
-            Fun(_, _)   => true,
-            Map(_, _)   => false,
-            Nominal(x)  => false,
-            Optional(t) => t.is_copyable(ctx),
-            Scalar(Str) => false,
-            Scalar(_)   => true,
-            Set(_)      => false,
-            Stream(_)   => false,
-            Struct(fs)  => fs.values().all(|t| t.is_copyable(ctx)),
-            Tuple(ts)   => ts.iter().all(|t| t.is_copyable(ctx)),
-            Unknown     => false,
-            Vector(_)   => false,
-            Boxed(_)    => false,
-            By(_, _)    => false,
-            Err         => true,
+            Array(_, _)  => false,
+            Fun(_, _)    => true,
+            Map(_, _)    => false,
+            Nominal(x)   => false,
+            Optional(t)  => t.is_copyable(ctx),
+            Scalar(Str)  => false,
+            Scalar(_)    => true,
+            Set(_)       => false,
+            Stream(_)    => false,
+            Struct(fs)   => fs.values().all(|t| t.is_copyable(ctx)),
+            Tuple(ts)    => ts.iter().all(|t| t.is_copyable(ctx)),
+            Unknown      => false,
+            Vector(_)    => false,
+            Boxed(_)     => false,
+            Err          => true,
         }
     }
     /// Returns `true` if type is an integer, else `false`.

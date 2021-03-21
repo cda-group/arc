@@ -4,7 +4,7 @@ expression: s
 input_file: arc-script-test/compile/src/tests/expect_pass/if.arc
 
 ---
-fun test() {
+fun test() -> i32 {
     let c0 = true in
     let c1 = false in
     let v = 3 in

@@ -27,6 +27,12 @@ impl From<hir::ScalarKind> for hir::TypeKind {
     }
 }
 
+impl From<Vec<(hir::Name, TypeId)>> for hir::Type {
+    fn from(vec: Vec<(hir::Name, TypeId)>) -> Self {
+        hir::TypeKind::Struct(vec.into_iter().collect()).into()
+    }
+}
+
 impl From<ast::Path> for hir::Path {
     fn from(path: ast::Path) -> Self {
         Self::new(path.id, path.loc)

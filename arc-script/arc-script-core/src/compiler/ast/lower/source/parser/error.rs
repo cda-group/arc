@@ -12,36 +12,32 @@ pub(crate) type ParseError = lalrpop_util::ParseError<ByteIndex, Token, ()>;
 
 impl Diagnostic {
     /// Converts an LALRPOP `ErrorRecovery` into a `Diagnostic`.
-    pub(crate) fn from(recovery: ErrorRecovery, file: FileId) -> Self {
+    pub(crate) fn from(recovery: ErrorRecovery, file: FileId) -> impl Into<Self> {
         match recovery.error {
             /// User errors (lexer errors) are handled by the lexer.
             ParseError::User { error: () } => unreachable!(),
             ParseError::ExtraToken { token: (l, t, r) } => Error::ExtraToken {
                 found: t,
-                loc: Loc::from_range(file, l..r).into(),
-            }
-            .into(),
+                loc: Loc::from_range(file, l..r),
+            },
             ParseError::InvalidToken { location: l } => Error::InvalidToken {
-                loc: Loc::from_range(file, l..l).into(),
-            }
-            .into(),
+                loc: Loc::from_range(file, l..l),
+            },
             ParseError::UnrecognizedEOF {
                 location: l,
                 expected,
             } => Error::UnrecognizedEOF {
-                loc: Loc::from_range(file, l..l).into(),
+                loc: Loc::from_range(file, l..l),
                 expected,
-            }
-            .into(),
+            },
             ParseError::UnrecognizedToken {
                 token: (l, t, r),
                 expected,
             } => Error::UnrecognizedToken {
                 found: t,
-                loc: Loc::from_range(file, l..r).into(),
+                loc: Loc::from_range(file, l..r),
                 expected,
-            }
-            .into(),
+            },
         }
     }
 }

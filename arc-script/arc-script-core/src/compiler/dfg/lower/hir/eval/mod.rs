@@ -242,7 +242,7 @@ impl Expr {
                 Variant(_x0, _v) => todo!(),
                 _ => unreachable!(),
             },
-            ExprKind::EmitAfter(_, _) => todo!(),
+            ExprKind::Trigger(_) => todo!(),
             ExprKind::Log(_e) => todo!(),
             // Short-circuit
             ExprKind::BinOp(e0, op, e1) if matches!(op.kind, And) => match e0.eval(ctx)?.kind {

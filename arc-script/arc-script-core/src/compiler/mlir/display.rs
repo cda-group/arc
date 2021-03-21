@@ -372,6 +372,7 @@ impl<'i> Display for Pretty<'i, mlir::OpKind, Context<'_>> {
                 r1 = r1.pretty(fmt),
             ),
             mlir::OpKind::Emit(_) => todo!(),
+            mlir::OpKind::Trigger(_) => todo!(),
             mlir::OpKind::Loop(_) => todo!(),
             mlir::OpKind::Call(x, xs) => write!(
                 f,
@@ -415,7 +416,7 @@ impl<'i> Display for Pretty<'i, mlir::OpKind, Context<'_>> {
             ),
             mlir::OpKind::Access(x, i) => write!(
                 f,
-                r#""arc.struct_access"({x}) {{ field = "{i}" }} : {t}"#,
+                r#""arc.struct_access"({x}) {{ field = "{i}" }} : ({t}) ->"#,
                 x = x.pretty(fmt),
                 i = i.pretty(fmt),
                 t = x.tv.pretty(fmt)
@@ -512,7 +513,6 @@ impl<'i> Display for Pretty<'i, hir::Type, Context<'_>> {
             Optional(_ty)   => todo!(),
             Fun(tys, ty)    => write!(f, "({tys}) -> {ty}", tys = tys.all_pretty(", ", fmt), ty = ty.pretty(fmt)),
             Boxed(ty)       => write!(f, "box {}", ty.pretty(fmt)),
-            By(t0, t1)      => write!(f, "{} by {}", t0.pretty(fmt), t1.pretty(fmt)),
             Unknown         => unreachable!(),
             Err             => unreachable!(),
         }

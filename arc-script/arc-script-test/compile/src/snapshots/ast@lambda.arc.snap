@@ -4,7 +4,7 @@ expression: s
 input_file: arc-script-test/compile/src/tests/expect_pass/lambda.arc
 
 ---
-fun test() {
+fun test() -> i32 {
     let increment = |i| {
         i + 1
     } in
