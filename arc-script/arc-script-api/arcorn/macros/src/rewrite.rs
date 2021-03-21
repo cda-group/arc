@@ -23,11 +23,8 @@ fn rewrite_enum(mut item: syn::ItemEnum) -> pm::TokenStream {
                 "#[arcorn::rewrite] expects variant fields to take exactly one argument"
             );
             let field = variant.fields.iter_mut().next().unwrap();
-            let (attr, is_unit) = ty_to_prost_attr(&field.ty, Some(tag));
+            let attr = ty_to_prost_attr(&field.ty, Some(tag));
             variant.attrs.push(attr);
-            if is_unit {
-                field.ty = syn::parse_quote!(arcorn::Unit)
-            }
         });
     let tags = item
         .variants
@@ -58,41 +55,32 @@ fn rewrite_enum(mut item: syn::ItemEnum) -> pm::TokenStream {
 }
 
 fn rewrite_struct(mut item: syn::ItemStruct) -> pm::TokenStream {
-    let (params, args): (Vec<_>, Vec<_>) = item
-        .fields
-        .iter_mut()
-        .map(|field| {
-            let (attr, is_unit) = ty_to_prost_attr(&field.ty, None);
-            field.attrs.push(attr);
-            if is_unit {
-                field.ty = syn::parse_quote!(arcorn::Unit)
-            }
-            let ty = &field.ty.clone();
-            let ident = field
-                .ident
-                .clone()
-                .expect("#[arcorn::rewrite] expects structs to have named fields");
-            let param = quote!(#ident:#ty);
-            let arg = quote!(#ident);
-            (param, arg)
-        })
-        .unzip();
-    let ident = item.ident.clone();
-    quote!(
-        #[derive(prost::Message, arcon::prelude::Arcon, Clone, arcorn::derive_more::From)]
-        #[arcon(reliable_ser_id = 13, version = 1)]
-        #item
-        impl #ident {
-            fn new(#(#params),*) -> Self {
-                Self { #(#args),* }
-            }
+    let mut has_key = false;
+    item.fields.iter_mut().for_each(|field| {
+        let attr = ty_to_prost_attr(&field.ty, None);
+        field.attrs.push(attr);
+        let ident = field
+            .ident
+            .clone()
+            .expect("#[arcorn::rewrite] expects structs to have named fields");
+        if ident == "key" {
+            has_key = true;
         }
+    });
+    let attr = if has_key {
+        quote!(#[arcon(reliable_ser_id = 13, version = 1, keys = "key")])
+    } else {
+        quote!(#[arcon(reliable_ser_id = 13, version = 1)])
+    };
+    quote!(
+        #[derive(prost::Message, arcon::prelude::Arcon, Clone, arcorn::derive_more::From, arcorn::derive_more::Constructor)]
+        #attr
+        #item
     )
     .into()
 }
 
-fn ty_to_prost_attr(ty: &syn::Type, tag: Option<usize>) -> (syn::Attribute, bool) {
-    let mut is_unit = false;
+fn ty_to_prost_attr(ty: &syn::Type, tag: Option<usize>) -> syn::Attribute {
     let ty = match &ty {
         syn::Type::Path(ty) => {
             let seg = ty.path.segments.iter().next().unwrap();
@@ -110,18 +98,14 @@ fn ty_to_prost_attr(ty: &syn::Type, tag: Option<usize>) -> (syn::Attribute, bool
             }
             .to_string()
         }
-        syn::Type::Tuple(ty) if ty.elems.is_empty() => {
-            is_unit = true;
-            "message".to_string()
-        }
+        syn::Type::Tuple(ty) if ty.elems.is_empty() => "message".to_string(),
         _ => panic!("#[arcorn::rewrite] expects all types to be mangled and de-aliased."),
     };
     let ident = syn::Ident::new(&ty, pm2::Span::call_site());
-    let attr = if let Some(tag) = tag {
+    if let Some(tag) = tag {
         let lit = syn::LitStr::new(&format!("{}", tag), pm2::Span::call_site());
         syn::parse_quote!(#[prost(#ident, tag = #lit)])
     } else {
         syn::parse_quote!(#[prost(#ident, required)])
-    };
-    (attr, is_unit)
+    }
 }
