@@ -15,12 +15,12 @@ regex           = { version = "1.4.3" }
 lazy_static     = { version = "1.4.0" }
 # compiletest     = { version = "0.6.0", package = "compiletest_rs", features = ["tmp"] }
 # cargo_toml      = { version = "0.8.1" }
-arcon           = { git = "https://github.com/cda-group/arcon" }
+arcon           = { git = "https://github.com/segeljakt/arcon" }
 arc-script      = { version = "=0.0.0", path = "../../" }
 prost           = { version = "0.7.0" }
 
 [build-dependencies]
 arc-script-build = { version = "=0.0.0", path = "../../arc-script-api/build" }
-# arcon           = { git = "https://github.com/cda-group/arcon" }
+# arcon           = { git = "https://github.com/segeljakt/arcon" }
 # arc-script      = { version = "=0.0.0", path = "../../" }
 # prost           = { version = "0.7.0" }

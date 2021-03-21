@@ -4,6 +4,6 @@ version = "0.0.0"
 edition = "2018"
 
 [dependencies]
-arcon      = { git = "https://github.com/cda-group/arcon" }
+arcon      = { git = "https://github.com/segeljakt/arcon" }
 arc-script = { version = "=0.0.0", path = "../../", features = ["proc"] }
 prost      = { version = "0.7.0" }
