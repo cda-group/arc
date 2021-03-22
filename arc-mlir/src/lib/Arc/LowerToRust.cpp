@@ -387,7 +387,7 @@ typedef enum {
   XOrOp,
   LAST
 } Op;
-};
+}
 
 template <class T, ArcIntArithmeticOp::Op arithOp>
 struct ArcIntArithmeticOpLowering : public ConversionPattern {
@@ -457,7 +457,7 @@ private:
 
 namespace StdArithmeticOp {
 typedef enum { AddFOp = 0, DivFOp, MulFOp, SubFOp, RemFOp, LAST } Op;
-};
+}
 
 template <class T, StdArithmeticOp::Op arithOp>
 struct StdArithmeticOpLowering : public ConversionPattern {
@@ -486,7 +486,7 @@ private:
 
 namespace OpAsMethod {
 typedef enum { PowFOp = 0, LAST } Op;
-};
+}
 
 template <class T, OpAsMethod::Op theOp>
 struct OpAsMethodLowering : public ConversionPattern {
@@ -573,7 +573,7 @@ typedef enum {
   sqrt,
   LAST
 } Op;
-};
+}
 
 template <class T, ArcUnaryFloatOp::Op arithOp>
 struct ArcUnaryFloatOpLowering : public ConversionPattern {

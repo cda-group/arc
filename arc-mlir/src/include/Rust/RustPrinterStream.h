@@ -25,7 +25,7 @@
 
 namespace rust {
 class RustPrinterStream;
-};
+}
 
 #include "Rust/Rust.h"
 #include "Rust/Types.h"
