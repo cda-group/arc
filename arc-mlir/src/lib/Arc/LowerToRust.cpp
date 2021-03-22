@@ -808,7 +808,7 @@ void ArcToRustLoweringPass::runOnOperation() {
   target.addLegalDialect<rust::RustDialect>();
   target.addLegalOp<ModuleOp, ModuleTerminatorOp>();
 
-  OwningRewritePatternList patterns;
+  OwningRewritePatternList patterns(&getContext());
   patterns.insert<ReturnOpLowering>(&getContext());
   patterns.insert<FuncOpLowering>(&getContext(), typeConverter);
   patterns.insert<StdConstantOpLowering>(&getContext(), typeConverter);

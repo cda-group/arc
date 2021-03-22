@@ -144,7 +144,7 @@ struct ConstantFoldStructAccess
 
 void MakeVectorOp::getCanonicalizationPatterns(
     OwningRewritePatternList &results, MLIRContext *ctx) {
-  populateWithGenerated(ctx, results);
+  populateWithGenerated(results);
 }
 
 void IfOp::getCanonicalizationPatterns(OwningRewritePatternList &results,
