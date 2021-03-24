@@ -1,4 +1,5 @@
 use crate::compiler::hir::Name;
+use crate::compiler::info::files::Loc;
 
 use arc_script_core_shared::From;
 use arc_script_core_shared::Hasher;
@@ -43,8 +44,8 @@ macro_rules! common {
 
 /// Commonly occurring names.
 common! {
-    aliased_names: [root: "crate"],
-    literal_names: [value, sink, source, push, pop, fold, add, remove, len, clear]
+    aliased_names: [root: "crate", sink: "Sink", source: "Source"],
+    literal_names: [val, key, dur, push, pop, fold, add, remove, len, clear]
 }
 
 impl Default for NameInterner {
@@ -82,7 +83,7 @@ impl NameInterner {
 
     /// Generates and interns fresh new name.
     pub(crate) fn fresh(&mut self) -> Name {
-        Name::new(self.uniquify("x"), None)
+        Name::new(self.uniquify("x"), Loc::Fake)
     }
 
     /// Generates and interns fresh new name which begins with `base`.

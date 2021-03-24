@@ -4,7 +4,7 @@ expression: s
 input_file: arc-script-test/compile/src/tests/expect_pass/pattern.arc
 
 ---
-fun main() {
+fun main()  {
     let ((a, b), (c, d)) = ((1, 2), (3, 4)) in
     unit
 }

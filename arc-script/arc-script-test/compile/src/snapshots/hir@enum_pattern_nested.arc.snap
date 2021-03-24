@@ -12,21 +12,21 @@ enum Foo {
     Bar(crate::Baz),
     None
 }
-fun x_5() -> unit {
+fun x_3() -> unit {
     unit
 }
 fun main() -> unit {
     let x_0: crate::Foo = enwrap[crate::Foo::Bar](enwrap[crate::Baz::Some](5)) in
     if is[crate::Foo::Bar](x_0) {
-        let x_2: crate::Baz = unwrap[crate::Foo::Bar](x_0) in
-        if is[crate::Baz::Some](x_2) {
-            let x_4: i32 = unwrap[crate::Baz::Some](x_2) in
+        let x_1: crate::Baz = unwrap[crate::Foo::Bar](x_0) in
+        if is[crate::Baz::Some](x_1) {
+            let x_2: i32 = unwrap[crate::Baz::Some](x_1) in
             unit
         } else {
-            crate::x_5()
+            crate::x_3()
         }
     } else {
-        crate::x_5()
+        crate::x_3()
     }
 }
 

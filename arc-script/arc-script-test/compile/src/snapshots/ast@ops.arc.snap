@@ -4,7 +4,7 @@ expression: s
 input_file: arc-script-test/compile/src/tests/expect_fail_todo/ops.arc
 
 ---
-fun test() {
+fun test()  {
     1 == 2;
     1 != 2;
     1 > 2;

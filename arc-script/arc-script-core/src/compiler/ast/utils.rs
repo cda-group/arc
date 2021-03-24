@@ -1,8 +1,8 @@
 use crate::compiler::ast::repr::{Index, Item, ItemKind, Module, Path, TaskItemKind, AST};
 
 use crate::compiler::hir::Name;
-
 use crate::compiler::info::names::NameId;
+use crate::compiler::info::files::Loc;
 use crate::compiler::info::Info;
 
 impl Path {
@@ -46,12 +46,12 @@ impl Module {
 
 impl From<NameId> for Name {
     fn from(id: NameId) -> Self {
-        Self::new(id, None)
+        Self::new(id, Loc::Fake)
     }
 }
 
 impl From<usize> for Index {
     fn from(id: usize) -> Self {
-        Self::new(id, None)
+        Self::new(id, Loc::Fake)
     }
 }

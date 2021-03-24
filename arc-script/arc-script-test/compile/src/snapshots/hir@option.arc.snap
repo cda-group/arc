@@ -8,7 +8,7 @@ enum Opt {
     Some(i32),
     None
 }
-fun x_2() -> unit {
+fun x_1() -> unit {
     unit
 }
 fun main() -> unit {
@@ -17,7 +17,7 @@ fun main() -> unit {
         let y_0: i32 = unwrap[crate::Opt::Some](x_0) in
         unit
     } else {
-        crate::x_2()
+        crate::x_1()
     }
 }
 

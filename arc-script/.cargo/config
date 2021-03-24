@@ -17,7 +17,7 @@ rrun-repl      = "run --release --manifest-path=arc-script-cli/Cargo.toml --feat
 
 check-web-lsp  = "check --manifest-path=arc-script-web-lsp/Cargo.toml  --target=wasm32-unknown-unknown"
 check-web-repl = "check --manifest-path=arc-script-web-repl/Cargo.toml --target=wasm32-unknown-unknown"
-debug          = "run --package=arc-script-cli -- --force-output --debug -v run --output=HIR"
+debug          = "run --package=arc-script-cli -- --force-output --debug -vvvv run --output=Rust"
 trace          = "run --package=arc-script-cli -- --force-output --debug -vv run --output=HIR"
 build-lsp      = "build --release --package=arc-script-lsp"
 build-repl     = "build --release --package=arc-script-repl"

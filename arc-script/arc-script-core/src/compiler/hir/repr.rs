@@ -2,7 +2,7 @@ use crate::compiler::ast;
 
 use crate::compiler::info::files::Loc;
 
-use arc_script_core_macros::Spanned;
+use arc_script_core_macros::Loc;
 use arc_script_core_shared::Educe;
 use arc_script_core_shared::New;
 use arc_script_core_shared::OrdMap;
@@ -33,10 +33,10 @@ pub(crate) struct HIR {
     pub(crate) defs: OrdMap<Path, Item>,
 }
 
-#[derive(New, Spanned, Debug)]
+#[derive(New, Loc, Debug)]
 pub(crate) struct Item {
     pub(crate) kind: ItemKind,
-    pub(crate) loc: Option<Loc>,
+    pub(crate) loc: Loc,
 }
 
 #[allow(clippy::large_enum_variant)]
@@ -55,12 +55,12 @@ pub(crate) use ast::Name;
 pub(crate) use ast::Index;
 
 /// A path of names.
-#[derive(Debug, Copy, Clone, Educe, New, Spanned)]
+#[derive(Debug, Copy, Clone, Educe, New, Loc)]
 #[educe(PartialEq, Eq, Hash)]
 pub struct Path {
     pub(crate) id: PathId,
     #[educe(PartialEq(ignore), Eq(ignore), Hash(ignore))]
-    pub(crate) loc: Option<Loc>,
+    pub(crate) loc: Loc,
 }
 
 #[derive(New, Debug)]
@@ -89,11 +89,11 @@ pub(crate) struct Extern {
     pub(crate) rtv: TypeId,
 }
 
-#[derive(New, Spanned, Debug, Clone, Copy)]
+#[derive(New, Loc, Debug, Clone, Copy)]
 pub(crate) struct Param {
     pub(crate) kind: ParamKind,
     pub(crate) tv: TypeId,
-    pub(crate) loc: Option<Loc>,
+    pub(crate) loc: Loc,
 }
 
 #[derive(Debug, Clone, Copy)]
@@ -109,17 +109,29 @@ pub(crate) struct Enum {
     pub(crate) variants: Vec<Path>,
 }
 
-#[derive(New, Spanned, Debug)]
+#[derive(Debug)]
+pub(crate) enum Vis {
+    Private,
+    Public,
+}
+
+#[derive(New, Loc, Debug)]
 pub(crate) struct Variant {
+    pub(crate) vis: Vis,
     pub(crate) path: Path,
     pub(crate) tv: TypeId,
-    pub(crate) loc: Option<Loc>,
+    pub(crate) loc: Loc,
 }
 
 #[derive(New, Debug)]
 pub(crate) struct Alias {
     pub(crate) path: Path,
     pub(crate) tv: TypeId,
+}
+
+#[derive(New, Debug)]
+pub(crate) struct Startup {
+    pub(crate) expr: Expr,
 }
 
 #[derive(New, Debug)]
@@ -136,6 +148,8 @@ pub(crate) struct Task {
     pub(crate) tv: TypeId,
     /// Initializer parameters of the task.
     pub(crate) params: Vec<Param>,
+    /// Statements run at startup.
+    pub(crate) startups: Vec<Startup>,
     /// State variables of the task.
     pub(crate) states: Vec<State>,
     /// Constructor which also flattens the input parameters of a task when initializing it.
@@ -158,19 +172,23 @@ pub(crate) struct Task {
     /// }
     /// Input hub to the task.
     pub(crate) ihub: Hub,
-    /// Input hub to the task.
+    /// Output hub to the task.
     pub(crate) ohub: Hub,
+    /// Timer.
+    pub(crate) timer: Option<Timer>,
+    /// Timer handler.
+    pub(crate) timeout: Option<Timeout>,
     /// Event handler.
     pub(crate) on: Option<On>,
     /// Items of the task.
     pub(crate) items: Vec<Path>,
 }
 
-#[derive(Debug, New, Spanned)]
+#[derive(Debug, New, Loc)]
 pub(crate) struct Hub {
-    pub(crate) tv: TypeId,
+    pub(crate) internal_tv: TypeId,
     pub(crate) kind: HubKind,
-    pub(crate) loc: Option<Loc>,
+    pub(crate) loc: Loc,
 }
 
 #[derive(Debug)]
@@ -179,17 +197,30 @@ pub(crate) enum HubKind {
     Single(TypeId),
 }
 
-#[derive(New, Spanned, Debug)]
+#[derive(New, Loc, Debug)]
+pub(crate) struct Timeout {
+    pub(crate) param: Param,
+    pub(crate) body: Expr,
+    pub(crate) loc: Loc,
+}
+
+#[derive(New, Loc, Debug)]
+pub(crate) struct Timer {
+    pub(crate) tv: TypeId,
+    pub(crate) loc: Loc,
+}
+
+#[derive(New, Loc, Debug)]
 pub(crate) struct On {
     pub(crate) param: Param,
     pub(crate) body: Expr,
-    pub(crate) loc: Option<Loc>,
+    pub(crate) loc: Loc,
 }
 
-#[derive(New, Spanned, Debug)]
+#[derive(New, Loc, Debug)]
 pub(crate) struct Setting {
     pub(crate) kind: SettingKind,
-    pub(crate) loc: Option<Loc>,
+    pub(crate) loc: Loc,
 }
 
 #[derive(Debug)]
@@ -198,11 +229,11 @@ pub(crate) enum SettingKind {
     Calibrate(ast::Name, LitKind),
 }
 
-#[derive(Debug, New, Clone, Spanned)]
+#[derive(Debug, New, Clone, Loc)]
 pub(crate) struct Expr {
     pub(crate) kind: ExprKind,
     pub(crate) tv: TypeId,
-    pub(crate) loc: Option<Loc>,
+    pub(crate) loc: Loc,
 }
 
 #[derive(Debug, Clone)]
@@ -217,6 +248,7 @@ pub(crate) enum ExprKind {
     Call(Box<Expr>, Vec<Expr>),
     Select(Box<Expr>, Vec<Expr>),
     Emit(Box<Expr>),
+    Trigger(Box<Expr>),
     If(Box<Expr>, Box<Expr>, Box<Expr>),
     Item(Path),
     Let(Param, Box<Expr>, Box<Expr>),
@@ -244,18 +276,18 @@ pub(crate) enum VarKind {
     // Global,
 }
 
-#[derive(Debug, New, Clone, Spanned)]
+#[derive(Debug, New, Clone, Loc)]
 pub(crate) struct BinOp {
     pub(crate) kind: BinOpKind,
-    pub(crate) loc: Option<Loc>,
+    pub(crate) loc: Loc,
 }
 
 pub(crate) use ast::BinOpKind;
 
-#[derive(Debug, New, Clone, Spanned)]
+#[derive(Debug, New, Clone, Loc)]
 pub(crate) struct UnOp {
     pub(crate) kind: UnOpKind,
-    pub(crate) loc: Option<Loc>,
+    pub(crate) loc: Loc,
 }
 
 pub(crate) use ast::UnOpKind;
@@ -280,7 +312,6 @@ pub enum TypeKind {
     Unknown,
     Vector(TypeId),
     Boxed(TypeId),
-    By(TypeId, TypeId),
     Err,
 }
 

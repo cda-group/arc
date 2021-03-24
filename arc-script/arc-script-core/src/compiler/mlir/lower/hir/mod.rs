@@ -71,6 +71,7 @@ impl Lower<mlir::BinOp, Context<'_>> for hir::BinOp {
     fn lower(&self, _ctx: &mut Context<'_>) -> mlir::BinOp {
         #[rustfmt::skip]
         let kind = match self.kind {
+            hir::BinOpKind::After => unreachable!(),
             hir::BinOpKind::Add   => mlir::BinOpKind::Add,
             hir::BinOpKind::Sub   => mlir::BinOpKind::Sub,
             hir::BinOpKind::Mul   => mlir::BinOpKind::Mul,
@@ -120,7 +121,8 @@ impl Lower<mlir::ConstKind, Context<'_>> for hir::LitKind {
             Self::Bool(v) => mlir::ConstKind::Bool(*v),
             Self::Char(v) => mlir::ConstKind::Char(*v),
             Self::Str(_)  => todo!(),
-            Self::Time(v) => mlir::ConstKind::Time(*v),
+            Self::DateTime(_) => todo!(),
+            Self::Duration(_) => todo!(),
             Self::Unit    => mlir::ConstKind::Unit,
             Self::Err     => unreachable!(),
         }

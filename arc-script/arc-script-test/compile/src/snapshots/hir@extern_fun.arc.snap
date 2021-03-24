@@ -5,16 +5,17 @@ input_file: arc-script-test/compile/src/tests/expect_mlir_fail_todo/extern_fun.a
 
 ---
 extern fun increment(x: i32) -> i32;
-task Adder() (~i32) -> (~i32) {
-    
+task Adder() ~{ val: i32, key: i32 } -> ~{ val: i32, key: i32 } {
     extern fun addition(x: i32, y: i32) -> i32;
     on {
-        event_0: i32 => {
-            emit crate::Adder::addition(event_0, event_0)
+        x_0: { key: i32, val: i32 } => {
+            let event_0: i32 = x_0.val in
+            let key_0: i32 = x_0.key in
+            emit { val: crate::Adder::addition(event_0, event_0), key: key_0 }
         }
     }
 }
-fun pipe(s_0: ~i32) -> ~i32 {
+fun pipe(s_0: ~{ val: i32, key: i32 }) -> ~{ val: i32, key: i32 } {
     if crate::increment(1) == 2 {
         crate::Adder()(s_0)
     } else {

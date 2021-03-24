@@ -1,3 +1,5 @@
+//! This module allows pretty printers to be implemented for language constructs.
+
 use arc_script_core_shared::Format;
 use arc_script_core_shared::New;
 

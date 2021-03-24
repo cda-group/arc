@@ -1,4 +1,9 @@
 #![allow(clippy::useless_format)]
+
+#[path = "../pretty.rs"]
+pub(crate) mod pretty;
+use pretty::*;
+
 use crate::compiler::hir;
 use crate::compiler::hir::{Name, Path};
 
@@ -6,7 +11,6 @@ use crate::compiler::info::paths::PathId;
 use crate::compiler::info::types::TypeId;
 use crate::compiler::info::Info;
 use crate::compiler::mlir;
-use crate::compiler::pretty::*;
 use arc_script_core_shared::From;
 
 use std::fmt;
@@ -372,6 +376,7 @@ impl<'i> Display for Pretty<'i, mlir::OpKind, Context<'_>> {
                 r1 = r1.pretty(fmt),
             ),
             mlir::OpKind::Emit(_) => todo!(),
+            mlir::OpKind::Trigger(_) => todo!(),
             mlir::OpKind::Loop(_) => todo!(),
             mlir::OpKind::Call(x, xs) => write!(
                 f,
@@ -392,13 +397,9 @@ impl<'i> Display for Pretty<'i, mlir::OpKind, Context<'_>> {
                     .map_pretty(|x, f| write!(f, "{}", x.tv.pretty(fmt)), ", "),
             ),
             mlir::OpKind::Return(x)
-		if matches!(fmt.ctx.info.types.resolve(x.tv).kind,
-			    hir::TypeKind::Scalar(hir::ScalarKind::Unit)) =>
-		write!(
-                    f,
-                    r#"return {s0}"#,
-                    s0 = fmt
-		),
+                if matches!(fmt.ctx.info.types.resolve(x.tv).kind,
+                    hir::TypeKind::Scalar(hir::ScalarKind::Unit)) =>
+                        write!(f, r#"return {s0}"#, s0 = fmt),
             mlir::OpKind::Return(x) => write!(
                 f,
                 r#"return {x} : {t}{s0}"#,
@@ -415,7 +416,7 @@ impl<'i> Display for Pretty<'i, mlir::OpKind, Context<'_>> {
             ),
             mlir::OpKind::Access(x, i) => write!(
                 f,
-                r#""arc.struct_access"({x}) {{ field = "{i}" }} : {t}"#,
+                r#""arc.struct_access"({x}) {{ field = "{i}" }} : ({t}) ->"#,
                 x = x.pretty(fmt),
                 i = i.pretty(fmt),
                 t = x.tv.pretty(fmt)
@@ -495,6 +496,8 @@ impl<'i> Display for Pretty<'i, hir::Type, Context<'_>> {
                 Char  => todo!(),
                 Bot   => unreachable!(),
                 Never => unreachable!(),
+                DateTime  => unreachable!(),
+                Duration  => unreachable!(),
             }
             Struct(fs)     => {
                     write!(f, "!arc.struct<{fs}>",
@@ -510,7 +513,6 @@ impl<'i> Display for Pretty<'i, hir::Type, Context<'_>> {
             Optional(_ty)   => todo!(),
             Fun(tys, ty)    => write!(f, "({tys}) -> {ty}", tys = tys.all_pretty(", ", fmt), ty = ty.pretty(fmt)),
             Boxed(ty)       => write!(f, "box {}", ty.pretty(fmt)),
-            By(t0, t1)      => write!(f, "{} by {}", t0.pretty(fmt), t1.pretty(fmt)),
             Unknown         => unreachable!(),
             Err             => unreachable!(),
         }

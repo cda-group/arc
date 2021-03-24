@@ -1,6 +1,5 @@
 pub(crate) mod lowerings {
     pub(crate) mod structs;
-    pub(crate) mod tasks;
 }
 
 use crate::compiler::arcon::lower::hir::lowerings::structs;
@@ -171,25 +170,45 @@ impl Lower<Tokens, Context<'_>> for hir::Task {
             })
             .collect::<Vec<_>>();
 
-        let value_name = ctx.info.names.common.value.into();
-
         let itv = get!(&self.ihub.kind, hir::HubKind::Single(itv));
         let itv = get!(ctx.info.types.resolve(*itv).kind, hir::TypeKind::Stream(tv));
-        let fs = vec![(value_name, itv)].into_iter().collect();
-
         let ity = itv.lower(ctx);
-        let struct_ity = ctx.info.types.intern(hir::TypeKind::Struct(fs)).lower(ctx);
 
         let otv = get!(&self.ohub.kind, hir::HubKind::Single(otv));
         let otv = get!(ctx.info.types.resolve(*otv).kind, hir::TypeKind::Stream(tv));
-        let fs = vec![(value_name, otv)].into_iter().collect();
-
         let oty = otv.lower(ctx);
-        let struct_oty = ctx.info.types.intern(hir::TypeKind::Struct(fs)).lower(ctx);
 
         let on = get!(&self.on, Some(on));
         let event = on.param.kind.lower(ctx);
-        let body = on.body.lower(ctx);
+        let on_body = on.body.lower(ctx);
+
+        let (timeout_body, timeout_param, do_timeout, tty, timer_state) = if let (
+            Some(timer),
+            Some(timeout),
+        ) =
+            (&self.timer, &self.timeout)
+        {
+            let timeout_body = timeout.body.lower(ctx);
+            let do_timeout = quote! {
+                let mut task = #task_name { data: self, key: timeout.get_key(), ctx, timestamp: None };
+                task.handle_timeout(timeout);
+            };
+            let timeout_param = timeout.param.kind.lower(ctx);
+            let tty = timeout.param.tv.lower(ctx);
+            (
+                Some(timeout_body),
+                Some(timeout_param),
+                Some(do_timeout),
+                Some(tty.clone()),
+                tty,
+            )
+        } else {
+            (None, None, None, None, quote!(ArconNever))
+        };
+
+        let tty = tty.into_iter();
+        let timeout_body = timeout_body.into_iter();
+        let do_timeout = do_timeout.into_iter();
 
         quote! {
 
@@ -197,6 +216,7 @@ impl Lower<Tokens, Context<'_>> for hir::Task {
                 pub data: &'i mut #data_name,
                 pub ctx: &'i mut OperatorContext<'source, 'timer, 'channel, #data_name, B, C>,
                 pub timestamp: Option<u64>,
+                pub key: u64,
             }
 
             pub struct #data_name {
@@ -233,24 +253,19 @@ impl Lower<Tokens, Context<'_>> for hir::Task {
             }
 
             impl Operator for #data_name {
-                type IN  = #struct_ity;
-                type OUT = #struct_oty;
-                type TimerState = ArconNever;
+                type IN            = #ity;
+                type OUT           = #oty;
+                type TimerState    = #timer_state;
                 type OperatorState = #state_name;
 
                 fn handle_element(
                     &mut self,
-                    elem: ArconElement<Self::IN>,
+                    element: ArconElement<Self::IN>,
                     ref mut ctx: OperatorContext<Self, impl Backend, impl ComponentDefinition>,
                 ) -> OperatorResult<()> {
-                    let ArconElement { timestamp, data } = elem;
-                    let event = data.value;
-                    let mut task = #task_name {
-                        data: self,
-                        ctx,
-                        timestamp
-                    };
-                    task.handle(event);
+                    let ArconElement { timestamp, data } = element;
+                    let mut task = #task_name { data: self, ctx, timestamp, key: data.get_key() };
+                    task.handle_element(data);
                     Ok(())
                 }
 
@@ -258,23 +273,44 @@ impl Lower<Tokens, Context<'_>> for hir::Task {
                     &mut self.state
                 }
 
-                arcon::ignore_timeout!();
-                arcon::ignore_persist!();
-            }
-
-            impl<'i, 'source, 'timer, 'channel, B: Backend, C: ComponentDefinition>
-                #task_name<'i, 'source, 'timer, 'channel, B, C>
-            {
-                fn handle(&mut self, #event: #ity) -> OperatorResult<()> {
-                    #body;
+                fn handle_timeout(
+                    &mut self,
+                    timeout: Self::TimerState,
+                    ref mut ctx: OperatorContext<Self, impl Backend, impl ComponentDefinition>,
+                ) -> OperatorResult<()> {
+                    #(#do_timeout)*
                     Ok(())
                 }
 
-                fn emit(&mut self, #event: #oty) {
-                    let data = #struct_oty { value: #event };
-                    let elem = ArconElement { data, timestamp: self.timestamp };
-                    self.ctx.output(elem);
+                fn persist(&mut self) -> OperatorResult<()> {
+                    self.state.persist();
+                    Ok(())
                 }
+            }
+
+            impl<'i, 'source, 'timer, 'channel, B: Backend, C: ComponentDefinition>
+                #task_name<'i, 'source, 'timer, 'channel, B, C> {
+
+                fn handle_element(&mut self, #event: #ity) -> OperatorResult<()> {
+                    #on_body;
+                    Ok(())
+                }
+
+                fn emit(&mut self, data: #oty) {
+                    let element = ArconElement { data, timestamp: self.timestamp };
+                    self.ctx.output(element);
+                }
+
+                #(
+                    fn handle_timeout(&mut self, #timeout_param: #tty) {
+                        #timeout_body
+                    }
+
+                    fn trigger(&mut self, data: #tty, after: u64) {
+                        let time = self.ctx.current_time().unwrap() + after;
+                        self.ctx.schedule_at(self.key, time, data);
+                    }
+                )*
 
                 #(#methods)*
             }
@@ -424,7 +460,6 @@ impl hir::Expr {
                     }
                     hir::VarKind::Member => quote!(self.data.#x),
                     hir::VarKind::State => {
-                        println!("{}", self.tv.debug(ctx.hir, ctx.info as &Info));
                         debug_assert!(self.tv.is_copyable((ctx.info as &Info, ctx.hir)));
                         quote!(self.data.state.#x.arc_ref_read().unwrap())
                     }
@@ -532,9 +567,13 @@ impl hir::Expr {
                 }
                 _ => unreachable!(),
             },
-            hir::ExprKind::Emit(e) => {
-                let e = e.ssa(ctx, env, ops, depth);
-                return quote!(self.emit(#e));
+            hir::ExprKind::Emit(e0) => {
+                let e0 = e0.ssa(ctx, env, ops, depth);
+                return quote!(self.emit(#e0));
+            }
+            hir::ExprKind::Trigger(e0) => {
+                let e0 = e0.ssa(ctx, env, ops, depth);
+                return quote!(self.trigger(#e0.val, #e0.dur));
             }
             hir::ExprKind::If(e0, e1, e2) => {
                 let e0 = e0.ssa(ctx, env, ops, depth);
@@ -613,7 +652,7 @@ impl hir::Expr {
             hir::ExprKind::Add(e0, e1) => {
                 if let hir::ExprKind::Var(x, hir::VarKind::State) = &e0.kind {
                     let x = x.lower(ctx);
-                    let e1 = e1.lower(ctx);
+                    let e1 = e1.ssa(ctx, env, ops, depth);
                     quote!(self.data.state.#x.arc_set_add(#e1).unwrap())
                 } else {
                     todo!()
@@ -622,7 +661,7 @@ impl hir::Expr {
             hir::ExprKind::Del(e0, e1) => {
                 if let hir::ExprKind::Var(x, hir::VarKind::State) = &e0.kind {
                     let x = x.lower(ctx);
-                    let e1 = e1.lower(ctx);
+                    let e1 = e1.ssa(ctx, env, ops, depth);
                     quote!(self.data.state.#x.arc_set_del(#e1).unwrap())
                 } else {
                     todo!()
@@ -691,9 +730,7 @@ impl Lower<Tokens, Context<'_>> for hir::TypeId {
                 quote!(Set<T>)
             }
             hir::TypeKind::Stream(t) => {
-                let x = ctx.info.names.common.value.into();
-                let fs = vec![(x, *t)].into_iter().collect();
-                let t = ctx.info.types.intern(hir::TypeKind::Struct(fs)).lower(ctx);
+                let t = t.lower(ctx);
                 quote!(Stream<#t>)
             }
             hir::TypeKind::Struct(fts) => {
@@ -734,11 +771,6 @@ impl Lower<Tokens, Context<'_>> for hir::TypeId {
                 let t = t.lower(ctx);
                 quote!(Box<#t>)
             }
-            hir::TypeKind::By(t0, t1) => {
-                let t0 = t0.lower(ctx);
-                let t1 = t1.lower(ctx);
-                todo!()
-            }
             hir::TypeKind::Unknown => unreachable!(),
             hir::TypeKind::Err => unreachable!(),
         }
@@ -768,6 +800,8 @@ impl Lower<Tokens, Context<'_>> for hir::ScalarKind {
             Self::Unit  => quote!(()),
             Self::Bot   => todo!(),
             Self::Never => quote!(!),
+            Self::DateTime  => quote!(u64),
+            Self::Duration  => quote!(u64),
         }
     }
 }
@@ -776,6 +810,7 @@ impl Lower<Tokens, Context<'_>> for hir::ScalarKind {
 impl Lower<Tokens, Context<'_>> for hir::BinOp {
     fn lower(&self, _ctx: &mut Context<'_>) -> Tokens {
         match self.kind {
+            hir::BinOpKind::After => unreachable!(),
             hir::BinOpKind::Add   => quote!(+),
             hir::BinOpKind::And   => quote!(&&),
             hir::BinOpKind::Band  => quote!(&),
@@ -871,7 +906,11 @@ impl Lower<Tokens, Context<'_>> for hir::LitKind {
             Self::U32(v)  => quote!(#v),
             Self::U64(v)  => quote!(#v),
             Self::Str(_v)  => todo!(),
-            Self::Time(_v) => todo!(),
+            Self::DateTime(_v) => todo!(),
+            Self::Duration(v) => {
+                let v = v.whole_seconds() as u64;
+                quote!(#v)
+            },
             Self::Unit    => quote!(()),
             Self::Err     => unreachable!(),
         }

@@ -1,0 +1,186 @@
+---
+source: arc-script-test/compile/src/insta.rs
+expression: s
+input_file: arc-script-test/compile/src/tests/expect_mlir_fail_todo/task_window.arc
+
+---
+#[allow(non_snake_case)]
+#[allow(unused_must_use)]
+#[allow(dead_code)]
+#[allow(unused_variables)]
+#[allow(unused_imports)]
+#[allow(unused_braces)]
+pub mod defs {
+    use super::*;
+    pub use arc_script::arcorn;
+    pub use arc_script::arcorn::state::{ArcMapOps, ArcRefOps, ArcSetOps, ArcVecOps};
+    pub use arcon::prelude::*;
+    pub struct TumblingWindowSum<'i, 'source, 'timer, 'channel, B: Backend, C: ComponentDefinition> {
+        pub data: &'i mut TumblingWindowSumData,
+        pub ctx: &'i mut OperatorContext<'source, 'timer, 'channel, TumblingWindowSumData, B, C>,
+        pub timestamp: Option<u64>,
+        pub key: u64,
+    }
+    pub struct TumblingWindowSumData {
+        pub state: TumblingWindowSumState,
+    }
+    #[derive(ArconState)]
+    pub struct TumblingWindowSumState {
+        pub agg_0: arc_script::arcorn::state::ArcRef<i32, Sled>,
+    }
+    impl StateConstructor for TumblingWindowSumState {
+        type BackendType = Sled;
+        fn new(backend: Arc<Self::BackendType>) -> Self {
+            Self {
+                agg_0: <arc_script::arcorn::state::ArcRef<i32, Sled>>::arc_ref_default(
+                    "agg_0",
+                    backend.clone(),
+                )
+                .unwrap(),
+            }
+        }
+    }
+    impl TumblingWindowSumData {
+        fn new() -> OperatorBuilder<TumblingWindowSumData> {
+            OperatorBuilder {
+                constructor: Arc::new(move |backend| TumblingWindowSumData {
+                    state: TumblingWindowSumState {
+                        agg_0: <arc_script::arcorn::state::ArcRef<i32, Sled>>::arc_ref_new(
+                            "agg_0",
+                            backend.clone(),
+                            {
+                                let y_1_0 = 0i32;
+                                y_1_0
+                            },
+                        )
+                        .unwrap(),
+                    },
+                }),
+                conf: Default::default(),
+            }
+        }
+    }
+    impl Operator for TumblingWindowSumData {
+        type IN = Struct3vali323keyi32End;
+        type OUT = Struct3vali323keyi32End;
+        type TimerState = Struct3valUnit3keyi32End;
+        type OperatorState = TumblingWindowSumState;
+        fn handle_element(
+            &mut self,
+            element: ArconElement<Self::IN>,
+            ref mut ctx: OperatorContext<Self, impl Backend, impl ComponentDefinition>,
+        ) -> OperatorResult<()> {
+            let ArconElement { timestamp, data } = element;
+            let mut task = TumblingWindowSum {
+                data: self,
+                ctx,
+                timestamp,
+                key: data.get_key(),
+            };
+            task.handle_element(data);
+            Ok(())
+        }
+        fn state(&mut self) -> &mut Self::OperatorState {
+            &mut self.state
+        }
+        fn handle_timeout(
+            &mut self,
+            timeout: Self::TimerState,
+            ref mut ctx: OperatorContext<Self, impl Backend, impl ComponentDefinition>,
+        ) -> OperatorResult<()> {
+            let mut task = TumblingWindowSum {
+                data: self,
+                key: timeout.get_key(),
+                ctx,
+                timestamp: None,
+            };
+            task.handle_timeout(timeout);
+            Ok(())
+        }
+        fn persist(&mut self) -> OperatorResult<()> {
+            self.state.persist();
+            Ok(())
+        }
+    }
+    impl<'i, 'source, 'timer, 'channel, B: Backend, C: ComponentDefinition>
+        TumblingWindowSum<'i, 'source, 'timer, 'channel, B, C>
+    {
+        fn handle_element(&mut self, x_0: Struct3vali323keyi32End) -> OperatorResult<()> {
+            {
+                let y_1_0 = x_0.val;
+                let y_1_1 = x_0.key;
+                let y_1_2 = self.data.state.agg_0.arc_ref_read().unwrap();
+                let y_1_3 = y_1_2 + y_1_0;
+                self.data.state.agg_0.arc_ref_write(y_1_3).unwrap()
+            };
+            Ok(())
+        }
+        fn emit(&mut self, data: Struct3vali323keyi32End) {
+            let element = ArconElement {
+                data,
+                timestamp: self.timestamp,
+            };
+            self.ctx.output(element);
+        }
+        fn handle_timeout(&mut self, x_1: Struct3valUnit3keyi32End) {
+            {
+                let y_1_0 = x_1.val;
+                let y_1_1 = ();
+                let y_1_2 = y_1_0 == y_1_1;
+                let y_1_3 = if y_1_2 {
+                    let y_2_0 = x_1.key;
+                    let y_2_1 = self.data.state.agg_0.arc_ref_read().unwrap();
+                    let y_2_2 = Struct3vali323keyi32End {
+                        val: y_2_1,
+                        key: y_2_0,
+                    };
+                    let y_2_3 = 0i32;
+                    let y_2_4 = ();
+                    let y_2_5 = Struct3valUnit3keyi32End {
+                        val: y_2_4,
+                        key: y_2_0,
+                    };
+                    let y_2_6 = 60u64;
+                    let y_2_7 = Struct3valStruct3valUnit3keyi32End3durdurationEnd {
+                        val: y_2_5,
+                        dur: y_2_6,
+                    };
+                    let y_2_8 = self.data.state.agg_0.arc_ref_write(y_2_3).unwrap();
+                    self.trigger(y_2_7.val, y_2_7.dur);
+                    let y_2_9 = self.emit(y_2_2);
+                    y_2_8;
+                    y_2_9
+                } else {
+                    let y_2_0 = todo!();
+                    y_2_0
+                };
+                y_1_3
+            }
+        }
+        fn trigger(&mut self, data: Struct3valUnit3keyi32End, after: u64) {
+            let time = self.ctx.current_time().unwrap() + after;
+            self.ctx.schedule_at(self.key, time, data);
+        }
+    }
+    #[arcorn::rewrite]
+    #[derive(Copy)]
+    pub struct Struct3vali323keyi32End {
+        val: i32,
+        key: i32,
+    }
+    #[arcorn::rewrite]
+    #[derive(Copy)]
+    pub struct Struct3valUnit3keyi32End {
+        val: (),
+        key: i32,
+    }
+    #[arcorn::rewrite]
+    #[derive(Copy)]
+    pub struct Struct3valStruct3valUnit3keyi32End3durdurationEnd {
+        val: Struct3valUnit3keyi32End,
+        dur: u64,
+    }
+}
+pub use defs::*;
+
+

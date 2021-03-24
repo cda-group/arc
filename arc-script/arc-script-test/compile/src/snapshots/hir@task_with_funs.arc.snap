@@ -4,15 +4,16 @@ expression: s
 input_file: arc-script-test/compile/src/tests/expect_mlir_fail_todo/task_with_funs.arc
 
 ---
-task Test(x_0: i32) (~i32) -> (~i32) {
-    
+task Test(x_0: i32) ~{ val: i32, key: i32 } -> ~{ val: i32, key: i32 } {
     fun addx(y_0: i32) -> i32 {
         let z_0: i32 = x_0 + y_0 in
         z_0
     }
     on {
-        event_0: i32 => {
-            emit crate::Test::addx(event_0)
+        x_1: { key: i32, val: i32 } => {
+            let event_0: i32 = x_1.val in
+            let key_0: i32 = x_1.key in
+            emit { val: crate::Test::addx(event_0), key: key_0 }
         }
     }
 }

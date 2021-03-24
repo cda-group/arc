@@ -1,7 +1,11 @@
+#[path = "../../../../pretty.rs"]
+pub(crate) mod pretty;
+
+use pretty::AsPretty;
+use pretty::Pretty;
+
 use crate::compiler::ast::lower::source::lexer::Token;
 use crate::compiler::info;
-use crate::compiler::pretty::AsPretty;
-use crate::compiler::pretty::Pretty;
 use arc_script_core_shared::New;
 
 use std::fmt::{self, Display, Formatter};
@@ -20,14 +24,17 @@ impl Token {
     }
 }
 
-#[rustfmt::skip]
 impl<'i> Display for Pretty<'i, Token, State<'_>> {
+    #[rustfmt::skip]
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
         let Pretty(token, fmt) = self;
         write!(f, "\"")?;
         match token {
             Token::Indent     => write!(f, "[Indent]"),
             Token::Dedent     => write!(f, "[Dedent]"),
+//=============================================================================
+// Grouping
+//=============================================================================
             Token::BraceL     => write!(f, "{{"),
             Token::BraceR     => write!(f, "}}"),
             Token::BraceLR    => write!(f, "{{}}"),
@@ -37,6 +44,9 @@ impl<'i> Display for Pretty<'i, Token, State<'_>> {
             Token::ParenL     => write!(f, "("),
             Token::ParenR     => write!(f, ")"),
             Token::ParenLR    => write!(f, "()"),
+//=============================================================================
+// Operators
+//=============================================================================
             Token::Amp        => write!(f, "&"),
             Token::AmpAmp     => write!(f, "&&"),
             Token::ArrowL     => write!(f, "<-"),
@@ -74,6 +84,9 @@ impl<'i> Display for Pretty<'i, Token, State<'_>> {
             Token::StarStar   => write!(f, "**"),
             Token::Tilde      => write!(f, "~"),
             Token::Underscore => write!(f, "_"),
+//=============================================================================
+// Keywords
+//=============================================================================
             Token::Add        => write!(f, "add"),
             Token::After      => write!(f, "after"),
             Token::And        => write!(f, "and"),
@@ -84,7 +97,7 @@ impl<'i> Display for Pretty<'i, Token, State<'_>> {
             Token::Break      => write!(f, "break"),
             Token::By         => write!(f, "by"),
             Token::Crate      => write!(f, "crate"),
-            Token::Del     => write!(f, "delete"),
+            Token::Del        => write!(f, "del"),
             Token::Bxor       => write!(f, "bxor"),
             Token::Else       => write!(f, "else"),
             Token::Enwrap     => write!(f, "enwrap"),
@@ -104,14 +117,22 @@ impl<'i> Display for Pretty<'i, Token, State<'_>> {
             Token::Not        => write!(f, "not"),
             Token::On         => write!(f, "on"),
             Token::Or         => write!(f, "or"),
+            Token::Port       => write!(f, "port"),
             Token::Pub        => write!(f, "pub"),
             Token::Reduce     => write!(f, "reduce"),
             Token::Return     => write!(f, "return"),
+            Token::Startup    => write!(f, "startup"),
             Token::State      => write!(f, "state"),
             Token::Task       => write!(f, "task"),
+            Token::Timer      => write!(f, "timer"),
+            Token::Timeout    => write!(f, "timeout"),
+            Token::Trigger    => write!(f, "trigger"),
             Token::Type       => write!(f, "type"),
             Token::Use        => write!(f, "use"),
             Token::Xor        => write!(f, "xor"),
+//=============================================================================
+// Reserved Keywords
+//=============================================================================
             Token::End        => write!(f, "end"),
             Token::Of         => write!(f, "of"),
             Token::Shutdown   => write!(f, "shutdown"),
@@ -119,6 +140,9 @@ impl<'i> Display for Pretty<'i, Token, State<'_>> {
             Token::Source     => write!(f, "source"),
             Token::Then       => write!(f, "then"),
             Token::Where      => write!(f, "where"),
+//=============================================================================
+// Primitive Types
+//=============================================================================
             Token::Bool       => write!(f, "bool"),
             Token::Bf16       => write!(f, "bf16"),
             Token::F16        => write!(f, "f16"),
@@ -135,6 +159,9 @@ impl<'i> Display for Pretty<'i, Token, State<'_>> {
             Token::Null       => write!(f, "null"),
             Token::Str        => write!(f, "str"),
             Token::Unit       => write!(f, "unit"),
+//=============================================================================
+// Identifiers and Literals
+//=============================================================================
             Token::NameId(v)  => write!(f, "{}", fmt.ctx.info.names.resolve(*v)),
             Token::LitI8(v)   => write!(f, "{}", v),
             Token::LitI16(v)  => write!(f, "{}", v),
@@ -151,7 +178,8 @@ impl<'i> Display for Pretty<'i, Token, State<'_>> {
             Token::LitBool(v) => write!(f, "{}", v),
             Token::LitChar(v) => write!(f, "{}", v),
             Token::LitStr(v)  => write!(f, "{}", v),
-            Token::LitTime(v) => write!(f, "{:?}", v),
+            Token::LitDateTime(v) => write!(f, "{:?}", v),
+            Token::LitDuration(v) => write!(f, "{:?}", v),
         }?;
         write!(f, "\"")?;
         Ok(())

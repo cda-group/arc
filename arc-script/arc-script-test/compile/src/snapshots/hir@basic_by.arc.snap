@@ -1,0 +1,13 @@
+---
+source: arc-script-test/compile/src/insta.rs
+expression: s
+input_file: arc-script-test/compile/src/tests/expect_pass/basic_by.arc
+
+---
+fun test() -> i32 {
+    let x_0: { val: i32, key: i32 } = { val: 1, key: 2 } in
+    let v_0: i32 = x_0.val in
+    let k_0: i32 = x_0.key in
+    v_0 + k_0
+}
+

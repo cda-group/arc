@@ -10,15 +10,16 @@ fun foo(x_0: i32) -> i32 {
 fun bar(x_1: i32) -> i32 {
     crate::foo(crate::foo(x_1))
 }
-task Baz() (~i32) -> (~i32) {
-    
+task Baz() ~{ val: i32, key: i32 } -> ~{ val: i32, key: i32 } {
     on {
-        event_0: i32 => {
-            emit event_0
+        x_2: { key: i32, val: i32 } => {
+            let event_0: i32 = x_2.val in
+            let key_0: i32 = x_2.key in
+            emit { val: event_0, key: key_0 }
         }
     }
 }
-fun qux(s_0: ~i32) -> ~i32 {
+fun qux(s_0: ~{ val: i32, key: i32 }) -> ~{ val: i32, key: i32 } {
     crate::Baz()(crate::Baz()(s_0))
 }
 

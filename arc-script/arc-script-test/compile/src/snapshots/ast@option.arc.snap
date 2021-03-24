@@ -5,7 +5,7 @@ input_file: arc-script-test/compile/src/tests/expect_pass/option.arc
 
 ---
 enum Opt { Some(i32), None }
-fun main() {
+fun main()  {
     if let Opt::Some(y) = Opt::Some(3) {
         unit
     } else {

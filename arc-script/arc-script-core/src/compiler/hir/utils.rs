@@ -2,6 +2,7 @@ use crate::compiler::ast;
 use crate::compiler::hir;
 use crate::compiler::info::paths::PathId;
 use crate::compiler::info::types::TypeId;
+use crate::compiler::info::files::Loc;
 
 impl Default for hir::Type {
     fn default() -> Self {
@@ -27,6 +28,12 @@ impl From<hir::ScalarKind> for hir::TypeKind {
     }
 }
 
+impl From<Vec<(hir::Name, TypeId)>> for hir::Type {
+    fn from(vec: Vec<(hir::Name, TypeId)>) -> Self {
+        hir::TypeKind::Struct(vec.into_iter().collect()).into()
+    }
+}
+
 impl From<ast::Path> for hir::Path {
     fn from(path: ast::Path) -> Self {
         Self::new(path.id, path.loc)
@@ -35,6 +42,6 @@ impl From<ast::Path> for hir::Path {
 
 impl From<PathId> for hir::Path {
     fn from(id: PathId) -> Self {
-        Self::new(id, None)
+        Self::new(id, Loc::Fake)
     }
 }

@@ -10,11 +10,7 @@ use resolve::DeclKind::*;
 use resolve::ItemDeclKind::*;
 
 /// A bare-path (which is not the operand of a call expression) can resolve into different things.
-pub(crate) fn lower_path_expr(
-    path: &ast::Path,
-    loc: Option<Loc>,
-    ctx: &mut Context<'_>,
-) -> hir::ExprKind {
+pub(crate) fn lower_path_expr(path: &ast::Path, loc: Loc, ctx: &mut Context<'_>) -> hir::ExprKind {
     ctx.res
         .resolve(path, ctx.info)
         .map(|decl| match decl {

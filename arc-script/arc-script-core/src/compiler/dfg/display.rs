@@ -1,16 +1,23 @@
 //! Module for displaying the `DFG`.
 
 #![allow(clippy::useless_format)]
+
+#[path = "../pretty.rs"]
+pub(crate) mod pretty;
+
+use pretty::*;
+
 use crate::compiler::dfg;
 use crate::compiler::hir;
-
 use crate::compiler::info::Info;
 
-use crate::compiler::pretty::*;
 use arc_script_core_shared::New;
 
 use petgraph::Direction;
-use std::fmt::{self, Display, Formatter};
+
+use std::fmt;
+use std::fmt::Display;
+use std::fmt::Formatter;
 
 /// State needed to display the `DFG`.
 #[derive(Copy, Clone, New)]

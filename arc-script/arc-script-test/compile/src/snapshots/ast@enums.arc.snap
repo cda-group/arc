@@ -5,7 +5,7 @@ input_file: arc-script-test/compile/src/tests/expect_pass/enums.arc
 
 ---
 enum Foo { Bar(u32), Baz(f32) }
-fun main() {
+fun main()  {
     let a = 200u32 in
     let b = 2.0f32 in
     let c = Foo::Bar(a) in

@@ -4,7 +4,7 @@ expression: s
 input_file: arc-script-test/compile/src/tests/expect_pass/path.arc
 
 ---
-fun main() {
+fun main()  {
     let x = 1 in
     let y = x in
     unit

@@ -1,0 +1,11 @@
+[package]
+name = "arcon"
+version = "0.1.0"
+authors = ["Klas Segeljakt <klasseg@kth.se>"]
+edition = "2018"
+description = "Arcon experiments"
+
+[dependencies]
+arcorn = { version = "=0.0.0", path = "../../arc-script-api/arcorn", package = "arc-script-arcorn"}
+arcon  = { git = "https://github.com/segeljakt/arcon" }
+prost  = { version = "0.7.0" }

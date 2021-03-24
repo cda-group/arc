@@ -4,7 +4,7 @@ expression: s
 input_file: arc-script-test/compile/src/tests/expect_pass/binops.arc
 
 ---
-fun main() {
+fun main()  {
     let c_bool: bool = true in
     let c_i8: i8 = 127i8 in
     let c_i16: i16 = 32767i16 in

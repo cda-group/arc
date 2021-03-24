@@ -56,9 +56,9 @@ impl Unify<TypeId, TypeId> for Context<'_> {
                 }
             }
             (Struct(fs0), Struct(fs1)) => {
-                for (f0, f1) in fs0 {
-                    if let Some(tv2) = fs1.get(f0) {
-                        self.unify(*f1, *tv2);
+                for (f0, tv0) in fs0 {
+                    if let Some(tv1) = fs1.get(f0) {
+                        self.unify(*tv0, *tv1);
                     }
                 }
             }

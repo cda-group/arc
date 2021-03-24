@@ -5,13 +5,13 @@ input_file: arc-script-test/compile/src/tests/expect_pass/option.arc
 
 ---
 module @toplevel {
-    func @crate_x_2() -> () {
+    func @crate_x_1() -> () {
         return 
     }
     func @crate_main() -> () {
-        %x_4 = arc.constant 3 : si32
-        %x_5 = "arc.enwrap"%x_4 { variant = crate_Opt_Some } : si32 -> crate_Opt
-        %x_6 = "arc.is"%x_5 { variant = crate_Opt_Some } : crate_Opt -> i1
+        %x_3 = arc.constant 3 : si32
+        %x_4 = "arc.enwrap"%x_3 { variant = crate_Opt_Some } : si32 -> crate_Opt
+        %x_5 = "arc.is"%x_4 { variant = crate_Opt_Some } : crate_Opt -> i1
         return 
     }
 }

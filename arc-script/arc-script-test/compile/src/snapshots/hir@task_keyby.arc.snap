@@ -1,0 +1,16 @@
+---
+source: arc-script-test/compile/src/insta.rs
+expression: s
+input_file: arc-script-test/compile/src/tests/expect_mlir_fail_todo/task_keyby.arc
+
+---
+task KeyBy(keyfun_0: fun(i32) -> i32) ~{ val: i32, key: i32 } -> ~{ val: i32, key: i32 } {
+    on {
+        x_0: { key: i32, val: i32 } => {
+            let event_0: i32 = x_0.val in
+            let key_0: i32 = x_0.key in
+            emit { val: event_0, key: keyfun_0(event_0) }
+        }
+    }
+}
+

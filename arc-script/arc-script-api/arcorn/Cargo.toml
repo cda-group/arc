@@ -9,8 +9,8 @@ license = "MIT"
 [dependencies]
 arcorn-macros = { version = "0.0.0", path = "./macros" }
 
-arcon         = { version = "0.1.3", git = "https://github.com/cda-group/arcon" }
-arcon_macros  = { version = "0.1.3", git = "https://github.com/cda-group/arcon" }
+arcon         = { version = "0.1.3", git = "https://github.com/segeljakt/arcon" }
+arcon_macros  = { version = "0.1.3", git = "https://github.com/segeljakt/arcon" }
 shrinkwraprs  = { version = "0.3.0" }
 prost         = { version = "0.7.0" }
 derive_more   = { version = "0.99.11" }
@@ -18,6 +18,6 @@ paste         = { version = "1.0.4" }
 half          = { version = "1.7.1", features = ["num-traits"] }
 
 [dev-dependencies]
-arcon         = { git = "https://github.com/cda-group/arcon" }
+arcon         = { git = "https://github.com/segeljakt/arcon" }
 prost         = { version = "0.7.0" }
 arc-script    = { version = "=0.0.0", path = "../../" }

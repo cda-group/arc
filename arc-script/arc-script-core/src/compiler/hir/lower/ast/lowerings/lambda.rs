@@ -11,7 +11,7 @@ use arc_script_core_shared::Lower;
 pub(crate) fn lower(
     params: &[ast::Param],
     body: &ast::Expr,
-    loc: Option<Loc>,
+    loc: Loc,
     ctx: &mut Context<'_>,
 ) -> hir::ExprKind {
     ctx.res.stack.push_frame();

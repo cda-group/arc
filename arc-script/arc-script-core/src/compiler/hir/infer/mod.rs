@@ -19,10 +19,10 @@ use constrain::Constrain;
 /// Context used during type inference.
 #[derive(New)]
 pub(crate) struct Context<'i> {
-    defs: &'i OrdMap<Path, Item>,
+    hir: &'i HIR,
     info: &'i mut Info,
     env: &'i mut Map<Name, Param>,
-    loc: Option<Loc>,
+    loc: Loc,
 }
 
 impl HIR {
@@ -31,7 +31,7 @@ impl HIR {
         self.items.iter().for_each(|item| {
             let item = self.defs.get(item).unwrap();
             let env = &mut Map::default();
-            let ctx = &mut Context::new(&self.defs, info, env, item.loc);
+            let ctx = &mut Context::new(self, info, env, item.loc);
             item.constrain(ctx)
         });
     }

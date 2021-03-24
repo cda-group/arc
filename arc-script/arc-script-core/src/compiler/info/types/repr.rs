@@ -4,6 +4,7 @@ use arc_script_core_shared::Educe;
 use arc_script_core_shared::Map;
 use arc_script_core_shared::MapEntry;
 use arc_script_core_shared::Shrinkwrap;
+use arc_script_core_shared::VecMap;
 
 use ena::unify::InPlace;
 use ena::unify::NoError;

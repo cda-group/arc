@@ -129,9 +129,13 @@ impl SSA<Var> for Expr {
                 let xs = es.ssa(ctx, env, ops);
                 OpKind::Tuple(xs)
             }
-            ExprKind::Emit(e) => {
-                let x = e.ssa(ctx, env, ops);
+            ExprKind::Emit(e0) => {
+                let x = e0.ssa(ctx, env, ops);
                 OpKind::Emit(x)
+            }
+            ExprKind::Trigger(e0) => {
+                let x0 = e0.ssa(ctx, env, ops);
+                OpKind::Trigger(x0)
             }
             ExprKind::Log(e) => {
                 let x = e.ssa(ctx, env, ops);
@@ -145,8 +149,8 @@ impl SSA<Var> for Expr {
             ExprKind::Return(_e) => todo!(),
             ExprKind::Todo => todo!(),
             ExprKind::Err => unreachable!(),
-            ExprKind::Del(e0, e1) => todo!(),
-            ExprKind::Add(e0, e1) => todo!(),
+            ExprKind::Del(_e0, _e1) => todo!(),
+            ExprKind::Add(_e0, _e1) => todo!(),
         };
         let x = Var::new(ctx.info.names.fresh(), self.tv);
         let ty = ctx.info.types.resolve(self.tv);

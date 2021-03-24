@@ -1,5 +1,5 @@
 // mod basic1 {
-//     use arc_script::arcorn;
+//     use arcon::arcorn;
 //
 //     #[arcorn::rewrite]
 //     struct Point {
@@ -11,12 +11,6 @@
 //     enum Foo {
 //         Bar(i32),
 //         Baz(f32),
-//     }
-//
-//     #[test]
-//     fn test() {
-//         let p = Point::new(1, 2);
-//         //         let foo = arcorn::enwrap!(Bar, 3);
 //     }
 // }
 //

@@ -7,9 +7,7 @@ use crate::compiler::info::diags::Panic;
 use crate::compiler::info::diags::Warning;
 use crate::compiler::info::files::FileId;
 use crate::compiler::info::files::Loc;
-
 use crate::compiler::info::Info;
-use crate::compiler::pretty::AsPretty;
 
 use codespan_reporting::diagnostic;
 use codespan_reporting::diagnostic::Label;
@@ -204,6 +202,9 @@ impl ToCodespan for Error {
             Self::LexicalCore { err, loc } => Codespan::error()
                 .with_message(lex_err(err))
                 .with_labels(vec![label(loc)?]),
+            Self::Time { err, loc } => Codespan::error()
+                .with_message(err.to_string())
+                .with_labels(vec![label(loc)?]),
             Self::UseOfMovedValue { loc0, loc1, tv } => Codespan::error()
                 .with_message(format!(
                     "Use of moved value, where moved value is of non-copyable type {}",
@@ -235,6 +236,9 @@ impl ToCodespan for Error {
                 .with_labels(vec![label(loc)?]),
             Self::ExpectedSelectableType { loc } => Codespan::error()
                 .with_message("Expected selectable type.")
+                .with_labels(vec![label(loc)?]),
+            Self::TypeMustBeKnownAtThisPoint { loc } => Codespan::error()
+                .with_message("Type must be known at this point.")
                 .with_labels(vec![label(loc)?]),
         }
         .into()
@@ -283,6 +287,10 @@ fn lex_err(err: &lexical_core::Error) -> &'static str {
     }
 }
 
-fn label(loc: impl Borrow<Option<Loc>>) -> Option<Label<FileId>> {
-    loc.borrow().map(|loc| Label::primary(loc.file, loc.span))
+fn label(loc: impl Borrow<Loc>) -> Option<Label<FileId>> {
+    if let Loc::Real(file, span) = loc.borrow() {
+        Some(Label::primary(*file, *span))
+    } else {
+        None
+    }
 }

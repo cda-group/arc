@@ -88,11 +88,6 @@ impl hir::TypeId {
                 name.push_str("Vec");
                 t.mangle(ctx, name);
             }
-            hir::TypeKind::By(t0, t1) => {
-                name.push_str("By");
-                t0.mangle(ctx, name);
-                t1.mangle(ctx, name);
-            }
             hir::TypeKind::Unknown => {}
             hir::TypeKind::Err => {}
         }
@@ -131,9 +126,11 @@ impl hir::ScalarKind {
             Self::U64   => "u64",
             Self::Null  => todo!(),
             Self::Str   => todo!(),
-            Self::Unit  => "()",
+            Self::Unit  => "Unit",
             Self::Bot   => todo!(),
             Self::Never => "!",
+            Self::DateTime  => "time",
+            Self::Duration  => "duration",
         };
         name.push_str(s);
     }
