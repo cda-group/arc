@@ -1,4 +1,5 @@
 use crate::compiler::hir::infer::unify::Unify;
+use crate::compiler::hir::utils::SortFields;
 use crate::compiler::hir::{
     self, BinOpKind, Dim, DimKind, Expr, ExprKind, Extern, Fun, Item, ItemKind, LitKind, Param,
     ParamKind, Path, ScalarKind, Shape, State, Task, Type, TypeKind, UnOpKind, HIR,
@@ -6,6 +7,7 @@ use crate::compiler::hir::{
 use crate::compiler::info::diags::{Diagnostic, Error, Warning};
 use crate::compiler::info::types::TypeId;
 
+use arc_script_core_shared::itertools::Itertools;
 use arc_script_core_shared::map;
 use arc_script_core_shared::VecMap;
 
@@ -90,7 +92,7 @@ impl Constrain<'_> for Task {
             let tv = ctx
                 .info
                 .types
-                .intern(vec![(val_name, val_tv), (key_name, key_tv)]);
+                .intern(vec![(key_name, key_tv), (val_name, val_tv)]);
             ctx.unify(tv, timeout.param.tv);
             timeout.body.constrain(ctx);
         }
@@ -217,9 +219,14 @@ impl Constrain<'_> for Expr {
                 ctx.unify(self.tv, TypeKind::Array(elem_tv, shape));
                 es.constrain(ctx);
             }
+            // NOTE: We sort fields-types by field name.
             ExprKind::Struct(fs) => {
                 fs.constrain(ctx);
-                let fs = fs.iter().map(|(x, e)| (*x, e.tv)).collect::<VecMap<_, _>>();
+                let fs = fs
+                    .iter()
+                    .map(|(x, e)| (*x, e.tv))
+                    .collect::<VecMap<_, _>>()
+                    .sort_fields(ctx.info);
                 ctx.unify(self.tv, TypeKind::Struct(fs));
             }
             ExprKind::Enwrap(x0, e) => {
@@ -361,7 +368,7 @@ impl Constrain<'_> for Expr {
                 let tv0 = ctx
                     .info
                     .types
-                    .intern(vec![(val_name, val_tv), (key_name, key_tv)]);
+                    .intern(vec![(key_name, key_tv), (val_name, val_tv)]);
                 ctx.unify(self.tv, Unit);
                 e0.constrain(ctx);
             }
@@ -375,11 +382,11 @@ impl Constrain<'_> for Expr {
                 let tv0 = ctx
                     .info
                     .types
-                    .intern(vec![(val_name, val_tv), (key_name, key_tv)]);
+                    .intern(vec![(key_name, key_tv), (val_name, val_tv)]);
                 let tv1 = ctx
                     .info
                     .types
-                    .intern(vec![(val_name, tv0), (dur_name, dur_tv)]);
+                    .intern(vec![(dur_name, dur_tv), (val_name, tv0)]);
                 ctx.unify(self.tv, Unit);
                 e0.constrain(ctx);
             }

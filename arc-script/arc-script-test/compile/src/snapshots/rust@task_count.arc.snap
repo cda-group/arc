@@ -61,8 +61,8 @@ pub mod defs {
         }
     }
     impl Operator for CountData {
-        type IN = Struct3vali323keyi32End;
-        type OUT = Struct3vali323keyi32End;
+        type IN = Struct3keyi323vali32End;
+        type OUT = Struct3keyi323vali32End;
         type TimerState = ArconNever;
         type OperatorState = CountState;
         fn handle_element(
@@ -98,7 +98,7 @@ pub mod defs {
     impl<'i, 'source, 'timer, 'channel, B: Backend, C: ComponentDefinition>
         Count<'i, 'source, 'timer, 'channel, B, C>
     {
-        fn handle_element(&mut self, x_0: Struct3vali323keyi32End) -> OperatorResult<()> {
+        fn handle_element(&mut self, x_0: Struct3keyi323vali32End) -> OperatorResult<()> {
             {
                 let y_1_0 = x_0.val;
                 let y_1_1 = x_0.key;
@@ -106,7 +106,7 @@ pub mod defs {
                 let y_1_3 = 1i32;
                 let y_1_4 = y_1_2 + y_1_3;
                 let y_1_5 = self.data.state.count_0.arc_ref_read().unwrap();
-                let y_1_6 = Struct3vali323keyi32End {
+                let y_1_6 = Struct3keyi323vali32End {
                     val: y_1_5,
                     key: y_1_1,
                 };
@@ -116,7 +116,7 @@ pub mod defs {
             };
             Ok(())
         }
-        fn emit(&mut self, data: Struct3vali323keyi32End) {
+        fn emit(&mut self, data: Struct3keyi323vali32End) {
             let element = ArconElement {
                 data,
                 timestamp: self.timestamp,
@@ -126,9 +126,9 @@ pub mod defs {
     }
     #[arcorn::rewrite]
     #[derive(Copy)]
-    pub struct Struct3vali323keyi32End {
-        val: i32,
+    pub struct Struct3keyi323vali32End {
         key: i32,
+        val: i32,
     }
 }
 pub use defs::*;

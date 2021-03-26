@@ -11,7 +11,7 @@ pub(crate) mod check;
 /// Module for inferring types of the HIR.
 pub(crate) mod infer;
 
-mod utils;
+pub(crate) mod utils;
 
 pub(crate) mod debug;
 pub(crate) mod display;

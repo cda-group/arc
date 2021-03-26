@@ -5,7 +5,7 @@ input_file: arc-script-test/compile/src/tests/expect_mlir_fail_todo/extern_fun.a
 
 ---
 extern fun increment(x: i32) -> i32;
-task Adder() ~{ val: i32, key: i32 } -> ~{ val: i32, key: i32 } {
+task Adder() ~{ key: i32, val: i32 } -> ~{ key: i32, val: i32 } {
     extern fun addition(x: i32, y: i32) -> i32;
     on {
         x_0: { key: i32, val: i32 } => {
@@ -15,7 +15,7 @@ task Adder() ~{ val: i32, key: i32 } -> ~{ val: i32, key: i32 } {
         }
     }
 }
-fun pipe(s_0: ~{ val: i32, key: i32 }) -> ~{ val: i32, key: i32 } {
+fun pipe(s_0: ~{ key: i32, val: i32 }) -> ~{ key: i32, val: i32 } {
     if crate::increment(1) == 2 {
         crate::Adder()(s_0)
     } else {

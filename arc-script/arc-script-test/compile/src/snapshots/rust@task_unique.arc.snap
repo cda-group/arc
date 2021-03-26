@@ -61,8 +61,8 @@ pub mod defs {
         }
     }
     impl Operator for UniqueSetData {
-        type IN = Struct3vali323keyi32End;
-        type OUT = Struct3vali323keyi32End;
+        type IN = Struct3keyi323vali32End;
+        type OUT = Struct3keyi323vali32End;
         type TimerState = ArconNever;
         type OperatorState = UniqueSetState;
         fn handle_element(
@@ -98,14 +98,14 @@ pub mod defs {
     impl<'i, 'source, 'timer, 'channel, B: Backend, C: ComponentDefinition>
         UniqueSet<'i, 'source, 'timer, 'channel, B, C>
     {
-        fn handle_element(&mut self, x_0: Struct3vali323keyi32End) -> OperatorResult<()> {
+        fn handle_element(&mut self, x_0: Struct3keyi323vali32End) -> OperatorResult<()> {
             {
                 let y_1_0 = x_0.val;
                 let y_1_1 = x_0.key;
                 let y_1_2 = !self.data.state.set_0.arc_set_contains(y_1_0).unwrap();
                 let y_1_3 = if y_1_2 {
                     let y_2_0 = self.data.state.set_0.arc_set_add(y_1_0).unwrap();
-                    let y_2_1 = Struct3vali323keyi32End {
+                    let y_2_1 = Struct3keyi323vali32End {
                         val: y_1_0,
                         key: y_1_1,
                     };
@@ -120,7 +120,7 @@ pub mod defs {
             };
             Ok(())
         }
-        fn emit(&mut self, data: Struct3vali323keyi32End) {
+        fn emit(&mut self, data: Struct3keyi323vali32End) {
             let element = ArconElement {
                 data,
                 timestamp: self.timestamp,
@@ -174,8 +174,8 @@ pub mod defs {
         }
     }
     impl Operator for UniqueMapData {
-        type IN = Struct3vali323keyi32End;
-        type OUT = Struct3vali323keyi32End;
+        type IN = Struct3keyi323vali32End;
+        type OUT = Struct3keyi323vali32End;
         type TimerState = ArconNever;
         type OperatorState = UniqueMapState;
         fn handle_element(
@@ -211,14 +211,14 @@ pub mod defs {
     impl<'i, 'source, 'timer, 'channel, B: Backend, C: ComponentDefinition>
         UniqueMap<'i, 'source, 'timer, 'channel, B, C>
     {
-        fn handle_element(&mut self, x_1: Struct3vali323keyi32End) -> OperatorResult<()> {
+        fn handle_element(&mut self, x_1: Struct3keyi323vali32End) -> OperatorResult<()> {
             {
                 let y_1_0 = x_1.val;
                 let y_1_1 = x_1.key;
                 let y_1_2 = !self.data.state.map_0.arc_map_contains(y_1_0).unwrap();
                 let y_1_3 = if y_1_2 {
                     let y_2_0 = ();
-                    let y_2_1 = Struct3vali323keyi32End {
+                    let y_2_1 = Struct3keyi323vali32End {
                         val: y_1_0,
                         key: y_1_1,
                     };
@@ -233,7 +233,7 @@ pub mod defs {
             };
             Ok(())
         }
-        fn emit(&mut self, data: Struct3vali323keyi32End) {
+        fn emit(&mut self, data: Struct3keyi323vali32End) {
             let element = ArconElement {
                 data,
                 timestamp: self.timestamp,
@@ -243,9 +243,9 @@ pub mod defs {
     }
     #[arcorn::rewrite]
     #[derive(Copy)]
-    pub struct Struct3vali323keyi32End {
-        val: i32,
+    pub struct Struct3keyi323vali32End {
         key: i32,
+        val: i32,
     }
 }
 pub use defs::*;

@@ -8,6 +8,7 @@ use crate::compiler::info::diags::Error;
 use crate::compiler::info::files::Loc;
 use crate::compiler::info::types::TypeId;
 
+use arc_script_core_shared::itertools::Itertools;
 use arc_script_core_shared::map;
 use arc_script_core_shared::Lower;
 use arc_script_core_shared::New;
@@ -76,10 +77,10 @@ pub(crate) fn lower_add(e: &ast::Expr, loc: Loc, ctx: &mut Context<'_>) -> hir::
 /// Lowers a `e0 after e1` into a `{val: e0, dur: e1}`
 pub(crate) fn lower_after<'i, O, I: Lower<O, Context<'i>>>(
     val: &I,
-    key: &I,
+    dur: &I,
     ctx: &mut Context<'i>,
 ) -> VecMap<Name, O> {
-    lower_pair(val, key, ctx.info.names.common.dur, ctx)
+    lower_pair(val, dur, ctx.info.names.common.dur, ctx)
 }
 
 /// Lowers a `e0 by e1` into a `{val: e0, key: e1}`

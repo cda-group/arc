@@ -1,8 +1,8 @@
 use crate::compiler::ast::repr::{Index, Item, ItemKind, Module, Path, TaskItemKind, AST};
 
 use crate::compiler::hir::Name;
-use crate::compiler::info::names::NameId;
 use crate::compiler::info::files::Loc;
+use crate::compiler::info::names::NameId;
 use crate::compiler::info::Info;
 
 impl Path {

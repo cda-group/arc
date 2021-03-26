@@ -13,7 +13,7 @@ pub trait ConvertStream<O: ArconType> {
 
 impl<I: ArconType, O: ArconType> ConvertStream<O> for Stream<I>
 where
-    O: From<(I, ())>,
+    O: From<((), I)>,
 {
     fn convert(self) -> Stream<O> {
         self.operator(OperatorBuilder {
@@ -25,7 +25,7 @@ where
 
 impl<I: ArconType, O: ArconType> Operator for Convert<I, O>
 where
-    O: From<(I, ())>,
+    O: From<((), I)>,
 {
     type IN = I;
     type OUT = O;
@@ -38,7 +38,7 @@ where
         mut ctx: OperatorContext<Self, impl Backend, impl ComponentDefinition>,
     ) -> OperatorResult<()> {
         let ArconElement { timestamp, data } = element;
-        let data = (data, ()).into();
+        let data = ((), data).into();
         let element = ArconElement { data, timestamp };
         ctx.output(element);
         Ok(())

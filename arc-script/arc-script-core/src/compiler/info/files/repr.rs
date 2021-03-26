@@ -50,7 +50,7 @@ impl Loc {
         match (self, other) {
             (Loc::Real(file, span0), Loc::Real(_, span1)) => Self::Real(file, span0.cover(span1)),
             (loc @ Loc::Real(..), Loc::Fake) | (Loc::Fake, loc @ Loc::Real(..)) => loc,
-            (Loc::Fake, Loc::Fake) => Loc::Fake
+            (Loc::Fake, Loc::Fake) => Loc::Fake,
         }
     }
 }

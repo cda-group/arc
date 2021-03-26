@@ -1,7 +1,7 @@
 ---
 source: arc-script-test/compile/src/insta.rs
 expression: s
-input_file: arc-script-test/compile/src/tests/expect_mlir_fail_todo/stream_typing.arc
+input_file: arc-script-test/compile/src/tests/expect_pass/sort_fields.arc
 
 ---
 #[allow(non_snake_case)]
@@ -15,18 +15,23 @@ pub mod defs {
     pub use arc_script::arcorn;
     pub use arc_script::arcorn::state::{ArcMapOps, ArcRefOps, ArcSetOps, ArcVecOps};
     pub use arcon::prelude::*;
-    pub fn test0(x_0: Stream<Struct3keyi323vali32End>) -> Stream<Struct3keyi323vali32End> {
-        let y_1_0 = Stream::operator(x_0, test1);
-        y_1_0
+    pub fn foo(a_0: Struct1xi321yi32End) -> i32 {
+        let y_1_0 = a_0.x;
+        let y_1_1 = a_0.y;
+        let y_1_2 = y_1_0 + y_1_1;
+        y_1_2
     }
-    pub fn test1(x_1: Stream<Struct3keyi323vali32End>) -> Stream<Struct3keyi323vali32End> {
-        x_1
+    pub fn bar(a_1: Struct1xi321yi32End) -> i32 {
+        let y_1_0 = a_1.x;
+        let y_1_1 = a_1.y;
+        let y_1_2 = y_1_0 + y_1_1;
+        y_1_2
     }
     #[arcorn::rewrite]
     #[derive(Copy)]
-    pub struct Struct3keyi323vali32End {
-        key: i32,
-        val: i32,
+    pub struct Struct1xi321yi32End {
+        x: i32,
+        y: i32,
     }
 }
 pub use defs::*;

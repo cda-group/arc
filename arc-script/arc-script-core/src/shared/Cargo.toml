@@ -16,3 +16,4 @@ cfg-if       = { version = "1.0.0" }
 fxhash       = { version = "0.2.1" }
 boolinator   = { version = "2.4.0" }
 countme      = { version = "2.0.4" }
+itertools    = { version = "0.10.0" }

@@ -4,11 +4,11 @@ expression: s
 input_file: arc-script-test/compile/src/tests/expect_mlir_fail_todo/task_window.arc
 
 ---
-task TumblingWindowSum() ~{ val: i32, key: i32 } -> ~{ val: i32, key: i32 } {
+task TumblingWindowSum() ~{ key: i32, val: i32 } -> ~{ key: i32, val: i32 } {
     startup trigger { val: { val: unit, key: 0 }, dur: 60 }
     timer unit
     timeout {
-        x_1: { val: unit, key: i32 } => {
+        x_1: { key: i32, val: unit } => {
             if x_1.val == unit {
                 let key_1: i32 = x_1.key in
                 emit { val: agg_0, key: key_1 };
