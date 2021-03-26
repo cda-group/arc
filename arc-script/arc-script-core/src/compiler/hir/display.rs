@@ -69,7 +69,7 @@ impl<'i> Display for Pretty<'i, hir::Fun, Context<'_>> {
         let name = fmt.ctx.info.paths.resolve(item.path.id).name;
         write!(
             f,
-            "fun {id}({params}) -> {ty} {{{s1}{body}{s0}}}",
+            "fun {id}({params}): {ty} {{{s1}{body}{s0}}}",
             id = name.pretty(fmt),
             params = item.params.iter().all_pretty(", ", fmt),
             ty = item.rtv.pretty(fmt),
@@ -86,7 +86,7 @@ impl<'i> Display for Pretty<'i, hir::Extern, Context<'_>> {
         let name = fmt.ctx.info.paths.resolve(item.path.id).name;
         write!(
             f,
-            "extern fun {id}({params}) -> {ty};",
+            "extern fun {id}({params}): {ty};",
             id = name.pretty(fmt),
             params = item.params.iter().all_pretty(", ", fmt),
             ty = item.rtv.pretty(fmt),
@@ -512,7 +512,7 @@ impl<'i> Display for Pretty<'i, hir::Type, Context<'_>> {
             hir::TypeKind::Vector(ty)       => write!(f, "[{}]", ty.pretty(fmt)),
             hir::TypeKind::Tuple(tys)       => write!(f, "({})", tys.iter().all_pretty(", ", fmt)),
             hir::TypeKind::Optional(ty)     => write!(f, "{}?", ty.pretty(fmt)),
-            hir::TypeKind::Fun(args, ty)    => write!(f, "fun({}) -> {}", args.all_pretty(", ", fmt), ty.pretty(fmt)),
+            hir::TypeKind::Fun(args, ty)    => write!(f, "fun({}): {}", args.all_pretty(", ", fmt), ty.pretty(fmt)),
             hir::TypeKind::Boxed(ty)        => write!(f, "box {}", ty.pretty(fmt)),
             hir::TypeKind::Err              => write!(f, "☇"),
             hir::TypeKind::Unknown          => write!(f, "?"),

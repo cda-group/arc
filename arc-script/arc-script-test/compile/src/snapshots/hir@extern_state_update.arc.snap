@@ -6,7 +6,7 @@ input_file: arc-script-test/compile/src/tests/expect_mlir_fail_todo/extern_state
 ---
 task Stateful(init_0: i32) ~{ key: i32, val: i32 } -> ~{ key: i32, val: i32 } {
     state value_0: i32 = init_0
-    extern fun update(v: i32) -> i32;
+    extern fun update(v: i32): i32;
     on {
         x_0: { key: i32, val: i32 } => {
             let event_0: i32 = x_0.val in

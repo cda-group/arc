@@ -4,11 +4,11 @@ expression: s
 input_file: arc-script-test/compile/src/tests/expect_pass/lambda.arc
 
 ---
-fun x_0(i_0: i32) -> i32 {
+fun x_0(i_0: i32): i32 {
     i_0 + 1
 }
-fun test() -> i32 {
-    let increment_0: fun(i32) -> i32 = crate::x_0 in
+fun test(): i32 {
+    let increment_0: fun(i32): i32 = crate::x_0 in
     let foo_0: i32 = 1 in
     increment_0(foo_0)
 }

@@ -5,7 +5,7 @@ task Repeat(v: i32, d: duration) () -> (Output(~i32)) {
     start_timer();
 
     fun start_timer() {
-        after d |_| emit Trigger(unit)
+        after d fun(_): emit Trigger(unit)
     }
 
     on Trigger(_) => {
@@ -14,7 +14,7 @@ task Repeat(v: i32, d: duration) () -> (Output(~i32)) {
     }
 }
 
-fun main() -> ~i32 {
+fun main(): ~i32 {
     let stream' = Repeat(1, 30s) () in
     stream'
 }

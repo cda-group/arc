@@ -12,10 +12,10 @@ enum Foo {
     Bar(crate::Baz),
     None
 }
-fun x_3() -> unit {
+fun x_3(): unit {
     unit
 }
-fun main() -> unit {
+fun main(): unit {
     let x_0: crate::Foo = enwrap[crate::Foo::Bar](enwrap[crate::Baz::Some](5)) in
     if is[crate::Foo::Bar](x_0) {
         let x_1: crate::Baz = unwrap[crate::Foo::Bar](x_0) in

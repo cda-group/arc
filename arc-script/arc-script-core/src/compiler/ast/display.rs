@@ -89,7 +89,7 @@ impl<'i> Display for Pretty<'i, ast::Extern, Context<'_>> {
         let Pretty(item, fmt) = self;
         write!(
             f,
-            "extern fun {id}({params}) -> {ty};",
+            "extern fun {id}({params}): {ty};",
             id = item.name.pretty(fmt),
             params = item.params.iter().all_pretty(", ", fmt),
             ty = item.return_ty.pretty(fmt),
@@ -102,14 +102,14 @@ impl<'i> Display for Pretty<'i, ast::Fun, Context<'_>> {
         let Pretty(item, fmt) = self;
         write!(
             f,
-            "fun {id}({params}) {rty} {{{s1}{body}{s0}}}",
+            "fun {id}({params}){rty} {{{s1}{body}{s0}}}",
             id = item.name.pretty(fmt),
             params = item.params.iter().all_pretty(", ", fmt),
             body = item.body.pretty(fmt.indent()),
             rty = item
                 .return_ty
                 .iter()
-                .map_pretty(|t, f| write!(f, "-> {}", t.pretty(fmt)), ""),
+                .map_pretty(|t, f| write!(f, ": {}", t.pretty(fmt)), ""),
             s0 = fmt,
             s1 = fmt.indent(),
         )
@@ -336,7 +336,7 @@ impl<'i> Display for Pretty<'i, ast::Expr, Context<'_>> {
             ),
             ast::ExprKind::Lambda(ps, e0) => write!(
                 f,
-                "|{ps}| {{{s1}{e0}{s0}}}",
+                "fun({ps}): {{{s1}{e0}{s0}}}",
                 ps = ps.iter().all_pretty(",", fmt),
                 e0 = e0.pretty(&fmt.indent()),
                 s0 = fmt,
@@ -550,7 +550,7 @@ impl<'i> Display for Pretty<'i, ast::Type, Context<'_>> {
             ast::TypeKind::Vector(ty)          => write!(f, "[{}]", ty.pretty(fmt)),
             ast::TypeKind::Tuple(tys)          => write!(f, "({})", tys.iter().all_pretty(", ", fmt)),
             ast::TypeKind::Optional(ty)        => write!(f, "{}?", ty.pretty(fmt)),
-            ast::TypeKind::Fun(args, ty)       => write!(f, "fun({}) -> {}", args.all_pretty(", ", fmt), ty.pretty(fmt)),
+            ast::TypeKind::Fun(args, ty)       => write!(f, "fun({}): {}", args.all_pretty(", ", fmt), ty.pretty(fmt)),
             ast::TypeKind::Boxed(ty)           => write!(f, "box {}", ty.pretty(fmt)),
             ast::TypeKind::By(ty0, ty1)        => write!(f, "{} by {}", ty0.pretty(fmt), ty1.pretty(fmt)),
             ast::TypeKind::After(ty0, ty1)     => write!(f, "{} after {}", ty0.pretty(fmt), ty1.pretty(fmt)),

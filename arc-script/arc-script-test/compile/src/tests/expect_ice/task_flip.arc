@@ -5,6 +5,6 @@ task Flip() (A0(~i32), B0(~i32)) -> (A1(~i32), B1(~i32)) {
     }
 }
 
-fun main(a: ~i32, b: ~i32) -> (~i32, ~i32) {
+fun main(a: ~i32, b: ~i32): (~i32, ~i32) {
     Flip() (a, b)
 }

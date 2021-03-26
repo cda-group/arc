@@ -4,14 +4,14 @@ expression: s
 input_file: arc-script-test/compile/src/tests/expect_pass/fib.arc
 
 ---
-fun fib(n_0: i32) -> i32 {
+fun fib(n_0: i32): i32 {
     if n_0 > 2 {
         crate::fib(n_0 - 1) + crate::fib(n_0 - 2)
     } else {
         0
     }
 }
-fun test() -> i32 {
+fun test(): i32 {
     crate::fib(5)
 }
 

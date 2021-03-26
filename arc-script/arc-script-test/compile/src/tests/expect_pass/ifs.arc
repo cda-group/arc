@@ -3,7 +3,7 @@
 
 fun main() { unit }
 
-fun test() -> i32 {
+fun test(): i32 {
   let a_i32: i32 = 65 in
   let b_i32: i32 = 66 in
 

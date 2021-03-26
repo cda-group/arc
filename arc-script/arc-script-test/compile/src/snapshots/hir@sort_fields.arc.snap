@@ -4,10 +4,10 @@ expression: s
 input_file: arc-script-test/compile/src/tests/expect_pass/sort_fields.arc
 
 ---
-fun foo(a_0: { x: i32, y: i32 }) -> i32 {
+fun foo(a_0: { x: i32, y: i32 }): i32 {
     a_0.x + a_0.y
 }
-fun bar(a_1: { x: i32, y: i32 }) -> i32 {
+fun bar(a_1: { x: i32, y: i32 }): i32 {
     a_1.x + a_1.y
 }
 

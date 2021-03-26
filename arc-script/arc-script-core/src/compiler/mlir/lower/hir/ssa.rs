@@ -1,10 +1,10 @@
 use super::Context;
+use crate::compiler::hir::utils::SortFields;
 use crate::compiler::hir::Name;
 use crate::compiler::hir::{
     Expr, ExprKind, ItemKind, Param, ParamKind, ScalarKind, TypeKind, UnOp, UnOpKind, HIR,
 };
 use crate::compiler::mlir::{self, Block, ConstKind, Op, OpKind, Region, Var};
-use crate::compiler::hir::utils::SortFields;
 
 use arc_script_core_shared::Lower;
 use arc_script_core_shared::Map;

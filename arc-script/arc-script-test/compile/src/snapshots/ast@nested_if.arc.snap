@@ -4,7 +4,7 @@ expression: s
 input_file: arc-script-test/compile/src/tests/expect_pass/nested_if.arc
 
 ---
-fun test() -> i32 {
+fun test(): i32 {
     let a_i32: i32 = 65 in
     let b_i32: i32 = 66 in
     let c_i32: i32 = 67 in

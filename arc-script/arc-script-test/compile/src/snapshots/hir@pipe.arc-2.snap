@@ -8,20 +8,20 @@ input_file: arc-script-test/compile/src/tests/expect_fail_todo/pipe.arc
 error: Type mismatch
    ┌─ <FILE-NAME>
    │
-16 │     let b: fun(i32, i32) -> (i32, i32) = |(x, y)| (y, x) in
-   │                                          ^^^^^^^^^^^^^^^ fun(i32, i32) -> (i32, i32) != fun(?) -> (?, ?)
+16 │     let b: fun(i32, i32): (i32, i32) = fun((x, y)): (y, x) in
+   │                                        ^^^^^^^^^^^^^^^^^^^ fun(i32, i32): (i32, i32) != fun(?): (?, ?)
 
 error: Type mismatch
    ┌─ <FILE-NAME>
    │
 19 │     let d: (i32, i32) = (a, a) |> b |> (c, c) in
-   │                         ^^^^^^^^^^^ fun(i32, i32) -> (i32, i32) != fun((i32, i32)) -> ?
+   │                         ^^^^^^^^^^^ fun(i32, i32): (i32, i32) != fun((i32, i32)): ?
 
 error: Type mismatch
    ┌─ <FILE-NAME>
    │
 19 │     let d: (i32, i32) = (a, a) |> b |> (c, c) in
-   │                         ^^^^^^^^^^^^^^^^^^^^^ (fun(i32) -> i32, fun(i32) -> i32) != fun(?) -> (i32, i32)
+   │                         ^^^^^^^^^^^^^^^^^^^^^ (fun(i32): i32, fun(i32): i32) != fun(?): (i32, i32)
 
 error: Type mismatch
    ┌─ <FILE-NAME>

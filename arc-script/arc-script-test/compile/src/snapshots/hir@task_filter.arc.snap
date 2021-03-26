@@ -4,7 +4,7 @@ expression: s
 input_file: arc-script-test/compile/src/tests/expect_mlir_fail_todo/task_filter.arc
 
 ---
-task Filter(p_0: fun(i32) -> bool) ~{ key: i32, val: i32 } -> ~{ key: i32, val: i32 } {
+task Filter(p_0: fun(i32): bool) ~{ key: i32, val: i32 } -> ~{ key: i32, val: i32 } {
     on {
         x_0: { key: i32, val: i32 } => {
             let event_0: i32 = x_0.val in
@@ -17,10 +17,10 @@ task Filter(p_0: fun(i32) -> bool) ~{ key: i32, val: i32 } -> ~{ key: i32, val: 
         }
     }
 }
-fun x_1(x_2: i32) -> bool {
+fun x_1(x_2: i32): bool {
     x_2 % 2 == 0
 }
-fun main(stream0_0: ~{ key: i32, val: i32 }) -> ~{ key: i32, val: i32 } {
+fun main(stream0_0: ~{ key: i32, val: i32 }): ~{ key: i32, val: i32 } {
     let stream1_0: ~{ key: i32, val: i32 } = crate::Filter(crate::x_1)(stream0_0) in
     stream1_0
 }

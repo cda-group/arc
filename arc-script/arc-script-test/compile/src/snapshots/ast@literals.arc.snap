@@ -4,7 +4,7 @@ expression: s
 input_file: arc-script-test/compile/src/tests/expect_pass/literals.arc
 
 ---
-fun test() -> i32 {
+fun test(): i32 {
     let pos_i8: i8 = 127i8 in
     let neg_i8: i8 = -128i8 in
     let pos_i16: i16 = 32767i16 in

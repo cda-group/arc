@@ -1,7 +1,7 @@
 # RUN: arc-to-mlir -i %s | FileCheck %s
 # RUN: arc-to-mlir -i %s | arc-mlir | FileCheck %s
 
-fun test() -> i32 {
+fun test(): i32 {
     let c_bool: bool = true in
     let c_i8: i8 = 127i8 in
     let c_i16: i16 = 32767i16 in

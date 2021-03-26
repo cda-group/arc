@@ -4,10 +4,10 @@ expression: s
 input_file: arc-script-test/compile/src/tests/expect_pass/if_let.arc
 
 ---
-fun x_3(y_0: i32) -> i32 {
+fun x_3(y_0: i32): i32 {
     y_0 + 2
 }
-fun test() -> i32 {
+fun test(): i32 {
     let x_0: i32 = 3 in
     let y_0: i32 = 5 in
     let x_1: ((i32, i32), i32) = ((3, x_0), 1) in

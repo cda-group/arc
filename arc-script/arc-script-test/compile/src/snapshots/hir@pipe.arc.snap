@@ -4,10 +4,10 @@ expression: s
 input_file: arc-script-test/compile/src/tests/expect_mlir_fail_todo/pipe.arc
 
 ---
-fun foo(x_0: i32) -> i32 {
+fun foo(x_0: i32): i32 {
     x_0 + x_0
 }
-fun bar(x_1: i32) -> i32 {
+fun bar(x_1: i32): i32 {
     crate::foo(crate::foo(x_1))
 }
 task Baz() ~{ key: i32, val: i32 } -> ~{ key: i32, val: i32 } {
@@ -19,7 +19,7 @@ task Baz() ~{ key: i32, val: i32 } -> ~{ key: i32, val: i32 } {
         }
     }
 }
-fun qux(s_0: ~{ key: i32, val: i32 }) -> ~{ key: i32, val: i32 } {
+fun qux(s_0: ~{ key: i32, val: i32 }): ~{ key: i32, val: i32 } {
     crate::Baz()(crate::Baz()(s_0))
 }
 

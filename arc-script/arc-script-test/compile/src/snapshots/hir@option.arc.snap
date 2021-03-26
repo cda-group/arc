@@ -8,10 +8,10 @@ enum Opt {
     Some(i32),
     None
 }
-fun x_1() -> unit {
+fun x_1(): unit {
     unit
 }
-fun main() -> unit {
+fun main(): unit {
     let x_0: crate::Opt = enwrap[crate::Opt::Some](3) in
     if is[crate::Opt::Some](x_0) {
         let y_0: i32 = unwrap[crate::Opt::Some](x_0) in

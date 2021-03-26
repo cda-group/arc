@@ -11,7 +11,7 @@ task Identity() ~{ key: i32, val: i32 } -> ~{ key: i32, val: i32 } {
         }
     }
 }
-fun main(input_0: ~{ key: i32, val: i32 }) -> ~{ key: i32, val: i32 } {
+fun main(input_0: ~{ key: i32, val: i32 }): ~{ key: i32, val: i32 } {
     let output_0: ~{ key: i32, val: i32 } = crate::Identity()(input_0) in
     output_0
 }
