@@ -43,8 +43,8 @@ pub mod defs {
         }
     }
     impl Operator for IdentityData {
-        type IN = Struct3vali323keyi32End;
-        type OUT = Struct3vali323keyi32End;
+        type IN = Struct3keyi323vali32End;
+        type OUT = Struct3keyi323vali32End;
         type TimerState = ArconNever;
         type OperatorState = IdentityState;
         fn handle_element(
@@ -80,13 +80,13 @@ pub mod defs {
     impl<'i, 'source, 'timer, 'channel, B: Backend, C: ComponentDefinition>
         Identity<'i, 'source, 'timer, 'channel, B, C>
     {
-        fn handle_element(&mut self, event_0: Struct3vali323keyi32End) -> OperatorResult<()> {
+        fn handle_element(&mut self, event_0: Struct3keyi323vali32End) -> OperatorResult<()> {
             {
                 self.emit(event_0)
             };
             Ok(())
         }
-        fn emit(&mut self, data: Struct3vali323keyi32End) {
+        fn emit(&mut self, data: Struct3keyi323vali32End) {
             let element = ArconElement {
                 data,
                 timestamp: self.timestamp,
@@ -94,16 +94,16 @@ pub mod defs {
             self.ctx.output(element);
         }
     }
-    pub fn main(input_0: Stream<Struct3vali323keyi32End>) -> Stream<Struct3vali323keyi32End> {
+    pub fn main(input_0: Stream<Struct3keyi323vali32End>) -> Stream<Struct3keyi323vali32End> {
         let y_1_0 = IdentityData::new();
         let y_1_1 = Stream::operator(input_0, y_1_0);
         y_1_1
     }
     #[arcorn::rewrite]
     #[derive(Copy)]
-    pub struct Struct3vali323keyi32End {
-        val: i32,
+    pub struct Struct3keyi323vali32End {
         key: i32,
+        val: i32,
     }
 }
 pub use defs::*;

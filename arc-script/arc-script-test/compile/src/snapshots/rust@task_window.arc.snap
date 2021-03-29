@@ -61,9 +61,9 @@ pub mod defs {
         }
     }
     impl Operator for TumblingWindowSumData {
-        type IN = Struct3vali323keyi32End;
-        type OUT = Struct3vali323keyi32End;
-        type TimerState = Struct3valUnit3keyi32End;
+        type IN = Struct3keyi323vali32End;
+        type OUT = Struct3keyi323vali32End;
+        type TimerState = Struct3keyi323valUnitEnd;
         type OperatorState = TumblingWindowSumState;
         fn handle_element(
             &mut self,
@@ -105,7 +105,7 @@ pub mod defs {
     impl<'i, 'source, 'timer, 'channel, B: Backend, C: ComponentDefinition>
         TumblingWindowSum<'i, 'source, 'timer, 'channel, B, C>
     {
-        fn handle_element(&mut self, x_0: Struct3vali323keyi32End) -> OperatorResult<()> {
+        fn handle_element(&mut self, x_0: Struct3keyi323vali32End) -> OperatorResult<()> {
             {
                 let y_1_0 = x_0.val;
                 let y_1_1 = x_0.key;
@@ -115,14 +115,14 @@ pub mod defs {
             };
             Ok(())
         }
-        fn emit(&mut self, data: Struct3vali323keyi32End) {
+        fn emit(&mut self, data: Struct3keyi323vali32End) {
             let element = ArconElement {
                 data,
                 timestamp: self.timestamp,
             };
             self.ctx.output(element);
         }
-        fn handle_timeout(&mut self, x_1: Struct3valUnit3keyi32End) {
+        fn handle_timeout(&mut self, x_1: Struct3keyi323valUnitEnd) {
             {
                 let y_1_0 = x_1.val;
                 let y_1_1 = ();
@@ -130,18 +130,18 @@ pub mod defs {
                 let y_1_3 = if y_1_2 {
                     let y_2_0 = x_1.key;
                     let y_2_1 = self.data.state.agg_0.arc_ref_read().unwrap();
-                    let y_2_2 = Struct3vali323keyi32End {
+                    let y_2_2 = Struct3keyi323vali32End {
                         val: y_2_1,
                         key: y_2_0,
                     };
                     let y_2_3 = 0i32;
                     let y_2_4 = ();
-                    let y_2_5 = Struct3valUnit3keyi32End {
+                    let y_2_5 = Struct3keyi323valUnitEnd {
                         val: y_2_4,
                         key: y_2_0,
                     };
                     let y_2_6 = 60u64;
-                    let y_2_7 = Struct3valStruct3valUnit3keyi32End3durdurationEnd {
+                    let y_2_7 = Struct3durduration3valStruct3keyi323valUnitEndEnd {
                         val: y_2_5,
                         dur: y_2_6,
                     };
@@ -157,28 +157,28 @@ pub mod defs {
                 y_1_3
             }
         }
-        fn trigger(&mut self, data: Struct3valUnit3keyi32End, after: u64) {
+        fn trigger(&mut self, data: Struct3keyi323valUnitEnd, after: u64) {
             let time = self.ctx.current_time().unwrap() + after;
             self.ctx.schedule_at(self.key, time, data);
         }
     }
     #[arcorn::rewrite]
     #[derive(Copy)]
-    pub struct Struct3vali323keyi32End {
-        val: i32,
+    pub struct Struct3keyi323valUnitEnd {
         key: i32,
-    }
-    #[arcorn::rewrite]
-    #[derive(Copy)]
-    pub struct Struct3valUnit3keyi32End {
         val: (),
-        key: i32,
     }
     #[arcorn::rewrite]
     #[derive(Copy)]
-    pub struct Struct3valStruct3valUnit3keyi32End3durdurationEnd {
-        val: Struct3valUnit3keyi32End,
+    pub struct Struct3durduration3valStruct3keyi323valUnitEndEnd {
         dur: u64,
+        val: Struct3keyi323valUnitEnd,
+    }
+    #[arcorn::rewrite]
+    #[derive(Copy)]
+    pub struct Struct3keyi323vali32End {
+        key: i32,
+        val: i32,
     }
 }
 pub use defs::*;

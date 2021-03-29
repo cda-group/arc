@@ -1,8 +1,12 @@
 use crate::compiler::ast;
 use crate::compiler::hir;
+use crate::compiler::info::files::Loc;
 use crate::compiler::info::paths::PathId;
 use crate::compiler::info::types::TypeId;
-use crate::compiler::info::files::Loc;
+use crate::compiler::info::Info;
+
+use arc_script_core_shared::itertools::Itertools;
+use arc_script_core_shared::VecMap;
 
 impl Default for hir::Type {
     fn default() -> Self {
@@ -43,5 +47,18 @@ impl From<ast::Path> for hir::Path {
 impl From<PathId> for hir::Path {
     fn from(id: PathId) -> Self {
         Self::new(id, Loc::Fake)
+    }
+}
+
+pub(crate) trait SortFields: Sized {
+    /// Sorts the fields of a record-type.
+    fn sort_fields(self, ctx: &mut Info) -> Self;
+}
+
+impl<T> SortFields for VecMap<hir::Name, T> {
+    fn sort_fields(mut self, info: &mut Info) -> Self {
+        self.drain()
+            .sorted_by_key(|(x, _)| info.names.resolve(x.id))
+            .collect()
     }
 }

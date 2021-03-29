@@ -3,7 +3,6 @@ use crate::compiler::hir::{
     TypeKind, UnOpKind, HIR,
 };
 use crate::compiler::info::diags::{Diagnostic, Error, Warning};
-
 use crate::compiler::info::types::union::Union;
 use crate::compiler::info::types::TypeId;
 

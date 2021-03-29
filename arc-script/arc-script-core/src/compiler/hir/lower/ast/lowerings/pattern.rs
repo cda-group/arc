@@ -9,8 +9,8 @@ use crate::compiler::hir::ParamKind;
 use crate::compiler::hir::VarKind;
 use crate::compiler::hir::HIR;
 use crate::compiler::info::diags::Error;
-use crate::compiler::info::types::TypeId;
 use crate::compiler::info::files::Loc;
+use crate::compiler::info::types::TypeId;
 
 use arc_script_core_shared::get;
 use arc_script_core_shared::map;

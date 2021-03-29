@@ -4,7 +4,7 @@ expression: s
 input_file: arc-script-test/compile/src/tests/expect_mlir_fail_todo/task_unique.arc
 
 ---
-task UniqueSet() ~{ val: i32, key: i32 } -> ~{ val: i32, key: i32 } {
+task UniqueSet() ~{ key: i32, val: i32 } -> ~{ key: i32, val: i32 } {
     state set_0: {i32} = {}
     on {
         x_0: { key: i32, val: i32 } => {
@@ -19,7 +19,7 @@ task UniqueSet() ~{ val: i32, key: i32 } -> ~{ val: i32, key: i32 } {
         }
     }
 }
-task UniqueMap() ~{ val: i32, key: i32 } -> ~{ val: i32, key: i32 } {
+task UniqueMap() ~{ key: i32, val: i32 } -> ~{ key: i32, val: i32 } {
     state map_0: {i32 => unit} = {}
     on {
         x_1: { key: i32, val: i32 } => {

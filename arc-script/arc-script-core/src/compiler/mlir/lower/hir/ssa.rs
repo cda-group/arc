@@ -4,6 +4,7 @@ use crate::compiler::hir::{
     Expr, ExprKind, ItemKind, Param, ParamKind, ScalarKind, TypeKind, UnOp, UnOpKind, HIR,
 };
 use crate::compiler::mlir::{self, Block, ConstKind, Op, OpKind, Region, Var};
+use crate::compiler::hir::utils::SortFields;
 
 use arc_script_core_shared::Lower;
 use arc_script_core_shared::Map;
@@ -109,8 +110,9 @@ impl SSA<Var> for Expr {
                 let xs = es.ssa(ctx, env, ops);
                 OpKind::Array(xs)
             }
+            // NOTE: We sort because struct constructor is order-sensitive with respect to fields.
             ExprKind::Struct(fs) => {
-                let fs = fs.ssa(ctx, env, ops);
+                let fs = fs.ssa(ctx, env, ops).sort_fields(ctx.info);
                 OpKind::Struct(fs)
             }
             ExprKind::Enwrap(x0, e1) => {

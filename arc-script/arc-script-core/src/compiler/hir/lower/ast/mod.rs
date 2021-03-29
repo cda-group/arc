@@ -31,6 +31,7 @@ use lowerings::*;
 
 use crate::compiler::ast;
 use crate::compiler::hir;
+use crate::compiler::hir::utils::SortFields;
 use crate::compiler::hir::FunKind::Global;
 use crate::compiler::hir::Name;
 use crate::compiler::hir::Path;
@@ -40,6 +41,7 @@ use crate::compiler::info::diags::Error;
 use crate::compiler::info::files::Loc;
 use crate::compiler::info::types::TypeId;
 
+use arc_script_core_shared::itertools::Itertools;
 use arc_script_core_shared::map;
 use arc_script_core_shared::Lower;
 use arc_script_core_shared::New;
@@ -465,7 +467,7 @@ impl Lower<hir::Expr, Context<'_>> for ast::Expr {
                 ast::BinOpKind::NotIn => ops::lower_not_in(e0, e1, self.loc, ctx),
                 ast::BinOpKind::Pipe  => ops::lower_pipe(e0, e1, self.loc, ctx),
                 ast::BinOpKind::By    => hir::ExprKind::Struct(ops::lower_by(e0, e1, ctx)),
-                ast::BinOpKind::After => hir::ExprKind::Struct(ops::lower_after(e0, e1, ctx)), 
+                ast::BinOpKind::After => hir::ExprKind::Struct(ops::lower_after(e0, e1, ctx)),
                 _                     => hir::ExprKind::BinOp(e0.lower(ctx).into(), op.lower(ctx), e1.lower(ctx).into())
 
             }
@@ -569,11 +571,11 @@ impl Lower<TypeId, Context<'_>> for ast::Type {
             ast::TypeKind::Array(t, s)   => hir::TypeKind::Array(t.lower(ctx).unwrap_or_else(|| ctx.info.types.fresh()), s.lower(ctx)),
             ast::TypeKind::Fun(ts, t)    => hir::TypeKind::Fun(ts.as_slice().lower(ctx), t.lower(ctx)),
             ast::TypeKind::Tuple(ts)     => hir::TypeKind::Tuple(ts.as_slice().lower(ctx)),
-            ast::TypeKind::Struct(fs)    => hir::TypeKind::Struct(fs.lower(ctx)),
+            ast::TypeKind::Struct(fs)    => hir::TypeKind::Struct(fs.lower(ctx).sort_fields(ctx.info)),
             ast::TypeKind::Map(t0, t1)   => hir::TypeKind::Map(t0.lower(ctx), t1.lower(ctx)),
             ast::TypeKind::Boxed(ty)     => hir::TypeKind::Boxed(ty.lower(ctx)),
-            ast::TypeKind::By(t0, t1)    => hir::TypeKind::Struct(ops::lower_by(t0, t1, ctx)),
-            ast::TypeKind::After(t0, t1) => hir::TypeKind::Struct(ops::lower_after(t0, t1, ctx)),
+            ast::TypeKind::By(t0, t1)    => hir::TypeKind::Struct(ops::lower_by(t0, t1, ctx).sort_fields(ctx.info)),
+            ast::TypeKind::After(t0, t1) => hir::TypeKind::Struct(ops::lower_after(t0, t1, ctx).sort_fields(ctx.info)),
             ast::TypeKind::Err           => hir::TypeKind::Err,
         };
         ctx.info.types.intern(kind)

@@ -4,7 +4,7 @@ expression: s
 input_file: arc-script-test/compile/src/tests/expect_mlir_fail_todo/extern_state_update.arc
 
 ---
-task Stateful(init_0: i32) ~{ val: i32, key: i32 } -> ~{ val: i32, key: i32 } {
+task Stateful(init_0: i32) ~{ key: i32, val: i32 } -> ~{ key: i32, val: i32 } {
     state value_0: i32 = init_0
     extern fun update(v: i32) -> i32;
     on {

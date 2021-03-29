@@ -23,3 +23,5 @@ pub type VecMap<K, V> = linear_map::LinearMap<K, V>;
 pub type OrdMap<K, V> = indexmap::map::IndexMap<K, V, Hasher>;
 pub type Map<K, V> = std::collections::HashMap<K, V, Hasher>;
 pub type Set<K> = std::collections::HashSet<K, Hasher>;
+
+pub use itertools;

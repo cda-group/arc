@@ -4,7 +4,7 @@ expression: s
 input_file: arc-script-test/compile/src/tests/expect_mlir_fail_todo/map_state.arc
 
 ---
-task MapCount() ~{ val: i32, key: i32 } -> ~{ val: i32, key: i32 } {
+task MapCount() ~{ key: i32, val: i32 } -> ~{ key: i32, val: i32 } {
     state c_0: {i32 => i32} = {}
     on {
         x_0: { key: i32, val: i32 } => {

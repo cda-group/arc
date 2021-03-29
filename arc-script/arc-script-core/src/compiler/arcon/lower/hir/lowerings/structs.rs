@@ -27,8 +27,6 @@ fn mangle_fields(tv: TypeId, fts: &VecMap<Name, TypeId>, ctx: &mut Context<'_>, 
         let mut inner = String::new();
         // Mangle the struct
         inner.push_str("Struct");
-        let mut fts = fts.into_iter().collect::<Vec<_>>();
-        fts.sort_by_key(|(x, _)| x.id);
         fts.iter().for_each(|(x, t)| {
             let len = ctx.info.names.resolve(x.id).len();
             inner.push_str(&format!("{}", len));
