@@ -2,12 +2,7 @@
 
 #![allow(unused)]
 
-// mod stage;
 mod build;
-
-// pub use stage::fun::Fun;
-// pub use stage::partial::Field;
-// pub use stage::script::Script;
 
 #[derive(Default)]
 pub struct Builder {
@@ -28,8 +23,4 @@ impl Builder {
             ..self
         }
     }
-
-    //     pub fn stage(path: &str) -> Script {
-    //         Script::new("str")
-    //     }
 }
