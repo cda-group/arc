@@ -806,7 +806,7 @@ void ArcToRustLoweringPass::runOnOperation() {
 
   ConversionTarget target(getContext());
   target.addLegalDialect<rust::RustDialect>();
-  target.addLegalOp<ModuleOp, ModuleTerminatorOp>();
+  target.addLegalOp<ModuleOp>();
 
   OwningRewritePatternList patterns(&getContext());
   patterns.insert<ReturnOpLowering>(&getContext());
