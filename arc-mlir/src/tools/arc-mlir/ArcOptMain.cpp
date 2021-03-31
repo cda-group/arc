@@ -35,15 +35,6 @@ using namespace rust;
 using llvm::SMLoc;
 namespace cl = llvm::cl;
 
-static cl::opt<std::string>
-    rustOutput("crate", cl::desc("Produce Rust crates in the directory"),
-               cl::value_desc("directory"));
-
-static cl::opt<std::string> rustTrailer(
-    "extra-rust-trailer",
-    cl::desc("Insert the given file at the end of the produced rust file"),
-    cl::value_desc("filename"));
-
 static cl::opt<bool> rustOutputInline("inline-rust",
                                       cl::desc("Produce an inline Rust module"),
                                       cl::value_desc("filename"));
@@ -78,12 +69,6 @@ static LogicalResult performActions(raw_ostream &os, bool verifyDiagnostics,
   // Run the pipeline.
   if (failed(pm.run(*module)))
     return failure();
-
-  if (!rustOutput.empty()) {
-    if (failed(writeModuleAsCrates(module.get(), rustOutput, rustTrailer, os)))
-      return failure();
-    return success();
-  }
 
   if (rustOutputInline) {
     if (failed(writeModuleAsInline(module.get(), os)))

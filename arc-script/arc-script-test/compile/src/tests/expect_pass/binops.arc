@@ -1,6 +1,6 @@
 # RUN: arc-script run --output=MLIR %s | FileCheck %s
 # RUN: arc-script run --output=MLIR %s | arc-mlir | FileCheck %s
-# RUN: arc-script run --output=MLIR %s | arc-mlir -rustcratename expectrunbinops -arc-to-rust -crate %t && arc-cargo build -j 1 --manifest-path=%t/expectrunbinops/Cargo.toml
+# RUN: arc-script run --output=MLIR %s | arc-mlir -arc-to-rust
 
 fun main() {
 

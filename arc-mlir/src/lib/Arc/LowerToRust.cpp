@@ -185,11 +185,7 @@ private:
       cst += "\"))";
     }
 
-    std::string directive =
-        "#[macro_use] extern crate " + ArcToRustLoweringPass::hexfCrate + ";";
-    ArcToRustLoweringPass::emitCrateDependency(ArcToRustLoweringPass::hexfCrate,
-                                               rust::CrateVersions::hexf,
-                                               op.getContext(), rewriter);
+    std::string directive = "use " + ArcToRustLoweringPass::hexfCrate + "::*;";
     ArcToRustLoweringPass::emitModuleDirective(
         ArcToRustLoweringPass::hexfCrate, directive, op.getContext(), rewriter);
     return returnResult(op, rustTy, cst, rewriter);

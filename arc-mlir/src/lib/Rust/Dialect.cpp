@@ -45,8 +45,6 @@ static llvm::cl::opt<std::string>
                    llvm::cl::desc("Write all rust output to a single file"),
                    llvm::cl::value_desc("filename"));
 
-static bool outputIsToModule() { return !rustModuleFile.getValue().empty(); }
-
 //===----------------------------------------------------------------------===//
 // RustDialect
 //===----------------------------------------------------------------------===//
@@ -105,45 +103,6 @@ void RustDialect::printType(Type type, DialectAsmPrinter &os) const {
     t.print(os);
   else
     llvm_unreachable("Unhandled Rust type");
-}
-
-struct CloneControl {
-  const Value V;
-
-public:
-  CloneControl(const Value v) : V(v) {}
-  virtual ~CloneControl() {}
-  virtual void output(llvm::raw_string_ostream &os) const = 0;
-
-  bool needsClone() const {
-    const Type t = V.getType();
-    if (t.isa<rust::types::RustStructType>())
-      return true;
-    if (t.isa<rust::types::RustTensorType>())
-      return true;
-    if (t.isa<rust::types::RustTupleType>())
-      return true;
-    return false;
-  }
-};
-
-struct CloneStart : public CloneControl {
-  CloneStart(Value v) : CloneControl(v) {}
-  void output(llvm::raw_string_ostream &os) const override {
-    os << "Rc::clone(&";
-  }
-};
-
-struct CloneEnd : public CloneControl {
-  CloneEnd(Value v) : CloneControl(v) {}
-  void output(llvm::raw_string_ostream &os) const override { os << ")"; };
-};
-
-llvm::raw_string_ostream &operator<<(llvm::raw_string_ostream &os,
-                                     const CloneControl &cc) {
-  if (cc.needsClone())
-    cc.output(os);
-  return os;
 }
 
 //===----------------------------------------------------------------------===//
@@ -255,180 +214,9 @@ RustPrinterStream &operator<<(RustPrinterStream &os, const Type &type) {
 }
 } // namespace rust
 
-static bool writeToml(StringRef filename, StringRef crateName,
-                      RustPrinterStream &PS) {
-  std::error_code EC;
-  llvm::raw_fd_ostream out(filename, EC, llvm::sys::fs::CD_CreateAlways,
-                           llvm::sys::fs::FA_Write, llvm::sys::fs::OF_Text);
-
-  if (EC) {
-    llvm::errs() << "Failed to create " << filename << ", " << EC.message()
-                 << "\n";
-    return false;
-  }
-
-  out << "[package]\n"
-      << "name = \"" << crateName << "\"\n"
-      << "version = \"0.1.0\"\n"
-      << "authors = [\"arc-mlir\"]\n"
-      << "edition = \"2018\"\n"
-      << "\n"
-      << "[dependencies]\n";
-  PS.writeTomlDependencies(out);
-  if (PS.hasTypesOutput())
-    out << crateName << "_types = { path = \"../" << crateName
-        << "_types\", version = \"0.1.0\" }\n";
-  out.close();
-  return true;
-}
-
-static bool writeTypesToml(StringRef filename, StringRef crateName,
-                           RustPrinterStream &PS) {
-  std::error_code EC;
-  llvm::raw_fd_ostream out(filename, EC, llvm::sys::fs::CD_CreateAlways,
-                           llvm::sys::fs::FA_Write, llvm::sys::fs::OF_Text);
-
-  if (EC) {
-    llvm::errs() << "Failed to create " << filename << ", " << EC.message()
-                 << "\n";
-    return false;
-  }
-
-  out << "[package]\n"
-      << "name = \"" << crateName << "_types\"\n"
-      << "version = \"0.1.0\"\n"
-      << "authors = [\"arc-mlir\"]\n"
-      << "edition = \"2018\"\n"
-      << "\n"
-      << "[dependencies]\n";
-
-  out.close();
-  return true;
-}
-
-LogicalResult rust::writeModuleAsCrates(ModuleOp module, std::string top_dir,
-                                        std::string rustTrailer,
-                                        llvm::raw_ostream &o) {
-
-  // Create the files for the main rust crate
-  StringRef crateName = module.getName().getValueOr("unknown");
-
-  if (!crateNameOverride.getValue().empty())
-    crateName = crateNameOverride;
-
-  llvm::errs() << "writing crate \"" << crateName << "\" to " << top_dir
-               << "\n";
-
-  SmallString<128> crate_dir(top_dir);
-  llvm::sys::path::append(crate_dir, crateName);
-  SmallString<128> src_dir(crate_dir);
-  llvm::sys::path::append(src_dir, "src");
-
-  SmallString<128> toml_filename(crate_dir);
-  llvm::sys::path::append(toml_filename, "Cargo.toml");
-
-  SmallString<128> rs_filename(src_dir);
-  llvm::sys::path::append(rs_filename, "lib.rs");
-
-  std::error_code EC = llvm::sys::fs::create_directories(src_dir);
-  if (EC) {
-    llvm::errs() << "Unable to create crate directories: " << src_dir << ", "
-                 << EC.message() << ".\n";
-    return failure();
-  }
-
-  llvm::raw_fd_ostream out(rs_filename, EC, llvm::sys::fs::CD_CreateAlways,
-                           llvm::sys::fs::FA_Write, llvm::sys::fs::OF_Text);
-
-  if (EC) {
-    llvm::errs() << "Failed to create " << rs_filename << ", " << EC.message()
-                 << "\n";
-    return failure();
-  }
-
-  // Create the files for the type crate
-  std::string typesCrateName = crateName.str() + "_types";
-  SmallString<128> types_crate_dir(top_dir);
-  llvm::sys::path::append(types_crate_dir, typesCrateName);
-  SmallString<128> types_src_dir(types_crate_dir);
-  llvm::sys::path::append(types_src_dir, "src");
-
-  SmallString<128> types_toml_filename(types_crate_dir);
-  llvm::sys::path::append(types_toml_filename, "Cargo.toml");
-
-  SmallString<128> types_rs_filename(types_src_dir);
-  llvm::sys::path::append(types_rs_filename, "lib.rs");
-
-  EC = llvm::sys::fs::create_directories(types_src_dir);
-  if (EC) {
-    llvm::errs() << "Unable to create crate directories: " << types_src_dir
-                 << ", " << EC.message() << ".\n";
-    return failure();
-  }
-
-  llvm::raw_fd_ostream types(types_rs_filename, EC,
-                             llvm::sys::fs::CD_CreateAlways,
-                             llvm::sys::fs::FA_Write, llvm::sys::fs::OF_Text);
-  if (EC) {
-    llvm::errs() << "Failed to create " << types_rs_filename << ", "
-                 << EC.message() << "\n";
-    return failure();
-  }
-
-  RustPrinterStream PS(out, types, crateName.str());
-
-  for (Operation &operation : module) {
-    if (RustFuncOp op = dyn_cast<RustFuncOp>(operation))
-      op.writeRust(PS);
-    else if (RustExtFuncOp op = dyn_cast<RustExtFuncOp>(operation))
-      op.writeRust(PS);
-  }
-
-  PS.flush();
-
-  if (!rustTrailer.empty()) {
-    using namespace llvm::sys::fs;
-    int fd;
-    EC = openFileForRead(rustTrailer, fd, OF_None);
-    if (EC) {
-      llvm::errs() << "Failed to open " << rustTrailer << ", " << EC.message()
-                   << "\n";
-      return failure();
-    }
-
-    constexpr size_t bufSize = 4096;
-    std::vector<char> buffer(bufSize);
-    int bytesRead = 0;
-    for (;;) {
-      bytesRead = read(fd, buffer.data(), bufSize);
-      if (bytesRead <= 0)
-        break;
-      out.write(buffer.data(), bytesRead);
-    }
-
-    if (bytesRead < 0) {
-      llvm::errs() << "Failed to read contents of " << rustTrailer << "\n";
-      return failure();
-    }
-    close(fd);
-  }
-  out.close();
-  types.close();
-
-  if (!writeToml(toml_filename, crateName, PS))
-    return failure();
-
-  if (!writeTypesToml(types_toml_filename, crateName, PS))
-    return failure();
-
-  return success();
-}
-
 LogicalResult rust::writeModuleAsInline(ModuleOp module, llvm::raw_ostream &o) {
-  std::string ms, ts;
-  llvm::raw_string_ostream m(ms), t(ts);
 
-  RustPrinterStream PS(m, t, "cratename", true);
+  RustPrinterStream PS("cratename");
 
   for (Operation &operation : module) {
     if (RustFuncOp op = dyn_cast<RustFuncOp>(operation))
@@ -437,12 +225,7 @@ LogicalResult rust::writeModuleAsInline(ModuleOp module, llvm::raw_ostream &o) {
       op.writeRust(PS);
   }
 
-  PS.flush();
-  m.flush();
-  t.flush();
-
-  o.write(ts.data(), ts.size());
-  o.write(ms.data(), ms.size());
+  PS.flush(o);
 
   return success();
 }
@@ -492,14 +275,12 @@ void RustCallOp::writeRust(RustPrinterStream &PS) {
   bool has_result = getNumResults();
   if (has_result) {
     auto r = getResult(0);
-    PS << "let " << r << ":" << r.getType() << " = " << CloneStart(r);
+    PS << "let " << r << ":" << r.getType() << " = ";
   }
   PS << getCallee() << "(";
   for (auto a : getOperands())
-    PS << CloneStart(a) << a << CloneEnd(a) << ", ";
+    PS << a << ", ";
   PS << ")";
-  if (has_result)
-    PS << CloneEnd(getResult(0));
   PS << ";\n";
 }
 
@@ -558,23 +339,23 @@ void RustConstantOp::writeRust(RustPrinterStream &PS) { PS.getConstant(*this); }
 
 void RustUnaryOp::writeRust(RustPrinterStream &PS) {
   auto r = getResult();
-  PS << "let " << r << ":" << r.getType() << " = " << CloneStart(r)
-     << getOperator() << "(" << CloneStart(getOperand()) << getOperand()
-     << CloneEnd(getOperand()) << ")" << CloneEnd(r) << ";\n";
+  PS << "let " << r << ":" << r.getType() << " = " << getOperator() << "("
+     << getOperand() << ")"
+     << ";\n";
 }
 
 void RustMakeStructOp::writeRust(RustPrinterStream &PS) {
   auto r = getResult();
   RustStructType st = r.getType().cast<RustStructType>();
-  PS << "let " << r << ":" << st << " = Rc::new(" << st << "Value { ";
+  PS << "let " << r << ":" << st << " = " << st << " { ";
   auto args = operands();
   for (unsigned i = 0; i < args.size(); i++) {
     if (i != 0)
       PS << ", ";
     auto v = args[i];
-    PS << st.getFieldName(i) << " : " << CloneStart(v) << v << CloneEnd(v);
+    PS << st.getFieldName(i) << " : " << v;
   }
-  PS << "});\n";
+  PS << "};\n";
 }
 
 void RustMethodCallOp::writeRust(RustPrinterStream &PS) {
@@ -586,15 +367,15 @@ void RustMethodCallOp::writeRust(RustPrinterStream &PS) {
     if (i != 0)
       PS << ", ";
     auto v = args[i];
-    PS << CloneStart(v) << v << CloneEnd(v);
+    PS << v;
   }
   PS << ");\n";
 }
 
 void RustBinaryOp::writeRust(RustPrinterStream &PS) {
   auto r = getResult();
-  PS << "let " << r << ":" << r.getType() << " = " << CloneStart(r) << LHS()
-     << " " << getOperator() << " " << RHS() << CloneEnd(r) << ";\n";
+  PS << "let " << r << ":" << r.getType() << " = " << LHS() << " "
+     << getOperator() << " " << RHS() << ";\n";
 }
 
 void RustBinaryRcOp::writeRust(RustPrinterStream &PS) {
@@ -605,14 +386,14 @@ void RustBinaryRcOp::writeRust(RustPrinterStream &PS) {
 
 void RustCompOp::writeRust(RustPrinterStream &PS) {
   auto r = getResult();
-  PS << "let " << r << ":" << r.getType() << " = " << CloneStart(r) << LHS()
-     << " " << getOperator() << " " << RHS() << CloneEnd(r) << ";\n";
+  PS << "let " << r << ":" << r.getType() << " = " << LHS() << " "
+     << getOperator() << " " << RHS() << ";\n";
 }
 
 void RustFieldAccessOp::writeRust(RustPrinterStream &PS) {
   auto r = getResult();
-  PS << "let " << r << ":" << r.getType() << " = " << CloneStart(r)
-     << aggregate() << "." << getField() << CloneEnd(r) << ";\n";
+  PS << "let " << r << ":" << r.getType() << " = " << aggregate() << "."
+     << getField() << ";\n";
 }
 
 void RustIfOp::writeRust(RustPrinterStream &PS) {
@@ -630,7 +411,7 @@ void RustIfOp::writeRust(RustPrinterStream &PS) {
 
 void RustBlockResultOp::writeRust(RustPrinterStream &PS) {
   auto r = getOperand();
-  PS << CloneStart(r) << r << CloneEnd(r) << "\n";
+  PS << r << "\n";
 }
 
 void RustTensorOp::writeRust(RustPrinterStream &PS) {
@@ -655,7 +436,7 @@ void RustTupleOp::writeRust(RustPrinterStream &PS) {
   auto args = operands();
   for (unsigned i = 0; i < args.size(); i++) {
     auto v = args[i];
-    PS << CloneStart(v) << v << CloneEnd(v) << ", ";
+    PS << v << ", ";
   }
   PS << "));\n";
 }
@@ -664,7 +445,6 @@ void RustTupleOp::writeRust(RustPrinterStream &PS) {
 // Crate versions
 //===----------------------------------------------------------------------===//
 namespace rust {
-const char *CrateVersions::hexf = "0.2.1";
 const char *CrateVersions::ndarray = "0.13.0";
 } // namespace rust
 
@@ -783,12 +563,14 @@ struct RustStructTypeStorage : public TypeStorage {
       : structFields(fields.begin(), fields.end()), id(id) {
     std::string str;
     llvm::raw_string_ostream s(str);
-    s << "ArcStruct";
+    s << "Struct";
 
     for (auto &f : fields) {
-      s << "F" << f.first.getValue() << "T";
+      StringRef fieldName = f.first.getValue();
+      s << fieldName.size() << fieldName;
       s << getTypeSignature(f.second);
     }
+    s << "End";
     signature = s.str();
   }
 
@@ -868,32 +650,22 @@ RustPrinterStream &
 RustStructTypeStorage::printAsRust(RustPrinterStream &ps) const {
 
   llvm::raw_ostream &os = ps.getNamedTypesStream();
-  llvm::raw_ostream &uses_os = ps.getUsesStream();
   // First ensure that any structs used by this struct are defined
   emitNestedTypedefs(ps);
 
+  os << "#[arcorn::rewrite]\n"
+     << "#[derive(Copy)]\n";
+
   os << "pub struct ";
-  printAsRustNamedType(os) << "Value {\n  ";
+  printAsRustNamedType(os) << " {\n  ";
 
   for (unsigned i = 0; i < structFields.size(); i++) {
     if (i != 0)
       os << ",\n  ";
-    os << "pub " << structFields[i].first.getValue() << " : ";
+    os << "  " << structFields[i].first.getValue() << " : ";
     os << getTypeString(structFields[i].second);
   }
   os << "\n}\n";
-  os << "pub type ";
-  printAsRustNamedType(os) << " = Rc<";
-  printAsRustNamedType(os) << "Value>;\n";
-  ps.registerDirective("rc-import", "use std::rc::Rc;\n");
-  uses_os << "use ";
-  ps.printModuleName(uses_os) << "_types::";
-  printAsRustNamedType(uses_os) << " as ";
-  printAsRustNamedType(uses_os) << ";\n";
-  uses_os << "use ";
-  ps.printModuleName(uses_os) << "_types::";
-  printAsRustNamedType(uses_os) << "Value as ";
-  printAsRustNamedType(uses_os) << "Value;\n";
   return ps;
 }
 
