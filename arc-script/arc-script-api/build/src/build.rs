@@ -46,6 +46,7 @@ impl Builder {
                         {
                             eprintln!("Internal compiler error when compiling : {:?}", path);
                             eprintln!("{:?}", e);
+                            self.report_arcscript_error(path, out_dir, cargo_dir);
                         }
                     }
                 }
@@ -90,5 +91,24 @@ impl Builder {
                     .unwrap();
             }
         }
+    }
+
+    // Write a fake output file, which when included into the main
+    // module will report the compilation error.
+    fn report_arcscript_error(&self, path: &Path, out_dir: &str, cargo_dir: &str) {
+        let input_path = PathBuf::from(path);
+        let mut output_path = input_path.clone();
+        output_path.set_extension("rs");
+        let output_path = output_path.strip_prefix(cargo_dir).unwrap();
+        let output_path = PathBuf::from(out_dir).join(output_path);
+
+        let output_dir = output_path.parent().unwrap();
+        fs::create_dir_all(output_dir).unwrap();
+        let mut sink = Buffer::no_color();
+        writeln!(sink, r#"compile_error!("Internal compiler error");"#);
+        fs::File::create(output_path)
+            .unwrap()
+            .write_all(sink.as_slice())
+            .unwrap();
     }
 }
