@@ -124,7 +124,7 @@ pub(crate) fn lower_cases(cases: &[ast::Case], _ctx: &mut Context<'_>) -> hir::E
         }
         if let Some(_bindings) = decision_tree.leaf_bindings.get(&node_index) {}
     }
-    todo!()
+    crate::todo!()
 }
 
 // fn recurse(node: CfgNodeKey, cfg: &pattern_compiler::PatternCfg<PatternTree>) {
@@ -155,8 +155,8 @@ impl PatternTree {
                 node
             }
             ast::PatKind::Err => self.pattern.add_node(PatternNodeKind::Err),
-            ast::PatKind::Struct(_) => todo!(),
-            ast::PatKind::Variant(_, _) => todo!(),
+            ast::PatKind::Struct(_) => crate::todo!(),
+            ast::PatKind::Variant(_, _) => crate::todo!(),
         }
     }
 

@@ -69,7 +69,7 @@ impl<'i> Display for Pretty<'i, dfg::DFG, Context<'_>> {
 impl<'i> Display for Pretty<'i, hir::Path, Context<'_>> {
     fn fmt(&self, _f: &mut Formatter<'_>) -> fmt::Result {
         let Pretty(_x, _ctx) = self;
-        todo!()
+        crate::todo!()
         //         write!(f, "{}", crate::compiler::hir::display::State::new(ctx.state).pretty(ctx))
     }
 }
@@ -77,7 +77,7 @@ impl<'i> Display for Pretty<'i, hir::Path, Context<'_>> {
 impl<'i> Display for Pretty<'i, dfg::Port, Context<'_>> {
     fn fmt(&self, _f: &mut Formatter<'_>) -> fmt::Result {
         let Pretty(_x, _ctx) = self;
-        todo!()
+        crate::todo!()
         //         write!(f, "{}", crate::compiler::hir::display::State::new(ctx.state).pretty(ctx))
     }
 }

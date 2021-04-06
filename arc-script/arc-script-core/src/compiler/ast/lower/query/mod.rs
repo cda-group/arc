@@ -9,6 +9,6 @@ struct Context<'a> {
 
 impl Lower<AST, Context<'_>> for Query {
     fn lower(&self, ctx: &mut Context<'_>) -> AST {
-        todo!()
+        crate::todo!()
     }
 }

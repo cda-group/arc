@@ -49,7 +49,7 @@ impl hir::TypeId {
             hir::TypeKind::Array(t, _s) => {
                 name.push_str("Array");
                 t.mangle(ctx, name);
-                todo!();
+                crate::todo!();
             }
             hir::TypeKind::Fun(ts, t) => {
                 name.push_str("Fun");
@@ -122,10 +122,10 @@ impl hir::ScalarKind {
             Self::U16   => "u16",
             Self::U32   => "u32",
             Self::U64   => "u64",
-            Self::Null  => todo!(),
-            Self::Str   => todo!(),
+            Self::Null  => crate::todo!(),
+            Self::Str   => crate::todo!(),
             Self::Unit  => "Unit",
-            Self::Bot   => todo!(),
+            Self::Bot   => crate::todo!(),
             Self::Never => "!",
             Self::DateTime  => "time",
             Self::Duration  => "duration",

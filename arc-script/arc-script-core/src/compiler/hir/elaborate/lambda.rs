@@ -74,6 +74,6 @@ use crate::compiler::shared::VecMap;
 
 pub(super) fn lower(params: &Vec<ast::Pat>, body: ast::Expr, ctx: Context) -> hir::Expr {
     //     let fv = body.free_vars();
-    todo!()
+    crate::todo!()
 }
 

@@ -500,7 +500,7 @@ impl hir::Expr {
                             };
                             return quote!(self.data.state.#x.#op(#e3, #e1).unwrap());
                         }
-                        _ => todo!("Add dataframes?"),
+                        _ => crate::todo!("Add dataframes?"),
                     }
                 }
                 // x = e1
@@ -553,7 +553,7 @@ impl hir::Expr {
                     let e1 = e1.ssa(ctx, env, ops, depth);
                     quote!(self.data.state.#x.arc_map_get_unchecked(#e1).unwrap())
                 }
-                _ => todo!(),
+                _ => crate::todo!(),
             },
             hir::ExprKind::Empty => match ctx.info.types.resolve(self.tv).kind {
                 hir::TypeKind::Set(tv0) => {
@@ -655,7 +655,7 @@ impl hir::Expr {
                     let e1 = e1.ssa(ctx, env, ops, depth);
                     quote!(self.data.state.#x.arc_set_add(#e1).unwrap())
                 } else {
-                    todo!()
+                    crate::todo!()
                 }
             }
             hir::ExprKind::Del(e0, e1) => {
@@ -664,7 +664,7 @@ impl hir::Expr {
                     let e1 = e1.ssa(ctx, env, ops, depth);
                     quote!(self.data.state.#x.arc_set_del(#e1).unwrap())
                 } else {
-                    todo!()
+                    crate::todo!()
                 }
             }
             hir::ExprKind::Enwrap(x, e) => {
@@ -702,7 +702,7 @@ impl Lower<Tokens, Context<'_>> for hir::TypeId {
     fn lower(&self, ctx: &mut Context<'_>) -> Tokens {
         let ty = ctx.info.types.resolve(*self);
         match &ty.kind {
-            hir::TypeKind::Array(_t, _s) => todo!(),
+            hir::TypeKind::Array(_t, _s) => crate::todo!(),
             hir::TypeKind::Fun(ts, t) => {
                 let t = t.lower(ctx);
                 let ts = ts.iter().map(|t| t.lower(ctx));
@@ -795,10 +795,10 @@ impl Lower<Tokens, Context<'_>> for hir::ScalarKind {
             Self::U16   => quote!(u16),
             Self::U32   => quote!(u32),
             Self::U64   => quote!(u64),
-            Self::Null  => todo!(),
-            Self::Str   => todo!(),
+            Self::Null  => crate::todo!(),
+            Self::Str   => crate::todo!(),
             Self::Unit  => quote!(()),
-            Self::Bot   => todo!(),
+            Self::Bot   => crate::todo!(),
             Self::Never => quote!(!),
             Self::DateTime  => quote!(u64),
             Self::Duration  => quote!(u64),
@@ -905,8 +905,8 @@ impl Lower<Tokens, Context<'_>> for hir::LitKind {
             Self::U16(v)  => quote!(#v),
             Self::U32(v)  => quote!(#v),
             Self::U64(v)  => quote!(#v),
-            Self::Str(_v)  => todo!(),
-            Self::DateTime(_v) => todo!(),
+            Self::Str(_v)  => crate::todo!(),
+            Self::DateTime(_v) => crate::todo!(),
             Self::Duration(v) => {
                 let v = v.whole_seconds() as u64;
                 quote!(#v)

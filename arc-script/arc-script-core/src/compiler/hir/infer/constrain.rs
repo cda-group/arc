@@ -334,7 +334,7 @@ impl Constrain<'_> for Expr {
                     e1.constrain(ctx);
                     ctx.unify(e0.tv, TypeKind::Map(e1.tv, self.tv));
                 }
-                _ => todo!("Probably support arrow-tables?"),
+                _ => crate::todo!("Probably support arrow-tables?"),
             },
             ExprKind::Project(e, i) => {
                 e.constrain(ctx);
@@ -402,7 +402,7 @@ impl Constrain<'_> for Expr {
                 e1.constrain(ctx);
                 e2.constrain(ctx);
             }
-            ExprKind::Loop(_) => todo!(),
+            ExprKind::Loop(_) => crate::todo!(),
             ExprKind::Break => ctx.unify(self.tv, Unit),
             ExprKind::Return(_) => ctx.unify(self.tv, Unit),
             ExprKind::Empty => {}

@@ -12,6 +12,7 @@ use std::env;
 use std::fs;
 use std::io::BufWriter;
 use std::io::Write;
+use std::panic;
 use std::path::Path;
 use std::path::PathBuf;
 use walkdir::WalkDir;
@@ -41,12 +42,12 @@ impl Builder {
                 let mut path = entry.path();
                 if let Some(name) = path.file_name() {
                     if name == "main.arc" || has_extension(path, "arc") && self.no_exclude {
-                        if let Err(e) =
-                            std::panic::catch_unwind(|| self.build_file(path, out_dir, cargo_dir))
-                        {
+                        let res = panic::catch_unwind(|| self.build_file(path, out_dir, cargo_dir));
+                        if let Err(e) = res {
                             eprintln!("Internal compiler error when compiling : {:?}", path);
                             eprintln!("{:?}", e);
-                            self.report_arcscript_error(path, out_dir, cargo_dir);
+                            let message = e.downcast_ref::<&str>().unwrap();
+                            self.report_arcscript_error(path, message, out_dir, cargo_dir);
                         }
                     }
                 }
@@ -95,7 +96,7 @@ impl Builder {
 
     // Write a fake output file, which when included into the main
     // module will report the compilation error.
-    fn report_arcscript_error(&self, path: &Path, out_dir: &str, cargo_dir: &str) {
+    fn report_arcscript_error(&self, path: &Path, message: &str, out_dir: &str, cargo_dir: &str) {
         let input_path = PathBuf::from(path);
         let mut output_path = input_path.clone();
         output_path.set_extension("rs");
@@ -105,7 +106,7 @@ impl Builder {
         let output_dir = output_path.parent().unwrap();
         fs::create_dir_all(output_dir).unwrap();
         let mut sink = Buffer::no_color();
-        writeln!(sink, r#"compile_error!("Internal compiler error");"#);
+        writeln!(sink, r#"compile_error!("Internal Compiler Error: {}");"#, message);
         fs::File::create(output_path)
             .unwrap()
             .write_all(sink.as_slice())

@@ -25,3 +25,14 @@ macro_rules! map {
         }
     }
 }
+
+/// A wrapper around todo!() which captures location info.
+#[macro_export]
+macro_rules! todo {
+    { } => {
+        panic!("{}:{}:{} not yet implemented", file!(), line!(), column!())
+    };
+    { $($arg:tt)+ } => {
+        panic!("{}:{}:{} not yet implemented: {}", file!(), line!(), column!(), format_args!($($arg)+))
+    };
+}
