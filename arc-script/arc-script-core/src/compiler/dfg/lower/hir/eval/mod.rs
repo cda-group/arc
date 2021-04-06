@@ -55,8 +55,8 @@ impl Expr {
                 LitKind::Unit    => Unit,
                 LitKind::Char(v) => Char(*v),
                 LitKind::Str(v)  => Str(v.clone()),
-                LitKind::DateTime(_) => todo!(),
-                LitKind::Duration(_) => todo!(),
+                LitKind::DateTime(_) => crate::todo!(),
+                LitKind::Duration(_) => crate::todo!(),
                 LitKind::Err     => unreachable!(),
             },
             ExprKind::Var(x, _) => return Ok(ctx.stack.lookup(x.id).clone()),
@@ -73,7 +73,7 @@ impl Expr {
                 }
                 ParamKind::Err => unreachable!(),
             },
-            ExprKind::Array(_es) => todo!(),
+            ExprKind::Array(_es) => crate::todo!(),
             ExprKind::Struct(fs) => Struct(
                 fs.iter()
                     .map(|(x, e)| Ok((x.id, e.eval(ctx)?)))
@@ -130,9 +130,9 @@ impl Expr {
             ExprKind::UnOp(op, e) => {
                 let v = e.eval(ctx)?;
                 match &op.kind {
-                    UnOpKind::Add => todo!(),
-                    UnOpKind::Boxed => todo!(),
-                    UnOpKind::Del => todo!(),
+                    UnOpKind::Add => crate::todo!(),
+                    UnOpKind::Boxed => crate::todo!(),
+                    UnOpKind::Del => crate::todo!(),
                     UnOpKind::Not => match v.kind {
                         Bool(v) => Bool(!v),
                         _ => unreachable!(),
@@ -229,7 +229,7 @@ impl Expr {
                 }
                 _ => unreachable!(),
             },
-            ExprKind::Select(e, es) => todo!(),
+            ExprKind::Select(e, es) => crate::todo!(),
             ExprKind::Access(e, x) => match e.eval(ctx)?.kind {
                 Struct(vfs) => return Ok(vfs.get(&x.id).unwrap().clone()),
                 _ => unreachable!(),
@@ -239,11 +239,11 @@ impl Expr {
                 _ => unreachable!(),
             },
             ExprKind::Emit(e) => match e.eval(ctx)?.kind {
-                Variant(_x0, _v) => todo!(),
+                Variant(_x0, _v) => crate::todo!(),
                 _ => unreachable!(),
             },
-            ExprKind::Trigger(_) => todo!(),
-            ExprKind::Log(_e) => todo!(),
+            ExprKind::Trigger(_) => crate::todo!(),
+            ExprKind::Log(_e) => crate::todo!(),
             // Short-circuit
             ExprKind::BinOp(e0, op, e1) if matches!(op.kind, And) => match e0.eval(ctx)?.kind {
                 v0 @ Bool(false) => v0,
@@ -371,14 +371,14 @@ impl Expr {
                     (F64(l),  Leq, F64(r))  => Bool(l <= r),
                     // Seq
                     (_, Seq, r) => r,
-                    (_l, Pipe, _r) => todo!(),
+                    (_l, Pipe, _r) => crate::todo!(),
                     _ => unreachable!(),
                 }
             }
-            ExprKind::Empty => todo!(),
-            ExprKind::Todo => todo!(),
-            ExprKind::Del(_, _) => todo!(),
-            ExprKind::Add(_, _) => todo!(),
+            ExprKind::Empty => crate::todo!(),
+            ExprKind::Todo => crate::todo!(),
+            ExprKind::Del(_, _) => crate::todo!(),
+            ExprKind::Add(_, _) => crate::todo!(),
             ExprKind::Err => unreachable!(),
         };
         Ok(Value::new(kind, self.tv))

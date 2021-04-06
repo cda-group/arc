@@ -80,3 +80,5 @@
 pub mod compiler;
 /// Module which re-exports common functionality.
 pub mod prelude;
+
+pub(crate) use arc_script_core_shared::todo;

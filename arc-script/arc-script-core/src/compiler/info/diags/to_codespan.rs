@@ -96,13 +96,13 @@ impl ToCodespan for Diagnostic {
 
 impl ToCodespan for Note {
     fn to_codespan(&self, _ctx: &Context<'_>) -> Option<Codespan> {
-        todo!()
+        crate::todo!()
     }
 }
 
 impl ToCodespan for Warning {
     fn to_codespan(&self, _ctx: &Context<'_>) -> Option<Codespan> {
-        todo!()
+        crate::todo!()
     }
 }
 
@@ -283,7 +283,7 @@ fn lex_err(err: &lexical_core::Error) -> &'static str {
         MissingExponentSign         => "Exponent sign was required, but not found.",
         ExponentWithoutFraction     => "Exponent was present without fraction component.",
         InvalidLeadingZeros         => "Integer had invalid leading zeros.",
-        __Nonexhaustive             => todo!(),
+        __Nonexhaustive             => crate::todo!(),
     }
 }
 
