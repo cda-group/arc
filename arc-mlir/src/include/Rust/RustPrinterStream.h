@@ -61,10 +61,12 @@ class RustPrinterStream {
   std::map<std::string, std::string> CrateDependencies;
   std::map<std::string, std::string> CrateDirectives;
 
+  std::string Includefile;
+
 public:
-  RustPrinterStream()
+  RustPrinterStream(std::string includefile)
       : Constants(ConstantsStr), NamedTypes(NamedTypesStr), TypeUses(UsesStr),
-        Body(BodyStr), NextID(0), NextConstID(0) {};
+        Body(BodyStr), NextID(0), NextConstID(0), Includefile(includefile){};
 
   void flush(llvm::raw_ostream &o) {
     o << "#[allow(non_snake_case)]\n"
@@ -89,6 +91,8 @@ public:
     std::string types = NamedTypes.str();
     o << types;
     o << Body.str();
+    if (!Includefile.empty())
+      o << "include!(\"" << Includefile << "\");\n";
     o << "}\n";
   }
 

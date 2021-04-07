@@ -45,6 +45,11 @@ static llvm::cl::opt<std::string>
                    llvm::cl::desc("Write all rust output to a single file"),
                    llvm::cl::value_desc("filename"));
 
+static llvm::cl::opt<std::string>
+    rustInclude("rustinclude",
+                llvm::cl::desc("Include this file into the generated module"),
+                llvm::cl::value_desc("filename"));
+
 //===----------------------------------------------------------------------===//
 // RustDialect
 //===----------------------------------------------------------------------===//
@@ -216,7 +221,7 @@ RustPrinterStream &operator<<(RustPrinterStream &os, const Type &type) {
 
 LogicalResult rust::writeModuleAsInline(ModuleOp module, llvm::raw_ostream &o) {
 
-  RustPrinterStream PS;
+  RustPrinterStream PS(rustInclude);
 
   for (Operation &operation : module) {
     if (RustFuncOp op = dyn_cast<RustFuncOp>(operation))
