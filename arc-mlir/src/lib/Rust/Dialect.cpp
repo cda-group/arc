@@ -432,13 +432,13 @@ void RustTensorOp::writeRust(RustPrinterStream &PS) {
 
 void RustTupleOp::writeRust(RustPrinterStream &PS) {
   auto r = getResult();
-  PS << "let " << r << ":" << r.getType() << " = Rc::new((";
+  PS << "let " << r << ":" << r.getType() << " = (";
   auto args = operands();
   for (unsigned i = 0; i < args.size(); i++) {
     auto v = args[i];
     PS << v << ", ";
   }
-  PS << "));\n";
+  PS << ");\n";
 }
 
 //===----------------------------------------------------------------------===//
@@ -839,10 +839,10 @@ std::string RustTupleTypeStorage::getRustType() const {
   std::string str;
   llvm::raw_string_ostream s(str);
 
-  s << "Rc<(";
+  s << "(";
   for (unsigned i = 0; i < tupleFields.size(); i++)
     s << getTypeString(tupleFields[i]) << ", ";
-  s << ")>";
+  s << ")";
   return s.str();
 }
 
