@@ -216,7 +216,7 @@ RustPrinterStream &operator<<(RustPrinterStream &os, const Type &type) {
 
 LogicalResult rust::writeModuleAsInline(ModuleOp module, llvm::raw_ostream &o) {
 
-  RustPrinterStream PS("cratename");
+  RustPrinterStream PS;
 
   for (Operation &operation : module) {
     if (RustFuncOp op = dyn_cast<RustFuncOp>(operation))

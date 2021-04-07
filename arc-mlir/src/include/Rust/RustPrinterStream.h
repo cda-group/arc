@@ -61,12 +61,10 @@ class RustPrinterStream {
   std::map<std::string, std::string> CrateDependencies;
   std::map<std::string, std::string> CrateDirectives;
 
-  std::string ModuleName;
-
 public:
-  RustPrinterStream(std::string module_name)
+  RustPrinterStream()
       : Constants(ConstantsStr), NamedTypes(NamedTypesStr), TypeUses(UsesStr),
-        Body(BodyStr), NextID(0), NextConstID(0), ModuleName(module_name){};
+        Body(BodyStr), NextID(0), NextConstID(0) {};
 
   void flush(llvm::raw_ostream &o) {
     o << "#[allow(non_snake_case)]\n"
@@ -165,11 +163,6 @@ public:
   RustPrinterStream &print(T t) {
     Body << t;
     return *this;
-  }
-
-  llvm::raw_ostream &printModuleName(llvm::raw_ostream &os) {
-    os << ModuleName;
-    return os;
   }
 
   void registerDependency(std::string key, std::string value) {
