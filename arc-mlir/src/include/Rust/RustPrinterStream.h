@@ -81,7 +81,8 @@ public:
       << "pub use arc_script::arcorn;\n"
       << "pub use arc_script::arcorn::state::{ArcMapOps, ArcRefOps, "
          "ArcSetOps, ArcVecOps};\n"
-      << "pub use arcon::prelude::*;\n";
+      << "pub use arcon::prelude::*;\n"
+      << "pub use hexf::*;\n";
 
     for (auto i : CrateDirectives)
       o << i.second << "\n";
@@ -171,21 +172,8 @@ public:
     return os;
   }
 
-  void registerDependency(RustDependencyOp dep) {
-    std::string key = dep.getCrate().cast<StringAttr>().getValue().str();
-    std::string value =
-        "\"" + dep.getVersion().cast<StringAttr>().getValue().str() + "\"";
-    registerDependency(key, value);
-  }
-
   void registerDependency(std::string key, std::string value) {
     CrateDependencies[key] = value;
-  }
-
-  void registerDirective(RustModuleDirectiveOp dep) {
-    std::string key = dep.getKey().cast<StringAttr>().getValue().str();
-    std::string str = dep.getStr().cast<StringAttr>().getValue().str();
-    registerDirective(key, str);
   }
 
   void registerDirective(std::string key, std::string value) {

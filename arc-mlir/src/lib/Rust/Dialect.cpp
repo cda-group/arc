@@ -260,11 +260,6 @@ static RustPrinterStream &writeRust(Operation &operation,
     op.writeRust(PS);
   else if (RustTupleOp op = dyn_cast<RustTupleOp>(operation))
     op.writeRust(PS);
-  else if (RustDependencyOp op = dyn_cast<RustDependencyOp>(operation))
-    PS.registerDependency(op);
-  else if (RustModuleDirectiveOp op =
-               dyn_cast<RustModuleDirectiveOp>(operation))
-    PS.registerDirective(op);
   else {
     operation.emitError("Unsupported operation");
   }

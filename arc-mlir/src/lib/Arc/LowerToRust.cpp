@@ -38,16 +38,6 @@ namespace arc {
 namespace {
 struct ArcToRustLoweringPass : public LowerToRustBase<ArcToRustLoweringPass> {
   void runOnOperation() final;
-
-  static void emitCrateDependency(StringRef crate, StringRef version,
-                                  MLIRContext *ctx,
-                                  ConversionPatternRewriter &rewriter);
-
-  static void emitModuleDirective(StringRef key, StringRef str,
-                                  MLIRContext *ctx,
-                                  ConversionPatternRewriter &rewriter);
-
-  static const std::string hexfCrate;
 };
 } // end anonymous namespace.
 
@@ -185,9 +175,6 @@ private:
       cst += "\"))";
     }
 
-    std::string directive = "use " + ArcToRustLoweringPass::hexfCrate + "::*;";
-    ArcToRustLoweringPass::emitModuleDirective(
-        ArcToRustLoweringPass::hexfCrate, directive, op.getContext(), rewriter);
     return returnResult(op, rustTy, cst, rewriter);
   }
 
@@ -899,18 +886,4 @@ void ArcToRustLoweringPass::runOnOperation() {
 
 std::unique_ptr<OperationPass<ModuleOp>> arc::createLowerToRustPass() {
   return std::make_unique<ArcToRustLoweringPass>();
-}
-
-const std::string ArcToRustLoweringPass::hexfCrate = "hexf";
-
-void ArcToRustLoweringPass::emitCrateDependency(
-    StringRef crate, StringRef version, MLIRContext *ctx,
-    ConversionPatternRewriter &rewriter) {
-  rewriter.create<rust::RustDependencyOp>(UnknownLoc::get(ctx), crate, version);
-}
-
-void ArcToRustLoweringPass::emitModuleDirective(
-    StringRef key, StringRef str, MLIRContext *ctx,
-    ConversionPatternRewriter &rewriter) {
-  rewriter.create<rust::RustModuleDirectiveOp>(UnknownLoc::get(ctx), key, str);
 }
