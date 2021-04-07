@@ -14,6 +14,12 @@ get_filename_component(ARC_CARGO_TARGET_DIR "../../cargo/build"
 get_filename_component(ARC_TOOLS_BIN_DIR "../../bin"
   REALPATH BASE_DIR ${CMAKE_CURRENT_BINARY_DIR} CACHE)
 
+get_filename_component(ARC_SCRIPT_SRC_DIR "../../arc-script"
+  REALPATH BASE_DIR ${CMAKE_CURRENT_SOURCE_DIR} CACHE)
+
+get_filename_component(ARC_MLIR_SRC_DIR "../"
+  REALPATH BASE_DIR ${CMAKE_CURRENT_SOURCE_DIR} CACHE)
+
 add_subdirectory(include)
 add_subdirectory(lib)
 add_subdirectory(tests)
@@ -23,9 +29,6 @@ corrosion_import_crate(MANIFEST_PATH "${CMAKE_CURRENT_SOURCE_DIR}/../../arc-scri
 
 get_filename_component(ARC_CARGO_BIN "../../bin"
   REALPATH BASE_DIR ${CMAKE_CURRENT_BINARY_DIR} CACHE)
-
-get_filename_component(ARC_SCRIPT_SRC_DIR "../../arc-script"
-  REALPATH BASE_DIR ${CMAKE_CURRENT_SOURCE_DIR} CACHE)
 
 add_custom_target(arc-check DEPENDS check-arc-mlir
   COMMAND cd ${ARC_SCRIPT_SRC_DIR}; ${ARC_CARGO_BIN}/arc-cargo clean
