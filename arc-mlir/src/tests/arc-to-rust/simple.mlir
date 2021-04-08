@@ -1,5 +1,5 @@
-// RUN: arc-mlir -rustcratename arctorustsimple -arc-to-rust -crate %t -extra-rust-trailer %s.rust-tests %s && CARGO_HTTP_DEBUG=true cargo test -j 1 --manifest-path=%t/arctorustsimple/Cargo.toml
-// RUN: arc-mlir -rustcratename arctorustsimplecanon -canonicalize -arc-to-rust -crate %t -extra-rust-trailer %s.rust-tests %s && CARGO_HTTP_DEBUG=true cargo test -j 1 --manifest-path=%t/arctorustsimple/Cargo.toml
+// RUN: arc-mlir-rust-test %t %s -rustinclude %s.rust-tests
+// RUN: arc-mlir-rust-test %t-canon %s -rustinclude %s.rust-tests -canonicalize
 
 module @arctorustsimple {
   func @returnf64() -> f64 {

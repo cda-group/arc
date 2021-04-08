@@ -1,5 +1,6 @@
 #[cfg(test)]
 mod tests {
+    use crate::defs::*;
     use ndarray::{Array,Dim,Ix};
     use std::rc::Rc;
 
@@ -11,19 +12,19 @@ mod tests {
 	let b:Rc<Array<u8, Dim<[Ix; 2]>>> =
 	    Rc::new(Array::from_shape_vec((2, 2),
 					  vec![1, 2, 3, 4]).unwrap());
-	assert_eq!(*crate::addi_tensor2x2xui8(Rc::clone(&a),
+	assert_eq!(*addi_tensor2x2xui8(Rc::clone(&a),
 					      Rc::clone(&b)),
 		   &*a + &*b);
-	assert_eq!(*crate::subi_tensor2x2xui8(Rc::clone(&a),
+	assert_eq!(*subi_tensor2x2xui8(Rc::clone(&a),
 					      Rc::clone(&b)),
 		   &*a - &*b);
-	assert_eq!(*crate::muli_tensor2x2xui8(Rc::clone(&a),
+	assert_eq!(*muli_tensor2x2xui8(Rc::clone(&a),
 					      Rc::clone(&b)),
 		   &*a * &*b);
-	assert_eq!(*crate::divi_tensor2x2xui8(Rc::clone(&a),
+	assert_eq!(*divi_tensor2x2xui8(Rc::clone(&a),
 					      Rc::clone(&b)),
 		   &*a / &*b);
-	assert_eq!(*crate::remi_tensor2x2xui8(Rc::clone(&a),
+	assert_eq!(*remi_tensor2x2xui8(Rc::clone(&a),
 					      Rc::clone(&b)),
 		   &*a % &*b);
     }
@@ -35,19 +36,19 @@ mod tests {
 	let b:Rc<Array<i8, Dim<[Ix; 2]>>> =
 	    Rc::new(Array::from_shape_vec((2, 2),
 					  vec![1, 2, 3, 4]).unwrap());
-	assert_eq!(*crate::addi_tensor2x2xsi8(Rc::clone(&a),
+	assert_eq!(*addi_tensor2x2xsi8(Rc::clone(&a),
 					      Rc::clone(&b)),
 		   &*a + &*b);
-	assert_eq!(*crate::subi_tensor2x2xsi8(Rc::clone(&a),
+	assert_eq!(*subi_tensor2x2xsi8(Rc::clone(&a),
 					      Rc::clone(&b)),
 		   &*a - &*b);
-	assert_eq!(*crate::muli_tensor2x2xsi8(Rc::clone(&a),
+	assert_eq!(*muli_tensor2x2xsi8(Rc::clone(&a),
 					      Rc::clone(&b)),
 		   &*a * &*b);
-	assert_eq!(*crate::divi_tensor2x2xsi8(Rc::clone(&a),
+	assert_eq!(*divi_tensor2x2xsi8(Rc::clone(&a),
 					       Rc::clone(&b)),
 		   &*a / &*b);
-	assert_eq!(*crate::remi_tensor2x2xsi8(Rc::clone(&a),
+	assert_eq!(*remi_tensor2x2xsi8(Rc::clone(&a),
 					      Rc::clone(&b)),
 		   &*a % &*b);
     }
@@ -60,19 +61,19 @@ mod tests {
 	let b:Rc<Array<u16, Dim<[Ix; 2]>>> =
 	    Rc::new(Array::from_shape_vec((2, 2),
 					  vec![1, 2, 3, 4]).unwrap());
-	assert_eq!(*crate::addi_tensor2x2xui16(Rc::clone(&a),
+	assert_eq!(*addi_tensor2x2xui16(Rc::clone(&a),
 					       Rc::clone(&b)),
 		   &*a + &*b);
-	assert_eq!(*crate::subi_tensor2x2xui16(Rc::clone(&a),
+	assert_eq!(*subi_tensor2x2xui16(Rc::clone(&a),
 					       Rc::clone(&b)),
 		   &*a - &*b);
-	assert_eq!(*crate::muli_tensor2x2xui16(Rc::clone(&a),
+	assert_eq!(*muli_tensor2x2xui16(Rc::clone(&a),
 					       Rc::clone(&b)),
 		   &*a * &*b);
-	assert_eq!(*crate::divi_tensor2x2xui16(Rc::clone(&a),
+	assert_eq!(*divi_tensor2x2xui16(Rc::clone(&a),
 					       Rc::clone(&b)),
 		   &*a / &*b);
-	assert_eq!(*crate::remi_tensor2x2xui16(Rc::clone(&a),
+	assert_eq!(*remi_tensor2x2xui16(Rc::clone(&a),
 					       Rc::clone(&b)),
 		   &*a % &*b);
     }
@@ -84,19 +85,19 @@ mod tests {
 	let b:Rc<Array<i16, Dim<[Ix; 2]>>> =
 	    Rc::new(Array::from_shape_vec((2, 2),
 					  vec![1, 2, 3, 4]).unwrap());
-	assert_eq!(*crate::addi_tensor2x2xsi16(Rc::clone(&a),
+	assert_eq!(*addi_tensor2x2xsi16(Rc::clone(&a),
 					       Rc::clone(&b)),
 		   &*a + &*b);
-	assert_eq!(*crate::subi_tensor2x2xsi16(Rc::clone(&a),
+	assert_eq!(*subi_tensor2x2xsi16(Rc::clone(&a),
 					       Rc::clone(&b)),
 		   &*a - &*b);
-	assert_eq!(*crate::muli_tensor2x2xsi16(Rc::clone(&a),
+	assert_eq!(*muli_tensor2x2xsi16(Rc::clone(&a),
 					       Rc::clone(&b)),
 		   &*a * &*b);
-	assert_eq!(*crate::divi_tensor2x2xsi16(Rc::clone(&a),
+	assert_eq!(*divi_tensor2x2xsi16(Rc::clone(&a),
 					       Rc::clone(&b)),
 		   &*a / &*b);
-	assert_eq!(*crate::remi_tensor2x2xsi16(Rc::clone(&a),
+	assert_eq!(*remi_tensor2x2xsi16(Rc::clone(&a),
 					       Rc::clone(&b)),
 		   &*a % &*b);
     }
@@ -109,19 +110,19 @@ mod tests {
 	let b:Rc<Array<u32, Dim<[Ix; 2]>>> =
 	    Rc::new(Array::from_shape_vec((2, 2),
 					  vec![1, 2, 3, 4]).unwrap());
-	assert_eq!(*crate::addi_tensor2x2xui32(Rc::clone(&a),
+	assert_eq!(*addi_tensor2x2xui32(Rc::clone(&a),
 					       Rc::clone(&b)),
 		   &*a + &*b);
-	assert_eq!(*crate::subi_tensor2x2xui32(Rc::clone(&a),
+	assert_eq!(*subi_tensor2x2xui32(Rc::clone(&a),
 					       Rc::clone(&b)),
 		   &*a - &*b);
-	assert_eq!(*crate::muli_tensor2x2xui32(Rc::clone(&a),
+	assert_eq!(*muli_tensor2x2xui32(Rc::clone(&a),
 					       Rc::clone(&b)),
 		   &*a * &*b);
-	assert_eq!(*crate::divi_tensor2x2xui32(Rc::clone(&a),
+	assert_eq!(*divi_tensor2x2xui32(Rc::clone(&a),
 					       Rc::clone(&b)),
 		   &*a / &*b);
-	assert_eq!(*crate::remi_tensor2x2xui32(Rc::clone(&a),
+	assert_eq!(*remi_tensor2x2xui32(Rc::clone(&a),
 					       Rc::clone(&b)),
 		   &*a % &*b);
     }
@@ -133,19 +134,19 @@ mod tests {
 	let b:Rc<Array<i32, Dim<[Ix; 2]>>> =
 	    Rc::new(Array::from_shape_vec((2, 2),
 					  vec![1, 2, 3, 4]).unwrap());
-	assert_eq!(*crate::addi_tensor2x2xsi32(Rc::clone(&a),
+	assert_eq!(*addi_tensor2x2xsi32(Rc::clone(&a),
 					       Rc::clone(&b)),
 		   &*a + &*b);
-	assert_eq!(*crate::subi_tensor2x2xsi32(Rc::clone(&a),
+	assert_eq!(*subi_tensor2x2xsi32(Rc::clone(&a),
 					       Rc::clone(&b)),
 		   &*a - &*b);
-	assert_eq!(*crate::muli_tensor2x2xsi32(Rc::clone(&a),
+	assert_eq!(*muli_tensor2x2xsi32(Rc::clone(&a),
 					       Rc::clone(&b)),
 		   &*a * &*b);
-	assert_eq!(*crate::divi_tensor2x2xsi32(Rc::clone(&a),
+	assert_eq!(*divi_tensor2x2xsi32(Rc::clone(&a),
 					       Rc::clone(&b)),
 		   &*a / &*b);
-	assert_eq!(*crate::remi_tensor2x2xsi32(Rc::clone(&a),
+	assert_eq!(*remi_tensor2x2xsi32(Rc::clone(&a),
 					       Rc::clone(&b)),
 		   &*a % &*b);
     }
@@ -158,19 +159,19 @@ mod tests {
 	let b:Rc<Array<u64, Dim<[Ix; 2]>>> =
 	    Rc::new(Array::from_shape_vec((2, 2),
 					  vec![1, 2, 3, 4]).unwrap());
-	assert_eq!(*crate::addi_tensor2x2xui64(Rc::clone(&a),
+	assert_eq!(*addi_tensor2x2xui64(Rc::clone(&a),
 					       Rc::clone(&b)),
 		   &*a + &*b);
-	assert_eq!(*crate::subi_tensor2x2xui64(Rc::clone(&a),
+	assert_eq!(*subi_tensor2x2xui64(Rc::clone(&a),
 					       Rc::clone(&b)),
 		   &*a - &*b);
-	assert_eq!(*crate::muli_tensor2x2xui64(Rc::clone(&a),
+	assert_eq!(*muli_tensor2x2xui64(Rc::clone(&a),
 					       Rc::clone(&b)),
 		   &*a * &*b);
-	assert_eq!(*crate::divi_tensor2x2xui64(Rc::clone(&a),
+	assert_eq!(*divi_tensor2x2xui64(Rc::clone(&a),
 					       Rc::clone(&b)),
 		   &*a / &*b);
-	assert_eq!(*crate::remi_tensor2x2xui64(Rc::clone(&a),
+	assert_eq!(*remi_tensor2x2xui64(Rc::clone(&a),
 					       Rc::clone(&b)),
 		   &*a % &*b);
     }
@@ -182,19 +183,19 @@ mod tests {
 	let b:Rc<Array<i64, Dim<[Ix; 2]>>> =
 	    Rc::new(Array::from_shape_vec((2, 2),
 					  vec![1, 2, 3, 4]).unwrap());
-	assert_eq!(*crate::addi_tensor2x2xsi64(Rc::clone(&a),
+	assert_eq!(*addi_tensor2x2xsi64(Rc::clone(&a),
 					       Rc::clone(&b)),
 		   &*a + &*b);
-	assert_eq!(*crate::subi_tensor2x2xsi64(Rc::clone(&a),
+	assert_eq!(*subi_tensor2x2xsi64(Rc::clone(&a),
 					       Rc::clone(&b)),
 		   &*a - &*b);
-	assert_eq!(*crate::muli_tensor2x2xsi64(Rc::clone(&a),
+	assert_eq!(*muli_tensor2x2xsi64(Rc::clone(&a),
 					       Rc::clone(&b)),
 		   &*a * &*b);
-	assert_eq!(*crate::divi_tensor2x2xsi64(Rc::clone(&a),
+	assert_eq!(*divi_tensor2x2xsi64(Rc::clone(&a),
 					       Rc::clone(&b)),
 		   &*a / &*b);
-	assert_eq!(*crate::remi_tensor2x2xsi64(Rc::clone(&a),
+	assert_eq!(*remi_tensor2x2xsi64(Rc::clone(&a),
 					       Rc::clone(&b)),
 		   &*a % &*b);
     }

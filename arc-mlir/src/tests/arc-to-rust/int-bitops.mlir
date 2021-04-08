@@ -1,4 +1,4 @@
-// RUN: arc-mlir -arc-to-rust -crate %t -extra-rust-trailer %s.rust-tests %s && CARGO_HTTP_DEBUG=true cargo test -j 1 --manifest-path=%t/arctorustintbitops/Cargo.toml
+// RUN: arc-mlir-rust-test %t %s -rustinclude %s.rust-tests
 
 module @arctorustintbitops {
   func @and_ui8(%arg0: ui8, %arg1: ui8) -> ui8 {

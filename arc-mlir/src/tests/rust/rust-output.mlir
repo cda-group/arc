@@ -1,4 +1,4 @@
-// RUN: arc-mlir -crate %t %s && cargo build -j 1 --manifest-path=%t/this_is_the_name_of_the_crate/Cargo.toml
+// RUN: arc-mlir-rust-test %t %s
 
 module @"this_is_the_name_of_the_crate" {
 

@@ -1,5 +1,5 @@
-// RUN: arc-mlir -rustcratename arctorustcalls -arc-to-rust -crate %t %s && CARGO_HTTP_DEBUG=true cargo test -j 1 --manifest-path=%t/arctorustcalls/Cargo.toml
-// RUN: arc-mlir -rustcratename arctorustcallscanon -canonicalize -arc-to-rust -crate %t %s && CARGO_HTTP_DEBUG=true cargo test -j 1 --manifest-path=%t/arctorustcallscanon/Cargo.toml
+// RUN: arc-mlir-rust-test %t %s -rustinclude %s.rust-tests
+// RUN: arc-mlir-rust-test canon-%t %s -rustinclude %s.rust-tests -canonicalize
 
 module @toplevel {
 
