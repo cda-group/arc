@@ -1,8 +1,0 @@
-[package]
-name = "external_crate"
-version = "0.1.0"
-authors = ["Frej Drejhammar <frej.drejhammar@gmail.com>"]
-edition = "2018"
-
-[dependencies]
-arctorustforeigncallscanon_types = {path = "../arctorustforeigncallscanon_types"}

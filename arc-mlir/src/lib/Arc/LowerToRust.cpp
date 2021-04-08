@@ -745,19 +745,6 @@ private:
                                  mlir::FuncOp &func, Operation *op,
                                  TypeConverter::SignatureConversion &sigConv,
                                  MLIRContext *ctx) const {
-    StringAttr lang = func->getAttr("arc.foreign_language").cast<StringAttr>();
-    auto prefix = (Twine("arc.foreign.") + lang.getValue() + ".").str();
-    attributes.push_back(
-        NamedAttribute(Identifier::get("language", ctx), lang));
-
-    for (auto a : func->getDialectAttrs()) {
-      auto name = a.first.strref();
-      if (name.consume_front(prefix)) {
-        attributes.push_back(
-            NamedAttribute(Identifier::get(name, ctx), a.second));
-      }
-    }
-
     auto newOp = rewriter.create<rust::RustExtFuncOp>(
         op->getLoc(), SmallVector<mlir::Type, 1>({}), operands, attributes);
     rewriter.applySignatureConversion(&newOp.getBody(), sigConv);
@@ -766,19 +753,6 @@ private:
                                            &sigConv)))
       return failure();
 
-    /* Move all module-level arc-dialect dependency attributes over to
-       their target dialect names */
-    prefix = prefix + "dependency.";
-    auto parent = newOp->getParentOp();
-
-    for (auto a : parent->getDialectAttrs()) {
-      auto name = a.first.strref();
-      if (name.consume_front(prefix)) {
-        auto new_name = (lang.getValue() + ".dependency." + name).str();
-        parent->removeAttr(a.first.strref());
-        parent->setAttr(Identifier::get(new_name, ctx), a.second);
-      }
-    }
     rewriter.eraseOp(op);
     return success();
   }

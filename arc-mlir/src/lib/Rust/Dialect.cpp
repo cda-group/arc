@@ -129,24 +129,6 @@ LogicalResult RustExtFuncOp::verifyType() {
   if (!type.isa<FunctionType>())
     return emitOpError("requires '" + getTypeAttrName() +
                        "' attribute of function type");
-  Attribute lang = (*this)->getAttr("language");
-  if (!lang || !lang.isa<StringAttr>())
-    return emitOpError("requires 'language' attribute");
-  StringAttr lang_str = lang.cast<StringAttr>();
-  if (!lang_str.getValue().equals("rust"))
-    return emitOpError("only supports the Rust language");
-  Attribute crate = (*this)->getAttr("crate");
-  if (!crate || !crate.isa<StringAttr>())
-    return emitOpError("requires 'crate' attribute");
-
-  std::string dependency_key =
-      ("rust.dependency." + crate.cast<StringAttr>().getValue()).str();
-
-  Attribute dep = (*this)->getParentOp()->getAttr(dependency_key);
-  if (!dep || !dep.isa<StringAttr>())
-    return (*this)->getParentOp()->emitOpError("requires '" + dependency_key +
-                                               "' attribute");
-
   return success();
 }
 
@@ -312,20 +294,6 @@ void RustFuncOp::writeRust(RustPrinterStream &PS) {
 
 // Write this function as Rust code to os
 void RustExtFuncOp::writeRust(RustPrinterStream &PS) {
-  StringRef crate = (*this)->getAttrOfType<StringAttr>("crate").getValue();
-  StringRef symbol = (*this)->getAttrOfType<StringAttr>("sym_name").getValue();
-
-  std::string d =
-      ("use " + crate + "::" + symbol + " as " + symbol + ";\n").str();
-  PS.registerDirective(d, d);
-
-  std::string dependency_key = ("rust.dependency." + crate).str();
-  PS.registerDependency(crate.str(),
-                        (*this)
-                            ->getParentOp()
-                            ->getAttrOfType<StringAttr>(dependency_key)
-                            .getValue()
-                            .str());
 }
 
 void RustReturnOp::writeRust(RustPrinterStream &PS) {

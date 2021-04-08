@@ -152,8 +152,6 @@ def Rust_RustExtFuncOp : Rust_Op<"extfunc", [FunctionLike, IsolatedFromAbove, Sy
   let description = [{
   }];
 
-  let arguments = (ins StrAttr : $language);
-
   let regions = (region AnyRegion:$empty_body);
 
   let extraClassDeclaration = [{
