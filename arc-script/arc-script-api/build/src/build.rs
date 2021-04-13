@@ -15,6 +15,8 @@ use std::io::Write;
 use std::panic;
 use std::path::Path;
 use std::path::PathBuf;
+use std::sync::Arc;
+use std::sync::Mutex;
 use walkdir::WalkDir;
 
 fn has_extension(path: &Path, s: &str) -> bool {
@@ -42,12 +44,29 @@ impl Builder {
                 let mut path = entry.path();
                 if let Some(name) = path.file_name() {
                     if name == "main.arc" || has_extension(path, "arc") && self.no_exclude {
+                        let rc0 = Arc::new(Mutex::new(String::from("hello")));
+                        let rc1 = rc0.clone();
+
+                        std::panic::set_hook(Box::new(move |panic_info| {
+                            let mut payload = rc1.lock().unwrap();
+
+                            let loc = if let Some(location) = panic_info.location() {
+                                format!(" in '{}' at line {}", location.file(), location.line(),)
+                            } else {
+                                String::from("")
+                            };
+                            let msg = if let Some(s) = panic_info.payload().downcast_ref::<&str>() {
+                                format!("'{}'", s)
+                            } else {
+                                String::from("")
+                            };
+                            *payload = format!("{}{}", msg, loc);
+                        }));
+
                         let res = panic::catch_unwind(|| self.build_file(path, out_dir, cargo_dir));
                         if let Err(e) = res {
-                            eprintln!("Internal compiler error when compiling : {:?}", path);
-                            eprintln!("{:?}", e);
-                            let message = e.downcast_ref::<&str>().unwrap();
-                            self.report_arcscript_error(path, message, out_dir, cargo_dir);
+                            let message = rc0.lock().unwrap();
+                            self.report_arcscript_error(path, &message, out_dir, cargo_dir);
                         }
                     }
                 }
@@ -106,7 +125,11 @@ impl Builder {
         let output_dir = output_path.parent().unwrap();
         fs::create_dir_all(output_dir).unwrap();
         let mut sink = Buffer::no_color();
-        writeln!(sink, r#"compile_error!("Internal Compiler Error: {}");"#, message);
+        writeln!(
+            sink,
+            r#"compile_error!("Internal Compiler Error: {}");"#,
+            message
+        );
         fs::File::create(output_path)
             .unwrap()
             .write_all(sink.as_slice())
