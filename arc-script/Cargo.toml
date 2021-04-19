@@ -51,7 +51,6 @@ members = [
 #   "arc-script-web-lsp",
   "arc-script-test/compile",
   "arc-script-test/bench",
-  "arc-script-test/template",
   "arc-script-test/stdlib",
   "arc-script-test/arcon",
 ]
@@ -76,7 +75,6 @@ default-members = [
 #   "arc-script-test/integration/dynamic",
 #   "arc-script-test/integration/dynamic-cached",
   "arc-script-test/bench",
-  "arc-script-test/template",
   "arc-script-test/stdlib",
 ]
 

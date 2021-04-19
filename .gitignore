@@ -148,3 +148,5 @@ dist/
 corpus/
 artifacts/
 history.txt
+
+arc-script/**/template/
