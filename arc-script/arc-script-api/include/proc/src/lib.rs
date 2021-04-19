@@ -2,7 +2,6 @@
 
 #![allow(unused)]
 #![feature(proc_macro_span)]
-#![feature(option_expect_none)]
 
 extern crate proc_macro;
 

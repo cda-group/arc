@@ -21,8 +21,10 @@ pub(crate) fn expand(attr: pm::TokenStream, item: pm::TokenStream) -> pm::TokenS
 
         let mut args = attr.into_iter();
         let arg = args.next().expect("Expected attribute");
-        args.next()
-            .expect_none("Only one attribute expected, found multiple");
+        assert!(
+            args.next().is_none(),
+            "Only one attribute expected, found multiple"
+        );
         let lit = syn::parse(arg.into())
             .expect("Expected a string literal attribute containing the filepath to an arc-script");
         if let syn::Lit::Str(v) = lit {

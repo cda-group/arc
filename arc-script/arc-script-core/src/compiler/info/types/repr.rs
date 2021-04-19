@@ -110,8 +110,8 @@ impl UnifyValue for Type {
     fn unify_values(ty1: &Self, ty2: &Self) -> std::result::Result<Self, Self::Error> {
         use TypeKind::*;
         match (&ty1.kind, &ty2.kind) {
-            (Unknown, _) | (Err, _) => Ok(ty2.clone()),
-            (_, Unknown) | (_, Err) => Ok(ty1.clone()),
+            (Unknown | Err, _) => Ok(ty2.clone()),
+            (_, Unknown | Err) => Ok(ty1.clone()),
             _ => Ok(ty1.clone()),
         }
     }

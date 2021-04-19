@@ -8,7 +8,7 @@ use crate::compiler::info::Info;
 impl Path {
     /// Converts the path into a path which points to an entry in the file system.
     /// The last component, which is assumed to be an item, is therefore stripped from the path.
-    pub(crate) fn to_path_buf(&self, info: &Info) -> std::path::PathBuf {
+    pub(crate) fn path_buf(&self, info: &Info) -> std::path::PathBuf {
         let names = info.resolve_to_names(self.id);
         let path = names[..names.len() - 1].join("/");
         std::path::PathBuf::from(path)

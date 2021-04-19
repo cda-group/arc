@@ -133,7 +133,7 @@ impl AST {
         self.modules.insert(module_path_id, module);
 
         for import_path in dependency_paths {
-            let mut import_path = import_path.to_path_buf(info);
+            let mut import_path = import_path.path_buf(info);
             let import_path_id = info.intern_ospath(&import_path);
             if !self.modules.contains_key(&import_path_id) {
                 import_path.push(MOD_FILENAME);
