@@ -38,6 +38,7 @@
 #![allow(clippy::cargo_common_metadata)] // Needless information
 #![allow(clippy::option_if_let_else)] // Buggy
 #![allow(clippy::module_name_repetitions)] // Annoying
+#![allow(clippy::needless_for_each)]
 // Allow unused items, toggle this every once in a while
 #![allow(unused)]
 // Deny all rustc/rustdoc lints (except for a few)

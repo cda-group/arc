@@ -664,7 +664,7 @@ void RustTupleOp::writeRust(RustPrinterStream &PS) {
 // Crate versions
 //===----------------------------------------------------------------------===//
 namespace rust {
-const char *CrateVersions::hexf = "0.1.0";
+const char *CrateVersions::hexf = "0.2.1";
 const char *CrateVersions::ndarray = "0.13.0";
 } // namespace rust
 

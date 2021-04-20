@@ -97,7 +97,7 @@ impl Builder {
             }
             Ok(val) => {
                 // Path to /a/b/c/my-project/target/build/my-project-xxx/out/src/x/y/z/main.rs
-                let mut output_path = input_path.clone();
+                let mut output_path = input_path;
                 output_path.set_extension("rs");
                 let output_path = output_path.strip_prefix(cargo_dir).unwrap();
                 let output_path = PathBuf::from(out_dir).join(output_path);
@@ -117,7 +117,7 @@ impl Builder {
     // module will report the compilation error.
     fn report_arcscript_error(&self, path: &Path, message: &str, out_dir: &str, cargo_dir: &str) {
         let input_path = PathBuf::from(path);
-        let mut output_path = input_path.clone();
+        let mut output_path = input_path;
         output_path.set_extension("rs");
         let output_path = output_path.strip_prefix(cargo_dir).unwrap();
         let output_path = PathBuf::from(out_dir).join(output_path);

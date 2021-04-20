@@ -153,7 +153,7 @@ impl<'a> Display for CaseDebug<'a> {
                 ParamKind::Ignore => {
                     writeln!(f, "    _ => {}", hir::pretty(expr, self.hir, self.info))?
                 }
-                _ => writeln!(f, "<error>")?,
+                ParamKind::Err => writeln!(f, "<error>")?,
             },
             _ => {}
         }
