@@ -152,8 +152,6 @@ def Rust_RustExtFuncOp : Rust_Op<"extfunc", [FunctionLike, IsolatedFromAbove, Sy
   let description = [{
   }];
 
-  let arguments = (ins StrAttr : $language);
-
   let regions = (region AnyRegion:$empty_body);
 
   let extraClassDeclaration = [{
@@ -377,21 +375,6 @@ def Rust_RustIfOp
   }];
 }
 
-def Rust_RustDependencyOp : Rust_Op<"dependency", [NoSideEffect]> {
-  let summary = "Specify a dependency on a crate.";
-  let description = [{
-    This is used to specify a dependency on an external crate.
-  }];
-
-  let arguments = (ins StrAttr : $crate, StrAttr : $version);
-  let results = (outs);
-
-  let extraClassDeclaration = [{
-    Attribute getCrate() { return (*this)->getAttr("crate"); }
-    Attribute getVersion() { return (*this)->getAttr("version"); }
-  }];
-}
-
 def Rust_RustMakeStructOp
     : Rust_Op<"make_struct", []> {
   let summary = "constructs a struct";
@@ -403,22 +386,6 @@ def Rust_RustMakeStructOp
   let extraClassDeclaration = [{
     // Write this operation as Rust code to the stream
     void writeRust(RustPrinterStream &);
-  }];
-}
-
-def Rust_RustModuleDirectiveOp : Rust_Op<"module_directive", [NoSideEffect]> {
-  let summary = "Rust-level module directives.";
-  let description = [{
-    The specified string will be output at the top of the Rust output file.
-    Strings with the same key will be de-duplicated.
-  }];
-
-  let arguments = (ins StrAttr : $key, StrAttr : $str);
-  let results = (outs);
-
-  let extraClassDeclaration = [{
-    Attribute getKey() { return (*this)->getAttr("key"); }
-    Attribute getStr() { return (*this)->getAttr("str"); }
   }];
 }
 

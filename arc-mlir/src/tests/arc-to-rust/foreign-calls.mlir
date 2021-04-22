@@ -1,42 +1,22 @@
-// RUN: arc-mlir -rustcratename arctorustforeigncalls -arc-to-rust -crate %t %s && cp -rpf %S/external_crate %t && CARGO_HTTP_DEBUG=true cargo test -j 1 --manifest-path=%t/arctorustforeigncalls/Cargo.toml
+// RUN: arc-mlir-rust-test %t %s -rustinclude %s.rust-tests
+// RUN: arc-mlir-rust-test %t-canon %s -rustinclude %s.rust-tests -canonicalize
 
-module @arctorustforeigncalls attributes {
+module @arctorustforeigncalls {
 
-arc.foreign.rust.dependency.external_crate = "{ path = \"../external_crate\", version = \"0.1.0\" }"
-} {
+  func private @callee_void_void() -> ()
 
-  func private @callee_void_void() -> () attributes {
-       arc.foreign_language = "rust",
-       arc.foreign.rust.crate = "external_crate"
-  }
+  func private @callee_si32_si32(%in : si32) -> si32
 
-  func private @callee_si32_si32(%in : si32) -> si32 attributes {
-       arc.foreign_language = "rust",
-       arc.foreign.rust.crate = "external_crate"
-  }
-
-  func private @callee_si32_x2_si32(%a : si32, %b : si32) -> si32 attributes {
-       arc.foreign_language = "rust",
-       arc.foreign.rust.crate = "external_crate"
-  }
+  func private @callee_si32_x2_si32(%a : si32, %b : si32) -> si32
 
   func private @callee_struct(%in : !arc.struct<foo : si32>)
-       -> !arc.struct<foo : si32> attributes {
-       arc.foreign_language = "rust",
-       arc.foreign.rust.crate = "external_crate"
-  }
+       -> !arc.struct<foo : si32>
 
   func private @callee_tuple(%in : tuple<si32,si32>) ->
-       tuple<si32,si32> attributes {
-       arc.foreign_language = "rust",
-       arc.foreign.rust.crate = "external_crate"
- }
+       tuple<si32,si32>
 
   func private @callee_mixed(%in : tuple<si32,si32,!arc.struct<a : si32>>)
-       -> tuple<si32,si32,!arc.struct<a : si32>> attributes {
-       arc.foreign_language = "rust",
-       arc.foreign.rust.crate = "external_crate"
- }
+       -> tuple<si32,si32,!arc.struct<a : si32>>
 
   func @caller0() -> () {
     call @callee_void_void() : () -> ()

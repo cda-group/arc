@@ -18,6 +18,7 @@ lazy_static     = { version = "1.4.0" }
 arcon           = { git = "https://github.com/segeljakt/arcon" }
 arc-script      = { version = "=0.0.0", path = "../../" }
 prost           = { version = "0.7.0" }
+hexf            = { version = "0.2.1" }
 
 [build-dependencies]
 arc-script-build = { version = "=0.0.0", path = "../../arc-script-api/build" }

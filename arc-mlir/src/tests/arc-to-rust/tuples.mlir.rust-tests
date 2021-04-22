@@ -1,16 +1,22 @@
 #[cfg(test)]
 mod tests {
+ use crate::defs::*;
   #[test]
   fn test() {
-    let tmp = crate::makemeatuple();
-    let tmp1 = crate::makemeatuple();
+   let tmp = makemeatuple();
+   let tmp1 = makemeatuple();
+   let tmp = makemeatuple();
+   let tmp1 = makemeatuple();
+   assert_eq!(tmp.0, 7);
+   assert_eq!(tmp.1, 17);
 
-    assert_eq!(tmp.0, 7);
-    assert_eq!(tmp.1, 17);
-
-    assert_eq!(crate::bool_tuple(),false);
-    assert_eq!(crate::const_tuple(),17);
-    assert_eq!(crate::tuple_access(tmp),17);
-    assert_eq!((crate::make_nested(tmp1).2).1,17);
+   assert_eq!(bool_tuple(),false);
+   assert_eq!(const_tuple(),17);
+   assert_eq!(tuple_access(tmp),17);
+   assert_eq!((make_nested(tmp1).2).1,17);
+   assert_eq!(bool_tuple(),false);
+   assert_eq!(const_tuple(),17);
+   assert_eq!(tuple_access(tmp),17);
+   assert_eq!((make_nested(tmp1).2).1,17);
   }
 }

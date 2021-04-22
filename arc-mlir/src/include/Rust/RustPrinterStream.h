@@ -46,9 +46,6 @@ namespace rust {
 // This class main purpose is to track MLIR Values and map them to
 // unique ids.
 class RustPrinterStream {
-  llvm::raw_ostream &OS;
-  llvm::raw_ostream &Types;
-
   llvm::raw_string_ostream Constants, NamedTypes, TypeUses, Body;
 
   std::string ConstantsStr, NamedTypesStr, UsesStr, BodyStr;
@@ -64,38 +61,39 @@ class RustPrinterStream {
   std::map<std::string, std::string> CrateDependencies;
   std::map<std::string, std::string> CrateDirectives;
 
-  std::string ModuleName;
-
-  bool InlineOuput;
+  std::string Includefile;
 
 public:
-  RustPrinterStream(llvm::raw_ostream &os, llvm::raw_ostream &types,
-                    std::string module_name, bool inlineOutput = false)
-      : OS(os), Types(types), Constants(ConstantsStr),
-        NamedTypes(NamedTypesStr), TypeUses(UsesStr), Body(BodyStr), NextID(0),
-        NextConstID(0), ModuleName(module_name), InlineOuput(inlineOutput){};
+  RustPrinterStream(std::string includefile)
+      : Constants(ConstantsStr), NamedTypes(NamedTypesStr), TypeUses(UsesStr),
+        Body(BodyStr), NextID(0), NextConstID(0), Includefile(includefile){};
 
-  void flush() {
-    if (InlineOuput) {
-      OS << "use arc_script::arcorn;\n";
-      OS << "use arc_script::arcorn::state::{ArcMapOps, ArcRefOps, ArcSetOps, "
-	"ArcVecOps};\n";
-      OS << "use arcon::prelude::*;\n";
-    } else {
-      OS << "#![allow(non_snake_case)]\n#![allow(non_camel_case_types)]\n";
-      OS << "#![allow(arithmetic_overflow)]\n";
-      Types << "#![allow(non_snake_case)]\n#![allow(non_camel_case_types)]\n";
-    }
+  void flush(llvm::raw_ostream &o) {
+    o << "#[allow(non_snake_case)]\n"
+      << "#[allow(unused_must_use)]\n"
+      << "#[allow(dead_code)]\n"
+      << "#[allow(unused_variables)]\n"
+      << "#[allow(unused_imports)]\n"
+      << "#[allow(unused_braces)]\n";
+
+    o << "pub mod defs {\n"
+         "use super::*;\n"
+      << "pub use arc_script::arcorn;\n"
+      << "pub use arc_script::arcorn::state::{ArcMapOps, ArcRefOps, "
+         "ArcSetOps, ArcVecOps};\n"
+      << "pub use arcon::prelude::*;\n"
+      << "pub use hexf::*;\n";
 
     for (auto i : CrateDirectives)
-      OS << i.second << "\n";
-    OS << Constants.str();
-    OS << TypeUses.str();
+      o << i.second << "\n";
+    o << Constants.str();
+    o << TypeUses.str();
     std::string types = NamedTypes.str();
-    if (!types.empty())
-      Types << "use std::rc::Rc;\n";
-    Types << types;
-    OS << Body.str();
+    o << types;
+    o << Body.str();
+    if (!Includefile.empty())
+      o << "include!(\"" << Includefile << "\");\n";
+    o << "}\n";
   }
 
   // Returns true if there has been output to the types NamedTypes
@@ -171,31 +169,8 @@ public:
     return *this;
   }
 
-  llvm::raw_ostream &printModuleName(llvm::raw_ostream &os) {
-    os << ModuleName;
-    return os;
-  }
-
-  void registerDependency(RustDependencyOp dep) {
-    std::string key = dep.getCrate().cast<StringAttr>().getValue().str();
-    std::string value =
-        "\"" + dep.getVersion().cast<StringAttr>().getValue().str() + "\"";
-    registerDependency(key, value);
-  }
-
   void registerDependency(std::string key, std::string value) {
     CrateDependencies[key] = value;
-  }
-
-  void writeTomlDependencies(llvm::raw_ostream &out) {
-    for (auto i : CrateDependencies)
-      out << i.first << " = " << i.second << "\n";
-  }
-
-  void registerDirective(RustModuleDirectiveOp dep) {
-    std::string key = dep.getKey().cast<StringAttr>().getValue().str();
-    std::string str = dep.getStr().cast<StringAttr>().getValue().str();
-    registerDirective(key, str);
   }
 
   void registerDirective(std::string key, std::string value) {

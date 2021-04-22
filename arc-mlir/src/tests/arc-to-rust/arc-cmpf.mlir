@@ -1,4 +1,5 @@
-// RUN: arc-mlir -arc-to-rust -crate %t -extra-rust-trailer %s.rust-tests %s && CARGO_HTTP_DEBUG=true cargo test -j 1 --manifest-path=%t/arctorustarcarccmpf/Cargo.toml
+// RUN: arc-mlir-rust-test %t %s -rustinclude %s.rust-tests
+
 module @arctorustarcarccmpf {
 func @oeq_f32(%a : f32, %b : f32) -> i1 {
   %r = cmpf "oeq", %a, %b : f32

@@ -1,13 +1,14 @@
 // Empty
 #[cfg(test)]
 mod tests {
+  use crate::defs::*;
   #[test]
   fn it_works() {
-    assert_eq!(crate::ok3().a, 4);
-    assert_eq!(crate::ok4().a, 4);
-    assert_eq!(crate::ok5().a, 4);
-    assert_eq!(crate::ok5().b.a, 3);
-    assert_eq!(crate::ok6(), 4);
-    assert_eq!(crate::ok7(), 3);
+    assert_eq!(ok3().a, 4);
+    assert_eq!(ok4().a, 4);
+    assert_eq!(ok5().a, 4);
+    assert_eq!(ok5().b.a, 3);
+    assert_eq!(ok6(), 4);
+    assert_eq!(ok7(), 3);
   }
 }

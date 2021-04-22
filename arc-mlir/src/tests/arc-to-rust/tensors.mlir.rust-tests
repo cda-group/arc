@@ -1,11 +1,12 @@
 #[cfg(test)]
 mod tests {
+  use crate::defs::*;
   #[test]
   fn test() {
-    let tmp0 = crate::make_0();
-    let tmp1 = crate::make_1();
-    let tmp2 = crate::make_2();
-    let tmp3 = crate::make_3();
+    let tmp0 = make_0();
+    let tmp1 = make_1();
+    let tmp2 = make_2();
+    let tmp3 = make_3();
 
     assert_eq!(tmp0[[0]], 0.0);
 

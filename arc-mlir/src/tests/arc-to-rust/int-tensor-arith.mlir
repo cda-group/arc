@@ -1,4 +1,5 @@
-// RUN: arc-mlir -arc-to-rust -crate %t -extra-rust-trailer %s.rust-tests %s && CARGO_HTTP_DEBUG=true cargo test -j 1 --manifest-path=%t/arctorustinttensorarith/Cargo.toml
+// RUN: arc-mlir-rust-test %t %s -rustinclude %s.rust-tests
+
 module @arctorustinttensorarith {
 func @addi_tensor2x2xui8(%a : tensor<2x2xui8>, %b : tensor<2x2xui8>) -> tensor<2x2xui8> {
   %c = arc.addi %a, %b : tensor<2x2xui8>

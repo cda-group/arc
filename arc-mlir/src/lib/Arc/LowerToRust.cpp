@@ -38,16 +38,6 @@ namespace arc {
 namespace {
 struct ArcToRustLoweringPass : public LowerToRustBase<ArcToRustLoweringPass> {
   void runOnOperation() final;
-
-  static void emitCrateDependency(StringRef crate, StringRef version,
-                                  MLIRContext *ctx,
-                                  ConversionPatternRewriter &rewriter);
-
-  static void emitModuleDirective(StringRef key, StringRef str,
-                                  MLIRContext *ctx,
-                                  ConversionPatternRewriter &rewriter);
-
-  static const std::string hexfCrate;
 };
 } // end anonymous namespace.
 
@@ -185,13 +175,6 @@ private:
       cst += "\"))";
     }
 
-    std::string directive =
-        "#[macro_use] extern crate " + ArcToRustLoweringPass::hexfCrate + ";";
-    ArcToRustLoweringPass::emitCrateDependency(ArcToRustLoweringPass::hexfCrate,
-                                               rust::CrateVersions::hexf,
-                                               op.getContext(), rewriter);
-    ArcToRustLoweringPass::emitModuleDirective(
-        ArcToRustLoweringPass::hexfCrate, directive, op.getContext(), rewriter);
     return returnResult(op, rustTy, cst, rewriter);
   }
 
@@ -762,19 +745,6 @@ private:
                                  mlir::FuncOp &func, Operation *op,
                                  TypeConverter::SignatureConversion &sigConv,
                                  MLIRContext *ctx) const {
-    StringAttr lang = func->getAttr("arc.foreign_language").cast<StringAttr>();
-    auto prefix = (Twine("arc.foreign.") + lang.getValue() + ".").str();
-    attributes.push_back(
-        NamedAttribute(Identifier::get("language", ctx), lang));
-
-    for (auto a : func->getDialectAttrs()) {
-      auto name = a.first.strref();
-      if (name.consume_front(prefix)) {
-        attributes.push_back(
-            NamedAttribute(Identifier::get(name, ctx), a.second));
-      }
-    }
-
     auto newOp = rewriter.create<rust::RustExtFuncOp>(
         op->getLoc(), SmallVector<mlir::Type, 1>({}), operands, attributes);
     rewriter.applySignatureConversion(&newOp.getBody(), sigConv);
@@ -783,19 +753,6 @@ private:
                                            &sigConv)))
       return failure();
 
-    /* Move all module-level arc-dialect dependency attributes over to
-       their target dialect names */
-    prefix = prefix + "dependency.";
-    auto parent = newOp->getParentOp();
-
-    for (auto a : parent->getDialectAttrs()) {
-      auto name = a.first.strref();
-      if (name.consume_front(prefix)) {
-        auto new_name = (lang.getValue() + ".dependency." + name).str();
-        parent->removeAttr(a.first.strref());
-        parent->setAttr(Identifier::get(new_name, ctx), a.second);
-      }
-    }
     rewriter.eraseOp(op);
     return success();
   }
@@ -903,18 +860,4 @@ void ArcToRustLoweringPass::runOnOperation() {
 
 std::unique_ptr<OperationPass<ModuleOp>> arc::createLowerToRustPass() {
   return std::make_unique<ArcToRustLoweringPass>();
-}
-
-const std::string ArcToRustLoweringPass::hexfCrate = "hexf";
-
-void ArcToRustLoweringPass::emitCrateDependency(
-    StringRef crate, StringRef version, MLIRContext *ctx,
-    ConversionPatternRewriter &rewriter) {
-  rewriter.create<rust::RustDependencyOp>(UnknownLoc::get(ctx), crate, version);
-}
-
-void ArcToRustLoweringPass::emitModuleDirective(
-    StringRef key, StringRef str, MLIRContext *ctx,
-    ConversionPatternRewriter &rewriter) {
-  rewriter.create<rust::RustModuleDirectiveOp>(UnknownLoc::get(ctx), key, str);
 }
