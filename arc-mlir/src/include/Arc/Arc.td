@@ -97,6 +97,7 @@ def ArcTensorElementType : Type<Or<[
 
 def AnyBuilder : Type<CPred<"$_self.isa<BuilderType>()">, "any builder">;
 def AnyAppender : Type<CPred<"$_self.isa<AppenderType>()">, "any appender">;
+def AnyEnum : Type<CPred<"$_self.isa<EnumType>()">, "any enum">;
 def AnyStruct : Type<CPred<"$_self.isa<StructType>()">, "any struct">;
 def ArcStream : Type<CPred<"$_self.isa<StreamType>()">, "a stream">;
 def ArcStateValue : Type<CPred<"$_self.isa<ArconValueType>()">,
@@ -233,6 +234,23 @@ def MakeStructOp : Arc_Op<"make_struct", [NoSideEffect]> {
   let assemblyFormat = [{
     (`(` $values^ `:` type($values) `)`)? attr-dict `:` type($result)
   }];
+}
+
+def MakeEnumOp : Arc_Op<"make_enum", [NoSideEffect]> {
+  let summary = "create an enum from a values";
+  let description = [{
+    A pure operation which turns its argument into an enum.
+    ```
+    %r = arc.make_enum "a" (%a : i32) : !arc.enum<a : i32, b : f32>
+    ```
+  }];
+  let arguments = (ins AnyType:$value, StrAttr:$variant);
+  let results = (outs AnyEnum:$result);
+  let extraClassDeclaration = [{ LogicalResult customVerify(); }];
+  let verifier = [{ return customVerify(); }];
+
+  let assemblyFormat =
+    "`(` $value `:` type($value) `)` `as` $variant attr-dict `:` type($result)";
 }
 
 def MakeTupleOp : Arc_Op<"make_tuple", [NoSideEffect]> {
