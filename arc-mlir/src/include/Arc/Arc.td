@@ -520,6 +520,24 @@ def EnumAccessOp : Arc_Op<"enum_access", [NoSideEffect]> {
     "$variant `in` `(` $value `:` type($value) `)` attr-dict `:` type($result)";
 }
 
+def EnumCheckOp : Arc_Op<"enum_check", [NoSideEffect]> {
+  let summary = "Check if an enum is of a particular variant";
+  let description = [{
+    A pure operation which checks if an enum is of a particular variant.
+
+    ```
+    %e = arc.make_enum "a" (%a : i32) : !arc.enum<a : i32, b : f32>
+    %v = arc.enum_check (%a : i32) is "a"
+    ```
+  }];
+  let arguments = (ins AnyEnum:$value, StrAttr:$variant);
+  let results = (outs BoolLike:$result);
+  let extraClassDeclaration = [{ LogicalResult customVerify(); }];
+  let verifier = [{ return customVerify(); }];
+  let assemblyFormat =
+    "`(` $value `:` type($value) `)` `is` $variant attr-dict `:` type($result)";
+}
+
 def StructAccessOp : Arc_Op<"struct_access", [NoSideEffect]> {
   let summary = "access a field of a struct";
   let description = [{

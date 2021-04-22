@@ -47,4 +47,13 @@ module @toplevel {
     return %r : f32
   }
 
+  func @check0(%e : !arc.enum<a : i32, b : f32>) -> i1 {
+    %r = arc.enum_check (%e : !arc.enum<a : i32, b : f32>) is "a" : i1
+    return %r : i1
+  }
+
+  func @check1(%e : !arc.enum<a : i32, b : f32>) -> i1 {
+    %r = arc.enum_check (%e : !arc.enum<a : i32, b : f32>) is "b" : i1
+    return %r : i1
+  }
 }

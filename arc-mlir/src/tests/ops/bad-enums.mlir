@@ -43,3 +43,14 @@ module @toplevel {
     return %r : i32
   }
 }
+
+// -----
+
+module @toplevel {
+  func @check2(%e : !arc.enum<a : i32, b : f32>) -> i1 {
+    // expected-error@+2 {{'arc.enum_check' op : variant 'c' does not exist in '!arc.enum<a : i32, b : f32>'}}
+    // expected-note@+1 {{see current operation: %0 = "arc.enum_check"(%arg0) {variant = "c"} : (!arc.enum<a : i32, b : f32>) -> i1}}
+    %r = arc.enum_check (%e : !arc.enum<a : i32, b : f32>) is "c" : i1
+    return %r : i1
+  }
+}

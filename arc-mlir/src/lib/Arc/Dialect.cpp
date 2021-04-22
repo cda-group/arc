@@ -272,6 +272,19 @@ LogicalResult EnumAccessOp::customVerify() {
          << WantedVariant << "' does not exist in " << SourceTy;
 }
 
+LogicalResult EnumCheckOp::customVerify() {
+  auto SourceTy = value().getType().cast<EnumType>();
+  auto VariantTys = SourceTy.getVariants();
+  auto WantedVariant = (*this)->getAttrOfType<StringAttr>("variant").getValue();
+
+  // Check that the given type matches the specified variant.
+  for (auto &i : VariantTys)
+    if (i.first.getValue().equals(WantedVariant))
+      return mlir::success();
+  return emitOpError(": variant '")
+         << WantedVariant << "' does not exist in " << SourceTy;
+}
+
 LogicalResult MakeEnumOp::customVerify() {
   auto ResultTy = result().getType().cast<EnumType>();
   auto SourceTy = value().getType();
