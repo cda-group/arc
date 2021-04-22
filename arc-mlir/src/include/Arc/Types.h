@@ -50,6 +50,7 @@ struct ArconMapTypeStorage;
 struct BuilderTypeStorage;
 struct AppenderTypeStorage;
 struct StreamTypeStorage;
+struct EnumTypeStorage;
 struct StructTypeStorage;
 
 //===----------------------------------------------------------------------===//
@@ -159,6 +160,25 @@ public:
 
   /// Returns the number of fields held by this struct.
   size_t getNumFields() const;
+
+  static Type parse(DialectAsmParser &parser);
+  void print(DialectAsmPrinter &os) const;
+};
+
+class EnumType
+    : public mlir::Type::TypeBase<EnumType, mlir::Type, EnumTypeStorage> {
+public:
+  using Base::Base;
+
+  typedef std::pair<mlir::StringAttr, mlir::Type> VariantTy;
+
+  static EnumType get(llvm::ArrayRef<VariantTy> elementTypes);
+
+  /// Returns the variants of this enum type.
+  llvm::ArrayRef<VariantTy> getVariants() const;
+
+  /// Returns the number of variants in this enum.
+  size_t getNumVariants() const;
 
   static Type parse(DialectAsmParser &parser);
   void print(DialectAsmPrinter &os) const;
