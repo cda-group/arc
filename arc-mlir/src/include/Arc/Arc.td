@@ -502,6 +502,23 @@ def Arc_SelectOp : Arc_Op<"select", [NoSideEffect, SameOperandsAndResultShape,
     $condition `,` $true_value `,` $false_value attr-dict `:` type($result)
   }];
 }
+def EnumAccessOp : Arc_Op<"enum_access", [NoSideEffect]> {
+  let summary = "access a variant of an enum";
+  let description = [{
+    A pure operation which acccesses a variant of an enum.
+
+    ```
+    %e = arc.make_enum "a" (%a : i32) : !arc.enum<a : i32, b : f32>
+    %v = arc.enum_access "a" in %e : i32
+    ```
+  }];
+  let arguments = (ins AnyEnum:$value, StrAttr:$variant);
+  let results = (outs AnyType:$result);
+  let extraClassDeclaration = [{ LogicalResult customVerify(); }];
+  let verifier = [{ return customVerify(); }];
+  let assemblyFormat =
+    "$variant `in` `(` $value `:` type($value) `)` attr-dict `:` type($result)";
+}
 
 def StructAccessOp : Arc_Op<"struct_access", [NoSideEffect]> {
   let summary = "access a field of a struct";

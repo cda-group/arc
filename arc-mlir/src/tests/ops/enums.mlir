@@ -37,4 +37,14 @@ module @toplevel {
     return %r : !arc.enum<a : i32, b : !arc.enum<a : i32>>
   }
 
+  func @access0(%e : !arc.enum<a : i32, b : f32>) -> i32 {
+    %r = arc.enum_access "a" in (%e : !arc.enum<a : i32, b : f32>) : i32
+    return %r : i32
+  }
+
+  func @access1(%e : !arc.enum<a : i32, b : f32>) -> f32 {
+    %r = arc.enum_access "b" in (%e : !arc.enum<a : i32, b : f32>) : f32
+    return %r : f32
+  }
+
 }

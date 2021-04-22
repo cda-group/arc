@@ -252,6 +252,26 @@ LogicalResult EmitOp::customVerify() {
   return mlir::success();
 }
 
+LogicalResult EnumAccessOp::customVerify() {
+  auto ResultTy = result().getType();
+  auto SourceTy = value().getType().cast<EnumType>();
+  auto VariantTys = SourceTy.getVariants();
+  auto WantedVariant = variant();
+
+  // Check that the given type matches the specified variant.
+  for (auto &i : VariantTys)
+    if (i.first.getValue().equals(WantedVariant)) {
+      if (i.second == ResultTy)
+        return mlir::success();
+      else
+        return emitOpError(": variant '")
+               << WantedVariant << "' does not have a matching type, expected "
+               << ResultTy << " but found " << i.second;
+    }
+  return emitOpError(": variant '")
+         << WantedVariant << "' does not exist in " << SourceTy;
+}
+
 LogicalResult MakeEnumOp::customVerify() {
   auto ResultTy = result().getType().cast<EnumType>();
   auto SourceTy = value().getType();
