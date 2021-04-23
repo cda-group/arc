@@ -51,6 +51,7 @@ void ArcDialect::initialize(void) {
   addTypes<ArconMapType>();
   addTypes<ArconValueType>();
   addTypes<StreamType>();
+  addTypes<EnumType>();
   addTypes<StructType>();
 }
 
@@ -72,6 +73,8 @@ Type ArcDialect::parseType(DialectAsmParser &parser) const {
     return ArconValueType::parse(parser);
   if (keyword == "stream")
     return StreamType::parse(parser);
+  if (keyword == "enum")
+    return EnumType::parse(parser);
   if (keyword == "struct")
     return StructType::parse(parser);
   parser.emitError(parser.getNameLoc(), "unknown type keyword " + keyword);
@@ -92,6 +95,8 @@ void ArcDialect::printType(Type type, DialectAsmPrinter &os) const {
   else if (auto t = type.dyn_cast<ArconValueType>())
     t.print(os);
   else if (auto t = type.dyn_cast<StreamType>())
+    t.print(os);
+  else if (auto t = type.dyn_cast<EnumType>())
     t.print(os);
   else if (auto t = type.dyn_cast<StructType>())
     t.print(os);
@@ -245,6 +250,59 @@ LogicalResult EmitOp::customVerify() {
     return emitOpError("Can't emit element of type ")
            << ElemTy << " on stream of " << StreamTy;
   return mlir::success();
+}
+
+LogicalResult EnumAccessOp::customVerify() {
+  auto ResultTy = result().getType();
+  auto SourceTy = value().getType().cast<EnumType>();
+  auto VariantTys = SourceTy.getVariants();
+  auto WantedVariant = variant();
+
+  // Check that the given type matches the specified variant.
+  for (auto &i : VariantTys)
+    if (i.first.getValue().equals(WantedVariant)) {
+      if (i.second == ResultTy)
+        return mlir::success();
+      else
+        return emitOpError(": variant '")
+               << WantedVariant << "' does not have a matching type, expected "
+               << ResultTy << " but found " << i.second;
+    }
+  return emitOpError(": variant '")
+         << WantedVariant << "' does not exist in " << SourceTy;
+}
+
+LogicalResult EnumCheckOp::customVerify() {
+  auto SourceTy = value().getType().cast<EnumType>();
+  auto VariantTys = SourceTy.getVariants();
+  auto WantedVariant = (*this)->getAttrOfType<StringAttr>("variant").getValue();
+
+  // Check that the given type matches the specified variant.
+  for (auto &i : VariantTys)
+    if (i.first.getValue().equals(WantedVariant))
+      return mlir::success();
+  return emitOpError(": variant '")
+         << WantedVariant << "' does not exist in " << SourceTy;
+}
+
+LogicalResult MakeEnumOp::customVerify() {
+  auto ResultTy = result().getType().cast<EnumType>();
+  auto SourceTy = value().getType();
+  auto VariantTys = ResultTy.getVariants();
+  auto WantedVariant = variant();
+
+  // Check that the given type matches the specified variant.
+  for (auto &i : VariantTys)
+    if (i.first.getValue().equals(WantedVariant)) {
+      if (i.second == SourceTy)
+        return mlir::success();
+      else
+        return emitOpError(": variant '")
+               << WantedVariant << "' does not have a matching type, expected "
+               << SourceTy << " but found " << i.second;
+    }
+  return emitOpError(": variant '")
+         << WantedVariant << "' does not exist in " << ResultTy;
 }
 
 LogicalResult MakeVectorOp::customVerify() {
@@ -1048,6 +1106,87 @@ Type StreamType::parse(DialectAsmParser &parser) {
   if (parser.parseGreater())
     return Type();
   return StreamType::get(elementType);
+}
+
+//===----------------------------------------------------------------------===//
+// EnumType
+//===----------------------------------------------------------------------===//
+struct EnumTypeStorage : public mlir::TypeStorage {
+  using KeyTy = llvm::ArrayRef<EnumType::VariantTy>;
+
+  EnumTypeStorage(llvm::ArrayRef<EnumType::VariantTy> variantTypes)
+      : variants(variantTypes) {}
+
+  bool operator==(const KeyTy &key) const { return key == variants; }
+
+  static llvm::hash_code hashKey(const KeyTy &key) {
+    return llvm::hash_value(key);
+  }
+
+  static KeyTy getKey(llvm::ArrayRef<EnumType::VariantTy> variantTypes) {
+    return KeyTy(variantTypes);
+  }
+
+  static EnumTypeStorage *construct(mlir::TypeStorageAllocator &allocator,
+                                    const KeyTy &key) {
+    llvm::ArrayRef<EnumType::VariantTy> elementTypes = allocator.copyInto(key);
+
+    return new (allocator.allocate<EnumTypeStorage>())
+        EnumTypeStorage(elementTypes);
+  }
+
+  llvm::ArrayRef<EnumType::VariantTy> variants;
+};
+
+EnumType EnumType::get(llvm::ArrayRef<EnumType::VariantTy> variantTypes) {
+  assert(!variantTypes.empty() && "expected at least 1 variant type");
+
+  mlir::MLIRContext *ctx = variantTypes.front().second.getContext();
+  return Base::get(ctx, variantTypes);
+}
+
+/// Returns the element types of this struct type.
+llvm::ArrayRef<EnumType::VariantTy> EnumType::getVariants() const {
+  // 'getImpl' returns a pointer to the internal storage instance.
+  return getImpl()->variants;
+}
+
+size_t EnumType::getNumVariants() const { return getVariants().size(); }
+
+Type EnumType::parse(DialectAsmParser &parser) {
+  if (parser.parseLess())
+    return nullptr;
+  Builder &builder = parser.getBuilder();
+
+  SmallVector<EnumType::VariantTy, 3> variantTypes;
+  do {
+    StringRef name;
+    if (parser.parseKeyword(&name) || parser.parseColon())
+      return nullptr;
+
+    EnumType::VariantTy variantType;
+    variantType.first = StringAttr::get(builder.getContext(), name);
+    if (parser.parseType(variantType.second))
+      return nullptr;
+
+    variantTypes.push_back(variantType);
+  } while (succeeded(parser.parseOptionalComma()));
+
+  if (parser.parseGreater())
+    return Type();
+  return EnumType::get(variantTypes);
+}
+
+void EnumType::print(DialectAsmPrinter &os) const {
+  // Print the struct type according to the parser format.
+  os << "enum<";
+  auto variants = getVariants();
+  for (unsigned i = 0; i < getNumVariants(); i++) {
+    if (i != 0)
+      os << ", ";
+    os << variants[i].first.getValue() << " : " << variants[i].second;
+  }
+  os << '>';
 }
 
 //===----------------------------------------------------------------------===//

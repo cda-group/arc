@@ -97,6 +97,7 @@ def ArcTensorElementType : Type<Or<[
 
 def AnyBuilder : Type<CPred<"$_self.isa<BuilderType>()">, "any builder">;
 def AnyAppender : Type<CPred<"$_self.isa<AppenderType>()">, "any appender">;
+def AnyEnum : Type<CPred<"$_self.isa<EnumType>()">, "any enum">;
 def AnyStruct : Type<CPred<"$_self.isa<StructType>()">, "any struct">;
 def ArcStream : Type<CPred<"$_self.isa<StreamType>()">, "a stream">;
 def ArcStateValue : Type<CPred<"$_self.isa<ArconValueType>()">,
@@ -233,6 +234,23 @@ def MakeStructOp : Arc_Op<"make_struct", [NoSideEffect]> {
   let assemblyFormat = [{
     (`(` $values^ `:` type($values) `)`)? attr-dict `:` type($result)
   }];
+}
+
+def MakeEnumOp : Arc_Op<"make_enum", [NoSideEffect]> {
+  let summary = "create an enum from a values";
+  let description = [{
+    A pure operation which turns its argument into an enum.
+    ```
+    %r = arc.make_enum "a" (%a : i32) : !arc.enum<a : i32, b : f32>
+    ```
+  }];
+  let arguments = (ins AnyType:$value, StrAttr:$variant);
+  let results = (outs AnyEnum:$result);
+  let extraClassDeclaration = [{ LogicalResult customVerify(); }];
+  let verifier = [{ return customVerify(); }];
+
+  let assemblyFormat =
+    "`(` $value `:` type($value) `)` `as` $variant attr-dict `:` type($result)";
 }
 
 def MakeTupleOp : Arc_Op<"make_tuple", [NoSideEffect]> {
@@ -483,6 +501,41 @@ def Arc_SelectOp : Arc_Op<"select", [NoSideEffect, SameOperandsAndResultShape,
   let assemblyFormat = [{
     $condition `,` $true_value `,` $false_value attr-dict `:` type($result)
   }];
+}
+def EnumAccessOp : Arc_Op<"enum_access", [NoSideEffect]> {
+  let summary = "access a variant of an enum";
+  let description = [{
+    A pure operation which acccesses a variant of an enum.
+
+    ```
+    %e = arc.make_enum "a" (%a : i32) : !arc.enum<a : i32, b : f32>
+    %v = arc.enum_access "a" in %e : i32
+    ```
+  }];
+  let arguments = (ins AnyEnum:$value, StrAttr:$variant);
+  let results = (outs AnyType:$result);
+  let extraClassDeclaration = [{ LogicalResult customVerify(); }];
+  let verifier = [{ return customVerify(); }];
+  let assemblyFormat =
+    "$variant `in` `(` $value `:` type($value) `)` attr-dict `:` type($result)";
+}
+
+def EnumCheckOp : Arc_Op<"enum_check", [NoSideEffect]> {
+  let summary = "Check if an enum is of a particular variant";
+  let description = [{
+    A pure operation which checks if an enum is of a particular variant.
+
+    ```
+    %e = arc.make_enum "a" (%a : i32) : !arc.enum<a : i32, b : f32>
+    %v = arc.enum_check (%a : i32) is "a"
+    ```
+  }];
+  let arguments = (ins AnyEnum:$value, StrAttr:$variant);
+  let results = (outs BoolLike:$result);
+  let extraClassDeclaration = [{ LogicalResult customVerify(); }];
+  let verifier = [{ return customVerify(); }];
+  let assemblyFormat =
+    "`(` $value `:` type($value) `)` `is` $variant attr-dict `:` type($result)";
 }
 
 def StructAccessOp : Arc_Op<"struct_access", [NoSideEffect]> {
