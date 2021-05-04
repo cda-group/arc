@@ -15,7 +15,7 @@ impl MLIR {
         let defs = hir
             .items
             .iter()
-            .filter_map(|x| Some((*x, hir.defs.get(x).unwrap().lower(ctx)?)))
+            .map(|x| (*x, hir.defs.get(x).unwrap().lower(ctx)))
             .collect::<OrdMap<_, _>>();
         Self::new(hir.items.clone(), defs)
     }

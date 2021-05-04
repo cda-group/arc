@@ -15,21 +15,28 @@ pub mod defs {
     pub use arc_script::arcorn;
     pub use arc_script::arcorn::state::{ArcMapOps, ArcRefOps, ArcSetOps, ArcVecOps};
     pub use arcon::prelude::*;
+    pub fn foo(
+        a_0: Struct1bi321ci32End,
+        b_0: Struct1bi321ci32End,
+    ) -> Struct1aStruct1bi321ci32End1dStruct1bi321ci32End3xyzi32End {
+        let y_1_0 = 4711i32;
+        let y_1_1 = Struct1aStruct1bi321ci32End1dStruct1bi321ci32End3xyzi32End {
+            a: a_0,
+            xyz: y_1_0,
+            d: b_0,
+        };
+        y_1_1
+    }
     pub fn test() -> () {
         let y_1_0 = 1i32;
         let y_1_1 = 5i32;
         let y_1_2 = Struct1bi321ci32End { c: y_1_0, b: y_1_1 };
-        let y_1_3 = 2i32;
-        let y_1_4 = 4i32;
-        let y_1_5 = 2i32;
-        let y_1_6 = Struct1bi321ci32End { b: y_1_4, c: y_1_5 };
-        let y_1_7 = Struct1aStruct1bi321ci32End1dStruct1bi321ci32End3xyzi32End {
-            a: y_1_2,
-            xyz: y_1_3,
-            d: y_1_6,
-        };
-        let y_1_8 = ();
-        y_1_8
+        let y_1_3 = 4i32;
+        let y_1_4 = 2i32;
+        let y_1_5 = Struct1bi321ci32End { b: y_1_3, c: y_1_4 };
+        let y_1_6 = foo(y_1_2, y_1_5);
+        let y_1_7 = ();
+        y_1_7
     }
     #[arcorn::rewrite]
     #[derive(Copy)]

@@ -4,8 +4,12 @@ expression: s
 input_file: arc-script-test/compile/src/tests/expect_pass/structs.arc
 
 ---
+fun foo(a_0: { b: i32, c: i32 }, b_0: { b: i32, c: i32 }) -> { a: { b: i32, c: i32 }, d: { b: i32, c: i32 }, xyz: i32 } {
+    let r_0: { a: { b: i32, c: i32 }, d: { b: i32, c: i32 }, xyz: i32 } = { a: a_0, xyz: 4711, d: b_0 } in
+    r_0
+}
 fun test() -> unit {
-    let x_0: { a: { b: i32, c: i32 }, d: { b: i32, c: i32 }, xyz: i32 } = { a: { c: 1, b: 5 }, xyz: 2, d: { b: 4, c: 2 } } in
+    let x_0: { a: { b: i32, c: i32 }, d: { b: i32, c: i32 }, xyz: i32 } = crate::foo({ c: 1, b: 5 }, { b: 4, c: 2 }) in
     unit
 }
 

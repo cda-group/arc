@@ -6,6 +6,7 @@ use crate::compiler::hir::HIR;
 use crate::compiler::info::Info;
 use crate::compiler::mlir;
 
+use arc_script_core_shared::get;
 use arc_script_core_shared::Lower;
 use arc_script_core_shared::New;
 
@@ -15,19 +16,18 @@ pub(crate) struct Context<'i> {
     info: &'i mut Info,
 }
 
-/// TODO: For now, only lower functions.
-impl Lower<Option<mlir::Item>, Context<'_>> for hir::Item {
-    fn lower(&self, ctx: &mut Context<'_>) -> Option<mlir::Item> {
+impl Lower<mlir::Item, Context<'_>> for hir::Item {
+    fn lower(&self, ctx: &mut Context<'_>) -> mlir::Item {
         #[rustfmt::skip]
         let kind = match &self.kind {
-            hir::ItemKind::Fun(item)     => mlir::ItemKind::Fun(item.lower(ctx)),
-            hir::ItemKind::Alias(_item)   => todo!(),
-            hir::ItemKind::Enum(_item)    => None?,
+            hir::ItemKind::Fun(item)      => mlir::ItemKind::Fun(item.lower(ctx)),
+            hir::ItemKind::Enum(item)     => mlir::ItemKind::Enum(item.lower(ctx)),
             hir::ItemKind::Task(_item)    => todo!(),
             hir::ItemKind::Extern(_item)  => todo!(),
-            hir::ItemKind::Variant(_item) => None?,
+            hir::ItemKind::Alias(_)       => unreachable!(),
+            hir::ItemKind::Variant(_)     => unreachable!(),
         };
-        Some(mlir::Item::new(kind, self.loc))
+        mlir::Item::new(kind, self.loc)
     }
 }
 
@@ -39,6 +39,26 @@ impl Lower<mlir::Fun, Context<'_>> for hir::Fun {
             self.body.lower(ctx),
             self.body.tv,
         )
+    }
+}
+
+impl Lower<mlir::Enum, Context<'_>> for hir::Enum {
+    fn lower(&self, ctx: &mut Context<'_>) -> mlir::Enum {
+        let variants = self
+            .variants
+            .iter()
+            .map(|path| {
+                let item = ctx.hir.defs.get(path).unwrap();
+                get!(&item.kind, hir::ItemKind::Variant(x)).lower(ctx)
+            })
+            .collect::<Vec<_>>();
+        mlir::Enum::new(self.path, variants)
+    }
+}
+
+impl Lower<mlir::Variant, Context<'_>> for hir::Variant {
+    fn lower(&self, ctx: &mut Context<'_>) -> mlir::Variant {
+        mlir::Variant::new(self.path, self.tv, self.loc)
     }
 }
 
