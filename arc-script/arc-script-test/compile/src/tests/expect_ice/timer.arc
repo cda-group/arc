@@ -1,4 +1,4 @@
-task MinuteSum() In(~i32) -> Out(~i32) {
+task MinuteSum(): In(~i32) -> Out(~i32) {
     port Trigger
     state sum: i32 = 0
     emit Trigger after 10s

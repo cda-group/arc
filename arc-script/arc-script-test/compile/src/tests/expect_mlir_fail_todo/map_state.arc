@@ -1,4 +1,4 @@
-task MapCount() ~i32 by i32 -> ~i32 by i32 {
+task MapCount(): ~i32 by i32 -> ~i32 by i32 {
     state c: {i32 => i32} = {}
     on event by key => {
         c[event] = c[event] + 1;

@@ -1,4 +1,4 @@
-task UniqueSet() ~i32 by i32 -> ~i32 by i32 {
+task UniqueSet(): ~i32 by i32 -> ~i32 by i32 {
     state set: {i32} = {}
     on event by key => {
         if event not in set {
@@ -10,7 +10,7 @@ task UniqueSet() ~i32 by i32 -> ~i32 by i32 {
     }
 }
 
-task UniqueMap() ~i32 by i32 -> ~i32 by i32 {
+task UniqueMap(): ~i32 by i32 -> ~i32 by i32 {
     state map: {i32 => unit} = {}
     on event by key => {
         if event not in map {

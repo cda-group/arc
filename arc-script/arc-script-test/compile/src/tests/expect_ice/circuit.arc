@@ -3,7 +3,7 @@ OutputPorts {
   Out2(i32),
 }
 
-task Foo(x:i32) (In1(i32)) -> OutputPorts
+task Foo(x:i32): (In1(i32)) -> OutputPorts
   on In1(x) =>
     emit In1(2);
     let output =

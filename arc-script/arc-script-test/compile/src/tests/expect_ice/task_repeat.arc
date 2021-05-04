@@ -1,4 +1,4 @@
-task Repeat(v: i32, d: duration) () -> (Output(~i32)) {
+task Repeat(v: i32, d: duration): () -> (Output(~i32)) {
 
     trigger Trigger(unit);
 

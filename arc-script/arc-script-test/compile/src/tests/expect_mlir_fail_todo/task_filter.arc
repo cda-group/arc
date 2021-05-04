@@ -1,4 +1,4 @@
-task Filter(p: fun(i32): bool) ~i32 by i32 -> ~i32 by i32 {
+task Filter(p: fun(i32): bool): ~i32 by i32 -> ~i32 by i32 {
     on event by key => {
         if p(event) {
             emit event by key

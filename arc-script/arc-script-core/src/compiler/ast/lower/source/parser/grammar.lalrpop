@@ -120,7 +120,6 @@ extern {
         "timeout" => Token::Timeout,
         "timer"   => Token::Timer,
         "trigger" => Token::Trigger,
-        "task"    => Token::Task,
         "type"    => Token::Type,
         "unwrap"  => Token::Unwrap,
         "enwrap"  => Token::Enwrap,
@@ -328,7 +327,7 @@ Fun:     Fun     = "fun" <Name> <Params> <Params?> <(":" <Type0>)?> <Brace<Expr0
 Alias:   Alias   = "type" <Name> "=" <Type0>                                       => Alias::new(<>);
 Enum:    Enum    = "enum" <Name> <Brace<Vec<Variant>>>                             => Enum::new(<>);
 Use:     Use     = "use" <Path> <("as" <Name>)?>                                   => Use::new(<>);
-Task:    Task    = "task" <Name> <Params> <Hub> "->" <Hub> <Brace<TaskItem*>>      => Task::new(<>);
+Task:    Task    = "task" <Name> <Params> ":" <Hub> "->" <Hub> <Brace<TaskItem*>>  => Task::new(<>);
 On:      On      = "on" <Handler>                                                  => On::new(<>);
 State:   State   = "state" <Param> "=" <Expr0>                                     => State::new(<>);
 Timer:   Timer   = "timer" <Type0>                                                 => Timer::new(<>);

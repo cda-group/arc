@@ -1,4 +1,4 @@
-task TumblingWindowSum() ~i32 by i32 -> ~i32 by i32 {
+task TumblingWindowSum(): ~i32 by i32 -> ~i32 by i32 {
     state agg: i32 = 0
 
     timer unit
