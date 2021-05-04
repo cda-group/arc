@@ -11,6 +11,8 @@ use crate::compiler::info::paths::PathId;
 use crate::compiler::info::types::TypeId;
 use crate::compiler::info::Info;
 use crate::compiler::mlir;
+
+use arc_script_core_shared::get;
 use arc_script_core_shared::From;
 
 use std::fmt;
@@ -21,14 +23,16 @@ use std::process::Command;
 
 #[derive(From, Copy, Clone)]
 pub(crate) struct Context<'i> {
+    mlir: &'i mlir::MLIR,
     info: &'i Info,
 }
 
 pub(crate) fn pretty<'i, 'j, Node>(
     node: &'i Node,
+    mlir: &'j mlir::MLIR,
     info: &'j Info,
 ) -> Pretty<'i, Node, Context<'j>> {
-    node.to_pretty(Context::from(info))
+    node.to_pretty(Context::from((mlir, info)))
 }
 
 pub(crate) fn run_arc_mlir(infile: &std::path::Path, outfile: &std::path::Path) {
@@ -199,15 +203,10 @@ impl<'i> Display for Pretty<'i, PathId, Context<'_>> {
 impl<'i> Display for Pretty<'i, mlir::Enum, Context<'_>> {
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
         let Pretty(item, fmt) = self;
-        // TODO: Find way to represent enums in MLIR
         write!(
             f,
-            "arc.enum<{id}> of {variants}",
-            id = item.path.pretty(fmt),
-            variants = item
-                .variants
-                .iter()
-                .map_pretty(|v, f| write!(f, "{}| {}", fmt.indent(), v.pretty(fmt)), "")
+            "!arc.enum<{variants}>",
+            variants = item.variants.iter().all_pretty(", ", fmt)
         )
     }
 }
@@ -217,7 +216,7 @@ impl<'i> Display for Pretty<'i, mlir::Variant, Context<'_>> {
         let Pretty(variant, fmt) = self;
         write!(
             f,
-            "{}({})",
+            "{} : {}",
             variant.path.pretty(fmt),
             variant.tv.pretty(fmt)
         )
@@ -499,11 +498,19 @@ impl<'i> Display for Pretty<'i, hir::Type, Context<'_>> {
                 DateTime  => unreachable!(),
                 Duration  => unreachable!(),
             }
-            Struct(fs)     => {
+            Struct(fs) => {
                     write!(f, "!arc.struct<{fs}>",
                         fs = fs.map_pretty(|(x, e), f| write!(f, "{} : {}", x.pretty(fmt), e.pretty(fmt)), ", "))
             }
-            Nominal(x)      => write!(f, "{}", x.pretty(fmt)),
+            Nominal(x) => match &fmt.mlir.defs.get(x).unwrap().kind {
+                mlir::ItemKind::Enum(item) => {
+                    write!(f, "!arc.enum<{variants}>",
+                        variants = item.variants.iter().all_pretty(", ", fmt))
+                }
+                mlir::ItemKind::Fun(_)     => unreachable!(),
+                mlir::ItemKind::State(_)   => unreachable!(),
+                mlir::ItemKind::Task(_)    => unreachable!(),
+            }
             Array(_ty, _sh) => crate::todo!(),
             Stream(_ty)     => crate::todo!(),
             Map(_ty0, _ty1) => crate::todo!(),

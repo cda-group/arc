@@ -89,7 +89,7 @@ where
     if matches!(info.mode.output, Output::RustMLIR) {
         // Lower HIR and DFG into Rust via MLIR
         let mlir = MLIR::from(&hir, &mut info);
-        let r = mlir::pretty(&mlir, &info);
+        let r = mlir::pretty(&mlir, &mlir, &info);
 
         let infile = tempfile::NamedTempFile::new().expect("Could not create temporary input file");
         let outfile =
@@ -108,7 +108,7 @@ where
         // Lower HIR and DFG into MLIR
         let mlir = MLIR::from(&hir, &mut info);
 
-        writeln!(f, "{}", mlir::pretty(&mlir, &info))?;
+        writeln!(f, "{}", mlir::pretty(&mlir, &mlir, &info))?;
         return Ok(Report::semantic(info, hir));
     }
 
