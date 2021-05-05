@@ -241,6 +241,8 @@ static RustPrinterStream &writeRust(Operation &operation,
     op.writeRust(PS);
   else if (RustEnumAccessOp op = dyn_cast<RustEnumAccessOp>(operation))
     op.writeRust(PS);
+  else if (RustEnumCheckOp op = dyn_cast<RustEnumCheckOp>(operation))
+    op.writeRust(PS);
   else if (RustFieldAccessOp op = dyn_cast<RustFieldAccessOp>(operation))
     op.writeRust(PS);
   else if (RustIfOp op = dyn_cast<RustIfOp>(operation))
@@ -379,6 +381,12 @@ void RustEnumAccessOp::writeRust(RustPrinterStream &PS) {
   auto r = getResult();
   PS << "let " << r << ":" << r.getType() << " = arcorn::unwrap!("
      << getVariant() << ", " << theEnum() << ");\n";
+}
+
+void RustEnumCheckOp::writeRust(RustPrinterStream &PS) {
+  auto r = getResult();
+  PS << "let " << r << ":" << r.getType() << " = arcorn::is!(" << getVariant()
+     << ", " << theEnum() << ");\n";
 }
 
 void RustFieldAccessOp::writeRust(RustPrinterStream &PS) {

@@ -232,6 +232,24 @@ def Rust_RustEnumAccessOp : Rust_Op<"enum_access", [NoSideEffect]> {
   }];
 }
 
+def Rust_RustEnumCheckOp : Rust_Op<"enum_check", [NoSideEffect]> {
+  let summary = "Check if an enum is of a particular variant";
+  let description = [{
+   A pure operation which checks if an enum is of a particular variant.
+  }];
+
+  let arguments = (ins AnyRustEnum : $theEnum, StrAttr : $variant);
+  let results = (outs BoolRustType);
+
+  let extraClassDeclaration = [{
+    StringRef getVariant() {
+      return (*this)->getAttrOfType<StringAttr>("variant").getValue();
+    }
+    // Write this constant as Rust code to os
+    void writeRust(RustPrinterStream &);
+  }];
+}
+
 def Rust_RustFieldAccessOp : Rust_Op<"field_access", [NoSideEffect]> {
   let summary = "Access to a field";
   let description = [{
