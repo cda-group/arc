@@ -603,6 +603,26 @@ private:
                                               "tanh", "ln",   "exp",  "sqrt"};
 };
 
+struct EnumAccessOpLowering : public ConversionPattern {
+  EnumAccessOpLowering(MLIRContext *ctx, RustTypeConverter &typeConverter)
+      : ConversionPattern(arc::EnumAccessOp::getOperationName(), 1, ctx),
+        TypeConverter(typeConverter) {}
+
+  LogicalResult
+  matchAndRewrite(Operation *op, ArrayRef<Value> operands,
+                  ConversionPatternRewriter &rewriter) const final {
+    EnumAccessOp o = cast<EnumAccessOp>(op);
+    Type retTy = TypeConverter.convertType(o.getType());
+    std::string variant_str(o.variant());
+    rewriter.replaceOpWithNewOp<rust::RustEnumAccessOp>(op, retTy, operands[0],
+                                                        variant_str);
+    return success();
+  };
+
+private:
+  RustTypeConverter &TypeConverter;
+};
+
 struct StructAccessOpLowering : public ConversionPattern {
   StructAccessOpLowering(MLIRContext *ctx, RustTypeConverter &typeConverter)
       : ConversionPattern(arc::StructAccessOp::getOperationName(), 1, ctx),
@@ -885,6 +905,7 @@ void ArcToRustLoweringPass::runOnOperation() {
   patterns.insert<MakeTensorOpLowering>(&getContext(), typeConverter);
   patterns.insert<MakeEnumOpLowering>(&getContext(), typeConverter);
   patterns.insert<MakeStructOpLowering>(&getContext(), typeConverter);
+  patterns.insert<EnumAccessOpLowering>(&getContext(), typeConverter);
   patterns.insert<StructAccessOpLowering>(&getContext(), typeConverter);
   patterns.insert<StdCallOpLowering>(&getContext(), typeConverter);
 
