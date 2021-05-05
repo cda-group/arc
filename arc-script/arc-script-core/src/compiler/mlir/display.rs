@@ -339,13 +339,15 @@ impl<'i> Display for Pretty<'i, mlir::OpKind, Context<'_>> {
                     .values()
                     .map_pretty(|v, f| write!(f, "{}", v.tv.pretty(fmt)), ", "),
             ),
-            mlir::OpKind::Enwrap(x0, x1) => write!(
+            mlir::OpKind::Enwrap(x0, x1) =>
+	    // %s = arc.make_enum (%a : i32) as "a" : !arc.enum<a : i32>
+		write!(
                 f,
-                r#""arc.enwrap"({}) {{ variant = {} }} : {} ->"#,
-                x1.pretty(fmt),
-                x0.pretty(fmt),
-                x1.tv.pretty(fmt),
-            ),
+                r#"arc.make_enum ({} : {}) as "{}" : "#,
+                    x1.pretty(fmt),
+		    x1.tv.pretty(fmt),
+                    x0.pretty(fmt),
+		),
             mlir::OpKind::Unwrap(x0, x1) => write!(
                 f,
                 r#""arc.unwrap"({}) {{ variant = {} }} : {} ->"#,

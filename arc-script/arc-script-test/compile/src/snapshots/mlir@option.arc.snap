@@ -11,7 +11,7 @@ module @toplevel {
     }
     func @crate_main() -> () {
         %x_3 = arc.constant 3 : si32
-        %x_4 = "arc.enwrap"(%x_3) { variant = crate_Opt_Some } : si32 -> !arc.enum<crate_Opt_Some : si32, crate_Opt_None : ()>
+        %x_4 = arc.make_enum (%x_3 : si32) as "crate_Opt_Some" :  !arc.enum<crate_Opt_Some : si32, crate_Opt_None : ()>
         %x_5 = "arc.is"%x_4 { variant = crate_Opt_Some } : !arc.enum<crate_Opt_Some : si32, crate_Opt_None : ()> -> i1
         return 
     }

@@ -9,9 +9,9 @@ module @toplevel {
     func @crate_main() -> () {
         %x_0 = arc.constant 200 : ui32
         %x_1 = constant 2.0 : f32
-        %x_2 = "arc.enwrap"(%x_0) { variant = crate_Foo_Bar } : ui32 -> !arc.enum<crate_Foo_Bar : ui32, crate_Foo_Baz : f32>
+        %x_2 = arc.make_enum (%x_0 : ui32) as "crate_Foo_Bar" :  !arc.enum<crate_Foo_Bar : ui32, crate_Foo_Baz : f32>
         %x_3 = "arc.unwrap"(%x_2) { variant = crate_Foo_Bar } : !arc.enum<crate_Foo_Bar : ui32, crate_Foo_Baz : f32> -> ui32
-        %x_4 = "arc.enwrap"(%x_1) { variant = crate_Foo_Baz } : f32 -> !arc.enum<crate_Foo_Bar : ui32, crate_Foo_Baz : f32>
+        %x_4 = arc.make_enum (%x_1 : f32) as "crate_Foo_Baz" :  !arc.enum<crate_Foo_Bar : ui32, crate_Foo_Baz : f32>
         %x_5 = "arc.is"%x_4 { variant = crate_Foo_Baz } : !arc.enum<crate_Foo_Bar : ui32, crate_Foo_Baz : f32> -> i1
         return 
     }
