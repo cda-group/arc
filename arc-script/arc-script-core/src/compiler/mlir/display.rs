@@ -357,12 +357,14 @@ impl<'i> Display for Pretty<'i, mlir::OpKind, Context<'_>> {
                 x1.pretty(fmt),
                 x1.tv.pretty(fmt),
             ),
-            mlir::OpKind::Is(x0, x1) => write!(
+            mlir::OpKind::Is(x0, x1) =>
+		// %r = arc.enum_check (%e : !arc.enum<a : i32, b : f32>) is "a" : i1
+		write!(
                 f,
-                r#""arc.is"{} {{ variant = {} }} : {} ->"#,
+                r#"arc.enum_check ({} : {}) is "{}" : "#,
                 x1.pretty(fmt),
-                x0.pretty(fmt),
                 x1.tv.pretty(fmt),
+                x0.pretty(fmt),
             ),
             mlir::OpKind::Tuple(xs) => write!(
                 f,
