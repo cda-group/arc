@@ -214,6 +214,24 @@ def Rust_RustConstantOp : Rust_Op<"constant", [NoSideEffect]> {
   }];
 }
 
+def Rust_RustEnumAccessOp : Rust_Op<"enum_access", [NoSideEffect]> {
+  let summary = "Access to a variant of an enum";
+  let description = [{
+    Access to a variant of an enum.
+  }];
+
+  let arguments = (ins AnyRustEnum : $theEnum, StrAttr : $variant);
+  let results = (outs AnyRustType);
+
+  let extraClassDeclaration = [{
+    StringRef getVariant() {
+      return (*this)->getAttrOfType<StringAttr>("variant").getValue();
+    }
+    // Write this constant as Rust code to os
+    void writeRust(RustPrinterStream &);
+  }];
+}
+
 def Rust_RustFieldAccessOp : Rust_Op<"field_access", [NoSideEffect]> {
   let summary = "Access to a field";
   let description = [{
