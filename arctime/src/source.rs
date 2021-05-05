@@ -8,7 +8,6 @@ use std::time::Duration;
 use time::PrimitiveDateTime as DateTime;
 
 use crate::client::*;
-use crate::data::*;
 use crate::pipeline::*;
 use crate::port::*;
 use crate::stream::*;
@@ -29,7 +28,7 @@ impl<S: SystemHandle> Pipeline<S> {
                 if let Some((time, data)) = task.state.next() {
                     if time > task.lowest_observed_watermarks[0] {
                         task.lowest_observed_watermarks[0] = time;
-                        task.data_oport.trigger(DataEvent::Item(time, data));
+                        task.data_oport.trigger(StreamEvent::Data(time, data));
                     } else {
                         info!(task.ctx.log(), "Discarded late event with time {}", time);
                     }

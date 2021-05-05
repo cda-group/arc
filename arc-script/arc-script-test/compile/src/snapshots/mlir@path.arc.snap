@@ -5,9 +5,10 @@ input_file: arc-script-test/compile/src/tests/expect_pass/path.arc
 
 ---
 module @toplevel {
-    func @crate_main() -> () {
-        %x_1 = arc.constant 1 : si32
-        return 
+    func @crate_main() -> none {
+        %x_0 = arc.constant 1 : si32
+        %x_1 = none none
+        "arc.block.result"(%x_1) : (none) -> ()
     }
 }
 

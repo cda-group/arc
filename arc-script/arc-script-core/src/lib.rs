@@ -4,7 +4,9 @@
 //!
 //! See all lints [here](https://doc.rust-lang.org/rustc/lints/groups.html).
 //! Or by running `rustc -W help`
-
+#![feature(try_trait_v2)]
+#![feature(control_flow_enum)]
+#![feature(or_patterns)]
 // Deny all clippy lints
 #![deny(clippy::correctness)]
 #![deny(clippy::style)]
@@ -14,6 +16,11 @@
 #![deny(clippy::nursery)]
 #![deny(clippy::cargo)]
 // Exceptions
+#![allow(clippy::semicolon_if_nothing_returned)]
+#![allow(clippy::diverging_sub_expression)]
+#![allow(clippy::unnecessary_operation)]
+#![allow(clippy::unused_self)]
+#![allow(clippy::mut_mut)]
 #![allow(clippy::upper_case_acronyms)]
 #![allow(clippy::similar_names)]
 #![allow(clippy::redundant_else)]
@@ -34,13 +41,15 @@
 #![allow(clippy::explicit_iter_loop)] // Breaks `crepe`
 #![allow(clippy::map_unwrap_or)] // Buggy
 #![allow(clippy::cast_possible_truncation)]
+#![allow(clippy::collapsible_match)]
 #![allow(clippy::cast_possible_wrap)]
 #![allow(clippy::cargo_common_metadata)] // Needless information
 #![allow(clippy::option_if_let_else)] // Buggy
 #![allow(clippy::module_name_repetitions)] // Annoying
 #![allow(clippy::needless_for_each)]
-// Allow unused items, toggle this every once in a while
-#![allow(unused)]
+#![allow(clippy::many_single_char_names)]
+#![allow(unused)] // Allow unused items, toggle this every once in a while
+#![allow(stable_features)] // Allow #[feature(...)] event if it's not needed
 // Deny all rustc/rustdoc lints (except for a few)
 #![deny(absolute_paths_not_starting_with_crate)]
 #![deny(anonymous_parameters)]
@@ -67,7 +76,7 @@
 #![deny(unaligned_references)]
 #![deny(unreachable_pub)]
 #![deny(unsafe_code)]
-
+#![allow(unstable_features)]
 #![allow(unused_crate_dependencies)]
 #![deny(unused_extern_crates)]
 #![deny(unused_import_braces)]
@@ -78,11 +87,10 @@
 #![deny(warnings)]
 #![allow(stable_features)]
 
-#![feature(or_patterns)]
-
 /// Module which assembles the compilation pipeline.
 pub mod compiler;
 /// Module which re-exports common functionality.
 pub mod prelude;
 
 pub(crate) use arc_script_core_shared::todo;
+pub(crate) use arc_script_core_shared::ice;

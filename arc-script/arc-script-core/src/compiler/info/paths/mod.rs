@@ -1,4 +1,6 @@
-pub(crate) mod repr;
+/// Module for representing paths.
+pub mod repr;
+mod utils;
 pub(crate) mod debug;
 
-pub(crate) use repr::*;
+pub use repr::*;

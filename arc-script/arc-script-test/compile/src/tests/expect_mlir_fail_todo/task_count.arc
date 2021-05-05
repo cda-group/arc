@@ -1,7 +1,12 @@
+extern type Cell(x: i32) {
+    fun get(): i32;
+    fun set(x: i32): unit;
+}
+
 task Count(): ~i32 by i32 -> ~i32 by i32 {
-    state count: i32 = 0
+    val count = crate::Cell(0);
     on event by key => {
-        count = count + 1;
-        emit count by key
-    }
+        count.set(count.get() + 1);
+        emit count.get() by key
+    };
 }

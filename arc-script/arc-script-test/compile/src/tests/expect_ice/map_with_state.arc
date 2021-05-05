@@ -1,8 +1,8 @@
-task MapWithState(init: i32, mapper: fun(i32, i32): -> (i32, i32)) ~i32 -> ~i32 {
-    state value: i32 = init;
+task MapWithState(init: i32, mapper: fun(i32, i32): (i32, i32)): ~i32 -> ~i32 {
+    val state: Cell[i32] = Cell(init);
     on event => {
-        let (new_value, new_event) = mapper(value, event) in
-        value = new_value;
+        val (new_value, new_event) = mapper(state.get(), event);
+        state.set(new_value);
         emit new_event
     }
 }

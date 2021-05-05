@@ -9,5 +9,5 @@ fun fib(n: i32): i32 {
 }
 
 fun test(): i32 {
-  fib(5)
+    fib(5)
 }

@@ -8,6 +8,6 @@ task Mapper(f: i32 -> i32) (In(i32)) -> (Out(i32))
 end
 
 fun main()
-  let x = foofun() in
-  let y = Mapper(|x| x + 1);
+  val x = foofun();
+  val y = Mapper(|x| x + 1);
 end

@@ -5,8 +5,8 @@ input_file: arc-script-test/compile/src/tests/expect_pass/path.arc
 
 ---
 fun main(): unit {
-    let x_0: i32 = 1 in
-    let y_0: i32 = x_0 in
-    unit
+    val x_0: i32 = 1;
+    val x_1: unit = unit;
+    x_1
 }
 

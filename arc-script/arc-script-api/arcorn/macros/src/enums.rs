@@ -43,6 +43,7 @@ pub(crate) fn rewrite(_: syn::AttributeArgs, mut enum_item: syn::ItemEnum) -> pm
         }
     };
     {
+        // NOTE: prost automatically derives Debug
         cfg_if::cfg_if! {
             if #[cfg(feature = "backend_arcon")] {
                 quote! {
@@ -62,11 +63,11 @@ pub(crate) fn rewrite(_: syn::AttributeArgs, mut enum_item: syn::ItemEnum) -> pm
                 }
             } else {
                 quote! {
-                    #[derive(Clone)]
+                    #[derive(Clone, Debug)]
                     pub struct #struct_ident {
                         pub this: Option<#enum_ident>
                     }
-                    #[derive(Clone)]
+                    #[derive(Clone, Debug)]
                     #enum_item
                     #appendix
                 }

@@ -35,8 +35,8 @@ impl<I: DataReqs> Stream<I> {
             )
         });
         let task = self.client.system().create(|| task);
-        biconnect_components::<DataPort<_>, _, _>(&task, &mergel);
-        biconnect_components::<DataPort<_>, _, _>(&task, &merger);
+        biconnect_components::<StreamPort<_>, _, _>(&task, &mergel);
+        biconnect_components::<StreamPort<_>, _, _>(&task, &merger);
         mergel.on_definition(|c| (self.connector)(&mut c.data_iport));
         merger.on_definition(|c| (other.connector)(&mut c.data_iport));
         let connect = create_connector(task.clone());

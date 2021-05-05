@@ -1,3 +1,3 @@
-fun bazfun()
-  2
-end
+fun bazfun() {
+    unit
+}

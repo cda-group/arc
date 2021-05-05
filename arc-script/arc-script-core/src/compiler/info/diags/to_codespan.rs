@@ -9,11 +9,12 @@ use crate::compiler::info::files::FileId;
 use crate::compiler::info::files::Loc;
 use crate::compiler::info::Info;
 
+use arc_script_core_shared::Shrinkwrap;
+
 use codespan_reporting::diagnostic;
 use codespan_reporting::diagnostic::Label;
 
 use std::borrow::Borrow;
-
 use std::str;
 
 /// A [`codespan`] diagnostic.
@@ -64,8 +65,9 @@ impl From<Report> for (Vec<Codespan>, Info) {
 
 /// Hacky solution, HIR can optionally be omitted to
 /// print diagnostics from before it was constructed.
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Copy, Clone, Shrinkwrap)]
 pub struct Context<'i> {
+    #[shrinkwrap(main_field)]
     pub(crate) info: &'i Info,
     pub(crate) hir: Option<&'i HIR>,
 }
@@ -86,10 +88,9 @@ pub trait ToCodespan {
 impl ToCodespan for Diagnostic {
     fn to_codespan(&self, ctx: &Context<'_>) -> Option<Codespan> {
         match self {
-            Self::Error(diag) => diag.to_codespan(ctx),
-            Self::Warning(diag) => diag.to_codespan(ctx),
-            Self::Note(diag) => diag.to_codespan(ctx),
-            Self::Panic(diag) => diag.to_codespan(ctx),
+            Diagnostic::Error(diag) => diag.to_codespan(ctx),
+            Diagnostic::Warning(diag) => diag.to_codespan(ctx),
+            Diagnostic::Note(diag) => diag.to_codespan(ctx),
         }
     }
 }
@@ -109,19 +110,22 @@ impl ToCodespan for Warning {
 impl ToCodespan for Error {
     fn to_codespan(&self, ctx: &Context<'_>) -> Option<Codespan> {
         match self {
-            Self::FileNotFound => Codespan::error().with_message("Source file not found."),
-            Self::ExtraToken { found, loc } => Codespan::error()
+            Error::FileNotFound => Codespan::error().with_message("Source file not found."),
+            Error::BadExtension => {
+                Codespan::error().with_message("Input files must have `.arc` extension.")
+            }
+            Error::ExtraToken { found, loc } => Codespan::error()
                 .with_message(format!("Extraneous token {}", found.pretty(ctx.info)))
                 .with_labels(vec![label(loc)?]),
-            Self::InvalidToken { loc } => Codespan::error()
+            Error::InvalidToken { loc } => Codespan::error()
                 .with_message("Invalid token")
                 .with_labels(vec![label(loc)?]),
-            Self::UnrecognizedEOF { loc, expected } => Codespan::error()
+            Error::UnrecognizedEOF { loc, expected } => Codespan::error()
                 .with_message("Unrecognized end of file")
                 .with_labels(vec![
                     label(loc)?.with_message(format!("expected {}", expected.join(", ")))
                 ]),
-            Self::UnrecognizedToken {
+            Error::UnrecognizedToken {
                 found,
                 expected,
                 loc,
@@ -130,134 +134,108 @@ impl ToCodespan for Error {
                 .with_labels(vec![
                     label(loc)?.with_message(format!("expected {}", expected.join(", ")))
                 ]),
-            Self::TypeMismatch { lhs, rhs, loc } => Codespan::error()
+            Error::TypeMismatch { lhs, rhs, loc } => Codespan::error()
                 .with_message("Type mismatch")
                 .with_labels(vec![label(loc)?.with_message(format!(
                     "{} != {}",
-                    hir::pretty(lhs, ctx.hir.unwrap(), ctx.info),
-                    hir::pretty(rhs, ctx.hir.unwrap(), ctx.info)
+                    ctx.hir.unwrap().pretty(lhs, ctx.info),
+                    ctx.hir.unwrap().pretty(rhs, ctx.info)
                 ))]),
-            Self::PathNotFound { path, loc } => Codespan::error()
+            Error::PathNotFound { path, loc } => Codespan::error()
                 .with_message(format!(
                     "Identifier `{}` not bound to anything",
-                    hir::pretty(path, ctx.hir.unwrap(), ctx.info),
+                    ctx.hir.unwrap().pretty(path, ctx.info),
                 ))
                 .with_labels(vec![label(loc)?.with_message("Used here")]),
-            Self::DisallowedDimExpr { loc } => Codespan::error()
-                .with_message("Disallowed expression in dimension")
-                .with_labels(vec![label(loc)?.with_message("Found here")]),
-            Self::ShapeUnsat => Codespan::error().with_message("Unsatisfiable shape"),
-            Self::ShapeUnknown => Codespan::error().with_message("Unknown shape"),
-            Self::NonExhaustiveMatch { loc } => Codespan::error()
+            Error::NonExhaustiveMatch { loc } => Codespan::error()
                 .with_message("Match is non-exhaustive")
                 .with_labels(vec![label(loc)?.with_message("Missing cases")]),
-            Self::NameClash { name } => {
+            Error::NameClash { name } => {
                 Codespan::error()
                     .with_message("Name clash")
                     .with_labels(vec![label(name.loc)?
                         .with_message("Name shadows previous declaration".to_owned())])
             }
-            Self::FieldClash { name } => Codespan::error()
+            Error::FieldClash { name } => Codespan::error()
                 .with_message("Found duplicate key")
                 .with_labels(vec![label(name.loc)?.with_message(format!(
                     "{}",
-                    hir::pretty(&name.id, ctx.hir.unwrap(), ctx.info)
+                    ctx.hir.unwrap().pretty(&name.id, ctx.info)
                 ))]),
-            Self::VariantClash { name } => Codespan::error()
+            Error::VariantClash { name } => Codespan::error()
                 .with_message("Found duplicate key")
                 .with_labels(vec![label(name.loc)?.with_message(format!(
                     "{}",
-                    hir::pretty(&name.id, ctx.hir.unwrap(), ctx.info)
+                    ctx.hir.unwrap().pretty(&name.id, ctx.info)
                 ))]),
-            Self::VariantWrongArity { path } => Codespan::error()
+            Error::VariantWrongArity { path } => Codespan::error()
                 .with_message("Variant constructors expect exactly one argument.")
                 .with_labels(vec![label(path.loc)?.with_message(format!(
                     "{}",
-                    hir::pretty(&path.id, ctx.hir.unwrap(), ctx.info)
+                    ctx.hir.unwrap().pretty(path, ctx.info)
                 ))]),
-            Self::OutOfBoundsProject { loc } => Codespan::error()
+            Error::OutOfBoundsProject { loc } => Codespan::error()
                 .with_message("Out of bounds projection")
                 .with_labels(vec![label(loc)?]),
-            Self::FieldNotFound { loc } => Codespan::error()
+            Error::FieldNotFound { loc } => Codespan::error()
                 .with_message("Field not found")
                 .with_labels(vec![label(loc)?]),
-            Self::MainNotFound => Codespan::error().with_message("`main` function not found"),
-            Self::MainWrongSign => Codespan::error()
-                .with_message("`main` function has wrong signature, expected main() -> ()"),
-            Self::CycleDetected => {
-                Codespan::error().with_message("Cycle detected in the Dataflow Graph")
-            }
-            Self::TypeInValuePosition { loc } => Codespan::error()
+            Error::TypeInValuePosition { loc } => Codespan::error()
                 .with_message("Expected value, found type in value-position")
                 .with_labels(vec![label(loc)?]),
-            Self::RefutablePattern { loc } => Codespan::error()
+            Error::ValueInTypePosition { loc } => Codespan::error()
+                .with_message("Expected value, found type in value-position")
+                .with_labels(vec![label(loc)?]),
+            Error::RefutablePattern { loc } => Codespan::error()
                 .with_message("Invalid pattern")
                 .with_labels(vec![label(loc)?]),
-            Self::TooMuchIndent { loc } => Codespan::error()
+            Error::TooMuchIndent { loc } => Codespan::error()
                 .with_message("Too many levels of indentation. Consider un-indenting.")
                 .with_labels(vec![label(loc)?]),
-            Self::BadIndent { loc } => Codespan::error()
+            Error::BadIndent { loc } => Codespan::error()
                 .with_message("Incorrectly aligned indentation.")
                 .with_labels(vec![label(loc)?]),
-            Self::LexicalCore { err, loc } => Codespan::error()
+            Error::LexicalCore { err, loc } => Codespan::error()
                 .with_message(lex_err(err))
                 .with_labels(vec![label(loc)?]),
-            Self::Time { err, loc } => Codespan::error()
+            Error::Time { err, loc } => Codespan::error()
                 .with_message(err.to_string())
                 .with_labels(vec![label(loc)?]),
-            Self::UseOfMovedValue { loc0, loc1, tv } => Codespan::error()
+            Error::UseOfMovedValue { loc0, loc1, t } => Codespan::error()
                 .with_message(format!(
                     "Use of moved value, where moved value is of non-copyable type {}",
-                    hir::pretty(tv, ctx.hir.unwrap(), ctx.info)
+                    ctx.hir.unwrap().pretty(t, ctx.info)
                 ))
                 .with_labels(vec![label(loc0)?, label(loc1)?]),
-            Self::DoubleUse {
+            Error::DoubleUse {
                 loc0,
                 loc1,
                 loc2,
-                tv,
+                t,
             } => Codespan::error()
                 .with_message(format!(
                     "Double use of value of non-copyable type {}",
-                    hir::pretty(tv, ctx.hir.unwrap(), ctx.info)
+                    ctx.hir.unwrap().pretty(t, ctx.info)
                 ))
                 .with_labels(vec![label(loc0)?, label(loc1)?, label(loc2)?]),
-            Self::PathIsNotVariant { loc } => Codespan::error()
+            Error::PathIsNotVariant { loc } => Codespan::error()
                 .with_message("Path is not referring to a variant")
                 .with_labels(vec![label(loc)?]),
-            Self::PatternInExternFun { loc } => Codespan::error()
+            Error::PatternInExternFun { loc } => Codespan::error()
                 .with_message("Extern functions may only take parameters which are not patterns")
                 .with_labels(vec![label(loc)?]),
-            Self::ExpectedSelector { loc } => Codespan::error()
+            Error::ExpectedSelector { loc } => Codespan::error()
                 .with_message("Expected selector")
                 .with_labels(vec![label(loc)?]),
-            Self::MultipleSelectors { loc } => Codespan::error()
+            Error::MultipleSelectors { loc } => Codespan::error()
                 .with_message("Found multiple selectors, expected just one.")
                 .with_labels(vec![label(loc)?]),
-            Self::ExpectedSelectableType { loc } => Codespan::error()
+            Error::ExpectedSelectableType { loc } => Codespan::error()
                 .with_message("Expected selectable type.")
                 .with_labels(vec![label(loc)?]),
-            Self::TypeMustBeKnownAtThisPoint { loc } => Codespan::error()
+            Error::TypeMustBeKnownAtThisPoint { loc } => Codespan::error()
                 .with_message("Type must be known at this point.")
                 .with_labels(vec![label(loc)?]),
-        }
-        .into()
-    }
-}
-
-impl ToCodespan for Panic {
-    fn to_codespan(&self, ctx: &Context<'_>) -> Option<Codespan> {
-        match self {
-            Self::Unwind { loc, trace } => {
-                let mut labels = vec![label(loc)?];
-                labels.extend(trace.iter().enumerate().filter_map(|(_i, path)| {
-                    let _name = ctx.info.resolve_to_names(path.id);
-                    label(path.loc).map(|l| l.with_message("Runtime error thrown here"))
-                }));
-                Codespan::error()
-                    .with_message("Runtime error")
-                    .with_labels(labels)
-            }
         }
         .into()
     }

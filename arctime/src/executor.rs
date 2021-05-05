@@ -8,7 +8,6 @@ use std::sync::Arc;
 
 use crate::client::*;
 use crate::control::*;
-use crate::data::*;
 use crate::task::*;
 
 pub struct Executor {

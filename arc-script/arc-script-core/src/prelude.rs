@@ -2,8 +2,6 @@
 
 pub use crate::compiler;
 pub use crate::compiler::ast;
-pub use crate::compiler::dfg::lower::hir::eval::value::Value;
-pub use crate::compiler::dfg::lower::hir::eval::value::ValueKind;
 pub use crate::compiler::info::diags;
 pub use crate::compiler::info::modes;
 pub use arc_script_core_shared::Result;

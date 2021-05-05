@@ -1,5 +1,7 @@
 use crate::compiler::ast;
 use crate::compiler::ast::AST;
+use crate::compiler::hir;
+use crate::compiler::hir::lower::ast::resolve::declare;
 use crate::compiler::hir::lower::ast::resolve::declare::Declare;
 use crate::compiler::hir::Name;
 use crate::compiler::info::diags::Error;
@@ -8,6 +10,8 @@ use crate::compiler::info::Info;
 
 use arc_script_core_shared::Map;
 use arc_script_core_shared::Set;
+
+use tracing::instrument;
 
 /// Every symbol is some kind of declaration. The symbol's declaration kind
 /// determines in which table of the HIR the definition of the symbol is stored.
@@ -18,10 +22,12 @@ pub(crate) enum ItemDeclKind {
     Alias,
     Enum,
     Fun,
+    Method,
     Task,
-    Extern,
+    ExternFun,
+    ExternType,
     Variant,
-    State,
+    Global,
 }
 
 /// A symbol table which stores both an import graph, which can be used to track
@@ -38,12 +44,14 @@ pub(crate) struct SymbolTable {
 
 impl SymbolTable {
     /// Constructs a `SymbolTable` from an `AST`.
+    #[instrument(name = "(Declare)", level = "debug", skip(ast, info))]
     pub(crate) fn from(ast: &AST, info: &mut Info) -> Self {
         let mut table = Self::default();
         for (path, module) in &ast.modules {
-            module.declare(*path, &mut table, info);
+            let ctx = &mut declare::Context::new(&mut table, info, ast);
+            module.declare(*path, ctx);
         }
-        tracing::debug!("{}", table.debug(info));
+        tracing::debug!("\n{}", table.debug(info));
         table
     }
 }
@@ -60,24 +68,32 @@ impl SymbolTable {
     ///   A -> B -> D
     ///   C -------/
     ///   E -> F --/
-    pub(crate) fn absolute(&mut self, path: PathId) -> PathId {
+    pub(crate) fn absolute(&mut self, path: impl Into<PathId>) -> PathId {
+        let path = path.into();
         if self.compressed.contains(&path) {
             // Path has already been compressed
-            self.imports.get(&path).cloned().unwrap_or(path)
+            self.imports.get(&path).copied().unwrap_or(path)
         } else {
             // Mark path as compressed to avoid infinite cycles.
             self.compressed.insert(path);
             self.imports.remove(&path).map_or(path, |next| {
                 // `path` is an alias for `next`, keep compressing
                 let real = self.absolute(next);
-                self.imports.insert(path, real);
+                self.import(path, real);
                 real
             })
         }
     }
+
     /// Returns the declaration kind of a path.
-    pub(crate) fn get_decl(&mut self, path: PathId) -> Option<ItemDeclKind> {
+    pub(crate) fn get_decl(&mut self, path: impl Into<PathId>) -> Option<ItemDeclKind> {
+        let path = path.into();
         let real = self.imports.get(&path).unwrap_or(&path);
-        self.declarations.get(real).cloned()
+        self.declarations.get(real).copied()
+    }
+
+    /// Imports a path `from` into a path `to`.
+    pub(crate) fn import(&mut self, from: impl Into<PathId>, to: impl Into<PathId>) {
+        self.imports.insert(from.into(), to.into());
     }
 }

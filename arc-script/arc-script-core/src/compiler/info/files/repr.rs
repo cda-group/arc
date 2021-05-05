@@ -9,17 +9,21 @@ use std::ops::Range;
 /// A struct for storing source files.
 #[derive(Debug)]
 pub struct FileInterner {
-    /// Store containing source names and source files. Can be used
+    /// Store containing source names and source files.
     pub store: SimpleFiles<String, String>,
 }
 
 impl Default for FileInterner {
     fn default() -> Self {
         Self {
-            store: SimpleFiles::new(),
+            store: SimpleFiles::new()
         }
     }
 }
+
+/// A structure which keeps the start and end position of an AST node plus its source file.
+#[derive(Debug, New)]
+pub struct Spanned<Node>(pub FileId, pub ByteIndex, pub Node, pub ByteIndex);
 
 /// An index of a character in a source file.
 pub type ByteIndex = TextSize;

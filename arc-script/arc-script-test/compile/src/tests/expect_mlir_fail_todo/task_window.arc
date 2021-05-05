@@ -1,15 +1,15 @@
+extern type Cell(x: i32) {
+    fun get(): i32;
+    fun set(x: i32): unit;
+}
+
 task TumblingWindowSum(): ~i32 by i32 -> ~i32 by i32 {
-    state agg: i32 = 0
+    val agg: crate::Cell = crate::Cell(0);
 
-    timer unit
+    every 1m {
+        emit agg.get() by 0;
+        agg.set(0);
+    };
 
-    startup trigger unit by 0 after 1m
-
-    timeout unit by key => {
-        emit agg by key;
-        agg = 0;
-        trigger unit by key after 1m
-    }
-
-    on event by key => agg = agg + event
+    on event by key => agg.set(agg.get() + event);
 }

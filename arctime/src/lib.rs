@@ -6,7 +6,6 @@
 
 pub mod client;
 pub mod control;
-pub mod data;
 pub mod epochs;
 pub mod executor;
 pub mod loops;
@@ -18,11 +17,11 @@ pub mod stream;
 pub mod task;
 pub mod timer;
 pub mod transform;
+pub mod state;
 
 pub mod prelude {
     pub use crate::client::*;
     pub use crate::control::*;
-    pub use crate::data::*;
     pub use crate::epochs::*;
     pub use crate::executor::*;
     pub use crate::loops::*;
@@ -32,6 +31,7 @@ pub mod prelude {
     pub use crate::source::*;
     pub use crate::stream::*;
     pub use crate::transform::*;
+    pub use crate::state::*;
     // pub use crate::task;
     pub use kompact::prelude::*;
     pub use std::any::Any;

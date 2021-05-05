@@ -7,9 +7,7 @@ input_file: arc-script-test/compile/src/tests/expect_pass/enum_pattern_nested.ar
 enum Baz { Some(i32), None }
 enum Foo { Bar(Baz), None }
 fun main() {
-    if let Foo::Bar(Baz::Some(x)) = Foo::Bar(Baz::Some(5)) {
-        unit
-    } else {
+    if val Foo::Bar(Baz::Some(x)) = Foo::Bar(Baz::Some(5)) {
         unit
     }
 }

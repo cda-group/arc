@@ -5,7 +5,7 @@ input_file: arc-script-test/compile/src/tests/expect_mlir_fail_todo/stream_typin
 
 ---
 fun test0(x: ~i32 by i32): ~i32 by i32 {
-    x |> test1
+    x | test1
 }
 fun test1(x: ~i32 by i32): ~i32 by i32 {
     x

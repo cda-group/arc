@@ -6,13 +6,13 @@ input_file: arc-script-test/compile/src/tests/expect_pass/basic_by.arc
 ---
 module @toplevel {
     func @crate_test() -> si32 {
-        %x_1 = arc.constant 1 : si32
-        %x_2 = arc.constant 2 : si32
-        %x_3 = arc.make_struct(%x_2, %x_1 : si32, si32) : !arc.struct<key : si32, val : si32>
-        %x_4 = "arc.struct_access"(%x_3) { field = "val" } : (!arc.struct<key : si32, val : si32>) -> si32
-        %x_5 = "arc.struct_access"(%x_3) { field = "key" } : (!arc.struct<key : si32, val : si32>) -> si32
-        %x_6 = arc.addi %x_4, %x_5 : si32
-        return %x_6 : si32
+        %x_0 = arc.constant 1 : si32
+        %x_1 = arc.constant 2 : si32
+        %x_2 = arc.make_struct(%x_1, %x_0 : si32, si32) : !arc.struct<key: si32, value: si32>
+        %x_3 = "arc.struct_access"(%x_2) { field = "value" } : (!arc.struct<key: si32, value: si32>) -> si32
+        %x_4 = "arc.struct_access"(%x_2) { field = "key" } : (!arc.struct<key: si32, value: si32>) -> si32
+        %x_5 = arc.addi %x_3, %x_4 : si32
+        "arc.block.result"(%x_5) : (si32) -> ()
     }
 }
 

@@ -1,9 +1,13 @@
-use crate::compiler::hir::Name;
 use crate::compiler::info::files::Loc;
+use crate::compiler::info::files::Spanned;
 
+use arc_script_core_macros::Loc;
+use arc_script_core_macros::GetId;
 use arc_script_core_shared::From;
 use arc_script_core_shared::Hasher;
 use arc_script_core_shared::Shrinkwrap;
+use arc_script_core_shared::New;
+use arc_script_core_shared::Educe;
 
 use lasso::MiniSpur;
 use lasso::Rodeo;
@@ -13,29 +17,41 @@ pub(crate) type Key = MiniSpur;
 /// A store for interning names.
 pub(crate) type Store = Rodeo<Key, Hasher>;
 
+/// An identifier.
+#[derive(Debug, Clone, Copy, Loc, Educe, New, GetId)]
+#[educe(PartialEq, Eq, Hash, PartialOrd, Ord)]
+pub struct Name {
+    /// Name identifier.
+    pub id: NameId,
+    /// Name location.
+    #[educe(PartialEq(ignore), Eq(ignore), Hash(ignore))]
+    #[educe(PartialOrd(ignore), Ord(ignore))]
+    pub loc: Loc,
+}
+
 /// An interner for interning `Name`s into `NameId`s, and resolving the other way around.
 #[derive(Debug)]
 pub(crate) struct NameInterner {
+    /// Where all names are stored.
     pub(crate) store: Store,
+    /// Commonly occuring names.
     pub(crate) common: Common,
+    /// Buffer used when generating new names.
     buf: String,
 }
 
 macro_rules! common {
     {
-        aliased_names: [$($aliased:ident:$alias:literal),*],
-        literal_names: [$($literal:ident),*]
+        $($name:ident:$literal:literal),* $(,)?
     } => {
         #[derive(Debug)]
         pub(crate) struct Common {
-            $(pub(crate) $aliased: NameId,)*
-            $(pub(crate) $literal: NameId),*
+            $(pub(crate) $name: Name,)*
         }
         impl Common {
             fn new(store: &mut Store) -> Self {
                 Self {
-                    $($aliased: NameId(store.get_or_intern_static($alias)),)*
-                    $($literal: NameId(store.get_or_intern_static((stringify!($literal))))),*
+                    $($name: NameId(store.get_or_intern_static($literal)).into(),)*
                 }
             }
         }
@@ -44,8 +60,14 @@ macro_rules! common {
 
 /// Commonly occurring names.
 common! {
-    aliased_names: [root: "crate", sink: "Sink", source: "Source"],
-    literal_names: [val, key, dur, push, pop, fold, add, remove, len, clear]
+    root: "crate",
+    iinterface: "IInterface",
+    ointerface: "OInterface",
+    dummy: "__",
+    val: "value",
+    key: "key",
+    on_event: "on_event",
+    on_start: "on_start",
 }
 
 impl Default for NameInterner {
@@ -57,7 +79,8 @@ impl Default for NameInterner {
     }
 }
 
-pub(crate) type NameBuf = str;
+/// A kind of name.
+pub(crate) type NameKind = str;
 
 /// The product of interning a `Name`.
 #[derive(Debug, Clone, Copy, From, Shrinkwrap, Eq, PartialEq, Ord, PartialOrd, Hash)]
@@ -65,18 +88,18 @@ pub struct NameId(Key);
 
 impl NameInterner {
     /// Interns a `NameBuf` to a `NameId`.
-    pub(crate) fn intern(&mut self, name: impl AsRef<NameBuf>) -> NameId {
+    pub(crate) fn intern(&mut self, name: impl AsRef<NameKind>) -> NameId {
         self.store.get_or_intern(name).into()
     }
 
     /// Resolves a `NameId` to a `NameBuf`.
-    pub(crate) fn resolve(&self, id: NameId) -> &NameBuf {
-        self.store.resolve(&id)
+    pub(crate) fn resolve(&self, id: impl Into<NameId>) -> &NameKind {
+        self.store.resolve(&id.into())
     }
 
     /// Returns a uniquified version of `name`.
     pub(crate) fn fresh_with_base(&mut self, name: Name) -> Name {
-        let buf = self.resolve(name.id).to_owned();
+        let buf = self.resolve(name).to_owned();
         let uid = self.uniquify(&buf);
         Name::new(uid, name.loc)
     }
@@ -89,7 +112,7 @@ impl NameInterner {
     /// Generates and interns fresh new name which begins with `base`.
     /// NB: This is probably not ideal for performance since a new string needs
     /// to be allocated.
-    fn uniquify(&mut self, base: impl AsRef<NameBuf>) -> NameId {
+    fn uniquify(&mut self, base: impl AsRef<NameKind>) -> NameId {
         self.buf.clear();
         self.buf.push_str(base.as_ref());
         loop {

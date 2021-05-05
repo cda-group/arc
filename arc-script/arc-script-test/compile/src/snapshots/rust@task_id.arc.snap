@@ -1,0 +1,87 @@
+---
+source: arc-script-test/compile/src/insta.rs
+expression: s
+input_file: arc-script-test/compile/src/tests/expect_mlir_fail_todo/task_id.arc
+
+---
+#[allow(non_snake_case)]
+#[allow(unused_must_use)]
+#[allow(dead_code)]
+#[allow(unused_variables)]
+#[allow(unused_imports)]
+#[allow(unused_braces)]
+#[allow(irrefutable_let_patterns)]
+#[allow(clippy::redundant_field_names)]
+#[allow(clippy::unused_unit)]
+#[allow(clippy::double_parens)]
+pub mod arc_script_output {
+    use super::*;
+    use arc_script::arcorn;
+    #[arcorn::rewrite(on_event = "Identity_on_event", on_start = "Identity_on_start")]
+    mod Identity_mod {
+        struct Identity {}
+        #[arcorn::rewrite]
+        pub enum Identity_IInterface {
+            Identity_IInterface_A(Struct3keyi325valuei32End),
+        }
+        #[arcorn::rewrite]
+        pub enum Identity_OInterface {
+            Identity_OInterface_B(Struct3keyi325valuei32End),
+        }
+    }
+    impl Identity_mod::Identity {
+        pub fn Identity_on_event(&mut self, x_0: Identity_IInterface) -> () {
+            let x_1: bool = arcorn::is!(Identity_IInterface_A, (x_0.clone()));
+            let x_6: () = if (x_1.clone()) {
+                let x_2: Struct3keyi325valuei32End =
+                    arcorn::unwrap!(Identity_IInterface_A, (x_0.clone()));
+                let x_3: Identity_OInterface =
+                    arcorn::enwrap!(Identity_OInterface_B, (x_2.clone()));
+                let x_4: () = self.emit((x_3.clone()));
+                (x_4.clone())
+            } else {
+                let x_5: () = unreachable!();
+                (x_5.clone())
+            };
+            (x_6.clone())
+        }
+        pub fn Identity_on_start(&mut self) -> () {
+            let x_7: () = ();
+            (x_7.clone())
+        }
+    }
+    pub fn main(
+        input_0: arcorn::Stream<Struct3keyi325valuei32End>,
+    ) -> arcorn::Stream<Struct3keyi325valuei32End> {
+        let x_8: Box<
+            dyn arcorn::ArcornFn() -> Box<
+                dyn arcorn::ArcornFn(
+                    arcorn::Stream<Struct3keyi325valuei32End>,
+                ) -> arcorn::Stream<Struct3keyi325valuei32End>,
+            >,
+        > = Box::new(Identity)
+            as Box<
+                dyn arcorn::ArcornFn() -> Box<
+                    dyn arcorn::ArcornFn(
+                        arcorn::Stream<Struct3keyi325valuei32End>,
+                    )
+                        -> arcorn::Stream<Struct3keyi325valuei32End>,
+                >,
+            >;
+        let x_9: Box<
+            dyn arcorn::ArcornFn(
+                arcorn::Stream<Struct3keyi325valuei32End>,
+            ) -> arcorn::Stream<Struct3keyi325valuei32End>,
+        > = (x_8.clone())();
+        let x_A: arcorn::Stream<Struct3keyi325valuei32End> = (x_9.clone())((input_0.clone()));
+        (x_A.clone())
+    }
+    #[arcorn::rewrite]
+    pub struct Struct3keyi325valuei32End {
+        key: i32,
+        value: i32,
+    }
+}
+pub use arc_script_output::*;
+
+

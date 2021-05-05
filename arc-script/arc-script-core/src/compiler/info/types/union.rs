@@ -1,21 +1,21 @@
 use crate::compiler::hir::Type;
-use crate::compiler::info::types::TypeId;
-use crate::compiler::info::TypeInterner;
+use crate::compiler::hir::TypeKind;
+use crate::compiler::info::types::TypeInterner;
 
 pub(crate) trait Union<A, B> {
     /// Unions A with B
     fn union(&mut self, a: A, b: B);
 }
 
-impl<T: Into<Type>> Union<TypeId, T> for TypeInterner {
-    fn union(&mut self, tv0: TypeId, ty1: T) {
-        self.store.get_mut().union_value(tv0, ty1.into());
+impl<T: Into<TypeKind>> Union<Type, T> for TypeInterner {
+    fn union(&mut self, t0: Type, t1: T) {
+        self.store.get_mut().union_value(t0.id, t1.into());
     }
 }
 
-impl Union<TypeId, TypeId> for TypeInterner {
+impl Union<Type, Type> for TypeInterner {
     /// Unifies two type variables `a` and `b`.
-    fn union(&mut self, a: TypeId, b: TypeId) {
-        self.store.get_mut().union(a, b);
+    fn union(&mut self, a: Type, b: Type) {
+        self.store.get_mut().union(a.id, b.id);
     }
 }

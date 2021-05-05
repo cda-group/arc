@@ -1,8 +1,12 @@
 use crate::compiler::ast;
-use crate::compiler::hir::{Name, Path};
+pub(crate) use crate::compiler::hir::Name;
+pub(crate) use crate::compiler::hir::Path;
+pub(crate) use crate::compiler::hir::PathId;
+pub(crate) use crate::compiler::hir::Type;
+pub(crate) use crate::compiler::hir::TypeKind;
+pub(crate) use crate::compiler::hir::ScalarKind;
 
 use crate::compiler::info::files::Loc;
-use crate::compiler::info::types::TypeId;
 
 use arc_script_core_shared::New;
 use arc_script_core_shared::OrdMap;
@@ -18,11 +22,9 @@ use time::Duration;
 #[derive(Debug, New)]
 pub(crate) struct MLIR {
     /// Top-level items
-    pub(crate) items: Vec<Path>,
+    pub(crate) items: Vec<PathId>,
     /// Definitions of items.
-    pub(crate) defs: OrdMap<Path, Item>,
-    //    /// Main function for generating the dataflow.
-    //     pub(crate) main: Fun,
+    pub(crate) defs: OrdMap<PathId, Item>,
 }
 
 #[derive(New, Debug)]
@@ -44,13 +46,13 @@ pub(crate) struct Fun {
     pub(crate) path: Path,
     pub(crate) params: Vec<Var>,
     pub(crate) body: Region,
-    pub(crate) tv: TypeId,
+    pub(crate) t: Type,
 }
 
 #[derive(New, Debug, Copy, Clone)]
 pub(crate) struct Var {
     pub(crate) name: Name,
-    pub(crate) tv: TypeId,
+    pub(crate) t: Type,
 }
 
 #[derive(New, Debug)]
@@ -62,20 +64,20 @@ pub(crate) struct Enum {
 #[derive(New, Debug)]
 pub(crate) struct Variant {
     pub(crate) path: Path,
-    pub(crate) tv: TypeId,
+    pub(crate) t: Type,
     pub(crate) loc: Loc,
 }
 
 #[derive(New, Debug)]
 pub(crate) struct Alias {
     pub(crate) path: Path,
-    pub(crate) tv: TypeId,
+    pub(crate) t: Type,
 }
 
 #[derive(New, Debug)]
 pub(crate) struct State {
     pub(crate) path: Path,
-    pub(crate) tv: TypeId,
+    pub(crate) t: Type,
     pub(crate) init: Op,
 }
 
@@ -84,13 +86,13 @@ pub(crate) struct State {
 pub(crate) struct Task {
     pub(crate) path: Path,
     /// Type of the task.
-    pub(crate) tv: TypeId,
+    pub(crate) t: Type,
     /// Side-input parameters to the task.
     pub(crate) params: Vec<Var>,
     /// Input ports to the task.
-    pub(crate) iports: TypeId,
+    pub(crate) iports: Type,
     /// Output ports of the task.
-    pub(crate) oports: TypeId,
+    pub(crate) oports: Type,
     /// Event handler.
     pub(crate) handler: Op,
     /// Items of the task.
@@ -118,16 +120,16 @@ pub(crate) struct Op {
 
 #[derive(Debug)]
 pub(crate) enum OpKind {
-    // Task-ops
     Access(Var, Name),
     Array(Vec<Var>),
-    BinOp(TypeId, Var, BinOp, Var),
-    Break,
+    BinOp(Type, Var, BinOp, Var),
+    Break(Var),
+    Continue,
     Call(Path, Vec<Var>),
     CallIndirect(Var, Vec<Var>),
+    CallMethod(Var, Name, Vec<Var>),
     Const(ConstKind),
     Emit(Var),
-    Trigger(Var),
     If(Var, Region, Region),
     Log(Var),
     Loop(Var),
@@ -140,9 +142,6 @@ pub(crate) enum OpKind {
     Enwrap(Path, Var),
     Unwrap(Path, Var),
     Is(Path, Var),
-    // Dataflow-ops
-    Edge((Var, usize), (Var, usize)),
-    Node(Path, Vec<Var>),
 }
 
 #[derive(Debug, New)]
@@ -152,7 +151,6 @@ pub(crate) struct Region {
 
 #[derive(Debug, New)]
 pub(crate) struct Block {
-    //     id: NameId,
     pub(crate) ops: Vec<Op>,
 }
 
@@ -176,12 +174,12 @@ pub(crate) enum BinOpKind {
     Lt,
     Mod,
     Mul,
+    Mut,
     Neq,
     Or,
     Pow,
     Sub,
     Xor,
-    Mut,
 }
 
 #[derive(Debug, New)]
@@ -217,9 +215,9 @@ pub(crate) enum ConstKind {
 }
 
 impl OpKind {
-    pub(crate) const fn get_type_specifier(&self, t: TypeId) -> TypeId {
+    pub(crate) const fn get_type_specifier(&self, t: Type) -> Type {
         match self {
-            Self::BinOp(st, _, op, _) => {
+            OpKind::BinOp(st, _, op, _) => {
                 use BinOpKind::*;
                 match op.kind {
                     Equ | Geq | Gt | Leq | Lt | Neq => *st,

@@ -55,17 +55,10 @@ fn test_hir() {
 }
 
 #[test]
-fn test_dfg() {
-    snapshot(Output::DFG, "tests/expect_mlir_fail_todo/*.arc");
-    snapshot(Output::DFG, "tests/expect_pass/*.arc");
-    snapshot(Output::DFG, "tests/expect_fail/*.arc");
-}
-
-#[test]
 fn test_rust() {
-    snapshot(Output::Rust, "tests/expect_mlir_fail_todo/*.arc");
-    snapshot(Output::Rust, "tests/expect_pass/*.arc");
-    snapshot(Output::Rust, "tests/expect_fail/*.arc");
+    snapshot(Output::Arcorn, "tests/expect_mlir_fail_todo/*.arc");
+    snapshot(Output::Arcorn, "tests/expect_pass/*.arc");
+    snapshot(Output::Arcorn, "tests/expect_fail/*.arc");
 }
 
 #[test]

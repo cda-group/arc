@@ -4,24 +4,48 @@ expression: s
 input_file: arc-script-test/compile/src/tests/expect_mlir_fail_todo/task_filter.arc
 
 ---
-task Filter(p_0: fun(i32): bool) ~{ key: i32, val: i32 } -> ~{ key: i32, val: i32 } {
-    on {
-        x_0: { key: i32, val: i32 } => {
-            let event_0: i32 = x_0.val in
-            let key_0: i32 = x_0.key in
-            if p_0(event_0) {
-                emit { val: event_0, key: key_0 }
-            } else {
-                unit
-            }
-        }
+task Filter(p_0: fun(i32): bool): ~{ key: i32, value: i32 } -> ~{ key: i32, value: i32 } {
+    enum IInterface {
+        __({ key: i32, value: i32 })
     }
+    enum OInterface {
+        __({ key: i32, value: i32 })
+    }
+    fun on_start(p_0: fun(i32): bool): unit {
+        val x_B: unit = unit;
+        x_B
+    }
+    crate::Filter::on_start();
+    fun on_event(x_3: crate::Filter::IInterface): unit {
+        val x_0: { key: i32, value: i32 } = unwrap[crate::Filter::IInterface::__](x_3);
+        val x_1: i32 = x_0.value;
+        val x_2: i32 = x_0.key;
+        val x_4: bool = p_0(x_1);
+        val x_9: unit = if x_4 {
+            val x_5: { key: i32, value: i32 } = { value: x_1, key: x_2 };
+            val x_6: crate::Filter::OInterface = enwrap[crate::Filter::OInterface::__](x_5);
+            val x_7: unit = emit x_6;
+            x_7
+        } else {
+            val x_8: unit = unit;
+            x_8
+        };
+        x_9
+    }
+    on event => crate::Filter::on_event(event)
 }
-fun x_1(x_2: i32): bool {
-    x_2 % 2 == 0
+fun x_D(x_E: i32): bool {
+    val x_F: i32 = 2;
+    val x_G: i32 = x_E % x_F;
+    val x_H: i32 = 0;
+    val x_I: bool = x_G == x_H;
+    x_I
 }
-fun main(stream0_0: ~{ key: i32, val: i32 }): ~{ key: i32, val: i32 } {
-    let stream1_0: ~{ key: i32, val: i32 } = crate::Filter(crate::x_1)(stream0_0) in
-    stream1_0
+fun main(stream0_0: ~{ key: i32, value: i32 }): ~{ key: i32, value: i32 } {
+    val x_C: fun(fun(i32): bool): fun(~{ key: i32, value: i32 }): ~{ key: i32, value: i32 } = crate::Filter;
+    val x_J: fun(i32): bool = crate::x_D;
+    val x_K: fun(~{ key: i32, value: i32 }): ~{ key: i32, value: i32 } = x_C(x_J);
+    val x_L: ~{ key: i32, value: i32 } = x_K(stream0_0);
+    x_L
 }
 

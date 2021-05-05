@@ -6,6 +6,6 @@ edition = "2018"
 description = "Arcon experiments"
 
 [dependencies]
-arc-script = { version = "0.0.0", path = "../../../arc-script", features = ["backend_arcon"], default-features = false }
-arcon      = { git = "https://github.com/segeljakt/arcon" }
+arc-script = { version = "=0.0.0", path = "../../../arc-script", features = ["backend_arcon"], default-features = false }
+arcon      = { version = "0.1.3", git = "https://github.com/segeljakt/arcon" }
 prost      = { version = "0.7.0" }

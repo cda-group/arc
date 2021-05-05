@@ -4,28 +4,48 @@ expression: s
 input_file: arc-script-test/compile/src/tests/expect_mlir_fail_todo/task_window.arc
 
 ---
-task TumblingWindowSum() ~{ key: i32, val: i32 } -> ~{ key: i32, val: i32 } {
-    startup trigger { val: { val: unit, key: 0 }, dur: 60 }
-    timer unit
-    timeout {
-        x_1: { key: i32, val: unit } => {
-            if x_1.val == unit {
-                let key_1: i32 = x_1.key in
-                emit { val: agg_0, key: key_1 };
-                agg_0 = 0;
-                trigger { val: { val: unit, key: key_1 }, dur: 60 }
-            } else {
-                ???
-            }
-        }
+extern type Cell(x: i32) {
+    extern fun get(): i32;, 
+    extern fun set(x: i32): unit;
+}
+task TumblingWindowSum(): ~{ key: i32, value: i32 } -> ~{ key: i32, value: i32 } {
+    enum IInterface {
+        __({ key: i32, value: i32 })
     }
-    state agg_0: i32 = 0
-    on {
-        x_0: { key: i32, val: i32 } => {
-            let event_0: i32 = x_0.val in
-            let key_0: i32 = x_0.key in
-            agg_0 = agg_0 + event_0
-        }
+    enum OInterface {
+        __({ key: i32, value: i32 })
     }
+    val agg_0: crate::Cell = uninitialised;
+    fun on_start(): unit {
+        val x_0: fun(i32): crate::Cell = crate::Cell;
+        val x_1: i32 = 0;
+        val x_2: crate::Cell = x_0(x_1);
+        val x_3: unit = initialise[agg_0](x_2);
+        val x_4: duration = 60;
+        val x_D: unit = every x_4 {
+            val x_5: i32 = agg_0.get();
+            val x_6: i32 = 0;
+            val x_7: { key: i32, value: i32 } = { value: x_5, key: x_6 };
+            val x_8: crate::TumblingWindowSum::OInterface = enwrap[crate::TumblingWindowSum::OInterface::__](x_7);
+            val x_9: unit = emit x_8;
+            val x_A: i32 = 0;
+            val x_B: unit = agg_0.set(x_A);
+            val x_C: unit = unit;
+            x_C
+        };
+        val x_M: unit = unit;
+        x_M
+    }
+    crate::TumblingWindowSum::on_start();
+    fun on_event(x_H: crate::TumblingWindowSum::IInterface): unit {
+        val x_E: { key: i32, value: i32 } = unwrap[crate::TumblingWindowSum::IInterface::__](x_H);
+        val x_F: i32 = x_E.value;
+        val x_G: i32 = x_E.key;
+        val x_I: i32 = agg_0.get();
+        val x_J: i32 = x_I + x_F;
+        val x_K: unit = agg_0.set(x_J);
+        x_K
+    }
+    on event => crate::TumblingWindowSum::on_event(event)
 }
 

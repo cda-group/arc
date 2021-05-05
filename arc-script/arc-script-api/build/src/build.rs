@@ -109,9 +109,9 @@ impl Builder {
                 if report.is_ok() {
                     file.write_all(sink.as_slice()).unwrap();
                 } else {
-                    file.write(r##"compile_error!(r#"Compilation Failed: "##.as_bytes()).unwrap();
+                    file.write_all(r##"compile_error!(r#"Compilation Failed: "##.as_bytes()).unwrap();
                     file.write_all(sink.as_slice()).unwrap();
-                    file.write(r##""#);"##.as_bytes()).unwrap();
+                    file.write_all(r##""#);"##.as_bytes()).unwrap();
                 }
             }
         }

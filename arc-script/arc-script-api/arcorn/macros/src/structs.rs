@@ -23,6 +23,7 @@ pub(crate) fn rewrite(_: syn::AttributeArgs, item: syn::ItemStruct) -> pm::Token
                 } else {
                     quote!(#[arcon(reliable_ser_id = 13, version = 1)])
                 };
+                // NOTE: prost automatically derives Debug
                 quote!(
                     #[derive(
                         Clone,
@@ -38,6 +39,7 @@ pub(crate) fn rewrite(_: syn::AttributeArgs, item: syn::ItemStruct) -> pm::Token
                 quote! {
                     #[derive(
                         Clone,
+                        Debug,
                         arc_script::arcorn::derive_more::From,
                         arc_script::arcorn::derive_more::Constructor
                     )]

@@ -1,11 +1,14 @@
 use arc_script_core::compiler::info::diags;
+use arc_script_core::compiler::info::diags::to_codespan::Codespan;
+use arc_script_core::compiler::info::diags::to_codespan::Report;
 use arc_script_core::compiler::info::diags::to_codespan::ToCodespan;
-use arc_script_core::compiler::info::diags::to_codespan::{Codespan, Report};
 use arc_script_core::compiler::info::files;
 use arc_script_core::compiler::info::Info;
 
 use codespan_lsp::byte_index_to_position;
-use codespan_reporting::diagnostic::{Diagnostic, Label, Severity};
+use codespan_reporting::diagnostic::Diagnostic;
+use codespan_reporting::diagnostic::Label;
+use codespan_reporting::diagnostic::Severity;
 use lspower::lsp;
 
 #[rustfmt::skip]
@@ -17,7 +20,7 @@ pub fn to_lsp(report: Report) -> Vec<lsp::Diagnostic> {
             |Diagnostic {
                  severity,
                  code,
-                 message: source,
+                 message,
                  labels,
                  ..
              }| {
@@ -28,15 +31,15 @@ pub fn to_lsp(report: Report) -> Vec<lsp::Diagnostic> {
                             byte_index_to_position(&info.files.store, file_id, range.start).unwrap(),
                             byte_index_to_position(&info.files.store, file_id, range.end).unwrap(),
                         ),
-                        severity: Some(match severity {
+                        severity: match severity {
                             Severity::Bug => lsp::DiagnosticSeverity::Error,
                             Severity::Error => lsp::DiagnosticSeverity::Error,
                             Severity::Warning => lsp::DiagnosticSeverity::Warning,
                             Severity::Note => lsp::DiagnosticSeverity::Information,
                             Severity::Help => lsp::DiagnosticSeverity::Hint,
-                        }),
+                        }.into(),
                         code: code.clone().map(lsp::NumberOrString::String),
-                        source: Some(source.clone()),
+                        source: message.clone().into(),
                         message,
                         related_information: None,
                         tags: None,

@@ -1,18 +1,27 @@
 use crate::compiler::ast;
-
 use crate::compiler::info::files::Loc;
+use crate::prelude::ast::Spanned;
 
+use arc_script_core_macros::GetId;
 use arc_script_core_macros::Loc;
+use arc_script_core_shared::Arena;
 use arc_script_core_shared::Educe;
+use arc_script_core_shared::From;
+use arc_script_core_shared::Into;
 use arc_script_core_shared::New;
 use arc_script_core_shared::OrdMap;
+use arc_script_core_shared::Shrinkwrap;
 use arc_script_core_shared::VecMap;
 
-use crate::prelude::ast::Spanned;
+use bitmaps::Bitmap;
+use strum::EnumCount;
+
+use std::collections::VecDeque;
 
 pub(crate) use crate::compiler::info::names::NameId;
 pub(crate) use crate::compiler::info::paths::PathId;
-pub(crate) use crate::compiler::info::types::TypeId;
+
+pub(crate) type ExprInterner = Arena<ExprId, ExprKind>;
 
 /// The HIR is a Higher-Level Intermediate Representation more suitable for
 /// analysis and code generation than the AST. The main differences between
@@ -28,294 +37,328 @@ pub(crate) use crate::compiler::info::types::TypeId;
 #[derive(Debug, Default)]
 pub(crate) struct HIR {
     /// Top-level items
-    pub(crate) items: Vec<Path>,
+    pub(crate) namespace: Vec<PathId>,
     /// Definitions of items.
-    pub(crate) defs: OrdMap<Path, Item>,
+    pub(crate) defs: OrdMap<PathId, Item>,
+    pub(crate) exprs: ExprInterner,
 }
 
-#[derive(New, Loc, Debug)]
+#[derive(Debug, Clone, New, Loc)]
 pub(crate) struct Item {
     pub(crate) kind: ItemKind,
     pub(crate) loc: Loc,
 }
 
 #[allow(clippy::large_enum_variant)]
-#[derive(Debug)]
+#[derive(Debug, Clone, From)]
 pub(crate) enum ItemKind {
-    Alias(Alias),
+    TypeAlias(TypeAlias),
     Enum(Enum),
     Fun(Fun),
     Task(Task),
-    Extern(Extern),
+    ExternFun(ExternFun),
+    ExternType(ExternType),
     Variant(Variant),
 }
 
-pub(crate) use ast::Name;
-
 pub(crate) use ast::Index;
+pub(crate) use ast::Name;
+pub(crate) use ast::Path;
 
-/// A path of names.
-#[derive(Debug, Copy, Clone, Educe, New, Loc)]
-#[educe(PartialEq, Eq, Hash)]
-pub struct Path {
-    pub(crate) id: PathId,
-    #[educe(PartialEq(ignore), Eq(ignore), Hash(ignore))]
-    pub(crate) loc: Loc,
-}
-
-#[derive(New, Debug)]
+#[derive(Debug, Clone, New)]
 pub(crate) struct Fun {
-    pub(crate) kind: FunKind,
     pub(crate) path: Path,
+    pub(crate) kind: FunKind,
     pub(crate) params: Vec<Param>,
-    pub(crate) channels: Option<Vec<Param>>,
-    pub(crate) body: Expr,
-    pub(crate) tv: TypeId,
-    pub(crate) rtv: TypeId,
+    pub(crate) body: Block,
+    pub(crate) t: Type,
+    pub(crate) rt: Type,
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone, Copy)]
 pub(crate) enum FunKind {
-    Global,
-    Method,
+    Free,   // Freestanding function
+    Method, // Method function
 }
 
-#[derive(New, Debug)]
-pub(crate) struct Extern {
+#[derive(Debug, Clone, New)]
+pub(crate) struct ExternFun {
+    pub(crate) path: Path,
     pub(crate) kind: FunKind,
+    pub(crate) params: Vec<Param>,
+    pub(crate) t: Type,
+    pub(crate) rt: Type,
+}
+
+#[derive(Debug, Clone, New)]
+pub(crate) struct ExternType {
     pub(crate) path: Path,
     pub(crate) params: Vec<Param>,
-    pub(crate) tv: TypeId,
-    pub(crate) rtv: TypeId,
+    pub(crate) items: Vec<PathId>,
+    pub(crate) t: Type
 }
 
-#[derive(New, Loc, Debug, Clone, Copy)]
+#[derive(Debug, Clone, Copy, New, Loc)]
 pub(crate) struct Param {
     pub(crate) kind: ParamKind,
-    pub(crate) tv: TypeId,
+    pub(crate) t: Type,
     pub(crate) loc: Loc,
 }
 
 #[derive(Debug, Clone, Copy)]
 pub(crate) enum ParamKind {
-    Var(Name),
+    Ok(Name),
     Ignore,
     Err,
 }
 
-#[derive(New, Debug)]
+#[derive(Debug, Clone, New)]
 pub(crate) struct Enum {
     pub(crate) path: Path,
     pub(crate) variants: Vec<Path>,
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub(crate) enum Vis {
     Private,
     Public,
 }
 
-#[derive(New, Loc, Debug)]
+#[derive(Debug, Clone, New, Loc)]
 pub(crate) struct Variant {
-    pub(crate) vis: Vis,
     pub(crate) path: Path,
-    pub(crate) tv: TypeId,
+    pub(crate) t: Type,
     pub(crate) loc: Loc,
 }
 
-#[derive(New, Debug)]
-pub(crate) struct Alias {
+#[derive(Debug, Clone, New)]
+pub(crate) struct TypeAlias {
     pub(crate) path: Path,
-    pub(crate) tv: TypeId,
+    pub(crate) t: Type,
 }
 
-#[derive(New, Debug)]
-pub(crate) struct Startup {
+#[derive(Debug, Clone, New)]
+pub(crate) struct Assign {
+    pub(crate) kind: MutKind,
+    pub(crate) param: Param,
     pub(crate) expr: Expr,
 }
 
-#[derive(New, Debug)]
-pub(crate) struct State {
-    pub(crate) param: Param,
-    pub(crate) init: Expr,
-}
+pub(crate) use ast::MutKind;
 
-/// A task is a generic low-level primitive which resembles a node in the dataflow graph.
-#[derive(New, Debug)]
+#[derive(Debug, Clone, New)]
 pub(crate) struct Task {
     pub(crate) path: Path,
-    /// Type of the task.
-    pub(crate) tv: TypeId,
+    /// Task-constructor function
+    pub(crate) cons_x: Path,
+    /// Type of the task-constructor: Params -> Streams -> Streams
+    pub(crate) cons_t: Type,
+    /// Type of the task-function: Streams -> Streams
+    pub(crate) fun_t: Type,
+    /// Type of the task-struct: {Params, Assignments}
+    pub(crate) struct_t: Type,
     /// Initializer parameters of the task.
     pub(crate) params: Vec<Param>,
-    /// Statements run at startup.
-    pub(crate) startups: Vec<Startup>,
-    /// State variables of the task.
-    pub(crate) states: Vec<State>,
-    /// Constructor which also flattens the input parameters of a task when initializing it.
-    ///
-    ///   task Foo((a, b): (i32, f32)) (I(i32)) -> (O(i32))
-    ///       fun foo() -> i32 { a + b }
-    ///       on I(c) => emit O(foo() + c)
-    ///   end
-    ///
-    /// Lowers into:
-    ///
-    /// fun Foo(x: (i32, i32)) -> Task((i32) -> (i32)) {
-    ///     let a = x.0 in
-    ///     let b = x.1 in
-    ///     _Foo(a, b)
-    /// }
-    /// task _Foo(a: i32, b: i32) (I(i32)) -> (O(i32)) {
-    ///     fun foo() { a + b }
-    ///     on I(c) => emit Out(foo() + c)
-    /// }
-    /// Input hub to the task.
-    pub(crate) ihub: Hub,
-    /// Output hub to the task.
-    pub(crate) ohub: Hub,
-    /// Timer.
-    pub(crate) timer: Option<Timer>,
-    /// Timer handler.
-    pub(crate) timeout: Option<Timeout>,
+    /// Assigned variables of the task.
+    pub(crate) fields: VecMap<Name, Type>,
+    /// Input interface to the task.
+    pub(crate) iinterface: Interface,
+    /// Output interface to the task.
+    pub(crate) ointerface: Interface,
     /// Event handler.
-    pub(crate) on: Option<On>,
+    pub(crate) on_event: OnEvent,
+    /// Statements run at startup.
+    pub(crate) on_start: OnStart,
     /// Items of the task.
-    pub(crate) items: Vec<Path>,
+    pub(crate) namespace: Vec<PathId>,
 }
 
-#[derive(Debug, New, Loc)]
-pub(crate) struct Hub {
-    pub(crate) internal_tv: TypeId,
-    pub(crate) kind: HubKind,
+#[derive(Debug, Clone, New, Loc)]
+pub(crate) struct Interface {
+    pub(crate) interior: Path,
+    pub(crate) exterior: Vec<Type>,
+    pub(crate) keys: Vec<Type>,
     pub(crate) loc: Loc,
 }
 
-#[derive(Debug)]
-pub(crate) enum HubKind {
-    Tagged(Path),
-    Single(TypeId),
-}
-
-#[derive(New, Loc, Debug)]
-pub(crate) struct Timeout {
-    pub(crate) param: Param,
-    pub(crate) body: Expr,
+#[derive(Debug, Clone, New, Loc)]
+pub(crate) struct OnEvent {
+    pub(crate) fun: Path, // Event handler function
     pub(crate) loc: Loc,
 }
 
-#[derive(New, Loc, Debug)]
-pub(crate) struct Timer {
-    pub(crate) tv: TypeId,
+#[derive(Debug, Clone, New, Loc)]
+pub(crate) struct OnStart {
+    pub(crate) fun: Path, // Startup function
     pub(crate) loc: Loc,
 }
 
-#[derive(New, Loc, Debug)]
-pub(crate) struct On {
-    pub(crate) param: Param,
-    pub(crate) body: Expr,
+pub(crate) use ast::Attr;
+pub(crate) use ast::AttrKind;
+pub(crate) use ast::Meta;
+
+#[derive(Debug, Clone, New, Loc)]
+pub(crate) struct Block {
+    /// This is a VecDeque so we can prepend statements.
+    pub(crate) stmts: VecDeque<Stmt>,
+    pub(crate) var: Var,
     pub(crate) loc: Loc,
 }
 
-#[derive(New, Loc, Debug)]
-pub(crate) struct Setting {
-    pub(crate) kind: SettingKind,
+#[derive(Debug, Clone, New, Loc)]
+pub(crate) struct Stmt {
+    pub(crate) kind: StmtKind,
     pub(crate) loc: Loc,
 }
 
-#[derive(Debug)]
-pub(crate) enum SettingKind {
-    Activate(ast::Name),
-    Calibrate(ast::Name, LitKind),
+#[derive(Debug, Clone)]
+pub(crate) enum StmtKind {
+    Assign(Assign),
 }
 
-#[derive(Debug, New, Clone, Loc)]
+#[derive(Debug, Clone, Copy, New, Loc)]
+pub(crate) struct Var {
+    pub(crate) kind: VarKind,
+    pub(crate) t: Type,
+    pub(crate) loc: Loc,
+}
+
+#[derive(Debug, Clone, Copy)]
+pub(crate) enum VarKind {
+    Ok(Name, ScopeKind),
+    Err,
+}
+
+/// Id of an interned expression.
+#[derive(Debug, Copy, Clone, Into, From)]
+pub struct ExprId(usize);
+
+#[derive(Debug, Clone, Copy, New, Loc, GetId)]
 pub(crate) struct Expr {
-    pub(crate) kind: ExprKind,
-    pub(crate) tv: TypeId,
+    pub(crate) id: ExprId,
+    pub(crate) t: Type,
     pub(crate) loc: Loc,
 }
 
 #[derive(Debug, Clone)]
 pub(crate) enum ExprKind {
-    Access(Box<Expr>, Name),
-    Array(Vec<Expr>),
-    BinOp(Box<Expr>, BinOp, Box<Expr>),
-    Break,
-    Empty,
-    Del(Box<Expr>, Box<Expr>),
-    Add(Box<Expr>, Box<Expr>),
-    Call(Box<Expr>, Vec<Expr>),
-    Select(Box<Expr>, Vec<Expr>),
-    Emit(Box<Expr>),
-    Trigger(Box<Expr>),
-    If(Box<Expr>, Box<Expr>, Box<Expr>),
-    Item(Path),
-    Let(Param, Box<Expr>, Box<Expr>),
+    Access(Var, Name),
+    After(Var, Block),
+    Array(Vec<Var>),
+    BinOp(Var, BinOp, Var),
+    Call(Var, Vec<Var>),
+    SelfCall(Path, Vec<Var>),
+    Invoke(Var, Name, Vec<Var>),
+    Cast(Var, Type),
+    Emit(Var),
+    Enwrap(Path, Var), // Construct a variant
+    Every(Var, Block),
+    If(Var, Block, Block),
+    Is(Path, Var), // Check a variant
     Lit(LitKind),
-    Log(Box<Expr>),
-    Loop(Box<Expr>),
-    Project(Box<Expr>, Index),
-    Struct(VecMap<Name, Expr>),
-    Tuple(Vec<Expr>),
-    UnOp(UnOp, Box<Expr>),
-    Var(Name, VarKind),
-    Enwrap(Path, Box<Expr>), // Construct a variant
-    Unwrap(Path, Box<Expr>), // Deconstruct a variant
-    Is(Path, Box<Expr>),     // Check a variant
-    Return(Box<Expr>),
-    Todo,
+    Log(Var),
+    Loop(Block),
+    Project(Var, Index),
+    Select(Var, Vec<Var>),
+    Struct(VecMap<Name, Var>),
+    Tuple(Vec<Var>),
+    UnOp(UnOp, Var),
+    Unwrap(Path, Var), // Deconstruct a variant
+    Return(Var),
+    Break(Var),
+    Continue,
     Err,
+    // Expressions constructed by lowering
+    Item(Path),            // Item reference
+    Unreachable,           // Unreachable code
+    Initialise(Name, Var), // Initialise state-variable
 }
 
 #[derive(Debug, Clone, Copy)]
-pub(crate) enum VarKind {
-    Local,
-    Member,
-    State,
-    // Global,
+pub(crate) enum ScopeKind {
+    Local,  // A variable which is bound inside a function-scope
+    Member, // A variable which is bound inside a task-scope
+    Global, // A variable which is bound inside the global-scope
 }
 
-#[derive(Debug, New, Clone, Loc)]
-pub(crate) struct BinOp {
-    pub(crate) kind: BinOpKind,
-    pub(crate) loc: Loc,
+/// A binary operator.
+#[derive(Debug, Clone, Copy, New, Loc)]
+pub struct BinOp {
+    pub kind: BinOpKind,
+    pub loc: Loc,
 }
 
-pub(crate) use ast::BinOpKind;
-
-#[derive(Debug, New, Clone, Loc)]
-pub(crate) struct UnOp {
-    pub(crate) kind: UnOpKind,
-    pub(crate) loc: Loc,
+/// A kind of binary operator.
+#[derive(Debug, Clone, Copy)]
+pub enum BinOpKind {
+    Add,
+    And,
+    Band,
+    Bor,
+    Bxor,
+    Div,
+    Equ,
+    Geq,
+    Gt,
+    Leq,
+    Lt,
+    Mod,
+    Mul,
+    Mut,
+    Neq,
+    Or,
+    Pow,
+    Sub,
+    Xor,
+    In,
+    Err,
 }
 
+pub(crate) use ast::UnOp;
 pub(crate) use ast::UnOpKind;
 
-#[derive(Debug, Clone, New)]
+#[derive(Shrinkwrap, New, From, Default, Debug, Eq, PartialEq, Copy, Clone, Hash, GetId)]
 pub struct Type {
-    pub(crate) kind: TypeKind,
+    pub(crate) id: TypeId,
 }
+
+/// A type variable which maps to a [`crate::repr::hir::Type`].
+#[derive(Shrinkwrap, Default, Debug, Eq, PartialEq, Copy, Clone, Hash)]
+pub struct TypeId(pub(crate) u32);
 
 #[derive(Debug, Clone)]
 pub enum TypeKind {
-    Array(TypeId, Shape),
-    Fun(Vec<TypeId>, TypeId),
-    Map(TypeId, TypeId),
+    Array(Type, Shape),
+    Fun(Vec<Type>, Type),
     Nominal(Path),
-    Optional(TypeId),
     Scalar(ScalarKind),
-    Set(TypeId),
-    Stream(TypeId),
-    Struct(VecMap<Name, TypeId>),
-    Tuple(Vec<TypeId>),
-    Unknown,
-    Vector(TypeId),
-    Boxed(TypeId),
+    Stream(Type),
+    Struct(VecMap<Name, Type>),
+    Tuple(Vec<Type>),
+    Unknown(Constraint),
     Err,
 }
 
 pub(crate) use ast::ScalarKind;
+
+/// A constraint on types imposed by various operations.
+#[derive(Debug, Default, Clone, Eq, PartialEq, Shrinkwrap, From)]
+#[shrinkwrap(mutable)]
+pub struct Constraint(pub Bitmap<{ ConstraintKind::COUNT }>);
+
+/// Type constraints imposed by various operations.
+#[derive(Debug, Clone, Eq, PartialEq, EnumCount)]
+#[repr(usize)]
+pub(crate) enum ConstraintKind {
+    Addable,    // i*, u*, f*, str
+    Negatable,  // i*, u*, f*, duration
+    Numeric,    // i*, u*, f*
+    Comparable, // i*, u*, f*, str, duration, time
+    Equatable,  // i*, u*, f*, str, duration, time, bytes, array, record, bool
+    Record,     // record
+    Timeable,   // duration, time
+    Stringable, // i*, u*, f*, str, time, duration, bool
+}
 
 #[derive(Debug, Clone, New)]
 pub struct Shape {
@@ -327,7 +370,6 @@ pub struct Dim {
     pub(crate) kind: DimKind,
 }
 
-/// An expression solveable by the z3 SMT solver
 #[derive(Debug, Clone)]
 pub enum DimKind {
     Op(Box<Dim>, DimOp, Box<Dim>),

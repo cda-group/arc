@@ -4,17 +4,20 @@ expression: s
 input_file: arc-script-test/compile/src/tests/expect_mlir_fail_todo/task_window.arc
 
 ---
+extern type Cell(x: i32) {
+    fun get(): i32, 
+    fun set(x: i32): unit
+}
 task TumblingWindowSum() ~i32 by i32 -> ~i32 by i32 {
-    state agg: i32 = 0
-    timer unit
-    startup trigger unit by 0 after 60
-    timeout unit by key => {
-        emit agg by key;
-        agg = 0;
-        trigger unit by key after 60
-    }
-    on event by key => {
-        agg = agg + event
-    }
+    val agg: crate::Cell = crate::Cell(0);
+    
+    every 60 {
+        emit agg.get() by 0;
+        agg.set(0);
+        
+    };
+    
+    on event by key => agg.set(agg.get() + event);
+    
 }
 

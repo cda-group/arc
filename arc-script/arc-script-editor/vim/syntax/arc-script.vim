@@ -44,27 +44,23 @@ hi def link arcOperator Operator
 " Statements
 "=============================================================================
 syn keyword arcStatement fun
-syn keyword arcStatement startup
-syn keyword arcStatement state
 syn keyword arcStatement task
 syn keyword arcStatement on
 syn keyword arcStatement emit
 syn keyword arcStatement log
 syn keyword arcStatement exit
-syn keyword arcStatement timeout
-syn keyword arcStatement timer
-syn keyword arcStatement trigger
+syn keyword arcStatement after
+syn keyword arcStatement every
+syn keyword arcStatement val
+syn keyword arcStatement var
 " Not statements, but looks nice syntactically
 syn keyword arcStatement not
 syn keyword arcStatement in
-syn keyword arcStatement add
-syn keyword arcStatement del
+syn keyword arcStatement is
 hi def link arcStatement Statement
 "=============================================================================
 " Conditionals
 "=============================================================================
-syn keyword arcConditional reduce
-syn keyword arcConditional after
 syn keyword arcConditional by
 hi def link arcConditional Conditional
 "=============================================================================

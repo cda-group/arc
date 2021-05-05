@@ -24,7 +24,7 @@ module @toplevel {
             }) : (i1) -> si32
             "arc.block.result"(%x_4) : (si32) -> ()
         }) : (i1) -> si32
-        return %x_5 : si32
+        "arc.block.result"(%x_5) : (si32) -> ()
     }
 }
 

@@ -1,13 +1,18 @@
 use crate::compiler::info::names::NameId;
 use crate::compiler::info::Info;
+use lasso::Key;
+
+use arc_script_core_shared::Shrinkwrap;
 
 use std::fmt::{Display, Formatter, Result};
 
 /// A wrapper struct around `NameId` which implements `Display`.
 /// Will display debug information when printed.
+#[derive(Shrinkwrap)]
 pub(crate) struct NameDebug<'a> {
     name: &'a NameId,
-    info: &'a Info,
+    #[shrinkwrap(main_field)]
+    pub(crate) info: &'a Info,
 }
 
 impl NameId {
@@ -21,9 +26,9 @@ impl<'a> Display for NameDebug<'a> {
     fn fmt(&self, f: &mut Formatter<'_>) -> Result {
         write!(
             f,
-            "{:?}: {}",
-            self.name,
-            self.info.names.resolve(*self.name)
+            "Name-{:<4?} => {}",
+            self.name.into_usize(),
+            self.names.resolve(self.name)
         )
     }
 }

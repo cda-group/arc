@@ -5,7 +5,7 @@ use std::fmt;
 use std::fmt::Display;
 use std::fmt::Formatter;
 
-/// A generic typeset which can be used during pretty printing to store indentation.
+/// A generic formatter which can be used during pretty printing to store indentation.
 #[derive(New, Copy, Clone, Shrinkwrap)]
 pub struct Format<T: Copy + Clone> {
     #[shrinkwrap(main_field)]

@@ -47,3 +47,22 @@ macro_rules! todo {
         panic!("{}:{}:{} not yet implemented: {}", file!(), line!(), column!(), format_args!($($arg)+))
     };
 }
+
+/// Macro for implementing lowerings.
+#[macro_export]
+macro_rules! lower {
+    {
+        [$self:ident, $ctx:ident, $repr:ident]
+        $($from:ty => $into:ty { $($tt:tt)+ } ,)*
+    } => {
+        $(
+            impl Lower<$into, Context<'_>> for $from {
+                fn lower(&self, $ctx: &mut Context<'_>) -> $into {
+                    let $self = self;
+                    tracing::trace!("{:<14} => {:<16}: {}", stringify!($from), stringify!($into), $ctx.$repr.pretty($self, $ctx.info));
+                    $($tt)+ 
+                }
+            }
+        )*
+    }
+}

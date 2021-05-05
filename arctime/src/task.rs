@@ -8,7 +8,6 @@ use kompact::prelude::*;
 use time::*;
 
 use crate::control::*;
-use crate::data::*;
 use crate::pipeline::*;
 use crate::port::*;
 use crate::stream::*;
@@ -31,10 +30,10 @@ pub struct Task<S: DataReqs, I: DataReqs, O: DataReqs, R: DataReqs = Never> {
     pub ctx: ComponentContext<Self>,
     pub name: &'static str,
     pub promise: Option<Ask<(), R>>,
-    pub data_iport: ProvidedPort<DataPort<I>>,
-    pub data_oport: RequiredPort<DataPort<O>>,
-    pub ctrl_iport: ProvidedPort<CtrlPort>,
-    pub ctrl_oport: RequiredPort<CtrlPort>,
+    pub data_iport: ProvidedPort<StreamPort<I>>,
+    pub data_oport: RequiredPort<StreamPort<O>>,
+    pub ctrl_iport: ProvidedPort<ControlPort>,
+    pub ctrl_oport: RequiredPort<ControlPort>,
     pub lowest_observed_watermarks: Vec<DateTime>,
     pub time: DateTime,
     pub state: S,
@@ -109,7 +108,7 @@ impl<S: DataReqs, I: DataReqs, O: DataReqs, R: DataReqs> Task<S, I, O, R> {
     }
 
     pub fn emit(&mut self, data: O) {
-        self.data_oport.trigger(DataEvent::Item(self.time, data));
+        self.data_oport.trigger(StreamEvent::Data(self.time, data));
     }
 
     /// Die with a return value
@@ -117,7 +116,7 @@ impl<S: DataReqs, I: DataReqs, O: DataReqs, R: DataReqs> Task<S, I, O, R> {
         if let Some(promise) = self.promise.take() {
             promise.reply(rval);
         };
-        self.data_oport.trigger(DataEvent::End);
+        self.data_oport.trigger(StreamEvent::End);
         self.ctx.suicide();
     }
 
@@ -170,14 +169,9 @@ impl<S: DataReqs, I: DataReqs, O: DataReqs, R: DataReqs> FnOnce<(Stream<I>,)> fo
     }
 }
 
-fn a(t: Task<(), i32, i32, ()>, s: Stream<i32>) -> Stream<i32> {
-    let x = Box::new(t) as Box<dyn FnOnce(Stream<i32>) -> Stream<i32>>;
-    x(s)
-}
-
 pub(crate) fn create_connector<S: DataReqs, I: DataReqs, O: DataReqs, R: DataReqs>(
     producer: Arc<Component<Task<S, I, O, R>>>,
-) -> Arc<dyn Fn(&mut ProvidedPort<DataPort<O>>) + 'static> {
+) -> Arc<dyn Fn(&mut ProvidedPort<StreamPort<O>>) + 'static> {
     Arc::new(move |mut iport| {
         producer.on_definition(|producer| {
             iport.connect(producer.data_oport.share());
@@ -186,44 +180,44 @@ pub(crate) fn create_connector<S: DataReqs, I: DataReqs, O: DataReqs, R: DataReq
     })
 }
 
-impl<S: DataReqs, I: DataReqs, O: DataReqs, R: DataReqs> Provide<DataPort<I>> for Task<S, I, O, R> {
-    fn handle(&mut self, event: DataEvent<I>) -> Handled {
+impl<S: DataReqs, I: DataReqs, O: DataReqs, R: DataReqs> Provide<StreamPort<I>> for Task<S, I, O, R> {
+    fn handle(&mut self, event: StreamEvent<I>) -> Handled {
         match event {
-            DataEvent::Watermark(time) => {
+            StreamEvent::Watermark(time) => {
                 if time > self.time {
                     let diff = time - self.time;
                     self.advance(diff.to_std().unwrap());
                 }
                 Handled::Ok
             }
-            DataEvent::Item(time, data) => {
+            StreamEvent::Data(time, data) => {
                 if time >= self.time {
                     (self.logic)(self, data);
                 }
                 Handled::Ok
             }
-            DataEvent::End => {
-                self.data_oport.trigger(DataEvent::End);
+            StreamEvent::End => {
+                self.data_oport.trigger(StreamEvent::End);
                 Handled::DieNow
             }
         }
     }
 }
 
-impl<S: DataReqs, I: DataReqs, O: DataReqs, R: DataReqs> Require<DataPort<O>> for Task<S, I, O, R> {
-    fn handle(&mut self, event: DataReply) -> Handled {
+impl<S: DataReqs, I: DataReqs, O: DataReqs, R: DataReqs> Require<StreamPort<O>> for Task<S, I, O, R> {
+    fn handle(&mut self, event: StreamReply) -> Handled {
         Handled::Ok
     }
 }
 
-impl<S: DataReqs, I: DataReqs, O: DataReqs, R: DataReqs> Provide<CtrlPort> for Task<S, I, O, R> {
-    fn handle(&mut self, event: CtrlEvent) -> Handled {
+impl<S: DataReqs, I: DataReqs, O: DataReqs, R: DataReqs> Provide<ControlPort> for Task<S, I, O, R> {
+    fn handle(&mut self, event: ControlEvent) -> Handled {
         todo!()
     }
 }
 
-impl<S: DataReqs, I: DataReqs, O: DataReqs, R: DataReqs> Require<CtrlPort> for Task<S, I, O, R> {
-    fn handle(&mut self, _: CtrlReply) -> Handled {
+impl<S: DataReqs, I: DataReqs, O: DataReqs, R: DataReqs> Require<ControlPort> for Task<S, I, O, R> {
+    fn handle(&mut self, _: ControlReply) -> Handled {
         Handled::Ok
     }
 }

@@ -5,13 +5,29 @@ input_file: arc-script-test/compile/src/tests/expect_pass/fib.arc
 
 ---
 fun fib(n_0: i32): i32 {
-    if n_0 > 2 {
-        crate::fib(n_0 - 1) + crate::fib(n_0 - 2)
+    val x_0: i32 = 2;
+    val x_1: bool = n_0 > x_0;
+    val x_C: i32 = if x_1 {
+        val x_2: fun(i32): i32 = crate::fib;
+        val x_3: i32 = 1;
+        val x_4: i32 = n_0 - x_3;
+        val x_5: i32 = x_2(x_4);
+        val x_6: fun(i32): i32 = crate::fib;
+        val x_7: i32 = 2;
+        val x_8: i32 = n_0 - x_7;
+        val x_9: i32 = x_6(x_8);
+        val x_A: i32 = x_5 + x_9;
+        x_A
     } else {
-        0
-    }
+        val x_B: i32 = 0;
+        x_B
+    };
+    x_C
 }
 fun test(): i32 {
-    crate::fib(5)
+    val x_D: fun(i32): i32 = crate::fib;
+    val x_E: i32 = 5;
+    val x_F: i32 = x_D(x_E);
+    x_F
 }
 

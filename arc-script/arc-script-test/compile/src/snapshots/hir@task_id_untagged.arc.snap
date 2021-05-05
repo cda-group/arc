@@ -4,15 +4,24 @@ expression: s
 input_file: arc-script-test/compile/src/tests/expect_mlir_fail_todo/task_id_untagged.arc
 
 ---
-task Identity() ~{ key: i32, val: i32 } -> ~{ key: i32, val: i32 } {
-    on {
-        event_0: { key: i32, val: i32 } => {
-            emit event_0
-        }
+task Identity(): ~{ key: i32, value: i32 } -> ~{ key: i32, value: i32 } {
+    enum IInterface {
+        __({ key: i32, value: i32 })
     }
-}
-fun main(input_0: ~{ key: i32, val: i32 }): ~{ key: i32, val: i32 } {
-    let output_0: ~{ key: i32, val: i32 } = crate::Identity()(input_0) in
-    output_0
+    enum OInterface {
+        __({ key: i32, value: i32 })
+    }
+    fun on_start(): unit {
+        val x_4: unit = unit;
+        x_4
+    }
+    crate::Identity::on_start();
+    fun on_event(x_0: crate::Identity::IInterface): unit {
+        val event_0: { key: i32, value: i32 } = unwrap[crate::Identity::IInterface::__](x_0);
+        val x_1: crate::Identity::OInterface = enwrap[crate::Identity::OInterface::__](event_0);
+        val x_2: unit = emit x_1;
+        x_2
+    }
+    on event => crate::Identity::on_event(event)
 }
 

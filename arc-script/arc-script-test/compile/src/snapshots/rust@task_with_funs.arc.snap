@@ -10,111 +10,56 @@ input_file: arc-script-test/compile/src/tests/expect_mlir_fail_todo/task_with_fu
 #[allow(unused_variables)]
 #[allow(unused_imports)]
 #[allow(unused_braces)]
-pub mod defs {
+#[allow(irrefutable_let_patterns)]
+#[allow(clippy::redundant_field_names)]
+#[allow(clippy::unused_unit)]
+#[allow(clippy::double_parens)]
+pub mod arc_script_output {
     use super::*;
-    pub use arc_script::arcorn;
-    pub use arc_script::arcorn::state::{ArcMapOps, ArcRefOps, ArcSetOps, ArcVecOps};
-    pub use arcon::prelude::*;
-    pub struct Test<'i, 'source, 'timer, 'channel, B: Backend, C: ComponentDefinition> {
-        pub data: &'i mut TestData,
-        pub ctx: &'i mut OperatorContext<'source, 'timer, 'channel, TestData, B, C>,
-        pub timestamp: Option<u64>,
-        pub key: u64,
-    }
-    pub struct TestData {
-        pub state: TestState,
-        pub x_0: i32,
-    }
-    #[derive(ArconState)]
-    pub struct TestState {}
-    impl StateConstructor for TestState {
-        type BackendType = Sled;
-        fn new(backend: Arc<Self::BackendType>) -> Self {
-            Self {}
+    use arc_script::arcorn;
+    #[arcorn::rewrite(on_event = "Test_on_event", on_start = "Test_on_start")]
+    mod Test_mod {
+        struct Test {
+            x_0: i32,
+        }
+        #[arcorn::rewrite]
+        pub enum Test_IInterface {
+            Test_IInterface___(Struct3keyi325valuei32End),
+        }
+        #[arcorn::rewrite]
+        pub enum Test_OInterface {
+            Test_OInterface___(Struct3keyi325valuei32End),
         }
     }
-    impl TestData {
-        fn new(x_0: i32) -> OperatorBuilder<TestData> {
-            OperatorBuilder {
-                constructor: Arc::new(move |backend| TestData {
-                    state: TestState {},
-                    x_0,
-                }),
-                conf: Default::default(),
-            }
-        }
-    }
-    impl Operator for TestData {
-        type IN = Struct3keyi323vali32End;
-        type OUT = Struct3keyi323vali32End;
-        type TimerState = ArconNever;
-        type OperatorState = TestState;
-        fn handle_element(
-            &mut self,
-            element: ArconElement<Self::IN>,
-            ref mut ctx: OperatorContext<Self, impl Backend, impl ComponentDefinition>,
-        ) -> OperatorResult<()> {
-            let ArconElement { timestamp, data } = element;
-            let mut task = Test {
-                data: self,
-                ctx,
-                timestamp,
-                key: data.get_key(),
+    impl Test_mod::Test {
+        pub fn Test_on_event(&mut self, x_5: Test_IInterface) -> () {
+            let x_2: Struct3keyi325valuei32End = arcorn::unwrap!(Test_IInterface___, (x_5.clone()));
+            let x_3: i32 = (x_2.clone()).value;
+            let x_4: i32 = (x_2.clone()).key;
+            let x_6: i32 = self.Test_addx((x_3.clone()));
+            let x_7: Struct3keyi325valuei32End = Struct3keyi325valuei32End {
+                value: (x_6.clone()),
+                key: (x_4.clone()),
             };
-            task.handle_element(data);
-            Ok(())
+            let x_8: Test_OInterface = arcorn::enwrap!(Test_OInterface___, (x_7.clone()));
+            let x_9: () = self.emit((x_8.clone()));
+            (x_9.clone())
         }
-        fn state(&mut self) -> &mut Self::OperatorState {
-            &mut self.state
-        }
-        fn handle_timeout(
-            &mut self,
-            timeout: Self::TimerState,
-            ref mut ctx: OperatorContext<Self, impl Backend, impl ComponentDefinition>,
-        ) -> OperatorResult<()> {
-            Ok(())
-        }
-        fn persist(&mut self) -> OperatorResult<()> {
-            self.state.persist();
-            Ok(())
-        }
-    }
-    impl<'i, 'source, 'timer, 'channel, B: Backend, C: ComponentDefinition>
-        Test<'i, 'source, 'timer, 'channel, B, C>
-    {
-        fn handle_element(&mut self, x_1: Struct3keyi323vali32End) -> OperatorResult<()> {
-            {
-                let y_1_0 = x_1.val;
-                let y_1_1 = x_1.key;
-                let y_1_2 = self.Test_addx(y_1_0);
-                let y_1_3 = Struct3keyi323vali32End {
-                    val: y_1_2,
-                    key: y_1_1,
-                };
-                self.emit(y_1_3)
-            };
-            Ok(())
-        }
-        fn emit(&mut self, data: Struct3keyi323vali32End) {
-            let element = ArconElement {
-                data,
-                timestamp: self.timestamp,
-            };
-            self.ctx.output(element);
+        pub fn Test_on_start(&mut self, x_0: i32) -> () {
+            let x_B: () = ();
+            (x_B.clone())
         }
         pub fn Test_addx(&mut self, y_0: i32) -> i32 {
-            let y_1_0 = self.data.x_0;
-            let y_1_1 = y_1_0 + y_0;
-            y_1_1
+            let x_1: i32 = ((self.x_0).clone()) + (y_0.clone());
+            (x_1.clone())
         }
     }
     #[arcorn::rewrite]
-    #[derive(Copy)]
-    pub struct Struct3keyi323vali32End {
+    pub struct Struct3keyi325valuei32End {
         key: i32,
-        val: i32,
+        value: i32,
     }
 }
-pub use defs::*;
+pub use arc_script_output::*;
 
 

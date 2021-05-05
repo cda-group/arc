@@ -9,7 +9,7 @@ name = "arctime"
 path = "src/lib.rs"
 
 [dependencies]
-kompact                       = { git = "https://github.com/kompics/kompact", features = ["type_erasure"] }
+kompact                       = { git = "https://github.com/segeljakt/kompact", features = ["type_erasure"] }
 paste                         = { version = "1.0.5" }
 slog                          = { version = "2.7.0" }
 coz                           = { version = "0.1.3" }

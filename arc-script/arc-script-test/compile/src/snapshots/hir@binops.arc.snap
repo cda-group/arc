@@ -5,168 +5,169 @@ input_file: arc-script-test/compile/src/tests/expect_pass/binops.arc
 
 ---
 fun main(): unit {
-    let c_bool_0: bool = true in
-    let c_i8_0: i8 = 127i8 in
-    let c_i16_0: i16 = 32767i16 in
-    let c_i32_0: i32 = 2147483647 in
-    let c_i64_0: i64 = 9223372036854775807i64 in
-    let c_u8_0: u8 = 255u8 in
-    let c_u16_0: u16 = 65535u16 in
-    let c_u32_0: u32 = 4294967295u32 in
-    let c_u64_0: u64 = 18446744073709551615u64 in
-    let c_f32_0: f32 = 3.4028235e38f32 in
-    let c_f64_0: f64 = 1.7976931348623157e308 in
-    let c1_i8_0: i8 = 126i8 in
-    let c1_i16_0: i16 = 32766i16 in
-    let c1_i32_0: i32 = 2147483646 in
-    let c1_i64_0: i64 = 9223372036854775806i64 in
-    let c1_u8_0: u8 = 254u8 in
-    let c1_u16_0: u16 = 65534u16 in
-    let c1_u32_0: u32 = 4294967294u32 in
-    let c1_u64_0: u64 = 18446744073709551614u64 in
-    let c1_f32_0: f32 = 3.4028235e37f32 in
-    let c1_f64_0: f64 = 1.7976931348623155e308 in
-    let sum_i8_0: i8 = c_i8_0 + c_i8_0 in
-    let sum_i16_0: i16 = c_i16_0 + c_i16_0 in
-    let sum_i32_0: i32 = c_i32_0 + c_i32_0 in
-    let sum_i64_0: i64 = c_i64_0 + c_i64_0 in
-    let sum_u8_0: u8 = c_u8_0 + c_u8_0 in
-    let sum_u16_0: u16 = c_u16_0 + c_u16_0 in
-    let sum_u32_0: u32 = c_u32_0 + c_u32_0 in
-    let sum_u64_0: u64 = c_u64_0 + c_u64_0 in
-    let sum_f32_0: f32 = c_f32_0 + c_f32_0 in
-    let sum_f64_0: f64 = c_f64_0 + c_f64_0 in
-    let difference_i8_0: i8 = c_i8_0 - c_i8_0 in
-    let difference_i16_0: i16 = c_i16_0 - c_i16_0 in
-    let difference_i32_0: i32 = c_i32_0 - c_i32_0 in
-    let difference_i64_0: i64 = c_i64_0 - c_i64_0 in
-    let difference_u8_0: u8 = c_u8_0 - c_u8_0 in
-    let difference_u16_0: u16 = c_u16_0 - c_u16_0 in
-    let difference_u32_0: u32 = c_u32_0 - c_u32_0 in
-    let difference_u64_0: u64 = c_u64_0 - c_u64_0 in
-    let difference_f32_0: f32 = c_f32_0 - c_f32_0 in
-    let difference_f64_0: f64 = c_f64_0 - c_f64_0 in
-    let product_i8_0: i8 = c_i8_0 * c_i8_0 in
-    let product_i16_0: i16 = c_i16_0 * c_i16_0 in
-    let product_i32_0: i32 = c_i32_0 * c_i32_0 in
-    let product_i64_0: i64 = c_i64_0 * c_i64_0 in
-    let product_u8_0: u8 = c_u8_0 * c_u8_0 in
-    let product_u16_0: u16 = c_u16_0 * c_u16_0 in
-    let product_u32_0: u32 = c_u32_0 * c_u32_0 in
-    let product_u64_0: u64 = c_u64_0 * c_u64_0 in
-    let product_f32_0: f32 = c_f32_0 * c_f32_0 in
-    let product_f64_0: f64 = c_f64_0 * c_f64_0 in
-    let quotient_i8_0: i8 = c_i8_0 / c_i8_0 in
-    let quotient_i16_0: i16 = c_i16_0 / c_i16_0 in
-    let quotient_i32_0: i32 = c_i32_0 / c_i32_0 in
-    let quotient_i64_0: i64 = c_i64_0 / c_i64_0 in
-    let quotient_u8_0: u8 = c_u8_0 / c_u8_0 in
-    let quotient_u16_0: u16 = c_u16_0 / c_u16_0 in
-    let quotient_u32_0: u32 = c_u32_0 / c_u32_0 in
-    let quotient_u64_0: u64 = c_u64_0 / c_u64_0 in
-    let quotient_f32_0: f32 = c_f32_0 / c_f32_0 in
-    let quotient_f64_0: f64 = c_f64_0 / c_f64_0 in
-    let remainder_i8_0: i8 = c_i8_0 % c_i8_0 in
-    let remainder_i16_0: i16 = c_i16_0 % c_i16_0 in
-    let remainder_i32_0: i32 = c_i32_0 % c_i32_0 in
-    let remainder_i64_0: i64 = c_i64_0 % c_i64_0 in
-    let remainder_u8_0: u8 = c_u8_0 % c_u8_0 in
-    let remainder_u16_0: u16 = c_u16_0 % c_u16_0 in
-    let remainder_u32_0: u32 = c_u32_0 % c_u32_0 in
-    let remainder_u64_0: u64 = c_u64_0 % c_u64_0 in
-    let remainder_f32_0: f32 = c_f32_0 % c_f32_0 in
-    let remainder_f64_0: f64 = c_f64_0 % c_f64_0 in
-    let lt_i8_0: bool = c_i8_0 < c_i8_0 in
-    let lt_i16_0: bool = c_i16_0 < c_i16_0 in
-    let lt_i32_0: bool = c_i32_0 < c_i32_0 in
-    let lt_i64_0: bool = c_i64_0 < c_i64_0 in
-    let lt_u8_0: bool = c_u8_0 < c_u8_0 in
-    let lt_u16_0: bool = c_u16_0 < c_u16_0 in
-    let lt_u32_0: bool = c_u32_0 < c_u32_0 in
-    let lt_u64_0: bool = c_u64_0 < c_u64_0 in
-    let lt_f32_0: bool = c_f32_0 < c_f32_0 in
-    let lt_f64_0: bool = c_f64_0 < c_f64_0 in
-    let le_i8_0: bool = c_i8_0 <= c_i8_0 in
-    let le_i16_0: bool = c_i16_0 <= c_i16_0 in
-    let le_i32_0: bool = c_i32_0 <= c_i32_0 in
-    let le_i64_0: bool = c_i64_0 <= c_i64_0 in
-    let le_u8_0: bool = c_u8_0 <= c_u8_0 in
-    let le_u16_0: bool = c_u16_0 <= c_u16_0 in
-    let le_u32_0: bool = c_u32_0 <= c_u32_0 in
-    let le_u64_0: bool = c_u64_0 <= c_u64_0 in
-    let le_f32_0: bool = c_f32_0 <= c_f32_0 in
-    let le_f64_0: bool = c_f64_0 <= c_f64_0 in
-    let gt_i8_0: bool = c_i8_0 > c_i8_0 in
-    let gt_i16_0: bool = c_i16_0 > c_i16_0 in
-    let gt_i32_0: bool = c_i32_0 > c_i32_0 in
-    let gt_i64_0: bool = c_i64_0 > c_i64_0 in
-    let gt_u8_0: bool = c_u8_0 > c_u8_0 in
-    let gt_u16_0: bool = c_u16_0 > c_u16_0 in
-    let gt_u32_0: bool = c_u32_0 > c_u32_0 in
-    let gt_u64_0: bool = c_u64_0 > c_u64_0 in
-    let gt_f32_0: bool = c_f32_0 > c_f32_0 in
-    let gt_f64_0: bool = c_f64_0 > c_f64_0 in
-    let ge_i8_0: bool = c_i8_0 >= c_i8_0 in
-    let ge_i16_0: bool = c_i16_0 >= c_i16_0 in
-    let ge_i32_0: bool = c_i32_0 >= c_i32_0 in
-    let ge_i64_0: bool = c_i64_0 >= c_i64_0 in
-    let ge_u8_0: bool = c_u8_0 >= c_u8_0 in
-    let ge_u16_0: bool = c_u16_0 >= c_u16_0 in
-    let ge_u32_0: bool = c_u32_0 >= c_u32_0 in
-    let ge_u64_0: bool = c_u64_0 >= c_u64_0 in
-    let ge_f32_0: bool = c_f32_0 >= c_f32_0 in
-    let ge_f64_0: bool = c_f64_0 >= c_f64_0 in
-    let eq_bool_0: bool = c_bool_0 == c_bool_0 in
-    let eq_i8_0: bool = c_i8_0 == c_i8_0 in
-    let eq_i16_0: bool = c_i16_0 == c_i16_0 in
-    let eq_i32_0: bool = c_i32_0 == c_i32_0 in
-    let eq_i64_0: bool = c_i64_0 == c_i64_0 in
-    let eq_u8_0: bool = c_u8_0 == c_u8_0 in
-    let eq_u16_0: bool = c_u16_0 == c_u16_0 in
-    let eq_u32_0: bool = c_u32_0 == c_u32_0 in
-    let eq_u64_0: bool = c_u64_0 == c_u64_0 in
-    let eq_f32_0: bool = c_f32_0 == c_f32_0 in
-    let eq_f64_0: bool = c_f64_0 == c_f64_0 in
-    let ne_bool_0: bool = c_bool_0 != c_bool_0 in
-    let ne_i8_0: bool = c_i8_0 != c_i8_0 in
-    let ne_i16_0: bool = c_i16_0 != c_i16_0 in
-    let ne_i32_0: bool = c_i32_0 != c_i32_0 in
-    let ne_i64_0: bool = c_i64_0 != c_i64_0 in
-    let ne_u8_0: bool = c_u8_0 != c_u8_0 in
-    let ne_u16_0: bool = c_u16_0 != c_u16_0 in
-    let ne_u32_0: bool = c_u32_0 != c_u32_0 in
-    let ne_u64_0: bool = c_u64_0 != c_u64_0 in
-    let ne_f32_0: bool = c_f32_0 != c_f32_0 in
-    let ne_f64_0: bool = c_f64_0 != c_f64_0 in
-    let land_0: bool = c_bool_0 and c_bool_0 in
-    let lor_0: bool = c_bool_0 or c_bool_0 in
-    let lxor_0: bool = c_bool_0 xor c_bool_0 in
-    let band_i8_0: i8 = c_i8_0 band c_i8_0 in
-    let band_i16_0: i16 = c_i16_0 band c_i16_0 in
-    let band_i32_0: i32 = c_i32_0 band c_i32_0 in
-    let band_i64_0: i64 = c_i64_0 band c_i64_0 in
-    let band_u8_0: u8 = c_u8_0 band c_u8_0 in
-    let band_u16_0: u16 = c_u16_0 band c_u16_0 in
-    let band_u32_0: u32 = c_u32_0 band c_u32_0 in
-    let band_u64_0: u64 = c_u64_0 band c_u64_0 in
-    let bor_i8_0: i8 = c_i8_0 bor c_i8_0 in
-    let bor_i16_0: i16 = c_i16_0 bor c_i16_0 in
-    let bor_i32_0: i32 = c_i32_0 bor c_i32_0 in
-    let bor_i64_0: i64 = c_i64_0 bor c_i64_0 in
-    let bor_u8_0: u8 = c_u8_0 bor c_u8_0 in
-    let bor_u16_0: u16 = c_u16_0 bor c_u16_0 in
-    let bor_u32_0: u32 = c_u32_0 bor c_u32_0 in
-    let bor_u64_0: u64 = c_u64_0 bor c_u64_0 in
-    let bxor_i8_0: i8 = c_i8_0 bxor c_i8_0 in
-    let bxor_i16_0: i16 = c_i16_0 bxor c_i16_0 in
-    let bxor_i32_0: i32 = c_i32_0 bxor c_i32_0 in
-    let bxor_i64_0: i64 = c_i64_0 bxor c_i64_0 in
-    let bxor_u8_0: u8 = c_u8_0 bxor c_u8_0 in
-    let bxor_u16_0: u16 = c_u16_0 bxor c_u16_0 in
-    let bxor_u32_0: u32 = c_u32_0 bxor c_u32_0 in
-    let bxor_u64_0: u64 = c_u64_0 bxor c_u64_0 in
-    let pow_f32_0: f32 = c_f32_0 ** c1_f32_0 in
-    let pow_f64_0: f64 = c_f64_0 ** c1_f64_0 in
-    unit
+    val x_0: bool = true;
+    val x_1: i8 = 127i8;
+    val x_2: i16 = 32767i16;
+    val x_3: i32 = 2147483647;
+    val x_4: i64 = 9223372036854775807i64;
+    val x_5: u8 = 255u8;
+    val x_6: u16 = 65535u16;
+    val x_7: u32 = 4294967295u32;
+    val x_8: u64 = 18446744073709551615u64;
+    val x_9: f32 = 3.4028235e38f32;
+    val x_A: f64 = 1.7976931348623157e308;
+    val x_B: i8 = 126i8;
+    val x_C: i16 = 32766i16;
+    val x_D: i32 = 2147483646;
+    val x_E: i64 = 9223372036854775806i64;
+    val x_F: u8 = 254u8;
+    val x_G: u16 = 65534u16;
+    val x_H: u32 = 4294967294u32;
+    val x_I: u64 = 18446744073709551614u64;
+    val x_J: f32 = 3.4028235e37f32;
+    val x_K: f64 = 1.7976931348623155e308;
+    val x_L: i8 = x_1 + x_1;
+    val x_M: i16 = x_2 + x_2;
+    val x_N: i32 = x_3 + x_3;
+    val x_O: i64 = x_4 + x_4;
+    val x_P: u8 = x_5 + x_5;
+    val x_Q: u16 = x_6 + x_6;
+    val x_R: u32 = x_7 + x_7;
+    val x_S: u64 = x_8 + x_8;
+    val x_T: f32 = x_9 + x_9;
+    val x_U: f64 = x_A + x_A;
+    val x_V: i8 = x_1 - x_1;
+    val x_W: i16 = x_2 - x_2;
+    val x_X: i32 = x_3 - x_3;
+    val x_Y: i64 = x_4 - x_4;
+    val x_Z: u8 = x_5 - x_5;
+    val x_a: u16 = x_6 - x_6;
+    val x_b: u32 = x_7 - x_7;
+    val x_c: u64 = x_8 - x_8;
+    val x_d: f32 = x_9 - x_9;
+    val x_e: f64 = x_A - x_A;
+    val x_f: i8 = x_1 * x_1;
+    val x_g: i16 = x_2 * x_2;
+    val x_h: i32 = x_3 * x_3;
+    val x_i: i64 = x_4 * x_4;
+    val x_j: u8 = x_5 * x_5;
+    val x_k: u16 = x_6 * x_6;
+    val x_l: u32 = x_7 * x_7;
+    val x_m: u64 = x_8 * x_8;
+    val x_n: f32 = x_9 * x_9;
+    val x_o: f64 = x_A * x_A;
+    val x_p: i8 = x_1 / x_1;
+    val x_q: i16 = x_2 / x_2;
+    val x_r: i32 = x_3 / x_3;
+    val x_s: i64 = x_4 / x_4;
+    val x_t: u8 = x_5 / x_5;
+    val x_u: u16 = x_6 / x_6;
+    val x_v: u32 = x_7 / x_7;
+    val x_w: u64 = x_8 / x_8;
+    val x_x: f32 = x_9 / x_9;
+    val x_y: f64 = x_A / x_A;
+    val x_z: i8 = x_1 % x_1;
+    val x__0: i16 = x_2 % x_2;
+    val x__1: i32 = x_3 % x_3;
+    val x__2: i64 = x_4 % x_4;
+    val x__3: u8 = x_5 % x_5;
+    val x__4: u16 = x_6 % x_6;
+    val x__5: u32 = x_7 % x_7;
+    val x__6: u64 = x_8 % x_8;
+    val x__7: f32 = x_9 % x_9;
+    val x__8: f64 = x_A % x_A;
+    val x__9: bool = x_1 < x_1;
+    val x__A: bool = x_2 < x_2;
+    val x__B: bool = x_3 < x_3;
+    val x__C: bool = x_4 < x_4;
+    val x__D: bool = x_5 < x_5;
+    val x__E: bool = x_6 < x_6;
+    val x__F: bool = x_7 < x_7;
+    val x__G: bool = x_8 < x_8;
+    val x__H: bool = x_9 < x_9;
+    val x__I: bool = x_A < x_A;
+    val x__J: bool = x_1 <= x_1;
+    val x__K: bool = x_2 <= x_2;
+    val x__L: bool = x_3 <= x_3;
+    val x__M: bool = x_4 <= x_4;
+    val x__N: bool = x_5 <= x_5;
+    val x__O: bool = x_6 <= x_6;
+    val x__P: bool = x_7 <= x_7;
+    val x__Q: bool = x_8 <= x_8;
+    val x__R: bool = x_9 <= x_9;
+    val x__S: bool = x_A <= x_A;
+    val x__T: bool = x_1 > x_1;
+    val x__U: bool = x_2 > x_2;
+    val x__V: bool = x_3 > x_3;
+    val x__W: bool = x_4 > x_4;
+    val x__X: bool = x_5 > x_5;
+    val x__Y: bool = x_6 > x_6;
+    val x__Z: bool = x_7 > x_7;
+    val x__a: bool = x_8 > x_8;
+    val x__b: bool = x_9 > x_9;
+    val x__c: bool = x_A > x_A;
+    val x__d: bool = x_1 >= x_1;
+    val x__e: bool = x_2 >= x_2;
+    val x__f: bool = x_3 >= x_3;
+    val x__g: bool = x_4 >= x_4;
+    val x__h: bool = x_5 >= x_5;
+    val x__i: bool = x_6 >= x_6;
+    val x__j: bool = x_7 >= x_7;
+    val x__k: bool = x_8 >= x_8;
+    val x__l: bool = x_9 >= x_9;
+    val x__m: bool = x_A >= x_A;
+    val x__n: bool = x_0 == x_0;
+    val x__o: bool = x_1 == x_1;
+    val x__p: bool = x_2 == x_2;
+    val x__q: bool = x_3 == x_3;
+    val x__r: bool = x_4 == x_4;
+    val x__s: bool = x_5 == x_5;
+    val x__t: bool = x_6 == x_6;
+    val x__u: bool = x_7 == x_7;
+    val x__v: bool = x_8 == x_8;
+    val x__w: bool = x_9 == x_9;
+    val x__x: bool = x_A == x_A;
+    val x__y: bool = x_0 != x_0;
+    val x__z: bool = x_1 != x_1;
+    val x___0: bool = x_2 != x_2;
+    val x___1: bool = x_3 != x_3;
+    val x___2: bool = x_4 != x_4;
+    val x___3: bool = x_5 != x_5;
+    val x___4: bool = x_6 != x_6;
+    val x___5: bool = x_7 != x_7;
+    val x___6: bool = x_8 != x_8;
+    val x___7: bool = x_9 != x_9;
+    val x___8: bool = x_A != x_A;
+    val x___9: bool = x_0 and x_0;
+    val x___A: bool = x_0 or x_0;
+    val x___B: bool = x_0 xor x_0;
+    val x___C: i8 = x_1 band x_1;
+    val x___D: i16 = x_2 band x_2;
+    val x___E: i32 = x_3 band x_3;
+    val x___F: i64 = x_4 band x_4;
+    val x___G: u8 = x_5 band x_5;
+    val x___H: u16 = x_6 band x_6;
+    val x___I: u32 = x_7 band x_7;
+    val x___J: u64 = x_8 band x_8;
+    val x___K: i8 = x_1 bor x_1;
+    val x___L: i16 = x_2 bor x_2;
+    val x___M: i32 = x_3 bor x_3;
+    val x___N: i64 = x_4 bor x_4;
+    val x___O: u8 = x_5 bor x_5;
+    val x___P: u16 = x_6 bor x_6;
+    val x___Q: u32 = x_7 bor x_7;
+    val x___R: u64 = x_8 bor x_8;
+    val x___S: i8 = x_1 bxor x_1;
+    val x___T: i16 = x_2 bxor x_2;
+    val x___U: i32 = x_3 bxor x_3;
+    val x___V: i64 = x_4 bxor x_4;
+    val x___W: u8 = x_5 bxor x_5;
+    val x___X: u16 = x_6 bxor x_6;
+    val x___Y: u32 = x_7 bxor x_7;
+    val x___Z: u64 = x_8 bxor x_8;
+    val x___a: f32 = x_9 ** x_J;
+    val x___b: f64 = x_A ** x_K;
+    val x___c: unit = unit;
+    x___c
 }
 

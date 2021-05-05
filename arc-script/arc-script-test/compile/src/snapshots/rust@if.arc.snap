@@ -10,25 +10,35 @@ input_file: arc-script-test/compile/src/tests/expect_pass/if.arc
 #[allow(unused_variables)]
 #[allow(unused_imports)]
 #[allow(unused_braces)]
-pub mod defs {
+#[allow(irrefutable_let_patterns)]
+#[allow(clippy::redundant_field_names)]
+#[allow(clippy::unused_unit)]
+#[allow(clippy::double_parens)]
+pub mod arc_script_output {
     use super::*;
-    pub use arc_script::arcorn;
-    pub use arc_script::arcorn::state::{ArcMapOps, ArcRefOps, ArcSetOps, ArcVecOps};
-    pub use arcon::prelude::*;
+    use arc_script::arcorn;
     pub fn test() -> i32 {
-        let y_1_0 = true;
-        let y_1_1 = false;
-        let y_1_2 = 3i32;
-        let y_1_3 = if y_1_0 {
-            let y_2_0 = if y_1_1 { y_1_2 } else { y_1_2 };
-            y_2_0
+        let x_0: bool = true;
+        let x_1: bool = false;
+        let x_2: i32 = 3i32;
+        let x_5: i32 = if (x_0.clone()) {
+            let x_3: i32 = if (x_1.clone()) {
+                (x_2.clone())
+            } else {
+                (x_2.clone())
+            };
+            (x_3.clone())
         } else {
-            let y_2_0 = if y_1_1 { y_1_2 } else { y_1_2 };
-            y_2_0
+            let x_4: i32 = if (x_1.clone()) {
+                (x_2.clone())
+            } else {
+                (x_2.clone())
+            };
+            (x_4.clone())
         };
-        y_1_3
+        (x_5.clone())
     }
 }
-pub use defs::*;
+pub use arc_script_output::*;
 
 

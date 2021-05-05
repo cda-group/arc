@@ -3,12 +3,12 @@
 
 fun test(): i32 {
 
-    let a_i32: i32 = 65 in
-    let b_i32: i32 = 66 in
-    let c_i32: i32 = 67 in
+    val a_i32: i32 = 65;
+    val b_i32: i32 = 66;
+    val c_i32: i32 = 67;
 
-    let true_bool: bool = true in
-    let false_bool: bool = false in
+    val true_bool: bool = true;
+    val false_bool: bool = false;
 
 # Check that the conditionals end up in the right places and that the
 # results in the branches are in the correct order

@@ -13,15 +13,21 @@ struct TaskComponents {
     task_name: syn::Ident,
     iport_enum: syn::ItemEnum,
     oport_enum: syn::ItemEnum,
+    iport_enum_wrapper_name: syn::Ident,
+    oport_enum_wrapper_name: syn::Ident,
     iport_enum_name: syn::Ident,
     oport_enum_name: syn::Ident,
+    iport_name_var: Vec<syn::Ident>,
     iport_name: Vec<syn::Ident>,
     iport_type: Vec<syn::Type>,
     oport_name: Vec<syn::Ident>,
     oport_type: Vec<syn::Type>,
+    param_name: Vec<syn::Ident>,
+    param_type: Vec<syn::Type>,
     state_name: Vec<syn::Ident>,
     state_type: Vec<syn::Type>,
-    handler_name: syn::Ident,
+    on_event_name: syn::Ident,
+    on_start_name: syn::Ident,
 }
 
 fn extract(attr: AttributeArgs, module: ItemMod) -> TaskComponents {
@@ -38,12 +44,15 @@ fn extract(attr: AttributeArgs, module: ItemMod) -> TaskComponents {
         .expect("Expected a task-struct in module");
 
     let task_name = task.ident.clone();
-    let state_name = task
+
+    let (states, params): (Vec<_>, Vec<_>) = task
         .fields
-        .iter()
-        .map(|f| f.ident.clone().expect("Expected field identifier"))
-        .collect();
-    let state_type = task.fields.iter().map(|f| f.ty.clone()).collect();
+        .clone()
+        .into_iter()
+        .partition(|f| has_attr_key("state", &f.attrs));
+
+    let (state_name, state_type) = get_name_type(&states);
+    let (param_name, param_type) = get_name_type(&params);
 
     let mut enums = items.iter().filter_map(|item| match item {
         Item::Enum(item) => Some(item),
@@ -52,35 +61,34 @@ fn extract(attr: AttributeArgs, module: ItemMod) -> TaskComponents {
     let iport_enum = enums.next().expect("Expected input port enum").clone();
     let oport_enum = enums.next().expect("Expected output port enum").clone();
 
-    let iport_enum_name = iport_enum.ident.clone();
-    let oport_enum_name = oport_enum.ident.clone();
+    let iport_enum_wrapper_name = iport_enum.ident.clone();
+    let oport_enum_wrapper_name = oport_enum.ident.clone();
 
-    let handler: syn::Ident = attr
-        .iter()
-        .find_map(|arg| match arg {
-            NestedMeta::Meta(meta) => match meta {
-                Meta::NameValue(nv) if nv.path.is_ident("handler") => match &nv.lit {
-                    Lit::Str(x) => Some(
-                        x.parse()
-                            .expect("Expected handler value to be an identifier"),
-                    ),
-                    _ => None,
-                },
-                _ => None,
-            },
-            NestedMeta::Lit(lit) => None,
-        })
-        .expect(r#"`handler = <id>` missing from identifiers"#);
+    let iport_enum_name = syn::Ident::new(
+        &format!("Enum{}", &iport_enum_wrapper_name),
+        pm2::Span::call_site(),
+    );
+    let oport_enum_name = syn::Ident::new(
+        &format!("Enum{}", &oport_enum_wrapper_name),
+        pm2::Span::call_site(),
+    );
+
+    let on_event_name = get_attr_val("on_event", &attr);
+    let on_start_name = get_attr_val("on_start", &attr);
 
     let iport_name = iport_enum
         .variants
         .iter()
         .map(|variant| variant.ident.clone())
-        .collect();
+        .collect::<Vec<_>>();
     let oport_name = oport_enum
         .variants
         .iter()
         .map(|variant| variant.ident.clone())
+        .collect();
+    let iport_name_var = iport_name
+        .iter()
+        .map(|ident| syn::Ident::new(&format!("_{}", ident), pm2::Span::call_site()))
         .collect();
 
     let iport_type = iport_enum
@@ -88,7 +96,6 @@ fn extract(attr: AttributeArgs, module: ItemMod) -> TaskComponents {
         .iter()
         .map(|variant| variant.fields.iter().next().unwrap().ty.clone())
         .collect();
-
     let oport_type = oport_enum
         .variants
         .iter()
@@ -100,16 +107,51 @@ fn extract(attr: AttributeArgs, module: ItemMod) -> TaskComponents {
         task_name,
         iport_enum,
         oport_enum,
+        iport_enum_wrapper_name,
+        oport_enum_wrapper_name,
         iport_enum_name,
         oport_enum_name,
+        iport_name_var,
         iport_name,
         iport_type,
         oport_name,
         oport_type,
+        param_name,
+        param_type,
         state_name,
         state_type,
-        handler_name: handler,
+        on_event_name,
+        on_start_name,
     }
+}
+
+fn get_attr_val(name: &str, attr: &[NestedMeta]) -> Ident {
+    attr.iter()
+        .find_map(|arg| match arg {
+            NestedMeta::Meta(meta) => match meta {
+                Meta::NameValue(nv) if nv.path.is_ident(name) => match &nv.lit {
+                    Lit::Str(x) => {
+                        Some(x.parse().expect("Expected attr value to be an identifier"))
+                    }
+                    _ => None,
+                },
+                _ => None,
+            },
+            NestedMeta::Lit(lit) => None,
+        })
+        .unwrap_or_else(|| panic!("`{} = <id>` missing from identifiers", name))
+}
+
+fn has_attr_key(name: &str, attr: &[Attribute]) -> bool {
+    attr.iter()
+        .any(|a| matches!(a.parse_meta(), Ok(Meta::Path(x)) if x.is_ident(name)))
+}
+
+fn get_name_type(field: &[Field]) -> (Vec<syn::Ident>, Vec<syn::Type>) {
+    field
+        .iter()
+        .map(|f| (f.ident.clone().expect("Expected named field"), f.ty.clone()))
+        .unzip()
 }
 
 cfg_if::cfg_if! {
@@ -117,8 +159,7 @@ cfg_if::cfg_if! {
         pub(crate) fn rewrite(attr: syn::AttributeArgs, item: syn::ItemMod) -> pm::TokenStream {
             todo!()
         }
-    } else {
-        #[cfg(feature = "backend_arctime")]
+    } else if #[cfg(feature = "backend_arctime")] {
         pub(crate) fn rewrite(attr: syn::AttributeArgs, item: syn::ItemMod) -> pm::TokenStream {
             let TaskComponents {
                 mod_name,
@@ -127,13 +168,19 @@ cfg_if::cfg_if! {
                 oport_enum,
                 iport_enum_name,
                 oport_enum_name,
+                iport_enum_wrapper_name,
+                oport_enum_wrapper_name,
+                iport_name_var,
                 iport_name,
                 iport_type,
                 oport_name,
                 oport_type,
+                param_name,
+                param_type,
                 state_name,
                 state_type,
-                handler_name,
+                on_event_name,
+                on_start_name,
             } = extract(attr, item);
 
             let mut poll_outer = Vec::new();
@@ -141,20 +188,20 @@ cfg_if::cfg_if! {
 
             for (i, port) in iport_name.iter().enumerate() {
                 let skip = i;
-                let handler = quote!({
+                let on_event = quote! {
                     match event {
-                        DataEvent::Item(time, data) => self.handle_data(#port(data), time),
-                        DataEvent::Watermark(time) => todo!(),
-                        DataEvent::End => todo!(),
+                        StreamEvent::Data(time, data) => self.handle_data(time, #port(data).wrap()),
+                        StreamEvent::Watermark(time) => todo!(),
+                        StreamEvent::End => todo!(),
                     }
-                });
-                poll_outer.push(poll_port(&handler, quote!(#skip), quote!(#skip), port));
-                poll_inner.push(poll_port(&handler, quote!(#skip), quote!(max_events), port));
+                };
+                poll_outer.push(poll_port(&on_event, quote!(#skip), quote!(#skip), port));
+                poll_inner.push(poll_port(&on_event, quote!(#skip), quote!(max_events), port));
             }
             //     for (i, port) in oport_name.iter().enumerate() {
             //         let skip = i + iport_name.len();
-            //         handlers_outer.push(handle_port(quote!(handle_oport(event)), quote!(#skip), quote!(#skip), port));
-            //         handlers_inner.push(handle_port(quote!(handle_oport(event)), quote!(#skip), quote!(max_events), port));
+            //         on_events_outer.push(handle_port(quote!(handle_oport(event)), quote!(#skip), quote!(#skip), port));
+            //         on_events_inner.push(handle_port(quote!(handle_oport(event)), quote!(#skip), quote!(max_events), port));
             //     }
 
             quote!(
@@ -166,101 +213,100 @@ cfg_if::cfg_if! {
                 #[allow(non_snake_case)]
                 mod #mod_name {
                     use arc_script::arcorn::arctime::prelude::*;
+                    use arc_script::arcorn;
                     use super::*;
 
+//                     #[derive(Clone)]
                     pub struct #task_name {
                         pub ctx: ComponentContext<Self>,
                         pub event_time: DateTime,
-                        #(pub #iport_name: ProvidedPort<DataPort<#iport_type>>,)*
-                        #(pub #oport_name: RequiredPort<DataPort<#oport_type>>,)*
-                        #(pub #state_name: #state_type,)*
+                        #(pub #iport_name: ProvidedPort<StreamPort<#iport_type>>,)*
+                        #(pub #oport_name: RequiredPort<StreamPort<#oport_type>>,)*
+                        #(pub #param_name: #param_type,)*
+                        #(pub #state_name: State<#state_type>,)*
                     }
 
-                    pub #iport_enum
-
-                    pub #oport_enum
+                    #iport_enum
+                    #oport_enum
 
                     use #iport_enum_name::*;
                     use #oport_enum_name::*;
 
-                    type TaskFn = Box<dyn FnOnce(#(Stream<#iport_type>,)*) -> (#(Stream<#oport_type>,)*)>;
+                    type Input = (#(Stream<#iport_type>,)*);
+                    type Output = (#(Stream<#oport_type>),*);
+                    type TaskFn = Box<dyn arcorn::ArcornFn<Input, Output = Output>>;
 
-                    #[allow(deprecated)]
-                    pub fn #task_name(#(#state_name: #state_type,)*) -> TaskFn {
-                        Box::new(#task_name {
-                            ctx: ComponentContext::uninitialised(),
-                            event_time: DateTime::unix_epoch(),
-                            #(#iport_name: ProvidedPort::uninitialised(),)*
-                            #(#oport_name: RequiredPort::uninitialised(),)*
-                            #(#state_name,)*
+                    pub fn #task_name(#(#param_name: #param_type,)*) -> TaskFn {
+                        Box::new(move |#(#iport_name_var: Stream<#iport_type>,)*| {
+                            #task_name::new(#(#param_name,)*).connect((#(#iport_name_var,)*))
                         }) as TaskFn
                     }
 
                     impl #task_name {
+                        #[allow(deprecated)] // NOTE: DateTime::unix_epoch is deprecated
+                        fn new(#(#param_name: #param_type,)*) -> #task_name {
+                            #task_name {
+                                ctx: ComponentContext::uninitialised(),
+                                event_time: DateTime::unix_epoch(),
+                                #(#iport_name: ProvidedPort::uninitialised(),)*
+                                #(#oport_name: RequiredPort::uninitialised(),)*
+                                #(#param_name,)*
+                                #(#state_name: State::Uninitialised,)*
+                            }
+                        }
+
+                        fn connect(self, (#(#iport_name_var,)*): Input) -> (#(Stream<#oport_type>),*) {
+                            // Step 1. Initialise the task
+                            // TODO: We currently assume all tasks at least take one stream as input
+                            let (stream, ..) = (#(&#iport_name_var,)*);
+                            let task = stream.client.system().create(|| self);
+                            // Step 2. Connect the input streams to each of the task's input ports
+                            task.on_definition(|producer| {
+                                #((#iport_name_var.connector)(&mut producer.#iport_name);)*
+                            });
+                            // Step 3. Setup so that the task will be initialised eventually
+                            {
+                                let client = stream.client.clone();
+                                let task = task.clone();
+                                stream
+                                    .start_fns
+                                    .borrow_mut()
+                                    .push(Box::new(move || client.system().start(&task)));
+                            }
+                            // Step 4. Return a stream for each of the task's output ports
+                            (#({
+                                let producer = task.clone();
+                                let connector: Arc<ConnectFn<_>> = Arc::new(move |iport| {
+                                    producer.on_definition(|producer| {
+                                        iport.connect(producer.#oport_name.share());
+                                        producer.#oport_name.connect(iport.share());
+                                    });
+                                });
+                                let client = stream.client.clone();
+                                let start_fns = stream.start_fns.clone();
+                                Stream { client, connector, start_fns }
+                            }),*)
+                        }
+
                         #[inline(always)]
-                        fn handle_data(&mut self, data: #iport_enum_name, time: DateTime) -> Handled {
+                        fn handle_data(&mut self, time: DateTime, data: #iport_enum_wrapper_name) -> Handled {
                             self.event_time = time;
-                            self.#handler_name(data);
+                            self.#on_event_name(data);
                             Handled::Ok
                         }
 
-                        // Fix this
+                        // TODO: Handle events which flow in reverse direction
                         #[inline(always)]
-                        fn handle_oport<T>(&mut self, data: T) -> Handled {
+                        fn handle_contraflow<T>(&mut self, data: T) -> Handled {
                             todo!()
                         }
 
-                        pub fn emit(&mut self, data: #oport_enum_name) {
-                            match data {
-                                #(#oport_enum_name::#oport_name(data) => {
-                                    self.#oport_name.trigger(DataEvent::Item(self.event_time, data))
-                                },)*
-                            }
-                        }
-                    }
-
-                    // Create a module here to avoid name clashes between function parameters and enum
-                    // variants.
-                    mod hygiene {
-                        use arc_script::arcorn::arctime::prelude::*;
-                        use super::#task_name;
-
-                        type Input = (#(Stream<#iport_type>,)*);
-                        // This code makes it possible to use an instantiated task as a function over streams
-                        impl FnOnce<Input> for #task_name {
-                            type Output = (#(Stream<#oport_type>,)*);
-                            extern "rust-call" fn call_once(self, (#(#iport_name,)*): Input) -> Self::Output {
-                                // Step 1. Initialise the task
-                                // TODO: We currently assume all tasks at least take one stream as input
-                                let (stream, ..) = (#(&#iport_name,)*);
-                                let task = stream.client.system().create(|| self);
-                                // Step 2. Connect the input streams to each of the task's input ports
-                                task.on_definition(|producer| {
-                                    #((#iport_name.connector)(&mut producer.#iport_name);)*
-                                });
-                                // Step 3. Setup so that the task will be initialised eventually
-                                {
-                                    let client = stream.client.clone();
-                                    let task = task.clone();
-                                    stream
-                                        .start_fns
-                                        .borrow_mut()
-                                        .push(Box::new(move || client.system().start(&task)));
-                                }
-                                // Step 4. Create a stream for each of the task's output ports
-                                (#({
-                                    let producer = task.clone();
-                                    let connector: Arc<ConnectFn<_>>
-                                        = Arc::new(move |iport| {
-                                        producer.on_definition(|producer| {
-                                            iport.connect(producer.#oport_name.share());
-                                            producer.#oport_name.connect(iport.share());
-                                        });
-                                    });
-                                    let client = stream.client.clone();
-                                    let start_fns = stream.start_fns.clone();
-                                    Stream { client, connector, start_fns }
-                                },)*)
+                        pub fn emit(&mut self, data: #oport_enum_wrapper_name) {
+                            match data.this.unwrap() {
+                                #(
+                                    #oport_enum_name::#oport_name(data) =>
+                                        self.#oport_name.trigger(StreamEvent::Data(self.event_time, data))
+                                ,)*
                             }
                         }
                     }
@@ -310,6 +356,8 @@ cfg_if::cfg_if! {
 
                     impl ComponentLifecycle for #task_name {
                         fn on_start(&mut self) -> Handled {
+                            let (#(#param_name,)*) = (#(self.#param_name.clone(),)*);
+                            self.#on_start_name(#(#param_name,)*);
                             Handled::Ok
                         }
 
@@ -323,10 +371,11 @@ cfg_if::cfg_if! {
                     }
 
                     impl DynamicPortAccess for #task_name {
-                        fn get_provided_port_as_any(&mut self, port_id: TypeId) -> Option<&mut dyn Any> {
+                        fn get_provided_port_as_any(&mut self, _: TypeId) -> Option<&mut dyn Any> {
                             unreachable!();
                         }
-                        fn get_required_port_as_any(&mut self, port_id: TypeId) -> Option<&mut dyn Any> {
+
+                        fn get_required_port_as_any(&mut self, _: TypeId) -> Option<&mut dyn Any> {
                             unreachable!();
                         }
                     }
@@ -335,7 +384,7 @@ cfg_if::cfg_if! {
         }
 
         fn poll_port(
-            handler: &pm2::TokenStream,
+            on_event: &pm2::TokenStream,
             treshold: pm2::TokenStream,
             skip: pm2::TokenStream,
             port: &syn::Ident,
@@ -347,7 +396,7 @@ cfg_if::cfg_if! {
                     }
                 }
                 if let Some(event) = self.#port.dequeue() {
-                    let res = #handler;
+                    let res = #on_event;
                     count += 1;
                     done_work = true;
                     if let Handled::BlockOn(blocking_future) = res {
@@ -364,6 +413,10 @@ cfg_if::cfg_if! {
             } else {
                 quote! {}
             }
+        }
+    } else {
+        pub(crate) fn rewrite(attr: syn::AttributeArgs, item: syn::ItemMod) -> pm::TokenStream {
+            compile_err!("Unsupported backend");
         }
     }
 }

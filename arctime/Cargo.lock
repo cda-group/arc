@@ -821,7 +821,7 @@ dependencies = [
 [[package]]
 name = "kompact"
 version = "0.10.1"
-source = "git+https://github.com/kompics/kompact#94956af23a8a5d30c968e707512b4f9d74dea99d"
+source = "git+https://github.com/segeljakt/kompact#bb1d33c9bd406fe356b5288d9dd682f65b54265b"
 dependencies = [
  "arc-swap",
  "as_num",
@@ -856,7 +856,7 @@ dependencies = [
 [[package]]
 name = "kompact-actor-derive"
 version = "0.10.1"
-source = "git+https://github.com/kompics/kompact#94956af23a8a5d30c968e707512b4f9d74dea99d"
+source = "git+https://github.com/segeljakt/kompact#bb1d33c9bd406fe356b5288d9dd682f65b54265b"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -866,7 +866,7 @@ dependencies = [
 [[package]]
 name = "kompact-component-derive"
 version = "0.10.1"
-source = "git+https://github.com/kompics/kompact#94956af23a8a5d30c968e707512b4f9d74dea99d"
+source = "git+https://github.com/segeljakt/kompact#bb1d33c9bd406fe356b5288d9dd682f65b54265b"
 dependencies = [
  "proc-macro2",
  "quote",

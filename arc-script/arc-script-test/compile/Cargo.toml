@@ -15,8 +15,8 @@ regex           = { version = "1.4.3" }
 lazy_static     = { version = "1.4.0" }
 # compiletest     = { version = "0.6.0", package = "compiletest_rs", features = ["tmp"] }
 # cargo_toml      = { version = "0.8.1" }
-arcon           = { git = "https://github.com/segeljakt/arcon" }
-arc-script      = { version = "=0.0.0", path = "../../" }
+arcon           = { version = "0.1.3", git = "https://github.com/segeljakt/arcon" }
+arc-script      = { version = "=0.0.0", path = "../../", features = ["backend_arctime"], default-features=true}
 prost           = { version = "0.7.0" }
 hexf            = { version = "0.2.1" }
 

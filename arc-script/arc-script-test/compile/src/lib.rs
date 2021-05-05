@@ -1,3 +1,6 @@
+#![feature(unboxed_closures)]
+#![feature(fn_traits)]
+
 #![allow(unused)]
 
 #[cfg(test)]

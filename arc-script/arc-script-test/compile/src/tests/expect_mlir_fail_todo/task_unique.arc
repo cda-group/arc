@@ -1,23 +1,14 @@
-task UniqueSet(): ~i32 by i32 -> ~i32 by i32 {
-    state set: {i32} = {}
-    on event by key => {
-        if event not in set {
-            add set[event];
-            emit event by key
-        } else {
-            unit
-        }
-    }
+extern type Set() {
+    fun contains(x: i32): bool;
+    fun add(x: i32): unit;
 }
 
-task UniqueMap(): ~i32 by i32 -> ~i32 by i32 {
-    state map: {i32 => unit} = {}
+task Unique(): ~i32 by i32 -> ~i32 by i32 {
+    val set = crate::Set();
     on event by key => {
-        if event not in map {
-            map[event] = unit;
+        if not set.contains(event) {
+            set.add(event);
             emit event by key
-        } else {
-            unit
         }
-    }
+    };
 }

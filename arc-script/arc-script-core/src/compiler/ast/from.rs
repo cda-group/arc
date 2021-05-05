@@ -7,7 +7,7 @@ use tracing::instrument;
 impl AST {
     #[instrument(name = "Info => AST", level = "debug", skip(info))]
     pub(crate) fn from(info: &mut Info) -> Self {
-        tracing::debug!("{}", info);
+        tracing::debug!("\n{:?}", info);
         let mut ast = Self::default();
         match &mut info.mode.input {
             Input::Code(source) => {
@@ -21,7 +21,7 @@ impl AST {
             }
             Input::Empty => {}
         }
-        tracing::debug!("{}", ast.debug(info));
+        tracing::debug!("\n{}", ast.debug(info));
         ast
     }
 }

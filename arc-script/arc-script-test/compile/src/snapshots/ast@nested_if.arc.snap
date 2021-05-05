@@ -5,11 +5,11 @@ input_file: arc-script-test/compile/src/tests/expect_pass/nested_if.arc
 
 ---
 fun test(): i32 {
-    let a_i32: i32 = 65 in
-    let b_i32: i32 = 66 in
-    let c_i32: i32 = 67 in
-    let true_bool: bool = true in
-    let false_bool: bool = false in
+    val a_i32: i32 = 65;
+    val b_i32: i32 = 66;
+    val c_i32: i32 = 67;
+    val true_bool: bool = true;
+    val false_bool: bool = false;
     if true_bool {
         a_i32
     } else {

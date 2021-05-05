@@ -1,7 +1,8 @@
 use crate::compiler::hir;
 use crate::compiler::hir::check::ownership::relations::Branch;
-use crate::compiler::hir::check::ownership::relations::Ownership;
+use crate::compiler::hir::check::ownership::relations::Context;
 use crate::compiler::hir::check::ownership::relations::Place;
+use crate::compiler::hir::check::ownership::relations::PlaceInterner;
 use crate::compiler::hir::check::ownership::relations::Use;
 use crate::compiler::info::diags::Error;
 use crate::compiler::info::Info;
@@ -100,7 +101,7 @@ crepe! {
 
 impl hir::HIR {
     pub(crate) fn check_ownership(&self, info: &mut Info) {
-        let mut places = Ownership::from(self);
+        let places = self.collect_places();
         let mut runtime = Crepe::new();
 
         runtime.extend(places.roots.into_iter().map(Root::from));
@@ -118,22 +119,22 @@ impl hir::HIR {
         errs1.sort();
 
         for UseOfMovedValue(p0, p1, _u0) in errs0 {
-            if !p0.tv.is_copyable((info as &Info, self)) {
+            if !p0.t.is_copyable((info as &Info, self)) {
                 info.diags.intern(Error::UseOfMovedValue {
                     loc0: p0.loc,
                     loc1: p1.loc,
-                    tv: p0.tv,
+                    t: p0.t,
                 })
             }
         }
 
         for DoubleUse(p0, u0, u1) in errs1 {
-            if !p0.tv.is_copyable((info as &Info, self)) {
+            if !p0.t.is_copyable((info as &Info, self)) {
                 info.diags.intern(Error::DoubleUse {
                     loc0: p0.loc,
                     loc1: u0.loc,
                     loc2: u1.loc,
-                    tv: p0.tv,
+                    t: p0.t,
                 })
             }
         }

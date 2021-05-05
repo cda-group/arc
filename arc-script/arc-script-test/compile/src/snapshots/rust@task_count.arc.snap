@@ -10,127 +10,63 @@ input_file: arc-script-test/compile/src/tests/expect_mlir_fail_todo/task_count.a
 #[allow(unused_variables)]
 #[allow(unused_imports)]
 #[allow(unused_braces)]
-pub mod defs {
+#[allow(irrefutable_let_patterns)]
+#[allow(clippy::redundant_field_names)]
+#[allow(clippy::unused_unit)]
+#[allow(clippy::double_parens)]
+pub mod arc_script_output {
+    use super::Cell;
     use super::*;
-    pub use arc_script::arcorn;
-    pub use arc_script::arcorn::state::{ArcMapOps, ArcRefOps, ArcSetOps, ArcVecOps};
-    pub use arcon::prelude::*;
-    pub struct Count<'i, 'source, 'timer, 'channel, B: Backend, C: ComponentDefinition> {
-        pub data: &'i mut CountData,
-        pub ctx: &'i mut OperatorContext<'source, 'timer, 'channel, CountData, B, C>,
-        pub timestamp: Option<u64>,
-        pub key: u64,
-    }
-    pub struct CountData {
-        pub state: CountState,
-    }
-    #[derive(ArconState)]
-    pub struct CountState {
-        pub count_0: arc_script::arcorn::state::ArcRef<i32, Sled>,
-    }
-    impl StateConstructor for CountState {
-        type BackendType = Sled;
-        fn new(backend: Arc<Self::BackendType>) -> Self {
-            Self {
-                count_0: <arc_script::arcorn::state::ArcRef<i32, Sled>>::arc_ref_default(
-                    "count_0",
-                    backend.clone(),
-                )
-                .unwrap(),
-            }
+    use arc_script::arcorn;
+    #[arcorn::rewrite(on_event = "Count_on_event", on_start = "Count_on_start")]
+    mod Count_mod {
+        struct Count {
+            count_0: Cell,
+        }
+        #[arcorn::rewrite]
+        pub enum Count_IInterface {
+            Count_IInterface___(Struct3keyi325valuei32End),
+        }
+        #[arcorn::rewrite]
+        pub enum Count_OInterface {
+            Count_OInterface___(Struct3keyi325valuei32End),
         }
     }
-    impl CountData {
-        fn new() -> OperatorBuilder<CountData> {
-            OperatorBuilder {
-                constructor: Arc::new(move |backend| CountData {
-                    state: CountState {
-                        count_0: <arc_script::arcorn::state::ArcRef<i32, Sled>>::arc_ref_new(
-                            "count_0",
-                            backend.clone(),
-                            {
-                                let y_1_0 = 0i32;
-                                y_1_0
-                            },
-                        )
-                        .unwrap(),
-                    },
-                }),
-                conf: Default::default(),
-            }
-        }
-    }
-    impl Operator for CountData {
-        type IN = Struct3keyi323vali32End;
-        type OUT = Struct3keyi323vali32End;
-        type TimerState = ArconNever;
-        type OperatorState = CountState;
-        fn handle_element(
-            &mut self,
-            element: ArconElement<Self::IN>,
-            ref mut ctx: OperatorContext<Self, impl Backend, impl ComponentDefinition>,
-        ) -> OperatorResult<()> {
-            let ArconElement { timestamp, data } = element;
-            let mut task = Count {
-                data: self,
-                ctx,
-                timestamp,
-                key: data.get_key(),
+    impl Count_mod::Count {
+        pub fn Count_on_event(&mut self, x_7: Count_IInterface) -> () {
+            let x_4: Struct3keyi325valuei32End =
+                arcorn::unwrap!(Count_IInterface___, (x_7.clone()));
+            let x_5: i32 = (x_4.clone()).value;
+            let x_6: i32 = (x_4.clone()).key;
+            let x_8: i32 = ((self.count_0).clone()).get();
+            let x_9: i32 = 1i32;
+            let x_A: i32 = (x_8.clone()) + (x_9.clone());
+            let x_B: () = ((self.count_0).clone()).set((x_A.clone()));
+            let x_C: i32 = ((self.count_0).clone()).get();
+            let x_D: Struct3keyi325valuei32End = Struct3keyi325valuei32End {
+                value: (x_C.clone()),
+                key: (x_6.clone()),
             };
-            task.handle_element(data);
-            Ok(())
+            let x_E: Count_OInterface = arcorn::enwrap!(Count_OInterface___, (x_D.clone()));
+            let x_F: () = self.emit((x_E.clone()));
+            (x_F.clone())
         }
-        fn state(&mut self) -> &mut Self::OperatorState {
-            &mut self.state
-        }
-        fn handle_timeout(
-            &mut self,
-            timeout: Self::TimerState,
-            ref mut ctx: OperatorContext<Self, impl Backend, impl ComponentDefinition>,
-        ) -> OperatorResult<()> {
-            Ok(())
-        }
-        fn persist(&mut self) -> OperatorResult<()> {
-            self.state.persist();
-            Ok(())
-        }
-    }
-    impl<'i, 'source, 'timer, 'channel, B: Backend, C: ComponentDefinition>
-        Count<'i, 'source, 'timer, 'channel, B, C>
-    {
-        fn handle_element(&mut self, x_0: Struct3keyi323vali32End) -> OperatorResult<()> {
-            {
-                let y_1_0 = x_0.val;
-                let y_1_1 = x_0.key;
-                let y_1_2 = self.data.state.count_0.arc_ref_read().unwrap();
-                let y_1_3 = 1i32;
-                let y_1_4 = y_1_2 + y_1_3;
-                let y_1_5 = self.data.state.count_0.arc_ref_read().unwrap();
-                let y_1_6 = Struct3keyi323vali32End {
-                    val: y_1_5,
-                    key: y_1_1,
-                };
-                let y_1_7 = self.data.state.count_0.arc_ref_write(y_1_4).unwrap();
-                self.emit(y_1_6);
-                y_1_7
-            };
-            Ok(())
-        }
-        fn emit(&mut self, data: Struct3keyi323vali32End) {
-            let element = ArconElement {
-                data,
-                timestamp: self.timestamp,
-            };
-            self.ctx.output(element);
+        pub fn Count_on_start(&mut self) -> () {
+            let x_0: Box<dyn arcorn::ArcornFn(i32) -> Cell> =
+                Box::new(Cell::new) as Box<dyn arcorn::ArcornFn(i32) -> Cell>;
+            let x_1: i32 = 0i32;
+            let x_2: Cell = (x_0.clone())((x_1.clone()));
+            let x_3: () = (self.count_0).initialise((x_2.clone()));
+            let x_H: () = ();
+            (x_H.clone())
         }
     }
     #[arcorn::rewrite]
-    #[derive(Copy)]
-    pub struct Struct3keyi323vali32End {
+    pub struct Struct3keyi325valuei32End {
         key: i32,
-        val: i32,
+        value: i32,
     }
 }
-pub use defs::*;
+pub use arc_script_output::*;
 
 

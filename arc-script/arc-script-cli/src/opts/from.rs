@@ -25,6 +25,7 @@ impl From<Opt> for Result<Mode> {
             verbosity,
             force_output,
             subcmd,
+            no_infer,
         } = opt;
 
         let mut mode = match subcmd {
@@ -32,8 +33,7 @@ impl From<Opt> for Result<Mode> {
                 output: match cmd.output {
                     opts::Output::AST => Output::AST,
                     opts::Output::HIR => Output::HIR,
-                    opts::Output::DFG => Output::DFG,
-                    opts::Output::Rust => Output::Rust,
+                    opts::Output::Rust => Output::Arcorn,
                     opts::Output::RustMLIR => Output::RustMLIR,
                     opts::Output::MLIR => Output::MLIR,
                 },
@@ -60,16 +60,15 @@ impl From<Opt> for Result<Mode> {
         };
         mode.profile = profile;
         mode.verbosity = match opt.verbosity {
-            0 => Verbosity::Error,
-            1 => Verbosity::Warn,
-            2 => Verbosity::Info,
-            3 => Verbosity::Debug,
+            0 => Verbosity::Info,
+            1 => Verbosity::Debug,
             _ => Verbosity::Trace,
         };
         mode.debug = debug;
         mode.fail_fast = fail_fast;
         mode.suppress_diags = suppress_diags;
         mode.force_output = force_output;
+        mode.no_infer = no_infer;
         Ok(mode)
     }
 }

@@ -1,13 +1,13 @@
 # RUN: arc-script run --output=MLIR %s | arc-mlir
 
-fun test1(): i32 {
+fun test(): i32 {
 
-    let a = 3 in
-    let b = fun(x): x + 1 in
-    let c = fun(x): x - 1 in
+    val a = 3;
+    val b = fun(x): x + 1;
+    val c = fun(x): x - 1;
 
-    let d: i32 = a |> b |> c in
-    # let d = c(b(a)) in
+    val d: i32 = a | b | c;
+    # val d = c(b(a));
 
     d
 }

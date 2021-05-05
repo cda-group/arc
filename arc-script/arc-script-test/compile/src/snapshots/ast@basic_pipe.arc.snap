@@ -4,15 +4,11 @@ expression: s
 input_file: arc-script-test/compile/src/tests/expect_pass/basic_pipe.arc
 
 ---
-fun test1(): i32 {
-    let a = 3 in
-    let b = fun(x): {
-        x + 1
-    } in
-    let c = fun(x): {
-        x - 1
-    } in
-    let d: i32 = a |> b |> c in
+fun test(): i32 {
+    val a = 3;
+    val b = fun(x): x + 1;
+    val c = fun(x): x - 1;
+    val d: i32 = a | b | c;
     d
 }
 

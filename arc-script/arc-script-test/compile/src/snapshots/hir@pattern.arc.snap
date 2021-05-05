@@ -5,13 +5,20 @@ input_file: arc-script-test/compile/src/tests/expect_pass/pattern.arc
 
 ---
 fun main(): unit {
-    let x_0: ((i32, i32), (i32, i32)) = ((1, 2), (3, 4)) in
-    let x_1: (i32, i32) = x_0.0 in
-    let a_0: i32 = x_1.0 in
-    let b_0: i32 = x_1.1 in
-    let x_2: (i32, i32) = x_0.1 in
-    let c_0: i32 = x_2.0 in
-    let d_0: i32 = x_2.1 in
-    unit
+    val x_0: i32 = 1;
+    val x_1: i32 = 2;
+    val x_2: (i32, i32) = (x_0, x_1);
+    val x_3: i32 = 3;
+    val x_4: i32 = 4;
+    val x_5: (i32, i32) = (x_3, x_4);
+    val x_6: ((i32, i32), (i32, i32)) = (x_2, x_5);
+    val x_7: (i32, i32) = x_6.0;
+    val x_8: i32 = x_7.0;
+    val x_9: i32 = x_7.1;
+    val x_A: (i32, i32) = x_6.1;
+    val x_B: i32 = x_A.0;
+    val x_C: i32 = x_A.1;
+    val x_D: unit = unit;
+    x_D
 }
 

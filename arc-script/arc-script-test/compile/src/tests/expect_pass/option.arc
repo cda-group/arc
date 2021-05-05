@@ -7,9 +7,7 @@ enum Opt {
 }
 
 fun main() {
-    if let Opt::Some(y) = Opt::Some(3) {
-        unit
-    } else {
+    if val Opt::Some(y) = Opt::Some(3) {
         unit
     }
 }

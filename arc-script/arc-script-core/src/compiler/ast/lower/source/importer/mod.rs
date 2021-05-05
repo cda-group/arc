@@ -63,8 +63,8 @@ impl AST {
     /// Parses a single source string and gives error if it contains imports.
     pub(crate) fn parse_source(&mut self, source: String, info: &mut Info) {
         // Read the file, parse it, and construct the module.
-        let name = info.names.resolve(info.names.common.root).to_string();
-        let module = Module::parse(name, source, &mut self.exprs, info);
+        let name = info.names.resolve(info.names.common.root.id).to_string();
+        let module = Module::parse(name, source, self, info);
 
         if !module.imports(info).is_empty() {
             panic!();
@@ -125,7 +125,7 @@ impl AST {
         // Read the file, parse it, and construct the module.
         let name = full_path.to_str().unwrap().to_owned();
         let source = read_file(&full_path).unwrap();
-        let module = Module::parse(name, source, &mut self.exprs, info);
+        let module = Module::parse(name, source, self, info);
 
         // Import any dependencies the module might have, if they have not already been imported.
         let dependency_paths = module.imports(info);

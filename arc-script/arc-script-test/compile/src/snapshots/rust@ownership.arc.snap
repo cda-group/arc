@@ -4,11 +4,24 @@ expression: s
 input_file: arc-script-test/compile/src/tests/expect_fail/ownership.arc
 
 ---
-[-- Found 1 errors --],
-error: Double use of value of non-copyable type ~i32
-  ┌─ <FILE-NAME>
-  │
-2 │     (s0, s0)
-  │      ^^  ^^
+#[allow(non_snake_case)]
+#[allow(unused_must_use)]
+#[allow(dead_code)]
+#[allow(unused_variables)]
+#[allow(unused_imports)]
+#[allow(unused_braces)]
+#[allow(irrefutable_let_patterns)]
+#[allow(clippy::redundant_field_names)]
+#[allow(clippy::unused_unit)]
+#[allow(clippy::double_parens)]
+pub mod arc_script_output {
+    use super::*;
+    use arc_script::arcorn;
+    pub fn main(s0_0: arcorn::Stream<i32>) -> (arcorn::Stream<i32>, arcorn::Stream<i32>) {
+        let x_0: (arcorn::Stream<i32>, arcorn::Stream<i32>) = ((s0_0.clone()), (s0_0.clone()));
+        (x_0.clone())
+    }
+}
+pub use arc_script_output::*;
 
 

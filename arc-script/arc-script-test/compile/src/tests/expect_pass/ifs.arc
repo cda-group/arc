@@ -4,10 +4,10 @@
 fun main() { unit }
 
 fun test(): i32 {
-  let a_i32: i32 = 65 in
-  let b_i32: i32 = 66 in
+  val a_i32: i32 = 65;
+  val b_i32: i32 = 66;
 
-  let true_bool: bool = true in
+  val true_bool: bool = true;
 
 # Check that the conditional ends up in the right place and that the
 # results in the two branches are correct

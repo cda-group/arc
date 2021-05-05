@@ -5,20 +5,22 @@ input_file: arc-script-test/compile/src/tests/expect_pass/structs.arc
 
 ---
 module @toplevel {
-    func @crate_foo(%a_0: !arc.struct<b : si32, c : si32>, %b_0: !arc.struct<b : si32, c : si32>) -> !arc.struct<a : !arc.struct<b : si32, c : si32>, d : !arc.struct<b : si32, c : si32>, xyz : si32> {
-        %x_1 = arc.constant 4711 : si32
-        %x_2 = arc.make_struct(%a_0, %b_0, %x_1 : !arc.struct<b : si32, c : si32>, !arc.struct<b : si32, c : si32>, si32) : !arc.struct<a : !arc.struct<b : si32, c : si32>, d : !arc.struct<b : si32, c : si32>, xyz : si32>
-        return %x_2 : !arc.struct<a : !arc.struct<b : si32, c : si32>, d : !arc.struct<b : si32, c : si32>, xyz : si32>
+    func @crate_foo(%a_0: !arc.struct<b: si32, c: si32>, %b_0: !arc.struct<b: si32, c: si32>) -> !arc.struct<a: !arc.struct<b: si32, c: si32>, d: !arc.struct<b: si32, c: si32>, xyz: si32> {
+        %x_0 = arc.constant 4711 : si32
+        %x_1 = arc.make_struct(%a_0, %b_0, %x_0 : !arc.struct<b: si32, c: si32>, !arc.struct<b: si32, c: si32>, si32) : !arc.struct<a: !arc.struct<b: si32, c: si32>, d: !arc.struct<b: si32, c: si32>, xyz: si32>
+        "arc.block.result"(%x_1) : (!arc.struct<a: !arc.struct<b: si32, c: si32>, d: !arc.struct<b: si32, c: si32>, xyz: si32>) -> ()
     }
-    func @crate_test() -> () {
+    func @crate_test() -> none {
+        %x_2 = constant @crate_foo : (!arc.struct<b: si32, c: si32>, !arc.struct<b: si32, c: si32>) -> !arc.struct<a: !arc.struct<b: si32, c: si32>, d: !arc.struct<b: si32, c: si32>, xyz: si32>
         %x_3 = arc.constant 1 : si32
         %x_4 = arc.constant 5 : si32
-        %x_5 = arc.make_struct(%x_4, %x_3 : si32, si32) : !arc.struct<b : si32, c : si32>
+        %x_5 = arc.make_struct(%x_4, %x_3 : si32, si32) : !arc.struct<b: si32, c: si32>
         %x_6 = arc.constant 4 : si32
         %x_7 = arc.constant 2 : si32
-        %x_8 = arc.make_struct(%x_6, %x_7 : si32, si32) : !arc.struct<b : si32, c : si32>
-        %x_9 = call @crate_foo(%x_5, %x_8) : (!arc.struct<b : si32, c : si32>, !arc.struct<b : si32, c : si32>) -> !arc.struct<a : !arc.struct<b : si32, c : si32>, d : !arc.struct<b : si32, c : si32>, xyz : si32>
-        return 
+        %x_8 = arc.make_struct(%x_6, %x_7 : si32, si32) : !arc.struct<b: si32, c: si32>
+        %x_9 = call_indirect %x_2(%x_5, %x_8) : (!arc.struct<b: si32, c: si32>, !arc.struct<b: si32, c: si32>) -> !arc.struct<a: !arc.struct<b: si32, c: si32>, d: !arc.struct<b: si32, c: si32>, xyz: si32>
+        %x_A = none none
+        "arc.block.result"(%x_A) : (none) -> ()
     }
 }
 

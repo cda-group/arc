@@ -12,21 +12,33 @@ enum Foo {
     Bar(crate::Baz),
     None
 }
-fun x_3(): unit {
-    unit
+fun x_9(): unit {
+    val x_8: unit = unit;
+    x_8
 }
 fun main(): unit {
-    let x_0: crate::Foo = enwrap[crate::Foo::Bar](enwrap[crate::Baz::Some](5)) in
-    if is[crate::Foo::Bar](x_0) {
-        let x_1: crate::Baz = unwrap[crate::Foo::Bar](x_0) in
-        if is[crate::Baz::Some](x_1) {
-            let x_2: i32 = unwrap[crate::Baz::Some](x_1) in
-            unit
+    val x_0: i32 = 5;
+    val x_1: crate::Baz = enwrap[crate::Baz::Some](x_0);
+    val x_2: crate::Foo = enwrap[crate::Foo::Bar](x_1);
+    val x_3: bool = is[x_2](x_2);
+    val x_D: unit = if x_3 {
+        val x_4: crate::Baz = unwrap[crate::Foo::Bar](x_2);
+        val x_5: bool = is[x_4](x_4);
+        val x_C: unit = if x_5 {
+            val x_6: i32 = unwrap[crate::Baz::Some](x_4);
+            val x_7: unit = unit;
+            x_7
         } else {
-            crate::x_3()
-        }
+            val x_A: fun(): unit = crate::x_9;
+            val x_B: unit = x_A();
+            x_B
+        };
+        x_C
     } else {
-        crate::x_3()
-    }
+        val x_A: fun(): unit = crate::x_9;
+        val x_B: unit = x_A();
+        x_B
+    };
+    x_D
 }
 

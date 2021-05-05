@@ -1,11 +1,12 @@
 use crate::compiler::hir;
-use crate::compiler::hir::TypeId;
+use crate::compiler::hir::Type;
 use crate::compiler::info::files::Loc;
 
 use arc_script_core_shared::Educe;
 use arc_script_core_shared::Map;
 use arc_script_core_shared::MapEntry;
 use arc_script_core_shared::New;
+use arc_script_core_shared::Shrinkwrap;
 
 /// The `PlaceId` of a `Place`.
 #[derive(Debug, Copy, Clone, Hash, Eq, PartialEq, PartialOrd, Ord)]
@@ -17,7 +18,7 @@ pub(crate) struct Place {
     id: PlaceId,
     #[educe(PartialEq(ignore), Eq(ignore), Hash(ignore))]
     #[educe(PartialOrd(ignore), Ord(ignore))]
-    pub(crate) tv: TypeId,
+    pub(crate) t: Type,
     #[educe(PartialEq(ignore), Eq(ignore), Hash(ignore))]
     #[educe(PartialOrd(ignore), Ord(ignore))]
     pub(crate) loc: Loc,
@@ -61,8 +62,16 @@ pub(crate) struct Use {
     pub(crate) loc: Loc,
 }
 
-#[derive(Default, Debug)]
-pub(crate) struct Ownership {
+#[derive(Debug, New, Shrinkwrap)]
+#[shrinkwrap(mutable)]
+pub(crate) struct Context<'i> {
+    #[shrinkwrap(main_field)]
+    pub(crate) places: &'i mut PlaceInterner,
+    pub(crate) hir: &'i hir::HIR,
+}
+
+#[derive(Default, Debug, New)]
+pub(crate) struct PlaceInterner {
     place_counter: usize,
     use_counter: usize,
     branch_counter: usize,
@@ -73,7 +82,7 @@ pub(crate) struct Ownership {
     pub(crate) jumps: Vec<(Branch, Branch)>,
 }
 
-impl Ownership {
+impl PlaceInterner {
     pub(crate) fn intern_place(&mut self, place: PlaceKind) -> PlaceId {
         match self.place_to_id.entry(place) {
             MapEntry::Occupied(e) => *e.get(),
@@ -97,7 +106,7 @@ impl Ownership {
         self.uses.push((p0, Use::new(id, loc), b0));
     }
     pub(crate) fn add_root(&mut self, p0: Place, x0: hir::Name) {
-        self.roots.push((x0.id, p0))
+        self.roots.push((x0, p0))
     }
     pub(crate) fn add_parent(&mut self, p0: Place, p1: Place) {
         self.parents.push((p0, p1))
@@ -107,26 +116,33 @@ impl Ownership {
     }
 }
 
-impl From<&'_ hir::HIR> for Ownership {
-    fn from(hir: &hir::HIR) -> Self {
-        let mut owner = Self::default();
-        hir.defs.values().for_each(|def| def.collect(&mut owner));
-        owner
+impl hir::HIR {
+    pub(crate) fn collect_places(&self) -> PlaceInterner {
+        let mut places = PlaceInterner::default();
+        let mut ctx = Context::new(&mut places, self);
+        self.defs.values().for_each(|def| def.collect(&mut ctx));
+        places
+    }
+}
+
+impl hir::Block {
+    fn collect_root(&self, ctx: &mut Context<'_>) {
+        todo!()
     }
 }
 
 impl hir::Item {
-    fn collect(&self, places: &mut Ownership) {
+    fn collect(&self, ctx: &mut Context<'_>) {
         match &self.kind {
             hir::ItemKind::Fun(i) => {
-                i.body.collect_root(places);
+                i.body.collect_root(ctx);
             }
             hir::ItemKind::Task(i) => {
-                for state in &i.states {
-                    state.init.collect_root(places);
+                for a in &i.assignments {
+                    a.expr.collect_root(ctx);
                 }
                 if let Some(on) = &i.on {
-                    on.body.collect_root(places);
+                    on.body.collect_root(ctx);
                 }
             }
             hir::ItemKind::Alias(_) => {}
@@ -138,95 +154,89 @@ impl hir::Item {
 }
 
 impl hir::Expr {
-    fn collect_root(&self, owner: &mut Ownership) {
-        let b = owner.new_branch(self.loc);
-        self.collect(b, owner);
+    fn collect_root(&self, ctx: &mut Context<'_>) {
+        let b = ctx.new_branch(self.loc);
+        self.collect(b, ctx);
     }
-    fn collect(&self, b0: Branch, owner: &mut Ownership) -> Option<Place> {
-        match &self.kind {
+    fn collect(&self, b0: Branch, ctx: &mut Context<'_>) -> Option<Place> {
+        match ctx.hir.exprs.resolve(self) {
             /// Place-expressions
             hir::ExprKind::Access(e, x) => {
-                if let Some(p0) = e.collect(b0, owner) {
+                if let Some(p0) = e.collect(b0, ctx) {
                     let p1 = Place::new(
-                        owner.intern_place(PlaceKind::Access(p0.id, *x)),
-                        self.tv,
+                        ctx.intern_place(PlaceKind::Access(p0, *x)),
+                        self.t,
                         self.loc,
                     );
-                    owner.add_parent(p0, p1);
+                    ctx.add_parent(p0, p1);
                     return Some(p1);
                 }
             }
             hir::ExprKind::Project(e, i) => {
-                if let Some(p0) = e.collect(b0, owner) {
+                if let Some(p0) = e.collect(b0, ctx) {
                     let p1 = Place::new(
-                        owner.intern_place(PlaceKind::Project(p0.id, *i)),
-                        self.tv,
+                        ctx.intern_place(PlaceKind::Project(p0, *i)),
+                        self.t,
                         self.loc,
                     );
-                    owner.add_parent(p0, p1);
+                    ctx.add_parent(p0, p1);
                     return Some(p1);
                 }
             }
             hir::ExprKind::Var(x, kind) => match kind {
-                hir::VarKind::Member | hir::VarKind::Local => {
-                    let p = Place::new(owner.intern_place(PlaceKind::Var(*x)), self.tv, self.loc);
-                    owner.add_root(p, *x);
+                hir::BindingKind::Member | hir::BindingKind::Local => {
+                    let p = Place::new(ctx.intern_place(PlaceKind::Var(*x)), self.t, self.loc);
+                    ctx.add_root(p, *x);
                     return Some(p);
                 }
                 hir::VarKind::State => {}
             },
             /// Branch/Use-expressions
-            hir::ExprKind::If(e0, e1, e2) => {
-                e0.collect_use(b0, owner);
-                let b1 = owner.new_branch(self.loc);
-                owner.add_jump(b0, b1);
-                e1.collect_use(b1, owner);
-                let b2 = owner.new_branch(self.loc);
-                owner.add_jump(b0, b2);
-                e2.collect_use(b2, owner);
+            hir::ExprKind::If(e, b0, b1) => {
+                todo!()
+                //                 e0.collect_use(b0, owner);
+                //                 let b1 = owner.new_branch(self.loc);
+                //                 owner.add_jump(b0, b1);
+                //                 e1.collect_use(b1, owner);
+                //                 let b2 = owner.new_branch(self.loc);
+                //                 owner.add_jump(b0, b2);
+                //                 e2.collect_use(b2, owner);
             }
-            hir::ExprKind::Loop(e0) => {
-                let b1 = owner.new_branch(self.loc);
-                owner.add_jump(b0, b1);
-                e0.collect_use(b1, owner)
+            hir::ExprKind::Loop(b) => {
+                todo!()
+                //                 let b1 = owner.new_branch(self.loc);
+                //                 owner.add_jump(b, b1);
+                //                 b.collect_use(b1, owner)
             }
             /// Use-expressions
             hir::ExprKind::BinOp(e0, _, e1) => {
-                e0.collect_use(b0, owner);
-                e1.collect_use(b0, owner);
+                e0.collect_use(b0, ctx);
+                e1.collect_use(b0, ctx);
             }
             hir::ExprKind::Call(e0, es) => {
-                e0.collect_use(b0, owner);
-                es.iter().for_each(|e| e.collect_use(b0, owner));
+                e0.collect_use(b0, ctx);
+                es.iter().for_each(|e| e.collect_use(b0, ctx));
             }
             hir::ExprKind::Select(e0, es) => {
-                e0.collect_use(b0, owner);
-                es.iter().for_each(|e| e.collect_use(b0, owner));
+                e0.collect_use(b0, ctx);
+                es.iter().for_each(|e| e.collect_use(b0, ctx));
             }
-            hir::ExprKind::Let(_, e0, e1) => {
-                e0.collect_use(b0, owner);
-                e1.collect_use(b0, owner);
-            }
-            hir::ExprKind::Struct(efs) => efs.values().for_each(|e| e.collect_use(b0, owner)),
-            hir::ExprKind::Array(es) => es.iter().for_each(|e| e.collect_use(b0, owner)),
-            hir::ExprKind::Tuple(es) => es.iter().for_each(|e| e.collect_use(b0, owner)),
-            hir::ExprKind::Emit(e0) => e0.collect_use(b0, owner),
-            hir::ExprKind::Trigger(e0) => e0.collect_use(b0, owner),
-            hir::ExprKind::Log(e0) => e0.collect_use(b0, owner),
-            hir::ExprKind::UnOp(_, e0) => e0.collect_use(b0, owner),
-            hir::ExprKind::Enwrap(_, e0) => e0.collect_use(b0, owner),
-            hir::ExprKind::Unwrap(_, e0) => e0.collect_use(b0, owner),
-            hir::ExprKind::Return(e0) => e0.collect_use(b0, owner),
+            hir::ExprKind::Struct(efs) => efs.values().for_each(|e| e.collect_use(b0, ctx)),
+            hir::ExprKind::Array(es) => es.iter().for_each(|e| e.collect_use(b0, ctx)),
+            hir::ExprKind::Tuple(es) => es.iter().for_each(|e| e.collect_use(b0, ctx)),
+            hir::ExprKind::Emit(e0) => e0.collect_use(b0, ctx),
+            hir::ExprKind::Log(e0) => e0.collect_use(b0, ctx),
+            hir::ExprKind::UnOp(_, e0) => e0.collect_use(b0, ctx),
+            hir::ExprKind::Enwrap(_, e0) => e0.collect_use(b0, ctx),
+            hir::ExprKind::Unwrap(_, e0) => e0.collect_use(b0, ctx),
             hir::ExprKind::Item(_) => {}
             hir::ExprKind::Lit(_) => {}
             hir::ExprKind::Break => {}
-            hir::ExprKind::Empty => {}
-            hir::ExprKind::Todo => {}
+            hir::ExprKind::After(_, _) => {}
+            hir::ExprKind::Every(_, _) => {}
+            hir::ExprKind::Cast(e, _) => e.collect_use(b0, ctx),
+            hir::ExprKind::Unreachable => {}
             hir::ExprKind::Err => {}
-            hir::ExprKind::Add(e0, e1) | hir::ExprKind::Del(e0, e1) => {
-                e0.collect_use(b0, owner);
-                e1.collect_use(b0, owner)
-            }
             // NOTE: Ownership breaks for the following transformation:
             // if let Some(x) = Some(y) {
             //     ...
@@ -237,14 +247,14 @@ impl hir::Expr {
             //     ...
             // }
             // Therefore, `is` is a by-reference expression
-            hir::ExprKind::Is(_, _e0) => {}
+            hir::ExprKind::Is(_, _) => {}
         }
         None
     }
 
-    fn collect_use(&self, b0: Branch, owner: &mut Ownership) {
-        if let Some(p0) = self.collect(b0, owner) {
-            owner.add_use(p0, b0, self.loc)
+    fn collect_use(&self, b0: Branch, ctx: &mut Context<'_>) {
+        if let Some(p0) = self.collect(b0, ctx) {
+            ctx.add_use(p0, b0, self.loc)
         }
     }
 }
