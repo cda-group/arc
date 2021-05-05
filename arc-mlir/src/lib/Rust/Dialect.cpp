@@ -60,6 +60,7 @@ void RustDialect::initialize() {
 #include "Rust/Rust.cpp.inc"
       >();
   addTypes<RustType>();
+  addTypes<RustEnumType>();
   addTypes<RustStructType>();
   addTypes<RustTensorType>();
   addTypes<RustTupleType>();
@@ -105,6 +106,8 @@ void RustDialect::printType(Type type, DialectAsmPrinter &os) const {
   else if (auto t = type.dyn_cast<RustTensorType>())
     t.print(os);
   else if (auto t = type.dyn_cast<RustTupleType>())
+    t.print(os);
+  else if (auto t = type.dyn_cast<RustEnumType>())
     t.print(os);
   else
     llvm_unreachable("Unhandled Rust type");
@@ -195,6 +198,9 @@ RustPrinterStream &operator<<(RustPrinterStream &os, const Type &type) {
     t.printAsRust(os);
   else if (auto t = type.dyn_cast<RustTupleType>())
     t.printAsRust(os);
+  else if (auto t = type.dyn_cast<RustEnumType>()) {
+    os.print(t);
+  }
   else
     os << "<not-a-rust-type>";
   return os;
@@ -431,6 +437,8 @@ static std::string getTypeString(Type type) {
     return t.getRustType();
   if (auto t = type.dyn_cast<RustType>())
     return t.getRustType().str();
+  if (auto t = type.dyn_cast<RustEnumType>())
+    return t.getRustType();
   return "<unsupported type>";
 }
 
@@ -442,6 +450,8 @@ static std::string getTypeSignature(Type type) {
   if (auto t = type.dyn_cast<RustTensorType>())
     return t.getSignature();
   if (auto t = type.dyn_cast<RustType>())
+    return t.getSignature();
+  if (auto t = type.dyn_cast<RustEnumType>())
     return t.getSignature();
   return "<unsupported type>";
 }
@@ -520,6 +530,142 @@ RustType RustType::getIntegerTy(RustDialect *dialect, IntegerType ty) {
 std::string RustType::getSignature() const { return getImpl()->getSignature(); }
 
 std::string RustTypeStorage::getSignature() const { return rustType; }
+
+//===----------------------------------------------------------------------===//
+// RustEnumType
+//===----------------------------------------------------------------------===//
+
+struct RustEnumTypeStorage : public TypeStorage {
+  RustEnumTypeStorage(ArrayRef<RustEnumType::EnumVariantTy> fields, unsigned id)
+      : enumVariants(fields.begin(), fields.end()), id(id) {
+    std::string str;
+    llvm::raw_string_ostream s(str);
+    s << "Enum";
+
+    for (auto &f : fields) {
+      StringRef fieldName = f.first.getValue();
+      s << fieldName.size() << fieldName;
+      s << getTypeSignature(f.second);
+    }
+    s << "End";
+    signature = s.str();
+  }
+
+  SmallVector<RustEnumType::EnumVariantTy, 4> enumVariants;
+  unsigned id;
+
+  using KeyTy = ArrayRef<RustEnumType::EnumVariantTy>;
+
+  bool operator==(const KeyTy &key) const { return key == KeyTy(enumVariants); }
+
+  static llvm::hash_code hashKey(const KeyTy &key) {
+    return llvm::hash_combine(key);
+  }
+
+  static RustEnumTypeStorage *construct(TypeStorageAllocator &allocator,
+                                        const KeyTy &key) {
+    return new (allocator.allocate<RustEnumTypeStorage>())
+        RustEnumTypeStorage(key, idCounter++);
+  }
+
+  RustPrinterStream &printAsRust(RustPrinterStream &os) const;
+  raw_ostream &printAsRustNamedType(raw_ostream &os) const;
+  void print(DialectAsmPrinter &os) const { os << getRustType(); }
+  StringRef getVariantName(unsigned idx) const;
+
+  std::string getRustType() const;
+  unsigned getEnumTypeId() const;
+
+  void emitNestedTypedefs(rust::RustPrinterStream &os) const;
+  std::string getSignature() const;
+
+private:
+  static unsigned idCounter;
+  std::string signature;
+};
+
+unsigned RustEnumTypeStorage::idCounter = 0;
+
+RustEnumType RustEnumType::get(RustDialect *dialect,
+                               ArrayRef<EnumVariantTy> fields) {
+  mlir::MLIRContext *ctx = fields.front().second.getContext();
+  return Base::get(ctx, fields);
+}
+
+void RustEnumType::print(DialectAsmPrinter &os) const { getImpl()->print(os); }
+
+RustPrinterStream &RustEnumType::printAsRust(RustPrinterStream &os) const {
+  return getImpl()->printAsRust(os);
+}
+
+raw_ostream &RustEnumType::printAsRustNamedType(raw_ostream &os) const {
+  return getImpl()->printAsRustNamedType(os);
+}
+
+StringRef RustEnumType::getVariantName(unsigned idx) const {
+  return getImpl()->getVariantName(idx);
+}
+
+StringRef RustEnumTypeStorage::getVariantName(unsigned idx) const {
+  return enumVariants[idx].first.getValue();
+}
+
+std::string RustEnumType::getRustType() const {
+  return getImpl()->getRustType();
+}
+
+unsigned RustEnumTypeStorage::getEnumTypeId() const { return id; }
+
+unsigned RustEnumType::getEnumTypeId() const {
+  return getImpl()->getEnumTypeId();
+}
+std::string RustEnumTypeStorage::getRustType() const { return signature; }
+
+RustPrinterStream &
+RustEnumTypeStorage::printAsRust(RustPrinterStream &ps) const {
+
+  llvm::raw_ostream &os = ps.getNamedTypesStream();
+  // First ensure that any structs used by this struct are defined
+  emitNestedTypedefs(ps);
+
+  os << "#[arcorn::rewrite]\n";
+
+  os << "pub enum ";
+  printAsRustNamedType(os) << " {\n";
+
+  for (unsigned i = 0; i < enumVariants.size(); i++) {
+    os << "  " << enumVariants[i].first.getValue();
+    os << "(" << getTypeString(enumVariants[i].second) << "),\n";
+  }
+  os << "\n}\n";
+  return ps;
+}
+
+void RustEnumType::emitNestedTypedefs(rust::RustPrinterStream &ps) const {
+  return getImpl()->emitNestedTypedefs(ps);
+}
+
+void RustEnumTypeStorage::emitNestedTypedefs(
+    rust::RustPrinterStream &ps) const {
+  // First ensure that any structs used by this tuple are defined
+  for (unsigned i = 0; i < enumVariants.size(); i++)
+    if (enumVariants[i].second.isa<RustEnumType>())
+      ps.writeEnumDefiniton(enumVariants[i].second.cast<RustEnumType>());
+    else if (enumVariants[i].second.isa<RustTupleType>())
+      enumVariants[i].second.cast<RustTupleType>().emitNestedTypedefs(ps);
+}
+
+raw_ostream &RustEnumTypeStorage::printAsRustNamedType(raw_ostream &os) const {
+
+  os << signature;
+  return os;
+}
+
+std::string RustEnumType::getSignature() const {
+  return getImpl()->getSignature();
+}
+
+std::string RustEnumTypeStorage::getSignature() const { return signature; }
 
 //===----------------------------------------------------------------------===//
 // RustStructType

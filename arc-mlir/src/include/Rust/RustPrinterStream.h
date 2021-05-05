@@ -147,10 +147,26 @@ public:
     return *this;
   }
 
+  RustPrinterStream &print(types::RustEnumType t) {
+    writeEnumDefiniton(t);
+    t.printAsRustNamedType(Body);
+    return *this;
+  }
+
   RustPrinterStream &print(types::RustStructType t) {
     writeStructDefiniton(t);
     t.printAsRustNamedType(Body);
     return *this;
+  }
+
+  void writeEnumDefiniton(types::RustEnumType t) {
+    unsigned id = t.getEnumTypeId();
+
+    // Only output an enum definition once
+    if (OutputNamedTypes.find(id) == OutputNamedTypes.end()) {
+      OutputNamedTypes.insert(id);
+      t.printAsRust(*this);
+    }
   }
 
   void writeStructDefiniton(types::RustStructType t) {

@@ -55,9 +55,12 @@ def Rust_Dialect : Dialect {
 class Rust_Op<string mnemonic, list<OpTrait> traits = []>
     : Op<Rust_Dialect, mnemonic, traits>;
 
-def AnyRustType : Type<CPred<"$_self.isa<RustType>() || $_self.isa<RustStructType>() || $_self.isa<RustTupleType>() || $_self.isa<RustTensorType>()">, "any RustType">;
+def AnyRustType : Type<CPred<"$_self.isa<RustType>() || $_self.isa<RustStructType>() || $_self.isa<RustTupleType>() || $_self.isa<RustTensorType>() || $_self.isa<RustEnumType>()">, "any RustType">;
 def AnyRustStruct :
     Type<CPred<"$_self.isa<RustStructType>()">, "any RustStruct">;
+
+def AnyRustEnum :
+    Type<CPred<"$_self.isa<RustEnumType>()">, "any RustEnum">;
 
 def BoolRustType : Type<CPred<"$_self.isa<RustType>() && $_self.cast<RustType>().isBool()">, "a Rust boolean type">;
 
