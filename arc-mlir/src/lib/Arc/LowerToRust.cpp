@@ -643,6 +643,26 @@ private:
   RustTypeConverter &TypeConverter;
 };
 
+struct EnumCheckOpLowering : public ConversionPattern {
+  EnumCheckOpLowering(MLIRContext *ctx, RustTypeConverter &typeConverter)
+      : ConversionPattern(arc::EnumCheckOp::getOperationName(), 1, ctx),
+        TypeConverter(typeConverter) {}
+
+  LogicalResult
+  matchAndRewrite(Operation *op, ArrayRef<Value> operands,
+                  ConversionPatternRewriter &rewriter) const final {
+    EnumCheckOp o = cast<EnumCheckOp>(op);
+    Type retTy = TypeConverter.convertType(o.getType());
+    std::string variant_str(o.variant());
+    rewriter.replaceOpWithNewOp<rust::RustEnumCheckOp>(op, retTy, o.value(),
+                                                       variant_str);
+    return success();
+  };
+
+private:
+  RustTypeConverter &TypeConverter;
+};
+
 RustTypeConverter::RustTypeConverter(MLIRContext *ctx)
     : Ctx(ctx), Dialect(ctx->getOrLoadDialect<rust::RustDialect>()) {
   addConversion(
@@ -906,6 +926,7 @@ void ArcToRustLoweringPass::runOnOperation() {
   patterns.insert<MakeEnumOpLowering>(&getContext(), typeConverter);
   patterns.insert<MakeStructOpLowering>(&getContext(), typeConverter);
   patterns.insert<EnumAccessOpLowering>(&getContext(), typeConverter);
+  patterns.insert<EnumCheckOpLowering>(&getContext(), typeConverter);
   patterns.insert<StructAccessOpLowering>(&getContext(), typeConverter);
   patterns.insert<StdCallOpLowering>(&getContext(), typeConverter);
 
