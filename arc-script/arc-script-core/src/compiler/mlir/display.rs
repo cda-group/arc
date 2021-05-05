@@ -348,11 +348,13 @@ impl<'i> Display for Pretty<'i, mlir::OpKind, Context<'_>> {
 		    x1.tv.pretty(fmt),
                     x0.pretty(fmt),
 		),
-            mlir::OpKind::Unwrap(x0, x1) => write!(
+            mlir::OpKind::Unwrap(x0, x1) =>
+	    // %r = arc.enum_access "b" in (%e : !arc.enum<a : i32, b : f32>) : f32
+		write!(
                 f,
-                r#""arc.unwrap"({}) {{ variant = {} }} : {} ->"#,
-                x1.pretty(fmt),
+                r#"arc.enum_access "{}" in ({} : {}) : "#,
                 x0.pretty(fmt),
+                x1.pretty(fmt),
                 x1.tv.pretty(fmt),
             ),
             mlir::OpKind::Is(x0, x1) => write!(
