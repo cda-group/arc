@@ -245,6 +245,8 @@ static RustPrinterStream &writeRust(Operation &operation,
     op.writeRust(PS);
   else if (RustBlockResultOp op = dyn_cast<RustBlockResultOp>(operation))
     op.writeRust(PS);
+  else if (RustMakeEnumOp op = dyn_cast<RustMakeEnumOp>(operation))
+    op.writeRust(PS);
   else if (RustMakeStructOp op = dyn_cast<RustMakeStructOp>(operation))
     op.writeRust(PS);
   else if (RustMethodCallOp op = dyn_cast<RustMethodCallOp>(operation))
@@ -316,6 +318,13 @@ void RustUnaryOp::writeRust(RustPrinterStream &PS) {
   PS << "let " << r << ":" << r.getType() << " = " << getOperator() << "("
      << getOperand() << ")"
      << ";\n";
+}
+
+void RustMakeEnumOp::writeRust(RustPrinterStream &PS) {
+  auto r = getResult();
+  RustEnumType et = r.getType().cast<RustEnumType>();
+  PS << "let " << r << ":" << et << " = arcorn::enwrap!(" << variant() << ", "
+     << value() << ");\n";
 }
 
 void RustMakeStructOp::writeRust(RustPrinterStream &PS) {

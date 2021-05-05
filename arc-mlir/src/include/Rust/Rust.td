@@ -378,6 +378,20 @@ def Rust_RustIfOp
   }];
 }
 
+def Rust_RustMakeEnumOp
+    : Rust_Op<"make_enum", []> {
+  let summary = "constructs an enum";
+  let description = [{
+    "rust.enum" constructs an enum
+  }];
+  let arguments = (ins AnyRustType:$value, StrAttr:$variant);
+  let results = (outs AnyRustEnum);
+  let extraClassDeclaration = [{
+    // Write this operation as Rust code to the stream
+    void writeRust(RustPrinterStream &);
+  }];
+}
+
 def Rust_RustMakeStructOp
     : Rust_Op<"make_struct", []> {
   let summary = "constructs a struct";
