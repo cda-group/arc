@@ -51,6 +51,7 @@ public:
   FunctionType convertFunctionSignature(Type, SignatureConversion &);
 
 protected:
+  Type convertEnumType(arc::types::EnumType type);
   Type convertFloatType(FloatType type);
   Type convertFunctionType(FunctionType type);
   Type convertIntegerType(IntegerType type);
@@ -604,6 +605,8 @@ private:
 
 RustTypeConverter::RustTypeConverter(MLIRContext *ctx)
     : Ctx(ctx), Dialect(ctx->getOrLoadDialect<rust::RustDialect>()) {
+  addConversion(
+      [&](arc::types::EnumType type) { return convertEnumType(type); });
   addConversion([&](FloatType type) { return convertFloatType(type); });
   addConversion([&](FunctionType type) { return convertFunctionType(type); });
   addConversion([&](IntegerType type) { return convertIntegerType(type); });
@@ -614,9 +617,19 @@ RustTypeConverter::RustTypeConverter(MLIRContext *ctx)
 
   // RustType is legal, so add a pass-through conversion.
   addConversion([](rust::types::RustType type) { return type; });
+  addConversion([](rust::types::RustEnumType type) { return type; });
   addConversion([](rust::types::RustStructType type) { return type; });
   addConversion([](rust::types::RustTensorType type) { return type; });
   addConversion([](rust::types::RustTupleType type) { return type; });
+}
+
+Type RustTypeConverter::convertEnumType(arc::types::EnumType type) {
+  SmallVector<rust::types::RustType::EnumVariantTy, 4> variants;
+  for (const auto &f : type.getVariants()) {
+    Type t = convertType(f.second);
+    variants.push_back(std::make_pair(f.first, t));
+  }
+  return rust::types::RustEnumType::get(Dialect, variants);
 }
 
 Type RustTypeConverter::convertFloatType(FloatType type) {
