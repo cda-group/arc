@@ -98,7 +98,7 @@ impl<'i> Display for Pretty<'i, mlir::Item, Context<'_>> {
         let Pretty(item, fmt) = self;
         match &item.kind {
             mlir::ItemKind::Fun(item)   => write!(f, "{}", item.pretty(fmt)),
-            mlir::ItemKind::Enum(item)  => write!(f, "{}", item.pretty(fmt)),
+            mlir::ItemKind::Enum(item)  => Ok(()),
             mlir::ItemKind::Task(item)  => write!(f, "{}", item.pretty(fmt)),
             mlir::ItemKind::State(item) => write!(f, "{}", item.pretty(fmt)),
         }

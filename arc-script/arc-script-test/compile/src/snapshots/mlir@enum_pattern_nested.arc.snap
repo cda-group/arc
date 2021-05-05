@@ -5,8 +5,8 @@ input_file: arc-script-test/compile/src/tests/expect_pass/enum_pattern_nested.ar
 
 ---
 module @toplevel {
-    !arc.enum<crate_Baz_Some : si32, crate_Baz_None : ()>
-    !arc.enum<crate_Foo_Bar : !arc.enum<crate_Baz_Some : si32, crate_Baz_None : ()>, crate_Foo_None : ()>
+    
+    
     func @crate_x_3() -> () {
         return 
     }

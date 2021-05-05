@@ -5,7 +5,7 @@ input_file: arc-script-test/compile/src/tests/expect_pass/enum_pattern.arc
 
 ---
 module @toplevel {
-    !arc.enum<crate_Opt_Some : si32, crate_Opt_None : ()>
+    
     func @crate_x_2() -> () {
         return 
     }
