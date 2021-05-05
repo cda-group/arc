@@ -323,6 +323,26 @@ private:
   RustTypeConverter &TypeConverter;
 };
 
+struct MakeEnumOpLowering : public ConversionPattern {
+  MakeEnumOpLowering(MLIRContext *ctx, RustTypeConverter &typeConverter)
+      : ConversionPattern(arc::MakeEnumOp::getOperationName(), 1, ctx),
+        TypeConverter(typeConverter) {}
+
+  LogicalResult
+  matchAndRewrite(Operation *op, ArrayRef<Value> operands,
+                  ConversionPatternRewriter &rewriter) const final {
+    MakeEnumOp o = cast<MakeEnumOp>(op);
+    Type retTy = TypeConverter.convertType(o.getType());
+    std::string variant_str(o.variant());
+    rewriter.replaceOpWithNewOp<rust::RustMakeEnumOp>(op, retTy, o.value(),
+                                                      variant_str);
+    return success();
+  };
+
+private:
+  RustTypeConverter &TypeConverter;
+};
+
 struct MakeTensorOpLowering : public ConversionPattern {
   MakeTensorOpLowering(MLIRContext *ctx, RustTypeConverter &typeConverter)
       : ConversionPattern(arc::MakeTensorOp::getOperationName(), 1, ctx),
@@ -863,6 +883,7 @@ void ArcToRustLoweringPass::runOnOperation() {
   patterns.insert<BlockResultOpLowering>(&getContext());
   patterns.insert<MakeTupleOpLowering>(&getContext(), typeConverter);
   patterns.insert<MakeTensorOpLowering>(&getContext(), typeConverter);
+  patterns.insert<MakeEnumOpLowering>(&getContext(), typeConverter);
   patterns.insert<MakeStructOpLowering>(&getContext(), typeConverter);
   patterns.insert<StructAccessOpLowering>(&getContext(), typeConverter);
   patterns.insert<StdCallOpLowering>(&getContext(), typeConverter);
