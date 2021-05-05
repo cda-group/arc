@@ -305,8 +305,7 @@ void RustFuncOp::writeRust(RustPrinterStream &PS) {
 }
 
 // Write this function as Rust code to os
-void RustExtFuncOp::writeRust(RustPrinterStream &PS) {
-}
+void RustExtFuncOp::writeRust(RustPrinterStream &PS) {}
 
 void RustReturnOp::writeRust(RustPrinterStream &PS) {
   if (getNumOperands())
