@@ -24,7 +24,7 @@ macro_rules! enwrap {
         ($variant($expr)).wrap()
     };
     ($enum:ident :: $variant:ident , $expr:expr) => {
-        paste::paste! {
+        arcorn::paste! {
             ([<Enum $enum>]::$variant($expr)).wrap()
         }
     };
@@ -53,7 +53,7 @@ macro_rules! is {
         }
     };
     ($enum:ident :: $variant:ident , $expr:expr) => {
-        paste::paste! {
+        arcorn::paste! {
             if let Some([<Enum $enum>]::$variant(_)) = &$expr.this {
                 true
             } else {
@@ -86,7 +86,7 @@ macro_rules! unwrap {
         }
     };
     ($enum:ident :: $variant:ident , $expr:expr) => {
-        paste::paste! {
+        arcorn::paste! {
             if let Some([<Enum $enum>]::$variant(v)) = $expr.this {
                 v
             } else {
