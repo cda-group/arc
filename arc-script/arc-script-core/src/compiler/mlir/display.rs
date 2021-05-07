@@ -98,7 +98,7 @@ impl<'i> Display for Pretty<'i, mlir::Item, Context<'_>> {
         let Pretty(item, fmt) = self;
         match &item.kind {
             mlir::ItemKind::Fun(item)   => write!(f, "{}", item.pretty(fmt)),
-            mlir::ItemKind::Enum(item)  => write!(f, "{}", item.pretty(fmt)),
+            mlir::ItemKind::Enum(item)  => Ok(()),
             mlir::ItemKind::Task(item)  => write!(f, "{}", item.pretty(fmt)),
             mlir::ItemKind::State(item) => write!(f, "{}", item.pretty(fmt)),
         }
@@ -339,26 +339,32 @@ impl<'i> Display for Pretty<'i, mlir::OpKind, Context<'_>> {
                     .values()
                     .map_pretty(|v, f| write!(f, "{}", v.tv.pretty(fmt)), ", "),
             ),
-            mlir::OpKind::Enwrap(x0, x1) => write!(
+            mlir::OpKind::Enwrap(x0, x1) =>
+	    // %s = arc.make_enum (%a : i32) as "a" : !arc.enum<a : i32>
+		write!(
                 f,
-                r#""arc.enwrap"({}) {{ variant = {} }} : {} ->"#,
-                x1.pretty(fmt),
+                r#"arc.make_enum ({} : {}) as "{}" : "#,
+                    x1.pretty(fmt),
+		    x1.tv.pretty(fmt),
+                    x0.pretty(fmt),
+		),
+            mlir::OpKind::Unwrap(x0, x1) =>
+	    // %r = arc.enum_access "b" in (%e : !arc.enum<a : i32, b : f32>) : f32
+		write!(
+                f,
+                r#"arc.enum_access "{}" in ({} : {}) : "#,
                 x0.pretty(fmt),
+                x1.pretty(fmt),
                 x1.tv.pretty(fmt),
             ),
-            mlir::OpKind::Unwrap(x0, x1) => write!(
+            mlir::OpKind::Is(x0, x1) =>
+		// %r = arc.enum_check (%e : !arc.enum<a : i32, b : f32>) is "a" : i1
+		write!(
                 f,
-                r#""arc.unwrap"({}) {{ variant = {} }} : {} ->"#,
+                r#"arc.enum_check ({} : {}) is "{}" : "#,
                 x1.pretty(fmt),
-                x0.pretty(fmt),
                 x1.tv.pretty(fmt),
-            ),
-            mlir::OpKind::Is(x0, x1) => write!(
-                f,
-                r#""arc.is"{} {{ variant = {} }} : {} ->"#,
-                x1.pretty(fmt),
                 x0.pretty(fmt),
-                x1.tv.pretty(fmt),
             ),
             mlir::OpKind::Tuple(xs) => write!(
                 f,

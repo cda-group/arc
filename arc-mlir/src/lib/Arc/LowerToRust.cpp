@@ -51,6 +51,7 @@ public:
   FunctionType convertFunctionSignature(Type, SignatureConversion &);
 
 protected:
+  Type convertEnumType(arc::types::EnumType type);
   Type convertFloatType(FloatType type);
   Type convertFunctionType(FunctionType type);
   Type convertIntegerType(IntegerType type);
@@ -322,6 +323,26 @@ private:
   RustTypeConverter &TypeConverter;
 };
 
+struct MakeEnumOpLowering : public ConversionPattern {
+  MakeEnumOpLowering(MLIRContext *ctx, RustTypeConverter &typeConverter)
+      : ConversionPattern(arc::MakeEnumOp::getOperationName(), 1, ctx),
+        TypeConverter(typeConverter) {}
+
+  LogicalResult
+  matchAndRewrite(Operation *op, ArrayRef<Value> operands,
+                  ConversionPatternRewriter &rewriter) const final {
+    MakeEnumOp o = cast<MakeEnumOp>(op);
+    Type retTy = TypeConverter.convertType(o.getType());
+    std::string variant_str(o.variant());
+    rewriter.replaceOpWithNewOp<rust::RustMakeEnumOp>(op, retTy, o.value(),
+                                                      variant_str);
+    return success();
+  };
+
+private:
+  RustTypeConverter &TypeConverter;
+};
+
 struct MakeTensorOpLowering : public ConversionPattern {
   MakeTensorOpLowering(MLIRContext *ctx, RustTypeConverter &typeConverter)
       : ConversionPattern(arc::MakeTensorOp::getOperationName(), 1, ctx),
@@ -582,6 +603,26 @@ private:
                                               "tanh", "ln",   "exp",  "sqrt"};
 };
 
+struct EnumAccessOpLowering : public ConversionPattern {
+  EnumAccessOpLowering(MLIRContext *ctx, RustTypeConverter &typeConverter)
+      : ConversionPattern(arc::EnumAccessOp::getOperationName(), 1, ctx),
+        TypeConverter(typeConverter) {}
+
+  LogicalResult
+  matchAndRewrite(Operation *op, ArrayRef<Value> operands,
+                  ConversionPatternRewriter &rewriter) const final {
+    EnumAccessOp o = cast<EnumAccessOp>(op);
+    Type retTy = TypeConverter.convertType(o.getType());
+    std::string variant_str(o.variant());
+    rewriter.replaceOpWithNewOp<rust::RustEnumAccessOp>(op, retTy, operands[0],
+                                                        variant_str);
+    return success();
+  };
+
+private:
+  RustTypeConverter &TypeConverter;
+};
+
 struct StructAccessOpLowering : public ConversionPattern {
   StructAccessOpLowering(MLIRContext *ctx, RustTypeConverter &typeConverter)
       : ConversionPattern(arc::StructAccessOp::getOperationName(), 1, ctx),
@@ -602,8 +643,30 @@ private:
   RustTypeConverter &TypeConverter;
 };
 
+struct EnumCheckOpLowering : public ConversionPattern {
+  EnumCheckOpLowering(MLIRContext *ctx, RustTypeConverter &typeConverter)
+      : ConversionPattern(arc::EnumCheckOp::getOperationName(), 1, ctx),
+        TypeConverter(typeConverter) {}
+
+  LogicalResult
+  matchAndRewrite(Operation *op, ArrayRef<Value> operands,
+                  ConversionPatternRewriter &rewriter) const final {
+    EnumCheckOp o = cast<EnumCheckOp>(op);
+    Type retTy = TypeConverter.convertType(o.getType());
+    std::string variant_str(o.variant());
+    rewriter.replaceOpWithNewOp<rust::RustEnumCheckOp>(op, retTy, o.value(),
+                                                       variant_str);
+    return success();
+  };
+
+private:
+  RustTypeConverter &TypeConverter;
+};
+
 RustTypeConverter::RustTypeConverter(MLIRContext *ctx)
     : Ctx(ctx), Dialect(ctx->getOrLoadDialect<rust::RustDialect>()) {
+  addConversion(
+      [&](arc::types::EnumType type) { return convertEnumType(type); });
   addConversion([&](FloatType type) { return convertFloatType(type); });
   addConversion([&](FunctionType type) { return convertFunctionType(type); });
   addConversion([&](IntegerType type) { return convertIntegerType(type); });
@@ -614,9 +677,19 @@ RustTypeConverter::RustTypeConverter(MLIRContext *ctx)
 
   // RustType is legal, so add a pass-through conversion.
   addConversion([](rust::types::RustType type) { return type; });
+  addConversion([](rust::types::RustEnumType type) { return type; });
   addConversion([](rust::types::RustStructType type) { return type; });
   addConversion([](rust::types::RustTensorType type) { return type; });
   addConversion([](rust::types::RustTupleType type) { return type; });
+}
+
+Type RustTypeConverter::convertEnumType(arc::types::EnumType type) {
+  SmallVector<rust::types::RustType::EnumVariantTy, 4> variants;
+  for (const auto &f : type.getVariants()) {
+    Type t = convertType(f.second);
+    variants.push_back(std::make_pair(f.first, t));
+  }
+  return rust::types::RustEnumType::get(Dialect, variants);
 }
 
 Type RustTypeConverter::convertFloatType(FloatType type) {
@@ -850,7 +923,10 @@ void ArcToRustLoweringPass::runOnOperation() {
   patterns.insert<BlockResultOpLowering>(&getContext());
   patterns.insert<MakeTupleOpLowering>(&getContext(), typeConverter);
   patterns.insert<MakeTensorOpLowering>(&getContext(), typeConverter);
+  patterns.insert<MakeEnumOpLowering>(&getContext(), typeConverter);
   patterns.insert<MakeStructOpLowering>(&getContext(), typeConverter);
+  patterns.insert<EnumAccessOpLowering>(&getContext(), typeConverter);
+  patterns.insert<EnumCheckOpLowering>(&getContext(), typeConverter);
   patterns.insert<StructAccessOpLowering>(&getContext(), typeConverter);
   patterns.insert<StdCallOpLowering>(&getContext(), typeConverter);
 
