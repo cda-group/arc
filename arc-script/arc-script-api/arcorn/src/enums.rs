@@ -13,18 +13,21 @@
 /// use arc_script::arcorn;
 /// #[arcorn::rewrite]
 /// enum Foo {
-///     FooBar(i32),
-///     FooBaz(i32)
+///     Bar(i32),
+///     Baz(i32)
 /// }
-/// let foo = arcorn::enwrap!(FooBar, 5);
+/// let foo = arcorn::enwrap!(Foo::Bar, 5);
 /// ```
 #[macro_export]
 macro_rules! enwrap {
-    {
-        $variant:ident , $expr:expr
-    } => {
+    ($variant:ident , $expr:expr) => {
         ($variant($expr)).wrap()
-    }
+    };
+    ($enum:ident :: $variant:ident , $expr:expr) => {
+        paste::paste! {
+            ([<Enum $enum>]::$variant($expr)).wrap()
+        }
+    };
 }
 
 /// Returns `true` if enum is a certain variant, else `false`.
@@ -33,24 +36,31 @@ macro_rules! enwrap {
 /// use arc_script::arcorn;
 /// #[arcorn::rewrite]
 /// enum Foo {
-///     FooBar(i32),
-///     FooBaz(i32)
+///     Bar(i32),
+///     Baz(i32)
 /// }
 ///
-/// let foo = arcorn::enwrap!(FooBar, 5);
-/// assert!(arcorn::is!(FooBar, foo));
+/// let foo = arcorn::enwrap!(Foo::Bar, 5);
+/// assert!(arcorn::is!(Foo::Bar, foo));
 /// ```
 #[macro_export]
 macro_rules! is {
-    {
-        $variant:ident , $expr:expr
-    } => {
+    ($variant:ident , $expr:expr) => {
         if let Some($variant(_)) = &$expr.this {
             true
         } else {
             false
         }
-    }
+    };
+    ($enum:ident :: $variant:ident , $expr:expr) => {
+        paste::paste! {
+            if let Some([<Enum $enum>]::$variant(_)) = &$expr.this {
+                true
+            } else {
+                false
+            }
+        }
+    };
 }
 
 /// Unwraps a value out of an enum-variant.
@@ -58,23 +68,30 @@ macro_rules! is {
 /// ```
 /// use arc_script::arcorn;
 /// #[arcorn::rewrite]
-/// enum FooEnum {
-///     FooBar(i32),
-///     FooBaz(i32)
+/// enum Foo {
+///     Bar(i32),
+///     Baz(i32)
 /// }
 ///
-/// let foo = arcorn::enwrap!(FooBar, 5);
-/// let bar = arcorn::unwrap!(FooBar, foo);
+/// let foo = arcorn::enwrap!(Foo::Bar, 5);
+/// let bar = arcorn::unwrap!(Foo::Bar, foo);
 /// ```
 #[macro_export]
 macro_rules! unwrap {
-    {
-        $variant:ident , $expr:expr
-    } => {
+    ($variant:ident , $expr:expr) => {
         if let Some($variant(v)) = $expr.this {
             v
         } else {
             unreachable!()
         }
-    }
+    };
+    ($enum:ident :: $variant:ident , $expr:expr) => {
+        paste::paste! {
+            if let Some([<Enum $enum>]::$variant(v)) = $expr.this {
+                v
+            } else {
+                unreachable!()
+            }
+        }
+    };
 }
