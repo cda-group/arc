@@ -95,7 +95,7 @@ impl Builder {
                 );
                 panic!("{}", std::str::from_utf8(sink.as_slice()).unwrap())
             }
-            Ok(val) => {
+            Ok(report) => {
                 // Path to /a/b/c/my-project/target/build/my-project-xxx/out/src/x/y/z/main.rs
                 let mut output_path = input_path;
                 output_path.set_extension("rs");
@@ -104,11 +104,15 @@ impl Builder {
 
                 let output_dir = output_path.parent().unwrap();
                 fs::create_dir_all(output_dir).unwrap();
+                let mut file = fs::File::create(output_path).unwrap();
 
-                fs::File::create(output_path)
-                    .unwrap()
-                    .write_all(sink.as_slice())
-                    .unwrap();
+                if report.is_ok() {
+                    file.write_all(sink.as_slice()).unwrap();
+                } else {
+                    file.write(r##"compile_error!(r#"Compilation Failed: "##.as_bytes()).unwrap();
+                    file.write_all(sink.as_slice()).unwrap();
+                    file.write(r##""#);"##.as_bytes()).unwrap();
+                }
             }
         }
     }
