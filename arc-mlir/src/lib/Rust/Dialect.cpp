@@ -200,8 +200,7 @@ RustPrinterStream &operator<<(RustPrinterStream &os, const Type &type) {
     t.printAsRust(os);
   else if (auto t = type.dyn_cast<RustEnumType>()) {
     os.print(t);
-  }
-  else
+  } else
     os << "<not-a-rust-type>";
   return os;
 }
@@ -326,8 +325,8 @@ void RustUnaryOp::writeRust(RustPrinterStream &PS) {
 void RustMakeEnumOp::writeRust(RustPrinterStream &PS) {
   auto r = getResult();
   RustEnumType et = r.getType().cast<RustEnumType>();
-  PS << "let " << r << ":" << et << " = arcorn::enwrap!(" << variant() << ", "
-     << value() << ");\n";
+  PS << "let " << r << ":" << et << " = arcorn::enwrap!(" << et
+     << "::" << variant() << ", " << value() << ");\n";
 }
 
 void RustMakeStructOp::writeRust(RustPrinterStream &PS) {
@@ -378,14 +377,16 @@ void RustCompOp::writeRust(RustPrinterStream &PS) {
 
 void RustEnumAccessOp::writeRust(RustPrinterStream &PS) {
   auto r = getResult();
-  PS << "let " << r << ":" << r.getType() << " = arcorn::unwrap!("
-     << getVariant() << ", " << theEnum() << ");\n";
+  RustEnumType et = theEnum().getType().cast<RustEnumType>();
+  PS << "let " << r << ":" << r.getType() << " = arcorn::unwrap!(" << et
+     << "::" << getVariant() << ", " << theEnum() << ");\n";
 }
 
 void RustEnumCheckOp::writeRust(RustPrinterStream &PS) {
   auto r = getResult();
-  PS << "let " << r << ":" << r.getType() << " = arcorn::is!(" << getVariant()
-     << ", " << theEnum() << ");\n";
+  RustEnumType et = theEnum().getType().cast<RustEnumType>();
+  PS << "let " << r << ":" << r.getType() << " = arcorn::is!(" << et
+     << "::" << getVariant() << ", " << theEnum() << ");\n";
 }
 
 void RustFieldAccessOp::writeRust(RustPrinterStream &PS) {

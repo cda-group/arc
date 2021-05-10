@@ -4,19 +4,20 @@ mod tests {
   use crate::defs::*;
   #[test]
   fn it_works() {
-    assert_eq!(arcorn::is!(a0, ok0()), true);
-    assert_eq!(arcorn::is!(b1, ok1()), true);
-    assert_eq!(arcorn::is!(a2, ok2()), true);
-    assert_eq!(arcorn::is!(a3, ok3()), true);
-    assert_eq!(arcorn::is!(b4, ok4()), true);
+    assert_eq!(arcorn::is!(Enum1ai321bf32End::a, ok0()), true);
+    assert_eq!(arcorn::is!(Enum1ai321bf32End::b, ok1()), true);
+    assert_eq!(arcorn::is!(Enum1ai32End::a, ok2()), true);
+    assert_eq!(arcorn::is!(Enum1ai321bEnum1ai32EndEnd::a, ok3()), true);
+    assert_eq!(arcorn::is!(Enum1ai321bEnum1ai32EndEnd::b, ok4()), true);
     let c0 : i32 = 17;
-    let tmp0 : Enum2a5i322b5f32End = arcorn::enwrap!(a5, c0);
+    let tmp0 :Enum1ai321bf32End  = arcorn::enwrap!(Enum1ai321bf32End::a, c0);
     let c1 : f32 = 17.0;
-    let tmp1 : Enum2a6i322b6f32End = arcorn::enwrap!(b6, c1);
+    let tmp1 : Enum1ai321bf32End = arcorn::enwrap!(Enum1ai321bf32End::b, c1);
+    assert_eq!(access0(tmp0), c0);
     assert_eq!(access1(tmp1), c1);
 
-    let c2 : Enum2a7i322b7f32End = arcorn::enwrap!(b7, 3.14);
-    let c3 : Enum2a7i322b7f32End = arcorn::enwrap!(a7, 3);
+    let c2 : Enum1ai321bf32End = arcorn::enwrap!(Enum1ai321bf32End::b, 3.14);
+    let c3 : Enum1ai321bf32End = arcorn::enwrap!(Enum1ai321bf32End::a, 3);
     assert_eq!(check0(c2), false);
     assert_eq!(check0(c3), true);
   }
