@@ -62,6 +62,7 @@ void RustDialect::initialize() {
   addTypes<RustType>();
   addTypes<RustEnumType>();
   addTypes<RustStructType>();
+  addTypes<RustStreamType>();
   addTypes<RustTensorType>();
   addTypes<RustTupleType>();
 
@@ -100,6 +101,8 @@ Type RustDialect::parseType(DialectAsmParser &parser) const {
 
 void RustDialect::printType(Type type, DialectAsmPrinter &os) const {
   if (auto t = type.dyn_cast<RustType>())
+    t.print(os);
+  else if (auto t = type.dyn_cast<RustStreamType>())
     t.print(os);
   else if (auto t = type.dyn_cast<RustStructType>())
     t.print(os);
@@ -193,6 +196,8 @@ RustPrinterStream &operator<<(RustPrinterStream &os, const Type &type) {
   if (auto t = type.dyn_cast<RustType>())
     os.print(t.getRustType());
   else if (auto t = type.dyn_cast<RustStructType>())
+    os.print(t);
+  else if (auto t = type.dyn_cast<RustStreamType>())
     os.print(t);
   else if (auto t = type.dyn_cast<RustTensorType>())
     t.printAsRust(os);
@@ -486,6 +491,8 @@ namespace types {
 static std::string getTypeString(Type type) {
   if (auto t = type.dyn_cast<RustStructType>())
     return t.getRustType();
+  if (auto t = type.dyn_cast<RustStreamType>())
+    return t.getRustType();
   if (auto t = type.dyn_cast<RustTupleType>())
     return t.getRustType();
   if (auto t = type.dyn_cast<RustTensorType>())
@@ -498,6 +505,8 @@ static std::string getTypeString(Type type) {
 }
 
 static std::string getTypeSignature(Type type) {
+  if (auto t = type.dyn_cast<RustStreamType>())
+    return t.getSignature();
   if (auto t = type.dyn_cast<RustStructType>())
     return t.getSignature();
   if (auto t = type.dyn_cast<RustTupleType>())
@@ -721,6 +730,108 @@ std::string RustEnumType::getSignature() const {
 }
 
 std::string RustEnumTypeStorage::getSignature() const { return signature; }
+
+//===----------------------------------------------------------------------===//
+// RustStreamType
+//===----------------------------------------------------------------------===//
+
+struct RustStreamTypeStorage : public TypeStorage {
+  RustStreamTypeStorage(Type item, unsigned id) : item(item), id(id) {
+    std::string str;
+    llvm::raw_string_ostream s(str);
+    s << "Stream";
+    s << getTypeSignature(item);
+    s << "End";
+    signature = s.str();
+  }
+
+  Type item;
+  unsigned id;
+
+  using KeyTy = Type;
+
+  bool operator==(const KeyTy &key) const { return key == KeyTy(item); }
+
+  static llvm::hash_code hashKey(const KeyTy &key) {
+    return llvm::hash_combine(key);
+  }
+
+  static RustStreamTypeStorage *construct(TypeStorageAllocator &allocator,
+                                          const KeyTy &key) {
+    return new (allocator.allocate<RustStreamTypeStorage>())
+        RustStreamTypeStorage(key, idCounter++);
+  }
+
+  RustPrinterStream &printAsRust(RustPrinterStream &os) const;
+  raw_ostream &printAsRustNamedType(raw_ostream &os) const;
+  void print(DialectAsmPrinter &os) const { os << getRustType(); }
+
+  std::string getRustType() const;
+  unsigned getStreamTypeId() const;
+
+  void emitNestedTypedefs(rust::RustPrinterStream &os) const;
+  std::string getSignature() const;
+
+private:
+  static unsigned idCounter;
+  std::string signature;
+};
+
+unsigned RustStreamTypeStorage::idCounter = 0;
+
+RustStreamType RustStreamType::get(RustDialect *dialect, Type item) {
+  mlir::MLIRContext *ctx = item.getContext();
+  return Base::get(ctx, item);
+}
+
+void RustStreamType::print(DialectAsmPrinter &os) const {
+  getImpl()->print(os);
+}
+
+RustPrinterStream &RustStreamType::printAsRust(RustPrinterStream &os) const {
+  return getImpl()->printAsRust(os);
+}
+
+std::string RustStreamType::getRustType() const {
+  return getImpl()->getRustType();
+}
+
+unsigned RustStreamTypeStorage::getStreamTypeId() const { return id; }
+
+std::string RustStreamTypeStorage::getRustType() const { return signature; }
+
+RustPrinterStream &
+RustStreamTypeStorage::printAsRust(RustPrinterStream &ps) const {
+
+  llvm::raw_ostream &os = ps.getNamedTypesStream();
+  // First ensure that any structs used by this struct are defined
+  emitNestedTypedefs(ps);
+
+  os << "<a stream should not be output as rust>\n";
+  return ps;
+}
+
+void RustStreamType::emitNestedTypedefs(rust::RustPrinterStream &ps) const {
+  return getImpl()->emitNestedTypedefs(ps);
+}
+
+void RustStreamTypeStorage::emitNestedTypedefs(
+    rust::RustPrinterStream &ps) const {
+  // XXXX?
+}
+
+raw_ostream &
+RustStreamTypeStorage::printAsRustNamedType(raw_ostream &os) const {
+
+  os << signature;
+  return os;
+}
+
+std::string RustStreamType::getSignature() const {
+  return getImpl()->getSignature();
+}
+
+std::string RustStreamTypeStorage::getSignature() const { return signature; }
 
 //===----------------------------------------------------------------------===//
 // RustStructType

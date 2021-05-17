@@ -56,6 +56,10 @@ class Rust_Op<string mnemonic, list<OpTrait> traits = []>
     : Op<Rust_Dialect, mnemonic, traits>;
 
 def AnyRustType : Type<CPred<"$_self.isa<RustType>() || $_self.isa<RustStructType>() || $_self.isa<RustTupleType>() || $_self.isa<RustTensorType>() || $_self.isa<RustEnumType>() || isRustFunctionType($_self)">, "any RustType">;
+
+def AnyRustStream :
+    Type<CPred<"$_self.isa<RustStreamType>()">, "any RustStream">;
+
 def AnyRustStruct :
     Type<CPred<"$_self.isa<RustStructType>()">, "any RustStruct">;
 

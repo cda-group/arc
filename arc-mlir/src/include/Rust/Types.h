@@ -41,6 +41,7 @@ namespace types {
 
 struct RustTypeStorage;
 struct RustEnumTypeStorage;
+struct RustStreamTypeStorage;
 struct RustStructTypeStorage;
 struct RustTupleTypeStorage;
 struct RustTensorTypeStorage;
@@ -68,6 +69,20 @@ public:
   typedef std::pair<mlir::StringAttr, Type> EnumVariantTy;
   typedef std::pair<mlir::StringAttr, Type> StructFieldTy;
 
+  std::string getSignature() const;
+};
+
+class RustStreamType
+    : public Type::TypeBase<RustStreamType, Type, RustStreamTypeStorage> {
+public:
+  using Base::Base;
+
+  void print(DialectAsmPrinter &os) const;
+  rust::RustPrinterStream &printAsRust(rust::RustPrinterStream &os) const;
+  std::string getRustType() const;
+
+  static RustStreamType get(RustDialect *dialect, Type item);
+  void emitNestedTypedefs(rust::RustPrinterStream &ps) const;
   std::string getSignature() const;
 };
 
