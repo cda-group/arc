@@ -710,6 +710,19 @@ private:
   RustTypeConverter &TypeConverter;
 };
 
+struct EmitOpLowering : public ConversionPattern {
+  EmitOpLowering(MLIRContext *ctx, RustTypeConverter &typeConverter)
+      : ConversionPattern(arc::EmitOp::getOperationName(), 1, ctx) {}
+
+  LogicalResult
+  matchAndRewrite(Operation *op, ArrayRef<Value> operands,
+                  ConversionPatternRewriter &rewriter) const final {
+    EmitOp o = cast<EmitOp>(op);
+    rewriter.replaceOpWithNewOp<rust::RustEmitOp>(op, o.value(), o.stream());
+    return success();
+  };
+};
+
 RustTypeConverter::RustTypeConverter(MLIRContext *ctx)
     : Ctx(ctx), Dialect(ctx->getOrLoadDialect<rust::RustDialect>()) {
   addConversion(
@@ -981,6 +994,7 @@ void ArcToRustLoweringPass::runOnOperation() {
   patterns.insert<MakeStructOpLowering>(&getContext(), typeConverter);
   patterns.insert<EnumAccessOpLowering>(&getContext(), typeConverter);
   patterns.insert<EnumCheckOpLowering>(&getContext(), typeConverter);
+  patterns.insert<EmitOpLowering>(&getContext(), typeConverter);
   patterns.insert<StructAccessOpLowering>(&getContext(), typeConverter);
   patterns.insert<StdCallOpLowering>(&getContext(), typeConverter);
   patterns.insert<StdCallIndirectOpLowering>(&getContext(), typeConverter);
