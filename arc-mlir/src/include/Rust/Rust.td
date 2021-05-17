@@ -433,6 +433,19 @@ def Rust_RustCompOp : Rust_Op<"compop", [SameTypeOperands]> {
   }];
 }
 
+def Rust_RustEmitOp
+    : Rust_Op<"emit", []> {
+  let summary = "Emits data on a stream";
+  let description = [{
+    "rust.enum" constructs an enum
+  }];
+  let arguments = (ins AnyRustType:$value, AnyRustStream:$stream);
+  let extraClassDeclaration = [{
+    // Write this operation as Rust code to the stream
+    void writeRust(RustPrinterStream &);
+  }];
+}
+
 def Rust_RustBlockResultOp
     : Rust_Op<"block.result",
               [HasParent<"RustIfOp">, Terminator]> {

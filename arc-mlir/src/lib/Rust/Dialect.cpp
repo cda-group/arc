@@ -265,6 +265,8 @@ static RustPrinterStream &writeRust(Operation &operation,
     op.writeRust(PS);
   else if (RustTupleOp op = dyn_cast<RustTupleOp>(operation))
     op.writeRust(PS);
+  else if (RustEmitOp op = dyn_cast<RustEmitOp>(operation))
+    op.writeRust(PS);
   else {
     operation.emitError("Unsupported operation");
   }
@@ -402,6 +404,10 @@ void RustCompOp::writeRust(RustPrinterStream &PS) {
   PS << "let ";
   PS.printAsArg(r) << ":" << r.getType() << " = " << LHS() << " "
                    << getOperator() << " " << RHS() << ";\n";
+}
+
+void RustEmitOp::writeRust(RustPrinterStream &PS) {
+  PS << "self.emit(" << value() << ");\n";
 }
 
 void RustEnumAccessOp::writeRust(RustPrinterStream &PS) {
