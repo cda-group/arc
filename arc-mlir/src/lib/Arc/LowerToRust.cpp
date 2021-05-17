@@ -57,6 +57,7 @@ protected:
   Type convertIntegerType(IntegerType type);
   Type convertTensorType(RankedTensorType type);
   Type convertTupleType(TupleType type);
+  Type convertStreamType(arc::types::StreamType type);
   Type convertStructType(arc::types::StructType type);
 };
 
@@ -719,11 +720,14 @@ RustTypeConverter::RustTypeConverter(MLIRContext *ctx)
   addConversion([&](RankedTensorType type) { return convertTensorType(type); });
   addConversion([&](TupleType type) { return convertTupleType(type); });
   addConversion(
+      [&](arc::types::StreamType type) { return convertStreamType(type); });
+  addConversion(
       [&](arc::types::StructType type) { return convertStructType(type); });
 
   // RustType is legal, so add a pass-through conversion.
   addConversion([](rust::types::RustType type) { return type; });
   addConversion([](rust::types::RustEnumType type) { return type; });
+  addConversion([](rust::types::RustStreamType type) { return type; });
   addConversion([](rust::types::RustStructType type) { return type; });
   addConversion([](rust::types::RustTensorType type) { return type; });
   addConversion([](rust::types::RustTupleType type) { return type; });
@@ -769,6 +773,10 @@ Type RustTypeConverter::convertIntegerType(IntegerType type) {
   if (auto t = type.dyn_cast<IntegerType>())
     return rust::types::RustType::getIntegerTy(Dialect, t);
   return emitError(UnknownLoc::get(Ctx), "unsupported type"), Type();
+}
+
+Type RustTypeConverter::convertStreamType(arc::types::StreamType type) {
+  return rust::types::RustStreamType::get(Dialect, convertType(type.getType()));
 }
 
 Type RustTypeConverter::convertStructType(arc::types::StructType type) {
