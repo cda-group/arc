@@ -34,9 +34,8 @@ checksum = "dabe5a181f83789739c194cbe5a897dde195078fac08568d09221fd6137a7ba8"
 
 [[package]]
 name = "arctime"
-version = "0.1.0"
+version = "0.0.0"
 dependencies = [
- "arctime_macros",
  "arrayvec",
  "coz",
  "hierarchical_hash_wheel_timer",
@@ -45,15 +44,6 @@ dependencies = [
  "slog",
  "time 0.2.26",
  "uuid",
-]
-
-[[package]]
-name = "arctime_macros"
-version = "0.0.0"
-dependencies = [
- "proc-macro2",
- "quote",
- "syn",
 ]
 
 [[package]]

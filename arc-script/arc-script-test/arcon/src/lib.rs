@@ -9,17 +9,17 @@ use data::*;
 
 use arcon::prelude::*;
 
-use arcorn::state::ArcMap;
-use arcorn::state::ArcMapOps;
-use arcorn::state::ArcRef;
-use arcorn::state::ArcRefOps;
-use arcorn::state::ArcSet;
-use arcorn::state::ArcSetOps;
-use arcorn::state::ArcVec;
-use arcorn::state::ArcVecOps;
+use arc_script::arcorn::state::ArcMap;
+use arc_script::arcorn::state::ArcMapOps;
+use arc_script::arcorn::state::ArcRef;
+use arc_script::arcorn::state::ArcRefOps;
+use arc_script::arcorn::state::ArcSet;
+use arc_script::arcorn::state::ArcSetOps;
+use arc_script::arcorn::state::ArcVec;
+use arc_script::arcorn::state::ArcVecOps;
 
-use arcorn::state::ArcKey;
-use arcorn::state::ArcValue;
+use arc_script::arcorn::state::ArcKey;
+use arc_script::arcorn::state::ArcValue;
 
 use std::collections::HashMap as Map;
 use std::collections::HashSet as Set;

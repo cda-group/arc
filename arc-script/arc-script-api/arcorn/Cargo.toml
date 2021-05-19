@@ -6,18 +6,25 @@ edition = "2018"
 description = "A bridge between MLIR and Arcon."
 license = "MIT"
 
+[features]
+backend_arcon   = ["arcorn-macros/backend_arcon", "arcon", "arcon_macros", "prost"]
+backend_arctime = ["arcorn-macros/backend_arctime", "arctime"]
+default         = ["backend_arctime"]
+
 [dependencies]
 arcorn-macros = { version = "0.0.0", path = "./macros" }
 
-arcon         = { version = "0.1.3", git = "https://github.com/segeljakt/arcon" }
-arcon_macros  = { version = "0.1.3", git = "https://github.com/segeljakt/arcon" }
+cfg-if        = { version = "1.0.0" }
 shrinkwraprs  = { version = "0.3.0" }
-prost         = { version = "0.7.0" }
 derive_more   = { version = "0.99.11" }
 paste         = { version = "1.0.4" }
 half          = { version = "1.7.1", features = ["num-traits"] }
 
+arcon         = { optional = true, version = "0.1.3", git = "https://github.com/segeljakt/arcon" }
+arcon_macros  = { optional = true, version = "0.1.3", git = "https://github.com/segeljakt/arcon" }
+prost         = { optional = true, version = "0.7.0" }
+
+arctime       = { optional = true, version = "0.0.0", path = "../../../arctime" }
+
 [dev-dependencies]
-arcon         = { git = "https://github.com/segeljakt/arcon" }
-prost         = { version = "0.7.0" }
-arc-script    = { version = "=0.0.0", path = "../../" }
+arc-script    = { version = "0.0.0", path = "../../../arc-script" }

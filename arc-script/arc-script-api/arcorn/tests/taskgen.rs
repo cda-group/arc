@@ -3,9 +3,7 @@
 #![allow(unreachable_code)]
 #![allow(unused_variables)]
 
-use arctime::macros::rewrite;
-
-#[rewrite(handler = "handler")]
+#[arc_script::arcorn::rewrite(handler = "handler")]
 mod my_task {
     struct MyTask {
         state_variable: String,

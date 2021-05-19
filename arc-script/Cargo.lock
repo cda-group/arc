@@ -69,6 +69,8 @@ dependencies = [
  "arcon 0.1.3",
  "arcon_macros",
  "arcorn-macros",
+ "arctime",
+ "cfg-if 1.0.0",
  "derive_more",
  "half",
  "paste",
@@ -271,7 +273,7 @@ checksum = "dabe5a181f83789739c194cbe5a897dde195078fac08568d09221fd6137a7ba8"
 name = "arcon"
 version = "0.1.0"
 dependencies = [
- "arc-script-arcorn",
+ "arc-script",
  "arcon 0.1.3",
  "prost",
 ]
@@ -291,7 +293,7 @@ dependencies = [
  "fxhash",
  "hierarchical_hash_wheel_timer",
  "hocon",
- "kompact",
+ "kompact 0.10.1 (git+https://github.com/kompics/kompact.git?branch=master)",
  "num_cpus",
  "prost",
  "prost-types",
@@ -344,10 +346,25 @@ dependencies = [
 name = "arcorn-macros"
 version = "0.0.0"
 dependencies = [
+ "cfg-if 1.0.0",
  "indexmap",
  "proc-macro2",
  "quote",
  "syn",
+]
+
+[[package]]
+name = "arctime"
+version = "0.0.0"
+dependencies = [
+ "arrayvec 0.7.0",
+ "coz",
+ "hierarchical_hash_wheel_timer",
+ "kompact 0.10.1 (git+https://github.com/kompics/kompact)",
+ "paste",
+ "slog",
+ "time 0.2.26",
+ "uuid",
 ]
 
 [[package]]
@@ -382,6 +399,12 @@ name = "arrayvec"
 version = "0.5.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "23b62fc65de8e4e7f52534fb52b0f3ed04746ae267519eef2a83941e8085068b"
+
+[[package]]
+name = "arrayvec"
+version = "0.7.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "5a2f58b0bb10c380af2b26e57212856b8c9a59e0925b4c20f4a174a49734eaf7"
 
 [[package]]
 name = "as_num"
@@ -698,7 +721,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "afa748e348ad3be8263be728124b24a24f268266f6f5d58af9d75f6a40b5c587"
 dependencies = [
  "arrayref",
- "arrayvec",
+ "arrayvec 0.5.2",
  "constant_time_eq",
 ]
 
@@ -940,6 +963,16 @@ name = "countme"
 version = "2.0.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "328b822bdcba4d4e402be8d9adb6eebf269f969f8eadef977a553ff3c4fbcb58"
+
+[[package]]
+name = "coz"
+version = "0.1.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "cef55b3fe2f5477d59e12bc792e8b3c95a25bd099eadcfae006ecea136de76e2"
+dependencies = [
+ "libc",
+ "once_cell",
+]
 
 [[package]]
 name = "crc32fast"
@@ -1923,8 +1956,43 @@ dependencies = [
  "hierarchical_hash_wheel_timer",
  "hocon",
  "iovec",
- "kompact-actor-derive",
- "kompact-component-derive",
+ "kompact-actor-derive 0.10.1 (git+https://github.com/kompics/kompact.git?branch=master)",
+ "kompact-component-derive 0.10.1 (git+https://github.com/kompics/kompact.git?branch=master)",
+ "log",
+ "mio",
+ "num_cpus",
+ "oncemutex",
+ "owning_ref",
+ "rustc-hash",
+ "rustc_version",
+ "serde",
+ "slog",
+ "slog-async",
+ "slog-term",
+ "synchronoise",
+ "uuid",
+]
+
+[[package]]
+name = "kompact"
+version = "0.10.1"
+source = "git+https://github.com/kompics/kompact#bb1d33c9bd406fe356b5288d9dd682f65b54265b"
+dependencies = [
+ "arc-swap",
+ "as_num",
+ "async-std",
+ "bitfields",
+ "bytes",
+ "crossbeam-channel 0.4.4",
+ "crossbeam-queue 0.2.3",
+ "crossbeam-utils 0.7.2",
+ "executors",
+ "futures",
+ "hierarchical_hash_wheel_timer",
+ "hocon",
+ "iovec",
+ "kompact-actor-derive 0.10.1 (git+https://github.com/kompics/kompact)",
+ "kompact-component-derive 0.10.1 (git+https://github.com/kompics/kompact)",
  "log",
  "mio",
  "num_cpus",
@@ -1951,9 +2019,29 @@ dependencies = [
 ]
 
 [[package]]
+name = "kompact-actor-derive"
+version = "0.10.1"
+source = "git+https://github.com/kompics/kompact#bb1d33c9bd406fe356b5288d9dd682f65b54265b"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "syn",
+]
+
+[[package]]
 name = "kompact-component-derive"
 version = "0.10.1"
 source = "git+https://github.com/kompics/kompact.git?branch=master#bc4b79c4e88effb70cb92344009514981261cb25"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "syn",
+]
+
+[[package]]
+name = "kompact-component-derive"
+version = "0.10.1"
+source = "git+https://github.com/kompics/kompact#bb1d33c9bd406fe356b5288d9dd682f65b54265b"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -2022,7 +2110,7 @@ version = "0.7.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "21f866863575d0e1d654fbeeabdc927292fdf862873dc3c96c6f753357e13374"
 dependencies = [
- "arrayvec",
+ "arrayvec 0.5.2",
  "bitflags",
  "cfg-if 1.0.0",
  "ryu",
@@ -3462,6 +3550,7 @@ checksum = "08a8cbfbf47955132d0202d1662f49b2423ae35862aee471f3ba4b133358f372"
 dependencies = [
  "const_fn",
  "libc",
+ "rand 0.7.3",
  "standback",
  "stdweb",
  "time-macros",

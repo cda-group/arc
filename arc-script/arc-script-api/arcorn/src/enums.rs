@@ -10,13 +10,12 @@
 /// Enwraps a value into an enum-variant.
 ///
 /// ```
-/// use arc_script::arcorn;
-/// #[arcorn::rewrite]
+/// #[arc_script::arcorn::rewrite]
 /// enum Foo {
 ///     Bar(i32),
 ///     Baz(i32)
 /// }
-/// let foo = arcorn::enwrap!(Foo::Bar, 5);
+/// let foo = arc_script::arcorn::enwrap!(Bar, 5);
 /// ```
 #[macro_export]
 macro_rules! enwrap {
@@ -33,15 +32,14 @@ macro_rules! enwrap {
 /// Returns `true` if enum is a certain variant, else `false`.
 ///
 /// ```
-/// use arc_script::arcorn;
-/// #[arcorn::rewrite]
+/// #[arc_script::arcorn::rewrite]
 /// enum Foo {
 ///     Bar(i32),
 ///     Baz(i32)
 /// }
 ///
-/// let foo = arcorn::enwrap!(Foo::Bar, 5);
-/// assert!(arcorn::is!(Foo::Bar, foo));
+/// let foo = arc_script::arcorn::enwrap!(Bar, 5);
+/// assert!(arc_script::arcorn::is!(Bar, foo));
 /// ```
 #[macro_export]
 macro_rules! is {
@@ -66,15 +64,14 @@ macro_rules! is {
 /// Unwraps a value out of an enum-variant.
 ///
 /// ```
-/// use arc_script::arcorn;
-/// #[arcorn::rewrite]
-/// enum Foo {
+/// #[arc_script::arcorn::rewrite]
+/// enum FooEnum {
 ///     Bar(i32),
 ///     Baz(i32)
 /// }
 ///
-/// let foo = arcorn::enwrap!(Foo::Bar, 5);
-/// let bar = arcorn::unwrap!(Foo::Bar, foo);
+/// let foo = arc_script::arcorn::enwrap!(Bar, 5);
+/// let bar = arc_script::arcorn::unwrap!(Bar, foo);
 /// ```
 #[macro_export]
 macro_rules! unwrap {

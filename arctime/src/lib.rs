@@ -39,7 +39,3 @@ pub mod prelude {
     pub use std::marker::PhantomData;
     pub use std::sync::Arc;
 }
-
-pub mod macros {
-    pub use arctime_macros::rewrite;
-}

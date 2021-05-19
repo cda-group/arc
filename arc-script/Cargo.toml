@@ -26,7 +26,10 @@ name = "arc_script"
 path = "src/lib.rs"
 
 [features]
-proc = ["arc-script-include/proc"]
+proc            = ["arc-script-include/proc"]
+backend_arcon   = ["arc-script-arcorn/backend_arcon"]
+backend_arctime = ["arc-script-arcorn/backend_arctime"]
+default         = ["backend_arctime"]
 
 [dependencies]
 arc-script-include = { version = "=0.0.0", path = "arc-script-api/include" }
