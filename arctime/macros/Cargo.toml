@@ -1,0 +1,12 @@
+[package]
+name = "arctime_macros"
+version = "0.0.0"
+edition = "2018"
+
+[dependencies]
+syn = { version = "1.0.71", features = ["full"] }
+quote = "1.0.9"
+proc-macro2 = "1.0.26"
+
+[lib]
+proc-macro = true
