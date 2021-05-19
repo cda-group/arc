@@ -61,6 +61,8 @@ class RustPrinterStream {
   std::map<std::string, std::string> CrateDependencies;
   std::map<std::string, std::string> CrateDirectives;
 
+  DenseMap<Value, std::string> ValueAliases;
+
   std::string Includefile;
 
 public:
@@ -106,7 +108,16 @@ public:
 
   llvm::raw_ostream &getConstantsStream() { return Constants; }
 
+  void addAlias(Value v, std::string identifier) {
+    ValueAliases[v] = identifier;
+  }
+
+  void clearAliases() { ValueAliases.clear(); }
+
   std::string get(Value v) {
+    auto alias = ValueAliases.find(v);
+    if (alias != ValueAliases.end())
+      return alias->second;
     auto found = Value2ID.find(v);
     int id = 0;
     if (found == Value2ID.end()) {
