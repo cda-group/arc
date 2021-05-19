@@ -839,6 +839,21 @@ struct FuncOpLowering : public ConversionPattern {
     mlir::FuncOp func = cast<mlir::FuncOp>(op);
     SmallVector<NamedAttribute, 4> attributes;
 
+    if (func->hasAttr("arc.task_name"))
+      attributes.push_back(NamedAttribute(Identifier::get("arc.task_name", ctx),
+                                          func->getAttr("arc.task_name")));
+    if (func->hasAttr("arc.mod_name"))
+      attributes.push_back(NamedAttribute(Identifier::get("arc.mod_name", ctx),
+                                          func->getAttr("arc.mod_name")));
+
+    if (func->hasAttr("arc.is_event_handler"))
+      attributes.push_back(
+          NamedAttribute(Identifier::get("arc.is_event_handler", ctx),
+                         func->getAttr("arc.is_event_handler")));
+    if (func->hasAttr("arc.is_init"))
+      attributes.push_back(NamedAttribute(Identifier::get("arc.is_init", ctx),
+                                          func->getAttr("arc.is_init")));
+
     TypeConverter::SignatureConversion sigConv(func.getNumArguments());
     mlir::FunctionType funcType =
         TypeConverter.convertFunctionSignature(func.getType(), sigConv);
