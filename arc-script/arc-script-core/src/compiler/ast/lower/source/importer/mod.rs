@@ -117,6 +117,11 @@ impl AST {
             return;
         }
 
+        if !matches!(full_path.extension(), Some(ext) if ext == "arc") {
+            info.diags.intern(Error::BadExtension);
+            return;
+        }
+
         // Read the file, parse it, and construct the module.
         let name = full_path.to_str().unwrap().to_owned();
         let source = read_file(&full_path).unwrap();

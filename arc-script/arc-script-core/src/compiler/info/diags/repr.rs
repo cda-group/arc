@@ -111,6 +111,9 @@ pub enum Error {
     /// Error when the importer fails to find a source file.
     FileNotFound,
 
+    /// Error when the importing is given a file with an invalid extension.
+    BadExtension,
+
     /// Error when the lexer encounters too many levels of indentation.
     TooMuchIndent {
         /// Location of the error.
