@@ -62,6 +62,7 @@ class RustPrinterStream {
   std::map<std::string, std::string> CrateDirectives;
 
   DenseMap<Value, std::string> ValueAliases;
+  DenseMap<Type, std::string> TypeAliases;
 
   std::string Includefile;
 
@@ -111,6 +112,8 @@ public:
   void addAlias(Value v, std::string identifier) {
     ValueAliases[v] = identifier;
   }
+
+  void addAlias(Type t, std::string identifier) { TypeAliases[t] = identifier; }
 
   void clearAliases() { ValueAliases.clear(); }
 
@@ -181,17 +184,23 @@ public:
   }
 
   RustPrinterStream &print(types::RustType t) {
+    if (printTypeAlias(t))
+      return *this;
     t.printAsRust(Body);
     return *this;
   }
 
   RustPrinterStream &print(types::RustEnumType t) {
+    if (printTypeAlias(t))
+      return *this;
     writeEnumDefiniton(t);
     t.printAsRustNamedType(Body);
     return *this;
   }
 
   RustPrinterStream &print(types::RustStructType t) {
+    if (printTypeAlias(t))
+      return *this;
     writeStructDefiniton(t);
     t.printAsRustNamedType(Body);
     return *this;
@@ -252,6 +261,14 @@ public:
     }
     s << "unhandled type";
     return s;
+  }
+private:
+  bool printTypeAlias(Type t) {
+    auto alias = TypeAliases.find(t);
+    if (alias == TypeAliases.end())
+      return false;
+    Body << alias->second;
+    return true;
   }
 };
 
