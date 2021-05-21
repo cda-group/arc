@@ -46,6 +46,8 @@ struct RustStructTypeStorage;
 struct RustTupleTypeStorage;
 struct RustTensorTypeStorage;
 
+class RustEnumType;
+
 //===----------------------------------------------------------------------===//
 // Rust Types
 //===----------------------------------------------------------------------===//
@@ -80,6 +82,7 @@ public:
   void print(DialectAsmPrinter &os) const;
   rust::RustPrinterStream &printAsRust(rust::RustPrinterStream &os) const;
   std::string getRustType() const;
+  Type getType() const;
 
   static RustStreamType get(RustDialect *dialect, Type item);
   void emitNestedTypedefs(rust::RustPrinterStream &ps) const;

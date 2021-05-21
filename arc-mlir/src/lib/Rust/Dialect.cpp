@@ -790,6 +790,7 @@ struct RustStreamTypeStorage : public TypeStorage {
   void print(DialectAsmPrinter &os) const { os << getRustType(); }
 
   std::string getRustType() const;
+  Type getType() const;
   unsigned getStreamTypeId() const;
 
   void emitNestedTypedefs(rust::RustPrinterStream &os) const;
@@ -855,6 +856,10 @@ std::string RustStreamType::getSignature() const {
 }
 
 std::string RustStreamTypeStorage::getSignature() const { return signature; }
+
+Type RustStreamType::getType() const { return getImpl()->getType(); }
+
+Type RustStreamTypeStorage::getType() const { return item; }
 
 //===----------------------------------------------------------------------===//
 // RustStructType
