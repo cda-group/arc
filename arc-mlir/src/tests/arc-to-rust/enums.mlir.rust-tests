@@ -1,7 +1,7 @@
 // Empty
 #[cfg(test)]
 mod tests {
-  use crate::defs::*;
+  use crate::toplevel::*;
   #[test]
   fn it_works() {
     assert_eq!(arcorn::is!(Enum1ai321bf32End::a, ok0()), true);

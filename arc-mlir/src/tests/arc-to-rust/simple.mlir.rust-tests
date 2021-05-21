@@ -1,6 +1,6 @@
 #[cfg(test)]
 mod tests {
-  use crate::defs::*;
+  use crate::arctorustsimple::*;
   use hexf::*;
   #[test]
   fn it_works() {

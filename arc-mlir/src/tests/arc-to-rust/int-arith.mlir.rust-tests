@@ -1,6 +1,6 @@
 #[cfg(test)]
 mod tests {
-  use crate::defs::*;
+  use crate::arctorustintarith::*;
   #[test]
   fn it_works() {
 assert_eq!(addi_si16(-32768, 0), -32768);

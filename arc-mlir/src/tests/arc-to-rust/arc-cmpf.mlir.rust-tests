@@ -1,6 +1,6 @@
 #[cfg(test)]
 mod tests {
-use crate::defs::*;
+use crate::arctorustarcarccmpf::*;
 
 #[test]
   fn test_0() {

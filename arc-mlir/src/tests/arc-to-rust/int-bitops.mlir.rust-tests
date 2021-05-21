@@ -1,6 +1,6 @@
 #[cfg(test)]
 mod tests {
-use crate::defs::*;
+use crate::arctorustintbitops::*;
 #[test]
   fn it_works() {
     assert_eq!(and_si16(-32768, -32768), -32768);

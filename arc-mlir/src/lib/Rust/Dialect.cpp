@@ -213,7 +213,7 @@ RustPrinterStream &operator<<(RustPrinterStream &os, const Type &type) {
 
 LogicalResult rust::writeModuleAsInline(ModuleOp module, llvm::raw_ostream &o) {
 
-  RustPrinterStream PS(rustInclude);
+  RustPrinterStream PS(module.getName()->str(), rustInclude);
 
   for (Operation &operation : module) {
     if (RustFuncOp op = dyn_cast<RustFuncOp>(operation))
@@ -303,16 +303,92 @@ void RustCallIndirectOp::writeRust(RustPrinterStream &PS) {
 
 // Write this function as Rust code to os
 void RustFuncOp::writeRust(RustPrinterStream &PS) {
+  bool isTask = (*this)->hasAttr("arc.task_name") &&
+                (*this)->hasAttr("arc.mod_name") &&
+                (*this)->hasAttr("arc.is_event_handler");
+  bool isMethod = (*this)->hasAttr("arc.task_name") &&
+                  (*this)->hasAttr("arc.mod_name") &&
+                  !(*this)->hasAttr("arc.is_event_handler");
 
+  if (isTask) {
+    auto modName =
+        (*this)->getAttrOfType<StringAttr>("arc.mod_name").getValue();
+    auto taskName =
+        (*this)->getAttrOfType<StringAttr>("arc.task_name").getValue();
+
+    // Construct rewrite directive
+    PS << "#[arcorn::rewrite(";
+    mlir::ModuleOp m = cast<mlir::ModuleOp>(getOperation()->getParentOp());
+    for (auto f : m.getOps<RustFuncOp>()) {
+      if (f->hasAttr("arc.is_event_handler"))
+        PS << "on_event = \"" << f.getName() << "\", ";
+      if (f->hasAttr("arc.is_init"))
+        PS << "on_start = \"" << f.getName() << "\", ";
+    }
+    PS << ")]\n";
+
+    // Generate the named type for the task
+    PS << "mod " << modName << "{\n";
+    // The state type
+    PS << "struct " << taskName << " {\n";
+    RustStructType st = front().getArgument(0).getType().cast<RustStructType>();
+    for (unsigned i = 0; i < st.getNumFields(); i++) {
+      PS << st.getFieldName(i) << ": " << st.getFieldType(i) << ",\n";
+    }
+    PS << "}\n";
+    std::string modBaseName = modName.str() + "::";
+    std::string stateTypeName = modBaseName + taskName.str();
+    PS.addAlias(st, stateTypeName);
+
+    RustEnumType inTy = front().getArgument(1).getType().cast<RustEnumType>();
+    PS << "#[arcorn::rewrite]\n"
+       << "pub enum IInterface {\n";
+    for (unsigned i = 0; i < inTy.getNumVariants(); i++) {
+      PS << inTy.getVariantName(i) << "(" << inTy.getVariantType(i) << "),\n";
+    }
+    PS << "}\n";
+    PS.addAlias(inTy, modBaseName + "IInterface");
+
+    RustStreamType outStream =
+        front().getArgument(2).getType().cast<RustStreamType>();
+    RustEnumType outTy = outStream.getType().cast<RustEnumType>();
+    PS << "#[arcorn::rewrite]\n"
+       << "pub enum OInterface {\n";
+    for (unsigned i = 0; i < outTy.getNumVariants(); i++) {
+      PS << outTy.getVariantName(i) << "(" << outTy.getVariantType(i) << "),\n";
+    }
+    PS << "}\n";
+    PS.addAlias(outTy, modBaseName + "OInterface");
+
+    PS << "}\n";
+  }
+  if (isTask || isMethod) {
+    PS << "impl "
+       << (*this)->getAttrOfType<StringAttr>("arc.mod_name").getValue()
+       << "::" << (*this)->getAttrOfType<StringAttr>("arc.task_name").getValue()
+       << " {\n";
+  }
+
+  PS << "// " << (isTask ? "Task" : "") << (isMethod ? "Method" : "") << "\n";
   PS << "pub fn " << getName() << "(";
 
   // Dump the function arguments
   unsigned numFuncArguments = getNumArguments();
   for (unsigned i = 0; i < numFuncArguments; i++) {
-    if (i != 0)
-      PS << ", ";
     Value v = front().getArgument(i);
-    PS.printAsArg(v) << ": " << v.getType();
+    if (isTask && i == 1) {
+      PS.addAlias(v, "event");
+      PS << ", event : " << v.getType();
+    } else if ((isTask || isMethod) && i == 0) {
+      PS << "&mut self";
+      PS.addAlias(v, "self");
+    } else if (isTask && i == 2) {
+      // We skip this argument
+    } else {
+      if (i != 0)
+        PS << ", ";
+      PS.printAsArg(v) << ": " << v.getType();
+    }
   }
   PS << ") ";
   if (getNumFuncResults()) { // The return type
@@ -325,6 +401,9 @@ void RustFuncOp::writeRust(RustPrinterStream &PS) {
     ::writeRust(operation, PS);
   }
   PS << "}\n";
+  if (isTask || isMethod)
+    PS << "}\n";
+  PS.clearAliases();
 }
 
 // Write this function as Rust code to os

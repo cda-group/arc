@@ -64,12 +64,14 @@ class RustPrinterStream {
   DenseMap<Value, std::string> ValueAliases;
   DenseMap<Type, std::string> TypeAliases;
 
+  std::string ModuleName;
   std::string Includefile;
 
 public:
-  RustPrinterStream(std::string includefile)
+  RustPrinterStream(std::string moduleName, std::string includefile)
       : Constants(ConstantsStr), NamedTypes(NamedTypesStr), TypeUses(UsesStr),
-        Body(BodyStr), NextID(0), NextConstID(0), Includefile(includefile){};
+        Body(BodyStr), NextID(0), NextConstID(0), ModuleName(moduleName),
+        Includefile(includefile){};
 
   void flush(llvm::raw_ostream &o) {
     o << "#[allow(non_snake_case)]\n"
@@ -79,10 +81,10 @@ public:
       << "#[allow(unused_imports)]\n"
       << "#[allow(unused_braces)]\n";
 
-    o << "pub mod defs {\n"
+    o << "pub mod " << ModuleName
+      << "{\n"
          "use super::*;\n"
       << "pub use arc_script::arcorn;\n"
-      << "pub use arcon::prelude::*;\n"
       << "pub use hexf::*;\n";
 
     for (auto i : CrateDirectives)
@@ -95,6 +97,7 @@ public:
     if (!Includefile.empty())
       o << "include!(\"" << Includefile << "\");\n";
     o << "}\n";
+    o << "pub use " << ModuleName << "::*;\n";
   }
 
   // Returns true if there has been output to the types NamedTypes
@@ -262,6 +265,7 @@ public:
     s << "unhandled type";
     return s;
   }
+
 private:
   bool printTypeAlias(Type t) {
     auto alias = TypeAliases.find(t);

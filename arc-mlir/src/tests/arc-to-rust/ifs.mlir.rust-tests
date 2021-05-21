@@ -1,6 +1,6 @@
 #[cfg(test)]
 mod tests {
-  use crate::defs::*;
+  use crate::arctorustifs::*;
   #[test]
   fn test() {
     assert_eq!(test_0(), 65);

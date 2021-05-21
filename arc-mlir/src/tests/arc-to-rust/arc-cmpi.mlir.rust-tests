@@ -1,6 +1,6 @@
 #[cfg(test)]
 mod tests {
-  use crate::defs::*;
+  use crate::arctorustcmpi::*;
   #[test]
   fn test_0() {
     assert_eq!(eq_si16(-32768, -32767), false);

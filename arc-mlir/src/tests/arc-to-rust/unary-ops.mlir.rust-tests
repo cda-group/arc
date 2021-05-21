@@ -1,6 +1,6 @@
 #[cfg(test)]
 mod tests {
-use crate::defs::*;
+use crate::arctorustunaryops::*;
 #[test]
   fn test_0() {
     assert!((acos_f32(1.00000000000000000000e+00, ) - 0.00000000000000000000e+00).abs() < 1e-6);

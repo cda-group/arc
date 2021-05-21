@@ -1,6 +1,6 @@
 #[cfg(test)]
 mod tests {
-  use crate::defs::*;
+  use crate::arctorusttensors::*;
   #[test]
   fn test() {
     let tmp0 = make_0();
