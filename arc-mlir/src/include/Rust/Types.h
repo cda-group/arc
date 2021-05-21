@@ -118,6 +118,8 @@ public:
   std::string getRustType() const;
   unsigned getEnumTypeId() const;
   StringRef getVariantName(unsigned idx) const;
+  Type getVariantType(unsigned idx) const;
+  unsigned getNumVariants() const;
 
   typedef std::pair<mlir::StringAttr, Type> EnumVariantTy;
   static RustEnumType get(RustDialect *dialect,

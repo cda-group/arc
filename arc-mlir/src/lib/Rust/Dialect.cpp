@@ -642,6 +642,8 @@ struct RustEnumTypeStorage : public TypeStorage {
   raw_ostream &printAsRustNamedType(raw_ostream &os) const;
   void print(DialectAsmPrinter &os) const { os << getRustType(); }
   StringRef getVariantName(unsigned idx) const;
+  Type getVariantType(unsigned idx) const;
+  unsigned getNumVariants() const;
 
   std::string getRustType() const;
   unsigned getEnumTypeId() const;
@@ -680,6 +682,21 @@ StringRef RustEnumTypeStorage::getVariantName(unsigned idx) const {
   return enumVariants[idx].first.getValue();
 }
 
+Type RustEnumType::getVariantType(unsigned idx) const {
+  return getImpl()->getVariantType(idx);
+}
+
+Type RustEnumTypeStorage::getVariantType(unsigned idx) const {
+  return enumVariants[idx].second;
+}
+
+unsigned RustEnumType::getNumVariants() const {
+  return getImpl()->getNumVariants();
+}
+
+unsigned RustEnumTypeStorage::getNumVariants() const {
+  return enumVariants.size();
+}
 std::string RustEnumType::getRustType() const {
   return getImpl()->getRustType();
 }
