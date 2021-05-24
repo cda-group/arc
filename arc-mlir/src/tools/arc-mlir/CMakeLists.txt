@@ -8,7 +8,6 @@ set(LIBS
   MLIRAffineTransformsTestPasses
   MLIRAnalysis
   MLIRDialect
-  MLIREDSC
   MLIROptLib
   MLIRParser
   MLIRPass
