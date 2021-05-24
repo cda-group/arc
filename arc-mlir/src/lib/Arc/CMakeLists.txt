@@ -14,7 +14,6 @@ add_mlir_dialect_library(ArcDialect
 
 target_link_libraries(ArcDialect
   PUBLIC
-  MLIREDSC
   MLIRIR
   MLIRStandard
   LLVMSupport
