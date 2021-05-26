@@ -111,6 +111,7 @@ def StreamElementType : Type<Or<[
   FloatLike.predicate,
   ArcIntegerLike.predicate,
   AnyStruct.predicate,
+  AnyEnum.predicate
 ]>, "any type valid in a stream">;
 
 
