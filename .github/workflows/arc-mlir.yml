@@ -23,3 +23,7 @@ jobs:
         ninja tools/arc-mlir/arc-check -C $A2M_BUILD/llvm-build/
       env:
         A2M_BUILD: ${{ format('{0}/build', runner.temp) }}
+
+    - name: Check for dirty tree
+      run: |
+        ./check-for-dirty-tree

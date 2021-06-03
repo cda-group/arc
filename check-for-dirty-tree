@@ -1,0 +1,7 @@
+#!/bin/bash
+
+# Check if the build touched version controlled files. This is mainly
+# done to avoid forgetting to check in Cargo.lock.
+
+git diff --quiet || \
+    (echo "The build modified checked in files" ; git diff ; exit 1)
