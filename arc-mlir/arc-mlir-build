@@ -73,8 +73,9 @@ function llvm-cmake {
        $A2M_CCACHE \
        -DLLVM_BUILD_EXAMPLES=OFF \
        -DLLVM_ENABLE_PROJECTS=mlir\
-       -DLLVM_EXTERNAL_PROJECTS="arc-mlir" \
+       -DLLVM_EXTERNAL_PROJECTS="arc-mlir mlir-dialect-experiments" \
        -DLLVM_EXTERNAL_ARC_MLIR_SOURCE_DIR="$A2M/src" \
+       -DLLVM_EXTERNAL_MLIR_DIALECT_EXPERIMENTS_SOURCE_DIR="$A2M/mlir-dialect-experiments" \
        -DLLVM_HAVE_TF_API="OFF" \
        $LLVM_SRC_DIR/llvm || fail "cmaking LLVM"
 }
