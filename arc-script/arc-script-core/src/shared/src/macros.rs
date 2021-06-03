@@ -26,6 +26,17 @@ macro_rules! map {
     }
 }
 
+/// A wrapper around panic!() which captures location info.
+#[macro_export]
+macro_rules! ice {
+    { } => {
+        panic!("{}:{}:{} internal compiler error", file!(), line!(), column!())
+    };
+    { $($arg:tt)+ } => {
+        panic!("{}:{}:{} internal compiler error: {}", file!(), line!(), column!(), format_args!($($arg)+))
+    };
+}
+
 /// A wrapper around todo!() which captures location info.
 #[macro_export]
 macro_rules! todo {
