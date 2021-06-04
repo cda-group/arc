@@ -67,7 +67,7 @@
 #![deny(unaligned_references)]
 #![deny(unreachable_pub)]
 #![deny(unsafe_code)]
-#![deny(unstable_features)]
+
 #![allow(unused_crate_dependencies)]
 #![deny(unused_extern_crates)]
 #![deny(unused_import_braces)]
@@ -76,6 +76,9 @@
 #![allow(unused_results)] // Just very annoying, it means every return value must be used
 #![allow(variant_size_differences)] // Good lint, annoying but can be useful for tuning performance
 #![deny(warnings)]
+#![allow(stable_features)]
+
+#![feature(or_patterns)]
 
 /// Module which assembles the compilation pipeline.
 pub mod compiler;
