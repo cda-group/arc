@@ -1,6 +1,6 @@
 set(MLIR_DIALECT_EXPERIMENTS_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
-include_directories(../llvm-project/mlir/include/)
-include_directories(include/)
+include_directories(../arc-mlir/llvm-project/mlir/include/)
+include_directories(../arc-mlir/src/include include/)
 include_directories(${CMAKE_CURRENT_BINARY_DIR}/../mlir/include/)
 include_directories(${CMAKE_CURRENT_BINARY_DIR}/include/)
 

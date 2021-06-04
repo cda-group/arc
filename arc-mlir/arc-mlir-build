@@ -72,7 +72,7 @@ function llvm-cmake {
        -DLLVM_USE_SPLIT_DWARF=ON \
        $A2M_CCACHE \
        -DLLVM_BUILD_EXAMPLES=OFF \
-       -DLLVM_ENABLE_PROJECTS=mlir\
+       -DLLVM_ENABLE_PROJECTS="mlir;clang"\
        -DLLVM_EXTERNAL_PROJECTS="arc-mlir mlir-dialect-experiments" \
        -DLLVM_EXTERNAL_ARC_MLIR_SOURCE_DIR="$A2M/src" \
        -DLLVM_EXTERNAL_MLIR_DIALECT_EXPERIMENTS_SOURCE_DIR="$A2M/mlir-dialect-experiments" \
