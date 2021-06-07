@@ -53,3 +53,7 @@ jobs:
 
 #    - name: cargo-fmt
 #      run: cargo fmt -- -v --check
+
+    - name: Check for dirty tree
+      run: |
+        ../check-for-dirty-tree
