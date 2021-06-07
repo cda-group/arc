@@ -18,14 +18,14 @@ LIB=mlir-target/libhello.a
 all: $(LIB)
 
 $(LIB): $(OBJ)
-	$(AR) rc $@ $^
+	$(AR) $(ARFLAGS) $@ $^
 
 $(OBJ): $(IR)
-	$(CC) $(CCFLAGS) $^ -o=$@
+	$(CC) $(CCFLAGS) -o=$@ $^
 
 $(IR): $(SRC)
 	$(MLIR_OPT) $(MLIR_OPT_FLAGS) $^ | \
-	$(MLIR_TRANSLATE) $(MLIR_TRANSLATE_FLAGS) -o $(IR)
+	$(MLIR_TRANSLATE) $(MLIR_TRANSLATE_FLAGS) -o=$@
 
 clean:
-	rm mlir-target/*
+	$(RM) $(LIB) $(OBJ) $(IR)
