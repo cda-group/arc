@@ -108,15 +108,29 @@ pretty! {
         mlir::ItemKind::Task(item)  => write!(w, "{}", item.pretty(fmt)),
         mlir::ItemKind::State(item) => write!(w, "{}", item.pretty(fmt)),
     },
-    mlir::Fun => write!(w, "func @{id}({params}) -> {ty} {body}",
-        id = node.path.pretty(fmt),
-        params = node.params.iter().map_pretty(
-            |x, w| write!(w, "{}: {}", x.pretty(fmt), x.t.pretty(fmt)),
-            ", "
-        ),
-        ty = node.t.pretty(fmt),
-        body = node.body.pretty(&fmt),
-    ),
+    mlir::Fun => {
+	match fmt.types.resolve(node.t) {
+	    hir::repr::TypeKind::Scalar(hir::repr::ScalarKind::Unit) =>
+		write!(w, "func @{id}({params}) -> () {body}",
+		       id = node.path.pretty(fmt),
+		       params = node.params.iter().map_pretty(
+			   |x, w| write!(w, "{}: {}", x.pretty(fmt), x.t.pretty(fmt)),
+			   ", "
+		       ),
+		       body = node.body.pretty(&fmt),
+		),
+	    _ =>
+		write!(w, "func @{id}({params}) -> {ty} {body}",
+		       id = node.path.pretty(fmt),
+		       params = node.params.iter().map_pretty(
+			   |x, w| write!(w, "{}: {}", x.pretty(fmt), x.t.pretty(fmt)),
+			   ", "
+		       ),
+		       ty = node.t.pretty(fmt),
+		       body = node.body.pretty(&fmt),
+		),
+	}
+    },
     mlir::Name => write!(w, "{}", fmt.names.resolve(node)),
     mlir::State => write!(w, "state {name}: {ty} = {init};",
         name = node.path.pretty(fmt),
