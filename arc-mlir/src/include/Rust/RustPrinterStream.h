@@ -79,8 +79,6 @@ public:
     o << "pub mod defs {\n"
          "use super::*;\n"
       << "pub use arc_script::arcorn;\n"
-      << "pub use arc_script::arcorn::state::{ArcMapOps, ArcRefOps, "
-         "ArcSetOps, ArcVecOps};\n"
       << "pub use arcon::prelude::*;\n"
       << "pub use hexf::*;\n";
 
