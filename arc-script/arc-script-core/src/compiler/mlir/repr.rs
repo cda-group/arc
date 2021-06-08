@@ -37,7 +37,6 @@ pub(crate) struct Item {
 pub(crate) enum ItemKind {
     Enum(Enum),
     Fun(Fun),
-    State(State),
     Task(Task),
 }
 
@@ -45,7 +44,7 @@ pub(crate) enum ItemKind {
 pub(crate) struct Fun {
     pub(crate) path: Path,
     pub(crate) params: Vec<Var>,
-    pub(crate) body: Region,
+    pub(crate) body: Block,
     pub(crate) t: Type,
 }
 
@@ -66,19 +65,6 @@ pub(crate) struct Variant {
     pub(crate) path: Path,
     pub(crate) t: Type,
     pub(crate) loc: Loc,
-}
-
-#[derive(New, Debug)]
-pub(crate) struct Alias {
-    pub(crate) path: Path,
-    pub(crate) t: Type,
-}
-
-#[derive(New, Debug)]
-pub(crate) struct State {
-    pub(crate) path: Path,
-    pub(crate) t: Type,
-    pub(crate) init: Op,
 }
 
 /// A task is a generic low-level primitive which resembles a node in the dataflow graph.
@@ -130,11 +116,11 @@ pub(crate) enum OpKind {
     CallMethod(Var, Name, Vec<Var>),
     Const(ConstKind),
     Emit(Var),
-    If(Var, Region, Region),
+    If(Var, Block, Block),
     Log(Var),
     Loop(Var),
     Project(Var, usize),
-    Res(Var),
+    Result(Var),
     Return(Var),
     Struct(VecMap<Name, Var>),
     Tuple(Vec<Var>),
@@ -142,11 +128,6 @@ pub(crate) enum OpKind {
     Enwrap(Path, Var),
     Unwrap(Path, Var),
     Is(Path, Var),
-}
-
-#[derive(Debug, New)]
-pub(crate) struct Region {
-    pub(crate) blocks: Vec<Block>,
 }
 
 #[derive(Debug, New)]

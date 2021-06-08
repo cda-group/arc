@@ -42,7 +42,7 @@ lower! {
         mlir::Fun {
             path: node.path,
             params: node.params.iter().map(|p| p.lower(ctx)).collect::<Vec<_>>(),
-            body: node.body.lower(ctx),
+            body: node.body.lower(mlir::OpKind::Return, ctx),
             t: node.body.var.t,
         }
     },
@@ -122,18 +122,12 @@ lower! {
         // side-effects.
         node.into_iter().map(|(x, v)| (*x, v.lower(ctx))).collect::<VecMap<_, _>>().sort_fields(ctx.info)
     },
-    hir::Block => mlir::Region {
-        let mut ops = node.stmts.lower(ctx);
-        let op = mlir::Op::new(None, mlir::OpKind::Res(node.var.lower(ctx)), node.var.loc);
-        ops.push(op);
-        mlir::Region::new(vec![mlir::Block::new(ops)])
-    },
     VecDeque<hir::Stmt> => Vec<mlir::Op> {
         node.iter().map(|stmt| stmt.lower(ctx)).collect()
     },
     hir::Stmt => mlir::Op {
         match &node.kind {
-            hir::StmtKind::Assign(i)  => mlir::Op::new(Some(i.param.lower(ctx)), i.expr.lower(ctx), node.loc),
+            hir::StmtKind::Assign(i) => mlir::Op::new(Some(i.param.lower(ctx)), i.expr.lower(ctx), node.loc),
         }
     },
     hir::Var => mlir::Var {
@@ -145,48 +139,66 @@ lower! {
     },
     hir::Expr => mlir::OpKind {
         match ctx.hir.exprs.resolve(node.id) {
-            hir::ExprKind::Return(v) => mlir::OpKind::Return(v.lower(ctx)),
-            hir::ExprKind::Break(v) => mlir::OpKind::Break(v.lower(ctx)),
-            hir::ExprKind::Continue => mlir::OpKind::Continue,
-            hir::ExprKind::Item(x) => match ctx.hir.resolve(x).kind {
-                hir::ItemKind::Fun(_) => mlir::OpKind::Const(mlir::ConstKind::Fun(*x)),
-                hir::ItemKind::Task(_) => crate::todo!(),
+            hir::ExprKind::Return(v)        => mlir::OpKind::Return(v.lower(ctx)),
+            hir::ExprKind::Break(v)         => mlir::OpKind::Break(v.lower(ctx)),
+            hir::ExprKind::Continue         => mlir::OpKind::Continue,
+            hir::ExprKind::Item(x)          => match ctx.hir.resolve(x).kind {
+                hir::ItemKind::Fun(_)       => mlir::OpKind::Const(mlir::ConstKind::Fun(*x)),
+                hir::ItemKind::Task(_)      => crate::todo!(),
                 _ => unreachable!(),
             },
-            hir::ExprKind::Call(v, vs) => mlir::OpKind::CallIndirect(v.lower(ctx), vs.lower(ctx)),
-            hir::ExprKind::SelfCall(x, vs) => crate::todo!(),
-            hir::ExprKind::Invoke(v, x, vs) => mlir::OpKind::CallMethod(v.lower(ctx), *x, vs.lower(ctx)),
-            hir::ExprKind::Select(_e, _es) => todo!(),
-            hir::ExprKind::Lit(l) => mlir::OpKind::Const(l.lower(ctx)),
-            hir::ExprKind::BinOp(v0, op, v1) => {
-                mlir::OpKind::BinOp(v0.t, v0.lower(ctx), op.lower(ctx), v1.lower(ctx))
-            }
-            hir::ExprKind::UnOp(op, v)   => {
-                let kind = match &op.kind {
-                    hir::UnOpKind::Not => mlir::UnOpKind::Not,
-                    hir::UnOpKind::Neg => mlir::UnOpKind::Neg,
-                    hir::UnOpKind::Err => unreachable!(),
-                };
-                mlir::OpKind::UnOp(mlir::UnOp::new(kind), v.lower(ctx))
-            },
-            hir::ExprKind::Access(v, x)     => mlir::OpKind::Access(v.lower(ctx), *x),
-            hir::ExprKind::Project(v, i)    => mlir::OpKind::Project(v.lower(ctx), i.id),
-            hir::ExprKind::If(v, b0, b1)    => mlir::OpKind::If(v.lower(ctx), b0.lower(ctx), b1.lower(ctx)),
-            hir::ExprKind::Array(vs)        => mlir::OpKind::Array(vs.lower(ctx)),
-            hir::ExprKind::Struct(fs)       => mlir::OpKind::Struct(fs.lower(ctx)),
-            hir::ExprKind::Enwrap(x, v1)    => mlir::OpKind::Enwrap(*x, v1.lower(ctx)),
-            hir::ExprKind::Unwrap(x, v1)    => mlir::OpKind::Unwrap(*x, v1.lower(ctx)),
-            hir::ExprKind::Is(x, v1)        => mlir::OpKind::Is(*x, v1.lower(ctx)),
-            hir::ExprKind::Tuple(vs)        => mlir::OpKind::Tuple(vs.lower(ctx)),
-            hir::ExprKind::Emit(v)          => mlir::OpKind::Emit(v.lower(ctx)),
-            hir::ExprKind::Log(v)           => mlir::OpKind::Log(v.lower(ctx)),
-            hir::ExprKind::Loop(v)          => crate::todo!(),
-            hir::ExprKind::After(_, _)      => crate::todo!(),
-            hir::ExprKind::Every(_, _)      => crate::todo!(),
-            hir::ExprKind::Cast(_, _)       => crate::todo!(),
-            hir::ExprKind::Unreachable      => crate::todo!(),
-            hir::ExprKind::Initialise(x, v) => crate::todo!(),
-            hir::ExprKind::Err              => unreachable!(),
+            hir::ExprKind::Call(v, vs)       => mlir::OpKind::CallIndirect(v.lower(ctx), vs.lower(ctx)),
+            hir::ExprKind::SelfCall(x, vs)   => crate::todo!(),
+            hir::ExprKind::Invoke(v, x, vs)  => mlir::OpKind::CallMethod(v.lower(ctx), *x, vs.lower(ctx)),
+            hir::ExprKind::Select(_e, _es)   => todo!(),
+            hir::ExprKind::Lit(l)            => mlir::OpKind::Const(l.lower(ctx)),
+            hir::ExprKind::BinOp(v0, op, v1) => mlir::OpKind::BinOp(v0.t, v0.lower(ctx), op.lower(ctx), v1.lower(ctx)),
+            hir::ExprKind::UnOp(op, v)       => mlir::OpKind::UnOp(mlir::UnOp::new(op.kind.lower(ctx)), v.lower(ctx)) ,
+            hir::ExprKind::Access(v, x)      => mlir::OpKind::Access(v.lower(ctx), *x),
+            hir::ExprKind::Project(v, i)     => mlir::OpKind::Project(v.lower(ctx), i.id),
+            hir::ExprKind::If(v, b0, b1)     => mlir::OpKind::If(
+                v.lower(ctx),
+                b0.lower(mlir::OpKind::Result, ctx),
+                b1.lower(mlir::OpKind::Result, ctx)
+            ),
+            hir::ExprKind::Array(vs)         => mlir::OpKind::Array(vs.lower(ctx)),
+            hir::ExprKind::Struct(fs)        => mlir::OpKind::Struct(fs.lower(ctx)),
+            hir::ExprKind::Enwrap(x, v1)     => mlir::OpKind::Enwrap(*x, v1.lower(ctx)),
+            hir::ExprKind::Unwrap(x, v1)     => mlir::OpKind::Unwrap(*x, v1.lower(ctx)),
+            hir::ExprKind::Is(x, v1)         => mlir::OpKind::Is(*x, v1.lower(ctx)),
+            hir::ExprKind::Tuple(vs)         => mlir::OpKind::Tuple(vs.lower(ctx)),
+            hir::ExprKind::Emit(v)           => mlir::OpKind::Emit(v.lower(ctx)),
+            hir::ExprKind::Log(v)            => mlir::OpKind::Log(v.lower(ctx)),
+            hir::ExprKind::Loop(v)           => crate::todo!(),
+            hir::ExprKind::After(_, _)       => crate::todo!(),
+            hir::ExprKind::Every(_, _)       => crate::todo!(),
+            hir::ExprKind::Cast(_, _)        => crate::todo!(),
+            hir::ExprKind::Unreachable       => crate::todo!(),
+            hir::ExprKind::Initialise(x, v)  => crate::todo!(),
+            hir::ExprKind::Err               => unreachable!(),
         }
     },
+    hir::UnOpKind => mlir::UnOpKind {
+        match node {
+            hir::UnOpKind::Not => mlir::UnOpKind::Not,
+            hir::UnOpKind::Neg => mlir::UnOpKind::Neg,
+            hir::UnOpKind::Err => unreachable!(),
+        }
+    },
+}
+
+impl hir::Block {
+    fn lower(
+        &self,
+        terminator: impl FnOnce(mlir::Var) -> mlir::OpKind,
+        ctx: &mut Context<'_>,
+    ) -> mlir::Block {
+        let mut ops = self.stmts.lower(ctx);
+        ops.push(mlir::Op::new(
+            None,
+            terminator(self.var.lower(ctx)),
+            self.var.loc,
+        ));
+        mlir::Block::new(ops)
+    }
 }

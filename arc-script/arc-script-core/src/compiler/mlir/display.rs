@@ -106,7 +106,6 @@ pretty! {
         mlir::ItemKind::Fun(item)   => write!(w, "{}", item.pretty(fmt)),
         mlir::ItemKind::Enum(item)  => write!(w, "{}", item.pretty(fmt)),
         mlir::ItemKind::Task(item)  => write!(w, "{}", item.pretty(fmt)),
-        mlir::ItemKind::State(item) => write!(w, "{}", item.pretty(fmt)),
     },
     mlir::Fun => {
 	match fmt.types.resolve(node.t) {
@@ -132,15 +131,6 @@ pretty! {
 	}
     },
     mlir::Name => write!(w, "{}", fmt.names.resolve(node)),
-    mlir::State => write!(w, "state {name}: {ty} = {init};",
-        name = node.path.pretty(fmt),
-        ty = node.t.pretty(fmt),
-        init = node.init.pretty(fmt)
-    ),
-    mlir::Alias => write!(w, "type {id} = {ty}",
-        id = node.path.pretty(fmt),
-        ty = node.t.pretty(fmt),
-    ),
     mlir::Task => write!(w, "task {name}({params}) ({iports}) -> ({oports}) {{{items}{s0}{s0}}}",
         name = node.path.pretty(fmt),
         params = node.params.iter().all_pretty(", ", fmt),
@@ -168,34 +158,25 @@ pretty! {
         use mlir::OpKind::*;
         match node.var {
             Some(var) if matches!(node.kind, Const(Bool(_))) => {
-                write!(
-                    w,
-                    "{var} = {kind}",
+                write!(w, "{var} = {kind}",
                     var = var.pretty(fmt),
                     kind = node.kind.pretty(fmt),
                 )
             }
-	    Some(var) if matches!(node.kind, Const(Unit))=> {
-		write!(w, "// No value")
-	    }
+	          Some(var) if matches!(node.kind, Const(Unit))=> {
+		            write!(w, "// No value")
+	          }
             Some(var) => {
-		let ty = node.kind.get_type_specifier(var.t);
-		match fmt.types.resolve(ty) {
-		    hir::repr::TypeKind::Scalar(hir::repr::ScalarKind::Unit) =>
-			write!(
-			    w,
-			    "{kind}",
-			    kind = node.kind.pretty(fmt),
-			),
-		    _ =>
-			write!(
-			    w,
-			    "{var} = {kind} {ty}",
-			    var = var.pretty(fmt),
-			    kind = node.kind.pretty(fmt),
-			    ty = ty.pretty(fmt),
-			),
-		}
+		            let ty = node.kind.get_type_specifier(var.t);
+		            if matches!(fmt.types.resolve(ty), hir::repr::TypeKind::Scalar(hir::repr::ScalarKind::Unit)) {
+			              write!(w, "{kind}", kind = node.kind.pretty(fmt))
+			          } else {
+		                write!(w, "{var} = {kind} {ty}",
+			                  var = var.pretty(fmt),
+			                  kind = node.kind.pretty(fmt),
+			                  ty = ty.pretty(fmt),
+			              )
+		            }
             }
             None => write!(w, "{kind}", kind = node.kind.pretty(fmt)),
         }
@@ -356,20 +337,17 @@ pretty! {
                 t = v.t.pretty(fmt),
                 s0 = fmt
             ),
-            mlir::OpKind::Res(v) => {
-		match fmt.types.resolve(v.t) {
-		    hir::repr::TypeKind::Scalar(hir::repr::ScalarKind::Unit) =>
-			write!(w, "// No result\n"),
-		    _ =>
-			write!(
-			    w,
-			    r#""arc.block.result"({v}) : ({t}) -> (){s0}"#,
-			    v = v.pretty(fmt),
-			    t = v.t.pretty(fmt),
-			    s0 = fmt
-			),
-		}
-	    },
+            mlir::OpKind::Result(v) => {
+                if matches!(fmt.types.resolve(v.t), hir::repr::TypeKind::Scalar(hir::repr::ScalarKind::Unit)) {
+			              write!(w, "// No result\n")
+                } else {
+			              write!(w, r#""arc.block.result"({v}) : ({t}) -> (){s0}"#,
+			                  v = v.pretty(fmt),
+			                  t = v.t.pretty(fmt),
+			                  s0 = fmt
+			              )
+		            }
+            },
             mlir::OpKind::Access(v, i) => write!(
                 w,
                 r#""arc.struct_access"({v}) {{ field = "{i}" }} : ({t}) ->"#,
@@ -389,7 +367,6 @@ pretty! {
             mlir::OpKind::Log(_) => crate::todo!(),
         }
     },
-    mlir::Region => write!(w, "{{{}}}", node.blocks.iter().all_pretty("", fmt.indent())),
     mlir::Block => write!(w, "{}",
         node.ops.iter().map_pretty(|op, w| write!(w, "{}{}", fmt.indent(), op.pretty(fmt)), "")),
     mlir::Type => match fmt.types.resolve(*node) {
@@ -419,7 +396,6 @@ pretty! {
         mlir::TypeKind::Nominal(x) => match &fmt.mlir.resolve(&x).kind {
             mlir::ItemKind::Enum(item) => write!(w, "!arc.enum<{}>", item.variants.iter().all_pretty(", ", fmt)),
             mlir::ItemKind::Fun(_)     => unreachable!(),
-            mlir::ItemKind::State(_)   => unreachable!(),
             mlir::ItemKind::Task(_)    => unreachable!(),
         }
         mlir::TypeKind::Array(_ty, _sh) => crate::todo!(),
