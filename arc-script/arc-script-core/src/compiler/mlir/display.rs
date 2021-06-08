@@ -161,14 +161,27 @@ pretty! {
                     kind = node.kind.pretty(fmt),
                 )
             }
+	    Some(var) if matches!(node.kind, Const(Unit))=> {
+		write!(w, "// No value")
+	    }
             Some(var) => {
-                write!(
-                    w,
-                    "{var} = {kind} {ty}",
-                    var = var.pretty(fmt),
-                    kind = node.kind.pretty(fmt),
-                    ty = node.kind.get_type_specifier(var.t).pretty(fmt)
-                )
+		let ty = node.kind.get_type_specifier(var.t);
+		match fmt.types.resolve(ty) {
+		    hir::repr::TypeKind::Scalar(hir::repr::ScalarKind::Unit) =>
+			write!(
+			    w,
+			    "{kind}",
+			    kind = node.kind.pretty(fmt),
+			),
+		    _ =>
+			write!(
+			    w,
+			    "{var} = {kind} {ty}",
+			    var = var.pretty(fmt),
+			    kind = node.kind.pretty(fmt),
+			    ty = ty.pretty(fmt),
+			),
+		}
             }
             None => write!(w, "{kind}", kind = node.kind.pretty(fmt)),
         }
