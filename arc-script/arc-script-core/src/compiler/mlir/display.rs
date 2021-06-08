@@ -342,13 +342,20 @@ pretty! {
                 t = v.t.pretty(fmt),
                 s0 = fmt
             ),
-            mlir::OpKind::Res(v) => write!(
-                w,
-                r#""arc.block.result"({v}) : ({t}) -> (){s0}"#,
-                v = v.pretty(fmt),
-                t = v.t.pretty(fmt),
-                s0 = fmt
-            ),
+            mlir::OpKind::Res(v) => {
+		match fmt.types.resolve(v.t) {
+		    hir::repr::TypeKind::Scalar(hir::repr::ScalarKind::Unit) =>
+			write!(w, "// No result\n"),
+		    _ =>
+			write!(
+			    w,
+			    r#""arc.block.result"({v}) : ({t}) -> (){s0}"#,
+			    v = v.pretty(fmt),
+			    t = v.t.pretty(fmt),
+			    s0 = fmt
+			),
+		}
+	    },
             mlir::OpKind::Access(v, i) => write!(
                 w,
                 r#""arc.struct_access"({v}) {{ field = "{i}" }} : ({t}) ->"#,
