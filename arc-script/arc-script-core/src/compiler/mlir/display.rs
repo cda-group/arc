@@ -89,7 +89,16 @@ pretty! {
     mlir::MLIR => write!(w, "module @toplevel {{{items}{s0}}}",
         items = node.items
             .iter()
-            .map(|x| node.resolve(x))
+            .filter_map(|i|
+            {
+                 let x = node.resolve(i);
+	         match x.kind {
+                      // There is no need to "declare" enum
+                      // types before use in MLIR, so just
+                      // filter them out
+                      mlir::ItemKind::Enum(_) => None,
+                      _ => Some(x),
+            }})
             .map_pretty(|i, w| write!(w, "{}{}", fmt.indent(), i.pretty(fmt)), ""),
         s0 = fmt,
     ),
