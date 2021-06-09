@@ -291,7 +291,7 @@ pretty! {
             mlir::OpKind::UnOp(_, _) => crate::todo!(),
             mlir::OpKind::If(v, r0, r1) => write!(
                 w,
-                r#""arc.if"({v}) ({r0},{r1}) : (i1) ->"#,
+                r#""arc.if"({v}) ({{{r0}}},{{{r1}}}) : (i1) ->"#,
                 v = v.pretty(fmt),
                 r0 = r0.pretty(fmt),
                 r1 = r1.pretty(fmt),
