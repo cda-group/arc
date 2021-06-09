@@ -110,6 +110,8 @@ struct StdConstantOpLowering : public ConversionPattern {
       return convertFloat(cOp, rewriter);
     if (attr.isa<IntegerAttr>())
       return convertInteger(cOp, rewriter);
+    if (attr.isa<SymbolRefAttr>())
+      return convertSymbolRef(cOp, rewriter);
     op->emitError("unhandled constant type");
     return failure();
   };
@@ -195,6 +197,24 @@ private:
       op.emitError("unhandled constant integer width");
       return failure();
     }
+  }
+
+  LogicalResult convertSymbolRef(mlir::ConstantOp op,
+                                 ConversionPatternRewriter &rewriter) const {
+    SymbolRefAttr attr = op.getValue().cast<SymbolRefAttr>();
+    Operation *refOp =
+        SymbolTable::lookupNearestSymbolFrom(op->getParentOp(), attr);
+
+    if (rust::RustFuncOp o = dyn_cast<rust::RustFuncOp>(refOp)) {
+      Type ty = o.getType();
+      Type rustTy = TypeConverter.convertType(ty);
+
+      rewriter.replaceOpWithNewOp<rust::RustConstantOp>(op, rustTy,
+                                                        o.getName());
+      return success();
+    }
+    op.emitError("unhandled symbol ref");
+    return failure();
   }
 };
 
