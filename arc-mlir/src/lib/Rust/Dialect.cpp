@@ -1054,31 +1054,28 @@ std::string RustTupleTypeStorage::getSignature() const {
 
 } // namespace types
 
+static bool isAnyRustType(Type type) {
+  if (type.isa<RustType>() || type.isa<RustStructType>() ||
+      type.isa<RustTupleType>() || type.isa<RustTensorType>() ||
+      type.isa<RustEnumType>())
+    return true;
+  if (type.isa<FunctionType>())
+    return isRustFunctionType(type);
+  return false;
+}
 
-  static bool isAnyRustType(Type type) {
-    if (type.isa<RustType>()
-	|| type.isa<RustStructType>()
-	|| type.isa<RustTupleType>()
-	|| type.isa<RustTensorType>()
-	|| type.isa<RustEnumType>())
-      return true;
-    if (type.isa<FunctionType>())
-      return isRustFunctionType(type);
-    return false;
+bool isRustFunctionType(Type type) {
+  if (FunctionType fty = type.dyn_cast<FunctionType>()) {
+    for (Type t : fty.getInputs())
+      if (!isAnyRustType(t))
+        return false;
+    for (Type t : fty.getResults())
+      if (!isAnyRustType(t))
+        return false;
+    return true;
   }
-
-  bool isRustFunctionType(Type type) {
-    if (FunctionType fty = type.dyn_cast<FunctionType>()) {
-      for (Type t : fty.getInputs())
-	if (!isAnyRustType(t))
-	  return false;
-      for (Type t : fty.getResults())
-	if (!isAnyRustType(t))
-	  return false;
-      return true;
-    }
-    return false;
-  }
+  return false;
+}
 } // namespace rust
 
 //===----------------------------------------------------------------------===//
