@@ -270,7 +270,8 @@ void RustCallOp::writeRust(RustPrinterStream &PS) {
   bool has_result = getNumResults();
   if (has_result) {
     auto r = getResult(0);
-    PS << "let " << r << ":" << r.getType() << " = ";
+    PS << "let ";
+    PS.printAsArg(r) << ":" << r.getType() << " = ";
   }
   PS << getCallee() << "(";
   for (auto a : getOperands())
@@ -283,7 +284,8 @@ void RustCallIndirectOp::writeRust(RustPrinterStream &PS) {
   bool has_result = getNumResults();
   if (has_result) {
     auto r = getResult(0);
-    PS << "let " << r << ":" << r.getType() << " = ";
+    PS << "let ";
+    PS.printAsArg(r) << ":" << r.getType() << " = ";
   }
   PS << "(" << getCallee() << ")(";
   for (auto a : getArgOperands())
@@ -303,7 +305,7 @@ void RustFuncOp::writeRust(RustPrinterStream &PS) {
     if (i != 0)
       PS << ", ";
     Value v = front().getArgument(i);
-    PS << v << ": " << v.getType();
+    PS.printAsArg(v) << ": " << v.getType();
   }
   PS << ") ";
   if (getNumFuncResults()) { // The return type
@@ -332,22 +334,25 @@ void RustConstantOp::writeRust(RustPrinterStream &PS) { PS.getConstant(*this); }
 
 void RustUnaryOp::writeRust(RustPrinterStream &PS) {
   auto r = getResult();
-  PS << "let " << r << ":" << r.getType() << " = " << getOperator() << "("
-     << getOperand() << ")"
-     << ";\n";
+  PS << "let ";
+  PS.printAsArg(r) << ":" << r.getType() << " = " << getOperator() << "("
+                   << getOperand() << ")"
+                   << ";\n";
 }
 
 void RustMakeEnumOp::writeRust(RustPrinterStream &PS) {
   auto r = getResult();
   RustEnumType et = r.getType().cast<RustEnumType>();
-  PS << "let " << r << ":" << et << " = arcorn::enwrap!(" << et
-     << "::" << variant() << ", " << value() << ");\n";
+  PS << "let ";
+  PS.printAsArg(r) << ":" << et << " = arcorn::enwrap!(" << et
+                   << "::" << variant() << ", " << value() << ");\n";
 }
 
 void RustMakeStructOp::writeRust(RustPrinterStream &PS) {
   auto r = getResult();
   RustStructType st = r.getType().cast<RustStructType>();
-  PS << "let " << r << ":" << st << " = " << st << " { ";
+  PS << "let ";
+  PS.printAsArg(r) << ":" << st << " = " << st << " { ";
   auto args = operands();
   for (unsigned i = 0; i < args.size(); i++) {
     if (i != 0)
@@ -360,8 +365,9 @@ void RustMakeStructOp::writeRust(RustPrinterStream &PS) {
 
 void RustMethodCallOp::writeRust(RustPrinterStream &PS) {
   auto r = getResult();
-  PS << "let " << r << ":" << r.getType() << " = " << obj() << "."
-     << getMethod() << "(";
+  PS << "let ";
+  PS.printAsArg(r) << ":" << r.getType() << " = " << obj() << "." << getMethod()
+                   << "(";
   auto args = operands();
   for (unsigned i = 0; i < args.size(); i++) {
     if (i != 0)
@@ -374,47 +380,54 @@ void RustMethodCallOp::writeRust(RustPrinterStream &PS) {
 
 void RustBinaryOp::writeRust(RustPrinterStream &PS) {
   auto r = getResult();
-  PS << "let " << r << ":" << r.getType() << " = " << LHS() << " "
-     << getOperator() << " " << RHS() << ";\n";
+  PS << "let ";
+  PS.printAsArg(r) << ":" << r.getType() << " = " << LHS() << " "
+                   << getOperator() << " " << RHS() << ";\n";
 }
 
 void RustBinaryRcOp::writeRust(RustPrinterStream &PS) {
   auto r = getResult();
-  PS << "let " << r << ":" << r.getType() << " = Rc::new(&*" << LHS() << " "
-     << getOperator() << " &*" << RHS() << ");\n";
+  PS << "let ";
+  PS.printAsArg(r) << ":" << r.getType() << " = Rc::new(&*" << LHS() << " "
+                   << getOperator() << " &*" << RHS() << ");\n";
 }
 
 void RustCompOp::writeRust(RustPrinterStream &PS) {
   auto r = getResult();
-  PS << "let " << r << ":" << r.getType() << " = " << LHS() << " "
-     << getOperator() << " " << RHS() << ";\n";
+  PS << "let ";
+  PS.printAsArg(r) << ":" << r.getType() << " = " << LHS() << " "
+                   << getOperator() << " " << RHS() << ";\n";
 }
 
 void RustEnumAccessOp::writeRust(RustPrinterStream &PS) {
   auto r = getResult();
   RustEnumType et = theEnum().getType().cast<RustEnumType>();
-  PS << "let " << r << ":" << r.getType() << " = arcorn::unwrap!(" << et
-     << "::" << getVariant() << ", " << theEnum() << ");\n";
+  PS << "let ";
+  PS.printAsArg(r) << ":" << r.getType() << " = arcorn::unwrap!(" << et
+                   << "::" << getVariant() << ", " << theEnum() << ");\n";
 }
 
 void RustEnumCheckOp::writeRust(RustPrinterStream &PS) {
   auto r = getResult();
   RustEnumType et = theEnum().getType().cast<RustEnumType>();
-  PS << "let " << r << ":" << r.getType() << " = arcorn::is!(" << et
-     << "::" << getVariant() << ", " << theEnum() << ");\n";
+  PS << "let ";
+  PS.printAsArg(r) << ":" << r.getType() << " = arcorn::is!(" << et
+                   << "::" << getVariant() << ", " << theEnum() << ");\n";
 }
 
 void RustFieldAccessOp::writeRust(RustPrinterStream &PS) {
   auto r = getResult();
-  PS << "let " << r << ":" << r.getType() << " = " << aggregate() << "."
-     << getField() << ";\n";
+  PS << "let ";
+  PS.printAsArg(r) << ":" << r.getType() << " = " << aggregate() << "."
+                   << getField() << ";\n";
 }
 
 void RustIfOp::writeRust(RustPrinterStream &PS) {
   auto r = getResult();
   // No clone is needed here as it will be inserted by the block
   // result.
-  PS << "let " << r << ":" << r.getType() << " = if " << getOperand() << " {\n";
+  PS << "let ";
+  PS.printAsArg(r) << ":" << r.getType() << " = if " << getOperand() << " {\n";
   for (Operation &operation : thenRegion().front())
     ::writeRust(operation, PS);
   PS << "} else {\n";
@@ -430,8 +443,9 @@ void RustBlockResultOp::writeRust(RustPrinterStream &PS) {
 
 void RustTensorOp::writeRust(RustPrinterStream &PS) {
   auto r = getResult();
-  PS << "let " << r << ":" << r.getType()
-     << " = Rc::new(Array::from_shape_vec((";
+  PS << "let ";
+  PS.printAsArg(r) << ":" << r.getType()
+                   << " = Rc::new(Array::from_shape_vec((";
   RustTensorType t = result().getType().cast<RustTensorType>();
   for (int64_t d : t.getDimensions())
     PS << d << ", ";
@@ -446,7 +460,8 @@ void RustTensorOp::writeRust(RustPrinterStream &PS) {
 
 void RustTupleOp::writeRust(RustPrinterStream &PS) {
   auto r = getResult();
-  PS << "let " << r << ":" << r.getType() << " = (";
+  PS << "let ";
+  PS.printAsArg(r) << ":" << r.getType() << " = (";
   auto args = operands();
   for (unsigned i = 0; i < args.size(); i++) {
     auto v = args[i];

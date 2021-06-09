@@ -116,8 +116,14 @@ public:
       id = found->second;
     if (id < 0)
       return "C" + std::to_string(-id);
-    else
+    else {
+      Type t = v.getType();
+      if (t.isa<FunctionType>() || t.isa<types::RustEnumType>() ||
+          t.isa<types::RustStructType>() || t.isa<types::RustTensorType>() ||
+          t.isa<types::RustTupleType>())
+        return "v" + std::to_string(id) + ".clone()";
       return "v" + std::to_string(id);
+    }
   }
 
   std::string getConstant(RustConstantOp v) {
@@ -153,6 +159,13 @@ public:
 
   RustPrinterStream &print(Value v) {
     Body << get(v);
+    return *this;
+  }
+
+  RustPrinterStream &printAsArg(Value v) {
+    int id = NextID++;
+    Value2ID[v] = id;
+    Body << "v" << std::to_string(id);
     return *this;
   }
 
