@@ -236,6 +236,8 @@ static RustPrinterStream &writeRust(Operation &operation,
     op.writeRust(PS);
   else if (RustCallOp op = dyn_cast<RustCallOp>(operation))
     op.writeRust(PS);
+  else if (RustCallIndirectOp op = dyn_cast<RustCallIndirectOp>(operation))
+    op.writeRust(PS);
   else if (RustCompOp op = dyn_cast<RustCompOp>(operation))
     op.writeRust(PS);
   else if (RustEnumAccessOp op = dyn_cast<RustEnumAccessOp>(operation))
@@ -271,6 +273,19 @@ void RustCallOp::writeRust(RustPrinterStream &PS) {
     PS << "let " << r << ":" << r.getType() << " = ";
   }
   PS << getCallee() << "(";
+  for (auto a : getOperands())
+    PS << a << ", ";
+  PS << ")";
+  PS << ";\n";
+}
+
+void RustCallIndirectOp::writeRust(RustPrinterStream &PS) {
+  bool has_result = getNumResults();
+  if (has_result) {
+    auto r = getResult(0);
+    PS << "let " << r << ":" << r.getType() << " = ";
+  }
+  PS << "(" << getCallee() << ".clone())(";
   for (auto a : getOperands())
     PS << a << ", ";
   PS << ")";

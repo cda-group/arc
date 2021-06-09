@@ -168,6 +168,9 @@ def RustCallIndirectOp : Rust_Op<"call_indirect", [
 
     /// Return the callee of this operation.
     CallInterfaceCallable getCallableForCallee() { return getCallee(); }
+
+    // Write this op as Rust code to os
+    void writeRust(RustPrinterStream &os);
   }];
 
   let verifier = ?;
