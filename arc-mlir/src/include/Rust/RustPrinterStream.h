@@ -121,6 +121,23 @@ public:
   }
 
   std::string getConstant(RustConstantOp v) {
+    StringAttr str = v.getValue().dyn_cast<StringAttr>();
+    if (FunctionType fType = v.getType().dyn_cast<FunctionType>()) {
+      // Although a function reference is a constant in MLIR it is not
+      // in the Arcorn dialect of Rust, so we need to handle them
+      // specially.
+      auto found = Value2ID.find(v);
+      int id = 0;
+      if (found == Value2ID.end()) {
+        id = NextID++;
+        Value2ID[v] = id;
+        Body << "let v" << id << " : ";
+        printAsRust(Body, fType) << " = Box::new(" << str.getValue() << ") as ";
+        printAsRust(Body, fType) << ";\n";
+      } else
+        id = found->second;
+      return "v" + std::to_string(id);
+    }
     auto found = Value2ID.find(v);
     int id = 0;
     if (found == Value2ID.end()) {
@@ -128,7 +145,6 @@ public:
       Value2ID[v] = id;
     } else
       id = found->second;
-    StringAttr str = v.getValue().dyn_cast<StringAttr>();
     types::RustType cType = v.getType().cast<types::RustType>();
     Constants << "const C" << -id << " : ";
     cType.printAsRust(Constants) << " = " << str.getValue() << ";\n";
@@ -189,6 +205,29 @@ public:
 
   void registerDirective(std::string key, std::string value) {
     CrateDirectives[key] = value;
+  }
+
+  llvm::raw_string_ostream &printAsRust(llvm::raw_string_ostream &s,
+                                        const Type ty) {
+    if (FunctionType fType = ty.dyn_cast<FunctionType>()) {
+      s << "Box<dyn arcorn::ArcornFn(";
+      for (Type t : fType.getInputs()) {
+        printAsRust(s, t) << ",";
+      }
+      s << ")";
+      if (fType.getNumResults()) {
+        s << " -> ";
+        printAsRust(s, fType.getResult(0));
+      }
+      s << ">";
+      return s;
+    }
+    if (types::RustType rt = ty.dyn_cast<types::RustType>()) {
+      rt.printAsRust(s);
+      return s;
+    }
+    s << "unhandled type";
+    return s;
   }
 };
 
