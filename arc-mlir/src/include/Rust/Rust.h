@@ -47,6 +47,8 @@ struct CrateVersions {
   static const char *ndarray;
 };
 
+bool isRustFunctionType(Type type);
+
 } // namespace rust
 
 /// Include the auto-generated header file containing the declarations of the
