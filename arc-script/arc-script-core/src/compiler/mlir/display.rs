@@ -110,7 +110,7 @@ pretty! {
     mlir::Fun => {
 	match fmt.types.resolve(node.t) {
 	    hir::repr::TypeKind::Scalar(hir::repr::ScalarKind::Unit) =>
-		write!(w, "func @{id}({params}) -> () {body}",
+		write!(w, "func @{id}({params}) -> () {{\n {body}\n}}\n",
 		       id = node.path.pretty(fmt),
 		       params = node.params.iter().map_pretty(
 			   |x, w| write!(w, "{}: {}", x.pretty(fmt), x.t.pretty(fmt)),
@@ -119,7 +119,7 @@ pretty! {
 		       body = node.body.pretty(&fmt),
 		),
 	    _ =>
-		write!(w, "func @{id}({params}) -> {ty} {body}",
+		write!(w, "func @{id}({params}) -> {ty} {{\n {body}\n}}\n",
 		       id = node.path.pretty(fmt),
 		       params = node.params.iter().map_pretty(
 			   |x, w| write!(w, "{}: {}", x.pretty(fmt), x.t.pretty(fmt)),
