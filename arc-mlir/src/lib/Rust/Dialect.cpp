@@ -285,8 +285,8 @@ void RustCallIndirectOp::writeRust(RustPrinterStream &PS) {
     auto r = getResult(0);
     PS << "let " << r << ":" << r.getType() << " = ";
   }
-  PS << "(" << getCallee() << ".clone())(";
-  for (auto a : getOperands())
+  PS << "(" << getCallee() << ")(";
+  for (auto a : getArgOperands())
     PS << a << ", ";
   PS << ")";
   PS << ";\n";
