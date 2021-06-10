@@ -20,7 +20,7 @@ arc-script-lsp      = { version = "=0.0.0", path = "../arc-script-lsp",  optiona
 arc-script-repl     = { version = "=0.0.0", path = "../arc-script-repl", optional = true }
 
 tracing             = { version = "0.2.0", git = "https://github.com/tokio-rs/tracing/" }
-tracing-subscriber  = { version = "0.3.0", git = "https://github.com/tokio-rs/tracing/" }
+tracing-subscriber  = { version = "0.3.0", git = "https://github.com/tokio-rs/tracing/", features = ["fmt"] }
 tracing-flame       = { version = "0.2.0", git = "https://github.com/tokio-rs/tracing/" }
 tracing-timing      = { version = "0.4.3" }
 serde_json          = { version = "1.0.61" }

@@ -4,12 +4,21 @@ expression: s
 input_file: arc-script-test/compile/src/tests/expect_pass/structs.arc
 
 ---
-fun foo(a_0: { b: i32, c: i32 }, b_0: { b: i32, c: i32 }) -> { a: { b: i32, c: i32 }, d: { b: i32, c: i32 }, xyz: i32 } {
-    let r_0: { a: { b: i32, c: i32 }, d: { b: i32, c: i32 }, xyz: i32 } = { a: a_0, xyz: 4711, d: b_0 } in
-    r_0
+fun foo(a_0: { b: i32, c: i32 }, b_0: { b: i32, c: i32 }): { a: { b: i32, c: i32 }, d: { b: i32, c: i32 }, xyz: i32 } {
+    val x_0: i32 = 4711;
+    val x_1: { a: { b: i32, c: i32 }, d: { b: i32, c: i32 }, xyz: i32 } = { a: a_0, xyz: x_0, d: b_0 };
+    x_1
 }
-fun test() -> unit {
-    let x_0: { a: { b: i32, c: i32 }, d: { b: i32, c: i32 }, xyz: i32 } = crate::foo({ c: 1, b: 5 }, { b: 4, c: 2 }) in
-    unit
+fun test(): unit {
+    val x_2: fun({ b: i32, c: i32 }, { b: i32, c: i32 }): { a: { b: i32, c: i32 }, d: { b: i32, c: i32 }, xyz: i32 } = crate::foo;
+    val x_3: i32 = 1;
+    val x_4: i32 = 5;
+    val x_5: { b: i32, c: i32 } = { c: x_3, b: x_4 };
+    val x_6: i32 = 4;
+    val x_7: i32 = 2;
+    val x_8: { b: i32, c: i32 } = { b: x_6, c: x_7 };
+    val x_9: { a: { b: i32, c: i32 }, d: { b: i32, c: i32 }, xyz: i32 } = x_2(x_5, x_8);
+    val x_A: unit = unit;
+    x_A
 }
 

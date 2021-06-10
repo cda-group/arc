@@ -17,7 +17,5 @@ fun test() {
     -- 1 as f32;
     (1, 2, 3).0;
     {a:1, b:2, c:3}.a;
-    emit "foo";
     log "bar";
-    unit
 }

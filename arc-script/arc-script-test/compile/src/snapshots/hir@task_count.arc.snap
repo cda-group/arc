@@ -4,15 +4,41 @@ expression: s
 input_file: arc-script-test/compile/src/tests/expect_mlir_fail_todo/task_count.arc
 
 ---
-task Count() ~{ key: i32, val: i32 } -> ~{ key: i32, val: i32 } {
-    state count_0: i32 = 0
-    on {
-        x_0: { key: i32, val: i32 } => {
-            let event_0: i32 = x_0.val in
-            let key_0: i32 = x_0.key in
-            count_0 = count_0 + 1;
-            emit { val: count_0, key: key_0 }
-        }
+extern type Cell(x: i32) {
+    extern fun get(): i32;, 
+    extern fun set(x: i32): unit;
+}
+task Count(): ~{ key: i32, value: i32 } -> ~{ key: i32, value: i32 } {
+    enum IInterface {
+        __({ key: i32, value: i32 })
     }
+    enum OInterface {
+        __({ key: i32, value: i32 })
+    }
+    val count_0: crate::Cell = uninitialised;
+    fun on_start(): unit {
+        val x_0: fun(i32): crate::Cell = crate::Cell;
+        val x_1: i32 = 0;
+        val x_2: crate::Cell = x_0(x_1);
+        val x_3: unit = initialise[count_0](x_2);
+        val x_H: unit = unit;
+        x_H
+    }
+    crate::Count::on_start();
+    fun on_event(x_7: crate::Count::IInterface): unit {
+        val x_4: { key: i32, value: i32 } = unwrap[crate::Count::IInterface::__](x_7);
+        val x_5: i32 = x_4.value;
+        val x_6: i32 = x_4.key;
+        val x_8: i32 = count_0.get();
+        val x_9: i32 = 1;
+        val x_A: i32 = x_8 + x_9;
+        val x_B: unit = count_0.set(x_A);
+        val x_C: i32 = count_0.get();
+        val x_D: { key: i32, value: i32 } = { value: x_C, key: x_6 };
+        val x_E: crate::Count::OInterface = enwrap[crate::Count::OInterface::__](x_D);
+        val x_F: unit = emit x_E;
+        x_F
+    }
+    on event => crate::Count::on_event(event)
 }
 

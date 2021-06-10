@@ -4,27 +4,67 @@ expression: s
 input_file: arc-script-test/compile/src/tests/expect_fail_todo/ops.arc
 
 ---
-fun test() -> unit {
-    1 == 2;
-    1 != 2;
-    1 > 2;
-    1 < 2;
-    1 >= 2;
-    1 <= 2;
-    1 + 2;
-    1 - 2;
-    1 * 2;
-    1 / 2;
-    true and false;
-    true or false;
-    not true;
-    -1;
-    1 ** 2;
-    --1;
-    (1, 2, 3).0;
-    { a: 1, b: 2, c: 3 }.a;
-    emit "foo";
-    log "bar";
-    unit
+fun test(): unit {
+    val x_0: i32 = 1;
+    val x_1: i32 = 2;
+    val x_2: bool = x_0 == x_1;
+    val x_3: i32 = 1;
+    val x_4: i32 = 2;
+    val x_5: bool = x_3 != x_4;
+    val x_6: i32 = 1;
+    val x_7: i32 = 2;
+    val x_8: bool = x_6 > x_7;
+    val x_9: i32 = 1;
+    val x_A: i32 = 2;
+    val x_B: bool = x_9 < x_A;
+    val x_C: i32 = 1;
+    val x_D: i32 = 2;
+    val x_E: bool = x_C >= x_D;
+    val x_F: i32 = 1;
+    val x_G: i32 = 2;
+    val x_H: bool = x_F <= x_G;
+    val x_I: i32 = 1;
+    val x_J: i32 = 2;
+    val x_K: i32 = x_I + x_J;
+    val x_L: i32 = 1;
+    val x_M: i32 = 2;
+    val x_N: i32 = x_L - x_M;
+    val x_O: i32 = 1;
+    val x_P: i32 = 2;
+    val x_Q: i32 = x_O * x_P;
+    val x_R: i32 = 1;
+    val x_S: i32 = 2;
+    val x_T: i32 = x_R / x_S;
+    val x_U: bool = true;
+    val x_V: bool = false;
+    val x_W: bool = x_U and x_V;
+    val x_X: bool = true;
+    val x_Y: bool = false;
+    val x_Z: bool = x_X or x_Y;
+    val x_a: bool = true;
+    val x_b: bool = not x_a;
+    val x_c: i32 = 1;
+    val x_d: i32 = -x_c;
+    val x_e: i32 = 1;
+    val x_f: i32 = 2;
+    val x_g: i32 = x_e ** x_f;
+    val x_h: i32 = 1;
+    val x_i: '134 = x_h as f32;
+    val x_j: '137 = -x_i;
+    val x_k: '140 = -x_j;
+    val x_l: i32 = 1;
+    val x_m: i32 = 2;
+    val x_n: i32 = 3;
+    val x_o: (i32, i32, i32) = (x_l, x_m, x_n);
+    val x_p: i32 = x_o.0;
+    val x_q: i32 = 1;
+    val x_r: i32 = 2;
+    val x_s: i32 = 3;
+    val x_t: { a: i32, b: i32, c: i32 } = { a: x_q, b: x_r, c: x_s };
+    val x_u: i32 = x_t.a;
+    val x_v: str = "bar";
+    val x_w: unit = log x_v;
+    val x_x: unit = unit;
+    x_x
 }
 

@@ -1,11 +1,15 @@
-use crate::compiler::hir::Type;
-use crate::compiler::hir::TypeKind;
+use crate::compiler::hir;
+pub(crate) use crate::compiler::hir::Type;
+pub(crate) use crate::compiler::hir::TypeId;
+
 use arc_script_core_shared::Educe;
 use arc_script_core_shared::Map;
 use arc_script_core_shared::MapEntry;
 use arc_script_core_shared::Shrinkwrap;
 use arc_script_core_shared::VecMap;
 
+use bitmaps::BitOps;
+use bitmaps::*;
 use ena::unify::InPlace;
 use ena::unify::NoError;
 use ena::unify::Snapshot;
@@ -43,42 +47,40 @@ impl Default for TypeInterner {
     }
 }
 
-/// A type variable which maps to a [`crate::repr::hir::Type`].
-#[derive(Shrinkwrap, Default, Debug, Eq, PartialEq, Copy, Clone, Hash)]
-pub struct TypeId(pub(crate) u32);
-
 impl TypeInterner {
-    /// Returns a fresh type variable which is unified with the given type `ty`.
-    pub(crate) fn intern(&mut self, ty: impl Into<Type>) -> TypeId {
-        self.store.get_mut().new_key(ty.into())
+    /// Returns a fresh type variable which is unified with the given the `TypeKind`.
+    pub(crate) fn intern(&mut self, kind: impl Into<hir::TypeKind>) -> Type {
+        self.store.get_mut().new_key(kind.into()).into()
     }
 
-    /// Returns the type which `tv` is unified with.
-    pub(crate) fn resolve(&self, tv: TypeId) -> Type {
-        self.store.borrow_mut().probe_value(tv)
+    /// Returns the `TypeKind` which `t` is unified with.
+    pub(crate) fn resolve(&self, t: impl Into<TypeId>) -> hir::TypeKind {
+        self.store.borrow_mut().probe_value(t.into())
     }
 
     /// Returns a fresh type variable.
-    pub(crate) fn fresh(&mut self) -> TypeId {
-        self.store.get_mut().new_key(Type::default())
+    pub(crate) fn fresh(&mut self) -> Type {
+        self.store
+            .get_mut()
+            .new_key(hir::TypeKind::default())
+            .into()
     }
 
     /// Returns the root of a type variable.
-    pub(crate) fn root(&self, tv: TypeId) -> TypeId {
-        self.store.borrow_mut().find(tv)
+    pub(crate) fn root(&self, id: impl Into<TypeId>) -> TypeId {
+        self.store.borrow_mut().find(id)
     }
 
     /// Collects all types in the unification-table into a map.
-    pub(crate) fn collect(&mut self) -> Map<TypeId, Type> {
-        let tvs = self.store.get_mut().vars_since_snapshot(&self.snapshot);
+    pub(crate) fn collect(&mut self) -> Map<Type, hir::TypeKind> {
+        let ts = self.store.get_mut().vars_since_snapshot(&self.snapshot);
         let mut map = Map::default();
-        for i in tvs.start.0..tvs.end.0 {
-            let tv = TypeId(i);
-            match map.entry(tv) {
+        for i in ts.start.0..ts.end.0 {
+            let t = Type::new(TypeId(i));
+            match map.entry(t) {
                 MapEntry::Occupied(_e) => {}
                 MapEntry::Vacant(e) => {
-                    let ty = self.resolve(tv);
-                    e.insert(ty);
+                    e.insert(self.resolve(t));
                 }
             }
         }
@@ -87,7 +89,7 @@ impl TypeInterner {
 }
 
 impl UnifyKey for TypeId {
-    type Value = Type;
+    type Value = hir::TypeKind;
 
     fn index(&self) -> u32 {
         **self
@@ -102,17 +104,18 @@ impl UnifyKey for TypeId {
     }
 }
 
-impl UnifyValue for Type {
+impl UnifyValue for hir::TypeKind {
     type Error = NoError;
 
-    /// Unifies two type variables without the possibility of failing.
-    /// TODO: Do not clone, instead use Rc<Type>
-    fn unify_values(ty1: &Self, ty2: &Self) -> std::result::Result<Self, Self::Error> {
-        use TypeKind::*;
-        match (&ty1.kind, &ty2.kind) {
-            (Unknown | Err, _) => Ok(ty2.clone()),
-            (_, Unknown | Err) => Ok(ty1.clone()),
-            _ => Ok(ty1.clone()),
+    /// Unifies two `TypeKind`s without the possibility of failing.
+    fn unify_values(kind0: &Self, kind1: &Self) -> std::result::Result<Self, Self::Error> {
+        use hir::TypeKind::*;
+        match (&kind0, &kind1) {
+            (Unknown(c0), Unknown(c1)) => Ok(Unknown(hir::Constraint(**c0 | **c1))),
+            (Err, _) | (_, Err) => Ok(Err),
+            (_, Unknown(_) | Err) => Ok(kind0.clone()),
+            (Unknown(_) | Err, _) => Ok(kind1.clone()),
+            _ => Ok(kind1.clone()),
         }
     }
 }

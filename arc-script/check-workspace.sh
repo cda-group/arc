@@ -3,11 +3,11 @@
 check () {
   cd "$1";
   echo "[$1]";
-  echo "[cargo check]"; cargo check;
-  echo "[cargo test]"; cargo test;
-  echo "[cargo clippy]"; cargo clippy;
-  echo "[cargo fmt]"; cargo fmt -- --check;
-  echo "[cargo rustc]"; cargo rustc --lib -- -D warnings;
+  echo "[cargo check]"; cargo check --quiet;
+  echo "[cargo test]"; cargo test --quiet;
+  echo "[cargo clippy]"; cargo clippy --quiet;
+  echo "[cargo fmt]";   cargo fmt --quiet -- --check;
+  echo "[cargo rustc]"; cargo rustc --quiet --lib -- -D warnings;
   cd -
 }
 

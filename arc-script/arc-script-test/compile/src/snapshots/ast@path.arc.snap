@@ -4,9 +4,9 @@ expression: s
 input_file: arc-script-test/compile/src/tests/expect_pass/path.arc
 
 ---
-fun main()  {
-    let x = 1 in
-    let y = x in
-    unit
+fun main() {
+    val x = 1;
+    val y = x;
+    
 }
 

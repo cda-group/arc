@@ -4,10 +4,10 @@ expression: s
 input_file: arc-script-test/compile/src/tests/expect_pass/if_let.arc
 
 ---
-fun test() -> i32 {
-    let x = 3 in
-    let y = 5 in
-    if let ((1, z), 1) = ((3, x), 1) {
+fun test(): i32 {
+    val x = 3;
+    val y = 5;
+    if val ((1, z), 1) = ((3, x), 1) {
         z + y
     } else {
         y + 2

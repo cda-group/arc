@@ -6,9 +6,13 @@ pub use codespan_reporting::term::termcolor::StandardStream;
 pub use codespan_reporting::term::termcolor::WriteColor;
 
 use std::io::Result;
-pub use std::io::Write;
 
 use codespan_reporting::term::termcolor::ColorSpec;
+
+/// Trait which wraps `Write` and `WriteColor`.
+pub trait Writer: std::io::Write + WriteColor {}
+
+impl<T> Writer for T where T: std::io::Write + WriteColor {}
 
 /// A writer which will move data into the void.
 /// Just like [`std::io::Sink`], but supports the `termcolor` library.
@@ -29,7 +33,7 @@ impl WriteColor for Sink {
     }
 }
 
-impl Write for Sink {
+impl std::io::Write for Sink {
     fn write(&mut self, _: &[u8]) -> Result<usize> {
         Ok(0)
     }

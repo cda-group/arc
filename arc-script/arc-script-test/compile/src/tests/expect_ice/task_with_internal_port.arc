@@ -1,4 +1,4 @@
-task Delay() (Input(~i32)) -> (Output(~i32)) {
+task Delay(): (Input(~i32)) -> (Output(~i32)) {
     port Trigger(~i32)
 
     on {

@@ -1,11 +1,14 @@
 use crate::compiler::hir::repr::{Index, Item, ItemKind, Path, HIR};
-
 use crate::compiler::info::Info;
+
+use arc_script_core_shared::Shrinkwrap;
 
 use std::fmt::{Display, Formatter, Result};
 
+#[derive(Shrinkwrap)]
 pub(crate) struct HIRDebug<'a> {
     hir: &'a HIR,
+    #[shrinkwrap(main_field)]
     info: &'a Info,
 }
 
@@ -20,20 +23,16 @@ impl<'a> Display for HIRDebug<'a> {
     fn fmt(&self, f: &mut Formatter<'_>) -> Result {
         writeln!(f, "HIR Items [")?;
         for (path, item) in &self.hir.defs {
-            write!(
-                f,
-                r#"    "{}" => "#,
-                self.info.resolve_to_names(path.id).join("::")
-            )?;
+            write!(f, r#"    {:<30} => "#, self.resolve_to_names(*path).join("::"))?;
             match &item.kind {
-                ItemKind::Alias(_x)   => writeln!(f, "alias,")?,
-                ItemKind::Enum(_x)    => writeln!(f, "enum,")?,
-                ItemKind::Fun(_x)     => writeln!(f, "fun,")?,
-                ItemKind::Extern(_x)  => writeln!(f, "extern,")?,
-                ItemKind::Task(_x)    => writeln!(f, "task,")?,
-                ItemKind::Variant(_x) => writeln!(f, "variant,")?,
+                ItemKind::TypeAlias(_)  => writeln!(f, "Alias,")?,
+                ItemKind::Enum(_)       => writeln!(f, "Enum,")?,
+                ItemKind::Fun(_)        => writeln!(f, "Fun,")?,
+                ItemKind::ExternFun(_)  => writeln!(f, "ExternFun,")?,
+                ItemKind::ExternType(_) => writeln!(f, "ExternType,")?,
+                ItemKind::Task(_)       => writeln!(f, "Task,")?,
+                ItemKind::Variant(_)    => writeln!(f, "Variant,")?,
             }
-
         }
         writeln!(f, "]")?;
         Ok(())

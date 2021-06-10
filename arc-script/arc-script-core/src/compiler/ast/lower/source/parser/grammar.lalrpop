@@ -1,4 +1,5 @@
 use crate::compiler::ast::*;
+use crate::compiler::info::Info;
 use crate::compiler::info::files::{FileId, ByteIndex};
 use crate::compiler::info::paths::{PathInterner, PathId};
 use crate::compiler::info::names::{NameInterner, NameId};
@@ -17,8 +18,10 @@ use half::bf16;
 grammar(
     file: FileId,
     exprs: &mut ExprInterner,
-    diags: &mut DiagInterner,
+    types: &mut TypeInterner,
+    pats: &mut PatInterner,
     paths: &mut PathInterner,
+    diags: &mut DiagInterner,
 );
 
 extern {
@@ -31,112 +34,120 @@ extern {
 //=============================================================================
 // Grouping
 //=============================================================================
-        "{"    => Token::BraceL,
-        "}"    => Token::BraceR,
-        "["    => Token::BrackL,
-        "]"    => Token::BrackR,
-        "("    => Token::ParenL,
-        ")"    => Token::ParenR,
-        "()"   => Token::ParenLR,
-        "[]"   => Token::BrackLR,
-        "{}"   => Token::BraceLR,
+        "{"  => Token::BraceL,
+        "}"  => Token::BraceR,
+        "{}" => Token::BraceLR,
+        "["  => Token::BrackL,
+        "]"  => Token::BrackR,
+        "[]" => Token::BrackLR,
+        "("  => Token::ParenL,
+        ")"  => Token::ParenR,
+        "()" => Token::ParenLR,
+        "<"  => Token::AngleL,
+        ">"  => Token::AngleR,
+        "<>" => Token::AngleLR,
 //=============================================================================
 // Operators
 //=============================================================================
-        "&"   => Token::Amp,
-        "&&"  => Token::AmpAmp,
-        "<-"  => Token::ArrowL,
-        "->"  => Token::ArrowR,
-        "@"   => Token::AtSign,
-        "!"   => Token::Bang,
-        "|"   => Token::Bar,
-        "||"  => Token::BarBar,
-        "^"   => Token::Caret,
-        ":"   => Token::Colon,
-        "::"  => Token::ColonColon,
-        ","   => Token::Comma,
-        "$"   => Token::Dollar,
-        "."   => Token::Dot,
-        ".."  => Token::DotDot,
-        "="   => Token::Equ,
-        "=="  => Token::EquEqu,
-        ">="  => Token::Geq,
-        ">"   => Token::Gt,
-        "=>"  => Token::Imply,
-        "<="  => Token::Leq,
-        "<"   => Token::Lt,
-        "<>"  => Token::LtGt,
-        "-"   => Token::Minus,
         "!="  => Token::Neq,
         "%"   => Token::Percent,
-        "|>"  => Token::Pipe,
-        "+"   => Token::Plus,
-        "?"   => Token::Qm,
-        "???" => Token::QmQmQm,
-        ";"   => Token::Semi,
-        ";;"  => Token::SemiSemi,
-        "/"   => Token::Slash,
         "*"   => Token::Star,
         "**"  => Token::StarStar,
-        "~"   => Token::Tilde,
+        "+"   => Token::Plus,
+        ","   => Token::Comma,
+        "-"   => Token::Minus,
+        "->"  => Token::ArrowR,
+        "."   => Token::Dot,
+        ".."  => Token::DotDot,
+        "..=" => Token::DotDotEq,
+        "/"   => Token::Slash,
+        ":"   => Token::Colon,
+        "::"  => Token::ColonColon,
+        ";"   => Token::Semi,
+        "<="  => Token::Leq,
+        "="   => Token::Equ,
+        "=="  => Token::EquEqu,
+        "=>"  => Token::Imply,
+        ">="  => Token::Geq,
+        "@"   => Token::AtSign,
         "_"   => Token::Underscore,
+        "|"   => Token::Bar,
+        "||"  => Token::BarBar,
+        "~"   => Token::Tilde,
+//=============================================================================
+// Unused Operators
+//=============================================================================
+        // "|>"  => Token::Pipe,
+        // "!"   => Token::Bang,
+        // "$"   => Token::Dollar,
+        // "&"   => Token::Amp,
+        // "&&"  => Token::AmpAmp,
+        // ";;"  => Token::SemiSemi,
+        // "<-"  => Token::ArrowL,
+        // "?"   => Token::Qm,
+        // "???" => Token::QmQmQm,
+        // "^"   => Token::Caret,
 //=============================================================================
 // Keywords
 //=============================================================================
-        "after"   => Token::After,
-        "and"     => Token::And,
-        "as"      => Token::As,
-        "band"    => Token::Band,
-        "bor"     => Token::Bor,
-        "box"     => Token::Box,
-        "bxor"    => Token::Bxor,
-        "by"      => Token::By,
-        "break"   => Token::Break,
-        "crate"   => Token::Crate,
-        "del"     => Token::Del,
-        "add"     => Token::Add,
-        "else"    => Token::Else,
-        "emit"    => Token::Emit,
-        "enum"    => Token::Enum,
-        "extern"  => Token::Extern,
-        "for"     => Token::For,
-        "fun"     => Token::Fun,
-        "if"      => Token::If,
-        "in"      => Token::In,
-        "is"      => Token::Is,
-        "let"     => Token::Let,
-        "log"     => Token::Log,
-        "loop"    => Token::Loop,
-        "match"   => Token::Match,
-        "not"     => Token::Not,
-        "on"      => Token::On,
-        "or"      => Token::Or,
-        "port"    => Token::Port,
-        "reduce"  => Token::Reduce,
-        "return"  => Token::Return,
-        "startup" => Token::Startup,
-        "state"   => Token::State,
-        "task"    => Token::Task,
-        "timeout" => Token::Timeout,
-        "timer"   => Token::Timer,
-        "trigger" => Token::Trigger,
-        "task"    => Token::Task,
-        "type"    => Token::Type,
-        "unwrap"  => Token::Unwrap,
-        "enwrap"  => Token::Enwrap,
-        "use"     => Token::Use,
-        "xor"     => Token::Xor,
+        "after"    => Token::After,
+        "and"      => Token::And,
+        "as"       => Token::As,
+        "band"     => Token::Band,
+        "bor"      => Token::Bor,
+        "break"    => Token::Break,
+        "bxor"     => Token::Bxor,
+        "by"       => Token::By,
+        "continue" => Token::Continue,
+        "crate"    => Token::Crate,
+        "else"     => Token::Else,
+        "emit"     => Token::Emit,
+        "enum"     => Token::Enum,
+        "enwrap"   => Token::Enwrap,
+        "every"    => Token::Every,
+        "extern"   => Token::Extern,
+        "for"      => Token::For,
+        "fun"      => Token::Fun,
+        "if"       => Token::If,
+        "in"       => Token::In,
+        "is"       => Token::Is,
+        "log"      => Token::Log,
+        "loop"     => Token::Loop,
+        "match"    => Token::Match,
+        "not"      => Token::Not,
+        "on"       => Token::On,
+        "or"       => Token::Or,
+        "return"   => Token::Return,
+        "task"     => Token::Task,
+        "type"     => Token::Type,
+        "unwrap"   => Token::Unwrap,
+        "use"      => Token::Use,
+        "val"      => Token::Val,
+        "var"      => Token::Var,
+        "xor"      => Token::Xor,
 //=============================================================================
-// Reserved Keywords
+// Unused Keywords
 //=============================================================================
-        "end"      => Token::End,
-        "of"       => Token::Of,
-        "pub"      => Token::Pub,
-        "shutdown" => Token::Shutdown,
-        "sink"     => Token::Sink,
-        "source"   => Token::Source,
-        "then"     => Token::Then,
-        "where"    => Token::Where,
+        // "add"      => Token::Add,
+        // "box"      => Token::Box,
+        // "del"      => Token::Del,
+        // "do"       => Token::Do,
+        // "end"      => Token::End,
+        // "let"      => Token::Let,
+        // "of"       => Token::Of,
+        // "port"     => Token::Port,
+        // "pub"      => Token::Pub,
+        // "reduce"   => Token::Reduce,
+        // "shutdown" => Token::Shutdown,
+        // "sink"     => Token::Sink,
+        // "source"   => Token::Source,
+        // "startup"  => Token::Startup,
+        // "state"    => Token::State,
+        // "then"     => Token::Then,
+        // "timeout"  => Token::Timeout,
+        // "timer"    => Token::Timer,
+        // "trigger"  => Token::Trigger,
+        // "where"    => Token::Where,
 //=============================================================================
 // Primitive Types
 //=============================================================================
@@ -153,7 +164,6 @@ extern {
         "u16"  => Token::U16,
         "u32"  => Token::U32,
         "u64"  => Token::U64,
-        "null" => Token::Null,
         "str"  => Token::Str,
         "unit" => Token::Unit,
 //=============================================================================
@@ -184,59 +194,63 @@ extern {
 // Macros
 //=============================================================================
 
-Sep<T, S>:         Vec<T> = <v:(<T> S)*> <e:T?> => v.into_iter().chain(e).collect();
-SepNonEmpty<T, S>: Vec<T> = <e:T> <v:(S <T>)*> => vec![e].into_iter().chain(v).collect();
-SepMulti<T, S>:    Vec<T> = <e:T> <v:(S <T>)+> => vec![e].into_iter().chain(v).collect();
-SepTrailing<T, S>: Vec<T> = (<T> S)*;
-Vec<T>:            Vec<T> = Sep<T, ",">;
-VecNonEmpty<T>:    Vec<T> = SepNonEmpty<T, ",">;
-VecMulti<T>:       Vec<T> = SepMulti<T, ",">;
-Semi<T>:           Vec<T> = Sep<T, ";">;
-Single<T>:         Vec<T> = T => vec![<>];
-Box<T>:            Box<T> = T => Box::new(<>);
-Err:               ()     = ! => diags.intern(Diagnostic::from(<>, file));
-Scope<T>:          T      = Indent <T> Dedent;
-Paren<T>:          T      = "(" <T> ")";
-Angle<T>:          T      = "<" <T> ">";
-Bar<T>:            T      = "|" <T> "|";
-Brace<T>:          T      = "{" <T> "}";
-Brack<T>:          T      = "[" <T> "]";
-ParenSep<T, S>:    Vec<T> = { "()" => Vec::new(), Paren<Sep<T, S>> }
-BrackSep<T, S>:    Vec<T> = { "[]" => Vec::new(), Brack<Sep<T, S>> }
-AngleSep<T, S>:    Vec<T> = { "<>" => Vec::new(), Angle<Sep<T, S>> }
-BraceSep<T, S>:    Vec<T> = { "{}" => Vec::new(), Brace<Sep<T, S>> }
-BarSep<T, S>:      Vec<T> = { "||" => Vec::new(), Bar<Sep<T, S>> }
-ParenPair:             () = { "()" => () , "(" ")" => ()  }
-BrackPair:             () = { "[]" => () , "[" "]" => ()  }
-AnglePair:             () = { "<>" => () , "<" ">" => ()  }
-BracePair:             () = { "{}" => () , "{" "}" => ()  }
-BarPair:               () = { "||" => () , "|" "|" => ()  }
-ParenVec<T>:       Vec<T> = ParenSep<T, ",">;
-BrackVec<T>:       Vec<T> = BrackSep<T, ",">;
-AngleVec<T>:       Vec<T> = AngleSep<T, ",">;
-BraceVec<T>:       Vec<T> = BraceSep<T, ",">;
-BarVec<T>:         Vec<T> = BarSep<T, ",">;
-Swap<A, B>:        (B, A) = <a:A> <b:B> => (b, a);
-Spanned<T>:        Spanned<T> = @L T @R => Spanned::new(file, <>);
-#[inline] Bool<T>: bool   = T? => <>.is_some();
+#[inline] Sep<T, S>:         Vec<T> = <v:(<T> S)*> <e:T?> => v.into_iter().chain(e).collect();
+#[inline] SepNonEmpty<T, S>: Vec<T> = <e:T> <v:(S <T>)*> => vec![e].into_iter().chain(v).collect();
+#[inline] SepMulti<T, S>:    Vec<T> = <e:T> <v:(S <T>)+> => vec![e].into_iter().chain(v).collect();
+#[inline] SepTrailing<T, S>: Vec<T> = { <T> S => vec![<>], SepMulti<T, S> };
+#[inline] Vec<T>:            Vec<T> = Sep<T, ",">;
+#[inline] VecNonEmpty<T>:    Vec<T> = SepNonEmpty<T, ",">;
+#[inline] VecTrailing<T>:    Vec<T> = SepTrailing<T, ",">;
+#[inline] VecMulti<T>:       Vec<T> = SepMulti<T, ",">;
+#[inline] Semi<T>:           Vec<T> = Sep<T, ";">;
+#[inline] Single<T>:         Vec<T> = T => vec![<>];
+#[inline] Box<T>:            Box<T> = T => Box::new(<>);
+#[inline] Err:               ()     = ! => diags.intern(Diagnostic::from(<>, file));
+#[inline] Scope<T>:          T      = Indent <T> Dedent;
+#[inline] Paren<T>:          T      = "(" <T> ")";
+#[inline] Angle<T>:          T      = "<" <T> ">";
+#[inline] Bar<T>:            T      = "|" <T> "|";
+#[inline] Brace<T>:          T      = "{" <T> "}";
+#[inline] Brack<T>:          T      = "[" <T> "]";
+#[inline] ParenSep<T, S>:    Vec<T> = { "()" => Vec::new(), Paren<Sep<T, S>> };
+#[inline] BrackSep<T, S>:    Vec<T> = { "[]" => Vec::new(), Brack<Sep<T, S>> };
+#[inline] AngleSep<T, S>:    Vec<T> = { "<>" => Vec::new(), Angle<Sep<T, S>> };
+#[inline] BraceSep<T, S>:    Vec<T> = { "{}" => Vec::new(), Brace<Sep<T, S>> };
+#[inline] BarSep<T, S>:      Vec<T> = { "||" => Vec::new(), Bar<Sep<T, S>> };
+#[inline] ParenPair:             () = { "()" => () , "(" ")" => () };
+#[inline] BrackPair:             () = { "[]" => () , "[" "]" => () };
+#[inline] AnglePair:             () = { "<>" => () , "<" ">" => () };
+#[inline] BracePair:             () = { "{}" => () , "{" "}" => () };
+#[inline] BarPair:               () = { "||" => () , "|" "|" => () };
+#[inline] ParenVec<T>:       Vec<T> = ParenSep<T, ",">;
+#[inline] BrackVec<T>:       Vec<T> = BrackSep<T, ",">;
+#[inline] AngleVec<T>:       Vec<T> = AngleSep<T, ",">;
+#[inline] BraceVec<T>:       Vec<T> = BraceSep<T, ",">;
+#[inline] BarVec<T>:         Vec<T> = BarSep<T, ",">;
+#[inline] Swap<A, B>:        (B, A) = <a:A> <b:B> => (b, a);
+#[inline] Spanned<T>: Spanned<T>    = @L T @R => Spanned::new(file, <>);
+#[inline] Bool<T>:           bool   = T? => <>.is_some();
 
 //=============================================================================
 // Misc
 //=============================================================================
 
-Field<T>: Field<T> = Spanned<(<Name> ":" <T>)>   => Field::from(<>);
-Variant:  Variant  = Spanned<(<Name> <Paren<Type0>?>)> => Variant::from(<>);
-Port:     Port     = Spanned<(<Name> <Paren<Type0>>)>  => Port::from(<>);
-Case:     Case     = Spanned<(<Pat0> "=>" <Expr0>)>    => Case::from(<>);
-Name:     Name     = Spanned<NameId>                   => Name::from(<>);
-Path:     Path     = Spanned<PathId>                   => Path::from(<>);
-Index:    Index    = Spanned<LitUsize>                 => Index::from(<>);
-LitUsize: usize    = LitI32                            => <> as usize;
+#[inline] Field<T>: Field<T> = Spanned<(<Name> ":" <T>)>         => Field::from(<>);
+#[inline] Variant:  Variant  = Spanned<(<Name> <Paren<Type0>?>)> => Variant::from(<>);
+#[inline] Port:     Port     = Spanned<(<Name> <Paren<Type0>>)>  => Port::from(<>);
+#[inline] Case:     Case     = Spanned<(<Pat0> "=>" <Expr0>)>    => Case::from(<>);
+#[inline] Name:     Name     = Spanned<NameId>                   => Name::from(<>);
+#[inline] Path:     Path     = Spanned<PathId>                   => Path::from(<>);
+#[inline] Index:    Index    = Spanned<LitUsize>                 => Index::from(<>);
+#[inline] LitUsize: usize    = LitI32                            => <> as usize;
 
-PathId: PathId = {
-    <PathId> "::" <Name> => paths.intern_child(<>),
+#[inline] PathId: PathId = <root:PathRoot> <tail:("::" <Name>)*> => {
+    tail.into_iter().fold(root, |a, x| paths.intern_child(a, x))
+};
+
+#[inline] PathRoot: PathId = {
     Name                 => paths.intern_orphan(<>),
-    "crate"              => paths.root,
+    "crate" "::" <Name>  => paths.intern_child(paths.root, <>),
 };
 
 //-----------------------------------------------------------------------------
@@ -250,6 +264,11 @@ BinaryInfixLeftAssociative<Op, Next>: ExprKind = {
 
 BinaryInfixRightAssociative<Op, Next>: ExprKind = {
     Expr<Next> Op Expr<BinaryInfixLeftAssociative<Op, Next>> => ExprKind::BinOp(<>),
+    Next,
+};
+
+BinaryInfixNonAssociative<Op, Next>: ExprKind = {
+    Expr<Next> Op Expr<Next> => ExprKind::BinOp(<>),
     Next,
 };
 
@@ -270,105 +289,102 @@ UnaryPrefix<Op, Next>: ExprKind = {
 pub(crate) Module = Item*;
 
 //=============================================================================
-// Settings
+// Meta Attributes
 //=============================================================================
 
-Settings: Vec<Setting> = "@" <Brack<Vec<Setting>>>;
+Meta: Meta = Spanned<("@" <Brace<Vec<Attr>>>)> => Meta::from(<>);
 
-Setting: Setting = Spanned<SettingKind> => Setting::from(<>);
+Attr: Attr = Spanned<AttrKind> => Attr::from(<>);
 
-SettingKind: SettingKind = {
-    Name Paren<LitKind> => SettingKind::Calibrate(<>),
-    Name                => SettingKind::Activate(<>),
+AttrKind: AttrKind = {
+    Name Paren<LitKind> => AttrKind::NameValue(<>),
+    Name                => AttrKind::Name(<>),
 };
 
 //=============================================================================
 // Items
 //=============================================================================
 
-Params = ParenVec<Param>;
+#[inline] Params = ParenVec<Param>;
+#[inline] Args   = ParenVec<Expr1>;
 
-Hub: Hub = Spanned<HubKind> => Hub::from(<>);
+Param: Param = Spanned<(<Pat1> <(":" <Type0>)?>)> => Param::from(<>);
 
-HubKind: HubKind = {
-    ParenVec<Port> => HubKind::Tagged(<>),
-    Type0          => HubKind::Single(<>),
+Interface: Interface = Spanned<InterfaceKind> => Interface::from(<>);
+
+InterfaceKind: InterfaceKind = {
+    ParenVec<Port> => InterfaceKind::Tagged(<>),
+    Type0          => InterfaceKind::Single(<>),
 };
 
-Item: Item = Spanned<Swap<Settings?, ItemKind>> => Item::from(<>);
+Item: Item = Spanned<(Meta? ItemKind)> => Item::from(<>);
 
 ItemKind: ItemKind = {
-    Extern => ItemKind::Extern(<>),
-    Alias  => ItemKind::Alias(<>),
-    Enum   => ItemKind::Enum(<>),
-    Fun    => ItemKind::Fun(<>),
-    Task   => ItemKind::Task(<>),
-    Use    => ItemKind::Use(<>),
-    Err    => ItemKind::Err,
+    ExternFun           => ItemKind::ExternFun(<>),
+    ExternType          => ItemKind::ExternType(<>),
+    TypeAlias           => ItemKind::TypeAlias(<>),
+    Enum                => ItemKind::Enum(<>),
+    Fun                 => ItemKind::Fun(<>),
+    Task                => ItemKind::Task(<>),
+    Use                 => ItemKind::Use(<>),
+    <Assign<Expr0>> ";" => ItemKind::Assign(<>),
+    Err                 => ItemKind::Err,
 };
 
-TaskItem: TaskItem = Spanned<Swap<Settings?, TaskItemKind>> => TaskItem::from(<>);
+TaskItem: TaskItem = Spanned<(Meta? TaskItemKind)> => TaskItem::from(<>);
 
 TaskItemKind: TaskItemKind = {
-    Fun     => TaskItemKind::Fun(<>),
-    Extern  => TaskItemKind::Extern(<>),
-    Alias   => TaskItemKind::Alias(<>),
-    Use     => TaskItemKind::Use(<>),
-    On      => TaskItemKind::On(<>),
-    State   => TaskItemKind::State(<>),
-    Enum    => TaskItemKind::Enum(<>),
-    Timer   => TaskItemKind::Timer(<>),
-    Timeout => TaskItemKind::Timeout(<>),
-    Startup => TaskItemKind::Startup(<>),
-    Err     => TaskItemKind::Err,
+    Fun       => TaskItemKind::Fun(<>),
+    ExternFun => TaskItemKind::ExternFun(<>),
+    TypeAlias => TaskItemKind::TypeAlias(<>),
+    Use       => TaskItemKind::Use(<>),
+    Enum      => TaskItemKind::Enum(<>),
+    Stmt      => TaskItemKind::Stmt(<>),
 };
 
-Extern:  Extern  = "extern" "fun" <Name> <Params> "->" <Type0>                      => Extern::new(<>);
-Fun:     Fun     = "fun" <Name> <Params> <Params?> <("->" <Type0>)?> <Brace<Expr0>> => Fun::new(<>);
-Alias:   Alias   = "type" <Name> "=" <Type0>                                        => Alias::new(<>);
-Enum:    Enum    = "enum" <Name> <Brace<Vec<Variant>>>                              => Enum::new(<>);
-Use:     Use     = "use" <Path> <("as" <Name>)?>                                    => Use::new(<>);
-Task:    Task    = "task" <Name> <Params> <Hub> "->" <Hub> <Brace<TaskItem*>>       => Task::new(<>);
-On:      On      = "on" <Handler>                                                   => On::new(<>);
-State:   State   = "state" <Param> "=" <Expr0>                                      => State::new(<>);
-Timer:   Timer   = "timer" <Type0>                                                  => Timer::new(<>);
-Timeout: Timeout = "timeout" <Handler>                                              => Timeout::new(<>);
-Startup: Startup = "startup" <Expr0>                                                => Startup::new(<>);
+ExternTypeItem: ExternTypeItem = Spanned<(Meta? ExternTypeItemKind)> => ExternTypeItem::from(<>);
 
-Handler = {
+ExternTypeItemKind: ExternTypeItemKind = {
+    FunDecl => ExternTypeItemKind::FunDecl(<>),
+};
+
+FunDecl:    FunDecl    = "fun" <Name> <Params> ":" <Type0> ";"                                      => FunDecl::new(<>);
+ExternFun:  ExternFun  = "extern" <FunDecl>                                                         => ExternFun::new(<>);
+ExternType: ExternType = "extern" "type" <Name> <Params> <Brace<ExternTypeItem*>>                   => ExternType::new(<>);
+Fun:        Fun        = "fun" <Name> <Params> <(":" <Type0>)?> <Block>                             => Fun::new(<>);
+TypeAlias:  TypeAlias  = "type" <Name> "=" <Type0> ";"                                              => TypeAlias::new(<>);
+Enum:       Enum       = "enum" <Name> <Brace<Vec<Variant>>>                                        => Enum::new(<>);
+Use:        Use        = "use" <Path> <("as" <Name>)?> ";"                                          => Use::new(<>);
+Task:       Task       = "task" <Name> <Params> ":" <Interface> "->" <Interface> <Brace<TaskItem*>> => Task::new(<>);
+
+Assign<Expr>: Assign = <MutKind> <Param> "=" <Expr> => Assign::new(<>);
+#[inline] MutKind: MutKind = {
+    "val" => MutKind::Immutable,
+    "var" => MutKind::Mutable,
+};
+
+#[inline] Handler = {
     Brace<VecNonEmpty<Case>>,
-    Single<Case>
+    <Single<Case>>
 };
-
-//=============================================================================
-// Expressions
-//=============================================================================
-
-Expr<Kind>: Expr = Spanned<Arenad<Kind>> => Expr::from(<>);
-Expr0 = Expr<ExprKind0>;
-Expr1 = Expr<ExprKind1>;
-Expr2 = Expr<ExprKind2>;
-Expr11 = Expr<ExprKind11>;
-
-Arenad<Kind>: ExprId = Kind => exprs.intern(<>);
 
 //=============================================================================
 // Operators
 //=============================================================================
 
-BinOp<Kind>: BinOp = Spanned<Kind> => BinOp::from(<>);
-UnOp<Kind>:  UnOp  = Spanned<Kind> => UnOp::from(<>);
+#[inline] BinOp<Kind>: BinOp = Spanned<Kind> => BinOp::from(<>);
+#[inline] UnOp<Kind>:  UnOp  = Spanned<Kind> => UnOp::from(<>);
 
 Op0: BinOpKind = {
-    ";"     => BinOpKind::Seq,
+    "|"        => BinOpKind::Pipe,
+    "="        => BinOpKind::Mut,
+    "in"       => BinOpKind::In,
+    "not" "in" => BinOpKind::NotIn,
 };
 
 Op1: BinOpKind = {
-    "|>"       => BinOpKind::Pipe,
-    "="        => BinOpKind::Mut,
-    "after"    => BinOpKind::After,
-//  "in"       => BinOpKind::In,
-    "not" "in" => BinOpKind::NotIn,
+    ".."       => BinOpKind::RInc,
+    "..="      => BinOpKind::RExc,
 };
 
 Op2: BinOpKind = {
@@ -405,11 +421,8 @@ Op6: BinOpKind = {
 };
 
 Op7: UnOpKind = {
-    "box" => UnOpKind::Boxed,
     "not" => UnOpKind::Not,
     "-"   => UnOpKind::Neg,
-    "del" => UnOpKind::Del,
-    "add" => UnOpKind::Add,
 };
 
 Op8: BinOpKind = {
@@ -417,64 +430,96 @@ Op8: BinOpKind = {
 };
 
 //=============================================================================
-// Precedence Climbing
+// Statements
 //=============================================================================
 
-ExprKind0:  ExprKind = BinaryInfixRightAssociative<BinOp<Op0>, ExprKind1>;
+#[inline] Stmt: Stmt = Spanned<StmtKind> => Stmt::from(<>);
+
+StmtKind: StmtKind = {
+    ";"                 => StmtKind::Empty,
+    <Expr0> ";"         => StmtKind::Expr(<>),
+    <Assign<Expr0>> ";" => StmtKind::Assign(<>),
+};
+
+//=============================================================================
+// Expressions
+//=============================================================================
+
+#[inline] InternExpr<Kind>: ExprId = Kind => exprs.intern(<>);
+
+#[inline] Expr<Kind>: Expr = Spanned<InternExpr<Kind>> => Expr::from(<>);
+
+#[inline] Expr0 = Expr<ExprKind0>;
+#[inline] Expr1 = Expr<ExprKind1>;
+#[inline] Expr2 = Expr<ExprKind2>;
+#[inline] Expr10 = Expr<ExprKind10>;
+#[inline] Expr11 = Expr<ExprKind11>;
+#[inline] Expr12 = Expr<ExprKind12>;
+#[inline] Expr13 = Expr<ExprKind13>;
+#[inline] Expr14 = Expr<ExprKind14>;
+#[inline] Expr15 = Expr<ExprKind15>;
+
+Block: Block = Spanned<Brace<(Stmt* Expr0?)>> => Block::from(<>);
+
+ExprKind0:  ExprKind = {
+    "on" <Handler>          => ExprKind::On(<>),
+    "emit" <Expr1>          => ExprKind::Emit(<>),
+    "after" <Expr1> <Block> => ExprKind::After(<>),
+    "every" <Expr1> <Block> => ExprKind::Every(<>),
+    "log" <Expr1>           => ExprKind::Log(<>),
+    "return" <Expr1?>       => ExprKind::Return(<>),
+    "break" <Expr1?>        => ExprKind::Break(<>),
+    "continue"              => ExprKind::Continue,
+    ExprKind1
+};
 ExprKind1:  ExprKind = {
-    "let" <Param> "=" <Expr2> "in" <Expr1> => ExprKind::Let(<>),
-    "emit" <Expr1>                         => ExprKind::Emit(<>),
-    "trigger" <Expr1>                      => ExprKind::Trigger(<>),
-    "log" <Expr1>                          => ExprKind::Log(<>),
-    "return" <Expr1?> ";;"                 => ExprKind::Return(<>),
+    "fun" <ParenVec<Param>> ":" <Expr2> => ExprKind::Lambda(<>),
     ExprKind2
 };
-ExprKind2:  ExprKind = {
-    <BarVec<Param>> <Expr2> => ExprKind::Lambda(<>),
-    ExprKind3
-};
-ExprKind3:  ExprKind =  BinaryInfixLeftAssociative<BinOp<Op1>, ExprKind4>;
+ExprKind2:  ExprKind =  BinaryInfixLeftAssociative<BinOp<Op0>, ExprKind3>;
+ExprKind3:  ExprKind =   BinaryInfixNonAssociative<BinOp<Op1>, ExprKind4>;
 ExprKind4:  ExprKind =  BinaryInfixLeftAssociative<BinOp<Op2>, ExprKind5>;
 ExprKind5:  ExprKind =  BinaryInfixLeftAssociative<BinOp<Op3>, ExprKind6>;
 ExprKind6:  ExprKind =  BinaryInfixLeftAssociative<BinOp<Op4>, ExprKind7>;
 ExprKind7:  ExprKind =  BinaryInfixLeftAssociative<BinOp<Op5>, ExprKind8>;
 ExprKind8:  ExprKind =  BinaryInfixLeftAssociative<BinOp<Op6>, ExprKind9>;
-ExprKind9:  ExprKind =                 UnaryPrefix<UnOp<Op7>,  ExprKind10>;
+ExprKind9:  ExprKind =                  UnaryPrefix<UnOp<Op7>, ExprKind10>;
 ExprKind10: ExprKind = BinaryInfixRightAssociative<BinOp<Op8>, ExprKind11>;
 ExprKind11: ExprKind = {
-    <Expr11> <ParenVec<Expr2>>  => ExprKind::Call(<>),
-    <Expr11> <BrackVec<Expr2>>  => ExprKind::Select(<>),
-    <Expr11> "as" <Type2>       => ExprKind::Cast(<>),
-    <Expr11> "." <Name>         => ExprKind::Access(<>),
-    <Expr11> "." <Index>        => ExprKind::Project(<>),
+    <Expr11> "as" <Type2> => ExprKind::Cast(<>),
     ExprKind12,
 };
 ExprKind12: ExprKind = {
-    Paren<ExprKind0>,
-    Brace<ExprKind0>,
-    LitKind                                                             => ExprKind::Lit(<>),
-    Path                                                                => ExprKind::Path(<>),
-    Brack<VecNonEmpty<Expr0>>                                           => ExprKind::Array(<>),
-    Paren<VecMulti<Expr0>>                                              => ExprKind::Tuple(<>),
-    Brace<Vec<Field<Expr0>>>                                            => ExprKind::Struct(<>),
-    "{}"                                                                => ExprKind::Empty,
-    "if" <Expr2> <Brace<Expr0>> "else" <Brace<Expr0>>                   => ExprKind::If(<>),
-    "if" "let" <Pat0> "=" <Expr2> <Brace<Expr0>> "else" <Brace<Expr0>>  => ExprKind::IfLet(<>),
-    "match" <Expr0> <Brace<Vec<Case>>>                                  => ExprKind::Match(<>),
-    "reduce" <Pat0> "=" <Expr0> <ReduceKind>                            => ExprKind::Reduce(<>),
-    "loop" <Brace<Expr0>>                                               => ExprKind::Loop(<>),
-    "break"                                                             => ExprKind::Break,
-    "for" <Pat0> "in" <Expr0> <Brace<Expr0>>                            => ExprKind::For(<>),
-    "unwrap" <Brack<Path>> <Paren<Expr0>>                               => ExprKind::Unwrap(<>),
-    "enwrap" <Brack<Path>> <Paren<Expr0>>                               => ExprKind::Enwrap(<>),
-    "is" <Brack<Path>> <Paren<Expr0>>                                   => ExprKind::Is(<>),
-    "???"                                                               => ExprKind::Todo,
-    Err                                                                 => ExprKind::Err,
+    ExprKind13,
+    ExprKind14,
 };
-
-ReduceKind: ReduceKind = {
-    "loop" <Brace<Expr0>>                    => ReduceKind::Loop(<>),
-    "for" <Pat0> "in" <Expr0> <Brace<Expr0>> => ReduceKind::For(<>),
+ExprKind13: ExprKind = {
+    <Expr15> <ParenVec<Expr1>> => ExprKind::Call(<>),
+    ExprKind15,
+};
+ExprKind14: ExprKind = {
+    <Expr12> "." <Index>                  => ExprKind::Project(<>),
+    <Expr12> "." <Name>                   => ExprKind::Access(<>),
+    <Expr12> "." <Name> <ParenVec<Expr1>> => ExprKind::Invoke(<>),
+    <Expr12> <BrackVec<Expr1>>            => ExprKind::Select(<>),
+};
+ExprKind15: ExprKind = {
+    Paren<ExprKind0>,
+    Block                                            => ExprKind::Block(<>),
+    LitKind                                          => ExprKind::Lit(<>),
+    Path ("::" <BrackVec<Type0>>)?                   => ExprKind::Path(<>),
+    Brack<VecNonEmpty<Expr0>>                        => ExprKind::Array(<>),
+    Paren<VecTrailing<Expr0>>                        => ExprKind::Tuple(<>),
+    Brace<VecNonEmpty<Field<Expr0>>>                 => ExprKind::Struct(<>),
+    "if" <Expr2> <Block> <("else" <Block>)?>         => ExprKind::If(<>),
+    "if" <Assign<Expr1>> <Block> <("else" <Block>)?> => ExprKind::IfAssign(<>),
+    "match" <Expr1> <Brace<Vec<Case>>>               => ExprKind::Match(<>),
+    "loop" <Block>                                   => ExprKind::Loop(<>),
+    "for" <Pat0> "in" <Expr1> <Block>                => ExprKind::For(<>),
+    "unwrap" <Brack<Path>> <Paren<Expr0>>            => ExprKind::Unwrap(<>),
+    "enwrap" <Brack<Path>> <Paren<Expr0>>            => ExprKind::Enwrap(<>),
+    "is" <Brack<Path>> <Paren<Expr0>>                => ExprKind::Is(<>),
+    Err                                              => ExprKind::Err,
 };
 
 //=============================================================================
@@ -506,30 +551,31 @@ LitKind: LitKind = {
 // Patterns
 //=============================================================================
 
-Param: Param = Spanned<(<Pat1> <(":" <Type0>)?>)> => Param::from(<>);
+#[inline] InternPat<Kind>: PatId = Kind => pats.intern(<>);
 
-Pat<Kind>: Pat = Spanned<Kind> => Pat::from(<>);
-Pat0 = Pat<PatKind0>;
-Pat1 = Pat<PatKind1>;
-Pat2 = Pat<PatKind2>;
+#[inline] Pat<Kind>: Pat = Spanned<InternPat<Kind>> => Pat::from(<>);
+
+#[inline] Pat0 = Pat<PatKind0>;
+#[inline] Pat1 = Pat<PatKind1>;
+#[inline] Pat2 = Pat<PatKind2>;
 
 PatKind0: PatKind = {
-    <Box<Pat0>> "|" <Box<Pat1>> => PatKind::Or(<>),
+    <Pat0> "or" <Pat1> => PatKind::Or(<>),
     PatKind1
 };
 
 PatKind1: PatKind = {
-    <Box<Pat1>> "by" <Box<Pat2>> => PatKind::By(<>),
+    <Pat1> "by" <Pat2> => PatKind::By(<>),
     PatKind2
 };
 
 PatKind2: PatKind = {
-    LitKind                  => PatKind::Val(<>),
-    Name                     => PatKind::Var(<>),
-    Path Paren<Box<Pat0>>    => PatKind::Variant(<>),
-    Paren<VecNonEmpty<Pat0>> => PatKind::Tuple(<>),
-    Brace<Vec<FieldPat>>     => PatKind::Struct(<>),
-    "_"                      => PatKind::Ignore,
+    LitKind                      => PatKind::Const(<>),
+    Name                         => PatKind::Var(<>),
+    Path Paren<Pat0>             => PatKind::Variant(<>),
+    Paren<VecTrailing<Pat0>>     => PatKind::Tuple(<>),
+    Brace<VecNonEmpty<FieldPat>> => PatKind::Struct(<>),
+    "_"                          => PatKind::Ignore,
 };
 
 FieldPat: Field<Option<Pat>> = Spanned<(Name (":" <Pat0>)?)> => Field::from(<>);
@@ -538,41 +584,32 @@ FieldPat: Field<Option<Pat>> = Spanned<(Name (":" <Pat0>)?)> => Field::from(<>);
 // Types
 //=============================================================================
 
-Type0 = Type<TypeKind0>;
-Type1 = Type<TypeKind1>;
-Type2 = Type<TypeKind2>;
-Type3 = Type<TypeKind3>;
+#[inline] InternType<Kind>: TypeId = Kind => types.intern(<>);
 
-Type<Kind>: Type = Spanned<Kind> => Type::from(<>);
+#[inline] Type<Kind>: Type = Spanned<InternType<Kind>> => Type::from(<>);
+
+#[inline] Type0 = Type<TypeKind0>;
+#[inline] Type1 = Type<TypeKind1>;
+#[inline] Type2 = Type<TypeKind2>;
 
 TypeKind0: TypeKind = {
-    "fun" <ParenVec<Type0>> "->" <Box<Type0>> => TypeKind::Fun(<>),
-    "~" <Box<Type0>>                          => TypeKind::Stream(<>),
-    "box" <Box<Type0>>                        => TypeKind::Boxed(<>),
+    "fun" <ParenVec<Type0>> ":" <Type0> => TypeKind::Fun(<>),
+    "~" <Type0>                         => TypeKind::Stream(<>),
     TypeKind1,
 };
 
 TypeKind1: TypeKind = {
-    <Box<Type1>> "by"    <Box<Type2>> => TypeKind::By(<>),
-    <Box<Type1>> "after" <Box<Type2>> => TypeKind::After(<>),
+    <Type1> "by" <Type2> => TypeKind::By(<>),
     TypeKind2
-}
-
-TypeKind2: TypeKind = {
-    <Box<Type2>> "?" => TypeKind::Optional(<>),
-    TypeKind3,
 };
 
-TypeKind3: TypeKind = {
-    ScalarKind                              => TypeKind::Scalar(<>),
-    Path                                    => TypeKind::Nominal(<>),
-    Brace<<Vec<Field<Type0>>>>              => TypeKind::Struct(<>),
-    Brace<(<Box<Type0>> "=>" <Box<Type0>>)> => TypeKind::Map(<>.0, <>.1),
-    Brace<<Box<Type0>>>                     => TypeKind::Set(<>),
-    Paren<<VecMulti<Type0>>>                => TypeKind::Tuple(<>),
-    Brack<(<(<Box<Type0>> ";")?> <Shape>)>  => TypeKind::Array(<>.0, <>.1),
-    Brack<<Box<Type0>>>                     => TypeKind::Vector(<>),
-    Err                                     => TypeKind::Err,
+TypeKind2: TypeKind = {
+    ScalarKind                        => TypeKind::Scalar(<>),
+    Path (BrackVec<Type0>)?           => TypeKind::Path(<>),
+    Brace<<Vec<Field<Type0>>>>        => TypeKind::Struct(<>),
+    Paren<<VecTrailing<Type0>>>       => TypeKind::Tuple(<>),
+    Brack<(<(<Type0> ";")?> <Shape>)> => TypeKind::Array(<>.0, <>.1),
+    Err                               => TypeKind::Err,
 };
 
 ScalarKind: ScalarKind = {
@@ -589,22 +626,21 @@ ScalarKind: ScalarKind = {
     "u16"  => ScalarKind::U16,
     "u32"  => ScalarKind::U32,
     "u64"  => ScalarKind::U64,
-    "null" => ScalarKind::Null,
     "str"  => ScalarKind::Str,
     "unit" => ScalarKind::Unit,
-    "!"    => ScalarKind::Bot,
 };
 
 //=============================================================================
 // Shape and Dimensions
 //=============================================================================
 
-Shape: Shape = Spanned<Vec<Dim<DimKind0>>> => Shape::from(<>);
+#[inline] Shape: Shape = Spanned<Vec<Dim<DimKind0>>> => Shape::from(<>);
 
-Dim<DimKind>: Dim = Spanned<DimKind> => Dim::from(<>);
-Dim0 = Dim<DimKind0>;
-Dim1 = Dim<DimKind1>;
-Dim2 = Dim<DimKind2>;
+#[inline] Dim<DimKind>: Dim = Spanned<DimKind> => Dim::from(<>);
+
+#[inline] Dim0 = Dim<DimKind0>;
+#[inline] Dim1 = Dim<DimKind1>;
+#[inline] Dim2 = Dim<DimKind2>;
 
 DimKind0: DimKind = {
     Box<Dim0> DimOp0 Box<Dim1> => DimKind::Op(<>),
@@ -618,12 +654,12 @@ DimKind1: DimKind = {
 
 DimKind2: DimKind = {
     LitI32 => DimKind::Val(<>),
-    "?"    => DimKind::Var(0),
+    // "?"    => DimKind::Var(0),
 };
 
-DimOp<Kind>: DimOp = Spanned<Kind> => DimOp::from(<>);
-DimOp0 = DimOp<DimOpKind0>;
-DimOp1 = DimOp<DimOpKind1>;
+#[inline] DimOp<Kind>: DimOp = Spanned<Kind> => DimOp::from(<>);
+#[inline] DimOp0 = DimOp<DimOpKind0>;
+#[inline] DimOp1 = DimOp<DimOpKind1>;
 
 DimOpKind0: DimOpKind = {
     "+" => DimOpKind::Add,

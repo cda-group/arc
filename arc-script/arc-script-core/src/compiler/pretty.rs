@@ -6,10 +6,32 @@ use arc_script_core_shared::New;
 use std::cell::Cell;
 use std::fmt::{self, Display, Formatter};
 
+// Macro for implementing pretty printers
+macro_rules! pretty {
+    {
+        [$node:ident, $fmt:ident, $w:ident]
+        $($path:path => $expr:expr ,)*
+    } => {
+        $(
+            impl<'i> Display for Pretty<'i, $path, Context<'_>> {
+                fn fmt(&self, w: &mut Formatter<'_>) -> fmt::Result {
+                    let $w = w;
+                    let $node = self.node;
+                    let $fmt = self.fmt;
+                    $expr;
+                    Ok(())
+                }
+            }
+        )*
+    };
+}
+
 /// Wraps a generic node to be printed in a specific context.
-/// NB: This is a tuple struct since it makes the syntax more concise.
 #[derive(New)]
-pub(crate) struct Pretty<'i, Node, Context: Copy>(pub(crate) &'i Node, pub(crate) Format<Context>);
+pub(crate) struct Pretty<'i, Node, Context: Copy> {
+    pub(crate) node: &'i Node,
+    pub(crate) fmt: Format<Context>,
+}
 
 /// Creates a pretty format for an AST node.
 pub(crate) trait AsPretty: Sized {

@@ -5,10 +5,12 @@ input_file: arc-script-test/compile/src/tests/expect_mlir_fail_todo/map_state.ar
 
 ---
 task MapCount() ~i32 by i32 -> ~i32 by i32 {
-    state c: {i32 => i32} = {}
+    val c: Dict[i32, i32] = Dict();
+    
     on event by key => {
         c[event] = c[event] + 1;
         emit c[event] by key
-    }
+    };
+    
 }
 

@@ -36,11 +36,15 @@ pub struct Opt {
 
     /// Print AST with type information and parentheses.
     #[clap(short, long, parse(from_occurrences))]
-    pub verbosity: i32,
+    pub verbosity: u8,
 
     /// Print result even if there are errors.
     #[clap(long)]
     pub force_output: bool,
+
+    /// Skip type inference pass.
+    #[clap(long)]
+    pub no_infer: bool,
 
     /// Sub-command.
     #[clap(subcommand)]
@@ -104,8 +108,6 @@ pub enum Output {
     AST,
     /// Output HIR.
     HIR,
-    /// Output DFG.
-    DFG,
     /// Output Rust.
     Rust,
     /// Output Rust via MLIR.

@@ -1,15 +1,15 @@
-extern fun increment(x: i32) -> i32
+extern fun increment(x: i32): i32;
 
-task Adder() ~i32 by i32 -> ~i32 by i32 {
-    extern fun addition(x: i32, y: i32) -> i32
+task Adder(): ~i32 by i32 -> ~i32 by i32 {
+    extern fun addition(x: i32, y: i32): i32;
 
-    on event by key => emit addition(event, event) by key
+    on event by key => emit addition(event, event) by key;
 }
 
-fun pipe(s: ~i32 by i32) -> ~i32 by i32 {
+fun pipe(s: ~i32 by i32): ~i32 by i32 {
     if increment(1) == 2 {
-        Adder() (s)
+        s | Adder()
     } else {
-        Adder() (s)
+        s | Adder()
     }
 }

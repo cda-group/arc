@@ -12,9 +12,7 @@ enum Foo {
 }
 
 fun main() {
-    if let Foo::Bar(Baz::Some(x)) = Foo::Bar(Baz::Some(5)) {
-        unit
-    } else {
+    if val Foo::Bar(Baz::Some(x)) = Foo::Bar(Baz::Some(5)) {
         unit
     }
 }

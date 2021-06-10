@@ -10,11 +10,13 @@ input_file: arc-script-test/compile/src/tests/expect_pass/enum_pattern_nested.ar
 #[allow(unused_variables)]
 #[allow(unused_imports)]
 #[allow(unused_braces)]
-pub mod defs {
+#[allow(irrefutable_let_patterns)]
+#[allow(clippy::redundant_field_names)]
+#[allow(clippy::unused_unit)]
+#[allow(clippy::double_parens)]
+pub mod arc_script_output {
     use super::*;
-    pub use arc_script::arcorn;
-    pub use arc_script::arcorn::state::{ArcMapOps, ArcRefOps, ArcSetOps, ArcVecOps};
-    pub use arcon::prelude::*;
+    use arc_script::arcorn;
     #[arcorn::rewrite]
     pub enum Baz {
         Baz_Some(i32),
@@ -25,34 +27,38 @@ pub mod defs {
         Foo_Bar(Baz),
         Foo_None(()),
     }
-    pub fn x_3() -> () {
-        let y_1_0 = ();
-        y_1_0
+    pub fn x_9() -> () {
+        let x_8: () = ();
+        (x_8.clone())
     }
     pub fn main() -> () {
-        let y_1_0 = 5i32;
-        let y_1_1 = arcorn::enwrap!(Baz_Some, y_1_0);
-        let y_1_2 = arcorn::enwrap!(Foo_Bar, y_1_1);
-        let y_1_3 = arcorn::is!(Foo_Bar, y_1_2);
-        let y_1_4 = if y_1_3 {
-            let y_2_0 = arcorn::unwrap!(Foo_Bar, y_1_2);
-            let y_2_1 = arcorn::is!(Baz_Some, y_2_0);
-            let y_2_2 = if y_2_1 {
-                let y_3_0 = arcorn::unwrap!(Baz_Some, y_2_0);
-                let y_3_1 = ();
-                y_3_1
+        let x_0: i32 = 5i32;
+        let x_1: Baz = arcorn::enwrap!(Baz_Some, (x_0.clone()));
+        let x_2: Foo = arcorn::enwrap!(Foo_Bar, (x_1.clone()));
+        let x_3: bool = arcorn::is!(Foo_Bar, (x_2.clone()));
+        let x_D: () = if (x_3.clone()) {
+            let x_4: Baz = arcorn::unwrap!(Foo_Bar, (x_2.clone()));
+            let x_5: bool = arcorn::is!(Baz_Some, (x_4.clone()));
+            let x_C: () = if (x_5.clone()) {
+                let x_6: i32 = arcorn::unwrap!(Baz_Some, (x_4.clone()));
+                let x_7: () = ();
+                (x_7.clone())
             } else {
-                let y_3_0 = x_3();
-                y_3_0
+                let x_A: Box<dyn arcorn::ArcornFn() -> ()> =
+                    Box::new(x_9) as Box<dyn arcorn::ArcornFn() -> ()>;
+                let x_B: () = (x_A.clone())();
+                (x_B.clone())
             };
-            y_2_2
+            (x_C.clone())
         } else {
-            let y_2_0 = x_3();
-            y_2_0
+            let x_A: Box<dyn arcorn::ArcornFn() -> ()> =
+                Box::new(x_9) as Box<dyn arcorn::ArcornFn() -> ()>;
+            let x_B: () = (x_A.clone())();
+            (x_B.clone())
         };
-        y_1_4
+        (x_D.clone())
     }
 }
-pub use defs::*;
+pub use arc_script_output::*;
 
 

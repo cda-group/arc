@@ -26,18 +26,32 @@ pub fn init(opt: &Opt) -> Result<Option<impl Drop>> {
             Ok(Some(flush_guard))
         }
         _ if opt.debug => {
-            // Print debugging info
-            let sub_fmt = FmtSubscriber::new().without_time();
             // Filter output based on options
             let sub_filter = EnvFilter::from_default_env()
-                .add_directive(match opt.verbosity {
-                    0 => Level::INFO.into(),
-                    1 => Level::DEBUG.into(),
-                    _ => Level::TRACE.into(),
-                })
+                .add_directive(
+                    match opt.verbosity {
+                        0 => Level::INFO,
+                        1 => Level::DEBUG,
+                        _ => Level::TRACE,
+                    }
+                    .into(),
+                )
                 .add_directive("ena=error".parse()?);
 
-            Registry::default().with(sub_fmt).with(sub_filter).init();
+            // Print debugging info
+            match opt.verbosity {
+                0 | 1 | 2 => {
+                    let sub_fmt = FmtSubscriber::new().without_time().with_target(false);
+                    Registry::default().with(sub_fmt).with(sub_filter).init();
+                }
+                _ => {
+                    let sub_fmt = FmtSubscriber::new()
+                        .without_time()
+                        .with_target(true)
+                        .pretty();
+                    Registry::default().with(sub_fmt).with(sub_filter).init();
+                }
+            }
 
             Ok(None)
         }

@@ -3,19 +3,28 @@ use crate::compiler::hir::lower::ast::resolve::table::SymbolTable;
 use crate::compiler::hir::lower::ast::resolve::Resolver;
 use crate::compiler::info::Info;
 
+use arc_script_core_shared::Shrinkwrap;
+
 use std::fmt::{Display, Formatter, Result};
 
+#[derive(Shrinkwrap)]
 pub(crate) struct ResolverDebug<'a> {
     res: &'a Resolver,
-    info: &'a Info,
-}
-pub(crate) struct SymbolTableDebug<'a> {
-    table: &'a SymbolTable,
+    #[shrinkwrap(main_field)]
     info: &'a Info,
 }
 
+#[derive(Shrinkwrap)]
+pub(crate) struct SymbolTableDebug<'a> {
+    table: &'a SymbolTable,
+    #[shrinkwrap(main_field)]
+    info: &'a Info,
+}
+
+#[derive(Shrinkwrap)]
 pub(crate) struct SymbolStackDebug<'a> {
     stack: &'a SymbolStack,
+    #[shrinkwrap(main_field)]
     info: &'a Info,
 }
 
@@ -56,8 +65,8 @@ impl<'a> Display for SymbolTableDebug<'a> {
             writeln!(
                 f,
                 "        {} => {}",
-                self.info.resolve_to_names(*alias).join("::"),
-                self.info.resolve_to_names(*target).join("::")
+                self.resolve_to_names(*alias).join("::"),
+                self.resolve_to_names(*target).join("::")
             )?;
         }
         writeln!(f, "    ],")?;
@@ -65,19 +74,15 @@ impl<'a> Display for SymbolTableDebug<'a> {
         for (path, decl) in &self.table.declarations {
             writeln!(
                 f,
-                "        {} => {:?}",
-                self.info.resolve_to_names(*path).join("::"),
+                "        {:<14} => {:?}",
+                self.resolve_to_names(*path).join("::"),
                 decl
             )?;
         }
         writeln!(f, "    ],")?;
         writeln!(f, "    Compressed: [")?;
         for path in &self.table.compressed {
-            writeln!(
-                f,
-                "        {}",
-                self.info.resolve_to_names(*path).join("::"),
-            )?;
+            writeln!(f, "        {}", self.resolve_to_names(*path).join("::"))?;
         }
         writeln!(f, "    ]")?;
         writeln!(f, "}}")?;
@@ -102,10 +107,10 @@ impl<'a> Display for SymbolStackDebug<'a> {
                 for (name, (unique_name, kind)) in scope.iter() {
                     writeln!(
                         f,
-                        "{}{} => {} ({:?})",
+                        "{}{:<10} => {} ({:?})",
                         Tab(i + j + 3),
-                        self.info.names.resolve(name.id),
-                        self.info.names.resolve(unique_name.id),
+                        self.names.resolve(name),
+                        self.names.resolve(unique_name),
                         kind,
                     )?;
                 }

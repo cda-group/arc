@@ -1,8 +1,8 @@
 # RUN: arc-script run --output=MLIR %s | arc-mlir
 
-fun test() -> i32 {
-    let x = 1 by 2 in
-    let v = x.val in
-    let k = x.key in
+fun test(): i32 {
+    val x = 1 by 2;
+    val v = x.value;
+    val k = x.key;
     v + k
 }

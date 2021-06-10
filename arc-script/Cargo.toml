@@ -1,32 +1,34 @@
 cargo-features = [
-  "strip" # Allow stripping symbols / debuginfo from binary
+#   "strip" # Allow stripping symbols / debuginfo from binary
 ]
 
 [package]
-name           = "arc-script"
-version        = "0.0.0"
-authors        = [
+name          = "arc-script"
+version       = "0.0.0"
+authors       = [
   "Klas Segeljakt <klasseg@kth.se>",
   "Frej Drejhammar <frej.drejhammar@ri.se>"
 ]
-edition        = "2018"
-description    = "The Arc-Script Programming Language."
-documentation  = "https://segeljakt.github.io/arc-script/"
-readme         = "README.md"
-homepage       = "https://cda-group.github.io/"
-repository     = "https://www.github.com/segeljakt/arc-script"
-license        = "MIT"
-# license-file   = "" TODO
-keywords       = ["compiler", "data-science"]
-categories     = ["science", "database"]
-publish        = false
+edition       = "2018"
+description   = "The Arc-Script Programming Language."
+documentation = "https://segeljakt.github.io/arc-script/"
+readme        = "README.md"
+homepage      = "https://cda-group.github.io/"
+repository    = "https://www.github.com/segeljakt/arc-script"
+license       = "MIT"
+keywords      = ["compiler", "data-science"]
+categories    = ["science", "database"]
+publish       = false
 
 [lib]
 name = "arc_script"
 path = "src/lib.rs"
 
 [features]
-proc = ["arc-script-include/proc"]
+proc            = ["arc-script-include/proc"]
+backend_arcon   = ["arc-script-arcorn/backend_arcon"]
+backend_arctime = ["arc-script-arcorn/backend_arctime"]
+default         = ["backend_arctime"]
 
 [dependencies]
 arc-script-include = { version = "=0.0.0", path = "arc-script-api/include" }
@@ -111,7 +113,7 @@ panic            = 'unwind'
 incremental      = false
 codegen-units    = 1
 rpath            = false
-strip            = "symbols"
+# strip            = "symbols"
 
 # -- The testing profile, used for `cargo test`.
 [profile.test]
@@ -136,7 +138,7 @@ lto              = true
 incremental      = false
 codegen-units    = 1
 rpath            = false
-strip            = "symbols"
+# strip            = "symbols"
 
 # --- Optimize for small binaries when compiling for the web
 [profile.release.package.arc-script-web-repl]

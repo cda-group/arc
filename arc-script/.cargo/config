@@ -33,9 +33,9 @@ ctest          = "test --package=arc-script-test-compile"
 # target = "triple"         # build for the target triple (ignored by `cargo install`)
 # target-dir = "target"     # path of where to place all generated artifacts
 rustflags = [    # custom flags to pass to all compiler invocations
-  "-Z",          "debug-macros=yes", # Emit line numbers debug info inside macros
-  "-Z",                 "teach=yes", # Show extended diagnostic help
-  "-Z", "trim-diagnostic-paths=yes", # In diagnostics, use heuristics to shorten paths referring to items
+#   "-Z",          "debug-macros=yes", # Emit line numbers debug info inside macros
+#   "-Z",                 "teach=yes", # Show extended diagnostic help
+#   "-Z", "trim-diagnostic-paths=yes", # In diagnostics, use heuristics to shorten paths referring to items
 #  "-Z",           "fewer-names=yes", # Reduce memory use by retaining fewer names within compilation artifacts
 #  "-Z",        "share-generics=yes", # Make the current crate share its generic instantiations
 #  "-Z",          "self-profile=yes", # Run the self profiler and output the raw event data

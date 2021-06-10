@@ -4,17 +4,32 @@ expression: s
 input_file: arc-script-test/compile/src/tests/expect_mlir_fail_todo/task_with_funs.arc
 
 ---
-task Test(x_0: i32) ~{ key: i32, val: i32 } -> ~{ key: i32, val: i32 } {
-    fun addx(y_0: i32) -> i32 {
-        let z_0: i32 = x_0 + y_0 in
-        z_0
+task Test(x_0: i32): ~{ key: i32, value: i32 } -> ~{ key: i32, value: i32 } {
+    enum IInterface {
+        __({ key: i32, value: i32 })
     }
-    on {
-        x_1: { key: i32, val: i32 } => {
-            let event_0: i32 = x_1.val in
-            let key_0: i32 = x_1.key in
-            emit { val: crate::Test::addx(event_0), key: key_0 }
-        }
+    enum OInterface {
+        __({ key: i32, value: i32 })
     }
+    fun addx(y_0: i32): i32 {
+        val x_1: i32 = x_0 + y_0;
+        x_1
+    }
+    fun on_start(x_0: i32): unit {
+        val x_B: unit = unit;
+        x_B
+    }
+    crate::Test::on_start();
+    fun on_event(x_5: crate::Test::IInterface): unit {
+        val x_2: { key: i32, value: i32 } = unwrap[crate::Test::IInterface::__](x_5);
+        val x_3: i32 = x_2.value;
+        val x_4: i32 = x_2.key;
+        val x_6: i32 = crate::Test::addx(x_3);
+        val x_7: { key: i32, value: i32 } = { value: x_6, key: x_4 };
+        val x_8: crate::Test::OInterface = enwrap[crate::Test::OInterface::__](x_7);
+        val x_9: unit = emit x_8;
+        x_9
+    }
+    on event => crate::Test::on_event(event)
 }
 

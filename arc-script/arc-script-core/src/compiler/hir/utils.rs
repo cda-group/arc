@@ -2,27 +2,25 @@ use crate::compiler::ast;
 use crate::compiler::hir;
 use crate::compiler::info::files::Loc;
 use crate::compiler::info::paths::PathId;
-use crate::compiler::info::types::TypeId;
 use crate::compiler::info::Info;
+use bitmaps::Bitmap;
 
 use arc_script_core_shared::itertools::Itertools;
 use arc_script_core_shared::VecMap;
 
-impl Default for hir::Type {
+impl hir::HIR {
+    pub(crate) fn intern(&mut self, path: impl Into<PathId>, item: impl Into<hir::Item>) {
+        self.defs.insert(path.into(), item.into());
+    }
+
+    pub(crate) fn resolve(&self, path: impl Into<PathId>) -> &hir::Item {
+        self.defs.get(&path.into()).unwrap()
+    }
+}
+
+impl Default for hir::TypeKind {
     fn default() -> Self {
-        Self::new(hir::TypeKind::Unknown)
-    }
-}
-
-impl From<hir::TypeKind> for hir::Type {
-    fn from(kind: hir::TypeKind) -> Self {
-        Self::new(kind)
-    }
-}
-
-impl From<hir::ScalarKind> for hir::Type {
-    fn from(kind: hir::ScalarKind) -> Self {
-        hir::TypeKind::Scalar(kind).into()
+        hir::TypeKind::Unknown(hir::Constraint::default())
     }
 }
 
@@ -32,21 +30,31 @@ impl From<hir::ScalarKind> for hir::TypeKind {
     }
 }
 
-impl From<Vec<(hir::Name, TypeId)>> for hir::Type {
-    fn from(vec: Vec<(hir::Name, TypeId)>) -> Self {
-        hir::TypeKind::Struct(vec.into_iter().collect()).into()
+impl From<Vec<(hir::Name, hir::Type)>> for hir::TypeKind {
+    fn from(vec: Vec<(hir::Name, hir::Type)>) -> Self {
+        hir::TypeKind::Struct(vec.into_iter().collect())
     }
 }
 
-impl From<ast::Path> for hir::Path {
-    fn from(path: ast::Path) -> Self {
-        Self::new(path.id, path.loc)
+impl From<hir::ConstraintKind> for hir::TypeKind {
+    fn from(kind: hir::ConstraintKind) -> Self {
+        let mut b = Bitmap::new();
+        b.set(kind as usize, true);
+        hir::TypeKind::Unknown(b.into())
     }
 }
 
-impl From<PathId> for hir::Path {
-    fn from(id: PathId) -> Self {
-        Self::new(id, Loc::Fake)
+impl hir::ItemKind {
+    pub(crate) const fn get_path(&self) -> hir::Path {
+        match self {
+            hir::ItemKind::TypeAlias(item) => item.path,
+            hir::ItemKind::Enum(item) => item.path,
+            hir::ItemKind::Fun(item) => item.path,
+            hir::ItemKind::Task(item) => item.path,
+            hir::ItemKind::ExternFun(item) => item.path,
+            hir::ItemKind::ExternType(item) => item.path,
+            hir::ItemKind::Variant(item) => item.path,
+        }
     }
 }
 
@@ -58,7 +66,7 @@ pub(crate) trait SortFields: Sized {
 impl<T> SortFields for VecMap<hir::Name, T> {
     fn sort_fields(mut self, info: &mut Info) -> Self {
         self.drain()
-            .sorted_by_key(|(x, _)| info.names.resolve(x.id))
+            .sorted_by_key(|(x, _)| info.names.resolve(x))
             .collect()
     }
 }

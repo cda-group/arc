@@ -4,13 +4,13 @@ expression: s
 input_file: arc-script-test/compile/src/tests/expect_pass/ifs.arc
 
 ---
-fun main()  {
+fun main() {
     unit
 }
-fun test() -> i32 {
-    let a_i32: i32 = 65 in
-    let b_i32: i32 = 66 in
-    let true_bool: bool = true in
+fun test(): i32 {
+    val a_i32: i32 = 65;
+    val b_i32: i32 = 66;
+    val true_bool: bool = true;
     if true_bool {
         a_i32
     } else {

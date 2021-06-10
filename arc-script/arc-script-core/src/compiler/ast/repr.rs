@@ -1,14 +1,23 @@
 //! Internal representation of the `AST`. In comparison to the `HIR`, the `AST` does not have
 //! resolved names. Also, all expressions are interned (bump-allocated).
 
-use crate::compiler::info::files::{ByteIndex, FileId, Loc};
-use crate::compiler::info::names::NameId;
-use crate::compiler::info::paths::PathId;
+use crate::compiler::info::files::ByteIndex;
+use crate::compiler::info::files::FileId;
+use crate::compiler::info::files::Loc;
 
+pub(crate) use crate::compiler::info::files::Spanned;
+pub(crate) use crate::compiler::info::names::NameId;
+pub(crate) use crate::compiler::info::paths::PathId;
+
+use arc_script_core_macros::GetId;
 use arc_script_core_macros::Loc;
+use arc_script_core_shared::Arena;
 use arc_script_core_shared::Educe;
+use arc_script_core_shared::From;
+use arc_script_core_shared::Into;
 use arc_script_core_shared::New;
 use arc_script_core_shared::OrdMap;
+use arc_script_core_shared::Shrinkwrap;
 
 use half::bf16;
 use half::f16;
@@ -16,16 +25,17 @@ use std::fmt::Debug;
 use time::Duration;
 use time::PrimitiveDateTime as DateTime;
 
-/// A structure which keeps the start and end position of an AST node plus its source file.
-/// NB: The `FileId` could probably be kept in a nicer place to take up less space.
-#[derive(Debug, New)]
-pub struct Spanned<Node>(pub FileId, pub ByteIndex, pub Node, pub ByteIndex);
+pub type ExprInterner = Arena<ExprId, ExprKind>;
+pub type TypeInterner = Arena<TypeId, TypeKind>;
+pub type PatInterner = Arena<PatId, PatKind>;
 
 /// An Arc-AST.
 #[derive(Debug, Default)]
 pub struct AST {
     pub modules: OrdMap<PathId, Module>,
     pub exprs: ExprInterner,
+    pub pats: PatInterner,
+    pub types: TypeInterner,
 }
 
 /// A module which corresponds directly to a source file.
@@ -34,36 +44,29 @@ pub struct Module {
     pub items: Vec<Item>,
 }
 
-/// A setting for an item.
-#[derive(Debug, Loc)]
-pub struct Setting {
-    pub kind: SettingKind,
+/// A set of attributes.
+#[derive(Debug, Clone, Loc)]
+pub struct Meta {
+    pub attrs: Vec<Attr>,
     pub loc: Loc,
 }
 
-/// A kind of setting for an item.
-#[derive(Debug)]
-pub enum SettingKind {
-    Activate(Name),
-    Calibrate(Name, LitKind),
-}
-
-/// Path to an item or variable.
-#[derive(Debug, Loc, Clone, Copy)]
-pub struct Path {
-    pub id: PathId,
+/// An attribute.
+#[derive(Debug, Clone, Loc)]
+pub struct Attr {
+    pub kind: AttrKind,
     pub loc: Loc,
 }
 
-/// An identifier.
-#[derive(Debug, Clone, Copy, Loc, Educe, New)]
-#[educe(PartialEq, Eq, Hash, PartialOrd, Ord)]
-pub struct Name {
-    pub id: NameId,
-    #[educe(PartialEq(ignore), Eq(ignore), Hash(ignore))]
-    #[educe(PartialOrd(ignore), Ord(ignore))]
-    pub loc: Loc,
+/// A kind of attribute for an item.
+#[derive(Debug, Clone)]
+pub enum AttrKind {
+    Name(Name),
+    NameValue(Name, LitKind),
 }
+
+pub use crate::compiler::info::names::Name;
+pub use crate::compiler::info::paths::Path;
 
 /// An index into a tuple.
 #[derive(Debug, Copy, Clone, Educe, New, Loc)]
@@ -77,36 +80,57 @@ pub struct Index {
 /// An item declaration.
 #[derive(Debug, Loc)]
 pub struct Item {
+    pub meta: Option<Meta>,
     pub kind: ItemKind,
-    pub settings: Option<Vec<Setting>>,
     pub loc: Loc,
 }
 
 /// A kind of item declaration.
 #[derive(Debug)]
 pub enum ItemKind {
-    Alias(Alias),
+    Assign(Assign),
     Enum(Enum),
+    ExternFun(ExternFun),
+    ExternType(ExternType),
     Fun(Fun),
-    Extern(Extern),
     Task(Task),
+    TypeAlias(TypeAlias),
     Use(Use),
     Err,
+}
+
+/// An item declaration residing within a task.
+#[derive(Debug, Loc)]
+pub struct ExternTypeItem {
+    pub meta: Option<Meta>,
+    pub kind: ExternTypeItemKind,
+    pub loc: Loc,
+}
+
+/// An kind of item declaration residing within an extern type.
+#[derive(Debug)]
+pub enum ExternTypeItemKind {
+    FunDecl(FunDecl),
+    Err,
+}
+
+/// An item declaration residing within a task.
+#[derive(Debug, Loc)]
+pub struct TaskItem {
+    pub meta: Option<Meta>,
+    pub kind: TaskItemKind,
+    pub loc: Loc,
 }
 
 /// An kind of item declaration residing within a task.
 #[derive(Debug)]
 pub enum TaskItemKind {
-    Alias(Alias),
     Enum(Enum),
+    ExternFun(ExternFun),
     Fun(Fun),
-    Extern(Extern),
-    On(On),
-    State(State),
-    Startup(Startup),
+    Stmt(Stmt),
+    TypeAlias(TypeAlias),
     Use(Use),
-    Timer(Timer),
-    Timeout(Timeout),
     Err,
 }
 
@@ -115,23 +139,38 @@ pub enum TaskItemKind {
 pub struct Task {
     pub name: Name,
     pub params: Vec<Param>,
-    pub ihub: Hub,
-    pub ohub: Hub,
+    pub iinterface: Interface,
+    pub ointerface: Interface,
     pub items: Vec<TaskItem>,
 }
 
-/// A hub of a task.
+/// An interface of a task.
 #[derive(Debug, New, Loc)]
-pub struct Hub {
-    pub kind: HubKind,
+pub struct Interface {
+    pub kind: InterfaceKind,
     pub loc: Loc,
 }
 
-/// A kind of hub.
+/// A kind of an interface.
 #[derive(Debug)]
-pub enum HubKind {
+pub enum InterfaceKind {
     Tagged(Vec<Port>),
+    // NB: This is lowered into a tagged version.
     Single(Type),
+}
+
+/// A local variable or value.
+#[derive(Debug, New)]
+pub struct Assign {
+    pub kind: MutKind,
+    pub param: Param,
+    pub expr: Expr,
+}
+
+#[derive(Debug, Clone, Copy)]
+pub enum MutKind {
+    Mutable,
+    Immutable,
 }
 
 /// A function.
@@ -139,24 +178,37 @@ pub enum HubKind {
 pub struct Fun {
     pub name: Name,
     pub params: Vec<Param>,
-    pub channels: Option<Vec<Param>>,
-    pub return_ty: Option<Type>,
-    pub body: Expr,
+    pub rt: Option<Type>,
+    pub block: Block,
 }
 
-/// An extern function.
+/// A function declaration.
 #[derive(Debug, New)]
-pub struct Extern {
+pub struct FunDecl {
     pub name: Name,
     pub params: Vec<Param>,
-    pub return_ty: Type,
+    pub rt: Type,
+}
+
+/// An externally defined function.
+#[derive(Debug, New)]
+pub struct ExternFun {
+    pub decl: FunDecl,
+}
+
+/// An externally defined type.
+#[derive(Debug, New)]
+pub struct ExternType {
+    pub name: Name,
+    pub params: Vec<Param>,
+    pub items: Vec<ExternTypeItem>,
 }
 
 /// A type alias.
 #[derive(Debug, New)]
-pub struct Alias {
+pub struct TypeAlias {
     pub name: Name,
-    pub ty: Type,
+    pub t: Type,
 }
 
 /// An enum.
@@ -173,119 +225,76 @@ pub struct Use {
     pub alias: Option<Name>,
 }
 
-/// An event handler.
-#[derive(Debug, New)]
-pub struct On {
-    pub cases: Vec<Case>,
-}
-
-/// A timer declaration.
-#[derive(Debug, New)]
-pub struct Timer {
-    pub ty: Type,
-}
-
-/// A trigger handler.
-#[derive(Debug, New)]
-pub struct Timeout {
-    pub cases: Vec<Case>,
-}
-
-/// A timer declaration.
-#[derive(Debug, New)]
-pub struct Startup {
-    pub expr: Expr,
-}
-
-/// A state variable.
-#[derive(Debug, New)]
-pub struct State {
-    pub param: Param,
-    pub expr: Expr,
-}
-
-/// An item declaration residing within a task.
+/// A block of statements terminated by an expression.
 #[derive(Debug, Loc)]
-pub struct TaskItem {
-    pub kind: TaskItemKind,
-    pub settings: Option<Vec<Setting>>,
+pub struct Block {
+    pub stmts: Vec<Stmt>,
+    pub expr: Option<Expr>,
     pub loc: Loc,
 }
 
-/// Data structure which interns (bump-allocates) expressions.
-#[derive(Debug, Default)]
-pub struct ExprInterner {
-    pub(crate) store: Vec<ExprKind>,
+/// A statement.
+#[derive(Debug, Loc)]
+pub struct Stmt {
+    pub kind: StmtKind,
+    pub loc: Loc,
+}
+
+/// A kind of statement.
+#[derive(Debug)]
+pub enum StmtKind {
+    Empty,
+    Assign(Assign),
+    Expr(Expr),
 }
 
 /// Id of an interned expression.
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Copy, Clone, Into, From)]
 pub struct ExprId(usize);
 
 /// An expression.
-#[derive(Debug, Loc)]
+#[derive(Debug, Copy, Clone, Loc, GetId)]
 pub struct Expr {
     pub id: ExprId,
     pub loc: Loc,
-}
-
-impl ExprInterner {
-    /// Interns an expression and returns a reference to it.
-    pub fn intern(&mut self, expr: ExprKind) -> ExprId {
-        let id = ExprId(self.store.len());
-        self.store.push(expr);
-        id
-    }
-
-    /// Resolves an `ExprId` into its associated `ExprKind`.
-    #[must_use]
-    #[allow(clippy::missing_panics_doc)]
-    pub fn resolve(&self, id: ExprId) -> &ExprKind {
-        self.store.get(id.0).unwrap()
-    }
 }
 
 /// A kind of expression.
 #[derive(Debug)]
 pub enum ExprKind {
     Access(Expr, Name),
+    Invoke(Expr, Name, Vec<Expr>),
+    After(Expr, Block),
+    Every(Expr, Block),
     Array(Vec<Expr>),
     BinOp(Expr, BinOp, Expr),
-    Break,
     Call(Expr, Vec<Expr>),
-    Select(Expr, Vec<Expr>),
-    Empty,
     Cast(Expr, Type),
     Emit(Expr),
-    Trigger(Expr),
-    For(Pat, Expr, Expr),
-    If(Expr, Expr, Expr),
-    IfLet(Pat, Expr, Expr, Expr),
-    Lambda(Vec<Param>, Expr),
-    Let(Param, Expr, Expr),
+    Enwrap(Path, Expr),
+    If(Expr, Block, Option<Block>),
+    Is(Path, Expr),
     Lit(LitKind),
     Log(Expr),
-    Loop(Expr),
-    Reduce(Pat, Expr, ReduceKind),
-    Unwrap(Path, Expr),
-    Is(Path, Expr),
-    Enwrap(Path, Expr),
-    Match(Expr, Vec<Case>),
-    Path(Path),
+    Loop(Block),
+    On(Vec<Case>),
     Project(Expr, Index),
+    Select(Expr, Vec<Expr>),
     Struct(Vec<Field<Expr>>),
     Tuple(Vec<Expr>),
     UnOp(UnOp, Expr),
+    Unwrap(Path, Expr),
     Return(Option<Expr>),
-    Todo,
+    Break(Option<Expr>),
+    Continue,
     Err,
-}
-
-/// A kind of reduce-expression.
-#[derive(Debug)]
-pub enum ReduceKind {
-    Loop(Expr),
-    For(Pat, Expr, Expr),
+    // NB: These expressions are desugared
+    Block(Block),
+    Lambda(Vec<Param>, Expr),
+    IfAssign(Assign, Block, Option<Block>),
+    For(Pat, Expr, Block),
+    Match(Expr, Vec<Case>),
+    Path(Path, Option<Vec<Type>>),
 }
 
 /// A literal.
@@ -313,17 +322,20 @@ pub enum LitKind {
 }
 
 /// The arm of a match expression.
-#[derive(Debug, Loc)]
+#[derive(Debug, Clone, Copy, Loc)]
 pub struct Case {
     pub pat: Pat,
     pub body: Expr,
     pub loc: Loc,
 }
 
+#[derive(Debug, Copy, Clone, Into, From)]
+pub struct PatId(usize);
+
 /// A pattern.
-#[derive(Debug, Loc)]
+#[derive(Debug, Copy, Clone, Loc, GetId)]
 pub struct Pat {
-    pub kind: PatKind,
+    pub id: PatId,
     pub loc: Loc,
 }
 
@@ -331,36 +343,31 @@ pub struct Pat {
 #[derive(Debug)]
 pub enum PatKind {
     Ignore,
-    Or(Box<Pat>, Box<Pat>),
+    Or(Pat, Pat),
     Struct(Vec<Field<Option<Pat>>>),
     Tuple(Vec<Pat>),
-    Val(LitKind),
+    Const(LitKind),
     Var(Name),
-    Variant(Path, Box<Pat>),
-    By(Box<Pat>, Box<Pat>),
-    After(Box<Pat>, Box<Pat>),
+    Variant(Path, Pat),
+    By(Pat, Pat),
     Err,
 }
 
 /// A binary operator.
-#[derive(Debug, Loc)]
+#[derive(Debug, Clone, Copy, New, Loc)]
 pub struct BinOp {
     pub kind: BinOpKind,
     pub loc: Loc,
 }
 
 /// A kind of binary operator.
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Copy)]
 pub enum BinOpKind {
-    After,
     Add,
     And,
     Band,
     Bor,
     Bxor,
-    By,
-    In,
-    NotIn,
     Div,
     Equ,
     Geq,
@@ -369,30 +376,32 @@ pub enum BinOpKind {
     Lt,
     Mod,
     Mul,
+    Mut,
     Neq,
     Or,
-    Pipe,
-    Mut,
     Pow,
-    Seq,
     Sub,
     Xor,
+    In,
+    RExc,
+    RInc,
     Err,
+    // NB: These ops are desugared
+    By,
+    NotIn,
+    Pipe,
 }
 
 /// A unary operator.
-#[derive(Debug, Loc)]
+#[derive(Debug, Clone, Copy, Loc)]
 pub struct UnOp {
     pub kind: UnOpKind,
     pub loc: Loc,
 }
 
 /// A kind of unary operator.
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Copy)]
 pub enum UnOpKind {
-    Add,
-    Boxed,
-    Del,
     Neg,
     Not,
     Err,
@@ -410,15 +419,15 @@ pub struct Field<T: Debug> {
 #[derive(Debug, Loc)]
 pub struct Variant {
     pub name: Name,
-    pub ty: Option<Type>,
+    pub t: Option<Type>,
     pub loc: Loc,
 }
 
-/// A port of a hub.
+/// A port of an interface.
 #[derive(Debug, Loc)]
 pub struct Port {
     pub name: Name,
-    pub ty: Type,
+    pub t: Type,
     pub loc: Loc,
 }
 
@@ -426,35 +435,33 @@ pub struct Port {
 #[derive(Debug, Loc)]
 pub struct Param {
     pub pat: Pat,
-    pub ty: Option<Type>,
+    pub t: Option<Type>,
     pub loc: Loc,
 }
 
+#[derive(Debug, Copy, Clone, Into, From)]
+pub struct TypeId(usize);
+
 /// A type from a type annotation.
-#[derive(Debug, Loc)]
+#[derive(Debug, Copy, Clone, Loc, GetId)]
 pub struct Type {
-    pub kind: TypeKind,
+    pub id: TypeId,
     pub loc: Loc,
 }
 
 /// A kind of type from a type annotation.
 #[derive(Debug)]
 pub enum TypeKind {
-    Array(Option<Box<Type>>, Shape),
-    Fun(Vec<Type>, Box<Type>),
-    Map(Box<Type>, Box<Type>),
-    Nominal(Path),
-    Optional(Box<Type>),
+    Array(Option<Type>, Shape),
+    Fun(Vec<Type>, Type),
     Scalar(ScalarKind),
-    Set(Box<Type>),
-    Stream(Box<Type>),
+    Stream(Type),
     Struct(Vec<Field<Type>>),
     Tuple(Vec<Type>),
-    Vector(Box<Type>),
-    Boxed(Box<Type>),
-    By(Box<Type>, Box<Type>),
-    After(Box<Type>, Box<Type>),
     Err,
+    // NB: These types are lowered
+    Path(Path, Option<Vec<Type>>),
+    By(Type, Type),
 }
 
 /// A kind of scalar type.
@@ -474,13 +481,11 @@ pub enum ScalarKind {
     U16,
     U32,
     U64,
-    Null,
     Str,
     Unit,
-    Never,
-    Bot,
     DateTime,
     Duration,
+    Size,
 }
 
 /// A shape of an array.

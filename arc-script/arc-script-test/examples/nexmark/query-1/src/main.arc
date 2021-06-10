@@ -24,16 +24,16 @@ task Bid() () -> () {
 extern fn dol_to_eur(dollar);
 
 fn query1(bids: Stream[Bid]) {
-    let people: Stream[Person] = source::People() () in
-    let items: Stream[Item] = source::Items() () in
-    let bids: Stream[Bid] = source::Bids() () in
+    val people: Stream[Person] = source::People() ();
+    val items: Stream[Item] = source::Items() ();
+    val bids: Stream[Bid] = source::Bids() ();
 
-    let mapped = Map(|bid| {
+    val mapped = Map(|bid| {
         item_id = bid.item_id,
         bidder_id = bid.bidder_id,
         eur = dol_to_eur(bid.price),
         time = bid.time
-    }) (items) in
+    }) (items);
 
     sink::Query1() (mapped)
 }

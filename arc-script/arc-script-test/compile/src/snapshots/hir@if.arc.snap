@@ -4,22 +4,25 @@ expression: s
 input_file: arc-script-test/compile/src/tests/expect_pass/if.arc
 
 ---
-fun test() -> i32 {
-    let c0_0: bool = true in
-    let c1_0: bool = false in
-    let v_0: i32 = 3 in
-    if c0_0 {
-        if c1_0 {
-            v_0
+fun test(): i32 {
+    val x_0: bool = true;
+    val x_1: bool = false;
+    val x_2: i32 = 3;
+    val x_5: i32 = if x_0 {
+        val x_3: i32 = if x_1 {
+            x_2
         } else {
-            v_0
-        }
+            x_2
+        };
+        x_3
     } else {
-        if c1_0 {
-            v_0
+        val x_4: i32 = if x_1 {
+            x_2
         } else {
-            v_0
-        }
-    }
+            x_2
+        };
+        x_4
+    };
+    x_5
 }
 

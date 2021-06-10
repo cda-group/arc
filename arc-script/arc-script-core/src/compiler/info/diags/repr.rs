@@ -7,7 +7,7 @@ use crate::compiler::info::diags::to_codespan::Context;
 use crate::compiler::info::diags::to_codespan::ToCodespan;
 use crate::compiler::info::files::Loc;
 
-use crate::compiler::info::types::TypeId;
+use crate::compiler::info::types::Type;
 use crate::compiler::info::Info;
 
 use std::io::Write;
@@ -70,6 +70,7 @@ impl DiagInterner {
         // Emit header message
         f.set_color(ColorSpec::new().set_fg(Some(Color::Red)));
         writeln!(f, "[-- Found {} errors --],", self.len())?;
+        tracing::trace!("{:?}", self);
         f.reset();
 
         let files = &info.files.store;
@@ -93,8 +94,6 @@ pub enum Diagnostic {
     Warning(Warning),
     /// A compile-time error
     Error(Error),
-    /// A run-time error
-    Panic(Panic),
 }
 
 /// Compile-time info reported by the compiler.
@@ -110,6 +109,9 @@ pub enum Warning {}
 pub enum Error {
     /// Error when the importer fails to find a source file.
     FileNotFound,
+
+    /// Error when the importing is given a file with an invalid extension.
+    BadExtension,
 
     /// Error when the lexer encounters too many levels of indentation.
     TooMuchIndent {
@@ -176,10 +178,10 @@ pub enum Error {
 
     /// Error when two types fail to unify.
     TypeMismatch {
-        /// Type variable of the first type.
-        lhs: TypeId,
-        /// Type variable of the second type.
-        rhs: TypeId,
+        /// First type.
+        lhs: Type,
+        /// Second type.
+        rhs: Type,
         /// Location of the error.
         loc: Loc,
     },
@@ -197,18 +199,6 @@ pub enum Error {
         /// Location of the error.
         loc: Loc,
     },
-
-    /// Error when trying to construct an array shape with an invalid dimension.
-    DisallowedDimExpr {
-        /// Location of the error.
-        loc: Loc,
-    },
-
-    /// Error when z3 cannot infer anything about a shape.
-    ShapeUnknown,
-
-    /// Error when z3 runs into a contradiction when inferring a shape.
-    ShapeUnsat,
 
     /// Error when a match is non-exhaustive.
     NonExhaustiveMatch {
@@ -252,17 +242,14 @@ pub enum Error {
         loc: Loc,
     },
 
-    /// Error when the main function has the wrong signature.
-    MainWrongSign,
-
-    /// Error when there is no main-function.
-    MainNotFound,
-
-    /// Error when a cycle is detected in the DFG.
-    CycleDetected,
-
     /// Error when placing a type in value position.
     TypeInValuePosition {
+        /// Location of the error.
+        loc: Loc,
+    },
+
+    /// Error when placing a value in type position.
+    ValueInTypePosition {
         /// Location of the error.
         loc: Loc,
     },
@@ -273,7 +260,7 @@ pub enum Error {
         loc: Loc,
     },
 
-    /// Error when placing a certain pattern inside a let-expression.
+    /// Error when placing a refutable pattern where an irrefutable one is expected.
     RefutablePattern {
         /// Location of the error.
         loc: Loc,
@@ -286,7 +273,7 @@ pub enum Error {
         /// Location of the second value.
         loc1: Loc,
         /// Type which does not implement Copy.
-        tv: TypeId,
+        t: Type,
     },
 
     /// Error when using the same value twice, and the used value does not implement Copy.
@@ -298,7 +285,7 @@ pub enum Error {
         /// Location of the second use.
         loc2: Loc,
         /// Type which does not implement Copy.
-        tv: TypeId,
+        t: Type,
     },
 
     /// Error when an extern function contains a parameter which is a pattern.

@@ -4,13 +4,28 @@ expression: s
 input_file: arc-script-test/compile/src/tests/expect_mlir_fail_todo/task_keyby.arc
 
 ---
-task KeyBy(keyfun_0: fun(i32) -> i32) ~{ key: i32, val: i32 } -> ~{ key: i32, val: i32 } {
-    on {
-        x_0: { key: i32, val: i32 } => {
-            let event_0: i32 = x_0.val in
-            let key_0: i32 = x_0.key in
-            emit { val: event_0, key: keyfun_0(event_0) }
-        }
+task KeyBy(keyfun_0: fun(i32): i32): ~{ key: i32, value: i32 } -> ~{ key: i32, value: i32 } {
+    enum IInterface {
+        __({ key: i32, value: i32 })
     }
+    enum OInterface {
+        __({ key: i32, value: i32 })
+    }
+    fun on_start(keyfun_0: fun(i32): i32): unit {
+        val x_9: unit = unit;
+        x_9
+    }
+    crate::KeyBy::on_start();
+    fun on_event(x_3: crate::KeyBy::IInterface): unit {
+        val x_0: { key: i32, value: i32 } = unwrap[crate::KeyBy::IInterface::__](x_3);
+        val x_1: i32 = x_0.value;
+        val x_2: i32 = x_0.key;
+        val x_4: i32 = keyfun_0(x_1);
+        val x_5: { key: i32, value: i32 } = { value: x_1, key: x_4 };
+        val x_6: crate::KeyBy::OInterface = enwrap[crate::KeyBy::OInterface::__](x_5);
+        val x_7: unit = emit x_6;
+        x_7
+    }
+    on event => crate::KeyBy::on_event(event)
 }
 

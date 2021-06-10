@@ -15,6 +15,8 @@ pub struct Mode {
     pub suppress_diags: bool,
     /// Fails compilation as soon as a compilation phase emits an error.
     pub fail_fast: bool,
+    /// Skip type inference pass.
+    pub no_infer: bool,
     /// Forces the compiler to emit its internal representation (e.g., AST) even if it has errors.
     pub force_output: bool,
     /// Configures what kind of language the compiler expects its input source code to be written in.
@@ -51,7 +53,7 @@ pub enum Verbosity {
     Info,
     /// Designates lower priority information.
     Debug,
-    /// Designates very low priority, often extremely verbose, information.
+    /// Designates very low priority information.
     Trace,
 }
 
@@ -83,13 +85,11 @@ pub enum Output {
     AST,
     /// Emit [`crate::compiler::hir::HIR`] as output (by first lowering the `AST` into it).
     HIR,
-    /// Emit [`crate::compiler::dfg::DFG`] as output (by first evaluating the `HIR` into it).
-    DFG,
-    /// Emit [`crate::compiler::rust::Rust`] as output (by first lowering the `HIR` and `DFG` into it).
-    Rust,
-    /// Emit [`crate::compiler::rust::Rust`] as output via the MLIR route.
+    /// Emit [`crate::compiler::arcorn::Arcorn`] as output (by first lowering the `HIR` into it).
+    Arcorn,
+    /// Emit [`crate::compiler::arcorn::Arcorn`] as output via the MLIR route.
     RustMLIR,
-    /// Emit [`crate::compiler::mlir::MLIR`] as output (by first lowering the `HIR` and `DFG` into it).
+    /// Emit [`crate::compiler::mlir::MLIR`] as output (by first lowering the `HIR` into it).
     #[educe(Default)]
     MLIR,
     /// Emit no output.
@@ -108,6 +108,6 @@ pub fn get_rust_backend() -> Output {
     if use_mlir_backend {
         Output::RustMLIR
     } else {
-        Output::Rust
+        Output::Arcorn
     }
 }

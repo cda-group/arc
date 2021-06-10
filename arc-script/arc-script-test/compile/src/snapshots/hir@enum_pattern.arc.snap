@@ -8,16 +8,23 @@ enum Opt {
     Some(i32),
     None
 }
-fun x_2() -> unit {
-    unit
+fun x_6(): unit {
+    val x_5: unit = unit;
+    x_5
 }
-fun main() -> unit {
-    let x_0: crate::Opt = enwrap[crate::Opt::Some](5) in
-    if is[crate::Opt::Some](x_0) {
-        let x_1: i32 = unwrap[crate::Opt::Some](x_0) in
-        unit
+fun main(): unit {
+    val x_0: i32 = 5;
+    val x_1: crate::Opt = enwrap[crate::Opt::Some](x_0);
+    val x_2: bool = is[x_1](x_1);
+    val x_9: unit = if x_2 {
+        val x_3: i32 = unwrap[crate::Opt::Some](x_1);
+        val x_4: unit = unit;
+        x_4
     } else {
-        crate::x_2()
-    }
+        val x_7: fun(): unit = crate::x_6;
+        val x_8: unit = x_7();
+        x_8
+    };
+    x_9
 }
 

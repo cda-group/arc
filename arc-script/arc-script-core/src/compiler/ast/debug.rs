@@ -1,16 +1,20 @@
 //! AST debugging utilities.
 
+use crate::compiler::ast;
 use crate::compiler::ast::repr::{Index, Item, ItemKind, Module, Path, TaskItemKind, AST};
-
 use crate::compiler::info::Info;
+
+use arc_script_core_shared::Shrinkwrap;
 
 use std::fmt::{Display, Formatter, Result};
 
 /// Wrapper around the AST which implements Display.
 /// Can be printed to display AST-debug information.
+#[derive(Shrinkwrap)]
 pub(crate) struct ASTDebug<'a> {
     ast: &'a AST,
-    info: &'a Info,
+    #[shrinkwrap(main_field)]
+    pub(crate) info: &'a Info,
 }
 
 impl AST {
@@ -25,21 +29,19 @@ impl Display for ASTDebug<'_> {
     fn fmt(&self, f: &mut Formatter<'_>) -> Result {
         writeln!(f, "AST Modules [")?;
         for (path, module) in &self.ast.modules {
-            writeln!(
-                f,
-                r#"    "{}" => ["#,
-                self.info.resolve_to_names(*path).join("::")
-            )?;
+            writeln!(f, "    {} => [", path.debug(self));
             for item in &module.items {
                 write!(f, "        ")?;
                 match &item.kind {
-                    ItemKind::Alias(x)  => write!(f, "{}", x.name.id.debug(self.info))?,
-                    ItemKind::Enum(x)   => write!(f, "{}", x.name.id.debug(self.info))?,
-                    ItemKind::Fun(x)    => write!(f, "{}", x.name.id.debug(self.info))?,
-                    ItemKind::Extern(x) => write!(f, "{}", x.name.id.debug(self.info))?,
-                    ItemKind::Task(x)   => write!(f, "{}", x.name.id.debug(self.info))?,
-                    ItemKind::Use(x)    => write!(f, "{}", x.path.id.debug(self.info))?,
-                    ItemKind::Err       => write!(f, "<Error>")?,
+                    ItemKind::TypeAlias(x)  => write!(f, "{}", x.name.id.debug(self.info))?,
+                    ItemKind::Enum(x)       => write!(f, "{}", x.name.id.debug(self.info))?,
+                    ItemKind::Fun(x)        => write!(f, "{}", x.name.id.debug(self.info))?,
+                    ItemKind::ExternFun(x)  => write!(f, "{}", x.decl.name.id.debug(self.info))?,
+                    ItemKind::ExternType(x) => write!(f, "{}", x.name.id.debug(self.info))?,
+                    ItemKind::Task(x)       => write!(f, "{}", x.name.id.debug(self.info))?,
+                    ItemKind::Use(x)        => write!(f, "{}", x.path.id.debug(self.info))?,
+                    ItemKind::Assign(x)     => write!(f, "{}", self.ast.pretty(&x.param.pat, self.info))?,
+                    ItemKind::Err           => write!(f, "<Error>")?,
                 }
                 writeln!(f, ",")?;
             }

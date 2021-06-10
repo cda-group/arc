@@ -1,8 +1,8 @@
 fun pipe(s0: ~i32) -> ~i32 {
-    let s1 = Identity() (s0) in
-    let s2 = Map(|x| x + 1) (s1) in
-    let s3 = Filter(|x| x != 0) (s2) in
-    let s4 = Duplicate() (s3) in
+    val s1 = Identity() (s0);
+    val s2 = Map(|x| x + 1) (s1);
+    val s3 = Filter(|x| x != 0) (s2);
+    val s4 = Duplicate() (s3);
     s4
 }
 

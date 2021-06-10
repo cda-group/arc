@@ -4,11 +4,8 @@ expression: s
 input_file: arc-script-test/compile/src/tests/expect_fail/ownership.arc
 
 ---
-[-- Found 1 errors --],
-error: Double use of value of non-copyable type ~i32
-  ┌─ <FILE-NAME>
-  │
-2 │     (s0, s0)
-  │      ^^  ^^
-
+fun main(s0_0: ~i32): (~i32, ~i32) {
+    val x_0: (~i32, ~i32) = (s0_0, s0_0);
+    x_0
+}
 

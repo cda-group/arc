@@ -1,12 +1,18 @@
 use crate::compiler::info::paths::PathId;
 use crate::compiler::info::Info;
 
-use std::fmt::{Display, Formatter, Result};
+use arc_script_core_shared::Shrinkwrap;
+
+use std::fmt::Display;
+use std::fmt::Formatter;
+use std::fmt::Result;
 
 /// A wrapper struct around `PathId` which implements `Display`.
 /// Will print debug information when displayed.
+#[derive(Shrinkwrap)]
 pub(crate) struct PathDebug<'a> {
     path: &'a PathId,
+    #[shrinkwrap(main_field)]
     info: &'a Info,
 }
 
@@ -19,11 +25,8 @@ impl PathId {
 
 impl<'a> Display for PathDebug<'a> {
     fn fmt(&self, f: &mut Formatter<'_>) -> Result {
-        write!(
-            f,
-            "{:?}: {}",
-            self.path,
-            self.info.resolve_to_names(*self.path).join("::")
-        )
+        let i: usize = (*self.path).into();
+        let p = self.resolve_to_names(self.path).join("::");
+        write!(f, "Path-{:<4?} => {}", i, p)
     }
 }

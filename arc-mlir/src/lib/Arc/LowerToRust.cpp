@@ -95,6 +95,27 @@ private:
   RustTypeConverter &TypeConverter;
 };
 
+struct StdCallIndirectOpLowering : public ConversionPattern {
+  StdCallIndirectOpLowering(MLIRContext *ctx, RustTypeConverter &typeConverter)
+      : ConversionPattern(CallIndirectOp::getOperationName(), 1, ctx),
+        TypeConverter(typeConverter) {}
+
+  LogicalResult
+  matchAndRewrite(Operation *op, ArrayRef<Value> operands,
+                  ConversionPatternRewriter &rewriter) const final {
+    CallIndirectOp o = cast<CallIndirectOp>(op);
+    SmallVector<Type, 4> resultTypes;
+    for (auto r : o.getResultTypes())
+      resultTypes.push_back(TypeConverter.convertType(r));
+    rewriter.replaceOpWithNewOp<rust::RustCallIndirectOp>(op, resultTypes,
+                                                          operands);
+    return success();
+  };
+
+private:
+  RustTypeConverter &TypeConverter;
+};
+
 struct StdConstantOpLowering : public ConversionPattern {
 
   StdConstantOpLowering(MLIRContext *ctx, RustTypeConverter &typeConverter)
@@ -110,6 +131,8 @@ struct StdConstantOpLowering : public ConversionPattern {
       return convertFloat(cOp, rewriter);
     if (attr.isa<IntegerAttr>())
       return convertInteger(cOp, rewriter);
+    if (attr.isa<SymbolRefAttr>())
+      return convertSymbolRef(cOp, rewriter);
     op->emitError("unhandled constant type");
     return failure();
   };
@@ -195,6 +218,24 @@ private:
       op.emitError("unhandled constant integer width");
       return failure();
     }
+  }
+
+  LogicalResult convertSymbolRef(mlir::ConstantOp op,
+                                 ConversionPatternRewriter &rewriter) const {
+    SymbolRefAttr attr = op.getValue().cast<SymbolRefAttr>();
+    Operation *refOp =
+        SymbolTable::lookupNearestSymbolFrom(op->getParentOp(), attr);
+
+    if (rust::RustFuncOp o = dyn_cast<rust::RustFuncOp>(refOp)) {
+      Type ty = o.getType();
+      Type rustTy = TypeConverter.convertType(ty);
+
+      rewriter.replaceOpWithNewOp<rust::RustConstantOp>(op, rustTy,
+                                                        o.getName());
+      return success();
+    }
+    op.emitError("unhandled symbol ref");
+    return failure();
   }
 };
 
@@ -929,6 +970,7 @@ void ArcToRustLoweringPass::runOnOperation() {
   patterns.insert<EnumCheckOpLowering>(&getContext(), typeConverter);
   patterns.insert<StructAccessOpLowering>(&getContext(), typeConverter);
   patterns.insert<StdCallOpLowering>(&getContext(), typeConverter);
+  patterns.insert<StdCallIndirectOpLowering>(&getContext(), typeConverter);
 
   if (failed(applyFullConversion(getOperation(), target, std::move(patterns))))
     signalPassFailure();

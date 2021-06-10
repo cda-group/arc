@@ -5,12 +5,7 @@ input_file: arc-script-test/compile/src/tests/expect_mlir_fail_todo/task_id_unta
 
 ---
 task Identity() ~i32 by i32 -> ~i32 by i32 {
-    on event => {
-        emit event
-    }
-}
-fun main(input: ~i32 by i32) -> ~i32 by i32 {
-    let output = Identity()(input) in
-    output
+    on event => emit event;
+    
 }
 

@@ -1,598 +1,405 @@
-mod lowerings {
+mod special {
     pub(crate) use super::Context;
     /// Module for lowering call-expressions.
     pub(crate) mod call;
     /// Module for lowering call-expressions.
     //     pub(crate) mod cases;
     /// Module for lowering if-let-expressions patterns.
-    pub(crate) mod if_let;
+    pub(crate) mod if_else;
     /// Module for lowering pure lambdas into first-class functions.
     pub(crate) mod lambda;
     /// Module for lowering let-expressions patterns.
     pub(crate) mod let_in;
     /// Module for lifting expressions into functions.
     pub(crate) mod lift;
-    /// Module for lowering nominal types.
-    pub(crate) mod nominal;
     /// Module for lowering path expressions.
     pub(crate) mod path;
     /// Module for lowering patterns.
     pub(crate) mod pattern;
     /// Module for lowering binop-expressions.
     pub(crate) mod ops;
-    /// Module for lowering types.
-    pub(crate) mod types;
+    /// Debug utils.
+    pub(crate) mod debug;
+    pub(crate) mod task;
 }
 
 /// Module for lowering names and paths of the AST.
-mod resolve;
-
-use lowerings::*;
+pub(crate) mod resolve;
+mod utils;
 
 use crate::compiler::ast;
 use crate::compiler::hir;
 use crate::compiler::hir::utils::SortFields;
-use crate::compiler::hir::FunKind::Global;
-use crate::compiler::hir::Name;
-use crate::compiler::hir::Path;
-use crate::compiler::hir::Vis;
 use crate::compiler::info;
 use crate::compiler::info::diags::Error;
 use crate::compiler::info::files::Loc;
 use crate::compiler::info::types::TypeId;
 
+use arc_script_core_shared::get;
 use arc_script_core_shared::itertools::Itertools;
+use arc_script_core_shared::lower;
 use arc_script_core_shared::map;
 use arc_script_core_shared::Lower;
+use arc_script_core_shared::Map;
 use arc_script_core_shared::New;
+use arc_script_core_shared::Shrinkwrap;
 use arc_script_core_shared::VecMap;
 
+use std::collections::VecDeque;
+
+use tracing::instrument;
+
 impl ast::AST {
-    pub(crate) fn lower(&self, info: &mut info::Info) -> hir::HIR {
-        let res = &mut resolve::Resolver::from(self, info);
+    #[instrument(name = "(Lower)", level = "debug", skip(self, res, info))]
+    pub(crate) fn lower(&self, res: &mut resolve::Resolver, info: &mut info::Info) -> hir::HIR {
         let mut hir = hir::HIR::default();
-        let ctx = &mut Context::new(res, self, &mut hir, info);
-        for (path_id, module) in &self.modules {
-            ctx.res.path_id = *path_id;
+        let ctx = &mut Context::new(res, self, &mut hir, info, hir::FunKind::Free, None, None);
+        for (path, module) in &self.modules {
+            ctx.res.set_path(*path);
             module.lower(ctx);
         }
         hir
     }
 }
 
-#[derive(New, Debug)]
+#[derive(New, Debug, Shrinkwrap)]
+#[shrinkwrap(mutable)]
 pub(crate) struct Context<'i> {
     pub(crate) res: &'i mut resolve::Resolver,
     pub(crate) ast: &'i ast::AST,
     pub(crate) hir: &'i mut hir::HIR,
+    #[shrinkwrap(main_field)]
     pub(crate) info: &'i mut info::Info,
+    pub(crate) funkind: hir::FunKind,
+    /// Tasks with untagged ports are lowered into tasks with tagged ports. This is set to
+    /// `Some(<path>)` where <path> is a generated output interface enum which allows us to
+    /// wrap emit expressions as `<path>::__(<expr>)`.
+    pub(crate) generated_ointerface_interior: Option<hir::Path>,
+    pub(crate) generated_iinterface_interior: Option<hir::Path>,
 }
 
-/// Resolve a module.
-impl Lower<(), Context<'_>> for ast::Module {
-    fn lower(&self, ctx: &mut Context<'_>) {
-        for item in &self.items {
+lower! {
+    [node, ctx, ast]
+
+    ast::Module => () {
+        for item in &node.items {
             if let Some(x) = item.lower(ctx) {
-                ctx.hir.items.push(x);
+                ctx.hir.namespace.push(x);
             }
         }
-    }
-}
-
-/// Resolve an item.
-impl Lower<Option<Path>, Context<'_>> for ast::Item {
-    #[rustfmt::skip]
-    fn lower(&self, ctx: &mut Context<'_>) -> Option<Path> {
-        match &self.kind {
-            ast::ItemKind::Task(item)   => item.lower(ctx),
-            ast::ItemKind::Fun(item)    => {
+    },
+    Vec<ast::Item> => Vec<hir::PathId> {
+        node.iter().filter_map(|item| item.lower(ctx)).collect()
+    },
+    ast::Item => Option<hir::PathId> {
+        node.kind.lower(ctx).map(|kind| {
+            let path = kind.get_path();
+            ctx.hir.intern(path, hir::Item::new(kind, node.loc));
+            *path
+        })
+    },
+    ast::ItemKind => Option<hir::ItemKind> {
+        let kind = match node {
+            ast::ItemKind::Task(item)       => {
+                ctx.funkind = hir::FunKind::Method;
+                let kind = item.lower(ctx).into();
+                ctx.funkind = hir::FunKind::Free;
+                kind
+            },
+            ast::ItemKind::Fun(item)        => {
                 ctx.res.stack.push_frame();
-                let item = item.lower(ctx, hir::FunKind::Global);
+                let kind = item.lower(ctx).into();
                 ctx.res.stack.pop_frame();
-                item
+                kind
             },
-            ast::ItemKind::Alias(item)  => item.lower(ctx),
-            ast::ItemKind::Enum(item)   => item.lower(ctx),
-            ast::ItemKind::Extern(item) => item.lower(ctx, hir::FunKind::Global),
-            ast::ItemKind::Use(_)       => None?,
-            ast::ItemKind::Err          => None?,
-        }
-        .map(|(path, kind)| {
-            let item = hir::Item::new(kind, self.loc);
-            ctx.hir.defs.insert(path, item);
-            path
-        })
-    }
-}
-
-/// Resolve a task item. Items that are specific tasks are not lowered here, but directly in the task.
-impl Lower<Option<Path>, Context<'_>> for ast::TaskItem {
-    #[rustfmt::skip]
-    fn lower(&self, ctx: &mut Context<'_>) -> Option<Path> {
-        match &self.kind {
-            ast::TaskItemKind::Fun(item)    => {
-                // NOTE: Methods capture their task-environment
-                ctx.res.stack.push_scope();
-                let item = item.lower(ctx, hir::FunKind::Method);
-                ctx.res.stack.pop_scope();
-                item
+            ast::ItemKind::TypeAlias(item)  => item.lower(ctx).into(),
+            ast::ItemKind::Enum(item)       => item.lower(ctx).into(),
+            ast::ItemKind::ExternFun(item)  => item.lower(ctx).into(),
+            ast::ItemKind::ExternType(item) => {
+                ctx.funkind = hir::FunKind::Method;
+                let kind = item.lower(ctx).into();
+                ctx.funkind = hir::FunKind::Free;
+                kind
             },
-            ast::TaskItemKind::Extern(item) => item.lower(ctx, hir::FunKind::Method),
-            ast::TaskItemKind::Alias(item)  => item.lower(ctx),
-            ast::TaskItemKind::Enum(item)   => item.lower(ctx),
-            ast::TaskItemKind::Timeout(_)   => None?,
-            ast::TaskItemKind::Timer(_)     => None?,
-            ast::TaskItemKind::On(_)        => None?,
-            ast::TaskItemKind::Use(_)       => None?,
-            ast::TaskItemKind::Startup(_)   => None?,
-            ast::TaskItemKind::State(_)     => None?,
-            ast::TaskItemKind::Err          => None?,
-        }
-        .map(|(path, kind)| {
-            let item = hir::Item::new(kind, self.loc);
-            ctx.hir.defs.insert(path, item);
-            path
+            ast::ItemKind::Assign(_)        => crate::todo!(),
+            ast::ItemKind::Use(_)           => None?,
+            ast::ItemKind::Err              => None?,
+        };
+        Some(kind)
+    },
+    Vec<ast::TaskItem> => Vec<hir::PathId> {
+        node.iter().filter_map(|item| item.lower(ctx)).collect()
+    },
+    ast::TaskItem => Option<hir::PathId> {
+        node.kind.lower(ctx).map(|kind| {
+            let path = kind.get_path();
+            ctx.hir.intern(path, hir::Item::new(kind, node.loc));
+            *path
         })
-    }
-}
-
-impl Lower<hir::Startup, Context<'_>> for ast::Startup {
-    fn lower(&self, ctx: &mut Context<'_>) -> hir::Startup {
-        let expr = self.expr.lower(ctx);
-        hir::Startup { expr }
-    }
-}
-
-impl Lower<hir::State, Context<'_>> for ast::State {
-    fn lower(&self, ctx: &mut Context<'_>) -> hir::State {
-        let (mut param, cases) = pattern::lower_pat(&self.param.pat, hir::VarKind::State, ctx);
-        param.tv = self
-            .param
-            .ty
-            .lower(ctx)
-            .unwrap_or_else(|| ctx.info.types.fresh());
-        let init = self.expr.lower(ctx);
-        hir::State { param, init }
-    }
-}
-
-/// Resolve a task.
-impl Lower<Option<(Path, hir::ItemKind)>, Context<'_>> for ast::Task {
-    fn lower(&self, ctx: &mut Context<'_>) -> Option<(Path, hir::ItemKind)> {
-        tracing::trace!("Lowering Task");
-        ctx.res.push_namespace(self.name, ctx.info);
-        let mut task_path: Path = ctx.res.path_id.into();
-        let (mut task_params, cases) =
-            pattern::lower_params(&self.params, hir::VarKind::Member, ctx);
-        let startups: Vec<hir::Startup> = self
-            .items
-            .iter()
-            .filter_map(|item| {
-                map!(&item.kind, ast::TaskItemKind::Startup).map(|item| item.lower(ctx))
-            })
-            .collect();
-        let states: Vec<hir::State> = self
-            .items
-            .iter()
-            .filter_map(|item| {
-                map!(&item.kind, ast::TaskItemKind::State).map(|item| item.lower(ctx))
-            })
-            .collect();
-        // If the task's parameter patterns are nested, a function must be created to
-        // flatten them. The function is then used in-place of the task.
-        if !cases.is_empty() {
-            let fun_params =
-                std::mem::replace(&mut task_params, pattern::params(&self.params, ctx));
-            let task_args = pattern::params_to_args(&task_params, hir::VarKind::Local);
-
-            let path = *ctx.info.paths.resolve(task_path.id);
-            let task_name = ctx.info.names.fresh_with_base(path.name);
-            let fun_path = std::mem::replace(
-                &mut task_path,
-                ctx.info
-                    .paths
-                    .intern_child(path.pred.unwrap(), task_name)
-                    .into(),
-            );
-
-            let ttv = ctx.info.types.fresh();
-            let rtv = ctx.info.types.fresh();
-            let ftv = ctx.info.types.fresh();
-
-            let call = hir::Expr::syn(
-                hir::ExprKind::Call(
-                    hir::Expr::syn(hir::ExprKind::Item(task_path), ttv).into(),
-                    task_args,
-                ),
-                rtv,
-            );
-            let body = pattern::fold_cases(call, None, cases);
-            let fun = hir::Fun::new(Global, fun_path, fun_params, None, body, ftv, rtv);
-            let item = hir::Item::syn(hir::ItemKind::Fun(fun));
-            ctx.hir.defs.insert(fun_path, item);
-            ctx.hir.items.push(fun_path);
+    },
+    ast::TaskItemKind => Option<hir::ItemKind> {
+        let kind = match &node {
+            ast::TaskItemKind::Fun(item)       => item.lower(ctx).into(),
+            ast::TaskItemKind::ExternFun(item) => item.lower(ctx).into(),
+            ast::TaskItemKind::TypeAlias(item) => item.lower(ctx).into(),
+            ast::TaskItemKind::Enum(item)      => item.lower(ctx).into(),
+            ast::TaskItemKind::Use(_)          => None?,
+            ast::TaskItemKind::Stmt(_)         => None?,
+            ast::TaskItemKind::Err             => None?,
+        };
+        Some(kind)
+    },
+    ast::Assign => () {
+        let cases = special::pattern::lower_assign(node, false, hir::ScopeKind::Local, ctx);
+        ctx.get_stmts().append(&mut special::pattern::cases_to_stmts(cases));
+    },
+    ast::Fun => hir::Fun {
+        let path = ctx.new_path(node.name);
+        let (params, cases) = special::pattern::lower_params(&node.params, hir::ScopeKind::Local, ctx);
+        let mut block = node.block.lower(ctx);
+        block.prepend_stmts(special::pattern::cases_to_stmts(cases));
+        let rt = ctx.new_type_unit_if_none(&node.rt);
+        let pts = params.iter().map(|p| p.t).collect();
+        let t = ctx.types.intern(hir::TypeKind::Fun(pts, rt));
+        hir::Fun::new(path, ctx.funkind, params, block, t, rt)
+    },
+    // Block-expressions need to be flattened. For this reason, the context maintains a list of
+    // statements of the current block.
+    ast::Block => hir::Block {
+        ctx.res.stack.push_scope();
+        node.stmts.lower(ctx);
+        let v = node.expr.lower(ctx);
+        let stmts = ctx.res.stack.pop_scope();
+        hir::Block::new(stmts, v, node.loc)
+    },
+    Vec<ast::Stmt> => () {
+        node.iter().for_each(|stmt| stmt.lower(ctx))
+    },
+    // Statements are SSA:d, so they don't lower into anything on their own
+    ast::Stmt => () {
+        match &node.kind {
+            ast::StmtKind::Empty     => {},
+            ast::StmtKind::Assign(a) => { a.lower(ctx); },
+            ast::StmtKind::Expr(e)   => { e.lower(ctx); },
         }
-        let ihub = self.ihub.lower(ctx.info.names.common.source.into(), ctx);
-        let ohub = self.ohub.lower(ctx.info.names.common.sink.into(), ctx);
-
-        let on = self
-            .items
-            .iter()
-            .find_map(|item| map!(&item.kind, ast::TaskItemKind::On))
-            .map(|item| item.lower(ctx));
-        let timer = self
-            .items
-            .iter()
-            .find_map(|item| map!(&item.kind, ast::TaskItemKind::Timer))
-            .map(|item| item.lower(ctx));
-        let timeout = self
-            .items
-            .iter()
-            .find_map(|item| map!(&item.kind, ast::TaskItemKind::Timeout))
-            .map(|item| item.lower(ctx));
-        let items = self
-            .items
-            .iter()
-            .filter_map(|item| item.lower(ctx))
-            .collect::<Vec<Path>>();
-        let tv = ctx.info.types.fresh();
+    },
+    Option<ast::Expr> => hir::Var {
+        if let Some(e) = node {
+            e.lower(ctx)
+        } else {
+            ctx.new_expr_unit().into_ssa(ctx)
+        }
+    },
+    ast::ExternFun => hir::ExternFun {
+        node.decl.lower(ctx)
+    },
+    ast::ExternType => hir::ExternType {
+        ctx.res.push_namespace(node.name, ctx.info);
+        let params = node.params.iter().map(|p| {
+                let x = get!(ctx.ast.pats.resolve(&p.pat), ast::PatKind::Var(x));
+                let t = p.t.as_ref().unwrap().lower(ctx);
+                hir::Param::new(hir::ParamKind::Ok(*x), t, p.loc)
+            })
+            .collect::<Vec<_>>();
+        let items = node.items.lower(ctx);
+        let path = ctx.res.path.into();
+        let t = ctx.types.fresh();
         ctx.res.pop_namespace(ctx.info);
-        let task = hir::Task {
-            path: task_path,
-            tv,
-            ihub,
-            ohub,
-            params: task_params,
-            states,
-            startups,
-            on,
-            timer,
-            timeout,
-            items,
+        hir::ExternType::new(path, params, items, t)
+    },
+    Vec<ast::ExternTypeItem> => Vec<hir::PathId> {
+        node.iter().filter_map(|item| item.lower(ctx)).collect()
+    },
+    ast::ExternTypeItem => Option<hir::PathId> {
+        node.kind.lower(ctx).map(|kind| {
+            let path = kind.get_path();
+            ctx.hir.intern(path, hir::Item::new(kind, node.loc));
+            *path
+        })
+    },
+    ast::ExternTypeItemKind => Option<hir::ItemKind> {
+        let kind = match node {
+            ast::ExternTypeItemKind::FunDecl(item) => item.lower(ctx).into(),
+            ast::ExternTypeItemKind::Err => None?,
         };
-        (task_path, hir::ItemKind::Task(task)).into()
-    }
-}
-
-impl ast::Hub {
-    fn lower(&self, hub_name: Name, ctx: &mut Context<'_>) -> hir::Hub {
-        tracing::trace!("Lowering Hub");
-        let kind = match &self.kind {
-            ast::HubKind::Tagged(ports) => {
-                // Construct enum for ports
-                let task_path = ctx.res.path_id;
-                let hub_path: Path = ctx.info.paths.intern_child(task_path, hub_name).into();
-                let mut ports = ports
-                    .iter()
-                    .map(|v| v.lower(hub_path.id, ctx))
-                    .collect::<Vec<_>>();
-                let hub_item = hir::Item::syn(hir::ItemKind::Enum(hir::Enum::new(hub_path, ports)));
-                ctx.hir.defs.insert(hub_path, hub_item);
-                hir::HubKind::Tagged(hub_path)
-            }
-            ast::HubKind::Single(ty) => hir::HubKind::Single(ty.lower(ctx)),
-        };
-        hir::Hub {
-            internal_tv: ctx.info.types.fresh(),
-            kind,
-            loc: self.loc,
+        Some(kind)
+    },
+    ast::FunDecl => hir::ExternFun {
+        let path = ctx.new_path(node.name);
+        let params = node.params.iter().map(|p| {
+                let x = get!(ctx.ast.pats.resolve(&p.pat), ast::PatKind::Var(x));
+                let t = p.t.as_ref().unwrap().lower(ctx);
+                hir::Param::new(hir::ParamKind::Ok(*x), t, p.loc)
+            })
+            .collect::<Vec<_>>();
+        let rt = node.rt.lower(ctx);
+        let ts = params.iter().map(|p| p.t).collect();
+        let t = ctx.types.intern(hir::TypeKind::Fun(ts, rt));
+        hir::ExternFun::new(path, ctx.funkind, params, t, rt)
+    },
+    ast::Task => hir::Task {
+        ctx.res.push_namespace(node.name, ctx.info);
+        ctx.res.stack.push_scope();
+        let mut path: hir::Path = ctx.res.path.into();
+        let (mut params, cases) = special::pattern::lower_params(&node.params, hir::ScopeKind::Member, ctx);
+        assert!(cases.is_empty());
+        let iinterface = node.iinterface.lower(ctx.names.common.iinterface, ctx);
+        let ointerface = node.ointerface.lower(ctx.names.common.ointerface, ctx);
+        if matches!(node.ointerface.kind, ast::InterfaceKind::Single(_)) {
+            ctx.generated_iinterface_interior = Some(iinterface.interior);
         }
-    }
-}
-
-impl ast::Fun {
-    fn lower(&self, ctx: &mut Context<'_>, kind: hir::FunKind) -> Option<(Path, hir::ItemKind)> {
-        tracing::trace!("Lowering Fun");
-        let path = ctx
-            .info
-            .paths
-            .intern_child(ctx.res.path_id, self.name)
-            .into();
-        let (params, cases) = pattern::lower_params(&self.params, hir::VarKind::Local, ctx);
-        let e = self.body.lower(ctx);
-        let e = pattern::fold_cases(e, None, cases);
-        let (channels, e) = if let Some(channels) = &self.channels {
-            let (channels, cases) = pattern::lower_params(channels, hir::VarKind::Local, ctx);
-            let e = pattern::fold_cases(e, None, cases);
-            (Some(channels), e)
-        } else {
-            (None, e)
-        };
-        let rtv = self
-            .return_ty
-            .as_ref()
-            .map(|ty| ty.lower(ctx))
-            .unwrap_or_else(|| ctx.info.types.intern(hir::ScalarKind::Unit));
-        let tv = ctx.info.types.intern(hir::TypeKind::Fun(
-            params.iter().map(|p| p.tv).collect(),
-            rtv,
-        ));
-        let item = hir::Fun::new(kind, path, params, channels, e, tv, rtv);
-        (path, hir::ItemKind::Fun(item)).into()
-    }
-}
-
-impl ast::Extern {
-    fn lower(&self, ctx: &mut Context<'_>, kind: hir::FunKind) -> Option<(Path, hir::ItemKind)> {
-        tracing::trace!("Lowering Extern");
-        let no_patterns = self
-            .params
-            .iter()
-            .all(|p| matches!(p.pat.kind, ast::PatKind::Var(_)));
-        if no_patterns {
-            let params = self
-                .params
-                .iter()
-                .filter_map(|p| {
-                    map!(&p.pat.kind, ast::PatKind::Var).map(|x| {
-                        let tv = p.ty.as_ref().unwrap().lower(ctx);
-                        hir::Param::new(hir::ParamKind::Var(*x), tv, p.loc)
-                    })
-                })
-                .collect::<Vec<_>>();
-            let path = ctx
-                .info
-                .paths
-                .intern_child(ctx.res.path_id, self.name)
-                .into();
-            let rtv = self.return_ty.lower(ctx);
-            let tv = ctx.info.types.intern(hir::TypeKind::Fun(
-                params.iter().map(|p| p.tv).collect(),
-                rtv,
-            ));
-            let item = hir::Extern::new(kind, path, params, tv, rtv);
-            (path, hir::ItemKind::Extern(item)).into()
-        } else {
-            ctx.info
-                .diags
-                .intern(Error::PatternInExternFun { loc: self.name.loc });
-            None
+        if matches!(node.iinterface.kind, ast::InterfaceKind::Single(_)) {
+            ctx.generated_ointerface_interior = Some(ointerface.interior);
         }
-    }
-}
+        let (fields, on_start, on_event, namespace) = special::task::lower_items(params.clone(), &node.items, ctx);
+        ctx.generated_ointerface_interior = None;
+        ctx.generated_iinterface_interior = None;
 
-impl Lower<hir::Timer, Context<'_>> for ast::Timer {
-    fn lower(&self, ctx: &mut Context<'_>) -> hir::Timer {
-        hir::Timer::syn(self.ty.lower(ctx))
-    }
-}
-
-impl Lower<hir::Timeout, Context<'_>> for ast::Timeout {
-    fn lower(&self, ctx: &mut Context<'_>) -> hir::Timeout {
-        let (param, body) = lower_handler(&self.cases, ctx);
-        hir::Timeout::syn(param, body)
-    }
-}
-
-impl Lower<hir::On, Context<'_>> for ast::On {
-    fn lower(&self, ctx: &mut Context<'_>) -> hir::On {
-        let (param, body) = lower_handler(&self.cases, ctx);
-        hir::On::syn(param, body)
-    }
-}
-
-/// For now, assume there is a single-case for handlers.
-fn lower_handler(cases: &[ast::Case], ctx: &mut Context<'_>) -> (hir::Param, hir::Expr) {
-    ctx.res.stack.push_scope();
-    let mut iter = cases.iter();
-    let case = iter.next().unwrap();
-    assert!(iter.next().is_none(), "Multi-cases are not yet supported");
-    let (param, cases) = pattern::lower_pat(&case.pat, hir::VarKind::Local, ctx);
-    cases
-        .iter()
-        .for_each(|c| tracing::debug!("{}", c.debug(ctx.info, ctx.hir)));
-    let body = case.body.lower(ctx);
-    let tv = ctx.info.types.fresh();
-    let else_branch = hir::Expr::syn(hir::ExprKind::Todo, tv);
-    let body = pattern::fold_cases(body, Some(&else_branch), cases);
-    ctx.res.stack.pop_scope();
-    (param, body)
-}
-
-impl Lower<Option<(Path, hir::ItemKind)>, Context<'_>> for ast::Alias {
-    fn lower(&self, ctx: &mut Context<'_>) -> Option<(Path, hir::ItemKind)> {
-        let path = ctx
-            .info
-            .paths
-            .intern_child(ctx.res.path_id, self.name)
-            .into();
-        let tv = self.ty.lower(ctx);
-        let item = hir::Alias::new(path, tv);
-        (path, hir::ItemKind::Alias(item)).into()
-    }
-}
-
-impl Lower<Option<(Path, hir::ItemKind)>, Context<'_>> for ast::Enum {
-    fn lower(&self, ctx: &mut Context<'_>) -> Option<(Path, hir::ItemKind)> {
-        let path: Path = ctx
-            .info
-            .paths
-            .intern_child(ctx.res.path_id, self.name)
-            .into();
-        let variants = self
+        let cons_t = ctx.types.fresh();
+        let fun_t = ctx.types.fresh();
+        let struct_t = ctx.types.fresh();
+        ctx.res.stack.pop_scope();
+        ctx.res.pop_namespace(ctx.info);
+        let cons_x = path; // TODO
+        hir::Task {
+            path,
+            cons_x,
+            cons_t,
+            fun_t,
+            struct_t,
+            params,
+            fields,
+            iinterface,
+            ointerface,
+            on_event,
+            on_start,
+            namespace
+        }
+    },
+    ast::TypeAlias => hir::TypeAlias {
+        let path = ctx.new_path(node.name);
+        let t = node.t.lower(ctx);
+        hir::TypeAlias::new(path, t)
+    },
+    ast::Enum => hir::Enum {
+        let path = ctx.new_path(node.name);
+        let variants = node
             .variants
             .iter()
-            .map(|v| v.lower(path.id, ctx))
+            .map(|v| {
+                let path: hir::Path = ctx.paths.intern_child(path, v.name).into();
+                let t = ctx.new_type_unit_if_none(&v.t);
+                let item = hir::Item::new(hir::Variant::new(path, t, v.loc).into(), v.loc);
+                ctx.hir.intern(path, item);
+                path
+            })
             .collect::<Vec<_>>();
-        let item = hir::Enum::new(path, variants);
-        (path, hir::ItemKind::Enum(item)).into()
-    }
-}
-
-impl ast::Variant {
-    fn lower(&self, enum_path: hir::PathId, ctx: &mut Context<'_>) -> Path {
-        let path: Path = ctx.info.paths.intern_child(enum_path, self.name).into();
-        let tv = self
-            .ty
-            .as_ref()
-            .map(|ty| ty.lower(ctx))
-            .unwrap_or_else(|| ctx.info.types.intern(hir::ScalarKind::Unit));
-        let item = hir::Variant::new(Vis::Public, path, tv, self.loc);
-        ctx.hir
-            .defs
-            .insert(path, hir::Item::new(hir::ItemKind::Variant(item), self.loc));
-        path
-    }
-}
-
-impl ast::Port {
-    fn lower(&self, enum_path: hir::PathId, ctx: &mut Context<'_>) -> Path {
-        let path: Path = ctx.info.paths.intern_child(enum_path, self.name).into();
-        let item = hir::Variant::new(Vis::Public, path, self.ty.lower(ctx), self.loc);
-        ctx.hir
-            .defs
-            .insert(path, hir::Item::new(hir::ItemKind::Variant(item), self.loc));
-        path
-    }
-}
-
-impl Lower<hir::Expr, Context<'_>> for ast::Expr {
-    #[rustfmt::skip]
-    fn lower(&self, ctx: &mut Context<'_>) -> hir::Expr {
-        let kind = match ctx.ast.exprs.resolve(self.id) {
-            ast::ExprKind::Path(x)              => path::lower_path_expr(x, self.loc, ctx),
-            ast::ExprKind::Lit(kind)            => hir::ExprKind::Lit(kind.lower(ctx)),
-            ast::ExprKind::Array(es)            => hir::ExprKind::Array(es.as_slice().lower(ctx)),
-            ast::ExprKind::Struct(fs)           => hir::ExprKind::Struct(fs.lower(ctx)),
-            ast::ExprKind::Tuple(es)            => hir::ExprKind::Tuple(es.as_slice().lower(ctx)),
-            ast::ExprKind::Lambda(ps, e)        => lambda::lower(ps, e, self.loc, ctx),
-            ast::ExprKind::Call(e, es)          => call::lower(e, es, ctx),
-            ast::ExprKind::Select(e, es)        => hir::ExprKind::Select(e.lower(ctx).into(), es.as_slice().lower(ctx)),
-            ast::ExprKind::UnOp(op, e) => match op.kind {
-                ast::UnOpKind::Add => ops::lower_add(e, self.loc, ctx),
-                ast::UnOpKind::Del => ops::lower_del(e, self.loc, ctx),
-                _ => hir::ExprKind::UnOp(op.lower(ctx), e.lower(ctx).into())
-            },
-            ast::ExprKind::BinOp(e0, op, e1) => match op.kind {
-                ast::BinOpKind::NotIn => ops::lower_not_in(e0, e1, self.loc, ctx),
-                ast::BinOpKind::Pipe  => ops::lower_pipe(e0, e1, self.loc, ctx),
-                ast::BinOpKind::By    => hir::ExprKind::Struct(ops::lower_by(e0, e1, ctx)),
-                ast::BinOpKind::After => hir::ExprKind::Struct(ops::lower_after(e0, e1, ctx)),
-                _                     => hir::ExprKind::BinOp(e0.lower(ctx).into(), op.lower(ctx), e1.lower(ctx).into())
-
+        hir::Enum::new(path, variants)
+    },
+    ast::Expr => hir::Var {
+        let kind = match ctx.ast.exprs.resolve(node) {
+            ast::ExprKind::Return(e)           => hir::ExprKind::Return(e.lower(ctx)),
+            ast::ExprKind::Break(e)            => hir::ExprKind::Break(e.lower(ctx)),
+            ast::ExprKind::Continue            => hir::ExprKind::Continue,
+            ast::ExprKind::Path(x, ts)         => return special::path::lower_expr_path(x, ts, node.loc, ctx),
+            ast::ExprKind::Lambda(ps, e)       => special::lambda::lower(ps, e, node.loc, ctx),
+            ast::ExprKind::Call(e, es)         => special::call::lower(e, es, ctx),
+            ast::ExprKind::Invoke(e, x, es)    => hir::ExprKind::Invoke(e.lower(ctx), *x, es.as_slice().lower(ctx)),
+            ast::ExprKind::If(e, b0, b1)       => special::if_else::lower_if(e, b0, b1, ctx),
+            ast::ExprKind::IfAssign(a, b0, b1) => return special::if_else::lower_if_assign(a, b0, b1, ctx),
+            ast::ExprKind::Lit(kind)           => hir::ExprKind::Lit(kind.lower(ctx)),
+            ast::ExprKind::Array(es)           => hir::ExprKind::Array(es.as_slice().lower(ctx)),
+            ast::ExprKind::Struct(fs)          => hir::ExprKind::Struct(fs.lower(ctx)),
+            ast::ExprKind::Tuple(es)           => hir::ExprKind::Tuple(es.as_slice().lower(ctx)),
+            ast::ExprKind::Select(e, es)       => hir::ExprKind::Select(e.lower(ctx), es.as_slice().lower(ctx)),
+            ast::ExprKind::UnOp(op, e)         => hir::ExprKind::UnOp(*op, e.lower(ctx)),
+            ast::ExprKind::BinOp(e0, op, e1)   => match op.kind {
+                ast::BinOpKind::NotIn => special::ops::lower_notin(e0, e1, node.loc, ctx),
+                ast::BinOpKind::Pipe  => special::ops::lower_pipe(e0, e1, node.loc, ctx),
+                ast::BinOpKind::By    => hir::ExprKind::Struct(special::ops::lower_by(e0, e1, ctx)),
+                _                     => hir::ExprKind::BinOp(e0.lower(ctx), op.lower(ctx), e1.lower(ctx))
             }
-            ast::ExprKind::If(e0, e1, e2)       => hir::ExprKind::If(e0.lower(ctx).into(), e1.scoped(ctx).into(), e2.scoped(ctx).into()),
-            ast::ExprKind::IfLet(p, e0, e1, e2) => return if_let::lower(p, e0, e1, e2, ctx),
-            ast::ExprKind::Let(p, e0, e1)       => return let_in::lower(p, e0, e1, ctx),
-            ast::ExprKind::Emit(e)              => hir::ExprKind::Emit(e.lower(ctx).into()),
-            ast::ExprKind::Trigger(e)           => hir::ExprKind::Trigger(e.lower(ctx).into()),
-            ast::ExprKind::Unwrap(x, e)         => path::lower_unwrap(x, e, ctx),
-            ast::ExprKind::Enwrap(x, e)         => path::lower_enwrap(x, e, ctx),
-            ast::ExprKind::Is(x, e)             => path::lower_is(x, e, ctx),
-            ast::ExprKind::Log(e)               => hir::ExprKind::Log(e.lower(ctx).into()),
-            ast::ExprKind::For(_p, _e0, _e1)    => todo!(),
-            ast::ExprKind::Match(_e, _cs)       => todo!(), //refutable::lower_cases(cs, ctx),
-            ast::ExprKind::Loop(e0)             => hir::ExprKind::Loop(e0.scoped(ctx).into()),
-            ast::ExprKind::Break                => hir::ExprKind::Break,
-            ast::ExprKind::Return(e)            => {
-                let e = e
-                    .as_ref()
-                    .map(|e| e.lower(ctx))
-                    .unwrap_or_else(||
-                        hir::Expr::syn(
-                            hir::ExprKind::Lit(hir::LitKind::Unit),
-                            ctx.info.types.intern(hir::ScalarKind::Unit),
-                        ));
-                hir::ExprKind::Return(e.into())
+            ast::ExprKind::Emit(e)             => special::path::lower_emit(e, ctx),
+            ast::ExprKind::Unwrap(x, e)        => special::path::lower_unwrap_path(x, e, ctx),
+            ast::ExprKind::Enwrap(x, e)        => special::path::lower_enwrap_path(x, e, ctx),
+            ast::ExprKind::Is(x, e)            => special::path::lower_is_path(x, e, ctx),
+            ast::ExprKind::On(_)               => crate::todo!("Currently event handlers cannot be subexpressions"),
+            ast::ExprKind::Log(e)              => hir::ExprKind::Log(e.lower(ctx)),
+            ast::ExprKind::For(_p, _e0, _e1)   => crate::todo!(),
+            ast::ExprKind::Match(_e, _cs)      => crate::todo!(), //refutable::lower_cases(cs, ctx),
+            ast::ExprKind::Loop(b)             => hir::ExprKind::Loop(b.lower(ctx)),
+            ast::ExprKind::Cast(e, ty)         => hir::ExprKind::Cast(e.lower(ctx), ty.lower(ctx)),
+            ast::ExprKind::Access(e, f)        => hir::ExprKind::Access(e.lower(ctx), *f),
+            ast::ExprKind::Project(e, i)       => hir::ExprKind::Project(e.lower(ctx), *i),
+            ast::ExprKind::After(e0, e1)       => hir::ExprKind::After(e0.lower(ctx), e1.lower(ctx)),
+            ast::ExprKind::Every(e0, e1)       => hir::ExprKind::Every(e0.lower(ctx), e1.lower(ctx)),
+            ast::ExprKind::Err                 => hir::ExprKind::Err,
+            ast::ExprKind::Block(b)            => {
+                // Flatten block
+                let mut b = b.lower(ctx);
+                ctx.get_stmts().append(&mut b.stmts);
+                return b.var;
             },
-            ast::ExprKind::Cast(e, ty)       => {
-                let mut e = e.lower(ctx);
-                e.tv = ty.lower(ctx);
-                return e;
-            }
-            ast::ExprKind::Reduce(_p, _e, _r)   => todo!(),
-            ast::ExprKind::Access(e, f)      => hir::ExprKind::Access(e.lower(ctx).into(), *f),
-            ast::ExprKind::Project(e, i)     => hir::ExprKind::Project(e.lower(ctx).into(), *i),
-            ast::ExprKind::Empty             => hir::ExprKind::Empty,
-            ast::ExprKind::Todo              => hir::ExprKind::Todo,
-            ast::ExprKind::Err               => hir::ExprKind::Err,
         };
-        hir::Expr::new(kind, ctx.info.types.fresh(), self.loc)
-    }
-}
-
-impl ast::Expr {
-    fn scoped(&self, ctx: &mut Context<'_>) -> hir::Expr {
-        ctx.res.stack.push_scope();
-        let expr = self.lower(ctx);
-        ctx.res.stack.pop_scope();
-        expr
-    }
-}
-
-impl Lower<hir::UnOp, Context<'_>> for ast::UnOp {
-    fn lower(&self, _ctx: &mut Context<'_>) -> hir::UnOp {
-        hir::UnOp::new(self.kind.clone(), self.loc)
-    }
-}
-
-impl Lower<hir::BinOp, Context<'_>> for ast::BinOp {
-    fn lower(&self, _: &mut Context<'_>) -> hir::BinOp {
-        hir::BinOp::new(self.kind.clone(), self.loc)
-    }
-}
-
-/// Lower the fields of a struct.
-/// NB: Records an error if two fields overlap.
-impl<'i, A, B> Lower<VecMap<Name, B>, Context<'i>> for Vec<ast::Field<A>>
-where
-    A: Lower<B, Context<'i>> + std::fmt::Debug,
-{
-    fn lower(&self, ctx: &mut Context<'i>) -> VecMap<Name, B> {
-        use arc_script_core_shared::VecMapEntry;
-        let mut map: VecMap<Name, B> = VecMap::new();
-        for f in self {
-            if let VecMapEntry::Vacant(entry) = map.entry(f.name) {
-                entry.insert(f.val.lower(ctx));
-            } else {
-                ctx.info.diags.intern(Error::FieldClash { name: f.name });
-            }
+        ctx.new_expr_with_loc(kind, node.loc).into_ssa(ctx)
+    },
+    ast::BinOp => hir::BinOp {
+        hir::BinOp::new(node.kind.lower(ctx), node.loc)
+    },
+    ast::BinOpKind => hir::BinOpKind {
+        match node {
+            ast::BinOpKind::Add   => hir::BinOpKind::Add,
+            ast::BinOpKind::And   => hir::BinOpKind::And,
+            ast::BinOpKind::Band  => hir::BinOpKind::Band,
+            ast::BinOpKind::Bor   => hir::BinOpKind::Bor,
+            ast::BinOpKind::Bxor  => hir::BinOpKind::Bxor,
+            ast::BinOpKind::Div   => hir::BinOpKind::Div,
+            ast::BinOpKind::Equ   => hir::BinOpKind::Equ,
+            ast::BinOpKind::Geq   => hir::BinOpKind::Geq,
+            ast::BinOpKind::Gt    => hir::BinOpKind::Gt,
+            ast::BinOpKind::Leq   => hir::BinOpKind::Leq,
+            ast::BinOpKind::Lt    => hir::BinOpKind::Lt,
+            ast::BinOpKind::Mod   => hir::BinOpKind::Mod,
+            ast::BinOpKind::Mul   => hir::BinOpKind::Mul,
+            ast::BinOpKind::Mut   => hir::BinOpKind::Mut,
+            ast::BinOpKind::Neq   => hir::BinOpKind::Neq,
+            ast::BinOpKind::Or    => hir::BinOpKind::Or,
+            ast::BinOpKind::Pow   => hir::BinOpKind::Pow,
+            ast::BinOpKind::Sub   => hir::BinOpKind::Sub,
+            ast::BinOpKind::Xor   => hir::BinOpKind::Xor,
+            ast::BinOpKind::Err   => hir::BinOpKind::Err,
+            ast::BinOpKind::By    => unreachable!(),
+            ast::BinOpKind::In    => unreachable!(),
+            ast::BinOpKind::NotIn => unreachable!(),
+            ast::BinOpKind::Pipe  => unreachable!(),
+            ast::BinOpKind::RExc  => unreachable!(),
+            ast::BinOpKind::RInc  => unreachable!(),
         }
-        map
-    }
-}
-
-impl Lower<hir::LitKind, Context<'_>> for ast::LitKind {
-    fn lower(&self, _: &mut Context<'_>) -> Self {
-        self.clone()
-    }
-}
-
-impl Lower<TypeId, Context<'_>> for ast::Type {
-    #[rustfmt::skip]
-    fn lower(&self, ctx: &mut Context<'_>) -> TypeId {
-        let kind = match &self.kind {
-            ast::TypeKind::Nominal(path) => nominal::desugar(path, ctx),
+    },
+    ast::LitKind => hir::LitKind {
+        node.clone()
+    },
+    ast::Type => hir::Type {
+        let kind = match ctx.ast.types.resolve(*node) {
+            ast::TypeKind::Path(x, ts)   => special::path::lower_type_path(x, ts, node.loc, ctx),
             ast::TypeKind::Scalar(kind)  => hir::TypeKind::Scalar(*kind),
-            ast::TypeKind::Optional(t)   => hir::TypeKind::Optional(t.lower(ctx)),
             ast::TypeKind::Stream(t)     => hir::TypeKind::Stream(t.lower(ctx)),
-            ast::TypeKind::Set(t)        => hir::TypeKind::Set(t.lower(ctx)),
-            ast::TypeKind::Vector(t)     => hir::TypeKind::Vector(t.lower(ctx)),
-            ast::TypeKind::Array(t, s)   => hir::TypeKind::Array(t.lower(ctx).unwrap_or_else(|| ctx.info.types.fresh()), s.lower(ctx)),
+            ast::TypeKind::Array(t, s)   => hir::TypeKind::Array(t.lower(ctx).unwrap_or_else(|| ctx.types.fresh()), s.lower(ctx)),
             ast::TypeKind::Fun(ts, t)    => hir::TypeKind::Fun(ts.as_slice().lower(ctx), t.lower(ctx)),
             ast::TypeKind::Tuple(ts)     => hir::TypeKind::Tuple(ts.as_slice().lower(ctx)),
             ast::TypeKind::Struct(fs)    => hir::TypeKind::Struct(fs.lower(ctx).sort_fields(ctx.info)),
-            ast::TypeKind::Map(t0, t1)   => hir::TypeKind::Map(t0.lower(ctx), t1.lower(ctx)),
-            ast::TypeKind::Boxed(ty)     => hir::TypeKind::Boxed(ty.lower(ctx)),
-            ast::TypeKind::By(t0, t1)    => hir::TypeKind::Struct(ops::lower_by(t0, t1, ctx).sort_fields(ctx.info)),
-            ast::TypeKind::After(t0, t1) => hir::TypeKind::Struct(ops::lower_after(t0, t1, ctx).sort_fields(ctx.info)),
+            ast::TypeKind::By(t0, t1)    => hir::TypeKind::Struct(special::ops::lower_by(t0, t1, ctx).sort_fields(ctx.info)),
             ast::TypeKind::Err           => hir::TypeKind::Err,
         };
         ctx.info.types.intern(kind)
-    }
-}
-
-impl Lower<hir::Shape, Context<'_>> for ast::Shape {
-    fn lower(&self, ctx: &mut Context<'_>) -> hir::Shape {
+    },
+    ast::Shape => hir::Shape {
         hir::Shape {
-            dims: self.dims.as_slice().lower(ctx),
+            dims: node.dims.as_slice().lower(ctx),
         }
-    }
-}
-
-impl Lower<hir::Dim, Context<'_>> for ast::Dim {
-    fn lower(&self, ctx: &mut Context<'_>) -> hir::Dim {
-        let kind = match &self.kind {
+    },
+    ast::Dim => hir::Dim {
+        let kind = match &node.kind {
             ast::DimKind::Var(x) => hir::DimKind::Var(*x),
             ast::DimKind::Val(v) => hir::DimKind::Val(*v),
             ast::DimKind::Op(d1, op, d2) => {
@@ -601,17 +408,34 @@ impl Lower<hir::Dim, Context<'_>> for ast::Dim {
             ast::DimKind::Err => hir::DimKind::Err,
         };
         hir::Dim { kind }
-    }
-}
-
-impl Lower<hir::DimOp, Context<'_>> for ast::DimOp {
-    fn lower(&self, _: &mut Context<'_>) -> hir::DimOp {
-        let kind = match &self.kind {
+    },
+    ast::DimOp => hir::DimOp {
+        let kind = match &node.kind {
             ast::DimOpKind::Add => hir::DimOpKind::Add,
             ast::DimOpKind::Sub => hir::DimOpKind::Sub,
             ast::DimOpKind::Mul => hir::DimOpKind::Mul,
             ast::DimOpKind::Div => hir::DimOpKind::Div,
         };
         hir::DimOp { kind }
+    },
+}
+
+/// Lower the fields of a struct.
+/// NB: Records an error if two fields overlap.
+impl<'i, A, B> Lower<VecMap<hir::Name, B>, Context<'i>> for Vec<ast::Field<A>>
+where
+    A: Lower<B, Context<'i>> + std::fmt::Debug,
+{
+    fn lower(&self, ctx: &mut Context<'i>) -> VecMap<hir::Name, B> {
+        use arc_script_core_shared::VecMapEntry;
+        let mut map: VecMap<hir::Name, B> = VecMap::new();
+        for f in self {
+            if let VecMapEntry::Vacant(entry) = map.entry(f.name) {
+                entry.insert(f.val.lower(ctx));
+            } else {
+                ctx.diags.intern(Error::FieldClash { name: f.name });
+            }
+        }
+        map
     }
 }

@@ -4,22 +4,47 @@ expression: s
 input_file: arc-script-test/compile/src/tests/expect_mlir_fail_todo/pipe.arc
 
 ---
-fun foo(x_0: i32) -> i32 {
-    x_0 + x_0
+fun foo(x_0: i32): i32 {
+    val x_1: i32 = x_0 + x_0;
+    x_1
 }
-fun bar(x_1: i32) -> i32 {
-    crate::foo(crate::foo(x_1))
+fun bar(x_2: i32): i32 {
+    val x_3: fun(i32): i32 = crate::foo;
+    val x_4: fun(i32): i32 = crate::foo;
+    val x_5: i32 = x_4(x_2);
+    val x_6: i32 = x_3(x_5);
+    x_6
 }
-task Baz() ~{ key: i32, val: i32 } -> ~{ key: i32, val: i32 } {
-    on {
-        x_2: { key: i32, val: i32 } => {
-            let event_0: i32 = x_2.val in
-            let key_0: i32 = x_2.key in
-            emit { val: event_0, key: key_0 }
-        }
+task Baz(): ~{ key: i32, value: i32 } -> ~{ key: i32, value: i32 } {
+    enum IInterface {
+        __({ key: i32, value: i32 })
     }
+    enum OInterface {
+        __({ key: i32, value: i32 })
+    }
+    fun on_start(): unit {
+        val x_F: unit = unit;
+        x_F
+    }
+    crate::Baz::on_start();
+    fun on_event(x_A: crate::Baz::IInterface): unit {
+        val x_7: { key: i32, value: i32 } = unwrap[crate::Baz::IInterface::__](x_A);
+        val x_8: i32 = x_7.value;
+        val x_9: i32 = x_7.key;
+        val x_B: { key: i32, value: i32 } = { value: x_8, key: x_9 };
+        val x_C: crate::Baz::OInterface = enwrap[crate::Baz::OInterface::__](x_B);
+        val x_D: unit = emit x_C;
+        x_D
+    }
+    on event => crate::Baz::on_event(event)
 }
-fun qux(s_0: ~{ key: i32, val: i32 }) -> ~{ key: i32, val: i32 } {
-    crate::Baz()(crate::Baz()(s_0))
+fun qux(s_0: ~{ key: i32, value: i32 }): ~{ key: i32, value: i32 } {
+    val x_G: fun(): fun(~{ key: i32, value: i32 }): ~{ key: i32, value: i32 } = crate::Baz;
+    val x_H: fun(~{ key: i32, value: i32 }): ~{ key: i32, value: i32 } = x_G();
+    val x_I: fun(): fun(~{ key: i32, value: i32 }): ~{ key: i32, value: i32 } = crate::Baz;
+    val x_J: fun(~{ key: i32, value: i32 }): ~{ key: i32, value: i32 } = x_I();
+    val x_K: ~{ key: i32, value: i32 } = x_J(s_0);
+    val x_L: ~{ key: i32, value: i32 } = x_H(x_K);
+    x_L
 }
 

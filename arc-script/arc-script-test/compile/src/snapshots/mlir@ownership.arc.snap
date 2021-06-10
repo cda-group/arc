@@ -4,11 +4,10 @@ expression: s
 input_file: arc-script-test/compile/src/tests/expect_fail/ownership.arc
 
 ---
-[-- Found 1 errors --],
-error: Double use of value of non-copyable type ~i32
-  ┌─ <FILE-NAME>
-  │
-2 │     (s0, s0)
-  │      ^^  ^^
-
+module @toplevel {
+    func @crate_main(%s0_0: arc.stream<si32>) -> tuple<arc.stream<si32>, arc.stream<si32>> {
+        %x_0 = "arc.make_tuple"(%s0_0, %s0_0) : (arc.stream<si32>, arc.stream<si32>) -> tuple<arc.stream<si32>, arc.stream<si32>>
+        "arc.block.result"(%x_0) : (tuple<arc.stream<si32>, arc.stream<si32>>) -> ()
+    }
+}
 

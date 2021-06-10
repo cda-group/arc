@@ -4,29 +4,30 @@ expression: s
 input_file: arc-script-test/compile/src/tests/expect_pass/literals.arc
 
 ---
-fun test() -> i32 {
-    let pos_i8_0: i8 = 127i8 in
-    let neg_i8_0: i8 = -128i8 in
-    let pos_i16_0: i16 = 32767i16 in
-    let neg_i16_0: i16 = -32768i16 in
-    let pos_i32_0: i32 = 2147483647 in
-    let neg_i32_0: i32 = -2147483648 in
-    let pos_i64_0: i64 = 9223372036854775807i64 in
-    let neg_i64_0: i64 = -9223372036854775808i64 in
-    let pos_u8_0: u8 = 255u8 in
-    let pos_u16_0: u16 = 65535u16 in
-    let pos_u32_0: u32 = 4294967295u32 in
-    let pos_u64_0: u64 = 18446744073709551615u64 in
-    let pos_bf16_0: bf16 = 338953140000000000000000000000000000000bf16 in
-    let neg_bf16_0: bf16 = -117636680000000000000000000000000000000bf16 in
-    let pos_f16_0: f16 = 65504f16 in
-    let neg_f16_0: f16 = -65504f16 in
-    let pos_f32_0: f32 = 3.4028235e38f32 in
-    let neg_f32_0: f32 = -3.4028235e38f32 in
-    let pos_f64_0: f64 = 1.7976931348623157e308 in
-    let neg_f64_0: f64 = -1.7976931348623157e308 in
-    let true_bool_0: bool = true in
-    let false_bool_0: bool = false in
-    4711
+fun test(): unit {
+    val x_0: i8 = 127i8;
+    val x_1: i8 = -128i8;
+    val x_2: i16 = 32767i16;
+    val x_3: i16 = -32768i16;
+    val x_4: i32 = 2147483647;
+    val x_5: i32 = -2147483648;
+    val x_6: i64 = 9223372036854775807i64;
+    val x_7: i64 = -9223372036854775808i64;
+    val x_8: u8 = 255u8;
+    val x_9: u16 = 65535u16;
+    val x_A: u32 = 4294967295u32;
+    val x_B: u64 = 18446744073709551615u64;
+    val x_C: bf16 = 338953140000000000000000000000000000000bf16;
+    val x_D: bf16 = -117636680000000000000000000000000000000bf16;
+    val x_E: f16 = 65504f16;
+    val x_F: f16 = -65504f16;
+    val x_G: f32 = 3.4028235e38f32;
+    val x_H: f32 = -3.4028235e38f32;
+    val x_I: f64 = 1.7976931348623157e308;
+    val x_J: f64 = -1.7976931348623157e308;
+    val x_K: bool = true;
+    val x_L: bool = false;
+    val x_M: unit = unit;
+    x_M
 }
 

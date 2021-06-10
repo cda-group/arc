@@ -1,0 +1,40 @@
+---
+source: arc-script-test/compile/src/insta.rs
+expression: s
+input_file: arc-script-test/compile/src/tests/expect_mlir_fail_todo/task_id.arc
+
+---
+task Identity(): ~{ key: i32, value: i32 } -> ~{ key: i32, value: i32 } {
+    enum IInterface {
+        A({ key: i32, value: i32 })
+    }
+    enum OInterface {
+        B({ key: i32, value: i32 })
+    }
+    fun on_start(): unit {
+        val x_7: unit = unit;
+        x_7
+    }
+    crate::Identity::on_start();
+    fun on_event(x_0: crate::Identity::IInterface): unit {
+        val x_1: bool = is[x_0](x_0);
+        val x_6: unit = if x_1 {
+            val x_2: { key: i32, value: i32 } = unwrap[crate::Identity::IInterface::A](x_0);
+            val x_3: crate::Identity::OInterface = enwrap[crate::Identity::OInterface::B](x_2);
+            val x_4: unit = emit x_3;
+            x_4
+        } else {
+            val x_5: unit = unreachable;
+            x_5
+        };
+        x_6
+    }
+    on event => crate::Identity::on_event(event)
+}
+fun main(input_0: ~{ key: i32, value: i32 }): ~{ key: i32, value: i32 } {
+    val x_8: fun(): fun(~{ key: i32, value: i32 }): ~{ key: i32, value: i32 } = crate::Identity;
+    val x_9: fun(~{ key: i32, value: i32 }): ~{ key: i32, value: i32 } = x_8();
+    val x_A: ~{ key: i32, value: i32 } = x_9(input_0);
+    x_A
+}
+

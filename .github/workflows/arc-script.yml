@@ -31,22 +31,22 @@ jobs:
       run: cargo insta test --package=arc-script-test-compile
 
     - name: cargo-clippy
-      run: cargo clippy --all-features
+      run: cargo clippy
 
     - name: cargo-check
-      run: cargo check --all-features
+      run: cargo check
 
     - name: cargo-check-bins
-      run: cargo check --all-features --bins
+      run: cargo check --bins
 
     - name: cargo-check-tests
-      run: cargo check --all-features --tests
+      run: cargo check --tests
 
     - name: cargo-check-examples
-      run: cargo check --all-features --examples
+      run: cargo check --examples
 
     - name: cargo-check-benches
-      run: cargo check --all-features --benches
+      run: cargo check --benches
     
     - name: cargo-fuzz
       run: cargo fuzz run parse -- -runs=10000 -only-ascii

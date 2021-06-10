@@ -1,4 +1,4 @@
-task Split(p: fun(i32) -> bool) ~i32 -> (A(~i32), B(~i32)) {
+task Split(p: fun(i32): bool): ~i32 -> (A(~i32), B(~i32)) {
     on event => {
         if p(event) {
             emit A(event)
@@ -8,7 +8,7 @@ task Split(p: fun(i32) -> bool) ~i32 -> (A(~i32), B(~i32)) {
     }
 }
 
-fun main(a: ~i32) -> (~i32, ~i32) {
-    let (b, c) = Split(|x| x % 2) (a) in
+fun main(a: ~i32): (~i32, ~i32) {
+    val (b, c) = Split(fun(x): x % 2) (a);
     (b, c)
 }

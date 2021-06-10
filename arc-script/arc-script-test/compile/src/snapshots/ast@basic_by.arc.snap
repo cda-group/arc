@@ -4,10 +4,10 @@ expression: s
 input_file: arc-script-test/compile/src/tests/expect_pass/basic_by.arc
 
 ---
-fun test() -> i32 {
-    let x = 1 by 2 in
-    let v = x.val in
-    let k = x.key in
+fun test(): i32 {
+    val x = 1 by 2;
+    val v = x.value;
+    val k = x.key;
     v + k
 }
 

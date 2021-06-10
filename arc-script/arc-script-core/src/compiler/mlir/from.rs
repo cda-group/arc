@@ -6,17 +6,20 @@ use crate::compiler::mlir::MLIR;
 use arc_script_core_shared::Lower;
 use arc_script_core_shared::OrdMap;
 
+use lower::hir::Context;
+
 use tracing::instrument;
 
 impl MLIR {
-    #[instrument(name = "HIR & Info => MLIR", level = "debug", skip(hir, info))]
+    #[instrument(name = "HIR => MLIR", level = "debug", skip(hir, info))]
     pub(crate) fn from(hir: &HIR, info: &mut Info) -> Self {
-        let ctx = &mut lower::hir::Context::new(hir, info);
+        let ops = Vec::new();
+        let ctx = &mut Context::new(hir, info, ops);
         let defs = hir
-            .items
+            .namespace
             .iter()
-            .map(|x| (*x, hir.defs.get(x).unwrap().lower(ctx)))
+            .map(|x| (*x, hir.resolve(x).lower(ctx)))
             .collect::<OrdMap<_, _>>();
-        Self::new(hir.items.clone(), defs)
+        Self::new(hir.namespace.clone(), defs)
     }
 }

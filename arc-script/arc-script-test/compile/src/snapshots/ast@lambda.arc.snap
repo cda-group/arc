@@ -4,11 +4,9 @@ expression: s
 input_file: arc-script-test/compile/src/tests/expect_pass/lambda.arc
 
 ---
-fun test() -> i32 {
-    let increment = |i| {
-        i + 1
-    } in
-    let foo = 1 in
+fun test(): i32 {
+    val increment = fun(i): i + 1;
+    val foo = 1;
     increment(foo)
 }
 

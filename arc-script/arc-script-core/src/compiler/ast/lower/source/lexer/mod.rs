@@ -14,8 +14,13 @@ use crate::compiler::ast::lower::source::lexer::sem_tokens::Token;
 use crate::compiler::info::diags::DiagInterner;
 use crate::compiler::info::diags::Error;
 use crate::compiler::info::diags::Result;
-use crate::compiler::info::files::{ByteIndex, FileId, Loc, Span};
-use crate::compiler::info::names::{NameId, NameInterner};
+use crate::compiler::info::files::ByteIndex;
+use crate::compiler::info::files::FileId;
+use crate::compiler::info::files::Loc;
+use crate::compiler::info::files::Span;
+use crate::compiler::info::names::NameId;
+use crate::compiler::info::names::NameInterner;
+
 use arc_script_core_shared::New;
 
 use half::bf16;
@@ -101,6 +106,7 @@ impl<'i> Lexer<'i> {
             Err(Error::BadIndent { loc: self.loc() }.into())
         }
     }
+
     /// Scans a numeric literal using `lexical_core`.
     fn lit<N: lexical_core::FromLexicalFormat>(
         &mut self,
@@ -115,6 +121,8 @@ impl<'i> Lexer<'i> {
             .into()
         })
     }
+
+    /// Scans a `DateTime` literal using `time`.
     fn datetime(&mut self, format: &str) -> Result<DateTime> {
         DateTime::parse(self.logos.slice(), format).map_err(|msg| {
             Error::Time {
@@ -124,6 +132,7 @@ impl<'i> Lexer<'i> {
             .into()
         })
     }
+
     /// Returns the current location of the lexer.
     #[inline]
     fn loc(&self) -> Loc {
@@ -131,6 +140,7 @@ impl<'i> Lexer<'i> {
         let span = self.span();
         Loc::Real(file, span)
     }
+
     /// Returns the current span of the lexer.
     #[inline]
     fn span(&self) -> Span {
@@ -139,11 +149,13 @@ impl<'i> Lexer<'i> {
         let end = ByteIndex::try_from(span.end).unwrap();
         Span::new(start, end)
     }
+
     /// Trims the lexer's current slice by stripping its prefix and suffix. Used to for example
     /// strip quotes from strings.
     fn trim(&self, prefix: usize, suffix: usize) -> &str {
         &self.logos.slice()[prefix..self.logos.span().len() - suffix]
     }
+
     /// Returns the next token or an error.
     #[rustfmt::skip]
     fn token(&mut self) -> Result<Option<Token>> {
@@ -176,63 +188,69 @@ impl<'i> Lexer<'i> {
                 LogosToken::ParenL     => Token::ParenL,
                 LogosToken::ParenR     => Token::ParenR,
                 LogosToken::ParenLR    => Token::ParenLR,
+                LogosToken::AngleL     => Token::AngleL,
+                LogosToken::AngleR     => Token::AngleR,
+                LogosToken::AngleLR    => Token::AngleLR,
 //=============================================================================
 // Operators
 //=============================================================================
-                LogosToken::Amp        => Token::Amp,
-                LogosToken::AmpAmp     => Token::AmpAmp,
-                LogosToken::ArrowL     => Token::ArrowL,
                 LogosToken::ArrowR     => Token::ArrowR,
-                LogosToken::Bang       => Token::Bang,
                 LogosToken::Bar        => Token::Bar,
                 LogosToken::BarBar     => Token::BarBar,
-                LogosToken::Caret      => Token::Caret,
                 LogosToken::Colon      => Token::Colon,
                 LogosToken::ColonColon => Token::ColonColon,
                 LogosToken::Comma      => Token::Comma,
-                LogosToken::Dollar     => Token::Dollar,
                 LogosToken::Dot        => Token::Dot,
                 LogosToken::DotDot     => Token::DotDot,
+                LogosToken::DotDotEq   => Token::DotDotEq,
                 LogosToken::Equ        => Token::Equ,
                 LogosToken::EquEqu     => Token::EquEqu,
                 LogosToken::Geq        => Token::Geq,
-                LogosToken::Gt         => Token::Gt,
                 LogosToken::AtSign     => Token::AtSign,
                 LogosToken::Imply      => Token::Imply,
                 LogosToken::Leq        => Token::Leq,
-                LogosToken::Lt         => Token::Lt,
-                LogosToken::LtGt       => Token::LtGt,
                 LogosToken::Minus      => Token::Minus,
                 LogosToken::Neq        => Token::Neq,
                 LogosToken::Percent    => Token::Percent,
-                LogosToken::Pipe       => Token::Pipe,
                 LogosToken::Plus       => Token::Plus,
-                LogosToken::Qm         => Token::Qm,
-                LogosToken::QmQmQm     => Token::QmQmQm,
                 LogosToken::Semi       => Token::Semi,
-                LogosToken::SemiSemi   => Token::SemiSemi,
                 LogosToken::Slash      => Token::Slash,
                 LogosToken::Star       => Token::Star,
                 LogosToken::StarStar   => Token::StarStar,
                 LogosToken::Tilde      => Token::Tilde,
                 LogosToken::Underscore => Token::Underscore,
 //=============================================================================
+// Unused Operators
+//=============================================================================
+                // LogosToken::Amp        => Token::Amp,
+                // LogosToken::AmpAmp     => Token::AmpAmp,
+                // LogosToken::ArrowL     => Token::ArrowL,
+                // LogosToken::Bang       => Token::Bang,
+                // LogosToken::Caret      => Token::Caret,
+                // LogosToken::Dollar     => Token::Dollar,
+                // LogosToken::Gt         => Token::Gt,
+                // LogosToken::Lt         => Token::Lt,
+                // LogosToken::LtGt       => Token::LtGt,
+                // LogosToken::Qm         => Token::Qm,
+                // LogosToken::QmQmQm     => Token::QmQmQm,
+                // LogosToken::SemiSemi   => Token::SemiSemi,
+//=============================================================================
 // Keywords
 //=============================================================================
-                LogosToken::Add        => Token::Add,
                 LogosToken::After      => Token::After,
                 LogosToken::And        => Token::And,
                 LogosToken::As         => Token::As,
                 LogosToken::Band       => Token::Band,
                 LogosToken::Bor        => Token::Bor,
-                LogosToken::Box        => Token::Box,
                 LogosToken::Bxor       => Token::Bxor,
                 LogosToken::Break      => Token::Break,
                 LogosToken::By         => Token::By,
                 LogosToken::Crate      => Token::Crate,
+                LogosToken::Continue   => Token::Continue,
                 LogosToken::Else       => Token::Else,
                 LogosToken::Emit       => Token::Emit,
                 LogosToken::Enum       => Token::Enum,
+                LogosToken::Every      => Token::Every,
                 LogosToken::Extern     => Token::Extern,
                 LogosToken::For        => Token::For,
                 LogosToken::Fun        => Token::Fun,
@@ -246,31 +264,36 @@ impl<'i> Lexer<'i> {
                 LogosToken::Not        => Token::Not,
                 LogosToken::On         => Token::On,
                 LogosToken::Or         => Token::Or,
-                LogosToken::Pub        => Token::Pub,
-                LogosToken::Port       => Token::Port,
-                LogosToken::Reduce     => Token::Reduce,
                 LogosToken::Return     => Token::Return,
-                LogosToken::Startup    => Token::Startup,
-                LogosToken::State      => Token::State,
                 LogosToken::Task       => Token::Task,
-                LogosToken::Timeout    => Token::Timeout,
-                LogosToken::Timer      => Token::Timer,
-                LogosToken::Trigger    => Token::Trigger,
-                LogosToken::Then       => Token::Then,
                 LogosToken::Type       => Token::Type,
+                LogosToken::Val        => Token::Val,
+                LogosToken::Var        => Token::Var,
                 LogosToken::Unwrap     => Token::Unwrap,
                 LogosToken::Enwrap     => Token::Enwrap,
                 LogosToken::Use        => Token::Use,
                 LogosToken::Xor        => Token::Xor,
 //=============================================================================
-// Reserved Keywords
+// Unused Keywords
 //=============================================================================
-                LogosToken::End        => Token::End,
-                LogosToken::Of         => Token::Of,
-                LogosToken::Shutdown   => Token::Shutdown,
-                LogosToken::Sink       => Token::Sink,
-                LogosToken::Source     => Token::Source,
-                LogosToken::Where      => Token::Where,
+                // LogosToken::Add        => Token::Add,
+                // LogosToken::Box        => Token::Box,
+                // LogosToken::Do         => Token::Do,
+                // LogosToken::End        => Token::End,
+                // LogosToken::Of         => Token::Of,
+                // LogosToken::Port       => Token::Port,
+                // LogosToken::Pub        => Token::Pub,
+                // LogosToken::Reduce     => Token::Reduce,
+                // LogosToken::Shutdown   => Token::Shutdown,
+                // LogosToken::Sink       => Token::Sink,
+                // LogosToken::Source     => Token::Source,
+                // LogosToken::Startup    => Token::Startup,
+                // LogosToken::State      => Token::State,
+                // LogosToken::Then       => Token::Then,
+                // LogosToken::Timeout    => Token::Timeout,
+                // LogosToken::Timer      => Token::Timer,
+                // LogosToken::Trigger    => Token::Trigger,
+                // LogosToken::Where      => Token::Where,
 //=============================================================================
 // Primitive Types
 //=============================================================================
@@ -287,28 +310,27 @@ impl<'i> Lexer<'i> {
                 LogosToken::U16        => Token::U16,
                 LogosToken::U32        => Token::U32,
                 LogosToken::U64        => Token::U64,
-                LogosToken::Null       => Token::Null,
                 LogosToken::Str        => Token::Str,
                 LogosToken::Unit       => Token::Unit,
 //=============================================================================
 // Identifiers and Literals
 //=============================================================================
-                LogosToken::LitI8      => Token::LitI8(self.lit(0, 2)?),
-                LogosToken::LitI16     => Token::LitI16(self.lit(0, 3)?),
-                LogosToken::LitI32     => Token::LitI32(self.lit(0, 0)?),
-                LogosToken::LitI64     => Token::LitI64(self.lit(0, 3)?),
-                LogosToken::LitU8      => Token::LitU8(self.lit(0, 2)?),
-                LogosToken::LitU16     => Token::LitU16(self.lit(0, 3)?),
-                LogosToken::LitU32     => Token::LitU32(self.lit(0, 3)?),
-                LogosToken::LitU64     => Token::LitU64(self.lit(0, 3)?),
-                LogosToken::LitBf16    => Token::LitBf16(self.lit::<f32>(0, 4).map(bf16::from_f32)?),
-                LogosToken::LitF16     => Token::LitF16(self.lit::<f32>(0, 3).map(f16::from_f32)?),
-                LogosToken::LitF32     => Token::LitF32(self.lit(0, 3)?),
-                LogosToken::LitF64     => Token::LitF64(self.lit(0, 0)?),
-                LogosToken::LitTrue    => Token::LitBool(true),
-                LogosToken::LitFalse   => Token::LitBool(false),
-                LogosToken::LitChar    => Token::LitChar(self.trim(1, 1).chars().next().unwrap()),
-                LogosToken::LitStr     => Token::LitStr(self.trim(1, 1).to_string()),
+                LogosToken::LitI8           => Token::LitI8(self.lit(0, 2)?),
+                LogosToken::LitI16          => Token::LitI16(self.lit(0, 3)?),
+                LogosToken::LitI32          => Token::LitI32(self.lit(0, 0)?),
+                LogosToken::LitI64          => Token::LitI64(self.lit(0, 3)?),
+                LogosToken::LitU8           => Token::LitU8(self.lit(0, 2)?),
+                LogosToken::LitU16          => Token::LitU16(self.lit(0, 3)?),
+                LogosToken::LitU32          => Token::LitU32(self.lit(0, 3)?),
+                LogosToken::LitU64          => Token::LitU64(self.lit(0, 3)?),
+                LogosToken::LitBf16         => Token::LitBf16(self.lit::<f32>(0, 4).map(bf16::from_f32)?),
+                LogosToken::LitF16          => Token::LitF16(self.lit::<f32>(0, 3).map(f16::from_f32)?),
+                LogosToken::LitF32          => Token::LitF32(self.lit(0, 3)?),
+                LogosToken::LitF64          => Token::LitF64(self.lit(0, 0)?),
+                LogosToken::LitTrue         => Token::LitBool(true),
+                LogosToken::LitFalse        => Token::LitBool(false),
+                LogosToken::LitChar         => Token::LitChar(self.trim(1, 1).chars().next().unwrap()),
+                LogosToken::LitStr          => Token::LitStr(self.trim(1, 1).to_string()),
                 LogosToken::LitDate         => Token::LitDateTime(self.datetime("%F")?),
                 LogosToken::LitDateTime     => Token::LitDateTime(self.datetime("%FT%T")?),
                 LogosToken::LitDateTimeZone => Token::LitDateTime(self.datetime("%FT%T%Z")?),

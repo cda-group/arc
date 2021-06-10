@@ -5,15 +5,25 @@ input_file: arc-script-test/compile/src/tests/expect_pass/option.arc
 
 ---
 module @toplevel {
-    
-    func @crate_x_1() -> () {
-        return 
+    !arc.enum<crate_Opt_Some : si32, crate_Opt_None : none>
+    func @crate_x_6() -> none {
+        %x_5 = none none
+        "arc.block.result"(%x_5) : (none) -> ()
     }
-    func @crate_main() -> () {
-        %x_3 = arc.constant 3 : si32
-        %x_4 = arc.make_enum (%x_3 : si32) as "crate_Opt_Some" :  !arc.enum<crate_Opt_Some : si32, crate_Opt_None : ()>
-        %x_5 = arc.enum_check (%x_4 : !arc.enum<crate_Opt_Some : si32, crate_Opt_None : ()>) is "crate_Opt_Some" :  i1
-        return 
+    func @crate_main() -> none {
+        %x_0 = arc.constant 3 : si32
+        %x_1 = arc.make_enum (%x_0 : si32) as "crate_Opt_Some" :  !arc.enum<crate_Opt_Some : si32, crate_Opt_None : none>
+        %x_2 = arc.enum_check (%x_1 : !arc.enum<crate_Opt_Some : si32, crate_Opt_None : none>) is "crate_Opt_Some" :  i1
+        %x_9 = "arc.if"(%x_2) ({
+            %x_3 = arc.enum_access "crate_Opt_Some" in (%x_1 : !arc.enum<crate_Opt_Some : si32, crate_Opt_None : none>) :  si32
+            %x_4 = none none
+            "arc.block.result"(%x_4) : (none) -> ()
+        },{
+            %x_7 = constant @crate_x_6 : () -> none
+            %x_8 = call_indirect %x_7() : () -> none
+            "arc.block.result"(%x_8) : (none) -> ()
+        }) : (i1) -> none
+        "arc.block.result"(%x_9) : (none) -> ()
     }
 }
 

@@ -4,22 +4,50 @@ expression: s
 input_file: arc-script-test/compile/src/tests/expect_mlir_fail_todo/extern_fun.arc
 
 ---
-extern fun increment(x: i32) -> i32;
-task Adder() ~{ key: i32, val: i32 } -> ~{ key: i32, val: i32 } {
-    extern fun addition(x: i32, y: i32) -> i32;
-    on {
-        x_0: { key: i32, val: i32 } => {
-            let event_0: i32 = x_0.val in
-            let key_0: i32 = x_0.key in
-            emit { val: crate::Adder::addition(event_0, event_0), key: key_0 }
-        }
+extern fun increment(x: i32): i32;
+task Adder(): ~{ key: i32, value: i32 } -> ~{ key: i32, value: i32 } {
+    enum IInterface {
+        __({ key: i32, value: i32 })
     }
+    enum OInterface {
+        __({ key: i32, value: i32 })
+    }
+    extern fun addition(x: i32, y: i32): i32;
+    fun on_start(): unit {
+        val x_A: unit = unit;
+        x_A
+    }
+    crate::Adder::on_start();
+    fun on_event(x_3: crate::Adder::IInterface): unit {
+        val x_0: { key: i32, value: i32 } = unwrap[crate::Adder::IInterface::__](x_3);
+        val x_1: i32 = x_0.value;
+        val x_2: i32 = x_0.key;
+        val x_4: fun(i32, i32): i32 = crate::Adder::addition;
+        val x_5: i32 = x_4(x_1, x_1);
+        val x_6: { key: i32, value: i32 } = { value: x_5, key: x_2 };
+        val x_7: crate::Adder::OInterface = enwrap[crate::Adder::OInterface::__](x_6);
+        val x_8: unit = emit x_7;
+        x_8
+    }
+    on event => crate::Adder::on_event(event)
 }
-fun pipe(s_0: ~{ key: i32, val: i32 }) -> ~{ key: i32, val: i32 } {
-    if crate::increment(1) == 2 {
-        crate::Adder()(s_0)
+fun pipe(s_0: ~{ key: i32, value: i32 }): ~{ key: i32, value: i32 } {
+    val x_B: fun(i32): i32 = crate::increment;
+    val x_C: i32 = 1;
+    val x_D: i32 = x_B(x_C);
+    val x_E: i32 = 2;
+    val x_F: bool = x_D == x_E;
+    val x_M: ~{ key: i32, value: i32 } = if x_F {
+        val x_G: fun(): fun(~{ key: i32, value: i32 }): ~{ key: i32, value: i32 } = crate::Adder;
+        val x_H: fun(~{ key: i32, value: i32 }): ~{ key: i32, value: i32 } = x_G();
+        val x_I: ~{ key: i32, value: i32 } = x_H(s_0);
+        x_I
     } else {
-        crate::Adder()(s_0)
-    }
+        val x_J: fun(): fun(~{ key: i32, value: i32 }): ~{ key: i32, value: i32 } = crate::Adder;
+        val x_K: fun(~{ key: i32, value: i32 }): ~{ key: i32, value: i32 } = x_J();
+        val x_L: ~{ key: i32, value: i32 } = x_K(s_0);
+        x_L
+    };
+    x_M
 }
 

@@ -6,14 +6,14 @@ enum Foo {
 }
 
 fun main() {
-    let a = 200u32 in
-    let b = 2.0f32 in
 
-    let c = Foo::Bar(a) in
-    let d = unwrap[Foo::Bar](c) in
+    val a = 200u32;
+    val b = 2.0f32;
 
-    let e = enwrap[Foo::Baz](b) in
-    let f = is[Foo::Baz](e) in
+    val c = Foo::Bar(a);
+    val d = unwrap[Foo::Bar](c);
 
-    unit
+    val e = enwrap[Foo::Baz](b);
+    val f = is[Foo::Baz](e);
+
 }

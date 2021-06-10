@@ -1,11 +1,11 @@
 use crate::compiler::hir::HIR;
 use crate::compiler::info::Info;
 
-mod ownership;
+// mod ownership;
 
 impl HIR {
     pub(crate) fn check(&self, info: &mut Info) {
-        self.check_ownership(info);
+//         self.check_ownership(info);
     }
 }
 
