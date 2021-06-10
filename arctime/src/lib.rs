@@ -1,6 +1,7 @@
 #![feature(fn_traits)]
 #![feature(unboxed_closures)]
 #![feature(arbitrary_self_types)]
+#![feature(async_closure)]
 #![allow(unused)]
 #![allow(clippy::type_complexity)]
 
@@ -18,6 +19,7 @@ pub mod task;
 pub mod timer;
 pub mod transform;
 pub mod state;
+pub mod channel;
 
 pub mod prelude {
     pub use crate::client::*;
