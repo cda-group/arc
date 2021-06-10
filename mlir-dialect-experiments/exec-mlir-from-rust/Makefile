@@ -10,10 +10,10 @@ MLIR_OPT_FLAGS=--gpu-to-llvm --convert-std-to-llvm --llvm-legalize-for-export
 MLIR_TRANSLATE=../../arc-mlir/build/llvm-build/bin/mlir-translate
 MLIR_TRANSLATE_FLAGS=--mlir-to-llvmir
 
-SRC=mlir-src/hello.mlir
-OBJ=mlir-target/hello.o
-IR=mlir-target/hello.ll
-LIB=mlir-target/libhello.a
+SRC=mlir/src/hello.mlir
+OBJ=mlir/target/hello.o
+IR=mlir/target/hello.ll
+LIB=mlir/target/libhello.a
 
 all: $(LIB)
 
