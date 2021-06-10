@@ -17,6 +17,7 @@ fn call_dynamic() -> Result<u32, Box<dyn std::error::Error>> {
         Ok(func())
     }
 }
+
 fn main() {
     println!("Hello, world!");
 }
