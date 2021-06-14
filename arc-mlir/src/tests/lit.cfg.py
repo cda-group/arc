@@ -58,7 +58,6 @@ tools = [
     'mlir-opt',
     'mlir-tblgen',
     'mlir-translate',
-    'mlir-edsc-builder-api-test',
     'arc-mlir',
     'arc-script',
 ]
