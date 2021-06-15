@@ -282,7 +282,12 @@ private:
         op.emitError("signless integers are not supported");
         return failure();
       }
-      return returnResult(op, rustTy, v.toString(10, ty.isSigned()), rewriter);
+      {
+        SmallVector<char> tmp;
+        v.toString(tmp, 10, ty.isSigned());
+        std::string str(tmp.begin(), tmp.end());
+        return returnResult(op, rustTy, str, rewriter);
+      }
     default:
       op.emitError("unhandled constant integer width");
       return failure();
