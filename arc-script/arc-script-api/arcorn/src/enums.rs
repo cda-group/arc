@@ -10,85 +10,101 @@
 /// Enwraps a value into an enum-variant.
 ///
 /// ```
-/// #[arc_script::arcorn::rewrite]
-/// enum Foo {
-///     Bar(i32),
-///     Baz(i32)
+/// use arc_script::arcorn;
+/// mod foo {
+///     use arc_script::arcorn;
+///     #[arcorn::rewrite]
+///     pub enum Bar {
+///         Baz(i32),
+///         Qux(i32)
+///     }
 /// }
-/// let foo = arc_script::arcorn::enwrap!(Bar, 5);
+/// let x = arcorn::enwrap!(foo::Bar::Baz, 5);
 /// ```
 #[macro_export]
 macro_rules! enwrap {
-    ($variant:ident , $expr:expr) => {
-        ($variant($expr)).wrap()
+    (@done $path:path, $expr:expr) => {
+        $path($expr).wrap()
+    };
+    ($mod:ident :: $enum:ident :: $variant:ident , $expr:expr) => {
+        arc_script::arcorn::paste!(arc_script::arcorn::enwrap!(@done $mod::[<Enum $enum>]::$variant, $expr))
     };
     ($enum:ident :: $variant:ident , $expr:expr) => {
-        arcorn::paste! {
-            ([<Enum $enum>]::$variant($expr)).wrap()
-        }
+        arc_script::arcorn::paste!(arc_script::arcorn::enwrap!(@done [<Enum $enum>]::$variant, $expr))
+    };
+    ($variant:ident , $expr:expr) => {
+        arc_script::arcorn::enwrap!(@done $variant, $expr)
     };
 }
 
 /// Returns `true` if enum is a certain variant, else `false`.
 ///
 /// ```
-/// #[arc_script::arcorn::rewrite]
-/// enum Foo {
-///     Bar(i32),
-///     Baz(i32)
+/// use arc_script::arcorn;
+/// mod foo {
+///     use arc_script::arcorn;
+///     #[arcorn::rewrite]
+///     pub enum Bar {
+///         Baz(i32),
+///         Qux(i32)
+///     }
 /// }
 ///
-/// let foo = arc_script::arcorn::enwrap!(Bar, 5);
-/// assert!(arc_script::arcorn::is!(Bar, foo));
+/// let x = arcorn::enwrap!(foo::Bar::Baz, 5);
+/// assert!(arcorn::is!(foo::Bar::Baz, x));
 /// ```
 #[macro_export]
 macro_rules! is {
-    ($variant:ident , $expr:expr) => {
-        if let Some($variant(_)) = &$expr.this {
+    (@done $path:path, $expr:expr) => {
+        if let Some($path(_)) = &$expr.this {
             true
         } else {
             false
         }
     };
+    ($mod:ident :: $enum:ident :: $variant:ident , $expr:expr) => {
+        arc_script::arcorn::paste!(arc_script::arcorn::is!(@done $mod::[<Enum $enum>]::$variant, $expr))
+    };
     ($enum:ident :: $variant:ident , $expr:expr) => {
-        arcorn::paste! {
-            if let Some([<Enum $enum>]::$variant(_)) = &$expr.this {
-                true
-            } else {
-                false
-            }
-        }
+        arc_script::arcorn::paste!(arc_script::arcorn::is!(@done [<Enum $enum>]::$variant, $expr))
+    };
+    ($variant:ident , $expr:expr) => {
+        arc_script::arcorn::is!(@done $variant, $expr)
     };
 }
 
 /// Unwraps a value out of an enum-variant.
 ///
 /// ```
-/// #[arc_script::arcorn::rewrite]
-/// enum FooEnum {
-///     Bar(i32),
-///     Baz(i32)
+/// use arc_script::arcorn;
+/// mod foo {
+///     use arc_script::arcorn;
+///     #[arcorn::rewrite]
+///     pub enum Bar {
+///         Baz(i32),
+///         Qux(i32)
+///     }
 /// }
 ///
-/// let foo = arc_script::arcorn::enwrap!(Bar, 5);
-/// let bar = arc_script::arcorn::unwrap!(Bar, foo);
+/// let x = arcorn::enwrap!(foo::Bar::Baz, 5);
+/// let y = arcorn::unwrap!(foo::Bar::Baz, x);
 /// ```
 #[macro_export]
 macro_rules! unwrap {
-    ($variant:ident , $expr:expr) => {
-        if let Some($variant(v)) = $expr.this {
+    (@done $path:path, $expr:expr) => {
+        if let Some($path(v)) = $expr.this {
             v
         } else {
             unreachable!()
         }
     };
+    ($mod:ident :: $enum:ident :: $variant:ident , $expr:expr) => {
+        arc_script::arcorn::paste!(arc_script::arcorn::unwrap!(@done $mod::[<Enum $enum>]::$variant, $expr))
+    };
     ($enum:ident :: $variant:ident , $expr:expr) => {
-        arcorn::paste! {
-            if let Some([<Enum $enum>]::$variant(v)) = $expr.this {
-                v
-            } else {
-                unreachable!()
-            }
-        }
+        arc_script::arcorn::paste!(arc_script::arcorn::unwrap!(@done [<Enum $enum>]::$variant, $expr))
+    };
+    ($variant:ident , $expr:expr) => {
+        arc_script::arcorn::unwrap!(@done $variant, $expr)
     };
 }
