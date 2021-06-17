@@ -4,8 +4,6 @@
 //!
 //! See all lints [here](https://doc.rust-lang.org/rustc/lints/groups.html).
 //! Or by running `rustc -W help`
-#![feature(try_trait_v2)]
-#![feature(control_flow_enum)]
 #![feature(or_patterns)]
 // Deny all clippy lints
 #![deny(clippy::correctness)]

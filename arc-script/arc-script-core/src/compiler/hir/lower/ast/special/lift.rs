@@ -14,8 +14,8 @@ use super::Context;
 pub(crate) fn lift(block: hir::Block, ctx: &mut Context<'_>) -> hir::Block {
     let mut vars = Set::default();
     match block.fv(&mut vars, ctx) {
-        Liftable::No => block,
-        Liftable::Yes => {
+        Err(_) => block,
+        Ok(_) => {
             let path = ctx.fresh_path();
             let vars = vars.into_iter().collect::<Vec<_>>();
 
@@ -57,39 +57,10 @@ pub(crate) fn lift(block: hir::Block, ctx: &mut Context<'_>) -> hir::Block {
     }
 }
 
-/// Represents whether a block is liftable or not.
-enum Liftable {
-    Yes,
-    No,
-}
-
-impl std::ops::FromResidual for Liftable {
-    fn from_residual(residual: <Self as std::ops::Try>::Residual) -> Self {
-        Self::No
-    }
-}
-
-impl std::ops::Try for Liftable {
-    type Output = ();
-
-    type Residual = ();
-
-    fn from_output(output: Self::Output) -> Self {
-        Self::Yes
-    }
-
-    fn branch(self) -> std::ops::ControlFlow<Self::Residual, Self::Output> {
-        match self {
-            Liftable::Yes => std::ops::ControlFlow::Continue(()),
-            Liftable::No => std::ops::ControlFlow::Break(()),
-        }
-    }
-}
-
 trait FreeVars {
-    /// Mutably constructs a set of free-variables. Returns `Liftable::Yes` if the expression can
-    /// be lifted, else `Liftable::No` (if control-flow constructs were found encountered).
-    fn fv(&self, set: &mut Set<Name>, ctx: &Context<'_>) -> Liftable;
+    /// Mutably constructs a set of free-variables. Returns `Result::Ok` if the expression can
+    /// be lifted, else `Result::Err` (if control-flow constructs were found encountered).
+    fn fv(&self, set: &mut Set<Name>, ctx: &Context<'_>) -> Result<(), ()>;
 }
 
 macro_rules! freevars {
@@ -100,10 +71,10 @@ macro_rules! freevars {
     } => {
         $(
             impl FreeVars for $ty {
-                fn fv(&self, $set: &mut Set<Name>, $ctx: &Context<'_>) -> Liftable {
+                fn fv(&self, $set: &mut Set<Name>, $ctx: &Context<'_>) -> Result<(), ()> {
                     let $node = self;
                     $expr;
-                    Liftable::Yes
+                    Ok(())
                 }
             }
         )*
@@ -133,9 +104,9 @@ freevars! {
         set.insert(*x);
     },
     hir::Expr => match ctx.hir.exprs.resolve(node) {
-        hir::ExprKind::Return(_) => Liftable::No?,
-        hir::ExprKind::Break(_) => Liftable::No?,
-        hir::ExprKind::Continue => Liftable::No?,
+        hir::ExprKind::Return(_) => return Err(()),
+        hir::ExprKind::Break(_) => return Err(()),
+        hir::ExprKind::Continue => return Err(()),
         hir::ExprKind::Lit(_) => {}
         hir::ExprKind::Array(vs) => vs.fv(set, ctx)?,
         hir::ExprKind::Struct(vfs) => vfs.fv(set, ctx)?,
@@ -194,13 +165,13 @@ freevars! {
 }
 
 impl<T: FreeVars> FreeVars for Vec<T> {
-    fn fv(&self, set: &mut Set<Name>, ctx: &Context<'_>) -> Liftable {
+    fn fv(&self, set: &mut Set<Name>, ctx: &Context<'_>) -> Result<(), ()> {
         self.iter().try_for_each(|x| x.fv(set, ctx))
     }
 }
 
 impl<T: FreeVars> FreeVars for VecMap<Name, T> {
-    fn fv(&self, set: &mut Set<Name>, ctx: &Context<'_>) -> Liftable {
+    fn fv(&self, set: &mut Set<Name>, ctx: &Context<'_>) -> Result<(), ()> {
         self.values().try_for_each(|x| x.fv(set, ctx))
     }
 }
