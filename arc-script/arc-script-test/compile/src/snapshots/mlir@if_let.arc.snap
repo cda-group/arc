@@ -8,8 +8,9 @@ module @toplevel {
     func @crate_x_H(%x_1: si32) -> si32 {
         %x_F = arc.constant 2 : si32
         %x_G = arc.addi %x_1, %x_F : si32
-        "arc.block.result"(%x_G) : (si32) -> ()
+        return %x_G : si32
     }
+
     func @crate_test() -> si32 {
         %x_0 = arc.constant 3 : si32
         %x_1 = arc.constant 5 : si32
@@ -40,7 +41,7 @@ module @toplevel {
             %x_J = call_indirect %x_I(%x_1) : (si32) -> si32
             "arc.block.result"(%x_J) : (si32) -> ()
         }) : (i1) -> si32
-        "arc.block.result"(%x_L) : (si32) -> ()
+        return %x_L : si32
     }
 }
 

@@ -5,7 +5,7 @@ input_file: arc-script-test/compile/src/tests/expect_pass/pattern.arc
 
 ---
 module @toplevel {
-    func @crate_main() -> none {
+    func @crate_main() -> () {
         %x_0 = arc.constant 1 : si32
         %x_1 = arc.constant 2 : si32
         %x_2 = "arc.make_tuple"(%x_0, %x_1) : (si32, si32) -> tuple<si32, si32>
@@ -19,8 +19,8 @@ module @toplevel {
         %x_A = "arc.index_tuple"(%x_6) { index = 1 } : (tuple<tuple<si32, si32>, tuple<si32, si32>>) -> tuple<si32, si32>
         %x_B = "arc.index_tuple"(%x_A) { index = 0 } : (tuple<si32, si32>) -> si32
         %x_C = "arc.index_tuple"(%x_A) { index = 1 } : (tuple<si32, si32>) -> si32
-        %x_D = none none
-        "arc.block.result"(%x_D) : (none) -> ()
+        // No value
+        return
     }
 }
 

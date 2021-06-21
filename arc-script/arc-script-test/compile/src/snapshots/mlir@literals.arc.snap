@@ -5,7 +5,7 @@ input_file: arc-script-test/compile/src/tests/expect_pass/literals.arc
 
 ---
 module @toplevel {
-    func @crate_test() -> none {
+    func @crate_test() -> () {
         %x_0 = arc.constant 127 : si8
         %x_1 = arc.constant -128 : si8
         %x_2 = arc.constant 32767 : si16
@@ -28,8 +28,8 @@ module @toplevel {
         %x_J = constant -1.7976931348623157e308 : f64
         %x_K = constant true
         %x_L = constant false
-        %x_M = none none
-        "arc.block.result"(%x_M) : (none) -> ()
+        // No value
+        return
     }
 }
 

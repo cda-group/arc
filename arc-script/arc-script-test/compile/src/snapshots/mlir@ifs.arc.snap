@@ -5,10 +5,11 @@ input_file: arc-script-test/compile/src/tests/expect_pass/ifs.arc
 
 ---
 module @toplevel {
-    func @crate_main() -> none {
-        %x_0 = none none
-        "arc.block.result"(%x_0) : (none) -> ()
+    func @crate_main() -> () {
+        // No value
+        return
     }
+
     func @crate_test() -> si32 {
         %x_1 = arc.constant 65 : si32
         %x_2 = arc.constant 66 : si32
@@ -18,7 +19,7 @@ module @toplevel {
         },{
             "arc.block.result"(%x_2) : (si32) -> ()
         }) : (i1) -> si32
-        "arc.block.result"(%x_4) : (si32) -> ()
+        return %x_4 : si32
     }
 }
 
