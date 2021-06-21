@@ -42,8 +42,6 @@ module @"name-of-the-crate-2" {
  ^bb0(%arg0: !rust<"f32">, %arg1: !rust<"f32">):
  "rust.return"(%arg0) : (!rust<"f32">) -> ()
 }) {sym_name = "the-function-name-1", type = (!rust<"f32">) -> !rust<"f32"> } : () -> ()
-
-"rust.crate_end"() : () -> ()
 }
 
 // -----
