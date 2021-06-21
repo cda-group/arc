@@ -241,7 +241,7 @@ lower! {
         ctx.res.push_namespace(node.name, ctx.info);
         ctx.res.stack.push_scope();
         let mut path: hir::Path = ctx.res.path.into();
-        let (mut params, cases) = special::pattern::lower_params(&node.params, hir::ScopeKind::Member, ctx);
+        let (params, cases) = special::pattern::lower_params(&node.params, hir::ScopeKind::Member, ctx);
         assert!(cases.is_empty());
         let iinterface = node.iinterface.lower(ctx.names.common.iinterface, ctx);
         let ointerface = node.ointerface.lower(ctx.names.common.ointerface, ctx);
@@ -251,7 +251,7 @@ lower! {
         if matches!(node.iinterface.kind, ast::InterfaceKind::Single(_)) {
             ctx.generated_ointerface_interior = Some(ointerface.interior);
         }
-        let (fields, on_start, on_event, namespace) = special::task::lower_items(params.clone(), &node.items, ctx);
+        let (fields, on_start, on_event, namespace) = special::task::lower_items(&node.items, ctx);
         ctx.generated_ointerface_interior = None;
         ctx.generated_iinterface_interior = None;
 

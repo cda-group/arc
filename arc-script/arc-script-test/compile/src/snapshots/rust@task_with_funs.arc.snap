@@ -45,7 +45,7 @@ pub mod arc_script_output {
             let x_9: () = self.emit((x_8.clone()));
             (x_9.clone())
         }
-        pub fn Test_on_start(&mut self, x_0: i32) -> () {
+        pub fn Test_on_start(&mut self) -> () {
             let x_B: () = ();
             (x_B.clone())
         }

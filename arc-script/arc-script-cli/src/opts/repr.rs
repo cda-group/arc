@@ -125,6 +125,7 @@ pub struct Completions {
 }
 
 /// Different types of shells.
+#[allow(clippy::enum_variant_names)]
 #[derive(ArgEnum, Debug, Clone)]
 pub enum Shell {
     /// Bourne Again Shell (Default).

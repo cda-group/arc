@@ -52,7 +52,7 @@ pub mod arc_script_output {
             };
             (x_9.clone())
         }
-        pub fn Filter_on_start(&mut self, p_0: Box<dyn arcorn::ArcornFn(i32) -> bool>) -> () {
+        pub fn Filter_on_start(&mut self) -> () {
             let x_B: () = ();
             (x_B.clone())
         }

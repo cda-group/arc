@@ -11,7 +11,7 @@ task Map(f_0: fun(i32): i32): ~{ key: i32, value: i32 } -> ~{ key: i32, value: i
     enum OInterface {
         __({ key: i32, value: i32 })
     }
-    fun on_start(f_0: fun(i32): i32): unit {
+    fun on_start(): unit {
         val x_9: unit = unit;
         x_9
     }

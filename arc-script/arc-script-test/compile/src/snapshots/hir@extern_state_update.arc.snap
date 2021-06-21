@@ -17,7 +17,7 @@ task Stateful(init_0: i32): ~{ key: i32, value: i32 } -> ~{ key: i32, value: i32
     }
     val state_0: crate::Cell = uninitialised;
     extern fun update(v: i32): i32;
-    fun on_start(init_0: i32): unit {
+    fun on_start(): unit {
         val x_0: fun(i32): crate::Cell = crate::Cell;
         val x_1: crate::Cell = x_0(init_0);
         val x_2: unit = initialise[state_0](x_1);

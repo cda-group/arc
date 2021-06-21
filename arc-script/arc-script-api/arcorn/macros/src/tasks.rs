@@ -356,8 +356,7 @@ cfg_if::cfg_if! {
 
                     impl ComponentLifecycle for #task_name {
                         fn on_start(&mut self) -> Handled {
-                            let (#(#param_name,)*) = (#(self.#param_name.clone(),)*);
-                            self.#on_start_name(#(#param_name,)*);
+                            self.#on_start_name();
                             Handled::Ok
                         }
 

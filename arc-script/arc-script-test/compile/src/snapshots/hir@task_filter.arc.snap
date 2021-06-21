@@ -11,7 +11,7 @@ task Filter(p_0: fun(i32): bool): ~{ key: i32, value: i32 } -> ~{ key: i32, valu
     enum OInterface {
         __({ key: i32, value: i32 })
     }
-    fun on_start(p_0: fun(i32): bool): unit {
+    fun on_start(): unit {
         val x_B: unit = unit;
         x_B
     }

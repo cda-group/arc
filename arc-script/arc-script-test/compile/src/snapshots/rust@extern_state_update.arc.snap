@@ -50,7 +50,7 @@ pub mod arc_script_output {
             let x_C: () = self.emit((x_B.clone()));
             (x_C.clone())
         }
-        pub fn Stateful_on_start(&mut self, init_0: i32) -> () {
+        pub fn Stateful_on_start(&mut self) -> () {
             let x_0: Box<dyn arcorn::ArcornFn(i32) -> Cell> =
                 Box::new(Cell::new) as Box<dyn arcorn::ArcornFn(i32) -> Cell>;
             let x_1: Cell = (x_0.clone())(((self.init_0).clone()));
