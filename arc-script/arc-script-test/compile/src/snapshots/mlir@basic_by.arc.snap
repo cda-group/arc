@@ -12,7 +12,7 @@ module @toplevel {
         %x_3 = "arc.struct_access"(%x_2) { field = "value" } : (!arc.struct<key: si32, value: si32>) -> si32
         %x_4 = "arc.struct_access"(%x_2) { field = "key" } : (!arc.struct<key: si32, value: si32>) -> si32
         %x_5 = arc.addi %x_3, %x_4 : si32
-        "arc.block.result"(%x_5) : (si32) -> ()
+        return %x_5 : si32
     }
 }
 

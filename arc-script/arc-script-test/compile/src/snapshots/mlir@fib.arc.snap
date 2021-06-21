@@ -23,13 +23,14 @@ module @toplevel {
             %x_B = arc.constant 0 : si32
             "arc.block.result"(%x_B) : (si32) -> ()
         }) : (i1) -> si32
-        "arc.block.result"(%x_C) : (si32) -> ()
+        return %x_C : si32
     }
+
     func @crate_test() -> si32 {
         %x_D = constant @crate_fib : (si32) -> si32
         %x_E = arc.constant 5 : si32
         %x_F = call_indirect %x_D(%x_E) : (si32) -> si32
-        "arc.block.result"(%x_F) : (si32) -> ()
+        return %x_F : si32
     }
 }
 

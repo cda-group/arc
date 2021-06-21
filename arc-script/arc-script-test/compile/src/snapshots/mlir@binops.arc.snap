@@ -5,7 +5,7 @@ input_file: arc-script-test/compile/src/tests/expect_pass/binops.arc
 
 ---
 module @toplevel {
-    func @crate_main() -> none {
+    func @crate_main() -> () {
         %x_0 = constant true
         %x_1 = arc.constant 127 : si8
         %x_2 = arc.constant 32767 : si16
@@ -168,8 +168,8 @@ module @toplevel {
         %x___Z = arc.xor %x_8, %x_8 : ui64
         %x___a = math.powf %x_9, %x_J : f32
         %x___b = math.powf %x_A, %x_K : f64
-        %x___c = none none
-        "arc.block.result"(%x___c) : (none) -> ()
+        // No value
+        return
     }
 }
 

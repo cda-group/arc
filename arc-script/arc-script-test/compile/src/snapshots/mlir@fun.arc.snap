@@ -14,14 +14,15 @@ module @toplevel {
         },{
             "arc.block.result"(%b_0) : (si32) -> ()
         }) : (i1) -> si32
-        "arc.block.result"(%x_3) : (si32) -> ()
+        return %x_3 : si32
     }
+
     func @crate_test() -> si32 {
         %x_4 = constant @crate_max : (si32, si32) -> si32
         %x_5 = arc.constant 1 : si32
         %x_6 = arc.constant 2 : si32
         %x_7 = call_indirect %x_4(%x_5, %x_6) : (si32, si32) -> si32
-        "arc.block.result"(%x_7) : (si32) -> ()
+        return %x_7 : si32
     }
 }
 
