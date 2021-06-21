@@ -73,7 +73,6 @@ use arc_script_core_shared::VecMap;
 /// ```
 ///
 pub(crate) fn lower_items(
-    params: Vec<hir::Param>,
     items: &[ast::TaskItem],
     ctx: &mut Context<'_>,
 ) -> (
@@ -98,7 +97,7 @@ pub(crate) fn lower_items(
     let body = hir::Block::syn(stmts, v);
     let name = ctx.names.common.on_start;
     let path = ctx.new_path(name);
-    let f = ctx.new_method(path, params, body);
+    let f = ctx.new_method(path, vec![], body);
     ctx.hir.intern(path, hir::Item::syn(hir::ItemKind::Fun(f)));
     let on_start = hir::OnStart::syn(path);
     (state_fields, on_start, on_event.unwrap(), namespace)

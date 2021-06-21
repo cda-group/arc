@@ -15,7 +15,7 @@ task Test(x_0: i32): ~{ key: i32, value: i32 } -> ~{ key: i32, value: i32 } {
         val x_1: i32 = x_0 + y_0;
         x_1
     }
-    fun on_start(x_0: i32): unit {
+    fun on_start(): unit {
         val x_B: unit = unit;
         x_B
     }

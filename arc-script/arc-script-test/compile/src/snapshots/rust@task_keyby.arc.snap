@@ -46,7 +46,7 @@ pub mod arc_script_output {
             let x_7: () = self.emit((x_6.clone()));
             (x_7.clone())
         }
-        pub fn KeyBy_on_start(&mut self, keyfun_0: Box<dyn arcorn::ArcornFn(i32) -> i32>) -> () {
+        pub fn KeyBy_on_start(&mut self) -> () {
             let x_9: () = ();
             (x_9.clone())
         }

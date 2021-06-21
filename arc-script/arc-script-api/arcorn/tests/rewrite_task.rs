@@ -31,7 +31,7 @@ impl MyTask {
             B(x) => self.emit(D(x).wrap()),
         }
     }
-    pub fn startup(&mut self, param_variable: i32) {
-        self.state_variable.set(param_variable * 2)
+    pub fn startup(&mut self) {
+        self.state_variable.set(self.param_variable * 2)
     }
 }
