@@ -28,7 +28,9 @@ jobs:
       run: cargo clean
 
     - name: cargo-test
-      run: cargo insta test --package=arc-script-test-compile
+      run: |
+        cargo insta test --package=arc-script-test-compile
+        cargo insta accept
 
     - name: cargo-clippy
       run: cargo clippy
