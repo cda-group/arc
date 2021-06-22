@@ -61,12 +61,17 @@ class RustPrinterStream {
   std::map<std::string, std::string> CrateDependencies;
   std::map<std::string, std::string> CrateDirectives;
 
+  DenseMap<Value, std::string> ValueAliases;
+  DenseMap<Type, std::string> TypeAliases;
+
+  std::string ModuleName;
   std::string Includefile;
 
 public:
-  RustPrinterStream(std::string includefile)
+  RustPrinterStream(std::string moduleName, std::string includefile)
       : Constants(ConstantsStr), NamedTypes(NamedTypesStr), TypeUses(UsesStr),
-        Body(BodyStr), NextID(0), NextConstID(0), Includefile(includefile){};
+        Body(BodyStr), NextID(0), NextConstID(0), ModuleName(moduleName),
+        Includefile(includefile){};
 
   void flush(llvm::raw_ostream &o) {
     o << "#[allow(non_snake_case)]\n"
@@ -76,10 +81,10 @@ public:
       << "#[allow(unused_imports)]\n"
       << "#[allow(unused_braces)]\n";
 
-    o << "pub mod defs {\n"
+    o << "pub mod " << ModuleName
+      << "{\n"
          "use super::*;\n"
       << "pub use arc_script::arcorn;\n"
-      << "pub use arcon::prelude::*;\n"
       << "pub use hexf::*;\n";
 
     for (auto i : CrateDirectives)
@@ -92,6 +97,7 @@ public:
     if (!Includefile.empty())
       o << "include!(\"" << Includefile << "\");\n";
     o << "}\n";
+    o << "pub use " << ModuleName << "::*;\n";
   }
 
   // Returns true if there has been output to the types NamedTypes
@@ -106,7 +112,18 @@ public:
 
   llvm::raw_ostream &getConstantsStream() { return Constants; }
 
+  void addAlias(Value v, std::string identifier) {
+    ValueAliases[v] = identifier;
+  }
+
+  void addAlias(Type t, std::string identifier) { TypeAliases[t] = identifier; }
+
+  void clearAliases() { ValueAliases.clear(); }
+
   std::string get(Value v) {
+    auto alias = ValueAliases.find(v);
+    if (alias != ValueAliases.end())
+      return alias->second;
     auto found = Value2ID.find(v);
     int id = 0;
     if (found == Value2ID.end()) {
@@ -170,17 +187,23 @@ public:
   }
 
   RustPrinterStream &print(types::RustType t) {
+    if (printTypeAlias(t))
+      return *this;
     t.printAsRust(Body);
     return *this;
   }
 
   RustPrinterStream &print(types::RustEnumType t) {
+    if (printTypeAlias(t))
+      return *this;
     writeEnumDefiniton(t);
     t.printAsRustNamedType(Body);
     return *this;
   }
 
   RustPrinterStream &print(types::RustStructType t) {
+    if (printTypeAlias(t))
+      return *this;
     writeStructDefiniton(t);
     t.printAsRustNamedType(Body);
     return *this;
@@ -241,6 +264,15 @@ public:
     }
     s << "unhandled type";
     return s;
+  }
+
+private:
+  bool printTypeAlias(Type t) {
+    auto alias = TypeAliases.find(t);
+    if (alias == TypeAliases.end())
+      return false;
+    Body << alias->second;
+    return true;
   }
 };
 

@@ -56,6 +56,10 @@ class Rust_Op<string mnemonic, list<OpTrait> traits = []>
     : Op<Rust_Dialect, mnemonic, traits>;
 
 def AnyRustType : Type<CPred<"$_self.isa<RustType>() || $_self.isa<RustStructType>() || $_self.isa<RustTupleType>() || $_self.isa<RustTensorType>() || $_self.isa<RustEnumType>() || isRustFunctionType($_self)">, "any RustType">;
+
+def AnyRustStream :
+    Type<CPred<"$_self.isa<RustStreamType>()">, "any RustStream">;
+
 def AnyRustStruct :
     Type<CPred<"$_self.isa<RustStructType>()">, "any RustStruct">;
 
@@ -424,6 +428,19 @@ def Rust_RustCompOp : Rust_Op<"compop", [SameTypeOperands]> {
       return (*this)->getAttrOfType<StringAttr>("op").getValue();
     }
 
+    // Write this operation as Rust code to the stream
+    void writeRust(RustPrinterStream &);
+  }];
+}
+
+def Rust_RustEmitOp
+    : Rust_Op<"emit", []> {
+  let summary = "Emits data on a stream";
+  let description = [{
+    "rust.enum" constructs an enum
+  }];
+  let arguments = (ins AnyRustType:$value, AnyRustStream:$stream);
+  let extraClassDeclaration = [{
     // Write this operation as Rust code to the stream
     void writeRust(RustPrinterStream &);
   }];

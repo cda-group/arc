@@ -1,6 +1,6 @@
 #[cfg(test)]
 mod tests {
-  use crate::defs::*;
+  use crate::toplevel::*;
   #[test]
   fn test() {
   assert_eq!(callee_si32_si32(17), 17);

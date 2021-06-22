@@ -41,9 +41,12 @@ namespace types {
 
 struct RustTypeStorage;
 struct RustEnumTypeStorage;
+struct RustStreamTypeStorage;
 struct RustStructTypeStorage;
 struct RustTupleTypeStorage;
 struct RustTensorTypeStorage;
+
+class RustEnumType;
 
 //===----------------------------------------------------------------------===//
 // Rust Types
@@ -71,6 +74,21 @@ public:
   std::string getSignature() const;
 };
 
+class RustStreamType
+    : public Type::TypeBase<RustStreamType, Type, RustStreamTypeStorage> {
+public:
+  using Base::Base;
+
+  void print(DialectAsmPrinter &os) const;
+  rust::RustPrinterStream &printAsRust(rust::RustPrinterStream &os) const;
+  std::string getRustType() const;
+  Type getType() const;
+
+  static RustStreamType get(RustDialect *dialect, Type item);
+  void emitNestedTypedefs(rust::RustPrinterStream &ps) const;
+  std::string getSignature() const;
+};
+
 class RustStructType
     : public Type::TypeBase<RustStructType, Type, RustStructTypeStorage> {
 public:
@@ -81,7 +99,9 @@ public:
   raw_ostream &printAsRustNamedType(raw_ostream &os) const;
   std::string getRustType() const;
   unsigned getStructTypeId() const;
+  unsigned getNumFields() const;
   StringRef getFieldName(unsigned idx) const;
+  Type getFieldType(unsigned idx) const;
 
   typedef std::pair<mlir::StringAttr, Type> StructFieldTy;
   static RustStructType get(RustDialect *dialect,
@@ -101,6 +121,8 @@ public:
   std::string getRustType() const;
   unsigned getEnumTypeId() const;
   StringRef getVariantName(unsigned idx) const;
+  Type getVariantType(unsigned idx) const;
+  unsigned getNumVariants() const;
 
   typedef std::pair<mlir::StringAttr, Type> EnumVariantTy;
   static RustEnumType get(RustDialect *dialect,

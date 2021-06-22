@@ -57,6 +57,7 @@ protected:
   Type convertIntegerType(IntegerType type);
   Type convertTensorType(RankedTensorType type);
   Type convertTupleType(TupleType type);
+  Type convertStreamType(arc::types::StreamType type);
   Type convertStructType(arc::types::StructType type);
 };
 
@@ -709,6 +710,19 @@ private:
   RustTypeConverter &TypeConverter;
 };
 
+struct EmitOpLowering : public ConversionPattern {
+  EmitOpLowering(MLIRContext *ctx, RustTypeConverter &typeConverter)
+      : ConversionPattern(arc::EmitOp::getOperationName(), 1, ctx) {}
+
+  LogicalResult
+  matchAndRewrite(Operation *op, ArrayRef<Value> operands,
+                  ConversionPatternRewriter &rewriter) const final {
+    EmitOp o = cast<EmitOp>(op);
+    rewriter.replaceOpWithNewOp<rust::RustEmitOp>(op, o.value(), o.stream());
+    return success();
+  };
+};
+
 RustTypeConverter::RustTypeConverter(MLIRContext *ctx)
     : Ctx(ctx), Dialect(ctx->getOrLoadDialect<rust::RustDialect>()) {
   addConversion(
@@ -719,11 +733,14 @@ RustTypeConverter::RustTypeConverter(MLIRContext *ctx)
   addConversion([&](RankedTensorType type) { return convertTensorType(type); });
   addConversion([&](TupleType type) { return convertTupleType(type); });
   addConversion(
+      [&](arc::types::StreamType type) { return convertStreamType(type); });
+  addConversion(
       [&](arc::types::StructType type) { return convertStructType(type); });
 
   // RustType is legal, so add a pass-through conversion.
   addConversion([](rust::types::RustType type) { return type; });
   addConversion([](rust::types::RustEnumType type) { return type; });
+  addConversion([](rust::types::RustStreamType type) { return type; });
   addConversion([](rust::types::RustStructType type) { return type; });
   addConversion([](rust::types::RustTensorType type) { return type; });
   addConversion([](rust::types::RustTupleType type) { return type; });
@@ -769,6 +786,10 @@ Type RustTypeConverter::convertIntegerType(IntegerType type) {
   if (auto t = type.dyn_cast<IntegerType>())
     return rust::types::RustType::getIntegerTy(Dialect, t);
   return emitError(UnknownLoc::get(Ctx), "unsupported type"), Type();
+}
+
+Type RustTypeConverter::convertStreamType(arc::types::StreamType type) {
+  return rust::types::RustStreamType::get(Dialect, convertType(type.getType()));
 }
 
 Type RustTypeConverter::convertStructType(arc::types::StructType type) {
@@ -817,6 +838,21 @@ struct FuncOpLowering : public ConversionPattern {
     MLIRContext *ctx = op->getContext();
     mlir::FuncOp func = cast<mlir::FuncOp>(op);
     SmallVector<NamedAttribute, 4> attributes;
+
+    if (func->hasAttr("arc.task_name"))
+      attributes.push_back(NamedAttribute(Identifier::get("arc.task_name", ctx),
+                                          func->getAttr("arc.task_name")));
+    if (func->hasAttr("arc.mod_name"))
+      attributes.push_back(NamedAttribute(Identifier::get("arc.mod_name", ctx),
+                                          func->getAttr("arc.mod_name")));
+
+    if (func->hasAttr("arc.is_event_handler"))
+      attributes.push_back(
+          NamedAttribute(Identifier::get("arc.is_event_handler", ctx),
+                         func->getAttr("arc.is_event_handler")));
+    if (func->hasAttr("arc.is_init"))
+      attributes.push_back(NamedAttribute(Identifier::get("arc.is_init", ctx),
+                                          func->getAttr("arc.is_init")));
 
     TypeConverter::SignatureConversion sigConv(func.getNumArguments());
     mlir::FunctionType funcType =
@@ -973,6 +1009,7 @@ void ArcToRustLoweringPass::runOnOperation() {
   patterns.insert<MakeStructOpLowering>(&getContext(), typeConverter);
   patterns.insert<EnumAccessOpLowering>(&getContext(), typeConverter);
   patterns.insert<EnumCheckOpLowering>(&getContext(), typeConverter);
+  patterns.insert<EmitOpLowering>(&getContext(), typeConverter);
   patterns.insert<StructAccessOpLowering>(&getContext(), typeConverter);
   patterns.insert<StdCallOpLowering>(&getContext(), typeConverter);
   patterns.insert<StdCallIndirectOpLowering>(&getContext(), typeConverter);

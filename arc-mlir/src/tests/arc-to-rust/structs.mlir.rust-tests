@@ -1,7 +1,7 @@
 // Empty
 #[cfg(test)]
 mod tests {
-  use crate::defs::*;
+  use crate::arctoruststructs::*;
   #[test]
   fn it_works() {
     assert_eq!(ok3().a, 4);

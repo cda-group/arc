@@ -1,6 +1,6 @@
 #[cfg(test)]
 mod tests {
-    use crate::defs::*;
+    use crate::arctorustfloattensorarith::*;
     use ndarray::{Array,Dim,Ix};
     use std::rc::Rc;
 

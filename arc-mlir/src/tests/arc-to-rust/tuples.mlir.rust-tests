@@ -1,6 +1,6 @@
 #[cfg(test)]
 mod tests {
- use crate::defs::*;
+ use crate::arctorusttuples::*;
   #[test]
   fn test() {
    let tmp = makemeatuple();
