@@ -317,7 +317,7 @@ struct IfOpLowering : public ConversionPattern {
   matchAndRewrite(Operation *op, ArrayRef<Value> operands,
                   ConversionPatternRewriter &rewriter) const final {
     arc::IfOp o = cast<arc::IfOp>(op);
-    Type retTy = TypeConverter.convertType(o.getType());
+    Type retTy = TypeConverter.convertType(o.getType(0));
     auto newOp =
         rewriter.create<rust::RustIfOp>(op->getLoc(), retTy, operands[0]);
 
