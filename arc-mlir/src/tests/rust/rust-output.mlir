@@ -85,5 +85,20 @@ module @"this_is_the_name_of_the_crate" {
 
 }) {sym_name = "no_returned_value", type = () -> () } : () -> ()
 
+"rust.func"() ( {
+ ^bb0(%arg0: !rust<"bool">, %arg1: !rust<"f64">):
+   %r = "rust.constant"() {value="3.14"} : () -> (!rust<"f64">)
+   "rust.if"(%arg0) ( {
+     %x = "rust.unaryop"(%r) {op="-"} : (!rust<"f64">) -> (!rust<"f64">)
+     %y = "rust.binaryop"(%arg1, %x) {op="+"} : (!rust<"f64">, !rust<"f64">) -> (!rust<"f64">)
+     "rust.block.result"() : () -> ()
+   }, {
+     "rust.block.result"() : () -> ()
+   }) : (!rust<"bool">) -> ()
+ "rust.return"() : () -> ()
+
+}) {sym_name = "if_without_value", type = (!rust<"bool">, !rust<"f64">) -> () } : () -> ()
+
+
 }
 

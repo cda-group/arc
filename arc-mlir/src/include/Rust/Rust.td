@@ -459,7 +459,7 @@ def Rust_RustBlockResultOp
       "rust.block.result"(%b) : (!rust<"f64">) -> ()
     ```
   }];
-  let arguments = (ins AnyRustType : $result);
+  let arguments = (ins Variadic<AnyRustType> : $result);
   let extraClassDeclaration = [{
     // Write this operation as Rust code to the stream
     void writeRust(RustPrinterStream &);
@@ -484,7 +484,7 @@ def Rust_RustIfOp
   }];
   let arguments = (ins BoolRustType : $condition);
   let regions = (region SizedRegion<1>:$thenRegion, SizedRegion<1>:$elseRegion);
-  let results = (outs AnyRustType);
+  let results = (outs Variadic<AnyRustType>);
   let extraClassDeclaration = [{
     // Write this operation as Rust code to the stream
     void writeRust(RustPrinterStream &);

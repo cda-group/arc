@@ -325,7 +325,7 @@ struct IfOpLowering : public ConversionPattern {
                                 newOp.thenRegion().end());
     rewriter.inlineRegionBefore(o.elseRegion(), newOp.elseRegion(),
                                 newOp.elseRegion().end());
-    rewriter.replaceOp(op, newOp.getResult());
+    rewriter.replaceOp(op, newOp.getResult(0));
     return success();
   };
 
