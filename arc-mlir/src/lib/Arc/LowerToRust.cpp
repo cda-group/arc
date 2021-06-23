@@ -303,7 +303,11 @@ struct BlockResultOpLowering : public ConversionPattern {
   LogicalResult
   matchAndRewrite(Operation *op, ArrayRef<Value> operands,
                   ConversionPatternRewriter &rewriter) const final {
-    rewriter.replaceOpWithNewOp<rust::RustBlockResultOp>(op, operands[0]);
+    SmallVector<Value, 1> values;
+
+    if (operands.size() != 0)
+      values.push_back(operands[0]);
+    rewriter.replaceOpWithNewOp<rust::RustBlockResultOp>(op, values);
     return success();
   };
 };
@@ -317,15 +321,20 @@ struct IfOpLowering : public ConversionPattern {
   matchAndRewrite(Operation *op, ArrayRef<Value> operands,
                   ConversionPatternRewriter &rewriter) const final {
     arc::IfOp o = cast<arc::IfOp>(op);
-    Type retTy = TypeConverter.convertType(o.getType(0));
+    SmallVector<Type, 1> resTys;
+
+    if (op->getNumResults()) {
+      Type retTy = TypeConverter.convertType(o.getType(0));
+      resTys.push_back(retTy);
+    }
     auto newOp =
-        rewriter.create<rust::RustIfOp>(op->getLoc(), retTy, operands[0]);
+        rewriter.create<rust::RustIfOp>(op->getLoc(), resTys, operands[0]);
 
     rewriter.inlineRegionBefore(o.thenRegion(), newOp.thenRegion(),
                                 newOp.thenRegion().end());
     rewriter.inlineRegionBefore(o.elseRegion(), newOp.elseRegion(),
                                 newOp.elseRegion().end());
-    rewriter.replaceOp(op, newOp.getResult(0));
+    rewriter.replaceOp(op, newOp.getResults());
     return success();
   };
 
