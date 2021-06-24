@@ -24,15 +24,15 @@ module @toplevel {
                 // No result
             },{
                 %x_A = constant @crate_x_9 : () -> none
-                call_indirect %x_A() : () ->
+                call_indirect %x_A() : () -> ()
                 // No result
-            }) : (i1) ->
+            }) : (i1) -> ()
             // No result
         },{
             %x_A = constant @crate_x_9 : () -> none
-            call_indirect %x_A() : () ->
+            call_indirect %x_A() : () -> ()
             // No result
-        }) : (i1) ->
+        }) : (i1) -> ()
         return
     }
 }
