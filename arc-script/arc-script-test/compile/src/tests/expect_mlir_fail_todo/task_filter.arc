@@ -1,3 +1,5 @@
+# RUN: arc-script run --output=MLIR %s | arc-mlir
+
 task Filter(p: fun(i32): bool): ~i32 by i32 -> ~i32 by i32 {
     on event by key => {
         if p(event) {

@@ -1,3 +1,5 @@
+# RUN: arc-script run --output=MLIR %s | arc-mlir
+
 extern type Cell(x: i32) {
     fun set(x: i32): unit;
     fun get(): i32;

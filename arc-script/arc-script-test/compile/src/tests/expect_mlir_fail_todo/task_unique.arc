@@ -1,3 +1,5 @@
+# RUN: arc-script run --output=MLIR %s | arc-mlir
+
 extern type Set() {
     fun contains(x: i32): bool;
     fun add(x: i32): unit;

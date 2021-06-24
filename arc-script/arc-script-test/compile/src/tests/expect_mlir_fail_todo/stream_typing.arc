@@ -1,3 +1,5 @@
+# RUN: arc-script run --output=MLIR %s | arc-mlir
+
 fun test0(x: ~i32 by i32): ~i32 by i32 {
     x | test1
 }

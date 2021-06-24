@@ -1,3 +1,5 @@
+# RUN: arc-script run --output=MLIR %s | arc-mlir
+
 extern fun increment(x: i32): i32;
 
 task Adder(): ~i32 by i32 -> ~i32 by i32 {
