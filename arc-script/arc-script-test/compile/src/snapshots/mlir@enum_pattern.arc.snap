@@ -17,11 +17,11 @@ module @toplevel {
         "arc.if"(%x_2) ({
             %x_3 = arc.enum_access "crate_Opt_Some" in (%x_1 : !arc.enum<crate_Opt_Some : si32, crate_Opt_None : none>) :  si32
             // No value
-            // No result
+            "arc.block.result"() : () -> ()
         },{
             %x_7 = constant @crate_x_6 : () -> none
             call_indirect %x_7() : () -> ()
-            // No result
+            "arc.block.result"() : () -> ()
         }) : (i1) -> ()
         return
     }
