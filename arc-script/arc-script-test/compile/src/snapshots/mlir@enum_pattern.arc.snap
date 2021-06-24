@@ -20,9 +20,9 @@ module @toplevel {
             // No result
         },{
             %x_7 = constant @crate_x_6 : () -> none
-            call_indirect %x_7() : () ->
+            call_indirect %x_7() : () -> ()
             // No result
-        }) : (i1) ->
+        }) : (i1) -> ()
         return
     }
 }

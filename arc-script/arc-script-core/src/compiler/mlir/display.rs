@@ -167,7 +167,7 @@ pretty! {
             Some(var) => {
 		            let ty = node.kind.get_type_specifier(var.t);
 		            if matches!(fmt.types.resolve(ty), hir::repr::TypeKind::Scalar(hir::repr::ScalarKind::Unit)) {
-			              write!(w, "{kind}", kind = node.kind.pretty(fmt))
+			              write!(w, "{kind} ()", kind = node.kind.pretty(fmt))
 			          } else {
 		                write!(w, "{var} = {kind} {ty}",
 			                  var = var.pretty(fmt),
