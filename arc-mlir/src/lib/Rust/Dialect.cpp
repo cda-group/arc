@@ -513,11 +513,14 @@ void RustFieldAccessOp::writeRust(RustPrinterStream &PS) {
 }
 
 void RustIfOp::writeRust(RustPrinterStream &PS) {
-  auto r = getResult();
+  if (getNumResults() != 0) {
+    auto r = getResult(0);
+    PS << "let ";
+    PS.printAsArg(r) << ":" << r.getType() << " =";
+  }
   // No clone is needed here as it will be inserted by the block
   // result.
-  PS << "let ";
-  PS.printAsArg(r) << ":" << r.getType() << " = if " << getOperand() << " {\n";
+  PS << " if " << getOperand() << " {\n";
   for (Operation &operation : thenRegion().front())
     ::writeRust(operation, PS);
   PS << "} else {\n";
@@ -527,7 +530,11 @@ void RustIfOp::writeRust(RustPrinterStream &PS) {
 }
 
 void RustBlockResultOp::writeRust(RustPrinterStream &PS) {
-  auto r = getOperand();
+  if (getNumOperands() == 0) {
+    PS << "// No value\n";
+    return;
+  }
+  auto r = getOperand(0);
   PS << r << "\n";
 }
 

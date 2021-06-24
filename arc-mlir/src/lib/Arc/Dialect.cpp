@@ -396,26 +396,38 @@ LogicalResult IndexTupleOp::customVerify() {
   return mlir::success();
 }
 
-LogicalResult IfOp::customVerify() {
-  // We check that the result types of the blocks match the result
-  // type of the operator.
+LogicalResult ArcBlockResultOp::customVerify() {
+  // Check that our type matches the type of our parent if-op
   auto Op = this->getOperation();
-  auto ResultTy = Op->getResult(0).getType();
-  bool FoundErrors = false;
-  auto CheckResultType = [this, ResultTy, &FoundErrors](ArcBlockResultOp R) {
-    if (R.getOperand().getType() != ResultTy) {
-      FoundErrors = true;
-      emitOpError(
-          "result type does not match the type of the parent: expected ")
-          << ResultTy << " but found " << R.getOperand().getType();
-    }
-  };
+  auto Parent = Op->getParentOp();
 
-  for (unsigned RegionIdx = 0; RegionIdx < Op->getNumRegions(); RegionIdx++)
-    Op->getRegion(RegionIdx).walk(CheckResultType);
-
-  if (FoundErrors)
+  if (Op->getNumOperands() > 1) {
+    emitOpError("cannot return more than one result");
     return mlir::failure();
+  }
+
+  if (Parent->getNumResults() == 0) {
+    if (Op->getNumOperands() != 0) {
+      emitOpError("cannot return a result from an 'arc.if' without result");
+      return mlir::failure();
+    }
+    return mlir::success();
+  }
+
+  if (Op->getOperand(0).getType() != Parent->getResult(0).getType()) {
+    emitOpError("result type does not match the type of the parent: expected ")
+        << Parent->getResult(0).getType() << " but found "
+        << Op->getOperand(0).getType();
+    return mlir::failure();
+  }
+  return mlir::success();
+}
+
+LogicalResult IfOp::customVerify() {
+  if (this->getOperation()->getNumResults() > 1) {
+    emitOpError("cannot return more than one result");
+    return mlir::failure();
+  }
   return mlir::success();
 }
 

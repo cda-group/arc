@@ -39,9 +39,9 @@ module @toplevel {
     %b = constant 3.14 : f32
     %c = constant 0.693 : f64
 
-    // expected-error@+2 {{'arc.if' op result type does not match the type of the parent: expected 'f64' but found 'f32'}}
-    // expected-note@+1 {{see current operation: %0 = "arc.if"(%false)}}
     "arc.if"(%a) ( {
+    // expected-error@+2 {{'arc.block.result' op result type does not match the type of the parent: expected 'f64' but found 'f32'}}
+    // expected-note@+1 {{see current operation:}}
     "arc.block.result"(%b) : (f32) -> ()
     },  {
       "arc.block.result"(%c) : (f64) -> ()
@@ -149,10 +149,9 @@ module @toplevel {
     %a = constant 0 : i1
     %b = constant 3.14 : f32
     %c = constant 0.693 : f64
-
-    // expected-error@+2 {{'arc.if' op result type does not match the type of the parent: expected 'f64' but found 'f32'}}
-    // expected-note@+1 {{see current operation: %0 = "arc.if"}}
     "arc.if"(%a) ( {
+      // expected-error@+2 {{'arc.block.result' op result type does not match the type of the parent: expected 'f64' but found 'f32'}}
+      // expected-note@+1 {{see current operation:}}
       "arc.block.result"(%b) : (f32) -> ()
     },  {
       "arc.block.result"(%c) : (f64) -> ()
@@ -168,13 +167,67 @@ module @toplevel {
     %a = constant 0 : i1
     %b = constant 3.14 : f32
     %c = constant 0.693 : f32
-    // expected-error@+2 {{'arc.if' op result type does not match the type of the parent: expected 'f64' but found 'f32'}}
-    // expected-note@+1 {{see current operation: %0 = "arc.if"}}
     "arc.if"(%a) ( {
+       // expected-error@+2 {{'arc.block.result' op result type does not match the type of the parent: expected 'f64' but found 'f32'}}
+       // expected-note@+1 {{see current operation:}}
       "arc.block.result"(%b) : (f32) -> ()
     },  {
       "arc.block.result"(%c) : (f32) -> ()
     }) : (i1) -> f64
+    return
+  }
+}
+
+// -----
+
+module @toplevel {
+  func @main() {
+    %a = constant 0 : i1
+    %b = constant 3.14 : f32
+    %c = constant 0.693 : f32
+    "arc.if"(%a) ( {
+      // expected-error@+2 {{'arc.block.result' op cannot return a result from an 'arc.if' without result}}
+      // expected-note@+1 {{see current operation: }}
+      "arc.block.result"(%b) : (f32) -> ()
+    },  {
+      "arc.block.result"(%c) : (f32) -> ()
+    }) : (i1) -> ()
+    return
+  }
+}
+
+// -----
+
+module @toplevel {
+  func @main() {
+    %a = constant 0 : i1
+    %b = constant 3.14 : f32
+    %c = constant 0.693 : f32
+    "arc.if"(%a) ( {
+       // expected-error@+2 {{'arc.block.result' op cannot return more than one result}}
+       // expected-note@+1 {{see current operation}}
+      "arc.block.result"(%b, %c) : (f32, f32) -> ()
+    },  {
+      "arc.block.result"(%c) : (f32) -> ()
+    }) : (i1) -> ()
+    return
+  }
+}
+
+// -----
+
+module @toplevel {
+  func @main() {
+    %a = constant 0 : i1
+    %b = constant 3.14 : f32
+    %c = constant 0.693 : f32
+    // expected-error@+2 {{'arc.if' op cannot return more than one result}}
+    // expected-note@+1 {{see current operation}}
+    "arc.if"(%a) ( {
+      "arc.block.result"(%b,%b) : (f32,f32) -> ()
+    },  {
+      "arc.block.result"(%c,%b) : (f32,f32) -> ()
+    }) : (i1) -> (f32,f32)
     return
   }
 }

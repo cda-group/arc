@@ -304,7 +304,9 @@ def ArcBlockResultOp :
       "arc.block.result"(%b) : (f32) -> ()
     ```
   }];
-  let arguments = (ins AnyType:$result);
+  let arguments = (ins Variadic<AnyType>:$result);
+  let extraClassDeclaration = [{ LogicalResult customVerify(); }];
+  let verifier = [{ return customVerify(); }];
 }
 
 def IfOp : Arc_Op<"if", [SingleBlockImplicitTerminator<"ArcBlockResultOp">]> {
@@ -324,7 +326,7 @@ def IfOp : Arc_Op<"if", [SingleBlockImplicitTerminator<"ArcBlockResultOp">]> {
   }];
   let arguments = (ins I1:$condition);
   let regions = (region SizedRegion<1>:$thenRegion, SizedRegion<1>:$elseRegion);
-  let results = (outs AnyType);
+  let results = (outs Variadic<AnyType>:$result);
   let extraClassDeclaration = [{ LogicalResult customVerify(); }];
   let verifier = [{ return customVerify(); }];
   let hasCanonicalizer = 1;
