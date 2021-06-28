@@ -6,7 +6,7 @@ input_file: arc-script-test/compile/src/tests/expect_pass/ifs.arc
 ---
 module @toplevel {
     func @crate_main() -> () {
-        // No value
+        // noop
         return
     }
 

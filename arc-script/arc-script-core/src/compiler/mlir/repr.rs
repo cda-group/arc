@@ -50,8 +50,14 @@ pub(crate) struct Fun {
 
 #[derive(New, Debug, Copy, Clone)]
 pub(crate) struct Var {
-    pub(crate) name: Name,
+    pub(crate) kind: VarKind,
     pub(crate) t: Type,
+}
+
+#[derive(Debug, Copy, Clone)]
+pub(crate) enum VarKind {
+    Ok(Name),
+    Elided,
 }
 
 #[derive(New, Debug)]
@@ -99,7 +105,7 @@ pub(crate) enum SettingKind {
 
 #[derive(Debug, New)]
 pub(crate) struct Op {
-    pub(crate) var: Option<Var>,
+    pub(crate) var: Var,
     pub(crate) kind: OpKind,
     pub(crate) loc: Loc,
 }
@@ -108,7 +114,7 @@ pub(crate) struct Op {
 pub(crate) enum OpKind {
     Access(Var, Name),
     Array(Vec<Var>),
-    BinOp(Type, Var, BinOp, Var),
+    BinOp(Var, BinOp, Var),
     Break(Var),
     Continue,
     Call(Path, Vec<Var>),
@@ -192,16 +198,16 @@ pub(crate) enum ConstKind {
     U32(u32),
     U64(u64),
     Time(Duration),
-    Unit,
+    Noop,
 }
 
 impl OpKind {
     pub(crate) const fn get_type_specifier(&self, t: Type) -> Type {
         match self {
-            OpKind::BinOp(st, _, op, _) => {
+            OpKind::BinOp(l, op, _) => {
                 use BinOpKind::*;
                 match op.kind {
-                    Equ | Geq | Gt | Leq | Lt | Neq => *st,
+                    Equ | Geq | Gt | Leq | Lt | Neq => l.t,
                     _ => t,
                 }
             }

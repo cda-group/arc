@@ -7,7 +7,7 @@ input_file: arc-script-test/compile/src/tests/expect_pass/path.arc
 module @toplevel {
     func @crate_main() -> () {
         %x_0 = arc.constant 1 : si32
-        // No value
+        // noop
         return
     }
 }

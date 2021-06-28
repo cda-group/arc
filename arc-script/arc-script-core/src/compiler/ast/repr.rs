@@ -482,6 +482,7 @@ pub enum ScalarKind {
     U32,
     U64,
     Str,
+    // Eliminated when lowering to HIR
     Unit,
     DateTime,
     Duration,

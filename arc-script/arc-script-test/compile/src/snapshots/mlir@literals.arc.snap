@@ -28,7 +28,7 @@ module @toplevel {
         %x_J = constant -1.7976931348623157e308 : f64
         %x_K = constant true
         %x_L = constant false
-        // No value
+        // noop
         return
     }
 }

@@ -25,6 +25,7 @@ mod expect_pass {
     test!(t16, "src/tests/expect_pass/structs.rs");
     test!(t17, "src/tests/expect_pass/basic_by.rs");
     test!(t18, "src/tests/expect_pass/sort_fields.rs");
+//     test!(t19, "src/tests/expect_pass/unit_fun.rs");
 }
 
 mod expect_mlir_fail_todo {

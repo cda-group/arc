@@ -1,0 +1,46 @@
+---
+source: arc-script-test/compile/src/insta.rs
+expression: s
+input_file: arc-script-test/compile/src/tests/expect_pass/unit_enum.arc
+
+---
+#[allow(non_snake_case)]
+#[allow(unused_must_use)]
+#[allow(dead_code)]
+#[allow(unused_variables)]
+#[allow(unused_imports)]
+#[allow(unused_braces)]
+#[allow(irrefutable_let_patterns)]
+#[allow(clippy::redundant_field_names)]
+#[allow(clippy::unused_unit)]
+#[allow(clippy::double_parens)]
+pub mod arc_script_output {
+    use super::*;
+    use arc_script::arcorn;
+    #[arcorn::rewrite]
+    pub enum Foo {
+        Foo_Bar(()),
+    }
+    pub fn x_5() -> () {
+        let x_4: () = ();
+        (x_4.clone())
+    }
+    pub fn test() -> () {
+        let x_0: () = ();
+        let x_1: Foo = arcorn::enwrap!(Foo_Bar, (x_0.clone()));
+        let x_2: bool = arcorn::is!(Foo_Bar, (x_1.clone()));
+        let x_8: () = if (x_2.clone()) {
+            let x_3: () = arcorn::unwrap!(Foo_Bar, (x_1.clone()));
+            (x_3.clone())
+        } else {
+            let x_6: Box<dyn arcorn::ArcornFn() -> ()> =
+                Box::new(x_5) as Box<dyn arcorn::ArcornFn() -> ()>;
+            let x_7: () = (x_6.clone())();
+            (x_7.clone())
+        };
+        (x_8.clone())
+    }
+}
+pub use arc_script_output::*;
+
+
