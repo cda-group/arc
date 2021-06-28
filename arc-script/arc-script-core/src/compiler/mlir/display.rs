@@ -336,7 +336,7 @@ pretty! {
             }
             mlir::OpKind::Result(v) => {
                 if matches!(fmt.types.resolve(v.t), hir::repr::TypeKind::Scalar(hir::repr::ScalarKind::Unit)) {
-			              write!(w, "// No result")
+			              write!(w, r#""arc.block.result"() : () -> ()"#)
                 } else {
 			              write!(w, r#""arc.block.result"({v}) : ({t}) -> ()"#,
 			                  v = v.pretty(fmt),
