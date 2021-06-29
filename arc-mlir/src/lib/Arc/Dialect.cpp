@@ -287,9 +287,15 @@ LogicalResult EnumCheckOp::customVerify() {
 
 LogicalResult MakeEnumOp::customVerify() {
   auto ResultTy = result().getType().cast<EnumType>();
-  auto SourceTy = value().getType();
+  Type SourceTy = NoneType::get(getContext());
   auto VariantTys = ResultTy.getVariants();
   auto WantedVariant = variant();
+
+  if (values().size() > 1)
+    return emitOpError(": only a single value expected");
+
+  if (values().size())
+    SourceTy = values()[0].getType();
 
   // Check that the given type matches the specified variant.
   for (auto &i : VariantTys)

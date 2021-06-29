@@ -245,13 +245,13 @@ def MakeEnumOp : Arc_Op<"make_enum", [NoSideEffect]> {
     %r = arc.make_enum "a" (%a : i32) : !arc.enum<a : i32, b : f32>
     ```
   }];
-  let arguments = (ins AnyType:$value, StrAttr:$variant);
+  let arguments = (ins Variadic<AnyType>:$values, StrAttr:$variant);
   let results = (outs AnyEnum:$result);
   let extraClassDeclaration = [{ LogicalResult customVerify(); }];
   let verifier = [{ return customVerify(); }];
 
   let assemblyFormat =
-    "`(` $value `:` type($value) `)` `as` $variant attr-dict `:` type($result)";
+    "`(` ($values^ `:` type($values))? `)` `as` $variant attr-dict `:` type($result)";
 }
 
 def MakeTupleOp : Arc_Op<"make_tuple", [NoSideEffect]> {
