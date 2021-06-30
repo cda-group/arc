@@ -55,6 +55,7 @@ protected:
   Type convertFloatType(FloatType type);
   Type convertFunctionType(FunctionType type);
   Type convertIntegerType(IntegerType type);
+  Type convertNoneType(NoneType type);
   Type convertTensorType(RankedTensorType type);
   Type convertTupleType(TupleType type);
   Type convertStreamType(arc::types::StreamType type);
@@ -390,7 +391,10 @@ struct MakeEnumOpLowering : public ConversionPattern {
     MakeEnumOp o = cast<MakeEnumOp>(op);
     Type retTy = TypeConverter.convertType(o.getType());
     std::string variant_str(o.variant());
-    rewriter.replaceOpWithNewOp<rust::RustMakeEnumOp>(op, retTy, o.value(),
+    SmallVector<Value, 1> values;
+    if (o.values().size())
+      values.push_back(o.values()[0]);
+    rewriter.replaceOpWithNewOp<rust::RustMakeEnumOp>(op, retTy, values,
                                                       variant_str);
     return success();
   };
@@ -745,6 +749,7 @@ RustTypeConverter::RustTypeConverter(MLIRContext *ctx)
       [&](arc::types::StreamType type) { return convertStreamType(type); });
   addConversion(
       [&](arc::types::StructType type) { return convertStructType(type); });
+  addConversion([&](NoneType type) { return convertNoneType(type); });
 
   // RustType is legal, so add a pass-through conversion.
   addConversion([](rust::types::RustType type) { return type; });
@@ -795,6 +800,10 @@ Type RustTypeConverter::convertIntegerType(IntegerType type) {
   if (auto t = type.dyn_cast<IntegerType>())
     return rust::types::RustType::getIntegerTy(Dialect, t);
   return emitError(UnknownLoc::get(Ctx), "unsupported type"), Type();
+}
+
+Type RustTypeConverter::convertNoneType(NoneType type) {
+  return rust::types::RustType::getNoneTy(Dialect);
 }
 
 Type RustTypeConverter::convertStreamType(arc::types::StreamType type) {

@@ -61,12 +61,14 @@ public:
   raw_ostream &printAsRust(raw_ostream &os) const;
   StringRef getRustType() const;
   bool isBool() const;
+  bool isUnit() const;
 
   static RustType getFloatTy(RustDialect *dialect);
   static RustType getDoubleTy(RustDialect *dialect);
   static RustType getFloat16Ty(RustDialect *dialect);
   static RustType getBFloat16Ty(RustDialect *dialect);
   static RustType getIntegerTy(RustDialect *dialect, IntegerType ty);
+  static RustType getNoneTy(RustDialect *dialect);
 
   typedef std::pair<mlir::StringAttr, Type> EnumVariantTy;
   typedef std::pair<mlir::StringAttr, Type> StructFieldTy;

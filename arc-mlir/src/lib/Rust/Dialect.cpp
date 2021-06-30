@@ -81,6 +81,7 @@ void RustDialect::initialize() {
   u16Ty = RustType::get(ctx, "u16");
   u32Ty = RustType::get(ctx, "u32");
   u64Ty = RustType::get(ctx, "u64");
+  noneTy = RustType::get(ctx, "unit");
 }
 
 //===----------------------------------------------------------------------===//
@@ -431,7 +432,12 @@ void RustMakeEnumOp::writeRust(RustPrinterStream &PS) {
   RustEnumType et = r.getType().cast<RustEnumType>();
   PS << "let ";
   PS.printAsArg(r) << ":" << et << " = arcorn::enwrap!(" << et
-                   << "::" << variant() << ", " << value() << ");\n";
+                   << "::" << variant() << ", ";
+  if (values().size())
+    PS << values()[0];
+  else
+    PS << "()";
+  PS << ");\n";
 }
 
 void RustMakeStructOp::writeRust(RustPrinterStream &PS) {
@@ -651,6 +657,8 @@ raw_ostream &RustType::printAsRust(raw_ostream &os) const {
 
 bool RustType::isBool() const { return getRustType().equals("bool"); }
 
+bool RustType::isUnit() const { return getRustType().equals("unit"); }
+
 RustType RustType::getFloatTy(RustDialect *dialect) { return dialect->floatTy; }
 
 RustType RustType::getDoubleTy(RustDialect *dialect) {
@@ -664,6 +672,8 @@ RustType RustType::getFloat16Ty(RustDialect *dialect) {
 RustType RustType::getBFloat16Ty(RustDialect *dialect) {
   return dialect->bFloat16Ty;
 }
+
+RustType RustType::getNoneTy(RustDialect *dialect) { return dialect->noneTy; }
 
 RustType RustType::getIntegerTy(RustDialect *dialect, IntegerType ty) {
   switch (ty.getWidth()) {
@@ -807,8 +817,14 @@ RustEnumTypeStorage::printAsRust(RustPrinterStream &ps) const {
   printAsRustNamedType(os) << " {\n";
 
   for (unsigned i = 0; i < enumVariants.size(); i++) {
-    os << "  " << enumVariants[i].first.getValue();
-    os << "(" << getTypeString(enumVariants[i].second) << "),\n";
+    os << "  " << enumVariants[i].first.getValue() << "(";
+    RustType rt = enumVariants[i].second.dyn_cast<RustType>();
+    if ((rt && rt.isUnit()))
+      os << "()";
+    else
+      os << getTypeString(enumVariants[i].second);
+    os << ")"
+       << ",\n";
   }
   os << "\n}\n";
   return ps;
