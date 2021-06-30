@@ -10,6 +10,7 @@ use crate::port::*;
 use crate::executor::*;
 use crate::task::*;
 
+/// A pipeline of tasks.
 pub struct Pipeline<S: SystemHandle> {
     pub(crate) system: S,
     pub(crate) client: Arc<Component<Client>>,
@@ -17,7 +18,8 @@ pub struct Pipeline<S: SystemHandle> {
 }
 
 impl<S: SystemHandle> Pipeline<S> {
-    pub fn finalize(self) {
+    /// Finalizes the construction of a pipeline by starting up all the tasks.
+    pub fn build(self) {
         for starter in self.startup.borrow_mut().drain(..).rev() {
             starter();
         }

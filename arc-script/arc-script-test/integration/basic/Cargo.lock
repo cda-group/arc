@@ -50,14 +50,23 @@ dependencies = [
 name = "arc-script-arcorn"
 version = "0.0.0"
 dependencies = [
- "arcon",
- "arcon_macros",
  "arcorn-macros",
+ "arctime",
  "derive_more",
+ "dyn-clone",
  "half",
+ "match_cfg",
  "paste",
- "prost",
  "shrinkwraprs",
+]
+
+[[package]]
+name = "arc-script-build"
+version = "0.0.0"
+dependencies = [
+ "arc-script-core",
+ "derive_more",
+ "walkdir",
 ]
 
 [[package]]
@@ -66,6 +75,7 @@ version = "0.0.0"
 dependencies = [
  "arc-script-core-macros",
  "arc-script-core-shared",
+ "bitmaps",
  "codespan-reporting",
  "crepe",
  "ena",
@@ -75,18 +85,16 @@ dependencies = [
  "lasso",
  "lexical-core",
  "logos",
- "petgraph",
  "proc-macro2",
  "quote",
  "regex",
  "ryu",
- "salsa",
  "serde",
- "sqlparser",
+ "strum",
  "syn",
  "tempfile",
  "text-size",
- "time 0.2.25",
+ "time 0.2.27",
  "tracing",
  "unzip-n",
 ]
@@ -107,10 +115,12 @@ dependencies = [
  "anyhow",
  "boolinator",
  "cfg-if 1.0.0",
+ "countme",
  "derive_more",
  "educe",
  "fxhash",
  "indexmap",
+ "itertools 0.10.0",
  "linear-map",
  "shrinkwraprs",
 ]
@@ -118,26 +128,13 @@ dependencies = [
 [[package]]
 name = "arc-script-include"
 version = "0.0.0"
-dependencies = [
- "arc-script-include-proc",
-]
 
 [[package]]
-name = "arc-script-include-proc"
-version = "0.0.0"
-dependencies = [
- "arc-script-core",
- "proc-macro-error",
- "proc-macro2",
- "quote",
- "syn",
-]
-
-[[package]]
-name = "arc-script-test-integration-dynamic"
+name = "arc-script-test-integration-dynamic-cached"
 version = "0.0.0"
 dependencies = [
  "arc-script",
+ "arc-script-build",
  "arcon",
  "prost",
 ]
@@ -151,7 +148,7 @@ checksum = "dabe5a181f83789739c194cbe5a897dde195078fac08568d09221fd6137a7ba8"
 [[package]]
 name = "arcon"
 version = "0.1.3"
-source = "git+https://github.com/cda-group/arcon#237c56446d2e72ae29de9d51e112dc1a4bac44ec"
+source = "git+https://github.com/segeljakt/arcon#16d524cb9fc1aef94e7880c486e3f44db5419725"
 dependencies = [
  "arcon_allocator",
  "arcon_error",
@@ -163,7 +160,7 @@ dependencies = [
  "fxhash",
  "hierarchical_hash_wheel_timer",
  "hocon",
- "kompact",
+ "kompact 0.10.1 (git+https://github.com/kompics/kompact.git?branch=master)",
  "num_cpus",
  "prost",
  "prost-types",
@@ -175,7 +172,7 @@ dependencies = [
 [[package]]
 name = "arcon_allocator"
 version = "0.1.0"
-source = "git+https://github.com/cda-group/arcon#237c56446d2e72ae29de9d51e112dc1a4bac44ec"
+source = "git+https://github.com/segeljakt/arcon#16d524cb9fc1aef94e7880c486e3f44db5419725"
 dependencies = [
  "fxhash",
 ]
@@ -183,7 +180,7 @@ dependencies = [
 [[package]]
 name = "arcon_error"
 version = "0.1.1"
-source = "git+https://github.com/cda-group/arcon#237c56446d2e72ae29de9d51e112dc1a4bac44ec"
+source = "git+https://github.com/segeljakt/arcon#16d524cb9fc1aef94e7880c486e3f44db5419725"
 dependencies = [
  "arcon_state",
 ]
@@ -191,7 +188,7 @@ dependencies = [
 [[package]]
 name = "arcon_macros"
 version = "0.1.3"
-source = "git+https://github.com/cda-group/arcon#237c56446d2e72ae29de9d51e112dc1a4bac44ec"
+source = "git+https://github.com/segeljakt/arcon#16d524cb9fc1aef94e7880c486e3f44db5419725"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -201,7 +198,7 @@ dependencies = [
 [[package]]
 name = "arcon_state"
 version = "0.1.1"
-source = "git+https://github.com/cda-group/arcon#237c56446d2e72ae29de9d51e112dc1a4bac44ec"
+source = "git+https://github.com/segeljakt/arcon#16d524cb9fc1aef94e7880c486e3f44db5419725"
 dependencies = [
  "bytes",
  "cc",
@@ -216,10 +213,26 @@ dependencies = [
 name = "arcorn-macros"
 version = "0.0.0"
 dependencies = [
+ "cfg-if 1.0.0",
  "indexmap",
  "proc-macro2",
  "quote",
  "syn",
+]
+
+[[package]]
+name = "arctime"
+version = "0.0.0"
+dependencies = [
+ "arrayvec 0.7.1",
+ "coz",
+ "hierarchical_hash_wheel_timer",
+ "kompact 0.10.1 (git+https://github.com/segeljakt/kompact)",
+ "paste",
+ "rand 0.8.3",
+ "slog",
+ "time 0.2.27",
+ "uuid",
 ]
 
 [[package]]
@@ -254,6 +267,12 @@ name = "arrayvec"
 version = "0.5.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "23b62fc65de8e4e7f52534fb52b0f3ed04746ae267519eef2a83941e8085068b"
+
+[[package]]
+name = "arrayvec"
+version = "0.7.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "be4dc07131ffa69b8072d35f5007352af944213cde02545e2103680baed38fcd"
 
 [[package]]
 name = "as_num"
@@ -465,13 +484,19 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "cf1de2fe8c75bc145a2f577add951f8134889b4795d47466a54a5c846d691693"
 
 [[package]]
+name = "bitmaps"
+version = "3.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "303cec55cd9c5fde944b061b902f142b52a8bb5438cc822481ea1e3ebc96bbcb"
+
+[[package]]
 name = "blake2b_simd"
 version = "0.5.11"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "afa748e348ad3be8263be728124b24a24f268266f6f5d58af9d75f6a40b5c587"
 dependencies = [
  "arrayref",
- "arrayvec",
+ "arrayvec 0.5.2",
  "constant_time_eq",
 ]
 
@@ -585,6 +610,22 @@ name = "constant_time_eq"
 version = "0.1.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "245097e9a4535ee1e3e3931fcfcd55a796a44c643e8596ff6566d68f09b87bbc"
+
+[[package]]
+name = "countme"
+version = "2.0.4"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "328b822bdcba4d4e402be8d9adb6eebf269f969f8eadef977a553ff3c4fbcb58"
+
+[[package]]
+name = "coz"
+version = "0.1.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "cef55b3fe2f5477d59e12bc792e8b3c95a25bd099eadcfae006ecea136de76e2"
+dependencies = [
+ "libc",
+ "once_cell",
+]
 
 [[package]]
 name = "crc32fast"
@@ -795,6 +836,12 @@ name = "doc-comment"
 version = "0.3.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "fea41bba32d969b513997752735605054bc0dfa92b4c56bf1189f2e174be7a10"
+
+[[package]]
+name = "dyn-clone"
+version = "1.0.4"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "ee2626afccd7561a06cf1367e2950c4718ea04565e20fb5029b6c7d8ad09abcf"
 
 [[package]]
 name = "educe"
@@ -1305,8 +1352,43 @@ dependencies = [
  "hierarchical_hash_wheel_timer",
  "hocon",
  "iovec",
- "kompact-actor-derive",
- "kompact-component-derive",
+ "kompact-actor-derive 0.10.1 (git+https://github.com/kompics/kompact.git?branch=master)",
+ "kompact-component-derive 0.10.1 (git+https://github.com/kompics/kompact.git?branch=master)",
+ "log",
+ "mio",
+ "num_cpus",
+ "oncemutex",
+ "owning_ref",
+ "rustc-hash",
+ "rustc_version",
+ "serde",
+ "slog",
+ "slog-async",
+ "slog-term",
+ "synchronoise",
+ "uuid",
+]
+
+[[package]]
+name = "kompact"
+version = "0.10.1"
+source = "git+https://github.com/segeljakt/kompact#bb1d33c9bd406fe356b5288d9dd682f65b54265b"
+dependencies = [
+ "arc-swap",
+ "as_num",
+ "async-std",
+ "bitfields",
+ "bytes",
+ "crossbeam-channel 0.4.4",
+ "crossbeam-queue 0.2.3",
+ "crossbeam-utils 0.7.2",
+ "executors",
+ "futures",
+ "hierarchical_hash_wheel_timer",
+ "hocon",
+ "iovec",
+ "kompact-actor-derive 0.10.1 (git+https://github.com/segeljakt/kompact)",
+ "kompact-component-derive 0.10.1 (git+https://github.com/segeljakt/kompact)",
  "log",
  "mio",
  "num_cpus",
@@ -1333,9 +1415,29 @@ dependencies = [
 ]
 
 [[package]]
+name = "kompact-actor-derive"
+version = "0.10.1"
+source = "git+https://github.com/segeljakt/kompact#bb1d33c9bd406fe356b5288d9dd682f65b54265b"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "syn",
+]
+
+[[package]]
 name = "kompact-component-derive"
 version = "0.10.1"
 source = "git+https://github.com/kompics/kompact.git?branch=master#fa4d4b12340c594068a2e8bf405bd129907c2189"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "syn",
+]
+
+[[package]]
+name = "kompact-component-derive"
+version = "0.10.1"
+source = "git+https://github.com/segeljakt/kompact#bb1d33c9bd406fe356b5288d9dd682f65b54265b"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -1404,7 +1506,7 @@ version = "0.7.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "21f866863575d0e1d654fbeeabdc927292fdf862873dc3c96c6f753357e13374"
 dependencies = [
- "arrayvec",
+ "arrayvec 0.5.2",
  "bitflags",
  "cfg-if 1.0.0",
  "ryu",
@@ -1413,9 +1515,9 @@ dependencies = [
 
 [[package]]
 name = "libc"
-version = "0.2.88"
+version = "0.2.97"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "03b07a082330a35e43f63177cc01689da34fbffa0105e1246cf0311472cac73a"
+checksum = "12b8adadd720df158f4d70dfe7ccc6adb0472d7c55ca83445f6a5ab3e36f8fb6"
 
 [[package]]
 name = "linear-map"
@@ -1465,6 +1567,12 @@ dependencies = [
  "syn",
  "utf8-ranges",
 ]
+
+[[package]]
+name = "match_cfg"
+version = "0.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "ffbee8634e0d45d258acb448e7eaab3fce7a0a467395d4d9f228e3c1f01fb2e4"
 
 [[package]]
 name = "maybe-uninit"
@@ -1566,9 +1674,9 @@ dependencies = [
 
 [[package]]
 name = "num-bigint"
-version = "0.3.2"
+version = "0.3.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "7d0a3d5e207573f948a9e5376662aa743a2ea13f7c50a554d7af443a73fbfeba"
+checksum = "5e9a41747ae4633fce5adffb4d2e81ffc5e89593cb19917f8fb2cc5ff76507bf"
 dependencies = [
  "autocfg",
  "num-integer",
@@ -1623,12 +1731,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "44d11de466f4a3006fe8a5e7ec84e93b79c70cb992ae0aa0eb631ad2df8abfe2"
 
 [[package]]
-name = "oorandom"
-version = "11.1.3"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "0ab1bc2a289d34bd04a330323ac98a1b4bc82c9d9fcb1e66b63caa84da26b575"
-
-[[package]]
 name = "owning_ref"
 version = "0.4.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1670,9 +1772,9 @@ dependencies = [
 
 [[package]]
 name = "paste"
-version = "1.0.4"
+version = "1.0.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c5d65c4d95931acda4498f675e332fcbdc9a06705cd07086c510e9b6009cd1c1"
+checksum = "acbf547ad0c65e31259204bd90935776d1c693cec2f4ff7abb7a1bbbd40dfe58"
 
 [[package]]
 name = "petgraph"
@@ -2013,32 +2115,12 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "71d301d4193d031abdd79ff7e3dd721168a9572ef3fe51a1517aba235bd8f86e"
 
 [[package]]
-name = "salsa"
-version = "0.16.0"
+name = "same-file"
+version = "1.0.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d8fadca2ab5de17acf66d744f4888049ca8f1bb9b8a1ab8afd9d032cc959c5dc"
+checksum = "93fc1dc3aaa9bfed95e02e6eadabb4baf7e3078b0bd1b4d7b6b0b68378900502"
 dependencies = [
- "crossbeam-utils 0.8.3",
- "indexmap",
- "lock_api",
- "log",
- "oorandom",
- "parking_lot",
- "rustc-hash",
- "salsa-macros",
- "smallvec",
-]
-
-[[package]]
-name = "salsa-macros"
-version = "0.16.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "cd3904a4ba0a9d0211816177fd34b04c7095443f8cdacd11175064fe541c8fe2"
-dependencies = [
- "heck",
- "proc-macro2",
- "quote",
- "syn",
+ "winapi-util",
 ]
 
 [[package]]
@@ -2219,15 +2301,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "sqlparser"
-version = "0.8.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "8b929a9577d01ee7cddb820696ed536868d81557d3c14363a7514d71add1d058"
-dependencies = [
- "log",
-]
-
-[[package]]
 name = "stable_deref_trait"
 version = "1.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2310,10 +2383,31 @@ dependencies = [
 ]
 
 [[package]]
-name = "syn"
-version = "1.0.61"
+name = "strum"
+version = "0.20.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ed22b90a0e734a23a7610f4283ac9e5acfb96cbb30dfefa540d66f866f1c09c5"
+checksum = "7318c509b5ba57f18533982607f24070a55d353e90d4cae30c467cdb2ad5ac5c"
+dependencies = [
+ "strum_macros",
+]
+
+[[package]]
+name = "strum_macros"
+version = "0.20.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "ee8bc6b87a5112aeeab1f4a9f7ab634fe6cbefc4850006df31267f4cfb9e3149"
+dependencies = [
+ "heck",
+ "proc-macro2",
+ "quote",
+ "syn",
+]
+
+[[package]]
+name = "syn"
+version = "1.0.60"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "c700597eca8a5a762beb35753ef6b94df201c81cca676604f547495a0d7f0081"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -2428,12 +2522,13 @@ dependencies = [
 
 [[package]]
 name = "time"
-version = "0.2.25"
+version = "0.2.27"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "1195b046942c221454c2539395f85413b33383a067449d78aab2b7b052a142f7"
+checksum = "4752a97f8eebd6854ff91f1c1824cd6160626ac4bd44287f7f4ea2035a02a242"
 dependencies = [
  "const_fn",
  "libc",
+ "rand 0.7.3",
  "standback",
  "stdweb",
  "time-macros",
@@ -2476,7 +2571,7 @@ dependencies = [
 [[package]]
 name = "tracing"
 version = "0.2.0"
-source = "git+https://github.com/tokio-rs/tracing/#fe59f7720342b3d313fe11bd3c7490b0e10aef2c"
+source = "git+https://github.com/tokio-rs/tracing/#ba7a7f782a079bbf062352d6c3ed3441cecaba81"
 dependencies = [
  "cfg-if 1.0.0",
  "pin-project-lite",
@@ -2487,7 +2582,7 @@ dependencies = [
 [[package]]
 name = "tracing-attributes"
 version = "0.2.0"
-source = "git+https://github.com/tokio-rs/tracing/#fe59f7720342b3d313fe11bd3c7490b0e10aef2c"
+source = "git+https://github.com/tokio-rs/tracing/#ba7a7f782a079bbf062352d6c3ed3441cecaba81"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -2497,7 +2592,7 @@ dependencies = [
 [[package]]
 name = "tracing-core"
 version = "0.2.0"
-source = "git+https://github.com/tokio-rs/tracing/#fe59f7720342b3d313fe11bd3c7490b0e10aef2c"
+source = "git+https://github.com/tokio-rs/tracing/#ba7a7f782a079bbf062352d6c3ed3441cecaba81"
 dependencies = [
  "lazy_static",
 ]
@@ -2589,6 +2684,17 @@ name = "waker-fn"
 version = "1.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "9d5b2c62b4012a3e1eca5a7e077d13b3bf498c4073e33ccd58626607748ceeca"
+
+[[package]]
+name = "walkdir"
+version = "2.3.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "777182bc735b6424e1a57516d35ed72cb8019d85c8c9bf536dccb3445c1a2f7d"
+dependencies = [
+ "same-file",
+ "winapi",
+ "winapi-util",
+]
 
 [[package]]
 name = "wasi"

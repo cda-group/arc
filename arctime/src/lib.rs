@@ -5,7 +5,6 @@
 #![allow(unused)]
 #![allow(clippy::type_complexity)]
 
-/// 
 pub mod client;
 pub mod control;
 pub mod epochs;
@@ -21,6 +20,7 @@ pub mod timer;
 pub mod transform;
 pub mod state;
 pub mod channel;
+pub mod datagen;
 
 pub mod prelude {
     pub use crate::client::*;
@@ -34,10 +34,13 @@ pub mod prelude {
     pub use crate::stream::*;
     pub use crate::transform::*;
     pub use crate::state::*;
-    // pub use crate::task;
+    pub use crate::task::*;
+    pub use crate::datagen::*;
     pub use kompact::prelude::*;
     pub use std::any::Any;
     pub use std::any::TypeId;
     pub use std::marker::PhantomData;
     pub use std::sync::Arc;
+    pub use std::time::Duration;
+    pub use time::PrimitiveDateTime as DateTime;
 }

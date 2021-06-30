@@ -1,5 +1,5 @@
 [package]
-name    = "arc-script-test-integration-dynamic-cached"
+name    = "arc-script-test-integration-basic"
 version = "0.0.0"
 authors = ["Klas Segeljakt <klasseg@kth.se>"]
 edition = "2018"

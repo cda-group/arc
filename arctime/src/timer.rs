@@ -11,6 +11,7 @@ use crate::task::Task;
 use std::collections::HashMap;
 use std::time::Duration;
 
+/// An event timer
 pub struct EventTimer<S: DataReqs, I: DataReqs, O: DataReqs, R: DataReqs> {
     pub wheel: QuadWheelWithOverflow<Entry>,
     pub data: HashMap<Uuid, fn(&mut Task<S, I, O, R>)>,
@@ -35,6 +36,7 @@ impl<S: DataReqs, I: DataReqs, O: DataReqs, R: DataReqs> Task<S, I, O, R> {
         self.etimer.wheel.insert(entry).unwrap();
     }
 
+    /// Advance the event timer and execute timers which have expired.
     /// TODO: Handle overflow. Currently assumes Duration <= u32::MAX.
     pub(crate) fn advance(&mut self, mut remaining: Duration) {
         while remaining.as_millis() > 0 {
