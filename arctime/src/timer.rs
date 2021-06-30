@@ -2,10 +2,7 @@
 
 use hierarchical_hash_wheel_timer::wheels::quad_wheel::QuadWheelWithOverflow;
 use hierarchical_hash_wheel_timer::wheels::Skip;
-use hierarchical_hash_wheel_timer::wheels::TimerEntryWithDelay;
-use hierarchical_hash_wheel_timer::TimerError;
 use hierarchical_hash_wheel_timer::UuidOnlyTimerEntry as Entry;
-use time::PrimitiveDateTime as DateTime;
 use uuid::Uuid;
 
 use crate::port::DataReqs;

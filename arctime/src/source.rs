@@ -1,13 +1,9 @@
 // Window operator can forward
 // Watermark emitted after trigger
-use crate::control::*;
 use kompact::prelude::*;
-use std::collections::HashMap;
-use std::sync::Arc;
 use std::time::Duration;
 use time::PrimitiveDateTime as DateTime;
 
-use crate::client::*;
 use crate::pipeline::*;
 use crate::port::*;
 use crate::stream::*;

@@ -5,6 +5,7 @@
 #![allow(unused)]
 #![allow(clippy::type_complexity)]
 
+/// 
 pub mod client;
 pub mod control;
 pub mod epochs;
@@ -23,7 +24,6 @@ pub mod channel;
 
 pub mod prelude {
     pub use crate::client::*;
-    pub use crate::control::*;
     pub use crate::epochs::*;
     pub use crate::executor::*;
     pub use crate::loops::*;

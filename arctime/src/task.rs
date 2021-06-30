@@ -2,22 +2,23 @@
 #![allow(deprecated)]
 #![allow(dead_code)]
 
-use arrayvec::ArrayVec;
-use kompact::component::AbstractComponent;
 use kompact::prelude::*;
-use time::*;
 
-use crate::control::*;
-use crate::pipeline::*;
-use crate::port::*;
+use crate::port::DataReqs;
+use crate::port::StreamPort;
+use crate::port::ControlPort;
+use crate::port::StreamEvent;
+use crate::port::StreamReply;
+use crate::port::ControlEvent;
+use crate::port::ControlReply;
+use crate::port::DateTime;
 use crate::stream::*;
 use crate::timer::*;
 
-use std::collections::HashMap;
-use std::collections::VecDeque;
 use std::sync::Arc;
 use std::time::Duration;
 
+/// A `Role` of a `Task`.
 pub enum Role {
     Producer,
     ProducerConsumer,
@@ -58,7 +59,7 @@ impl<R: DataReqs, S: DataReqs, I: DataReqs, O: DataReqs> Actor for Task<S, I, O,
         Handled::Ok
     }
 
-    fn receive_network(&mut self, msg: NetMessage) -> Handled {
+    fn receive_network(&mut self, _msg: NetMessage) -> Handled {
         todo!()
     }
 }
@@ -83,7 +84,7 @@ impl<S: DataReqs, I: DataReqs, O: DataReqs, R: DataReqs> Task<S, I, O, R> {
         }
     }
 
-    pub(crate) fn set_role(mut self, role: Role) -> Self {
+    pub(crate) fn set_role(self, role: Role) -> Self {
         Self { role, ..self }
     }
 
@@ -114,7 +115,7 @@ impl<S: DataReqs, I: DataReqs, O: DataReqs, R: DataReqs> Task<S, I, O, R> {
     /// Die with a return value
     pub fn exit(&mut self, rval: R) {
         if let Some(promise) = self.promise.take() {
-            promise.reply(rval);
+            promise.reply(rval).expect("reply");
         };
         self.data_oport.trigger(StreamEvent::End);
         self.ctx.suicide();
@@ -165,14 +166,14 @@ impl<S: DataReqs, I: DataReqs, O: DataReqs, R: DataReqs> FnOnce<(Stream<I>,)> fo
             .borrow_mut()
             .push(Box::new(move || client.system().start(&task)));
         let client = stream.client.clone();
-        (Stream::new(client, connector, start_fns))
+        Stream::new(client, connector, start_fns)
     }
 }
 
 pub(crate) fn create_connector<S: DataReqs, I: DataReqs, O: DataReqs, R: DataReqs>(
     producer: Arc<Component<Task<S, I, O, R>>>,
 ) -> Arc<dyn Fn(&mut ProvidedPort<StreamPort<O>>) + 'static> {
-    Arc::new(move |mut iport| {
+    Arc::new(move |iport| {
         producer.on_definition(|producer| {
             iport.connect(producer.data_oport.share());
             producer.data_oport.connect(iport.share());
@@ -211,7 +212,7 @@ impl<S: DataReqs, I: DataReqs, O: DataReqs, R: DataReqs> Require<StreamPort<O>> 
 }
 
 impl<S: DataReqs, I: DataReqs, O: DataReqs, R: DataReqs> Provide<ControlPort> for Task<S, I, O, R> {
-    fn handle(&mut self, event: ControlEvent) -> Handled {
+    fn handle(&mut self, _event: ControlEvent) -> Handled {
         todo!()
     }
 }

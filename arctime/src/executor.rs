@@ -1,15 +1,6 @@
-use kompact::component::AbstractComponent;
-use kompact::config::ConfigEntry;
 use kompact::prelude::*;
 
-use std::cell::RefCell;
-use std::collections::HashMap;
-use std::sync::Arc;
-
-use crate::client::*;
-use crate::control::*;
-use crate::task::*;
-
+/// The core data structure for creating and executing pipelines.
 pub struct Executor {
     pub(crate) system: KompactSystem,
 }

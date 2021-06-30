@@ -1,11 +1,7 @@
 #![allow(clippy::type_complexity)]
-use crate::control::*;
-use kompact::component::AbstractComponent;
-use kompact::config::ConfigEntry;
 use kompact::prelude::*;
 
 use std::cell::RefCell;
-use std::collections::HashMap;
 use std::rc::Rc;
 use std::sync::Arc;
 

@@ -1,16 +1,9 @@
 #![allow(clippy::type_complexity)]
 
-use kompact::component::AbstractComponent;
 use kompact::prelude::*;
 
-use std::cell::RefCell;
-use std::marker::PhantomData;
-use std::rc::Rc;
 use std::sync::Arc;
 
-use crate::client::*;
-use crate::control::*;
-use crate::pipeline::*;
 use crate::port::*;
 use crate::stream::*;
 use crate::task::*;
@@ -26,7 +19,7 @@ impl<I: DataReqs> Stream<I> {
     ///        (s1, s3)
     ///    })
     /// ```
-    pub(crate) fn iterate<O: DataReqs>(
+    pub fn iterate<O: DataReqs>(
         self,
         f: fn(Stream<I>) -> (Stream<I>, Stream<O>),
     ) -> Stream<O> {
@@ -59,10 +52,10 @@ impl<I: DataReqs> Stream<I> {
         output
     }
 
-    fn structured_loop<R: DataReqs, O: DataReqs, const A: usize>(
+    pub fn structured_loop<R: DataReqs, O: DataReqs, const A: usize>(
         self,
-        body: fn(Stream<I>, Stream<R>) -> (Stream<R>, Stream<O>),
-        cond: fn(R, Scope<A>) -> bool,
+        _body: fn(Stream<I>, Stream<R>) -> (Stream<R>, Stream<O>),
+        _cond: fn(R, Scope<A>) -> bool,
     ) -> Stream<O> {
         todo!()
         // Iteration Head => Termination condition
@@ -74,4 +67,4 @@ impl<I: DataReqs> Stream<I> {
     }
 }
 
-struct Scope<const A: usize>([i32; A]);
+pub struct Scope<const A: usize>([i32; A]);

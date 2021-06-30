@@ -2,17 +2,11 @@
 
 use kompact::prelude::*;
 use std::cell::RefCell;
-use std::marker::PhantomData;
 use std::rc::Rc;
 use std::sync::Arc;
 
-use kompact::component::AbstractComponent;
-
 use crate::client::*;
-use crate::control::*;
-use crate::pipeline::*;
 use crate::port::*;
-use crate::task::*;
 
 pub type ErasedFn = Box<dyn FnOnce()>;
 pub type ConnectFn<T> = dyn Fn(&mut ProvidedPort<StreamPort<T>>) + 'static;
