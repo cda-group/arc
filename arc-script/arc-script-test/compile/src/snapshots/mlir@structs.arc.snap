@@ -20,7 +20,7 @@ module @toplevel {
         %x_7 = arc.constant 2 : si32
         %x_8 = arc.make_struct(%x_6, %x_7 : si32, si32) : !arc.struct<b: si32, c: si32>
         %x_9 = call_indirect %x_2(%x_5, %x_8) : (!arc.struct<b: si32, c: si32>, !arc.struct<b: si32, c: si32>) -> !arc.struct<a: !arc.struct<b: si32, c: si32>, d: !arc.struct<b: si32, c: si32>, xyz: si32>
-        // No value
+        // noop
         return
     }
 }

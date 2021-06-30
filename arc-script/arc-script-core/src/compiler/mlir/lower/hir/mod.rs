@@ -58,11 +58,16 @@ lower! {
         mlir::Variant::new(node.path, node.t, node.loc)
     },
     hir::Param => mlir::Var {
-        match &node.kind {
+        let kind = match &node.kind {
             hir::ParamKind::Ignore => todo!(),
-            hir::ParamKind::Ok(x) => mlir::Var::new(*x, node.t),
+            hir::ParamKind::Ok(x) => if node.t.is_unit(ctx.info) {
+                mlir::VarKind::Elided
+            } else {
+                mlir::VarKind::Ok(*x)
+            },
             hir::ParamKind::Err => unreachable!(),
-        }
+        };
+        mlir::Var::new(kind, node.t)
     },
     hir::BinOp => mlir::BinOp {
         let kind = match &node.kind {
@@ -109,7 +114,7 @@ lower! {
             hir::LitKind::Str(_)      => todo!(),
             hir::LitKind::DateTime(_) => todo!(),
             hir::LitKind::Duration(_) => todo!(),
-            hir::LitKind::Unit        => mlir::ConstKind::Unit,
+            hir::LitKind::Unit        => mlir::ConstKind::Noop,
             hir::LitKind::Err         => unreachable!(),
         }
     },
@@ -127,15 +132,22 @@ lower! {
     },
     hir::Stmt => mlir::Op {
         match &node.kind {
-            hir::StmtKind::Assign(i) => mlir::Op::new(Some(i.param.lower(ctx)), i.expr.lower(ctx), node.loc),
+            hir::StmtKind::Assign(a) => {
+                mlir::Op::new(a.param.lower(ctx), a.expr.lower(ctx), node.loc)
+            },
         }
     },
     hir::Var => mlir::Var {
-        if let hir::VarKind::Ok(x, _) = &node.kind {
-            mlir::Var::new(*x, node.t)
+        let kind = if let hir::VarKind::Ok(x, _) = &node.kind {
+            if node.t.is_unit(ctx.info) {
+                mlir::VarKind::Elided
+            } else {
+                mlir::VarKind::Ok(*x)
+            }
         } else {
             unreachable!()
-        }
+        };
+        mlir::Var::new(kind, node.t)
     },
     hir::Expr => mlir::OpKind {
         match ctx.hir.exprs.resolve(node.id) {
@@ -152,7 +164,7 @@ lower! {
             hir::ExprKind::Invoke(v, x, vs)  => mlir::OpKind::CallMethod(v.lower(ctx), *x, vs.lower(ctx)),
             hir::ExprKind::Select(_e, _es)   => todo!(),
             hir::ExprKind::Lit(l)            => mlir::OpKind::Const(l.lower(ctx)),
-            hir::ExprKind::BinOp(v0, op, v1) => mlir::OpKind::BinOp(v0.t, v0.lower(ctx), op.lower(ctx), v1.lower(ctx)),
+            hir::ExprKind::BinOp(v0, op, v1) => mlir::OpKind::BinOp(v0.lower(ctx), op.lower(ctx), v1.lower(ctx)),
             hir::ExprKind::UnOp(op, v)       => mlir::OpKind::UnOp(mlir::UnOp::new(op.kind.lower(ctx)), v.lower(ctx)) ,
             hir::ExprKind::Access(v, x)      => mlir::OpKind::Access(v.lower(ctx), *x),
             hir::ExprKind::Project(v, i)     => mlir::OpKind::Project(v.lower(ctx), i.id),
@@ -195,7 +207,7 @@ impl hir::Block {
     ) -> mlir::Block {
         let mut ops = self.stmts.lower(ctx);
         ops.push(mlir::Op::new(
-            None,
+            mlir::Var::new(mlir::VarKind::Elided, self.var.t),
             terminator(self.var.lower(ctx)),
             self.var.loc,
         ));

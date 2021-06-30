@@ -168,7 +168,7 @@ module @toplevel {
         %x___Z = arc.xor %x_8, %x_8 : ui64
         %x___a = math.powf %x_9, %x_J : f32
         %x___b = math.powf %x_A, %x_K : f64
-        // No value
+        // noop
         return
     }
 }

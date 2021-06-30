@@ -6,30 +6,30 @@ input_file: arc-script-test/compile/src/tests/expect_pass/enum_pattern_nested.ar
 ---
 module @toplevel {
     func @crate_x_9() -> () {
-        // No value
+        // noop
         return
     }
 
     func @crate_main() -> () {
         %x_0 = arc.constant 5 : si32
-        %x_1 = arc.make_enum (%x_0 : si32) as "crate_Baz_Some" :  !arc.enum<crate_Baz_Some : si32, crate_Baz_None : none>
-        %x_2 = arc.make_enum (%x_1 : !arc.enum<crate_Baz_Some : si32, crate_Baz_None : none>) as "crate_Foo_Bar" :  !arc.enum<crate_Foo_Bar : !arc.enum<crate_Baz_Some : si32, crate_Baz_None : none>, crate_Foo_None : none>
-        %x_3 = arc.enum_check (%x_2 : !arc.enum<crate_Foo_Bar : !arc.enum<crate_Baz_Some : si32, crate_Baz_None : none>, crate_Foo_None : none>) is "crate_Foo_Bar" :  i1
+        %x_1 = arc.make_enum (%x_0 : si32) as "crate_Baz_Some" : !arc.enum<crate_Baz_Some : si32, crate_Baz_None : none>
+        %x_2 = arc.make_enum (%x_1 : !arc.enum<crate_Baz_Some : si32, crate_Baz_None : none>) as "crate_Foo_Bar" : !arc.enum<crate_Foo_Bar : !arc.enum<crate_Baz_Some : si32, crate_Baz_None : none>, crate_Foo_None : none>
+        %x_3 = arc.enum_check (%x_2 : !arc.enum<crate_Foo_Bar : !arc.enum<crate_Baz_Some : si32, crate_Baz_None : none>, crate_Foo_None : none>) is "crate_Foo_Bar" : i1
         "arc.if"(%x_3) ({
-            %x_4 = arc.enum_access "crate_Foo_Bar" in (%x_2 : !arc.enum<crate_Foo_Bar : !arc.enum<crate_Baz_Some : si32, crate_Baz_None : none>, crate_Foo_None : none>) :  !arc.enum<crate_Baz_Some : si32, crate_Baz_None : none>
-            %x_5 = arc.enum_check (%x_4 : !arc.enum<crate_Baz_Some : si32, crate_Baz_None : none>) is "crate_Baz_Some" :  i1
+            %x_4 = arc.enum_access "crate_Foo_Bar" in (%x_2 : !arc.enum<crate_Foo_Bar : !arc.enum<crate_Baz_Some : si32, crate_Baz_None : none>, crate_Foo_None : none>) : !arc.enum<crate_Baz_Some : si32, crate_Baz_None : none>
+            %x_5 = arc.enum_check (%x_4 : !arc.enum<crate_Baz_Some : si32, crate_Baz_None : none>) is "crate_Baz_Some" : i1
             "arc.if"(%x_5) ({
-                %x_6 = arc.enum_access "crate_Baz_Some" in (%x_4 : !arc.enum<crate_Baz_Some : si32, crate_Baz_None : none>) :  si32
-                // No value
+                %x_6 = arc.enum_access "crate_Baz_Some" in (%x_4 : !arc.enum<crate_Baz_Some : si32, crate_Baz_None : none>) : si32
+                // noop
                 "arc.block.result"() : () -> ()
             },{
-                %x_A = constant @crate_x_9 : () -> none
+                %x_A = constant @crate_x_9 : () -> ()
                 call_indirect %x_A() : () -> ()
                 "arc.block.result"() : () -> ()
             }) : (i1) -> ()
             "arc.block.result"() : () -> ()
         },{
-            %x_A = constant @crate_x_9 : () -> none
+            %x_A = constant @crate_x_9 : () -> ()
             call_indirect %x_A() : () -> ()
             "arc.block.result"() : () -> ()
         }) : (i1) -> ()

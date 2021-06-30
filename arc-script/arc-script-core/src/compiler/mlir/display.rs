@@ -106,27 +106,16 @@ pretty! {
         mlir::ItemKind::Task(item)  => write!(w, "{}", item.pretty(fmt)),
     },
     mlir::Fun => {
-	      match fmt.types.resolve(node.t) {
-	          hir::repr::TypeKind::Scalar(hir::repr::ScalarKind::Unit) =>
-		            write!(w, "func @{id}({params}) -> () {body}\n",
-		                id = node.path.pretty(fmt),
-		                params = node.params.iter().map_pretty(
-			                  |x, w| write!(w, "{}: {}", x.pretty(fmt), x.t.pretty(fmt)),
-			                  ", "
-		                ),
-		                body = node.body.pretty(&fmt.indent()),
-		            ),
-	          _ =>
-		            write!(w, "func @{id}({params}) -> {ty} {body}\n",
-		                id = node.path.pretty(fmt),
-		                params = node.params.iter().map_pretty(
-			                  |x, w| write!(w, "{}: {}", x.pretty(fmt), x.t.pretty(fmt)),
-			                  ", "
-		                ),
-		                ty = node.t.pretty(fmt),
-		                body = node.body.pretty(&fmt.indent()),
-		            ),
-	      }
+		    write!(w, "func @{id}({params}) -> {t} {body}\n",
+		        id = node.path.pretty(fmt),
+		        params = node
+                .params
+                .iter()
+                .filter(|p| matches!(&p.kind, mlir::VarKind::Ok(_)))
+                .map_pretty(|p, w| write!(w, "{}: {}", p.pretty(fmt), p.t.pretty(fmt)), ", "),
+		        t = node.t.pretty(fmt),
+		        body = node.body.pretty(&fmt.indent()),
+		    )
     },
     mlir::Name => write!(w, "{}", fmt.names.resolve(node)),
     mlir::Task => write!(w, "task {name}({params}) ({iports}) -> ({oports}) {{{items}{s0}{s0}}}",
@@ -134,10 +123,10 @@ pretty! {
         params = node.params.iter().all_pretty(", ", fmt),
         iports = node.iports.pretty(fmt),
         oports = node.oports.pretty(fmt),
-        items = node.items.iter().map_pretty(
-            |i, w| write!(w, "{s0}{s0}{}", i.pretty(fmt.indent()), s0 = fmt.indent()),
-            ""
-        ),
+        items = node
+            .items
+            .iter()
+            .map_pretty(|i, w| write!(w, "{s0}{s0}{}", i.pretty(fmt.indent()), s0 = fmt.indent()), ""),
         s0 = fmt,
     ),
     mlir::Path => write!(w, "{}", node.id.pretty(fmt)),
@@ -149,98 +138,93 @@ pretty! {
         write!(w, "{}", kind.name.pretty(fmt))
     },
     mlir::Enum => write!(w, "!arc.enum<{}>", node.variants.iter().all_pretty(", ", fmt)),
-    mlir::Variant => write!(w, "{} : {}", node.path.pretty(fmt), node.t.pretty(fmt)),
-    mlir::Var => write!(w, "%{}", node.name.pretty(fmt)),
+    mlir::Variant => {
+        if node.t.is_unit(fmt.ctx.info) {
+            write!(w, "{} : none", node.path.pretty(fmt))
+        } else {
+            write!(w, "{} : {}", node.path.pretty(fmt), node.t.pretty(fmt))
+        }
+    },
+    mlir::VarKind => match node {
+        mlir::VarKind::Ok(x) => write!(w, "%{}", x.pretty(fmt)),
+        mlir::VarKind::Elided => write!(w, "/* elided */"),
+    },
+    mlir::Var => write!(w, "{}", node.kind.pretty(fmt)),
+    Vec<mlir::Var> => write!(w, "{}",
+        node.iter()
+            .filter(|v| matches!(&v.kind, mlir::VarKind::Ok(_)))
+            .all_pretty(", ", fmt)
+    ),
     mlir::Op => {
         use mlir::ConstKind::*;
         use mlir::OpKind::*;
-        match node.var {
-            Some(var) if matches!(node.kind, Const(Bool(_))) => {
-                write!(w, "{var} = {kind}",
-                    var = var.pretty(fmt),
-                    kind = node.kind.pretty(fmt),
-                )
-            }
-	          Some(var) if matches!(node.kind, Const(Unit))=> {
-		            write!(w, "// No value")
-	          }
-            Some(var) => {
-		            let ty = node.kind.get_type_specifier(var.t);
-		            if matches!(fmt.types.resolve(ty), hir::repr::TypeKind::Scalar(hir::repr::ScalarKind::Unit)) {
-			              write!(w, "{kind} ()", kind = node.kind.pretty(fmt))
-			          } else {
-		                write!(w, "{var} = {kind} {ty}",
-			                  var = var.pretty(fmt),
-			                  kind = node.kind.pretty(fmt),
-			                  ty = ty.pretty(fmt),
-			              )
-		            }
-            }
-            None => write!(w, "{kind}", kind = node.kind.pretty(fmt)),
+        if let mlir::VarKind::Ok(x) = &node.var.kind {
+            write!(w, "{} = ", node.var.pretty(fmt))?;
         }
-    },
-    mlir::OpKind => {
         use mlir::BinOpKind::*;
-        match node {
+        let rt = node.var.t.pretty(fmt);
+        match &node.kind {
             mlir::OpKind::Const(c) => match c {
                 mlir::ConstKind::Bool(true)  => write!(w, r#"constant true"#),
                 mlir::ConstKind::Bool(false) => write!(w, r#"constant false"#),
-                mlir::ConstKind::Bf16(l)     => write!(w, r#"constant {} :"#, ryu::Buffer::new().format(l.to_f32())),
-                mlir::ConstKind::F16(l)      => write!(w, r#"constant {} :"#, ryu::Buffer::new().format(l.to_f32())),
-                mlir::ConstKind::F32(l)      => write!(w, r#"constant {} :"#, ryu::Buffer::new().format(*l)),
-                mlir::ConstKind::F64(l)      => write!(w, r#"constant {} :"#, ryu::Buffer::new().format(*l)),
-                mlir::ConstKind::I8(v)       => write!(w, r#"arc.constant {} :"#, v),
-                mlir::ConstKind::I16(v)      => write!(w, r#"arc.constant {} :"#, v),
-                mlir::ConstKind::I32(v)      => write!(w, r#"arc.constant {} :"#, v),
-                mlir::ConstKind::I64(v)      => write!(w, r#"arc.constant {} :"#, v),
-                mlir::ConstKind::U8(v)       => write!(w, r#"arc.constant {} :"#, v),
-                mlir::ConstKind::U16(v)      => write!(w, r#"arc.constant {} :"#, v),
-                mlir::ConstKind::U32(v)      => write!(w, r#"arc.constant {} :"#, v),
-                mlir::ConstKind::U64(v)      => write!(w, r#"arc.constant {} :"#, v),
-                mlir::ConstKind::Fun(x)      => write!(w, r#"constant @{} :"#, x.pretty(fmt)),
+                mlir::ConstKind::Bf16(l)     => write!(w, r#"constant {} : {}"#, ryu::Buffer::new().format(l.to_f32()), rt),
+                mlir::ConstKind::F16(l)      => write!(w, r#"constant {} : {}"#, ryu::Buffer::new().format(l.to_f32()), rt),
+                mlir::ConstKind::F32(l)      => write!(w, r#"constant {} : {}"#, ryu::Buffer::new().format(*l), rt),
+                mlir::ConstKind::F64(l)      => write!(w, r#"constant {} : {}"#, ryu::Buffer::new().format(*l), rt),
+                mlir::ConstKind::I8(v)       => write!(w, r#"arc.constant {} : {}"#, v, rt),
+                mlir::ConstKind::I16(v)      => write!(w, r#"arc.constant {} : {}"#, v, rt),
+                mlir::ConstKind::I32(v)      => write!(w, r#"arc.constant {} : {}"#, v, rt),
+                mlir::ConstKind::I64(v)      => write!(w, r#"arc.constant {} : {}"#, v, rt),
+                mlir::ConstKind::U8(v)       => write!(w, r#"arc.constant {} : {}"#, v, rt),
+                mlir::ConstKind::U16(v)      => write!(w, r#"arc.constant {} : {}"#, v, rt),
+                mlir::ConstKind::U32(v)      => write!(w, r#"arc.constant {} : {}"#, v, rt),
+                mlir::ConstKind::U64(v)      => write!(w, r#"arc.constant {} : {}"#, v, rt),
+                mlir::ConstKind::Fun(x)      => write!(w, r#"constant @{} : {}"#, x.pretty(fmt), rt),
                 mlir::ConstKind::Char(_)     => crate::todo!(),
                 mlir::ConstKind::Time(_)     => crate::todo!(),
-                mlir::ConstKind::Unit        => write!(w, r#"none"#),
+                mlir::ConstKind::Noop        => write!(w, r#"// noop"#),
             },
-            mlir::OpKind::BinOp(t, l, op, r) => {
+            mlir::OpKind::BinOp(l, op, r) => {
+                let t = l.t;
                 let l = l.pretty(fmt);
                 let r = r.pretty(fmt);
                 let info = fmt.info;
+                let lt = t.pretty(fmt);
                 use hir::ScalarKind::*;
                 use hir::TypeKind::*;
                 match &op.kind {
-                    Add  if t.is_int(info)   => write!(w, r#"arc.addi {l}, {r} :"#, l = l, r = r),
-                    Add  if t.is_float(info) => write!(w, r#"addf {l}, {r} :"#, l = l, r = r),
-                    Sub  if t.is_int(info)   => write!(w, r#"arc.subi {l}, {r} :"#, l = l, r = r),
-                    Sub  if t.is_float(info) => write!(w, r#"subf {l}, {r} :"#, l = l, r = r),
-                    Mul  if t.is_int(info)   => write!(w, r#"arc.muli {l}, {r} :"#, l = l, r = r),
-                    Mul  if t.is_float(info) => write!(w, r#"mulf {l}, {r} :"#, l = l, r = r),
-                    Div  if t.is_int(info)   => write!(w, r#"arc.divi {l}, {r} :"#, l = l, r = r),
-                    Div  if t.is_float(info) => write!(w, r#"divf {l}, {r} :"#, l = l, r = r),
-                    Mod  if t.is_int(info)   => write!(w, r#"arc.remi {l}, {r} :"#, l = l, r = r),
-                    Mod  if t.is_float(info) => write!(w, r#"remf {l}, {r} :"#, l = l, r = r),
-                    Pow  if t.is_int(info)   => write!(w, r#"arc.powi {l}, {r} :"#, l = l, r = r),
-                    Pow  if t.is_float(info) => write!(w, r#"math.powf {l}, {r} :"#, l = l, r = r),
-                    Lt   if t.is_int(info)   => write!(w, r#"arc.cmpi lt, {l}, {r} :"#, l = l, r = r),
-                    Lt   if t.is_float(info) => write!(w, r#"cmpf olt, {l}, {r} :"#, l = l, r = r),
-                    Leq  if t.is_int(info)   => write!(w, r#"arc.cmpi le, {l}, {r} :"#, l = l, r = r),
-                    Leq  if t.is_float(info) => write!(w, r#"cmpf ole, {l}, {r} :"#, l = l, r = r),
-                    Gt   if t.is_int(info)   => write!(w, r#"arc.cmpi gt, {l}, {r} :"#, l = l, r = r),
-                    Gt   if t.is_float(info) => write!(w, r#"cmpf ogt, {l}, {r} :"#, l = l, r = r),
-                    Geq  if t.is_int(info)   => write!(w, r#"arc.cmpi ge, {l}, {r} :"#, l = l, r = r),
-                    Geq  if t.is_float(info) => write!(w, r#"cmpf oge, {l}, {r} :"#, l = l, r = r),
-                    Equ  if t.is_int(info)   => write!(w, r#"arc.cmpi eq, {l}, {r} :"#, l = l, r = r),
-                    Equ  if t.is_float(info) => write!(w, r#"cmpf oeq, {l}, {r} :"#, l = l, r = r),
-                    Equ  if t.is_bool(info)  => write!(w, r#"cmpi eq, {l}, {r} :"#, l = l, r = r),
-                    Neq  if t.is_int(info)   => write!(w, r#"arc.cmpi ne, {l}, {r} :"#, l = l, r = r),
-                    Neq  if t.is_float(info) => write!(w, r#"cmpf one, {l}, {r} :"#, l = l, r = r),
-                    Neq  if t.is_bool(info)  => write!(w, r#"cmpi ne, {l}, {r} :"#, l = l, r = r),
-                    And  if t.is_bool(info)  => write!(w, r#"and {l}, {r} :"#, l = l, r = r),
-                    Or   if t.is_bool(info)  => write!(w, r#"or {l}, {r} :"#, l = l, r = r),
-                    Xor  if t.is_bool(info)  => write!(w, r#"xor {l}, {r} :"#, l = l, r = r),
-                    Band if t.is_int(info)   => write!(w, r#"arc.and {l}, {r} :"#, l = l, r = r),
-                    Bor  if t.is_int(info)   => write!(w, r#"arc.or {l}, {r} :"#, l = l, r = r),
-                    Bxor if t.is_int(info)   => write!(w, r#"arc.xor {l}, {r} :"#, l = l, r = r),
+                    Add  if t.is_int(info)   => write!(w, r#"arc.addi {}, {} : {}"#, l, r, lt),
+                    Add  if t.is_float(info) => write!(w, r#"addf {}, {} : {}"#, l, r, lt),
+                    Sub  if t.is_int(info)   => write!(w, r#"arc.subi {}, {} : {}"#, l, r, lt),
+                    Sub  if t.is_float(info) => write!(w, r#"subf {}, {} : {}"#, l, r, lt),
+                    Mul  if t.is_int(info)   => write!(w, r#"arc.muli {}, {} : {}"#, l, r, lt),
+                    Mul  if t.is_float(info) => write!(w, r#"mulf {}, {} : {}"#, l, r, lt),
+                    Div  if t.is_int(info)   => write!(w, r#"arc.divi {}, {} : {}"#, l, r, lt),
+                    Div  if t.is_float(info) => write!(w, r#"divf {}, {} : {}"#, l, r, lt),
+                    Mod  if t.is_int(info)   => write!(w, r#"arc.remi {}, {} : {}"#, l, r, lt),
+                    Mod  if t.is_float(info) => write!(w, r#"remf {}, {} : {}"#, l, r, lt),
+                    Pow  if t.is_int(info)   => write!(w, r#"arc.powi {}, {} : {}"#, l, r, lt),
+                    Pow  if t.is_float(info) => write!(w, r#"math.powf {}, {} : {}"#, l, r, lt),
+                    Lt   if t.is_int(info)   => write!(w, r#"arc.cmpi lt, {}, {} : {}"#, l, r, lt),
+                    Lt   if t.is_float(info) => write!(w, r#"cmpf olt, {}, {} : {}"#, l, r, lt),
+                    Leq  if t.is_int(info)   => write!(w, r#"arc.cmpi le, {}, {} : {}"#, l, r, lt),
+                    Leq  if t.is_float(info) => write!(w, r#"cmpf ole, {}, {} : {}"#, l, r, lt),
+                    Gt   if t.is_int(info)   => write!(w, r#"arc.cmpi gt, {}, {} : {}"#, l, r, lt),
+                    Gt   if t.is_float(info) => write!(w, r#"cmpf ogt, {}, {} : {}"#, l, r, lt),
+                    Geq  if t.is_int(info)   => write!(w, r#"arc.cmpi ge, {}, {} : {}"#, l, r, lt),
+                    Geq  if t.is_float(info) => write!(w, r#"cmpf oge, {}, {} : {}"#, l, r, lt),
+                    Equ  if t.is_int(info)   => write!(w, r#"arc.cmpi eq, {}, {} : {}"#, l, r, lt),
+                    Equ  if t.is_float(info) => write!(w, r#"cmpf oeq, {}, {} : {}"#, l, r, lt),
+                    Equ  if t.is_bool(info)  => write!(w, r#"cmpi eq, {}, {} : {}"#, l, r, lt),
+                    Neq  if t.is_int(info)   => write!(w, r#"arc.cmpi ne, {}, {} : {}"#, l, r, lt),
+                    Neq  if t.is_float(info) => write!(w, r#"cmpf one, {}, {} : {}"#, l, r, lt),
+                    Neq  if t.is_bool(info)  => write!(w, r#"cmpi ne, {}, {} : {}"#, l, r, lt),
+                    And  if t.is_bool(info)  => write!(w, r#"and {}, {} : {}"#, l, r, lt),
+                    Or   if t.is_bool(info)  => write!(w, r#"or {}, {} : {}"#, l, r, lt),
+                    Xor  if t.is_bool(info)  => write!(w, r#"xor {}, {} : {}"#, l, r, lt),
+                    Band if t.is_int(info)   => write!(w, r#"arc.and {}, {} : {}"#, l, r, lt),
+                    Bor  if t.is_int(info)   => write!(w, r#"arc.or {}, {} : {}"#, l, r, lt),
+                    Bxor if t.is_int(info)   => write!(w, r#"arc.xor {}, {} : {}"#, l, r, lt),
                     op => {
                         let kind = info.types.resolve(*t);
                         unreachable!("Undefined op: {:?} for {:?}", op, kind)
@@ -250,92 +234,95 @@ pretty! {
             mlir::OpKind::Array(_) => todo!(),
             mlir::OpKind::Struct(xfs) => write!(
                 w,
-                r#"arc.make_struct({xfs} : {ts}) :"#,
+                r#"arc.make_struct({xfs} : {ts}) : {rt}"#,
                 xfs = xfs.values().all_pretty(", ", fmt),
                 ts = xfs
                     .values()
                     .map_pretty(|v, w| write!(w, "{}", v.t.pretty(fmt)), ", "),
+                rt = rt,
             ),
 	          // %s = arc.make_enum (%a : i32) as "a" : !arc.enum<a : i32>
-            mlir::OpKind::Enwrap(x0, x1) => write!(
-                w,
-                r#"arc.make_enum ({} : {}) as "{}" : "#,
-                x1.pretty(fmt),
-		            x1.t.pretty(fmt),
-                x0.pretty(fmt),
-		        ),
+            mlir::OpKind::Enwrap(x, v) => if v.t.is_unit(fmt.ctx.info) {
+                write!(w, r#"arc.make_enum () as "{}" : {}"#, x.pretty(fmt), rt)
+            } else {
+                write!(w, r#"arc.make_enum ({} : {}) as "{}" : {}"#, v.pretty(fmt), v.t.pretty(fmt), x.pretty(fmt), rt)
+            },
 	          // %r = arc.enum_access "b" in (%e : !arc.enum<a : i32, b : f32>) : f32
-            mlir::OpKind::Unwrap(x0, x1) => write!(
-                w,
-                r#"arc.enum_access "{}" in ({} : {}) : "#,
-                x0.pretty(fmt),
-                x1.pretty(fmt),
-                x1.t.pretty(fmt),
-            ),
+            mlir::OpKind::Unwrap(x, v) => if node.var.t.is_unit(fmt.ctx.info) {
+                write!(w, r#"arc.enum_access "{}" in ({} : {}) : none"#, x.pretty(fmt), v.pretty(fmt), v.t.pretty(fmt))
+            } else {
+                write!(w, r#"arc.enum_access "{}" in ({} : {}) : {}"#, x.pretty(fmt), v.pretty(fmt), v.t.pretty(fmt), rt)
+            },
 		        // %r = arc.enum_check (%e : !arc.enum<a : i32, b : f32>) is "a" : i1
-            mlir::OpKind::Is(x0, x1) => write!(
+            mlir::OpKind::Is(x, v) => write!(
                 w,
-                r#"arc.enum_check ({} : {}) is "{}" : "#,
-                x1.pretty(fmt),
-                x1.t.pretty(fmt),
-                x0.pretty(fmt),
+                r#"arc.enum_check ({} : {}) is "{}" : {}"#,
+                v.pretty(fmt),
+                v.t.pretty(fmt),
+                x.pretty(fmt),
+                rt,
             ),
             mlir::OpKind::Tuple(vs) => write!(
                 w,
-                r#""arc.make_tuple"({vs}) : ({ts}) ->"#,
+                r#""arc.make_tuple"({vs}) : ({ts}) -> {rt}"#,
                 vs = vs.all_pretty(", ", fmt),
-                ts = vs.map_pretty(|v, w| write!(w, "{}", v.t.pretty(fmt)), ", ")
+                ts = vs.map_pretty(|v, w| write!(w, "{}", v.t.pretty(fmt)), ", "),
+                rt = rt,
             ),
             mlir::OpKind::UnOp(_, _) => crate::todo!(),
             mlir::OpKind::If(v, b0, b1) => write!(
                 w,
-                r#""arc.if"({v}) ({b0},{b1}) : (i1) ->"#,
+                r#""arc.if"({v}) ({b0},{b1}) : (i1) -> {rt}"#,
                 v = v.pretty(fmt),
                 b0 = b0.pretty(fmt.indent()),
                 b1 = b1.pretty(fmt.indent()),
+                rt = rt,
             ),
             mlir::OpKind::Emit(_) => crate::todo!(),
             mlir::OpKind::Loop(_) => crate::todo!(),
             mlir::OpKind::Call(v, vs) => write!(
                 w,
-                r#"call @{callee}({args}) : ({tys}) ->"#,
+                r#"call @{callee}({args}) : ({ts}) -> {rt}"#,
                 callee = v.pretty(fmt),
-                args = vs.iter().all_pretty(", ", fmt),
-                tys = vs
+                args = vs.pretty(fmt),
+                ts = vs
                     .iter()
-                    .map_pretty(|v, w| write!(w, "{}", v.t.pretty(fmt)), ", ")
+                    .filter(|v| !v.t.is_unit(fmt.ctx.info))
+                    .map_pretty(|v, w| write!(w, "{}", v.t.pretty(fmt)), ", "),
+                rt = rt,
             ),
             mlir::OpKind::CallIndirect(v, vs) => write!(
                 w,
-                r#"call_indirect {callee}({args}) : ({tys}) ->"#,
+                r#"call_indirect {callee}({args}) : ({ts}) -> {rt}"#,
                 callee = v.pretty(fmt),
-                args = vs.iter().all_pretty(", ", fmt),
-                tys = vs
+                args = vs.pretty(fmt),
+                ts = vs
                     .iter()
+                    .filter(|v| !v.t.is_unit(fmt.ctx.info))
                     .map_pretty(|v, w| write!(w, "{}", v.t.pretty(fmt)), ", "),
+                rt = rt,
             ),
             mlir::OpKind::CallMethod(v, x, vs) => write!(
                 w,
-                r#"call_method {object} @{method}({args}) : ({tys}) ->"#,
+                r#"call_method {object} @{method}({args}) : ({ts}) -> {rt}"#,
                 object = v.pretty(fmt),
                 method = x.pretty(fmt),
-                args = vs.iter().all_pretty(", ", fmt),
-                tys = vs
+                args = vs.pretty(fmt),
+                ts = vs
                     .iter()
+                    .filter(|v| !v.t.is_unit(fmt.ctx.info))
                     .map_pretty(|v, w| write!(w, "{}", v.t.pretty(fmt)), ", "),
+                rt = rt,
             ),
             mlir::OpKind::Return(v) => {
-                if matches!(fmt.types.resolve(v.t), hir::repr::TypeKind::Scalar(hir::repr::ScalarKind::Unit)) {
+                if v.t.is_unit(fmt.ctx.info) {
 			              write!(w, "return")
                 } else {
-			             write!(w, r#"return {v} : {t}"#,
-                        v = v.pretty(fmt),
-                        t = v.t.pretty(fmt),
-                    ) 
+			             write!(w, r#"return {} : {}"#, v.pretty(fmt), rt) 
 		            }
             }
             mlir::OpKind::Result(v) => {
-                if matches!(fmt.types.resolve(v.t), hir::repr::TypeKind::Scalar(hir::repr::ScalarKind::Unit)) {
+                if v.t.is_unit(fmt.ctx.info) {
 			              write!(w, r#""arc.block.result"() : () -> ()"#)
                 } else {
 			              write!(w, r#""arc.block.result"({v}) : ({t}) -> ()"#,
@@ -346,17 +333,19 @@ pretty! {
             },
             mlir::OpKind::Access(v, i) => write!(
                 w,
-                r#""arc.struct_access"({v}) {{ field = "{i}" }} : ({t}) ->"#,
+                r#""arc.struct_access"({v}) {{ field = "{i}" }} : ({t}) -> {rt}"#,
                 v = v.pretty(fmt),
                 i = i.pretty(fmt),
-                t = v.t.pretty(fmt)
+                t = v.t.pretty(fmt),
+                rt = rt,
             ),
             mlir::OpKind::Project(v, i) => write!(
                 w,
-                r#""arc.index_tuple"({v}) {{ index = {i} }} : ({t}) ->"#,
+                r#""arc.index_tuple"({v}) {{ index = {i} }} : ({t}) -> {rt}"#,
                 v = v.pretty(fmt),
                 t = v.t.pretty(fmt),
                 i = i,
+                rt = rt,
             ),
             mlir::OpKind::Break(_) => crate::todo!(),
             mlir::OpKind::Continue => crate::todo!(),
@@ -382,7 +371,7 @@ pretty! {
             mlir::ScalarKind::F32      => write!(w, "f32"),
             mlir::ScalarKind::F64      => write!(w, "f64"),
             mlir::ScalarKind::Bool     => write!(w, "i1"),
-            mlir::ScalarKind::Unit     => write!(w, "none"),
+            mlir::ScalarKind::Unit     => write!(w, "()"), // Unit becomes Void
             mlir::ScalarKind::Size     => write!(w, "ui64"),
             mlir::ScalarKind::DateTime => write!(w, "ui64"),
             mlir::ScalarKind::Duration => write!(w, "ui64"),
@@ -396,11 +385,16 @@ pretty! {
             mlir::ItemKind::Fun(_)     => unreachable!(),
             mlir::ItemKind::Task(_)    => unreachable!(),
         }
-        mlir::TypeKind::Array(_ty, _sh) => crate::todo!(),
-        mlir::TypeKind::Stream(ty)      => write!(w, "arc.stream<{}>", ty.pretty(fmt)),
-        mlir::TypeKind::Tuple(tys)      => write!(w, "tuple<{}>", tys.iter().all_pretty(", ", fmt)),
-        mlir::TypeKind::Fun(tys, ty)    => write!(w, "({}) -> {}", tys.iter().all_pretty(", ", fmt), ty.pretty(fmt)),
-        mlir::TypeKind::Unknown(_)      => unreachable!(),
-        mlir::TypeKind::Err             => unreachable!(),
+        mlir::TypeKind::Array(_t, _sh) => crate::todo!(),
+        mlir::TypeKind::Stream(t)      => write!(w, "arc.stream<{}>", t.pretty(fmt)),
+        mlir::TypeKind::Tuple(ts)      => write!(w, "tuple<{}>", ts.iter().all_pretty(", ", fmt)),
+        mlir::TypeKind::Fun(ts, t)     => write!(w, "({}) -> {}",
+            ts.iter()
+              .filter(|t| !t.is_unit(fmt.ctx.info))
+              .all_pretty(", ", fmt),
+            t.pretty(fmt)
+        ),
+        mlir::TypeKind::Unknown(_)     => unreachable!(),
+        mlir::TypeKind::Err            => unreachable!(),
     },
 }

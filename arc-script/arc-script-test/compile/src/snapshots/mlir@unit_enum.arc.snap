@@ -1,0 +1,28 @@
+---
+source: arc-script-test/compile/src/insta.rs
+expression: s
+input_file: arc-script-test/compile/src/tests/expect_pass/unit_enum.arc
+
+---
+module @toplevel {
+    func @crate_x_5() -> () {
+        // noop
+        return
+    }
+
+    func @crate_test() -> () {
+        // noop
+        %x_1 = arc.make_enum () as "crate_Foo_Bar" : !arc.enum<crate_Foo_Bar : none>
+        %x_2 = arc.enum_check (%x_1 : !arc.enum<crate_Foo_Bar : none>) is "crate_Foo_Bar" : i1
+        "arc.if"(%x_2) ({
+            arc.enum_access "crate_Foo_Bar" in (%x_1 : !arc.enum<crate_Foo_Bar : none>) : none
+            "arc.block.result"() : () -> ()
+        },{
+            %x_6 = constant @crate_x_5 : () -> ()
+            call_indirect %x_6() : () -> ()
+            "arc.block.result"() : () -> ()
+        }) : (i1) -> ()
+        return
+    }
+}
+
