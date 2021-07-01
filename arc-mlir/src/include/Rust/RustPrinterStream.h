@@ -262,6 +262,22 @@ public:
       rt.printAsRust(s);
       return s;
     }
+    if (types::RustEnumType rt = ty.dyn_cast<types::RustEnumType>()) {
+      this->print(rt);
+      return s;
+    }
+    if (types::RustStructType rt = ty.dyn_cast<types::RustStructType>()) {
+      this->print(rt);
+      return s;
+    }
+    if (types::RustTensorType rt = ty.dyn_cast<types::RustTensorType>()) {
+      rt.printAsRust(*this);
+      return s;
+    }
+    if (types::RustTupleType rt = ty.dyn_cast<types::RustTupleType>()) {
+      rt.printAsRust(*this);
+      return s;
+    }
     s << "unhandled type";
     return s;
   }
