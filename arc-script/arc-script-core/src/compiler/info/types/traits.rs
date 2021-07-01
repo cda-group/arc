@@ -81,7 +81,7 @@ impl TypeId {
     /// Returns `true` if type is a float, else `false`.
     pub(crate) fn is_float(self, info: &Info) -> bool {
         if let Scalar(kind) = info.types.resolve(self) {
-            matches!(kind, F16 | Bf16 | F32 | F64)
+            matches!(kind, F32 | F64)
         } else {
             false
         }

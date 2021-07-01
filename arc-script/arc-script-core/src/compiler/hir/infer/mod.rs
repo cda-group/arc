@@ -278,8 +278,6 @@ infer! {
                     hir::LitKind::U16(_)      => U16,
                     hir::LitKind::U32(_)      => U32,
                     hir::LitKind::U64(_)      => U64,
-                    hir::LitKind::Bf16(_)     => Bf16,
-                    hir::LitKind::F16(_)      => F16,
                     hir::LitKind::F32(_)      => F32,
                     hir::LitKind::F64(_)      => F64,
                     hir::LitKind::Bool(_)     => Bool,

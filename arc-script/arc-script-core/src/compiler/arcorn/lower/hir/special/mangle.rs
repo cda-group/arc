@@ -99,8 +99,6 @@ mangle! {
         let s = match node {
             hir::ScalarKind::Bool      => "bool",
             hir::ScalarKind::Char      => "char",
-            hir::ScalarKind::Bf16      => "bf16",
-            hir::ScalarKind::F16       => "f16",
             hir::ScalarKind::F32       => "f32",
             hir::ScalarKind::F64       => "f64",
             hir::ScalarKind::I8        => "i8",

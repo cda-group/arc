@@ -246,8 +246,6 @@ pretty! {
         hir::LitKind::U16(l)      => write!(w, "{}u16", l),
         hir::LitKind::U32(l)      => write!(w, "{}u32", l),
         hir::LitKind::U64(l)      => write!(w, "{}u64", l),
-        hir::LitKind::Bf16(l)     => write!(w, "{}bf16", l),
-        hir::LitKind::F16(l)      => write!(w, "{}f16", l),
         hir::LitKind::F32(l)      => write!(w, "{}f32", ryu::Buffer::new().format(*l)),
         hir::LitKind::F64(l)      => write!(w, "{}", ryu::Buffer::new().format(*l)),
         hir::LitKind::Bool(l)     => write!(w, "{}", l),
@@ -284,8 +282,6 @@ pretty! {
     hir::ScalarKind => match node {
         hir::ScalarKind::Bool     => write!(w, "bool"),
         hir::ScalarKind::Char     => write!(w, "char"),
-        hir::ScalarKind::Bf16     => write!(w, "bf16"),
-        hir::ScalarKind::F16      => write!(w, "f16"),
         hir::ScalarKind::F32      => write!(w, "f32"),
         hir::ScalarKind::F64      => write!(w, "f64"),
         hir::ScalarKind::I8       => write!(w, "i8"),

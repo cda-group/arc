@@ -167,8 +167,6 @@ pretty! {
             mlir::OpKind::Const(c) => match c {
                 mlir::ConstKind::Bool(true)  => write!(w, r#"constant true"#),
                 mlir::ConstKind::Bool(false) => write!(w, r#"constant false"#),
-                mlir::ConstKind::Bf16(l)     => write!(w, r#"constant {} : {}"#, ryu::Buffer::new().format(l.to_f32()), rt),
-                mlir::ConstKind::F16(l)      => write!(w, r#"constant {} : {}"#, ryu::Buffer::new().format(l.to_f32()), rt),
                 mlir::ConstKind::F32(l)      => write!(w, r#"constant {} : {}"#, ryu::Buffer::new().format(*l), rt),
                 mlir::ConstKind::F64(l)      => write!(w, r#"constant {} : {}"#, ryu::Buffer::new().format(*l), rt),
                 mlir::ConstKind::I8(v)       => write!(w, r#"arc.constant {} : {}"#, v, rt),
@@ -366,8 +364,6 @@ pretty! {
             mlir::ScalarKind::U16      => write!(w, "ui16"),
             mlir::ScalarKind::U32      => write!(w, "ui32"),
             mlir::ScalarKind::U64      => write!(w, "ui64"),
-            mlir::ScalarKind::Bf16     => write!(w, "bf16"),
-            mlir::ScalarKind::F16      => write!(w, "f16"),
             mlir::ScalarKind::F32      => write!(w, "f32"),
             mlir::ScalarKind::F64      => write!(w, "f64"),
             mlir::ScalarKind::Bool     => write!(w, "i1"),

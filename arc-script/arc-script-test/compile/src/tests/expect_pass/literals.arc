@@ -34,18 +34,6 @@ fun test() {
 # As MLIR does not support hex floating point values we only check the
 # f32 to 6 significant digits and f64 to 15.
 
-  val pos_bf16: bf16 = 3.38953139e38bf16;
-#CHECK: {{%[^ ]+}} = constant {{(3.3895314e38)|(3.389530e\+?38)}} : bf16
-
-  val neg_bf16: bf16 = -1.175494351e38bf16;
-#CHECK: {{%[^ ]+}} = constant -{{(1.1763668e38)|(1.176370e\+?38)}} : bf16
-
-  val pos_f16: f16 = 6.5504e4f16;
-#CHECK: {{%[^ ]+}} = constant {{(6.5504[0]+e\+04)|(65504.0)}} : f16
-
-  val neg_f16: f16 = -6.550e4f16;
-#CHECK: {{%[^ ]+}} = constant -{{(6.5504[0]+[Ee]\+?0?4)|(65504.0)}} : f16
-
   val pos_f32: f32 = 3.4028234664e38f32;
 #CHECK: {{%[^ ]+}} = constant 3.40282{{[0-9]+[Ee]\+?}}38 : f32
 

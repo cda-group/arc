@@ -17,17 +17,13 @@ fun test(): unit {
     val x_9: u16 = 65535u16;
     val x_A: u32 = 4294967295u32;
     val x_B: u64 = 18446744073709551615u64;
-    val x_C: bf16 = 338953140000000000000000000000000000000bf16;
-    val x_D: bf16 = -117636680000000000000000000000000000000bf16;
-    val x_E: f16 = 65504f16;
-    val x_F: f16 = -65504f16;
-    val x_G: f32 = 3.4028235e38f32;
-    val x_H: f32 = -3.4028235e38f32;
-    val x_I: f64 = 1.7976931348623157e308;
-    val x_J: f64 = -1.7976931348623157e308;
-    val x_K: bool = true;
-    val x_L: bool = false;
-    val x_M: unit = unit;
-    x_M
+    val x_C: f32 = 3.4028235e38f32;
+    val x_D: f32 = -3.4028235e38f32;
+    val x_E: f64 = 1.7976931348623157e308;
+    val x_F: f64 = -1.7976931348623157e308;
+    val x_G: bool = true;
+    val x_H: bool = false;
+    val x_I: unit = unit;
+    x_I
 }
 
