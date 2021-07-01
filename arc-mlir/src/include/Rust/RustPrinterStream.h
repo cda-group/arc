@@ -56,7 +56,7 @@ class RustPrinterStream {
   DenseMap<Value, int> Value2ID;
 
   // Tracking of the named types which has already been output.
-  DenseSet<unsigned> OutputNamedTypes;
+  DenseSet<unsigned> OutputEnumTypes, OutputStructTypes;
 
   std::map<std::string, std::string> CrateDependencies;
   std::map<std::string, std::string> CrateDirectives;
@@ -213,8 +213,8 @@ public:
     unsigned id = t.getEnumTypeId();
 
     // Only output an enum definition once
-    if (OutputNamedTypes.find(id) == OutputNamedTypes.end()) {
-      OutputNamedTypes.insert(id);
+    if (OutputEnumTypes.find(id) == OutputEnumTypes.end()) {
+      OutputEnumTypes.insert(id);
       t.printAsRust(*this);
     }
   }
@@ -223,8 +223,8 @@ public:
     unsigned id = t.getStructTypeId();
 
     // Only output a struct definition once
-    if (OutputNamedTypes.find(id) == OutputNamedTypes.end()) {
-      OutputNamedTypes.insert(id);
+    if (OutputStructTypes.find(id) == OutputStructTypes.end()) {
+      OutputStructTypes.insert(id);
       t.printAsRust(*this);
     }
   }
