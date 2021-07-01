@@ -61,6 +61,7 @@ fi
 
 # Create dummy wrapper .rs-file which includes the generated test-case
 
+echo '#![feature(unboxed_closures)]' > ${MAIN}
 arc-mlir -arc-to-rust -inline-rust ${MLIR_FILE} "$@" >> ${MAIN}
 
 cat >> ${MAIN} <<EOF
