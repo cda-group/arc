@@ -39,7 +39,6 @@ dependencies = [
  "codespan-reporting",
  "crepe",
  "ena",
- "half",
  "lalrpop",
  "lalrpop-util",
  "lasso",
@@ -389,15 +388,6 @@ dependencies = [
  "cfg-if",
  "libc",
  "wasi 0.10.0+wasi-snapshot-preview1",
-]
-
-[[package]]
-name = "half"
-version = "1.7.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "62aca2aba2d62b4a7f5b33f3712cb1b0692779a56fb510499d5c0aa594daeaf3"
-dependencies = [
- "num-traits",
 ]
 
 [[package]]

@@ -12,8 +12,6 @@ use arc_script_core_shared::New;
 use arc_script_core_shared::OrdMap;
 use arc_script_core_shared::VecMap;
 
-use half::bf16;
-use half::f16;
 use time::Duration;
 
 /// MLIR is a Multi-Level Intermediate Representation which is the final
@@ -184,8 +182,6 @@ pub(crate) enum UnOpKind {
 pub(crate) enum ConstKind {
     Bool(bool),
     Char(char),
-    Bf16(bf16),
-    F16(f16),
     F32(f32),
     F64(f64),
     Fun(Path),

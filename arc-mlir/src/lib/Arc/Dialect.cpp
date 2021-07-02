@@ -808,8 +808,7 @@ namespace types {
 //===----------------------------------------------------------------------===//
 
 bool isValueType(Type type) {
-  if (type.isa<BFloat16Type>() || type.isa<Float16Type>() ||
-      type.isa<Float32Type>() || type.isa<Float64Type>() ||
+  if (type.isa<Float32Type>() || type.isa<Float64Type>() ||
       type.isa<IntegerType>() || type.isa<VectorType>() ||
       type.isa<RankedTensorType>() || type.isa<UnrankedTensorType>() ||
       type.isa<UnrankedMemRefType>() || type.isa<MemRefType>() ||

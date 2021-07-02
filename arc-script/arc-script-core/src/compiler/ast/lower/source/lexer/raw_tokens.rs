@@ -141,8 +141,6 @@ pub(crate) enum LogosToken {
 // Primitive Types
 //=============================================================================
     #[token("bool")] Bool,
-    #[token("bf16")] Bf16,
-    #[token("f16")] F16,
     #[token("f32")] F32,
     #[token("f64")] F64,
     #[token("i8")] I8,
@@ -167,8 +165,6 @@ pub(crate) enum LogosToken {
     #[regex(r"-?((?&bin)|(?&dec)|(?&hex)|(?&oct))u16")]              LitU16,
     #[regex(r"-?((?&bin)|(?&dec)|(?&hex)|(?&oct))u32")]              LitU32,
     #[regex(r"-?((?&bin)|(?&dec)|(?&hex)|(?&oct))u64")]              LitU64,
-    #[regex(r"-?(((?&dec)\.(?&dec)(?&exp)?)|((?&dec)(?&exp)))bf16")] LitBf16,
-    #[regex(r"-?(((?&dec)\.(?&dec)(?&exp)?)|((?&dec)(?&exp)))f16")]  LitF16,
     #[regex(r"-?(((?&dec)\.(?&dec)(?&exp)?)|((?&dec)(?&exp)))f32")]  LitF32,
     #[regex(r"-?(((?&dec)\.(?&dec)(?&exp)?)|((?&dec)(?&exp)))")]     LitF64,
     #[token("true")]         LitTrue,

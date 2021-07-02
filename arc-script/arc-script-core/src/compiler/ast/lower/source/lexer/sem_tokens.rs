@@ -1,7 +1,5 @@
 use crate::compiler::info::names::{NameId, NameInterner};
 
-use half::bf16;
-use half::f16;
 use time::Duration;
 use time::PrimitiveDateTime as DateTime;
 
@@ -132,8 +130,6 @@ pub enum Token {
 // Primitive Types
 //=============================================================================
     Bool,
-    Bf16,
-    F16,
     F32,
     F64,
     I8,
@@ -158,8 +154,6 @@ pub enum Token {
     LitU16(u16),
     LitU32(u32),
     LitU64(u64),
-    LitBf16(bf16),
-    LitF16(f16),
     LitF32(f32),
     LitF64(f64),
     LitBool(bool),

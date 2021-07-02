@@ -105,8 +105,6 @@ lower! {
             hir::LitKind::U16(v)      => mlir::ConstKind::U16(*v),
             hir::LitKind::U32(v)      => mlir::ConstKind::U32(*v),
             hir::LitKind::U64(v)      => mlir::ConstKind::U64(*v),
-            hir::LitKind::Bf16(v)     => mlir::ConstKind::Bf16(*v),
-            hir::LitKind::F16(v)      => mlir::ConstKind::F16(*v),
             hir::LitKind::F32(v)      => mlir::ConstKind::F32(*v),
             hir::LitKind::F64(v)      => mlir::ConstKind::F64(*v),
             hir::LitKind::Bool(v)     => mlir::ConstKind::Bool(*v),

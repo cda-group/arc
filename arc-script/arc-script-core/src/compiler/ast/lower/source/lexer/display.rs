@@ -157,8 +157,6 @@ impl<'i> Display for Pretty<'i, Token, State<'_>> {
 // Primitive Types
 //=============================================================================
             Token::Bool       => write!(f, "bool"),
-            Token::Bf16       => write!(f, "bf16"),
-            Token::F16        => write!(f, "f16"),
             Token::F32        => write!(f, "f32"),
             Token::F64        => write!(f, "f64"),
             Token::I8         => write!(f, "i8"),
@@ -183,8 +181,6 @@ impl<'i> Display for Pretty<'i, Token, State<'_>> {
             Token::LitU16(v)  => write!(f, "{}", v),
             Token::LitU32(v)  => write!(f, "{}", v),
             Token::LitU64(v)  => write!(f, "{}", v),
-            Token::LitBf16(v) => write!(f, "{}", v),
-            Token::LitF16(v)  => write!(f, "{}", v),
             Token::LitF32(v)  => write!(f, "{}", v),
             Token::LitF64(v)  => write!(f, "{}", v),
             Token::LitBool(v) => write!(f, "{}", v),

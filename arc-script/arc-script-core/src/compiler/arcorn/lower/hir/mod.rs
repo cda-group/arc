@@ -481,8 +481,6 @@ lower! {
         match node {
             hir::ScalarKind::Bool     => rust!(bool),
             hir::ScalarKind::Char     => rust!(char),
-            hir::ScalarKind::Bf16     => rust!(arcorn::bf16),
-            hir::ScalarKind::F16      => rust!(arcorn::f16),
             hir::ScalarKind::F32      => rust!(f32),
             hir::ScalarKind::F64      => rust!(f64),
             hir::ScalarKind::I8       => rust!(i8),
@@ -529,16 +527,6 @@ lower! {
         match node {
             hir::LitKind::Bool(v)      => rust!(#v),
             hir::LitKind::Char(v)      => rust!(#v),
-            hir::LitKind::Bf16(v) => match v.to_f32() {
-                v if v.is_nan()        => rust!(arcorn::bf16::NAN),
-                v if v.is_infinite()   => rust!(arcorn::bf16::INFINITE),
-                v                      => rust!(arcorn::bf16::from_f32(#v)),
-            },
-            hir::LitKind::F16(v) => match v.to_f32() {
-                v if v.is_nan()        => rust!(arcorn::f16::NAN),
-                v if v.is_infinite()   => rust!(arcorn::f16::INFINITE),
-                v                      => rust!(arcorn::f16::from_f32(#v)),
-            },
             hir::LitKind::F32(v) => match v {
                 v if v.is_nan()        => rust!(f32::NAN),
                 v if v.is_infinite()   => rust!(f32::INFINITE),

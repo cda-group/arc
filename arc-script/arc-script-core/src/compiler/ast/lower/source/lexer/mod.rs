@@ -23,8 +23,6 @@ use crate::compiler::info::names::NameInterner;
 
 use arc_script_core_shared::New;
 
-use half::bf16;
-use half::f16;
 use lexical_core::parse_format;
 use lexical_core::NumberFormat;
 use logos::Lexer as LogosLexer;
@@ -298,8 +296,6 @@ impl<'i> Lexer<'i> {
 // Primitive Types
 //=============================================================================
                 LogosToken::Bool       => Token::Bool,
-                LogosToken::Bf16       => Token::Bf16,
-                LogosToken::F16        => Token::F16,
                 LogosToken::F32        => Token::F32,
                 LogosToken::F64        => Token::F64,
                 LogosToken::I8         => Token::I8,
@@ -323,8 +319,6 @@ impl<'i> Lexer<'i> {
                 LogosToken::LitU16          => Token::LitU16(self.lit(0, 3)?),
                 LogosToken::LitU32          => Token::LitU32(self.lit(0, 3)?),
                 LogosToken::LitU64          => Token::LitU64(self.lit(0, 3)?),
-                LogosToken::LitBf16         => Token::LitBf16(self.lit::<f32>(0, 4).map(bf16::from_f32)?),
-                LogosToken::LitF16          => Token::LitF16(self.lit::<f32>(0, 3).map(f16::from_f32)?),
                 LogosToken::LitF32          => Token::LitF32(self.lit(0, 3)?),
                 LogosToken::LitF64          => Token::LitF64(self.lit(0, 0)?),
                 LogosToken::LitTrue         => Token::LitBool(true),

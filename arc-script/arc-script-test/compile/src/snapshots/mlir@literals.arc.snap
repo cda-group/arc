@@ -18,16 +18,12 @@ module @toplevel {
         %x_9 = arc.constant 65535 : ui16
         %x_A = arc.constant 4294967295 : ui32
         %x_B = arc.constant 18446744073709551615 : ui64
-        %x_C = constant 3.3895314e38 : bf16
-        %x_D = constant -1.1763668e38 : bf16
-        %x_E = constant 65504.0 : f16
-        %x_F = constant -65504.0 : f16
-        %x_G = constant 3.4028235e38 : f32
-        %x_H = constant -3.4028235e38 : f32
-        %x_I = constant 1.7976931348623157e308 : f64
-        %x_J = constant -1.7976931348623157e308 : f64
-        %x_K = constant true
-        %x_L = constant false
+        %x_C = constant 3.4028235e38 : f32
+        %x_D = constant -3.4028235e38 : f32
+        %x_E = constant 1.7976931348623157e308 : f64
+        %x_F = constant -1.7976931348623157e308 : f64
+        %x_G = constant true
+        %x_H = constant false
         // noop
         return
     }

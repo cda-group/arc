@@ -19,8 +19,6 @@ use arc_script_core_shared::New;
 use arc_script_core_shared::OrdMap;
 use arc_script_core_shared::Shrinkwrap;
 
-use half::bf16;
-use half::f16;
 use std::fmt::Debug;
 use time::Duration;
 use time::PrimitiveDateTime as DateTime;
@@ -302,8 +300,6 @@ pub enum ExprKind {
 pub enum LitKind {
     Bool(bool),
     Char(char),
-    Bf16(bf16),
-    F16(f16),
     F32(f32),
     F64(f64),
     I8(i8),
@@ -469,8 +465,6 @@ pub enum TypeKind {
 pub enum ScalarKind {
     Bool,
     Char,
-    Bf16,
-    F16,
     F32,
     F64,
     I8,

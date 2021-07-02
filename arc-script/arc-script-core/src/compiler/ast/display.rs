@@ -289,8 +289,6 @@ pretty! {
             ast::LitKind::U16(l)      => write!(w, "{}u16", l),
             ast::LitKind::U32(l)      => write!(w, "{}u32", l),
             ast::LitKind::U64(l)      => write!(w, "{}u64", l),
-            ast::LitKind::Bf16(l)     => write!(w, "{}bf16", l),
-            ast::LitKind::F16(l)      => write!(w, "{}f16", l),
             ast::LitKind::F32(l)      => write!(w, "{}f32", ryu::Buffer::new().format(*l)),
             ast::LitKind::F64(l)      => write!(w, "{}", ryu::Buffer::new().format(*l)),
             ast::LitKind::Bool(l)     => write!(w, "{}", l),
@@ -341,8 +339,6 @@ pretty! {
     ast::ScalarKind => match node {
         ast::ScalarKind::Bool      => write!(w, "bool"),
         ast::ScalarKind::Char      => write!(w, "char"),
-        ast::ScalarKind::Bf16      => write!(w, "bf16"),
-        ast::ScalarKind::F16       => write!(w, "f16"),
         ast::ScalarKind::F32       => write!(w, "f32"),
         ast::ScalarKind::F64       => write!(w, "f64"),
         ast::ScalarKind::I8        => write!(w, "i8"),

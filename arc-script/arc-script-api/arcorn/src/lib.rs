@@ -42,8 +42,6 @@ pub use arcorn_macros::rewrite;
 pub use derive_more;
 
 pub use paste::paste;
-pub use half::bf16;
-pub use half::f16;
 
 /// Functions must be cloneable
 use dyn_clone::DynClone;

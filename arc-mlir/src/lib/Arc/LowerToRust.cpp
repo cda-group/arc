@@ -157,11 +157,6 @@ private:
     APFloat f = attr.getValue();
     unsigned width = ty.getIntOrFloatBitWidth();
 
-    Type f16 = rust::types::RustType::getFloat16Ty(
-        Ctx->getOrLoadDialect<rust::RustDialect>());
-    Type bf16 = rust::types::RustType::getBFloat16Ty(
-        Ctx->getOrLoadDialect<rust::RustDialect>());
-
     std::string rustTyName = "f" + Twine(width).str();
 
     if (f.isInfinity()) {
@@ -190,16 +185,6 @@ private:
 
     Twine str = "hexf" + Twine(width) + "!(\"" + hex + "\")";
     std::string cst = str.str();
-
-    // The 16 bit floats are printed as f32 hex and converted using
-    // arcorn.
-    if (rustTy == f16 || rustTy == bf16) {
-      cst = "arcorn::";
-      cst += (rustTy == bf16) ? "b" : "";
-      cst += "f16::from_f32(hexf32!(\"";
-      cst += hex;
-      cst += "\"))";
-    }
 
     return returnResult(op, rustTy, cst, rewriter);
   }
@@ -774,10 +759,6 @@ Type RustTypeConverter::convertFloatType(FloatType type) {
     return rust::types::RustType::getFloatTy(Dialect);
   if (type.isa<Float64Type>())
     return rust::types::RustType::getDoubleTy(Dialect);
-  if (type.isa<Float16Type>())
-    return rust::types::RustType::getFloat16Ty(Dialect);
-  if (type.isa<BFloat16Type>())
-    return rust::types::RustType::getBFloat16Ty(Dialect);
   if (type.isa<IntegerType>())
     return rust::types::RustType::getIntegerTy(Dialect,
                                                type.cast<IntegerType>());
