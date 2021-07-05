@@ -122,7 +122,7 @@ struct StdConstantOpLowering : public ConversionPattern {
 
   StdConstantOpLowering(MLIRContext *ctx, RustTypeConverter &typeConverter)
       : ConversionPattern(mlir::ConstantOp::getOperationName(), 1, ctx),
-        TypeConverter(typeConverter), Ctx(ctx) {}
+        TypeConverter(typeConverter) {}
 
   LogicalResult
   matchAndRewrite(Operation *op, ArrayRef<Value> operands,
@@ -141,7 +141,6 @@ struct StdConstantOpLowering : public ConversionPattern {
 
 private:
   RustTypeConverter &TypeConverter;
-  MLIRContext *Ctx;
 
   LogicalResult returnResult(Operation *op, Type ty, StringRef value,
                              ConversionPatternRewriter &rewriter) const {

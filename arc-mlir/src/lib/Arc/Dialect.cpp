@@ -35,6 +35,7 @@ using namespace mlir;
 using namespace arc;
 using namespace types;
 
+#include "Arc/ArcOpsDialect.cpp.inc"
 #include "Arc/ArcOpsEnums.cpp.inc"
 
 //===----------------------------------------------------------------------===//
