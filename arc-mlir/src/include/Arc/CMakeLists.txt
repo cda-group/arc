@@ -9,6 +9,7 @@ set(TBLGEN_INCDIRS "-I${CMAKE_CURRENT_SOURCE_DIR}/../../../llvm-project/mlir/inc
 mlir_tablegen(ArcOps.h.inc -gen-op-decls)
 mlir_tablegen(ArcOps.cpp.inc -gen-op-defs)
 mlir_tablegen(ArcOpsDialect.h.inc -gen-dialect-decls)
+mlir_tablegen(ArcOpsDialect.cpp.inc -gen-dialect-defs)
 mlir_tablegen(ArcOpsEnums.h.inc -gen-enum-decls)
 mlir_tablegen(ArcOpsEnums.cpp.inc -gen-enum-defs)
 

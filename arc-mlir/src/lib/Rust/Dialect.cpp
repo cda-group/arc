@@ -31,6 +31,8 @@
 #include <mlir/IR/BuiltinTypes.h>
 #include <mlir/IR/DialectImplementation.h>
 
+#include "Rust/RustDialect.cpp.inc"
+
 using namespace mlir;
 using namespace rust;
 using namespace types;
