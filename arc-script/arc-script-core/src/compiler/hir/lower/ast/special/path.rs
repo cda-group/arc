@@ -118,17 +118,3 @@ pub(crate) fn lower_variant_path(x: &ast::Path, ctx: &mut Context<'_>) -> Option
         .intern(Error::PathIsNotVariant { loc: x.loc });
     None
 }
-
-/// Lowers a `emit e` into a `emit crate::path::to::Task::OInterface::__(e)` in the context of a
-/// task with an untagged port.
-pub(crate) fn lower_emit(e0: &ast::Expr, ctx: &mut Context<'_>) -> hir::ExprKind {
-    let v0 = e0.lower(ctx);
-    if let Some(enum_path) = ctx.generated_ointerface_interior {
-        let dummy_x = ctx.names.common.dummy;
-        let variant_path = ctx.paths.intern_child(enum_path, dummy_x);
-        let v1 = ctx.new_expr_enwrap(variant_path.into(), v0).into_ssa(ctx);
-        hir::ExprKind::Emit(v1)
-    } else {
-        hir::ExprKind::Emit(v0)
-    }
-}

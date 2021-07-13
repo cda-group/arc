@@ -155,22 +155,16 @@ pub(crate) struct Task {
     pub(crate) cons_t: Type,
     /// Type of the task-function: Streams -> Streams
     pub(crate) fun_t: Type,
-    /// Type of the task-struct: {Params, Assignments}
+    /// Type of the task-struct: {Params}
     pub(crate) struct_t: Type,
     /// Initializer parameters of the task.
     pub(crate) params: Vec<Param>,
-    /// Assigned variables of the task.
-    pub(crate) fields: VecMap<Name, Type>,
     /// Input interface to the task.
     pub(crate) iinterface: Interface,
     /// Output interface to the task.
     pub(crate) ointerface: Interface,
-    /// Event handler.
-    pub(crate) on_event: OnEvent,
-    /// Statements run at startup.
-    pub(crate) on_start: OnStart,
-    /// Items of the task.
-    pub(crate) namespace: Vec<PathId>,
+    /// Finite State Machine
+    pub(crate) fsm: FSM,
 }
 
 #[derive(Debug, Clone, New, Loc)]
@@ -181,16 +175,13 @@ pub(crate) struct Interface {
     pub(crate) loc: Loc,
 }
 
-#[derive(Debug, Clone, New, Loc)]
-pub(crate) struct OnEvent {
-    pub(crate) fun: Path, // Event handler function
-    pub(crate) loc: Loc,
-}
-
-#[derive(Debug, Clone, New, Loc)]
-pub(crate) struct OnStart {
-    pub(crate) fun: Path, // Startup function
-    pub(crate) loc: Loc,
+#[derive(Debug, Clone, New)]
+pub(crate) struct FSM {
+    /// A path to an enum which contains a variant for each state in the FSM.
+    pub(crate) state_enum: Path,
+    /// A list of paths to state transition functions which have the form State -> Event -> State
+    /// All states except the final have a state transition function.
+    pub(crate) event_funs: Vec<Path>,
 }
 
 pub(crate) use ast::Attr;

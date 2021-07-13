@@ -65,20 +65,6 @@ declare! {
         ast::ItemKind::ExternType(item) => item.declare(path, ctx),
         ast::ItemKind::Err              => {}
     },
-    ast::TaskItem => match &node.kind {
-        ast::TaskItemKind::Fun(item)       => {
-            let path = ctx.paths.intern_child(path, item.name);
-            if ctx.table.declarations.insert(path, ItemDeclKind::Method).is_some() {
-                ctx.diags.intern(Error::NameClash { name: item.name })
-            }
-        },
-        ast::TaskItemKind::ExternFun(item) => item.declare(path, ctx),
-        ast::TaskItemKind::TypeAlias(item) => item.declare(path, ctx),
-        ast::TaskItemKind::Use(item)       => item.declare(path, ctx),
-        ast::TaskItemKind::Enum(item)      => item.declare(path, ctx),
-        ast::TaskItemKind::Stmt(_)         => {} // TODO! Handle variables
-        ast::TaskItemKind::Err             => {}
-    },
     ast::Fun => {
         let path = ctx.paths.intern_child(path, node.name);
         if ctx.table.declarations.insert(path, ItemDeclKind::Fun).is_some() {
@@ -138,9 +124,6 @@ declare! {
         if ctx.table.declarations.insert(path, ItemDeclKind::Task).is_some() {
             ctx.diags.intern(Error::NameClash { name: node.name })
         } else {
-            for item in &node.items {
-                item.declare(path, ctx);
-            }
             let iname = ctx.names.common.iinterface;
             let oname = ctx.names.common.ointerface;
             for (node, name) in [(&node.iinterface, iname), (&node.ointerface, oname)] {
@@ -173,9 +156,9 @@ declare! {
         }
     },
     ast::ExternFun => {
-        let path = ctx.paths.intern_child(path, node.decl.name);
+        let path = ctx.paths.intern_child(path, node.name);
         if ctx.table.declarations.insert(path, ItemDeclKind::ExternFun).is_some() {
-            ctx.diags.intern(Error::NameClash { name: node.decl.name })
+            ctx.diags.intern(Error::NameClash { name: node.name })
         }
     },
     ast::ExternType => {

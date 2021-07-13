@@ -60,13 +60,12 @@ deep_clone! {
         ..node.clone()
     },
     hir::Task => hir::Task {
-        fields: node.fields.dc(ctx),
-        on_event: node.on_event.dc(ctx),
+        fsm: node.fsm.dc(ctx),
         ..node.clone()
     },
-    Option<hir::OnEvent> => node.as_ref().map(|o| o.dc(ctx)),
-    hir::OnEvent => hir::OnEvent {
-        fun: node.fun.dc(ctx),
+    hir::FSM => hir::FSM {
+        state_enum: node.state_enum.dc(ctx),
+        event_funs: node.event_funs.iter().map(|f| f.dc(ctx)).collect(),
         ..node.clone()
     },
     hir::ExternFun => node.clone(),

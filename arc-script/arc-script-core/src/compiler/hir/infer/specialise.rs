@@ -85,14 +85,6 @@ specialise! {
         t: node.t.specialise(ctx),
         ..*node
     },
-    hir::OnStart => hir::OnStart {
-        fun: node.fun.specialise(ctx),
-        ..node.clone()
-    },
-    hir::OnEvent => hir::OnEvent {
-        fun: node.fun.specialise(ctx),
-        ..node.clone()
-    },
     hir::Block => hir::Block {
         stmts: node.stmts.specialise(ctx),
         var: node.var.specialise(ctx),

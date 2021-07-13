@@ -6,6 +6,7 @@ use arc_script_core_shared::MapEntry;
 use arc_script_core_shared::New;
 use arc_script_core_shared::Shrinkwrap;
 use arc_script_core_shared::VecDeque;
+use arc_script_core_shared::VecMap;
 
 /// A data structure which stores information about locals and scopes.
 /// Note that the `SymbolStack` does not store information about items and
@@ -71,6 +72,14 @@ impl SymbolStack {
     /// Returns the active frame.
     fn innermost(&self) -> &Vec<Scope> {
         self.iter().last().unwrap()
+    }
+
+    /// Captures all variables visible from the innermost scope
+    pub(crate) fn capture(&self) -> Vec<hir::Name> {
+        self.innermost()
+            .iter()
+            .flat_map(|s| s.vars.values().map(|(x, _)| *x).collect::<Vec<_>>())
+            .collect()
     }
 
     /// Returns the active frame as mutable.

@@ -24,23 +24,20 @@ impl ast::Module {
     /// Returns the imports of a module in the form of OS-paths which are
     /// relative to the project root.
     pub(crate) fn imports(&self, info: &Info) -> Vec<ast::Path> {
-        let mut imports = Vec::new();
-        for item in &self.items {
-            match &item.kind {
-                ast::ItemKind::Use(item) if item.path.is_absolute(info) => imports.push(item.path),
-                ast::ItemKind::Task(item) => {
-                    for item in &item.items {
-                        if let ast::TaskItemKind::Use(item) = &item.kind {
-                            if item.path.is_absolute(info) {
-                                imports.push(item.path)
-                            }
-                        }
+        self.items
+            .iter()
+            .filter_map(|item| {
+                if let ast::ItemKind::Use(item) = &item.kind {
+                    if item.path.is_absolute(info) {
+                        Some(item.path)
+                    } else {
+                        None
                     }
+                } else {
+                    None
                 }
-                _ => {}
-            }
-        }
-        imports
+            })
+            .collect()
     }
 }
 

@@ -108,27 +108,7 @@ pub struct ExternTypeItem {
 /// An kind of item declaration residing within an extern type.
 #[derive(Debug)]
 pub enum ExternTypeItemKind {
-    FunDecl(FunDecl),
-    Err,
-}
-
-/// An item declaration residing within a task.
-#[derive(Debug, Loc)]
-pub struct TaskItem {
-    pub meta: Option<Meta>,
-    pub kind: TaskItemKind,
-    pub loc: Loc,
-}
-
-/// An kind of item declaration residing within a task.
-#[derive(Debug)]
-pub enum TaskItemKind {
-    Enum(Enum),
-    ExternFun(ExternFun),
-    Fun(Fun),
-    Stmt(Stmt),
-    TypeAlias(TypeAlias),
-    Use(Use),
+    ExternMethod(ExternMethod),
     Err,
 }
 
@@ -139,7 +119,7 @@ pub struct Task {
     pub params: Vec<Param>,
     pub iinterface: Interface,
     pub ointerface: Interface,
-    pub items: Vec<TaskItem>,
+    pub block: Block,
 }
 
 /// An interface of a task.
@@ -180,18 +160,20 @@ pub struct Fun {
     pub block: Block,
 }
 
-/// A function declaration.
+/// An externally defined function.
 #[derive(Debug, New)]
-pub struct FunDecl {
+pub struct ExternFun {
     pub name: Name,
     pub params: Vec<Param>,
     pub rt: Type,
 }
 
-/// An externally defined function.
+/// An externally defined method.
 #[derive(Debug, New)]
-pub struct ExternFun {
-    pub decl: FunDecl,
+pub struct ExternMethod {
+    pub name: Name,
+    pub params: Vec<Param>,
+    pub rt: Type,
 }
 
 /// An externally defined type.

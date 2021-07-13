@@ -88,10 +88,6 @@ pretty! {
         {{\
             {s1}{iinterior}\
             {s1}{ointerior}\
-            {fields}\
-            {items}\
-            {s1}{on_start}\
-            {s1}{on_event}\
             {s0}\
         }}",
         name = fmt.paths.resolve(node.path).name.pretty(fmt),
@@ -100,18 +96,10 @@ pretty! {
         oexterior = node.ointerface.exterior.iter().all_pretty(", ", fmt),
         iinterior = fmt.hir.resolve(&node.iinterface.interior).pretty(fmt.indent()),
         ointerior = fmt.hir.resolve(&node.ointerface.interior).pretty(fmt.indent()),
-        items = node.namespace.iter().map_pretty(
-            |x, w| write!(w, "{s0}{}", fmt.hir.resolve(x).pretty(fmt.indent()), s0 = fmt.indent()),
-            ""
-        ),
-        fields = node.fields.iter().map_pretty(|(x, t), w| 
-            write!(w, "{s1}val {}: {} = uninitialised;", x.pretty(fmt), t.pretty(fmt), s1 = fmt.indent()), ""
-        ),
-        on_start = node.on_start.pretty(fmt.indent()),
-        on_event = node.on_event.pretty(fmt.indent()),
         s0 = fmt,
         s1 = fmt.indent(),
     ),
+    hir::FSM => { },
     hir::Interface => { },
     Vec<hir::Param> => write!(w, "{}", node.iter().all_pretty(", ", fmt)),
     hir::Param => write!(w, "{}: {}", node.kind.pretty(fmt), node.t.pretty(fmt)),
@@ -126,16 +114,6 @@ pretty! {
         id = fmt.paths.resolve(node.path).name.pretty(fmt),
         ty = node.t.pretty(fmt)
     ),
-    hir::OnStart => write!(w, "{}{s0}{}();",
-        fmt.hir.resolve(node.fun).pretty(fmt),
-        node.fun.pretty(fmt),
-        s0 = fmt,
-    ),
-    hir::OnEvent => write!(w, "{}{s0}on event => {}(event)",
-        fmt.hir.resolve(node.fun).pretty(fmt),
-        node.fun.pretty(fmt),
-        s0 = fmt,
-    )?,
     hir::Path => write!(w, "{}", node.id.pretty(fmt)),
     hir::PathId => {
         let kind = fmt.paths.resolve(node);

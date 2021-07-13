@@ -155,46 +155,23 @@ lower! {
         let path = node.path.lower(ctx);
         let module_name = ctx.create_id(&format!("{}_mod", path.to_string()));
         let params = node.params.lower(ctx);
-        let defs = node.namespace.iter().map(|item| ctx.hir.resolve(item).lower(ctx)).collect::<Vec<_>>();
         let ienum = ctx.hir.resolve(&node.iinterface.interior).lower(ctx);
         let oenum = ctx.hir.resolve(&node.ointerface.interior).lower(ctx);
-        let (on_start_fun_name, on_start_fun) = node.on_start.lower(ctx);
-        let (on_event_fun_name, on_event_fun) = node.on_event.lower(ctx);
         let cons_t = node.cons_t.lower(ctx);
         let fun_t = node.fun_t.lower(ctx);
-        let fields = node.fields.iter().map(|(x, t)| {
-            let x = x.lower(ctx);
-            let t = t.lower(ctx);
-            rust!(#x: #t)
-        });
         rust! {
-            #[arcorn::rewrite(on_event = #on_event_fun_name, on_start = #on_start_fun_name)]
+            #[arcorn::rewrite(fsm = /*#fsm_fun_name*/)]
             mod #module_name {
                 struct #path {
                     #(#params,)*
-                    #(#fields,)*
                 }
                 #ienum
                 #oenum
             }
             impl #module_name::#path {
-                #on_event_fun
-                #on_start_fun
-                #(#defs)*
+                // TODO: FSM code
             }
         }
-    },
-    hir::OnStart => (String, Rust) {
-        let fun = get!(&ctx.hir.resolve(node.fun).kind, hir::ItemKind::Fun(x));
-        let name = fun.path.lower(ctx).to_string();
-        let fun = fun.lower(ctx);
-        (name, fun)
-    },
-    hir::OnEvent => (String, Rust) {
-        let fun = get!(&ctx.hir.resolve(node.fun).kind, hir::ItemKind::Fun(x));
-        let name = fun.path.lower(ctx).to_string();
-        let fun = fun.lower(ctx);
-        (name, fun)
     },
     hir::Name => Rust {
         let name = ctx.names.resolve(node);

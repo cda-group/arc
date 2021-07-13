@@ -1,7 +1,7 @@
 //! AST debugging utilities.
 
 use crate::compiler::ast;
-use crate::compiler::ast::repr::{Index, Item, ItemKind, Module, Path, TaskItemKind, AST};
+use crate::compiler::ast::repr::{Index, Item, ItemKind, Module, Path, AST};
 use crate::compiler::info::Info;
 
 use arc_script_core_shared::Shrinkwrap;
@@ -36,7 +36,7 @@ impl Display for ASTDebug<'_> {
                     ItemKind::TypeAlias(x)  => write!(f, "{}", x.name.id.debug(self.info))?,
                     ItemKind::Enum(x)       => write!(f, "{}", x.name.id.debug(self.info))?,
                     ItemKind::Fun(x)        => write!(f, "{}", x.name.id.debug(self.info))?,
-                    ItemKind::ExternFun(x)  => write!(f, "{}", x.decl.name.id.debug(self.info))?,
+                    ItemKind::ExternFun(x)  => write!(f, "{}", x.name.id.debug(self.info))?,
                     ItemKind::ExternType(x) => write!(f, "{}", x.name.id.debug(self.info))?,
                     ItemKind::Task(x)       => write!(f, "{}", x.name.id.debug(self.info))?,
                     ItemKind::Use(x)        => write!(f, "{}", x.path.id.debug(self.info))?,

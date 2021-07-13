@@ -182,21 +182,12 @@ infer! {
         node.ointerface.infer(ctx);
         // All keys of the input-streams must match
         node.iinterface.keys.iter().for_each(|t| ctx.unify(*t, ikey_t));
-        // Infer state-fields
-        node.fields.iter().for_each(|(x, t)| {
-            ctx.env.insert(*x, *t);
-        });
         // Infer handler functions
         ctx.iinterface_interior = Some(node.iinterface.interior);
         ctx.ointerface_interior = Some(node.ointerface.interior);
-        node.on_start.infer(ctx);
-        node.on_event.infer(ctx);
+        // TODO
         ctx.iinterface_interior = None;
         ctx.ointerface_interior = None;
-        // Infer task items
-        for item in &node.namespace {
-            ctx.hir.resolve(item).infer(ctx);
-        }
         // Construct a function-type for calling the task.
         let ts = node.params.iter().map(|x| x.t).collect();
         let it = node.iinterface.exterior.clone();
@@ -209,7 +200,6 @@ infer! {
         ctx.unify(node.fun_t, hir::TypeKind::Fun(it, ot));
         ctx.unify(node.cons_t, hir::TypeKind::Fun(ts, node.fun_t));
         let mut fs = ctx.params_to_fields(&node.params);
-        fs.extend(node.fields.clone());
         ctx.unify(node.struct_t, hir::TypeKind::Struct(fs));
     },
     hir::Interface => {
@@ -224,16 +214,9 @@ infer! {
             ctx.unify(exterior_t, hir::TypeKind::Stream(interior_t));
         }
     },
-    hir::OnStart => {
-        let item = get!(&ctx.hir.resolve(node.fun).kind, hir::ItemKind::Fun(x));
-        item.infer(ctx);
-        ctx.unify(item.body.var.t, hir::ScalarKind::Unit);
-    },
-    hir::OnEvent => {
-        let item = get!(&ctx.hir.resolve(node.fun).kind, hir::ItemKind::Fun(x));
-        item.infer(ctx);
-        ctx.unify(item.body.var.t, hir::ScalarKind::Unit);
-        ctx.unify(item.params[0].t, hir::TypeKind::Nominal(ctx.iinterface_interior.unwrap()));
+    hir::FSM => {
+        todo!()
+        // ctx.unify(item.params[0].t, hir::TypeKind::Nominal(ctx.iinterface_interior.unwrap()));
     },
     hir::Assign => {
         node.expr.infer(ctx);

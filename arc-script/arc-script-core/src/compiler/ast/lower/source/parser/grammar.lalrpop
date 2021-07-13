@@ -325,31 +325,20 @@ ItemKind: ItemKind = {
     Err                 => ItemKind::Err,
 };
 
-TaskItem: TaskItem = Spanned<(Meta? TaskItemKind)> => TaskItem::from(<>);
-
-TaskItemKind: TaskItemKind = {
-    Fun       => TaskItemKind::Fun(<>),
-    ExternFun => TaskItemKind::ExternFun(<>),
-    TypeAlias => TaskItemKind::TypeAlias(<>),
-    Use       => TaskItemKind::Use(<>),
-    Enum      => TaskItemKind::Enum(<>),
-    Stmt      => TaskItemKind::Stmt(<>),
-};
-
 ExternTypeItem: ExternTypeItem = Spanned<(Meta? ExternTypeItemKind)> => ExternTypeItem::from(<>);
 
 ExternTypeItemKind: ExternTypeItemKind = {
-    FunDecl => ExternTypeItemKind::FunDecl(<>),
+    ExternMethod => ExternTypeItemKind::ExternMethod(<>),
 };
 
-FunDecl:    FunDecl    = "fun" <Name> <Params> ":" <Type0> ";"                                      => FunDecl::new(<>);
-ExternFun:  ExternFun  = "extern" <FunDecl>                                                         => ExternFun::new(<>);
-ExternType: ExternType = "extern" "type" <Name> <Params> <Brace<ExternTypeItem*>>                   => ExternType::new(<>);
-Fun:        Fun        = "fun" <Name> <Params> <(":" <Type0>)?> <Block>                             => Fun::new(<>);
-TypeAlias:  TypeAlias  = "type" <Name> "=" <Type0> ";"                                              => TypeAlias::new(<>);
-Enum:       Enum       = "enum" <Name> <Brace<Vec<Variant>>>                                        => Enum::new(<>);
-Use:        Use        = "use" <Path> <("as" <Name>)?> ";"                                          => Use::new(<>);
-Task:       Task       = "task" <Name> <Params> ":" <Interface> "->" <Interface> <Brace<TaskItem*>> => Task::new(<>);
+ExternFun:    ExternFun    = "extern" "fun" <Name> <Params> ":" <Type0> ";"                  => ExternFun::new(<>);
+ExternMethod: ExternMethod = "extern" "fun" <Name> <Params> ":" <Type0> ";"                  => ExternMethod::new(<>);
+ExternType:   ExternType   = "extern" "type" <Name> <Params> <Brace<ExternTypeItem*>>        => ExternType::new(<>);
+Fun:          Fun          = "fun" <Name> <Params> <(":" <Type0>)?> <Block>                  => Fun::new(<>);
+TypeAlias:    TypeAlias    = "type" <Name> "=" <Type0> ";"                                   => TypeAlias::new(<>);
+Enum:         Enum         = "enum" <Name> <Brace<Vec<Variant>>>                             => Enum::new(<>);
+Use:          Use          = "use" <Path> <("as" <Name>)?> ";"                               => Use::new(<>);
+Task:         Task         = "task" <Name> <Params> ":" <Interface> "->" <Interface> <Block> => Task::new(<>);
 
 Assign<Expr>: Assign = <MutKind> <Param> "=" <Expr> => Assign::new(<>);
 #[inline] MutKind: MutKind = {
