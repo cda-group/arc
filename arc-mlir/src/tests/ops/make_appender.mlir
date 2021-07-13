@@ -17,7 +17,7 @@ module @toplevel {
     %v = constant 0 : i32
 
     // expected-error@+2 {{'arc.make_appender' op requires zero operands}}
-    // expected-note@+1 {{see current operation: %0 = "arc.make_appender"}}
+    // expected-note@+1 {{see current operation:}}
     %0 = "arc.make_appender"(%v) : (i32) -> !arc.appender<i32>
 
     %r = "arc.result"(%0) : (!arc.appender<i32>) -> tensor<i32>

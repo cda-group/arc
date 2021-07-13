@@ -52,7 +52,7 @@ module @toplevel {
     %v2 = constant 5 : i32
 
     // expected-error@+2 {{'arc.make_appender' op failed to verify that result must have exactly one use}}
-    // expected-note@+1 {{see current operation: %0 = "arc.make_appender"}}
+    // expected-note@+1 {{see current operation:}}
     %0 = "arc.make_appender"() : () -> !arc.appender<i32>
 
     %1 = "arc.merge"(%0, %v1) : (!arc.appender<i32>, i32) -> !arc.appender<i32>

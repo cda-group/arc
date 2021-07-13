@@ -22,7 +22,7 @@ module @toplevel {
     %d = constant 0 : i1
 
     // expected-error@+2 {{'arc.make_vector' op requires the same element type for all operands and results}}
-    // expected-note@+1 {{see current operation: %0 = "arc.make_vector"}}
+    // expected-note@+1 {{see current operation:}}
     %1 = "arc.make_vector"(%b, %b, %c, %d) : (i1, i1, i1, i1) -> tuple<i1,i1,i1,i1>
     return
   }
@@ -37,7 +37,7 @@ module @toplevel {
     %d = constant 0 : i1
 
     // expected-error@+2 {{'arc.make_vector' op requires the same element type for all operands and results}}
-    // expected-note@+1 {{see current operation: %0 = "arc.make_vector"}}
+    // expected-note@+1 {{see current operation:}}
     %1 = "arc.make_vector"(%b, %b, %c, %d) : (i1, i1, i1, i1) -> tensor<f32>
     return
   }
@@ -52,7 +52,7 @@ module @toplevel {
     %d = constant 0 : i1
 
     // expected-error@+2 {{'arc.make_vector' op result #0 must be 1D tensor of any type values, but got 'tensor<4x4xi1>'}}
-    // expected-note@+1 {{see current operation: %0 = "arc.make_vector"}}
+    // expected-note@+1 {{see current operation:}}
     %1 = "arc.make_vector"(%b, %b, %c, %d) : (i1, i1, i1, i1) -> tensor<4x4xi1>
     return
   }
@@ -67,7 +67,7 @@ module @toplevel {
     %d = constant 0 : i1
 
     // expected-error@+2 {{'arc.make_vector' op result must have static shape: expected 'tensor<4xi1>'}}
-    // expected-note@+1 {{see current operation: %0 = "arc.make_vector"}}
+    // expected-note@+1 {{see current operation:}}
     %1 = "arc.make_vector"(%b, %b, %c, %d) : (i1, i1, i1, i1) -> tensor<?xi1>
     return
   }
@@ -82,7 +82,7 @@ module @toplevel {
     %d = constant 0 : i1
 
     // expected-error@+2 {{'arc.make_vector' op result does not match the number of operands: expected 5 but found 4 operands}}
-    // expected-note@+1 {{see current operation: %0 = "arc.make_vector"}}
+    // expected-note@+1 {{see current operation:}}
     %1 = "arc.make_vector"(%b, %b, %c, %d) : (i1, i1, i1, i1) -> tensor<5xi1>
     return
   }
