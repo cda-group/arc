@@ -8,7 +8,59 @@ use arc_script_core_shared::Lower;
 use arc_script_core_shared::VecMap;
 
 /// Lowers a loop into a FSM if it contains an async operation. Otherwise the loop is lowered into
-/// a regular loop.
+/// a regular loop. For example:
+/// ```skip
+/// task Foo(): ~i32 -> (~i32, i32) {
+///     var x: i32 = 0;
+///     loop { if x < 100 {         x += 1; } else { break } };
+///     loop { if x < 200 { on y => x += y; } else { break } };
+///     x += 1;
+///     return x;
+/// }
+/// ```
+/// becomes
+/// ```skip
+/// task Foo(): ~i32 -> ~i32 {
+///     enum State { S0(unit), S1((i32,)), S2((i32,)), S3((i32,)), R(i32) }
+///     fun on_start(): State {
+///         State::S0(unit)
+///     }
+///     fun on_event(state: State): State {
+///         if is[S0](state) {
+///             val values = unwrap[S0](state);
+///             var x: i32 = 0;
+///             loop { if x < 100 { x += 1; } else { break } };
+///             S1((x,))
+///         } else {
+///             if is[S1](state) {
+///                 val values = unwrap[S3](state);
+///                 val x = values.0;
+///                 if x < 200 { S2((x,)) } else { S3((x,)) }
+///             } else {
+///                 if is[S2](state) {
+///                     val values = unwrap[S3](state);
+///                     var x = values.0;
+///                     val y = unwrap[Some](event);
+///                     x += y;
+///                     S1((x,))
+///                 } else {
+///                     if is[S3](state) {
+///                         val values = unwrap[S3](state);
+///                         var x = values.0;
+///                         x += 1;
+///                         R(x)
+///                     } else {
+///                         panic
+///                     }
+///                 }
+///             }
+///         }
+///     }
+///     fun handle(state)
+///     return State0(x);
+///     fun action0(state: State)
+/// }
+/// ```
 pub(crate) fn lower_loop(b: &ast::Block, ctx: &mut Context<'_>) -> hir::ExprKind {
     if b.is_async(ctx) {
         let state = ctx.state_enum.unwrap();
