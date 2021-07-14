@@ -1,0 +1,48 @@
+name: test
+
+on:
+  pull_request:
+    branches: [ master ]
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  build:
+    runs-on: self-hosted
+
+    steps:
+
+      # Checkout branch which we want to test
+    - name: Checkout source
+      uses: actions/checkout@v2
+
+      # Update LLVM dependency
+    - name: Update submodule
+      run: git submodule update --init --recursive
+
+      # Arc-MLIR specific tests
+    - name: Build and test arc-mlir
+      run: |
+        cd arc-mlir
+        ./arc-mlir-build
+        ninja tools/arc-mlir/arc-check -C $A2M_BUILD/llvm-build/
+        echo $A2M_BUILD/llvm-build/bin/ >> $GITHUB_PATH
+        cd ../arc-script
+        cargo insta test --package=arc-script-test-compile
+        cargo insta accept
+        cargo clippy
+        cargo check
+        cargo check --bins
+        cargo check --tests
+        cargo check --examples
+        cargo check --benches
+        cargo fuzz run parse -- -runs=10000 -only-ascii
+        # cargo fmt -- -v --check
+      env:
+        A2M_BUILD: ${{ format('{0}/build', runner.temp) }}
+
+    - name: Check for dirty tree
+      run: |
+        ./check-for-dirty-tree
+
