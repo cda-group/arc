@@ -6,6 +6,7 @@ mod build;
 
 #[derive(Default)]
 pub struct Builder {
+    library_name: Option<String>,
     compile_unused_sources: bool,
     source_dirs: Vec<String>,
     prefix: Option<String>,
@@ -13,6 +14,13 @@ pub struct Builder {
 }
 
 impl Builder {
+    /// Sets the library name which will become the name of the root module.
+    pub fn library_name(self, library_name: impl Into<String>) -> Self {
+        Self {
+            library_name: Some(library_name.into()),
+            ..self
+        }
+    }
     /// Compiles all scripts, regardless of whether they are used or not.
     pub fn compile_unused_sources(self, compile_unused_sources: bool) -> Self {
         Self {
