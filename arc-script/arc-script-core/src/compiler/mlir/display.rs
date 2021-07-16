@@ -112,23 +112,49 @@ pretty! {
                 .params
                 .iter()
                 .filter(|p| matches!(&p.kind, mlir::VarKind::Ok(_)))
-                .map_pretty(|p, w| write!(w, "{}: {}", p.pretty(fmt), p.t.pretty(fmt)), ", "),
+                .map_pretty(|p, w| write!(w, "{}", p.pretty(fmt)), ", "),
 		        t = node.t.pretty(fmt),
 		        body = node.body.pretty(&fmt.indent()),
 		    )
     },
     mlir::Name => write!(w, "{}", fmt.names.resolve(node)),
-    mlir::Task => write!(w, "task {name}({params}) ({iports}) -> ({oports}) {{{items}{s0}{s0}}}",
-        name = node.path.pretty(fmt),
-        params = node.params.iter().all_pretty(", ", fmt),
-        iports = node.iports.pretty(fmt),
-        oports = node.oports.pretty(fmt),
-        items = node
-            .items
-            .iter()
-            .map_pretty(|i, w| write!(w, "{s0}{s0}{}", i.pretty(fmt.indent()), s0 = fmt.indent()), ""),
-        s0 = fmt,
-    ),
+    mlir::Task => {
+        write!(w,
+    r#"func @{name}_on_event(
+        %this : {this_t},
+        {ievent},
+        %output_stream : !arc.stream<{oevent_t}
+    ) -> ()
+    attributes {{
+        "arc.mod_name" = "mod_{name}",
+        "arc.task_name" = "{name}",
+        "arc.is_event_handler"
+    }} {body}"#,
+            name = node.path.pretty(fmt),
+            this_t = node.this_t.pretty(fmt),
+            ievent = node.ievent.pretty(fmt),
+            oevent_t = node.oevent_t.pretty(fmt),
+            body = node.on_event.pretty(fmt.indent()),
+        )?;
+        write!(w,
+    r#"{s1}func @{name}_on_start(
+        %this : {this_t}
+    ) -> ()
+    attributes {{
+        "arc.mod_name" = "mod_{name}",
+        "arc.task_name" = "{name}",
+        "arc.is_event_handler"
+    }} {body}"#,
+            name = node.path.pretty(fmt),
+            this_t = node.this_t.pretty(fmt),
+            body = node.on_start.pretty(fmt.indent()),
+            s1 = fmt.indent()
+        )?;
+    },
+    mlir::Param => match &node.kind {
+        mlir::VarKind::Ok(x) => write!(w, "%{}: {}", x.pretty(fmt), node.t.pretty(fmt)),
+        mlir::VarKind::Elided => write!(w, "/* elided */"),
+    },
     mlir::Path => write!(w, "{}", node.id.pretty(fmt)),
     mlir::PathId => {
         let kind = fmt.paths.resolve(*node);
@@ -158,11 +184,11 @@ pretty! {
     mlir::Op => {
         use mlir::ConstKind::*;
         use mlir::OpKind::*;
-        if let mlir::VarKind::Ok(x) = &node.var.kind {
-            write!(w, "{} = ", node.var.pretty(fmt))?;
-        }
         use mlir::BinOpKind::*;
-        let rt = node.var.t.pretty(fmt);
+        if let mlir::VarKind::Ok(x) = &node.param.kind {
+            write!(w, "%{} = ", x.pretty(fmt))?;
+        }
+        let rt = node.param.t.pretty(fmt);
         match &node.kind {
             mlir::OpKind::Const(c) => match c {
                 mlir::ConstKind::Bool(true)  => write!(w, r#"constant true"#),
@@ -246,7 +272,7 @@ pretty! {
                 write!(w, r#"arc.make_enum ({} : {}) as "{}" : {}"#, v.pretty(fmt), v.t.pretty(fmt), x.pretty(fmt), rt)
             },
 	          // %r = arc.enum_access "b" in (%e : !arc.enum<a : i32, b : f32>) : f32
-            mlir::OpKind::Unwrap(x, v) => if node.var.t.is_unit(fmt.ctx.info) {
+            mlir::OpKind::Unwrap(x, v) => if node.param.t.is_unit(fmt.ctx.info) {
                 write!(w, r#"arc.enum_access "{}" in ({} : {}) : none"#, x.pretty(fmt), v.pretty(fmt), v.t.pretty(fmt))
             } else {
                 write!(w, r#"arc.enum_access "{}" in ({} : {}) : {}"#, x.pretty(fmt), v.pretty(fmt), v.t.pretty(fmt), rt)
@@ -276,7 +302,13 @@ pretty! {
                 b1 = b1.pretty(fmt.indent()),
                 rt = rt,
             ),
-            mlir::OpKind::Emit(_) => crate::todo!(),
+            mlir::OpKind::Emit(v) => write!(
+                w,
+                r#""arc.emit"({v}, %output_stream) : ({t}, !arc.stream<{t}>) -> {rt}"#,
+                v = v.pretty(fmt),
+                t = v.t.pretty(fmt),
+                rt = rt
+            ),
             mlir::OpKind::Loop(_) => crate::todo!(),
             mlir::OpKind::Call(v, vs) => write!(
                 w,
@@ -348,6 +380,8 @@ pretty! {
             mlir::OpKind::Break(_) => crate::todo!(),
             mlir::OpKind::Continue => crate::todo!(),
             mlir::OpKind::Log(_) => crate::todo!(),
+            mlir::OpKind::Noop => write!(w, "// noop"),
+            mlir::OpKind::Panic => write!(w, r#""arc.panic"()"#),
         }
     },
     mlir::Block => write!(w, "{{{}{s0}}}",
