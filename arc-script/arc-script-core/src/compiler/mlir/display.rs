@@ -127,7 +127,7 @@ pretty! {
             ostream_ts = node.ostream_ts.iter().all_pretty(", ", fmt),
         )?;
         write!(w,
-    r#"func @{name}_on_event(
+    r#"{s1}func @{name}_on_event(
         %this : {this_t},
         {ievent},
         %output_stream : !arc.stream<{oevent_t}>
@@ -142,6 +142,7 @@ pretty! {
             ievent = node.ievent.pretty(fmt),
             oevent_t = node.oevent_t.pretty(fmt),
             body = node.on_event.pretty(fmt.indent()),
+            s1 = fmt.indent(),
         )?;
         write!(w,
     r#"{s1}func @{name}_on_start(
@@ -155,7 +156,7 @@ pretty! {
             name = node.path.pretty(fmt),
             this_t = node.this_t.pretty(fmt),
             body = node.on_start.pretty(fmt.indent()),
-            s1 = fmt.indent()
+            s1 = fmt.indent(),
         )?;
     },
     mlir::Param => match &node.kind {
