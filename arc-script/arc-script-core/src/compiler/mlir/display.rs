@@ -112,7 +112,7 @@ pretty! {
                 .params
                 .iter()
                 .filter(|p| matches!(&p.kind, mlir::VarKind::Ok(_)))
-                .map_pretty(|p, w| write!(w, "{}: {}", p.pretty(fmt), p.t.pretty(fmt)), ", "),
+                .map_pretty(|p, w| write!(w, "{}", p.pretty(fmt)), ", "),
 		        t = node.t.pretty(fmt),
 		        body = node.body.pretty(&fmt.indent()),
 		    )
@@ -158,6 +158,10 @@ pretty! {
             s1 = fmt.indent()
         )?;
     },
+    mlir::Param => match &node.kind {
+        mlir::VarKind::Ok(x) => write!(w, "%{}: {}", x.pretty(fmt), node.t.pretty(fmt)),
+        mlir::VarKind::Elided => write!(w, "/* elided */"),
+    },
     mlir::Path => write!(w, "{}", node.id.pretty(fmt)),
     mlir::PathId => {
         let kind = fmt.paths.resolve(*node);
@@ -187,11 +191,11 @@ pretty! {
     mlir::Op => {
         use mlir::ConstKind::*;
         use mlir::OpKind::*;
-        if let mlir::VarKind::Ok(x) = &node.var.kind {
-            write!(w, "{} = ", node.var.pretty(fmt))?;
-        }
         use mlir::BinOpKind::*;
-        let rt = node.var.t.pretty(fmt);
+        if let mlir::VarKind::Ok(x) = &node.param.kind {
+            write!(w, "%{} = ", x.pretty(fmt))?;
+        }
+        let rt = node.param.t.pretty(fmt);
         match &node.kind {
             mlir::OpKind::Const(c) => match c {
                 mlir::ConstKind::Bool(true)  => write!(w, r#"constant true"#),
@@ -275,7 +279,7 @@ pretty! {
                 write!(w, r#"arc.make_enum ({} : {}) as "{}" : {}"#, v.pretty(fmt), v.t.pretty(fmt), x.pretty(fmt), rt)
             },
 	          // %r = arc.enum_access "b" in (%e : !arc.enum<a : i32, b : f32>) : f32
-            mlir::OpKind::Unwrap(x, v) => if node.var.t.is_unit(fmt.ctx.info) {
+            mlir::OpKind::Unwrap(x, v) => if node.param.t.is_unit(fmt.ctx.info) {
                 write!(w, r#"arc.enum_access "{}" in ({} : {}) : none"#, x.pretty(fmt), v.pretty(fmt), v.t.pretty(fmt))
             } else {
                 write!(w, r#"arc.enum_access "{}" in ({} : {}) : {}"#, x.pretty(fmt), v.pretty(fmt), v.t.pretty(fmt), rt)

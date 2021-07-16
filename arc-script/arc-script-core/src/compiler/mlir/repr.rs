@@ -42,7 +42,7 @@ pub(crate) enum ItemKind {
 #[derive(New, Debug)]
 pub(crate) struct Fun {
     pub(crate) path: Path,
-    pub(crate) params: Vec<Var>,
+    pub(crate) params: Vec<Param>,
     pub(crate) body: Block,
     pub(crate) t: Type,
 }
@@ -60,7 +60,7 @@ pub(crate) struct Task {
     /// Type of the task (struct of parameters)
     pub(crate) this_t: Type,
     /// Task I/O
-    pub(crate) ievent: Var,
+    pub(crate) ievent: Param,
     pub(crate) oevent_t: Type,
     /// Event handler.
     pub(crate) on_event: Block,
@@ -77,14 +77,8 @@ pub(crate) struct Var {
 
 #[derive(Debug, Clone, Copy, New)]
 pub(crate) struct Param {
-    pub(crate) kind: ParamKind,
+    pub(crate) kind: VarKind,
     pub(crate) t: Type,
-}
-
-#[derive(Debug, Clone, Copy)]
-pub(crate) enum ParamKind {
-    Ok(Name),
-    Ignore,
 }
 
 pub(crate) use hir::ScopeKind;
@@ -122,7 +116,7 @@ pub(crate) enum SettingKind {
 
 #[derive(Debug, New)]
 pub(crate) struct Op {
-    pub(crate) var: Var,
+    pub(crate) param: Param,
     pub(crate) kind: OpKind,
     pub(crate) loc: Loc,
 }

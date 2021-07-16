@@ -103,9 +103,9 @@ lower! {
     hir::Variant => mlir::Variant {
         mlir::Variant::new(node.path, node.t, node.loc)
     },
-    hir::Param => mlir::Var {
+    hir::Param => mlir::Param {
         let kind = match &node.kind {
-            hir::ParamKind::Ignore => todo!(),
+            hir::ParamKind::Ignore => mlir::VarKind::Ok(ctx.names.fresh()),
             hir::ParamKind::Ok(x) => if node.t.is_unit(ctx.info) {
                 mlir::VarKind::Elided
             } else {
@@ -113,7 +113,7 @@ lower! {
             },
             hir::ParamKind::Err => unreachable!(),
         };
-        mlir::Var::new(kind, mlir::ScopeKind::Local, node.t)
+        mlir::Param::new(kind, node.t)
     },
     hir::BinOp => mlir::BinOp {
         let kind = match &node.kind {
@@ -182,16 +182,13 @@ lower! {
         }
     },
     hir::Var => mlir::Var {
-        let kind = if let hir::VarKind::Ok(x, _) = &node.kind {
-            if node.t.is_unit(ctx.info) {
-                mlir::VarKind::Elided
-            } else {
-                mlir::VarKind::Ok(*x)
-            }
+        let (x, scope) = get!(node.kind, hir::VarKind::Ok(x, scope));
+        let kind = if node.t.is_unit(ctx.info) {
+            mlir::VarKind::Elided
         } else {
-            unreachable!()
+            mlir::VarKind::Ok(x)
         };
-        mlir::Var::new(kind, mlir::ScopeKind::Local, node.t)
+        mlir::Var::new(kind, scope, node.t)
     },
     hir::Expr => mlir::OpKind {
         match ctx.hir.exprs.resolve(node.id) {
@@ -210,7 +207,11 @@ lower! {
             hir::ExprKind::Lit(l)            => mlir::OpKind::Const(l.lower(ctx)),
             hir::ExprKind::BinOp(v0, op, v1) => mlir::OpKind::BinOp(v0.lower(ctx), op.lower(ctx), v1.lower(ctx)),
             hir::ExprKind::UnOp(op, v)       => mlir::OpKind::UnOp(mlir::UnOp::new(op.kind.lower(ctx)), v.lower(ctx)) ,
-            hir::ExprKind::Access(v, x)      => mlir::OpKind::Access(v.lower(ctx), *x),
+            hir::ExprKind::Access(v, x)      => if node.t.is_unit(ctx.info) { 
+                mlir::OpKind::Noop
+            } else {
+                mlir::OpKind::Access(v.lower(ctx), *x)
+            },
             hir::ExprKind::Project(v, i)     => mlir::OpKind::Project(v.lower(ctx), i.id),
             hir::ExprKind::If(v, b0, b1)     => mlir::OpKind::If(
                 v.lower(ctx),
@@ -220,7 +221,11 @@ lower! {
             hir::ExprKind::Array(vs)         => mlir::OpKind::Array(vs.lower(ctx)),
             hir::ExprKind::Struct(fs)        => mlir::OpKind::Struct(fs.lower(ctx)),
             hir::ExprKind::Enwrap(x, v1)     => mlir::OpKind::Enwrap(*x, v1.lower(ctx)),
-            hir::ExprKind::Unwrap(x, v1)     => mlir::OpKind::Unwrap(*x, v1.lower(ctx)),
+            hir::ExprKind::Unwrap(x, v1)     => if node.t.is_unit(ctx.info) {
+                mlir::OpKind::Noop
+            } else {
+                mlir::OpKind::Unwrap(*x, v1.lower(ctx))
+            },
             hir::ExprKind::Is(x, v1)         => mlir::OpKind::Is(*x, v1.lower(ctx)),
             hir::ExprKind::Tuple(vs)         => mlir::OpKind::Tuple(vs.lower(ctx)),
             hir::ExprKind::Emit(v)           => mlir::OpKind::Emit(v.lower(ctx)),
@@ -251,7 +256,7 @@ impl hir::Block {
     ) -> mlir::Block {
         let mut ops = self.stmts.lower(ctx);
         ops.push(mlir::Op::new(
-            mlir::Var::new(mlir::VarKind::Elided, hir::ScopeKind::Local, self.var.t),
+            mlir::Param::new(mlir::VarKind::Elided, self.var.t),
             terminator(self.var.lower(ctx)),
             self.var.loc,
         ));
