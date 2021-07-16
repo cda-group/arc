@@ -1,6 +1,5 @@
 use crate::compiler::hir;
 use crate::compiler::hir::utils::SortFields;
-use crate::compiler::hir::HIR;
 use crate::compiler::info::Info;
 use crate::compiler::mlir;
 
@@ -15,7 +14,8 @@ use arc_script_core_shared::VecMap;
 #[derive(New, Shrinkwrap)]
 #[shrinkwrap(mutable)]
 pub(crate) struct Context<'i> {
-    hir: &'i HIR,
+    hir: &'i hir::HIR,
+    pub(crate) mlir: &'i mut mlir::MLIR,
     #[shrinkwrap(main_field)]
     pub(crate) info: &'i mut Info,
     pub(crate) ops: Vec<mlir::Op>,
@@ -24,6 +24,13 @@ pub(crate) struct Context<'i> {
 lower! {
     [node, ctx, hir]
 
+    hir::HIR => () {
+        for x in &node.namespace {
+            let item = node.resolve(x).lower(ctx);
+            ctx.mlir.intern(*x, item);
+            ctx.mlir.items.push(*x);
+        }
+    },
     hir::Item => mlir::Item {
         mlir::Item::new(node.kind.lower(ctx), node.loc)
     },
@@ -31,7 +38,7 @@ lower! {
         match node {
             hir::ItemKind::Fun(item)         => mlir::ItemKind::Fun(item.lower(ctx)),
             hir::ItemKind::Enum(item)        => mlir::ItemKind::Enum(item.lower(ctx)),
-            hir::ItemKind::Task(_item)       => todo!(),
+            hir::ItemKind::Task(item)        => mlir::ItemKind::Task(item.lower(ctx)),
             hir::ItemKind::ExternFun(_item)  => todo!(),
             hir::ItemKind::ExternType(_item) => todo!(),
             hir::ItemKind::TypeAlias(_)      => unreachable!(),
@@ -44,6 +51,45 @@ lower! {
             params: node.params.iter().map(|p| p.lower(ctx)).collect::<Vec<_>>(),
             body: node.body.lower(mlir::OpKind::Return, ctx),
             t: node.body.var.t,
+        }
+    },
+    hir::Task => mlir::Task {
+        let on_event = get!(&ctx.hir.resolve(node.on_event.fun).kind, hir::ItemKind::Fun(x));
+        let on_start = get!(&ctx.hir.resolve(node.on_start.fun).kind, hir::ItemKind::Fun(x));
+        let fields = node.params.iter().map(|p| {
+            let x = get!(p.kind, hir::ParamKind::Ok(x));
+            (x, p.t)
+        }).collect();
+        let params = node.params.iter().map(|p| p.lower(ctx)).collect();
+        let this_t = ctx.types.intern(hir::TypeKind::Struct(fields));
+        let ievent = on_event.params.first().unwrap().lower(ctx);
+        // This is mangled later on
+        let oevent_t = ctx.types.intern(hir::TypeKind::Nominal(node.ointerface.interior.id.into()));
+        let on_event = on_event.body.lower(mlir::OpKind::Return, ctx);
+        let on_start = on_start.body.lower(mlir::OpKind::Return, ctx);
+        let iinterior_enum_item = ctx.hir.resolve(node.iinterface.interior).lower(ctx);
+        let ointerior_enum_item = ctx.hir.resolve(node.ointerface.interior).lower(ctx);
+        let istream_ts = node.iinterface.exterior.clone();
+        let ostream_ts = node.ointerface.exterior.clone();
+        ctx.mlir.intern(node.iinterface.interior, iinterior_enum_item);
+        ctx.mlir.intern(node.ointerface.interior, ointerior_enum_item);
+        ctx.mlir.items.push(*node.iinterface.interior);
+        ctx.mlir.items.push(*node.ointerface.interior);
+        for x in &node.namespace {
+            let item = ctx.hir.resolve(x).lower(ctx);
+            ctx.mlir.intern(x, item);
+            ctx.mlir.items.push(*x);
+        }
+        mlir::Task {
+            path: node.path,
+            params,
+            istream_ts,
+            ostream_ts,
+            this_t,
+            ievent,
+            oevent_t,
+            on_event,
+            on_start,
         }
     },
     hir::Enum => mlir::Enum {
@@ -67,7 +113,7 @@ lower! {
             },
             hir::ParamKind::Err => unreachable!(),
         };
-        mlir::Var::new(kind, node.t)
+        mlir::Var::new(kind, mlir::ScopeKind::Local, node.t)
     },
     hir::BinOp => mlir::BinOp {
         let kind = match &node.kind {
@@ -145,7 +191,7 @@ lower! {
         } else {
             unreachable!()
         };
-        mlir::Var::new(kind, node.t)
+        mlir::Var::new(kind, mlir::ScopeKind::Local, node.t)
     },
     hir::Expr => mlir::OpKind {
         match ctx.hir.exprs.resolve(node.id) {
@@ -154,7 +200,7 @@ lower! {
             hir::ExprKind::Continue         => mlir::OpKind::Continue,
             hir::ExprKind::Item(x)          => match ctx.hir.resolve(x).kind {
                 hir::ItemKind::Fun(_)       => mlir::OpKind::Const(mlir::ConstKind::Fun(*x)),
-                hir::ItemKind::Task(_)      => crate::todo!(),
+                hir::ItemKind::Task(_)      => mlir::OpKind::Const(mlir::ConstKind::Fun(*x)),
                 _ => unreachable!(),
             },
             hir::ExprKind::Call(v, vs)       => mlir::OpKind::CallIndirect(v.lower(ctx), vs.lower(ctx)),
@@ -183,7 +229,7 @@ lower! {
             hir::ExprKind::After(_, _)       => crate::todo!(),
             hir::ExprKind::Every(_, _)       => crate::todo!(),
             hir::ExprKind::Cast(_, _)        => crate::todo!(),
-            hir::ExprKind::Unreachable       => crate::todo!(),
+            hir::ExprKind::Unreachable       => mlir::OpKind::Panic,
             hir::ExprKind::Initialise(x, v)  => crate::todo!(),
             hir::ExprKind::Err               => unreachable!(),
         }
@@ -205,7 +251,7 @@ impl hir::Block {
     ) -> mlir::Block {
         let mut ops = self.stmts.lower(ctx);
         ops.push(mlir::Op::new(
-            mlir::Var::new(mlir::VarKind::Elided, self.var.t),
+            mlir::Var::new(mlir::VarKind::Elided, hir::ScopeKind::Local, self.var.t),
             terminator(self.var.lower(ctx)),
             self.var.loc,
         ));

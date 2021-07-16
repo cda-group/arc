@@ -118,17 +118,46 @@ pretty! {
 		    )
     },
     mlir::Name => write!(w, "{}", fmt.names.resolve(node)),
-    mlir::Task => write!(w, "task {name}({params}) ({iports}) -> ({oports}) {{{items}{s0}{s0}}}",
-        name = node.path.pretty(fmt),
-        params = node.params.iter().all_pretty(", ", fmt),
-        iports = node.iports.pretty(fmt),
-        oports = node.oports.pretty(fmt),
-        items = node
-            .items
-            .iter()
-            .map_pretty(|i, w| write!(w, "{s0}{s0}{}", i.pretty(fmt.indent()), s0 = fmt.indent()), ""),
-        s0 = fmt,
-    ),
+    mlir::Task => {
+        write!(w,
+    r#"func private @{name}({params}) -> (({istream_ts}) -> ({ostream_ts}))"#,
+            name = node.path.pretty(fmt),
+            params = node.params.iter().all_pretty(", ", fmt),
+            istream_ts = node.istream_ts.iter().all_pretty(", ", fmt),
+            ostream_ts = node.ostream_ts.iter().all_pretty(", ", fmt),
+        )?;
+        write!(w,
+    r#"func @{name}_on_event(
+        %this : {this_t},
+        {ievent},
+        %output_stream : !arc.stream<{oevent_t}>
+    ) -> ()
+    attributes {{
+        "arc.mod_name" = "mod_{name}",
+        "arc.task_name" = "{name}",
+        "arc.is_event_handler"
+    }} {body}"#,
+            name = node.path.pretty(fmt),
+            this_t = node.this_t.pretty(fmt),
+            ievent = node.ievent.pretty(fmt),
+            oevent_t = node.oevent_t.pretty(fmt),
+            body = node.on_event.pretty(fmt.indent()),
+        )?;
+        write!(w,
+    r#"{s1}func @{name}_on_start(
+        %this : {this_t}
+    ) -> ()
+    attributes {{
+        "arc.mod_name" = "mod_{name}",
+        "arc.task_name" = "{name}",
+        "arc.is_event_handler"
+    }} {body}"#,
+            name = node.path.pretty(fmt),
+            this_t = node.this_t.pretty(fmt),
+            body = node.on_start.pretty(fmt.indent()),
+            s1 = fmt.indent()
+        )?;
+    },
     mlir::Path => write!(w, "{}", node.id.pretty(fmt)),
     mlir::PathId => {
         let kind = fmt.paths.resolve(*node);
@@ -276,7 +305,13 @@ pretty! {
                 b1 = b1.pretty(fmt.indent()),
                 rt = rt,
             ),
-            mlir::OpKind::Emit(_) => crate::todo!(),
+            mlir::OpKind::Emit(v) => write!(
+                w,
+                r#""arc.emit"({v}, %output_stream) : ({t}, !arc.stream<{t}>) -> {rt}"#,
+                v = v.pretty(fmt),
+                t = v.t.pretty(fmt),
+                rt = rt
+            ),
             mlir::OpKind::Loop(_) => crate::todo!(),
             mlir::OpKind::Call(v, vs) => write!(
                 w,
@@ -348,6 +383,8 @@ pretty! {
             mlir::OpKind::Break(_) => crate::todo!(),
             mlir::OpKind::Continue => crate::todo!(),
             mlir::OpKind::Log(_) => crate::todo!(),
+            mlir::OpKind::Noop => write!(w, "// noop"),
+            mlir::OpKind::Panic => write!(w, r#""arc.panic"() : () -> ()"#),
         }
     },
     mlir::Block => write!(w, "{{{}{s0}}}",
@@ -382,7 +419,7 @@ pretty! {
             mlir::ItemKind::Task(_)    => unreachable!(),
         }
         mlir::TypeKind::Array(_t, _sh) => crate::todo!(),
-        mlir::TypeKind::Stream(t)      => write!(w, "arc.stream<{}>", t.pretty(fmt)),
+        mlir::TypeKind::Stream(t)      => write!(w, "!arc.stream<{}>", t.pretty(fmt)),
         mlir::TypeKind::Tuple(ts)      => write!(w, "tuple<{}>", ts.iter().all_pretty(", ", fmt)),
         mlir::TypeKind::Fun(ts, t)     => write!(w, "({}) -> {}",
             ts.iter()
