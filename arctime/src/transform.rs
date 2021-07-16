@@ -20,14 +20,14 @@ impl<I: DataReqs> Stream<I> {
         other: Stream<X>,
         task: Task<S, Either<I, X>, O, Never>,
     ) -> Stream<O> {
-        let mergel: Arc<Component<Task<_, _, _, _>>> = self.client.system().create(|| {
+        let mergel = self.client.system().create(|| {
             Task::new(
                 "Merge Left",
                 (),
                 |task: &mut Task<(), I, Either<I, X>, Never>, event| task.emit(Either::L(event)),
             )
         });
-        let merger: Arc<Component<Task<_, _, _, _>>> = self.client.system().create(|| {
+        let merger = self.client.system().create(|| {
             Task::new(
                 "Merge Right",
                 (),
@@ -35,8 +35,8 @@ impl<I: DataReqs> Stream<I> {
             )
         });
         let task = self.client.system().create(|| task);
-        biconnect_components::<StreamPort<_>, _, _>(&task, &mergel);
-        biconnect_components::<StreamPort<_>, _, _>(&task, &merger);
+        biconnect_components::<StreamPort<_>, _, _>(&task, &mergel).expect("biconnect");
+        biconnect_components::<StreamPort<_>, _, _>(&task, &merger).expect("biconnect");
         mergel.on_definition(|c| (self.connector)(&mut c.data_iport));
         merger.on_definition(|c| (other.connector)(&mut c.data_iport));
         let connect = create_connector(task.clone());

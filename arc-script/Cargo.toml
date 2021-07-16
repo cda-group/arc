@@ -45,7 +45,6 @@ members = [
   "arc-script-api/build",
   "arc-script-api/include",
   "arc-script-api/arcorn",
-  "arc-script-api/arcorn/macros",
   "arc-script-repl",
   "arc-script-lsp",
   "arc-script-cli",
@@ -54,7 +53,6 @@ members = [
   "arc-script-test/compile",
   "arc-script-test/bench",
   "arc-script-test/stdlib",
-  "arc-script-test/arcon",
 ]
 
 default-members = [
@@ -67,23 +65,19 @@ default-members = [
   "arc-script-api/build",
   "arc-script-api/include",
   "arc-script-api/arcorn",
-  "arc-script-api/arcorn/macros",
   "arc-script-repl",
   "arc-script-lsp",
   "arc-script-cli",
   "arc-script-web-repl",
 #   "arc-script-web-lsp",
 #   "arc-script-test/compile",
-#   "arc-script-test/integration/dynamic",
-#   "arc-script-test/integration/dynamic-cached",
+#   "arc-script-test/integration/basic",
   "arc-script-test/bench",
   "arc-script-test/stdlib",
 ]
 
 exclude = [
-  "arc-script-test/integration/dynamic",
-  "arc-script-test/integration/dynamic-cached",
-  "arc-script-test/arcon",
+  "arc-script-test/integration/basic",
   "fuzz",
 #   "arc-script-web-repl",
   "arc-script-web-lsp",

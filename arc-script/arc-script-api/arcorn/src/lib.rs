@@ -1,52 +1,19 @@
-#![feature(unboxed_closures)]
+#[cfg(feature = "backend_arctime")]
+pub use arc_script_arcorn_arctime as backend;
 
-// #[macro_use(match_cfg)]
-// extern crate match_cfg;
+#[cfg(feature = "backend_arcon")]
+pub use arc_script_arcorn_arcon as backend;
 
-// match_cfg::match_cfg! {
-//     #[cfg(feature = "backend_arcon")] => {
-//         pub mod backends {
-//             pub mod arcon {
-//                 pub mod operators {
-//                     pub mod convert;
-//                 }
-//                 pub mod state;
-//             }
-//         }
-//         pub use backends::arcon::*;
-//         pub use arcon;
-//         pub use prost;
-//         pub use arcon_macros;
-//         pub use arcon::prelude::Stream;
-//     }
-//     #[cfg(feature = "backend_arctime")] => {
-pub mod backends {
-    pub mod arctime {}
-}
-pub use arctime;
-pub use arctime::prelude::Stream;
-pub use backends::arctime::*;
-//     }
-//     _ => {
-//         compile_err!("No backend found");
-//     }
-// }
+pub use arc_script_arcorn_shared as shared;
 
-/// Enum macros
-pub mod enums;
+pub use backend::rewrite;
 
-/// Derive macros for enums, structs, and tasks.
-pub use arcorn_macros::rewrite;
+pub use backend::prelude::Stream;
 
-/// Exports
-pub use derive_more;
-
-pub use paste::paste;
-
-/// Functions must be cloneable
-use dyn_clone::DynClone;
-
-pub trait ArcornFn<Args>: FnOnce<Args> + Send + DynClone + 'static {}
-impl<Args, F> ArcornFn<Args> for F where F: FnOnce<Args> + Send + DynClone + 'static {}
-
-dyn_clone::clone_trait_object!(<I, O> ArcornFn<I, Output=O>);
+pub use shared::derive_more;
+pub use shared::enums;
+pub use shared::paste::paste;
+pub use shared::ArcornFn;
+pub use shared::is;
+pub use shared::enwrap;
+pub use shared::unwrap;

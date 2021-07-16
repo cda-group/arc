@@ -17,3 +17,5 @@ time                          = { version = "0.2.26", features = ["rand", "depre
 arrayvec                      = { version = "0.7.0" }
 hierarchical_hash_wheel_timer = { version = "1.0.0" }
 uuid                          = { version = "0.8.2" }
+rand                          = { version = "0.8.3" }
+dyn-clone                     = { version = "1.0.4" }

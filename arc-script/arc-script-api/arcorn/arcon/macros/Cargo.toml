@@ -1,13 +1,8 @@
 [package]
-name    = "arcorn-macros"
+name    = "arc-script-arcorn-arctime-macros"
 version = "0.0.0"
 authors = ["Klas Segeljakt <klasseg@kth.se>"]
 edition = "2018"
-
-[features]
-backend_arcon   = []
-backend_arctime = []
-default         = ["backend_arctime"]
 
 [lib]
 proc-macro = true

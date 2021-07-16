@@ -2,22 +2,23 @@
 #![allow(deprecated)]
 #![allow(dead_code)]
 
-use arrayvec::ArrayVec;
-use kompact::component::AbstractComponent;
 use kompact::prelude::*;
-use time::*;
 
-use crate::control::*;
-use crate::pipeline::*;
-use crate::port::*;
+use crate::port::ControlEvent;
+use crate::port::ControlPort;
+use crate::port::ControlReply;
+use crate::port::DataReqs;
+use crate::port::DateTime;
+use crate::port::StreamEvent;
+use crate::port::StreamPort;
+use crate::port::StreamReply;
 use crate::stream::*;
 use crate::timer::*;
 
-use std::collections::HashMap;
-use std::collections::VecDeque;
 use std::sync::Arc;
 use std::time::Duration;
 
+/// A `Role` of a `Task`. This is used to determine if the task should produce or consume data.
 pub enum Role {
     Producer,
     ProducerConsumer,
@@ -43,6 +44,7 @@ pub struct Task<S: DataReqs, I: DataReqs, O: DataReqs, R: DataReqs = Never> {
     pub role: Role,
 }
 
+/// A timer which uses processing-time.
 #[derive(Clone)]
 pub struct ProcessingTimer<S: DataReqs, I: DataReqs, O: DataReqs, R: DataReqs> {
     duration: Duration,
@@ -58,12 +60,13 @@ impl<R: DataReqs, S: DataReqs, I: DataReqs, O: DataReqs> Actor for Task<S, I, O,
         Handled::Ok
     }
 
-    fn receive_network(&mut self, msg: NetMessage) -> Handled {
+    fn receive_network(&mut self, _msg: NetMessage) -> Handled {
         todo!()
     }
 }
 
 impl<S: DataReqs, I: DataReqs, O: DataReqs, R: DataReqs> Task<S, I, O, R> {
+    /// Returns a new `Task`.
     pub fn new(name: &'static str, state: S, logic: fn(&mut Self, I)) -> Self {
         Self {
             ctx: ComponentContext::uninitialised(),
@@ -77,29 +80,28 @@ impl<S: DataReqs, I: DataReqs, O: DataReqs, R: DataReqs> Task<S, I, O, R> {
             logic,
             ptimer: None,
             role: Role::ProducerConsumer,
-            lowest_observed_watermarks: vec![],
+            lowest_observed_watermarks: vec![DateTime::unix_epoch()],
             time: DateTime::unix_epoch(),
             etimer: EventTimer::default(),
         }
     }
 
-    pub(crate) fn set_role(mut self, role: Role) -> Self {
+    pub fn producer(name: &'static str, state: S) -> Self {
+        Self::new(name, state, |_, _| {}).set_role(Role::Producer)
+    }
+
+    pub(crate) fn set_role(self, role: Role) -> Self {
         Self { role, ..self }
     }
 
-    pub(crate) fn new_periodic(
-        name: &'static str,
-        state: S,
-        duration: Duration,
-        trigger: fn(&mut Self),
-    ) -> Self {
+    pub(crate) fn set_periodic_timer(self, duration: Duration, trigger: fn(&mut Self)) -> Self {
         Self {
             ptimer: Some(ProcessingTimer {
                 duration,
                 trigger,
                 scheduled: None,
             }),
-            ..Self::new(name, state, |_, _| {})
+            ..self
         }
     }
 
@@ -114,7 +116,7 @@ impl<S: DataReqs, I: DataReqs, O: DataReqs, R: DataReqs> Task<S, I, O, R> {
     /// Die with a return value
     pub fn exit(&mut self, rval: R) {
         if let Some(promise) = self.promise.take() {
-            promise.reply(rval);
+            promise.reply(rval).expect("reply");
         };
         self.data_oport.trigger(StreamEvent::End);
         self.ctx.suicide();
@@ -165,14 +167,14 @@ impl<S: DataReqs, I: DataReqs, O: DataReqs, R: DataReqs> FnOnce<(Stream<I>,)> fo
             .borrow_mut()
             .push(Box::new(move || client.system().start(&task)));
         let client = stream.client.clone();
-        (Stream::new(client, connector, start_fns))
+        Stream::new(client, connector, start_fns)
     }
 }
 
 pub(crate) fn create_connector<S: DataReqs, I: DataReqs, O: DataReqs, R: DataReqs>(
     producer: Arc<Component<Task<S, I, O, R>>>,
 ) -> Arc<dyn Fn(&mut ProvidedPort<StreamPort<O>>) + 'static> {
-    Arc::new(move |mut iport| {
+    Arc::new(move |iport| {
         producer.on_definition(|producer| {
             iport.connect(producer.data_oport.share());
             producer.data_oport.connect(iport.share());
@@ -180,7 +182,9 @@ pub(crate) fn create_connector<S: DataReqs, I: DataReqs, O: DataReqs, R: DataReq
     })
 }
 
-impl<S: DataReqs, I: DataReqs, O: DataReqs, R: DataReqs> Provide<StreamPort<I>> for Task<S, I, O, R> {
+impl<S: DataReqs, I: DataReqs, O: DataReqs, R: DataReqs> Provide<StreamPort<I>>
+    for Task<S, I, O, R>
+{
     fn handle(&mut self, event: StreamEvent<I>) -> Handled {
         match event {
             StreamEvent::Watermark(time) => {
@@ -204,14 +208,16 @@ impl<S: DataReqs, I: DataReqs, O: DataReqs, R: DataReqs> Provide<StreamPort<I>> 
     }
 }
 
-impl<S: DataReqs, I: DataReqs, O: DataReqs, R: DataReqs> Require<StreamPort<O>> for Task<S, I, O, R> {
+impl<S: DataReqs, I: DataReqs, O: DataReqs, R: DataReqs> Require<StreamPort<O>>
+    for Task<S, I, O, R>
+{
     fn handle(&mut self, event: StreamReply) -> Handled {
         Handled::Ok
     }
 }
 
 impl<S: DataReqs, I: DataReqs, O: DataReqs, R: DataReqs> Provide<ControlPort> for Task<S, I, O, R> {
-    fn handle(&mut self, event: ControlEvent) -> Handled {
+    fn handle(&mut self, _event: ControlEvent) -> Handled {
         todo!()
     }
 }

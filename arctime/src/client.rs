@@ -1,12 +1,5 @@
 use kompact::prelude::*;
 
-use std::sync::Arc;
-
-use crate::control::*;
-use crate::pipeline::*;
-use crate::port::*;
-use crate::task::*;
-
 #[derive(ComponentDefinition, Actor)]
 pub struct Client {
     pub ctx: ComponentContext<Self>,

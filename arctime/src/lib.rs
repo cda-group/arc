@@ -20,10 +20,10 @@ pub mod timer;
 pub mod transform;
 pub mod state;
 pub mod channel;
+pub mod datagen;
 
 pub mod prelude {
     pub use crate::client::*;
-    pub use crate::control::*;
     pub use crate::epochs::*;
     pub use crate::executor::*;
     pub use crate::loops::*;
@@ -34,10 +34,13 @@ pub mod prelude {
     pub use crate::stream::*;
     pub use crate::transform::*;
     pub use crate::state::*;
-    // pub use crate::task;
+    pub use crate::task::*;
+    pub use crate::datagen::*;
     pub use kompact::prelude::*;
     pub use std::any::Any;
     pub use std::any::TypeId;
     pub use std::marker::PhantomData;
     pub use std::sync::Arc;
+    pub use std::time::Duration;
+    pub use time::PrimitiveDateTime as DateTime;
 }
