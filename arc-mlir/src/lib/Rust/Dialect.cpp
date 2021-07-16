@@ -81,7 +81,7 @@ void RustDialect::initialize() {
   u16Ty = RustType::get(ctx, "u16");
   u32Ty = RustType::get(ctx, "u32");
   u64Ty = RustType::get(ctx, "u64");
-  noneTy = RustType::get(ctx, "unit");
+  noneTy = RustType::get(ctx, "()");
 }
 
 //===----------------------------------------------------------------------===//
@@ -657,7 +657,7 @@ raw_ostream &RustType::printAsRust(raw_ostream &os) const {
 
 bool RustType::isBool() const { return getRustType().equals("bool"); }
 
-bool RustType::isUnit() const { return getRustType().equals("unit"); }
+bool RustType::isUnit() const { return getRustType().equals("()"); }
 
 RustType RustType::getFloatTy(RustDialect *dialect) { return dialect->floatTy; }
 
@@ -703,7 +703,11 @@ struct RustEnumTypeStorage : public TypeStorage {
     for (auto &f : fields) {
       StringRef fieldName = f.first.getValue();
       s << fieldName.size() << fieldName;
-      s << getTypeSignature(f.second);
+      RustType vt = f.second.dyn_cast<RustType>();
+      if (vt && vt.isUnit())
+        s << "unit";
+      else
+        s << getTypeSignature(f.second);
     }
     s << "End";
     signature = s.str();
@@ -809,14 +813,8 @@ RustEnumTypeStorage::printAsRust(RustPrinterStream &ps) const {
   printAsRustNamedType(os) << " {\n";
 
   for (unsigned i = 0; i < enumVariants.size(); i++) {
-    os << "  " << enumVariants[i].first.getValue() << "(";
-    RustType rt = enumVariants[i].second.dyn_cast<RustType>();
-    if ((rt && rt.isUnit()))
-      os << "()";
-    else
-      os << getTypeString(enumVariants[i].second);
-    os << ")"
-       << ",\n";
+    os << "  " << enumVariants[i].first.getValue() << "("
+       << getTypeString(enumVariants[i].second) << "),\n";
   }
   os << "\n}\n";
   return ps;
