@@ -549,4 +549,22 @@ def Rust_RustTupleOp
     void writeRust(RustPrinterStream &);
   }];
 }
+
+def Rust_RustPanicOp : Rust_Op<"panic", []> {
+  let summary = "Trigger a run-time panic";
+  let description = [{
+    Trigger a run-time panic
+  }];
+  let arguments = (ins OptionalAttr<StrAttr>:$msg);
+  let results = (outs );
+
+  let assemblyFormat = [{
+    `(` ($msg^)? `)` attr-dict
+  }];
+  let extraClassDeclaration = [{
+    // Write this operation as Rust code to the stream
+    void writeRust(RustPrinterStream &);
+  }];
+}
+
 #endif // RUST_OPS

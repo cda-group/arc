@@ -346,6 +346,28 @@ private:
   RustTypeConverter &TypeConverter;
 };
 
+struct PanicOpLowering : public ConversionPattern {
+  PanicOpLowering(MLIRContext *ctx)
+      : ConversionPattern(arc::PanicOp::getOperationName(), 1, ctx), Ctx(ctx) {}
+
+  LogicalResult
+  matchAndRewrite(Operation *op, ArrayRef<Value> operands,
+                  ConversionPatternRewriter &rewriter) const final {
+    PanicOp o = cast<PanicOp>(op);
+    auto msg = o.msg();
+    if (msg.hasValue())
+      rewriter.replaceOpWithNewOp<rust::RustPanicOp>(
+          op, StringAttr::get(Ctx, msg.getValue()));
+    else
+      rewriter.replaceOpWithNewOp<rust::RustPanicOp>(op, nullptr);
+
+    return success();
+  };
+
+private:
+  MLIRContext *Ctx;
+};
+
 struct MakeStructOpLowering : public ConversionPattern {
   MakeStructOpLowering(MLIRContext *ctx, RustTypeConverter &typeConverter)
       : ConversionPattern(arc::MakeStructOp::getOperationName(), 1, ctx),
@@ -1008,6 +1030,7 @@ void ArcToRustLoweringPass::runOnOperation() {
   patterns.insert<EnumAccessOpLowering>(&getContext(), typeConverter);
   patterns.insert<EnumCheckOpLowering>(&getContext(), typeConverter);
   patterns.insert<EmitOpLowering>(&getContext(), typeConverter);
+  patterns.insert<PanicOpLowering>(&getContext());
   patterns.insert<StructAccessOpLowering>(&getContext(), typeConverter);
   patterns.insert<StdCallOpLowering>(&getContext(), typeConverter);
   patterns.insert<StdCallIndirectOpLowering>(&getContext(), typeConverter);

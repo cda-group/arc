@@ -735,4 +735,26 @@ def Arc_StateValueReadOp : Arc_Op<"value_read", []> {
   let verifier = [{ return customVerify(); }];
 }
 
+def PanicOp : Arc_Op<"panic", []> {
+  let summary = "Trigger a run-time panic";
+  let description = [{
+    Trigger a run-time panic
+
+    ```
+    "arc.panic"() : () -> ()
+    "arc.panic"() {msg = "foo"} : () -> ()
+    arc.panic()
+    arc.panic("foo")
+    ```
+  }];
+  let arguments = (ins OptionalAttr<StrAttr>:$msg);
+  let results = (outs );
+
+  let assemblyFormat = [{
+    `(` ($msg^)? `)` attr-dict
+  }];
+}
+
+
+
 #endif // ARC_OPS
