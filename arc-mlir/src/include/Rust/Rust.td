@@ -561,6 +561,10 @@ def Rust_RustPanicOp : Rust_Op<"panic", []> {
   let assemblyFormat = [{
     `(` ($msg^)? `)` attr-dict
   }];
+  let extraClassDeclaration = [{
+    // Write this operation as Rust code to the stream
+    void writeRust(RustPrinterStream &);
+  }];
 }
 
 #endif // RUST_OPS

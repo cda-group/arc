@@ -268,6 +268,8 @@ static RustPrinterStream &writeRust(Operation &operation,
     op.writeRust(PS);
   else if (RustEmitOp op = dyn_cast<RustEmitOp>(operation))
     op.writeRust(PS);
+  else if (RustPanicOp op = dyn_cast<RustPanicOp>(operation))
+    op.writeRust(PS);
   else {
     operation.emitError("Unsupported operation");
   }
@@ -542,6 +544,13 @@ void RustBlockResultOp::writeRust(RustPrinterStream &PS) {
   }
   auto r = getOperand(0);
   PS << r << "\n";
+}
+
+void RustPanicOp::writeRust(RustPrinterStream &PS) {
+  PS << "panic!(";
+  if (msg().hasValue())
+    PS << "\"" << msg().getValue() << "\"";
+  PS << ");\n";
 }
 
 void RustTensorOp::writeRust(RustPrinterStream &PS) {
