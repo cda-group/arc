@@ -233,7 +233,7 @@ def MakeStructOp : Arc_Op<"make_struct", [NoSideEffect]> {
   let verifier = [{ return customVerify(); }];
 
   let assemblyFormat = [{
-    (`(` $values^ `:` type($values) `)`)? attr-dict `:` type($result)
+    `(` ($values^ `:` type($values) )? `)` attr-dict `:` type($result)
   }];
 }
 
