@@ -153,7 +153,8 @@ public:
 
   typedef std::pair<mlir::StringAttr, mlir::Type> FieldTy;
 
-  static StructType get(llvm::ArrayRef<FieldTy> elementTypes);
+  static StructType get(mlir::MLIRContext *ctx,
+                        llvm::ArrayRef<FieldTy> elementTypes);
 
   /// Returns the fields of this struct type.
   llvm::ArrayRef<FieldTy> getFields() const;

@@ -1,15 +1,6 @@
 // RUN: arc-mlir %s -split-input-file -verify-diagnostics
 
 module @toplevel {
-// expected-error@+1 {{expected valid keyword}}
-  func @fail0(%in : !arc.struct<>) -> () {
-    return
-  }
-}
-
-// -----
-
-module @toplevel {
 // expected-error@+1 {{expected ':'}}
   func @fail1(%in : !arc.struct<foo>) -> () {
     return

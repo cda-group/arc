@@ -1237,10 +1237,8 @@ struct StructTypeStorage : public mlir::TypeStorage {
   llvm::ArrayRef<StructType::FieldTy> fields;
 };
 
-StructType StructType::get(llvm::ArrayRef<StructType::FieldTy> elementTypes) {
-  assert(!elementTypes.empty() && "expected at least 1 element type");
-
-  mlir::MLIRContext *ctx = elementTypes.front().second.getContext();
+StructType StructType::get(mlir::MLIRContext *ctx,
+                           llvm::ArrayRef<StructType::FieldTy> elementTypes) {
   return Base::get(ctx, elementTypes);
 }
 
@@ -1258,8 +1256,12 @@ Type StructType::parse(DialectAsmParser &parser) {
   Builder &builder = parser.getBuilder();
 
   SmallVector<StructType::FieldTy, 3> elementTypes;
-  do {
+  while (true) {
     StringRef name;
+
+    if (succeeded(parser.parseOptionalGreater()))
+      return StructType::get(parser.getBuilder().getContext(), elementTypes);
+
     if (parser.parseKeyword(&name) || parser.parseColon())
       return nullptr;
 
@@ -1269,11 +1271,8 @@ Type StructType::parse(DialectAsmParser &parser) {
       return nullptr;
 
     elementTypes.push_back(elementType);
-  } while (succeeded(parser.parseOptionalComma()));
-
-  if (parser.parseGreater())
-    return Type();
-  return StructType::get(elementTypes);
+    parser.parseOptionalComma();
+  }
 }
 
 void StructType::print(DialectAsmPrinter &os) const {

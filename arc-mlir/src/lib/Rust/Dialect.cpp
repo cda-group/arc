@@ -752,8 +752,7 @@ unsigned RustEnumTypeStorage::idCounter = 0;
 
 RustEnumType RustEnumType::get(RustDialect *dialect,
                                ArrayRef<EnumVariantTy> fields) {
-  mlir::MLIRContext *ctx = fields.front().second.getContext();
-  return Base::get(ctx, fields);
+  return Base::get(dialect->getContext(), fields);
 }
 
 void RustEnumType::print(DialectAsmPrinter &os) const { getImpl()->print(os); }
@@ -896,8 +895,7 @@ private:
 unsigned RustStreamTypeStorage::idCounter = 0;
 
 RustStreamType RustStreamType::get(RustDialect *dialect, Type item) {
-  mlir::MLIRContext *ctx = item.getContext();
-  return Base::get(ctx, item);
+  return Base::get(dialect->getContext(), item);
 }
 
 void RustStreamType::print(DialectAsmPrinter &os) const {
@@ -1014,8 +1012,7 @@ unsigned RustStructTypeStorage::idCounter = 0;
 
 RustStructType RustStructType::get(RustDialect *dialect,
                                    ArrayRef<StructFieldTy> fields) {
-  mlir::MLIRContext *ctx = fields.front().second.getContext();
-  return Base::get(ctx, fields);
+  return Base::get(dialect->getContext(), fields);
 }
 
 void RustStructType::print(DialectAsmPrinter &os) const {
@@ -1154,8 +1151,7 @@ struct RustTensorTypeStorage : public TypeStorage {
 
 RustTensorType RustTensorType::get(RustDialect *dialect, Type elementTy,
                                    ArrayRef<int64_t> dimensions) {
-  mlir::MLIRContext *ctx = elementTy.getContext();
-  return Base::get(ctx, elementTy, dimensions);
+  return Base::get(dialect->getContext(), elementTy, dimensions);
 }
 
 void RustTensorType::print(DialectAsmPrinter &os) const {
@@ -1240,8 +1236,7 @@ struct RustTupleTypeStorage : public TypeStorage {
 };
 
 RustTupleType RustTupleType::get(RustDialect *dialect, ArrayRef<Type> fields) {
-  mlir::MLIRContext *ctx = fields.front().getContext();
-  return Base::get(ctx, fields);
+  return Base::get(dialect->getContext(), fields);
 }
 
 void RustTupleType::print(DialectAsmPrinter &os) const { getImpl()->print(os); }
