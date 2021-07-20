@@ -1,3 +1,24 @@
+pub fn an_external_fun0(i: i32) -> f32 {
+  return 3.14;
+}
+
+pub fn an_external_fun3(i: i32) -> i32 {
+  return i;
+}
+
+pub fn an_external_fun1() -> Box<dyn arcorn::ArcornFn(i32,) -> i32> {
+  return Box::new(an_external_fun3);
+}
+
+pub fn an_external_fun2(i : arcorn::Stream<Struct3keyi325valuei32End>)
+    -> arcorn::Stream<Struct3keyi325valuei32End>{
+  return i;
+}
+
+pub fn crate_Identity() -> Box<dyn arcorn::ArcornFn(arcorn::Stream<Struct3keyi325valuei32End>) -> arcorn::Stream<Struct3keyi325valuei32End>> {
+  return Box::new(an_external_fun2);
+}
+
 #[cfg(test)]
 mod tests {
   use crate::toplevel::*;
