@@ -14,12 +14,9 @@ impl MLIR {
     #[instrument(name = "HIR => MLIR", level = "debug", skip(hir, info))]
     pub(crate) fn from(hir: &HIR, info: &mut Info) -> Self {
         let ops = Vec::new();
-        let ctx = &mut Context::new(hir, info, ops);
-        let defs = hir
-            .namespace
-            .iter()
-            .map(|x| (*x, hir.resolve(x).lower(ctx)))
-            .collect::<OrdMap<_, _>>();
-        Self::new(hir.namespace.clone(), defs)
+        let mut mlir = MLIR::default();
+        let ctx = &mut Context::new(hir, &mut mlir, info, ops);
+        hir.lower(ctx);
+        mlir
     }
 }

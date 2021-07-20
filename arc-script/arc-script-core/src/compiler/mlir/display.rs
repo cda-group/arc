@@ -91,7 +91,7 @@ pretty! {
             .iter()
             .filter_map(|i| {
                 let x = node.resolve(i);
-	              match x.kind {
+                  match x.kind {
                     // There is no need to "declare" enum
                     // types before use in MLIR, so just
                     // filter them out
@@ -106,29 +106,63 @@ pretty! {
         mlir::ItemKind::Task(item)  => write!(w, "{}", item.pretty(fmt)),
     },
     mlir::Fun => {
-		    write!(w, "func @{id}({params}) -> {t} {body}\n",
-		        id = node.path.pretty(fmt),
-		        params = node
+            write!(w, "func @{id}({params}) -> {t} {body}\n",
+                id = node.path.pretty(fmt),
+                params = node
                 .params
                 .iter()
                 .filter(|p| matches!(&p.kind, mlir::VarKind::Ok(_)))
-                .map_pretty(|p, w| write!(w, "{}: {}", p.pretty(fmt), p.t.pretty(fmt)), ", "),
-		        t = node.t.pretty(fmt),
-		        body = node.body.pretty(&fmt.indent()),
-		    )
+                .map_pretty(|p, w| write!(w, "{}", p.pretty(fmt)), ", "),
+                t = node.t.pretty(fmt),
+                body = node.body.pretty(&fmt.indent()),
+            )
     },
     mlir::Name => write!(w, "{}", fmt.names.resolve(node)),
-    mlir::Task => write!(w, "task {name}({params}) ({iports}) -> ({oports}) {{{items}{s0}{s0}}}",
-        name = node.path.pretty(fmt),
-        params = node.params.iter().all_pretty(", ", fmt),
-        iports = node.iports.pretty(fmt),
-        oports = node.oports.pretty(fmt),
-        items = node
-            .items
-            .iter()
-            .map_pretty(|i, w| write!(w, "{s0}{s0}{}", i.pretty(fmt.indent()), s0 = fmt.indent()), ""),
-        s0 = fmt,
-    ),
+    mlir::Task => {
+        write!(w,
+    r#"func private @{name}({params}) -> (({istream_ts}) -> ({ostream_ts}))"#,
+            name = node.path.pretty(fmt),
+            params = node.params.iter().all_pretty(", ", fmt),
+            istream_ts = node.istream_ts.iter().all_pretty(", ", fmt),
+            ostream_ts = node.ostream_ts.iter().all_pretty(", ", fmt),
+        )?;
+        write!(w,
+    r#"{s1}func @{name}_on_event(
+        %this : {this_t},
+        {ievent},
+        %output_stream : !arc.stream<{oevent_t}>
+    ) -> ()
+    attributes {{
+        "arc.mod_name" = "mod_{name}",
+        "arc.task_name" = "{name}",
+        "arc.is_event_handler"
+    }} {body}"#,
+            name = node.path.pretty(fmt),
+            this_t = node.this_t.pretty(fmt),
+            ievent = node.ievent.pretty(fmt),
+            oevent_t = node.oevent_t.pretty(fmt),
+            body = node.on_event.pretty(fmt.indent()),
+            s1 = fmt.indent(),
+        )?;
+        write!(w,
+    r#"{s1}func @{name}_on_start(
+        %this : {this_t}
+    ) -> ()
+    attributes {{
+        "arc.mod_name" = "mod_{name}",
+        "arc.task_name" = "{name}",
+        "arc.is_event_handler"
+    }} {body}"#,
+            name = node.path.pretty(fmt),
+            this_t = node.this_t.pretty(fmt),
+            body = node.on_start.pretty(fmt.indent()),
+            s1 = fmt.indent(),
+        )?;
+    },
+    mlir::Param => match &node.kind {
+        mlir::VarKind::Ok(x) => write!(w, "%{}: {}", x.pretty(fmt), node.t.pretty(fmt)),
+        mlir::VarKind::Elided => write!(w, "/* elided */"),
+    },
     mlir::Path => write!(w, "{}", node.id.pretty(fmt)),
     mlir::PathId => {
         let kind = fmt.paths.resolve(*node);
@@ -158,11 +192,11 @@ pretty! {
     mlir::Op => {
         use mlir::ConstKind::*;
         use mlir::OpKind::*;
-        if let mlir::VarKind::Ok(x) = &node.var.kind {
-            write!(w, "{} = ", node.var.pretty(fmt))?;
-        }
         use mlir::BinOpKind::*;
-        let rt = node.var.t.pretty(fmt);
+        if let mlir::VarKind::Ok(x) = &node.param.kind {
+            write!(w, "%{} = ", x.pretty(fmt))?;
+        }
+        let rt = node.param.t.pretty(fmt);
         match &node.kind {
             mlir::OpKind::Const(c) => match c {
                 mlir::ConstKind::Bool(true)  => write!(w, r#"constant true"#),
@@ -239,19 +273,19 @@ pretty! {
                     .map_pretty(|v, w| write!(w, "{}", v.t.pretty(fmt)), ", "),
                 rt = rt,
             ),
-	          // %s = arc.make_enum (%a : i32) as "a" : !arc.enum<a : i32>
+              // %s = arc.make_enum (%a : i32) as "a" : !arc.enum<a : i32>
             mlir::OpKind::Enwrap(x, v) => if v.t.is_unit(fmt.ctx.info) {
                 write!(w, r#"arc.make_enum () as "{}" : {}"#, x.pretty(fmt), rt)
             } else {
                 write!(w, r#"arc.make_enum ({} : {}) as "{}" : {}"#, v.pretty(fmt), v.t.pretty(fmt), x.pretty(fmt), rt)
             },
-	          // %r = arc.enum_access "b" in (%e : !arc.enum<a : i32, b : f32>) : f32
-            mlir::OpKind::Unwrap(x, v) => if node.var.t.is_unit(fmt.ctx.info) {
+              // %r = arc.enum_access "b" in (%e : !arc.enum<a : i32, b : f32>) : f32
+            mlir::OpKind::Unwrap(x, v) => if node.param.t.is_unit(fmt.ctx.info) {
                 write!(w, r#"arc.enum_access "{}" in ({} : {}) : none"#, x.pretty(fmt), v.pretty(fmt), v.t.pretty(fmt))
             } else {
                 write!(w, r#"arc.enum_access "{}" in ({} : {}) : {}"#, x.pretty(fmt), v.pretty(fmt), v.t.pretty(fmt), rt)
             },
-		        // %r = arc.enum_check (%e : !arc.enum<a : i32, b : f32>) is "a" : i1
+                // %r = arc.enum_check (%e : !arc.enum<a : i32, b : f32>) is "a" : i1
             mlir::OpKind::Is(x, v) => write!(
                 w,
                 r#"arc.enum_check ({} : {}) is "{}" : {}"#,
@@ -265,7 +299,7 @@ pretty! {
                 r#""arc.make_tuple"({vs}) : ({ts}) -> {rt}"#,
                 vs = vs.all_pretty(", ", fmt),
                 ts = vs.map_pretty(|v, w| write!(w, "{}", v.t.pretty(fmt)), ", "),
-                rt = rt,
+                rt = SpecialCase::new(node.param.t).pretty(fmt),
             ),
             mlir::OpKind::UnOp(_, _) => crate::todo!(),
             mlir::OpKind::If(v, b0, b1) => write!(
@@ -276,7 +310,13 @@ pretty! {
                 b1 = b1.pretty(fmt.indent()),
                 rt = rt,
             ),
-            mlir::OpKind::Emit(_) => crate::todo!(),
+            mlir::OpKind::Emit(v) => write!(
+                w,
+                r#""arc.emit"({v}, %output_stream) : ({t}, !arc.stream<{t}>) -> {rt}"#,
+                v = v.pretty(fmt),
+                t = v.t.pretty(fmt),
+                rt = rt
+            ),
             mlir::OpKind::Loop(_) => crate::todo!(),
             mlir::OpKind::Call(v, vs) => write!(
                 w,
@@ -287,7 +327,7 @@ pretty! {
                     .iter()
                     .filter(|v| !v.t.is_unit(fmt.ctx.info))
                     .map_pretty(|v, w| write!(w, "{}", v.t.pretty(fmt)), ", "),
-                rt = rt,
+                rt = SpecialCase::new(node.param.t).pretty(fmt),
             ),
             mlir::OpKind::CallIndirect(v, vs) => write!(
                 w,
@@ -298,7 +338,7 @@ pretty! {
                     .iter()
                     .filter(|v| !v.t.is_unit(fmt.ctx.info))
                     .map_pretty(|v, w| write!(w, "{}", v.t.pretty(fmt)), ", "),
-                rt = rt,
+                rt = SpecialCase::new(node.param.t).pretty(fmt),
             ),
             mlir::OpKind::CallMethod(v, x, vs) => write!(
                 w,
@@ -310,24 +350,24 @@ pretty! {
                     .iter()
                     .filter(|v| !v.t.is_unit(fmt.ctx.info))
                     .map_pretty(|v, w| write!(w, "{}", v.t.pretty(fmt)), ", "),
-                rt = rt,
+                rt = SpecialCase::new(node.param.t).pretty(fmt),
             ),
             mlir::OpKind::Return(v) => {
                 if v.t.is_unit(fmt.ctx.info) {
-			              write!(w, "return")
+                          write!(w, "return")
                 } else {
-			             write!(w, r#"return {} : {}"#, v.pretty(fmt), rt) 
-		            }
+                         write!(w, r#"return {} : {}"#, v.pretty(fmt), rt)
+                    }
             }
             mlir::OpKind::Result(v) => {
                 if v.t.is_unit(fmt.ctx.info) {
-			              write!(w, r#""arc.block.result"() : () -> ()"#)
+                          write!(w, r#""arc.block.result"() : () -> ()"#)
                 } else {
-			              write!(w, r#""arc.block.result"({v}) : ({t}) -> ()"#,
-			                  v = v.pretty(fmt),
-			                  t = v.t.pretty(fmt),
-			              )
-		            }
+                          write!(w, r#""arc.block.result"({v}) : ({t}) -> ()"#,
+                              v = v.pretty(fmt),
+                              t = v.t.pretty(fmt),
+                          )
+                    }
             },
             mlir::OpKind::Access(v, i) => write!(
                 w,
@@ -348,6 +388,8 @@ pretty! {
             mlir::OpKind::Break(_) => crate::todo!(),
             mlir::OpKind::Continue => crate::todo!(),
             mlir::OpKind::Log(_) => crate::todo!(),
+            mlir::OpKind::Noop => write!(w, "// noop"),
+            mlir::OpKind::Panic => write!(w, r#""arc.panic"() : () -> ()"#),
         }
     },
     mlir::Block => write!(w, "{{{}{s0}}}",
@@ -382,15 +424,25 @@ pretty! {
             mlir::ItemKind::Task(_)    => unreachable!(),
         }
         mlir::TypeKind::Array(_t, _sh) => crate::todo!(),
-        mlir::TypeKind::Stream(t)      => write!(w, "arc.stream<{}>", t.pretty(fmt)),
+        mlir::TypeKind::Stream(t)      => write!(w, "!arc.stream<{}>", t.pretty(fmt)),
         mlir::TypeKind::Tuple(ts)      => write!(w, "tuple<{}>", ts.iter().all_pretty(", ", fmt)),
         mlir::TypeKind::Fun(ts, t)     => write!(w, "({}) -> {}",
-            ts.iter()
-              .filter(|t| !t.is_unit(fmt.ctx.info))
-              .all_pretty(", ", fmt),
-            t.pretty(fmt)
+            ts.iter().filter(|t| !t.is_unit(fmt.ctx.info)).all_pretty(", ", fmt),
+            SpecialCase::new(t).pretty(fmt),
         ),
         mlir::TypeKind::Unknown(_)     => unreachable!(),
         mlir::TypeKind::Err            => unreachable!(),
     },
+    SpecialCase<mlir::Type> => {
+        if node.inner.is_fun(fmt.ctx.info) {
+            write!(w, "({})", node.inner.pretty(fmt))
+        } else {
+            write!(w, "{}", node.inner.pretty(fmt))
+        }
+    },
+}
+
+#[derive(New)]
+struct SpecialCase<T> {
+    inner: T,
 }

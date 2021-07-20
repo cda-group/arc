@@ -93,4 +93,7 @@ impl TypeId {
     pub(crate) fn is_unit(self, info: &Info) -> bool {
         matches!(info.types.resolve(self), Scalar(Unit))
     }
+    pub(crate) fn is_fun(self, info: &Info) -> bool {
+        matches!(info.types.resolve(self), Fun(_, _))
+    }
 }

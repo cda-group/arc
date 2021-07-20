@@ -5,9 +5,9 @@ input_file: arc-script-test/compile/src/tests/expect_fail/ownership.arc
 
 ---
 module @toplevel {
-    func @crate_main(%s0_0: arc.stream<si32>) -> tuple<arc.stream<si32>, arc.stream<si32>> {
-        %x_0 = "arc.make_tuple"(%s0_0, %s0_0) : (arc.stream<si32>, arc.stream<si32>) -> tuple<arc.stream<si32>, arc.stream<si32>>
-        return %x_0 : tuple<arc.stream<si32>, arc.stream<si32>>
+    func @crate_main(%s0_0: !arc.stream<si32>) -> tuple<!arc.stream<si32>, !arc.stream<si32>> {
+        %x_0 = "arc.make_tuple"(%s0_0, %s0_0) : (!arc.stream<si32>, !arc.stream<si32>) -> tuple<!arc.stream<si32>, !arc.stream<si32>>
+        return %x_0 : tuple<!arc.stream<si32>, !arc.stream<si32>>
     }
 }
 

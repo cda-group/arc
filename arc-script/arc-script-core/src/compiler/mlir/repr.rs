@@ -1,4 +1,5 @@
 use crate::compiler::ast;
+use crate::compiler::hir;
 pub(crate) use crate::compiler::hir::Name;
 pub(crate) use crate::compiler::hir::Path;
 pub(crate) use crate::compiler::hir::PathId;
@@ -17,7 +18,7 @@ use time::Duration;
 /// MLIR is a Multi-Level Intermediate Representation which is the final
 /// representation within the Arc-Script compiler. In contrast to the HIR,
 /// MLIR is in SSA form.
-#[derive(Debug, New)]
+#[derive(Debug, New, Default)]
 pub(crate) struct MLIR {
     /// Top-level items
     pub(crate) items: Vec<PathId>,
@@ -41,16 +42,46 @@ pub(crate) enum ItemKind {
 #[derive(New, Debug)]
 pub(crate) struct Fun {
     pub(crate) path: Path,
-    pub(crate) params: Vec<Var>,
+    pub(crate) params: Vec<Param>,
     pub(crate) body: Block,
     pub(crate) t: Type,
+}
+
+#[derive(New, Debug)]
+pub(crate) struct Task {
+    /// Path of the task
+    pub(crate) path: Path,
+    /// Parameters for instantiating the task
+    pub(crate) params: Vec<Param>,
+    /// Input stream typess
+    pub(crate) istream_ts: Vec<Type>,
+    /// Output stream types
+    pub(crate) ostream_ts: Vec<Type>,
+    /// Type of the task (struct of parameters)
+    pub(crate) this_t: Type,
+    /// Task I/O
+    pub(crate) ievent: Param,
+    pub(crate) oevent_t: Type,
+    /// Event handler.
+    pub(crate) on_event: Block,
+    /// Statements run at startup.
+    pub(crate) on_start: Block,
 }
 
 #[derive(New, Debug, Copy, Clone)]
 pub(crate) struct Var {
     pub(crate) kind: VarKind,
+    pub(crate) scope: ScopeKind,
     pub(crate) t: Type,
 }
+
+#[derive(Debug, Clone, Copy, New)]
+pub(crate) struct Param {
+    pub(crate) kind: VarKind,
+    pub(crate) t: Type,
+}
+
+pub(crate) use hir::ScopeKind;
 
 #[derive(Debug, Copy, Clone)]
 pub(crate) enum VarKind {
@@ -71,24 +102,6 @@ pub(crate) struct Variant {
     pub(crate) loc: Loc,
 }
 
-/// A task is a generic low-level primitive which resembles a node in the dataflow graph.
-#[derive(New, Debug)]
-pub(crate) struct Task {
-    pub(crate) path: Path,
-    /// Type of the task.
-    pub(crate) t: Type,
-    /// Side-input parameters to the task.
-    pub(crate) params: Vec<Var>,
-    /// Input ports to the task.
-    pub(crate) iports: Type,
-    /// Output ports of the task.
-    pub(crate) oports: Type,
-    /// Event handler.
-    pub(crate) handler: Op,
-    /// Items of the task.
-    pub(crate) items: Vec<Path>,
-}
-
 #[derive(New, Debug)]
 pub(crate) struct Setting {
     pub(crate) kind: SettingKind,
@@ -103,7 +116,7 @@ pub(crate) enum SettingKind {
 
 #[derive(Debug, New)]
 pub(crate) struct Op {
-    pub(crate) var: Var,
+    pub(crate) param: Param,
     pub(crate) kind: OpKind,
     pub(crate) loc: Loc,
 }
@@ -132,6 +145,8 @@ pub(crate) enum OpKind {
     Enwrap(Path, Var),
     Unwrap(Path, Var),
     Is(Path, Var),
+    Panic,
+    Noop,
 }
 
 #[derive(Debug, New)]

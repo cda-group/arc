@@ -1,0 +1,49 @@
+---
+source: arc-script-test/compile/src/insta.rs
+expression: s
+input_file: arc-script-test/compile/src/tests/expect_pass/task_id.arc
+
+---
+module @toplevel {
+    func private @crate_Identity() -> ((!arc.stream<!arc.struct<key: si32, value: si32>>) -> (!arc.stream<!arc.struct<key: si32, value: si32>>))
+    func @crate_Identity_on_event(
+        %this : !arc.struct<>,
+        %x_0: !arc.enum<crate_Identity_IInterface_A : !arc.struct<key: si32, value: si32>>,
+        %output_stream : !arc.stream<!arc.enum<crate_Identity_OInterface_B : !arc.struct<key: si32, value: si32>>>
+    ) -> ()
+    attributes {
+        "arc.mod_name" = "mod_crate_Identity",
+        "arc.task_name" = "crate_Identity",
+        "arc.is_event_handler"
+    } {
+        %x_1 = arc.enum_check (%x_0 : !arc.enum<crate_Identity_IInterface_A : !arc.struct<key: si32, value: si32>>) is "crate_Identity_IInterface_A" : i1
+        "arc.if"(%x_1) ({
+            %x_2 = arc.enum_access "crate_Identity_IInterface_A" in (%x_0 : !arc.enum<crate_Identity_IInterface_A : !arc.struct<key: si32, value: si32>>) : !arc.struct<key: si32, value: si32>
+            %x_3 = arc.make_enum (%x_2 : !arc.struct<key: si32, value: si32>) as "crate_Identity_OInterface_B" : !arc.enum<crate_Identity_OInterface_B : !arc.struct<key: si32, value: si32>>
+            "arc.emit"(%x_3, %output_stream) : (!arc.enum<crate_Identity_OInterface_B : !arc.struct<key: si32, value: si32>>, !arc.stream<!arc.enum<crate_Identity_OInterface_B : !arc.struct<key: si32, value: si32>>>) -> ()
+            "arc.block.result"() : () -> ()
+        },{
+            "arc.panic"() : () -> ()
+            "arc.block.result"() : () -> ()
+        }) : (i1) -> ()
+        return
+    }
+    func @crate_Identity_on_start(
+        %this : !arc.struct<>
+    ) -> ()
+    attributes {
+        "arc.mod_name" = "mod_crate_Identity",
+        "arc.task_name" = "crate_Identity",
+        "arc.is_event_handler"
+    } {
+        // noop
+        return
+    }
+    func @crate_main(%input_0: !arc.stream<!arc.struct<key: si32, value: si32>>) -> !arc.stream<!arc.struct<key: si32, value: si32>> {
+        %x_8 = constant @crate_Identity : () -> ((!arc.stream<!arc.struct<key: si32, value: si32>>) -> !arc.stream<!arc.struct<key: si32, value: si32>>)
+        %x_9 = call_indirect %x_8() : () -> ((!arc.stream<!arc.struct<key: si32, value: si32>>) -> !arc.stream<!arc.struct<key: si32, value: si32>>)
+        %x_A = call_indirect %x_9(%input_0) : (!arc.stream<!arc.struct<key: si32, value: si32>>) -> !arc.stream<!arc.struct<key: si32, value: si32>>
+        return %x_A : !arc.stream<!arc.struct<key: si32, value: si32>>
+    }
+}
+
