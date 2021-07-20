@@ -1311,7 +1311,7 @@ std::string RustTupleTypeStorage::getSignature() const {
 static bool isAnyRustType(Type type) {
   if (type.isa<RustType>() || type.isa<RustStructType>() ||
       type.isa<RustTupleType>() || type.isa<RustTensorType>() ||
-      type.isa<RustEnumType>())
+      type.isa<RustEnumType>() || type.isa<RustStreamType>())
     return true;
   if (type.isa<FunctionType>())
     return isRustFunctionType(type);
