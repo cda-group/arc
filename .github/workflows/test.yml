@@ -4,12 +4,14 @@ on:
   pull_request:
     branches: [ master ]
 
-env:
-  CARGO_TERM_COLOR: always
-
 jobs:
   build:
     runs-on: self-hosted
+
+    env:
+      CARGO_TERM_COLOR: always
+      CCACHE_CONFIGPATH: /root/actions-runner/persist/ccache-config
+      PERSIST_DIR: /root/actions-runner/persist/
 
     steps:
 
@@ -26,11 +28,17 @@ jobs:
       env:
         A2M_BUILD: ${{ format('{0}/build', runner.temp) }}
 
+      # Create or reuse directory for ccache
+    - name: Create or reuse ccache
+      run: ./.github/persist.sh
+      env:
+        A2M_BUILD: ${{ format('{0}/build', runner.temp) }}
+
       # Arc-MLIR specific tests
-    - name: Build and test arc-mlir
+    - name: Build and test arc-mlir and arc-script
       run: |
         cd arc-mlir
-        ./arc-mlir-build
+        BUILD_FLAVOUR=Release A2M_ASSERTS="1" ./arc-mlir-build
         ninja tools/arc-mlir/arc-check -C $A2M_BUILD/llvm-build/
         cd ../arc-script
         cargo insta test --package=arc-script-test-compile
@@ -47,6 +55,4 @@ jobs:
         A2M_BUILD: ${{ format('{0}/build', runner.temp) }}
 
     - name: Check for dirty tree
-      run: |
-        ./check-for-dirty-tree
-
+      run: ./check-for-dirty-tree
