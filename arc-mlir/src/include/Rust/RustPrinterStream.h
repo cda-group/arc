@@ -209,6 +209,11 @@ public:
     return *this;
   }
 
+  RustPrinterStream &print(types::RustStreamType t) {
+    printAsRust(Body, t);
+    return *this;
+  }
+
   void writeEnumDefiniton(types::RustEnumType t) {
     unsigned id = t.getEnumTypeId();
 
@@ -264,6 +269,12 @@ public:
     }
     if (types::RustEnumType rt = ty.dyn_cast<types::RustEnumType>()) {
       this->print(rt);
+      return s;
+    }
+    if (types::RustStreamType rt = ty.dyn_cast<types::RustStreamType>()) {
+      s << "arcorn::Stream<";
+      printAsRust(s, rt.getType());
+      s << ">";
       return s;
     }
     if (types::RustStructType rt = ty.dyn_cast<types::RustStructType>()) {
