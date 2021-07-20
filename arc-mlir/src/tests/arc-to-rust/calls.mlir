@@ -101,4 +101,40 @@ module @toplevel {
     return %r : tensor<5xi32>
   }
 
+  func private @an_external_fun0(si32) -> f32
+
+  func @call_external0(%in : si32) -> f32 {
+    %r = call @an_external_fun0(%in) : (si32) -> f32
+    return %r : f32
+  }
+
+  func @call_external_indirect0(%in : si32) -> f32 {
+    %f = constant @an_external_fun0 : (si32) -> f32
+    %r = call_indirect %f(%in) : (si32) -> f32
+    return %r : f32
+  }
+
+  func private @an_external_fun1() -> ((si32) -> si32)
+
+  func @call_external1(%in : si32) -> si32 {
+    %f = call @an_external_fun1() : () -> ((si32) -> si32)
+    %r = call_indirect %f(%in) : (si32) -> si32
+    return %r : si32
+  }
+
+  func @call_external_indirect1(%in : si32) -> si32 {
+    %thunk = constant @an_external_fun1 : () -> ((si32) -> si32)
+    %f = call_indirect %thunk() : () -> ((si32) -> si32)
+    %r = call_indirect %f(%in) : (si32) -> si32
+    return %r : si32
+  }
+
+  func private @crate_Identity() -> ((!arc.stream<!arc.struct<key: si32, value: si32>>) -> !arc.stream<!arc.struct<key: si32, value: si32>>)
+
+    func @crate_main(%input_0: !arc.stream<!arc.struct<key: si32, value: si32>>) -> !arc.stream<!arc.struct<key: si32, value: si32>> {
+        %x_8 = constant @crate_Identity : () -> ((!arc.stream<!arc.struct<key: si32, value: si32>>) -> !arc.stream<!arc.struct<key: si32, value: si32>>)
+        %x_9 = call_indirect %x_8() : () -> ((!arc.stream<!arc.struct<key: si32, value: si32>>) -> !arc.stream<!arc.struct<key: si32, value: si32>>)
+        %x_A = call_indirect %x_9(%input_0) : (!arc.stream<!arc.struct<key: si32, value: si32>>) -> !arc.stream<!arc.struct<key: si32, value: si32>>
+        return %x_A : !arc.stream<!arc.struct<key: si32, value: si32>>
+    }
 }

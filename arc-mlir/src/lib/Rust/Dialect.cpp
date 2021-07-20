@@ -204,9 +204,11 @@ RustPrinterStream &operator<<(RustPrinterStream &os, const Type &type) {
     t.printAsRust(os);
   else if (auto t = type.dyn_cast<RustTupleType>())
     t.printAsRust(os);
-  else if (auto t = type.dyn_cast<RustEnumType>()) {
+  else if (auto t = type.dyn_cast<RustEnumType>())
     os.print(t);
-  } else
+  else if (auto t = type.dyn_cast<FunctionType>())
+    os.print(t);
+  else
     os << "<not-a-rust-type>";
   return os;
 }
@@ -1311,7 +1313,7 @@ std::string RustTupleTypeStorage::getSignature() const {
 static bool isAnyRustType(Type type) {
   if (type.isa<RustType>() || type.isa<RustStructType>() ||
       type.isa<RustTupleType>() || type.isa<RustTensorType>() ||
-      type.isa<RustEnumType>())
+      type.isa<RustEnumType>() || type.isa<RustStreamType>())
     return true;
   if (type.isa<FunctionType>())
     return isRustFunctionType(type);

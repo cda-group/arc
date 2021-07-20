@@ -219,6 +219,13 @@ private:
       rewriter.replaceOpWithNewOp<rust::RustConstantOp>(op, rustTy,
                                                         o.getName());
       return success();
+    } else if (rust::RustExtFuncOp o = dyn_cast<rust::RustExtFuncOp>(refOp)) {
+      Type ty = o.getType();
+      Type rustTy = TypeConverter.convertType(ty);
+
+      rewriter.replaceOpWithNewOp<rust::RustConstantOp>(op, rustTy,
+                                                        o.getName());
+      return success();
     }
     op.emitError("unhandled symbol ref");
     return failure();
