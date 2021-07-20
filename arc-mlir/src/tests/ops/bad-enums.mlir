@@ -79,3 +79,12 @@ module @toplevel {
   }
 }
 
+// -----
+module @toplevel {
+   func @access2(%e : !arc.enum<a : si32, b : f32, no_value : none>) -> none {
+    // expected-error@+2 {{accessing a 'none'-typed variant does not make sense}}
+    // expected-note@+1 {{see current operation}}
+    %r = arc.enum_access "no_value" in (%e : !arc.enum<a : si32, b : f32, no_value : none>) : none
+    return %r : none
+  }
+}

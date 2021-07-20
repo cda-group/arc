@@ -253,11 +253,18 @@ LogicalResult EmitOp::customVerify() {
   return mlir::success();
 }
 
+//===----------------------------------------------------------------------===//
+// Enums
+//===----------------------------------------------------------------------===//
 LogicalResult EnumAccessOp::customVerify() {
   auto ResultTy = result().getType();
   auto SourceTy = value().getType().cast<EnumType>();
   auto VariantTys = SourceTy.getVariants();
   auto WantedVariant = variant();
+
+  if (ResultTy.isa<NoneType>())
+    return emitError(": accessing a ")
+           << ResultTy << "-typed variant does not make sense";
 
   // Check that the given type matches the specified variant.
   for (auto &i : VariantTys)
