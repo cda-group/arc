@@ -214,6 +214,11 @@ public:
     return *this;
   }
 
+  RustPrinterStream &print(FunctionType t) {
+    printAsRust(Body, t);
+    return *this;
+  }
+
   void writeEnumDefiniton(types::RustEnumType t) {
     unsigned id = t.getEnumTypeId();
 
