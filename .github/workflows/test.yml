@@ -21,13 +21,17 @@ jobs:
     - name: Update submodule
       run: git submodule update --init --recursive
 
+    - name: Update system path
+      run: echo "$A2M_BUILD/llvm-build/bin/" >> $GITHUB_PATH
+      env:
+        A2M_BUILD: ${{ format('{0}/build', runner.temp) }}
+
       # Arc-MLIR specific tests
     - name: Build and test arc-mlir
       run: |
         cd arc-mlir
         ./arc-mlir-build
         ninja tools/arc-mlir/arc-check -C $A2M_BUILD/llvm-build/
-        echo $A2M_BUILD/llvm-build/bin/ >> $GITHUB_PATH
         cd ../arc-script
         cargo insta test --package=arc-script-test-compile
         cargo insta accept
