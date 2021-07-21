@@ -519,6 +519,7 @@ def EnumAccessOp : Arc_Op<"enum_access", [NoSideEffect]> {
   let results = (outs AnyType:$result);
   let extraClassDeclaration = [{ LogicalResult customVerify(); }];
   let verifier = [{ return customVerify(); }];
+  let hasCanonicalizer = 1;
   let assemblyFormat =
     "$variant `in` `(` $value `:` type($value) `)` attr-dict `:` type($result)";
 }
