@@ -127,6 +127,29 @@ LogicalResult RustFuncOp::verifyType() {
   if (!type.isa<FunctionType>())
     return emitOpError("requires '" + getTypeAttrName() +
                        "' attribute of function type");
+
+  if ((*this)->hasAttr("arc.task_name") && (*this)->hasAttr("arc.mod_name") &&
+      (*this)->hasAttr("arc.is_event_handler")) {
+    // We want to check:
+    //  * The first argument is a struct
+    //  * The second argument is an enum
+    //  * The this argument is a stream type
+    // This is enough to avoid segfaults in later stages, errors undetected here
+    // will trigger type errors when the generated Rust is compiled.
+    if (getNumArguments() != 3)
+      return emitOpError(
+          ": task event handlers are expected to have 3 arguments, found " +
+          Twine(getNumArguments()));
+    if (!front().getArgument(0).getType().isa<RustStructType>())
+      return emitOpError(": The first argument to a task event handler is "
+                         "expected to be a struct");
+    if (!front().getArgument(1).getType().isa<RustEnumType>())
+      return emitOpError(": The second argument to a task event handler is "
+                         "expected to be an enum");
+    if (!front().getArgument(2).getType().isa<RustStreamType>())
+      return emitOpError(": The third argument to a task event handler is "
+                         "expected to be a stream");
+  }
   return success();
 }
 
