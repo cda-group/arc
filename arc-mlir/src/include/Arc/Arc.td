@@ -538,6 +538,7 @@ def EnumCheckOp : Arc_Op<"enum_check", [NoSideEffect]> {
   let results = (outs BoolLike:$result);
   let extraClassDeclaration = [{ LogicalResult customVerify(); }];
   let verifier = [{ return customVerify(); }];
+  let hasCanonicalizer = 1;
   let assemblyFormat =
     "`(` $value `:` type($value) `)` `is` $variant attr-dict `:` type($result)";
 }
