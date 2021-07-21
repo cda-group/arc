@@ -112,6 +112,43 @@ struct ConstantFoldIndexTuple
   }
 };
 
+struct ConstantFoldEnumAccess
+    : public mlir::OpRewritePattern<arc::EnumAccessOp> {
+  ConstantFoldEnumAccess(MLIRContext *ctx)
+      : OpRewritePattern<arc::EnumAccessOp>(ctx, /*benefit=*/1) {}
+
+  mlir::LogicalResult
+  matchAndRewrite(arc::EnumAccessOp op,
+                  PatternRewriter &rewriter) const override {
+    Operation *def = op.value().getDefiningOp();
+    arc::MakeEnumOp me = dyn_cast_or_null<arc::MakeEnumOp>(def);
+    if (!me || !me.variant().equals(op.variant()))
+      return failure();
+    rewriter.replaceOp(op, me.values()[0]);
+    return success();
+  }
+};
+
+struct ConstantFoldEnumCheck : public mlir::OpRewritePattern<arc::EnumCheckOp> {
+  ConstantFoldEnumCheck(MLIRContext *ctx)
+      : OpRewritePattern<arc::EnumCheckOp>(ctx, /*benefit=*/1) {}
+
+  mlir::LogicalResult
+  matchAndRewrite(arc::EnumCheckOp op,
+                  PatternRewriter &rewriter) const override {
+    Operation *def = op.value().getDefiningOp();
+    arc::MakeEnumOp me = dyn_cast_or_null<arc::MakeEnumOp>(def);
+    if (!me)
+      return failure();
+
+    mlir::ConstantIntOp isTrue = rewriter.create<mlir::ConstantIntOp>(
+        op.getLoc(), me.variant().equals(op.variant()), 1);
+    Value r = isTrue;
+    rewriter.replaceOp(op, r);
+    return success();
+  }
+};
+
 struct ConstantFoldStructAccess
     : public mlir::OpRewritePattern<arc::StructAccessOp> {
   ConstantFoldStructAccess(MLIRContext *ctx)
@@ -141,6 +178,16 @@ struct ConstantFoldStructAccess
 #include "Arc/ArcOpts.h.inc"
 
 } // end anonymous namespace
+
+void EnumAccessOp::getCanonicalizationPatterns(
+    OwningRewritePatternList &results, MLIRContext *ctx) {
+  results.insert<ConstantFoldEnumAccess>(ctx);
+}
+
+void EnumCheckOp::getCanonicalizationPatterns(OwningRewritePatternList &results,
+                                              MLIRContext *ctx) {
+  results.insert<ConstantFoldEnumCheck>(ctx);
+}
 
 void MakeVectorOp::getCanonicalizationPatterns(
     OwningRewritePatternList &results, MLIRContext *ctx) {
