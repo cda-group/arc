@@ -56,11 +56,6 @@ module @toplevel {
     return %r : f32
   }
 
-  func @access2(%e : !arc.enum<a : si32, b : f32, no_value : none>) -> none {
-    %r = arc.enum_access "no_value" in (%e : !arc.enum<a : si32, b : f32, no_value : none>) : none
-    return %r : none
-  }
-
   func @check0(%e : !arc.enum<a : si32, b : f32>) -> i1 {
     %r = arc.enum_check (%e : !arc.enum<a : si32, b : f32>) is "a" : i1
     return %r : i1
