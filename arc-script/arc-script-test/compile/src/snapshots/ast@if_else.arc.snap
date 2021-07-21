@@ -1,0 +1,25 @@
+---
+source: arc-script-test/compile/src/insta.rs
+expression: s
+input_file: arc-script-test/compile/src/tests/expect_pass/if_else.arc
+
+---
+fun test(): i32 {
+    val c0 = true;
+    val c1 = false;
+    val v = 3;
+    if c0 {
+        if c1 {
+            v
+        } else {
+            v
+        }
+    } else {
+        if c1 {
+            v
+        } else {
+            v
+        }
+    }
+}
+
