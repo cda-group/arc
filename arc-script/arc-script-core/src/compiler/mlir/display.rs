@@ -151,7 +151,7 @@ pretty! {
     attributes {{
         "arc.mod_name" = "mod_{name}",
         "arc.task_name" = "{name}",
-        "arc.is_event_handler"
+        "arc.is_init"
     }} {body}"#,
             name = node.path.pretty(fmt),
             this_t = node.this_t.pretty(fmt),
