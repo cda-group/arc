@@ -34,7 +34,7 @@ module @toplevel {
     attributes {
         "arc.mod_name" = "mod_crate_Identity",
         "arc.task_name" = "crate_Identity",
-        "arc.is_event_handler"
+        "arc.is_init"
     } {
         // noop
         return
