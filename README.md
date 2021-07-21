@@ -1,30 +1,23 @@
-<h1 align="center">The Arc Programming Language</h1>
+## Arc
 
-[![Build Status](https://travis-ci.org/cda-group/arc.svg?branch=master)](https://travis-ci.org/cda-group/arc/)
+[![](https://img.shields.io/badge/docs-online-brightgreen)](https://segeljakt.github.io/arc-website/arc-script/doc.html)
+[![](https://img.shields.io/badge/shell-online-brightgreen)](https://cda-group.github.io/arc/)
 
-**Arc** is a scripting language with an [*intermediate representation*](https://en.wikipedia.org/wiki/Intermediate_representation) for expressing transformations over batch and streaming data. The output of the Arc compiler is a *dataflow graph* that can be deployed on distributed stream processing runtimes. While the goal is to be runtime-agnostic, Arc is primarily intended to run on top of [Arcon](https://github.com/cda-group/arcon) - a native Rust-based runner.
+A programming language for writing applications oriented around data streams and collections.
 
-This repository is divided into two parts:
+## Project Structure
 
-* A *front-end* compiler for Arc implemented in Scala, which takes care of
-  * Lexing/Parsing through [ANTLR](https://www.antlr.org/).
-  * Macro expansion/Name resolution.
-  * Type inference.
-  * [MLIR](https://github.com/tensorflow/mlir) code generation.
-* A *middle-end* optimizer, implemented in C++ using [MLIR](https://github.com/tensorflow/mlir), which (will) take care of:
-  * Standard compiler optimizations.
-  * Dataflow optimizations.
-  * Domain-specific optimizations.
-  * Hardware-acceleration.
-  * Dataflow code generation.
+* [`arc-script`](https://github.com/cda-group/arc/tree/master/arc-script) - A standalone user-facing surface language for Arc.
+* [`arc-mlir`](https://github.com/cda-group/arc/tree/master/arc-mlir) - An intermediate representation built in [MLIR](https://mlir.llvm.org/) which `arc-script` programs translate into for optimisation.
+* [`arcorn`](https://github.com/cda-group/arc/tree/master/arc-script/arc-script-api/arcorn) - A code generation library for different runtime backends which `arc-mlir` programs translate into for execution.
+* [`arctime`](https://github.com/cda-group/arc/tree/master/arctime) - A local runtime targeted by `arcorn`.
 
-More information about the project can be found [here](https://cda-group.github.io/).
+## Related Projects
+
+* [`arcon`](https://github.com/cda-group/arcon) - Distributed runtime targeted by `arcorn`.
+* [`kompact`](https://github.com/kompics/kompact) - Distributed middleware which `arctime` and `arcon` are written in.
 
 # Getting Started
-
-## macOS / Linux
-
-Assuming Scala and `sbt` are installed, the following clones and builds the project.
 
 ```bash
 git clone https://github.com/cda-group/arc.github
@@ -34,19 +27,11 @@ cd arc/
 git submodule update --init --recursive
 
 # Compile arc-script
-cd arc-script/; cargo build --release --workspace; cd -
+(cd arc-script/; cargo build --release --workspace)
 
 # Compile arc-mlir
-cd arc-mlir/; ./arc-mlir-build; cd -
+(cd arc-mlir/; ./arc-mlir-build)
 
 # Run tests
-cd arc-mlir/build/llvm-build/; ninja check-arc-mlir; cd -
+(cd arc-mlir/build/llvm-build/; ninja check-arc-mlir)
 ```
-
-# Documentation
-
-[Documentation](www.github.com/cda-group/arc)
-
-<p align="center">
-  <img src="https://github.com/segeljakt/assets/raw/master/arc-script.png">
-</p>
