@@ -1,5 +1,6 @@
 //! Library for compiling arc-scripts inside `build.rs` files.
 
+#![feature(panic_info_message)]
 #![allow(unused)]
 
 mod build;

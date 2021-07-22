@@ -166,7 +166,7 @@ impl Builder {
 }
 
 fn set_hook(msg: Arc<Mutex<String>>) {
-    std::panic::set_hook(Box::new(move |panic_info| {
+    std::panic::set_hook(Box::new(move |panic_info: &std::panic::PanicInfo<'_>| {
         let location = panic_info
             .location()
             .map(|location| format!(" in '{}' at line {}", location.file(), location.line()))
@@ -175,9 +175,14 @@ fn set_hook(msg: Arc<Mutex<String>>) {
         let payload = panic_info
             .payload()
             .downcast_ref::<&str>()
+            .map(|s| format!(" with payload '{}'", s))
+            .unwrap_or_else(String::new);
+
+        let message = panic_info
+            .message()
             .map(|s| format!("'{}'", s))
             .unwrap_or_else(String::new);
 
-        *msg.lock().unwrap() = format!("{}{}", payload, location);
+        *msg.lock().unwrap() = format!("{}{}{}", message, payload, location);
     }))
 }
