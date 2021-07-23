@@ -31,6 +31,5 @@ get_filename_component(ARC_CARGO_BIN "../../bin"
   REALPATH BASE_DIR ${CMAKE_CURRENT_BINARY_DIR} CACHE)
 
 add_custom_target(arc-check DEPENDS check-arc-mlir
-  COMMAND cd ${ARC_SCRIPT_SRC_DIR}; ${ARC_CARGO_BIN}/arc-cargo clean
   COMMAND cd ${ARC_SCRIPT_SRC_DIR}; ${ARC_CARGO_BIN}/arc-cargo test --package=arc-script-test-compile
 )
