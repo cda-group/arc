@@ -23,10 +23,73 @@ jobs:
     - name: Update submodule
       run: git submodule update --init --recursive
 
-    - name: Execute CI
-      run: ./.github/continuous-integration.sh
+    - name: Check ccache setup
+      run: ./.github/continuous-integration.sh check-ccache
+
+    - name: Build MLIR + LLVM + arc-script
+      run: ./.github/continuous-integration.sh run-mlir-build
       env:
         A2M_BUILD: ${{ format('{0}/build', runner.temp) }}
+
+    - name: Pre-build arc-script
+      run: ./.github/continuous-integration.sh cargo test --package=arc-script-test-compile
+      env:
+        A2M_BUILD: ${{ format('{0}/build', runner.temp) }}
+
+    - name: Run MLIR tests
+      run: ./.github/continuous-integration.sh run-mlir-tests
+      env:
+        A2M_BUILD: ${{ format('{0}/build', runner.temp) }}
+
+    - name: "Run arc-script test: insta test --package=arc-script-test-compile"
+      run: ./.github/continuous-integration.sh cargo insta test --package=arc-script-test-compile
+      env:
+        A2M_BUILD: ${{ format('{0}/build', runner.temp) }}
+
+    - name: "Run arc-script test: insta accept"
+      run: ./.github/continuous-integration.sh cargo insta accept
+      env:
+        A2M_BUILD: ${{ format('{0}/build', runner.temp) }}
+
+    - name: "Run arc-script test: clippy"
+      run: ./.github/continuous-integration.sh cargo clippy
+      env:
+        A2M_BUILD: ${{ format('{0}/build', runner.temp) }}
+
+    - name: "Run arc-script test: check"
+      run: ./.github/continuous-integration.sh cargo check
+      env:
+        A2M_BUILD: ${{ format('{0}/build', runner.temp) }}
+
+    - name: "Run arc-script test: check --bins"
+      run: ./.github/continuous-integration.sh cargo check --bins
+      env:
+        A2M_BUILD: ${{ format('{0}/build', runner.temp) }}
+
+    - name: "Run arc-script test: check --tests"
+      run: ./.github/continuous-integration.sh cargo check --tests
+      env:
+        A2M_BUILD: ${{ format('{0}/build', runner.temp) }}
+
+    - name: "Run arc-script test: check --examples"
+      run: ./.github/continuous-integration.sh cargo check --examples
+      env:
+        A2M_BUILD: ${{ format('{0}/build', runner.temp) }}
+
+    - name: "Run arc-script test: check --benches"
+      run: ./.github/continuous-integration.sh cargo check --benches
+      env:
+        A2M_BUILD: ${{ format('{0}/build', runner.temp) }}
+
+    - name: "Run arc-script test: cargo fuzz run parse -- -runs=10000 -only-ascii"
+      run: ./.github/continuous-integration.sh cargo fuzz run parse -- -runs=10000 -only-ascii
+      env:
+        A2M_BUILD: ${{ format('{0}/build', runner.temp) }}
+
+#    - name: "Run arc-script test: fmt -- -v --check"
+#      run: ./.github/continuous-integration.sh cargo fmt -- -v --check
+#      env:
+#        A2M_BUILD: ${{ format('{0}/build', runner.temp) }}
 
     - name: Check for dirty tree
       run: ./check-for-dirty-tree

@@ -2,10 +2,13 @@
 
 set -e # Terminates as soon as something fails
 
+echo "The work dir is ${A2M_BUILD}"
+
 export PATH="$A2M_BUILD/llvm-build/bin:$PATH"
+export ARC_CARGO_TARGET_DIR="${CARGO_PERSIST_DIR}"
 
 function run-step {
-    echo "Running $@"
+    echo "Running \'$@\'"
     "$@"
 }
 
@@ -20,22 +23,48 @@ else
 EOF
 fi
 
-(
-    run-step cd arc-mlir
-    A2M_CCACHE="1" BUILD_FLAVOUR=Release A2M_ASSERTS="1" run-step ./arc-mlir-build
-    run-step ninja -C $A2M_BUILD/llvm-build/ check-arc-mlir
-)
+function check-ccache {
+    echo "Ccache statistics:"
+    ccache -s
+}
 
-(
-    run-step cd arc-script
-    run-step cargo insta test --package=arc-script-test-compile
-    run-step cargo insta accept
-    run-step cargo clippy
-    run-step cargo check
-    run-step cargo check --bins
-    run-step cargo check --tests
-    run-step cargo check --examples
-    run-step cargo check --benches
-    run-step cargo fuzz run parse -- -runs=10000 -only-ascii
-    # run-step cargo fmt -- -v --check
-)
+function run-mlir-build {
+    cd arc-mlir
+    A2M_CCACHE="1" BUILD_FLAVOUR="Release" A2M_ASSERTS="1" \
+	      run-step ./arc-mlir-build
+}
+
+function run-mlir-tests {
+    run-step ninja -C $A2M_BUILD/llvm-build/ check-arc-mlir
+}
+
+function run-arc-script-test {
+    cd arc-script
+    run-step arc-cargo "$@"
+}
+
+case $1 in
+    check-ccache)
+	check-ccache
+	;;
+
+    check-cargo)
+	check-cargo
+	;;
+
+    run-mlir-build)
+	run-mlir-build
+	;;
+
+    run-mlir-tests)
+	run-mlir-tests
+	;;
+
+    cargo)
+	# We assume this is a arc-script cargo command line
+	shift
+	run-arc-script-test "$@"
+	;;
+esac
+
+rm -rf ${ARC_CARGO_TARGET_DIR}
