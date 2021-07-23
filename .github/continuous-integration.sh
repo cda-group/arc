@@ -5,7 +5,6 @@ set -e # Terminates as soon as something fails
 echo "The work dir is ${A2M_BUILD}"
 
 export PATH="$A2M_BUILD/llvm-build/bin:$PATH"
-export ARC_CARGO_TARGET_DIR="${CARGO_PERSIST_DIR}"
 
 function run-step {
     echo "Running \'$@\'"
@@ -66,5 +65,3 @@ case $1 in
 	run-arc-script-test "$@"
 	;;
 esac
-
-rm -rf ${ARC_CARGO_TARGET_DIR}
