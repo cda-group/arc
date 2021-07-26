@@ -5,7 +5,10 @@ set -e # Terminates as soon as something fails
 echo "The work dir is ${A2M_BUILD}"
 
 export PATH="$A2M_BUILD/llvm-build/bin:$PATH"
-export ARC_CARGO_TARGET_DIR="${CARGO_PERSIST_DIR}"
+export RUSTC_WRAPPER="/root/.cargo/bin/sccache"
+export SCCACHE_DIR="${PERSIST_DIR}/sccache"
+export SCCACHE_CACHE_SIZE="2G"
+export CARGO_INCREMENTAL="0"
 
 function run-step {
     echo "Running \'$@\'"
@@ -21,6 +24,14 @@ else
     max_size = 20G
     cache_dir = ${PERSIST_DIR}/ccache-cachedir
 EOF
+fi
+
+if [[ -d "${SCCACHE_DIR}" ]]; then
+    echo "The Sccache directory exists at ${SCCACHE_DIR}"
+    echo "It contains $(du -hs ${SCCACHE_DIR} | cut -f1)"
+else
+    echo "Creating Sccache directory at ${SCCACHE_DIR}"
+    mkdir -p ${SCCACHE_DIR}
 fi
 
 function check-ccache {
@@ -66,5 +77,3 @@ case $1 in
 	run-arc-script-test "$@"
 	;;
 esac
-
-rm -rf ${ARC_CARGO_TARGET_DIR}
