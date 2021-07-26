@@ -86,6 +86,9 @@ jobs:
       env:
         A2M_BUILD: ${{ format('{0}/build', runner.temp) }}
 
+    - name: "Ccache/Sccache statistics"
+      run: ./.github/continuous-integration.sh check-ccache
+
 #    - name: "Run arc-script test: fmt -- -v --check"
 #      run: ./.github/continuous-integration.sh cargo fmt -- -v --check
 #      env:
