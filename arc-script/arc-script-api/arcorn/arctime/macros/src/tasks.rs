@@ -224,6 +224,10 @@ pub(crate) fn rewrite(attr: syn::AttributeArgs, item: syn::ItemMod) -> pm::Token
                 #(pub #state_name: State<#state_type>,)*
             }
 
+            // Allows the component to be sent across threads even if it contains fields which are 
+            // not safely sendable. The code generator is required to generate thread-safe code.
+            unsafe impl Send for #task_name {}
+
             #iport_enum
             #oport_enum
 
