@@ -70,4 +70,7 @@ fn main() {
 }
 EOF
 
+echo 'Rust file:'
+cat "${MAIN}"
+
 exec arc-cargo test -j 1 --manifest-path=${WORK_DIR}/Cargo.toml
