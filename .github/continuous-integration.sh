@@ -37,6 +37,8 @@ fi
 function check-ccache {
     echo "Ccache statistics:"
     ccache -s
+    echo "Cccache statistics:"
+    sccache --show-stats
 }
 
 function run-mlir-build {
