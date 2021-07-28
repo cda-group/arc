@@ -176,7 +176,7 @@ private:
     // string.
     for (size_t i = 0; hex[i] && hex[i] != '.'; i++) {
       if (hex[i] == 'p') {
-        memmove(hex + i + 1, hex + i, strlen(hex + i));
+        memmove(hex + i + 1, hex + i, strlen(hex + i) + 1);
         hex[i] = '.';
         break;
       }
