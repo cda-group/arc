@@ -17,7 +17,8 @@ input_file: arc-script-test/compile/src/tests/expect_pass/binops.arc
 pub mod arc_script_output {
     use super::*;
     use arc_script::arcorn;
-    pub fn main() -> () {
+    use arc_script::arcorn::*;
+    pub fn main() -> Unit {
         let x_0: bool = true;
         let x_1: i8 = 127i8;
         let x_2: i16 = 32767i16;
@@ -180,7 +181,7 @@ pub mod arc_script_output {
         let x___Z: u64 = (x_8.clone()) ^ (x_8.clone());
         let x___a: f32 = (x_9.clone()).powf((x_J.clone()));
         let x___b: f64 = (x_A.clone()).powf((x_K.clone()));
-        let x___c: () = ();
+        let x___c: Unit = ();
         (x___c.clone())
     }
 }

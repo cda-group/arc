@@ -17,43 +17,44 @@ input_file: arc-script-test/compile/src/tests/expect_pass/enum_pattern_nested.ar
 pub mod arc_script_output {
     use super::*;
     use arc_script::arcorn;
+    use arc_script::arcorn::*;
     #[arcorn::rewrite]
     pub enum Baz {
         Baz_Some(i32),
-        Baz_None(()),
+        Baz_None(Unit),
     }
     #[arcorn::rewrite]
     pub enum Foo {
         Foo_Bar(Baz),
-        Foo_None(()),
+        Foo_None(Unit),
     }
-    pub fn x_9() -> () {
-        let x_8: () = ();
+    pub fn x_9() -> Unit {
+        let x_8: Unit = ();
         (x_8.clone())
     }
-    pub fn main() -> () {
+    pub fn main() -> Unit {
         let x_0: i32 = 5i32;
         let x_1: Baz = arcorn::enwrap!(Baz_Some, (x_0.clone()));
         let x_2: Foo = arcorn::enwrap!(Foo_Bar, (x_1.clone()));
         let x_3: bool = arcorn::is!(Foo_Bar, (x_2.clone()));
-        let x_D: () = if (x_3.clone()) {
+        let x_D: Unit = if (x_3.clone()) {
             let x_4: Baz = arcorn::unwrap!(Foo_Bar, (x_2.clone()));
             let x_5: bool = arcorn::is!(Baz_Some, (x_4.clone()));
-            let x_C: () = if (x_5.clone()) {
+            let x_C: Unit = if (x_5.clone()) {
                 let x_6: i32 = arcorn::unwrap!(Baz_Some, (x_4.clone()));
-                let x_7: () = ();
+                let x_7: Unit = ();
                 (x_7.clone())
             } else {
-                let x_A: Box<dyn arcorn::ArcornFn() -> ()> =
-                    Box::new(x_9) as Box<dyn arcorn::ArcornFn() -> ()>;
-                let x_B: () = (x_A.clone())();
+                let x_A: Box<dyn arcorn::ArcornFn() -> Unit> =
+                    Box::new(x_9) as Box<dyn arcorn::ArcornFn() -> Unit>;
+                let x_B: Unit = (x_A.clone())();
                 (x_B.clone())
             };
             (x_C.clone())
         } else {
-            let x_A: Box<dyn arcorn::ArcornFn() -> ()> =
-                Box::new(x_9) as Box<dyn arcorn::ArcornFn() -> ()>;
-            let x_B: () = (x_A.clone())();
+            let x_A: Box<dyn arcorn::ArcornFn() -> Unit> =
+                Box::new(x_9) as Box<dyn arcorn::ArcornFn() -> Unit>;
+            let x_B: Unit = (x_A.clone())();
             (x_B.clone())
         };
         (x_D.clone())

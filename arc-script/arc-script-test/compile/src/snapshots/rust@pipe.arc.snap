@@ -17,6 +17,7 @@ input_file: arc-script-test/compile/src/tests/expect_mlir_fail_todo/pipe.arc
 pub mod arc_script_output {
     use super::*;
     use arc_script::arcorn;
+    use arc_script::arcorn::*;
     pub fn foo(x_0: i32) -> i32 {
         let x_1: i32 = (x_0.clone()) + (x_0.clone());
         (x_1.clone())
@@ -43,68 +44,85 @@ pub mod arc_script_output {
         }
     }
     impl Baz_mod::Baz {
-        pub fn Baz_on_event(&mut self, x_A: Baz_IInterface) -> () {
+        pub fn Baz_on_event(&mut self, x_A: Baz_IInterface) -> Unit {
             let x_7: Struct3keyi325valuei32End = arcorn::unwrap!(Baz_IInterface___, (x_A.clone()));
-            let x_8: i32 = (x_7.clone()).value;
-            let x_9: i32 = (x_7.clone()).key;
-            let x_B: Struct3keyi325valuei32End = Struct3keyi325valuei32End {
-                value: (x_8.clone()),
-                key: (x_9.clone()),
-            };
+            let x_8: i32 = arcorn::access!((x_7.clone()), value);
+            let x_9: i32 = arcorn::access!((x_7.clone()), key);
+            let x_B: Struct3keyi325valuei32End =
+                arc_script::arcorn::new!(Struct3keyi325valuei32End {
+                    value: (x_8.clone()),
+                    key: (x_9.clone())
+                });
             let x_C: Baz_OInterface = arcorn::enwrap!(Baz_OInterface___, (x_B.clone()));
-            let x_D: () = self.emit((x_C.clone()));
+            let x_D: Unit = self.emit((x_C.clone()));
             (x_D.clone())
         }
-        pub fn Baz_on_start(&mut self) -> () {
-            let x_F: () = ();
+        pub fn Baz_on_start(&mut self) -> Unit {
+            let x_F: Unit = ();
             (x_F.clone())
         }
     }
     pub fn qux(
-        s_0: arcorn::Stream<Struct3keyi325valuei32End>,
-    ) -> arcorn::Stream<Struct3keyi325valuei32End> {
+        s_0: arcorn::Stream<<Struct3keyi325valuei32End as arc_script::arcorn::Convert>::T>,
+    ) -> arcorn::Stream<<Struct3keyi325valuei32End as arc_script::arcorn::Convert>::T> {
         let x_G: Box<
             dyn arcorn::ArcornFn() -> Box<
                 dyn arcorn::ArcornFn(
-                    arcorn::Stream<Struct3keyi325valuei32End>,
-                ) -> arcorn::Stream<Struct3keyi325valuei32End>,
+                    arcorn::Stream<<Struct3keyi325valuei32End as arc_script::arcorn::Convert>::T>,
+                ) -> arcorn::Stream<
+                    <Struct3keyi325valuei32End as arc_script::arcorn::Convert>::T,
+                >,
             >,
         > = Box::new(Baz)
             as Box<
                 dyn arcorn::ArcornFn() -> Box<
                     dyn arcorn::ArcornFn(
-                        arcorn::Stream<Struct3keyi325valuei32End>,
-                    )
-                        -> arcorn::Stream<Struct3keyi325valuei32End>,
+                        arcorn::Stream<
+                            <Struct3keyi325valuei32End as arc_script::arcorn::Convert>::T,
+                        >,
+                    ) -> arcorn::Stream<
+                        <Struct3keyi325valuei32End as arc_script::arcorn::Convert>::T,
+                    >,
                 >,
             >;
         let x_H: Box<
             dyn arcorn::ArcornFn(
-                arcorn::Stream<Struct3keyi325valuei32End>,
-            ) -> arcorn::Stream<Struct3keyi325valuei32End>,
+                arcorn::Stream<<Struct3keyi325valuei32End as arc_script::arcorn::Convert>::T>,
+            ) -> arcorn::Stream<
+                <Struct3keyi325valuei32End as arc_script::arcorn::Convert>::T,
+            >,
         > = (x_G.clone())();
         let x_I: Box<
             dyn arcorn::ArcornFn() -> Box<
                 dyn arcorn::ArcornFn(
-                    arcorn::Stream<Struct3keyi325valuei32End>,
-                ) -> arcorn::Stream<Struct3keyi325valuei32End>,
+                    arcorn::Stream<<Struct3keyi325valuei32End as arc_script::arcorn::Convert>::T>,
+                ) -> arcorn::Stream<
+                    <Struct3keyi325valuei32End as arc_script::arcorn::Convert>::T,
+                >,
             >,
         > = Box::new(Baz)
             as Box<
                 dyn arcorn::ArcornFn() -> Box<
                     dyn arcorn::ArcornFn(
-                        arcorn::Stream<Struct3keyi325valuei32End>,
-                    )
-                        -> arcorn::Stream<Struct3keyi325valuei32End>,
+                        arcorn::Stream<
+                            <Struct3keyi325valuei32End as arc_script::arcorn::Convert>::T,
+                        >,
+                    ) -> arcorn::Stream<
+                        <Struct3keyi325valuei32End as arc_script::arcorn::Convert>::T,
+                    >,
                 >,
             >;
         let x_J: Box<
             dyn arcorn::ArcornFn(
-                arcorn::Stream<Struct3keyi325valuei32End>,
-            ) -> arcorn::Stream<Struct3keyi325valuei32End>,
+                arcorn::Stream<<Struct3keyi325valuei32End as arc_script::arcorn::Convert>::T>,
+            ) -> arcorn::Stream<
+                <Struct3keyi325valuei32End as arc_script::arcorn::Convert>::T,
+            >,
         > = (x_I.clone())();
-        let x_K: arcorn::Stream<Struct3keyi325valuei32End> = (x_J.clone())((s_0.clone()));
-        let x_L: arcorn::Stream<Struct3keyi325valuei32End> = (x_H.clone())((x_K.clone()));
+        let x_K: arcorn::Stream<<Struct3keyi325valuei32End as arc_script::arcorn::Convert>::T> =
+            (x_J.clone())((s_0.clone()));
+        let x_L: arcorn::Stream<<Struct3keyi325valuei32End as arc_script::arcorn::Convert>::T> =
+            (x_H.clone())((x_K.clone()));
         (x_L.clone())
     }
     #[arcorn::rewrite]

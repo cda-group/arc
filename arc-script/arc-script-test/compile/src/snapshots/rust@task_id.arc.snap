@@ -1,7 +1,7 @@
 ---
 source: arc-script-test/compile/src/insta.rs
 expression: s
-input_file: arc-script-test/compile/src/tests/expect_mlir_fail_todo/task_id.arc
+input_file: arc-script-test/compile/src/tests/expect_pass/task_id.arc
 
 ---
 #[allow(non_snake_case)]
@@ -17,6 +17,7 @@ input_file: arc-script-test/compile/src/tests/expect_mlir_fail_todo/task_id.arc
 pub mod arc_script_output {
     use super::*;
     use arc_script::arcorn;
+    use arc_script::arcorn::*;
     #[arcorn::rewrite(on_event = "Identity_on_event", on_start = "Identity_on_start")]
     mod Identity_mod {
         struct Identity {}
@@ -30,50 +31,58 @@ pub mod arc_script_output {
         }
     }
     impl Identity_mod::Identity {
-        pub fn Identity_on_event(&mut self, x_0: Identity_IInterface) -> () {
+        pub fn Identity_on_event(&mut self, x_0: Identity_IInterface) -> Unit {
             let x_1: bool = arcorn::is!(Identity_IInterface_A, (x_0.clone()));
-            let x_6: () = if (x_1.clone()) {
+            let x_6: Unit = if (x_1.clone()) {
                 let x_2: Struct3keyi325valuei32End =
                     arcorn::unwrap!(Identity_IInterface_A, (x_0.clone()));
                 let x_3: Identity_OInterface =
                     arcorn::enwrap!(Identity_OInterface_B, (x_2.clone()));
-                let x_4: () = self.emit((x_3.clone()));
+                let x_4: Unit = self.emit((x_3.clone()));
                 (x_4.clone())
             } else {
-                let x_5: () = unreachable!();
+                let x_5: Unit = unreachable!();
                 (x_5.clone())
             };
             (x_6.clone())
         }
-        pub fn Identity_on_start(&mut self) -> () {
-            let x_7: () = ();
+        pub fn Identity_on_start(&mut self) -> Unit {
+            let x_7: Unit = ();
             (x_7.clone())
         }
     }
     pub fn main(
-        input_0: arcorn::Stream<Struct3keyi325valuei32End>,
-    ) -> arcorn::Stream<Struct3keyi325valuei32End> {
+        input_0: arcorn::Stream<<Struct3keyi325valuei32End as arc_script::arcorn::Convert>::T>,
+    ) -> arcorn::Stream<<Struct3keyi325valuei32End as arc_script::arcorn::Convert>::T> {
         let x_8: Box<
             dyn arcorn::ArcornFn() -> Box<
                 dyn arcorn::ArcornFn(
-                    arcorn::Stream<Struct3keyi325valuei32End>,
-                ) -> arcorn::Stream<Struct3keyi325valuei32End>,
+                    arcorn::Stream<<Struct3keyi325valuei32End as arc_script::arcorn::Convert>::T>,
+                ) -> arcorn::Stream<
+                    <Struct3keyi325valuei32End as arc_script::arcorn::Convert>::T,
+                >,
             >,
         > = Box::new(Identity)
             as Box<
                 dyn arcorn::ArcornFn() -> Box<
                     dyn arcorn::ArcornFn(
-                        arcorn::Stream<Struct3keyi325valuei32End>,
-                    )
-                        -> arcorn::Stream<Struct3keyi325valuei32End>,
+                        arcorn::Stream<
+                            <Struct3keyi325valuei32End as arc_script::arcorn::Convert>::T,
+                        >,
+                    ) -> arcorn::Stream<
+                        <Struct3keyi325valuei32End as arc_script::arcorn::Convert>::T,
+                    >,
                 >,
             >;
         let x_9: Box<
             dyn arcorn::ArcornFn(
-                arcorn::Stream<Struct3keyi325valuei32End>,
-            ) -> arcorn::Stream<Struct3keyi325valuei32End>,
+                arcorn::Stream<<Struct3keyi325valuei32End as arc_script::arcorn::Convert>::T>,
+            ) -> arcorn::Stream<
+                <Struct3keyi325valuei32End as arc_script::arcorn::Convert>::T,
+            >,
         > = (x_8.clone())();
-        let x_A: arcorn::Stream<Struct3keyi325valuei32End> = (x_9.clone())((input_0.clone()));
+        let x_A: arcorn::Stream<<Struct3keyi325valuei32End as arc_script::arcorn::Convert>::T> =
+            (x_9.clone())((input_0.clone()));
         (x_A.clone())
     }
     #[arcorn::rewrite]

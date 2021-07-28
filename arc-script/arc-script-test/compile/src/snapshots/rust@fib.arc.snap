@@ -17,6 +17,7 @@ input_file: arc-script-test/compile/src/tests/expect_pass/fib.arc
 pub mod arc_script_output {
     use super::*;
     use arc_script::arcorn;
+    use arc_script::arcorn::*;
     pub fn fib(n_0: i32) -> i32 {
         let x_0: i32 = 2i32;
         let x_1: bool = (n_0.clone()) > (x_0.clone());

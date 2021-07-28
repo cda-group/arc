@@ -17,6 +17,7 @@ input_file: arc-script-test/compile/src/tests/expect_mlir_fail_todo/task_with_fu
 pub mod arc_script_output {
     use super::*;
     use arc_script::arcorn;
+    use arc_script::arcorn::*;
     #[arcorn::rewrite(on_event = "Test_on_event", on_start = "Test_on_start")]
     mod Test_mod {
         struct Test {
@@ -32,21 +33,22 @@ pub mod arc_script_output {
         }
     }
     impl Test_mod::Test {
-        pub fn Test_on_event(&mut self, x_5: Test_IInterface) -> () {
+        pub fn Test_on_event(&mut self, x_5: Test_IInterface) -> Unit {
             let x_2: Struct3keyi325valuei32End = arcorn::unwrap!(Test_IInterface___, (x_5.clone()));
-            let x_3: i32 = (x_2.clone()).value;
-            let x_4: i32 = (x_2.clone()).key;
+            let x_3: i32 = arcorn::access!((x_2.clone()), value);
+            let x_4: i32 = arcorn::access!((x_2.clone()), key);
             let x_6: i32 = self.Test_addx((x_3.clone()));
-            let x_7: Struct3keyi325valuei32End = Struct3keyi325valuei32End {
-                value: (x_6.clone()),
-                key: (x_4.clone()),
-            };
+            let x_7: Struct3keyi325valuei32End =
+                arc_script::arcorn::new!(Struct3keyi325valuei32End {
+                    value: (x_6.clone()),
+                    key: (x_4.clone())
+                });
             let x_8: Test_OInterface = arcorn::enwrap!(Test_OInterface___, (x_7.clone()));
-            let x_9: () = self.emit((x_8.clone()));
+            let x_9: Unit = self.emit((x_8.clone()));
             (x_9.clone())
         }
-        pub fn Test_on_start(&mut self) -> () {
-            let x_B: () = ();
+        pub fn Test_on_start(&mut self) -> Unit {
+            let x_B: Unit = ();
             (x_B.clone())
         }
         pub fn Test_addx(&mut self, y_0: i32) -> i32 {

@@ -17,27 +17,28 @@ input_file: arc-script-test/compile/src/tests/expect_pass/option.arc
 pub mod arc_script_output {
     use super::*;
     use arc_script::arcorn;
+    use arc_script::arcorn::*;
     #[arcorn::rewrite]
     pub enum Opt {
         Opt_Some(i32),
-        Opt_None(()),
+        Opt_None(Unit),
     }
-    pub fn x_6() -> () {
-        let x_5: () = ();
+    pub fn x_6() -> Unit {
+        let x_5: Unit = ();
         (x_5.clone())
     }
-    pub fn main() -> () {
+    pub fn main() -> Unit {
         let x_0: i32 = 3i32;
         let x_1: Opt = arcorn::enwrap!(Opt_Some, (x_0.clone()));
         let x_2: bool = arcorn::is!(Opt_Some, (x_1.clone()));
-        let x_9: () = if (x_2.clone()) {
+        let x_9: Unit = if (x_2.clone()) {
             let x_3: i32 = arcorn::unwrap!(Opt_Some, (x_1.clone()));
-            let x_4: () = ();
+            let x_4: Unit = ();
             (x_4.clone())
         } else {
-            let x_7: Box<dyn arcorn::ArcornFn() -> ()> =
-                Box::new(x_6) as Box<dyn arcorn::ArcornFn() -> ()>;
-            let x_8: () = (x_7.clone())();
+            let x_7: Box<dyn arcorn::ArcornFn() -> Unit> =
+                Box::new(x_6) as Box<dyn arcorn::ArcornFn() -> Unit>;
+            let x_8: Unit = (x_7.clone())();
             (x_8.clone())
         };
         (x_9.clone())

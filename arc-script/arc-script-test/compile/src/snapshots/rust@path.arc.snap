@@ -17,9 +17,10 @@ input_file: arc-script-test/compile/src/tests/expect_pass/path.arc
 pub mod arc_script_output {
     use super::*;
     use arc_script::arcorn;
-    pub fn main() -> () {
+    use arc_script::arcorn::*;
+    pub fn main() -> Unit {
         let x_0: i32 = 1i32;
-        let x_1: () = ();
+        let x_1: Unit = ();
         (x_1.clone())
     }
 }

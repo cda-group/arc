@@ -17,8 +17,9 @@ input_file: arc-script-test/compile/src/tests/expect_pass/ifs.arc
 pub mod arc_script_output {
     use super::*;
     use arc_script::arcorn;
-    pub fn main() -> () {
-        let x_0: () = ();
+    use arc_script::arcorn::*;
+    pub fn main() -> Unit {
+        let x_0: Unit = ();
         (x_0.clone())
     }
     pub fn test() -> i32 {

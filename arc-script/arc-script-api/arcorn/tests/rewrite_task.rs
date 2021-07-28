@@ -3,6 +3,8 @@
 #![allow(unreachable_code)]
 #![allow(unused_variables)]
 
+use arc_script::arcorn::*;
+
 #[arc_script::arcorn::rewrite(on_event = "handler", on_start = "startup")]
 pub mod my_task {
     pub struct MyTask {
@@ -10,11 +12,13 @@ pub mod my_task {
         #[state]
         pub state_variable: i32,
     }
+
     #[arc_script::arcorn::rewrite]
     pub enum InputPorts {
         A(i32),
         B(i32),
     }
+
     #[arc_script::arcorn::rewrite]
     pub enum OutputPorts {
         C(i32),
@@ -26,9 +30,18 @@ use my_task::*;
 
 impl MyTask {
     pub fn handler(&mut self, event: InputPorts) {
-        match event.this.unwrap() {
-            A(x) => self.emit(C(x).wrap()),
-            B(x) => self.emit(D(x).wrap()),
+        let x0 = is!(A, event.clone());
+        if x0 {
+            let x1: i32 = unwrap!(A, event.clone());
+            let x2: OutputPorts = enwrap!(C, x1.clone());
+            self.emit(x2.clone());
+        } else {
+            let x3 = is!(B, event.clone());
+            if x3 {
+                let x4: i32 = unwrap!(B, event.clone());
+                let x5: OutputPorts = enwrap!(D, x4.clone());
+                self.emit(x5.clone());
+            }
         }
     }
     pub fn startup(&mut self) {

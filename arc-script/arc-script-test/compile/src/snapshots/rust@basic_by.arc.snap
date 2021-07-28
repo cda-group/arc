@@ -17,15 +17,16 @@ input_file: arc-script-test/compile/src/tests/expect_pass/basic_by.arc
 pub mod arc_script_output {
     use super::*;
     use arc_script::arcorn;
+    use arc_script::arcorn::*;
     pub fn test() -> i32 {
         let x_0: i32 = 1i32;
         let x_1: i32 = 2i32;
-        let x_2: Struct3keyi325valuei32End = Struct3keyi325valuei32End {
+        let x_2: Struct3keyi325valuei32End = arc_script::arcorn::new!(Struct3keyi325valuei32End {
             value: (x_0.clone()),
-            key: (x_1.clone()),
-        };
-        let x_3: i32 = (x_2.clone()).value;
-        let x_4: i32 = (x_2.clone()).key;
+            key: (x_1.clone())
+        });
+        let x_3: i32 = arcorn::access!((x_2.clone()), value);
+        let x_4: i32 = arcorn::access!((x_2.clone()), key);
         let x_5: i32 = (x_3.clone()) + (x_4.clone());
         (x_5.clone())
     }

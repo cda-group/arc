@@ -17,6 +17,7 @@ input_file: arc-script-test/compile/src/tests/expect_pass/if_let.arc
 pub mod arc_script_output {
     use super::*;
     use arc_script::arcorn;
+    use arc_script::arcorn::*;
     pub fn x_H(x_1: i32) -> i32 {
         let x_F: i32 = 2i32;
         let x_G: i32 = (x_1.clone()) + (x_F.clone());

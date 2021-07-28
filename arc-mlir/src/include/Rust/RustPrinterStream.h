@@ -84,6 +84,7 @@ public:
     o << "pub mod " << ModuleName
       << "{\n"
          "use super::*;\n"
+      << "pub use arc_script::arcorn::*;\n"
       << "pub use arc_script::arcorn;\n"
       << "pub use hexf::*;\n";
 
@@ -277,9 +278,9 @@ public:
       return s;
     }
     if (types::RustStreamType rt = ty.dyn_cast<types::RustStreamType>()) {
-      s << "arcorn::Stream<";
+      s << "arcorn::Stream<<";
       printAsRust(s, rt.getType());
-      s << ">";
+      s << " as arcorn::Convert>::T>";
       return s;
     }
     if (types::RustStructType rt = ty.dyn_cast<types::RustStructType>()) {

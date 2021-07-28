@@ -17,6 +17,7 @@ input_file: arc-script-test/compile/src/tests/expect_pass/basic_pipe.arc
 pub mod arc_script_output {
     use super::*;
     use arc_script::arcorn;
+    use arc_script::arcorn::*;
     pub fn x_1(x_2: i32) -> i32 {
         let x_3: i32 = 1i32;
         let x_4: i32 = (x_2.clone()) + (x_3.clone());

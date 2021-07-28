@@ -17,6 +17,7 @@ input_file: arc-script-test/compile/src/tests/expect_mlir_fail_todo/task_filter.
 pub mod arc_script_output {
     use super::*;
     use arc_script::arcorn;
+    use arc_script::arcorn::*;
     #[arcorn::rewrite(on_event = "Filter_on_event", on_start = "Filter_on_start")]
     mod Filter_mod {
         struct Filter {
@@ -32,28 +33,29 @@ pub mod arc_script_output {
         }
     }
     impl Filter_mod::Filter {
-        pub fn Filter_on_event(&mut self, x_3: Filter_IInterface) -> () {
+        pub fn Filter_on_event(&mut self, x_3: Filter_IInterface) -> Unit {
             let x_0: Struct3keyi325valuei32End =
                 arcorn::unwrap!(Filter_IInterface___, (x_3.clone()));
-            let x_1: i32 = (x_0.clone()).value;
-            let x_2: i32 = (x_0.clone()).key;
+            let x_1: i32 = arcorn::access!((x_0.clone()), value);
+            let x_2: i32 = arcorn::access!((x_0.clone()), key);
             let x_4: bool = ((self.p_0).clone())((x_1.clone()));
-            let x_9: () = if (x_4.clone()) {
-                let x_5: Struct3keyi325valuei32End = Struct3keyi325valuei32End {
-                    value: (x_1.clone()),
-                    key: (x_2.clone()),
-                };
+            let x_9: Unit = if (x_4.clone()) {
+                let x_5: Struct3keyi325valuei32End =
+                    arc_script::arcorn::new!(Struct3keyi325valuei32End {
+                        value: (x_1.clone()),
+                        key: (x_2.clone())
+                    });
                 let x_6: Filter_OInterface = arcorn::enwrap!(Filter_OInterface___, (x_5.clone()));
-                let x_7: () = self.emit((x_6.clone()));
+                let x_7: Unit = self.emit((x_6.clone()));
                 (x_7.clone())
             } else {
-                let x_8: () = ();
+                let x_8: Unit = ();
                 (x_8.clone())
             };
             (x_9.clone())
         }
-        pub fn Filter_on_start(&mut self) -> () {
-            let x_B: () = ();
+        pub fn Filter_on_start(&mut self) -> Unit {
+            let x_B: Unit = ();
             (x_B.clone())
         }
     }
@@ -65,15 +67,17 @@ pub mod arc_script_output {
         (x_I.clone())
     }
     pub fn main(
-        stream0_0: arcorn::Stream<Struct3keyi325valuei32End>,
-    ) -> arcorn::Stream<Struct3keyi325valuei32End> {
+        stream0_0: arcorn::Stream<<Struct3keyi325valuei32End as arc_script::arcorn::Convert>::T>,
+    ) -> arcorn::Stream<<Struct3keyi325valuei32End as arc_script::arcorn::Convert>::T> {
         let x_C: Box<
             dyn arcorn::ArcornFn(
                 Box<dyn arcorn::ArcornFn(i32) -> bool>,
             ) -> Box<
                 dyn arcorn::ArcornFn(
-                    arcorn::Stream<Struct3keyi325valuei32End>,
-                ) -> arcorn::Stream<Struct3keyi325valuei32End>,
+                    arcorn::Stream<<Struct3keyi325valuei32End as arc_script::arcorn::Convert>::T>,
+                ) -> arcorn::Stream<
+                    <Struct3keyi325valuei32End as arc_script::arcorn::Convert>::T,
+                >,
             >,
         > = Box::new(Filter)
             as Box<
@@ -81,19 +85,25 @@ pub mod arc_script_output {
                     Box<dyn arcorn::ArcornFn(i32) -> bool>,
                 ) -> Box<
                     dyn arcorn::ArcornFn(
-                        arcorn::Stream<Struct3keyi325valuei32End>,
-                    )
-                        -> arcorn::Stream<Struct3keyi325valuei32End>,
+                        arcorn::Stream<
+                            <Struct3keyi325valuei32End as arc_script::arcorn::Convert>::T,
+                        >,
+                    ) -> arcorn::Stream<
+                        <Struct3keyi325valuei32End as arc_script::arcorn::Convert>::T,
+                    >,
                 >,
             >;
         let x_J: Box<dyn arcorn::ArcornFn(i32) -> bool> =
             Box::new(x_D) as Box<dyn arcorn::ArcornFn(i32) -> bool>;
         let x_K: Box<
             dyn arcorn::ArcornFn(
-                arcorn::Stream<Struct3keyi325valuei32End>,
-            ) -> arcorn::Stream<Struct3keyi325valuei32End>,
+                arcorn::Stream<<Struct3keyi325valuei32End as arc_script::arcorn::Convert>::T>,
+            ) -> arcorn::Stream<
+                <Struct3keyi325valuei32End as arc_script::arcorn::Convert>::T,
+            >,
         > = (x_C.clone())((x_J.clone()));
-        let x_L: arcorn::Stream<Struct3keyi325valuei32End> = (x_K.clone())((stream0_0.clone()));
+        let x_L: arcorn::Stream<<Struct3keyi325valuei32End as arc_script::arcorn::Convert>::T> =
+            (x_K.clone())((stream0_0.clone()));
         (x_L.clone())
     }
     #[arcorn::rewrite]

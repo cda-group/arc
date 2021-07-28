@@ -62,6 +62,7 @@ lower! {
             pub mod arc_script_output {
                 use super::*;
                 use arc_script::arcorn;
+                use arc_script::arcorn::*;
                 #(#defs)*
                 #(#mangled_defs)*
             }
@@ -96,8 +97,8 @@ lower! {
     },
     hir::Variant => Rust {
         let name = node.path.lower(ctx);
-        let ty = node.t.lower(ctx);
-        rust!(#name(#ty))
+        let t = node.t.lower(ctx);
+        rust!(#name(#t))
     },
     hir::Block => Rust {
         let stmts = node.stmts.lower(ctx);
@@ -264,7 +265,7 @@ lower! {
             hir::ExprKind::Access(v, f) => {
                 let v = v.lower(ctx);
                 let f = f.lower(ctx);
-                rust!(#v.#f)
+                rust!(arcorn::access!(#v, #f))
             }
             hir::ExprKind::Array(vs) => {
                 let vs = vs.lower(ctx);
@@ -376,7 +377,7 @@ lower! {
                         rust!(#x: #v)
                     })
                     .collect::<Vec<_>>();
-                rust!(#ident { #(#vfs),* })
+                rust!(arc_script::arcorn::new!(#ident { #(#vfs),* }))
             }
             hir::ExprKind::Tuple(vs) => {
                 let vs = vs.lower(ctx);
@@ -446,7 +447,7 @@ lower! {
             }
             hir::TypeKind::Stream(t) => {
                 let t = t.lower(ctx);
-                rust!(arcorn::Stream<#t>)
+                rust!(arcorn::Stream<<#t as arc_script::arcorn::Convert>::T>)
             }
             hir::TypeKind::Struct(fts) => {
                 let ident = node.mangle_to_ident(ctx);
@@ -492,7 +493,7 @@ lower! {
             hir::ScalarKind::U32      => rust!(u32),
             hir::ScalarKind::U64      => rust!(u64),
             hir::ScalarKind::Str      => crate::todo!(),
-            hir::ScalarKind::Unit     => rust!(()),
+            hir::ScalarKind::Unit     => rust!(Unit),
             hir::ScalarKind::Size     => rust!(usize),
             hir::ScalarKind::DateTime => rust!(u64),
             hir::ScalarKind::Duration => rust!(u64),

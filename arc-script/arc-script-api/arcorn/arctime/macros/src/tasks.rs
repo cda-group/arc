@@ -1,5 +1,7 @@
 #![allow(unused)]
 
+use crate::new_id;
+
 use proc_macro as pm;
 use proc_macro2 as pm2;
 use quote::quote;
@@ -13,14 +15,14 @@ struct TaskComponents {
     task_name: syn::Ident,
     iport_enum: syn::ItemEnum,
     oport_enum: syn::ItemEnum,
-    iport_enum_wrapper_name: syn::Ident,
-    oport_enum_wrapper_name: syn::Ident,
-    iport_enum_name: syn::Ident,
-    oport_enum_name: syn::Ident,
+    abstract_iport_enum_name: syn::Ident,
+    abstract_oport_enum_name: syn::Ident,
+    concrete_iport_enum_name: syn::Ident,
+    concrete_oport_enum_name: syn::Ident,
     iport_name_var: Vec<syn::Ident>,
     iport_name: Vec<syn::Ident>,
-    iport_type: Vec<syn::Type>,
     oport_name: Vec<syn::Ident>,
+    iport_type: Vec<syn::Type>,
     oport_type: Vec<syn::Type>,
     param_name: Vec<syn::Ident>,
     param_type: Vec<syn::Type>,
@@ -61,17 +63,11 @@ fn extract(attr: AttributeArgs, module: ItemMod) -> TaskComponents {
     let iport_enum = enums.next().expect("Expected input port enum").clone();
     let oport_enum = enums.next().expect("Expected output port enum").clone();
 
-    let iport_enum_wrapper_name = iport_enum.ident.clone();
-    let oport_enum_wrapper_name = oport_enum.ident.clone();
+    let abstract_iport_enum_name = iport_enum.ident.clone();
+    let abstract_oport_enum_name = oport_enum.ident.clone();
 
-    let iport_enum_name = syn::Ident::new(
-        &format!("Enum{}", &iport_enum_wrapper_name),
-        pm2::Span::call_site(),
-    );
-    let oport_enum_name = syn::Ident::new(
-        &format!("Enum{}", &oport_enum_wrapper_name),
-        pm2::Span::call_site(),
-    );
+    let concrete_iport_enum_name = new_id(format!("Concrete{}", iport_enum.ident.clone()));
+    let concrete_oport_enum_name = new_id(format!("Concrete{}", oport_enum.ident.clone()));
 
     let on_event_name = get_attr_val("on_event", &attr);
     let on_start_name = get_attr_val("on_start", &attr);
@@ -88,7 +84,7 @@ fn extract(attr: AttributeArgs, module: ItemMod) -> TaskComponents {
         .collect();
     let iport_name_var = iport_name
         .iter()
-        .map(|ident| syn::Ident::new(&format!("_{}", ident), pm2::Span::call_site()))
+        .map(|ident| new_id(&format!("_{}", ident)))
         .collect();
 
     let iport_type = iport_enum
@@ -107,14 +103,14 @@ fn extract(attr: AttributeArgs, module: ItemMod) -> TaskComponents {
         task_name,
         iport_enum,
         oport_enum,
-        iport_enum_wrapper_name,
-        oport_enum_wrapper_name,
-        iport_enum_name,
-        oport_enum_name,
+        abstract_iport_enum_name,
+        abstract_oport_enum_name,
+        concrete_iport_enum_name,
+        concrete_oport_enum_name,
         iport_name_var,
         iport_name,
-        iport_type,
         oport_name,
+        iport_type,
         oport_type,
         param_name,
         param_type,
@@ -160,14 +156,14 @@ pub(crate) fn rewrite(attr: syn::AttributeArgs, item: syn::ItemMod) -> pm::Token
         task_name,
         iport_enum,
         oport_enum,
-        iport_enum_name,
-        oport_enum_name,
-        iport_enum_wrapper_name,
-        oport_enum_wrapper_name,
+        abstract_iport_enum_name,
+        abstract_oport_enum_name,
+        concrete_iport_enum_name,
+        concrete_oport_enum_name,
         iport_name_var,
         iport_name,
-        iport_type,
         oport_name,
+        iport_type,
         oport_type,
         param_name,
         param_type,
@@ -184,7 +180,7 @@ pub(crate) fn rewrite(attr: syn::AttributeArgs, item: syn::ItemMod) -> pm::Token
         let skip = i;
         let on_event = quote! {
             match event {
-                StreamEvent::Data(time, data) => self.handle_data(time, #port(data).wrap()),
+                StreamEvent::Data(time, data) => self.handle_data(time, #concrete_iport_enum_name::#port(data.convert()).convert()),
                 StreamEvent::Watermark(time) => todo!(),
                 StreamEvent::End => todo!(),
             }
@@ -204,42 +200,38 @@ pub(crate) fn rewrite(attr: syn::AttributeArgs, item: syn::ItemMod) -> pm::Token
     //     }
 
     quote!(
-        use #mod_name::#task_name;
-        use #mod_name::#iport_enum_name::*;
-        use #mod_name::#oport_enum_name::*;
         use #mod_name::*;
+        use #mod_name::#concrete_iport_enum_name::*;
+        use #mod_name::#concrete_oport_enum_name::*;
         #[allow(clippy::all)]
         #[allow(non_snake_case)]
         mod #mod_name {
+            use arc_script::arcorn::*;
             use arc_script::arcorn::backend::prelude::*;
-            use arc_script::arcorn::shared::ArcornFn;
             use super::*;
 
             pub struct #task_name {
                 pub ctx: ComponentContext<Self>,
                 pub event_time: DateTime,
-                #(pub #iport_name: ProvidedPort<StreamPort<#iport_type>>,)*
-                #(pub #oport_name: RequiredPort<StreamPort<#oport_type>>,)*
+                #(pub #iport_name: ProvidedPort<StreamPort<<#iport_type as Convert>::T>>,)*
+                #(pub #oport_name: RequiredPort<StreamPort<<#oport_type as Convert>::T>>,)*
                 #(pub #param_name: #param_type,)*
                 #(pub #state_name: State<#state_type>,)*
             }
 
-            // Allows the component to be sent across threads even if it contains fields which are 
+            // Allows the component to be sent across threads even if it contains fields which are
             // not safely sendable. The code generator is required to generate thread-safe code.
             unsafe impl Send for #task_name {}
 
             #iport_enum
             #oport_enum
 
-            use #iport_enum_name::*;
-            use #oport_enum_name::*;
-
-            type Input = (#(Stream<#iport_type>,)*);
-            type Output = (#(Stream<#oport_type>),*);
+            type Input = (#(Stream<<#iport_type as Convert>::T>,)*);
+            type Output = (#(Stream<<#oport_type as Convert>::T>),*);
             type TaskFn = Box<dyn ArcornFn<Input, Output = Output>>;
 
             pub fn #task_name(#(#param_name: #param_type,)*) -> TaskFn {
-                Box::new(move |#(#iport_name_var: Stream<#iport_type>,)*| {
+                Box::new(move |#(#iport_name_var: Stream<<#iport_type as Convert>::T>,)*| {
                     #task_name::new(#(#param_name,)*).connect((#(#iport_name_var,)*))
                 }) as TaskFn
             }
@@ -257,7 +249,7 @@ pub(crate) fn rewrite(attr: syn::AttributeArgs, item: syn::ItemMod) -> pm::Token
                     }
                 }
 
-                fn connect(self, (#(#iport_name_var,)*): Input) -> (#(Stream<#oport_type>),*) {
+                fn connect(self, (#(#iport_name_var,)*): Input) -> (#(Stream<<#oport_type as Convert>::T>),*) {
                     // Step 1. Initialise the task
                     // TODO: We currently assume all tasks at least take one stream as input
                     let (stream, ..) = (#(&#iport_name_var,)*);
@@ -291,7 +283,7 @@ pub(crate) fn rewrite(attr: syn::AttributeArgs, item: syn::ItemMod) -> pm::Token
                 }
 
                 #[inline(always)]
-                fn handle_data(&mut self, time: DateTime, data: #iport_enum_wrapper_name) -> Handled {
+                fn handle_data(&mut self, time: DateTime, data: #abstract_iport_enum_name) -> Handled {
                     self.event_time = time;
                     self.#on_event_name(data);
                     Handled::Ok
@@ -303,11 +295,11 @@ pub(crate) fn rewrite(attr: syn::AttributeArgs, item: syn::ItemMod) -> pm::Token
                     todo!()
                 }
 
-                pub fn emit(&mut self, data: #oport_enum_wrapper_name) {
-                    match data.this.unwrap() {
+                pub fn emit(&mut self, data: #abstract_oport_enum_name) {
+                    match data.concrete.as_ref() {
                         #(
-                            #oport_enum_name::#oport_name(data) =>
-                                self.#oport_name.trigger(StreamEvent::Data(self.event_time, data))
+                            #concrete_oport_enum_name::#oport_name(data) =>
+                                self.#oport_name.trigger(StreamEvent::Data(self.event_time, data.clone().convert()))
                         ,)*
                     }
                 }
@@ -381,7 +373,8 @@ pub(crate) fn rewrite(attr: syn::AttributeArgs, item: syn::ItemMod) -> pm::Token
                 }
             }
         }
-    ).into()
+    )
+    .into()
 }
 
 fn poll_port(

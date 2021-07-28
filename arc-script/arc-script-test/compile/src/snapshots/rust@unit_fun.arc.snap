@@ -17,14 +17,15 @@ input_file: arc-script-test/compile/src/tests/expect_pass/unit_fun.arc
 pub mod arc_script_output {
     use super::*;
     use arc_script::arcorn;
-    pub fn foo(x_0: ()) -> () {
+    use arc_script::arcorn::*;
+    pub fn foo(x_0: Unit) -> Unit {
         (x_0.clone())
     }
-    pub fn bar() -> () {
-        let x_1: Box<dyn arcorn::ArcornFn(()) -> ()> =
-            Box::new(foo) as Box<dyn arcorn::ArcornFn(()) -> ()>;
-        let x_2: () = ();
-        let x_3: () = (x_1.clone())((x_2.clone()));
+    pub fn bar() -> Unit {
+        let x_1: Box<dyn arcorn::ArcornFn(Unit) -> Unit> =
+            Box::new(foo) as Box<dyn arcorn::ArcornFn(Unit) -> Unit>;
+        let x_2: Unit = ();
+        let x_3: Unit = (x_1.clone())((x_2.clone()));
         (x_3.clone())
     }
 }

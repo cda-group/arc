@@ -6,8 +6,8 @@ use std::fmt::Debug;
 use std::marker::PhantomData;
 
 /// Trait requirements for sending data on a port.
-pub trait DataReqs: 'static + Sync + Send + Debug + Clone {}
-impl<T> DataReqs for T where T: 'static + Sync + Send + Debug + Clone {}
+pub trait DataReqs: 'static + Send + Debug + Clone {}
+impl<T> DataReqs for T where T: 'static + Send + Debug + Clone {}
 
 /// A datatype which can be used for sending values of either type `L` or `R`.
 #[derive(Debug, Clone)]

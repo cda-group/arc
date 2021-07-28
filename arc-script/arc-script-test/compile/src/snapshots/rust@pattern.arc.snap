@@ -17,7 +17,8 @@ input_file: arc-script-test/compile/src/tests/expect_pass/pattern.arc
 pub mod arc_script_output {
     use super::*;
     use arc_script::arcorn;
-    pub fn main() -> () {
+    use arc_script::arcorn::*;
+    pub fn main() -> Unit {
         let x_0: i32 = 1i32;
         let x_1: i32 = 2i32;
         let x_2: (i32, i32) = ((x_0.clone()), (x_1.clone()));
@@ -31,7 +32,7 @@ pub mod arc_script_output {
         let x_A: (i32, i32) = (x_6.clone()).1;
         let x_B: i32 = (x_A.clone()).0;
         let x_C: i32 = (x_A.clone()).1;
-        let x_D: () = ();
+        let x_D: Unit = ();
         (x_D.clone())
     }
 }

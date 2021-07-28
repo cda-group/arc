@@ -17,6 +17,7 @@ input_file: arc-script-test/compile/src/tests/expect_pass/fun.arc
 pub mod arc_script_output {
     use super::*;
     use arc_script::arcorn;
+    use arc_script::arcorn::*;
     pub fn max(a_0: i32, b_0: i32) -> i32 {
         let x_0: bool = (a_0.clone()) > (b_0.clone());
         let x_3: i32 = if (x_0.clone()) {

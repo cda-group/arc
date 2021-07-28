@@ -17,6 +17,7 @@ input_file: arc-script-test/compile/src/tests/expect_mlir_fail_todo/task_keyby.a
 pub mod arc_script_output {
     use super::*;
     use arc_script::arcorn;
+    use arc_script::arcorn::*;
     #[arcorn::rewrite(on_event = "KeyBy_on_event", on_start = "KeyBy_on_start")]
     mod KeyBy_mod {
         struct KeyBy {
@@ -32,22 +33,23 @@ pub mod arc_script_output {
         }
     }
     impl KeyBy_mod::KeyBy {
-        pub fn KeyBy_on_event(&mut self, x_3: KeyBy_IInterface) -> () {
+        pub fn KeyBy_on_event(&mut self, x_3: KeyBy_IInterface) -> Unit {
             let x_0: Struct3keyi325valuei32End =
                 arcorn::unwrap!(KeyBy_IInterface___, (x_3.clone()));
-            let x_1: i32 = (x_0.clone()).value;
-            let x_2: i32 = (x_0.clone()).key;
+            let x_1: i32 = arcorn::access!((x_0.clone()), value);
+            let x_2: i32 = arcorn::access!((x_0.clone()), key);
             let x_4: i32 = ((self.keyfun_0).clone())((x_1.clone()));
-            let x_5: Struct3keyi325valuei32End = Struct3keyi325valuei32End {
-                value: (x_1.clone()),
-                key: (x_4.clone()),
-            };
+            let x_5: Struct3keyi325valuei32End =
+                arc_script::arcorn::new!(Struct3keyi325valuei32End {
+                    value: (x_1.clone()),
+                    key: (x_4.clone())
+                });
             let x_6: KeyBy_OInterface = arcorn::enwrap!(KeyBy_OInterface___, (x_5.clone()));
-            let x_7: () = self.emit((x_6.clone()));
+            let x_7: Unit = self.emit((x_6.clone()));
             (x_7.clone())
         }
-        pub fn KeyBy_on_start(&mut self) -> () {
-            let x_9: () = ();
+        pub fn KeyBy_on_start(&mut self) -> Unit {
+            let x_9: Unit = ();
             (x_9.clone())
         }
     }

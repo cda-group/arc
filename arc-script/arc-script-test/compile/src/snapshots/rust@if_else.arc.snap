@@ -17,6 +17,7 @@ input_file: arc-script-test/compile/src/tests/expect_pass/if_else.arc
 pub mod arc_script_output {
     use super::*;
     use arc_script::arcorn;
+    use arc_script::arcorn::*;
     pub fn test() -> i32 {
         let x_0: bool = true;
         let x_1: bool = false;

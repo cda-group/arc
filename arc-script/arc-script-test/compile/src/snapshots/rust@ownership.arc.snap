@@ -17,8 +17,17 @@ input_file: arc-script-test/compile/src/tests/expect_fail/ownership.arc
 pub mod arc_script_output {
     use super::*;
     use arc_script::arcorn;
-    pub fn main(s0_0: arcorn::Stream<i32>) -> (arcorn::Stream<i32>, arcorn::Stream<i32>) {
-        let x_0: (arcorn::Stream<i32>, arcorn::Stream<i32>) = ((s0_0.clone()), (s0_0.clone()));
+    use arc_script::arcorn::*;
+    pub fn main(
+        s0_0: arcorn::Stream<<i32 as arc_script::arcorn::Convert>::T>,
+    ) -> (
+        arcorn::Stream<<i32 as arc_script::arcorn::Convert>::T>,
+        arcorn::Stream<<i32 as arc_script::arcorn::Convert>::T>,
+    ) {
+        let x_0: (
+            arcorn::Stream<<i32 as arc_script::arcorn::Convert>::T>,
+            arcorn::Stream<<i32 as arc_script::arcorn::Convert>::T>,
+        ) = ((s0_0.clone()), (s0_0.clone()));
         (x_0.clone())
     }
 }
