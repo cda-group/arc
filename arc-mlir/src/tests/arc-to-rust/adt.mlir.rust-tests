@@ -1,0 +1,14 @@
+#[cfg(test)]
+mod tests {
+ use crate::arctorustadt::*;
+  #[test]
+  fn test() {
+   ok0(17);
+   let tmp0 = ok2(4711);
+   assert_eq!(tmp0, 4711);
+
+   let tmp1 = ok3((4711, false),);
+   assert_eq!(tmp1, (4711, false),);
+
+  }
+}
