@@ -305,6 +305,25 @@ struct BlockResultOpLowering : public ConversionPattern {
   };
 };
 
+struct ConstantADTOpLowering : public ConversionPattern {
+  ConstantADTOpLowering(MLIRContext *ctx, RustTypeConverter &typeConverter)
+      : ConversionPattern(arc::ConstantADTOp::getOperationName(), 1, ctx),
+        TypeConverter(typeConverter) {}
+
+  LogicalResult
+  matchAndRewrite(Operation *op, ArrayRef<Value> operands,
+                  ConversionPatternRewriter &rewriter) const final {
+    arc::ConstantADTOp o = cast<arc::ConstantADTOp>(op);
+
+    Type rustTy = TypeConverter.convertType(o.result().getType());
+    rewriter.replaceOpWithNewOp<rust::RustConstantOp>(op, rustTy, o.value());
+    return success();
+  };
+
+private:
+  RustTypeConverter &TypeConverter;
+};
+
 struct IfOpLowering : public ConversionPattern {
   IfOpLowering(MLIRContext *ctx, RustTypeConverter &typeConverter)
       : ConversionPattern(arc::IfOp::getOperationName(), 1, ctx),
@@ -1036,6 +1055,7 @@ void ArcToRustLoweringPass::runOnOperation() {
   patterns.insert<IfOpLowering>(&getContext(), typeConverter);
   patterns.insert<IndexTupleOpLowering>(&getContext(), typeConverter);
   patterns.insert<BlockResultOpLowering>(&getContext());
+  patterns.insert<ConstantADTOpLowering>(&getContext(), typeConverter);
   patterns.insert<MakeTupleOpLowering>(&getContext(), typeConverter);
   patterns.insert<MakeTensorOpLowering>(&getContext(), typeConverter);
   patterns.insert<MakeEnumOpLowering>(&getContext(), typeConverter);

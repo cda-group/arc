@@ -15,4 +15,14 @@ func @ok0(%in : !arc.adt<"i32">) -> () {
     return %pair : !arc.adt<"(i32, bool)">
   }
 
+  func @ok4() -> !arc.adt<"i32"> {
+    %out = arc.adt_constant "4711" : !arc.adt<"i32">
+    return %out : !arc.adt<"i32">
+  }
+
+  func @ok5() -> !arc.adt<"(i32, bool)"> {
+    %pair = arc.adt_constant "(17, false)" : !arc.adt<"(i32, bool)">
+    return %pair : !arc.adt<"(i32, bool)">
+  }
+
 }
