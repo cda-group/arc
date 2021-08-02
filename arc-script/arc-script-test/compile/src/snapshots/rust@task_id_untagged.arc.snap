@@ -32,16 +32,14 @@ pub mod arc_script_output {
     }
     impl Identity_mod::Identity {
         pub fn Identity_on_event(&mut self, x_0: Identity_IInterface) -> Unit {
-            let event_0: Struct3keyi325valuei32End =
-                arcorn::unwrap!(Identity_IInterface___, arcorn::val!(x_0));
-            let x_1: Identity_OInterface =
-                arcorn::enwrap!(Identity_OInterface___, arcorn::val!(event_0));
-            let x_2: Unit = self.emit(arcorn::val!(x_1));
-            arcorn::val!(x_2)
+            let event_0: Struct3keyi325valuei32End = unwrap!(Identity_IInterface___, val!(x_0));
+            let x_1: Identity_OInterface = enwrap!(Identity_OInterface___, val!(event_0));
+            let x_2: Unit = self.emit(val!(x_1));
+            val!(x_2)
         }
         pub fn Identity_on_start(&mut self) -> Unit {
             let x_4: Unit = ();
-            arcorn::val!(x_4)
+            val!(x_4)
         }
     }
     #[arcorn::rewrite]

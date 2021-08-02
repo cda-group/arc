@@ -21,19 +21,19 @@ pub mod arc_script_output {
     pub fn main() -> Unit {
         let x_0: i32 = 1i32;
         let x_1: i32 = 2i32;
-        let x_2: (i32, i32) = (arcorn::val!(x_0), arcorn::val!(x_1));
+        let x_2: (i32, i32) = (val!(x_0), val!(x_1));
         let x_3: i32 = 3i32;
         let x_4: i32 = 4i32;
-        let x_5: (i32, i32) = (arcorn::val!(x_3), arcorn::val!(x_4));
-        let x_6: ((i32, i32), (i32, i32)) = (arcorn::val!(x_2), arcorn::val!(x_5));
-        let x_7: (i32, i32) = arcorn::val!(x_6).0;
-        let x_8: i32 = arcorn::val!(x_7).0;
-        let x_9: i32 = arcorn::val!(x_7).1;
-        let x_A: (i32, i32) = arcorn::val!(x_6).1;
-        let x_B: i32 = arcorn::val!(x_A).0;
-        let x_C: i32 = arcorn::val!(x_A).1;
+        let x_5: (i32, i32) = (val!(x_3), val!(x_4));
+        let x_6: ((i32, i32), (i32, i32)) = (val!(x_2), val!(x_5));
+        let x_7: (i32, i32) = val!(x_6).0;
+        let x_8: i32 = val!(x_7).0;
+        let x_9: i32 = val!(x_7).1;
+        let x_A: (i32, i32) = val!(x_6).1;
+        let x_B: i32 = val!(x_A).0;
+        let x_C: i32 = val!(x_A).1;
         let x_D: Unit = ();
-        arcorn::val!(x_D)
+        val!(x_D)
     }
 }
 pub use arc_script_output::*;

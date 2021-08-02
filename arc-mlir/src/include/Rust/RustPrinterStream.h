@@ -251,7 +251,7 @@ public:
   llvm::raw_string_ostream &printAsRust(llvm::raw_string_ostream &s,
                                         const Type ty) {
     if (FunctionType fType = ty.dyn_cast<FunctionType>()) {
-      s << "Box<dyn arcorn::ArcornFn(";
+      s << "Box<dyn ArcornFn(";
       for (Type t : fType.getInputs()) {
         printAsRust(s, t) << ",";
       }
@@ -272,9 +272,9 @@ public:
       return s;
     }
     if (types::RustStreamType rt = ty.dyn_cast<types::RustStreamType>()) {
-      s << "arcorn::Stream<<";
+      s << "Stream<<";
       printAsRust(s, rt.getType());
-      s << " as arcorn::Convert>::T>";
+      s << " as Convert>::T>";
       return s;
     }
     if (types::RustStructType rt = ty.dyn_cast<types::RustStructType>()) {

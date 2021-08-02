@@ -21,7 +21,7 @@ pub mod arc_script_output {
     #[arcorn::rewrite(on_event = "Map_on_event", on_start = "Map_on_start")]
     mod Map_mod {
         struct Map {
-            f_0: Box<dyn arcorn::ArcornFn(i32) -> i32>,
+            f_0: Box<dyn ArcornFn(i32) -> i32>,
         }
         #[arcorn::rewrite]
         pub enum Map_IInterface {
@@ -34,69 +34,58 @@ pub mod arc_script_output {
     }
     impl Map_mod::Map {
         pub fn Map_on_event(&mut self, x_3: Map_IInterface) -> Unit {
-            let x_0: Struct3keyi325valuei32End =
-                arcorn::unwrap!(Map_IInterface___, arcorn::val!(x_3));
-            let x_1: i32 = arcorn::access!(arcorn::val!(x_0), value);
-            let x_2: i32 = arcorn::access!(arcorn::val!(x_0), key);
-            let x_4: i32 = ((self.f_0).clone())(arcorn::val!(x_1));
-            let x_5: Struct3keyi325valuei32End =
-                arc_script::arcorn::new!(Struct3keyi325valuei32End {
-                    value: arcorn::val!(x_4),
-                    key: arcorn::val!(x_2)
-                });
-            let x_6: Map_OInterface = arcorn::enwrap!(Map_OInterface___, arcorn::val!(x_5));
-            let x_7: Unit = self.emit(arcorn::val!(x_6));
-            arcorn::val!(x_7)
+            let x_0: Struct3keyi325valuei32End = unwrap!(Map_IInterface___, val!(x_3));
+            let x_1: i32 = access!(val!(x_0), value);
+            let x_2: i32 = access!(val!(x_0), key);
+            let x_4: i32 = ((self.f_0).clone())(val!(x_1));
+            let x_5: Struct3keyi325valuei32End = new!(Struct3keyi325valuei32End {
+                value: val!(x_4),
+                key: val!(x_2)
+            });
+            let x_6: Map_OInterface = enwrap!(Map_OInterface___, val!(x_5));
+            let x_7: Unit = self.emit(val!(x_6));
+            val!(x_7)
         }
         pub fn Map_on_start(&mut self) -> Unit {
             let x_9: Unit = ();
-            arcorn::val!(x_9)
+            val!(x_9)
         }
     }
     pub fn x_B(x_C: i32) -> i32 {
         let x_D: i32 = 1i32;
-        let x_E: i32 = arcorn::val!(x_C) + arcorn::val!(x_D);
-        arcorn::val!(x_E)
+        let x_E: i32 = val!(x_C) + val!(x_D);
+        val!(x_E)
     }
     pub fn main(
-        input_0: arcorn::Stream<<Struct3keyi325valuei32End as arc_script::arcorn::Convert>::T>,
-    ) -> arcorn::Stream<<Struct3keyi325valuei32End as arc_script::arcorn::Convert>::T> {
+        input_0: Stream<<Struct3keyi325valuei32End as Convert>::T>,
+    ) -> Stream<<Struct3keyi325valuei32End as Convert>::T> {
         let x_A: Box<
-            dyn arcorn::ArcornFn(
-                Box<dyn arcorn::ArcornFn(i32) -> i32>,
+            dyn ArcornFn(
+                Box<dyn ArcornFn(i32) -> i32>,
             ) -> Box<
-                dyn arcorn::ArcornFn(
-                    arcorn::Stream<<Struct3keyi325valuei32End as arc_script::arcorn::Convert>::T>,
-                ) -> arcorn::Stream<
-                    <Struct3keyi325valuei32End as arc_script::arcorn::Convert>::T,
-                >,
+                dyn ArcornFn(
+                    Stream<<Struct3keyi325valuei32End as Convert>::T>,
+                ) -> Stream<<Struct3keyi325valuei32End as Convert>::T>,
             >,
         > = Box::new(Map)
             as Box<
-                dyn arcorn::ArcornFn(
-                    Box<dyn arcorn::ArcornFn(i32) -> i32>,
+                dyn ArcornFn(
+                    Box<dyn ArcornFn(i32) -> i32>,
                 ) -> Box<
-                    dyn arcorn::ArcornFn(
-                        arcorn::Stream<
-                            <Struct3keyi325valuei32End as arc_script::arcorn::Convert>::T,
-                        >,
-                    ) -> arcorn::Stream<
-                        <Struct3keyi325valuei32End as arc_script::arcorn::Convert>::T,
-                    >,
+                    dyn ArcornFn(
+                        Stream<<Struct3keyi325valuei32End as Convert>::T>,
+                    )
+                        -> Stream<<Struct3keyi325valuei32End as Convert>::T>,
                 >,
             >;
-        let x_F: Box<dyn arcorn::ArcornFn(i32) -> i32> =
-            Box::new(x_B) as Box<dyn arcorn::ArcornFn(i32) -> i32>;
+        let x_F: Box<dyn ArcornFn(i32) -> i32> = Box::new(x_B) as Box<dyn ArcornFn(i32) -> i32>;
         let x_G: Box<
-            dyn arcorn::ArcornFn(
-                arcorn::Stream<<Struct3keyi325valuei32End as arc_script::arcorn::Convert>::T>,
-            ) -> arcorn::Stream<
-                <Struct3keyi325valuei32End as arc_script::arcorn::Convert>::T,
-            >,
-        > = arcorn::val!(x_A)(arcorn::val!(x_F));
-        let x_H: arcorn::Stream<<Struct3keyi325valuei32End as arc_script::arcorn::Convert>::T> =
-            arcorn::val!(x_G)(arcorn::val!(input_0));
-        arcorn::val!(x_H)
+            dyn ArcornFn(
+                Stream<<Struct3keyi325valuei32End as Convert>::T>,
+            ) -> Stream<<Struct3keyi325valuei32End as Convert>::T>,
+        > = val!(x_A)(val!(x_F));
+        let x_H: Stream<<Struct3keyi325valuei32End as Convert>::T> = val!(x_G)(val!(input_0));
+        val!(x_H)
     }
     #[arcorn::rewrite]
     pub struct Struct3keyi325valuei32End {

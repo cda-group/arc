@@ -19,16 +19,11 @@ pub mod arc_script_output {
     use arc_script::arcorn;
     use arc_script::arcorn::*;
     pub fn main(
-        s0_0: arcorn::Stream<<i32 as arc_script::arcorn::Convert>::T>,
-    ) -> (
-        arcorn::Stream<<i32 as arc_script::arcorn::Convert>::T>,
-        arcorn::Stream<<i32 as arc_script::arcorn::Convert>::T>,
-    ) {
-        let x_0: (
-            arcorn::Stream<<i32 as arc_script::arcorn::Convert>::T>,
-            arcorn::Stream<<i32 as arc_script::arcorn::Convert>::T>,
-        ) = (arcorn::val!(s0_0), arcorn::val!(s0_0));
-        arcorn::val!(x_0)
+        s0_0: Stream<<i32 as Convert>::T>,
+    ) -> (Stream<<i32 as Convert>::T>, Stream<<i32 as Convert>::T>) {
+        let x_0: (Stream<<i32 as Convert>::T>, Stream<<i32 as Convert>::T>) =
+            (val!(s0_0), val!(s0_0));
+        val!(x_0)
     }
 }
 pub use arc_script_output::*;

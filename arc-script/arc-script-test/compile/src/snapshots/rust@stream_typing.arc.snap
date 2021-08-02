@@ -19,30 +19,25 @@ pub mod arc_script_output {
     use arc_script::arcorn;
     use arc_script::arcorn::*;
     pub fn test0(
-        x_0: arcorn::Stream<<Struct3keyi325valuei32End as arc_script::arcorn::Convert>::T>,
-    ) -> arcorn::Stream<<Struct3keyi325valuei32End as arc_script::arcorn::Convert>::T> {
+        x_0: Stream<<Struct3keyi325valuei32End as Convert>::T>,
+    ) -> Stream<<Struct3keyi325valuei32End as Convert>::T> {
         let x_1: Box<
-            dyn arcorn::ArcornFn(
-                arcorn::Stream<<Struct3keyi325valuei32End as arc_script::arcorn::Convert>::T>,
-            ) -> arcorn::Stream<
-                <Struct3keyi325valuei32End as arc_script::arcorn::Convert>::T,
-            >,
+            dyn ArcornFn(
+                Stream<<Struct3keyi325valuei32End as Convert>::T>,
+            ) -> Stream<<Struct3keyi325valuei32End as Convert>::T>,
         > = Box::new(test1)
             as Box<
-                dyn arcorn::ArcornFn(
-                    arcorn::Stream<<Struct3keyi325valuei32End as arc_script::arcorn::Convert>::T>,
-                ) -> arcorn::Stream<
-                    <Struct3keyi325valuei32End as arc_script::arcorn::Convert>::T,
-                >,
+                dyn ArcornFn(
+                    Stream<<Struct3keyi325valuei32End as Convert>::T>,
+                ) -> Stream<<Struct3keyi325valuei32End as Convert>::T>,
             >;
-        let x_2: arcorn::Stream<<Struct3keyi325valuei32End as arc_script::arcorn::Convert>::T> =
-            arcorn::val!(x_1)(arcorn::val!(x_0));
-        arcorn::val!(x_2)
+        let x_2: Stream<<Struct3keyi325valuei32End as Convert>::T> = val!(x_1)(val!(x_0));
+        val!(x_2)
     }
     pub fn test1(
-        x_3: arcorn::Stream<<Struct3keyi325valuei32End as arc_script::arcorn::Convert>::T>,
-    ) -> arcorn::Stream<<Struct3keyi325valuei32End as arc_script::arcorn::Convert>::T> {
-        arcorn::val!(x_3)
+        x_3: Stream<<Struct3keyi325valuei32End as Convert>::T>,
+    ) -> Stream<<Struct3keyi325valuei32End as Convert>::T> {
+        val!(x_3)
     }
     #[arcorn::rewrite]
     pub struct Struct3keyi325valuei32End {

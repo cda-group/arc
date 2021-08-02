@@ -32,58 +32,48 @@ pub mod arc_script_output {
     }
     impl Identity_mod::Identity {
         pub fn Identity_on_event(&mut self, x_0: Identity_IInterface) -> Unit {
-            let x_1: bool = arcorn::is!(Identity_IInterface_A, arcorn::val!(x_0));
-            let x_6: Unit = if arcorn::val!(x_1) {
-                let x_2: Struct3keyi325valuei32End =
-                    arcorn::unwrap!(Identity_IInterface_A, arcorn::val!(x_0));
-                let x_3: Identity_OInterface =
-                    arcorn::enwrap!(Identity_OInterface_B, arcorn::val!(x_2));
-                let x_4: Unit = self.emit(arcorn::val!(x_3));
-                arcorn::val!(x_4)
+            let x_1: bool = is!(Identity_IInterface_A, val!(x_0));
+            let x_6: Unit = if val!(x_1) {
+                let x_2: Struct3keyi325valuei32End = unwrap!(Identity_IInterface_A, val!(x_0));
+                let x_3: Identity_OInterface = enwrap!(Identity_OInterface_B, val!(x_2));
+                let x_4: Unit = self.emit(val!(x_3));
+                val!(x_4)
             } else {
                 let x_5: Unit = unreachable!();
-                arcorn::val!(x_5)
+                val!(x_5)
             };
-            arcorn::val!(x_6)
+            val!(x_6)
         }
         pub fn Identity_on_start(&mut self) -> Unit {
             let x_7: Unit = ();
-            arcorn::val!(x_7)
+            val!(x_7)
         }
     }
     pub fn main(
-        input_0: arcorn::Stream<<Struct3keyi325valuei32End as arc_script::arcorn::Convert>::T>,
-    ) -> arcorn::Stream<<Struct3keyi325valuei32End as arc_script::arcorn::Convert>::T> {
+        input_0: Stream<<Struct3keyi325valuei32End as Convert>::T>,
+    ) -> Stream<<Struct3keyi325valuei32End as Convert>::T> {
         let x_8: Box<
-            dyn arcorn::ArcornFn() -> Box<
-                dyn arcorn::ArcornFn(
-                    arcorn::Stream<<Struct3keyi325valuei32End as arc_script::arcorn::Convert>::T>,
-                ) -> arcorn::Stream<
-                    <Struct3keyi325valuei32End as arc_script::arcorn::Convert>::T,
-                >,
+            dyn ArcornFn() -> Box<
+                dyn ArcornFn(
+                    Stream<<Struct3keyi325valuei32End as Convert>::T>,
+                ) -> Stream<<Struct3keyi325valuei32End as Convert>::T>,
             >,
         > = Box::new(Identity)
             as Box<
-                dyn arcorn::ArcornFn() -> Box<
-                    dyn arcorn::ArcornFn(
-                        arcorn::Stream<
-                            <Struct3keyi325valuei32End as arc_script::arcorn::Convert>::T,
-                        >,
-                    ) -> arcorn::Stream<
-                        <Struct3keyi325valuei32End as arc_script::arcorn::Convert>::T,
-                    >,
+                dyn ArcornFn() -> Box<
+                    dyn ArcornFn(
+                        Stream<<Struct3keyi325valuei32End as Convert>::T>,
+                    )
+                        -> Stream<<Struct3keyi325valuei32End as Convert>::T>,
                 >,
             >;
         let x_9: Box<
-            dyn arcorn::ArcornFn(
-                arcorn::Stream<<Struct3keyi325valuei32End as arc_script::arcorn::Convert>::T>,
-            ) -> arcorn::Stream<
-                <Struct3keyi325valuei32End as arc_script::arcorn::Convert>::T,
-            >,
-        > = arcorn::val!(x_8)();
-        let x_A: arcorn::Stream<<Struct3keyi325valuei32End as arc_script::arcorn::Convert>::T> =
-            arcorn::val!(x_9)(arcorn::val!(input_0));
-        arcorn::val!(x_A)
+            dyn ArcornFn(
+                Stream<<Struct3keyi325valuei32End as Convert>::T>,
+            ) -> Stream<<Struct3keyi325valuei32End as Convert>::T>,
+        > = val!(x_8)();
+        let x_A: Stream<<Struct3keyi325valuei32End as Convert>::T> = val!(x_9)(val!(input_0));
+        val!(x_A)
     }
     #[arcorn::rewrite]
     pub struct Struct3keyi325valuei32End {

@@ -458,8 +458,8 @@ void RustMakeEnumOp::writeRust(RustPrinterStream &PS) {
   auto r = getResult();
   RustEnumType et = r.getType().cast<RustEnumType>();
   PS << "let ";
-  PS.printAsArg(r) << ":" << et << " = arcorn::enwrap!(" << et
-                   << "::" << variant() << ", ";
+  PS.printAsArg(r) << ":" << et << " = enwrap!(" << et << "::" << variant()
+                   << ", ";
   if (values().size())
     PS << values()[0];
   else
@@ -471,7 +471,7 @@ void RustMakeStructOp::writeRust(RustPrinterStream &PS) {
   auto r = getResult();
   RustStructType st = r.getType().cast<RustStructType>();
   PS << "let ";
-  PS.printAsArg(r) << ":" << st << " = arcorn::new!(" << st << " { ";
+  PS.printAsArg(r) << ":" << st << " = new!(" << st << " { ";
   auto args = operands();
   for (unsigned i = 0; i < args.size(); i++) {
     if (i != 0)
@@ -526,7 +526,7 @@ void RustEnumAccessOp::writeRust(RustPrinterStream &PS) {
   auto r = getResult();
   RustEnumType et = theEnum().getType().cast<RustEnumType>();
   PS << "let ";
-  PS.printAsArg(r) << ":" << r.getType() << " = arcorn::unwrap!(" << et
+  PS.printAsArg(r) << ":" << r.getType() << " = unwrap!(" << et
                    << "::" << getVariant() << ", " << theEnum() << ");\n";
 }
 
@@ -534,15 +534,15 @@ void RustEnumCheckOp::writeRust(RustPrinterStream &PS) {
   auto r = getResult();
   RustEnumType et = theEnum().getType().cast<RustEnumType>();
   PS << "let ";
-  PS.printAsArg(r) << ":" << r.getType() << " = arcorn::is!(" << et
+  PS.printAsArg(r) << ":" << r.getType() << " = is!(" << et
                    << "::" << getVariant() << ", " << theEnum() << ");\n";
 }
 
 void RustFieldAccessOp::writeRust(RustPrinterStream &PS) {
   auto r = getResult();
   PS << "let ";
-  PS.printAsArg(r) << ":" << r.getType() << " = arcorn::access!("
-                   << aggregate() << ", " << getField() << ");\n";
+  PS.printAsArg(r) << ":" << r.getType() << " = access!(" << aggregate() << ", "
+                   << getField() << ");\n";
 }
 
 void RustIfOp::writeRust(RustPrinterStream &PS) {

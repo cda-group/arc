@@ -24,17 +24,13 @@ pub mod arc_script_output {
         let x_2: i32 = 67i32;
         let x_3: bool = true;
         let x_4: bool = false;
-        let x_6: i32 = if arcorn::val!(x_3) {
-            arcorn::val!(x_0)
+        let x_6: i32 = if val!(x_3) {
+            val!(x_0)
         } else {
-            let x_5: i32 = if arcorn::val!(x_4) {
-                arcorn::val!(x_1)
-            } else {
-                arcorn::val!(x_2)
-            };
-            arcorn::val!(x_5)
+            let x_5: i32 = if val!(x_4) { val!(x_1) } else { val!(x_2) };
+            val!(x_5)
         };
-        arcorn::val!(x_6)
+        val!(x_6)
     }
 }
 pub use arc_script_output::*;

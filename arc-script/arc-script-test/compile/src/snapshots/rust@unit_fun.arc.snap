@@ -19,14 +19,13 @@ pub mod arc_script_output {
     use arc_script::arcorn;
     use arc_script::arcorn::*;
     pub fn foo(x_0: Unit) -> Unit {
-        arcorn::val!(x_0)
+        val!(x_0)
     }
     pub fn bar() -> Unit {
-        let x_1: Box<dyn arcorn::ArcornFn(Unit) -> Unit> =
-            Box::new(foo) as Box<dyn arcorn::ArcornFn(Unit) -> Unit>;
+        let x_1: Box<dyn ArcornFn(Unit) -> Unit> = Box::new(foo) as Box<dyn ArcornFn(Unit) -> Unit>;
         let x_2: Unit = ();
-        let x_3: Unit = arcorn::val!(x_1)(arcorn::val!(x_2));
-        arcorn::val!(x_3)
+        let x_3: Unit = val!(x_1)(val!(x_2));
+        val!(x_3)
     }
 }
 pub use arc_script_output::*;

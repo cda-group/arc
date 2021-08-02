@@ -30,34 +30,32 @@ pub mod arc_script_output {
     }
     pub fn x_9() -> Unit {
         let x_8: Unit = ();
-        arcorn::val!(x_8)
+        val!(x_8)
     }
     pub fn main() -> Unit {
         let x_0: i32 = 5i32;
-        let x_1: Baz = arcorn::enwrap!(Baz_Some, arcorn::val!(x_0));
-        let x_2: Foo = arcorn::enwrap!(Foo_Bar, arcorn::val!(x_1));
-        let x_3: bool = arcorn::is!(Foo_Bar, arcorn::val!(x_2));
-        let x_D: Unit = if arcorn::val!(x_3) {
-            let x_4: Baz = arcorn::unwrap!(Foo_Bar, arcorn::val!(x_2));
-            let x_5: bool = arcorn::is!(Baz_Some, arcorn::val!(x_4));
-            let x_C: Unit = if arcorn::val!(x_5) {
-                let x_6: i32 = arcorn::unwrap!(Baz_Some, arcorn::val!(x_4));
+        let x_1: Baz = enwrap!(Baz_Some, val!(x_0));
+        let x_2: Foo = enwrap!(Foo_Bar, val!(x_1));
+        let x_3: bool = is!(Foo_Bar, val!(x_2));
+        let x_D: Unit = if val!(x_3) {
+            let x_4: Baz = unwrap!(Foo_Bar, val!(x_2));
+            let x_5: bool = is!(Baz_Some, val!(x_4));
+            let x_C: Unit = if val!(x_5) {
+                let x_6: i32 = unwrap!(Baz_Some, val!(x_4));
                 let x_7: Unit = ();
-                arcorn::val!(x_7)
+                val!(x_7)
             } else {
-                let x_A: Box<dyn arcorn::ArcornFn() -> Unit> =
-                    Box::new(x_9) as Box<dyn arcorn::ArcornFn() -> Unit>;
-                let x_B: Unit = arcorn::val!(x_A)();
-                arcorn::val!(x_B)
+                let x_A: Box<dyn ArcornFn() -> Unit> = Box::new(x_9) as Box<dyn ArcornFn() -> Unit>;
+                let x_B: Unit = val!(x_A)();
+                val!(x_B)
             };
-            arcorn::val!(x_C)
+            val!(x_C)
         } else {
-            let x_A: Box<dyn arcorn::ArcornFn() -> Unit> =
-                Box::new(x_9) as Box<dyn arcorn::ArcornFn() -> Unit>;
-            let x_B: Unit = arcorn::val!(x_A)();
-            arcorn::val!(x_B)
+            let x_A: Box<dyn ArcornFn() -> Unit> = Box::new(x_9) as Box<dyn ArcornFn() -> Unit>;
+            let x_B: Unit = val!(x_A)();
+            val!(x_B)
         };
-        arcorn::val!(x_D)
+        val!(x_D)
     }
 }
 pub use arc_script_output::*;

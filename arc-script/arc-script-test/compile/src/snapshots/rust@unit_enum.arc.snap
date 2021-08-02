@@ -24,22 +24,21 @@ pub mod arc_script_output {
     }
     pub fn x_5() -> Unit {
         let x_4: Unit = ();
-        arcorn::val!(x_4)
+        val!(x_4)
     }
     pub fn test() -> Unit {
         let x_0: Unit = ();
-        let x_1: Foo = arcorn::enwrap!(Foo_Bar, arcorn::val!(x_0));
-        let x_2: bool = arcorn::is!(Foo_Bar, arcorn::val!(x_1));
-        let x_8: Unit = if arcorn::val!(x_2) {
-            let x_3: Unit = arcorn::unwrap!(Foo_Bar, arcorn::val!(x_1));
-            arcorn::val!(x_3)
+        let x_1: Foo = enwrap!(Foo_Bar, val!(x_0));
+        let x_2: bool = is!(Foo_Bar, val!(x_1));
+        let x_8: Unit = if val!(x_2) {
+            let x_3: Unit = unwrap!(Foo_Bar, val!(x_1));
+            val!(x_3)
         } else {
-            let x_6: Box<dyn arcorn::ArcornFn() -> Unit> =
-                Box::new(x_5) as Box<dyn arcorn::ArcornFn() -> Unit>;
-            let x_7: Unit = arcorn::val!(x_6)();
-            arcorn::val!(x_7)
+            let x_6: Box<dyn ArcornFn() -> Unit> = Box::new(x_5) as Box<dyn ArcornFn() -> Unit>;
+            let x_7: Unit = val!(x_6)();
+            val!(x_7)
         };
-        arcorn::val!(x_8)
+        val!(x_8)
     }
 }
 pub use arc_script_output::*;

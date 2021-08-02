@@ -20,18 +20,14 @@ pub mod arc_script_output {
     use arc_script::arcorn::*;
     pub fn main() -> Unit {
         let x_0: Unit = ();
-        arcorn::val!(x_0)
+        val!(x_0)
     }
     pub fn test() -> i32 {
         let x_1: i32 = 65i32;
         let x_2: i32 = 66i32;
         let x_3: bool = true;
-        let x_4: i32 = if arcorn::val!(x_3) {
-            arcorn::val!(x_1)
-        } else {
-            arcorn::val!(x_2)
-        };
-        arcorn::val!(x_4)
+        let x_4: i32 = if val!(x_3) { val!(x_1) } else { val!(x_2) };
+        val!(x_4)
     }
 }
 pub use arc_script_output::*;

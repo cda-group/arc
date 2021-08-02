@@ -21,7 +21,7 @@ pub mod arc_script_output {
     #[arcorn::rewrite(on_event = "Filter_on_event", on_start = "Filter_on_start")]
     mod Filter_mod {
         struct Filter {
-            p_0: Box<dyn arcorn::ArcornFn(i32) -> bool>,
+            p_0: Box<dyn ArcornFn(i32) -> bool>,
         }
         #[arcorn::rewrite]
         pub enum Filter_IInterface {
@@ -34,78 +34,66 @@ pub mod arc_script_output {
     }
     impl Filter_mod::Filter {
         pub fn Filter_on_event(&mut self, x_3: Filter_IInterface) -> Unit {
-            let x_0: Struct3keyi325valuei32End =
-                arcorn::unwrap!(Filter_IInterface___, arcorn::val!(x_3));
-            let x_1: i32 = arcorn::access!(arcorn::val!(x_0), value);
-            let x_2: i32 = arcorn::access!(arcorn::val!(x_0), key);
-            let x_4: bool = ((self.p_0).clone())(arcorn::val!(x_1));
-            let x_9: Unit = if arcorn::val!(x_4) {
-                let x_5: Struct3keyi325valuei32End =
-                    arc_script::arcorn::new!(Struct3keyi325valuei32End {
-                        value: arcorn::val!(x_1),
-                        key: arcorn::val!(x_2)
-                    });
-                let x_6: Filter_OInterface =
-                    arcorn::enwrap!(Filter_OInterface___, arcorn::val!(x_5));
-                let x_7: Unit = self.emit(arcorn::val!(x_6));
-                arcorn::val!(x_7)
+            let x_0: Struct3keyi325valuei32End = unwrap!(Filter_IInterface___, val!(x_3));
+            let x_1: i32 = access!(val!(x_0), value);
+            let x_2: i32 = access!(val!(x_0), key);
+            let x_4: bool = ((self.p_0).clone())(val!(x_1));
+            let x_9: Unit = if val!(x_4) {
+                let x_5: Struct3keyi325valuei32End = new!(Struct3keyi325valuei32End {
+                    value: val!(x_1),
+                    key: val!(x_2)
+                });
+                let x_6: Filter_OInterface = enwrap!(Filter_OInterface___, val!(x_5));
+                let x_7: Unit = self.emit(val!(x_6));
+                val!(x_7)
             } else {
                 let x_8: Unit = ();
-                arcorn::val!(x_8)
+                val!(x_8)
             };
-            arcorn::val!(x_9)
+            val!(x_9)
         }
         pub fn Filter_on_start(&mut self) -> Unit {
             let x_B: Unit = ();
-            arcorn::val!(x_B)
+            val!(x_B)
         }
     }
     pub fn x_D(x_E: i32) -> bool {
         let x_F: i32 = 2i32;
-        let x_G: i32 = arcorn::val!(x_E) % arcorn::val!(x_F);
+        let x_G: i32 = val!(x_E) % val!(x_F);
         let x_H: i32 = 0i32;
-        let x_I: bool = arcorn::val!(x_G) == arcorn::val!(x_H);
-        arcorn::val!(x_I)
+        let x_I: bool = val!(x_G) == val!(x_H);
+        val!(x_I)
     }
     pub fn main(
-        stream0_0: arcorn::Stream<<Struct3keyi325valuei32End as arc_script::arcorn::Convert>::T>,
-    ) -> arcorn::Stream<<Struct3keyi325valuei32End as arc_script::arcorn::Convert>::T> {
+        stream0_0: Stream<<Struct3keyi325valuei32End as Convert>::T>,
+    ) -> Stream<<Struct3keyi325valuei32End as Convert>::T> {
         let x_C: Box<
-            dyn arcorn::ArcornFn(
-                Box<dyn arcorn::ArcornFn(i32) -> bool>,
+            dyn ArcornFn(
+                Box<dyn ArcornFn(i32) -> bool>,
             ) -> Box<
-                dyn arcorn::ArcornFn(
-                    arcorn::Stream<<Struct3keyi325valuei32End as arc_script::arcorn::Convert>::T>,
-                ) -> arcorn::Stream<
-                    <Struct3keyi325valuei32End as arc_script::arcorn::Convert>::T,
-                >,
+                dyn ArcornFn(
+                    Stream<<Struct3keyi325valuei32End as Convert>::T>,
+                ) -> Stream<<Struct3keyi325valuei32End as Convert>::T>,
             >,
         > = Box::new(Filter)
             as Box<
-                dyn arcorn::ArcornFn(
-                    Box<dyn arcorn::ArcornFn(i32) -> bool>,
+                dyn ArcornFn(
+                    Box<dyn ArcornFn(i32) -> bool>,
                 ) -> Box<
-                    dyn arcorn::ArcornFn(
-                        arcorn::Stream<
-                            <Struct3keyi325valuei32End as arc_script::arcorn::Convert>::T,
-                        >,
-                    ) -> arcorn::Stream<
-                        <Struct3keyi325valuei32End as arc_script::arcorn::Convert>::T,
-                    >,
+                    dyn ArcornFn(
+                        Stream<<Struct3keyi325valuei32End as Convert>::T>,
+                    )
+                        -> Stream<<Struct3keyi325valuei32End as Convert>::T>,
                 >,
             >;
-        let x_J: Box<dyn arcorn::ArcornFn(i32) -> bool> =
-            Box::new(x_D) as Box<dyn arcorn::ArcornFn(i32) -> bool>;
+        let x_J: Box<dyn ArcornFn(i32) -> bool> = Box::new(x_D) as Box<dyn ArcornFn(i32) -> bool>;
         let x_K: Box<
-            dyn arcorn::ArcornFn(
-                arcorn::Stream<<Struct3keyi325valuei32End as arc_script::arcorn::Convert>::T>,
-            ) -> arcorn::Stream<
-                <Struct3keyi325valuei32End as arc_script::arcorn::Convert>::T,
-            >,
-        > = arcorn::val!(x_C)(arcorn::val!(x_J));
-        let x_L: arcorn::Stream<<Struct3keyi325valuei32End as arc_script::arcorn::Convert>::T> =
-            arcorn::val!(x_K)(arcorn::val!(stream0_0));
-        arcorn::val!(x_L)
+            dyn ArcornFn(
+                Stream<<Struct3keyi325valuei32End as Convert>::T>,
+            ) -> Stream<<Struct3keyi325valuei32End as Convert>::T>,
+        > = val!(x_C)(val!(x_J));
+        let x_L: Stream<<Struct3keyi325valuei32End as Convert>::T> = val!(x_K)(val!(stream0_0));
+        val!(x_L)
     }
     #[arcorn::rewrite]
     pub struct Struct3keyi325valuei32End {
