@@ -52,10 +52,25 @@ struct AppenderTypeStorage;
 struct StreamTypeStorage;
 struct EnumTypeStorage;
 struct StructTypeStorage;
+struct ADTTypeStorage;
 
 //===----------------------------------------------------------------------===//
 // Arc Types
 //===----------------------------------------------------------------------===//
+
+class ADTType
+    : public mlir::Type::TypeBase<ADTType, mlir::Type, ADTTypeStorage> {
+public:
+  using Base::Base;
+
+  static ADTType get(mlir::MLIRContext *ctx, StringRef rustType);
+
+  /// Returns the Rust name for this type.
+  StringRef getTypeName() const;
+
+  static Type parse(DialectAsmParser &parser);
+  void print(DialectAsmPrinter &os) const;
+};
 
 class BuilderType : public Type {
 public:
