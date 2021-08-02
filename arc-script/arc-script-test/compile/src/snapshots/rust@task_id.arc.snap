@@ -32,23 +32,23 @@ pub mod arc_script_output {
     }
     impl Identity_mod::Identity {
         pub fn Identity_on_event(&mut self, x_0: Identity_IInterface) -> Unit {
-            let x_1: bool = arcorn::is!(Identity_IInterface_A, (x_0.clone()));
-            let x_6: Unit = if (x_1.clone()) {
+            let x_1: bool = arcorn::is!(Identity_IInterface_A, arcorn::val!(x_0));
+            let x_6: Unit = if arcorn::val!(x_1) {
                 let x_2: Struct3keyi325valuei32End =
-                    arcorn::unwrap!(Identity_IInterface_A, (x_0.clone()));
+                    arcorn::unwrap!(Identity_IInterface_A, arcorn::val!(x_0));
                 let x_3: Identity_OInterface =
-                    arcorn::enwrap!(Identity_OInterface_B, (x_2.clone()));
-                let x_4: Unit = self.emit((x_3.clone()));
-                (x_4.clone())
+                    arcorn::enwrap!(Identity_OInterface_B, arcorn::val!(x_2));
+                let x_4: Unit = self.emit(arcorn::val!(x_3));
+                arcorn::val!(x_4)
             } else {
                 let x_5: Unit = unreachable!();
-                (x_5.clone())
+                arcorn::val!(x_5)
             };
-            (x_6.clone())
+            arcorn::val!(x_6)
         }
         pub fn Identity_on_start(&mut self) -> Unit {
             let x_7: Unit = ();
-            (x_7.clone())
+            arcorn::val!(x_7)
         }
     }
     pub fn main(
@@ -80,10 +80,10 @@ pub mod arc_script_output {
             ) -> arcorn::Stream<
                 <Struct3keyi325valuei32End as arc_script::arcorn::Convert>::T,
             >,
-        > = (x_8.clone())();
+        > = arcorn::val!(x_8)();
         let x_A: arcorn::Stream<<Struct3keyi325valuei32End as arc_script::arcorn::Convert>::T> =
-            (x_9.clone())((input_0.clone()));
-        (x_A.clone())
+            arcorn::val!(x_9)(arcorn::val!(input_0));
+        arcorn::val!(x_A)
     }
     #[arcorn::rewrite]
     pub struct Struct3keyi325valuei32End {

@@ -25,11 +25,11 @@ pub mod arc_script_output {
         let x_0: i32 = 4711i32;
         let x_1: Struct1aStruct1bi321ci32End1dStruct1bi321ci32End3xyzi32End =
             arc_script::arcorn::new!(Struct1aStruct1bi321ci32End1dStruct1bi321ci32End3xyzi32End {
-                a: (a_0.clone()),
-                xyz: (x_0.clone()),
-                d: (b_0.clone())
+                a: arcorn::val!(a_0),
+                xyz: arcorn::val!(x_0),
+                d: arcorn::val!(b_0)
             });
-        (x_1.clone())
+        arcorn::val!(x_1)
     }
     pub fn test() -> Unit {
         let x_2: Box<
@@ -49,19 +49,19 @@ pub mod arc_script_output {
         let x_3: i32 = 1i32;
         let x_4: i32 = 5i32;
         let x_5: Struct1bi321ci32End = arc_script::arcorn::new!(Struct1bi321ci32End {
-            c: (x_3.clone()),
-            b: (x_4.clone())
+            c: arcorn::val!(x_3),
+            b: arcorn::val!(x_4)
         });
         let x_6: i32 = 4i32;
         let x_7: i32 = 2i32;
         let x_8: Struct1bi321ci32End = arc_script::arcorn::new!(Struct1bi321ci32End {
-            b: (x_6.clone()),
-            c: (x_7.clone())
+            b: arcorn::val!(x_6),
+            c: arcorn::val!(x_7)
         });
         let x_9: Struct1aStruct1bi321ci32End1dStruct1bi321ci32End3xyzi32End =
-            (x_2.clone())((x_5.clone()), (x_8.clone()));
+            arcorn::val!(x_2)(arcorn::val!(x_5), arcorn::val!(x_8));
         let x_A: Unit = ();
-        (x_A.clone())
+        arcorn::val!(x_A)
     }
     #[arcorn::rewrite]
     pub struct Struct1bi321ci32End {

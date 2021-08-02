@@ -25,23 +25,23 @@ pub mod arc_script_output {
     }
     pub fn x_6() -> Unit {
         let x_5: Unit = ();
-        (x_5.clone())
+        arcorn::val!(x_5)
     }
     pub fn main() -> Unit {
         let x_0: i32 = 5i32;
-        let x_1: Opt = arcorn::enwrap!(Opt_Some, (x_0.clone()));
-        let x_2: bool = arcorn::is!(Opt_Some, (x_1.clone()));
-        let x_9: Unit = if (x_2.clone()) {
-            let x_3: i32 = arcorn::unwrap!(Opt_Some, (x_1.clone()));
+        let x_1: Opt = arcorn::enwrap!(Opt_Some, arcorn::val!(x_0));
+        let x_2: bool = arcorn::is!(Opt_Some, arcorn::val!(x_1));
+        let x_9: Unit = if arcorn::val!(x_2) {
+            let x_3: i32 = arcorn::unwrap!(Opt_Some, arcorn::val!(x_1));
             let x_4: Unit = ();
-            (x_4.clone())
+            arcorn::val!(x_4)
         } else {
             let x_7: Box<dyn arcorn::ArcornFn() -> Unit> =
                 Box::new(x_6) as Box<dyn arcorn::ArcornFn() -> Unit>;
-            let x_8: Unit = (x_7.clone())();
-            (x_8.clone())
+            let x_8: Unit = arcorn::val!(x_7)();
+            arcorn::val!(x_8)
         };
-        (x_9.clone())
+        arcorn::val!(x_9)
     }
 }
 pub use arc_script_output::*;

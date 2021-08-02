@@ -27,8 +27,8 @@ pub mod arc_script_output {
         let x_0: (
             arcorn::Stream<<i32 as arc_script::arcorn::Convert>::T>,
             arcorn::Stream<<i32 as arc_script::arcorn::Convert>::T>,
-        ) = ((s0_0.clone()), (s0_0.clone()));
-        (x_0.clone())
+        ) = (arcorn::val!(s0_0), arcorn::val!(s0_0));
+        arcorn::val!(x_0)
     }
 }
 pub use arc_script_output::*;

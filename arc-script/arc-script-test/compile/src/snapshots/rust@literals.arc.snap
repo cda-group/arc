@@ -38,7 +38,7 @@ pub mod arc_script_output {
         let x_G: bool = true;
         let x_H: bool = false;
         let x_I: Unit = ();
-        (x_I.clone())
+        arcorn::val!(x_I)
     }
 }
 pub use arc_script_output::*;

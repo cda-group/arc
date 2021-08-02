@@ -5,6 +5,7 @@ pub mod structs;
 pub mod functions;
 pub mod conversions;
 pub mod primitives;
+pub mod values;
 
 pub use derive_more;
 pub use dyn_clone;

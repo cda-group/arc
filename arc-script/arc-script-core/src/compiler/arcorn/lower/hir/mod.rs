@@ -234,7 +234,7 @@ lower! {
             hir::VarKind::Ok(x, scope) => {
                 let x = x.lower(ctx);
                 match scope {
-                    hir::ScopeKind::Local  => rust!((#x.clone())),
+                    hir::ScopeKind::Local  => rust!(arcorn::val!(#x)),
                     hir::ScopeKind::Member => rust!(((self.#x).clone())),
                     hir::ScopeKind::Global => crate::todo!("Add support for globals"),
                 }

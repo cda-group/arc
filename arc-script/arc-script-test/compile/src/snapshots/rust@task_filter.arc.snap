@@ -35,36 +35,37 @@ pub mod arc_script_output {
     impl Filter_mod::Filter {
         pub fn Filter_on_event(&mut self, x_3: Filter_IInterface) -> Unit {
             let x_0: Struct3keyi325valuei32End =
-                arcorn::unwrap!(Filter_IInterface___, (x_3.clone()));
-            let x_1: i32 = arcorn::access!((x_0.clone()), value);
-            let x_2: i32 = arcorn::access!((x_0.clone()), key);
-            let x_4: bool = ((self.p_0).clone())((x_1.clone()));
-            let x_9: Unit = if (x_4.clone()) {
+                arcorn::unwrap!(Filter_IInterface___, arcorn::val!(x_3));
+            let x_1: i32 = arcorn::access!(arcorn::val!(x_0), value);
+            let x_2: i32 = arcorn::access!(arcorn::val!(x_0), key);
+            let x_4: bool = ((self.p_0).clone())(arcorn::val!(x_1));
+            let x_9: Unit = if arcorn::val!(x_4) {
                 let x_5: Struct3keyi325valuei32End =
                     arc_script::arcorn::new!(Struct3keyi325valuei32End {
-                        value: (x_1.clone()),
-                        key: (x_2.clone())
+                        value: arcorn::val!(x_1),
+                        key: arcorn::val!(x_2)
                     });
-                let x_6: Filter_OInterface = arcorn::enwrap!(Filter_OInterface___, (x_5.clone()));
-                let x_7: Unit = self.emit((x_6.clone()));
-                (x_7.clone())
+                let x_6: Filter_OInterface =
+                    arcorn::enwrap!(Filter_OInterface___, arcorn::val!(x_5));
+                let x_7: Unit = self.emit(arcorn::val!(x_6));
+                arcorn::val!(x_7)
             } else {
                 let x_8: Unit = ();
-                (x_8.clone())
+                arcorn::val!(x_8)
             };
-            (x_9.clone())
+            arcorn::val!(x_9)
         }
         pub fn Filter_on_start(&mut self) -> Unit {
             let x_B: Unit = ();
-            (x_B.clone())
+            arcorn::val!(x_B)
         }
     }
     pub fn x_D(x_E: i32) -> bool {
         let x_F: i32 = 2i32;
-        let x_G: i32 = (x_E.clone()) % (x_F.clone());
+        let x_G: i32 = arcorn::val!(x_E) % arcorn::val!(x_F);
         let x_H: i32 = 0i32;
-        let x_I: bool = (x_G.clone()) == (x_H.clone());
-        (x_I.clone())
+        let x_I: bool = arcorn::val!(x_G) == arcorn::val!(x_H);
+        arcorn::val!(x_I)
     }
     pub fn main(
         stream0_0: arcorn::Stream<<Struct3keyi325valuei32End as arc_script::arcorn::Convert>::T>,
@@ -101,10 +102,10 @@ pub mod arc_script_output {
             ) -> arcorn::Stream<
                 <Struct3keyi325valuei32End as arc_script::arcorn::Convert>::T,
             >,
-        > = (x_C.clone())((x_J.clone()));
+        > = arcorn::val!(x_C)(arcorn::val!(x_J));
         let x_L: arcorn::Stream<<Struct3keyi325valuei32End as arc_script::arcorn::Convert>::T> =
-            (x_K.clone())((stream0_0.clone()));
-        (x_L.clone())
+            arcorn::val!(x_K)(arcorn::val!(stream0_0));
+        arcorn::val!(x_L)
     }
     #[arcorn::rewrite]
     pub struct Struct3keyi325valuei32End {

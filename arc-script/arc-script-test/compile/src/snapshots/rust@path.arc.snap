@@ -21,7 +21,7 @@ pub mod arc_script_output {
     pub fn main() -> Unit {
         let x_0: i32 = 1i32;
         let x_1: Unit = ();
-        (x_1.clone())
+        arcorn::val!(x_1)
     }
 }
 pub use arc_script_output::*;

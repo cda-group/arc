@@ -20,42 +20,42 @@ pub mod arc_script_output {
     use arc_script::arcorn::*;
     pub fn x_H(x_1: i32) -> i32 {
         let x_F: i32 = 2i32;
-        let x_G: i32 = (x_1.clone()) + (x_F.clone());
-        (x_G.clone())
+        let x_G: i32 = arcorn::val!(x_1) + arcorn::val!(x_F);
+        arcorn::val!(x_G)
     }
     pub fn test() -> i32 {
         let x_0: i32 = 3i32;
         let x_1: i32 = 5i32;
         let x_2: i32 = 3i32;
-        let x_3: (i32, i32) = ((x_2.clone()), (x_0.clone()));
+        let x_3: (i32, i32) = (arcorn::val!(x_2), arcorn::val!(x_0));
         let x_4: i32 = 1i32;
-        let x_5: ((i32, i32), i32) = ((x_3.clone()), (x_4.clone()));
-        let x_6: (i32, i32) = (x_5.clone()).0;
-        let x_7: i32 = (x_6.clone()).0;
+        let x_5: ((i32, i32), i32) = (arcorn::val!(x_3), arcorn::val!(x_4));
+        let x_6: (i32, i32) = arcorn::val!(x_5).0;
+        let x_7: i32 = arcorn::val!(x_6).0;
         let x_8: i32 = 1i32;
-        let x_9: bool = (x_7.clone()) == (x_8.clone());
-        let x_L: i32 = if (x_9.clone()) {
-            let x_A: i32 = (x_6.clone()).1;
-            let x_B: i32 = (x_5.clone()).1;
+        let x_9: bool = arcorn::val!(x_7) == arcorn::val!(x_8);
+        let x_L: i32 = if arcorn::val!(x_9) {
+            let x_A: i32 = arcorn::val!(x_6).1;
+            let x_B: i32 = arcorn::val!(x_5).1;
             let x_C: i32 = 1i32;
-            let x_D: bool = (x_B.clone()) == (x_C.clone());
-            let x_K: i32 = if (x_D.clone()) {
-                let x_E: i32 = (x_A.clone()) + (x_1.clone());
-                (x_E.clone())
+            let x_D: bool = arcorn::val!(x_B) == arcorn::val!(x_C);
+            let x_K: i32 = if arcorn::val!(x_D) {
+                let x_E: i32 = arcorn::val!(x_A) + arcorn::val!(x_1);
+                arcorn::val!(x_E)
             } else {
                 let x_I: Box<dyn arcorn::ArcornFn(i32) -> i32> =
                     Box::new(x_H) as Box<dyn arcorn::ArcornFn(i32) -> i32>;
-                let x_J: i32 = (x_I.clone())((x_1.clone()));
-                (x_J.clone())
+                let x_J: i32 = arcorn::val!(x_I)(arcorn::val!(x_1));
+                arcorn::val!(x_J)
             };
-            (x_K.clone())
+            arcorn::val!(x_K)
         } else {
             let x_I: Box<dyn arcorn::ArcornFn(i32) -> i32> =
                 Box::new(x_H) as Box<dyn arcorn::ArcornFn(i32) -> i32>;
-            let x_J: i32 = (x_I.clone())((x_1.clone()));
-            (x_J.clone())
+            let x_J: i32 = arcorn::val!(x_I)(arcorn::val!(x_1));
+            arcorn::val!(x_J)
         };
-        (x_L.clone())
+        arcorn::val!(x_L)
     }
 }
 pub use arc_script_output::*;

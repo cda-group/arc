@@ -19,16 +19,16 @@ pub mod arc_script_output {
     use arc_script::arcorn;
     use arc_script::arcorn::*;
     pub fn foo(a_0: Struct1xi321yi32End) -> i32 {
-        let x_0: i32 = arcorn::access!((a_0.clone()), x);
-        let x_1: i32 = arcorn::access!((a_0.clone()), y);
-        let x_2: i32 = (x_0.clone()) + (x_1.clone());
-        (x_2.clone())
+        let x_0: i32 = arcorn::access!(arcorn::val!(a_0), x);
+        let x_1: i32 = arcorn::access!(arcorn::val!(a_0), y);
+        let x_2: i32 = arcorn::val!(x_0) + arcorn::val!(x_1);
+        arcorn::val!(x_2)
     }
     pub fn bar(a_1: Struct1xi321yi32End) -> i32 {
-        let x_3: i32 = arcorn::access!((a_1.clone()), x);
-        let x_4: i32 = arcorn::access!((a_1.clone()), y);
-        let x_5: i32 = (x_3.clone()) + (x_4.clone());
-        (x_5.clone())
+        let x_3: i32 = arcorn::access!(arcorn::val!(a_1), x);
+        let x_4: i32 = arcorn::access!(arcorn::val!(a_1), y);
+        let x_5: i32 = arcorn::val!(x_3) + arcorn::val!(x_4);
+        arcorn::val!(x_5)
     }
     #[arcorn::rewrite]
     pub struct Struct1xi321yi32End {

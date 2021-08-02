@@ -24,17 +24,17 @@ pub mod arc_script_output {
         let x_2: i32 = 67i32;
         let x_3: bool = true;
         let x_4: bool = false;
-        let x_6: i32 = if (x_3.clone()) {
-            (x_0.clone())
+        let x_6: i32 = if arcorn::val!(x_3) {
+            arcorn::val!(x_0)
         } else {
-            let x_5: i32 = if (x_4.clone()) {
-                (x_1.clone())
+            let x_5: i32 = if arcorn::val!(x_4) {
+                arcorn::val!(x_1)
             } else {
-                (x_2.clone())
+                arcorn::val!(x_2)
             };
-            (x_5.clone())
+            arcorn::val!(x_5)
         };
-        (x_6.clone())
+        arcorn::val!(x_6)
     }
 }
 pub use arc_script_output::*;

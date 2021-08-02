@@ -19,23 +19,23 @@ pub mod arc_script_output {
     use arc_script::arcorn;
     use arc_script::arcorn::*;
     pub fn max(a_0: i32, b_0: i32) -> i32 {
-        let x_0: bool = (a_0.clone()) > (b_0.clone());
-        let x_3: i32 = if (x_0.clone()) {
+        let x_0: bool = arcorn::val!(a_0) > arcorn::val!(b_0);
+        let x_3: i32 = if arcorn::val!(x_0) {
             let x_1: i32 = 1i32;
-            let x_2: i32 = (a_0.clone()) + (x_1.clone());
-            (x_2.clone())
+            let x_2: i32 = arcorn::val!(a_0) + arcorn::val!(x_1);
+            arcorn::val!(x_2)
         } else {
-            (b_0.clone())
+            arcorn::val!(b_0)
         };
-        (x_3.clone())
+        arcorn::val!(x_3)
     }
     pub fn test() -> i32 {
         let x_4: Box<dyn arcorn::ArcornFn(i32, i32) -> i32> =
             Box::new(max) as Box<dyn arcorn::ArcornFn(i32, i32) -> i32>;
         let x_5: i32 = 1i32;
         let x_6: i32 = 2i32;
-        let x_7: i32 = (x_4.clone())((x_5.clone()), (x_6.clone()));
-        (x_7.clone())
+        let x_7: i32 = arcorn::val!(x_4)(arcorn::val!(x_5), arcorn::val!(x_6));
+        arcorn::val!(x_7)
     }
 }
 pub use arc_script_output::*;

@@ -36,13 +36,13 @@ pub mod arc_script_output {
                 >,
             >;
         let x_2: arcorn::Stream<<Struct3keyi325valuei32End as arc_script::arcorn::Convert>::T> =
-            (x_1.clone())((x_0.clone()));
-        (x_2.clone())
+            arcorn::val!(x_1)(arcorn::val!(x_0));
+        arcorn::val!(x_2)
     }
     pub fn test1(
         x_3: arcorn::Stream<<Struct3keyi325valuei32End as arc_script::arcorn::Convert>::T>,
     ) -> arcorn::Stream<<Struct3keyi325valuei32End as arc_script::arcorn::Convert>::T> {
-        (x_3.clone())
+        arcorn::val!(x_3)
     }
     #[arcorn::rewrite]
     pub struct Struct3keyi325valuei32End {
