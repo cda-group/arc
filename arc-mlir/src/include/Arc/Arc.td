@@ -95,6 +95,7 @@ def ArcTensorElementType : Type<Or<[
         AnyFloat.predicate]>,
     "arc-tensor-element">;
 
+def ADTType : Type<CPred<"$_self.isa<ADTType>()">, "an ADT type">;
 def AnyBuilder : Type<CPred<"$_self.isa<BuilderType>()">, "any builder">;
 def AnyAppender : Type<CPred<"$_self.isa<AppenderType>()">, "any appender">;
 def AnyEnum : Type<CPred<"$_self.isa<EnumType>()">, "any enum">;
@@ -385,6 +386,18 @@ def ResultOp : Arc_Op<"result", [NoSideEffect]> {
   let results = (outs AnyType);
   let verifier = [{ return customVerify(); }];
   let extraClassDeclaration = [{ LogicalResult customVerify(); }];
+}
+
+def Arc_ConstantADTOp : Arc_Op<"adt_constant", [NoSideEffect]> {
+  let summary = "Declare an ADT constant";
+  let description = [{
+    ```
+    %x = arc.adt_constant "some Rust expression" : !arc.adt<"a Rust type">
+    ```
+  }];
+  let arguments = (ins StrAttr:$value);
+  let results = (outs ADTType:$result);
+  let assemblyFormat = " $value attr-dict `:` type($result)";
 }
 
 def Arc_ConstantIntOp : Arc_Op<"constant", [ConstantLike, NoSideEffect]> {
