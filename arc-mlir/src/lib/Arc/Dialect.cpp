@@ -47,6 +47,7 @@ void ArcDialect::initialize(void) {
 #define GET_OP_LIST
 #include "Arc/Arc.cpp.inc"
       >();
+  addTypes<ADTType>();
   addTypes<AppenderType>();
   addTypes<ArconAppenderType>();
   addTypes<ArconMapType>();
@@ -64,6 +65,8 @@ Type ArcDialect::parseType(DialectAsmParser &parser) const {
   StringRef keyword;
   if (failed(parser.parseKeyword(&keyword)))
     return nullptr;
+  if (keyword == "adt")
+    return ADTType::parse(parser);
   if (keyword == "appender")
     return AppenderType::parse(parser);
   if (keyword == "arcon.appender")
@@ -87,7 +90,9 @@ Type ArcDialect::parseType(DialectAsmParser &parser) const {
 //===----------------------------------------------------------------------===//
 
 void ArcDialect::printType(Type type, DialectAsmPrinter &os) const {
-  if (auto t = type.dyn_cast<AppenderType>())
+  if (auto t = type.dyn_cast<ADTType>())
+    t.print(os);
+  else if (auto t = type.dyn_cast<AppenderType>())
     t.print(os);
   else if (auto t = type.dyn_cast<ArconAppenderType>())
     t.print(os);
@@ -830,6 +835,52 @@ bool isValueType(Type type) {
     return true;
   }
   return false;
+}
+
+//===----------------------------------------------------------------------===//
+// ADTType
+//===----------------------------------------------------------------------===//
+struct ADTTypeStorage : public mlir::TypeStorage {
+  using KeyTy = std::string;
+
+  ADTTypeStorage(KeyTy rustTypeName) : rustType(rustTypeName) {}
+
+  bool operator==(const KeyTy &key) const { return rustType == key; }
+
+  static llvm::hash_code hashKey(const KeyTy &key) {
+    return llvm::hash_value(key);
+  }
+
+  static KeyTy getKey(KeyTy name) { return KeyTy(name); }
+
+  static ADTTypeStorage *construct(mlir::TypeStorageAllocator &allocator,
+                                   const KeyTy &key) {
+    return new (allocator.allocate<ADTTypeStorage>()) ADTTypeStorage(key);
+  }
+
+  KeyTy rustType;
+};
+
+ADTType ADTType::get(mlir::MLIRContext *ctx, StringRef key) {
+  return Base::get(ctx, key);
+}
+
+StringRef ADTType::getTypeName() const { return getImpl()->rustType; }
+
+Type ADTType::parse(DialectAsmParser &parser) {
+  if (parser.parseLess())
+    return nullptr;
+  StringRef tmp;
+  if (parser.parseString(&tmp))
+    return nullptr;
+  std::string str(tmp);
+  if (parser.parseGreater())
+    return nullptr;
+  return ADTType::get(parser.getBuilder().getContext(), str);
+}
+
+void ADTType::print(DialectAsmPrinter &os) const {
+  os << "adt<\"" << getTypeName() << "\">";
 }
 
 //===----------------------------------------------------------------------===//

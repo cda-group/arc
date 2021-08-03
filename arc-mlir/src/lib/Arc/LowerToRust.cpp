@@ -51,6 +51,7 @@ public:
   FunctionType convertFunctionSignature(Type, SignatureConversion &);
 
 protected:
+  Type convertADTType(arc::types::ADTType type);
   Type convertEnumType(arc::types::EnumType type);
   Type convertFloatType(FloatType type);
   Type convertFunctionType(FunctionType type);
@@ -302,6 +303,25 @@ struct BlockResultOpLowering : public ConversionPattern {
     rewriter.replaceOpWithNewOp<rust::RustBlockResultOp>(op, values);
     return success();
   };
+};
+
+struct ConstantADTOpLowering : public ConversionPattern {
+  ConstantADTOpLowering(MLIRContext *ctx, RustTypeConverter &typeConverter)
+      : ConversionPattern(arc::ConstantADTOp::getOperationName(), 1, ctx),
+        TypeConverter(typeConverter) {}
+
+  LogicalResult
+  matchAndRewrite(Operation *op, ArrayRef<Value> operands,
+                  ConversionPatternRewriter &rewriter) const final {
+    arc::ConstantADTOp o = cast<arc::ConstantADTOp>(op);
+
+    Type rustTy = TypeConverter.convertType(o.result().getType());
+    rewriter.replaceOpWithNewOp<rust::RustConstantOp>(op, rustTy, o.value());
+    return success();
+  };
+
+private:
+  RustTypeConverter &TypeConverter;
 };
 
 struct IfOpLowering : public ConversionPattern {
@@ -751,6 +771,7 @@ struct EmitOpLowering : public ConversionPattern {
 
 RustTypeConverter::RustTypeConverter(MLIRContext *ctx)
     : Ctx(ctx), Dialect(ctx->getOrLoadDialect<rust::RustDialect>()) {
+  addConversion([&](arc::types::ADTType type) { return convertADTType(type); });
   addConversion(
       [&](arc::types::EnumType type) { return convertEnumType(type); });
   addConversion([&](FloatType type) { return convertFloatType(type); });
@@ -771,6 +792,10 @@ RustTypeConverter::RustTypeConverter(MLIRContext *ctx)
   addConversion([](rust::types::RustStructType type) { return type; });
   addConversion([](rust::types::RustTensorType type) { return type; });
   addConversion([](rust::types::RustTupleType type) { return type; });
+}
+
+Type RustTypeConverter::convertADTType(arc::types::ADTType type) {
+  return rust::types::RustType::get(type.getContext(), type.getTypeName());
 }
 
 Type RustTypeConverter::convertEnumType(arc::types::EnumType type) {
@@ -1030,6 +1055,7 @@ void ArcToRustLoweringPass::runOnOperation() {
   patterns.insert<IfOpLowering>(&getContext(), typeConverter);
   patterns.insert<IndexTupleOpLowering>(&getContext(), typeConverter);
   patterns.insert<BlockResultOpLowering>(&getContext());
+  patterns.insert<ConstantADTOpLowering>(&getContext(), typeConverter);
   patterns.insert<MakeTupleOpLowering>(&getContext(), typeConverter);
   patterns.insert<MakeTensorOpLowering>(&getContext(), typeConverter);
   patterns.insert<MakeEnumOpLowering>(&getContext(), typeConverter);
