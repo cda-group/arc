@@ -308,7 +308,13 @@ void RustCallOp::writeRust(RustPrinterStream &PS) {
     PS << "let ";
     PS.printAsArg(r) << ":" << r.getType() << " = ";
   }
-  PS << getCallee() << "(";
+
+  StringRef callee = getCallee();
+  Operation *target = SymbolTable::lookupNearestSymbolFrom(*this, getCallee());
+  if (target && target->hasAttr("arc.rust_name"))
+    callee = target->getAttrOfType<StringAttr>("arc.rust_name").getValue();
+
+  PS << callee << "(";
   for (auto a : getOperands())
     PS << a << ", ";
   PS << ")";
@@ -398,7 +404,12 @@ void RustFuncOp::writeRust(RustPrinterStream &PS) {
   }
 
   PS << "// " << (isTask ? "Task" : "") << (isMethod ? "Method" : "") << "\n";
-  PS << "pub fn " << getName() << "(";
+  PS << "pub fn ";
+  if ((*this)->hasAttr("arc.rust_name"))
+    PS << (*this)->getAttrOfType<StringAttr>("arc.rust_name").getValue();
+  else
+    PS << getName();
+  PS << "(";
 
   // Dump the function arguments
   unsigned numFuncArguments = getNumArguments();

@@ -19,6 +19,10 @@ pub fn crate_Identity() -> Box<dyn arcorn::ArcornFn(arcorn::Stream<Struct3keyi32
   return Box::new(an_external_fun2);
 }
 
+pub fn the_name_on_the_rust_side(i: i32) -> i32 {
+  return i;
+}
+
 #[cfg(test)]
 mod tests {
   use crate::toplevel::*;
@@ -26,5 +30,8 @@ mod tests {
   fn test() {
   assert_eq!(callee_si32_si32(17), 17);
   assert_eq!(caller1(4711), 4711);
+  assert_eq!(call_external2(13), 13);
+  assert_eq!(call_renamed_local(14), 14);
+  assert_eq!(defined_in_arc(15), 15);
   }
 }
