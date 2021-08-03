@@ -169,6 +169,8 @@ impl<'i> Display for Pretty<'i, Token, State<'_>> {
             Token::U64        => write!(f, "u64"),
             Token::Str        => write!(f, "str"),
             Token::Unit       => write!(f, "unit"),
+            Token::Char       => write!(f, "char"),
+            Token::Size       => write!(f, "size"),
 //=============================================================================
 // Identifiers and Literals
 //=============================================================================
