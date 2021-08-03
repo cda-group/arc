@@ -121,6 +121,7 @@ impl Builder {
             } else {
                 get_rust_backend()
             },
+            no_prelude: self.disable_prelude,
             ..Default::default()
         };
 

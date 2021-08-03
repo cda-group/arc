@@ -1,5 +1,5 @@
-# RUN: arc-script run --output=MLIR %s | FileCheck %s
-# RUN: arc-script run --output=MLIR %s | arc-mlir | FileCheck %s
+# RUN: arc-script --no-prelude run --output=MLIR %s | FileCheck %s
+# RUN: arc-script --no-prelude run --output=MLIR %s | arc-mlir | FileCheck %s
 
 fun main() { unit }
 

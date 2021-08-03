@@ -1,8 +1,0 @@
-[package]
-name = "arc-script-stdlib"
-version = "0.0.0"
-authors = ["Klas Segeljakt <klasseg@kth.se>"]
-edition = "2018"
-description = "Standard library of tasks."
-
-[dependencies]

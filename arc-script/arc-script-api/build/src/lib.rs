@@ -12,6 +12,7 @@ pub struct Builder {
     source_dirs: Vec<String>,
     prefix: Option<String>,
     enable_optimisations: bool,
+    disable_prelude: bool,
 }
 
 impl Builder {
@@ -29,10 +30,17 @@ impl Builder {
             ..self
         }
     }
-    /// Compiles all scripts, regardless of whether they are used or not.
+    /// Compiles by passing the script through MLIR.
     pub fn enable_optimisations(self, enable_optimisations: bool) -> Self {
         Self {
             enable_optimisations,
+            ..self
+        }
+    }
+    /// Do not prepend each file with a prelude.
+    pub fn disable_prelude(self, disable_prelude: bool) -> Self {
+        Self {
+            disable_prelude,
             ..self
         }
     }

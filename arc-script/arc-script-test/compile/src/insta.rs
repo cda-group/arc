@@ -27,6 +27,7 @@ fn snapshot(output: Output, paths: &str) {
             let mode = Mode {
                 input: Input::File(Some(path.into())),
                 output,
+                no_prelude: true,
                 ..Default::default()
             };
             compile(mode, &mut sink).unwrap();
