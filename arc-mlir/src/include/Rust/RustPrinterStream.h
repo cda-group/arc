@@ -84,6 +84,7 @@ public:
     o << "pub mod " << ModuleName
       << "{\n"
          "use super::*;\n"
+      << "pub use arc_script::arcorn::*;\n"
       << "pub use arc_script::arcorn;\n"
       << "pub use hexf::*;\n";
 
@@ -133,14 +134,8 @@ public:
       id = found->second;
     if (id < 0)
       return "C" + std::to_string(-id);
-    else {
-      Type t = v.getType();
-      if (t.isa<FunctionType>() || t.isa<types::RustEnumType>() ||
-          t.isa<types::RustStructType>() || t.isa<types::RustTensorType>() ||
-          t.isa<types::RustTupleType>())
-        return "v" + std::to_string(id) + ".clone()";
-      return "v" + std::to_string(id);
-    }
+    else
+      return "val!(v" + std::to_string(id) + ")";
   }
 
   std::string getConstant(RustConstantOp v) {
@@ -256,7 +251,7 @@ public:
   llvm::raw_string_ostream &printAsRust(llvm::raw_string_ostream &s,
                                         const Type ty) {
     if (FunctionType fType = ty.dyn_cast<FunctionType>()) {
-      s << "Box<dyn arcorn::ArcornFn(";
+      s << "Box<dyn ArcornFn(";
       for (Type t : fType.getInputs()) {
         printAsRust(s, t) << ",";
       }
@@ -277,9 +272,9 @@ public:
       return s;
     }
     if (types::RustStreamType rt = ty.dyn_cast<types::RustStreamType>()) {
-      s << "arcorn::Stream<";
+      s << "Stream<<";
       printAsRust(s, rt.getType());
-      s << ">";
+      s << " as Convert>::T>";
       return s;
     }
     if (types::RustStructType rt = ty.dyn_cast<types::RustStructType>()) {

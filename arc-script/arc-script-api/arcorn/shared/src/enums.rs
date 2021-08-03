@@ -24,13 +24,13 @@
 #[macro_export]
 macro_rules! enwrap {
     (@done $path:path, $expr:expr) => {
-        $path($expr).wrap()
+        $path($expr).convert()
     };
     ($mod:ident :: $enum:ident :: $variant:ident , $expr:expr) => {
-        arc_script::arcorn::paste!(arc_script::arcorn::enwrap!(@done $mod::[<Enum $enum>]::$variant, $expr))
+        arc_script::arcorn::paste!(arc_script::arcorn::enwrap!(@done $mod::[<Concrete $enum>]::$variant, $expr))
     };
     ($enum:ident :: $variant:ident , $expr:expr) => {
-        arc_script::arcorn::paste!(arc_script::arcorn::enwrap!(@done [<Enum $enum>]::$variant, $expr))
+        arc_script::arcorn::paste!(arc_script::arcorn::enwrap!(@done [<Concrete $enum>]::$variant, $expr))
     };
     ($variant:ident , $expr:expr) => {
         arc_script::arcorn::enwrap!(@done $variant, $expr)
@@ -56,17 +56,17 @@ macro_rules! enwrap {
 #[macro_export]
 macro_rules! is {
     (@done $path:path, $expr:expr) => {
-        if let Some($path(_)) = &$expr.this {
+        if let $path(_) = $expr.concrete.as_ref() {
             true
         } else {
             false
         }
     };
     ($mod:ident :: $enum:ident :: $variant:ident , $expr:expr) => {
-        arc_script::arcorn::paste!(arc_script::arcorn::is!(@done $mod::[<Enum $enum>]::$variant, $expr))
+        arc_script::arcorn::paste!(arc_script::arcorn::is!(@done $mod::[<Concrete $enum>]::$variant, $expr))
     };
     ($enum:ident :: $variant:ident , $expr:expr) => {
-        arc_script::arcorn::paste!(arc_script::arcorn::is!(@done [<Enum $enum>]::$variant, $expr))
+        arc_script::arcorn::paste!(arc_script::arcorn::is!(@done [<Concrete $enum>]::$variant, $expr))
     };
     ($variant:ident , $expr:expr) => {
         arc_script::arcorn::is!(@done $variant, $expr)
@@ -92,17 +92,17 @@ macro_rules! is {
 #[macro_export]
 macro_rules! unwrap {
     (@done $path:path, $expr:expr) => {
-        if let Some($path(v)) = $expr.this {
-            v
+        if let $path(v) = $expr.concrete.as_ref() {
+            v.clone()
         } else {
             unreachable!()
         }
     };
     ($mod:ident :: $enum:ident :: $variant:ident , $expr:expr) => {
-        arc_script::arcorn::paste!(arc_script::arcorn::unwrap!(@done $mod::[<Enum $enum>]::$variant, $expr))
+        arc_script::arcorn::paste!(arc_script::arcorn::unwrap!(@done $mod::[<Concrete $enum>]::$variant, $expr))
     };
     ($enum:ident :: $variant:ident , $expr:expr) => {
-        arc_script::arcorn::paste!(arc_script::arcorn::unwrap!(@done [<Enum $enum>]::$variant, $expr))
+        arc_script::arcorn::paste!(arc_script::arcorn::unwrap!(@done [<Concrete $enum>]::$variant, $expr))
     };
     ($variant:ident , $expr:expr) => {
         arc_script::arcorn::unwrap!(@done $variant, $expr)

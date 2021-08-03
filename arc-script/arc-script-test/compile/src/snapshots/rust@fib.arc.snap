@@ -17,34 +17,32 @@ input_file: arc-script-test/compile/src/tests/expect_pass/fib.arc
 pub mod arc_script_output {
     use super::*;
     use arc_script::arcorn;
+    use arc_script::arcorn::*;
     pub fn fib(n_0: i32) -> i32 {
         let x_0: i32 = 2i32;
-        let x_1: bool = (n_0.clone()) > (x_0.clone());
-        let x_C: i32 = if (x_1.clone()) {
-            let x_2: Box<dyn arcorn::ArcornFn(i32) -> i32> =
-                Box::new(fib) as Box<dyn arcorn::ArcornFn(i32) -> i32>;
+        let x_1: bool = val!(n_0) > val!(x_0);
+        let x_C: i32 = if val!(x_1) {
+            let x_2: Box<dyn ArcornFn(i32) -> i32> = Box::new(fib) as Box<dyn ArcornFn(i32) -> i32>;
             let x_3: i32 = 1i32;
-            let x_4: i32 = (n_0.clone()) - (x_3.clone());
-            let x_5: i32 = (x_2.clone())((x_4.clone()));
-            let x_6: Box<dyn arcorn::ArcornFn(i32) -> i32> =
-                Box::new(fib) as Box<dyn arcorn::ArcornFn(i32) -> i32>;
+            let x_4: i32 = val!(n_0) - val!(x_3);
+            let x_5: i32 = val!(x_2)(val!(x_4));
+            let x_6: Box<dyn ArcornFn(i32) -> i32> = Box::new(fib) as Box<dyn ArcornFn(i32) -> i32>;
             let x_7: i32 = 2i32;
-            let x_8: i32 = (n_0.clone()) - (x_7.clone());
-            let x_9: i32 = (x_6.clone())((x_8.clone()));
-            let x_A: i32 = (x_5.clone()) + (x_9.clone());
-            (x_A.clone())
+            let x_8: i32 = val!(n_0) - val!(x_7);
+            let x_9: i32 = val!(x_6)(val!(x_8));
+            let x_A: i32 = val!(x_5) + val!(x_9);
+            val!(x_A)
         } else {
             let x_B: i32 = 0i32;
-            (x_B.clone())
+            val!(x_B)
         };
-        (x_C.clone())
+        val!(x_C)
     }
     pub fn test() -> i32 {
-        let x_D: Box<dyn arcorn::ArcornFn(i32) -> i32> =
-            Box::new(fib) as Box<dyn arcorn::ArcornFn(i32) -> i32>;
+        let x_D: Box<dyn ArcornFn(i32) -> i32> = Box::new(fib) as Box<dyn ArcornFn(i32) -> i32>;
         let x_E: i32 = 5i32;
-        let x_F: i32 = (x_D.clone())((x_E.clone()));
-        (x_F.clone())
+        let x_F: i32 = val!(x_D)(val!(x_E));
+        val!(x_F)
     }
 }
 pub use arc_script_output::*;

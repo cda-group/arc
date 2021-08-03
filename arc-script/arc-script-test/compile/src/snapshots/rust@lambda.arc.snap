@@ -17,17 +17,17 @@ input_file: arc-script-test/compile/src/tests/expect_pass/lambda.arc
 pub mod arc_script_output {
     use super::*;
     use arc_script::arcorn;
+    use arc_script::arcorn::*;
     pub fn x_0(i_0: i32) -> i32 {
         let x_1: i32 = 1i32;
-        let x_2: i32 = (i_0.clone()) + (x_1.clone());
-        (x_2.clone())
+        let x_2: i32 = val!(i_0) + val!(x_1);
+        val!(x_2)
     }
     pub fn test() -> i32 {
-        let x_3: Box<dyn arcorn::ArcornFn(i32) -> i32> =
-            Box::new(x_0) as Box<dyn arcorn::ArcornFn(i32) -> i32>;
+        let x_3: Box<dyn ArcornFn(i32) -> i32> = Box::new(x_0) as Box<dyn ArcornFn(i32) -> i32>;
         let x_4: i32 = 1i32;
-        let x_5: i32 = (x_3.clone())((x_4.clone()));
-        (x_5.clone())
+        let x_5: i32 = val!(x_3)(val!(x_4));
+        val!(x_5)
     }
 }
 pub use arc_script_output::*;

@@ -123,16 +123,14 @@ mod prost_test2 {
                 tail: ListEnum::Cons(
                     Cons {
                         val: 0,
-                        tail: ListEnum::Nil(Nil {}).wrap().into(),
+                        tail: ListEnum::Nil(Nil {}).into(),
                     }
                     .into(),
                 )
-                .wrap()
                 .into(),
             }
             .into(),
-        )
-        .wrap();
+        );
 
         let mut buf = Vec::new();
 

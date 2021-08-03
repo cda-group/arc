@@ -17,28 +17,28 @@ input_file: arc-script-test/compile/src/tests/expect_pass/unit_enum.arc
 pub mod arc_script_output {
     use super::*;
     use arc_script::arcorn;
+    use arc_script::arcorn::*;
     #[arcorn::rewrite]
     pub enum Foo {
-        Foo_Bar(()),
+        Foo_Bar(Unit),
     }
-    pub fn x_5() -> () {
-        let x_4: () = ();
-        (x_4.clone())
+    pub fn x_5() -> Unit {
+        let x_4: Unit = ();
+        val!(x_4)
     }
-    pub fn test() -> () {
-        let x_0: () = ();
-        let x_1: Foo = arcorn::enwrap!(Foo_Bar, (x_0.clone()));
-        let x_2: bool = arcorn::is!(Foo_Bar, (x_1.clone()));
-        let x_8: () = if (x_2.clone()) {
-            let x_3: () = arcorn::unwrap!(Foo_Bar, (x_1.clone()));
-            (x_3.clone())
+    pub fn test() -> Unit {
+        let x_0: Unit = ();
+        let x_1: Foo = enwrap!(Foo_Bar, val!(x_0));
+        let x_2: bool = is!(Foo_Bar, val!(x_1));
+        let x_8: Unit = if val!(x_2) {
+            let x_3: Unit = unwrap!(Foo_Bar, val!(x_1));
+            val!(x_3)
         } else {
-            let x_6: Box<dyn arcorn::ArcornFn() -> ()> =
-                Box::new(x_5) as Box<dyn arcorn::ArcornFn() -> ()>;
-            let x_7: () = (x_6.clone())();
-            (x_7.clone())
+            let x_6: Box<dyn ArcornFn() -> Unit> = Box::new(x_5) as Box<dyn ArcornFn() -> Unit>;
+            let x_7: Unit = val!(x_6)();
+            val!(x_7)
         };
-        (x_8.clone())
+        val!(x_8)
     }
 }
 pub use arc_script_output::*;

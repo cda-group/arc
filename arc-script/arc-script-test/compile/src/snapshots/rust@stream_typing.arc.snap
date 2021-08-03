@@ -17,26 +17,27 @@ input_file: arc-script-test/compile/src/tests/expect_mlir_fail_todo/stream_typin
 pub mod arc_script_output {
     use super::*;
     use arc_script::arcorn;
+    use arc_script::arcorn::*;
     pub fn test0(
-        x_0: arcorn::Stream<Struct3keyi325valuei32End>,
-    ) -> arcorn::Stream<Struct3keyi325valuei32End> {
+        x_0: Stream<<Struct3keyi325valuei32End as Convert>::T>,
+    ) -> Stream<<Struct3keyi325valuei32End as Convert>::T> {
         let x_1: Box<
-            dyn arcorn::ArcornFn(
-                arcorn::Stream<Struct3keyi325valuei32End>,
-            ) -> arcorn::Stream<Struct3keyi325valuei32End>,
+            dyn ArcornFn(
+                Stream<<Struct3keyi325valuei32End as Convert>::T>,
+            ) -> Stream<<Struct3keyi325valuei32End as Convert>::T>,
         > = Box::new(test1)
             as Box<
-                dyn arcorn::ArcornFn(
-                    arcorn::Stream<Struct3keyi325valuei32End>,
-                ) -> arcorn::Stream<Struct3keyi325valuei32End>,
+                dyn ArcornFn(
+                    Stream<<Struct3keyi325valuei32End as Convert>::T>,
+                ) -> Stream<<Struct3keyi325valuei32End as Convert>::T>,
             >;
-        let x_2: arcorn::Stream<Struct3keyi325valuei32End> = (x_1.clone())((x_0.clone()));
-        (x_2.clone())
+        let x_2: Stream<<Struct3keyi325valuei32End as Convert>::T> = val!(x_1)(val!(x_0));
+        val!(x_2)
     }
     pub fn test1(
-        x_3: arcorn::Stream<Struct3keyi325valuei32End>,
-    ) -> arcorn::Stream<Struct3keyi325valuei32End> {
-        (x_3.clone())
+        x_3: Stream<<Struct3keyi325valuei32End as Convert>::T>,
+    ) -> Stream<<Struct3keyi325valuei32End as Convert>::T> {
+        val!(x_3)
     }
     #[arcorn::rewrite]
     pub struct Struct3keyi325valuei32End {

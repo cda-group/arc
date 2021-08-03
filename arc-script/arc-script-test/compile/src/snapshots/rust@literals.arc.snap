@@ -17,7 +17,8 @@ input_file: arc-script-test/compile/src/tests/expect_pass/literals.arc
 pub mod arc_script_output {
     use super::*;
     use arc_script::arcorn;
-    pub fn test() -> () {
+    use arc_script::arcorn::*;
+    pub fn test() -> Unit {
         let x_0: i8 = 127i8;
         let x_1: i8 = -128i8;
         let x_2: i16 = 32767i16;
@@ -36,8 +37,8 @@ pub mod arc_script_output {
         let x_F : f64 = - 179769313486231570000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000f64 ;
         let x_G: bool = true;
         let x_H: bool = false;
-        let x_I: () = ();
-        (x_I.clone())
+        let x_I: Unit = ();
+        val!(x_I)
     }
 }
 pub use arc_script_output::*;

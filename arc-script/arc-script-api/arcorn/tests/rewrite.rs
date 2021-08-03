@@ -1,13 +1,14 @@
 #![allow(unused)]
 
 mod basic1 {
-    #[arc_script::arcorn::rewrite]
+    use arc_script::arcorn::*;
+    #[rewrite]
     pub struct Point {
         pub x: i32,
         pub y: i32,
     }
 
-    #[arc_script::arcorn::rewrite]
+    #[rewrite]
     pub enum Foo {
         Bar(i32),
         Baz(f32),
@@ -15,85 +16,90 @@ mod basic1 {
 }
 
 mod basic2 {
-    #[arc_script::arcorn::rewrite]
+    use arc_script::arcorn::*;
+    #[rewrite]
     pub struct A {
         pub b: B,
     }
 
-    #[arc_script::arcorn::rewrite]
+    #[rewrite]
     pub struct B {
         pub c: i32,
     }
 }
 
 mod basic3 {
-    #[arc_script::arcorn::rewrite]
+    use arc_script::arcorn::*;
+    #[rewrite]
     pub enum A {
         B(B),
         C(C),
     }
 
-    #[arc_script::arcorn::rewrite]
+    #[rewrite]
     pub struct B {
         pub v: i32,
     }
 
-    #[arc_script::arcorn::rewrite]
+    #[rewrite]
     pub struct C {}
 }
 
 mod list {
-    #[arc_script::arcorn::rewrite]
+    use arc_script::arcorn::*;
+
+    #[rewrite]
     pub enum List {
         Cons(Cons),
         Nil(Nil),
     }
 
-    #[arc_script::arcorn::rewrite]
+    #[rewrite]
     pub struct Cons {
         pub val: i32,
-        pub tail: Box<List>,
+        pub tail: List,
     }
 
-    #[arc_script::arcorn::rewrite]
+    #[rewrite]
     pub struct Nil {}
 
     #[test]
     fn test() {
-        let l = arc_script::arcorn::enwrap!(Nil, Nil::new());
-        let l = arc_script::arcorn::enwrap!(Cons, Cons::new(5, Box::new(l)));
-        let h = arc_script::arcorn::unwrap!(Cons, l);
+        let l: List = enwrap!(Nil, new!(Nil {}));
+        let l: List = enwrap!(Cons, new!(Cons { val: 5, tail: l }));
+        let h: Cons = unwrap!(Cons, l);
         assert_eq!(h.val, 5);
     }
 }
 
 mod structs {
-    #[arc_script::arcorn::rewrite]
-    #[derive(Eq, PartialEq)]
+    use arc_script::arcorn::*;
+
+    #[rewrite]
     pub struct Foo {
         pub a: i32,
         pub b: Bar,
     }
 
-    #[arc_script::arcorn::rewrite]
-    #[derive(Eq, PartialEq)]
+    #[rewrite]
     pub struct Bar {}
 
     #[test]
     fn test() {
-        Foo { a: 0, b: Bar {} };
+        new!(Foo { a: 0, b: new!(Bar {}) });
     }
 }
 
 mod unit {
-    #[arc_script::arcorn::rewrite]
-    #[derive(Eq, PartialEq)]
+    use arc_script::arcorn::*;
+
+    #[rewrite]
     pub enum Foo {
-        A(()),
+        A(Unit),
     }
 
     #[test]
     fn test() {
-        arc_script::arcorn::enwrap!(A, ());
+        enwrap!(A, ());
     }
 }

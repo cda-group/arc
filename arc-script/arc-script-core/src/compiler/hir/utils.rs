@@ -70,3 +70,9 @@ impl<T> SortFields for VecMap<hir::Name, T> {
             .collect()
     }
 }
+
+impl hir::Path {
+    pub(crate) fn is_enum(self, hir: &hir::HIR) -> bool {
+        matches!(&hir.resolve(self).kind, hir::ItemKind::Enum(_))
+    }
+}

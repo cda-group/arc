@@ -17,20 +17,21 @@ input_file: arc-script-test/compile/src/tests/expect_pass/enums.arc
 pub mod arc_script_output {
     use super::*;
     use arc_script::arcorn;
+    use arc_script::arcorn::*;
     #[arcorn::rewrite]
     pub enum Foo {
         Foo_Bar(u32),
         Foo_Baz(f32),
     }
-    pub fn main() -> () {
+    pub fn main() -> Unit {
         let x_0: u32 = 200u32;
         let x_1: f32 = 2f32;
-        let x_2: Foo = arcorn::enwrap!(Foo_Bar, (x_0.clone()));
-        let x_3: u32 = arcorn::unwrap!(Foo_Bar, (x_2.clone()));
-        let x_4: Foo = arcorn::enwrap!(Foo_Baz, (x_1.clone()));
-        let x_5: bool = arcorn::is!(Foo_Baz, (x_4.clone()));
-        let x_6: () = ();
-        (x_6.clone())
+        let x_2: Foo = enwrap!(Foo_Bar, val!(x_0));
+        let x_3: u32 = unwrap!(Foo_Bar, val!(x_2));
+        let x_4: Foo = enwrap!(Foo_Baz, val!(x_1));
+        let x_5: bool = is!(Foo_Baz, val!(x_4));
+        let x_6: Unit = ();
+        val!(x_6)
     }
 }
 pub use arc_script_output::*;

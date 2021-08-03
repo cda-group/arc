@@ -81,7 +81,7 @@ void RustDialect::initialize() {
   u16Ty = RustType::get(ctx, "u16");
   u32Ty = RustType::get(ctx, "u32");
   u64Ty = RustType::get(ctx, "u64");
-  noneTy = RustType::get(ctx, "()");
+  noneTy = RustType::get(ctx, "Unit");
 }
 
 //===----------------------------------------------------------------------===//
@@ -358,7 +358,7 @@ void RustFuncOp::writeRust(RustPrinterStream &PS) {
     // Generate the named type for the task
     PS << "mod " << modName << "{\n";
     // The state type
-    PS << "struct " << taskName << " {\n";
+    PS << "pub struct " << taskName << " {\n";
     RustStructType st = front().getArgument(0).getType().cast<RustStructType>();
     for (unsigned i = 0; i < st.getNumFields(); i++) {
       PS << st.getFieldName(i) << ": " << st.getFieldType(i) << ",\n";
@@ -458,8 +458,8 @@ void RustMakeEnumOp::writeRust(RustPrinterStream &PS) {
   auto r = getResult();
   RustEnumType et = r.getType().cast<RustEnumType>();
   PS << "let ";
-  PS.printAsArg(r) << ":" << et << " = arcorn::enwrap!(" << et
-                   << "::" << variant() << ", ";
+  PS.printAsArg(r) << ":" << et << " = enwrap!(" << et << "::" << variant()
+                   << ", ";
   if (values().size())
     PS << values()[0];
   else
@@ -471,7 +471,7 @@ void RustMakeStructOp::writeRust(RustPrinterStream &PS) {
   auto r = getResult();
   RustStructType st = r.getType().cast<RustStructType>();
   PS << "let ";
-  PS.printAsArg(r) << ":" << st << " = " << st << " { ";
+  PS.printAsArg(r) << ":" << st << " = new!(" << st << " { ";
   auto args = operands();
   for (unsigned i = 0; i < args.size(); i++) {
     if (i != 0)
@@ -479,7 +479,7 @@ void RustMakeStructOp::writeRust(RustPrinterStream &PS) {
     auto v = args[i];
     PS << st.getFieldName(i) << " : " << v;
   }
-  PS << "};\n";
+  PS << "});\n";
 }
 
 void RustMethodCallOp::writeRust(RustPrinterStream &PS) {
@@ -526,7 +526,7 @@ void RustEnumAccessOp::writeRust(RustPrinterStream &PS) {
   auto r = getResult();
   RustEnumType et = theEnum().getType().cast<RustEnumType>();
   PS << "let ";
-  PS.printAsArg(r) << ":" << r.getType() << " = arcorn::unwrap!(" << et
+  PS.printAsArg(r) << ":" << r.getType() << " = unwrap!(" << et
                    << "::" << getVariant() << ", " << theEnum() << ");\n";
 }
 
@@ -534,15 +534,15 @@ void RustEnumCheckOp::writeRust(RustPrinterStream &PS) {
   auto r = getResult();
   RustEnumType et = theEnum().getType().cast<RustEnumType>();
   PS << "let ";
-  PS.printAsArg(r) << ":" << r.getType() << " = arcorn::is!(" << et
+  PS.printAsArg(r) << ":" << r.getType() << " = is!(" << et
                    << "::" << getVariant() << ", " << theEnum() << ");\n";
 }
 
 void RustFieldAccessOp::writeRust(RustPrinterStream &PS) {
   auto r = getResult();
   PS << "let ";
-  PS.printAsArg(r) << ":" << r.getType() << " = " << aggregate() << "."
-                   << getField() << ";\n";
+  PS.printAsArg(r) << ":" << r.getType() << " = access!(" << aggregate() << ", "
+                   << getField() << ");\n";
 }
 
 void RustIfOp::writeRust(RustPrinterStream &PS) {
@@ -1103,8 +1103,7 @@ RustStructTypeStorage::printAsRust(RustPrinterStream &ps) const {
   // First ensure that any structs used by this struct are defined
   emitNestedTypedefs(ps);
 
-  os << "#[arcorn::rewrite]\n"
-     << "#[derive(Copy)]\n";
+  os << "#[arcorn::rewrite]\n";
 
   os << "pub struct ";
   printAsRustNamedType(os) << " {\n  ";

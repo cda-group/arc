@@ -62,6 +62,7 @@ lower! {
             pub mod arc_script_output {
                 use super::*;
                 use arc_script::arcorn;
+                use arc_script::arcorn::*;
                 #(#defs)*
                 #(#mangled_defs)*
             }
@@ -96,8 +97,8 @@ lower! {
     },
     hir::Variant => Rust {
         let name = node.path.lower(ctx);
-        let ty = node.t.lower(ctx);
-        rust!(#name(#ty))
+        let t = node.t.lower(ctx);
+        rust!(#name(#t))
     },
     hir::Block => Rust {
         let stmts = node.stmts.lower(ctx);
@@ -233,7 +234,7 @@ lower! {
             hir::VarKind::Ok(x, scope) => {
                 let x = x.lower(ctx);
                 match scope {
-                    hir::ScopeKind::Local  => rust!((#x.clone())),
+                    hir::ScopeKind::Local  => rust!(val!(#x)),
                     hir::ScopeKind::Member => rust!(((self.#x).clone())),
                     hir::ScopeKind::Global => crate::todo!("Add support for globals"),
                 }
@@ -264,7 +265,7 @@ lower! {
             hir::ExprKind::Access(v, f) => {
                 let v = v.lower(ctx);
                 let f = f.lower(ctx);
-                rust!(#v.#f)
+                rust!(access!(#v, #f))
             }
             hir::ExprKind::Array(vs) => {
                 let vs = vs.lower(ctx);
@@ -376,7 +377,7 @@ lower! {
                         rust!(#x: #v)
                     })
                     .collect::<Vec<_>>();
-                rust!(#ident { #(#vfs),* })
+                rust!(new!(#ident { #(#vfs),* }))
             }
             hir::ExprKind::Tuple(vs) => {
                 let vs = vs.lower(ctx);
@@ -394,17 +395,17 @@ lower! {
             hir::ExprKind::Enwrap(x, v) => {
                 let x = x.lower(ctx);
                 let v = v.lower(ctx);
-                rust!(arcorn::enwrap!(#x, #v))
+                rust!(enwrap!(#x, #v))
             }
             hir::ExprKind::Unwrap(x, v) => {
                 let x = x.lower(ctx);
                 let v = v.lower(ctx);
-                rust!(arcorn::unwrap!(#x, #v))
+                rust!(unwrap!(#x, #v))
             }
             hir::ExprKind::Is(x, v) => {
                 let x = x.lower(ctx);
                 let v = v.lower(ctx);
-                rust!(arcorn::is!(#x, #v))
+                rust!(is!(#x, #v))
             }
             hir::ExprKind::After(v, b) => {
                 let v = v.lower(ctx);
@@ -434,7 +435,7 @@ lower! {
             hir::TypeKind::Fun(ts, t) => {
                 let t = t.lower(ctx);
                 let ts = ts.lower(ctx);
-                rust!(Box<dyn arcorn::ArcornFn(#(#ts),*) -> #t>)
+                rust!(Box<dyn ArcornFn(#(#ts),*) -> #t>)
             }
             hir::TypeKind::Nominal(x) => {
                 let x = x.lower(ctx);
@@ -446,7 +447,7 @@ lower! {
             }
             hir::TypeKind::Stream(t) => {
                 let t = t.lower(ctx);
-                rust!(arcorn::Stream<#t>)
+                rust!(Stream<<#t as Convert>::T>)
             }
             hir::TypeKind::Struct(fts) => {
                 let ident = node.mangle_to_ident(ctx);
@@ -492,7 +493,7 @@ lower! {
             hir::ScalarKind::U32      => rust!(u32),
             hir::ScalarKind::U64      => rust!(u64),
             hir::ScalarKind::Str      => crate::todo!(),
-            hir::ScalarKind::Unit     => rust!(()),
+            hir::ScalarKind::Unit     => rust!(Unit),
             hir::ScalarKind::Size     => rust!(usize),
             hir::ScalarKind::DateTime => rust!(u64),
             hir::ScalarKind::Duration => rust!(u64),

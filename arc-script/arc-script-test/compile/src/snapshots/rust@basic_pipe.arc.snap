@@ -17,25 +17,24 @@ input_file: arc-script-test/compile/src/tests/expect_pass/basic_pipe.arc
 pub mod arc_script_output {
     use super::*;
     use arc_script::arcorn;
+    use arc_script::arcorn::*;
     pub fn x_1(x_2: i32) -> i32 {
         let x_3: i32 = 1i32;
-        let x_4: i32 = (x_2.clone()) + (x_3.clone());
-        (x_4.clone())
+        let x_4: i32 = val!(x_2) + val!(x_3);
+        val!(x_4)
     }
     pub fn x_6(x_7: i32) -> i32 {
         let x_8: i32 = 1i32;
-        let x_9: i32 = (x_7.clone()) - (x_8.clone());
-        (x_9.clone())
+        let x_9: i32 = val!(x_7) - val!(x_8);
+        val!(x_9)
     }
     pub fn test() -> i32 {
         let x_0: i32 = 3i32;
-        let x_5: Box<dyn arcorn::ArcornFn(i32) -> i32> =
-            Box::new(x_1) as Box<dyn arcorn::ArcornFn(i32) -> i32>;
-        let x_A: Box<dyn arcorn::ArcornFn(i32) -> i32> =
-            Box::new(x_6) as Box<dyn arcorn::ArcornFn(i32) -> i32>;
-        let x_B: i32 = (x_5.clone())((x_0.clone()));
-        let x_C: i32 = (x_A.clone())((x_B.clone()));
-        (x_C.clone())
+        let x_5: Box<dyn ArcornFn(i32) -> i32> = Box::new(x_1) as Box<dyn ArcornFn(i32) -> i32>;
+        let x_A: Box<dyn ArcornFn(i32) -> i32> = Box::new(x_6) as Box<dyn ArcornFn(i32) -> i32>;
+        let x_B: i32 = val!(x_5)(val!(x_0));
+        let x_C: i32 = val!(x_A)(val!(x_B));
+        val!(x_C)
     }
 }
 pub use arc_script_output::*;

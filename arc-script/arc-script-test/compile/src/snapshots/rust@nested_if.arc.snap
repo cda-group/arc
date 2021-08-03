@@ -17,23 +17,20 @@ input_file: arc-script-test/compile/src/tests/expect_pass/nested_if.arc
 pub mod arc_script_output {
     use super::*;
     use arc_script::arcorn;
+    use arc_script::arcorn::*;
     pub fn test() -> i32 {
         let x_0: i32 = 65i32;
         let x_1: i32 = 66i32;
         let x_2: i32 = 67i32;
         let x_3: bool = true;
         let x_4: bool = false;
-        let x_6: i32 = if (x_3.clone()) {
-            (x_0.clone())
+        let x_6: i32 = if val!(x_3) {
+            val!(x_0)
         } else {
-            let x_5: i32 = if (x_4.clone()) {
-                (x_1.clone())
-            } else {
-                (x_2.clone())
-            };
-            (x_5.clone())
+            let x_5: i32 = if val!(x_4) { val!(x_1) } else { val!(x_2) };
+            val!(x_5)
         };
-        (x_6.clone())
+        val!(x_6)
     }
 }
 pub use arc_script_output::*;

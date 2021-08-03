@@ -1,4 +1,5 @@
 use proc_macro::TokenStream;
+use proc_macro2 as pm2;
 
 mod tasks;
 mod structs;
@@ -8,8 +9,6 @@ mod enums;
 ///
 /// Any expansion of the macro satisfies the following properties:
 /// * Enums:
-///   * Each enum is wrapped as an `Option` inside a struct (prost requirement).
-///   * Each enum implements a method `.wrap()` to wrap it inside the struct.
 ///   * Each enum variants is imported into the global namespace.
 /// * Structs
 /// * Tasks
@@ -23,4 +22,8 @@ pub fn rewrite(attr: TokenStream, input: TokenStream) -> TokenStream {
         syn::Item::Mod(item) => tasks::rewrite(attr, item),
         _ => panic!("#[arcorn::rewrite] expects enum or struct as input"),
     }
+}
+
+pub(crate) fn new_id(s: impl ToString) -> syn::Ident {
+    syn::Ident::new(&s.to_string(), pm2::Span::call_site())
 }
