@@ -137,4 +137,22 @@ module @toplevel {
         %x_A = call_indirect %x_9(%input_0) : (!arc.stream<!arc.struct<key: si32, value: si32>>) -> !arc.stream<!arc.struct<key: si32, value: si32>>
         return %x_A : !arc.stream<!arc.struct<key: si32, value: si32>>
     }
+
+  func private @an_external_fun_with_other_name0(si32) -> si32 attributes { "arc.rust_name" = "the_name_on_the_rust_side" }
+
+  func @call_external2(%in : si32) -> si32 {
+    %r = call @an_external_fun_with_other_name0(%in) : (si32) -> si32
+    return %r : si32
+  }
+
+  func private @a_function_called_something_else_in_rust(%in : si32) -> si32
+     attributes { "arc.rust_name" = "defined_in_arc" } {
+    return %in : si32
+  }
+
+  func @call_renamed_local(%in : si32) -> si32 {
+    %r = call @a_function_called_something_else_in_rust(%in) : (si32) -> si32
+    return %r : si32
+  }
+
 }

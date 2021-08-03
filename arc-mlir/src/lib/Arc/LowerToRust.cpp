@@ -891,6 +891,10 @@ struct FuncOpLowering : public ConversionPattern {
     mlir::FuncOp func = cast<mlir::FuncOp>(op);
     SmallVector<NamedAttribute, 4> attributes;
 
+    if (func->hasAttr("arc.rust_name"))
+      attributes.push_back(NamedAttribute(Identifier::get("arc.rust_name", ctx),
+                                          func->getAttr("arc.rust_name")));
+
     if (func->hasAttr("arc.task_name"))
       attributes.push_back(NamedAttribute(Identifier::get("arc.task_name", ctx),
                                           func->getAttr("arc.task_name")));
