@@ -101,22 +101,40 @@ pretty! {
             .map_pretty(|i, w| write!(w, "{}{}", fmt.indent(), i.pretty(fmt)), ""),
     ),
     mlir::Item => match &node.kind {
-        mlir::ItemKind::Fun(item)   => write!(w, "{}", item.pretty(fmt)),
-        mlir::ItemKind::Enum(item)  => write!(w, "{}", item.pretty(fmt)),
-        mlir::ItemKind::Task(item)  => write!(w, "{}", item.pretty(fmt)),
+        mlir::ItemKind::Fun(item)        => write!(w, "{}", item.pretty(fmt)),
+        mlir::ItemKind::Enum(item)       => write!(w, "{}", item.pretty(fmt)),
+        mlir::ItemKind::Task(item)       => write!(w, "{}", item.pretty(fmt)),
+        mlir::ItemKind::ExternFun(item)  => write!(w, "{}", item.pretty(fmt)),
+        mlir::ItemKind::ExternType(item) => write!(w, "{}", item.pretty(fmt)),
     },
-    mlir::Fun => {
-            write!(w, "func @{id}({params}) -> {t} {body}\n",
-                id = node.path.pretty(fmt),
-                params = node
-                .params
-                .iter()
-                .filter(|p| matches!(&p.kind, mlir::VarKind::Ok(_)))
-                .map_pretty(|p, w| write!(w, "{}", p.pretty(fmt)), ", "),
-                t = node.t.pretty(fmt),
-                body = node.body.pretty(&fmt.indent()),
-            )
-    },
+    mlir::Fun => write!(w, "func @{id}({params}) -> {t} {body}\n",
+        id = node.path.pretty(fmt),
+        params = node
+            .params
+            .iter()
+            .filter(|p| matches!(&p.kind, mlir::VarKind::Ok(_)))
+            .map_pretty(|p, w| write!(w, "{}", p.pretty(fmt)), ", "),
+        t = node.t.pretty(fmt),
+        body = node.body.pretty(&fmt.indent()),
+    ),
+    mlir::ExternFun => write!(w, "func private @{id}({params}) -> {rt}\n",
+        id = node.path.pretty(fmt),
+        params = node
+            .params
+            .iter()
+            .filter(|p| matches!(&p.kind, mlir::VarKind::Ok(_)))
+            .map_pretty(|p, w| write!(w, "{}", p.pretty(fmt)), ", "),
+        rt = node.rt.pretty(fmt),
+    ),
+    mlir::ExternType => write!(w, "func private @{id}({params}) -> !arc.adt<\"{id}\">\n{items}",
+        id = node.path.pretty(fmt),
+        params = node
+            .params
+            .iter()
+            .filter(|p| matches!(&p.kind, mlir::VarKind::Ok(_)))
+            .map_pretty(|p, w| write!(w, "{}", p.pretty(fmt)), ", "),
+        items = node.items.iter().map_pretty(|p, w| write!(w, "{}{}", fmt.indent(), fmt.ctx.mlir.resolve(p).pretty(fmt)), ""),
+    ),
     mlir::Name => write!(w, "{}", fmt.names.resolve(node)),
     mlir::Task => {
         write!(w,
@@ -413,15 +431,17 @@ pretty! {
             mlir::ScalarKind::Size     => write!(w, "ui64"),
             mlir::ScalarKind::DateTime => write!(w, "ui64"),
             mlir::ScalarKind::Duration => write!(w, "ui64"),
-            mlir::ScalarKind::Str      => crate::todo!(),
-            mlir::ScalarKind::Char     => crate::todo!(),
+            mlir::ScalarKind::Str      => write!(w, "!arc.adt<\"String\">"),
+            mlir::ScalarKind::Char     => write!(w, "!arc.adt<\"char\">"),
         }
         mlir::TypeKind::Struct(fs) => write!(w, "!arc.struct<{}>",
             fs.map_pretty(|(x, e), w| write!(w, "{}: {}", x.pretty(fmt), e.pretty(fmt)), ", ")),
         mlir::TypeKind::Nominal(x) => match &fmt.mlir.resolve(&x).kind {
-            mlir::ItemKind::Enum(item) => write!(w, "!arc.enum<{}>", item.variants.iter().all_pretty(", ", fmt)),
-            mlir::ItemKind::Fun(_)     => unreachable!(),
-            mlir::ItemKind::Task(_)    => unreachable!(),
+            mlir::ItemKind::Enum(item)    => write!(w, "!arc.enum<{}>", item.variants.iter().all_pretty(", ", fmt)),
+            mlir::ItemKind::Fun(_)        => unreachable!(),
+            mlir::ItemKind::Task(_)       => unreachable!(),
+            mlir::ItemKind::ExternType(_) => write!(w, "!arc.adt<\"{}\">", x.pretty(fmt)),
+            mlir::ItemKind::ExternFun(_)  => unreachable!(),
         }
         mlir::TypeKind::Array(_t, _sh) => crate::todo!(),
         mlir::TypeKind::Stream(t)      => write!(w, "!arc.stream<{}>", t.pretty(fmt)),

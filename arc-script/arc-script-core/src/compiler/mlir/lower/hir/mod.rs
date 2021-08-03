@@ -36,13 +36,31 @@ lower! {
     },
     hir::ItemKind => mlir::ItemKind {
         match node {
-            hir::ItemKind::Fun(item)         => mlir::ItemKind::Fun(item.lower(ctx)),
-            hir::ItemKind::Enum(item)        => mlir::ItemKind::Enum(item.lower(ctx)),
-            hir::ItemKind::Task(item)        => mlir::ItemKind::Task(item.lower(ctx)),
-            hir::ItemKind::ExternFun(_item)  => todo!(),
-            hir::ItemKind::ExternType(_item) => todo!(),
-            hir::ItemKind::TypeAlias(_)      => unreachable!(),
-            hir::ItemKind::Variant(_)        => unreachable!(),
+            hir::ItemKind::Fun(item)        => mlir::ItemKind::Fun(item.lower(ctx)),
+            hir::ItemKind::Enum(item)       => mlir::ItemKind::Enum(item.lower(ctx)),
+            hir::ItemKind::Task(item)       => mlir::ItemKind::Task(item.lower(ctx)),
+            hir::ItemKind::ExternFun(item)  => mlir::ItemKind::ExternFun(item.lower(ctx)),
+            hir::ItemKind::ExternType(item) => mlir::ItemKind::ExternType(item.lower(ctx)),
+            hir::ItemKind::TypeAlias(_)     => unreachable!(),
+            hir::ItemKind::Variant(_)       => unreachable!(),
+        }
+    },
+    hir::ExternFun => mlir::ExternFun {
+        mlir::ExternFun {
+            path: node.path,
+            params: node.params.iter().map(|p| p.lower(ctx)).collect::<Vec<_>>(),
+            rt: node.rt,
+        }
+    },
+    hir::ExternType => mlir::ExternType {
+        mlir::ExternType {
+            path: node.path,
+            params: node.params.iter().map(|p| p.lower(ctx)).collect::<Vec<_>>(),
+            items: node.items.iter().map(|p| {
+                let item = ctx.hir.resolve(p).lower(ctx);
+                ctx.mlir.intern(p, item);
+                *p
+            }).collect::<Vec<_>>(),
         }
     },
     hir::Fun => mlir::Fun {
@@ -207,7 +225,7 @@ lower! {
             hir::ExprKind::Lit(l)            => mlir::OpKind::Const(l.lower(ctx)),
             hir::ExprKind::BinOp(v0, op, v1) => mlir::OpKind::BinOp(v0.lower(ctx), op.lower(ctx), v1.lower(ctx)),
             hir::ExprKind::UnOp(op, v)       => mlir::OpKind::UnOp(mlir::UnOp::new(op.kind.lower(ctx)), v.lower(ctx)) ,
-            hir::ExprKind::Access(v, x)      => if node.t.is_unit(ctx.info) { 
+            hir::ExprKind::Access(v, x)      => if node.t.is_unit(ctx.info) {
                 mlir::OpKind::Noop
             } else {
                 mlir::OpKind::Access(v.lower(ctx), *x)
