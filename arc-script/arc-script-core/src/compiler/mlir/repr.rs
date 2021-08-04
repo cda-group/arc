@@ -37,6 +37,8 @@ pub(crate) enum ItemKind {
     Enum(Enum),
     Fun(Fun),
     Task(Task),
+    ExternFun(ExternFun),
+    ExternType(ExternType),
 }
 
 #[derive(New, Debug)]
@@ -45,6 +47,20 @@ pub(crate) struct Fun {
     pub(crate) params: Vec<Param>,
     pub(crate) body: Block,
     pub(crate) t: Type,
+}
+
+#[derive(New, Debug)]
+pub(crate) struct ExternFun {
+    pub(crate) path: Path,
+    pub(crate) params: Vec<Param>,
+    pub(crate) rt: Type,
+}
+
+#[derive(New, Debug)]
+pub(crate) struct ExternType {
+    pub(crate) path: Path,
+    pub(crate) params: Vec<Param>,
+    pub(crate) items: Vec<PathId>,
 }
 
 #[derive(New, Debug)]

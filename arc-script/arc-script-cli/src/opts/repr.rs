@@ -46,6 +46,10 @@ pub struct Opt {
     #[clap(long)]
     pub no_infer: bool,
 
+    /// Do not include prelude.
+    #[clap(long)]
+    pub no_prelude: bool,
+
     /// Sub-command.
     #[clap(subcommand)]
     pub subcmd: SubCmd,

@@ -56,6 +56,7 @@ impl Resolver {
                 return Some(DeclKind::Var(name, kind));
             }
         }
+
         // Otherwise it might be stored in the symbol table
         let absolute_path = if path.is_absolute(info) {
             path.id
@@ -63,10 +64,13 @@ impl Resolver {
             let relative_path = info.paths.join(self.path, *path);
             self.table.absolute(relative_path)
         };
+        tracing::trace!("Resolving absolute path: {}", absolute_path.debug(info));
+
         self.table
             .get_decl(absolute_path)
             .map(|decl| DeclKind::Item(absolute_path.into(), decl))
             .or_else(|| {
+                tracing::trace!("Path not found");
                 info.diags.intern(Error::PathNotFound {
                     path: absolute_path.into(),
                     loc: path.loc,

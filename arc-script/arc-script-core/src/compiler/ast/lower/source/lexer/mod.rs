@@ -308,6 +308,8 @@ impl<'i> Lexer<'i> {
                 LogosToken::U64        => Token::U64,
                 LogosToken::Str        => Token::Str,
                 LogosToken::Unit       => Token::Unit,
+                LogosToken::Char       => Token::Char,
+                LogosToken::Size       => Token::Size,
 //=============================================================================
 // Identifiers and Literals
 //=============================================================================

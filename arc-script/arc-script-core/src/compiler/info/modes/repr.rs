@@ -17,6 +17,8 @@ pub struct Mode {
     pub fail_fast: bool,
     /// Skip type inference pass.
     pub no_infer: bool,
+    /// Do not include prelude.
+    pub no_prelude: bool,
     /// Forces the compiler to emit its internal representation (e.g., AST) even if it has errors.
     pub force_output: bool,
     /// Configures what kind of language the compiler expects its input source code to be written in.

@@ -26,6 +26,7 @@ impl From<Opt> for Result<Mode> {
             force_output,
             subcmd,
             no_infer,
+            no_prelude,
         } = opt;
 
         let mut mode = match subcmd {
@@ -69,6 +70,7 @@ impl From<Opt> for Result<Mode> {
         mode.suppress_diags = suppress_diags;
         mode.force_output = force_output;
         mode.no_infer = no_infer;
+        mode.no_prelude = no_prelude;
         Ok(mode)
     }
 }

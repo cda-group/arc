@@ -1,4 +1,4 @@
-# RUN: arc-script run --output=MLIR %s | arc-mlir
+# RUN: arc-script --no-prelude run --output=MLIR %s | arc-mlir
 
 fun test(): i32 {
 

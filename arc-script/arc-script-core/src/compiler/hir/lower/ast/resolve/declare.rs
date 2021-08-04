@@ -183,6 +183,8 @@ declare! {
         if ctx.table.declarations.insert(path, ItemDeclKind::ExternType).is_some() {
             ctx.diags.intern(Error::NameClash { name: node.name })
         }
+        let self_path = ctx.paths.intern_child(path, node.name);
+        ctx.table.import(self_path, path);
     },
     ast::Variant => {
         let path = ctx.paths.intern_child(path, node.name);

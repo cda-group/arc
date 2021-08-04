@@ -1,4 +1,4 @@
-# RUN: arc-script run --output=MLIR %s | arc-mlir -rustcratename expectpassif -arc-to-rust
+# RUN: arc-script --no-prelude run --output=MLIR %s | arc-mlir -rustcratename expectpassif -arc-to-rust
 
 fun test(): i32 {
     val c0 = true;

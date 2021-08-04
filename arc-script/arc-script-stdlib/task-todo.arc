@@ -13,29 +13,7 @@ task Nat() () -> (Out(i32)) {
 
 # -------------------------------
 
-task Identity() (i32) -> (i32) {
-    on event => emit event
-}
-
-# -------------------------------
-
-task Map(f: fun(i32) -> i32) (i32) -> (i32) {
-    on event => emit f(event)
-}
-
-# -------------------------------
-
-task Filter(f: fun(i32) -> bool) (i32) -> (i32) {
-    on event => if f(event) {
-        emit f(event)
-    } else {
-        ()
-    }
-}
-
-# -------------------------------
-
-task Tee() (i32) -> (A(i32), B(i32)) {
+task Clone(): i32 -> (A(i32), B(i32)) {
     on event => {
         emit A(event);
         emit B(event)
@@ -44,7 +22,7 @@ task Tee() (i32) -> (A(i32), B(i32)) {
 
 # -------------------------------
 
-task Merge() (A(i32), B(i32)) -> (i32) {
+task Merge(): (A(i32), B(i32)) -> i32 {
     on {
         A(event) => emit event,
         B(event) => emit event
@@ -53,7 +31,7 @@ task Merge() (A(i32), B(i32)) -> (i32) {
 
 # -------------------------------
 
-task Flip() (A0(i32), B0(i32)) -> (A1(i32), B1(i32)) {
+task Flip(): (A0(i32), B0(i32)) -> (A1(i32), B1(i32)) {
     on {
         A0(event) => emit B1(event),
         B0(event) => emit A1(event)
@@ -62,7 +40,7 @@ task Flip() (A0(i32), B0(i32)) -> (A1(i32), B1(i32)) {
 
 # -------------------------------
 
-task Split(f: fun(i32) -> bool) (i32) -> (A(i32), B(i32)) {
+task Split(f: fun(i32): bool): i32 -> (A(i32), B(i32)) {
     on event => if f(event) {
         emit A(event)
     } else {
@@ -72,7 +50,17 @@ task Split(f: fun(i32) -> bool) (i32) -> (A(i32), B(i32)) {
 
 # -------------------------------
 
-task Until(f: fun(i32) -> bool) (i32) -> (i32) {
+task Scan(i: i32, f: fun(i32, i32): i32): i32 -> i32 {
+    var agg: i32 = i;
+    on event => {
+        agg = f(agg, event);
+        emit agg
+    }
+}
+
+# -------------------------------
+
+task Until(f: fun(i32): bool): i32 -> i32 {
     on event => if f(event) {
         exit
     } else {
@@ -82,22 +70,12 @@ task Until(f: fun(i32) -> bool) (i32) -> (i32) {
 
 # -------------------------------
 
-task Search(f: fun(i32) -> bool) (i32) -> (i32) {
+task Search(f: fun(i32): bool): i32 -> i32 {
     on event => if f(event) {
         emit event;
         exit
     } else {
         ()
-    }
-}
-
-# -------------------------------
-
-task Scan(i: i32, f: fun(i32, i32) -> i32) (i32) -> (i32) {
-    state agg: i32 = i;
-    on event => {
-        agg = f(agg, event);
-        emit agg
     }
 }
 
@@ -130,7 +108,7 @@ task Fold(i: i32, f: fun(i32, i32) -> i32) (In(~i32)) -> (Out(i32)) {
 #   * Should termination be encoded in the type or just be assumed?
 # * When a task terminates, it might produce a value
 
-task ScanFold(i: i32, f: fun(i32, i32) -> i32) (i32) -> (Out(i32), $(i32)) {
+task ScanFold(i: i32, f: fun(i32, i32) -> i32) i32 -> (Out(i32), $(i32)) {
     state agg: i32 = i;
     on {
         $ => exit agg

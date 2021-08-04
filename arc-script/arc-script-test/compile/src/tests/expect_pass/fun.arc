@@ -1,4 +1,4 @@
-# RUN: arc-script run --output=MLIR %s | arc-mlir -rustcratename expectrunfun -arc-to-rust
+# RUN: arc-script --no-prelude run --output=MLIR %s | arc-mlir -rustcratename expectrunfun -arc-to-rust
 
 fun max(a: i32, b: i32): i32 {
     val c = a > b;

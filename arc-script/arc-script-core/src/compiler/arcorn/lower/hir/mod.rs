@@ -76,14 +76,10 @@ lower! {
             hir::ItemKind::Fun(i)        => i.lower(ctx),
             hir::ItemKind::Task(i)       => i.lower(ctx),
             hir::ItemKind::ExternFun(i)  => None?,
-            hir::ItemKind::ExternType(i) => i.lower(ctx),
+            hir::ItemKind::ExternType(i) => None?,
             hir::ItemKind::Variant(i)    => i.lower(ctx),
         };
         Some(item)
-    },
-    hir::ExternType => Rust {
-        let name = node.path.lower(ctx);
-        rust!(use super::#name;)
     },
     hir::Enum => Rust {
         let name = node.path.lower(ctx);

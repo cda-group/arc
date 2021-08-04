@@ -25,8 +25,8 @@ use crate::compiler::info::Info;
 
 impl ast::Module {
     /// Parses a source file with `name` that contains `text`.
-    pub(crate) fn parse(name: String, text: String, ast: &mut ast::AST, info: &mut Info) -> Self {
-        let file_id = info.files.intern(name, text);
+    pub(crate) fn parse(name: String, source: String, ast: &mut ast::AST, info: &mut Info) -> Self {
+        let file_id = info.files.intern(name, source);
         let source = info.files.resolve(file_id);
         let mut lexer = Lexer::new(source, file_id, &mut info.names);
         let items = ModuleParser::new()

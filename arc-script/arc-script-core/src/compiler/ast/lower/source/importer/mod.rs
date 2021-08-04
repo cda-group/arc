@@ -21,6 +21,15 @@ const SRC_DIRNAME: &str = "src";
 /// Name of an arc-script module file.
 const MOD_FILENAME: &str = "mod.arc";
 
+macro_rules! prelude {
+    ($($s:literal),+) => {
+        concat!($(include_str!(concat!(env!("CARGO_MANIFEST_DIR"), "/../arc-script-stdlib/", $s))),+)
+    }
+}
+
+/// Prelude prepended to all arc-scripts.
+const PRELUDE: &str = prelude!("strings.arc", "tasks.arc");
+
 /// Reads a file and returns its contents.
 pub(crate) fn read_file(path: &impl AsRef<Path>) -> Result<String> {
     let mut file = File::open(path)?;
@@ -124,7 +133,13 @@ impl AST {
 
         // Read the file, parse it, and construct the module.
         let name = full_path.to_str().unwrap().to_owned();
-        let source = read_file(&full_path).unwrap();
+        let mut source = read_file(&full_path).unwrap();
+
+        // Append prelude
+        if !info.mode.no_prelude {
+            source.push_str(PRELUDE);
+        }
+
         let module = Module::parse(name, source, self, info);
 
         // Import any dependencies the module might have, if they have not already been imported.

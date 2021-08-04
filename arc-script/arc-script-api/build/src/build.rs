@@ -61,7 +61,7 @@ impl Builder {
         let mut file = fs::File::create(parent_file_path.clone()).unwrap();
         writeln!(
             file,
-            "mod {parent_file_name} {{",
+            "mod {parent_file_name} {{ use arc_script::arcorn::*;",
             parent_file_name = parent_file_path.file_stem().unwrap().to_str().unwrap()
         );
         for child_file_path in child_file_paths {
@@ -121,6 +121,7 @@ impl Builder {
             } else {
                 get_rust_backend()
             },
+            no_prelude: self.disable_prelude,
             ..Default::default()
         };
 

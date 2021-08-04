@@ -162,6 +162,8 @@ extern {
         "u64"  => Token::U64,
         "str"  => Token::Str,
         "unit" => Token::Unit,
+        "char" => Token::Char,
+        "size" => Token::Size,
 //=============================================================================
 // Identifiers and Literals
 //=============================================================================
@@ -618,6 +620,8 @@ ScalarKind: ScalarKind = {
     "u64"  => ScalarKind::U64,
     "str"  => ScalarKind::Str,
     "unit" => ScalarKind::Unit,
+    "char" => ScalarKind::Char,
+    "size" => ScalarKind::Size,
 };
 
 //=============================================================================

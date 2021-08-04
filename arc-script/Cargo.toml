@@ -49,7 +49,6 @@ members = [
   "arc-script-lsp",
   "arc-script-cli",
   "arc-script-web-repl",
-  "arc-script-stdlib",
 #   "arc-script-web-lsp",
   "arc-script-test/compile",
   "arc-script-test/bench",
@@ -73,7 +72,6 @@ default-members = [
 #   "arc-script-test/compile",
 #   "arc-script-test/integration/basic",
   "arc-script-test/bench",
-  "arc-script-stdlib",
 ]
 
 exclude = [

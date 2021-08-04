@@ -153,6 +153,8 @@ pub(crate) enum LogosToken {
     #[token("u64")] U64,
     #[token("str")] Str,
     #[token("unit")] Unit,
+    #[token("char")] Char,
+    #[token("size")] Size,
 //=============================================================================
 // Identifiers and Literals
 //=============================================================================
