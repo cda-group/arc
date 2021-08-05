@@ -1,0 +1,19 @@
+[package]
+name        = "arc-script-compiler-shared"
+version     = "0.0.0"
+authors     = ["Klas Segeljakt <klasseg@kth.se>"]
+edition     = "2018"
+description = "Traits and re-exports useful to the compiler."
+
+[dependencies]
+shrinkwraprs = { version = "0.3.0" }
+derive_more  = { version = "0.99.11", default-features = false, features = ["constructor", "as_ref", "from", "into", "add", "mul", "not"] }
+linear-map   = { version = "1.2.0" }
+indexmap     = { version = "1.6.1" }
+anyhow       = { version = "1.0.37" }
+educe        = { version = "0.4.13", default-features = false, features = ["Hash", "PartialEq", "Eq", "PartialOrd", "Ord", "Debug", "Default"] }
+cfg-if       = { version = "1.0.0" }
+fxhash       = { version = "0.2.1" }
+boolinator   = { version = "2.4.0" }
+countme      = { version = "2.0.4" }
+itertools    = { version = "0.10.0" }

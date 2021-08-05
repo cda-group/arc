@@ -84,8 +84,8 @@ public:
     o << "pub mod " << ModuleName
       << "{\n"
          "use super::*;\n"
-      << "pub use arc_script::arcorn::*;\n"
-      << "pub use arc_script::arcorn;\n"
+      << "pub use arc_script::codegen::*;\n"
+      << "pub use arc_script::codegen;\n"
       << "pub use hexf::*;\n";
 
     for (auto i : CrateDirectives)
@@ -142,8 +142,7 @@ public:
     StringAttr str = v.getValue().dyn_cast<StringAttr>();
     if (FunctionType fType = v.getType().dyn_cast<FunctionType>()) {
       // Although a function reference is a constant in MLIR it is not
-      // in the Arcorn dialect of Rust, so we need to handle them
-      // specially.
+      // in our Rust dialect, so we need to handle them specially.
       auto found = Value2ID.find(v);
       int id = 0;
       if (found == Value2ID.end()) {
@@ -251,7 +250,7 @@ public:
   llvm::raw_string_ostream &printAsRust(llvm::raw_string_ostream &s,
                                         const Type ty) {
     if (FunctionType fType = ty.dyn_cast<FunctionType>()) {
-      s << "Box<dyn ArcornFn(";
+      s << "Box<dyn ValueFn(";
       for (Type t : fType.getInputs()) {
         printAsRust(s, t) << ",";
       }

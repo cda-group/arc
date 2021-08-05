@@ -1,0 +1,43 @@
+---
+source: tests/unit/src/insta.rs
+expression: s
+input_file: tests/unit/src/tests/expect_pass/fun.arc
+
+---
+#[allow(non_snake_case)]
+#[allow(unused_must_use)]
+#[allow(dead_code)]
+#[allow(unused_variables)]
+#[allow(unused_imports)]
+#[allow(unused_braces)]
+#[allow(irrefutable_let_patterns)]
+#[allow(clippy::redundant_field_names)]
+#[allow(clippy::unused_unit)]
+#[allow(clippy::double_parens)]
+pub mod arc_script_output {
+    use super::*;
+    use arc_script::codegen;
+    use arc_script::codegen::*;
+    pub fn max(a_0: i32, b_0: i32) -> i32 {
+        let x_0: bool = val!(a_0) > val!(b_0);
+        let x_3: i32 = if val!(x_0) {
+            let x_1: i32 = 1i32;
+            let x_2: i32 = val!(a_0) + val!(x_1);
+            val!(x_2)
+        } else {
+            val!(b_0)
+        };
+        val!(x_3)
+    }
+    pub fn test() -> i32 {
+        let x_4: Box<dyn ValueFn(i32, i32) -> i32> =
+            Box::new(max) as Box<dyn ValueFn(i32, i32) -> i32>;
+        let x_5: i32 = 1i32;
+        let x_6: i32 = 2i32;
+        let x_7: i32 = val!(x_4)(val!(x_5), val!(x_6));
+        val!(x_7)
+    }
+}
+pub use arc_script_output::*;
+
+

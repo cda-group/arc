@@ -25,61 +25,64 @@ name = "arc_script"
 path = "src/lib.rs"
 
 [features]
-proc            = ["arc-script-include/proc"]
-backend_arcon   = ["arc-script-arcorn/backend_arcon"]
-backend_arctime = ["arc-script-arcorn/backend_arctime"]
-default         = ["backend_arctime"]
+proc          = ["arc-script-api-include/proc"]
+backend_arcon = ["arc-script-codegen/backend_arcon"]
+backend_local = ["arc-script-codegen/backend_local"]
+default       = ["backend_local"]
 
 [dependencies]
-arc-script-include = { version = "=0.0.0", path = "arc-script-api/include" }
-arc-script-arcorn  = { version = "=0.0.0", path = "arc-script-api/arcorn" }
+arc-script-api-include = { version = "=0.0.0", path = "api/include" }
+arc-script-codegen     = { version = "=0.0.0", path = "codegen" }
 
 [workspace]
 members = [
-  "arc-script-core",
-  "arc-script-core/src/shared",
-  "arc-script-core/src/macros",
-  "arc-script-api/quote",
-  "arc-script-api/include/proc",
-#   "arc-script-api/python",
-  "arc-script-api/build",
-  "arc-script-api/include",
-  "arc-script-api/arcorn",
-  "arc-script-repl",
-  "arc-script-lsp",
-  "arc-script-cli",
-  "arc-script-web-repl",
-#   "arc-script-web-lsp",
-  "arc-script-test/compile",
-  "arc-script-test/bench",
+  "compiler",
+  "compiler/shared",
+  "compiler/macros",
+  "api/quote",
+  "api/include/proc",
+  "api/build",
+  "api/include",
+  "codegen",
+  "repl",
+  "lsp",
+  "cli",
+  "website/repl",
+  "tests/unit",
+  "benches",
+  "runtime",
+  # "api/python",
+  # "website/web-lsp",
 ]
 
+# The most important crates
 default-members = [
-  "arc-script-core",
-  "arc-script-core/src/shared",
-  "arc-script-core/src/macros",
-  "arc-script-api/quote",
-  "arc-script-api/include/proc",
-#   "arc-script-api/python",
-  "arc-script-api/build",
-  "arc-script-api/include",
-  "arc-script-api/arcorn",
-  "arc-script-repl",
-  "arc-script-lsp",
-  "arc-script-cli",
-  "arc-script-web-repl",
-#   "arc-script-web-lsp",
-#   "arc-script-test/compile",
-#   "arc-script-test/integration/basic",
-  "arc-script-test/bench",
+  "compiler",
+  "compiler/shared",
+  "compiler/macros",
+  "api/build",
+  "api/include",
+  "codegen",
+  "repl",
+  "cli",
+  "runtime",
+  # "api/include/proc",
+  # "lsp",
+  # "api/quote",
+  # "benches",
+  # "website/repl",
+  # "arc-script-api/python",
+  # "website/lsp",
+  # "tests/compile",
+  # "tests/integration/basic",
 ]
 
 exclude = [
-  "arc-script-test/integration/basic",
+  "tests/integration/basic",
   "fuzz",
-#   "arc-script-web-repl",
-  "arc-script-web-lsp",
-  "arc-script-api/python",
+  "website/lsp",
+  "api/python",
+  # "website/repl",
 ]
 
 # -- The development profile, used for `cargo build`.
@@ -133,8 +136,8 @@ rpath            = false
 # strip            = "symbols"
 
 # --- Optimize for small binaries when compiling for the web
-[profile.release.package.arc-script-web-repl]
+[profile.release.package.arc-script-website-repl]
 opt-level = "z"
 
-# [profile.release.package.arc-script-web-lsp]
+# [profile.release.package.arc-script-website-lsp]
 # opt-level = "z"

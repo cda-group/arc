@@ -1,5 +1,5 @@
 [package]
-name = "fuzz"
+name    = "fuzz"
 version = "0.0.0"
 authors = ["Klas Segeljakt <klasseg@kth.se>"]
 edition = "2018"
@@ -12,5 +12,5 @@ name = "parse"
 path = "fuzz-targets/parse.rs"
 
 [dependencies]
-arc-script-core = { version = "=0.0.0", path = "../arc-script-core" }
-libfuzzer-sys   = { version = "0.3.5" }
+arc-script-compiler = { version = "=0.0.0", path = "../compiler" }
+libfuzzer-sys       = { version = "0.3.5" }

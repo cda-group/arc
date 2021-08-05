@@ -1,0 +1,106 @@
+---
+source: tests/unit/src/insta.rs
+expression: s
+input_file: tests/unit/src/tests/expect_mlir_fail_todo/task_filter.arc
+
+---
+#[allow(non_snake_case)]
+#[allow(unused_must_use)]
+#[allow(dead_code)]
+#[allow(unused_variables)]
+#[allow(unused_imports)]
+#[allow(unused_braces)]
+#[allow(irrefutable_let_patterns)]
+#[allow(clippy::redundant_field_names)]
+#[allow(clippy::unused_unit)]
+#[allow(clippy::double_parens)]
+pub mod arc_script_output {
+    use super::*;
+    use arc_script::codegen;
+    use arc_script::codegen::*;
+    #[codegen::rewrite(on_event = "Filter_on_event", on_start = "Filter_on_start")]
+    mod Filter_mod {
+        struct Filter {
+            p_0: Box<dyn ValueFn(i32) -> bool>,
+        }
+        #[codegen::rewrite]
+        pub enum Filter_IInterface {
+            Filter_IInterface___(Struct3keyi325valuei32End),
+        }
+        #[codegen::rewrite]
+        pub enum Filter_OInterface {
+            Filter_OInterface___(Struct3keyi325valuei32End),
+        }
+    }
+    impl Filter_mod::Filter {
+        pub fn Filter_on_event(&mut self, x_3: Filter_IInterface) -> Unit {
+            let x_0: Struct3keyi325valuei32End = unwrap!(Filter_IInterface___, val!(x_3));
+            let x_1: i32 = access!(val!(x_0), value);
+            let x_2: i32 = access!(val!(x_0), key);
+            let x_4: bool = ((self.p_0).clone())(val!(x_1));
+            let x_9: Unit = if val!(x_4) {
+                let x_5: Struct3keyi325valuei32End = new!(Struct3keyi325valuei32End {
+                    value: val!(x_1),
+                    key: val!(x_2)
+                });
+                let x_6: Filter_OInterface = enwrap!(Filter_OInterface___, val!(x_5));
+                let x_7: Unit = self.emit(val!(x_6));
+                val!(x_7)
+            } else {
+                let x_8: Unit = ();
+                val!(x_8)
+            };
+            val!(x_9)
+        }
+        pub fn Filter_on_start(&mut self) -> Unit {
+            let x_B: Unit = ();
+            val!(x_B)
+        }
+    }
+    pub fn x_D(x_E: i32) -> bool {
+        let x_F: i32 = 2i32;
+        let x_G: i32 = val!(x_E) % val!(x_F);
+        let x_H: i32 = 0i32;
+        let x_I: bool = val!(x_G) == val!(x_H);
+        val!(x_I)
+    }
+    pub fn main(
+        stream0_0: Stream<<Struct3keyi325valuei32End as Convert>::T>,
+    ) -> Stream<<Struct3keyi325valuei32End as Convert>::T> {
+        let x_C: Box<
+            dyn ValueFn(
+                Box<dyn ValueFn(i32) -> bool>,
+            ) -> Box<
+                dyn ValueFn(
+                    Stream<<Struct3keyi325valuei32End as Convert>::T>,
+                ) -> Stream<<Struct3keyi325valuei32End as Convert>::T>,
+            >,
+        > = Box::new(Filter)
+            as Box<
+                dyn ValueFn(
+                    Box<dyn ValueFn(i32) -> bool>,
+                ) -> Box<
+                    dyn ValueFn(
+                        Stream<<Struct3keyi325valuei32End as Convert>::T>,
+                    )
+                        -> Stream<<Struct3keyi325valuei32End as Convert>::T>,
+                >,
+            >;
+        let x_J: Box<dyn ValueFn(i32) -> bool> = Box::new(x_D) as Box<dyn ValueFn(i32) -> bool>;
+        let x_K: Box<
+            dyn ValueFn(
+                Stream<<Struct3keyi325valuei32End as Convert>::T>,
+            ) -> Stream<<Struct3keyi325valuei32End as Convert>::T>,
+        > = val!(x_C)(val!(x_J));
+        let x_L: Stream<<Struct3keyi325valuei32End as Convert>::T> = val!(x_K)(val!(stream0_0));
+        val!(x_L)
+    }
+    #[codegen::rewrite]
+    pub struct Struct3keyi325valuei32End {
+        key: i32,
+        value: i32,
+    }
+}
+pub use arc_script_output::*;
+
+

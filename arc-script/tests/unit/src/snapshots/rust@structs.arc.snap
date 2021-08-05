@@ -1,0 +1,79 @@
+---
+source: tests/unit/src/insta.rs
+expression: s
+input_file: tests/unit/src/tests/expect_pass/structs.arc
+
+---
+#[allow(non_snake_case)]
+#[allow(unused_must_use)]
+#[allow(dead_code)]
+#[allow(unused_variables)]
+#[allow(unused_imports)]
+#[allow(unused_braces)]
+#[allow(irrefutable_let_patterns)]
+#[allow(clippy::redundant_field_names)]
+#[allow(clippy::unused_unit)]
+#[allow(clippy::double_parens)]
+pub mod arc_script_output {
+    use super::*;
+    use arc_script::codegen;
+    use arc_script::codegen::*;
+    pub fn foo(
+        a_0: Struct1bi321ci32End,
+        b_0: Struct1bi321ci32End,
+    ) -> Struct1aStruct1bi321ci32End1dStruct1bi321ci32End3xyzi32End {
+        let x_0: i32 = 4711i32;
+        let x_1: Struct1aStruct1bi321ci32End1dStruct1bi321ci32End3xyzi32End =
+            new!(Struct1aStruct1bi321ci32End1dStruct1bi321ci32End3xyzi32End {
+                a: val!(a_0),
+                xyz: val!(x_0),
+                d: val!(b_0)
+            });
+        val!(x_1)
+    }
+    pub fn test() -> Unit {
+        let x_2: Box<
+            dyn ValueFn(
+                Struct1bi321ci32End,
+                Struct1bi321ci32End,
+            ) -> Struct1aStruct1bi321ci32End1dStruct1bi321ci32End3xyzi32End,
+        > = Box::new(foo)
+            as Box<
+                dyn ValueFn(
+                    Struct1bi321ci32End,
+                    Struct1bi321ci32End,
+                )
+                    -> Struct1aStruct1bi321ci32End1dStruct1bi321ci32End3xyzi32End,
+            >;
+        let x_3: i32 = 1i32;
+        let x_4: i32 = 5i32;
+        let x_5: Struct1bi321ci32End = new!(Struct1bi321ci32End {
+            c: val!(x_3),
+            b: val!(x_4)
+        });
+        let x_6: i32 = 4i32;
+        let x_7: i32 = 2i32;
+        let x_8: Struct1bi321ci32End = new!(Struct1bi321ci32End {
+            b: val!(x_6),
+            c: val!(x_7)
+        });
+        let x_9: Struct1aStruct1bi321ci32End1dStruct1bi321ci32End3xyzi32End =
+            val!(x_2)(val!(x_5), val!(x_8));
+        let x_A: Unit = ();
+        val!(x_A)
+    }
+    #[codegen::rewrite]
+    pub struct Struct1bi321ci32End {
+        b: i32,
+        c: i32,
+    }
+    #[codegen::rewrite]
+    pub struct Struct1aStruct1bi321ci32End1dStruct1bi321ci32End3xyzi32End {
+        a: Struct1bi321ci32End,
+        d: Struct1bi321ci32End,
+        xyz: i32,
+    }
+}
+pub use arc_script_output::*;
+
+

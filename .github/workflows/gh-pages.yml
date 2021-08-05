@@ -22,9 +22,9 @@ jobs:
       - name: Setup wasm-pack
         run: curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
 
-      - name: Build arc-script-web-repl
+      - name: Build arc-script-website-repl
         run: wasm-pack build
-        working-directory: ./arc-script/arc-script-web-repl
+        working-directory: ./arc-script/website/repl
 
       - name: Setup node
         uses: actions/setup-node@v1
@@ -33,7 +33,7 @@ jobs:
         run: |
           npm install
           npm run build
-        working-directory: ./arc-script/arc-script-web-repl/www
+        working-directory: ./arc-script/website/repl/www
 
       - name: Setup mdbook
         uses: peaceiris/actions-mdbook@v1
@@ -47,13 +47,13 @@ jobs:
         run: dot -Tpng ./docs/src/*.dot -O
 
       - name: Build mdbook
-        run: mdbook build ./docs/ --dest-dir ../arc-script/arc-script-web-repl/www/dist/book
+        run: mdbook build ./docs/ --dest-dir ../arc-script/website/repl/www/dist/book
 
       - name: Deploy to gh-pages
         if: success()
         uses: peaceiris/actions-gh-pages@v3
         with:
           deploy_key: ${{ secrets.GITHUB_PAGES }}
-          publish_dir: ./arc-script/arc-script-web-repl/www/dist
+          publish_dir: ./arc-script/website/repl/www/dist
           force_orphan: true
 

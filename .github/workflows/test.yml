@@ -32,7 +32,7 @@ jobs:
         A2M_BUILD: ${{ format('{0}/build', runner.temp) }}
 
     - name: Pre-build arc-script
-      run: ./.github/continuous-integration.sh cargo test --package=arc-script-test-compile
+      run: ./.github/continuous-integration.sh cargo test --package=arc-script-tests-unit
       env:
         A2M_BUILD: ${{ format('{0}/build', runner.temp) }}
 
@@ -41,8 +41,8 @@ jobs:
       env:
         A2M_BUILD: ${{ format('{0}/build', runner.temp) }}
 
-    - name: "Run arc-script test: insta test --package=arc-script-test-compile"
-      run: ./.github/continuous-integration.sh cargo insta test --package=arc-script-test-compile
+    - name: "Run arc-script test: insta test --package=arc-script-tests-unit"
+      run: ./.github/continuous-integration.sh cargo insta test --package=arc-script-tests-unit
       env:
         A2M_BUILD: ${{ format('{0}/build', runner.temp) }}
 

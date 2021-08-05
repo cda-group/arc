@@ -1,0 +1,35 @@
+[package]
+name    = "arc-script-cli"
+version = "0.0.0"
+authors = ["Klas Segeljakt <klasseg@kth.se>"]
+edition = "2018"
+license = "MIT"
+
+[[bin]]
+name = "arc-script"
+path = "src/main.rs"
+
+[features]
+default = []
+repl    = ["arc-script-repl"]
+lsp     = ["arc-script-lsp"]
+
+[dependencies]
+arc-script-compiler = { version = "=0.0.0", path = "../compiler" }
+arc-script-lsp      = { version = "=0.0.0", path = "../lsp",  optional = true }
+arc-script-repl     = { version = "=0.0.0", path = "../repl", optional = true }
+
+tracing             = { version = "0.2.0", git = "https://github.com/tokio-rs/tracing/" }
+tracing-subscriber  = { version = "0.3.0", git = "https://github.com/tokio-rs/tracing/", features = ["fmt"] }
+tracing-flame       = { version = "0.2.0", git = "https://github.com/tokio-rs/tracing/" }
+tracing-timing      = { version = "0.4.3" }
+serde_json          = { version = "1.0.61" }
+codespan-reporting  = { version = "=0.9.5" }
+derive_more         = { version = "0.99.11", default-features = false, features = ["constructor", "from", "into"] }
+strum               = { version = "0.20.0", features = ["derive"] }
+clap                = { version = "3.0.0-beta.2", features = ["derive", "suggestions", "color"] }
+clap_generate       = { version = "3.0.0-beta.2" }
+
+[build-dependencies]
+clap                = { version = "3.0.0-beta.2", features = ["derive", "suggestions", "color"] }
+clap_generate       = { version = "3.0.0-beta.2" }
