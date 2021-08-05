@@ -1,0 +1,17 @@
+[package]
+name    = "arc-script-benches"
+version = "0.0.0"
+authors = ["Klas Segeljakt <klasseg@kth.se>"]
+edition = "2018"
+
+[[bench]]
+name    = "bench"
+harness = false
+
+[dependencies]
+arc-script-compiler = { version = "=0.0.0", path = "../compiler" }
+
+[dev-dependencies]
+criterion           = { version = "0.3.3" }
+criterion-cpu-time  = { version = "0.1.0" }
+include_dir         = { version = "0.6.0" }

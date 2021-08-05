@@ -1,0 +1,11 @@
+[package]
+name = "arc-script-codegen-local"
+version = "0.0.0"
+authors = ["Klas Segeljakt <klasseg@kth.se>"]
+edition = "2018"
+description = "A bridge between MLIR and the local runtime."
+license = "MIT"
+
+[dependencies]
+arc-script-runtime              = { version = "=0.0.0", path = "../../runtime" }
+arc-script-codegen-local-macros = { version = "=0.0.0", path = "./macros" }

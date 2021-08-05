@@ -1,0 +1,15 @@
+[package]
+name    = "arc-script-codegen-local-macros"
+version = "0.0.0"
+authors = ["Klas Segeljakt <klasseg@kth.se>"]
+edition = "2018"
+
+[lib]
+proc-macro = true
+
+[dependencies]
+quote       = { version = "1.0.8" }
+syn         = { version = "1.0.58", features = ["full"] }
+proc-macro2 = { version = "1.0.24" }
+indexmap    = { version = "1.6.1" }
+cfg-if      = { version = "1.0.0" }

@@ -30,11 +30,11 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "db55d72333851e17d572bec876e390cd3b11eb1ef53ae821dd9f3b653d2b4569"
 
 [[package]]
-name = "arc-script-core"
+name = "arc-script-compiler"
 version = "0.0.0"
 dependencies = [
- "arc-script-core-macros",
- "arc-script-core-shared",
+ "arc-script-compiler-macros",
+ "arc-script-compiler-shared",
  "bitmaps",
  "codespan-reporting",
  "crepe",
@@ -59,7 +59,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "arc-script-core-macros"
+name = "arc-script-compiler-macros"
 version = "0.0.0"
 dependencies = [
  "proc-macro2",
@@ -68,7 +68,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "arc-script-core-shared"
+name = "arc-script-compiler-shared"
 version = "0.0.0"
 dependencies = [
  "anyhow",
@@ -355,7 +355,7 @@ checksum = "3f9eec918d3f24069decb9af1554cad7c880e2da24a9afd88aca000531ab82c1"
 name = "fuzz"
 version = "0.0.0"
 dependencies = [
- "arc-script-core",
+ "arc-script-compiler",
  "libfuzzer-sys",
 ]
 

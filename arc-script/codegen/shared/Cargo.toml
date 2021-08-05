@@ -1,0 +1,10 @@
+[package]
+name = "arc-script-codegen-shared"
+version = "0.0.0"
+edition = "2018"
+
+[dependencies]
+dyn-clone     = { version = "1.0.4" }
+shrinkwraprs  = { version = "0.3.0" }
+derive_more   = { version = "0.99.11" }
+paste         = { version = "1.0.4" }

@@ -6,16 +6,16 @@ pub fn an_external_fun3(i: i32) -> i32 {
   return i;
 }
 
-pub fn an_external_fun1() -> Box<dyn arcorn::ArcornFn(i32,) -> i32> {
+pub fn an_external_fun1() -> Box<dyn codegen::ValueFn(i32,) -> i32> {
   return Box::new(an_external_fun3);
 }
 
-pub fn an_external_fun2(i : arcorn::Stream<<Struct3keyi325valuei32End as Convert>::T>)
-    -> arcorn::Stream<<Struct3keyi325valuei32End as Convert>::T>{
+pub fn an_external_fun2(i : codegen::Stream<<Struct3keyi325valuei32End as Convert>::T>)
+    -> codegen::Stream<<Struct3keyi325valuei32End as Convert>::T>{
   return i;
 }
 
-pub fn crate_Identity() -> Box<dyn arcorn::ArcornFn(arcorn::Stream<<Struct3keyi325valuei32End as Convert>::T>) -> arcorn::Stream<<Struct3keyi325valuei32End as Convert>::T>> {
+pub fn crate_Identity() -> Box<dyn codegen::ValueFn(codegen::Stream<<Struct3keyi325valuei32End as Convert>::T>) -> codegen::Stream<<Struct3keyi325valuei32End as Convert>::T>> {
   return Box::new(an_external_fun2);
 }
 
