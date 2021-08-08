@@ -150,3 +150,7 @@ artifacts/
 history.txt
 
 arc-script/**/template/
+
+# OCaml
+
+_build/

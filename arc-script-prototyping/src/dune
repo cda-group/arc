@@ -1,0 +1,8 @@
+(executable
+ (name main)
+ (public_name main)
+ (libraries core sexplib str)
+ (preprocess (pps ppx_sexp_conv)))
+(ocamllex lexer)
+(menhir
+ (modules parser))

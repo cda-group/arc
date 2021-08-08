@@ -11,8 +11,6 @@ import pytest
 import cloudpickle
 from cloudpickle.compat import pickle
 
-def dump(f):
-
 
 class CloudPickleFileTests(unittest.TestCase):
     """In Cloudpickle, expected behaviour when pickling an opened file

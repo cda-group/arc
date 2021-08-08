@@ -58,7 +58,7 @@ rustdocflags = [ # Custom flags to pass to rustdoc
 
 [unstable]
 multitarget         = true # Allow passing multiple target flags
-named-profiles      = true # Allow defining custom profiles
+# named-profiles      = true # Allow defining custom profiles
 namespaced-features = true # Allow features to be namespaced
 #timings             = ["info"] # Emit compile times of each dependency
 
