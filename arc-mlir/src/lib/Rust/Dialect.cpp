@@ -281,6 +281,12 @@ static RustPrinterStream &writeRust(Operation &operation,
     op.writeRust(PS);
   else if (RustBlockResultOp op = dyn_cast<RustBlockResultOp>(operation))
     op.writeRust(PS);
+  else if (RustLoopOp op = dyn_cast<RustLoopOp>(operation))
+    op.writeRust(PS);
+  else if (RustLoopConditionOp op = dyn_cast<RustLoopConditionOp>(operation))
+    op.writeRust(PS);
+  else if (RustLoopYieldOp op = dyn_cast<RustLoopYieldOp>(operation))
+    op.writeRust(PS);
   else if (RustMakeEnumOp op = dyn_cast<RustMakeEnumOp>(operation))
     op.writeRust(PS);
   else if (RustMakeStructOp op = dyn_cast<RustMakeStructOp>(operation))
@@ -465,6 +471,96 @@ void RustUnaryOp::writeRust(RustPrinterStream &PS) {
                    << ";\n";
 }
 
+void RustLoopOp::writeRust(RustPrinterStream &PS) {
+  PS << "// Loop variables\n";
+  Block::BlockArgListType before_args = before().front().getArguments();
+  Block::BlockArgListType after_args = after().front().getArguments();
+  OperandRange inits = this->inits();
+
+  assert(inits.size() == before_args.size());
+
+  // Construct a mutable variable for each loop variable
+  for (unsigned idx = 0; idx < inits.size(); idx++) {
+    Value v = before_args[idx];
+    Value i = inits[idx];
+
+    PS << "let mut ";
+    PS.printAsArg(v) << ":" << v.getType() << " = ";
+    PS.print(i) << ";\n";
+  }
+
+  // Construct variables for catching the result
+  if (getNumResults() != 0)
+    PS << "let (";
+  for (unsigned i = 0; i < getNumResults(); i++) {
+    auto r = getResult(i);
+    PS.printAsArg(r) << ",";
+  }
+  if (getNumResults() != 0)
+    PS << ") : (";
+  for (unsigned i = 0; i < getNumResults(); i++) {
+    auto r = getResult(i);
+    PS << r.getType() << ",";
+  }
+  if (getNumResults() != 0)
+    PS << ") = ";
+
+  // Emit the loop body
+  PS << "loop {\n";
+  PS << "// Before\n";
+  for (Operation &operation : before().front())
+    ::writeRust(operation, PS);
+  RustLoopConditionOp cond = getConditionOp();
+  auto passed_on = cond.args();
+  PS << "// Pass on state from the before to the after part\n";
+  assert(passed_on.size() == after_args.size());
+
+  for (unsigned idx = 0; idx < after_args.size(); idx++) {
+    Value v = after_args[idx];
+    Value i = passed_on[idx];
+
+    PS << "let ";
+    PS.printAsArg(v) << ":" << v.getType() << " = ";
+    PS.print(i) << ";\n";
+  }
+
+  PS << "// After\n";
+  for (Operation &operation : after().front())
+    ::writeRust(operation, PS);
+
+  RustLoopYieldOp yield = getYieldOp();
+  auto updated = yield.results();
+  PS << "// Update the loop variables for the next iteration\n";
+  assert(before_args.size() == updated.size());
+  for (unsigned idx = 0; idx < before_args.size(); idx++) {
+    Value v = before_args[idx];
+    Value u = updated[idx];
+
+    PS.printAsLValue(v) << " = ";
+    PS.print(u) << ";\n";
+  }
+
+  PS << "};\n";
+}
+
+void RustLoopConditionOp::writeRust(RustPrinterStream &PS) {
+  PS << "// Loop condition\n";
+  PS << "if !" << getOperand(0) << " {\n";
+  PS << "break";
+  if (getNumOperands() != 1) {
+    PS << " (";
+    for (auto arg : args())
+      PS << arg << ",";
+    PS << ")";
+  }
+  PS << ";\n";
+  PS << "}\n";
+}
+
+void RustLoopYieldOp::writeRust(RustPrinterStream &PS) {
+  PS << "// Loop yield\n";
+}
+
 void RustMakeEnumOp::writeRust(RustPrinterStream &PS) {
   auto r = getResult();
   RustEnumType et = r.getType().cast<RustEnumType>();
@@ -571,6 +667,18 @@ void RustIfOp::writeRust(RustPrinterStream &PS) {
   for (Operation &operation : elseRegion().front())
     ::writeRust(operation, PS);
   PS << "};\n";
+}
+
+//===----------------------------------------------------------------------===//
+// RustLoopOp, stolen from SCF
+//===----------------------------------------------------------------------===//
+
+RustLoopConditionOp RustLoopOp::getConditionOp() {
+  return cast<RustLoopConditionOp>(before().front().getTerminator());
+}
+
+RustLoopYieldOp RustLoopOp::getYieldOp() {
+  return cast<RustLoopYieldOp>(after().front().getTerminator());
 }
 
 void RustBlockResultOp::writeRust(RustPrinterStream &PS) {

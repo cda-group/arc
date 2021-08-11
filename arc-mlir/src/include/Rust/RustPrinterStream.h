@@ -173,6 +173,24 @@ public:
     return *this;
   }
 
+  RustPrinterStream &printAsLValue(Value v) {
+    auto alias = ValueAliases.find(v);
+    if (alias != ValueAliases.end())
+      Body << alias->second;
+    auto found = Value2ID.find(v);
+    int id = 0;
+    if (found == Value2ID.end()) {
+      id = NextID++;
+      Value2ID[v] = id;
+    } else
+      id = found->second;
+    if (id < 0)
+      Body << "C" + std::to_string(-id);
+    else
+      Body << "v" + std::to_string(id);
+    return *this;
+  }
+
   RustPrinterStream &printAsArg(Value v) {
     int id = NextID++;
     Value2ID[v] = id;

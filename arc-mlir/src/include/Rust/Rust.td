@@ -243,6 +243,63 @@ def Rust_RustExtFuncOp : Rust_Op<"extfunc", [FunctionLike, IsolatedFromAbove, Sy
   }];
 }
 
+// Stolen from SCF
+def Rust_RustLoopOp : Rust_Op<"loop", [RecursiveSideEffects]> {
+  let summary = "A Rust loop ";
+  let description = [{
+  }];
+
+  let arguments = (ins Variadic<AnyRustType>:$inits);
+  let results = (outs Variadic<AnyRustType>:$results);
+  let regions = (region SizedRegion<1>:$before, SizedRegion<1>:$after);
+
+  let extraClassDeclaration = [{
+    RustLoopConditionOp getConditionOp();
+    RustLoopYieldOp getYieldOp();
+
+    // Write this op as Rust code to os
+    void writeRust(RustPrinterStream &os);
+  }];
+
+}
+
+// Stolen from SCF
+def Rust_RustLoopConditionOp : Rust_Op<"loop.condition", [
+  HasParent<"RustLoopOp">,
+  NoSideEffect,
+  Terminator
+]> {
+  let summary = "loop continuation condition";
+  let description = [{
+    Corresponds to the scf.condition operation.
+  }];
+
+  let arguments = (ins BoolRustType:$condition, Variadic<AnyRustType>:$args);
+
+  let extraClassDeclaration = [{
+    // Write this op as Rust code to os
+    void writeRust(RustPrinterStream &os);
+  }];
+}
+
+// Stolen from SCF
+def Rust_RustLoopYieldOp : Rust_Op<"loop.yield",
+                              [NoSideEffect, Terminator,
+                               HasParent<"RustLoopOp">]> {
+  let summary = "loop yield and termination operation";
+  let description = [{
+    As "scf.yield".
+  }];
+
+  let arguments = (ins Variadic<AnyRustType>:$results);
+  let builders = [OpBuilder<(ins), [{ /* nothing to do */ }]>];
+
+  let extraClassDeclaration = [{
+    // Write this op as Rust code to os
+    void writeRust(RustPrinterStream &os);
+  }];
+}
+
 def Rust_RustReturnOp : Rust_Op<"return", [HasParent<"RustFuncOp">,
     Terminator]> {
   let summary = "Terminator for Rust functions.";
