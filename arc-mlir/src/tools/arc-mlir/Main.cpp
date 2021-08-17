@@ -34,6 +34,7 @@
 #include <llvm/Support/raw_ostream.h>
 #include <memory>
 #include <mlir/Dialect/Math/IR/Math.h>
+#include <mlir/Dialect/SCF/SCF.h>
 #include <mlir/IR/AsmState.h>
 #include <mlir/IR/BuiltinOps.h>
 #include <mlir/IR/MLIRContext.h>
@@ -82,6 +83,7 @@ int main(int argc, char **argv) {
   mlir::DialectRegistry registry;
   registry.insert<mlir::StandardOpsDialect>();
   registry.insert<math::MathDialect>();
+  registry.insert<scf::SCFDialect>();
   registry.insert<ArcDialect>();
   registry.insert<rust::RustDialect>();
   arc::registerArcPasses();
