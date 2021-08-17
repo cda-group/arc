@@ -19,6 +19,7 @@
 #include "mlir/Support/LLVM.h"
 #include "mlir/Support/LogicalResult.h"
 #include <mlir/Dialect/Math/IR/Math.h>
+#include <mlir/Dialect/SCF/SCF.h>
 #include <mlir/Dialect/StandardOps/IR/Ops.h>
 #include <mlir/Transforms/DialectConversion.h>
 
@@ -73,6 +74,67 @@ struct ReturnOpLowering : public ConversionPattern {
                   ConversionPatternRewriter &rewriter) const final {
     rewriter.replaceOpWithNewOp<rust::RustReturnOp>(
         op, llvm::None, operands.size() ? operands[0] : Value());
+    return success();
+  };
+};
+
+struct SCFWhileOpLowering : public ConversionPattern {
+  SCFWhileOpLowering(MLIRContext *ctx, RustTypeConverter &typeConverter)
+      : ConversionPattern(scf::WhileOp::getOperationName(), 1, ctx),
+        TypeConverter(typeConverter) {}
+
+  LogicalResult
+  matchAndRewrite(Operation *op, ArrayRef<Value> operands,
+                  ConversionPatternRewriter &rewriter) const final {
+    scf::WhileOp o = cast<scf::WhileOp>(op);
+    SmallVector<Type, 4> resTys;
+
+    for (auto ty : op->getResultTypes())
+      resTys.push_back(TypeConverter.convertType(ty));
+
+    rust::RustLoopOp loop =
+        rewriter.create<rust::RustLoopOp>(op->getLoc(), resTys, operands);
+
+    rewriter.inlineRegionBefore(o.before(), loop.before(), loop.before().end());
+    rewriter.inlineRegionBefore(o.after(), loop.after(), loop.after().end());
+
+    if (failed(rewriter.convertRegionTypes(&loop.before(), TypeConverter)))
+      return failure();
+    if (failed(rewriter.convertRegionTypes(&loop.after(), TypeConverter)))
+      return failure();
+
+    rewriter.replaceOp(op, loop.getResults());
+    return success();
+  };
+
+private:
+  RustTypeConverter &TypeConverter;
+};
+
+struct SCFLoopConditionOpLowering : public ConversionPattern {
+
+  SCFLoopConditionOpLowering(MLIRContext *ctx, RustTypeConverter &typeConverter)
+      : ConversionPattern(scf::ConditionOp::getOperationName(), 1, ctx) {}
+
+  LogicalResult
+  matchAndRewrite(Operation *op, ArrayRef<Value> operands,
+                  ConversionPatternRewriter &rewriter) const final {
+    rewriter.replaceOpWithNewOp<rust::RustLoopConditionOp>(op, llvm::None,
+                                                           operands);
+    return success();
+  };
+};
+
+struct SCFLoopYieldOpLowering : public ConversionPattern {
+
+  SCFLoopYieldOpLowering(MLIRContext *ctx, RustTypeConverter &typeConverter)
+      : ConversionPattern(scf::YieldOp::getOperationName(), 1, ctx) {}
+
+  LogicalResult
+  matchAndRewrite(Operation *op, ArrayRef<Value> operands,
+                  ConversionPatternRewriter &rewriter) const final {
+    rewriter.replaceOpWithNewOp<rust::RustLoopYieldOp>(op, llvm::None,
+                                                       operands);
     return success();
   };
 };
@@ -1071,6 +1133,9 @@ void ArcToRustLoweringPass::runOnOperation() {
   patterns.insert<StructAccessOpLowering>(&getContext(), typeConverter);
   patterns.insert<StdCallOpLowering>(&getContext(), typeConverter);
   patterns.insert<StdCallIndirectOpLowering>(&getContext(), typeConverter);
+  patterns.insert<SCFWhileOpLowering>(&getContext(), typeConverter);
+  patterns.insert<SCFLoopConditionOpLowering>(&getContext(), typeConverter);
+  patterns.insert<SCFLoopYieldOpLowering>(&getContext(), typeConverter);
 
   if (failed(applyFullConversion(getOperation(), target, std::move(patterns))))
     signalPassFailure();

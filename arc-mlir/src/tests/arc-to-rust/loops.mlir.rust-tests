@@ -1,0 +1,9 @@
+#[cfg(test)]
+mod tests {
+  use crate::arctorustloops::*;
+  use hexf::*;
+  #[test]
+  fn it_works() {
+    assert_eq!(a_while_loop(0, 5, 3), 13);
+  }
+}
