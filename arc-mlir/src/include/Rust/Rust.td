@@ -300,6 +300,23 @@ def Rust_RustLoopYieldOp : Rust_Op<"loop.yield",
   }];
 }
 
+def Rust_RustLoopBreakOp : Rust_Op<"loop.break",
+                              [NoSideEffect, Terminator]> {
+  let summary = "break out of a loop";
+  let description = [{
+     Break out of a loop producing a result
+  }];
+
+  let arguments = (ins Variadic<AnyRustType>:$results);
+
+  let extraClassDeclaration = [{
+    // Write this op as Rust code to os
+    void writeRust(RustPrinterStream &os);
+  }];
+
+  let verifier = [{ return ::verify(*this); }];
+}
+
 def Rust_RustReturnOp : Rust_Op<"return", [HasParent<"RustFuncOp">,
     Terminator]> {
   let summary = "Terminator for Rust functions.";
@@ -525,7 +542,7 @@ def Rust_RustBlockResultOp
 }
 
 def Rust_RustIfOp
-    : Rust_Op<"if", [SingleBlockImplicitTerminator<"RustBlockResultOp">]> {
+    : Rust_Op<"if", [SingleBlock]> {
   let summary = "if-then-else operation";
   let description = [{
     The "rust.if" operation represents an if-then-else construct for
@@ -547,6 +564,7 @@ def Rust_RustIfOp
     // Write this operation as Rust code to the stream
     void writeRust(RustPrinterStream &);
   }];
+  let verifier = [{ return ::verify(*this); }];
 }
 
 def Rust_RustMakeEnumOp
