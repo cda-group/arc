@@ -283,6 +283,8 @@ static RustPrinterStream &writeRust(Operation &operation,
     op.writeRust(PS);
   else if (RustLoopOp op = dyn_cast<RustLoopOp>(operation))
     op.writeRust(PS);
+  else if (RustLoopBreakOp op = dyn_cast<RustLoopBreakOp>(operation))
+    op.writeRust(PS);
   else if (RustLoopConditionOp op = dyn_cast<RustLoopConditionOp>(operation))
     op.writeRust(PS);
   else if (RustLoopYieldOp op = dyn_cast<RustLoopYieldOp>(operation))
@@ -543,6 +545,43 @@ void RustLoopOp::writeRust(RustPrinterStream &PS) {
   PS << "};\n";
 }
 
+static LogicalResult verify(RustLoopBreakOp breakOp) {
+  // HasParent<"RustLoopOp"> in the .td apparently only looks at the
+  // immediate parent and not all parents. Therefore we have to check
+  // that we are inside a loop here.
+  RustLoopOp loopOp = breakOp->getParentOfType<RustLoopOp>();
+  if (!loopOp)
+    return breakOp.emitOpError("must be inside a rust.loop region");
+
+  // Now check that what we return matches the type of the parent
+  unsigned noofResults = breakOp.getNumOperands();
+  unsigned noofParentResults = loopOp.getNumResults();
+
+  if (noofResults != noofParentResults)
+    return breakOp.emitOpError("returns ")
+           << noofResults << " values parent expects " << noofParentResults;
+
+  auto breakTypes = breakOp.getOperandTypes();
+  auto loopTypes = loopOp.getResultTypes();
+  for (unsigned i = 0; i < noofResults; i++)
+    if (breakTypes[i] != loopTypes[i])
+      return breakOp.emitOpError(
+          "type signature does not match signature of parent 'rust.loop'");
+
+  return success();
+}
+
+void RustLoopBreakOp::writeRust(RustPrinterStream &PS) {
+  PS << "break";
+  if (getNumOperands() != 1) {
+    PS << " (";
+    for (auto arg : results())
+      PS << arg << ",";
+    PS << ")";
+  }
+  PS << ";\n";
+}
+
 void RustLoopConditionOp::writeRust(RustPrinterStream &PS) {
   PS << "// Loop condition\n";
   PS << "if !" << getOperand(0) << " {\n";
@@ -667,6 +706,21 @@ void RustIfOp::writeRust(RustPrinterStream &PS) {
   for (Operation &operation : elseRegion().front())
     ::writeRust(operation, PS);
   PS << "};\n";
+}
+
+static LogicalResult verify(RustIfOp ifOp) {
+  // Check that the terminators are a rust.loop.break or a
+  // rust.block.result.
+  auto &thenTerm = ifOp.thenRegion().getBlocks().back().back();
+  auto &elseTerm = ifOp.elseRegion().getBlocks().back().back();
+
+  if ((dyn_cast<RustBlockResultOp>(thenTerm) ||
+       dyn_cast<RustLoopBreakOp>(thenTerm)) &&
+      (dyn_cast<RustBlockResultOp>(elseTerm) ||
+       dyn_cast<RustLoopBreakOp>(elseTerm)))
+    return success();
+  return ifOp.emitOpError("expects terminators to be 'rust.loop.break' or "
+                          "'rust.block.result' operations");
 }
 
 //===----------------------------------------------------------------------===//

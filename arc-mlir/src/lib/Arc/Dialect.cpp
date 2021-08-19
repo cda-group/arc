@@ -24,6 +24,7 @@
 #include <llvm/ADT/StringSwitch.h>
 #include <llvm/Support/raw_ostream.h>
 #include <mlir/Dialect/CommonFolders.h>
+#include <mlir/Dialect/SCF/SCF.h>
 #include <mlir/IR/Builders.h>
 #include <mlir/IR/BuiltinTypes.h>
 #include <mlir/IR/DialectImplementation.h>
@@ -447,7 +448,45 @@ LogicalResult IfOp::customVerify() {
     emitOpError("cannot return more than one result");
     return mlir::failure();
   }
+
+  // Check that the terminators are a arc.loop.break or a
+  // arc.block.result.
+  auto &thenTerm = thenRegion().getBlocks().back().back();
+  auto &elseTerm = elseRegion().getBlocks().back().back();
+
+  if ((dyn_cast<ArcBlockResultOp>(thenTerm) ||
+       dyn_cast<LoopBreakOp>(thenTerm)) &&
+      (dyn_cast<ArcBlockResultOp>(elseTerm) || dyn_cast<LoopBreakOp>(elseTerm)))
+    return success();
+  return emitOpError("expects terminators to be 'arc.loop.break' or "
+                     "'arc.block.result' operations");
   return mlir::success();
+}
+
+static LogicalResult verify(LoopBreakOp breakOp) {
+  // HasParent<"scf::WhileOp"> in the .td apparently only looks at the
+  // immediate parent and not all parents. Therefore we have to check
+  // that we are inside a loop here.
+  scf::WhileOp loopOp = breakOp->getParentOfType<scf::WhileOp>();
+  if (!loopOp)
+    return breakOp.emitOpError("must be inside a scf.while region");
+
+  // Now check that what we return matches the type of the parent
+  unsigned noofResults = breakOp.getNumOperands();
+  unsigned noofParentResults = loopOp.getNumResults();
+
+  if (noofResults != noofParentResults)
+    breakOp.emitOpError("returns ")
+        << noofResults << " values parent expects " << noofParentResults;
+
+  auto breakTypes = breakOp.getOperandTypes();
+  auto loopTypes = loopOp.getResultTypes();
+  for (unsigned i = 0; i < noofResults; i++)
+    if (breakTypes[i] != loopTypes[i])
+      breakOp.emitOpError(
+          "type signature does not match signature of parent 'scf.while'");
+
+  return success();
 }
 
 LogicalResult MergeOp::customVerify() {

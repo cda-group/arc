@@ -5,5 +5,7 @@ mod tests {
   #[test]
   fn it_works() {
     assert_eq!(a_while_loop(0, 5, 3), 13);
+    assert_eq!(a_while_loop_with_a_break_in_before(0, 5, 1), 2);
+    assert_eq!(a_while_loop_with_a_break_in_after(0, 10, 3), 4);
   }
 }

@@ -310,7 +310,7 @@ def ArcBlockResultOp :
   let verifier = [{ return customVerify(); }];
 }
 
-def IfOp : Arc_Op<"if", [SingleBlockImplicitTerminator<"ArcBlockResultOp">]> {
+def IfOp : Arc_Op<"if", [SingleBlock]> {
   let summary = "if-then-else operation";
   let description = [{
     The "arc.if" operation represents an if-then-else construct for
@@ -331,6 +331,17 @@ def IfOp : Arc_Op<"if", [SingleBlockImplicitTerminator<"ArcBlockResultOp">]> {
   let extraClassDeclaration = [{ LogicalResult customVerify(); }];
   let verifier = [{ return customVerify(); }];
   let hasCanonicalizer = 1;
+}
+
+def LoopBreakOp : Arc_Op<"loop.break", [NoSideEffect, Terminator]> {
+  let summary = "break out of a loop";
+  let description = [{
+     Break out of a loop producing a result
+  }];
+
+  let arguments = (ins Variadic<AnyType>:$results);
+
+  let verifier = [{ return ::verify(*this); }];
 }
 
 def MakeAppenderOp : Arc_Op<"make_appender", [NoSideEffect, Linear]> {

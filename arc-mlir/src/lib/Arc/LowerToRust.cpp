@@ -435,6 +435,18 @@ private:
   RustTypeConverter &TypeConverter;
 };
 
+struct LoopBreakOpLowering : public ConversionPattern {
+  LoopBreakOpLowering(MLIRContext *ctx)
+      : ConversionPattern(arc::LoopBreakOp::getOperationName(), 1, ctx) {}
+
+  LogicalResult
+  matchAndRewrite(Operation *op, ArrayRef<Value> operands,
+                  ConversionPatternRewriter &rewriter) const final {
+    rewriter.replaceOpWithNewOp<rust::RustLoopBreakOp>(op, operands);
+    return success();
+  };
+};
+
 struct PanicOpLowering : public ConversionPattern {
   PanicOpLowering(MLIRContext *ctx)
       : ConversionPattern(arc::PanicOp::getOperationName(), 1, ctx), Ctx(ctx) {}
@@ -1126,6 +1138,7 @@ void ArcToRustLoweringPass::runOnOperation() {
   patterns.insert<MakeTensorOpLowering>(&getContext(), typeConverter);
   patterns.insert<MakeEnumOpLowering>(&getContext(), typeConverter);
   patterns.insert<MakeStructOpLowering>(&getContext(), typeConverter);
+  patterns.insert<LoopBreakOpLowering>(&getContext());
   patterns.insert<EnumAccessOpLowering>(&getContext(), typeConverter);
   patterns.insert<EnumCheckOpLowering>(&getContext(), typeConverter);
   patterns.insert<EmitOpLowering>(&getContext(), typeConverter);
