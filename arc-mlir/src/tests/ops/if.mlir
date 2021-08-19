@@ -129,9 +129,8 @@ module @toplevel {
     %b = constant 3.14 : f64
     %c = constant 0.693 : f64
 
-    // expected-error@+3 {{'arc.if' op expects regions to end with 'arc.block.result', found 'arc.make_tuple'}}
-    // expected-note@+2 {{in custom textual format, the absence of terminator implies 'arc.block.result'}}
-    // expected-note@+1 {{see current operation:}}
+    // expected-error@+2 {{arc.if' op expects terminators to be 'arc.loop.break' or 'arc.block.result' operations}}
+    // expected-note@+1 {{see current operation}}
     "arc.if"(%a) ( {
       "arc.block.result"(%b) : (f64) -> ()
       %1 = "arc.make_tuple"(%c, %c) : (f64, f64) -> tuple<f64,f64>
