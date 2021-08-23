@@ -64,6 +64,20 @@ protected:
   Type convertStructType(arc::types::StructType type);
 };
 
+struct ArcReturnOpLowering : public ConversionPattern {
+
+  ArcReturnOpLowering(MLIRContext *ctx)
+      : ConversionPattern(ArcReturnOp::getOperationName(), 1, ctx) {}
+
+  LogicalResult
+  matchAndRewrite(Operation *op, ArrayRef<Value> operands,
+                  ConversionPatternRewriter &rewriter) const final {
+    rewriter.replaceOpWithNewOp<rust::RustReturnOp>(
+        op, llvm::None, operands.size() ? operands[0] : Value());
+    return success();
+  };
+};
+
 struct ReturnOpLowering : public ConversionPattern {
 
   ReturnOpLowering(MLIRContext *ctx)
@@ -1052,6 +1066,7 @@ void ArcToRustLoweringPass::runOnOperation() {
 
   OwningRewritePatternList patterns(&getContext());
   patterns.insert<ReturnOpLowering>(&getContext());
+  patterns.insert<ArcReturnOpLowering>(&getContext());
   patterns.insert<FuncOpLowering>(&getContext(), typeConverter);
   patterns.insert<StdConstantOpLowering>(&getContext(), typeConverter);
   patterns.insert<ConstantIntOpLowering>(&getContext(), typeConverter);

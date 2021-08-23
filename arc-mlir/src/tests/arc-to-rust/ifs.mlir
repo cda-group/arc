@@ -28,4 +28,13 @@ module @arctorustifs {
     }) : (i1) -> ()
     return
   }
+
+  func @test_3(%c: i1, %arg0: ui32, %arg1: ui32) -> ui32 {
+    %3 = "arc.if"(%c) ({
+      "arc.return"(%arg0) : (ui32) -> ()
+    }, {
+      "arc.block.result"(%arg1) : (ui32) -> ()
+    }) : (i1) -> ui32
+    return %3 : ui32
+  }
 }

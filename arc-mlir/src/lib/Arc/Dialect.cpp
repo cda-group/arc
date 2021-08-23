@@ -462,12 +462,14 @@ LogicalResult IfOp::customVerify() {
   auto &thenTerm = thenRegion().getBlocks().back().back();
   auto &elseTerm = elseRegion().getBlocks().back().back();
 
-  if ((dyn_cast<ArcBlockResultOp>(thenTerm) ||
-       dyn_cast<LoopBreakOp>(thenTerm)) &&
-      (dyn_cast<ArcBlockResultOp>(elseTerm) || dyn_cast<LoopBreakOp>(elseTerm)))
+  if ((isa<ArcBlockResultOp>(thenTerm) || isa<LoopBreakOp>(thenTerm) ||
+       isa<ArcReturnOp>(thenTerm)) &&
+      (isa<ArcBlockResultOp>(elseTerm) || isa<LoopBreakOp>(elseTerm) ||
+       isa<ArcReturnOp>(elseTerm)))
     return success();
-  return emitOpError("expects terminators to be 'arc.loop.break' or "
-                     "'arc.block.result' operations");
+  return emitOpError(
+      "expects terminators to be 'arc.loop.break', 'arc.return' or"
+      "'arc.block.result' operations");
   return mlir::success();
 }
 
@@ -628,6 +630,37 @@ OpFoldResult RemIOp::fold(ArrayRef<Attribute> operands) {
   return IntegerAttr::get(lhs.getType(), isUnsigned
                                              ? lhs.getValue().urem(rhsValue)
                                              : lhs.getValue().srem(rhsValue));
+}
+
+//===----------------------------------------------------------------------===//
+// ArcReturnOp
+//===----------------------------------------------------------------------===//
+static LogicalResult verify(ArcReturnOp returnOp) {
+  FuncOp function = returnOp->getParentOfType<FuncOp>();
+  if (!function)
+    return returnOp.emitOpError("expects parent op builtin.func");
+
+  FunctionType funType = function.getType();
+
+  if (funType.getNumResults() == 0 && returnOp.operands())
+    return returnOp.emitOpError("cannot return a value from a void function");
+
+  if (!returnOp.operands() && funType.getNumResults())
+    return returnOp.emitOpError("operation must return a ")
+           << funType.getResult(0) << " value";
+
+  if (!funType.getNumResults())
+    return success();
+
+  Type returnType = returnOp.getOperand(0).getType();
+  Type funReturnType = funType.getResult(0);
+
+  if (funReturnType != returnType) {
+    return returnOp.emitOpError("result type does not match the type of the "
+                                "function: expected ")
+           << funReturnType << " but found " << returnType;
+  }
+  return success();
 }
 
 //===----------------------------------------------------------------------===//

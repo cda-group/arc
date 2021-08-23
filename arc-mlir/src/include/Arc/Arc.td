@@ -781,6 +781,19 @@ def PanicOp : Arc_Op<"panic", []> {
   }];
 }
 
+def ArcReturnOp : Arc_Op<"return", [Terminator]> {
+  let summary = "Terminator for Arc functions.";
+  let description = [{
+    A terminator operation for regions that appear in the body of  `rust.func`
+    functions. The operands to the `arc.return` are the result values returned
+    by an incovation of the `function`.
+  }];
+
+  let arguments = (ins Optional<AnyType>:$operands);
+
+  let verifier = [{ return ::verify(*this); }];
+}
+
 
 
 #endif // ARC_OPS

@@ -317,8 +317,7 @@ def Rust_RustLoopBreakOp : Rust_Op<"loop.break",
   let verifier = [{ return ::verify(*this); }];
 }
 
-def Rust_RustReturnOp : Rust_Op<"return", [HasParent<"RustFuncOp">,
-    Terminator]> {
+def Rust_RustReturnOp : Rust_Op<"return", [Terminator]> {
   let summary = "Terminator for Rust functions.";
   let description = [{
     A terminator operation for regions that appear in the body of  `rust.func`
