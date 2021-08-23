@@ -129,7 +129,7 @@ module @toplevel {
     %b = constant 3.14 : f64
     %c = constant 0.693 : f64
 
-    // expected-error@+2 {{arc.if' op expects terminators to be 'arc.loop.break' or 'arc.block.result' operations}}
+    // expected-error@+2 {{'arc.if' op expects terminators to be 'arc.loop.break', 'arc.return' or'arc.block.result' operations}}
     // expected-note@+1 {{see current operation}}
     "arc.if"(%a) ( {
       "arc.block.result"(%b) : (f64) -> ()
@@ -245,5 +245,90 @@ module @toplevel {
       "arc.block.result"() : () -> ()
     }) : (i1) -> ui64
     return
+  }
+}
+
+// -----
+
+module @toplevel {
+  func @main() {
+    %a = constant 0 : i1
+    %b = arc.constant 66 : ui64
+    %c = arc.constant 7 : ui64
+    "arc.if"(%a) ( {
+      "arc.block.result"(%b) : (ui64) -> ()
+    },  {
+       "arc.return"() : () -> ()
+    }) : (i1) -> ui64
+    return
+  }
+}
+
+// -----
+
+module @toplevel {
+  func @main() -> ui64 {
+    %a = constant 0 : i1
+    %b = arc.constant 66 : ui64
+    %c = arc.constant 7 : ui64
+    "arc.if"(%a) ( {
+      "arc.block.result"() : () -> ()
+    },  {
+       "arc.return"(%c) : (ui64) -> ()
+    }) : (i1) -> ()
+    return %b : ui64
+  }
+}
+
+// -----
+
+module @toplevel {
+  func @main() -> ui64 {
+    %a = constant 0 : i1
+    %b = arc.constant 66 : ui64
+    %c = arc.constant 7 : si64
+    "arc.if"(%a) ( {
+      "arc.block.result"() : () -> ()
+    },  {
+       // expected-error@+2 {{'arc.return' op result type does not match the type of the function: expected 'ui64' but found 'si64'}}
+       // expected-note@+1 {{see current operation}}
+       "arc.return"(%c) : (si64) -> ()
+    }) : (i1) -> ()
+    return %b : ui64
+  }
+}
+
+// -----
+
+module @toplevel {
+  func @main() {
+    %a = constant 0 : i1
+    %b = arc.constant 66 : ui64
+    %c = arc.constant 7 : ui64
+    "arc.if"(%a) ( {
+      "arc.block.result"() : () -> ()
+    },  {
+       // expected-error@+2 {{'arc.return' op cannot return a value from a void function}}
+       // expected-note@+1 {{see current operation}}
+       "arc.return"(%c) : (ui64) -> ()
+    }) : (i1) -> ()
+    return
+  }
+}
+
+// -----
+
+module @toplevel {
+  func @main() -> ui64 {
+    %a = constant 0 : i1
+    %b = arc.constant 66 : ui64
+    "arc.if"(%a) ( {
+      "arc.block.result"() : () -> ()
+    },  {
+       // expected-error@+2 {{'arc.return' op operation must return a 'ui64' value}}
+       // expected-note@+1 {{see current operation}}
+       "arc.return"() : () -> ()
+    }) : (i1) -> ()
+    return %b : ui64
   }
 }
