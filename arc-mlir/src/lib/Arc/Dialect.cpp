@@ -434,6 +434,14 @@ LogicalResult ArcBlockResultOp::customVerify() {
     return mlir::success();
   }
 
+  if (Parent->getNumResults() != Op->getNumOperands()) {
+    emitOpError(
+        "the number of values returned does not match parent: expected ")
+        << Parent->getNumResults() << " but found " << Op->getNumOperands()
+        << " values";
+    return mlir::failure();
+  }
+
   if (Op->getOperand(0).getType() != Parent->getResult(0).getType()) {
     emitOpError("result type does not match the type of the parent: expected ")
         << Parent->getResult(0).getType() << " but found "

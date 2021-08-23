@@ -230,3 +230,20 @@ module @toplevel {
     return
   }
 }
+
+// -----
+
+module @toplevel {
+  func @main() {
+    %a = constant 0 : i1
+    %b = arc.constant 66 : ui64
+    "arc.if"(%a) ( {
+      "arc.block.result"(%b) : (ui64) -> ()
+    },  {
+      // expected-error@+2 {{'arc.block.result' op the number of values returned does not match parent: expected 1 but found 0 values}}
+      // expected-note@+1 {{see current operation}}
+      "arc.block.result"() : () -> ()
+    }) : (i1) -> ui64
+    return
+  }
+}
