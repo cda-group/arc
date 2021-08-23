@@ -185,6 +185,10 @@ LogicalResult RustFuncOp::verifyBody() {
 
 static LogicalResult verify(RustReturnOp returnOp) {
   RustFuncOp function = returnOp->getParentOfType<RustFuncOp>();
+
+  if (!function)
+    return returnOp.emitOpError("expects 'rust.func' parent");
+
   FunctionType funType = function.getType();
 
   if (funType.getNumResults() == 0 && returnOp.operands())
@@ -714,10 +718,10 @@ static LogicalResult verify(RustIfOp ifOp) {
   auto &thenTerm = ifOp.thenRegion().getBlocks().back().back();
   auto &elseTerm = ifOp.elseRegion().getBlocks().back().back();
 
-  if ((dyn_cast<RustBlockResultOp>(thenTerm) ||
-       dyn_cast<RustLoopBreakOp>(thenTerm)) &&
-      (dyn_cast<RustBlockResultOp>(elseTerm) ||
-       dyn_cast<RustLoopBreakOp>(elseTerm)))
+  if ((isa<RustBlockResultOp>(thenTerm) || isa<RustLoopBreakOp>(thenTerm) ||
+       isa<RustReturnOp>(thenTerm)) &&
+      (isa<RustBlockResultOp>(elseTerm) || isa<RustLoopBreakOp>(elseTerm) ||
+       isa<RustReturnOp>(elseTerm)))
     return success();
   return ifOp.emitOpError("expects terminators to be 'rust.loop.break' or "
                           "'rust.block.result' operations");
