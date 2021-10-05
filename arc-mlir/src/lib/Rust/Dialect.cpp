@@ -322,7 +322,8 @@ void RustCallOp::writeRust(RustPrinterStream &PS) {
   }
 
   StringRef callee = getCallee();
-  Operation *target = SymbolTable::lookupNearestSymbolFrom(*this, getCallee());
+  StringAttr calleeName = StringAttr::get(this->getContext(), getCallee());
+  Operation *target = SymbolTable::lookupNearestSymbolFrom(*this, calleeName);
   if (target && target->hasAttr("arc.rust_name"))
     callee = target->getAttrOfType<StringAttr>("arc.rust_name").getValue();
 

@@ -146,7 +146,7 @@ static ParseResult parseConstantIntOp(OpAsmParser &parser,
 }
 
 static void print(arc::ConstantIntOp constOp, OpAsmPrinter &printer) {
-  printer << arc::ConstantIntOp::getOperationName() << ' ' << constOp.value();
+  printer << ' ' << constOp.value();
 }
 
 static LogicalResult verify(arc::ConstantIntOp constOp) {
@@ -725,8 +725,9 @@ OpFoldResult arc::XOrOp::fold(ArrayRef<Attribute> operands) {
 LogicalResult StateAppenderFoldOp::customVerify() {
   auto InitTy = init().getType();
   auto ResultTy = res().getType();
-  Operation *Callee =
-      ::mlir::SymbolTable::lookupNearestSymbolFrom(this->getOperation(), fun());
+  StringAttr funName = StringAttr::get(this->getContext(), fun());
+  Operation *Callee = ::mlir::SymbolTable::lookupNearestSymbolFrom(
+      this->getOperation(), funName);
   auto StateTy = state().getType().cast<ArconAppenderType>().getType();
 
   FuncOp F = dyn_cast<FuncOp>(Callee);
@@ -883,7 +884,7 @@ static void printArcBinaryOp(Operation *op, OpAsmPrinter &p) {
     return;
   }
 
-  p << op->getName() << ' ' << op->getOperand(0) << ", " << op->getOperand(1);
+  p << ' ' << op->getOperand(0) << ", " << op->getOperand(1);
   p.printOptionalAttrDict(op->getAttrs());
 
   // Now we can output only one type for all operands and the result.
@@ -950,10 +951,9 @@ StringRef ADTType::getTypeName() const { return getImpl()->rustType; }
 Type ADTType::parse(DialectAsmParser &parser) {
   if (parser.parseLess())
     return nullptr;
-  StringRef tmp;
-  if (parser.parseString(&tmp))
+  std::string str;
+  if (parser.parseString(&str))
     return nullptr;
-  std::string str(tmp);
   if (parser.parseGreater())
     return nullptr;
   return ADTType::get(parser.getBuilder().getContext(), str);
