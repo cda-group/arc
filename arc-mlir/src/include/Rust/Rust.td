@@ -94,7 +94,8 @@ def RustCallOp : Rust_Op<"call", [CallOpInterface]> {
     }]>,
     OpBuilder<(ins "StringRef":$callee, "TypeRange":$results,
       CArg<"ValueRange", "{}">:$operands), [{
-      build($_builder, $_state, $_builder.getSymbolRefAttr(callee), results,
+      build($_builder, $_state,
+            SymbolRefAttr::get($_state.getContext(), callee), results,
             operands);
     }]>];
 
