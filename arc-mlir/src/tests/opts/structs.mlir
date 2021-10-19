@@ -2,14 +2,14 @@
 
 module @toplevel {
   func @main() -> i1 {
-    %a = constant 0 : i1
-    %b = constant 1 : i1
+    %a = arith.constant 0 : i1
+    %b = arith.constant 1 : i1
 
     %struct = arc.make_struct(%a, %b : i1, i1) : !arc.struct<a : i1, b : i1>
     %elem = "arc.struct_access"(%struct) { field = "a" } : (!arc.struct<a : i1, b : i1>) -> i1
 
     return %elem : i1
-    // CHECK-DAG: [[FALSE:%[^ ]+]] = constant false
+    // CHECK-DAG: [[FALSE:%[^ ]+]] = arith.constant false
     // CHECK: return [[FALSE]] : i1
   }
 }

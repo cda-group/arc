@@ -9,7 +9,7 @@ module @toplevel {
   }
 
   func @ok1() -> !arc.enum<a : si32, b : f32> {
-    %b = constant 3.14 : f32
+    %b = arith.constant 3.14 : f32
     %r = arc.make_enum (%b : f32) as "b" : !arc.enum<a : si32, b : f32>
     return %r : !arc.enum<a : si32, b : f32>
   }

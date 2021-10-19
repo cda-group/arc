@@ -16,8 +16,8 @@ fun test(): i32 {
 #CHECK-DAG: [[A:%[^ ]+]] = arc.constant 65 : si32
 #CHECK-DAG: [[B:%[^ ]+]] = arc.constant 66 : si32
 #CHECK-DAG: [[C:%[^ ]+]] = arc.constant 67 : si32
-#CHECK-DAG: [[CONDOUTER:%[^ ]+]] = constant true
-#CHECK-DAG: [[CONDINNER:%[^ ]+]] = constant false
+#CHECK-DAG: [[CONDOUTER:%[^ ]+]] = arith.constant true
+#CHECK-DAG: [[CONDINNER:%[^ ]+]] = arith.constant false
 
     if true_bool {
         a_i32

@@ -4,9 +4,9 @@
 
 module @toplevel {
   func @main() {
-    %a = constant 0 : i1
-    %b = constant 3.14 : f32
-    %c = constant 0.693 : f32
+    %a = arith.constant 0 : i1
+    %b = arith.constant 3.14 : f32
+    %c = arith.constant 0.693 : f32
     "arc.if"(%a) ( {
         // expected-error@+2 {{'arc.loop.break' op must be inside a scf.while region}}
     	// expected-note@+1 {{see current operation}}

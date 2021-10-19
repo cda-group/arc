@@ -44,9 +44,9 @@ fun main() {
     val sum_u64: u64 = c_u64 + c_u64;
 #CHECK: {{%[^ ]+}} = arc.addi {{%[^ ]+}}, {{%[^ ]+}} : ui64
     val sum_f32: f32 = c_f32 + c_f32;
-#CHECK: {{%[^ ]+}} = addf {{%[^ ]+}}, {{%[^ ]+}} : f32
+#CHECK: {{%[^ ]+}} = arith.addf {{%[^ ]+}}, {{%[^ ]+}} : f32
     val sum_f64: f64 = c_f64 + c_f64;
-#CHECK: {{%[^ ]+}} = addf {{%[^ ]+}}, {{%[^ ]+}} : f64
+#CHECK: {{%[^ ]+}} = arith.addf {{%[^ ]+}}, {{%[^ ]+}} : f64
 
     val difference_i8: i8 = c_i8 - c_i8;
 #CHECK: {{%[^ ]+}} = arc.subi {{%[^ ]+}}, {{%[^ ]+}} : si8
@@ -65,9 +65,9 @@ fun main() {
     val difference_u64: u64 = c_u64 - c_u64;
 #CHECK: {{%[^ ]+}} = arc.subi {{%[^ ]+}}, {{%[^ ]+}} : ui64
     val difference_f32: f32 = c_f32 - c_f32;
-#CHECK: {{%[^ ]+}} = subf {{%[^ ]+}}, {{%[^ ]+}} : f32
+#CHECK: {{%[^ ]+}} = arith.subf {{%[^ ]+}}, {{%[^ ]+}} : f32
     val difference_f64: f64 = c_f64 - c_f64;
-#CHECK: {{%[^ ]+}} = subf {{%[^ ]+}}, {{%[^ ]+}} : f64
+#CHECK: {{%[^ ]+}} = arith.subf {{%[^ ]+}}, {{%[^ ]+}} : f64
 
     val product_i8: i8 = c_i8 * c_i8;
 #CHECK: {{%[^ ]+}} = arc.muli {{%[^ ]+}}, {{%[^ ]+}} : si8
@@ -86,9 +86,9 @@ fun main() {
     val product_u64: u64 = c_u64 * c_u64;
 #CHECK: {{%[^ ]+}} = arc.muli {{%[^ ]+}}, {{%[^ ]+}} : ui64
     val product_f32: f32 = c_f32 * c_f32;
-#CHECK: {{%[^ ]+}} = mulf {{%[^ ]+}}, {{%[^ ]+}} : f32
+#CHECK: {{%[^ ]+}} = arith.mulf {{%[^ ]+}}, {{%[^ ]+}} : f32
     val product_f64: f64 = c_f64 * c_f64;
-#CHECK: {{%[^ ]+}} = mulf {{%[^ ]+}}, {{%[^ ]+}} : f64
+#CHECK: {{%[^ ]+}} = arith.mulf {{%[^ ]+}}, {{%[^ ]+}} : f64
 
     val quotient_i8: i8 = c_i8 / c_i8;
 #CHECK: {{%[^ ]+}} = arc.divi {{%[^ ]+}}, {{%[^ ]+}} : si8
@@ -107,9 +107,9 @@ fun main() {
     val quotient_u64: u64 = c_u64 / c_u64;
 #CHECK: {{%[^ ]+}} = arc.divi {{%[^ ]+}}, {{%[^ ]+}} : ui64
     val quotient_f32: f32 = c_f32 / c_f32;
-#CHECK: {{%[^ ]+}} = divf {{%[^ ]+}}, {{%[^ ]+}} : f32
+#CHECK: {{%[^ ]+}} = arith.divf {{%[^ ]+}}, {{%[^ ]+}} : f32
     val quotient_f64: f64 = c_f64 / c_f64;
-#CHECK: {{%[^ ]+}} = divf {{%[^ ]+}}, {{%[^ ]+}} : f64
+#CHECK: {{%[^ ]+}} = arith.divf {{%[^ ]+}}, {{%[^ ]+}} : f64
 
     val remainder_i8: i8 = c_i8 % c_i8;
 #CHECK: {{%[^ ]+}} = arc.remi {{%[^ ]+}}, {{%[^ ]+}} : si8
@@ -128,9 +128,9 @@ fun main() {
     val remainder_u64: u64 = c_u64 % c_u64;
 #CHECK: {{%[^ ]+}} = arc.remi {{%[^ ]+}}, {{%[^ ]+}} : ui64
     val remainder_f32: f32 = c_f32 % c_f32;
-#CHECK: {{%[^ ]+}} = remf {{%[^ ]+}}, {{%[^ ]+}} : f32
+#CHECK: {{%[^ ]+}} = arith.remf {{%[^ ]+}}, {{%[^ ]+}} : f32
     val remainder_f64: f64 = c_f64 % c_f64;
-#CHECK: {{%[^ ]+}} = remf {{%[^ ]+}}, {{%[^ ]+}} : f64
+#CHECK: {{%[^ ]+}} = arith.remf {{%[^ ]+}}, {{%[^ ]+}} : f64
 
     val lt_i8: bool = c_i8 < c_i8;
 #CHECK: {{%[^ ]+}} = arc.cmpi lt, {{%[^ ]+}}, {{%[^ ]+}} : si8
@@ -149,9 +149,9 @@ fun main() {
     val lt_u64: bool = c_u64 < c_u64;
 #CHECK: {{%[^ ]+}} = arc.cmpi lt, {{%[^ ]+}}, {{%[^ ]+}} : ui64
     val lt_f32: bool = c_f32 < c_f32;
-#CHECK: {{%[^ ]+}} = cmpf olt, {{%[^ ]+}}, {{%[^ ]+}} : f32
+#CHECK: {{%[^ ]+}} = arith.cmpf olt, {{%[^ ]+}}, {{%[^ ]+}} : f32
     val lt_f64: bool = c_f64 < c_f64;
-#CHECK: {{%[^ ]+}} = cmpf olt, {{%[^ ]+}}, {{%[^ ]+}} : f64
+#CHECK: {{%[^ ]+}} = arith.cmpf olt, {{%[^ ]+}}, {{%[^ ]+}} : f64
 
     val le_i8: bool = c_i8 <= c_i8;
 #CHECK: {{%[^ ]+}} = arc.cmpi le, {{%[^ ]+}}, {{%[^ ]+}} : si8
@@ -170,9 +170,9 @@ fun main() {
     val le_u64: bool = c_u64 <= c_u64;
 #CHECK: {{%[^ ]+}} = arc.cmpi le, {{%[^ ]+}}, {{%[^ ]+}} : ui64
     val le_f32: bool = c_f32 <= c_f32;
-#CHECK: {{%[^ ]+}} = cmpf ole, {{%[^ ]+}}, {{%[^ ]+}} : f32
+#CHECK: {{%[^ ]+}} = arith.cmpf ole, {{%[^ ]+}}, {{%[^ ]+}} : f32
     val le_f64: bool = c_f64 <= c_f64;
-#CHECK: {{%[^ ]+}} = cmpf ole, {{%[^ ]+}}, {{%[^ ]+}} : f64
+#CHECK: {{%[^ ]+}} = arith.cmpf ole, {{%[^ ]+}}, {{%[^ ]+}} : f64
 
     val gt_i8: bool = c_i8 > c_i8;
 #CHECK: {{%[^ ]+}} = arc.cmpi gt, {{%[^ ]+}}, {{%[^ ]+}} : si8
@@ -191,9 +191,9 @@ fun main() {
     val gt_u64: bool = c_u64 > c_u64;
 #CHECK: {{%[^ ]+}} = arc.cmpi gt, {{%[^ ]+}}, {{%[^ ]+}} : ui64
     val gt_f32: bool = c_f32 > c_f32;
-#CHECK: {{%[^ ]+}} = cmpf ogt, {{%[^ ]+}}, {{%[^ ]+}} : f32
+#CHECK: {{%[^ ]+}} = arith.cmpf ogt, {{%[^ ]+}}, {{%[^ ]+}} : f32
     val gt_f64: bool = c_f64 > c_f64;
-#CHECK: {{%[^ ]+}} = cmpf ogt, {{%[^ ]+}}, {{%[^ ]+}} : f64
+#CHECK: {{%[^ ]+}} = arith.cmpf ogt, {{%[^ ]+}}, {{%[^ ]+}} : f64
 
     val ge_i8: bool = c_i8 >= c_i8;
 #CHECK: {{%[^ ]+}} = arc.cmpi ge, {{%[^ ]+}}, {{%[^ ]+}} : si8
@@ -212,12 +212,12 @@ fun main() {
     val ge_u64: bool = c_u64 >= c_u64;
 #CHECK: {{%[^ ]+}} = arc.cmpi ge, {{%[^ ]+}}, {{%[^ ]+}} : ui64
     val ge_f32: bool = c_f32 >= c_f32;
-#CHECK: {{%[^ ]+}} = cmpf oge, {{%[^ ]+}}, {{%[^ ]+}} : f32
+#CHECK: {{%[^ ]+}} = arith.cmpf oge, {{%[^ ]+}}, {{%[^ ]+}} : f32
     val ge_f64: bool = c_f64 >= c_f64;
-#CHECK: {{%[^ ]+}} = cmpf oge, {{%[^ ]+}}, {{%[^ ]+}} : f64
+#CHECK: {{%[^ ]+}} = arith.cmpf oge, {{%[^ ]+}}, {{%[^ ]+}} : f64
 
     val eq_bool: bool = c_bool == c_bool;
-#CHECK: {{%[^ ]+}} = cmpi eq, {{%[^ ]+}}, {{%[^ ]+}} : i1
+#CHECK: {{%[^ ]+}} = arith.cmpi eq, {{%[^ ]+}}, {{%[^ ]+}} : i1
     val eq_i8: bool = c_i8 == c_i8;
 #CHECK: {{%[^ ]+}} = arc.cmpi eq, {{%[^ ]+}}, {{%[^ ]+}} : si8
     val eq_i16: bool = c_i16 == c_i16;
@@ -235,12 +235,12 @@ fun main() {
     val eq_u64: bool = c_u64 == c_u64;
 #CHECK: {{%[^ ]+}} = arc.cmpi eq, {{%[^ ]+}}, {{%[^ ]+}} : ui64
     val eq_f32: bool = c_f32 == c_f32;
-#CHECK: {{%[^ ]+}} = cmpf oeq, {{%[^ ]+}}, {{%[^ ]+}} : f32
+#CHECK: {{%[^ ]+}} = arith.cmpf oeq, {{%[^ ]+}}, {{%[^ ]+}} : f32
     val eq_f64: bool = c_f64 == c_f64;
-#CHECK: {{%[^ ]+}} = cmpf oeq, {{%[^ ]+}}, {{%[^ ]+}} : f64
+#CHECK: {{%[^ ]+}} = arith.cmpf oeq, {{%[^ ]+}}, {{%[^ ]+}} : f64
 
     val ne_bool: bool = c_bool != c_bool;
-#CHECK: {{%[^ ]+}} = cmpi ne, {{%[^ ]+}}, {{%[^ ]+}} : i1
+#CHECK: {{%[^ ]+}} = arith.cmpi ne, {{%[^ ]+}}, {{%[^ ]+}} : i1
     val ne_i8: bool = c_i8 != c_i8;
 #CHECK: {{%[^ ]+}} = arc.cmpi ne, {{%[^ ]+}}, {{%[^ ]+}} : si8
     val ne_i16: bool = c_i16 != c_i16;
@@ -258,16 +258,16 @@ fun main() {
     val ne_u64: bool = c_u64 != c_u64;
 #CHECK: {{%[^ ]+}} = arc.cmpi ne, {{%[^ ]+}}, {{%[^ ]+}} : ui64
     val ne_f32: bool = c_f32 != c_f32;
-#CHECK: {{%[^ ]+}} = cmpf one, {{%[^ ]+}}, {{%[^ ]+}} : f32
+#CHECK: {{%[^ ]+}} = arith.cmpf one, {{%[^ ]+}}, {{%[^ ]+}} : f32
     val ne_f64: bool = c_f64 != c_f64;
-#CHECK: {{%[^ ]+}} = cmpf one, {{%[^ ]+}}, {{%[^ ]+}} : f64
+#CHECK: {{%[^ ]+}} = arith.cmpf one, {{%[^ ]+}}, {{%[^ ]+}} : f64
 
     val land: bool = c_bool and c_bool;
-#CHECK: {{%[^ ]+}} = and {{%[^ ]+}}, {{%[^ ]+}} : i1
+#CHECK: {{%[^ ]+}} = arith.andi {{%[^ ]+}}, {{%[^ ]+}} : i1
     val lor: bool = c_bool or c_bool;
-#CHECK: {{%[^ ]+}} = or {{%[^ ]+}}, {{%[^ ]+}} : i1
+#CHECK: {{%[^ ]+}} = arith.ori {{%[^ ]+}}, {{%[^ ]+}} : i1
     val lxor: bool = c_bool xor c_bool;
-#CHECK: {{%[^ ]+}} = xor {{%[^ ]+}}, {{%[^ ]+}} : i1
+#CHECK: {{%[^ ]+}} = arith.xori {{%[^ ]+}}, {{%[^ ]+}} : i1
 
     val band_i8: i8 = c_i8 band c_i8;
 #CHECK: {{%[^ ]+}} = arc.and {{%[^ ]+}}, {{%[^ ]+}} : si8
@@ -353,11 +353,11 @@ fun main() {
 ###XCHECK: {{%[^ ]+}} = arc.select [[A7]], [[B7]], [[C7]] : ui64
 ##
 ##val min_f32: f32 = min(c_f32, c1_f32);
-###XCHECK-DAG: [[A8:%[^ ]+]] = cmpf olt, [[B8:%[^ ]+]], [[C8:%[^ ]+]] : f32
+###XCHECK-DAG: [[A8:%[^ ]+]] = arith.cmpf olt, [[B8:%[^ ]+]], [[C8:%[^ ]+]] : f32
 ###XCHECK: {{%[^ ]+}} = select [[A8]], [[B8]], [[C8]] : f32
 ##
 ##val min_f64: f64 = min(c_f64, c1_f64);
-###XCHECK-DAG: [[A9:%[^ ]+]] = cmpf olt, [[B9:%[^ ]+]], [[C9:%[^ ]+]] : f64
+###XCHECK-DAG: [[A9:%[^ ]+]] = arith.cmpf olt, [[B9:%[^ ]+]], [[C9:%[^ ]+]] : f64
 ###XCHECK: {{%[^ ]+}} = select [[A9]], [[B9]], [[C9]] : f64
 ##
 ##val max_i8: i8 = max(c_i8, c1_i8);
@@ -393,11 +393,11 @@ fun main() {
 ###XCHECK: {{%[^ ]+}} = arc.select [[A7]], [[C7]], [[B7]] : ui64
 ##
 ##val max_f32: f32 = max(c_f32, c1_f32);
-###XCHECK-DAG: [[A8:%[^ ]+]] = cmpf olt, [[B8:%[^ ]+]], [[C8:%[^ ]+]] : f32
+###XCHECK-DAG: [[A8:%[^ ]+]] = arith.cmpf olt, [[B8:%[^ ]+]], [[C8:%[^ ]+]] : f32
 ###XCHECK: {{%[^ ]+}} = select [[A8]], [[C8]], [[B8]] : f32
 ##
 ##val max_f64: f64 = max(c_f64, c1_f64);
-###XCHECK-DAG: [[A9:%[^ ]+]] = cmpf olt, [[B9:%[^ ]+]], [[C9:%[^ ]+]] : f64
+###XCHECK-DAG: [[A9:%[^ ]+]] = arith.cmpf olt, [[B9:%[^ ]+]], [[C9:%[^ ]+]] : f64
 ###XCHECK: {{%[^ ]+}} = select [[A9]], [[C9]], [[B9]] : f64
 
     val pow_f32: f32 = c_f32 ** c1_f32;

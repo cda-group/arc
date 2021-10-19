@@ -4,7 +4,7 @@ module @arctorustifs {
   func @test_0() -> si32 {
     %0 = arc.constant 65 : si32
     %1 = arc.constant 66 : si32
-    %2 = constant 1 : i1
+    %2 = arith.constant 1 : i1
     %3 = "arc.if"(%2) ({
       "arc.block.result"(%0) : (si32) -> ()
     }, {

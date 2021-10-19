@@ -1,8 +1,8 @@
 // RUN: arc-mlir --canonicalize %s | FileCheck %s
 module @toplevel {
   func @main(%arg0 : i1) {
-    %true = constant 1 : i1
-    %false = constant 0 : i1
+    %true = arith.constant 1 : i1
+    %false = arith.constant 0 : i1
 
     %si8_left = arc.constant 42 : si8
     %si8_right = arc.constant 17 : si8

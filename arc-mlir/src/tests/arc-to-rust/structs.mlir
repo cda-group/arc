@@ -18,7 +18,7 @@ module @arctoruststructs {
 
   func @ok3() -> !arc.struct<a : si32, b : f32> {
     %a = arc.constant 4 : si32
-    %b = constant 3.14 : f32
+    %b = arith.constant 3.14 : f32
     %r = arc.make_struct(%a, %b : si32, f32) : !arc.struct<a : si32, b : f32>
     return %r : !arc.struct<a : si32, b : f32>
   }

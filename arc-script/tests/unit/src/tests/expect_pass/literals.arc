@@ -35,35 +35,35 @@ fun test() {
 # f32 to 6 significant digits and f64 to 15.
 
   val pos_f32: f32 = 3.4028234664e38f32;
-#CHECK: {{%[^ ]+}} = constant 3.40282{{[0-9]+[Ee]\+?}}38 : f32
+#CHECK: {{%[^ ]+}} = arith.constant 3.40282{{[0-9]+[Ee]\+?}}38 : f32
 
   val neg_f32: f32 = -3.4028234664e38f32;
-#CHECK: {{%[^ ]+}} = constant -3.40282{{[0-9]+[Ee]\+?}}38 : f32
+#CHECK: {{%[^ ]+}} = arith.constant -3.40282{{[0-9]+[Ee]\+?}}38 : f32
 
   val pos_f64: f64 = 1.7976931348623157e308;
-#CHECK: {{%[^ ]+}} = constant 1.79769313486231{{[0-9]+[Ee]\+?}}308 : f64
+#CHECK: {{%[^ ]+}} = arith.constant 1.79769313486231{{[0-9]+[Ee]\+?}}308 : f64
 
   val neg_f64: f64 = -1.7976931348623157e308;
-#CHECK: {{%[^ ]+}} = constant -1.79769313486231{{[0-9]+[Ee]\+?}}308 : f64
+#CHECK: {{%[^ ]+}} = arith.constant -1.79769313486231{{[0-9]+[Ee]\+?}}308 : f64
 
   val true_bool: bool = true;
-#CHECK: {{%[^ ]+}} = constant true
+#CHECK: {{%[^ ]+}} = arith.constant true
 
   val false_bool: bool = false;
-#CHECK: {{%[^ ]+}} = constant false
+#CHECK: {{%[^ ]+}} = arith.constant false
 
 #  val bool_vector: vec[bool] = [true, false, true, false];
-##XCHECK-DAG: [[E0:%[^ ]+]] = constant true
-##XCHECK-DAG: [[E1:%[^ ]+]] = constant false
-##XCHECK-DAG: [[E2:%[^ ]+]] = constant true
-##XCHECK-DAG: [[E3:%[^ ]+]] = constant false
+##XCHECK-DAG: [[E0:%[^ ]+]] = arith.constant true
+##XCHECK-DAG: [[E1:%[^ ]+]] = arith.constant false
+##XCHECK-DAG: [[E2:%[^ ]+]] = arith.constant true
+##XCHECK-DAG: [[E3:%[^ ]+]] = arith.constant false
 ##XCHECK: {{%[^ ]+}} = "arc.make_vector"([[E0]], [[E1]], [[E2]], [[E3]]) : (i1, i1, i1, i1) -> tensor<4xi1>
 #
 #  val f64_vector: vec[f64] = [0.694, 1.0, 1.4142, 3.14];
-##XCHECK-DAG: [[E4:%[^ ]+]] = constant {{[^:]+}} : f64
-##XCHECK-DAG: [[E5:%[^ ]+]] = constant {{[^:]+}} : f64
-##XCHECK-DAG: [[E6:%[^ ]+]] = constant {{[^:]+}} : f64
-##XCHECK-DAG: [[E7:%[^ ]+]] = constant {{[^:]+}} : f64
+##XCHECK-DAG: [[E4:%[^ ]+]] = arith.constant {{[^:]+}} : f64
+##XCHECK-DAG: [[E5:%[^ ]+]] = arith.constant {{[^:]+}} : f64
+##XCHECK-DAG: [[E6:%[^ ]+]] = arith.constant {{[^:]+}} : f64
+##XCHECK-DAG: [[E7:%[^ ]+]] = arith.constant {{[^:]+}} : f64
 ##XCHECK: {{%[^ ]+}} = "arc.make_vector"([[E4]], [[E5]], [[E6]], [[E7]]) : (f64, f64, f64, f64) -> tensor<4xf64>
 
 }

@@ -369,7 +369,7 @@ def MergeOp : Arc_Op<"merge", [NoSideEffect, Linear]> {
 
     ```mlir
     %a = "arc.make_appender"() : () -> !arc.appender<i32>
-    %v = constant 5 : i32
+    %v = arith.constant 5 : i32
     %b = "arc.merge"(%a, %v) : (!arc.appender<i32>, i32) -> !arc.appender<i32>
     ```
   }];
@@ -388,7 +388,7 @@ def ResultOp : Arc_Op<"result", [NoSideEffect]> {
 
     ```mlir
     %a = "arc.make_appender"() : () -> !arc.appender<i32>
-    %v = constant 5 : i32
+    %v = arith.constant 5 : i32
     %b = "arc.merge"(%a, %v) : (!arc.appender<i32>, i32) -> !arc.appender<i32>
     %r = "arc.result"(%b) : (!arc.appender<i32>) -> i32
     ```
