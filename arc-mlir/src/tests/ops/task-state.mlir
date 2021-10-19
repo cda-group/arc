@@ -32,7 +32,7 @@ module @toplevel {
 
   func @FoldFun(f32, !arc.struct<i : si32, f : f32>) -> f32 {
   ^bb0(%a: f32, %b : !arc.struct<i : si32, f : f32>):
-    %f = constant 3.14 : f32
+    %f = arith.constant 3.14 : f32
     return %f : f32
   }
 
@@ -60,7 +60,7 @@ module @toplevel {
 			       state3 : !arc.arcon.map<ui64, !arc.struct<i : si32, f : f32>>>) -> !arc.arcon.value<!arc.struct<i : si32, f : f32>>
 	  %i = arc.constant 4 : si32
 	  %u = arc.constant 8 : ui64
-	  %f = constant 3.14 : f32
+	  %f = arith.constant 3.14 : f32
 	  %s = arc.make_struct(%i, %f : si32, f32) : !arc.struct<i : si32, f : f32>
 	  "arc.value_write"(%state1, %s) : (!arc.arcon.value<!arc.struct<i : si32, f : f32>>, !arc.struct<i : si32, f : f32>) -> ()
 	  %sr = "arc.value_read"(%state1) : (!arc.arcon.value<!arc.struct<i : si32, f : f32>>) -> !arc.struct<i : si32, f : f32>

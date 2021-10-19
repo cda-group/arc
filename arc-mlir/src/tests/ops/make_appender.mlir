@@ -14,7 +14,7 @@ module @toplevel {
 
 module @toplevel {
   func @main() {
-    %v = constant 0 : i32
+    %v = arith.constant 0 : i32
 
     // expected-error@+2 {{'arc.make_appender' op requires zero operands}}
     // expected-note@+1 {{see current operation:}}
@@ -43,8 +43,8 @@ module @toplevel {
     // expected-error@+2 {{'arc.make_appender' op result #0 must be any appender, but got 'i32'}}
     // expected-note@+1 {{see current operation: %0 = "arc.make_appender"}}
     %0 = "arc.make_appender"() : () -> i32
-    %b = constant 2 : i32
-    %c = addi %0, %b : i32
+    %b = arith.constant 2 : i32
+    %c = arith.addi %0, %b : i32
     return
   }
 }

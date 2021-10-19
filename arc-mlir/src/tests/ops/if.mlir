@@ -4,9 +4,9 @@
 
 module @toplevel {
   func @main() {
-    %a = constant 0 : i1
-    %b = constant 3.14 : f64
-    %c = constant 0.693 : f64
+    %a = arith.constant 0 : i1
+    %b = arith.constant 3.14 : f64
+    %c = arith.constant 0.693 : f64
 
     "arc.if"(%a) ( {
       "arc.block.result"(%b) : (f64) -> ()
@@ -21,8 +21,8 @@ module @toplevel {
 
 module @toplevel {
   func @main() {
-    %a = constant 0 : i1
-    %f = constant 3.14 : f64
+    %a = arith.constant 0 : i1
+    %f = arith.constant 3.14 : f64
 
     // expected-error@+2 {{'arc.block.result' op expects parent op 'arc.if'}}
     // expected-note@+1 {{see current operation:}}
@@ -35,9 +35,9 @@ module @toplevel {
 
 module @toplevel {
   func @main() {
-    %a = constant 0 : i1
-    %b = constant 3.14 : f32
-    %c = constant 0.693 : f64
+    %a = arith.constant 0 : i1
+    %b = arith.constant 3.14 : f32
+    %c = arith.constant 0.693 : f64
 
     "arc.if"(%a) ( {
     // expected-error@+2 {{'arc.block.result' op result type does not match the type of the parent: expected 'f64' but found 'f32'}}
@@ -54,9 +54,9 @@ module @toplevel {
 
 module @toplevel {
   func @main() {
-    %a = constant 0 : i1
-    %b = constant 3.14 : f32
-    %c = constant 0.693 : f64
+    %a = arith.constant 0 : i1
+    %b = arith.constant 3.14 : f32
+    %c = arith.constant 0.693 : f64
     // expected-error@+1 {{expected '{' to begin a region}}
     "arc.if"(%a) () : (i1) -> f64
     return
@@ -67,9 +67,9 @@ module @toplevel {
 
 module @toplevel {
   func @main() {
-    %a = constant 0 : i1
-    %b = constant 3.14 : f32
-    %c = constant 0.693 : f64
+    %a = arith.constant 0 : i1
+    %b = arith.constant 3.14 : f32
+    %c = arith.constant 0.693 : f64
     // expected-error@+2 {{'arc.if' op expected 2 regions}}
     // expected-note@+1 {{see current operation:}}
     "arc.if"(%a) ({}) : (i1) -> f64
@@ -81,9 +81,9 @@ module @toplevel {
 
 module @toplevel {
   func @main() {
-    %a = constant 0 : i1
-    %b = constant 3.14 : f32
-    %c = constant 0.693 : f64
+    %a = arith.constant 0 : i1
+    %b = arith.constant 3.14 : f32
+    %c = arith.constant 0.693 : f64
     // expected-error@+2 {{'arc.if' op expected 2 regions}}
     // expected-note@+1 {{see current operation:}}
     "arc.if"(%a) ({},{},{}) : (i1) -> f64
@@ -95,9 +95,9 @@ module @toplevel {
 
 module @toplevel {
   func @main() {
-    %a = constant 0 : i1
-    %b = constant 3.14 : f32
-    %c = constant 0.693 : f64
+    %a = arith.constant 0 : i1
+    %b = arith.constant 3.14 : f32
+    %c = arith.constant 0.693 : f64
     // expected-error@+2 {{'arc.if' op region #0 ('thenRegion') failed to verify constraint: region with 1 blocks}}
     // expected-note@+1 {{see current operation:}}
     "arc.if"(%a) ({},{}) : (i1) -> f64
@@ -109,9 +109,9 @@ module @toplevel {
 
 module @toplevel {
   func @main() {
-    %a = constant 0 : i1
-    %b = constant 3.14 : f64
-    %c = constant 0.693 : f64
+    %a = arith.constant 0 : i1
+    %b = arith.constant 3.14 : f64
+    %c = arith.constant 0.693 : f64
     // expected-error@+2 {{'arc.if' op region #1 ('elseRegion') failed to verify constraint: region with 1 blocks}}
     // expected-note@+1 {{see current operation:}}
     "arc.if"(%a) ({
@@ -125,9 +125,9 @@ module @toplevel {
 
 module @toplevel {
   func @main() {
-    %a = constant 0 : i1
-    %b = constant 3.14 : f64
-    %c = constant 0.693 : f64
+    %a = arith.constant 0 : i1
+    %b = arith.constant 3.14 : f64
+    %c = arith.constant 0.693 : f64
 
     // expected-error@+2 {{'arc.if' op expects terminators to be 'arc.loop.break', 'arc.return' or'arc.block.result' operations}}
     // expected-note@+1 {{see current operation}}
@@ -145,9 +145,9 @@ module @toplevel {
 
 module @toplevel {
   func @main() {
-    %a = constant 0 : i1
-    %b = constant 3.14 : f32
-    %c = constant 0.693 : f64
+    %a = arith.constant 0 : i1
+    %b = arith.constant 3.14 : f32
+    %c = arith.constant 0.693 : f64
     "arc.if"(%a) ( {
       // expected-error@+2 {{'arc.block.result' op result type does not match the type of the parent: expected 'f64' but found 'f32'}}
       // expected-note@+1 {{see current operation:}}
@@ -163,9 +163,9 @@ module @toplevel {
 
 module @toplevel {
   func @main() {
-    %a = constant 0 : i1
-    %b = constant 3.14 : f32
-    %c = constant 0.693 : f32
+    %a = arith.constant 0 : i1
+    %b = arith.constant 3.14 : f32
+    %c = arith.constant 0.693 : f32
     "arc.if"(%a) ( {
        // expected-error@+2 {{'arc.block.result' op result type does not match the type of the parent: expected 'f64' but found 'f32'}}
        // expected-note@+1 {{see current operation:}}
@@ -181,9 +181,9 @@ module @toplevel {
 
 module @toplevel {
   func @main() {
-    %a = constant 0 : i1
-    %b = constant 3.14 : f32
-    %c = constant 0.693 : f32
+    %a = arith.constant 0 : i1
+    %b = arith.constant 3.14 : f32
+    %c = arith.constant 0.693 : f32
     "arc.if"(%a) ( {
       // expected-error@+2 {{'arc.block.result' op cannot return a result from an 'arc.if' without result}}
       // expected-note@+1 {{see current operation: }}
@@ -199,9 +199,9 @@ module @toplevel {
 
 module @toplevel {
   func @main() {
-    %a = constant 0 : i1
-    %b = constant 3.14 : f32
-    %c = constant 0.693 : f32
+    %a = arith.constant 0 : i1
+    %b = arith.constant 3.14 : f32
+    %c = arith.constant 0.693 : f32
     "arc.if"(%a) ( {
        // expected-error@+2 {{'arc.block.result' op cannot return more than one result}}
        // expected-note@+1 {{see current operation}}
@@ -217,9 +217,9 @@ module @toplevel {
 
 module @toplevel {
   func @main() {
-    %a = constant 0 : i1
-    %b = constant 3.14 : f32
-    %c = constant 0.693 : f32
+    %a = arith.constant 0 : i1
+    %b = arith.constant 3.14 : f32
+    %c = arith.constant 0.693 : f32
     // expected-error@+2 {{'arc.if' op cannot return more than one result}}
     // expected-note@+1 {{see current operation}}
     "arc.if"(%a) ( {
@@ -235,7 +235,7 @@ module @toplevel {
 
 module @toplevel {
   func @main() {
-    %a = constant 0 : i1
+    %a = arith.constant 0 : i1
     %b = arc.constant 66 : ui64
     "arc.if"(%a) ( {
       "arc.block.result"(%b) : (ui64) -> ()
@@ -252,7 +252,7 @@ module @toplevel {
 
 module @toplevel {
   func @main() {
-    %a = constant 0 : i1
+    %a = arith.constant 0 : i1
     %b = arc.constant 66 : ui64
     %c = arc.constant 7 : ui64
     "arc.if"(%a) ( {
@@ -268,7 +268,7 @@ module @toplevel {
 
 module @toplevel {
   func @main() -> ui64 {
-    %a = constant 0 : i1
+    %a = arith.constant 0 : i1
     %b = arc.constant 66 : ui64
     %c = arc.constant 7 : ui64
     "arc.if"(%a) ( {
@@ -284,7 +284,7 @@ module @toplevel {
 
 module @toplevel {
   func @main() -> ui64 {
-    %a = constant 0 : i1
+    %a = arith.constant 0 : i1
     %b = arc.constant 66 : ui64
     %c = arc.constant 7 : si64
     "arc.if"(%a) ( {
@@ -302,7 +302,7 @@ module @toplevel {
 
 module @toplevel {
   func @main() {
-    %a = constant 0 : i1
+    %a = arith.constant 0 : i1
     %b = arc.constant 66 : ui64
     %c = arc.constant 7 : ui64
     "arc.if"(%a) ( {
@@ -320,7 +320,7 @@ module @toplevel {
 
 module @toplevel {
   func @main() -> ui64 {
-    %a = constant 0 : i1
+    %a = arith.constant 0 : i1
     %b = arc.constant 66 : ui64
     "arc.if"(%a) ( {
       "arc.block.result"() : () -> ()

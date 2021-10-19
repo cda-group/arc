@@ -23,8 +23,10 @@
 
 #include <llvm/ADT/StringSwitch.h>
 #include <llvm/Support/raw_ostream.h>
+#include <mlir/Dialect/Arithmetic/IR/Arithmetic.h>
 #include <mlir/Dialect/CommonFolders.h>
 #include <mlir/Dialect/SCF/SCF.h>
+#include <mlir/Dialect/StandardOps/IR/Ops.h>
 #include <mlir/IR/Builders.h>
 #include <mlir/IR/BuiltinTypes.h>
 #include <mlir/IR/DialectImplementation.h>
@@ -178,9 +180,18 @@ OpFoldResult ConstantIntOp::fold(ArrayRef<Attribute> operands) {
 /// the desired resultant type. Stolen from the standard dialect.
 Operation *ArcDialect::materializeConstant(OpBuilder &builder, Attribute value,
                                            Type type, Location loc) {
+
   if (type.isSignedInteger() || type.isUnsignedInteger())
     return builder.create<ConstantIntOp>(loc, type, value);
-  return nullptr; // Let the standard dialect handle this
+
+  if (arith::ConstantOp::isBuildableWith(value, type))
+    return builder.create<arith::ConstantOp>(loc, type, value);
+
+  if (mlir::ConstantOp::isBuildableWith(value, type))
+
+    return builder.create<ConstantOp>(loc, value, type);
+
+  return nullptr;
 }
 
 //===----------------------------------------------------------------------===//
@@ -219,7 +230,7 @@ OpFoldResult arc::CmpIOp::fold(ArrayRef<Attribute> operands) {
   bool isUnsigned = operands[0].getType().isUnsignedInteger();
   auto val = applyCmpPredicate(getPredicate(), isUnsigned, lhs.getValue(),
                                rhs.getValue());
-  return IntegerAttr::get(IntegerType::get(getContext(), 1), APInt(1, val));
+  return BoolAttr::get(getContext(), val);
 }
 
 //===----------------------------------------------------------------------===//

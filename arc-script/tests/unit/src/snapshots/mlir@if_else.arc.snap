@@ -1,13 +1,13 @@
 ---
-source: arc-script-test/compile/src/insta.rs
+source: tests/unit/src/insta.rs
 expression: s
-input_file: arc-script-test/compile/src/tests/expect_pass/if_else.arc
+input_file: tests/unit/src/tests/expect_pass/if_else.arc
 
 ---
 module @toplevel {
     func @crate_test() -> si32 {
-        %x_0 = constant true
-        %x_1 = constant false
+        %x_0 = arith.constant true
+        %x_1 = arith.constant false
         %x_2 = arc.constant 3 : si32
         %x_5 = "arc.if"(%x_0) ({
             %x_3 = "arc.if"(%x_1) ({

@@ -49,7 +49,7 @@ module @toplevel {
 	                       state2 : !arc.arcon.appender<!arc.struct<i : si32, f : f32>>,
 			       state3 : !arc.arcon.map<ui64, !arc.struct<i : si32, f : f32>>>) -> !arc.arcon.value<!arc.struct<i : si32, f : f32>>
 	  %i = arc.constant 4 : si32
-	  %f = constant 3.14 : f32
+	  %f = arith.constant 3.14 : f32
 	  %s = arc.make_struct(%f, %i : f32, si32) : !arc.struct<f : f32, i : si32>
 	  // expected-error@+2 {{'arc.value_write' op Can't write a value of type '!arc.struct<f : f32, i : si32>' to a state value of type'!arc.struct<i : si32, f : f32>'}}
 	   // expected-note@+1 {{see current operation:}}
@@ -115,7 +115,7 @@ module @toplevel {
 	   %output0: !arc.stream<!arc.struct<i : si32, f : f32>>):
 
 	  %i = arc.constant 4 : si32
-	  %f = constant 3.14 : f32
+	  %f = arith.constant 3.14 : f32
 	  %s = arc.make_struct(%f, %i : f32, si32) : !arc.struct<f : f32, i : si32>
 	  %state2 = "arc.struct_access"(%state) { field = "state2" } : (!arc.struct<state1 : !arc.arcon.value<!arc.struct<i : si32, f : f32>>,
 	                       state2 : !arc.arcon.appender<!arc.struct<i : si32, f : f32>>,
@@ -158,7 +158,7 @@ module @toplevel {
 	                       state2 : !arc.arcon.appender<!arc.struct<i : si32, f : f32>>,
 			       state3 : !arc.arcon.map<ui64, !arc.struct<i : si32, f : f32>>>) -> !arc.arcon.value<!arc.struct<i : si32, f : f32>>
 	  %i = arc.constant 4 : si32
-	  %f = constant 3.14 : f32
+	  %f = arith.constant 3.14 : f32
 	  %s = arc.make_struct(%i, %f : si32, f32) : !arc.struct<i : si32, f : f32>
 	  "arc.value_write"(%state1, %s) : (!arc.arcon.value<!arc.struct<i : si32, f : f32>>, !arc.struct<i : si32, f : f32>) -> ()
 	  %sr = "arc.value_read"(%state1) : (!arc.arcon.value<!arc.struct<i : si32, f : f32>>) -> !arc.struct<i : si32, f : f32>
@@ -206,7 +206,7 @@ module @toplevel {
 	                       state2 : !arc.arcon.appender<!arc.struct<i : si32, f : f32>>,
 			       state3 : !arc.arcon.map<ui64, !arc.struct<i : si32, f : f32>>>) -> !arc.arcon.value<!arc.struct<i : si32, f : f32>>
 	  %i = arc.constant 4 : si32
-	  %f = constant 3.14 : f32
+	  %f = arith.constant 3.14 : f32
 	  %s = arc.make_struct(%i, %f : si32, f32) : !arc.struct<i : si32, f : f32>
 	  "arc.value_write"(%state1, %s) : (!arc.arcon.value<!arc.struct<i : si32, f : f32>>, !arc.struct<i : si32, f : f32>) -> ()
 	  %sr = "arc.value_read"(%state1) : (!arc.arcon.value<!arc.struct<i : si32, f : f32>>) -> !arc.struct<i : si32, f : f32>
@@ -255,7 +255,7 @@ module @toplevel {
 	                       state2 : !arc.arcon.appender<!arc.struct<i : si32, f : f32>>,
 			       state3 : !arc.arcon.map<ui64, !arc.struct<i : si32, f : f32>>>) -> !arc.arcon.value<!arc.struct<i : si32, f : f32>>
 	  %i = arc.constant 4 : si32
-	  %f = constant 3.14 : f32
+	  %f = arith.constant 3.14 : f32
 	  %s = arc.make_struct(%i, %f : si32, f32) : !arc.struct<i : si32, f : f32>
 	  "arc.value_write"(%state1, %s) : (!arc.arcon.value<!arc.struct<i : si32, f : f32>>, !arc.struct<i : si32, f : f32>) -> ()
 	  %sr = "arc.value_read"(%state1) : (!arc.arcon.value<!arc.struct<i : si32, f : f32>>) -> !arc.struct<i : si32, f : f32>
@@ -304,7 +304,7 @@ module @toplevel {
 	                       state2 : !arc.arcon.appender<!arc.struct<i : si32, f : f32>>,
 			       state3 : !arc.arcon.map<ui64, !arc.struct<i : si32, f : f32>>>) -> !arc.arcon.value<!arc.struct<i : si32, f : f32>>
 	  %i = arc.constant 4 : si32
-	  %f = constant 3.14 : f32
+	  %f = arith.constant 3.14 : f32
 	  %s = arc.make_struct(%i, %f : si32, f32) : !arc.struct<i : si32, f : f32>
 	  "arc.value_write"(%state1, %s) : (!arc.arcon.value<!arc.struct<i : si32, f : f32>>, !arc.struct<i : si32, f : f32>) -> ()
 	  %sr = "arc.value_read"(%state1) : (!arc.arcon.value<!arc.struct<i : si32, f : f32>>) -> !arc.struct<i : si32, f : f32>
@@ -326,7 +326,7 @@ module @toplevel {
 
   func @FoldFun(f32, si32) -> f32 {
   ^bb0(%a: f32, %b : si32):
-    %f = constant 3.14 : f32
+    %f = arith.constant 3.14 : f32
     return %f : f32
   }
 
@@ -353,7 +353,7 @@ module @toplevel {
 	                       state2 : !arc.arcon.appender<!arc.struct<i : si32, f : f32>>,
 			       state3 : !arc.arcon.map<ui64, !arc.struct<i : si32, f : f32>>>) -> !arc.arcon.value<!arc.struct<i : si32, f : f32>>
 	  %i = arc.constant 4 : si32
-	  %f = constant 3.14 : f32
+	  %f = arith.constant 3.14 : f32
 	  %s = arc.make_struct(%i, %f : si32, f32) : !arc.struct<i : si32, f : f32>
 	  "arc.value_write"(%state1, %s) : (!arc.arcon.value<!arc.struct<i : si32, f : f32>>, !arc.struct<i : si32, f : f32>) -> ()
 	  %sr = "arc.value_read"(%state1) : (!arc.arcon.value<!arc.struct<i : si32, f : f32>>) -> !arc.struct<i : si32, f : f32>
@@ -375,7 +375,7 @@ module @toplevel {
 
   func @FoldFun(f32, !arc.struct<i : si32, f : f32>) -> f32 {
   ^bb0(%a: f32, %b : !arc.struct<i : si32, f : f32>):
-    %f = constant 3.14 : f32
+    %f = arith.constant 3.14 : f32
     return %f : f32
   }
 
@@ -399,7 +399,7 @@ module @toplevel {
 	   %output0: !arc.stream<!arc.struct<i : si32, f : f32>>):
 	  "arc.emit"(%input, %output0) : (!arc.struct<i : si32, f : f32>, !arc.stream<!arc.struct<i : si32, f : f32>>) -> ()
 	  %i = arc.constant 4 : si32
-	  %f = constant 3.14 : f32
+	  %f = arith.constant 3.14 : f32
 	  %s = arc.make_struct(%i, %f : si32, f32) : !arc.struct<i : si32, f : f32>
 
 	  %state3 = "arc.struct_access"(%state) { field = "state3" } : (!arc.struct<state1 : !arc.arcon.value<!arc.struct<i : si32, f : f32>>,
@@ -419,7 +419,7 @@ module @toplevel {
 
   func @FoldFun(f32, !arc.struct<i : si32, f : f32>) -> f32 {
   ^bb0(%a: f32, %b : !arc.struct<i : si32, f : f32>):
-    %f = constant 3.14 : f32
+    %f = arith.constant 3.14 : f32
     return %f : f32
   }
 
@@ -444,7 +444,7 @@ module @toplevel {
 	  "arc.emit"(%input, %output0) : (!arc.struct<i : si32, f : f32>, !arc.stream<!arc.struct<i : si32, f : f32>>) -> ()
 	  %i = arc.constant 4 : si32
   	  %u = arc.constant 8 : ui64
-	  %f = constant 3.14 : f32
+	  %f = arith.constant 3.14 : f32
 	  %s = arc.make_struct(%i, %f : si32, f32) : !arc.struct<i : si32, f : f32>
 
 	  %state3 = "arc.struct_access"(%state) { field = "state3" } : (!arc.struct<state1 : !arc.arcon.value<!arc.struct<i : si32, f : f32>>,
@@ -464,7 +464,7 @@ module @toplevel {
 
   func @FoldFun(f32, !arc.struct<i : si32, f : f32>) -> f32 {
   ^bb0(%a: f32, %b : !arc.struct<i : si32, f : f32>):
-    %f = constant 3.14 : f32
+    %f = arith.constant 3.14 : f32
     return %f : f32
   }
 
@@ -489,7 +489,7 @@ module @toplevel {
 	  "arc.emit"(%input, %output0) : (!arc.struct<i : si32, f : f32>, !arc.stream<!arc.struct<i : si32, f : f32>>) -> ()
 	  %i = arc.constant 4 : si32
 	  %u = arc.constant 8 : ui64
-	  %f = constant 3.14 : f32
+	  %f = arith.constant 3.14 : f32
 	  %s = arc.make_struct(%i, %f : si32, f32) : !arc.struct<i : si32, f : f32>
 	  %state3 = "arc.struct_access"(%state) { field = "state3" } : (!arc.struct<state1 : !arc.arcon.value<!arc.struct<i : si32, f : f32>>,
 	                       state2 : !arc.arcon.appender<!arc.struct<i : si32, f : f32>>,
@@ -508,7 +508,7 @@ module @toplevel {
 
   func @FoldFun(f32, !arc.struct<i : si32, f : f32>) -> f32 {
   ^bb0(%a: f32, %b : !arc.struct<i : si32, f : f32>):
-    %f = constant 3.14 : f32
+    %f = arith.constant 3.14 : f32
     return %f : f32
   }
 
@@ -533,7 +533,7 @@ module @toplevel {
 	  "arc.emit"(%input, %output0) : (!arc.struct<i : si32, f : f32>, !arc.stream<!arc.struct<i : si32, f : f32>>) -> ()
 	  %i = arc.constant 4 : si32
 	  %u = arc.constant 8 : ui64
-	  %f = constant 3.14 : f32
+	  %f = arith.constant 3.14 : f32
 	  %s = arc.make_struct(%i, %f : si32, f32) : !arc.struct<i : si32, f : f32>
 	  %state3 = "arc.struct_access"(%state) { field = "state3" } : (!arc.struct<state1 : !arc.arcon.value<!arc.struct<i : si32, f : f32>>,
 	                       state2 : !arc.arcon.appender<!arc.struct<i : si32, f : f32>>,
@@ -551,7 +551,7 @@ module @toplevel {
 
   func @FoldFun(f32, !arc.struct<i : si32, f : f32>) -> f32 {
   ^bb0(%a: f32, %b : !arc.struct<i : si32, f : f32>):
-    %f = constant 3.14 : f32
+    %f = arith.constant 3.14 : f32
     return %f : f32
   }
 
@@ -576,7 +576,7 @@ module @toplevel {
 	  "arc.emit"(%input, %output0) : (!arc.struct<i : si32, f : f32>, !arc.stream<!arc.struct<i : si32, f : f32>>) -> ()
 	  %i = arc.constant 4 : si32
 	  %u = arc.constant 8 : ui64
-	  %f = constant 3.14 : f32
+	  %f = arith.constant 3.14 : f32
 	  %s = arc.make_struct(%i, %f : si32, f32) : !arc.struct<i : si32, f : f32>
 	  %state3 = "arc.struct_access"(%state) { field = "state3" } : (!arc.struct<state1 : !arc.arcon.value<!arc.struct<i : si32, f : f32>>,
 	                       state2 : !arc.arcon.appender<!arc.struct<i : si32, f : f32>>,
@@ -595,7 +595,7 @@ module @toplevel {
 
   func @FoldFun(f32, !arc.struct<i : si32, f : f32>) -> f32 {
   ^bb0(%a: f32, %b : !arc.struct<i : si32, f : f32>):
-    %f = constant 3.14 : f32
+    %f = arith.constant 3.14 : f32
     return %f : f32
   }
 
@@ -620,7 +620,7 @@ module @toplevel {
 	  "arc.emit"(%input, %output0) : (!arc.struct<i : si32, f : f32>, !arc.stream<!arc.struct<i : si32, f : f32>>) -> ()
 	  %i = arc.constant 4 : si32
 	  %u = arc.constant 8 : ui64
-	  %f = constant 3.14 : f32
+	  %f = arith.constant 3.14 : f32
 	  %s = arc.make_struct(%i, %f : si32, f32) : !arc.struct<i : si32, f : f32>
 	  %state3 = "arc.struct_access"(%state) { field = "state3" } : (!arc.struct<state1 : !arc.arcon.value<!arc.struct<i : si32, f : f32>>,
 	                       state2 : !arc.arcon.appender<!arc.struct<i : si32, f : f32>>,

@@ -1,10 +1,10 @@
 // RUN: arc-mlir --canonicalize %s | FileCheck %s
 module @toplevel {
   func @main(%arg0 : ui64) {
-    %true = constant 1 : i1
-    %false = constant 0 : i1
-    // CHECK-DAG: [[TRUE:%[^ ]+]] = constant true
-    // CHECK-DAG: [[FALSE:%[^ ]+]] = constant false
+    %true = arith.constant 1 : i1
+    %false = arith.constant 0 : i1
+    // CHECK-DAG: [[TRUE:%[^ ]+]] = arith.constant true
+    // CHECK-DAG: [[FALSE:%[^ ]+]] = arith.constant false
     %smaller_si8 = arc.constant -64 : si8
     %larger_si8 = arc.constant 64 : si8
     %smaller_ui8 = arc.constant 28 : ui8

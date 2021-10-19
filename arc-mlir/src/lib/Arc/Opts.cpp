@@ -23,6 +23,7 @@
 
 #include "Arc/Arc.h"
 #include <llvm/Support/raw_ostream.h>
+#include <mlir/Dialect/Arithmetic/IR/Arithmetic.h>
 #include <mlir/Dialect/StandardOps/IR/Ops.h>
 #include <mlir/IR/BlockAndValueMapping.h>
 #include <mlir/IR/Matchers.h>
@@ -37,7 +38,7 @@ namespace {
 bool AllValuesAreConstant(Operation::operand_range &ops) {
   for (const mlir::Value &a : ops) {
     Operation *op = a.getDefiningOp();
-    if (!op || !isa<ConstantOp>(op)) // function arguments have no defining op
+    if (!op || (!isa<arith::ConstantOp>(op) && !isa<ConstantOp>(op)))
       return false;
   }
   return true;
@@ -48,9 +49,15 @@ ConstantValuesToDenseAttributes(mlir::OpResult result,
                                 Operation::operand_range &ops) {
   ShapedType st = result.getType().cast<ShapedType>();
   std::vector<Attribute> attribs;
+
   for (const mlir::Value &a : ops) {
-    ConstantOp def = cast<ConstantOp>(a.getDefiningOp());
-    attribs.push_back(def.getValue());
+    if (isa<ConstantOp>(a.getDefiningOp())) {
+      ConstantOp def = cast<ConstantOp>(a.getDefiningOp());
+      attribs.push_back(def.getValue());
+    } else {
+      arith::ConstantOp def = cast<arith::ConstantOp>(a.getDefiningOp());
+      attribs.push_back(def.value());
+    }
   }
   return DenseElementsAttr::get(st, llvm::makeArrayRef(attribs));
 }
@@ -63,10 +70,10 @@ struct ConstantFoldIf : public mlir::OpRewritePattern<arc::IfOp> {
   matchAndRewrite(arc::IfOp op, PatternRewriter &rewriter) const override {
     Operation *def = op.getOperand().getDefiningOp();
 
-    if (!def || !isa<ConstantOp>(def))
+    if (!def || !isa<arith::ConstantOp>(def))
       return failure();
 
-    int64_t cond = cast<mlir::ConstantIntOp>(def).getValue();
+    int64_t cond = cast<arith::ConstantIntOp>(def).value();
     Region &region = cond ? op.thenRegion() : op.elseRegion();
     Block &block = region.getBlocks().front();
 
@@ -141,7 +148,7 @@ struct ConstantFoldEnumCheck : public mlir::OpRewritePattern<arc::EnumCheckOp> {
     if (!me)
       return failure();
 
-    mlir::ConstantIntOp isTrue = rewriter.create<mlir::ConstantIntOp>(
+    arith::ConstantIntOp isTrue = rewriter.create<arith::ConstantIntOp>(
         op.getLoc(), me.variant().equals(op.variant()), 1);
     Value r = isTrue;
     rewriter.replaceOp(op, r);

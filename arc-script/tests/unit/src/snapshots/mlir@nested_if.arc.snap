@@ -1,7 +1,7 @@
 ---
-source: arc-script-test/compile/src/insta.rs
+source: tests/unit/src/insta.rs
 expression: s
-input_file: arc-script-test/compile/src/tests/expect_pass/nested_if.arc
+input_file: tests/unit/src/tests/expect_pass/nested_if.arc
 
 ---
 module @toplevel {
@@ -9,8 +9,8 @@ module @toplevel {
         %x_0 = arc.constant 65 : si32
         %x_1 = arc.constant 66 : si32
         %x_2 = arc.constant 67 : si32
-        %x_3 = constant true
-        %x_4 = constant false
+        %x_3 = arith.constant true
+        %x_4 = arith.constant false
         %x_6 = "arc.if"(%x_3) ({
             "arc.block.result"(%x_0) : (si32) -> ()
         },{

@@ -1,12 +1,12 @@
 ---
-source: arc-script-test/compile/src/insta.rs
+source: tests/unit/src/insta.rs
 expression: s
-input_file: arc-script-test/compile/src/tests/expect_pass/binops.arc
+input_file: tests/unit/src/tests/expect_pass/binops.arc
 
 ---
 module @toplevel {
     func @crate_main() -> () {
-        %x_0 = constant true
+        %x_0 = arith.constant true
         %x_1 = arc.constant 127 : si8
         %x_2 = arc.constant 32767 : si16
         %x_3 = arc.constant 2147483647 : si32
@@ -15,8 +15,8 @@ module @toplevel {
         %x_6 = arc.constant 65535 : ui16
         %x_7 = arc.constant 4294967295 : ui32
         %x_8 = arc.constant 18446744073709551615 : ui64
-        %x_9 = constant 3.4028235e38 : f32
-        %x_A = constant 1.7976931348623157e308 : f64
+        %x_9 = arith.constant 3.4028235e38 : f32
+        %x_A = arith.constant 1.7976931348623157e308 : f64
         %x_B = arc.constant 126 : si8
         %x_C = arc.constant 32766 : si16
         %x_D = arc.constant 2147483646 : si32
@@ -25,8 +25,8 @@ module @toplevel {
         %x_G = arc.constant 65534 : ui16
         %x_H = arc.constant 4294967294 : ui32
         %x_I = arc.constant 18446744073709551614 : ui64
-        %x_J = constant 3.4028235e37 : f32
-        %x_K = constant 1.7976931348623155e308 : f64
+        %x_J = arith.constant 3.4028235e37 : f32
+        %x_K = arith.constant 1.7976931348623155e308 : f64
         %x_L = arc.addi %x_1, %x_1 : si8
         %x_M = arc.addi %x_2, %x_2 : si16
         %x_N = arc.addi %x_3, %x_3 : si32
@@ -35,8 +35,8 @@ module @toplevel {
         %x_Q = arc.addi %x_6, %x_6 : ui16
         %x_R = arc.addi %x_7, %x_7 : ui32
         %x_S = arc.addi %x_8, %x_8 : ui64
-        %x_T = addf %x_9, %x_9 : f32
-        %x_U = addf %x_A, %x_A : f64
+        %x_T = arith.addf %x_9, %x_9 : f32
+        %x_U = arith.addf %x_A, %x_A : f64
         %x_V = arc.subi %x_1, %x_1 : si8
         %x_W = arc.subi %x_2, %x_2 : si16
         %x_X = arc.subi %x_3, %x_3 : si32
@@ -45,8 +45,8 @@ module @toplevel {
         %x_a = arc.subi %x_6, %x_6 : ui16
         %x_b = arc.subi %x_7, %x_7 : ui32
         %x_c = arc.subi %x_8, %x_8 : ui64
-        %x_d = subf %x_9, %x_9 : f32
-        %x_e = subf %x_A, %x_A : f64
+        %x_d = arith.subf %x_9, %x_9 : f32
+        %x_e = arith.subf %x_A, %x_A : f64
         %x_f = arc.muli %x_1, %x_1 : si8
         %x_g = arc.muli %x_2, %x_2 : si16
         %x_h = arc.muli %x_3, %x_3 : si32
@@ -55,8 +55,8 @@ module @toplevel {
         %x_k = arc.muli %x_6, %x_6 : ui16
         %x_l = arc.muli %x_7, %x_7 : ui32
         %x_m = arc.muli %x_8, %x_8 : ui64
-        %x_n = mulf %x_9, %x_9 : f32
-        %x_o = mulf %x_A, %x_A : f64
+        %x_n = arith.mulf %x_9, %x_9 : f32
+        %x_o = arith.mulf %x_A, %x_A : f64
         %x_p = arc.divi %x_1, %x_1 : si8
         %x_q = arc.divi %x_2, %x_2 : si16
         %x_r = arc.divi %x_3, %x_3 : si32
@@ -65,8 +65,8 @@ module @toplevel {
         %x_u = arc.divi %x_6, %x_6 : ui16
         %x_v = arc.divi %x_7, %x_7 : ui32
         %x_w = arc.divi %x_8, %x_8 : ui64
-        %x_x = divf %x_9, %x_9 : f32
-        %x_y = divf %x_A, %x_A : f64
+        %x_x = arith.divf %x_9, %x_9 : f32
+        %x_y = arith.divf %x_A, %x_A : f64
         %x_z = arc.remi %x_1, %x_1 : si8
         %x__0 = arc.remi %x_2, %x_2 : si16
         %x__1 = arc.remi %x_3, %x_3 : si32
@@ -75,8 +75,8 @@ module @toplevel {
         %x__4 = arc.remi %x_6, %x_6 : ui16
         %x__5 = arc.remi %x_7, %x_7 : ui32
         %x__6 = arc.remi %x_8, %x_8 : ui64
-        %x__7 = remf %x_9, %x_9 : f32
-        %x__8 = remf %x_A, %x_A : f64
+        %x__7 = arith.remf %x_9, %x_9 : f32
+        %x__8 = arith.remf %x_A, %x_A : f64
         %x__9 = arc.cmpi lt, %x_1, %x_1 : si8
         %x__A = arc.cmpi lt, %x_2, %x_2 : si16
         %x__B = arc.cmpi lt, %x_3, %x_3 : si32
@@ -85,8 +85,8 @@ module @toplevel {
         %x__E = arc.cmpi lt, %x_6, %x_6 : ui16
         %x__F = arc.cmpi lt, %x_7, %x_7 : ui32
         %x__G = arc.cmpi lt, %x_8, %x_8 : ui64
-        %x__H = cmpf olt, %x_9, %x_9 : f32
-        %x__I = cmpf olt, %x_A, %x_A : f64
+        %x__H = arith.cmpf olt, %x_9, %x_9 : f32
+        %x__I = arith.cmpf olt, %x_A, %x_A : f64
         %x__J = arc.cmpi le, %x_1, %x_1 : si8
         %x__K = arc.cmpi le, %x_2, %x_2 : si16
         %x__L = arc.cmpi le, %x_3, %x_3 : si32
@@ -95,8 +95,8 @@ module @toplevel {
         %x__O = arc.cmpi le, %x_6, %x_6 : ui16
         %x__P = arc.cmpi le, %x_7, %x_7 : ui32
         %x__Q = arc.cmpi le, %x_8, %x_8 : ui64
-        %x__R = cmpf ole, %x_9, %x_9 : f32
-        %x__S = cmpf ole, %x_A, %x_A : f64
+        %x__R = arith.cmpf ole, %x_9, %x_9 : f32
+        %x__S = arith.cmpf ole, %x_A, %x_A : f64
         %x__T = arc.cmpi gt, %x_1, %x_1 : si8
         %x__U = arc.cmpi gt, %x_2, %x_2 : si16
         %x__V = arc.cmpi gt, %x_3, %x_3 : si32
@@ -105,8 +105,8 @@ module @toplevel {
         %x__Y = arc.cmpi gt, %x_6, %x_6 : ui16
         %x__Z = arc.cmpi gt, %x_7, %x_7 : ui32
         %x__a = arc.cmpi gt, %x_8, %x_8 : ui64
-        %x__b = cmpf ogt, %x_9, %x_9 : f32
-        %x__c = cmpf ogt, %x_A, %x_A : f64
+        %x__b = arith.cmpf ogt, %x_9, %x_9 : f32
+        %x__c = arith.cmpf ogt, %x_A, %x_A : f64
         %x__d = arc.cmpi ge, %x_1, %x_1 : si8
         %x__e = arc.cmpi ge, %x_2, %x_2 : si16
         %x__f = arc.cmpi ge, %x_3, %x_3 : si32
@@ -115,9 +115,9 @@ module @toplevel {
         %x__i = arc.cmpi ge, %x_6, %x_6 : ui16
         %x__j = arc.cmpi ge, %x_7, %x_7 : ui32
         %x__k = arc.cmpi ge, %x_8, %x_8 : ui64
-        %x__l = cmpf oge, %x_9, %x_9 : f32
-        %x__m = cmpf oge, %x_A, %x_A : f64
-        %x__n = cmpi eq, %x_0, %x_0 : i1
+        %x__l = arith.cmpf oge, %x_9, %x_9 : f32
+        %x__m = arith.cmpf oge, %x_A, %x_A : f64
+        %x__n = arith.cmpi eq, %x_0, %x_0 : i1
         %x__o = arc.cmpi eq, %x_1, %x_1 : si8
         %x__p = arc.cmpi eq, %x_2, %x_2 : si16
         %x__q = arc.cmpi eq, %x_3, %x_3 : si32
@@ -126,9 +126,9 @@ module @toplevel {
         %x__t = arc.cmpi eq, %x_6, %x_6 : ui16
         %x__u = arc.cmpi eq, %x_7, %x_7 : ui32
         %x__v = arc.cmpi eq, %x_8, %x_8 : ui64
-        %x__w = cmpf oeq, %x_9, %x_9 : f32
-        %x__x = cmpf oeq, %x_A, %x_A : f64
-        %x__y = cmpi ne, %x_0, %x_0 : i1
+        %x__w = arith.cmpf oeq, %x_9, %x_9 : f32
+        %x__x = arith.cmpf oeq, %x_A, %x_A : f64
+        %x__y = arith.cmpi ne, %x_0, %x_0 : i1
         %x__z = arc.cmpi ne, %x_1, %x_1 : si8
         %x___0 = arc.cmpi ne, %x_2, %x_2 : si16
         %x___1 = arc.cmpi ne, %x_3, %x_3 : si32
@@ -137,11 +137,11 @@ module @toplevel {
         %x___4 = arc.cmpi ne, %x_6, %x_6 : ui16
         %x___5 = arc.cmpi ne, %x_7, %x_7 : ui32
         %x___6 = arc.cmpi ne, %x_8, %x_8 : ui64
-        %x___7 = cmpf one, %x_9, %x_9 : f32
-        %x___8 = cmpf one, %x_A, %x_A : f64
-        %x___9 = and %x_0, %x_0 : i1
-        %x___A = or %x_0, %x_0 : i1
-        %x___B = xor %x_0, %x_0 : i1
+        %x___7 = arith.cmpf one, %x_9, %x_9 : f32
+        %x___8 = arith.cmpf one, %x_A, %x_A : f64
+        %x___9 = arith.andi %x_0, %x_0 : i1
+        %x___A = arith.ori %x_0, %x_0 : i1
+        %x___B = arith.xori %x_0, %x_0 : i1
         %x___C = arc.and %x_1, %x_1 : si8
         %x___D = arc.and %x_2, %x_2 : si16
         %x___E = arc.and %x_3, %x_3 : si32

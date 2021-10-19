@@ -12,8 +12,8 @@ module @arctorusttuples {
   }
 
   func @bool_tuple() -> i1 {
-    %a = constant 0 : i1
-    %b = constant 1 : i1
+    %a = arith.constant 0 : i1
+    %b = arith.constant 1 : i1
 
     %tuple = "arc.make_tuple"(%a, %b) : (i1, i1) -> tuple<i1,i1>
     %elem = "arc.index_tuple"(%tuple) { index = 0 } : (tuple<i1,i1>) -> i1

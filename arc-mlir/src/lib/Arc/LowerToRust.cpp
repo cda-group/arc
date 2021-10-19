@@ -18,6 +18,7 @@
 #include "mlir/IR/MLIRContext.h"
 #include "mlir/Support/LLVM.h"
 #include "mlir/Support/LogicalResult.h"
+#include <mlir/Dialect/Arithmetic/IR/Arithmetic.h>
 #include <mlir/Dialect/Math/IR/Math.h>
 #include <mlir/Dialect/SCF/SCF.h>
 #include <mlir/Dialect/StandardOps/IR/Ops.h>
@@ -195,23 +196,21 @@ private:
   RustTypeConverter &TypeConverter;
 };
 
-struct StdConstantOpLowering : public ConversionPattern {
+struct ArithConstantOpLowering : public ConversionPattern {
 
-  StdConstantOpLowering(MLIRContext *ctx, RustTypeConverter &typeConverter)
-      : ConversionPattern(mlir::ConstantOp::getOperationName(), 1, ctx),
+  ArithConstantOpLowering(MLIRContext *ctx, RustTypeConverter &typeConverter)
+      : ConversionPattern(arith::ConstantOp::getOperationName(), 1, ctx),
         TypeConverter(typeConverter) {}
 
   LogicalResult
   matchAndRewrite(Operation *op, ArrayRef<Value> operands,
                   ConversionPatternRewriter &rewriter) const final {
-    mlir::ConstantOp cOp = cast<mlir::ConstantOp>(op);
-    Attribute attr = cOp.getValue();
+    arith::ConstantOp cOp = cast<arith::ConstantOp>(op);
+    Attribute attr = cOp.value();
     if (attr.isa<FloatAttr>())
       return convertFloat(cOp, rewriter);
     if (attr.isa<IntegerAttr>())
       return convertInteger(cOp, rewriter);
-    if (attr.isa<SymbolRefAttr>())
-      return convertSymbolRef(cOp, rewriter);
     op->emitError("unhandled constant type");
     return failure();
   };
@@ -225,9 +224,9 @@ private:
     return success();
   }
 
-  LogicalResult convertFloat(mlir::ConstantOp op,
+  LogicalResult convertFloat(arith::ConstantOp op,
                              ConversionPatternRewriter &rewriter) const {
-    FloatAttr attr = op.getValue().cast<FloatAttr>();
+    FloatAttr attr = op.value().cast<FloatAttr>();
     Type ty = attr.getType();
     Type rustTy = TypeConverter.convertType(ty);
     APFloat f = attr.getValue();
@@ -265,9 +264,9 @@ private:
     return returnResult(op, rustTy, cst, rewriter);
   }
 
-  LogicalResult convertInteger(mlir::ConstantOp op,
+  LogicalResult convertInteger(arith::ConstantOp op,
                                ConversionPatternRewriter &rewriter) const {
-    IntegerAttr attr = op.getValue().cast<IntegerAttr>();
+    IntegerAttr attr = op.value().cast<IntegerAttr>();
     IntegerType ty = attr.getType().cast<IntegerType>();
     Type rustTy = TypeConverter.convertType(ty);
     APInt v = attr.getValue();
@@ -281,6 +280,33 @@ private:
       op.emitError("unhandled constant integer width");
       return failure();
     }
+  }
+};
+
+struct StdConstantOpLowering : public ConversionPattern {
+
+  StdConstantOpLowering(MLIRContext *ctx, RustTypeConverter &typeConverter)
+      : ConversionPattern(mlir::ConstantOp::getOperationName(), 1, ctx),
+        TypeConverter(typeConverter) {}
+
+  LogicalResult
+  matchAndRewrite(Operation *op, ArrayRef<Value> operands,
+                  ConversionPatternRewriter &rewriter) const final {
+    mlir::ConstantOp cOp = cast<mlir::ConstantOp>(op);
+    Attribute attr = cOp.getValue();
+    if (attr.isa<SymbolRefAttr>())
+      return convertSymbolRef(cOp, rewriter);
+    op->emitError("unhandled constant type");
+    return failure();
+  };
+
+private:
+  RustTypeConverter &TypeConverter;
+
+  LogicalResult returnResult(Operation *op, Type ty, StringRef value,
+                             ConversionPatternRewriter &rewriter) const {
+    rewriter.replaceOpWithNewOp<rust::RustConstantOp>(op, ty, value);
+    return success();
   }
 
   LogicalResult convertSymbolRef(mlir::ConstantOp op,
@@ -701,32 +727,32 @@ private:
 
 struct StdCmpFOpLowering : public ConversionPattern {
   StdCmpFOpLowering(MLIRContext *ctx, RustTypeConverter &typeConverter)
-      : ConversionPattern(mlir::CmpFOp::getOperationName(), 1, ctx),
+      : ConversionPattern(mlir::arith::CmpFOp::getOperationName(), 1, ctx),
         TypeConverter(typeConverter) {}
 
   LogicalResult
   matchAndRewrite(Operation *op, ArrayRef<Value> operands,
                   ConversionPatternRewriter &rewriter) const final {
-    mlir::CmpFOp o = cast<mlir::CmpFOp>(op);
+    mlir::arith::CmpFOp o = cast<mlir::arith::CmpFOp>(op);
     Type rustTy = TypeConverter.convertType(o.getType());
     const char *cmpOp = NULL;
     switch (o.getPredicate()) {
-    case CmpFPredicate::OEQ:
+    case mlir::arith::CmpFPredicate::OEQ:
       cmpOp = "==";
       break;
-    case CmpFPredicate::ONE:
+    case mlir::arith::CmpFPredicate::ONE:
       cmpOp = "!=";
       break;
-    case CmpFPredicate::OLT:
+    case mlir::arith::CmpFPredicate::OLT:
       cmpOp = "<";
       break;
-    case CmpFPredicate::OLE:
+    case mlir::arith::CmpFPredicate::OLE:
       cmpOp = "<=";
       break;
-    case CmpFPredicate::OGT:
+    case mlir::arith::CmpFPredicate::OGT:
       cmpOp = ">";
       break;
-    case CmpFPredicate::OGE:
+    case mlir::arith::CmpFPredicate::OGE:
       cmpOp = ">=";
       break;
     default:
@@ -1069,6 +1095,7 @@ void ArcToRustLoweringPass::runOnOperation() {
   patterns.insert<ArcReturnOpLowering>(&getContext());
   patterns.insert<FuncOpLowering>(&getContext(), typeConverter);
   patterns.insert<StdConstantOpLowering>(&getContext(), typeConverter);
+  patterns.insert<ArithConstantOpLowering>(&getContext(), typeConverter);
   patterns.insert<ConstantIntOpLowering>(&getContext(), typeConverter);
 
   patterns.insert<
@@ -1096,21 +1123,21 @@ void ArcToRustLoweringPass::runOnOperation() {
       ArcIntArithmeticOpLowering<arc::XOrOp, ArcIntArithmeticOp::XOrOp>>(
       &getContext(), typeConverter);
 
-  patterns
-      .insert<StdArithmeticOpLowering<mlir::AddFOp, StdArithmeticOp::AddFOp>>(
-          &getContext(), typeConverter);
-  patterns
-      .insert<StdArithmeticOpLowering<mlir::DivFOp, StdArithmeticOp::DivFOp>>(
-          &getContext(), typeConverter);
-  patterns
-      .insert<StdArithmeticOpLowering<mlir::MulFOp, StdArithmeticOp::MulFOp>>(
-          &getContext(), typeConverter);
-  patterns
-      .insert<StdArithmeticOpLowering<mlir::SubFOp, StdArithmeticOp::SubFOp>>(
-          &getContext(), typeConverter);
-  patterns
-      .insert<StdArithmeticOpLowering<mlir::RemFOp, StdArithmeticOp::RemFOp>>(
-          &getContext(), typeConverter);
+  patterns.insert<
+      StdArithmeticOpLowering<mlir::arith::AddFOp, StdArithmeticOp::AddFOp>>(
+      &getContext(), typeConverter);
+  patterns.insert<
+      StdArithmeticOpLowering<mlir::arith::DivFOp, StdArithmeticOp::DivFOp>>(
+      &getContext(), typeConverter);
+  patterns.insert<
+      StdArithmeticOpLowering<mlir::arith::MulFOp, StdArithmeticOp::MulFOp>>(
+      &getContext(), typeConverter);
+  patterns.insert<
+      StdArithmeticOpLowering<mlir::arith::SubFOp, StdArithmeticOp::SubFOp>>(
+      &getContext(), typeConverter);
+  patterns.insert<
+      StdArithmeticOpLowering<mlir::arith::RemFOp, StdArithmeticOp::RemFOp>>(
+      &getContext(), typeConverter);
   patterns.insert<OpAsMethodLowering<math::PowFOp, OpAsMethod::PowFOp>>(
       &getContext(), typeConverter);
 

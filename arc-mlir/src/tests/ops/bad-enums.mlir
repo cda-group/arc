@@ -2,7 +2,7 @@
 
 module @toplevel {
   func @bad() -> !arc.enum<a : i32, b : f32> {
-    %a = constant 4 : i32
+    %a = arith.constant 4 : i32
     // expected-error@+2 {{'arc.make_enum' op : variant 'c' does not exist in '!arc.enum<a : i32, b : f32>'}}
     // expected-note@+1 {{see current operation:}}
     %r = arc.make_enum (%a : i32) as "c" : !arc.enum<a : i32, b : f32>
@@ -14,7 +14,7 @@ module @toplevel {
 
 module @toplevel {
   func @bad() -> !arc.enum<a : i32, b : f32> {
-    %a = constant 3.14 : f32
+    %a = arith.constant 3.14 : f32
     // expected-error@+2 {{'arc.make_enum' op : variant 'a' does not have a matching type, expected 'f32' but found 'i32'}}
     // expected-note@+1 {{see current operation:}}
     %r = arc.make_enum (%a : f32) as "a" : !arc.enum<a : i32, b : f32>
@@ -59,7 +59,7 @@ module @toplevel {
 
 module @toplevel {
   func @bad() -> !arc.enum<bad : i32, b : f32> {
-    %a = constant 4 : i32
+    %a = arith.constant 4 : i32
     // expected-error@+2 {{'arc.make_enum' op : variant 'bad' does not have a matching type, expected 'none' but found 'i32'}}
     // expected-note@+1 {{see current operation}}
     %r = arc.make_enum () as "bad" : !arc.enum<bad : i32, b : f32>
@@ -71,7 +71,7 @@ module @toplevel {
 
 module @toplevel {
   func @bad() -> !arc.enum<a : i32, b : f32> {
-    %b = constant 3.14 : f32
+    %b = arith.constant 3.14 : f32
     // expected-error@+2 {{'arc.make_enum' op : only a single value expected}}
     // expected-note@+1 {{see current operation}}
     %r = arc.make_enum (%b, %b : f32, f32) as "b" : !arc.enum<a : i32, b : f32>
