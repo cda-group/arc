@@ -11,26 +11,15 @@
 //
 //===----------------------------------------------------------------------===//
 
-#include "Arc/Arc.h"
 #include "Arc/Passes.h"
-#include "Rust/Rust.h"
 #include "mlir/IR/BuiltinTypes.h"
 #include "mlir/IR/MLIRContext.h"
 #include "mlir/Support/LLVM.h"
 #include "mlir/Support/LogicalResult.h"
-#include <mlir/Dialect/Arithmetic/IR/Arithmetic.h>
-#include <mlir/Dialect/Math/IR/Math.h>
-#include <mlir/Dialect/SCF/SCF.h>
-#include <mlir/Dialect/StandardOps/IR/Ops.h>
 #include <mlir/Transforms/DialectConversion.h>
 
 using namespace mlir;
 using namespace arc;
-
-namespace arc {
-#define GEN_PASS_CLASSES
-#include "Arc/Passes.h.inc"
-} // namespace arc
 
 //===----------------------------------------------------------------------===//
 // ArcToRustLoweringPass
