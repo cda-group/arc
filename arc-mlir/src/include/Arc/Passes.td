@@ -47,4 +47,14 @@ def ToSCF : Pass<"to-scf", "ModuleOp"> {
   ];
 }
 
+def ToFSM : Pass<"to-fsm", "ModuleOp"> {
+  let summary = "Convert functions with blocking operations into FSMs";
+  let constructor = "arc::createToFSMPass()";
+
+  let dependentDialects = [
+        "arc::ArcDialect",
+        "rust::RustDialect",
+        "mlir::func::FuncDialect"
+  ];
+}
 #endif // ARC_PASSES

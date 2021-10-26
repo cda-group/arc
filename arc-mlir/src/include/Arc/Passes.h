@@ -45,6 +45,9 @@ std::unique_ptr<OperationPass<mlir::func::FuncOp>> createRemoveSCFPass();
 /// between basic blocks to structured flow-control.
 std::unique_ptr<OperationPass<ModuleOp>> createToSCFPass();
 
+/// Create a pass for converting blocking code to FSMs.
+std::unique_ptr<OperationPass<ModuleOp>> createToFSMPass();
+
 } // namespace arc
 
 #endif // ARC_PASSES_H
