@@ -65,41 +65,43 @@ protected:
   Type convertStructType(arc::types::StructType type);
 };
 
-struct ArcReturnOpLowering : public ConversionPattern {
+struct ArcReturnOpLowering : public OpConversionPattern<ArcReturnOp> {
 
-  ArcReturnOpLowering(MLIRContext *ctx)
-      : ConversionPattern(ArcReturnOp::getOperationName(), 1, ctx) {}
+  ArcReturnOpLowering(MLIRContext *ctx, RustTypeConverter &typeConverter)
+      : OpConversionPattern<ArcReturnOp>(typeConverter, ctx, 1) {}
 
   LogicalResult
-  matchAndRewrite(Operation *op, ArrayRef<Value> operands,
+  matchAndRewrite(ArcReturnOp op, OpAdaptor adaptor,
                   ConversionPatternRewriter &rewriter) const final {
     rewriter.replaceOpWithNewOp<rust::RustReturnOp>(
-        op, llvm::None, operands.size() ? operands[0] : Value());
+        op, llvm::None,
+        adaptor.getOperands().size() ? adaptor.getOperands()[0] : Value());
     return success();
   };
 };
 
-struct ReturnOpLowering : public ConversionPattern {
+struct ReturnOpLowering : public OpConversionPattern<mlir::ReturnOp> {
 
-  ReturnOpLowering(MLIRContext *ctx)
-      : ConversionPattern(mlir::ReturnOp::getOperationName(), 1, ctx) {}
+  ReturnOpLowering(MLIRContext *ctx, RustTypeConverter &typeConverter)
+      : OpConversionPattern<mlir::ReturnOp>(typeConverter, ctx, 1) {}
 
   LogicalResult
-  matchAndRewrite(Operation *op, ArrayRef<Value> operands,
+  matchAndRewrite(mlir::ReturnOp op, OpAdaptor adaptor,
                   ConversionPatternRewriter &rewriter) const final {
     rewriter.replaceOpWithNewOp<rust::RustReturnOp>(
-        op, llvm::None, operands.size() ? operands[0] : Value());
+        op, llvm::None,
+        adaptor.getOperands().size() ? adaptor.getOperands()[0] : Value());
     return success();
   };
 };
 
-struct SCFWhileOpLowering : public ConversionPattern {
+struct SCFWhileOpLowering : public OpConversionPattern<scf::WhileOp> {
   SCFWhileOpLowering(MLIRContext *ctx, RustTypeConverter &typeConverter)
-      : ConversionPattern(scf::WhileOp::getOperationName(), 1, ctx),
+      : OpConversionPattern<scf::WhileOp>(typeConverter, ctx, 1),
         TypeConverter(typeConverter) {}
 
   LogicalResult
-  matchAndRewrite(Operation *op, ArrayRef<Value> operands,
+  matchAndRewrite(scf::WhileOp op, OpAdaptor adaptor,
                   ConversionPatternRewriter &rewriter) const final {
     scf::WhileOp o = cast<scf::WhileOp>(op);
     SmallVector<Type, 4> resTys;
@@ -107,8 +109,8 @@ struct SCFWhileOpLowering : public ConversionPattern {
     for (auto ty : op->getResultTypes())
       resTys.push_back(TypeConverter.convertType(ty));
 
-    rust::RustLoopOp loop =
-        rewriter.create<rust::RustLoopOp>(op->getLoc(), resTys, operands);
+    rust::RustLoopOp loop = rewriter.create<rust::RustLoopOp>(
+        op->getLoc(), resTys, adaptor.getOperands());
 
     rewriter.inlineRegionBefore(o.before(), loop.before(), loop.before().end());
     rewriter.inlineRegionBefore(o.after(), loop.after(), loop.after().end());
@@ -126,48 +128,48 @@ private:
   RustTypeConverter &TypeConverter;
 };
 
-struct SCFLoopConditionOpLowering : public ConversionPattern {
+struct SCFLoopConditionOpLowering
+    : public OpConversionPattern<scf::ConditionOp> {
 
   SCFLoopConditionOpLowering(MLIRContext *ctx, RustTypeConverter &typeConverter)
-      : ConversionPattern(scf::ConditionOp::getOperationName(), 1, ctx) {}
+      : OpConversionPattern<scf::ConditionOp>(typeConverter, ctx, 1) {}
 
   LogicalResult
-  matchAndRewrite(Operation *op, ArrayRef<Value> operands,
+  matchAndRewrite(scf::ConditionOp op, OpAdaptor adaptor,
                   ConversionPatternRewriter &rewriter) const final {
-    rewriter.replaceOpWithNewOp<rust::RustLoopConditionOp>(op, llvm::None,
-                                                           operands);
+    rewriter.replaceOpWithNewOp<rust::RustLoopConditionOp>(
+        op, llvm::None, adaptor.getOperands());
     return success();
   };
 };
 
-struct SCFLoopYieldOpLowering : public ConversionPattern {
+struct SCFLoopYieldOpLowering : public OpConversionPattern<scf::YieldOp> {
 
   SCFLoopYieldOpLowering(MLIRContext *ctx, RustTypeConverter &typeConverter)
-      : ConversionPattern(scf::YieldOp::getOperationName(), 1, ctx) {}
+      : OpConversionPattern<scf::YieldOp>(typeConverter, ctx, 1) {}
 
   LogicalResult
-  matchAndRewrite(Operation *op, ArrayRef<Value> operands,
+  matchAndRewrite(scf::YieldOp op, OpAdaptor adaptor,
                   ConversionPatternRewriter &rewriter) const final {
     rewriter.replaceOpWithNewOp<rust::RustLoopYieldOp>(op, llvm::None,
-                                                       operands);
+                                                       adaptor.getOperands());
     return success();
   };
 };
 
-struct StdCallOpLowering : public ConversionPattern {
+struct StdCallOpLowering : public OpConversionPattern<CallOp> {
   StdCallOpLowering(MLIRContext *ctx, RustTypeConverter &typeConverter)
-      : ConversionPattern(CallOp::getOperationName(), 1, ctx),
+      : OpConversionPattern<CallOp>(typeConverter, ctx, 1),
         TypeConverter(typeConverter) {}
 
   LogicalResult
-  matchAndRewrite(Operation *op, ArrayRef<Value> operands,
+  matchAndRewrite(CallOp o, OpAdaptor adaptor,
                   ConversionPatternRewriter &rewriter) const final {
-    CallOp o = cast<CallOp>(op);
     SmallVector<Type, 4> resultTypes;
     for (auto r : o.getResultTypes())
       resultTypes.push_back(TypeConverter.convertType(r));
-    rewriter.replaceOpWithNewOp<rust::RustCallOp>(op, o.getCallee(),
-                                                  resultTypes, operands);
+    rewriter.replaceOpWithNewOp<rust::RustCallOp>(o, o.getCallee(), resultTypes,
+                                                  o.getOperands());
     return success();
   };
 
@@ -175,20 +177,19 @@ private:
   RustTypeConverter &TypeConverter;
 };
 
-struct StdCallIndirectOpLowering : public ConversionPattern {
+struct StdCallIndirectOpLowering : public OpConversionPattern<CallIndirectOp> {
   StdCallIndirectOpLowering(MLIRContext *ctx, RustTypeConverter &typeConverter)
-      : ConversionPattern(CallIndirectOp::getOperationName(), 1, ctx),
+      : OpConversionPattern<CallIndirectOp>(typeConverter, ctx, 1),
         TypeConverter(typeConverter) {}
 
   LogicalResult
-  matchAndRewrite(Operation *op, ArrayRef<Value> operands,
+  matchAndRewrite(CallIndirectOp o, OpAdaptor adaptor,
                   ConversionPatternRewriter &rewriter) const final {
-    CallIndirectOp o = cast<CallIndirectOp>(op);
     SmallVector<Type, 4> resultTypes;
     for (auto r : o.getResultTypes())
       resultTypes.push_back(TypeConverter.convertType(r));
-    rewriter.replaceOpWithNewOp<rust::RustCallIndirectOp>(op, resultTypes,
-                                                          operands);
+    rewriter.replaceOpWithNewOp<rust::RustCallIndirectOp>(
+        o, resultTypes, adaptor.getOperands());
     return success();
   };
 
@@ -196,22 +197,21 @@ private:
   RustTypeConverter &TypeConverter;
 };
 
-struct ArithConstantOpLowering : public ConversionPattern {
+struct ArithConstantOpLowering : public OpConversionPattern<arith::ConstantOp> {
 
   ArithConstantOpLowering(MLIRContext *ctx, RustTypeConverter &typeConverter)
-      : ConversionPattern(arith::ConstantOp::getOperationName(), 1, ctx),
+      : OpConversionPattern<arith::ConstantOp>(typeConverter, ctx, 1),
         TypeConverter(typeConverter) {}
 
   LogicalResult
-  matchAndRewrite(Operation *op, ArrayRef<Value> operands,
+  matchAndRewrite(arith::ConstantOp cOp, OpAdaptor adaptor,
                   ConversionPatternRewriter &rewriter) const final {
-    arith::ConstantOp cOp = cast<arith::ConstantOp>(op);
     Attribute attr = cOp.value();
     if (attr.isa<FloatAttr>())
       return convertFloat(cOp, rewriter);
     if (attr.isa<IntegerAttr>())
       return convertInteger(cOp, rewriter);
-    op->emitError("unhandled constant type");
+    cOp->emitError("unhandled constant type");
     return failure();
   };
 
@@ -283,20 +283,19 @@ private:
   }
 };
 
-struct StdConstantOpLowering : public ConversionPattern {
+struct StdConstantOpLowering : public OpConversionPattern<mlir::ConstantOp> {
 
   StdConstantOpLowering(MLIRContext *ctx, RustTypeConverter &typeConverter)
-      : ConversionPattern(mlir::ConstantOp::getOperationName(), 1, ctx),
+      : OpConversionPattern<mlir::ConstantOp>(typeConverter, ctx, 1),
         TypeConverter(typeConverter) {}
 
   LogicalResult
-  matchAndRewrite(Operation *op, ArrayRef<Value> operands,
+  matchAndRewrite(mlir::ConstantOp cOp, OpAdaptor adaptor,
                   ConversionPatternRewriter &rewriter) const final {
-    mlir::ConstantOp cOp = cast<mlir::ConstantOp>(op);
     Attribute attr = cOp.getValue();
     if (attr.isa<SymbolRefAttr>())
       return convertSymbolRef(cOp, rewriter);
-    op->emitError("unhandled constant type");
+    cOp->emitError("unhandled constant type");
     return failure();
   };
 
@@ -335,20 +334,19 @@ private:
   }
 };
 
-struct ConstantIntOpLowering : public ConversionPattern {
+struct ConstantIntOpLowering : public OpConversionPattern<arc::ConstantIntOp> {
 
   ConstantIntOpLowering(MLIRContext *ctx, RustTypeConverter &typeConverter)
-      : ConversionPattern(arc::ConstantIntOp::getOperationName(), 1, ctx),
+      : OpConversionPattern<arc::ConstantIntOp>(typeConverter, ctx, 1),
         TypeConverter(typeConverter) {}
 
   LogicalResult
-  matchAndRewrite(Operation *op, ArrayRef<Value> operands,
+  matchAndRewrite(arc::ConstantIntOp cOp, OpAdaptor adaptor,
                   ConversionPatternRewriter &rewriter) const final {
-    arc::ConstantIntOp cOp = cast<arc::ConstantIntOp>(op);
     Attribute attr = cOp.getValue();
     if (attr.isa<IntegerAttr>())
       return convertInteger(cOp, rewriter);
-    op->emitError("unhandled constant type");
+    cOp->emitError("unhandled constant type");
     return failure();
   };
 
@@ -391,15 +389,16 @@ private:
   }
 };
 
-struct BlockResultOpLowering : public ConversionPattern {
-  BlockResultOpLowering(MLIRContext *ctx)
-      : ConversionPattern(arc::ArcBlockResultOp::getOperationName(), 1, ctx) {}
+struct BlockResultOpLowering
+    : public OpConversionPattern<arc::ArcBlockResultOp> {
+  BlockResultOpLowering(MLIRContext *ctx, RustTypeConverter &typeConverter)
+      : OpConversionPattern<arc::ArcBlockResultOp>(typeConverter, ctx, 1) {}
 
   LogicalResult
-  matchAndRewrite(Operation *op, ArrayRef<Value> operands,
+  matchAndRewrite(arc::ArcBlockResultOp op, OpAdaptor adaptor,
                   ConversionPatternRewriter &rewriter) const final {
     SmallVector<Value, 1> values;
-
+    auto operands = adaptor.getOperands();
     if (operands.size() != 0)
       values.push_back(operands[0]);
     rewriter.replaceOpWithNewOp<rust::RustBlockResultOp>(op, values);
@@ -407,18 +406,17 @@ struct BlockResultOpLowering : public ConversionPattern {
   };
 };
 
-struct ConstantADTOpLowering : public ConversionPattern {
+struct ConstantADTOpLowering : public OpConversionPattern<arc::ConstantADTOp> {
   ConstantADTOpLowering(MLIRContext *ctx, RustTypeConverter &typeConverter)
-      : ConversionPattern(arc::ConstantADTOp::getOperationName(), 1, ctx),
+      : OpConversionPattern<arc::ConstantADTOp>(typeConverter, ctx, 1),
         TypeConverter(typeConverter) {}
 
   LogicalResult
-  matchAndRewrite(Operation *op, ArrayRef<Value> operands,
+  matchAndRewrite(arc::ConstantADTOp o, OpAdaptor adaptor,
                   ConversionPatternRewriter &rewriter) const final {
-    arc::ConstantADTOp o = cast<arc::ConstantADTOp>(op);
-
     Type rustTy = TypeConverter.convertType(o.result().getType());
-    rewriter.replaceOpWithNewOp<rust::RustConstantOp>(op, rustTy, o.value());
+    rewriter.replaceOpWithNewOp<rust::RustConstantOp>(o, rustTy,
+                                                      adaptor.value());
     return success();
   };
 
@@ -426,29 +424,28 @@ private:
   RustTypeConverter &TypeConverter;
 };
 
-struct IfOpLowering : public ConversionPattern {
+struct IfOpLowering : public OpConversionPattern<arc::IfOp> {
   IfOpLowering(MLIRContext *ctx, RustTypeConverter &typeConverter)
-      : ConversionPattern(arc::IfOp::getOperationName(), 1, ctx),
+      : OpConversionPattern<arc::IfOp>(typeConverter, ctx, 1),
         TypeConverter(typeConverter) {}
 
   LogicalResult
-  matchAndRewrite(Operation *op, ArrayRef<Value> operands,
+  matchAndRewrite(arc::IfOp o, OpAdaptor adaptor,
                   ConversionPatternRewriter &rewriter) const final {
-    arc::IfOp o = cast<arc::IfOp>(op);
     SmallVector<Type, 1> resTys;
 
-    if (op->getNumResults()) {
+    if (o->getNumResults()) {
       Type retTy = TypeConverter.convertType(o.getType(0));
       resTys.push_back(retTy);
     }
-    auto newOp =
-        rewriter.create<rust::RustIfOp>(op->getLoc(), resTys, operands[0]);
+    auto newOp = rewriter.create<rust::RustIfOp>(o.getLoc(), resTys,
+                                                 adaptor.condition());
 
     rewriter.inlineRegionBefore(o.thenRegion(), newOp.thenRegion(),
                                 newOp.thenRegion().end());
     rewriter.inlineRegionBefore(o.elseRegion(), newOp.elseRegion(),
                                 newOp.elseRegion().end());
-    rewriter.replaceOp(op, newOp.getResults());
+    rewriter.replaceOp(o, newOp.getResults());
     return success();
   };
 
@@ -456,18 +453,17 @@ private:
   RustTypeConverter &TypeConverter;
 };
 
-struct IndexTupleOpLowering : public ConversionPattern {
+struct IndexTupleOpLowering : public OpConversionPattern<arc::IndexTupleOp> {
   IndexTupleOpLowering(MLIRContext *ctx, RustTypeConverter &typeConverter)
-      : ConversionPattern(arc::IndexTupleOp::getOperationName(), 1, ctx),
+      : OpConversionPattern<arc::IndexTupleOp>(typeConverter, ctx, 1),
         TypeConverter(typeConverter) {}
 
   LogicalResult
-  matchAndRewrite(Operation *op, ArrayRef<Value> operands,
+  matchAndRewrite(IndexTupleOp o, OpAdaptor adaptor,
                   ConversionPatternRewriter &rewriter) const final {
-    IndexTupleOp o = cast<IndexTupleOp>(op);
     Type retTy = TypeConverter.convertType(o.getType());
     rewriter.replaceOpWithNewOp<rust::RustFieldAccessOp>(
-        op, retTy, operands[0], std::to_string(o.index()));
+        o, retTy, adaptor.value(), std::to_string(o.index()));
     return success();
   };
 
@@ -475,32 +471,32 @@ private:
   RustTypeConverter &TypeConverter;
 };
 
-struct LoopBreakOpLowering : public ConversionPattern {
-  LoopBreakOpLowering(MLIRContext *ctx)
-      : ConversionPattern(arc::LoopBreakOp::getOperationName(), 1, ctx) {}
+struct LoopBreakOpLowering : public OpConversionPattern<arc::LoopBreakOp> {
+  LoopBreakOpLowering(MLIRContext *ctx, RustTypeConverter &typeConverter)
+      : OpConversionPattern<arc::LoopBreakOp>(typeConverter, ctx, 1) {}
 
   LogicalResult
-  matchAndRewrite(Operation *op, ArrayRef<Value> operands,
+  matchAndRewrite(arc::LoopBreakOp op, OpAdaptor adaptor,
                   ConversionPatternRewriter &rewriter) const final {
-    rewriter.replaceOpWithNewOp<rust::RustLoopBreakOp>(op, operands);
+    rewriter.replaceOpWithNewOp<rust::RustLoopBreakOp>(op,
+                                                       adaptor.getOperands());
     return success();
   };
 };
 
-struct PanicOpLowering : public ConversionPattern {
-  PanicOpLowering(MLIRContext *ctx)
-      : ConversionPattern(arc::PanicOp::getOperationName(), 1, ctx), Ctx(ctx) {}
+struct PanicOpLowering : public OpConversionPattern<arc::PanicOp> {
+  PanicOpLowering(MLIRContext *ctx, RustTypeConverter &typeConverter)
+      : OpConversionPattern<arc::PanicOp>(typeConverter, ctx, 1), Ctx(ctx) {}
 
   LogicalResult
-  matchAndRewrite(Operation *op, ArrayRef<Value> operands,
+  matchAndRewrite(PanicOp o, OpAdaptor adaptor,
                   ConversionPatternRewriter &rewriter) const final {
-    PanicOp o = cast<PanicOp>(op);
     auto msg = o.msg();
     if (msg.hasValue())
       rewriter.replaceOpWithNewOp<rust::RustPanicOp>(
-          op, StringAttr::get(Ctx, msg.getValue()));
+          o, StringAttr::get(Ctx, msg.getValue()));
     else
-      rewriter.replaceOpWithNewOp<rust::RustPanicOp>(op, nullptr);
+      rewriter.replaceOpWithNewOp<rust::RustPanicOp>(o, nullptr);
 
     return success();
   };
@@ -509,17 +505,17 @@ private:
   MLIRContext *Ctx;
 };
 
-struct MakeStructOpLowering : public ConversionPattern {
+struct MakeStructOpLowering : public OpConversionPattern<arc::MakeStructOp> {
   MakeStructOpLowering(MLIRContext *ctx, RustTypeConverter &typeConverter)
-      : ConversionPattern(arc::MakeStructOp::getOperationName(), 1, ctx),
+      : OpConversionPattern<arc::MakeStructOp>(typeConverter, ctx, 1),
         TypeConverter(typeConverter) {}
 
   LogicalResult
-  matchAndRewrite(Operation *op, ArrayRef<Value> operands,
+  matchAndRewrite(MakeStructOp o, OpAdaptor adaptor,
                   ConversionPatternRewriter &rewriter) const final {
-    MakeStructOp o = cast<MakeStructOp>(op);
     Type retTy = TypeConverter.convertType(o.getType());
-    rewriter.replaceOpWithNewOp<rust::RustMakeStructOp>(op, retTy, operands);
+    rewriter.replaceOpWithNewOp<rust::RustMakeStructOp>(o, retTy,
+                                                        adaptor.getOperands());
     return success();
   };
 
@@ -527,20 +523,19 @@ private:
   RustTypeConverter &TypeConverter;
 };
 
-struct MakeEnumOpLowering : public ConversionPattern {
+struct MakeEnumOpLowering : public OpConversionPattern<MakeEnumOp> {
   MakeEnumOpLowering(MLIRContext *ctx, RustTypeConverter &typeConverter)
-      : ConversionPattern(arc::MakeEnumOp::getOperationName(), 1, ctx),
+      : OpConversionPattern<MakeEnumOp>(typeConverter, ctx, 1),
         TypeConverter(typeConverter) {}
 
   LogicalResult
-  matchAndRewrite(Operation *op, ArrayRef<Value> operands,
+  matchAndRewrite(MakeEnumOp op, OpAdaptor adaptor,
                   ConversionPatternRewriter &rewriter) const final {
-    MakeEnumOp o = cast<MakeEnumOp>(op);
-    Type retTy = TypeConverter.convertType(o.getType());
-    std::string variant_str(o.variant());
+    Type retTy = TypeConverter.convertType(op.getType());
+    std::string variant_str(op.variant());
     SmallVector<Value, 1> values;
-    if (o.values().size())
-      values.push_back(o.values()[0]);
+    if (op.values().size())
+      values.push_back(adaptor.values()[0]);
     rewriter.replaceOpWithNewOp<rust::RustMakeEnumOp>(op, retTy, values,
                                                       variant_str);
     return success();
@@ -550,17 +545,17 @@ private:
   RustTypeConverter &TypeConverter;
 };
 
-struct MakeTensorOpLowering : public ConversionPattern {
+struct MakeTensorOpLowering : public OpConversionPattern<arc::MakeTensorOp> {
   MakeTensorOpLowering(MLIRContext *ctx, RustTypeConverter &typeConverter)
-      : ConversionPattern(arc::MakeTensorOp::getOperationName(), 1, ctx),
+      : OpConversionPattern<arc::MakeTensorOp>(typeConverter, ctx, 1),
         TypeConverter(typeConverter) {}
 
   LogicalResult
-  matchAndRewrite(Operation *op, ArrayRef<Value> operands,
+  matchAndRewrite(MakeTensorOp o, OpAdaptor adaptor,
                   ConversionPatternRewriter &rewriter) const final {
-    MakeTensorOp o = cast<MakeTensorOp>(op);
     Type retTy = TypeConverter.convertType(o.getType());
-    rewriter.replaceOpWithNewOp<rust::RustTensorOp>(op, retTy, operands);
+    rewriter.replaceOpWithNewOp<rust::RustTensorOp>(o, retTy,
+                                                    adaptor.getOperands());
     return success();
   };
 
@@ -568,17 +563,17 @@ private:
   RustTypeConverter &TypeConverter;
 };
 
-struct MakeTupleOpLowering : public ConversionPattern {
+struct MakeTupleOpLowering : public OpConversionPattern<arc::MakeTupleOp> {
   MakeTupleOpLowering(MLIRContext *ctx, RustTypeConverter &typeConverter)
-      : ConversionPattern(arc::MakeTupleOp::getOperationName(), 1, ctx),
+      : OpConversionPattern<arc::MakeTupleOp>(typeConverter, ctx, 1),
         TypeConverter(typeConverter) {}
 
   LogicalResult
-  matchAndRewrite(Operation *op, ArrayRef<Value> operands,
+  matchAndRewrite(MakeTupleOp o, OpAdaptor adaptor,
                   ConversionPatternRewriter &rewriter) const final {
-    MakeTupleOp o = cast<MakeTupleOp>(op);
     Type retTy = TypeConverter.convertType(o.getType());
-    rewriter.replaceOpWithNewOp<rust::RustTupleOp>(op, retTy, operands);
+    rewriter.replaceOpWithNewOp<rust::RustTupleOp>(o, retTy,
+                                                   adaptor.getOperands());
     return success();
   };
 
@@ -601,22 +596,21 @@ typedef enum {
 }
 
 template <class T, ArcIntArithmeticOp::Op arithOp>
-struct ArcIntArithmeticOpLowering : public ConversionPattern {
+struct ArcIntArithmeticOpLowering : public OpConversionPattern<T> {
   ArcIntArithmeticOpLowering(MLIRContext *ctx, RustTypeConverter &typeConverter)
-      : ConversionPattern(T::getOperationName(), 1, ctx),
+      : OpConversionPattern<T>(typeConverter, ctx, 1),
         TypeConverter(typeConverter) {}
 
   LogicalResult
-  matchAndRewrite(Operation *op, ArrayRef<Value> operands,
+  matchAndRewrite(T o, typename T::Adaptor adaptor,
                   ConversionPatternRewriter &rewriter) const final {
-    T o = cast<T>(op);
     Type rustTy = TypeConverter.convertType(o.getType());
     if (rustTy.isa<rust::types::RustTensorType>())
       rewriter.replaceOpWithNewOp<rust::RustBinaryRcOp>(
-          op, rustTy, opStr[arithOp], operands[0], operands[1]);
+          o, rustTy, opStr[arithOp], adaptor.lhs(), adaptor.rhs());
     else
       rewriter.replaceOpWithNewOp<rust::RustBinaryOp>(
-          op, rustTy, opStr[arithOp], operands[0], operands[1]);
+          o, rustTy, opStr[arithOp], adaptor.lhs(), adaptor.rhs());
     return success();
   };
 
@@ -626,15 +620,14 @@ private:
                                                  "*", "-", "%", "^"};
 };
 
-struct ArcCmpIOpLowering : public ConversionPattern {
+struct ArcCmpIOpLowering : public OpConversionPattern<arc::CmpIOp> {
   ArcCmpIOpLowering(MLIRContext *ctx, RustTypeConverter &typeConverter)
-      : ConversionPattern(arc::CmpIOp::getOperationName(), 1, ctx),
+      : OpConversionPattern<arc::CmpIOp>(typeConverter, ctx, 1),
         TypeConverter(typeConverter) {}
 
   LogicalResult
-  matchAndRewrite(Operation *op, ArrayRef<Value> operands,
+  matchAndRewrite(arc::CmpIOp o, OpAdaptor adaptor,
                   ConversionPatternRewriter &rewriter) const final {
-    arc::CmpIOp o = cast<arc::CmpIOp>(op);
     Type rustTy = TypeConverter.convertType(o.getType());
     const char *cmpOp = NULL;
     switch (o.getPredicate()) {
@@ -657,8 +650,8 @@ struct ArcCmpIOpLowering : public ConversionPattern {
       cmpOp = ">=";
       break;
     }
-    rewriter.replaceOpWithNewOp<rust::RustBinaryOp>(op, rustTy, cmpOp,
-                                                    operands[0], operands[1]);
+    rewriter.replaceOpWithNewOp<rust::RustBinaryOp>(
+        o, rustTy, cmpOp, adaptor.lhs(), adaptor.rhs());
     return success();
   };
 
@@ -671,22 +664,21 @@ typedef enum { AddFOp = 0, DivFOp, MulFOp, SubFOp, RemFOp, LAST } Op;
 }
 
 template <class T, StdArithmeticOp::Op arithOp>
-struct StdArithmeticOpLowering : public ConversionPattern {
+struct StdArithmeticOpLowering : public OpConversionPattern<T> {
   StdArithmeticOpLowering(MLIRContext *ctx, RustTypeConverter &typeConverter)
-      : ConversionPattern(T::getOperationName(), 1, ctx),
+      : OpConversionPattern<T>(typeConverter, ctx, 1),
         TypeConverter(typeConverter) {}
 
   LogicalResult
-  matchAndRewrite(Operation *op, ArrayRef<Value> operands,
+  matchAndRewrite(T o, typename T::Adaptor adaptor,
                   ConversionPatternRewriter &rewriter) const final {
-    T o = cast<T>(op);
     Type rustTy = TypeConverter.convertType(o.getType());
     if (rustTy.isa<rust::types::RustTensorType>())
       rewriter.replaceOpWithNewOp<rust::RustBinaryRcOp>(
-          op, rustTy, opStr[arithOp], operands[0], operands[1]);
+          o, rustTy, opStr[arithOp], adaptor.lhs(), adaptor.rhs());
     else
       rewriter.replaceOpWithNewOp<rust::RustBinaryOp>(
-          op, rustTy, opStr[arithOp], operands[0], operands[1]);
+          o, rustTy, opStr[arithOp], adaptor.lhs(), adaptor.rhs());
     return success();
   };
 
@@ -700,23 +692,22 @@ typedef enum { PowFOp = 0, LAST } Op;
 }
 
 template <class T, OpAsMethod::Op theOp>
-struct OpAsMethodLowering : public ConversionPattern {
+struct OpAsMethodLowering : public OpConversionPattern<T> {
   OpAsMethodLowering(MLIRContext *ctx, RustTypeConverter &typeConverter)
-      : ConversionPattern(T::getOperationName(), 1, ctx),
+      : OpConversionPattern<T>(typeConverter, ctx, 1),
         TypeConverter(typeConverter) {}
 
   LogicalResult
-  matchAndRewrite(Operation *op, ArrayRef<Value> operands,
+  matchAndRewrite(T o, typename T::Adaptor adaptor,
                   ConversionPatternRewriter &rewriter) const final {
-    T o = cast<T>(op);
     Type rustTy = TypeConverter.convertType(o.getType());
     SmallVector<mlir::Value, 1> args;
-
+    auto operands = adaptor.getOperands();
     for (unsigned i = 1; i < operands.size(); i++)
       args.push_back(operands[i]);
 
-    rewriter.replaceOpWithNewOp<rust::RustMethodCallOp>(
-        op, rustTy, opStr[theOp], operands[0], args);
+    rewriter.replaceOpWithNewOp<rust::RustMethodCallOp>(o, rustTy, opStr[theOp],
+                                                        operands[0], args);
     return success();
   };
 
@@ -725,15 +716,14 @@ private:
   const char *opStr[StdArithmeticOp::LAST] = {"powf"};
 };
 
-struct StdCmpFOpLowering : public ConversionPattern {
+struct StdCmpFOpLowering : public OpConversionPattern<mlir::arith::CmpFOp> {
   StdCmpFOpLowering(MLIRContext *ctx, RustTypeConverter &typeConverter)
-      : ConversionPattern(mlir::arith::CmpFOp::getOperationName(), 1, ctx),
+      : OpConversionPattern<mlir::arith::CmpFOp>(typeConverter, ctx, 1),
         TypeConverter(typeConverter) {}
 
   LogicalResult
-  matchAndRewrite(Operation *op, ArrayRef<Value> operands,
+  matchAndRewrite(mlir::arith::CmpFOp o, OpAdaptor adaptor,
                   ConversionPatternRewriter &rewriter) const final {
-    mlir::arith::CmpFOp o = cast<mlir::arith::CmpFOp>(op);
     Type rustTy = TypeConverter.convertType(o.getType());
     const char *cmpOp = NULL;
     switch (o.getPredicate()) {
@@ -756,11 +746,11 @@ struct StdCmpFOpLowering : public ConversionPattern {
       cmpOp = ">=";
       break;
     default:
-      op->emitError("unhandled std.cmpf operation");
+      o.emitError("unhandled std.cmpf operation");
       return failure();
     }
-    rewriter.replaceOpWithNewOp<rust::RustBinaryOp>(op, rustTy, cmpOp,
-                                                    operands[0], operands[1]);
+    rewriter.replaceOpWithNewOp<rust::RustBinaryOp>(
+        o, rustTy, cmpOp, adaptor.lhs(), adaptor.rhs());
     return success();
   };
 
@@ -787,18 +777,18 @@ typedef enum {
 }
 
 template <class T, ArcUnaryFloatOp::Op arithOp>
-struct ArcUnaryFloatOpLowering : public ConversionPattern {
+struct ArcUnaryFloatOpLowering : public OpConversionPattern<T> {
   ArcUnaryFloatOpLowering(MLIRContext *ctx, RustTypeConverter &typeConverter)
-      : ConversionPattern(T::getOperationName(), 1, ctx),
+      : OpConversionPattern<T>(typeConverter, ctx, 1),
         TypeConverter(typeConverter) {}
 
   LogicalResult
-  matchAndRewrite(Operation *op, ArrayRef<Value> operands,
+  matchAndRewrite(T o, typename T::Adaptor adaptor,
                   ConversionPatternRewriter &rewriter) const final {
-    T o = cast<T>(op);
     Type rustTy = TypeConverter.convertType(o.getType());
+    auto operands = adaptor.getOperands();
     rewriter.replaceOpWithNewOp<rust::RustMethodCallOp>(
-        op, rustTy, opStr[arithOp], operands[0],
+        o, rustTy, opStr[arithOp], operands[0],
         SmallVector<mlir::Value, 1>({}));
     return success();
   };
@@ -810,19 +800,18 @@ private:
                                               "tanh", "ln",   "exp",  "sqrt"};
 };
 
-struct EnumAccessOpLowering : public ConversionPattern {
+struct EnumAccessOpLowering : public OpConversionPattern<arc::EnumAccessOp> {
   EnumAccessOpLowering(MLIRContext *ctx, RustTypeConverter &typeConverter)
-      : ConversionPattern(arc::EnumAccessOp::getOperationName(), 1, ctx),
+      : OpConversionPattern<arc::EnumAccessOp>(typeConverter, ctx, 1),
         TypeConverter(typeConverter) {}
 
   LogicalResult
-  matchAndRewrite(Operation *op, ArrayRef<Value> operands,
+  matchAndRewrite(EnumAccessOp o, OpAdaptor adaptor,
                   ConversionPatternRewriter &rewriter) const final {
-    EnumAccessOp o = cast<EnumAccessOp>(op);
     Type retTy = TypeConverter.convertType(o.getType());
     std::string variant_str(o.variant());
-    rewriter.replaceOpWithNewOp<rust::RustEnumAccessOp>(op, retTy, operands[0],
-                                                        variant_str);
+    rewriter.replaceOpWithNewOp<rust::RustEnumAccessOp>(
+        o, retTy, adaptor.value(), variant_str);
     return success();
   };
 
@@ -830,19 +819,19 @@ private:
   RustTypeConverter &TypeConverter;
 };
 
-struct StructAccessOpLowering : public ConversionPattern {
+struct StructAccessOpLowering
+    : public OpConversionPattern<arc::StructAccessOp> {
   StructAccessOpLowering(MLIRContext *ctx, RustTypeConverter &typeConverter)
-      : ConversionPattern(arc::StructAccessOp::getOperationName(), 1, ctx),
+      : OpConversionPattern<arc::StructAccessOp>(typeConverter, ctx, 1),
         TypeConverter(typeConverter) {}
 
   LogicalResult
-  matchAndRewrite(Operation *op, ArrayRef<Value> operands,
+  matchAndRewrite(StructAccessOp o, OpAdaptor adaptor,
                   ConversionPatternRewriter &rewriter) const final {
-    StructAccessOp o = cast<StructAccessOp>(op);
     Type retTy = TypeConverter.convertType(o.getType());
     std::string idx_str(o.field());
-    rewriter.replaceOpWithNewOp<rust::RustFieldAccessOp>(op, retTy, operands[0],
-                                                         idx_str);
+    rewriter.replaceOpWithNewOp<rust::RustFieldAccessOp>(
+        o, retTy, adaptor.value(), idx_str);
     return success();
   };
 
@@ -850,19 +839,18 @@ private:
   RustTypeConverter &TypeConverter;
 };
 
-struct EnumCheckOpLowering : public ConversionPattern {
+struct EnumCheckOpLowering : public OpConversionPattern<arc::EnumCheckOp> {
   EnumCheckOpLowering(MLIRContext *ctx, RustTypeConverter &typeConverter)
-      : ConversionPattern(arc::EnumCheckOp::getOperationName(), 1, ctx),
+      : OpConversionPattern<arc::EnumCheckOp>(typeConverter, ctx, 1),
         TypeConverter(typeConverter) {}
 
   LogicalResult
-  matchAndRewrite(Operation *op, ArrayRef<Value> operands,
+  matchAndRewrite(EnumCheckOp o, OpAdaptor adaptor,
                   ConversionPatternRewriter &rewriter) const final {
-    EnumCheckOp o = cast<EnumCheckOp>(op);
     Type retTy = TypeConverter.convertType(o.getType());
     std::string variant_str(o.variant());
-    rewriter.replaceOpWithNewOp<rust::RustEnumCheckOp>(op, retTy, o.value(),
-                                                       variant_str);
+    rewriter.replaceOpWithNewOp<rust::RustEnumCheckOp>(
+        o, retTy, adaptor.value(), variant_str);
     return success();
   };
 
@@ -870,15 +858,15 @@ private:
   RustTypeConverter &TypeConverter;
 };
 
-struct EmitOpLowering : public ConversionPattern {
+struct EmitOpLowering : public OpConversionPattern<arc::EmitOp> {
   EmitOpLowering(MLIRContext *ctx, RustTypeConverter &typeConverter)
-      : ConversionPattern(arc::EmitOp::getOperationName(), 1, ctx) {}
+      : OpConversionPattern<arc::EmitOp>(typeConverter, ctx, 1) {}
 
   LogicalResult
-  matchAndRewrite(Operation *op, ArrayRef<Value> operands,
+  matchAndRewrite(EmitOp o, OpAdaptor adaptor,
                   ConversionPatternRewriter &rewriter) const final {
-    EmitOp o = cast<EmitOp>(op);
-    rewriter.replaceOpWithNewOp<rust::RustEmitOp>(op, o.value(), o.stream());
+    rewriter.replaceOpWithNewOp<rust::RustEmitOp>(o, adaptor.value(),
+                                                  adaptor.stream());
     return success();
   };
 };
@@ -992,17 +980,16 @@ RustTypeConverter::convertFunctionSignature(Type ty, SignatureConversion &SC) {
   return funcType;
 }
 
-struct FuncOpLowering : public ConversionPattern {
+struct FuncOpLowering : public OpConversionPattern<mlir::FuncOp> {
 
   FuncOpLowering(MLIRContext *ctx, RustTypeConverter &typeConverter)
-      : ConversionPattern(mlir::FuncOp::getOperationName(), 1, ctx),
+      : OpConversionPattern<mlir::FuncOp>(typeConverter, ctx, 1),
         TypeConverter(typeConverter) {}
 
   LogicalResult
-  matchAndRewrite(Operation *op, ArrayRef<Value> operands,
+  matchAndRewrite(mlir::FuncOp func, OpAdaptor adaptor,
                   ConversionPatternRewriter &rewriter) const final {
-    MLIRContext *ctx = op->getContext();
-    mlir::FuncOp func = cast<mlir::FuncOp>(op);
+    MLIRContext *ctx = func.getContext();
     SmallVector<NamedAttribute, 4> attributes;
 
     if (func->hasAttr("arc.rust_name"))
@@ -1033,10 +1020,14 @@ struct FuncOpLowering : public ConversionPattern {
     attributes.push_back(NamedAttribute(Identifier::get("sym_name", ctx),
                                         StringAttr::get(ctx, func.getName())));
 
+    SmallVector<Value, 4> operandsArray;
+    for (auto i : adaptor.getOperands())
+      operandsArray.push_back(i);
+    ArrayRef<Value> operands = llvm::makeArrayRef(operandsArray);
     if (func.isExternal())
-      return buildExternalFun(rewriter, operands, attributes, func, op, sigConv,
-                              ctx);
-    return buildLocalFun(rewriter, operands, attributes, func, op, sigConv,
+      return buildExternalFun(rewriter, operands, attributes, func, func,
+                              sigConv, ctx);
+    return buildLocalFun(rewriter, operands, attributes, func, func, sigConv,
                          ctx);
   };
 
@@ -1091,8 +1082,8 @@ void ArcToRustLoweringPass::runOnOperation() {
   target.addLegalOp<ModuleOp>();
 
   OwningRewritePatternList patterns(&getContext());
-  patterns.insert<ReturnOpLowering>(&getContext());
-  patterns.insert<ArcReturnOpLowering>(&getContext());
+  patterns.insert<ReturnOpLowering>(&getContext(), typeConverter);
+  patterns.insert<ArcReturnOpLowering>(&getContext(), typeConverter);
   patterns.insert<FuncOpLowering>(&getContext(), typeConverter);
   patterns.insert<StdConstantOpLowering>(&getContext(), typeConverter);
   patterns.insert<ArithConstantOpLowering>(&getContext(), typeConverter);
@@ -1174,17 +1165,17 @@ void ArcToRustLoweringPass::runOnOperation() {
 
   patterns.insert<IfOpLowering>(&getContext(), typeConverter);
   patterns.insert<IndexTupleOpLowering>(&getContext(), typeConverter);
-  patterns.insert<BlockResultOpLowering>(&getContext());
+  patterns.insert<BlockResultOpLowering>(&getContext(), typeConverter);
   patterns.insert<ConstantADTOpLowering>(&getContext(), typeConverter);
   patterns.insert<MakeTupleOpLowering>(&getContext(), typeConverter);
   patterns.insert<MakeTensorOpLowering>(&getContext(), typeConverter);
   patterns.insert<MakeEnumOpLowering>(&getContext(), typeConverter);
   patterns.insert<MakeStructOpLowering>(&getContext(), typeConverter);
-  patterns.insert<LoopBreakOpLowering>(&getContext());
+  patterns.insert<LoopBreakOpLowering>(&getContext(), typeConverter);
   patterns.insert<EnumAccessOpLowering>(&getContext(), typeConverter);
   patterns.insert<EnumCheckOpLowering>(&getContext(), typeConverter);
   patterns.insert<EmitOpLowering>(&getContext(), typeConverter);
-  patterns.insert<PanicOpLowering>(&getContext());
+  patterns.insert<PanicOpLowering>(&getContext(), typeConverter);
   patterns.insert<StructAccessOpLowering>(&getContext(), typeConverter);
   patterns.insert<StdCallOpLowering>(&getContext(), typeConverter);
   patterns.insert<StdCallIndirectOpLowering>(&getContext(), typeConverter);
