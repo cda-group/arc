@@ -168,8 +168,8 @@ struct StdCallOpLowering : public OpConversionPattern<CallOp> {
     SmallVector<Type, 4> resultTypes;
     for (auto r : o.getResultTypes())
       resultTypes.push_back(TypeConverter.convertType(r));
-    rewriter.replaceOpWithNewOp<rust::RustCallOp>(o, o.getCallee(), resultTypes,
-                                                  o.getOperands());
+    rewriter.replaceOpWithNewOp<rust::RustCallOp>(
+        o, adaptor.getCallee(), resultTypes, adaptor.getOperands());
     return success();
   };
 
