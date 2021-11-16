@@ -37,6 +37,10 @@ void registerArcPasses();
 /// Create a pass for lowering to operations in the `Rust` dialect.
 std::unique_ptr<OperationPass<ModuleOp>> createLowerToRustPass();
 
+/// Create a pass for converting structured flow-control to branches
+/// between basic blocks.
+std::unique_ptr<OperationPass<FuncOp>> createRemoveSCFPass();
+
 } // namespace arc
 
 #endif // ARC_PASSES_H
