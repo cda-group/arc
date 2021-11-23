@@ -3,7 +3,7 @@ enum Expr {
     Add((i32, i32))
 }
 
-fun eval(e) {
+def eval(e) {
     match e {
         Expr::Num(x) => x,
         Expr::Add((a, b)) => a + b,

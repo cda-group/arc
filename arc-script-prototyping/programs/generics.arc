@@ -9,7 +9,7 @@ enum Option[T] {
     None
 }
 
-fun test() {
+def test() {
     val x = Option::Some(5);
     val y = Option::Some(5.0);
     if val Option::Some(z) = x {

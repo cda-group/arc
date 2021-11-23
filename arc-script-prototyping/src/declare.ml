@@ -1,5 +1,6 @@
 open Table
 open Ast
+open Utils
 
 module Ctx = struct
   type t = {
@@ -32,14 +33,18 @@ and declare_item i xs ctx =
       add_decl (x::xs, DItem DGlobal) ctx
   | IEnum (x, _, vs) ->
       let xs = x::xs in
-      let ctx = add_decl (xs, DItem DEnum) ctx in
-      vs |> List.fold_left (fun ctx (x, _) -> add_decl (x::xs, DItem DVariant) ctx) ctx
-  | IExternFunc (x, _, _, _) ->
-      add_decl (x::xs, DItem DExternFunc) ctx
+      let ctx = ctx |> add_decl (xs, DItem DEnum) in
+      vs |> List.fold_left (fun ctx (x, _) -> ctx |> add_decl (x::xs, DItem DVariant)) ctx
+  | IExternDef (x, _, _, _) ->
+      add_decl (x::xs, DItem DExternDef) ctx
   | IExternType (x, _) ->
       add_decl (x::xs, DItem DExternType) ctx
-  | IFunc (x, _, _, _, _) ->
-      add_decl (x::xs, DItem DFunc) ctx
+  | IDef (x, _, _, _, _) ->
+      add_decl (x::xs, DItem DDef) ctx
+  | IClass (x, _, ds) ->
+      let ctx = ctx |> add_decl (x::xs, DItem DClass) in
+      ds |> foldl (fun ctx (x, _, _, _) -> add_decl (x::xs, DItem DDef) ctx) ctx
+  | IInstance _ -> ctx
   | ITask (x, _, _, i0, i1, _) ->
       let xs = x::xs in
       add_decl (xs, DItem DTask) ctx

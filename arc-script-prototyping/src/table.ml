@@ -12,9 +12,10 @@ type decl =
   | DUse of path (* An alias *)
 and kind =
   | DEnum
-  | DExternFunc
+  | DExternDef
   | DExternType
-  | DFunc
+  | DDef
+  | DClass
   | DTask
   | DTypeAlias
   | DVariant

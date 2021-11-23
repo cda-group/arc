@@ -59,7 +59,7 @@ rule main =
   | "_"        { Underscore }
   | "|"        { Bar }
 (*   | "||"       { BarBar } *)
-  | "~"        { Tilde }
+(*   | "~"        { Tilde } *)
 (*   | "&"        { Ampersand } *)
 (*= Keywords ================================================================*)
   | "after"    { After }
@@ -70,9 +70,9 @@ rule main =
   | "bor"      { Bor }
   | "bxor"     { Bxor }
   | "by"       { By }
-(*   | "crate"    { Crate } *)
+  | "class"    { Class }
   | "continue" { Continue }
-(*   | "decl"     { Decl } *)
+  | "def"      { Def }
   | "else"     { Else }
   | "emit"     { Emit }
   | "enum"     { Enum }
@@ -83,9 +83,9 @@ rule main =
   | "fun"      { Fun }
   | "if"       { If }
   | "in"       { In }
+  | "instance" { Instance }
 (*   | "is"       { Is } *)
 (*   | "let"      { Let } *)
-  | "log"      { Log }
   | "loop"     { Loop }
   | "match"    { Match }
   | "mod"      { Mod }
@@ -96,7 +96,7 @@ rule main =
   | "task"     { Task }
   | "type"     { Type }
   | "val"      { Val }
-  | "with"     { With }
+(*   | "with"     { With } *)
 (*   | "var"      { Var } *)
 (*   | "unwrap"   { Unwrap } *)
 (*   | "enwrap"   { Enwrap } *)
@@ -158,4 +158,3 @@ and string buf =
     }
   | _ { raise (SyntaxError ("Illegal string character: " ^ Lexing.lexeme lexbuf)) }
   | eof { raise (SyntaxError ("String is not terminated")) }
-

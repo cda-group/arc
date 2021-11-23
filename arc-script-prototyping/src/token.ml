@@ -37,9 +37,9 @@ type token =
   | Underscore
   | Bar
   | BarBar
-  | Tilde
   | Ampersand
 (*= Retired Operators =======================================================*)
+(*     Tilde, *)
 (*     Pipe, *)
 (*     Bang, *)
 (*     Dollar, *)
@@ -58,9 +58,9 @@ type token =
   | Bor
   | Bxor
   | By
-  | Crate
+  | Class
   | Continue
-  | Decl
+  | Def
   | Else
   | Emit
   | Enum
@@ -71,9 +71,9 @@ type token =
   | Fun
   | If
   | In
+  | Instance
   | Is
   | Let
-  | Log
   | Loop
   | Match
   | Mod
@@ -84,7 +84,7 @@ type token =
   | Task
   | Type
   | Val
-  | With
+(*   | With *)
   | Var
   | Unwrap
   | Enwrap

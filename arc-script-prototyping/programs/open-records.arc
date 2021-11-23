@@ -1,7 +1,7 @@
-fun foo(x: #{}): #{} {
+def foo(x: #{}): #{} {
     x
 }
 
-fun bar() {
+def bar() {
     foo(#{y: 5});
 }

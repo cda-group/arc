@@ -1,8 +1,8 @@
-fun add(a:i32, b:i32): i32;
+def add(a:i32, b:i32): i32;
 
-fun add(a, b) {
+def add(a, b) {
     a + b
 }
 
-# Update fun
+# Update def
 

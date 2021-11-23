@@ -1,4 +1,5 @@
 open Hir
+open Utils
 
 module Ctx = struct
   type t = {
@@ -44,6 +45,12 @@ let rec pr_hir (hir:Hir.hir) =
   hir |> List.iter (fun i -> pr_item i ctx);
   pr "\n";
 
+and pr_thir (thir:Hir.thir) =
+  let hir = thir |> map (fun ((xs, _), i) -> (xs, i)) in
+  let ctx = Ctx.make hir true in
+  hir |> List.iter (fun i -> pr_item i ctx);
+  pr "\n";
+
 and pr_item (xs, i) ctx =
   ctx |> Ctx.print_indent;
   match i with
@@ -62,7 +69,7 @@ and pr_item (xs, i) ctx =
       pr_sep ", " pr_variant_path xss (ctx |> Ctx.indent);
       ctx |> Ctx.print_indent;
       pr "}";
-  | IExternFunc (gs, ps, t) ->
+  | IExternDef (gs, ps, t) ->
       pr "extern fun";
       pr_path xs;
       pr_generics gs ctx;
@@ -77,8 +84,8 @@ and pr_item (xs, i) ctx =
       pr_path xs;
       pr_generics gs ctx;
       pr ";";
-  | IFunc (gs, ps, t, b) ->
-      pr "fun ";
+  | IDef (gs, ps, t, b) ->
+      pr "def ";
       pr_path xs;
       pr_generics gs ctx;
       pr_params ps ctx;
@@ -105,6 +112,10 @@ and pr_item (xs, i) ctx =
       pr_type t ctx;
       pr ";";
   | IVariant _ -> ()
+  | IClass _ -> ()
+  | IClassDecl _ -> ()
+  | IInstance _ -> ()
+  | IInstanceDef _ -> ()
 
 and pr_interface (xs, ts) ctx =
   pr_path xs;
@@ -191,13 +202,6 @@ and pr_type t ctx =
         pr_sep ", " pr_type ts ctx;
         pr "]";
       end
-  | TArray t ->
-      pr "[";
-      pr_type t ctx;
-      pr "]";
-  | TStream t ->
-      pr "~";
-      pr_type t ctx;
   | TVar x -> pr "'%s" x;
   | TGeneric x -> pr "%s" x;
 
@@ -244,15 +248,9 @@ and pr_expr e ctx =
       pr_var v ctx;
       pr " ";
       pr_block b (ctx |> Ctx.indent);
-  | EArray vs ->
-      pr "[";
-      pr_sep ", " pr_var vs ctx;
-      pr "]";
-  | EBinOp (op, v0, v1) ->
+  | EEq (v0, v1) ->
       pr_var v0 ctx;
-      pr " ";
-      pr_binop op ctx;
-      pr " ";
+      pr " == ";
       pr_var v1 ctx;
   | ECall (v, vs) ->
       pr_var v ctx;
@@ -299,26 +297,15 @@ and pr_expr e ctx =
       pr ")";
   | ELit l ->
       pr_lit l ctx;
-  | ELog v ->
-      pr "log ";
-      pr_var v ctx;
   | ELoop b ->
       pr "loop ";
       pr_block b ctx;
   | EReceive ->
       pr "receive";
-  | ESelect (v0, v1) ->
-      pr_var v0 ctx;
-      pr "[";
-      pr_var v1 ctx;
-      pr "]";
   | ERecord fvs ->
       pr "%%{";
       pr_sep ", " pr_field_expr fvs ctx;
       pr "}";
-  | EUnOp (op, v) ->
-      pr_unop op ctx;
-      pr_var v ctx;
   | EUnwrap (xs, ts, v) ->
       pr "unwrap[";
       pr_path xs;
@@ -346,36 +333,6 @@ and pr_expr e ctx =
         pr_sep ", " pr_type ts ctx;
         pr "]";
       end
-
-and pr_binop op _ctx =
-  match op with
-  | BAdd -> pr "+"
-  | BAnd -> pr "and"
-  | BBand -> pr "band"
-  | BBor -> pr "bor"
-  | BBxor -> pr "bxor"
-  | BDiv -> pr "/"
-  | BEq -> pr "=="
-  | BGeq -> pr ">="
-  | BGt -> pr ">"
-  | BLeq -> pr "<="
-  | BLt -> pr "<"
-  | BMod -> pr "%s" "%"
-  | BMul -> pr "*"
-  | BNeq -> pr "!="
-  | BOr -> pr "|"
-  | BPow -> pr "^"
-  | BSub -> pr "-"
-  | BXor -> pr "xor"
-  | BIn -> pr "in"
-  | BRExc -> pr ".."
-  | BRInc -> pr "..="
-  | BWith -> pr "with"
-
-and pr_unop op _ctx =
-  match op with
-  | UNeg -> pr "-"
-  | UNot -> pr "not"
 
 and pr_var x ctx =
   pr_name x ctx

@@ -1,3 +1,3 @@
-fun test(s: ~i32): ~i32 {
+def test(s: ~i32): ~i32 {
     s | task: loop { on event => emit event } 
 }

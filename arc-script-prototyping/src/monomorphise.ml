@@ -4,19 +4,19 @@ open Utils
 module Ctx = struct
   type t = {
     hir: Hir.hir;
-    instances: (signature * item) list
+    thir: Hir.thir;
   }
   (* Here we should maybe mangle instead *)
   and signature = path * ty list
 
-  let rec make (hir:Hir.hir) = { hir; instances = []; }
+  let rec make (hir:Hir.hir) = { hir; thir = []; }
 
   and has_instance s ctx =
-    ctx.instances |> List.assoc_opt s |> Option.is_some
+    ctx.thir |> List.assoc_opt s |> Option.is_some
 
   and add_instance s i ctx =
     if not (ctx |> has_instance s) then
-      { ctx with instances = (s, i)::ctx.instances }
+      { ctx with thir = (s, i)::ctx.thir }
     else
       ctx
 end
@@ -24,18 +24,14 @@ end
 let rec monomorphise hir =
   let ctx = Ctx.make hir in
   let ctx = hir |> foldl mono_item ctx in
-  ctx.instances |> map (fun ((xs, _), i) -> (xs, i))
+  ctx.thir
 
 and mono_item ctx (xs, i) =
   match i with
-  | Hir.IFunc ([], ps, t, b) ->
+  | Hir.IDef ([], ps, t, b) ->
       let ctx = mono_params ctx ps in
       let ctx = mono_type ctx t in
       let ctx = mono_block ctx b in
-      ctx |> Ctx.add_instance (xs, []) i
-  | Hir.IExternFunc ([], ps, t) ->
-      let ctx = mono_params ctx ps in
-      let ctx = mono_type ctx t in
       ctx |> Ctx.add_instance (xs, []) i
   | Hir.ITask ([], ps, (xs0, ts0), (xs1, ts1), b) ->
       let ctx = mono_params ctx ps in
@@ -65,7 +61,7 @@ and mono_expr ctx e =
   | Hir.ELoop b -> mono_block ctx b
   | Hir.EItem (xs, ts) ->
       begin match ctx.hir |> assoc xs with
-      | Hir.IFunc (gs, ps, t, b) ->
+      | Hir.IDef (gs, ps, t, b) ->
           (* Instantiate function *)
           let s = zip gs ts in
           let f = Infer.instantiate s in
@@ -76,13 +72,13 @@ and mono_expr ctx e =
           let ctx = mono_params ctx ps in
           let ctx = mono_type ctx t in
           let ctx = mono_block ctx b in
-          ctx |> Ctx.add_instance (xs, ts) (Hir.IFunc ([], ps, t, b))
-      | Hir.IExternFunc (gs, ps, t) ->
+          ctx |> Ctx.add_instance (xs, ts) (Hir.IDef ([], ps, t, b))
+      | Hir.IExternDef (gs, ps, t) ->
           let s = zip gs ts in
           let f = Infer.instantiate s in
           let ps = tmap_params f ps in
           let t = f t in
-          ctx |> Ctx.add_instance (xs, ts) (Hir.IExternFunc ([], ps, t))
+          ctx |> Ctx.add_instance (xs, ts) (Hir.IExternDef ([], ps, t))
       | Hir.ITask (gs, ps, (xs0, ts0), (xs1, ts1), b) ->
           (* Instantiate task *)
           let s = zip gs ts in
@@ -125,8 +121,6 @@ and mono_type ctx t =
       | _ -> unreachable ()
       end
   | Hir.TGeneric _ -> unreachable ()
-  | Hir.TArray t -> mono_type ctx t
-  | Hir.TStream t -> mono_type ctx t
   | Hir.TVar _ -> unreachable ()
 
 and mono_enum_path ctx xs ts =

@@ -58,9 +58,9 @@
 %token Bor
 %token Bxor
 %token By
-(* %token Crate *)
+%token Class
 %token Continue
-(* %token Decl *)
+%token Def
 %token Else
 %token Emit
 %token Enum
@@ -71,9 +71,9 @@
 %token Fun
 %token If
 %token In
+%token Instance
 (* %token Is *)
 (* %token Let *)
-%token Log
 %token Loop
 %token Match
 %token Mod
@@ -84,7 +84,7 @@
 %token Task
 %token Type
 %token Val
-%token With
+(* %token With *)
 (* %token Var *)
 %token Use
 (* %token Xor *)
@@ -137,16 +137,20 @@ expr: expr0 Eof { $1 }
 program: llist(item) Eof { $1 }
 
 %inline item:
-  | Extern Fun name loption(generics) basic_params ty_annot Semi
-    { Ast.IExternFunc ($3, $4, $5, $6) }
+  | Extern Def name loption(generics) basic_params ty_annot Semi
+    { Ast.IExternDef ($3, $4, $5, $6) }
   | Type name Eq ty0 Semi
     { Ast.ITypeAlias ($2, $4) }
   | Extern Type name loption(generics) Semi
     { Ast.IExternType ($3, $4) }
   | Enum name loption(generics) brace(variants)
     { Ast.IEnum ($2, $3, $4) }
-  | Fun name loption(generics) params ioption(ty_annot) body
-    { Ast.IFunc ($2, $3, $4, $5, $6) }
+  | Class name loption(generics) brace(llist(decl))
+    { Ast.IClass ($2, $3, $4) }
+  | Instance loption(generics) path loption(ty_args) brace(llist(def))
+    { Ast.IInstance ($2, $3, $4, $5) }
+  | Def name loption(generics) params ioption(ty_annot) body
+    { Ast.IDef ($2, $3, $4, $5, $6) }
   | Mod name brace(llist(item))
     { Ast.IMod ($2, $3) }
   | Task name loption(generics) params Colon intf ArrowR intf body
@@ -155,8 +159,12 @@ program: llist(item) Eof { $1 }
     { Ast.IUse ($2, $3) }
   | Val name ioption(ty_annot) Eq expr0 Semi
     { Ast.IVal ($2, $3, $5) }
-(*   | Trait name brack(separated_llist(Comma, bound)) *)
-(*     { Ast.ITrait ($2, $3 )} *)
+
+%inline decl: Def name loption(generics) params ioption(ty_annot)
+  { ($2, $3, $4, $5) }
+
+%inline def: Def name loption(generics) params ioption(ty_annot) block
+  { ($2, $3, $4, $5, $6) }
 
 %inline body:
   | Semi { None }
@@ -199,7 +207,6 @@ expr0:
   | Emit expr0 { Ast.EEmit $2 }
   | After expr1 block { Ast.EAfter ($2, $3) }
   | Every expr1 block { Ast.EEvery ($2, $3) }
-  | Log expr0 { Ast.ELog $2 }
   | Return ioption(expr0) { Ast.EReturn $2 }
   | Break ioption(expr0) { Ast.EBreak $2 }
   | Continue { Ast.EContinue }
@@ -213,7 +220,6 @@ expr1:
   | expr2 { $1 }
   
 %inline op2:
-  | Bar { Ast.BPipe }
   | Eq { Ast.BMut }
   | In { Ast.BIn }
   | Not In { Ast.BNotIn }
@@ -308,8 +314,6 @@ expr14:
     { Ast.ESelect ($1, $2) }
   | expr12 Dot name paren(separated_llist(Comma, expr1))
     { Ast.EInvoke ($1, $3, $4) }
-  | expr12 With brace(separated_nonempty_llist(Comma, field_expr(expr15)))
-    { Ast.EWith ($1, $3) }
 
 %inline expr15:
   | paren(expr0)
@@ -320,14 +324,14 @@ expr14:
     { Ast.ELit $1 }
   | path loption(qualified_ty_args)
     { Ast.EPath ($1, $2) }
-  | brack(separated_llist(Comma, expr0))
-    { Ast.EArray $1 }
+  | BrackL separated_llist(Comma, expr0) option(tail(expr0)) BrackR
+    { Ast.EArray ($2, $3) }
   | BrackL expr0 Semi for_generator Semi separated_llist(Semi, clause) BrackR
     { Ast.ECompr ($2, $4, $6) }
   | ParenL expr0 Comma separated_llist(Comma, expr0) ParenR
     { Ast.ETuple ($2::$4) }
-  | PercentBraceL separated_llist(Comma, field_expr(expr0)) BraceR
-    { Ast.ERecord ($2) }
+  | PercentBraceL separated_llist(Comma, field_expr(expr0)) option(tail(expr0)) BraceR
+    { Ast.ERecord ($2, $3) }
   | If expr2 block ioption(else_block)
     { Ast.EIf ($2, $3, $4) }
   | If Val pat0 Eq expr1 block ioption(else_block)
@@ -341,7 +345,7 @@ expr14:
 
 %inline qualified_ty_args: ColonColon ty_args { $2 }
 %inline ty_args: brack(separated_nonempty_llist(Comma, ty0)) { $1 }
-%inline record_tail: Bar ty0 { $2 }
+%inline tail(x): Bar x { $2 }
 
 %inline clause:
   | for_generator { let (x0, x1) = $1 in Ast.CFor (x0, x1) }
@@ -424,15 +428,13 @@ ty0:
     { $1 }
   | Fun paren(separated_llist(Comma, ty0)) Colon ty0
     { Ast.TFunc ($2, $4) }
-  | Tilde ty0
-    { Ast.TStream $2 }
 
 ty1:
   | path loption(ty_args)
     { Ast.TPath ($1, $2) }
   | ParenL ty0 Comma separated_llist(Comma, ty0) ParenR
     { Ast.TTuple ($2::$4) }
-  | PercentBraceL separated_llist(Comma, field_ty) option(record_tail) BraceR
+  | PercentBraceL separated_llist(Comma, field_ty) option(tail(ty0)) BraceR
     { Ast.TRecord ($2, $3) }
   | brack(ty0)
     { Ast.TArray $1 }

@@ -54,6 +54,13 @@ and pr_generics gs ctx =
 and pr_generic x ctx =
   pr_name x ctx;
 
+and pr_overload t ctx =
+  match t with
+  | Some t1 ->
+      pr " for ";
+      pr_type t1 ctx
+  | None -> ()
+
 and pr_item i ctx =
   ctx |> Ctx.print_indent;
   match i with
@@ -72,7 +79,7 @@ and pr_item i ctx =
       pr_sep ", " pr_variant xss (ctx |> Ctx.indent);
       ctx |> Ctx.print_indent;
       pr "}";
-  | IExternFunc (x, gs, ps, t) ->
+  | IExternDef (x, gs, ps, t) ->
       pr "extern fun ";
       pr_name x ctx;
       pr_generics gs ctx;
@@ -87,12 +94,12 @@ and pr_item i ctx =
       pr_name x ctx;
       pr_generics gs ctx;
       pr ";";
-  | IFunc (x, gs, ps, t, b) ->
+  | IDef (x, gs, ps, t0, b) ->
       pr "fun ";
       pr_name x ctx;
       pr_generics gs ctx;
       pr_params ps ctx;
-      pr_type_opt t ctx;
+      pr_type_opt t0 ctx;
       pr_body b ctx;
   | ITask (x, gs, ps, i0, i1, b) ->
       pr "task ";
@@ -124,6 +131,54 @@ and pr_item i ctx =
       | None -> ()
       end;
       pr ";";
+  | IClass (x, gs, ds) ->
+      pr "class ";
+      pr_name x ctx;
+      pr_generics gs ctx;
+      pr_decls ds ctx;
+  | IInstance (gs, xs, ts, ds) ->
+      pr "instance ";
+      pr_generics gs ctx;
+      pr_path xs ctx;
+      pr ": ";
+      pr_type_args ts ctx;
+      pr_defs ds ctx;
+
+and pr_type_args ts ctx =
+  if ts != [] then begin
+    pr "[";
+    pr_sep ", " pr_type ts ctx;
+    pr "]";
+  end
+
+and pr_decls ds ctx =
+  pr " {";
+  pr_sep "" pr_decl ds ctx;
+  pr "}";
+
+and pr_decl (x, gs, ps, t) ctx =
+  pr "def ";
+  pr_name x ctx;
+  pr_generics gs ctx;
+  pr_params ps ctx;
+  pr_type_opt t ctx;
+  pr ";";
+
+and pr_defs ds ctx =
+  if ds != [] then begin
+    pr " {";
+    pr_sep "" pr_def ds ctx;
+    pr "}";
+  end;
+
+and pr_def (x, gs, ps, t, b) ctx =
+  pr "def ";
+  pr_name x ctx;
+  pr_generics gs ctx;
+  pr_params ps ctx;
+  pr_type_opt t ctx;
+  pr " ";
+  pr_block b ctx;
 
 and pr_body b ctx =
   match b with
@@ -256,19 +311,19 @@ and pr_type t ctx =
       end;
       pr " }";
   | TPath (xs, ts) ->
-      pr_path xs ctx;
-      if ts != [] then begin
-        pr "[";
-        pr_sep ", " pr_type ts ctx; 
-        pr "]";
-      end
+      pr_type_path xs ts ctx;
   | TArray t ->
       pr "[";
       pr_type t ctx;
       pr "]";
-  | TStream t ->
-      pr "~";
-      pr_type t ctx;
+
+and pr_type_path xs ts ctx =
+  pr_path xs ctx;
+  if ts != [] then begin
+    pr "[";
+    pr_sep ", " pr_type ts ctx; 
+    pr "]";
+  end
 
 and pr_block (ss, e) ctx =
   let ctx' = ctx |> Ctx.indent in
@@ -331,9 +386,15 @@ and pr_expr e ctx =
         pr_expr e ctx;
         pr " ";
         pr_block b (ctx |> Ctx.indent);
-    | EArray vs ->
+    | EArray (vs, v) ->
         pr "[";
         pr_sep ", " pr_expr vs ctx;
+        begin match v with
+        | None -> ();
+        | Some v ->
+            pr "|";
+            pr_expr v ctx;
+        end;
         pr "]";
     | EBinOp (op, v0, v1) ->
         pr_expr v0 ctx;
@@ -386,9 +447,6 @@ and pr_expr e ctx =
         end
     | ELit l ->
         pr_lit l ctx;
-    | ELog e ->
-        pr "log ";
-        pr_expr e ctx;
     | ELoop b ->
         pr "loop ";
         pr_block b ctx;
@@ -403,9 +461,15 @@ and pr_expr e ctx =
         pr "[";
         pr_expr e1 ctx;
         pr "]";
-    | ERecord fvs ->
+    | ERecord (fvs, v) ->
         pr "%%{";
         pr_sep ", " pr_field_expr fvs ctx;
+        begin match v with
+        | None -> ();
+        | Some v ->
+            pr "|";
+            pr_expr v ctx;
+        end;
         pr "}";
     | EUnOp (op, e) ->
         pr_unop op ctx;

@@ -68,7 +68,7 @@ module Ctx = struct
     | SMono of { t:ty; explicit_gs:name list; }
 
   and subctx =
-    | CFunc of ty
+    | CDef of ty
     | CTask of ty * ty
     | CLoop of ty
 
@@ -85,7 +85,7 @@ module Ctx = struct
 
   and return_ty ctx =
     match hd ctx.subctx with
-    | CFunc t -> t
+    | CDef t -> t
     | _ -> panic "Tried to return outside of function"
 
   and input_event_ty ctx =
@@ -251,8 +251,6 @@ and apply s t =
   | Hir.TRowExtend ((x, t), r) -> Hir.TRowExtend ((x, f t), f r)
   | Hir.TNominal (xs, ts) -> Hir.TNominal (xs, map f ts)
   | Hir.TGeneric x -> Hir.TGeneric x
-  | Hir.TArray t -> Hir.TArray (f t)
-  | Hir.TStream t -> Hir.TStream (f t)
   | Hir.TVar x -> s |> get_or x t
 
 (* Apply generic substitutions to type *)
@@ -265,8 +263,6 @@ and instantiate s t =
   | Hir.TRowExtend ((x, t), r) -> Hir.TRowExtend ((x, f t), f r)
   | Hir.TNominal (xs, ts) -> Hir.TNominal (xs, map f ts)
   | Hir.TGeneric x -> s |> assoc x
-  | Hir.TArray t -> Hir.TArray (f t)
-  | Hir.TStream t -> Hir.TStream (f t)
   | Hir.TVar x -> Hir.TVar x
 
 (* Generalise a type into a type scheme *)
@@ -279,8 +275,6 @@ and generalise s t =
   | Hir.TRowExtend ((x, t), r) -> Hir.TRowExtend ((x, f t), f r)
   | Hir.TNominal (xs, ts) -> Hir.TNominal (xs, map f ts)
   | Hir.TGeneric x -> Hir.TGeneric x
-  | Hir.TArray t -> Hir.TArray (f t)
-  | Hir.TStream t -> Hir.TStream (f t)
   | Hir.TVar x -> Hir.TGeneric (s |> assoc x)
 
 (* Unifies two types *)
@@ -325,8 +319,6 @@ and tvs t =
     | Hir.TRowExtend ((_, t), _) -> acc |> tvs_of_t t
     | Hir.TNominal (_, ts) -> acc |> tvs_of_ts ts
     | Hir.TGeneric _ -> NameSet.empty
-    | Hir.TArray t -> acc |> tvs_of_t t
-    | Hir.TStream t -> acc |> tvs_of_t t
     | Hir.TVar x -> acc |> NameSet.add x
   and tvs_of_ts ts acc = ts |> foldl (fun acc t -> (tvs_of_t t acc)) acc in
   tvs_of_t t NameSet.empty |> NameSet.elements
@@ -352,10 +344,6 @@ and mgu t0 t1 ctx : ((Hir.name * Hir.ty) list * Ctx.t) =
       ctx |> mgus ts0 ts1 []
   | Hir.TGeneric x0, Hir.TGeneric x1 when x0 = x1 ->
       ([], ctx)
-  | Hir.TArray t0, Hir.TArray t1 ->
-      ctx |> mgu t0 t1
-  | Hir.TStream t0, Hir.TStream t1 ->
-      ctx |> mgu t0 t1
   | Hir.TVar x, t | t, Hir.TVar x ->
       if t = Hir.TVar x then
         ([], ctx)
@@ -424,13 +412,17 @@ and infer_item (ctx:Ctx.t) (xs, i) : Ctx.t =
     ctx
   else
     match i with
+    | Hir.IClass _ -> todo ()
+    | Hir.IInstance _ -> todo ()
+    | Hir.IClassDecl _ -> todo ()
+    | Hir.IInstanceDef _ -> todo ()
     | Hir.IVal (t0, b) ->
         let (t1, ctx) = infer_block b ctx in
         let _ctx = ctx |> unify t0 t1 in
         todo ()
-    | Hir.IFunc (explicit_gs, ps, t0, b) ->
+    | Hir.IDef (explicit_gs, ps, t0, b) ->
         let ctx = ctx |> Ctx.push_frame in
-        let ctx = ctx |> Ctx.push_subctx (Ctx.CFunc t0) in
+        let ctx = ctx |> Ctx.push_subctx (Ctx.CDef t0) in
 
         (* Infer MGU of the function *)
         let ctx = ctx |> bind_params ps in
@@ -459,7 +451,7 @@ and infer_item (ctx:Ctx.t) (xs, i) : Ctx.t =
 
         (* Store the type scheme / generic item *)
         let sc = Ctx.SPoly { t; explicit_gs; implicit_gs } in
-        let ctx = ctx |> Ctx.add_item xs (Hir.IFunc (explicit_gs @ implicit_gs, ps, t0, b)) in
+        let ctx = ctx |> Ctx.add_item xs (Hir.IDef (explicit_gs @ implicit_gs, ps, t0, b)) in
         let ctx = ctx |> Ctx.add_scheme xs sc in
 
         ctx
@@ -486,8 +478,8 @@ and infer_item (ctx:Ctx.t) (xs, i) : Ctx.t =
         (* Apply MGU to all types in the function *)
         let (ps, ts0, ts1, b) = tmap_task (apply s) (ps, ts0, ts1, b) in
 
-        let ts0_streams = ts0 |> map (fun t -> Hir.TStream t) in
-        let ts1_streams = ts1 |> map (fun t -> Hir.TStream t) in
+        let ts0_streams = ts0 |> map (fun t -> Hir.TNominal (["Stream"], [t])) in
+        let ts1_streams = ts1 |> map (fun t -> Hir.TNominal (["Stream"], [t])) in
 
         (* Create the task type *)
         let t = match ts1_streams with
@@ -511,49 +503,10 @@ and infer_item (ctx:Ctx.t) (xs, i) : Ctx.t =
         let ctx = ctx |> Ctx.add_scheme xs sc in
         ctx
     | Hir.IEnum _
-    | Hir.IExternFunc _
+    | Hir.IExternDef _
     | Hir.IExternType _
     | Hir.ITypeAlias _
     | Hir.IVariant _ -> ctx |> Ctx.add_item xs i
-
-and infer_binop t0 op v1 v2 (ctx:Ctx.t) =
-  let typeof v = ctx |> Ctx.typeof v in
-  match op with
-  | Hir.BAdd
-  | Hir.BDiv
-  | Hir.BMul
-  | Hir.BSub
-  | Hir.BPow
-  | Hir.BMod ->
-      ctx |> unify t0 (atom "i32") (* FIXME *)
-          |> unify t0 (typeof v1)
-          |> unify t0 (typeof v2)
-  | Hir.BBand
-  | Hir.BBor
-  | Hir.BBxor ->
-      ctx |> unify t0 (atom "bool")
-          |> unify (typeof v1) (typeof v2)
-  | Hir.BNeq
-  | Hir.BEq ->
-      ctx |> unify t0 (atom "bool")
-          |> unify (typeof v1) (typeof v2)
-  | Hir.BGeq
-  | Hir.BGt
-  | Hir.BLeq
-  | Hir.BLt ->
-      ctx |> unify t0 (atom "bool")
-          |> unify (typeof v1) (typeof v2)
-          |> unify (typeof v1) (atom "i32")
-  | Hir.BOr
-  | Hir.BAnd
-  | Hir.BXor ->
-      ctx |> unify t0 (atom "bool")
-          |> unify t0 (typeof v1)
-          |> unify t0 (typeof v2)
-  | Hir.BIn
-  | Hir.BRExc
-  | Hir.BRInc
-  | Hir.BWith -> todo ()
 
 and infer_lit t l (ctx:Ctx.t) =
   match l with
@@ -598,10 +551,6 @@ and infer_ssa_rhs ctx (v0, t0, e0) =
       ctx |> unify (typeof v1) (atom "i32")
           |> unify t2 (atom "unit")
           |> unify (typeof v0) t2
-  | Hir.EArray vs ->
-      vs |> foldl (fun ctx v1 -> ctx |> unify t0 (Hir.TArray (typeof v1))) ctx
-  | Hir.EBinOp (op, v0, v1) ->
-      infer_binop t0 op v0 v1 ctx
   | Hir.ECall (v1, vs) ->
       ctx |> unify (typeof v1) (Hir.TFunc (ts_of_vs vs ctx, t0))
   | Hir.ECast (v1, t2) ->
@@ -610,6 +559,9 @@ and infer_ssa_rhs ctx (v0, t0, e0) =
   | Hir.EEmit v1 ->
       ctx |> unify t0 (atom "unit")
           |> unify (typeof v1) (ctx |> Ctx.output_event_ty)
+  | Hir.EEq (v1, v2) ->
+      ctx |> unify t0 (atom "bool")
+          |> unify (typeof v1) (typeof v2)
   | Hir.EIf (v1, b0, b1) ->
       let (t2, ctx) = infer_block b0 ctx in
       let (t3, ctx) = infer_block b1 ctx in
@@ -618,23 +570,15 @@ and infer_ssa_rhs ctx (v0, t0, e0) =
           |> unify (atom "bool") (typeof v1)
   | Hir.ELit l ->
       infer_lit t0 l ctx
-  | Hir.ELog v1 ->
-      ctx |> unify t0 (atom "unit")
-          |> unify (typeof v1) (atom "string")
   | Hir.ELoop b ->
       let (t1, ctx) = infer_block b ctx in
       ctx |> unify t0 (atom "unit")
           |> unify t1 (atom "unit")
   | Hir.EReceive -> ctx
-  | Hir.ESelect (v1, v2) ->
-      ctx |> unify (typeof v1) (Hir.TArray (t0))
-          |> unify (typeof v2) (atom "i32")
   | Hir.ERecord fvs ->
       let fts = fts_of_fvs fvs ctx in
       let t1 = fts |> Lower.fields_to_rows Hir.TRowEmpty in
       ctx |> unify t0 (Hir.TRecord t1)
-  | Hir.EUnOp (op, v) ->
-      infer_unop t0 op v ctx
   | Hir.EReturn v1 ->
       ctx |> unify t0 (atom "unit")
           |> unify (typeof v1) (ctx |> Ctx.return_ty)

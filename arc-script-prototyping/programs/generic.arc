@@ -1,8 +1,8 @@
-fun identity[A](x: A, y: A): A {
+def identity[A](x: A, y: A): A {
     identity(x, y)
 }
 
-fun main() {
+def main() {
     val x: i32 = 5;
     identity::[i32](x, x);
 }

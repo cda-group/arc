@@ -76,8 +76,8 @@ module Ctx = struct
         end
     | _ -> panic "Called `emit` from outside of task"
 
-  and add_item path item (ctx:t) =
-    { ctx with hir = (path, item)::ctx.hir }
+  and add_item xs i (ctx:t) =
+    { ctx with hir = (xs, i)::ctx.hir }
 
   and fresh_t (ctx:t) =
     let (n, next_type_uid) = ctx.next_type_uid |> Gen.fresh in
@@ -213,15 +213,15 @@ module Ctx = struct
   and resolve_variant_path xs ctx =
     let (xs, decl) = ctx |> resolve_path xs in
     match decl with
-    | DExternFunc | DExternType | DFunc | DTask | DVariant | DGlobal | DMod -> unreachable ()
-    | DEnum | DTypeAlias -> (Hir.TNominal (xs, []), ctx)
+    | DExternDef | DExternType | DDef | DTask | DVariant | DGlobal | DMod -> unreachable ()
+    | DEnum | DClass | DTypeAlias -> (Hir.TNominal (xs, []), ctx)
 
   and resolve_type_path xs ts ctx =
     let resolve_type_path xs ctx =
       let (xs, decl) = ctx |> resolve_path xs in
       match decl with
-      | DExternFunc | DFunc | DTask | DVariant | DGlobal | DMod -> unreachable ()
-      | DEnum | DExternType | DTypeAlias -> (Hir.TNominal (xs, ts), ctx)
+      | DExternDef | DDef | DTask | DVariant | DGlobal | DMod -> unreachable ()
+      | DEnum | DClass | DExternType | DTypeAlias -> (Hir.TNominal (xs, ts), ctx)
     in
     match xs with
     | [x] when ts = [] ->
@@ -236,7 +236,7 @@ module Ctx = struct
     let resolve_expr_path xs ctx =
       let (xs, decl) = ctx |> resolve_path xs in
       match decl with
-      | DEnum | DExternFunc | DExternType | DTask | DFunc | DVariant | DGlobal | DMod ->
+      | DEnum | DClass | DExternDef | DExternType | DTask | DDef | DVariant | DGlobal | DMod ->
           ctx |> add_expr (Hir.EItem (xs, ts))
       | DTypeAlias -> panic "Found type where expr was expected"
     in
@@ -292,6 +292,25 @@ module Ctx = struct
     let (ss, ctx) = ctx |> pop_vscope in
     ((ss, v), ctx)
 
+  and make_array vs ctx =
+    let (t, ctx) = ctx |> fresh_t in
+    let (v_new, ctx) = ctx |> add_expr (Hir.EItem (["new_array"], [t])) in
+    let (v_push, ctx) = ctx |> add_expr (Hir.EItem (["push_array"], [t])) in
+    let (v0, ctx) = ctx |> add_expr (Hir.ECall (v_new, [])) in
+    let ctx = vs |> foldl (fun ctx v1 -> ctx |> add_expr (Hir.ECall (v_push, [v0; v1])) |> snd) ctx in
+    (v0, ctx)
+
+  and append_array v0 v1 ctx =
+    let (t, ctx) = ctx |> fresh_t in
+    let (v_append, ctx) = ctx |> add_expr (Hir.EItem (["append_array"], [t])) in
+    ctx |> add_expr (Hir.ECall (v_append, [v0; v1]))
+
+  (* Retrieve the value from a cell *)
+  and select_array v0 v1 ctx =
+    let (t, ctx) = ctx |> fresh_t in
+    let (v_fun, ctx) = ctx |> add_expr (Hir.EItem (["select_array"], [t])) in
+    ctx |> add_expr (Hir.ECall (v_fun, [v0; v1]))
+
   and nominal x ts = Hir.TNominal ([x], ts)
 
   and generic x = Hir.TGeneric x
@@ -330,23 +349,38 @@ and lower_item i ctx =
       let (variants, ctx) = variants |> mapm (lower_variant xs) ctx in
       let ctx = ctx |> Ctx.pop_gscope in
       ctx |> Ctx.add_item xs (Hir.IEnum (gs, variants))
-  | Ast.IExternFunc (x, gs, ps, t) ->
+  | Ast.IExternDef (x, gs, ps, t) ->
       let xs = x::ctx.path |> List.rev in
       let ctx = ctx |> Ctx.push_gscope in
       let (gs, ctx) = gs |> mapm lower_generic ctx in
       let (ps, ctx) = ps |> mapm lower_basicparam ctx in
       let (t, ctx) = lower_type t ctx in
       let ctx = ctx |> Ctx.pop_gscope in
-      ctx |> Ctx.add_item xs (Hir.IExternFunc (gs, ps, t))
+      ctx |> Ctx.add_item xs (Hir.IExternDef (gs, ps, t))
   | Ast.IExternType (x, gs) ->
       let xs = x::ctx.path |> List.rev in
       let ctx = ctx |> Ctx.push_gscope in
       let (gs, ctx) = gs |> mapm lower_generic ctx in
       let ctx = ctx |> Ctx.pop_gscope in
       ctx |> Ctx.add_item xs (Hir.IExternType gs)
-  | Ast.IFunc (_, _, _, _, None) -> ctx
-  | Ast.ITask (_, _, _, _, _, None) -> ctx
-  | Ast.IFunc (x, gs, ps, t, Some b) ->
+  | Ast.IClass (x, gs, decls) ->
+      let xs = x::ctx.path |> List.rev in
+      let ctx = ctx |> Ctx.push_gscope in
+      let (gs, ctx) = gs |> mapm lower_generic ctx in
+      let ctx = decls |> foldl (lower_decl xs) ctx in
+      let ctx = ctx |> Ctx.pop_gscope in
+      ctx |> Ctx.add_item xs (Hir.IClass (gs))
+  | Ast.IInstance (gs, xs, ts, defs) ->
+      let ctx = ctx |> Ctx.push_gscope in
+      let (gs, ctx) = gs |> mapm lower_generic ctx in
+      let ctx = defs |> foldl (lower_def xs) ctx in
+      let (ts, ctx) = ts |> mapm lower_type ctx in
+      let ctx = ctx |> Ctx.pop_gscope in
+      ctx |> Ctx.add_item xs (Hir.IInstance (gs, xs, ts))
+  (* Declaration *)
+  | Ast.IDef (_, _, _, _, None) -> ctx
+  (* Definition *)
+  | Ast.IDef (x, gs, ps, t, Some b) ->
       let xs = x::ctx.path in
       let ctx = ctx |> Ctx.push_gscope in
       let ctx = ctx |> Ctx.push_vscope in
@@ -357,7 +391,8 @@ and lower_item i ctx =
       let (ss1, ctx) = ctx |> Ctx.pop_vscope in
       let b = (ss1 @ ss0, v) in
       let ctx = ctx |> Ctx.pop_gscope in
-      ctx |> Ctx.add_item xs (Hir.IFunc (gs, ps, t, b))
+      ctx |> Ctx.add_item xs (Hir.IDef (gs, ps, t, b))
+  | Ast.ITask (_, _, _, _, _, None) -> ctx
   | Ast.ITask (x, gs, ps, i0, i1, Some b) ->
       let xs = x::ctx.path in
       let ctx = ctx |> Ctx.push_gscope in
@@ -389,6 +424,12 @@ and lower_item i ctx =
       let ctx = ctx |> Ctx.pop_namespace in
       ctx
   | Ast.IUse _ -> ctx
+
+and lower_decl _xs _ctx (_d:Ast.decl) =
+  todo ()
+
+and lower_def _xs _ctx (_d:Ast.def) =
+  todo ()
 
 and enwrap generics xs v = Hir.EEnwrap (xs, generics, v)
 and unwrap generics xs v = Hir.EUnwrap (xs, generics, v)
@@ -472,9 +513,16 @@ and lower_expr expr ctx : Hir.var * Ctx.t =
       let (v, ctx) = lower_expr e ctx in
       let (b, ctx) = lower_block b ctx in
       ctx |> Ctx.add_expr (Hir.EEvery (v, b))
-  | Ast.EArray es ->
+  | Ast.EArray (es, e) ->
       let (vs, ctx) = es |> mapm lower_expr ctx in
-      ctx |> Ctx.add_expr (Hir.EArray vs)
+      let (v0, ctx) = ctx |> Ctx.make_array vs in
+      begin match e with
+      | None ->
+          (v0, ctx)
+      | Some e ->
+          let (v1, ctx) = lower_expr e ctx in
+          ctx |> Ctx.append_array v0 v1
+      end
   | Ast.EBinOp (Ast.BPipe, e0, e1) ->
       let (v0, ctx) = lower_expr e0 ctx in
       let (v1, ctx) = lower_expr e1 ctx in
@@ -483,13 +531,21 @@ and lower_expr expr ctx : Hir.var * Ctx.t =
       let (v0, ctx) = Ctx.resolve_lvalue e0 ctx in
       let (v1, ctx) = lower_expr e1 ctx in
       ctx |> Ctx.update_cell v0 v1
-  | Ast.EBinOp (op, e0, e1) ->
+  | Ast.EBinOp (Ast.BEq, e0, e1) ->
       let (v0, ctx) = lower_expr e0 ctx in
       let (v1, ctx) = lower_expr e1 ctx in
-      let (op, ctx) = lower_binop op ctx in
-      ctx |> Ctx.add_expr (Hir.EBinOp (op, v0, v1))
+      ctx |> Ctx.add_expr (Hir.EEq (v0, v1))
+  | Ast.EBinOp (op, e0, e1) ->
+      let (v0, ctx) = lower_binop op ctx in
+      let (v1, ctx) = lower_expr e0 ctx in
+      let (v2, ctx) = lower_expr e1 ctx in
+      ctx |> Ctx.add_expr (Hir.ECall (v0, [v1; v2]))
   | Ast.ECall (e, es) -> lower_call e es ctx
-  | Ast.EInvoke _ -> todo ()
+  | Ast.EInvoke (e, x, es) ->
+      let (v0, ctx) = lower_expr e ctx in
+      let (v1, ctx) = Ctx.resolve_expr_path [x] [] ctx in
+      let (vs, ctx) = es |> mapm lower_expr ctx in
+      ctx |> Ctx.add_expr (Hir.ECall (v1, v0::vs))
   | Ast.ECast (e, t) ->
       let (v, ctx) = lower_expr e ctx in
       let (t, ctx) = lower_type t ctx in
@@ -503,23 +559,22 @@ and lower_expr expr ctx : Hir.var * Ctx.t =
       let (b0, ctx) = lower_block b0 ctx in
       let (b1, ctx) = lower_block_opt b1 ctx in
       ctx |> Ctx.add_expr (Hir.EIf (v, b0, b1))
-  | Ast.ELit l -> lower_lit l ctx
-  | Ast.ELog e ->
-      let (v, ctx) = lower_expr e ctx in
-      ctx |> Ctx.add_expr (Hir.ELog v)
+  | Ast.ELit l ->
+      lower_lit l ctx
   | Ast.ELoop b ->
       let (b, ctx) = lower_block b ctx in
       ctx |> Ctx.add_expr (Hir.ELoop b)
   | Ast.ESelect (e0, e1) ->
       let (v0, ctx) = lower_expr e0 ctx in
       let (v1, ctx) = lower_expr e1 ctx in
-      ctx |> Ctx.add_expr (Hir.ESelect (v0, v1))
-  | Ast.ERecord fs ->
+      ctx |> Ctx.select_array v0 v1
+  | Ast.ERecord (fs, _) ->
       let (fs, ctx) = fs |> mapm lower_field_expr ctx in
       ctx |> Ctx.add_expr (Hir.ERecord fs)
   | Ast.EUnOp (op, e) ->
-      let (v, ctx) = lower_expr e ctx in
-      ctx |> Ctx.add_expr (Hir.EUnOp (op, v))
+      let (v0, ctx) = lower_unop op ctx in
+      let (v1, ctx) = lower_expr e ctx in
+      ctx |> Ctx.add_expr (Hir.ECall (v0, [v1]))
   | Ast.EReturn e ->
       let (v, ctx) = lower_expr_opt e ctx in
       ctx |> Ctx.add_expr (Hir.EReturn v)
@@ -654,6 +709,11 @@ and lower_expr expr ctx : Hir.var * Ctx.t =
       (v, ctx)
     | Ast.EWith (_e, _es) -> todo ()
 
+and lower_unop op ctx =
+  match op with
+  | Ast.UNot -> ctx |> Ctx.add_expr (Hir.EItem (["not"], []))
+  | Ast.UNeg -> ctx |> Ctx.add_expr (Hir.EItem (["neg"], []))
+
 and lower_compr_clauses cs e0 ctx =
   match cs with
   | c::cs ->
@@ -734,10 +794,7 @@ and lower_type t (ctx:Ctx.t) =
       ctx |> Ctx.resolve_type_path xs ts
   | Ast.TArray t ->
       let (t, ctx) = lower_type t ctx in
-      (Hir.TArray t, ctx)
-  | Ast.TStream t ->
-      let (t, ctx) = lower_type t ctx in
-      (Hir.TStream t, ctx)
+      (Hir.TNominal (["Array"], [t]), ctx)
 
 (* Lowers an irrefutable pattern matching on variable v, e.g., val p = v; *)
 and lower_irrefutable_pat p t v ctx =
@@ -993,31 +1050,26 @@ and fresh_interface f ctx =
   (f, ts, ctx)
 
 and lower_binop op (ctx:Ctx.t) =
-  let op = match op with
-  | Ast.BAdd -> Hir.BAdd
-  | Ast.BAnd -> Hir.BAnd
-  | Ast.BBand -> Hir.BBand
-  | Ast.BBor -> Hir.BBor
-  | Ast.BBxor -> Hir.BBxor
-  | Ast.BDiv -> Hir.BDiv
-  | Ast.BEq -> Hir.BEq
-  | Ast.BGeq -> Hir.BGeq
-  | Ast.BGt -> Hir.BGt
-  | Ast.BLeq -> Hir.BLeq
-  | Ast.BLt -> Hir.BLt
-  | Ast.BMod -> Hir.BMod
-  | Ast.BMul -> Hir.BMul
-  | Ast.BNeq -> Hir.BNeq
-  | Ast.BOr -> Hir.BOr
-  | Ast.BPow -> Hir.BPow
-  | Ast.BSub -> Hir.BSub
-  | Ast.BXor -> Hir.BXor
-  | Ast.BIn -> Hir.BIn
-  | Ast.BRExc -> Hir.BRExc
-  | Ast.BRInc -> Hir.BRInc
+  match op with
+  | Ast.BAdd -> ctx |> Ctx.add_expr (Hir.EItem (["add"], []))
+  | Ast.BAnd -> ctx |> Ctx.add_expr (Hir.EItem (["and"], []))
+  | Ast.BBand -> ctx |> Ctx.add_expr (Hir.EItem (["band"], []))
+  | Ast.BBor -> ctx |> Ctx.add_expr (Hir.EItem (["bor"], []))
+  | Ast.BBxor -> ctx |> Ctx.add_expr (Hir.EItem (["bxor"], []))
+  | Ast.BDiv -> ctx |> Ctx.add_expr (Hir.EItem (["div"], []))
+  | Ast.BGeq -> ctx |> Ctx.add_expr (Hir.EItem (["geq"], []))
+  | Ast.BGt -> ctx |> Ctx.add_expr (Hir.EItem (["gt"], []))
+  | Ast.BLeq -> ctx |> Ctx.add_expr (Hir.EItem (["leq"], []))
+  | Ast.BLt -> ctx |> Ctx.add_expr (Hir.EItem (["lt"], []))
+  | Ast.BMod -> ctx |> Ctx.add_expr (Hir.EItem (["mod"], []))
+  | Ast.BMul -> ctx |> Ctx.add_expr (Hir.EItem (["mul"], []))
+  | Ast.BNeq -> ctx |> Ctx.add_expr (Hir.EItem (["neq"], []))
+  | Ast.BOr -> ctx |> Ctx.add_expr (Hir.EItem (["or"], []))
+  | Ast.BPow -> ctx |> Ctx.add_expr (Hir.EItem (["pow"], []))
+  | Ast.BSub -> ctx |> Ctx.add_expr (Hir.EItem (["sub"], []))
+  | Ast.BXor -> ctx |> Ctx.add_expr (Hir.EItem (["xor"], []))
   (* Unreachable code *)
-  | Ast.BMut | Ast.BBy | Ast.BNotIn | Ast.BPipe -> unreachable ()
-  in (op, ctx)
+  | Ast.BIn | Ast.BRExc | Ast.BRInc | Ast.BEq | Ast.BMut | Ast.BBy | Ast.BNotIn | Ast.BPipe -> unreachable ()
 
 and regex = (Str.regexp "\\${[^}]+}\\|\\$[a-zA-Z_][a-zA-Z0-9_]*")
 
@@ -1037,8 +1089,9 @@ and lower_lit l (ctx:Ctx.t) =
         ) ctx in
       begin match vs with
       | v::vs ->
-        vs |> List.fold_left (fun (v0, ctx) v1 ->
-          ctx |> Ctx.add_expr (Hir.EBinOp (Hir.BAdd, v0, v1))
+        vs |> List.fold_left (fun (v1, ctx) v2 ->
+          let (v0, ctx) = ctx |> Ctx.add_expr (Hir.EItem (["concat"], [])) in
+          ctx |> Ctx.add_expr (Hir.ECall (v0, [v1; v2]))
         ) (v, ctx)
       | _ -> unreachable ()
       end
@@ -1071,7 +1124,7 @@ and lower_closure ps e (ctx:Ctx.t) =
   let (t, ctx) = ctx |> Ctx.fresh_t in
   let xs = [x] in
 
-  let f = Hir.IFunc ([], ps, t, b1) in
+  let f = Hir.IDef ([], ps, t, b1) in
   let ctx = ctx |> Ctx.add_item xs f in
 
   (* Create the function pointer *)
@@ -1136,8 +1189,7 @@ and free_vars (ps:Hir.param list) (b:Hir.block) : Hir.name list =
     | Hir.EAccess (v, _) -> ctx |> use v
     | Hir.EAfter (v, b) -> ctx |> use v |> use_block b
     | Hir.EEvery (v, b) -> ctx |> use v |> use_block b
-    | Hir.EArray vs -> use_all vs ctx
-    | Hir.EBinOp (_, v0, v1) -> ctx |> use v0 |> use v1
+    | Hir.EEq (v0, v1) -> ctx |> use v0 |> use v1
     | Hir.ECall (v, vs) -> ctx |> use v |> use_all vs
     | Hir.ECast (v, _) -> ctx |> use v
     | Hir.EEmit v -> ctx |> use v
@@ -1145,12 +1197,9 @@ and free_vars (ps:Hir.param list) (b:Hir.block) : Hir.name list =
     | Hir.EIf (v, b0, b1) -> ctx |> use v |> use_block b0 |> use_block b1
     | Hir.EIs (_, _, v) -> ctx |> use v
     | Hir.ELit _ -> ctx
-    | Hir.ELog v -> ctx |> use v
     | Hir.ELoop b -> ctx |> use_block b
     | Hir.EReceive -> ctx
-    | Hir.ESelect (v0, v1) -> ctx |> use v0 |> use v1
     | Hir.ERecord vfs -> vfs |> List.fold_left (fun ctx (_, v) -> ctx |> use v) ctx
-    | Hir.EUnOp (_, v) -> ctx |> use v
     | Hir.EUnwrap (_, _, v) -> ctx |> use v
     | Hir.EReturn v -> ctx |> use v
     | Hir.EBreak v -> ctx |> use v

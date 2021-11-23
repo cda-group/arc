@@ -17,13 +17,18 @@ and interface =
 and item =
   | IVal        of name * ty option * expr
   | IEnum       of name * generic list * variant list
-  | IExternFunc of name * generic list * basic_param list * ty
+  | IExternDef  of name * generic list * basic_param list * ty
   | IExternType of name * generic list
-  | IFunc       of name * generic list * param list * ty option * block option
+  | IClass      of name * generic list * decl list
+  | IInstance   of generic list * path * ty list * def list
+  | IDef        of name * generic list * param list * ty option * block option
   | ITask       of name * generic list * param list * interface * interface * block option
   | IMod        of name * item list
   | ITypeAlias  of name * ty
   | IUse        of path * name option
+
+and decl = name * generic list * param list * ty option
+and def = name * generic list * param list * ty option * block
 
 and pattern =
   | PIgnore
@@ -40,7 +45,6 @@ and ty =
   | TRecord of ty field list * ty option
   | TPath   of path * ty list
   | TArray  of ty
-  | TStream of ty
 
 and binop =
   | BAdd
@@ -94,34 +98,33 @@ and expr =
   | EAccess   of expr * name
   | EAfter    of expr * block
   | EEvery    of expr * block
-  | EArray    of expr list
-  | EBinOp    of binop * expr * expr
   | ECall     of expr * expr list
-  | EInvoke   of expr * name * expr list
   | ECast     of expr * ty
   | EEmit     of expr
   | EIf       of expr * block * block option
   | ELit      of lit
-  | ELog      of expr
   | ELoop     of block
-  | EOn       of arm list
-  | ESelect   of expr * expr
-  | ERecord   of expr option field list
+  | ERecord   of expr option field list * expr option
   | EUnOp     of unop * expr
   | EReturn   of expr option
   | EBreak    of expr option
   | EContinue
   (* NB: These expressions are desugared *)
-  | ETuple    of expr list
-  | EProject  of expr * index
+  | EArray    of expr list * expr option
+  | EBinOp    of binop * expr * expr
   | EBlock    of block
-  | EFunc     of param list * expr
-  | ETask     of expr
-  | EIfVal    of pattern * expr * block * block option
-  | EFor      of pattern * expr * block
-  | EMatch    of expr * arm list
   | ECompr    of expr * (pattern * expr) * clause list
+  | EFor      of pattern * expr * block
+  | EFunc     of param list * expr
+  | EIfVal    of pattern * expr * block * block option
+  | EInvoke   of expr * name * expr list
+  | EMatch    of expr * arm list
+  | EOn       of arm list
   | EPath     of path * ty list
+  | EProject  of expr * index
+  | ESelect   of expr * expr
+  | ETask     of expr
+  | ETuple    of expr list
   | EWith     of expr * expr option field list
 
 and clause =

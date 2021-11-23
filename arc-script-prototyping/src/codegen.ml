@@ -2,7 +2,7 @@ open Utils
 
 module Ctx = struct
   type t = {
-    hir: Hir.hir;
+    thir: Hir.thir;
     mlir: Mlir.mlir;
     stack: scope list;
     subctx: subctx list;
@@ -17,7 +17,7 @@ module Ctx = struct
     }
 
   let add_item xs i ctx = { ctx with mlir = (xs, i)::ctx.mlir }
-  let make hir = { hir; mlir = []; stack = []; subctx = []; }
+  let make thir = { thir; mlir = []; stack = []; subctx = []; }
 
   let push_subctx c ctx = { ctx with subctx = c::ctx.subctx }
   let pop_subctx ctx = { ctx with subctx = ctx.subctx |> tl }
@@ -46,29 +46,29 @@ end
 
 let id x = x
 
-let rec mlir_of_hir hir =
-  let ctx = Ctx.make hir in
-  let ctx = hir |> List.fold_left codegen_item ctx in
+let rec mlir_of_thir thir =
+  let ctx = Ctx.make thir in
+  let ctx = thir |> List.fold_left codegen_item ctx in
   ctx.mlir
 
-and codegen_item ctx (xs, i) =
+and codegen_item ctx ((xs, ts), i) =
   match i with
   | Hir.IVal (t0, b) ->
-      let (x, ctx) = codegen_path xs ctx in
+      let (x, ctx) = codegen_path (xs, ts) ctx in
       let (t0, ctx) = codegen_type t0 ctx in
       let terminator _ = Mlir.ENoop in
       let (b, ctx) = codegen_block b terminator ctx in
       ctx |> Ctx.add_item x (Mlir.IAssign (t0, b))
   | Hir.IEnum _ -> ctx
-  | Hir.IExternFunc (_, ps, t) ->
-      let (x, ctx) = codegen_path xs ctx in
-      let (ps, ctx) = ps |> mapm_filter codegen_param ctx in
+  | Hir.IExternDef (_, ps, t) ->
+      let (x, ctx) = codegen_path (xs, ts) ctx in
+      let (ps, ctx) = ps |> mapm_filter codegen_extern_param ctx in
       let (t, ctx) = codegen_type t ctx in
       ctx |> Ctx.add_item x (Mlir.IExternFunc (ps, t))
   | Hir.IExternType _ -> ctx
-  | Hir.IFunc (_, ps, t, b) ->
+  | Hir.IDef (_, ps, t, b) ->
       let ctx = ctx |> Ctx.push_scope in
-      let (x, ctx) = codegen_path xs ctx in
+      let (x, ctx) = codegen_path (xs, ts) ctx in
       let (ps, ctx) = ps |> mapm_filter codegen_param ctx in
       let terminator (v, t) = Mlir.EReturn (t |> Option.map (fun t -> (v, t))) in
       let (t, ctx) = codegen_type t ctx in
@@ -77,10 +77,10 @@ and codegen_item ctx (xs, i) =
       ctx |> Ctx.add_item x (Mlir.IFunc (ps, t, b))
   | Hir.ITask (_, ps, (xs0, _), (xs1, _), b) ->
       let ctx = ctx |> Ctx.push_scope in
-      let (x, ctx) = codegen_path xs ctx in
+      let (x, ctx) = codegen_path (xs, ts) ctx in
       let (ps, ctx) = ps |> mapm_filter codegen_param ctx in
-      let (t0, ctx) = codegen_enum xs0 ctx in
-      let (t1, ctx) = codegen_enum xs1 ctx in
+      let (t0, ctx) = codegen_enum (xs0, ts) ctx in
+      let (t1, ctx) = codegen_enum (xs1, ts) ctx in
       let param0 = ("in", t0) in
       let param1 = ("out", Mlir.TStream t1) in
       let ps = ps @ [param0; param1] in
@@ -90,13 +90,24 @@ and codegen_item ctx (xs, i) =
       ctx |> Ctx.add_item x (Mlir.ITask (ps, b))
   | Hir.ITypeAlias _ -> ctx
   | Hir.IVariant _ -> ctx
+  | Hir.IClass _ -> ctx
+  | Hir.IInstance _ -> ctx
+  | Hir.IInstanceDef _ -> ctx
+  | Hir.IClassDecl _ -> ctx
 
-and codegen_enum xs ctx =
-  match ctx.hir |> List.assoc xs with
+and codegen_enum (xs, ts) (ctx:Ctx.t) =
+  match ctx.thir |> List.assoc (xs, ts) with
   | Hir.IEnum (_, xss) ->
-      let (vs, ctx) = xss |> mapm codegen_variant ctx in
+      let (vs, ctx) = xss |> mapm (fun xs ctx -> codegen_variant (xs, ts) ctx) ctx in
       (Mlir.TEnum vs, ctx)
   | _ -> unreachable ()
+
+and codegen_extern_param ((x, t):Hir.param) (ctx:Ctx.t) =
+  if Hir.is_unit t then
+    (None, ctx)
+  else
+    let (t, ctx) = codegen_type t ctx in
+    (Some (x, t), ctx)
 
 and codegen_param ((x, t):Hir.param) (ctx:Ctx.t) =
   if Hir.is_unit t then
@@ -133,26 +144,28 @@ and codegen_type t ctx =
   | Hir.TRecord r ->
       let (fts, ctx) = codegen_row r ctx in
       (Mlir.TRecord fts, ctx)
-  | Hir.TNominal (xs, _) ->
+  | Hir.TNominal (xs, ts) ->
+      (* Intrinsic types in MLIR *)
       begin match xs with
-      | ["i32"] -> (Mlir.TNative "i32", ctx)
-      | ["f32"] -> (Mlir.TNative "f32", ctx)
       | ["bool"] -> (Mlir.TNative "i1", ctx)
+      | ["i16"] -> (Mlir.TNative "i16", ctx)
+      | ["i32"] -> (Mlir.TNative "i32", ctx)
+      | ["i64"] -> (Mlir.TNative "i64", ctx)
+      | ["i128"] -> (Mlir.TNative "i128", ctx)
+      | ["f32"] -> (Mlir.TNative "f32", ctx)
+      | ["f64"] -> (Mlir.TNative "f64", ctx)
+      | ["unit"] -> (Mlir.TNative "()", ctx)
       | _ ->
-          begin match ctx.hir |> List.assoc xs with
+          begin match ctx.thir |> List.assoc (xs, ts) with
           | Hir.IEnum (_, xss) ->
-              let (vs, ctx) = xss |> mapm codegen_variant ctx in
+              let (vs, ctx) = xss |> mapm (fun xs ctx -> codegen_variant (xs, ts) ctx) ctx in
               (Mlir.TEnum vs, ctx)
-          | Hir.IExternType xs ->
-              let (xs, ctx) = codegen_path xs ctx in
+          | Hir.IExternType _ ->
+              let (xs, ctx) = codegen_path (xs, ts) ctx in
               (Mlir.TAdt (xs, []), ctx)
           | _ -> unreachable ()
           end
       end
-  | Hir.TArray _ -> todo ()
-  | Hir.TStream t ->
-      let (t, ctx) = codegen_type t ctx in
-      (Mlir.TStream t, ctx)
   | Hir.TVar _
   | Hir.TGeneric _
   | Hir.TRowEmpty
@@ -165,7 +178,7 @@ and codegen_block (ss, v) terminator ctx =
   let ctx = ctx |> Ctx.pop_scope in
   (ss @ [(None, v)], ctx)
 
-and codegen_path xs ctx =
+and codegen_path ((xs, _ts):(Hir.path * Hir.ty list)) ctx =
   (xs |> String.concat "__", ctx)
 
 and codegen_ssa (v, t, e) ctx =
@@ -183,26 +196,24 @@ and codegen_expr t e ctx =
       (Mlir.EAccess (arg v0, x0), ctx)
   | Hir.EAfter _ -> todo ()
   | Hir.EEvery _ -> todo ()
-  | Hir.EArray _ -> todo ()
-  | Hir.EBinOp (op, v0, v1) ->
-      let (op, ctx) = codegen_binop t op ctx in
-      (Mlir.EBinOp (op, arg v0, arg v1), ctx)
+  | Hir.EEq (v0, v1) ->
+      (Mlir.EBinOp (Mlir.BEqu (int_or_float_or_bool t), arg v0, arg v1), ctx)
   | Hir.ECall (v0, vs) ->
       (Mlir.ECall (arg v0, args vs), ctx)
   | Hir.ECast _ -> todo ()
   | Hir.EEmit v0 ->
       (Mlir.EEmit (ctx |> Ctx.get_output_handle, (arg v0)), ctx)
-  | Hir.EEnwrap (xs, _, v0) ->
-      let (x, ctx) = codegen_path xs ctx in
+  | Hir.EEnwrap (xs, ts, v0) ->
+      let (x, ctx) = codegen_path (xs, ts) ctx in
       (Mlir.EEnwrap (x, arg_opt v0), ctx)
-  | Hir.EUnwrap (xs, _, v0) ->
+  | Hir.EUnwrap (xs, ts, v0) ->
       if Hir.is_unit t then
         (Mlir.ENoop, ctx)
       else
-        let (x, ctx) = codegen_path xs ctx in
+        let (x, ctx) = codegen_path (xs, ts) ctx in
         (Mlir.EUnwrap (x, arg v0), ctx)
-  | Hir.EIs (xs, _, v0) ->
-      let (x, ctx) = codegen_path xs ctx in
+  | Hir.EIs (xs, ts, v0) ->
+      let (x, ctx) = codegen_path (xs, ts) ctx in
       (Mlir.EIs (x, arg v0), ctx)
   | Hir.EIf (v0, b0, b1) ->
       let terminator (v, t) = Mlir.EResult (t |> Option.map (fun t -> (v, t))) in
@@ -214,38 +225,39 @@ and codegen_expr t e ctx =
   | Hir.ELit l ->
       let (l, ctx) = codegen_lit l ctx in
       (Mlir.EConst l, ctx)
-  | Hir.ELog _ -> todo ()
   | Hir.ELoop b ->
       let terminator _ = Mlir.EYield in
       let (b, ctx) = codegen_block b terminator ctx in
       (Mlir.ELoop b, ctx)
   | Hir.EReceive ->
       (Mlir.EReceive (ctx |> Ctx.get_input_handle), ctx)
-  | Hir.ESelect _ -> todo ()
   | Hir.ERecord fvs ->
       let (fvs, ctx) = fvs |> mapm_filter codegen_field_expr ctx in
       (Mlir.ERecord fvs, ctx)
-  | Hir.EUnOp _ -> todo ()
   | Hir.EReturn v0 ->
       (Mlir.EReturn (arg_opt v0), ctx)
   | Hir.EBreak v0 ->
       (Mlir.EBreak (arg_opt v0), ctx)
   | Hir.EContinue ->
       (Mlir.EContinue, ctx)
-  | Hir.EItem (xs, _) ->
-      match ctx.hir |> List.assoc xs with
+  | Hir.EItem (xs, ts) ->
+      match ctx.thir |> List.assoc (xs, ts) with
       | Hir.IVal _ -> todo ()
       | Hir.IEnum _ -> unreachable ()
-      | Hir.IExternFunc (xs, _, _) ->
-          let (x, ctx) = codegen_path xs ctx in
+      | Hir.IExternDef (xs, _, _) ->
+          let (x, ctx) = codegen_path (xs, ts) ctx in
           (Mlir.EConst (Mlir.CFun x), ctx)
       | Hir.IExternType _ -> unreachable ()
-      | Hir.IFunc _ ->
-          let (x, ctx) = codegen_path xs ctx in
+      | Hir.IDef _ ->
+          let (x, ctx) = codegen_path (xs, ts) ctx in
           (Mlir.EConst (Mlir.CFun x), ctx)
       | Hir.ITask _ -> todo ()
       | Hir.ITypeAlias (_ps, _t1) -> unreachable ()
       | Hir.IVariant _ -> unreachable ()
+      | Hir.IClass _ -> unreachable ()
+      | Hir.IClassDecl _ -> unreachable ()
+      | Hir.IInstance _ -> unreachable ()
+      | Hir.IInstanceDef _ -> unreachable ()
 
 and codegen_field_type (x, t) ctx =
   let (t, ctx) = codegen_type t ctx in
@@ -255,11 +267,11 @@ and codegen_field_expr (x, v) ctx =
   let fa = ctx |> Ctx.typeof_opt v |> Option.map (fun t -> (x, (v, t))) in
   (fa, ctx)
 
-and codegen_variant xs ctx =
-  match ctx.hir |> List.assoc xs with
+and codegen_variant ((xs, ts):(Hir.path * Hir.ty list)) ctx =
+  match ctx.thir |> List.assoc (xs, ts) with
   | Hir.IVariant t ->
       let (t, ctx) = codegen_type t ctx in
-      let (xs, ctx) = codegen_path xs ctx in
+      let (xs, ctx) = codegen_path (xs, ts) ctx in
       ((xs, t), ctx)
   | _ -> unreachable ()
 
@@ -275,32 +287,6 @@ and int_or_float_or_bool t =
   | t when Hir.is_float t -> Mlir.EqFlt
   | t when Hir.is_bool t -> Mlir.EqBool
   | _ -> todo ()
-
-and codegen_binop t op ctx =
-  let op = match op with
-  | Hir.BAdd  -> Mlir.BAdd (int_or_float t)
-  | Hir.BDiv  -> Mlir.BDiv (int_or_float t)
-  | Hir.BMul  -> Mlir.BMul (int_or_float t)
-  | Hir.BSub  -> Mlir.BSub (int_or_float t)
-  | Hir.BPow  -> Mlir.BPow (int_or_float t)
-  | Hir.BMod  -> Mlir.BMod (int_or_float t)
-  | Hir.BBand -> Mlir.BBand
-  | Hir.BBor  -> Mlir.BBor
-  | Hir.BBxor -> Mlir.BXor
-  | Hir.BNeq  -> Mlir.BNeq (int_or_float_or_bool t)
-  | Hir.BEq   -> Mlir.BEqu (int_or_float_or_bool t)
-  | Hir.BGeq  -> Mlir.BGeq (int_or_float t)
-  | Hir.BGt   -> Mlir.BGt  (int_or_float t)
-  | Hir.BLeq  -> Mlir.BLeq (int_or_float t)
-  | Hir.BLt   -> Mlir.BLt  (int_or_float t)
-  | Hir.BOr   -> Mlir.BOr
-  | Hir.BAnd  -> Mlir.BAnd
-  | Hir.BXor  -> Mlir.BXor
-  | Hir.BIn
-  | Hir.BRExc
-  | Hir.BRInc
-  | Hir.BWith -> todo ()
-  in (op, ctx)
 
 and codegen_lit l ctx =
   let l = match l with

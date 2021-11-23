@@ -43,12 +43,12 @@ let main =
             print_endline "\n\n[:::HIR (Inferred):::]";
             Pretty_hir.pr_hir hir;
 
-            let hir = Monomorphise.monomorphise hir in
+            let thir = Monomorphise.monomorphise hir in
 
             print_endline "\n\n[:::HIR (Monomorphised):::]";
-            Pretty_hir.pr_hir hir;
+            Pretty_hir.pr_thir thir;
 
-            let mlir = Codegen.mlir_of_hir hir in
+            let mlir = Codegen.mlir_of_thir thir in
 
             print_endline "\n\n[:::MLIR:::]";
             Pretty_mlir.pr_mlir mlir;

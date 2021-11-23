@@ -1,18 +1,11 @@
 open Utils
 
 type hir = (path * item) list
+and thir = ((path * ty list) * item) list
 
-(* and state_param = param *)
-(* and event_param = param *)
-and state_func = param * param option * block
-(* and state_data = path *)
-
-(* and generic = name *)
 and name = string
 and path = name list
-and tv = int  (* Type variable *)
 and param = name * ty
-and index = int
 and 't field = name * 't
 and ssa = var * ty * expr
 and var = name
@@ -21,14 +14,18 @@ and block = ssa list * var
 and interface = path * ty list
 and subst = (name * ty) list
 and item =
-  | IVal        of ty * block
-  | IEnum       of generic list * path list
-  | IExternFunc of generic list * param list * ty
-  | IExternType of generic list
-  | IFunc       of generic list * param list * ty * block
-  | ITask       of generic list * param list * interface * interface * block
-  | ITypeAlias  of generic list * ty
-  | IVariant    of ty
+  | IVal         of ty * block
+  | IEnum        of generic list * path list
+  | IExternDef   of generic list * param list * ty
+  | IExternType  of generic list
+  | IDef         of generic list * param list * ty * block
+  | IClassDecl   of path * generic list * param list * ty
+  | IInstanceDef of path * generic list * param list * ty * block
+  | IClass       of generic list
+  | IInstance    of generic list * path * ty list
+  | ITask        of generic list * param list * interface * interface * block
+  | ITypeAlias   of generic list * ty
+  | IVariant     of ty
 
 and ty =
   | TFunc      of ty list * ty
@@ -37,40 +34,13 @@ and ty =
   | TRowExtend of ty field * ty
   | TNominal   of path * ty list
   | TGeneric   of name
-  | TArray     of ty
-  | TStream    of ty
   | TVar       of name
-
-and binop =
-  | BAdd
-  | BAnd
-  | BBand
-  | BBor
-  | BBxor
-  | BDiv
-  | BEq
-  | BGeq
-  | BGt
-  | BLeq
-  | BLt
-  | BMod
-  | BMul
-  | BNeq
-  | BOr
-  | BPow
-  | BSub
-  | BXor
-  | BIn
-  | BRExc
-  | BRInc
-  | BWith
 
 and expr =
   | EAccess   of var * name
   | EAfter    of var * block
   | EEvery    of var * block
-  | EArray    of var list
-  | EBinOp    of binop * var * var
+  | EEq       of var * var
   | ECall     of var * var list
   | ECast     of var * ty
   | EEmit     of var
@@ -78,19 +48,15 @@ and expr =
   | EIf       of var * block * block
   | EIs       of path * ty list * var
   | ELit      of Ast.lit
-  | ELog      of var
   | ELoop     of block
   | EReceive
-  | ESelect   of var * var
   | ERecord   of var field list
-  | EUnOp     of Ast.unop * var
   | EUnwrap   of path * ty list * var
   | EReturn   of var
   | EBreak    of var
   | EContinue
   (* NB: These expressions are constructed by lowering *)
   | EItem     of path * ty list
-
 
 let is_int t =
   match t with
@@ -159,7 +125,7 @@ and tmap_params f ps =
 (* Map SSAs *)
 let rec smap_item f i =
   match i with
-  | IFunc (gs, ps, t, b) -> IFunc (gs, ps, t, b |> smap_block f)
+  | IDef (gs, ps, t, b) -> IDef (gs, ps, t, b |> smap_block f)
   | ITask (gs, ps, i0, i1, b) -> ITask (gs, ps, i0, i1, b |> smap_block f)
   | _ -> i
 
