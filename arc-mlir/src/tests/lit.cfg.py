@@ -59,7 +59,7 @@ tools = [
     'mlir-tblgen',
     'mlir-translate',
     'arc-mlir',
-    'arc-script',
+    'arc-lang',
 ]
 
 llvm_config.add_tool_substitutions(tools, tool_dirs)

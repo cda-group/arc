@@ -8,3 +8,4 @@ dyn-clone     = { version = "1.0.4" }
 shrinkwraprs  = { version = "0.3.0" }
 derive_more   = { version = "0.99.11" }
 paste         = { version = "1.0.4" }
+pyo3          = { version = "0.13.1" }

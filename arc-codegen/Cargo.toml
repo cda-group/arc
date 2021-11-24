@@ -1,0 +1,17 @@
+[package]
+name = "arc-codegen"
+version = "0.0.0"
+authors = ["Klas Segeljakt <klasseg@kth.se>"]
+edition = "2018"
+description = "A bridge between MLIR and Arcon/local runtime."
+license = "MIT"
+
+[features]
+backend_arcon = ["arc-codegen-arcon"]
+backend_local = ["arc-codegen-local"]
+default       = ["backend_local"]
+
+[dependencies]
+arc-codegen-arcon  = { optional = true, version = "=0.0.0", path = "./arcon" }
+arc-codegen-local  = { optional = true, version = "=0.0.0", path = "./local" }
+arc-codegen-shared = { version = "=0.0.0", path = "./shared" }

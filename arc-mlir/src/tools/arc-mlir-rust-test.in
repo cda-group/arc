@@ -3,8 +3,10 @@
 set -e
 
 export PATH="@ARC_TOOLS_BIN_DIR@:$PATH"
-export ARC_SOURCE_DIR="@ARC_SCRIPT_SRC_DIR@"
+export ARC_LANG_SOURCE_DIR="@ARC_LANG_SRC_DIR@"
 export ARC_MLIR_SOURCE_DIR="@ARC_MLIR_SRC_DIR@"
+export ARC_CODEGEN_SOURCE_DIR="@ARC_CODEGEN_SRC_DIR@"
+export ARC_RUNTIME_SOURCE_DIR="@ARC_RUNTIME_SRC_DIR@"
 
 WORK_DIR="$1"
 MLIR_FILE="$2"
@@ -18,7 +20,7 @@ export TEST_NAME=${TEST_NAME//-/_}
 CARGO_DEP_FRAGMENT="${MLIR_FILE%.mlir}.cargo-dep"
 echo "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
 rustc --version
-echo "Arc-script sources are in: ${ARC_SOURCE_DIR}"
+echo "Arc-lang sources are in: ${ARC_LANG_SOURCE_DIR}"
 echo "Test name: ${TEST_NAME}"
 echo "MLIR input: ${MLIR_FILE}"
 echo "Crate will be written to: ${WORK_DIR}"
@@ -43,18 +45,18 @@ license     = "MIT"
 description = "Generic MLIR-to-Rust test case"
 
 [dependencies]
-arc-script-compiler = { version = "=0.0.0", path = "${ARC_SOURCE_DIR}/compiler" }
 insta               = { version = "1.6.0", features = ["glob"] }
 regex               = { version = "1.4.3" }
 lazy_static         = { version = "1.4.0" }
-arcon               = { git = "https://github.com/segeljakt/arcon" }
-arc-script          = { version = "=0.0.0", path = "${ARC_SOURCE_DIR}" }
+# arcon               = { git = "https://github.com/segeljakt/arcon" }
+arc-codegen         = { version = "=0.0.0", path = "${ARC_CODEGEN_SOURCE_DIR}" }
+arc-runtime         = { version = "=0.0.0", path = "${ARC_RUNTIME_SOURCE_DIR}" }
 hexf                = { version = "0.2.1" }
 ndarray             = { version = "0.13.0" }
 prost               = { version = "0.7.0" }
 EOF
 
-# Allow a test to include extra dependencies i the Cargo.toml
+# Allow a test to include extra dependencies in the Cargo.toml
 if [ -f "${CARGO_DEP_FRAGMENT}" ]; then
     envsubst >> ${WORK_DIR}/Cargo.toml < "${CARGO_DEP_FRAGMENT}"
 fi
