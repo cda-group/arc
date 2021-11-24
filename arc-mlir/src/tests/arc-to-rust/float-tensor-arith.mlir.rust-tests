@@ -4,6 +4,7 @@ mod tests {
     use ndarray::{Array,Dim,Ix};
     use std::rc::Rc;
 
+    #[rewrite(main)]
     #[test]
     fn testf32() {
 	let a32:Rc<Array<f32, Dim<[Ix; 2]>>> =
@@ -29,6 +30,7 @@ mod tests {
 		   &*a32 % &*b32);
     }
 
+#[rewrite(main)]
     #[test]
     fn testf64() {
 	let a64:Rc<Array<f64, Dim<[Ix; 2]>>> =

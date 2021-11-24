@@ -2,13 +2,14 @@
 #[cfg(test)]
 mod tests {
   use crate::arctoruststructs::*;
+  #[rewrite(main)]
   #[test]
   fn it_works() {
-    assert_eq!(ok3().a, 4);
-    assert_eq!(ok4().a, 4);
-    assert_eq!(ok5().a, 4);
-    assert_eq!(ok5().b.a, 3);
-    assert_eq!(ok6(), 4);
-    assert_eq!(ok7(), 3);
+    assert_eq!(call!(ok3()).a, 4);
+    assert_eq!(call!(ok4()).a, 4);
+    assert_eq!(call!(ok5()).a, 4);
+    assert_eq!(call!(ok5()).b.a, 3);
+    assert_eq!(call!(ok6()), 4);
+    assert_eq!(call!(ok7()), 3);
   }
 }

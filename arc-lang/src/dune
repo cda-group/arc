@@ -1,0 +1,9 @@
+(executable
+ (name main)
+ (public_name main)
+ (libraries core str))
+(ocamllex lexer)
+(menhir
+ (merge_into parser)
+ (modules tokens parser)
+ (flags --external-tokens Token))

@@ -4,6 +4,7 @@ mod tests {
     use ndarray::{Array,Dim,Ix};
     use std::rc::Rc;
 
+    #[rewrite(main)]
     #[test]
     fn testu8() {
 	let a:Rc<Array<u8, Dim<[Ix; 2]>>> =
@@ -28,6 +29,7 @@ mod tests {
 					      Rc::clone(&b)),
 		   &*a % &*b);
     }
+    #[rewrite(main)]
     #[test]
     fn tests8() {
 	let a:Rc<Array<i8, Dim<[Ix; 2]>>> =
@@ -53,6 +55,7 @@ mod tests {
 		   &*a % &*b);
     }
 
+    #[rewrite(main)]
     #[test]
     fn testu16() {
 	let a:Rc<Array<u16, Dim<[Ix; 2]>>> =
@@ -77,6 +80,7 @@ mod tests {
 					       Rc::clone(&b)),
 		   &*a % &*b);
     }
+    #[rewrite(main)]
     #[test]
     fn tests16() {
 	let a:Rc<Array<i16, Dim<[Ix; 2]>>> =
@@ -101,7 +105,7 @@ mod tests {
 					       Rc::clone(&b)),
 		   &*a % &*b);
     }
-
+    #[rewrite(main)]
     #[test]
     fn testu32() {
 	let a:Rc<Array<u32, Dim<[Ix; 2]>>> =
@@ -126,6 +130,7 @@ mod tests {
 					       Rc::clone(&b)),
 		   &*a % &*b);
     }
+    #[rewrite(main)]
     #[test]
     fn tests32() {
 	let a:Rc<Array<i32, Dim<[Ix; 2]>>> =
@@ -151,6 +156,7 @@ mod tests {
 		   &*a % &*b);
     }
 
+    #[rewrite(main)]
     #[test]
     fn testu64() {
 	let a:Rc<Array<u64, Dim<[Ix; 2]>>> =
@@ -175,6 +181,7 @@ mod tests {
 					       Rc::clone(&b)),
 		   &*a % &*b);
     }
+    #[rewrite(main)]
     #[test]
     fn tests64() {
 	let a:Rc<Array<i64, Dim<[Ix; 2]>>> =
