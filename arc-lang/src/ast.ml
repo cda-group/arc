@@ -105,11 +105,11 @@ and expr =
   | ELit      of lit
   | ELoop     of block
   | ERecord   of expr option field list * expr option
-  | EUnOp     of unop * expr
   | EReturn   of expr option
   | EBreak    of expr option
   | EContinue
   (* NB: These expressions are desugared *)
+  | EUnOp     of unop * expr
   | EArray    of expr list * expr option
   | EBinOp    of binop * expr * expr
   | EBlock    of block
@@ -125,13 +125,24 @@ and expr =
   | ESelect   of expr * expr
   | ETask     of expr
   | ETuple    of expr list
-  | EWith     of expr * expr option field list
+  | EFrom     of scan list * step list
 
 and clause =
   | CFor of pattern * expr
   | CIf of expr
 
-and mut =
-  | MVal (* Immutable *)
-  | MVar (* Mutable *)
+and scan = pattern * scankind * expr
+and scankind =
+  | ScIn
+  | ScEq
 
+and step =
+  | SWhere of expr
+  | SJoin of scan * expr option
+  | SGroup of expr list * (expr * expr option) list
+  | SOrder of (expr * ord) list
+  | SYield of expr
+
+and ord =
+  | OAsc
+  | ODesc

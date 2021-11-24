@@ -1,4 +1,5 @@
 open Ast
+open Utils
 
 module Ctx = struct
   type t = {
@@ -234,7 +235,7 @@ and pr_pat p ctx =
       pr " | ";
       pr_pat p1 ctx;
   | PRecord fps ->
-      pr "%%{";
+      pr "#{";
       pr_sep ", " pr_field_pat fps ctx;
       pr "}";
   | PTuple ps ->
@@ -300,7 +301,7 @@ and pr_type t ctx =
       pr_sep ", " pr_type ts ctx;
       pr ",)";
   | TRecord (fts, t) ->
-      pr "%%{ ";
+      pr "#{ ";
       pr_sep ", " pr_field_type fts ctx;
       begin match t with
       | Some t ->
@@ -462,7 +463,7 @@ and pr_expr e ctx =
         pr_expr e1 ctx;
         pr "]";
     | ERecord (fvs, v) ->
-        pr "%%{";
+        pr "#{";
         pr_sep ", " pr_field_expr fvs ctx;
         begin match v with
         | None -> ();
@@ -539,11 +540,7 @@ and pr_expr e ctx =
           pr_sep ", " pr_type ts ctx;
           pr "]";
         end
-    | EWith (e, es) ->
-        pr_expr e ctx;
-        pr " with {";
-        pr_sep ", " pr_field_expr es ctx;
-        pr "}";
+    | EFrom _ -> todo ()
   in
   if ctx.debug then begin
     pr "(";

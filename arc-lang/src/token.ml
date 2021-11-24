@@ -5,7 +5,7 @@ type token =
   | BrackL
   | BrackR
   | BrackLR
-  | PercentBraceL
+  | PoundBraceL
   | BraceL
   | BraceR
   | BraceLR
@@ -80,12 +80,14 @@ type token =
   | Not
   | On
   | Or
+  | Order
   | Return
   | Task
   | Type
   | Val
 (*   | With *)
   | Var
+  | Where
   | Unwrap
   | Enwrap
   | Use
@@ -108,7 +110,6 @@ type token =
 (*     Timeout, *)
 (*     Timer, *)
 (*     Trigger, *)
-(*     Where, *)
 (*= Identifiers and Literals ================================================*)
   | Name of string
   | Int of int

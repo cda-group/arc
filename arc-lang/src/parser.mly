@@ -4,7 +4,7 @@
 %token BrackL
 %token BrackR
 (* %token BrackLR *)
-%token PercentBraceL
+%token PoundBraceL
 %token BraceL
 %token BraceR
 (* %token BraceLR *)
@@ -32,12 +32,8 @@
 %token EqEq
 %token Imply
 %token Geq
-(* %token AtSign *)
 %token Underscore
 %token Bar
-(* %token BarBar *)
-%token Tilde
-(* %token Ampersand *)
 (*= Retired Operators =======================================================*)
 (*     Pipe, *)
 (*     Bang, *)
@@ -61,33 +57,38 @@
 %token Class
 %token Continue
 %token Def
+%token Desc
 %token Else
 %token Emit
 %token Enum
 %token Every
 %token Extern
 %token For
-(* %token From *)
+%token From
 %token Fun
+%token Group
 %token If
 %token In
 %token Instance
-(* %token Is *)
-(* %token Let *)
+%token Join
 %token Loop
 %token Match
 %token Mod
 %token Not
 %token On
+%token Of
 %token Or
+%token Order
 %token Return
+%token Reduce
 %token Task
 %token Type
 %token Val
-(* %token With *)
-(* %token Var *)
+%token Var
+%token Where
 %token Use
-(* %token Xor *)
+%token Xor
+%token Yield
 (*= Reserved Keywords =======================================================*)
 (*     Add, *)
 (*     Box, *)
@@ -240,6 +241,7 @@ expr3:
   | Band { Ast.BBand }
   | Bxor { Ast.BBxor }
   | Or { Ast.BOr }
+  | Xor { Ast.BXor }
   | And { Ast.BAnd }
 expr4:
   | expr5 { $1 }
@@ -330,7 +332,7 @@ expr14:
     { Ast.ECompr ($2, $4, $6) }
   | ParenL expr0 Comma separated_llist(Comma, expr0) ParenR
     { Ast.ETuple ($2::$4) }
-  | PercentBraceL separated_llist(Comma, field_expr(expr0)) option(tail(expr0)) BraceR
+  | PoundBraceL separated_llist(Comma, field_expr(expr0)) option(tail(expr0)) BraceR
     { Ast.ERecord ($2, $3) }
   | If expr2 block ioption(else_block)
     { Ast.EIf ($2, $3, $4) }
@@ -342,6 +344,38 @@ expr14:
     { Ast.ELoop $2 }
   | For pat0 In expr1 block
     { Ast.EFor ($2, $4, $5) }
+  | From separated_nonempty_llist(Comma, scan) brace(nonempty_llist(step))
+    { Ast.EFrom ($2, $3) }
+
+%inline scan: pat0 scankind expr1 { ($1, $2, $3) }
+%inline scankind:
+  | In { Ast.ScIn }
+  | Eq { Ast.ScEq }
+
+%inline step:
+  | Where expr1
+    { Ast.SWhere $2 }
+  | Join scan option(on)
+    { Ast.SJoin ($2, $3) }
+  | Group separated_nonempty_llist(Comma, expr1) loption(reduce)
+    { Ast.SGroup ($2, $3) }
+  | Order separated_nonempty_llist(Comma, sort)
+    { Ast.SOrder $2 }
+  | Yield expr1
+    { Ast.SYield $2 }
+
+%inline on: On expr1 { $2 }
+
+%inline reduce: Reduce separated_nonempty_llist(Comma, agg) { $2 }
+
+%inline sort: expr1 ord { ($1, $2) }
+
+%inline ord:
+  | { Ast.OAsc }
+  | Desc { Ast.ODesc }
+
+%inline agg: expr1 option(aggof) { ($1, $2) }
+%inline aggof: Of expr1 { $2 }
 
 %inline qualified_ty_args: ColonColon ty_args { $2 }
 %inline ty_args: brack(separated_nonempty_llist(Comma, ty0)) { $1 }
@@ -398,6 +432,8 @@ separated_nonempty_llist_rev(s, x):
     { Ast.SExpr $1 }
   | Val param Eq expr0 Semi
     { Ast.SVal ($2, $4) }
+  | Var name option(ty_annot) Eq expr0 Semi
+    { Ast.SVar (($2, $3), $5) }
 
 pat0:
   | pat0 Or pat1
@@ -412,7 +448,7 @@ pat1:
     { Ast.PUnwrap ($1, $2) }
   | ParenL pat0 Comma separated_llist(Comma, pat0) ParenR
     { Ast.PTuple ($2::$4) }
-  | PercentBraceL separated_llist(Comma, field_pat) BraceR
+  | PoundBraceL separated_llist(Comma, field_pat) BraceR
     { Ast.PRecord ($2) }
   | Underscore
     { Ast.PIgnore }
@@ -434,7 +470,7 @@ ty1:
     { Ast.TPath ($1, $2) }
   | ParenL ty0 Comma separated_llist(Comma, ty0) ParenR
     { Ast.TTuple ($2::$4) }
-  | PercentBraceL separated_llist(Comma, field_ty) option(tail(ty0)) BraceR
+  | PoundBraceL separated_llist(Comma, field_ty) option(tail(ty0)) BraceR
     { Ast.TRecord ($2, $3) }
   | brack(ty0)
     { Ast.TArray $1 }

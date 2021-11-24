@@ -29,7 +29,7 @@ rule main =
   | ")"        { ParenR }
   | "["        { BrackL }
   | "]"        { BrackR }
-  | "%{"       { PercentBraceL }
+  | "#{"       { PoundBraceL }
   | "{"        { BraceL }
   | "}"        { BraceR }
   | "<"        { AngleL }
@@ -55,12 +55,8 @@ rule main =
   | "=="       { EqEq }
   | "=>"       { Imply }
   | ">="       { Geq }
-(*   | "@"        { AtSign } *)
   | "_"        { Underscore }
   | "|"        { Bar }
-(*   | "||"       { BarBar } *)
-(*   | "~"        { Tilde } *)
-(*   | "&"        { Ampersand } *)
 (*= Keywords ================================================================*)
   | "after"    { After }
   | "and"      { And }
@@ -79,29 +75,31 @@ rule main =
   | "every"    { Every }
   | "extern"   { Extern }
   | "for"      { For }
-(*   | "from"     { From } *)
+  | "from"     { From }
   | "fun"      { Fun }
+  | "group"    { Group }
   | "if"       { If }
   | "in"       { In }
   | "instance" { Instance }
-(*   | "is"       { Is } *)
-(*   | "let"      { Let } *)
+  | "join"     { Join }
   | "loop"     { Loop }
   | "match"    { Match }
   | "mod"      { Mod }
   | "not"      { Not }
   | "on"       { On }
   | "or"       { Or }
+  | "order"    { Or }
+  | "of"       { Of }
   | "return"   { Return }
+  | "reduce"   { Reduce }
   | "task"     { Task }
   | "type"     { Type }
   | "val"      { Val }
-(*   | "with"     { With } *)
-(*   | "var"      { Var } *)
-(*   | "unwrap"   { Unwrap } *)
-(*   | "enwrap"   { Enwrap } *)
+  | "var"      { Var }
+  | "where"    { Where }
   | "use"      { Use }
-(*   | "xor"      { Xor } *)
+  | "xor"      { Xor }
+  | "yield"    { Yield }
 (*= Identifiers and Literals ================================================*)
   | name       { Name (Lexing.lexeme lexbuf) }
   | int        { Printf.printf "!"; Int (int_of_string (Lexing.lexeme lexbuf)) }

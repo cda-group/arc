@@ -707,7 +707,7 @@ and lower_expr expr ctx : Hir.var * Ctx.t =
       let (v, ctx) = ctx |> Ctx.add_expr (Hir.ECall (v, [])) in
       let (v, ctx) = ctx |> Ctx.add_expr (Hir.ECall (v, [v_stream])) in
       (v, ctx)
-    | Ast.EWith (_e, _es) -> todo ()
+    | Ast.EFrom _ -> todo ()
 
 and lower_unop op ctx =
   match op with
