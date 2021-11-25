@@ -41,6 +41,10 @@ std::unique_ptr<OperationPass<ModuleOp>> createLowerToRustPass();
 /// between basic blocks.
 std::unique_ptr<OperationPass<FuncOp>> createRemoveSCFPass();
 
+/// Create a pass for converting branches
+/// between basic blocks to structured flow-control.
+std::unique_ptr<OperationPass<ModuleOp>> createToSCFPass();
+
 } // namespace arc
 
 #endif // ARC_PASSES_H

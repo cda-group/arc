@@ -37,4 +37,14 @@ def RemoveSCF : Pass<"remove-scf", "FuncOp"> {
   ];
 }
 
+def ToSCF : Pass<"to-scf", "ModuleOp"> {
+  let summary = "Convert branches between basic blocks to structured flow-control";
+  let constructor = "arc::createToSCFPass()";
+
+  let dependentDialects = [
+        "arc::ArcDialect",
+        "StandardOpsDialect"
+  ];
+}
+
 #endif // ARC_PASSES
