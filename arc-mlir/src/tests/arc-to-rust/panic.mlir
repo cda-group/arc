@@ -1,5 +1,5 @@
-// RUN: arc-mlir-rust-test %t %s
-// RUN: arc-mlir-rust-test %t-canon %s -canonicalize
+// RUN: arc-mlir-rust-test %t %s -rustinclude %s.rust-tests
+// RUN: arc-mlir-rust-test %t-canon %s -rustinclude %s.rust-tests -canonicalize
 
 module @toplevel {
   func @trigger_panic0() -> () {

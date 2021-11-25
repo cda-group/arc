@@ -25,4 +25,13 @@ func @ok0(%in : !arc.adt<"i32">) -> () {
     return %pair : !arc.adt<"(i32, bool)">
   }
 
+  func private @new_array_i32() -> !arc.adt<"Array<i32>">
+  func private @push_array_i32(%array : !arc.adt<"Array<i32>">, %elem : si32) -> ()
+
+  func @ok6() -> !arc.adt<"Array<i32>"> {
+    %a = arc.constant 4 : si32
+    %array = call @new_array_i32() : () -> !arc.adt<"Array<i32>">
+    call @push_array_i32(%array, %a) : (!arc.adt<"Array<i32>">, si32) -> ()
+    return %array : !arc.adt<"Array<i32>">
+  }
 }

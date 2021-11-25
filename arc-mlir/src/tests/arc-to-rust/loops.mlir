@@ -108,4 +108,30 @@ module @arctorustloops {
        }
        return %res_sum : ui64
   }
+
+  func @a_while_true_loop() -> () {
+       scf.while () : () -> () {
+         %condition = arith.constant 1 : i1
+         scf.condition(%condition)
+       } do {
+	        scf.yield
+       }
+       return
+  }
+
+  func @a_nested_while_true_loop() -> () {
+       scf.while () : () -> () {
+         %condition = arith.constant 1 : i1
+         scf.condition(%condition)
+       } do {
+          scf.while () : () -> () {
+            %condition = arith.constant 1 : i1
+            scf.condition(%condition)
+          } do {
+	            scf.yield
+          }
+	        scf.yield
+       }
+       return
+  }
 }

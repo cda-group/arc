@@ -1,0 +1,34 @@
+use std::rc::Rc;
+use std::cell::RefCell;
+
+type Text = &'static str;
+
+#[derive(Clone)]
+pub struct Str {
+    concrete: Rc<RefCell<String>>,
+}
+
+pub fn print(s: Str) {
+    print!("{}", s.concrete.borrow());
+}
+
+pub fn append(s0: Str, s1: Str) {
+    s0.concrete.borrow_mut().push_str(&s1.concrete.borrow());
+}
+
+pub fn new(t: Text) -> Str {
+    Str {
+        concrete: Rc::new(RefCell::new(t.to_string())),
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use crate::toplevel::*;
+
+    #[test]
+    fn test() {
+        ok0();
+        ok1();
+    }
+}

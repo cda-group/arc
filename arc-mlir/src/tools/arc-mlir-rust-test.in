@@ -47,7 +47,7 @@ arc-script-compiler = { version = "=0.0.0", path = "${ARC_SOURCE_DIR}/compiler" 
 insta               = { version = "1.6.0", features = ["glob"] }
 regex               = { version = "1.4.3" }
 lazy_static         = { version = "1.4.0" }
-arcon               = { git = "https://github.com/segeljakt/arcon" }
+# arcon               = { git = "https://github.com/segeljakt/arcon" }
 arc-script          = { version = "=0.0.0", path = "${ARC_SOURCE_DIR}" }
 hexf                = { version = "0.2.1" }
 ndarray             = { version = "0.13.0" }

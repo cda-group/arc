@@ -1,0 +1,12 @@
+#[cfg(test)]
+mod tests {
+    use crate::toplevel::*;
+    #[test]
+    fn test() {
+        assert!(is_odd(1));
+        assert!(!is_even(1));
+        assert!(is_even(2));
+        assert!(!is_odd(2));
+        assert_eq!(ok0(), ());
+    }
+}

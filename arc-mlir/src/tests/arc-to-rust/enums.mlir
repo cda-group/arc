@@ -46,6 +46,13 @@ module @toplevel {
     return %r : !arc.enum<no_value : none, b : f32>
   }
 
+  func @ok7() -> () {
+    %x = arc.constant 4 : si32
+    %y = arc.make_enum (%x : si32) as "a" : !arc.enum<a : si32, b : f32>
+    %z = arc.make_enum (%x : si32) as "b" : !arc.enum<b : si32, a : f32>
+    return
+  }
+
   func @access0(%e : !arc.enum<a : si32, b : f32>) -> si32 {
     %r = arc.enum_access "a" in (%e : !arc.enum<a : si32, b : f32>) : si32
     return %r : si32
