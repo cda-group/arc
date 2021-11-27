@@ -1,72 +1,28 @@
 open Utils
-
-module Ctx = struct
-  type t = {
-    indent: int;
-    debug: bool;
-  }
-
-  let print_indent ctx: unit =
-    Printf.printf "\n";
-    let rec print_indent = function
-      | 0 -> ()
-      | i ->
-        Printf.printf "    ";
-        print_indent (i - 1)
-    in
-    print_indent ctx.indent
-
-  let indent ctx =
-    { ctx with indent = ctx.indent + 1 }
-
-  and make debug = { indent = 0; debug; }
-
-end
-
-let pr fmt = Printf.printf fmt
-let prr s = Printf.printf "%s" s
-
-let quoted f s =
-  pr "\"";
-  f s;
-  pr "\""
-
-let paren f s =
-  pr "(";
-  f s;
-  pr ")"
-
-let rec pr_sep sep f l (ctx:Ctx.t) =
-  match l with
-  | [x]  -> f x ctx
-  | []   -> ()
-  | h::t ->
-      f h ctx;
-      pr sep;
-      pr_sep sep f t ctx
+open Pretty
 
 let rec pr_mlir (mlir:Mlir.mlir) =
-  let ctx = Ctx.make false in
+  let ctx = Ctx.brief in
   pr "\nmodule @toplevel {";
   let ctx' = ctx |> Ctx.indent in
   mlir |> List.iter (fun i -> pr_item i ctx');
-  ctx |> Ctx.print_indent;
+  ctx |> pr_indent;
   pr "}\n";
 
 and pr_item (xs, i) ctx =
-  ctx |> Ctx.print_indent;
+  ctx |> pr_indent;
   match i with
   | Mlir.IAssign _ ->
       todo ()
   | Mlir.IExternFunc (ps, t) ->
       pr "func private @";
-      pr_path xs;
+      pr_path xs ctx;
       pr_params ps ctx;
       pr " -> ";
       pr_type t ctx;
   | Mlir.IFunc (ps, t, b) ->
       pr "func @";
-      pr_path xs;
+      pr_path xs ctx;
       pr_params ps ctx;
       pr " -> ";
       pr_type t ctx;
@@ -74,15 +30,13 @@ and pr_item (xs, i) ctx =
       pr_block b ctx;
   | Mlir.ITask (ps, b) ->
       pr "func @";
-      pr_path xs;
+      pr_path xs ctx;
       pr_params ps ctx;
       pr " ";
       pr_block b ctx;
 
 and pr_params ps ctx =
-  pr "(";
-  pr_sep ", " pr_param ps ctx;
-  pr ")";
+  pr_paren (pr_list pr_param ps) ctx
 
 and pr_param (x, t) ctx =
   prr "%";
@@ -90,44 +44,37 @@ and pr_param (x, t) ctx =
   pr ": ";
   pr_type t ctx;
 
-and pr_variant_type (x, t) (ctx:Ctx.t) =
-  pr_path x;
-  pr ": ";
-  pr_type t ctx;
-
-and pr_path x =
+and pr_path x _ctx =
   pr "%s" x;
+
+and pr_types ts ctx =
+  pr_paren (pr_list pr_type ts) ctx
 
 and pr_type t ctx =
   match t with
   | Mlir.TFunc (ts, t) ->
-      pr "(";
-      pr_sep ", " pr_type ts ctx; 
-      pr ") -> ";
-    pr_type t ctx;
-  | Mlir.TRecord fts ->
-      pr "!arc.struct<";
-      pr_sep ", " pr_field_type fts ctx;
-      pr ">";
-  | Mlir.TEnum vts ->
-      pr "!arc.enum<";
-      pr_sep ", " pr_variant_type vts ctx;
-      pr ">";
-  | Mlir.TAdt (xs, _ts) ->
-      pr "!arc.adt<";
-      pr_path xs;
-      pr ">";
-  | Mlir.TStream t ->
-      pr "!arc.stream<";
+      pr_paren (pr_types ts) ctx;
+      pr "-> ";
       pr_type t ctx;
-      pr ">";
+  | Mlir.TRecord fts ->
+      pr "!arc.struct";
+      pr_angle (pr_list (pr_field pr_type) fts) ctx;
+  | Mlir.TEnum vts ->
+      pr "!arc.enum";
+      pr_angle (pr_list (pr_field pr_type) vts) ctx;
+  | Mlir.TAdt (xs, _ts) ->
+      pr "!arc.adt";
+      pr_angle (pr_path xs) ctx;
+  | Mlir.TStream t ->
+      pr "!arc.stream";
+      pr_angle (pr_type t) ctx;
   | Mlir.TNative x ->
       pr "%s" x;
 
 and pr_block ss ctx =
   pr "{";
   pr_sep "" pr_ssa ss (ctx |> Ctx.indent);
-  ctx |> Ctx.print_indent;
+  ctx |> pr_indent;
   pr "}";
 
 and pr_lhs lhs ctx =
@@ -138,17 +85,17 @@ and pr_lhs lhs ctx =
   | _ -> ()
 
 and pr_ssa (lhs, e) ctx =
-  ctx |> Ctx.print_indent;
+  ctx |> pr_indent;
   pr_lhs lhs ctx;
 
   match e with
   | Mlir.EAccess (a0, x1) ->
-      quoted pr "arc.struct_access";
-      paren (pr_arg_var a0) ctx;
+      pr_quote pr "arc.struct_access";
+      pr_paren (pr_arg_var a0) ctx;
       pr "{ field = ";
-      quoted (pr_name x1) ctx;
+      pr_quote (pr_name x1) ctx;
       pr " } :";
-      paren (pr_arg_type a0) ctx;
+      pr_paren (pr_arg_type a0) ctx;
       pr "-> ";
       pr_lhs_type lhs ctx;
   | Mlir.EBinOp (op, a0, a1) ->
@@ -195,21 +142,21 @@ and pr_ssa (lhs, e) ctx =
       pr_arg_type a0 ctx;
   | Mlir.ECall (a0, args) ->
       pr_arg_var a0 ctx;
-      paren (pr_sep ", " pr_arg_var args) ctx;
+      pr_paren (pr_list pr_arg_var args) ctx;
       pr " : ";
       pr_arg_type a0 ctx;
       pr " -> ";
       pr_lhs_type lhs ctx;
   | Mlir.EReceive a0 ->
       pr "arc.receive";
-      paren (pr_arg_var a0) ctx;
+      pr_paren (pr_arg_var a0) ctx;
       pr " : ";
       pr_arg_type a0 ctx;
       pr " -> ";
-      paren (pr_lhs_type lhs) ctx;
+      pr_paren (pr_lhs_type lhs) ctx;
   | Mlir.EEmit (a0, a1) ->
       pr "arc.emit";
-      paren (fun ctx ->
+      pr_paren (fun ctx ->
         pr_arg_var a0 ctx;
         prr ", ";
         pr_arg_var a1 ctx;
@@ -222,33 +169,33 @@ and pr_ssa (lhs, e) ctx =
       pr "arc.make_enum";
       begin match a0 with
       | None -> pr "()"
-      | Some a0 -> paren (pr_arg a0) ctx;
+      | Some a0 -> pr_paren (pr_arg a0) ctx;
       end;
       pr " as ";
-      quoted pr_path xs;
+      pr_quote (pr_path xs) ctx;
       pr " : ";
       pr_lhs_type lhs ctx;
   | Mlir.EIs (xs, a0) ->
       pr "arc.enum_check";
-      paren (pr_arg a0) ctx;
+      pr_paren (pr_arg a0) ctx;
       pr " is ";
-      quoted pr_path xs;
+      pr_quote (pr_path xs) ctx;
       pr " : ";
       pr_lhs_type lhs ctx;
   | Mlir.EUnwrap (xs, a0) ->
       pr "arc.enum_access ";
-      quoted pr_path xs;
+      pr_quote (pr_path xs) ctx;
       pr " in ";
-      paren (pr_arg a0) ctx;
+      pr_paren (pr_arg a0) ctx;
       pr " : ";
       begin match lhs with
       | Some (_, t) -> pr_type t ctx
       | None -> pr "none"
       end;
   | Mlir.EIf (a0, b0, b1) ->
-      quoted pr "arc.if";
-      paren (pr_arg_var a0) ctx;
-      paren (fun ctx ->
+      pr_quote pr "arc.if";
+      pr_paren (pr_arg_var a0) ctx;
+      pr_paren (fun ctx ->
         pr_block b0 ctx;
         pr ",";
         pr_block b1 ctx;
@@ -264,16 +211,16 @@ and pr_ssa (lhs, e) ctx =
       end;
   | Mlir.ELoop b ->
       pr "scf.while : () -> () {";
-      ctx |> Ctx.indent |> Ctx.print_indent;
+      ctx |> Ctx.indent |> pr_indent;
       pr "%%condition = constant 1 : i1";
-      ctx |> Ctx.indent |> Ctx.print_indent;
+      ctx |> Ctx.indent |> pr_indent;
       pr "scf.condition(%%condition)";
-      ctx |> Ctx.print_indent;
+      ctx |> pr_indent;
       pr "} do ";
       pr_block b ctx;
   | Mlir.ERecord fas ->
-      quoted pr "arc.make_struct";
-      paren (pr_sep ", " pr_field_expr fas) ctx;
+      pr_quote pr "arc.make_struct";
+      pr_paren (pr_list pr_field_expr fas) ctx;
       pr " : ";
       pr_lhs_type lhs ctx;
   | Mlir.EReturn a0 ->
@@ -287,29 +234,29 @@ and pr_ssa (lhs, e) ctx =
           pr "return"
       end
   | Mlir.EResult a0 ->
-      quoted pr "arc.block.result";
+      pr_quote pr "arc.block.result";
       begin match a0 with
       | Some a0 ->
-          paren (pr_arg_var a0) ctx;
+          pr_paren (pr_arg_var a0) ctx;
           pr " : ";
-          paren (pr_arg_type a0) ctx;
+          pr_paren (pr_arg_type a0) ctx;
           pr " -> ";
           pr_lhs_type lhs ctx;
       | None -> ()
       end
   | Mlir.EBreak a0 ->
-      quoted pr "arc.loop.break";
+      pr_quote pr "arc.loop.break";
       begin match a0 with
       | Some a0 ->
-          paren (pr_arg_var a0) ctx;
+          pr_paren (pr_arg_var a0) ctx;
           pr " : ";
-          paren (pr_arg_type a0) ctx;
+          pr_paren (pr_arg_type a0) ctx;
           pr " -> ";
           pr_lhs_type lhs ctx;
       | None -> pr ": () -> ()";
       end
   | Mlir.EContinue ->
-      quoted pr "arc.loop.continue";
+      pr_quote pr "arc.loop.continue";
       pr "() : () -> ()"
   | Mlir.EYield ->
       pr "scf.yield";

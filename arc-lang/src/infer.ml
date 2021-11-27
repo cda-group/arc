@@ -165,33 +165,33 @@ module Ctx = struct
   and add_item xs i ctx = { ctx with definitions = (xs, i)::ctx.definitions}
 end
 
-let debug_schemes scs hir =
+let debug_schemes scs =
   Printf.printf "\nSchemes:\n";
-  let ctx = (Pretty_hir.Ctx.make hir true) in
+  let ctx = Pretty.Ctx.brief in
   scs |> PathMap.iter (fun xs sc ->
     match sc with
     | Ctx.SPoly {t; explicit_gs; implicit_gs } ->
         Printf.printf "Poly: ";
-        Pretty_hir.pr_path xs;
+        Pretty_hir.pr_path xs ctx;
         Printf.printf " => forall";
         Printf.printf "\n  explicit ";
         Printf.printf "[";
-        Pretty_hir.pr_sep ", " Pretty_hir.pr_name explicit_gs ctx;
+        Pretty.pr_sep ", " Pretty_hir.pr_name explicit_gs ctx;
         Printf.printf "]";
         Printf.printf "\n  implicit ";
         Printf.printf "[";
-        Pretty_hir.pr_sep ", " Pretty_hir.pr_name implicit_gs ctx;
+        Pretty.pr_sep ", " Pretty_hir.pr_name implicit_gs ctx;
         Printf.printf "]";
         Printf.printf "\n  . ";
         Pretty_hir.pr_type t ctx;
         Printf.printf "\n";
     | Ctx.SMono {t; explicit_gs } ->
         Printf.printf "Mono: ";
-        Pretty_hir.pr_path xs;
+        Pretty_hir.pr_path xs ctx;
         Printf.printf " => forall ";
         Printf.printf "  explicit ";
         Printf.printf "[";
-        Pretty_hir.pr_sep ", " Pretty_hir.pr_name explicit_gs ctx;
+        Pretty.pr_sep ", " Pretty_hir.pr_name explicit_gs ctx;
         Printf.printf "]";
         Printf.printf "\n  . ";
         Pretty_hir.pr_type t ctx;
@@ -280,7 +280,7 @@ and generalise s t =
 (* Unifies two types *)
 and unify t0 t1 (ctx:Ctx.t) =
   begin
-    let ctx = Pretty_hir.Ctx.make ctx.hir false in
+    let ctx = Pretty.Ctx.brief in
     Printf.printf "Unifying: ";
     Pretty_hir.pr_type t0 ctx;
     Printf.printf " = ";
@@ -292,7 +292,7 @@ and unify t0 t1 (ctx:Ctx.t) =
 (*   Debug.debug_substitutions s1 ctx.hir; *)
   let ctx = ctx |> Ctx.update_tsubst (compose s1 s0) in
 (*   Printf.printf "---------------------------------"; *)
-  Debug.debug_substitutions (ctx |> Ctx.get_tsubst) ctx.hir;
+  Debug.debug_substitutions (ctx |> Ctx.get_tsubst);
   Printf.printf "=================================\n\n";
   ctx
 
@@ -352,7 +352,7 @@ and mgu t0 t1 ctx : ((Hir.name * Hir.ty) list * Ctx.t) =
       else
         ([(x, t)], ctx)
   | _ ->
-      let ctx = Pretty_hir.Ctx.make ctx.hir false in
+      let ctx = Pretty.Ctx.brief in
       Printf.printf "Oops... ";
       Pretty_hir.pr_type t0 ctx;
       Printf.printf " != ";
@@ -486,7 +486,7 @@ and infer_item (ctx:Ctx.t) (xs, i) : Ctx.t =
         | [t3] ->
             Hir.TFunc (ts_of_ps ps, Hir.TFunc (ts0_streams, t3))
         | _ ->
-            let t3 = ts1_streams |> Lower.indexes_to_fields |> Lower.fields_to_rows Hir.TRowEmpty in
+            let t3 = ts1_streams |> Hir.indexes_to_rows Hir.TRowEmpty in
             Hir.TFunc (ts_of_ps ps, Hir.TFunc (ts0_streams, Hir.TRecord t3))
         in
 
@@ -577,7 +577,7 @@ and infer_ssa_rhs ctx (v0, t0, e0) =
   | Hir.EReceive -> ctx
   | Hir.ERecord fvs ->
       let fts = fts_of_fvs fvs ctx in
-      let t1 = fts |> Lower.fields_to_rows Hir.TRowEmpty in
+      let t1 = fts |> Hir.fields_to_rows Hir.TRowEmpty in
       ctx |> unify t0 (Hir.TRecord t1)
   | Hir.EReturn v1 ->
       ctx |> unify t0 (atom "unit")
@@ -633,7 +633,7 @@ and infer_ssa_rhs ctx (v0, t0, e0) =
       (* If we have already inferenced this item then we can just instantiate
          its type scheme *)
       | Ctx.SPoly sc ->
-          debug_schemes ctx.schemes ctx.hir;
+          debug_schemes ctx.schemes;
           let (ts1, s0, ctx) = ctx |> instantiate_generics sc.explicit_gs in
           let (ts2, s1, ctx) = ctx |> instantiate_generics sc.implicit_gs in
           let ctx = ctx |> try_unify_ts ts0 ts1 in

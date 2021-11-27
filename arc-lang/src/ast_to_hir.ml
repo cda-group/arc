@@ -316,16 +316,6 @@ module Ctx = struct
   and generic x = Hir.TGeneric x
 end
 
-let index_to_field i = Printf.sprintf "_%d" i
-
-let indexes_to_fields is =
-  is |> List.fold_left (fun (l, c) v -> ((index_to_field c, v)::l, c+1)) ([], 0)
-     |> fst
-     |> List.rev
-
-and arms_to_clauses arms v =
-  arms |> List.map (fun (p, e) -> ([(v, p)], [], e))
-
 let rec hir_of_ast table ast =
   let ctx = Ctx.make table in
   let ctx = ast |> List.fold_left (fun ctx i -> lower_item i ctx) ctx in
@@ -349,14 +339,14 @@ and lower_item i ctx =
       let (variants, ctx) = variants |> mapm (lower_variant xs) ctx in
       let ctx = ctx |> Ctx.pop_gscope in
       ctx |> Ctx.add_item xs (Hir.IEnum (gs, variants))
-  | Ast.IExternDef (x, gs, ps, t) ->
+  | Ast.IExternDef (x, gs, ts, t) ->
       let xs = x::ctx.path |> List.rev in
       let ctx = ctx |> Ctx.push_gscope in
       let (gs, ctx) = gs |> mapm lower_generic ctx in
-      let (ps, ctx) = ps |> mapm lower_basicparam ctx in
+      let (ts, ctx) = ts |> mapm lower_type ctx in
       let (t, ctx) = lower_type t ctx in
       let ctx = ctx |> Ctx.pop_gscope in
-      ctx |> Ctx.add_item xs (Hir.IExternDef (gs, ps, t))
+      ctx |> Ctx.add_item xs (Hir.IExternDef (gs, ts, t))
   | Ast.IExternType (x, gs) ->
       let xs = x::ctx.path |> List.rev in
       let ctx = ctx |> Ctx.push_gscope in
@@ -441,19 +431,11 @@ and lower_variant xs (x, ts) (ctx:Ctx.t) =
   | [t] -> lower_type t ctx
   | ts ->
       let (ts, ctx) = ts |> mapm lower_type ctx in
-      let fts = ts |> indexes_to_fields in
+      let fts = ts |> Hir.indexes_to_fields in
       let t = fts |> fields_to_rows Hir.TRowEmpty in
       (Hir.TRecord t, ctx)
   in
   (xs, ctx |> Ctx.add_item xs (Hir.IVariant t))
-
-(* t is the tail, which could either be a Hir.TVar or Hir.TRowEmpty *)
-and fields_to_rows (t:Hir.ty) (fs:Hir.ty Hir.field list) : Hir.ty =
-  fs |> List.fold_left (fun t f -> Hir.TRowExtend (f, t)) t
-
-and lower_basicparam (x, t) (ctx:Ctx.t) =
-  let (t, ctx) = lower_type t ctx in
-  ((x, t), ctx)
 
 and lower_generic x (ctx:Ctx.t) =
   let (x, ctx) = ctx |> Ctx.bind_gname x in
@@ -487,7 +469,7 @@ and lower_call e es ctx =
                 lower_expr e ctx
             | es ->
                 let (vs, ctx) = es |> mapm lower_expr ctx in
-                let fs = vs |> indexes_to_fields in
+                let fs = vs |> Hir.indexes_to_fields in
                 ctx |> Ctx.add_expr (Hir.ERecord fs)
           in
           ctx |> Ctx.add_expr (Hir.EEnwrap (xs, ts, v))
@@ -586,11 +568,11 @@ and lower_expr expr ctx : Hir.var * Ctx.t =
   (* Desugared expressions *)
   | Ast.ETuple es ->
       let (vs, ctx) = es |> mapm lower_expr ctx in
-      let fs = vs |> indexes_to_fields in
+      let fs = vs |> Hir.indexes_to_fields in
       ctx |> Ctx.add_expr (Hir.ERecord fs)
   | Ast.EProject (e, i) ->
       let (v, ctx) = lower_expr e ctx in
-      ctx |> Ctx.add_expr (Hir.EAccess (v, index_to_field i))
+      ctx |> Ctx.add_expr (Hir.EAccess (v, Hir.index_to_field i))
   | Ast.EBlock b ->
       let ((ss, v), ctx) = lower_block b ctx in
       let ctx = ctx |> Ctx.add_stmts ss in
@@ -642,13 +624,13 @@ and lower_expr expr ctx : Hir.var * Ctx.t =
       lower_clauses [c0; c1] ctx
   | Ast.EMatch (e, arms) ->
       let (v, ctx) = lower_expr e ctx in
-      let cs = arms_to_clauses arms v in
+      let cs = Hir.arms_to_clauses arms v in
       lower_clauses cs ctx
   | Ast.EOn arms ->
       let ctx = ctx |> Ctx.push_vscope in
       let (v0, ctx) = ctx |> Ctx.add_expr Hir.EReceive in
       let (v1, ctx) = ctx |> Ctx.unwrap_input v0 in
-      let cs = arms_to_clauses arms v1 in
+      let cs = Hir.arms_to_clauses arms v1 in
       let (v2, ctx) = lower_clauses cs ctx in
       let (ss, ctx) = ctx |> Ctx.pop_vscope in
       let ctx = ctx |> Ctx.add_stmts (ss |> List.rev) in
@@ -755,8 +737,13 @@ and lower_field_expr (x, e) (ctx:Ctx.t) =
       | None -> panic "Name not found"
 
 and lower_field_type (x, t) (ctx:Ctx.t) =
-  let (t, ctx) = lower_type t ctx in
-  ((x, t), ctx)
+  match t with
+  | Some t ->
+    let (t, ctx) = lower_type t ctx in
+    ((x, t), ctx)
+  | None ->
+    let (t, ctx) = ctx |> Ctx.fresh_t in
+    ((x, t), ctx)
 
 and lower_type_or_fresh t (ctx:Ctx.t) =
   match t with
@@ -778,7 +765,7 @@ and lower_type t (ctx:Ctx.t) =
       (Hir.TFunc (ts, t), ctx)
   | Ast.TTuple ts ->
       let (ts, ctx) = ts |> mapm lower_type ctx in
-      let fs = ts |> indexes_to_fields in
+      let fs = ts |> Hir.indexes_to_fields in
       let t = fs |> fields_to_rows Hir.TRowEmpty in
       (Hir.TRecord t, ctx)
   | Ast.TRecord (fs, t) ->
@@ -801,7 +788,7 @@ and lower_irrefutable_pat p t v ctx =
   match p with
   | Ast.PIgnore -> ctx
   | Ast.POr _ -> panic "Found refutable pattern"
-  | Ast.PRecord pfs ->
+  | Ast.PRecord (pfs, _tail) ->
       pfs |> List.fold_left (fun ctx (x, p) ->
         let (v, ctx) = ctx |> Ctx.add_typed_expr (Hir.EAccess (v, x)) t in
         let (t, ctx) = ctx |> Ctx.fresh_t in
@@ -813,7 +800,7 @@ and lower_irrefutable_pat p t v ctx =
       ) ctx
   | Ast.PTuple ps ->
       let (_, ctx) = ps |> List.fold_left (fun (i, ctx) p ->
-        let x = index_to_field i in
+        let x = Hir.index_to_field i in
         let (v, ctx) = ctx |> Ctx.add_typed_expr (Hir.EAccess (v, x)) t in
         let (t, ctx) = ctx |> Ctx.fresh_t in
         (i+1, lower_irrefutable_pat p t v ctx)
@@ -864,8 +851,8 @@ and simplify_record (eqs, substs, ctx) v fs =
   ) (eqs, substs, ctx)
 
 and simplify_tuple (eqs, substs, ctx) v ps =
-  let fs = ps |> List.map (fun p -> Some p) |> indexes_to_fields in
-  simplify_eq (eqs, substs, ctx) (v, Ast.PRecord fs)
+  let fs = ps |> List.map (fun p -> Some p) |> Hir.indexes_to_fields in
+  simplify_eq (eqs, substs, ctx) (v, Ast.PRecord (fs, None))
 
 (* and simplify_or (eqs, substs, ctx) cs p0 p1 = *)
 (*   let (v0, ctx) = ctx |> Ctx.fresh_x in *)
@@ -880,7 +867,7 @@ and simplify_eq ((eqs, substs, ctx) as acc) (v, p) =
   match p with
   | Ast.PVar x -> (eqs, (x, v)::substs, ctx) (* Substitute *)
   | Ast.PIgnore -> acc (* Ignore completely *)
-  | Ast.PRecord fs -> simplify_record acc v fs
+  | Ast.PRecord (fs, _tail) -> simplify_record acc v fs
   | Ast.PTuple ps -> simplify_tuple acc v ps
   | Ast.POr (_p0, _p1) -> todo ()
   (* Refutable patterns are not simplified *)
@@ -1068,7 +1055,6 @@ and lower_binop op (ctx:Ctx.t) =
   | Ast.BPow -> ctx |> Ctx.add_expr (Hir.EItem (["pow"], []))
   | Ast.BSub -> ctx |> Ctx.add_expr (Hir.EItem (["sub"], []))
   | Ast.BXor -> ctx |> Ctx.add_expr (Hir.EItem (["xor"], []))
-  (* Unreachable code *)
   | Ast.BIn | Ast.BRExc | Ast.BRInc | Ast.BEq | Ast.BMut | Ast.BBy | Ast.BNotIn | Ast.BPipe -> unreachable ()
 
 and regex = (Str.regexp "\\${[^}]+}\\|\\$[a-zA-Z_][a-zA-Z0-9_]*")
@@ -1107,7 +1093,7 @@ and lower_closure ps e (ctx:Ctx.t) =
 
   let b0 = (ss0, v0) in
   let vs = free_vars ps b0 in
-  let fvs = indexes_to_fields vs in
+  let fvs = Hir.indexes_to_fields vs in
 
   (* Create the extra function parameter *)
   let (v, ctx) = ctx |> Ctx.fresh_x in

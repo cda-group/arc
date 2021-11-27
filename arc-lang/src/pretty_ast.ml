@@ -1,74 +1,36 @@
 open Ast
 open Utils
+open Pretty
 
-module Ctx = struct
-  type t = {
-    indent: int;
-    debug: bool;
-    ast: Ast.ast;
-  }
-
-  let print_indent ctx: unit =
-    Printf.printf "\n";
-    let rec print_indent = function
-      | 0 -> ()
-      | i ->
-        Printf.printf "    ";
-        print_indent (i - 1)
-    in
-    print_indent ctx.indent
-
-  let indent ctx =
-    { ctx with indent = ctx.indent + 1 }
-
-  and make ast debug = {
-      indent = 0;
-      debug;
-      ast;
-    }
-
-end
-
-let pr fmt = Printf.printf fmt
-
-let rec pr_sep sep f l (ctx:Ctx.t) =
-  match l with
-  | [x]  -> f x ctx
-  | []   -> ()
-  | h::t ->
-      f h ctx;
-      pr sep;
-      pr_sep sep f t ctx
+let pr_tail f a ctx =
+  begin match a with
+  | Some a ->
+      pr "|";
+      f a ctx;
+  | None ->
+      ()
+  end
 
 let rec pr_ast (ast:Ast.ast) =
-  let ctx = Ctx.make ast false in
+  let ctx = Ctx.brief in
   ast |> List.iter (fun i -> pr_item i ctx);
   pr "\n";
 
 and pr_generics gs ctx =
   if gs != [] then begin
-    pr "[";
-    pr_sep ", " pr_generic gs ctx;
-    pr "]";
+    pr_brack (pr_list pr_generic gs) ctx;
   end;
 
 and pr_generic x ctx =
   pr_name x ctx;
 
-and pr_overload t ctx =
-  match t with
-  | Some t1 ->
-      pr " for ";
-      pr_type t1 ctx
-  | None -> ()
-
 and pr_item i ctx =
-  ctx |> Ctx.print_indent;
+  ctx |> pr_indent;
   match i with
   | IVal (x, t, e) ->
       pr "val ";
       pr_name x ctx;
-      pr_type_opt t ctx;
+      pr_type_annot t ctx;
       pr " = ";
       pr_expr e ctx;
       pr ";";
@@ -77,16 +39,14 @@ and pr_item i ctx =
       pr_name x ctx;
       pr_generics gs ctx;
       pr " {";
-      pr_sep ", " pr_variant xss (ctx |> Ctx.indent);
-      ctx |> Ctx.print_indent;
+      pr_list pr_variant xss (ctx |> Ctx.indent);
+      ctx |> pr_indent;
       pr "}";
-  | IExternDef (x, gs, ps, t) ->
+  | IExternDef (x, gs, ts, t) ->
       pr "extern fun ";
       pr_name x ctx;
       pr_generics gs ctx;
-      pr "(";
-      pr_sep ", " pr_basic_param ps ctx;
-      pr ")";
+      pr_paren (pr_types ts) ctx;
       pr ": ";
       pr_type t ctx;
       pr ";";
@@ -100,7 +60,7 @@ and pr_item i ctx =
       pr_name x ctx;
       pr_generics gs ctx;
       pr_params ps ctx;
-      pr_type_opt t0 ctx;
+      pr_type_annot t0 ctx;
       pr_body b ctx;
   | ITask (x, gs, ps, i0, i1, b) ->
       pr "task ";
@@ -148,7 +108,7 @@ and pr_item i ctx =
 and pr_type_args ts ctx =
   if ts != [] then begin
     pr "[";
-    pr_sep ", " pr_type ts ctx;
+    pr_list pr_type ts ctx;
     pr "]";
   end
 
@@ -162,7 +122,7 @@ and pr_decl (x, gs, ps, t) ctx =
   pr_name x ctx;
   pr_generics gs ctx;
   pr_params ps ctx;
-  pr_type_opt t ctx;
+  pr_type_annot t ctx;
   pr ";";
 
 and pr_defs ds ctx =
@@ -177,7 +137,7 @@ and pr_def (x, gs, ps, t, b) ctx =
   pr_name x ctx;
   pr_generics gs ctx;
   pr_params ps ctx;
-  pr_type_opt t ctx;
+  pr_type_annot t ctx;
   pr " ";
   pr_block b ctx;
 
@@ -190,38 +150,24 @@ and pr_body b ctx =
 
 and pr_interface i ctx =
   match i with
-  | PTagged vs -> pr_sep ", " pr_port vs ctx
+  | PTagged vs -> pr_list pr_port vs ctx
   | PSingle t -> pr_type t ctx
 
 and pr_variant (x, ts) ctx =
-  ctx |> Ctx.print_indent;
+  ctx |> pr_indent;
   pr_name x ctx;
   match ts with
   | [] -> ()
   | ts ->
-    pr "(";
-    pr_sep ", " pr_type ts ctx;
-    pr ")";
+    pr_paren (pr_types ts) ctx
 
 and pr_port (x, t) ctx =
-  ctx |> Ctx.print_indent;
+  ctx |> pr_indent;
   pr_name x ctx;
-  pr "(";
-  pr_type t ctx;
-  pr ")";
-
-and pr_basic_params ps ctx =
-  pr_sep ", " pr_basic_param ps ctx;
-
-and pr_basic_param (x, t) ctx =
-  pr_name x ctx;
-  pr ": ";
-  pr_type t ctx;
+  pr_paren (pr_type t) ctx;
 
 and pr_params ps ctx =
-  pr "(";
-  pr_sep ", " pr_param ps ctx;
-  pr ")";
+  pr_paren (pr_list pr_param ps) ctx;
 
 and pr_param (p, t) ctx =
   pr_pat p ctx;
@@ -234,13 +180,14 @@ and pr_pat p ctx =
       pr_pat p0 ctx;
       pr " | ";
       pr_pat p1 ctx;
-  | PRecord fps ->
+  | PRecord (fps, p) ->
       pr "#{";
-      pr_sep ", " pr_field_pat fps ctx;
+      pr_list (pr_field_opt pr_pat) fps ctx;
+      pr_tail pr_pat p ctx;
       pr "}";
   | PTuple ps ->
       pr "(";
-      pr_sep ", " pr_pat ps ctx;
+      pr_list pr_pat ps ctx;
       pr ",)";
   | PConst l ->
       pr_lit l ctx;
@@ -248,27 +195,7 @@ and pr_pat p ctx =
       pr_name x ctx;
   | PUnwrap (xs, ps) ->
       pr_path xs ctx;
-      pr "(";
-      pr_sep ", " pr_pat ps ctx;
-      pr ")";
-
-and pr_field_pat (x, p) ctx =
-  pr_name x ctx;
-  match p with
-  | Some p ->
-      pr ": ";
-      pr_pat p ctx;
-  | None -> ()
-
-and pr_path xs ctx =
-  match xs with
-  | [] ->
-      ()
-  | [h] ->
-      pr "%s" h;
-  | h::t ->
-      pr "%s::" h;
-      pr_path t ctx;
+      pr_paren (pr_list pr_pat ps) ctx;
 
 and pr_type_annot t ctx =
   match t with
@@ -277,53 +204,34 @@ and pr_type_annot t ctx =
       pr_type t ctx
   | None -> ()
 
-and pr_type_opt t ctx =
-  match t with
-  | Some t ->
-      pr ": ";
-      pr_type t ctx
-  | None -> ()
-
 and pr_types ts ctx =
-  pr "(";
-  pr_sep ", " pr_type ts ctx;
-  pr ")";
+  pr_list pr_type ts ctx;
 
 and pr_type t ctx =
   match t with
   | TFunc (ts, t) ->
       pr "fun";
-      pr_types ts ctx; 
+      pr_paren (pr_types ts) ctx; 
       pr ": ";
       pr_type t ctx;
   | TTuple ts ->
       pr "(";
-      pr_sep ", " pr_type ts ctx;
+      pr_list pr_type ts ctx;
       pr ",)";
   | TRecord (fts, t) ->
-      pr "#{ ";
-      pr_sep ", " pr_field_type fts ctx;
-      begin match t with
-      | Some t ->
-          pr "|";
-          pr_type t ctx;
-      | None ->
-          ()
-      end;
-      pr " }";
+      pr "#{";
+      pr_list (pr_field_opt pr_type) fts ctx;
+      pr_tail pr_type t ctx;
+      pr "}";
   | TPath (xs, ts) ->
       pr_type_path xs ts ctx;
   | TArray t ->
-      pr "[";
-      pr_type t ctx;
-      pr "]";
+      pr_delim "[" "]" (pr_type t) ctx;
 
 and pr_type_path xs ts ctx =
   pr_path xs ctx;
   if ts != [] then begin
-    pr "[";
-    pr_sep ", " pr_type ts ctx; 
-    pr "]";
+    pr_delim "[" "]" (pr_list pr_type ts) ctx; 
   end
 
 and pr_block (ss, e) ctx =
@@ -338,18 +246,18 @@ and pr_block (ss, e) ctx =
   | (ss, Some e) ->
     pr_sep ";" pr_stmt ss ctx';
     pr ";";
-    ctx' |> Ctx.print_indent;
+    ctx' |> pr_indent;
     pr_expr e ctx';
-    ctx |> Ctx.print_indent;
+    ctx |> pr_indent;
   | (ss, None) ->
     pr_sep ";" pr_stmt ss ctx';
     pr ";";
-    ctx |> Ctx.print_indent
+    ctx |> pr_indent
   end;
   pr "}";
 
 and pr_stmt s ctx =
-  ctx |> Ctx.print_indent;
+  ctx |> pr_indent;
   match s with
   | SNoop -> ();
   | SVal ((p, t), e) ->
@@ -366,9 +274,6 @@ and pr_stmt s ctx =
       pr_expr e ctx;
   | SExpr e ->
       pr_expr e ctx;
-
-and pr_name x _ctx =
-  pr "%s" x;
 
 and pr_expr e ctx =
   let pr_expr e = 
@@ -389,13 +294,8 @@ and pr_expr e ctx =
         pr_block b (ctx |> Ctx.indent);
     | EArray (vs, v) ->
         pr "[";
-        pr_sep ", " pr_expr vs ctx;
-        begin match v with
-        | None -> ();
-        | Some v ->
-            pr "|";
-            pr_expr v ctx;
-        end;
+        pr_list pr_expr vs ctx;
+        pr_tail pr_expr v ctx;
         pr "]";
     | EBinOp (op, v0, v1) ->
         pr_expr v0 ctx;
@@ -405,16 +305,12 @@ and pr_expr e ctx =
         pr_expr v1 ctx;
     | ECall (e, vs) ->
         pr_expr e ctx;
-        pr "(";
-        pr_sep ", " pr_expr vs ctx;
-        pr ")";
+        pr_paren (pr_list pr_expr vs) ctx;
     | EInvoke (e, x, vs) ->
         pr_expr e ctx;
         pr ".";
         pr_name x ctx;
-        pr "(";
-        pr_sep ", " pr_expr vs ctx;
-        pr ")";
+        pr_paren (pr_list pr_expr vs) ctx;
     | ECast (e, t) ->
         pr_expr e ctx;
         pr " as ";
@@ -455,7 +351,7 @@ and pr_expr e ctx =
         pr "on ";
         pr "{";
         pr_sep "," pr_arm arms (ctx |> Ctx.indent);
-        ctx |> Ctx.print_indent;
+        ctx |> pr_indent;
         pr "}";
     | ESelect (e0, e1) ->
         pr_expr e0 ctx;
@@ -464,13 +360,8 @@ and pr_expr e ctx =
         pr "]";
     | ERecord (fvs, v) ->
         pr "#{";
-        pr_sep ", " pr_field_expr fvs ctx;
-        begin match v with
-        | None -> ();
-        | Some v ->
-            pr "|";
-            pr_expr v ctx;
-        end;
+        pr_list (pr_field_opt pr_expr) fvs ctx;
+        pr_tail pr_expr v ctx;
         pr "}";
     | EUnOp (op, e) ->
         pr_unop op ctx;
@@ -495,7 +386,7 @@ and pr_expr e ctx =
         pr "continue"
     | ETuple es ->
         pr "(";
-        pr_sep ", " pr_expr es ctx;
+        pr_list pr_expr es ctx;
         pr ",)";
     | EProject (e, i) ->
         pr_expr e ctx;
@@ -503,9 +394,9 @@ and pr_expr e ctx =
     | EBlock (b) ->
         pr_block b ctx;
     | EFunc (ps, e) ->
-        pr "fun(";
-        pr_sep ", " pr_param ps ctx;
-        pr "): ";
+        pr "fun";
+        pr_paren (pr_list pr_param ps) ctx;
+        pr ": ";
         pr_expr e ctx;
     | ETask e ->
         pr "task ";
@@ -521,7 +412,7 @@ and pr_expr e ctx =
         pr_expr e ctx;
         pr " {";
         pr_sep "," pr_arm arms (ctx |> Ctx.indent);
-        ctx |> Ctx.print_indent;
+        ctx |> pr_indent;
         pr "}";
     | ECompr (e0, (p, e), cs) ->
         pr "[";
@@ -536,16 +427,13 @@ and pr_expr e ctx =
     | EPath (xs, ts) ->
         pr_path xs ctx;
         if ts != [] then begin
-          pr "::[";
-          pr_sep ", " pr_type ts ctx;
-          pr "]";
+          pr "::";
+          pr_brack (pr_list pr_type ts) ctx
         end
     | EFrom _ -> todo ()
   in
-  if ctx.debug then begin
-    pr "(";
-    pr_expr e;
-    pr ")";
+  if ctx.show_types then begin
+    pr_paren pr_expr e;
   end else
     pr_expr e
 
@@ -561,7 +449,7 @@ and pr_clause c ctx =
       pr_expr e ctx;
 
 and pr_arm (p, e) ctx =
-  ctx |> Ctx.print_indent;
+  ctx |> pr_indent;
   pr_pat p ctx;
   pr " => ";
   pr_expr e ctx;
@@ -598,19 +486,6 @@ and pr_unop op _ctx =
   match op with
   | UNeg -> pr "-"
   | UNot -> pr "not"
-
-and pr_field_type (x, t) ctx =
-  pr_name x ctx;
-  pr ": ";
-  pr_type t ctx;
-
-and pr_field_expr (x, e) ctx =
-  pr_name x ctx;
-  match e with
-  | Some e -> 
-    pr ": ";
-    pr_expr e ctx;
-  | None -> ()
 
 and pr_lit l _ctx =
   match l with

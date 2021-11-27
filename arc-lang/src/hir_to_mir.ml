@@ -4,27 +4,26 @@ open Utils
 module Ctx = struct
   type t = {
     hir: Hir.hir;
-    thir: Hir.thir;
+    mir: Mir.mir;
   }
-  (* Here we should maybe mangle instead *)
-  and signature = path * ty list
 
-  let rec make (hir:Hir.hir) = { hir; thir = []; }
+  let rec make (hir:Hir.hir) = { hir; mir = []; }
 
   and has_instance s ctx =
-    ctx.thir |> List.assoc_opt s |> Option.is_some
+    ctx.mir |> List.assoc_opt s |> Option.is_some
 
+  (* Add a monomorphised instance *)
   and add_instance s i ctx =
     if not (ctx |> has_instance s) then
-      { ctx with thir = (s, i)::ctx.thir }
+      { ctx with mir = (s, i)::ctx.mir }
     else
       ctx
 end
 
-let rec monomorphise hir =
+let rec mir_of_hir hir =
   let ctx = Ctx.make hir in
   let ctx = hir |> foldl mono_item ctx in
-  ctx.thir
+  ctx.mir
 
 and mono_item ctx (xs, i) =
   match i with
@@ -73,12 +72,12 @@ and mono_expr ctx e =
           let ctx = mono_type ctx t in
           let ctx = mono_block ctx b in
           ctx |> Ctx.add_instance (xs, ts) (Hir.IDef ([], ps, t, b))
-      | Hir.IExternDef (gs, ps, t) ->
+      | Hir.IExternDef (gs, ts, t) ->
           let s = zip gs ts in
           let f = Infer.instantiate s in
-          let ps = tmap_params f ps in
+          let ts = ts |> map f in
           let t = f t in
-          ctx |> Ctx.add_instance (xs, ts) (Hir.IExternDef ([], ps, t))
+          ctx |> Ctx.add_instance (xs, ts) (Hir.IExternDef ([], ts, t))
       | Hir.ITask (gs, ps, (xs0, ts0), (xs1, ts1), b) ->
           (* Instantiate task *)
           let s = zip gs ts in
@@ -139,4 +138,3 @@ and mono_enum ctx xs xss gs ts =
     | _ -> unreachable ()
   ) ctx in
   ctx |> Ctx.add_instance (xs, ts) (Hir.IEnum ([], xss))
-

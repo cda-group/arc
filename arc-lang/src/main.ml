@@ -33,7 +33,7 @@ let main =
 
             let table = Declare.declare ast in
 
-            let hir = Lower.hir_of_ast table ast in
+            let hir = Ast_to_hir.hir_of_ast table ast in
 
             print_endline "\n\n[:::HIR:::]";
             Pretty_hir.pr_hir hir;
@@ -43,12 +43,12 @@ let main =
             print_endline "\n\n[:::HIR (Inferred):::]";
             Pretty_hir.pr_hir hir;
 
-            let thir = Monomorphise.monomorphise hir in
+            let mir = Hir_to_mir.mir_of_hir hir in
 
-            print_endline "\n\n[:::HIR (Monomorphised):::]";
-            Pretty_hir.pr_thir thir;
+            print_endline "\n\n[:::Monomorphised IR:::]";
+            Pretty_mir.pr_mir mir;
 
-            let mlir = Codegen.mlir_of_thir thir in
+            let mlir = Mir_to_mlir.mlir_of_thir mir in
 
             print_endline "\n\n[:::MLIR:::]";
             Pretty_mlir.pr_mlir mlir;

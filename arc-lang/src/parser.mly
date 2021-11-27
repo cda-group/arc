@@ -174,7 +174,7 @@ program: llist(item) Eof { $1 }
 %inline ty_annot: Colon ty0 { $2 }
 
 %inline basic_params: paren(separated_llist(Comma, basic_param)) { $1 }
-%inline basic_param: name Colon ty0 { ($1, $3) }
+%inline basic_param: name Colon ty0 { $3 }
 
 %inline params: paren(separated_llist(Comma, param)) { $1 }
 %inline param: pat0 ioption(ty_annot) { ($1, $2) }
@@ -330,10 +330,10 @@ expr14:
     { Ast.EArray ($2, $3) }
   | BrackL expr0 Semi for_generator Semi separated_llist(Semi, clause) BrackR
     { Ast.ECompr ($2, $4, $6) }
-  | ParenL expr0 Comma separated_llist(Comma, expr0) ParenR
-    { Ast.ETuple ($2::$4) }
-  | PoundBraceL separated_llist(Comma, field_expr(expr0)) option(tail(expr0)) BraceR
-    { Ast.ERecord ($2, $3) }
+  | tuple(expr0)
+    { Ast.ETuple $1 }
+  | record(expr0)
+    { Ast.ERecord $1 }
   | If expr2 block ioption(else_block)
     { Ast.EIf ($2, $3, $4) }
   | If Val pat0 Eq expr1 block ioption(else_block)
@@ -392,13 +392,7 @@ expr14:
 
 %inline arm: pat0 Imply expr0 { ($1, $3) }
 
-%inline field_expr(expr):
-  | name Colon expr
-    { ($1, Some $3) }
-  | name
-    { ($1, None) }
-
-block: BraceL llist(stmt) ioption(expr0) BraceR { ($2, $3) }
+%inline block: BraceL llist(stmt) ioption(expr0) BraceR { ($2, $3) }
 
 %inline llist(x):
   llist_rev(x) { $1 |> List.rev }
@@ -446,18 +440,12 @@ pat1:
     { Ast.PVar $1 }
   | path paren(separated_nonempty_llist(Comma, pat0))
     { Ast.PUnwrap ($1, $2) }
-  | ParenL pat0 Comma separated_llist(Comma, pat0) ParenR
-    { Ast.PTuple ($2::$4) }
-  | PoundBraceL separated_llist(Comma, field_pat) BraceR
-    { Ast.PRecord ($2) }
+  | tuple(pat0)
+    { Ast.PTuple $1 }
+  | record(pat0)
+    { Ast.PRecord $1 }
   | Underscore
     { Ast.PIgnore }
-
-%inline field_pat:
-  | name Colon pat0
-    { ($1, Some $3) }
-  | name
-    { ($1, None) }
 
 ty0:
   | ty1
@@ -468,14 +456,26 @@ ty0:
 ty1:
   | path loption(ty_args)
     { Ast.TPath ($1, $2) }
-  | ParenL ty0 Comma separated_llist(Comma, ty0) ParenR
-    { Ast.TTuple ($2::$4) }
-  | PoundBraceL separated_llist(Comma, field_ty) option(tail(ty0)) BraceR
-    { Ast.TRecord ($2, $3) }
+  | tuple(ty0)
+    { Ast.TTuple $1 }
+  | record(ty0)
+    { Ast.TRecord $1 }
   | brack(ty0)
     { Ast.TArray $1 }
 
-%inline field_ty: name Colon ty0 { ($1, $3) }
+%inline tys: separated_llist(Comma, ty0) { $1 }
+
+%inline tuple(x): ParenL x Comma separated_llist(Comma, x) ParenR
+  { $2::$4 }
+
+%inline record(x): PoundBraceL separated_llist(Comma, field(x)) option(tail(x)) BraceR
+  { ($2, $3) }
+
+%inline field(x):
+  | name Colon x
+    { ($1, Some $3) }
+  | name
+    { ($1, None) }
 
 %inline lit:
   | Bool { Ast.LBool $1 }

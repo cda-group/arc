@@ -29,7 +29,7 @@ let nums = ints @ floats
 
 (* Binary operators *)
 
-let binop x t0 t1 t2 = Ast.IExternDef (x, [], [("a", t0); ("b", t1)], t2)
+let binop x t0 t1 t2 = Ast.IExternDef (x, [], [t0; t1], t2)
 
 let insts f ts = ts |> map f
 
@@ -54,7 +54,7 @@ let i_xor _ = binop "xor" t_bool t_bool t_bool
 
 (* Unary operators *)
 
-let unop x t0 t1 = Ast.IExternDef (x, [], [("a", t0)], t1)
+let unop x t0 t1 = Ast.IExternDef (x, [], [t0], t1)
 
 let i_neg t = unop "neg" t t
 let i_not _ = unop "not" t_bool t_bool
@@ -92,47 +92,48 @@ and i_range_leq = i_leq
 and add_range ast =
   ast |> add_item i_range
 
-(* Self *)
-
-(* Tuples *)
-
 (* Iterators *)
 
-let i_iter = Ast.IExternType ("Iter", ["T"])
-let t_iter = Ast.TPath (["Iter"], [])
-let i_next = Ast.IExternDef ("next", ["T"], [("iter", t_iter)], generic "T")
-
-and add_iter ast = ast |> add_item i_iter
+and add_iter ast =
+  ast |> add_item (Ast.IExternType ("Iter", ["T"]))
+      |> add_item (Ast.IExternDef ("next", ["T"], [(Ast.TPath (["Iter"], [generic "T"]))], generic "T"))
 
 (* Cells *)
 and add_cells ast =
   let t_cell = (nominal "Cell" [generic "T"]) in
   let t_elem = generic "T" in
-  let p_cell = ("cell", t_cell) in
-  let p_elem = ("elem", t_elem) in
   ast |> add_item (Ast.IExternType ("Cell", ["T"]))
-      |> add_item (Ast.IExternDef ("new_cell", ["T"], [p_elem], t_cell))
-      |> add_item (Ast.IExternDef ("update_cell", ["T"], [p_cell; p_elem], t_unit))
-      |> add_item (Ast.IExternDef ("read_cell", ["T"], [p_cell], t_cell))
+      |> add_item (Ast.IExternDef ("new_cell", ["T"], [t_elem], t_cell))
+      |> add_item (Ast.IExternDef ("update_cell", ["T"], [t_cell; t_elem], t_unit))
+      |> add_item (Ast.IExternDef ("read_cell", ["T"], [t_cell], t_cell))
 
 (* arraytors *)
 and add_arrays ast =
-  let t_array = (nominal "array" [generic "T"]) in
+  let t_array = (nominal "Array" [generic "T"]) in
   let t_elem = generic "T" in
-  let p_array = ("array", t_array) in
-  let p_other = ("other", t_array) in
-  let p_elem = ("elem", t_elem) in
-  let p_idx = ("idx", t_i32) in
-  ast |> add_item (Ast.IExternType ("array", ["T"]))
-      |> add_item (Ast.IExternDef ("new_array", ["T"], [p_elem], t_array))
-      |> add_item (Ast.IExternDef ("push_array", ["T"], [p_array; p_elem], t_unit))
-      |> add_item (Ast.IExternDef ("pop_array", ["T"], [p_array], t_elem))
-      |> add_item (Ast.IExternDef ("select_array", ["T"], [p_array; p_idx], t_elem))
-      |> add_item (Ast.IExternDef ("len_array", ["T"], [p_array], t_i32))
-      |> add_item (Ast.IExternDef ("extend_array", ["T"], [p_array; p_other], t_unit))
+  ast |> add_item (Ast.IExternType ("Array", ["T"]))
+      |> add_item (Ast.IExternDef ("new_array", ["T"], [t_elem], t_array))
+      |> add_item (Ast.IExternDef ("push_array", ["T"], [t_array; t_elem], t_unit))
+      |> add_item (Ast.IExternDef ("pop_array", ["T"], [t_array], t_elem))
+      |> add_item (Ast.IExternDef ("select_array", ["T"], [t_array; t_i32], t_elem))
+      |> add_item (Ast.IExternDef ("len_array", ["T"], [t_array], t_i32))
+      |> add_item (Ast.IExternDef ("extend_array", ["T"], [t_array; t_array], t_unit))
+
+and add_streams ast =
+  let t_elem = generic "A" in
+  let t_elem' = generic "B" in
+  let t_stream = (nominal "Stream" [t_elem]) in
+  let t_stream' = (nominal "Stream" [t_elem']) in
+  let t_fun = Ast.TFunc ([t_elem], t_elem') in
+  ast |> add_item (Ast.IExternType ("Stream", ["T"]))
+      |> add_item (Ast.IExternDef ("map", ["A"; "B"], [t_stream; t_fun], t_stream'))
 
 (* Intrinsics *)
 let add_intrinsics ast =
   ast |> add_scalars
       |> add_cells
       |> add_binops
+      |> add_arrays
+      |> add_unops
+      |> add_iter
+      |> add_streams

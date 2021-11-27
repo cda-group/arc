@@ -2,7 +2,7 @@ open Utils
 
 module Ctx = struct
   type t = {
-    thir: Hir.thir;
+    mir: Mir.mir;
     mlir: Mlir.mlir;
     stack: scope list;
     subctx: subctx list;
@@ -17,7 +17,7 @@ module Ctx = struct
     }
 
   let add_item xs i ctx = { ctx with mlir = (xs, i)::ctx.mlir }
-  let make thir = { thir; mlir = []; stack = []; subctx = []; }
+  let make mir = { mir; mlir = []; stack = []; subctx = []; }
 
   let push_subctx c ctx = { ctx with subctx = c::ctx.subctx }
   let pop_subctx ctx = { ctx with subctx = ctx.subctx |> tl }
@@ -46,10 +46,13 @@ end
 
 let id x = x
 
-let rec mlir_of_thir thir =
-  let ctx = Ctx.make thir in
-  let ctx = thir |> List.fold_left codegen_item ctx in
+let rec mlir_of_thir mir =
+  let ctx = Ctx.make mir in
+  let ctx = mir |> List.fold_left codegen_item ctx in
   ctx.mlir
+
+and filter_unit ts =
+  ts |> filter (fun t -> t |> Hir.is_unit |> not)
 
 and codegen_item ctx ((xs, ts), i) =
   match i with
@@ -60,9 +63,10 @@ and codegen_item ctx ((xs, ts), i) =
       let (b, ctx) = codegen_block b terminator ctx in
       ctx |> Ctx.add_item x (Mlir.IAssign (t0, b))
   | Hir.IEnum _ -> ctx
-  | Hir.IExternDef (_, ps, t) ->
+  | Hir.IExternDef (_, ts, t) ->
       let (x, ctx) = codegen_path (xs, ts) ctx in
-      let (ps, ctx) = ps |> mapm_filter codegen_extern_param ctx in
+      let (ts, ctx) = ts |> filter_unit |> mapm codegen_type ctx in
+      let ps = ts |> Hir.indexes_to_fields in
       let (t, ctx) = codegen_type t ctx in
       ctx |> Ctx.add_item x (Mlir.IExternFunc (ps, t))
   | Hir.IExternType _ -> ctx
@@ -96,18 +100,18 @@ and codegen_item ctx ((xs, ts), i) =
   | Hir.IClassDecl _ -> ctx
 
 and codegen_enum (xs, ts) (ctx:Ctx.t) =
-  match ctx.thir |> List.assoc (xs, ts) with
+  match ctx.mir |> List.assoc (xs, ts) with
   | Hir.IEnum (_, xss) ->
       let (vs, ctx) = xss |> mapm (fun xs ctx -> codegen_variant (xs, ts) ctx) ctx in
       (Mlir.TEnum vs, ctx)
   | _ -> unreachable ()
 
-and codegen_extern_param ((x, t):Hir.param) (ctx:Ctx.t) =
+and codegen_extern_param (t:Hir.ty) (ctx:Ctx.t) =
   if Hir.is_unit t then
     (None, ctx)
   else
     let (t, ctx) = codegen_type t ctx in
-    (Some (x, t), ctx)
+    (Some t, ctx)
 
 and codegen_param ((x, t):Hir.param) (ctx:Ctx.t) =
   if Hir.is_unit t then
@@ -156,7 +160,7 @@ and codegen_type t ctx =
       | ["f64"] -> (Mlir.TNative "f64", ctx)
       | ["unit"] -> (Mlir.TNative "()", ctx)
       | _ ->
-          begin match ctx.thir |> List.assoc (xs, ts) with
+          begin match ctx.mir |> List.assoc (xs, ts) with
           | Hir.IEnum (_, xss) ->
               let (vs, ctx) = xss |> mapm (fun xs ctx -> codegen_variant (xs, ts) ctx) ctx in
               (Mlir.TEnum vs, ctx)
@@ -241,7 +245,7 @@ and codegen_expr t e ctx =
   | Hir.EContinue ->
       (Mlir.EContinue, ctx)
   | Hir.EItem (xs, ts) ->
-      match ctx.thir |> List.assoc (xs, ts) with
+      match ctx.mir |> List.assoc (xs, ts) with
       | Hir.IVal _ -> todo ()
       | Hir.IEnum _ -> unreachable ()
       | Hir.IExternDef (xs, _, _) ->
@@ -268,7 +272,7 @@ and codegen_field_expr (x, v) ctx =
   (fa, ctx)
 
 and codegen_variant ((xs, ts):(Hir.path * Hir.ty list)) ctx =
-  match ctx.thir |> List.assoc (xs, ts) with
+  match ctx.mir |> List.assoc (xs, ts) with
   | Hir.IVariant t ->
       let (t, ctx) = codegen_type t ctx in
       let (xs, ctx) = codegen_path (xs, ts) ctx in

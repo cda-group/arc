@@ -1,7 +1,6 @@
 open Utils
 
 type hir = (path * item) list
-and thir = ((path * ty list) * item) list
 
 and name = string
 and path = name list
@@ -16,7 +15,7 @@ and subst = (name * ty) list
 and item =
   | IVal         of ty * block
   | IEnum        of generic list * path list
-  | IExternDef   of generic list * param list * ty
+  | IExternDef   of generic list * ty list * ty
   | IExternType  of generic list
   | IDef         of generic list * param list * ty * block
   | IClassDecl   of path * generic list * param list * ty
@@ -148,3 +147,22 @@ and smap_expr f e =
   | EEvery (v, b) -> EEvery (v, b |> smap_block f)
   | EAfter (v, b) -> EAfter (v, b |> smap_block f)
   | _ -> e
+
+(* Conversions *)
+
+let index_to_field i = Printf.sprintf "_%d" i
+
+let indexes_to_fields is =
+  is |> List.fold_left (fun (l, c) v -> ((index_to_field c, v)::l, c+1)) ([], 0)
+     |> fst
+     |> List.rev
+
+let arms_to_clauses arms v =
+  arms |> List.map (fun (p, e) -> ([(v, p)], [], e))
+
+(* t is the tail, which could either be a Hir.TVar or Hir.TRowEmpty *)
+let fields_to_rows t fs =
+  fs |> List.fold_left (fun t f -> TRowExtend (f, t)) t
+
+let indexes_to_rows t is =
+  is |> indexes_to_fields |> fields_to_rows t

@@ -3,7 +3,6 @@ and name = string
 and path = name list
 and arm = pattern * expr
 and param = pattern * ty option
-and basic_param = name * ty
 and index = int
 and 't field = name * 't
 and port = name * ty
@@ -17,7 +16,7 @@ and interface =
 and item =
   | IVal        of name * ty option * expr
   | IEnum       of name * generic list * variant list
-  | IExternDef  of name * generic list * basic_param list * ty
+  | IExternDef  of name * generic list * ty list * ty
   | IExternType of name * generic list
   | IClass      of name * generic list * decl list
   | IInstance   of generic list * path * ty list * def list
@@ -33,7 +32,7 @@ and def = name * generic list * param list * ty option * block
 and pattern =
   | PIgnore
   | POr      of pattern * pattern
-  | PRecord  of pattern option field list
+  | PRecord  of (pattern option field list * pattern option)
   | PTuple   of pattern list
   | PConst   of lit
   | PVar     of name
@@ -42,7 +41,7 @@ and pattern =
 and ty =
   | TFunc   of ty list * ty
   | TTuple  of ty list
-  | TRecord of ty field list * ty option
+  | TRecord of (ty option field list * ty option)
   | TPath   of path * ty list
   | TArray  of ty
 
@@ -104,7 +103,7 @@ and expr =
   | EIf       of expr * block * block option
   | ELit      of lit
   | ELoop     of block
-  | ERecord   of expr option field list * expr option
+  | ERecord   of (expr option field list * expr option)
   | EReturn   of expr option
   | EBreak    of expr option
   | EContinue
