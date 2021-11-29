@@ -487,14 +487,6 @@ and lower_expr expr ctx : Hir.var * Ctx.t =
   | Ast.EAccess (e, x) -> 
       let (v, ctx) = lower_expr e ctx in
       ctx |> Ctx.add_expr (Hir.EAccess (v, x))
-  | Ast.EAfter (e, b) ->
-      let (v, ctx) = lower_expr e ctx in
-      let (b, ctx) = lower_block b ctx in
-      ctx |> Ctx.add_expr (Hir.EAfter (v, b))
-  | Ast.EEvery (e, b) ->
-      let (v, ctx) = lower_expr e ctx in
-      let (b, ctx) = lower_block b ctx in
-      ctx |> Ctx.add_expr (Hir.EEvery (v, b))
   | Ast.EArray (es, e) ->
       let (vs, ctx) = es |> mapm lower_expr ctx in
       let (v0, ctx) = ctx |> Ctx.make_array vs in
@@ -1173,8 +1165,6 @@ and free_vars (ps:Hir.param list) (b:Hir.block) : Hir.name list =
   and use_expr e ctx =
     match e with
     | Hir.EAccess (v, _) -> ctx |> use v
-    | Hir.EAfter (v, b) -> ctx |> use v |> use_block b
-    | Hir.EEvery (v, b) -> ctx |> use v |> use_block b
     | Hir.EEq (v0, v1) -> ctx |> use v0 |> use v1
     | Hir.ECall (v, vs) -> ctx |> use v |> use_all vs
     | Hir.ECast (v, _) -> ctx |> use v

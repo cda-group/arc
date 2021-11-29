@@ -36,8 +36,6 @@ and ty =
 
 and expr =
   | EAccess   of var * name
-  | EAfter    of var * block
-  | EEvery    of var * block
   | EEq       of var * var
   | ECall     of var * var list
   | ECast     of var * ty
@@ -53,30 +51,9 @@ and expr =
   | EReturn   of var
   | EBreak    of var
   | EContinue
-  (* NB: These expressions are constructed by lowering *)
   | EItem     of path * ty list
 
-let is_int t =
-  match t with
-  | TNominal (["i16" | "i32" | "i64" | "i128"], []) -> true
-  | _ -> false
-
-let is_float t =
-  match t with
-  | TNominal (["f32" | "f64"], []) -> true
-  | _ -> false
-
-let is_bool t =
-  match t with
-  | TNominal (["bool"], []) -> true
-  | _ -> false
-
-let is_unit t =
-  match t with
-  | TNominal (["unit"], []) -> true
-  | _ -> false
-
-and nominal xs gs = TNominal (xs, gs)
+let nominal xs gs = TNominal (xs, gs)
 
 and atom x = TNominal ([x], [])
 
@@ -113,8 +90,6 @@ and tmap_expr f e =
   match e with
   | EIf (v, b0, b1) -> EIf (v, b0 |> tmap_block f, b1 |> tmap_block f)
   | ELoop b -> ELoop (b |> tmap_block f)
-  | EEvery (v, b) -> EEvery (v, b |> tmap_block f)
-  | EAfter (v, b) -> EAfter (v, b |> tmap_block f)
   | _ -> e
 
 and tmap_params f ps =
@@ -143,8 +118,6 @@ and smap_expr f e =
   match e with
   | EIf (v, b0, b1) -> EIf (v, b0 |> smap_block f, b1 |> smap_block f)
   | ELoop b -> ELoop (b |> smap_block f)
-  | EEvery (v, b) -> EEvery (v, b |> smap_block f)
-  | EAfter (v, b) -> EAfter (v, b |> smap_block f)
   | _ -> e
 
 (* Conversions *)

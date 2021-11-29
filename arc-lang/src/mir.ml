@@ -1,17 +1,24 @@
-open Hir
 
-type mir = ((path * ty list) * item) list
+type mir = ((Hir.path * ty list) * item) list
+
+and name = string
+and path = name list
+and param = name * ty
+and 't field = name * 't
+and ssa = var * ty * expr
+and var = name
+and generic = name
+and block = ssa list * var
+and interface = path * ty list
+
 and item =
   | IVal         of ty * block
-  | IEnum        of path list * ty list
+  | IEnum        of path list
   | IExternDef   of ty list * ty
   | IExternType
   | IDef         of param list * ty * block
-  | IClassDecl   of path * param list * ty
-  | IInstanceDef of path * param list * ty * block
-  | IClass
-  | IInstance    of path * ty list
   | ITask        of param list * interface * interface * block
+  | IVariant     of ty
 
 and ty =
   | TFunc      of ty list * ty
@@ -20,8 +27,6 @@ and ty =
 
 and expr =
   | EAccess   of var * name
-  | EAfter    of var * block
-  | EEvery    of var * block
   | EEq       of var * var
   | ECall     of var * var list
   | ECast     of var * ty
@@ -37,5 +42,31 @@ and expr =
   | EReturn   of var
   | EBreak    of var
   | EContinue
-  (* NB: These expressions are constructed by lowering *)
   | EItem     of path * ty list
+
+let is_int t =
+  match t with
+  | TNominal (["i16" | "i32" | "i64" | "i128"], []) -> true
+  | _ -> false
+
+let is_float t =
+  match t with
+  | TNominal (["f32" | "f64"], []) -> true
+  | _ -> false
+
+let is_bool t =
+  match t with
+  | TNominal (["bool"], []) -> true
+  | _ -> false
+
+let is_unit t =
+  match t with
+  | TNominal (["unit"], []) -> true
+  | _ -> false
+
+and nominal xs = TNominal (xs, [])
+and atom x = TNominal ([x], [])
+
+and ts_of_vs vs = vs |> List.map (fun (_, t) -> t)
+and fts_of_fvs vs = vs |> List.map (fun (x, (_, t)) -> (x, t))
+

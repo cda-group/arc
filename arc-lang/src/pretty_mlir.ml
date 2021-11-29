@@ -48,13 +48,13 @@ and pr_path x _ctx =
   pr "%s" x;
 
 and pr_types ts ctx =
-  pr_paren (pr_list pr_type ts) ctx
+  pr_list pr_type ts ctx
 
 and pr_type t ctx =
   match t with
   | Mlir.TFunc (ts, t) ->
       pr_paren (pr_types ts) ctx;
-      pr "-> ";
+      pr " -> ";
       pr_type t ctx;
   | Mlir.TRecord fts ->
       pr "!arc.struct";
@@ -145,8 +145,6 @@ and pr_ssa (lhs, e) ctx =
       pr_paren (pr_list pr_arg_var args) ctx;
       pr " : ";
       pr_arg_type a0 ctx;
-      pr " -> ";
-      pr_lhs_type lhs ctx;
   | Mlir.EReceive a0 ->
       pr "arc.receive";
       pr_paren (pr_arg_var a0) ctx;
@@ -204,10 +202,15 @@ and pr_ssa (lhs, e) ctx =
       pr_lhs_type lhs ctx;
   | Mlir.EConst c ->
       begin match c with
-      | Mlir.CInt d -> pr "arc.constant %d : i32" d
-      | Mlir.CFloat f -> pr "constant %f : f32" f
-      | Mlir.CBool b -> pr "constant %b : i0" b
-      | Mlir.CFun x -> pr "constant @%s" x
+      | Mlir.CInt d ->
+          pr "arc.constant %d : i32" d;
+      | Mlir.CFloat f ->
+          pr "constant %f : f32" f;
+      | Mlir.CBool b ->
+          pr "constant %b : i0" b;
+      | Mlir.CFun x ->
+          pr "constant @%s : " x;
+          pr_lhs_type lhs ctx;
       end;
   | Mlir.ELoop b ->
       pr "scf.while : () -> () {";

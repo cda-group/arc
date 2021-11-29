@@ -31,7 +31,6 @@
 %token Underscore
 %token Bar
 (*= Keywords ================================================================*)
-%token After
 %token And
 %token As
 %token Break
@@ -46,7 +45,6 @@
 %token Else
 %token Emit
 %token Enum
-%token Every
 %token Extern
 %token For
 %token From
@@ -199,8 +197,6 @@ separated_nonempty_llist_rev(s, x):
 expr0:
   | On handler { Ast.EOn $2 }
   | Emit expr0 { Ast.EEmit $2 }
-  | After expr1 block { Ast.EAfter ($2, $3) }
-  | Every expr1 block { Ast.EEvery ($2, $3) }
   | Return ioption(expr0) { Ast.EReturn $2 }
   | Break ioption(expr0) { Ast.EBreak $2 }
   | Continue { Ast.EContinue }

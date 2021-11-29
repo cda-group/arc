@@ -58,7 +58,6 @@ rule main =
   | "_"        { Underscore }
   | "|"        { Bar }
 (*= Keywords ================================================================*)
-  | "after"    { After }
   | "and"      { And }
   | "as"       { As }
   | "break"    { Break }
@@ -72,7 +71,6 @@ rule main =
   | "else"     { Else }
   | "emit"     { Emit }
   | "enum"     { Enum }
-  | "every"    { Every }
   | "extern"   { Extern }
   | "for"      { For }
   | "from"     { From }

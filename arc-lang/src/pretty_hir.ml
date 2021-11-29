@@ -1,10 +1,16 @@
 open Hir
 open Pretty
+open Utils
 
 let rec pr_hir (hir:Hir.hir) =
   let ctx = Ctx.brief in
-  hir |> List.iter (fun i -> pr_item i ctx);
+  hir |> filter (show_item ctx) |> List.iter (fun i -> pr_item i ctx);
   pr "\n";
+
+and show_item (ctx:Ctx.t) (_, i) =
+  match i with
+  | IExternType _ | IExternDef _ when not ctx.show_externs -> false
+  | _ -> true
 
 and pr_item (xs, i) ctx =
   ctx |> pr_indent;
@@ -25,7 +31,7 @@ and pr_item (xs, i) ctx =
       ctx |> pr_indent;
       pr "}";
   | IExternDef (gs, ts, t) ->
-      pr "extern fun";
+      pr "extern def";
       pr_path xs ctx;
       pr_generics gs ctx;
       pr_paren (pr_types ts) ctx;
@@ -64,7 +70,10 @@ and pr_item (xs, i) ctx =
       pr " = ";
       pr_type t ctx;
       pr ";";
-  | IVariant _ -> ()
+  | IVariant t ->
+      pr "variant ";
+      pr_path xs ctx;
+      pr_type t ctx;
   | IClass _ -> ()
   | IClassDecl _ -> ()
   | IInstance _ -> ()
@@ -103,24 +112,19 @@ and pr_path xs ctx =
       pr "::%s" h;
       pr_path t ctx;
 
-and debug_type t =
-  pr "\nDEBUG: ";
-  pr_type t Ctx.brief
-
 and pr_types ts ctx =
   pr_list pr_type ts ctx;
 
 and pr_type t ctx =
   match t with
   | TFunc (ts, t) ->
-      pr "fun(";
-      pr_list pr_type ts ctx; 
-      pr "): ";
+      pr "fun";
+      pr_paren (pr_list pr_type ts) ctx; 
+      pr ": ";
       pr_type t ctx;
   | TRecord t ->
-      pr "%%{";
-      pr_type t ctx;
-      pr "}";
+      pr "#";
+      pr_brace (pr_type t) ctx;
   | TRowEmpty ->
       pr "∅"
   | TRowExtend ((x, t), r) ->
@@ -164,9 +168,6 @@ and pr_ssa (x, t, e) ctx =
   pr " = ";
   pr_expr e ctx;
 
-and debug_name x =
-  pr_name x Ctx.brief
-
 and pr_name x _ctx =
   pr "%s" x;
 
@@ -176,16 +177,6 @@ and pr_expr e ctx =
       pr_var v ctx;
       pr ".";
       pr_name x ctx;
-  | EAfter (v, b) ->
-      pr "after ";
-      pr_var v ctx;
-      pr " ";
-      pr_block b (ctx |> Ctx.indent);
-  | EEvery (v, b) ->
-      pr "every ";
-      pr_var v ctx;
-      pr " ";
-      pr_block b (ctx |> Ctx.indent);
   | EEq (v0, v1) ->
       pr_var v0 ctx;
       pr " == ";
@@ -235,9 +226,8 @@ and pr_expr e ctx =
   | EReceive ->
       pr "receive";
   | ERecord fvs ->
-      pr "%%{";
-      pr_list (pr_field pr_var) fvs ctx;
-      pr "}";
+      pr "#";
+      pr_brace (pr_list (pr_field pr_var) fvs) ctx;
   | EUnwrap (xs, ts, v) ->
       pr "unwrap[";
       pr_path xs ctx;

@@ -1,6 +1,6 @@
 
 module Ctx = struct
-  type 'a t = {
+  type t = {
     indent: int;
     show_types: bool;
     show_externs: bool;
@@ -38,7 +38,7 @@ let rec pr_sep sep f l ctx =
 let pr_list f l ctx =
   pr_sep ", " f l ctx
 
-let pr_indent (ctx:'a Ctx.t) =
+let pr_indent (ctx:Ctx.t) =
   Printf.printf "\n";
   let rec pr_indent i = match i with
     | 0 -> ()

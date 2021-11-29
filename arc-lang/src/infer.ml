@@ -142,7 +142,7 @@ module Ctx = struct
 
   and bind_t x t ctx = ctx |> update_frame (fun f -> { f with tsubst = (x, t)::f.tsubst })
   and bind_v x t ctx =
-    print_endline "Binding var";
+(*     print_endline "Binding var"; *)
     ctx |> update_scope (fun s -> { vsubst = (x, t)::s.vsubst })
 
   and find_t x ctx = ctx |> get_tsubst |> List.assoc_opt x
@@ -279,21 +279,21 @@ and generalise s t =
 
 (* Unifies two types *)
 and unify t0 t1 (ctx:Ctx.t) =
-  begin
-    let ctx = Pretty.Ctx.brief in
-    Printf.printf "Unifying: ";
-    Pretty_hir.pr_type t0 ctx;
-    Printf.printf " = ";
-    Pretty_hir.pr_type t1 ctx;
-    Printf.printf " \n";
-  end;
+(*   begin *)
+(*     let ctx = Pretty.Ctx.brief in *)
+(*     Printf.printf "Unifying: "; *)
+(*     Pretty_hir.pr_type t0 ctx; *)
+(*     Printf.printf " = "; *)
+(*     Pretty_hir.pr_type t1 ctx; *)
+(*     Printf.printf " \n"; *)
+(*   end; *)
   let s0 = ctx |> Ctx.get_tsubst in
   let (s1, ctx) = ctx |> mgu (apply s0 t0) (apply s0 t1) in
 (*   Debug.debug_substitutions s1 ctx.hir; *)
   let ctx = ctx |> Ctx.update_tsubst (compose s1 s0) in
 (*   Printf.printf "---------------------------------"; *)
-  Debug.debug_substitutions (ctx |> Ctx.get_tsubst);
-  Printf.printf "=================================\n\n";
+(*   Debug.debug_substitutions (ctx |> Ctx.get_tsubst); *)
+(*   Printf.printf "=================================\n\n"; *)
   ctx
 
 and try_unify_ts ts0 ts1 (ctx:Ctx.t) =
@@ -545,12 +545,6 @@ and infer_ssa_rhs ctx (v0, t0, e0) =
       let (t2, ctx) = ctx |> Ctx.fresh_t in
       let t3 = Hir.TRowExtend ((x, t0), t2) in
       ctx |> unify (Hir.TRecord t3) (typeof v1)
-  | Hir.EAfter (v1, b)
-  | Hir.EEvery (v1, b) ->
-      let (t2, ctx) = infer_block b ctx in
-      ctx |> unify (typeof v1) (atom "i32")
-          |> unify t2 (atom "unit")
-          |> unify (typeof v0) t2
   | Hir.ECall (v1, vs) ->
       ctx |> unify (typeof v1) (Hir.TFunc (ts_of_vs vs ctx, t0))
   | Hir.ECast (v1, t2) ->
@@ -633,7 +627,7 @@ and infer_ssa_rhs ctx (v0, t0, e0) =
       (* If we have already inferenced this item then we can just instantiate
          its type scheme *)
       | Ctx.SPoly sc ->
-          debug_schemes ctx.schemes;
+(*           debug_schemes ctx.schemes; *)
           let (ts1, s0, ctx) = ctx |> instantiate_generics sc.explicit_gs in
           let (ts2, s1, ctx) = ctx |> instantiate_generics sc.implicit_gs in
           let ctx = ctx |> try_unify_ts ts0 ts1 in

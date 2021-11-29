@@ -95,8 +95,6 @@ and stmt =
 
 and expr =
   | EAccess   of expr * name
-  | EAfter    of expr * block
-  | EEvery    of expr * block
   | ECall     of expr * expr list
   | ECast     of expr * ty
   | EEmit     of expr

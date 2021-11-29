@@ -13,8 +13,13 @@ let pr_tail f a ctx =
 
 let rec pr_ast (ast:Ast.ast) =
   let ctx = Ctx.brief in
-  ast |> List.iter (fun i -> pr_item i ctx);
+  ast |> filter (show_item ctx) |> List.iter (fun i -> pr_item i ctx);
   pr "\n";
+
+and show_item (ctx:Ctx.t) i =
+  match i with
+  | IExternType _ | IExternDef _ when not ctx.show_externs -> false
+  | _ -> true
 
 and pr_generics gs ctx =
   if gs != [] then begin
@@ -282,16 +287,6 @@ and pr_expr e ctx =
         pr_expr e ctx;
         pr ".";
         pr_name x ctx;
-    | EAfter (e, b) ->
-        pr "after ";
-        pr_expr e ctx;
-        pr " ";
-        pr_block b (ctx |> Ctx.indent);
-    | EEvery (e, b) ->
-        pr "every ";
-        pr_expr e ctx;
-        pr " ";
-        pr_block b (ctx |> Ctx.indent);
     | EArray (vs, v) ->
         pr "[";
         pr_list pr_expr vs ctx;

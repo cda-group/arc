@@ -48,7 +48,7 @@ let main =
             print_endline "\n\n[:::Monomorphised IR:::]";
             Pretty_mir.pr_mir mir;
 
-            let mlir = Mir_to_mlir.mlir_of_thir mir in
+            let mlir = Mir_to_mlir.mlir_of_mir mir in
 
             print_endline "\n\n[:::MLIR:::]";
             Pretty_mlir.pr_mlir mlir;
