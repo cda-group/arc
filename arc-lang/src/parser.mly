@@ -1,16 +1,12 @@
 %token ParenL
 %token ParenR
-(* %token ParenLR *)
 %token BrackL
 %token BrackR
-(* %token BrackLR *)
 %token PoundBraceL
 %token BraceL
 %token BraceR
-(* %token BraceLR *)
 %token AngleL
 %token AngleR
-(* %token AngleLR *)
 (*= Operators ==============================================================*)
 %token Neq
 %token Percent
@@ -34,17 +30,6 @@
 %token Geq
 %token Underscore
 %token Bar
-(*= Retired Operators =======================================================*)
-(*     Pipe, *)
-(*     Bang, *)
-(*     Dollar, *)
-(*     Amp, *)
-(*     AmpAmp, *)
-(*     SemiSemi, *)
-(*     ArrowL, *)
-(*     Qm, *)
-(*     QmQmQm, *)
-(*     Caret, *)
 (*= Keywords ================================================================*)
 %token After
 %token And
@@ -89,25 +74,6 @@
 %token Use
 %token Xor
 %token Yield
-(*= Reserved Keywords =======================================================*)
-(*     Add, *)
-(*     Box, *)
-(*     Do, *)
-(*     End, *)
-(*     Of, *)
-(*     Port, *)
-(*     Pub, *)
-(*     Reduce, *)
-(*     Shutdown, *)
-(*     Sink, *)
-(*     Source, *)
-(*     Startup, *)
-(*     State, *)
-(*     Then, *)
-(*     Timeout, *)
-(*     Timer, *)
-(*     Trigger, *)
-(*     Where, *)
 (*= Identifiers and Literals ================================================*)
 %token <string> Name
 %token <int> Int 
@@ -136,6 +102,39 @@
 
 expr: expr0 Eof { $1 }
 program: llist(item) Eof { $1 }
+
+(* Utilities *)
+%inline paren(x): ParenL x ParenR { $2 }
+%inline brack(x): BrackL x BrackR { $2 }
+%inline brace(x): BraceL x BraceR { $2 }
+%inline angle(x): AngleL x AngleR { $2 }
+
+%inline llist(x):
+  llist_rev(x) { $1 |> List.rev }
+
+llist_rev(x):
+  | { [] }
+  | llist_rev(x) x { $2::$1 }
+
+%inline nonempty_llist(x):
+  nonempty_llist_rev(x) { $1 |> List.rev }
+
+nonempty_llist_rev(x): 
+  | x { [$1] }
+  | nonempty_llist_rev(x) x { $2::$1 }
+
+%inline separated_nonempty_llist(s, x):
+  separated_nonempty_llist_rev(s, x) { $1 |> List.rev }
+
+separated_nonempty_llist_rev(s, x): 
+  | x { [$1] }
+  | separated_nonempty_llist_rev(s, x) s x { $3::$1 }
+
+%inline separated_llist(s, x):
+  | { [] }
+  | separated_nonempty_llist(s, x) { $1 }
+
+(* The grammar *)
 
 %inline item:
   | Extern Def name loption(generics) basic_params ty_annot Semi
@@ -179,16 +178,15 @@ program: llist(item) Eof { $1 }
 %inline params: paren(separated_llist(Comma, param)) { $1 }
 %inline param: pat0 ioption(ty_annot) { ($1, $2) }
 
-generics: BrackL separated_llist(Comma, generic) BrackR { $2 }
-generic: Name { $1 }
-(* generic: Name separated_llist(And, bound) { ($1, $2) } *)
-(* bound: Name { $1 } *)
+%inline generics: BrackL separated_llist(Comma, generic) BrackR { $2 }
+%inline generic: Name { $1 }
 
-intf:
+%inline intf:
   | paren(ports) { Ast.PTagged $1 }
   | ty0 { Ast.PSingle $1 }
-ports: separated_llist(Comma, port) { $1 }
-port: name paren(ty0) { ($1, $2) }
+
+%inline ports: separated_llist(Comma, port) { $1 }
+%inline port: name paren(ty0) { ($1, $2) }
 
 %inline variants: separated_llist(Comma, variant) { $1 }
 %inline variant: name loption(paren(separated_nonempty_llist(Comma, ty0))) { ($1, $2) }
@@ -197,11 +195,6 @@ port: name paren(ty0) { ($1, $2) }
 %inline name: Name { $1 }
 %inline index: Int { $1 }
 %inline path: separated_nonempty_llist(ColonColon, name) { $1 }
-
-%inline paren(x): ParenL x ParenR { $2 }
-%inline brack(x): BrackL x BrackR { $2 }
-%inline brace(x): BraceL x BraceR { $2 }
-%inline angle(x): AngleL x AngleR { $2 }
 
 expr0:
   | On handler { Ast.EOn $2 }
@@ -394,31 +387,6 @@ expr14:
 
 %inline block: BraceL llist(stmt) ioption(expr0) BraceR { ($2, $3) }
 
-%inline llist(x):
-  llist_rev(x) { $1 |> List.rev }
-
-llist_rev(x):
-  | { [] }
-  | llist_rev(x) x { $2::$1 }
-
-%inline nonempty_llist(x):
-  nonempty_llist_rev(x) { $1 |> List.rev }
-
-nonempty_llist_rev(x): 
-  | x { [$1] }
-  | nonempty_llist_rev(x) x { $2::$1 }
-
-%inline separated_nonempty_llist(s, x):
-  separated_nonempty_llist_rev(s, x) { $1 |> List.rev }
-
-separated_nonempty_llist_rev(s, x): 
-  | x { [$1] }
-  | separated_nonempty_llist_rev(s, x) s x { $3::$1 }
-
-%inline separated_llist(s, x):
-  | { [] }
-  | separated_nonempty_llist(s, x) { $1 }
-
 %inline stmt:
   | Semi
     { Ast.SNoop }
@@ -462,8 +430,6 @@ ty1:
     { Ast.TRecord $1 }
   | brack(ty0)
     { Ast.TArray $1 }
-
-%inline tys: separated_llist(Comma, ty0) { $1 }
 
 %inline tuple(x): ParenL x Comma separated_llist(Comma, x) ParenR
   { $2::$4 }

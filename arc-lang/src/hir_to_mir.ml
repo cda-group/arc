@@ -71,13 +71,13 @@ and mono_expr ctx e =
           let ctx = mono_params ctx ps in
           let ctx = mono_type ctx t in
           let ctx = mono_block ctx b in
-          ctx |> Ctx.add_instance (xs, ts) (Hir.IDef ([], ps, t, b))
+          ctx |> Ctx.add_instance (xs, ts) (Mir.IDef ([], ps, t, b))
       | Hir.IExternDef (gs, ts, t) ->
           let s = zip gs ts in
           let f = Infer.instantiate s in
           let ts = ts |> map f in
           let t = f t in
-          ctx |> Ctx.add_instance (xs, ts) (Hir.IExternDef ([], ts, t))
+          ctx |> Ctx.add_instance (xs, ts) (Mir.IExternDef ([], ts, t))
       | Hir.ITask (gs, ps, (xs0, ts0), (xs1, ts1), b) ->
           (* Instantiate task *)
           let s = zip gs ts in
@@ -93,7 +93,7 @@ and mono_expr ctx e =
           let ctx = mono_block ctx b in
           let ctx = mono_enum_path ctx xs0 [] in
           let ctx = mono_enum_path ctx xs1 [] in
-          ctx |> Ctx.add_instance (xs, ts) (Hir.ITask ([], ps, (xs0, ts0), (xs1, ts1), b))
+          ctx |> Ctx.add_instance (xs, ts) (Mir.ITask ([], ps, (xs0, ts0), (xs1, ts1), b))
       | _ -> ctx
       end
   | _ -> ctx
@@ -115,7 +115,7 @@ and mono_type ctx t =
   | Hir.TRowExtend ((_, t), r) -> mono_types ctx [t; r]
   | Hir.TNominal (xs, ts) ->
       begin match ctx.hir |> assoc xs with
-      | Hir.IExternType _ -> ctx |> Ctx.add_instance (xs, ts) (Hir.IExternType [])
+      | Hir.IExternType _ -> ctx |> Ctx.add_instance (xs, ts) (Mir.IExternType [])
       | Hir.IEnum (gs, xss) -> mono_enum ctx xs xss gs ts 
       | _ -> unreachable ()
       end
@@ -134,7 +134,7 @@ and mono_enum ctx xs xss gs ts =
     match ctx.hir |> assoc xs with
     | Hir.IVariant t ->
         let t = Infer.instantiate s t in
-        ctx |> Ctx.add_instance (xs, ts) (Hir.IVariant t)
+        ctx |> Ctx.add_instance (xs, ts) (Mir.IVariant t)
     | _ -> unreachable ()
   ) ctx in
-  ctx |> Ctx.add_instance (xs, ts) (Hir.IEnum ([], xss))
+  ctx |> Ctx.add_instance (xs, ts) (Mir.IEnum ([], xss))

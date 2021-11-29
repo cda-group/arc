@@ -5,6 +5,7 @@ and arm = pattern * expr
 and param = pattern * ty option
 and index = int
 and 't field = name * 't
+and 'a record = 'a option field list * 'a option
 and port = name * ty
 and variant = name * ty list
 and block = stmt list * expr option
@@ -32,7 +33,7 @@ and def = name * generic list * param list * ty option * block
 and pattern =
   | PIgnore
   | POr      of pattern * pattern
-  | PRecord  of (pattern option field list * pattern option)
+  | PRecord  of pattern record
   | PTuple   of pattern list
   | PConst   of lit
   | PVar     of name
@@ -41,7 +42,7 @@ and pattern =
 and ty =
   | TFunc   of ty list * ty
   | TTuple  of ty list
-  | TRecord of (ty option field list * ty option)
+  | TRecord of ty record
   | TPath   of path * ty list
   | TArray  of ty
 
@@ -68,7 +69,6 @@ and binop =
   | BIn
   | BRExc
   | BRInc
-  (* NB: These ops are desugared *)
   | BBy
   | BNotIn
   | BPipe
@@ -103,7 +103,7 @@ and expr =
   | EIf       of expr * block * block option
   | ELit      of lit
   | ELoop     of block
-  | ERecord   of (expr option field list * expr option)
+  | ERecord   of expr record
   | EReturn   of expr option
   | EBreak    of expr option
   | EContinue

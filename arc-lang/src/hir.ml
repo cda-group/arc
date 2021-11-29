@@ -11,7 +11,6 @@ and var = name
 and generic = name
 and block = ssa list * var
 and interface = path * ty list
-and subst = (name * ty) list
 and item =
   | IVal         of ty * block
   | IEnum        of generic list * path list
