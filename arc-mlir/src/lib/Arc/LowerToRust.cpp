@@ -660,7 +660,17 @@ private:
 };
 
 namespace StdArithmeticOp {
-typedef enum { AddFOp = 0, DivFOp, MulFOp, SubFOp, RemFOp, LAST } Op;
+typedef enum {
+  AddFOp = 0,
+  DivFOp,
+  MulFOp,
+  SubFOp,
+  RemFOp,
+  AndIOp,
+  OrIOp,
+  XOrIOp,
+  LAST
+} Op;
 }
 
 template <class T, StdArithmeticOp::Op arithOp>
@@ -684,7 +694,8 @@ struct StdArithmeticOpLowering : public OpConversionPattern<T> {
 
 private:
   RustTypeConverter &TypeConverter;
-  const char *opStr[StdArithmeticOp::LAST] = {"+", "/", "*", "-", "%"};
+  const char *opStr[StdArithmeticOp::LAST] = {"+", "/", "*", "-",
+                                              "%", "&", "|", "^"};
 };
 
 namespace OpAsMethod {
@@ -1129,6 +1140,17 @@ void ArcToRustLoweringPass::runOnOperation() {
   patterns.insert<
       StdArithmeticOpLowering<mlir::arith::RemFOp, StdArithmeticOp::RemFOp>>(
       &getContext(), typeConverter);
+
+  patterns.insert<
+      StdArithmeticOpLowering<mlir::arith::AndIOp, StdArithmeticOp::AndIOp>>(
+      &getContext(), typeConverter);
+  patterns.insert<
+      StdArithmeticOpLowering<mlir::arith::OrIOp, StdArithmeticOp::OrIOp>>(
+      &getContext(), typeConverter);
+  patterns.insert<
+      StdArithmeticOpLowering<mlir::arith::XOrIOp, StdArithmeticOp::XOrIOp>>(
+      &getContext(), typeConverter);
+
   patterns.insert<OpAsMethodLowering<math::PowFOp, OpAsMethod::PowFOp>>(
       &getContext(), typeConverter);
 
