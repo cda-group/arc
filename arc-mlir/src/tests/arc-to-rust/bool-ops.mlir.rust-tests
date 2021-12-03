@@ -1,0 +1,10 @@
+#[cfg(test)]
+mod tests {
+use crate::toplevel::*;
+#[test]
+  fn it_works() {
+    assert_eq!(and_i1(true, true), true);
+    assert_eq!(or_i1(false, true), true);
+    assert_eq!(xor_i1(true, true), false);
+  }
+}
