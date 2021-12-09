@@ -52,6 +52,14 @@ bool isRustFunctionType(Type type);
 
 } // namespace rust
 
+namespace rust {
+namespace types {
+
+std::string getTypeString(Type type);
+
+}
+} // namespace rust
+
 /// Include the auto-generated header file containing the declarations of the
 /// rust operations.
 #define GET_OP_CLASSES
