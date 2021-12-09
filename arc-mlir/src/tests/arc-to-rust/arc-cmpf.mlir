@@ -1,4 +1,5 @@
 // RUN: arc-mlir-rust-test %t %s -rustinclude %s.rust-tests
+// RUN: arc-mlir-rust-test %t-roundtrip-scf %s -rustinclude %s.rust-tests -canonicalize -remove-scf -canonicalize -to-scf -canonicalize
 
 module @arctorustarcarccmpf {
 func @oeq_f32(%a : f32, %b : f32) -> i1 {

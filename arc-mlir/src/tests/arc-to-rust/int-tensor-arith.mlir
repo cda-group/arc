@@ -1,4 +1,5 @@
 // RUN: arc-mlir-rust-test %t %s -rustinclude %s.rust-tests
+// RUN: arc-mlir-rust-test %t-roundtrip-scf %s -rustinclude %s.rust-tests -canonicalize -remove-scf -canonicalize -to-scf -canonicalize
 
 module @arctorustinttensorarith {
 func @addi_tensor2x2xui8(%a : tensor<2x2xui8>, %b : tensor<2x2xui8>) -> tensor<2x2xui8> {
