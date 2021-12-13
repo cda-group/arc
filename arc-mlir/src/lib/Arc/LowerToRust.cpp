@@ -206,7 +206,7 @@ struct ArithConstantOpLowering : public OpConversionPattern<arith::ConstantOp> {
   LogicalResult
   matchAndRewrite(arith::ConstantOp cOp, OpAdaptor adaptor,
                   ConversionPatternRewriter &rewriter) const final {
-    Attribute attr = cOp.value();
+    Attribute attr = cOp.getValue();
     if (attr.isa<FloatAttr>())
       return convertFloat(cOp, rewriter);
     if (attr.isa<IntegerAttr>())
@@ -226,7 +226,7 @@ private:
 
   LogicalResult convertFloat(arith::ConstantOp op,
                              ConversionPatternRewriter &rewriter) const {
-    FloatAttr attr = op.value().cast<FloatAttr>();
+    FloatAttr attr = op.getValue().cast<FloatAttr>();
     Type ty = attr.getType();
     Type rustTy = TypeConverter.convertType(ty);
     APFloat f = attr.getValue();
@@ -266,7 +266,7 @@ private:
 
   LogicalResult convertInteger(arith::ConstantOp op,
                                ConversionPatternRewriter &rewriter) const {
-    IntegerAttr attr = op.value().cast<IntegerAttr>();
+    IntegerAttr attr = op.getValue().cast<IntegerAttr>();
     IntegerType ty = attr.getType().cast<IntegerType>();
     Type rustTy = TypeConverter.convertType(ty);
     APInt v = attr.getValue();
@@ -685,10 +685,10 @@ struct StdArithmeticOpLowering : public OpConversionPattern<T> {
     Type rustTy = TypeConverter.convertType(o.getType());
     if (rustTy.isa<rust::types::RustTensorType>())
       rewriter.replaceOpWithNewOp<rust::RustBinaryRcOp>(
-          o, rustTy, opStr[arithOp], adaptor.lhs(), adaptor.rhs());
+          o, rustTy, opStr[arithOp], adaptor.getLhs(), adaptor.getRhs());
     else
       rewriter.replaceOpWithNewOp<rust::RustBinaryOp>(
-          o, rustTy, opStr[arithOp], adaptor.lhs(), adaptor.rhs());
+          o, rustTy, opStr[arithOp], adaptor.getLhs(), adaptor.getRhs());
     return success();
   };
 
@@ -761,7 +761,7 @@ struct StdCmpFOpLowering : public OpConversionPattern<mlir::arith::CmpFOp> {
       return failure();
     }
     rewriter.replaceOpWithNewOp<rust::RustBinaryOp>(
-        o, rustTy, cmpOp, adaptor.lhs(), adaptor.rhs());
+        o, rustTy, cmpOp, adaptor.getLhs(), adaptor.getRhs());
     return success();
   };
 
