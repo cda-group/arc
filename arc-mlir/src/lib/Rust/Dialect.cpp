@@ -222,19 +222,19 @@ RustPrinterStream &operator<<(RustPrinterStream &os, const Value &v) {
 
 RustPrinterStream &operator<<(RustPrinterStream &os, const Type &type) {
   if (auto t = type.dyn_cast<RustType>())
-    os.print(t.getRustType());
+    os.print(os.getBodyStream(), t.getRustType());
   else if (auto t = type.dyn_cast<RustStructType>())
-    os.print(t);
+    os.print(os.getBodyStream(), t);
   else if (auto t = type.dyn_cast<RustStreamType>())
-    os.print(t);
+    os.print(os.getBodyStream(), t);
   else if (auto t = type.dyn_cast<RustTensorType>())
     t.printAsRust(os);
   else if (auto t = type.dyn_cast<RustTupleType>())
     t.printAsRust(os);
   else if (auto t = type.dyn_cast<RustEnumType>())
-    os.print(t);
+    os.print(os.getBodyStream(), t);
   else if (auto t = type.dyn_cast<FunctionType>())
-    os.print(t);
+    os.print(os.getBodyStream(), t);
   else
     os << "<not-a-rust-type>";
   return os;
@@ -798,7 +798,7 @@ const char *CrateVersions::ndarray = "0.13.0";
 namespace rust {
 namespace types {
 
-static std::string getTypeString(Type type) {
+std::string getTypeString(Type type) {
   if (auto t = type.dyn_cast<RustStructType>())
     return t.getRustType();
   if (auto t = type.dyn_cast<RustStreamType>())
@@ -1290,7 +1290,7 @@ RustStructTypeStorage::printAsRust(RustPrinterStream &ps) const {
     if (i != 0)
       os << ",\n  ";
     os << "  " << structFields[i].first.getValue() << " : ";
-    os << getTypeString(structFields[i].second);
+    ps.printAsRust(os, structFields[i].second);
   }
   os << "\n}\n";
   return ps;

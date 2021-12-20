@@ -168,6 +168,13 @@ public:
     return "C" + std::to_string(-id);
   }
 
+  std::string getTypeString(Type t) {
+    auto alias = TypeAliases.find(t);
+    if (alias == TypeAliases.end())
+      return rust::types::getTypeString(t);
+    return alias->second;
+  }
+
   RustPrinterStream &print(Value v) {
     Body << get(v);
     return *this;
@@ -198,36 +205,38 @@ public:
     return *this;
   }
 
-  RustPrinterStream &print(types::RustType t) {
-    if (printTypeAlias(t))
+  RustPrinterStream &print(llvm::raw_ostream &o, types::RustType t) {
+    if (printTypeAlias(o, t))
       return *this;
-    t.printAsRust(Body);
+    t.printAsRust(o);
     return *this;
   }
 
-  RustPrinterStream &print(types::RustEnumType t) {
-    if (printTypeAlias(t))
+  RustPrinterStream &print(llvm::raw_ostream &o, types::RustEnumType t) {
+    if (printTypeAlias(o, t))
       return *this;
     writeEnumDefiniton(t);
-    t.printAsRustNamedType(Body);
+    t.printAsRustNamedType(o);
     return *this;
   }
 
-  RustPrinterStream &print(types::RustStructType t) {
-    if (printTypeAlias(t))
+  RustPrinterStream &print(llvm::raw_ostream &o, types::RustStructType t) {
+    if (printTypeAlias(o, t))
       return *this;
     writeStructDefiniton(t);
-    t.printAsRustNamedType(Body);
+    t.printAsRustNamedType(o);
     return *this;
   }
 
-  RustPrinterStream &print(types::RustStreamType t) {
-    printAsRust(Body, t);
+  RustPrinterStream &print(llvm::raw_ostream &o, types::RustStreamType t) {
+    if (printTypeAlias(o, t))
+      return *this;
+    printAsRust(o, t);
     return *this;
   }
 
-  RustPrinterStream &print(FunctionType t) {
-    printAsRust(Body, t);
+  RustPrinterStream &print(llvm::raw_ostream &o, FunctionType t) {
+    printAsRust(o, t);
     return *this;
   }
 
@@ -252,8 +261,8 @@ public:
   }
 
   template <typename T>
-  RustPrinterStream &print(T t) {
-    Body << t;
+  RustPrinterStream &print(llvm::raw_ostream &o, T t) {
+    o << t;
     return *this;
   }
 
@@ -265,8 +274,7 @@ public:
     CrateDirectives[key] = value;
   }
 
-  llvm::raw_string_ostream &printAsRust(llvm::raw_string_ostream &s,
-                                        const Type ty) {
+  llvm::raw_ostream &printAsRust(llvm::raw_ostream &s, const Type ty) {
     if (FunctionType fType = ty.dyn_cast<FunctionType>()) {
       s << "Box<dyn ValueFn(";
       for (Type t : fType.getInputs()) {
@@ -285,7 +293,7 @@ public:
       return s;
     }
     if (types::RustEnumType rt = ty.dyn_cast<types::RustEnumType>()) {
-      this->print(rt);
+      this->print(s, rt);
       return s;
     }
     if (types::RustStreamType rt = ty.dyn_cast<types::RustStreamType>()) {
@@ -295,7 +303,7 @@ public:
       return s;
     }
     if (types::RustStructType rt = ty.dyn_cast<types::RustStructType>()) {
-      this->print(rt);
+      this->print(s, rt);
       return s;
     }
     if (types::RustTensorType rt = ty.dyn_cast<types::RustTensorType>()) {
@@ -311,11 +319,11 @@ public:
   }
 
 private:
-  bool printTypeAlias(Type t) {
+  bool printTypeAlias(llvm::raw_ostream &o, Type t) {
     auto alias = TypeAliases.find(t);
     if (alias == TypeAliases.end())
       return false;
-    Body << alias->second;
+    o << alias->second;
     return true;
   }
 };
@@ -326,7 +334,7 @@ RustPrinterStream &operator<<(RustPrinterStream &os, const types::RustType &t);
 
 template <typename T>
 RustPrinterStream &operator<<(RustPrinterStream &os, const T &t) {
-  return os.print(t);
+  return os.print(os.getBodyStream(), t);
 }
 
 } // namespace rust
