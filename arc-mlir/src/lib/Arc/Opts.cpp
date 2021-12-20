@@ -56,7 +56,7 @@ ConstantValuesToDenseAttributes(mlir::OpResult result,
       attribs.push_back(def.getValue());
     } else {
       arith::ConstantOp def = cast<arith::ConstantOp>(a.getDefiningOp());
-      attribs.push_back(def.value());
+      attribs.push_back(def.getValue());
     }
   }
   return DenseElementsAttr::get(st, llvm::makeArrayRef(attribs));
