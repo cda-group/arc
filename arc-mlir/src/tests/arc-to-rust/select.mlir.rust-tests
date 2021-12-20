@@ -1,0 +1,9 @@
+#[cfg(test)]
+mod tests {
+  use crate::arctorustifs::*;
+  #[test]
+  fn test() {
+    assert_eq!(test_0(true, 3, 4), 3);
+    assert_eq!(test_0(false, 3, 4), 4);
+  }
+}

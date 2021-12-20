@@ -758,6 +758,29 @@ private:
   RustTypeConverter &TypeConverter;
 };
 
+struct StdSelectOpLowering : public OpConversionPattern<mlir::SelectOp> {
+  StdSelectOpLowering(MLIRContext *ctx, RustTypeConverter &typeConverter)
+      : OpConversionPattern<mlir::SelectOp>(typeConverter, ctx, 1) {}
+
+  LogicalResult
+  matchAndRewrite(mlir::SelectOp o, OpAdaptor adaptor,
+                  ConversionPatternRewriter &rewriter) const final {
+    // There is no ternary if in Rust, so just sink this to an
+    // ordinary arc if.
+    auto thisIf = rewriter.replaceOpWithNewOp<arc::IfOp>(o, o.getType(),
+                                                         adaptor.condition());
+    Block *thenBB = rewriter.createBlock(&thisIf.thenRegion());
+    rewriter.setInsertionPointToEnd(thenBB);
+    rewriter.create<arc::ArcBlockResultOp>(o.getLoc(), o.true_value());
+
+    Block *elseBB = rewriter.createBlock(&thisIf.elseRegion());
+    rewriter.setInsertionPointToEnd(elseBB);
+    rewriter.create<arc::ArcBlockResultOp>(o.getLoc(), o.false_value());
+
+    return success();
+  };
+};
+
 namespace ArcUnaryFloatOp {
 typedef enum {
   sin = 0,
@@ -1187,6 +1210,7 @@ void ArcToRustLoweringPass::runOnOperation() {
   patterns.insert<EnumCheckOpLowering>(&getContext(), typeConverter);
   patterns.insert<EmitOpLowering>(&getContext(), typeConverter);
   patterns.insert<PanicOpLowering>(&getContext(), typeConverter);
+  patterns.insert<StdSelectOpLowering>(&getContext(), typeConverter);
   patterns.insert<StructAccessOpLowering>(&getContext(), typeConverter);
   patterns.insert<StdCallOpLowering>(&getContext(), typeConverter);
   patterns.insert<StdCallIndirectOpLowering>(&getContext(), typeConverter);
