@@ -14,13 +14,23 @@
 #ifndef ARC_PASSES_H
 #define ARC_PASSES_H
 
+#include <memory>
 #include <mlir/Pass/Pass.h>
 
-#include <memory>
+#include <mlir/Dialect/Arithmetic/IR/Arithmetic.h>
+#include <mlir/Dialect/Math/IR/Math.h>
+#include <mlir/Dialect/SCF/SCF.h>
+#include <mlir/Dialect/StandardOps/IR/Ops.h>
+
+#include "Arc/Arc.h"
+#include "Rust/Rust.h"
 
 using namespace mlir;
 
 namespace arc {
+
+#define GEN_PASS_CLASSES
+#include "Arc/Passes.h.inc"
 
 void registerArcPasses();
 
