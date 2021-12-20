@@ -767,15 +767,15 @@ struct StdSelectOpLowering : public OpConversionPattern<mlir::SelectOp> {
                   ConversionPatternRewriter &rewriter) const final {
     // There is no ternary if in Rust, so just sink this to an
     // ordinary arc if.
-    auto thisIf = rewriter.replaceOpWithNewOp<arc::IfOp>(o, o.getType(),
-                                                         adaptor.condition());
+    auto thisIf = rewriter.replaceOpWithNewOp<arc::IfOp>(
+        o, o.getType(), adaptor.getCondition());
     Block *thenBB = rewriter.createBlock(&thisIf.thenRegion());
     rewriter.setInsertionPointToEnd(thenBB);
-    rewriter.create<arc::ArcBlockResultOp>(o.getLoc(), o.true_value());
+    rewriter.create<arc::ArcBlockResultOp>(o.getLoc(), adaptor.getTrueValue());
 
     Block *elseBB = rewriter.createBlock(&thisIf.elseRegion());
     rewriter.setInsertionPointToEnd(elseBB);
-    rewriter.create<arc::ArcBlockResultOp>(o.getLoc(), o.false_value());
+    rewriter.create<arc::ArcBlockResultOp>(o.getLoc(), adaptor.getFalseValue());
 
     return success();
   };
