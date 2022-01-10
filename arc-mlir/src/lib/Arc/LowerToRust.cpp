@@ -101,8 +101,8 @@ struct SCFWhileOpLowering : public OpConversionPattern<scf::WhileOp> {
     rust::RustLoopOp loop = rewriter.create<rust::RustLoopOp>(
         op->getLoc(), resTys, adaptor.getOperands());
 
-    rewriter.inlineRegionBefore(o.before(), loop.before(), loop.before().end());
-    rewriter.inlineRegionBefore(o.after(), loop.after(), loop.after().end());
+    rewriter.inlineRegionBefore(o.getBefore(), loop.before(), loop.before().end());
+    rewriter.inlineRegionBefore(o.getAfter(), loop.after(), loop.after().end());
 
     if (failed(rewriter.convertRegionTypes(&loop.before(), TypeConverter)))
       return failure();
