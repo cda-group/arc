@@ -1,4 +1,5 @@
 // RUN: arc-mlir-rust-test %t %s -rustinclude %s.rust-tests
+// RUN: arc-mlir-rust-test %t-roundtrip-scf %s -rustinclude %s.rust-tests -canonicalize -remove-scf -canonicalize -to-scf -canonicalize
 
 module @arctorustintbitops {
   func @and_ui8(%arg0: ui8, %arg1: ui8) -> ui8 {

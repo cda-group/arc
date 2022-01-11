@@ -1,4 +1,6 @@
 // RUN: arc-mlir-rust-test %t %s -rustinclude %s.rust-tests
+// RUN: arc-mlir-rust-test %t-roundtrip-scf %s -rustinclude %s.rust-tests -canonicalize -remove-scf -canonicalize -to-scf -canonicalize
+
 module @arctorustunaryops {
 func @acos_f32(%a : f32) -> f32 {
   %r = arc.acos %a : f32

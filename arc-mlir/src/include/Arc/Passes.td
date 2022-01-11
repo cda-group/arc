@@ -27,4 +27,24 @@ def LowerToRust : Pass<"arc-to-rust", "ModuleOp"> {
   ];
 }
 
+def RemoveSCF : Pass<"remove-scf", "FuncOp"> {
+  let summary = "Convert structured flow-control to branches between basic blocks";
+  let constructor = "arc::createRemoveSCFPass()";
+
+  let dependentDialects = [
+        "arc::ArcDialect",
+        "StandardOpsDialect"
+  ];
+}
+
+def ToSCF : Pass<"to-scf", "ModuleOp"> {
+  let summary = "Convert branches between basic blocks to structured flow-control";
+  let constructor = "arc::createToSCFPass()";
+
+  let dependentDialects = [
+        "arc::ArcDialect",
+        "StandardOpsDialect"
+  ];
+}
+
 #endif // ARC_PASSES

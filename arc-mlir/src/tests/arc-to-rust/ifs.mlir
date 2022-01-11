@@ -1,4 +1,5 @@
 // RUN: arc-mlir-rust-test %t %s -rustinclude %s.rust-tests
+// RUN: arc-mlir-rust-test %t-roundtrip-scf %s -rustinclude %s.rust-tests -canonicalize -remove-scf -canonicalize -to-scf -canonicalize
 
 module @arctorustifs {
   func @test_0() -> si32 {
@@ -34,6 +35,14 @@ module @arctorustifs {
       "arc.return"(%arg0) : (ui32) -> ()
     }, {
       "arc.block.result"(%arg1) : (ui32) -> ()
+    }) : (i1) -> ui32
+    return %3 : ui32
+  }
+  func @test_4(%c: i1, %arg0: ui32, %arg1: ui32) -> ui32 {
+    %3 = "arc.if"(%c) ({
+      "arc.block.result"(%arg1) : (ui32) -> ()
+    }, {
+      "arc.return"(%arg0) : (ui32) -> ()
     }) : (i1) -> ui32
     return %3 : ui32
   }
