@@ -101,7 +101,8 @@ struct SCFWhileOpLowering : public OpConversionPattern<scf::WhileOp> {
     rust::RustLoopOp loop = rewriter.create<rust::RustLoopOp>(
         op->getLoc(), resTys, adaptor.getOperands());
 
-    rewriter.inlineRegionBefore(o.getBefore(), loop.before(), loop.before().end());
+    rewriter.inlineRegionBefore(o.getBefore(), loop.before(),
+                                loop.before().end());
     rewriter.inlineRegionBefore(o.getAfter(), loop.after(), loop.after().end());
 
     if (failed(rewriter.convertRegionTypes(&loop.before(), TypeConverter)))
@@ -1014,6 +1015,14 @@ struct FuncOpLowering : public OpConversionPattern<mlir::FuncOp> {
                   ConversionPatternRewriter &rewriter) const final {
     MLIRContext *ctx = func.getContext();
     SmallVector<NamedAttribute, 4> attributes;
+
+    // Check that this function is contained in a named module
+    ModuleOp module = func->getParentOfType<ModuleOp>();
+    if (!module.getName()) {
+      emitError(module.getLoc())
+          << "Module is missing a name (is the module implicitly created?)";
+      return failure();
+    }
 
     if (func->hasAttr("arc.rust_name"))
       attributes.push_back(NamedAttribute(Identifier::get("arc.rust_name", ctx),
