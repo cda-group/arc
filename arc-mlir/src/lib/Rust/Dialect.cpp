@@ -243,6 +243,12 @@ RustPrinterStream &operator<<(RustPrinterStream &os, const Type &type) {
 
 LogicalResult rust::writeModuleAsInline(ModuleOp module, llvm::raw_ostream &o) {
 
+  if (!module.getName()) {
+    emitError(module.getLoc())
+        << "Rust module is missing a name (is the module implicitly created?)";
+    return failure();
+  }
+
   RustPrinterStream PS(module.getName()->str(), rustInclude);
 
   for (Operation &operation : module) {
