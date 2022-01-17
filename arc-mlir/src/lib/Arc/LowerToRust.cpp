@@ -1025,22 +1025,22 @@ struct FuncOpLowering : public OpConversionPattern<mlir::FuncOp> {
     }
 
     if (func->hasAttr("arc.rust_name"))
-      attributes.push_back(NamedAttribute(Identifier::get("arc.rust_name", ctx),
+      attributes.push_back(NamedAttribute(StringAttr::get(ctx, "arc.rust_name"),
                                           func->getAttr("arc.rust_name")));
 
     if (func->hasAttr("arc.task_name"))
-      attributes.push_back(NamedAttribute(Identifier::get("arc.task_name", ctx),
+      attributes.push_back(NamedAttribute(StringAttr::get(ctx, "arc.task_name"),
                                           func->getAttr("arc.task_name")));
     if (func->hasAttr("arc.mod_name"))
-      attributes.push_back(NamedAttribute(Identifier::get("arc.mod_name", ctx),
+      attributes.push_back(NamedAttribute(StringAttr::get(ctx, "arc.mod_name"),
                                           func->getAttr("arc.mod_name")));
 
     if (func->hasAttr("arc.is_event_handler"))
       attributes.push_back(
-          NamedAttribute(Identifier::get("arc.is_event_handler", ctx),
+          NamedAttribute(StringAttr::get(ctx, "arc.is_event_handler"),
                          func->getAttr("arc.is_event_handler")));
     if (func->hasAttr("arc.is_init"))
-      attributes.push_back(NamedAttribute(Identifier::get("arc.is_init", ctx),
+      attributes.push_back(NamedAttribute(StringAttr::get(ctx, "arc.is_init"),
                                           func->getAttr("arc.is_init")));
 
     TypeConverter::SignatureConversion sigConv(func.getNumArguments());
@@ -1048,8 +1048,8 @@ struct FuncOpLowering : public OpConversionPattern<mlir::FuncOp> {
         TypeConverter.convertFunctionSignature(func.getType(), sigConv);
 
     attributes.push_back(
-        NamedAttribute(Identifier::get("type", ctx), TypeAttr::get(funcType)));
-    attributes.push_back(NamedAttribute(Identifier::get("sym_name", ctx),
+        NamedAttribute(StringAttr::get(ctx, "type"), TypeAttr::get(funcType)));
+    attributes.push_back(NamedAttribute(StringAttr::get(ctx, "sym_name"),
                                         StringAttr::get(ctx, func.getName())));
 
     SmallVector<Value, 4> operandsArray;
