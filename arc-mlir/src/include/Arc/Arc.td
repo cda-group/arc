@@ -506,6 +506,21 @@ def Arc_EmitOp : Arc_Op<"emit", []> {
   let extraClassDeclaration = [{ LogicalResult customVerify(); }];
 }
 
+def Arc_ReceiveOp : Arc_Op<"receive", []> {
+  let summary = "Receive a value from a stream";
+  let description = [{
+    Receive a value from a stream. Must be located inside a task.
+  }];
+
+  let arguments = (ins
+      ArcSourceStream:$sink
+  );
+  let results = (outs StreamElementType:$value);
+  let verifier = [{ return customVerify(); }];
+
+  let extraClassDeclaration = [{ LogicalResult customVerify(); }];
+}
+
 def Arc_SelectOp : Arc_Op<"select", [NoSideEffect, SameOperandsAndResultShape,
      AllTypesMatch<["true_value", "false_value", "result"]>,
      TypesMatchWith<"condition type matches i1 equivalent of result type",

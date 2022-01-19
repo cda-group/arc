@@ -32,3 +32,28 @@ module @toplevel {
     return
   }
 }
+
+// -----
+
+module @toplevel {
+  func @bad3(%s : !arc.stream.sink<si32>) -> si32
+    attributes { "arc.is_task" } {
+// expected-error@+2 {{'arc.receive' op operand #0 must be a source stream, but got '!arc.stream.sink<si32>'}}
+// expected-note@+1 {{see current operation:}}
+    %v = "arc.receive"(%s) : (!arc.stream.sink<si32>) -> si32
+    return %v : si32
+  }
+}
+
+// -----
+
+module @toplevel {
+  func @bad3(%s : !arc.stream.source<si32>) -> si64
+    attributes { "arc.is_task" } {
+// expected-error@+2 {{'arc.receive' op Can't receive a value of type 'si64' from a '!arc.stream.source<si32>' stream}}
+// expected-note@+1 {{see current operation:}}
+    %v = "arc.receive"(%s) : (!arc.stream.source<si32>) -> si64
+    return %v : si64
+  }
+}
+

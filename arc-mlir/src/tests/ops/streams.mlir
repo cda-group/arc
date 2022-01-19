@@ -18,4 +18,10 @@ module @toplevel {
     "arc.send"(%v, %s) : (si32, !arc.stream.sink<si32>) -> ()
     return
   }
+
+  func @ok3(%s : !arc.stream.source<si32>) -> si32
+    attributes { "arc.is_task" } {
+    %v = "arc.receive"(%s) : (!arc.stream.source<si32>) -> si32
+    return %v : si32
+  }
 }
