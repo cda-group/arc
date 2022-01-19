@@ -101,6 +101,10 @@ def AnyBuilder : Type<CPred<"$_self.isa<BuilderType>()">, "any builder">;
 def AnyAppender : Type<CPred<"$_self.isa<AppenderType>()">, "any appender">;
 def AnyEnum : Type<CPred<"$_self.isa<EnumType>()">, "any enum">;
 def AnyStruct : Type<CPred<"$_self.isa<StructType>()">, "any struct">;
+def ArcSinkStream : Type<CPred<"$_self.isa<SinkStreamType>()">,
+                               "a sink stream">;
+def ArcSourceStream : Type<CPred<"$_self.isa<SourceStreamType>()">,
+                                 "a source stream">;
 def ArcStream : Type<CPred<"$_self.isa<StreamType>()">, "a stream">;
 def ArcStateValue : Type<CPred<"$_self.isa<ArconValueType>()">,
                                 "an arcon value type">;
@@ -502,6 +506,21 @@ def Arc_EmitOp : Arc_Op<"emit", []> {
   let extraClassDeclaration = [{ LogicalResult customVerify(); }];
 }
 
+def Arc_ReceiveOp : Arc_Op<"receive", []> {
+  let summary = "Receive a value from a stream";
+  let description = [{
+    Receive a value from a stream. Must be located inside a task.
+  }];
+
+  let arguments = (ins
+      ArcSourceStream:$sink
+  );
+  let results = (outs StreamElementType:$value);
+  let verifier = [{ return customVerify(); }];
+
+  let extraClassDeclaration = [{ LogicalResult customVerify(); }];
+}
+
 def Arc_SelectOp : Arc_Op<"select", [NoSideEffect, SameOperandsAndResultShape,
      AllTypesMatch<["true_value", "false_value", "result"]>,
      TypesMatchWith<"condition type matches i1 equivalent of result type",
@@ -530,6 +549,23 @@ def Arc_SelectOp : Arc_Op<"select", [NoSideEffect, SameOperandsAndResultShape,
     $condition `,` $true_value `,` $false_value attr-dict `:` type($result)
   }];
 }
+
+def Arc_SendOp : Arc_Op<"send", []> {
+  let summary = "Send a value on a stream";
+  let description = [{
+    Send a value on a stream
+  }];
+
+  let arguments = (ins
+      StreamElementType:$value,
+      ArcSinkStream:$sink
+  );
+  let results = (outs);
+  let verifier = [{ return customVerify(); }];
+
+  let extraClassDeclaration = [{ LogicalResult customVerify(); }];
+}
+
 def EnumAccessOp : Arc_Op<"enum_access", [NoSideEffect]> {
   let summary = "access a variant of an enum";
   let description = [{
