@@ -534,6 +534,23 @@ def Arc_SelectOp : Arc_Op<"select", [NoSideEffect, SameOperandsAndResultShape,
     $condition `,` $true_value `,` $false_value attr-dict `:` type($result)
   }];
 }
+
+def Arc_SendOp : Arc_Op<"send", []> {
+  let summary = "Send a value on a stream";
+  let description = [{
+    Send a value on a stream
+  }];
+
+  let arguments = (ins
+      StreamElementType:$value,
+      ArcSinkStream:$sink
+  );
+  let results = (outs);
+  let verifier = [{ return customVerify(); }];
+
+  let extraClassDeclaration = [{ LogicalResult customVerify(); }];
+}
+
 def EnumAccessOp : Arc_Op<"enum_access", [NoSideEffect]> {
   let summary = "access a variant of an enum";
   let description = [{

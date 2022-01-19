@@ -703,6 +703,25 @@ OpFoldResult arc::SelectOp::fold(ArrayRef<Attribute> operands) {
 }
 
 //===----------------------------------------------------------------------===//
+// SendOp
+//===----------------------------------------------------------------------===//
+LogicalResult SendOp::customVerify() {
+  // Check that we're located inside a task
+  FuncOp function = getOperation()->getParentOfType<FuncOp>();
+  if (!function->hasAttr("arc.is_task")) {
+    emitOpError("can only be used inside a task");
+    return mlir::failure();
+  }
+  // Check that the stream's element type matches what we send
+  auto ElemTy = value().getType();
+  SinkStreamType StreamTy = sink().getType().cast<SinkStreamType>();
+  if (ElemTy != StreamTy.getType())
+    return emitOpError("Can't send value of type ")
+           << ElemTy << " on a " << StreamTy << " stream";
+  return mlir::success();
+}
+
+//===----------------------------------------------------------------------===//
 // SubIOp
 //===----------------------------------------------------------------------===//
 // Mostly stolen from the standard dialect
