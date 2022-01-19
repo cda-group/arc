@@ -49,6 +49,9 @@ struct ArconAppenderTypeStorage;
 struct ArconMapTypeStorage;
 struct BuilderTypeStorage;
 struct AppenderTypeStorage;
+struct SinkStreamTypeStorage;
+struct SourceStreamTypeStorage;
+struct StreamTypeBaseStorage;
 struct StreamTypeStorage;
 struct EnumTypeStorage;
 struct StructTypeStorage;
@@ -146,6 +149,49 @@ public:
 
   static Type parse(DialectAsmParser &parser);
   virtual void print(DialectAsmPrinter &os) const override;
+};
+
+class StreamTypeBase : public Type {
+public:
+  virtual ~StreamTypeBase(){};
+  using ImplType = StreamTypeBaseStorage;
+  using Type::Type;
+
+  Type getElementType() const;
+  StringRef getKeyword() const;
+  virtual void print(DialectAsmPrinter &os) const;
+  static Type parse(DialectAsmParser &parser);
+
+protected:
+  static Type parseElementType(DialectAsmParser &parser);
+};
+
+class SinkStreamType
+    : public mlir::Type::TypeBase<SinkStreamType, StreamTypeBase,
+                                  SinkStreamTypeStorage> {
+public:
+  using Base::Base;
+
+  static SinkStreamType get(mlir::Type elementType);
+
+  /// Returns the type of the stream elements
+  mlir::Type getType() const;
+
+  static Type parse(DialectAsmParser &parser);
+};
+
+class SourceStreamType
+    : public mlir::Type::TypeBase<SourceStreamType, StreamTypeBase,
+                                  SourceStreamTypeStorage> {
+public:
+  using Base::Base;
+
+  static SourceStreamType get(mlir::Type elementType);
+
+  /// Returns the type of the stream elements
+  mlir::Type getType() const;
+
+  static Type parse(DialectAsmParser &parser);
 };
 
 class StreamType

@@ -101,6 +101,10 @@ def AnyBuilder : Type<CPred<"$_self.isa<BuilderType>()">, "any builder">;
 def AnyAppender : Type<CPred<"$_self.isa<AppenderType>()">, "any appender">;
 def AnyEnum : Type<CPred<"$_self.isa<EnumType>()">, "any enum">;
 def AnyStruct : Type<CPred<"$_self.isa<StructType>()">, "any struct">;
+def ArcSinkStream : Type<CPred<"$_self.isa<SinkStreamType>()">,
+                               "a sink stream">;
+def ArcSourceStream : Type<CPred<"$_self.isa<SourceStreamType>()">,
+                                 "a source stream">;
 def ArcStream : Type<CPred<"$_self.isa<StreamType>()">, "a stream">;
 def ArcStateValue : Type<CPred<"$_self.isa<ArconValueType>()">,
                                 "an arcon value type">;

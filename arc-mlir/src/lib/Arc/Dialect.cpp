@@ -55,6 +55,8 @@ void ArcDialect::initialize(void) {
   addTypes<ArconAppenderType>();
   addTypes<ArconMapType>();
   addTypes<ArconValueType>();
+  addTypes<SinkStreamType>();
+  addTypes<SourceStreamType>();
   addTypes<StreamType>();
   addTypes<EnumType>();
   addTypes<StructType>();
@@ -78,6 +80,10 @@ Type ArcDialect::parseType(DialectAsmParser &parser) const {
     return ArconMapType::parse(parser);
   if (keyword == "arcon.value")
     return ArconValueType::parse(parser);
+  if (keyword == "stream.sink")
+    return SinkStreamType::parse(parser);
+  if (keyword == "stream.source")
+    return SourceStreamType::parse(parser);
   if (keyword == "stream")
     return StreamType::parse(parser);
   if (keyword == "enum")
@@ -102,6 +108,10 @@ void ArcDialect::printType(Type type, DialectAsmPrinter &os) const {
   else if (auto t = type.dyn_cast<ArconMapType>())
     t.print(os);
   else if (auto t = type.dyn_cast<ArconValueType>())
+    t.print(os);
+  else if (auto t = type.dyn_cast<SinkStreamType>())
+    t.print(os);
+  else if (auto t = type.dyn_cast<SourceStreamType>())
     t.print(os);
   else if (auto t = type.dyn_cast<StreamType>())
     t.print(os);
@@ -1237,6 +1247,109 @@ LogicalResult AppenderType::verify(function_ref<InFlightDiagnostic()> emitError,
                        << mergeType;
   }
   return success();
+}
+
+//===----------------------------------------------------------------------===//
+// StreamTypeBase
+//===----------------------------------------------------------------------===//
+
+struct StreamTypeBaseStorage : public TypeStorage {
+  StreamTypeBaseStorage(Type containedTy, std::string keyword)
+      : TypeStorage(), containedType(containedTy), keyword(keyword) {}
+
+  using KeyTy = Type;
+
+  bool operator==(const KeyTy &key) const { return key == containedType; }
+
+  Type containedType;
+  std::string keyword;
+};
+
+Type StreamTypeBase::getElementType() const {
+  return static_cast<ImplType *>(impl)->containedType;
+}
+
+StringRef StreamTypeBase::getKeyword() const {
+  return static_cast<ImplType *>(impl)->keyword;
+}
+
+void StreamTypeBase::print(DialectAsmPrinter &os) const {
+  os << getKeyword() << "<" << getElementType() << ">";
+}
+
+Type StreamTypeBase::parseElementType(DialectAsmParser &parser) {
+  if (parser.parseLess())
+    return nullptr;
+
+  mlir::Type elementType;
+  if (parser.parseType(elementType))
+    return nullptr;
+
+  if (parser.parseGreater())
+    return Type();
+  return elementType;
+}
+
+//===----------------------------------------------------------------------===//
+// SinkStreamType
+//===----------------------------------------------------------------------===//
+struct SinkStreamTypeStorage : public StreamTypeBaseStorage {
+  using KeyTy = Type;
+
+  SinkStreamTypeStorage(Type elementType)
+      : StreamTypeBaseStorage(elementType, "stream.sink") {}
+
+  static SinkStreamTypeStorage *construct(mlir::TypeStorageAllocator &allocator,
+                                          const KeyTy &key) {
+    return new (allocator.allocate<StreamTypeStorage>())
+        SinkStreamTypeStorage(key);
+  }
+};
+
+SinkStreamType SinkStreamType::get(mlir::Type elementType) {
+  mlir::MLIRContext *ctx = elementType.getContext();
+  return Base::get(ctx, elementType);
+}
+
+/// Returns the element type of this stream type.
+mlir::Type SinkStreamType::getType() const { return getElementType(); }
+
+Type SinkStreamType::parse(DialectAsmParser &parser) {
+  Type t = parseElementType(parser);
+  if (t)
+    return SinkStreamType::get(t);
+  return nullptr;
+}
+
+//===----------------------------------------------------------------------===//
+// SourceStreamType
+//===----------------------------------------------------------------------===//
+struct SourceStreamTypeStorage : public StreamTypeBaseStorage {
+  using KeyTy = Type;
+
+  SourceStreamTypeStorage(Type elementType)
+      : StreamTypeBaseStorage(elementType, "stream.source") {}
+
+  static SourceStreamTypeStorage *
+  construct(mlir::TypeStorageAllocator &allocator, const KeyTy &key) {
+    return new (allocator.allocate<StreamTypeStorage>())
+        SourceStreamTypeStorage(key);
+  }
+};
+
+SourceStreamType SourceStreamType::get(mlir::Type elementType) {
+  mlir::MLIRContext *ctx = elementType.getContext();
+  return Base::get(ctx, elementType);
+}
+
+/// Returns the element type of this stream type.
+mlir::Type SourceStreamType::getType() const { return getElementType(); }
+
+Type SourceStreamType::parse(DialectAsmParser &parser) {
+  Type t = parseElementType(parser);
+  if (t)
+    return SourceStreamType::get(t);
+  return nullptr;
 }
 
 //===----------------------------------------------------------------------===//
