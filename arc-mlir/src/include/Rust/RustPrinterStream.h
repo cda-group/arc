@@ -235,6 +235,21 @@ public:
     return *this;
   }
 
+  RustPrinterStream &print(llvm::raw_ostream &o, types::RustSinkStreamType t) {
+    if (printTypeAlias(o, t))
+      return *this;
+    printAsRust(o, t);
+    return *this;
+  }
+
+  RustPrinterStream &print(llvm::raw_ostream &o,
+                           types::RustSourceStreamType t) {
+    if (printTypeAlias(o, t))
+      return *this;
+    printAsRust(o, t);
+    return *this;
+  }
+
   RustPrinterStream &print(llvm::raw_ostream &o, FunctionType t) {
     printAsRust(o, t);
     return *this;
@@ -300,6 +315,20 @@ public:
       s << "Stream<<";
       printAsRust(s, rt.getType());
       s << " as Convert>::T>";
+      return s;
+    }
+    if (types::RustSinkStreamType rt =
+            ty.dyn_cast<types::RustSinkStreamType>()) {
+      s << "Pushable<";
+      printAsRust(s, rt.getType());
+      s << ">";
+      return s;
+    }
+    if (types::RustSourceStreamType rt =
+            ty.dyn_cast<types::RustSourceStreamType>()) {
+      s << "Pullable<";
+      printAsRust(s, rt.getType());
+      s << ">";
       return s;
     }
     if (types::RustStructType rt = ty.dyn_cast<types::RustStructType>()) {
