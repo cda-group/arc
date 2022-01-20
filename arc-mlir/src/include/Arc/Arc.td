@@ -512,9 +512,7 @@ def Arc_ReceiveOp : Arc_Op<"receive", []> {
     Receive a value from a stream. Must be located inside a task.
   }];
 
-  let arguments = (ins
-      ArcSourceStream:$sink
-  );
+  let arguments = (ins ArcSourceStream:$source);
   let results = (outs StreamElementType:$value);
   let verifier = [{ return customVerify(); }];
 

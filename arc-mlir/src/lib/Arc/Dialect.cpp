@@ -636,7 +636,7 @@ LogicalResult ReceiveOp::customVerify() {
   }
   // Check that the stream's element type matches what we receive
   auto ElemTy = value().getType();
-  SourceStreamType StreamTy = sink().getType().cast<SourceStreamType>();
+  SourceStreamType StreamTy = source().getType().cast<SourceStreamType>();
   if (ElemTy != StreamTy.getType())
     return emitOpError("Can't receive a value of type ")
            << ElemTy << " from a " << StreamTy << " stream";
