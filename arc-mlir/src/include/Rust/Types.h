@@ -41,6 +41,8 @@ namespace types {
 
 struct RustTypeStorage;
 struct RustEnumTypeStorage;
+struct RustSinkStreamTypeStorage;
+struct RustSourceStreamTypeStorage;
 struct RustStreamTypeStorage;
 struct RustStructTypeStorage;
 struct RustTupleTypeStorage;
@@ -85,6 +87,37 @@ public:
   Type getType() const;
 
   static RustStreamType get(RustDialect *dialect, Type item);
+  void emitNestedTypedefs(rust::RustPrinterStream &ps) const;
+  std::string getSignature() const;
+};
+
+class RustSinkStreamType : public Type::TypeBase<RustSinkStreamType, Type,
+                                                 RustSinkStreamTypeStorage> {
+public:
+  using Base::Base;
+
+  void print(DialectAsmPrinter &os) const;
+  rust::RustPrinterStream &printAsRust(rust::RustPrinterStream &os) const;
+  std::string getRustType() const;
+  Type getType() const;
+
+  static RustSinkStreamType get(RustDialect *dialect, Type item);
+  void emitNestedTypedefs(rust::RustPrinterStream &ps) const;
+  std::string getSignature() const;
+};
+
+class RustSourceStreamType
+    : public Type::TypeBase<RustSourceStreamType, Type,
+                            RustSourceStreamTypeStorage> {
+public:
+  using Base::Base;
+
+  void print(DialectAsmPrinter &os) const;
+  rust::RustPrinterStream &printAsRust(rust::RustPrinterStream &os) const;
+  std::string getRustType() const;
+  Type getType() const;
+
+  static RustSourceStreamType get(RustDialect *dialect, Type item);
   void emitNestedTypedefs(rust::RustPrinterStream &ps) const;
   std::string getSignature() const;
 };

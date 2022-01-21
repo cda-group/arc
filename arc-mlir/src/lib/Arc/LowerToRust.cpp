@@ -51,6 +51,8 @@ protected:
   Type convertTensorType(RankedTensorType type);
   Type convertTupleType(TupleType type);
   Type convertStreamType(arc::types::StreamType type);
+  Type convertSinkStreamType(arc::types::SinkStreamType type);
+  Type convertSourceStreamType(arc::types::SourceStreamType type);
   Type convertStructType(arc::types::StructType type);
 };
 
@@ -907,6 +909,12 @@ RustTypeConverter::RustTypeConverter(MLIRContext *ctx)
   addConversion([&](TupleType type) { return convertTupleType(type); });
   addConversion(
       [&](arc::types::StreamType type) { return convertStreamType(type); });
+  addConversion([&](arc::types::SinkStreamType type) {
+    return convertSinkStreamType(type);
+  });
+  addConversion([&](arc::types::SourceStreamType type) {
+    return convertSourceStreamType(type);
+  });
   addConversion(
       [&](arc::types::StructType type) { return convertStructType(type); });
   addConversion([&](NoneType type) { return convertNoneType(type); });
@@ -968,6 +976,17 @@ Type RustTypeConverter::convertNoneType(NoneType type) {
 
 Type RustTypeConverter::convertStreamType(arc::types::StreamType type) {
   return rust::types::RustStreamType::get(Dialect, convertType(type.getType()));
+}
+
+Type RustTypeConverter::convertSinkStreamType(arc::types::SinkStreamType type) {
+  return rust::types::RustSinkStreamType::get(Dialect,
+                                              convertType(type.getType()));
+}
+
+Type RustTypeConverter::convertSourceStreamType(
+    arc::types::SourceStreamType type) {
+  return rust::types::RustSourceStreamType::get(Dialect,
+                                                convertType(type.getType()));
 }
 
 Type RustTypeConverter::convertStructType(arc::types::StructType type) {
