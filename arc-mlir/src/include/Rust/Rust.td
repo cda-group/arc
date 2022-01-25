@@ -601,6 +601,27 @@ def Rust_RustMakeStructOp
   }];
 }
 
+def Rust_RustReceiveOp
+    : Rust_Op<"receive", []> {
+  let summary = "Receive a value from a stream.";
+  let arguments = (ins AnyRustSourceStream:$source);
+  let results = (outs AnyRustType:$value);
+  let extraClassDeclaration = [{
+    // Write this operation as Rust code to the stream
+    void writeRust(RustPrinterStream &);
+  }];
+}
+
+def Rust_RustSendOp
+    : Rust_Op<"send", []> {
+  let summary = "Send data on a sink stream";
+  let arguments = (ins AnyRustType:$value, AnyRustSinkStream:$sink);
+  let extraClassDeclaration = [{
+    // Write this operation as Rust code to the stream
+    void writeRust(RustPrinterStream &);
+  }];
+}
+
 def Rust_RustTensorOp : Rust_Op<"make_tensor", []> {
   let summary = "create a tensor from a sequence of values";
   let description = [{
