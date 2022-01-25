@@ -75,8 +75,9 @@ LogicalResult IfLowering::matchAndRewrite(arc::IfOp ifOp,
   if (ifOp.getNumResults() == 0) {
     continueBlock = remainingOpsBlock;
   } else {
-    continueBlock =
-        rewriter.createBlock(remainingOpsBlock, ifOp.getResultTypes());
+    continueBlock = rewriter.createBlock(
+        remainingOpsBlock, ifOp.getResultTypes(),
+        SmallVector<Location>(ifOp.getResultTypes().size(), loc));
     rewriter.create<BranchOp>(loc, remainingOpsBlock);
   }
 
@@ -154,7 +155,9 @@ LogicalResult WhileLowering::matchAndRewrite(scf::WhileOp whileOp,
 
   if (whileOp.getNumResults() != 0) {
     Block *t = continuation;
-    continuation = rewriter.createBlock(t, whileOp.getResultTypes());
+    auto resultTypes = whileOp.getResultTypes();
+    continuation = rewriter.createBlock(
+        t, resultTypes, SmallVector<Location>(resultTypes.size(), loc));
     rewriter.create<BranchOp>(loc, t);
   }
 

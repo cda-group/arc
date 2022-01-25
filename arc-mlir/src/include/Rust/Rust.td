@@ -25,6 +25,7 @@
 
 #ifndef OP_BASE
 include "../../mlir/include/mlir/IR/OpBase.td"
+include "../../mlir/include/mlir/IR/FunctionInterfaces.td"
 include "../../mlir/include/mlir/Interfaces/CallInterfaces.td"
 include "../../mlir/include/mlir/Interfaces/InferTypeOpInterface.td"
 include "../../mlir/include/mlir/Interfaces/SideEffectInterfaces.td"
@@ -190,7 +191,7 @@ def RustCallIndirectOp : Rust_Op<"call_indirect", [
 }
 
 
-def Rust_RustFuncOp : Rust_Op<"func", [FunctionLike, IsolatedFromAbove, Symbol]> {
+def Rust_RustFuncOp : Rust_Op<"func", [FunctionOpInterface, IsolatedFromAbove, Symbol]> {
   let summary = "A function";
 
   let description = [{
@@ -204,14 +205,13 @@ def Rust_RustFuncOp : Rust_Op<"func", [FunctionLike, IsolatedFromAbove, Symbol]>
       return getTypeAttr().getValue().cast<FunctionType>();
     }
 
-    // FunctionLike trait needs access to the functions below.
-    friend class OpTrait::FunctionLike<RustFuncOp>;
+    /// Returns the argument types of this function.
+    ArrayRef<Type> getArgumentTypes() { return getType().getInputs(); }
 
-    /// Hooks for the input/output type enumeration in FunctionLike .
-    unsigned getNumFuncArguments() { return getType().getNumInputs(); }
-    unsigned getNumFuncResults() { return getType().getNumResults(); }
+    /// Returns the result types of this function.
+    ArrayRef<Type> getResultTypes() { return getType().getResults(); }
 
-    /// Hook for FunctionLike verifier.
+    /// Hook for FunctionOpInterface verifier.
     LogicalResult verifyType();
 
     /// Verifies the body of the function.
@@ -222,7 +222,7 @@ def Rust_RustFuncOp : Rust_Op<"func", [FunctionLike, IsolatedFromAbove, Symbol]>
   }];
 }
 
-def Rust_RustExtFuncOp : Rust_Op<"extfunc", [FunctionLike, IsolatedFromAbove, Symbol]> {
+def Rust_RustExtFuncOp : Rust_Op<"extfunc", [FunctionOpInterface, IsolatedFromAbove, Symbol]> {
   let summary = "An external function";
 
   let description = [{
@@ -236,14 +236,13 @@ def Rust_RustExtFuncOp : Rust_Op<"extfunc", [FunctionLike, IsolatedFromAbove, Sy
       return getTypeAttr().getValue().cast<FunctionType>();
     }
 
-    // FunctionLike trait needs access to the functions below.
-    friend class OpTrait::FunctionLike<RustExtFuncOp>;
+    /// Returns the argument types of this function.
+    ArrayRef<Type> getArgumentTypes() { return getType().getInputs(); }
 
-    /// Hooks for the input/output type enumeration in FunctionLike .
-    unsigned getNumFuncArguments() { return getType().getNumInputs(); }
-    unsigned getNumFuncResults() { return getType().getNumResults(); }
+    /// Returns the result types of this function.
+    ArrayRef<Type> getResultTypes() { return getType().getResults(); }
 
-    /// Hook for FunctionLike verifier.
+    /// Hook for FunctionOpInterface verifier.
     LogicalResult verifyType();
 
     // Write this function as Rust code to os
