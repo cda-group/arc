@@ -182,8 +182,9 @@ private:
 
     // Create a new basic block to hold the loop
     auto &entryBB = f->getRegion(0).front();
-    Block *newEntryBB =
-        rewriter.createBlock(&entryBB, entryBB.getArgumentTypes());
+    Block *newEntryBB = rewriter.createBlock(
+        &entryBB, entryBB.getArgumentTypes(),
+        SmallVector<Location>(entryBB.getArgumentTypes().size(), f->getLoc()));
     rewriter.setInsertionPointToEnd(newEntryBB);
 
     // Create the type for the state, it consists of the variants for
@@ -207,9 +208,12 @@ private:
     scf::WhileOp loop =
         rewriter.create<scf::WhileOp>(f->getLoc(), loopVarTypes, loopOps);
     Block *beforeBB = rewriter.createBlock(&loop.getBefore());
-    beforeBB->addArguments(loopVarTypes);
+
+    auto tmp = SmallVector<Location>(loopVarTypes.size(), f->getLoc());
+    beforeBB->addArguments(loopVarTypes, tmp);
     Block *afterBB = rewriter.createBlock(&loop.getAfter());
-    afterBB->addArguments(loopVarTypes);
+    afterBB->addArguments(
+        loopVarTypes, SmallVector<Location>(loopVarTypes.size(), f->getLoc()));
 
     // Fill in the before block
     rewriter.setInsertionPointToEnd(beforeBB);

@@ -459,7 +459,7 @@ void RustFuncOp::writeRust(RustPrinterStream &PS) {
     }
   }
   PS << ") ";
-  if (getNumFuncResults()) { // The return type
+  if (getType().getNumResults()) { // The return type
     PS << "-> " << getType().getResult(0) << " ";
   }
 
