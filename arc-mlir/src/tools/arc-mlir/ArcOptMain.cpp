@@ -48,7 +48,7 @@ static LogicalResult performActions(raw_ostream &os, bool verifyDiagnostics,
                                     bool verifyPasses, SourceMgr &sourceMgr,
                                     MLIRContext *context,
                                     const PassPipelineCLParser &passPipeline) {
-  OwningModuleRef module(parseSourceFile(sourceMgr, context));
+  OwningOpRef<ModuleOp> module(parseSourceFile(sourceMgr, context));
   if (!module)
     return failure();
 
