@@ -186,32 +186,32 @@ struct ConstantFoldStructAccess
 
 } // end anonymous namespace
 
-void EnumAccessOp::getCanonicalizationPatterns(
-    OwningRewritePatternList &results, MLIRContext *ctx) {
+void EnumAccessOp::getCanonicalizationPatterns(RewritePatternSet &results,
+                                               MLIRContext *ctx) {
   results.insert<ConstantFoldEnumAccess>(ctx);
 }
 
-void EnumCheckOp::getCanonicalizationPatterns(OwningRewritePatternList &results,
+void EnumCheckOp::getCanonicalizationPatterns(RewritePatternSet &results,
                                               MLIRContext *ctx) {
   results.insert<ConstantFoldEnumCheck>(ctx);
 }
 
-void MakeVectorOp::getCanonicalizationPatterns(
-    OwningRewritePatternList &results, MLIRContext *ctx) {
+void MakeVectorOp::getCanonicalizationPatterns(RewritePatternSet &results,
+                                               MLIRContext *ctx) {
   populateWithGenerated(results);
 }
 
-void IfOp::getCanonicalizationPatterns(OwningRewritePatternList &results,
+void IfOp::getCanonicalizationPatterns(RewritePatternSet &results,
                                        MLIRContext *ctx) {
   results.insert<ConstantFoldIf>(ctx);
 }
 
-void IndexTupleOp::getCanonicalizationPatterns(
-    OwningRewritePatternList &results, MLIRContext *ctx) {
+void IndexTupleOp::getCanonicalizationPatterns(RewritePatternSet &results,
+                                               MLIRContext *ctx) {
   results.insert<ConstantFoldIndexTuple>(ctx);
 }
 
-void StructAccessOp::getCanonicalizationPatterns(
-    OwningRewritePatternList &results, MLIRContext *ctx) {
+void StructAccessOp::getCanonicalizationPatterns(RewritePatternSet &results,
+                                                 MLIRContext *ctx) {
   results.insert<ConstantFoldStructAccess>(ctx);
 }
