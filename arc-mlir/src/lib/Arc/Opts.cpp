@@ -35,10 +35,10 @@ using namespace arc;
 
 namespace {
 
-bool AllValuesAreConstant(Operation::operand_range &ops) {
+bool AllValuesAreArithConstant(Operation::operand_range &ops) {
   for (const mlir::Value &a : ops) {
     Operation *op = a.getDefiningOp();
-    if (!op || (!isa<arith::ConstantOp>(op) && !isa<ConstantOp>(op)))
+    if (!op || !isa<arith::ConstantOp>(op))
       return false;
   }
   return true;
@@ -51,13 +51,8 @@ ConstantValuesToDenseAttributes(mlir::OpResult result,
   std::vector<Attribute> attribs;
 
   for (const mlir::Value &a : ops) {
-    if (isa<ConstantOp>(a.getDefiningOp())) {
-      ConstantOp def = cast<ConstantOp>(a.getDefiningOp());
-      attribs.push_back(def.getValue());
-    } else {
-      arith::ConstantOp def = cast<arith::ConstantOp>(a.getDefiningOp());
-      attribs.push_back(def.getValue());
-    }
+    arith::ConstantOp def = cast<arith::ConstantOp>(a.getDefiningOp());
+    attribs.push_back(def.getValue());
   }
   return DenseElementsAttr::get(st, llvm::makeArrayRef(attribs));
 }

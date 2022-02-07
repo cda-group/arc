@@ -32,12 +32,9 @@ include "../../mlir/include/mlir/Dialect/Arithmetic/IR/ArithmeticOps.td"
 include "../../include/Arc/Arc.td"
 #endif // ARC_OPS
 
-def AllValuesAreConstants : Constraint<CPred<"AllValuesAreConstant($0)">>;
+def AllValuesAreConstants : Constraint<CPred<"AllValuesAreArithConstant($0)">>;
 def ConstantValuesToDenseAttributes :
     NativeCodeCall<"ConstantValuesToDenseAttributes($0, $1)">;
-def ConstantMakeVectorPattern0 : Pat<(MakeVectorOp:$result $values),
-          (ConstantOp (ConstantValuesToDenseAttributes $result, $values)),
-          [(AllValuesAreConstants $values)]>;
 def ConstantMakeVectorPattern1 : Pat<(MakeVectorOp:$result $values),
           (Arith_ConstantOp (ConstantValuesToDenseAttributes $result, $values)),
           [(AllValuesAreConstants $values)]>;

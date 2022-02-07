@@ -15,6 +15,7 @@
 #include "Arc/Arc.h"
 #include "Arc/Passes.h"
 #include "mlir/Analysis/Liveness.h"
+#include "mlir/Dialect/ControlFlow/IR/ControlFlowOps.h"
 #include "mlir/Dialect/SCF/SCF.h"
 #include "mlir/IR/BuiltinOps.h"
 #include "mlir/IR/BuiltinTypes.h"
@@ -24,6 +25,7 @@
 #include "mlir/Transforms/DialectConversion.h"
 
 using namespace mlir;
+using namespace mlir::cf;
 using namespace arc;
 
 //===----------------------------------------------------------------------===//

@@ -284,7 +284,7 @@ struct StdConstantOpLowering : public OpConversionPattern<mlir::ConstantOp> {
   LogicalResult
   matchAndRewrite(mlir::ConstantOp cOp, OpAdaptor adaptor,
                   ConversionPatternRewriter &rewriter) const final {
-    Attribute attr = cOp.getValue();
+    Attribute attr = cOp.getValueAttr();
     if (attr.isa<SymbolRefAttr>())
       return convertSymbolRef(cOp, rewriter);
     cOp->emitError("unhandled constant type");
@@ -302,7 +302,7 @@ private:
 
   LogicalResult convertSymbolRef(mlir::ConstantOp op,
                                  ConversionPatternRewriter &rewriter) const {
-    SymbolRefAttr attr = op.getValue().cast<SymbolRefAttr>();
+    SymbolRefAttr attr = op.getValueAttr().cast<SymbolRefAttr>();
     Operation *refOp =
         SymbolTable::lookupNearestSymbolFrom(op->getParentOp(), attr);
 
@@ -761,12 +761,13 @@ private:
   RustTypeConverter &TypeConverter;
 };
 
-struct StdSelectOpLowering : public OpConversionPattern<mlir::SelectOp> {
-  StdSelectOpLowering(MLIRContext *ctx, RustTypeConverter &typeConverter)
-      : OpConversionPattern<mlir::SelectOp>(typeConverter, ctx, 1) {}
+struct ArithSelectOpLowering
+    : public OpConversionPattern<mlir::arith::SelectOp> {
+  ArithSelectOpLowering(MLIRContext *ctx, RustTypeConverter &typeConverter)
+      : OpConversionPattern<mlir::arith::SelectOp>(typeConverter, ctx, 1) {}
 
   LogicalResult
-  matchAndRewrite(mlir::SelectOp o, OpAdaptor adaptor,
+  matchAndRewrite(mlir::arith::SelectOp o, OpAdaptor adaptor,
                   ConversionPatternRewriter &rewriter) const final {
     // There is no ternary if in Rust, so just sink this to an
     // ordinary arc if.
@@ -1238,7 +1239,7 @@ void ArcToRustLoweringPass::runOnOperation() {
   patterns.insert<EnumCheckOpLowering>(&getContext(), typeConverter);
   patterns.insert<EmitOpLowering>(&getContext(), typeConverter);
   patterns.insert<PanicOpLowering>(&getContext(), typeConverter);
-  patterns.insert<StdSelectOpLowering>(&getContext(), typeConverter);
+  patterns.insert<ArithSelectOpLowering>(&getContext(), typeConverter);
   patterns.insert<StructAccessOpLowering>(&getContext(), typeConverter);
   patterns.insert<StdCallOpLowering>(&getContext(), typeConverter);
   patterns.insert<StdCallIndirectOpLowering>(&getContext(), typeConverter);
