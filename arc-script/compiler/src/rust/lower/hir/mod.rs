@@ -150,7 +150,7 @@ lower! {
     },
     hir::Task => Code {
         let path = node.path.lower(ctx);
-        let module_name = ctx.create_id(&format!("{}_mod", path.to_string()));
+        let module_name = ctx.create_id(&format!("{}_mod", path));
         let params = node.params.lower(ctx);
         let defs = node.namespace.iter().map(|item| ctx.hir.resolve(item).lower(ctx)).collect::<Vec<_>>();
         let ienum = ctx.hir.resolve(&node.iinterface.interior).lower(ctx);

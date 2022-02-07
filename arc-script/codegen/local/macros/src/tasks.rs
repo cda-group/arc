@@ -66,8 +66,8 @@ fn extract(attr: AttributeArgs, module: ItemMod) -> TaskComponents {
     let abstract_iport_enum_name = iport_enum.ident.clone();
     let abstract_oport_enum_name = oport_enum.ident.clone();
 
-    let concrete_iport_enum_name = new_id(format!("Concrete{}", iport_enum.ident.clone()));
-    let concrete_oport_enum_name = new_id(format!("Concrete{}", oport_enum.ident.clone()));
+    let concrete_iport_enum_name = new_id(format!("Concrete{}", iport_enum.ident));
+    let concrete_oport_enum_name = new_id(format!("Concrete{}", oport_enum.ident));
 
     let on_event_name = get_attr_val("on_event", &attr);
     let on_start_name = get_attr_val("on_start", &attr);
