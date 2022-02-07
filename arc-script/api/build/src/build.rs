@@ -115,7 +115,7 @@ impl Builder {
         // Compile file
         let mut sink = Buffer::no_color();
         let mut mode = Mode {
-            input: Input::File(Some(input_path.clone())),
+            input: Input::File(Some(input_path)),
             output: if self.enable_optimisations {
                 Output::RustMLIR
             } else {

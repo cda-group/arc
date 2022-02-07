@@ -251,7 +251,7 @@ pretty! {
         hir::LitKind::Bool(l)     => write!(w, "{}", l),
         hir::LitKind::Char(l)     => write!(w, "'{}'", l),
         hir::LitKind::Str(l)      => write!(w, r#""{}""#, l),
-        hir::LitKind::DateTime(l) => write!(w, "{}", l.to_string()),
+        hir::LitKind::DateTime(l) => write!(w, "{}", l),
         hir::LitKind::Duration(l) => write!(w, "{}", l.as_seconds_f64()),
         hir::LitKind::Unit        => write!(w, "unit"),
         hir::LitKind::Err         => write!(w, "☇"),

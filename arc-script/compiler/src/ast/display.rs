@@ -295,7 +295,7 @@ pretty! {
             ast::LitKind::Char(l)     => write!(w, "'{}'", l),
             ast::LitKind::Str(l)      => write!(w, r#""{}""#, l),
             ast::LitKind::Duration(l) => write!(w, "{}", l.as_seconds_f64()),
-            ast::LitKind::DateTime(l) => write!(w, "{}", l.to_string()),
+            ast::LitKind::DateTime(l) => write!(w, "{}", l),
             ast::LitKind::Unit        => write!(w, "unit"),
             ast::LitKind::Err         => write!(w, "☇"),
         },

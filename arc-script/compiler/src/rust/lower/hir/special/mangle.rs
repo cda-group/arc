@@ -44,6 +44,7 @@ impl Type {
 }
 
 trait Mangle {
+    #[allow(clippy::style)]
     fn mangle(&self, name: &mut String, ctx: &mut Context<'_>);
 }
 
