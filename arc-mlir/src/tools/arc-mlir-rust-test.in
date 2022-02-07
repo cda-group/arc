@@ -7,6 +7,7 @@ export ARC_SOURCE_DIR="@ARC_SCRIPT_SRC_DIR@"
 export ARC_MLIR_SOURCE_DIR="@ARC_MLIR_SRC_DIR@"
 
 WORK_DIR="$1"
+TARGET_DIR="${WORK_DIR}.target"
 MLIR_FILE="$2"
 shift 2 # The rest of the arguments goes to arc-mlir
 
@@ -22,6 +23,7 @@ echo "Arc-script sources are in: ${ARC_SOURCE_DIR}"
 echo "Test name: ${TEST_NAME}"
 echo "MLIR input: ${MLIR_FILE}"
 echo "Crate will be written to: ${WORK_DIR}"
+echo "Target directory is: ${TARGET_DIR}"
 echo "arc-mlir arguments: $@"
 if [ -f "${CARGO_DEP_FRAGMENT}.cargo-dep" ]; then
     echo "cargo dependency fragment: ${CARGO_DEP_FRAGMENT}"
@@ -73,4 +75,5 @@ EOF
 echo 'Rust file:'
 cat "${MAIN}"
 
+export CARGO_TARGET_DIR="${TARGET_DIR}"
 exec arc-cargo test -j 1 --manifest-path=${WORK_DIR}/Cargo.toml
