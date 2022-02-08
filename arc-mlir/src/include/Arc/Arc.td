@@ -48,23 +48,23 @@ def Arc_Dialect : Dialect {
 // Arc Operation Classes
 //===----------------------------------------------------------------------===//
 
-class Arc_Op<string mnemonic, list<OpTrait> traits = []>
+class Arc_Op<string mnemonic, list<Trait> traits = []>
     : Op<Arc_Dialect, mnemonic, traits>;
 
 /* The structure for these unary operands is stolen from the standard dialect */
-class Arc_UnaryOp<string mnemonic, list<OpTrait> traits = []>
+class Arc_UnaryOp<string mnemonic, list<Trait> traits = []>
     : Op<Arc_Dialect, mnemonic, !listconcat(traits, [NoSideEffect])> {
   let results = (outs AnyType);
 }
 
 class Arc_UnaryOpSameOperandAndResultType<string mnemonic,
-                                         list<OpTrait> traits = []>
+                                         list<Trait> traits = []>
     : Arc_UnaryOp<mnemonic, !listconcat(traits, [SameOperandsAndResultType])> {
   let parser =
       [{ return impl::parseOneResultSameOperandTypeOp(parser, result); }];
 }
 
-class Arc_FloatUnaryOp<string mnemonic, list<OpTrait> traits = []>
+class Arc_FloatUnaryOp<string mnemonic, list<Trait> traits = []>
     : Arc_UnaryOpSameOperandAndResultType<mnemonic, traits>,
       Arguments<(ins FloatLike:$operand)>;
 
@@ -623,7 +623,7 @@ def StructAccessOp : Arc_Op<"struct_access", [NoSideEffect]> {
 // and results to be of the same type, but does not constrain them to
 // specific types. Individual classes will have `lhs` and `rhs`
 // accessor to operands.  Stolen from standard dialect.
-class ArcArithmeticOp<string mnemonic, list<OpTrait> traits = []> :
+class ArcArithmeticOp<string mnemonic, list<Trait> traits = []> :
     Op<Arc_Dialect, mnemonic,
        !listconcat(traits, [NoSideEffect, SameOperandsAndResultType])> {
 
@@ -646,7 +646,7 @@ class ArcArithmeticOp<string mnemonic, list<OpTrait> traits = []> :
 // the operation is as follows. Stolen from standard dialect.
 //
 //     <op>i %0, %1 : i32
-class ArcIntArithmeticOp<string mnemonic, list<OpTrait> traits = []> :
+class ArcIntArithmeticOp<string mnemonic, list<Trait> traits = []> :
     ArcArithmeticOp<mnemonic, traits>,
     Arguments<(ins ArcIntegerLike:$lhs, ArcIntegerLike:$rhs)>;
 
@@ -727,7 +727,7 @@ def Arc_StateAppenderFoldOp : Arc_Op<"appender_fold",
 // State maps
 
 class Arc_KeyedStateMapOp<string mnemonic,
-                          list<OpTrait> traits = []>
+                          list<Trait> traits = []>
     : Arc_Op<mnemonic, traits> {
   let arguments = (ins ArcStateMap:$state,
                        StreamElementType:$key);
