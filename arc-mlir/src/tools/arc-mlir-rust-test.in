@@ -54,6 +54,10 @@ arc-script          = { version = "=0.0.0", path = "${ARC_SOURCE_DIR}" }
 hexf                = { version = "0.2.1" }
 ndarray             = { version = "0.13.0" }
 prost               = { version = "0.7.0" }
+
+[profile.dev]
+debug = false
+
 EOF
 
 # Allow a test to include extra dependencies i the Cargo.toml
