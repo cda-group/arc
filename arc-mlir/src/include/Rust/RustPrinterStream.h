@@ -67,26 +67,45 @@ class RustPrinterStream {
   std::string ModuleName;
   std::string Includefile;
 
+  bool isLegacy() { return RuntimeVersion == LEGACY; }
+
 public:
-  RustPrinterStream(std::string moduleName, std::string includefile)
+  enum RuntimeVersion { NEW, LEGACY } RuntimeVersion;
+
+  RustPrinterStream(std::string moduleName, std::string includefile,
+                    enum RuntimeVersion rv)
       : Constants(ConstantsStr), NamedTypes(NamedTypesStr), TypeUses(UsesStr),
         Body(BodyStr), NextID(0), NextConstID(0), ModuleName(moduleName),
-        Includefile(includefile){};
+        Includefile(includefile), RuntimeVersion(rv){};
 
   void flush(llvm::raw_ostream &o) {
-    o << "#[allow(non_snake_case)]\n"
-      << "#[allow(unused_must_use)]\n"
-      << "#[allow(dead_code)]\n"
-      << "#[allow(unused_variables)]\n"
-      << "#[allow(unused_imports)]\n"
-      << "#[allow(unused_braces)]\n";
+    if (isLegacy()) {
+      o << "#[allow(non_snake_case)]\n"
+        << "#[allow(unused_must_use)]\n"
+        << "#[allow(dead_code)]\n"
+        << "#[allow(unused_variables)]\n"
+        << "#[allow(unused_imports)]\n"
+        << "#[allow(unused_braces)]\n";
+    } else {
+      o << "#![allow(non_snake_case)]\n"
+        << "#![allow(unused_must_use)]\n"
+        << "#![allow(dead_code)]\n"
+        << "#![allow(unused_variables)]\n"
+        << "#![allow(unused_imports)]\n"
+        << "#![allow(unused_braces)]\n"
+        << "#![allow(non_camel_case_types)]\n";
+    }
 
     o << "pub mod " << ModuleName
       << "{\n"
-         "use super::*;\n"
-      << "pub use arc_script::codegen::*;\n"
-      << "pub use arc_script::codegen;\n"
-      << "pub use hexf::*;\n";
+         "use super::*;\n";
+    if (isLegacy()) {
+      o << "pub use arc_script::codegen::*;\n"
+        << "pub use arc_script::codegen;\n";
+    } else {
+      o << "pub use arc_runtime::prelude::*;\n";
+    }
+    o << "pub use hexf::*;\n";
 
     for (auto i : CrateDirectives)
       o << i.second << "\n";
@@ -149,8 +168,14 @@ public:
         id = NextID++;
         Value2ID[v] = id;
         Body << "let v" << id << " : ";
-        printAsRust(Body, fType) << " = Box::new(" << str.getValue() << ") as ";
-        printAsRust(Body, fType) << ";\n";
+
+        if (isLegacy()) {
+          printAsRust(Body, fType)
+              << " = Box::new(" << str.getValue() << ") as ";
+          printAsRust(Body, fType) << ";\n";
+        } else {
+          printAsRust(Body, fType) << " = " << str.getValue() << ";\n";
+        }
       } else
         id = found->second;
       return "v" + std::to_string(id);
@@ -291,7 +316,10 @@ public:
 
   llvm::raw_ostream &printAsRust(llvm::raw_ostream &s, const Type ty) {
     if (FunctionType fType = ty.dyn_cast<FunctionType>()) {
-      s << "Box<dyn ValueFn(";
+      if (isLegacy())
+        s << "Box<dyn ValueFn(";
+      else
+        s << "function!((";
       for (Type t : fType.getInputs()) {
         printAsRust(s, t) << ",";
       }
@@ -300,7 +328,10 @@ public:
         s << " -> ";
         printAsRust(s, fType.getResult(0));
       }
-      s << ">";
+      if (isLegacy())
+        s << ">";
+      else
+        s << ")";
       return s;
     }
     if (types::RustType rt = ty.dyn_cast<types::RustType>()) {
