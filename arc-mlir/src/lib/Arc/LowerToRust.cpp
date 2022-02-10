@@ -1096,6 +1096,14 @@ struct FuncOpLowering : public OpConversionPattern<mlir::FuncOp> {
       attributes.push_back(NamedAttribute(StringAttr::get(ctx, "arc.is_init"),
                                           func->getAttr("arc.is_init")));
 
+    if (func->hasAttr("arc.is_toplevel_task_function"))
+      attributes.push_back(
+          NamedAttribute(StringAttr::get(ctx, "arc.is_toplevel_task_function"),
+                         UnitAttr::get(ctx)));
+    if (func->hasAttr("arc.use_nonpersistent"))
+      attributes.push_back(NamedAttribute(
+          StringAttr::get(ctx, "arc.use_nonpersistent"), UnitAttr::get(ctx)));
+
     TypeConverter::SignatureConversion sigConv(func.getNumArguments());
     mlir::FunctionType funcType =
         TypeConverter.convertFunctionSignature(func.getType(), sigConv);
