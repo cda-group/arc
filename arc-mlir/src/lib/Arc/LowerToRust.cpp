@@ -898,6 +898,37 @@ struct EmitOpLowering : public OpConversionPattern<arc::EmitOp> {
   };
 };
 
+struct ReceiveOpLowering : public OpConversionPattern<arc::ReceiveOp> {
+  ReceiveOpLowering(MLIRContext *ctx, RustTypeConverter &typeConverter)
+      : OpConversionPattern<arc::ReceiveOp>(typeConverter, ctx, 1),
+        TypeConverter(typeConverter) {}
+
+  LogicalResult
+  matchAndRewrite(ReceiveOp o, OpAdaptor adaptor,
+                  ConversionPatternRewriter &rewriter) const final {
+    Type retTy = TypeConverter.convertType(o.getType());
+    rewriter.replaceOpWithNewOp<rust::RustReceiveOp>(o, retTy,
+                                                     adaptor.source());
+    return success();
+  };
+
+private:
+  RustTypeConverter &TypeConverter;
+};
+
+struct SendOpLowering : public OpConversionPattern<arc::SendOp> {
+  SendOpLowering(MLIRContext *ctx, RustTypeConverter &typeConverter)
+      : OpConversionPattern<arc::SendOp>(typeConverter, ctx, 1) {}
+
+  LogicalResult
+  matchAndRewrite(SendOp o, OpAdaptor adaptor,
+                  ConversionPatternRewriter &rewriter) const final {
+    rewriter.replaceOpWithNewOp<rust::RustSendOp>(o, adaptor.value(),
+                                                  adaptor.sink());
+    return success();
+  };
+};
+
 RustTypeConverter::RustTypeConverter(MLIRContext *ctx)
     : Ctx(ctx), Dialect(ctx->getOrLoadDialect<rust::RustDialect>()) {
   addConversion([&](arc::types::ADTType type) { return convertADTType(type); });
@@ -924,6 +955,8 @@ RustTypeConverter::RustTypeConverter(MLIRContext *ctx)
   addConversion([](rust::types::RustType type) { return type; });
   addConversion([](rust::types::RustEnumType type) { return type; });
   addConversion([](rust::types::RustStreamType type) { return type; });
+  addConversion([](rust::types::RustSinkStreamType type) { return type; });
+  addConversion([](rust::types::RustSourceStreamType type) { return type; });
   addConversion([](rust::types::RustStructType type) { return type; });
   addConversion([](rust::types::RustTensorType type) { return type; });
   addConversion([](rust::types::RustTupleType type) { return type; });
@@ -1062,6 +1095,14 @@ struct FuncOpLowering : public OpConversionPattern<mlir::FuncOp> {
     if (func->hasAttr("arc.is_init"))
       attributes.push_back(NamedAttribute(StringAttr::get(ctx, "arc.is_init"),
                                           func->getAttr("arc.is_init")));
+
+    if (func->hasAttr("arc.is_toplevel_task_function"))
+      attributes.push_back(
+          NamedAttribute(StringAttr::get(ctx, "arc.is_toplevel_task_function"),
+                         UnitAttr::get(ctx)));
+    if (func->hasAttr("arc.use_nonpersistent"))
+      attributes.push_back(NamedAttribute(
+          StringAttr::get(ctx, "arc.use_nonpersistent"), UnitAttr::get(ctx)));
 
     TypeConverter::SignatureConversion sigConv(func.getNumArguments());
     mlir::FunctionType funcType =
@@ -1240,6 +1281,8 @@ void ArcToRustLoweringPass::runOnOperation() {
   patterns.insert<EmitOpLowering>(&getContext(), typeConverter);
   patterns.insert<PanicOpLowering>(&getContext(), typeConverter);
   patterns.insert<ArithSelectOpLowering>(&getContext(), typeConverter);
+  patterns.insert<ReceiveOpLowering>(&getContext(), typeConverter);
+  patterns.insert<SendOpLowering>(&getContext(), typeConverter);
   patterns.insert<StructAccessOpLowering>(&getContext(), typeConverter);
   patterns.insert<StdCallOpLowering>(&getContext(), typeConverter);
   patterns.insert<StdCallIndirectOpLowering>(&getContext(), typeConverter);

@@ -52,6 +52,10 @@ static llvm::cl::opt<std::string>
                 llvm::cl::desc("Include this file into the generated module"),
                 llvm::cl::value_desc("filename"));
 
+static llvm::cl::opt<bool>
+    useArclangRuntime("arc-lang-runtime",
+                      llvm::cl::desc("Use the new arc-lang runtime"));
+
 //===----------------------------------------------------------------------===//
 // RustDialect
 //===----------------------------------------------------------------------===//
@@ -83,7 +87,7 @@ void RustDialect::initialize() {
   u16Ty = RustType::get(ctx, "u16");
   u32Ty = RustType::get(ctx, "u32");
   u64Ty = RustType::get(ctx, "u64");
-  noneTy = RustType::get(ctx, "Unit");
+  noneTy = RustType::get(ctx, useArclangRuntime ? "unit" : "Unit");
 }
 
 //===----------------------------------------------------------------------===//
@@ -259,7 +263,9 @@ LogicalResult rust::writeModuleAsInline(ModuleOp module, llvm::raw_ostream &o) {
     return failure();
   }
 
-  RustPrinterStream PS(module.getName()->str(), rustInclude);
+  RustPrinterStream PS(module.getName()->str(), rustInclude,
+                       useArclangRuntime ? RustPrinterStream::NEW
+                                         : RustPrinterStream::LEGACY);
 
   for (Operation &operation : module) {
     if (RustFuncOp op = dyn_cast<RustFuncOp>(operation))
@@ -323,6 +329,10 @@ static RustPrinterStream &writeRust(Operation &operation,
     op.writeRust(PS);
   else if (RustPanicOp op = dyn_cast<RustPanicOp>(operation))
     op.writeRust(PS);
+  else if (RustReceiveOp op = dyn_cast<RustReceiveOp>(operation))
+    op.writeRust(PS);
+  else if (RustSendOp op = dyn_cast<RustSendOp>(operation))
+    op.writeRust(PS);
   else {
     operation.emitError("Unsupported operation");
   }
@@ -343,10 +353,14 @@ void RustCallOp::writeRust(RustPrinterStream &PS) {
   if (target && target->hasAttr("arc.rust_name"))
     callee = target->getAttrOfType<StringAttr>("arc.rust_name").getValue();
 
+  if (useArclangRuntime)
+    PS << "call!(";
   PS << callee << "(";
   for (auto a : getOperands())
     PS << a << ", ";
   PS << ")";
+  if (useArclangRuntime)
+    PS << ")";
   PS << ";\n";
 }
 
@@ -357,85 +371,48 @@ void RustCallIndirectOp::writeRust(RustPrinterStream &PS) {
     PS << "let ";
     PS.printAsArg(r) << ":" << r.getType() << " = ";
   }
+  if (useArclangRuntime)
+    PS << "call_indirect!(";
   PS << "(" << getCallee() << ")(";
   for (auto a : getArgOperands())
     PS << a << ", ";
   PS << ")";
+  if (useArclangRuntime)
+    PS << ")";
   PS << ";\n";
 }
 
 // Write this function as Rust code to os
 void RustFuncOp::writeRust(RustPrinterStream &PS) {
-  bool isTask = (*this)->hasAttr("arc.task_name") &&
-                (*this)->hasAttr("arc.mod_name") &&
-                (*this)->hasAttr("arc.is_event_handler");
+  bool isNonpersistentTask =
+      (*this)->hasAttr("arc.is_toplevel_task_function") &&
+      (*this)->hasAttr("arc.use_nonpersistent");
   bool isMethod = (*this)->hasAttr("arc.task_name") &&
                   (*this)->hasAttr("arc.mod_name") &&
                   !(*this)->hasAttr("arc.is_event_handler");
 
-  if (isTask) {
-    auto modName =
-        (*this)->getAttrOfType<StringAttr>("arc.mod_name").getValue();
-    auto taskName =
-        (*this)->getAttrOfType<StringAttr>("arc.task_name").getValue();
-
+  if (isNonpersistentTask) {
     // Construct rewrite directive
-    PS << "#[codegen::rewrite(";
-    mlir::ModuleOp m = cast<mlir::ModuleOp>(getOperation()->getParentOp());
-    for (auto f : m.getOps<RustFuncOp>()) {
-      if (f->hasAttr("arc.is_event_handler"))
-        PS << "on_event = \"" << f.getName() << "\", ";
-      if (f->hasAttr("arc.is_init"))
-        PS << "on_start = \"" << f.getName() << "\", ";
-    }
-    PS << ")]\n";
+    PS << "#[rewrite(nonpersistent)]\n";
 
     // Generate the named type for the task
-    PS << "mod " << modName << "{\n";
-    // The state type
-    PS << "pub struct " << taskName << " {\n";
-    RustStructType st = front().getArgument(0).getType().cast<RustStructType>();
-    for (unsigned i = 0; i < st.getNumFields(); i++) {
-      PS << st.getFieldName(i) << ": " << st.getFieldType(i) << ",\n";
-    }
-    PS << "}\n";
-    std::string modBaseName = modName.str() + "::";
-    std::string stateTypeName = modBaseName + taskName.str();
-    PS.addAlias(st, stateTypeName);
-
-    RustEnumType inTy = front().getArgument(1).getType().cast<RustEnumType>();
-    PS << "#[codegen::rewrite]\n"
-       << "pub enum IInterface {\n";
-    for (unsigned i = 0; i < inTy.getNumVariants(); i++) {
-      PS << inTy.getVariantName(i) << "(" << inTy.getVariantType(i) << "),\n";
-    }
-    PS << "}\n";
-    PS.addAlias(inTy, modBaseName + "IInterface");
-
-    RustStreamType outStream =
-        front().getArgument(2).getType().cast<RustStreamType>();
-    RustEnumType outTy = outStream.getType().cast<RustEnumType>();
-    PS << "#[codegen::rewrite]\n"
-       << "pub enum OInterface {\n";
-    for (unsigned i = 0; i < outTy.getNumVariants(); i++) {
-      PS << outTy.getVariantName(i) << "(" << outTy.getVariantType(i) << "),\n";
-    }
-    PS << "}\n";
-    PS.addAlias(outTy, modBaseName + "OInterface");
-
-    PS << "}\n";
+    PS << "mod " << (*this).getName() << "{\n";
   }
-  if (isTask || isMethod) {
+  if (isMethod) {
     PS << "impl "
        << (*this)->getAttrOfType<StringAttr>("arc.mod_name").getValue()
        << "::" << (*this)->getAttrOfType<StringAttr>("arc.task_name").getValue()
        << " {\n";
   }
 
-  PS << "// " << (isTask ? "Task" : "") << (isMethod ? "Method" : "") << "\n";
+  PS << "// " << (isMethod ? "Method" : "") << "\n";
+  if (useArclangRuntime)
+    PS << "#[rewrite]\n";
   PS << "pub fn ";
   if ((*this)->hasAttr("arc.rust_name"))
     PS << (*this)->getAttrOfType<StringAttr>("arc.rust_name").getValue();
+  else if ((*this)->hasAttr("arc.is_toplevel_task_function"))
+    PS << "task";
   else
     PS << getName();
   PS << "(";
@@ -444,19 +421,14 @@ void RustFuncOp::writeRust(RustPrinterStream &PS) {
   unsigned numFuncArguments = getNumArguments();
   for (unsigned i = 0; i < numFuncArguments; i++) {
     Value v = front().getArgument(i);
-    if (isTask && i == 1) {
-      PS.addAlias(v, "event");
-      PS << ", event : " << v.getType();
-    } else if ((isTask || isMethod) && i == 0) {
-      PS << "&mut self";
-      PS.addAlias(v, "self");
-    } else if (isTask && i == 2) {
-      // We skip this argument
-    } else {
-      if (i != 0)
-        PS << ", ";
-      PS.printAsArg(v) << ": " << v.getType();
+    Type t = v.getType();
+    if (i != 0)
+      PS << ", ";
+    if (isNonpersistentTask) {
+      if (RustSinkStreamType st = t.dyn_cast<RustSinkStreamType>())
+        PS << "#[output]";
     }
+    PS.printAsArg(v) << ": " << v.getType();
   }
   PS << ") ";
   if (getType().getNumResults()) { // The return type
@@ -469,7 +441,7 @@ void RustFuncOp::writeRust(RustPrinterStream &PS) {
     ::writeRust(operation, PS);
   }
   PS << "}\n";
-  if (isTask || isMethod)
+  if (isNonpersistentTask || isMethod)
     PS << "}\n";
   PS.clearAliases();
 }
@@ -772,6 +744,16 @@ void RustPanicOp::writeRust(RustPrinterStream &PS) {
   PS << ");\n";
 }
 
+void RustReceiveOp::writeRust(RustPrinterStream &PS) {
+  auto r = getResult();
+  PS << "let ";
+  PS.printAsArg(r) << ":" << r.getType() << " = pull!(" << source() << ");\n";
+}
+
+void RustSendOp::writeRust(RustPrinterStream &PS) {
+  PS << "push!(" << value() << "," << sink() << ");\n";
+}
+
 void RustTensorOp::writeRust(RustPrinterStream &PS) {
   auto r = getResult();
   PS << "let ";
@@ -1042,7 +1024,7 @@ RustEnumTypeStorage::printAsRust(RustPrinterStream &ps) const {
   // First ensure that any structs used by this struct are defined
   emitNestedTypedefs(ps);
 
-  os << "#[codegen::rewrite]\n";
+  os << "#[" << (useArclangRuntime ? "" : "codegen::") << "rewrite]\n";
 
   os << "pub enum ";
   printAsRustNamedType(os) << " {\n";
@@ -1524,7 +1506,7 @@ RustStructTypeStorage::printAsRust(RustPrinterStream &ps) const {
   // First ensure that any structs used by this struct are defined
   emitNestedTypedefs(ps);
 
-  os << "#[codegen::rewrite]\n";
+  os << "#[" << (useArclangRuntime ? "" : "codegen::") << "rewrite]\n";
 
   os << "pub struct ";
   printAsRustNamedType(os) << " {\n  ";
@@ -1532,7 +1514,9 @@ RustStructTypeStorage::printAsRust(RustPrinterStream &ps) const {
   for (unsigned i = 0; i < structFields.size(); i++) {
     if (i != 0)
       os << ",\n  ";
-    os << "  " << structFields[i].first.getValue() << " : ";
+
+    os << "  " << (useArclangRuntime ? "" : "pub ")
+       << structFields[i].first.getValue() << " : ";
     ps.printAsRust(os, structFields[i].second);
   }
   os << "\n}\n";
