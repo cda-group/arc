@@ -147,8 +147,7 @@ OpFoldResult arc::AndOp::fold(ArrayRef<Attribute> operands) {
 //===----------------------------------------------------------------------===//
 // ConstantIntOp
 //===----------------------------------------------------------------------===//
-static ParseResult parseConstantIntOp(OpAsmParser &parser,
-                                      OperationState &state) {
+ParseResult ConstantIntOp::parse(OpAsmParser &parser, OperationState &state) {
   Attribute value;
   if (parser.parseAttribute(value, "value", state.attributes))
     return failure();
@@ -157,8 +156,8 @@ static ParseResult parseConstantIntOp(OpAsmParser &parser,
   return parser.addTypeToList(type, state.types);
 }
 
-static void print(arc::ConstantIntOp constOp, OpAsmPrinter &printer) {
-  printer << ' ' << constOp.value();
+void arc::ConstantIntOp::print(OpAsmPrinter &printer) {
+  printer << ' ' << value();
 }
 
 static LogicalResult verify(arc::ConstantIntOp constOp) {
@@ -928,27 +927,6 @@ static Type getI1SameShape(Type type) {
   Type res = getCheckedI1SameShape(type);
   assert(res && "expected type with valid i1 shape");
   return res;
-}
-
-/// Stolen from the standard dialect.
-static void printArcBinaryOp(Operation *op, OpAsmPrinter &p) {
-  assert(op->getNumOperands() == 2 && "binary op should have two operands");
-  assert(op->getNumResults() == 1 && "binary op should have one result");
-
-  // If not all the operand and result types are the same, just use the
-  // generic assembly form to avoid omitting information in printing.
-  auto resultType = op->getResult(0).getType();
-  if (op->getOperand(0).getType() != resultType ||
-      op->getOperand(1).getType() != resultType) {
-    p.printGenericOp(op);
-    return;
-  }
-
-  p << ' ' << op->getOperand(0) << ", " << op->getOperand(1);
-  p.printOptionalAttrDict(op->getAttrs());
-
-  // Now we can output only one type for all operands and the result.
-  p << " : " << op->getResult(0).getType();
 }
 
 //===----------------------------------------------------------------------===//
