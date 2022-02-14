@@ -60,13 +60,14 @@ class Arc_UnaryOp<string mnemonic, list<Trait> traits = []>
 class Arc_UnaryOpSameOperandAndResultType<string mnemonic,
                                          list<Trait> traits = []>
     : Arc_UnaryOp<mnemonic, !listconcat(traits, [SameOperandsAndResultType])> {
-  let parser =
-      [{ return impl::parseOneResultSameOperandTypeOp(parser, result); }];
 }
 
 class Arc_FloatUnaryOp<string mnemonic, list<Trait> traits = []>
     : Arc_UnaryOpSameOperandAndResultType<mnemonic, traits>,
-      Arguments<(ins FloatLike:$operand)>;
+      Arguments<(ins FloatLike:$operand)>,
+      Results<(outs FloatLike:$result)> {
+    let assemblyFormat = "$operand attr-dict `:` type($result)";
+}
 
 //===----------------------------------------------------------------------===//
 // Arc Predicates
@@ -429,9 +430,7 @@ def Arc_ConstantIntOp : Arc_Op<"constant", [ConstantLike, NoSideEffect]> {
   let results = (outs
     AnyArcInteger:$constant
   );
-
-  let parser = [{ return ::parseConstantIntOp(parser, result); }];
-  let printer = [{ return ::print(*this, p); }];
+  let hasCustomAssemblyFormat = 1;
   let verifier = [{ return ::verify(*this); }];
   let hasFolder = 1;
 
@@ -628,14 +627,7 @@ class ArcArithmeticOp<string mnemonic, list<Trait> traits = []> :
        !listconcat(traits, [NoSideEffect, SameOperandsAndResultType])> {
 
   let results = (outs AnyType);
-
-  let parser = [{
-    return impl::parseOneResultSameOperandTypeOp(parser, result);
-  }];
-
-  let printer = [{
-    return printArcBinaryOp(this->getOperation(), p);
-  }];
+  let hasCustomAssemblyFormat = 1;
 }
 
 // Base class for standard arithmetic operations on integers, vectors
@@ -648,7 +640,10 @@ class ArcArithmeticOp<string mnemonic, list<Trait> traits = []> :
 //     <op>i %0, %1 : i32
 class ArcIntArithmeticOp<string mnemonic, list<Trait> traits = []> :
     ArcArithmeticOp<mnemonic, traits>,
-    Arguments<(ins ArcIntegerLike:$lhs, ArcIntegerLike:$rhs)>;
+    Arguments<(ins ArcIntegerLike:$lhs, ArcIntegerLike:$rhs)>,
+   Results<(outs ArcIntegerLike:$result)> {
+   let assemblyFormat = "$lhs `,` $rhs attr-dict `:` type($result)";
+}
 
 def Arc_AddIOp : ArcIntArithmeticOp<"addi", [Commutative]> {
   let summary = "integer addition operation";
