@@ -162,6 +162,11 @@ public:
     if (FunctionType fType = v.getType().dyn_cast<FunctionType>()) {
       // Although a function reference is a constant in MLIR it is not
       // in our Rust dialect, so we need to handle them specially.
+
+      if (Operation *target = SymbolTable::lookupNearestSymbolFrom(v, str))
+	if (target->hasAttr("arc.rust_name"))
+	  str = target->getAttrOfType<StringAttr>("arc.rust_name");
+
       auto found = Value2ID.find(v);
       int id = 0;
       if (found == Value2ID.end()) {
