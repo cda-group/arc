@@ -174,7 +174,8 @@ public:
               << " = Box::new(" << str.getValue() << ") as ";
           printAsRust(Body, fType) << ";\n";
         } else {
-          printAsRust(Body, fType) << " = " << str.getValue() << ";\n";
+          printAsRust(Body, fType)
+              << " = function!(" << str.getValue() << ");\n";
         }
       } else
         id = found->second;
