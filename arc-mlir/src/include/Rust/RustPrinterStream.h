@@ -89,6 +89,7 @@ public:
     } else {
       o << "#![allow(non_snake_case)]\n"
         << "#![allow(unused_must_use)]\n"
+        << "#![allow(non_camel_case_types)]"
         << "#![allow(dead_code)]\n"
         << "#![allow(unused_variables)]\n"
         << "#![allow(unused_imports)]\n"
