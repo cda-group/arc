@@ -7,7 +7,7 @@ echo "The work dir is ${A2M_BUILD}"
 export PATH="$A2M_BUILD/llvm-build/bin:$PATH"
 export RUSTC_WRAPPER="/home/arc-runner/.cargo/bin/sccache"
 export SCCACHE_DIR="${PERSIST_DIR}/sccache"
-export SCCACHE_CACHE_SIZE="2G"
+export SCCACHE_CACHE_SIZE="20G"
 export CARGO_INCREMENTAL="0"
 
 function run-step {
