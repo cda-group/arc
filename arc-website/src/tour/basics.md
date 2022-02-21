@@ -33,7 +33,7 @@ Enums (also known as disjoint or discriminated unions) are supported:
 Three forms of polymorphism are supported. First, parametric polymorphism allows functions to behave equivalently for different types of parameters:
 
 ```arc-lang
-{{#include ../../../arc-lang/examples/id-fun.arc:example}}
+{{#include ../../../arc-lang/examples/identity-function.arc:example}}
 ```
 
 Second, overloading allows functions to behave differently for different types of parameters:
