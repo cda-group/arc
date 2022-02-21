@@ -10,8 +10,8 @@ jobs:
 
     env:
       CARGO_TERM_COLOR: always
-      CCACHE_CONFIGPATH: /root/actions-runner/persist/ccache-config
-      PERSIST_DIR: /root/actions-runner/persist/
+      CCACHE_CONFIGPATH: /home/arc-runner/actions-runner/persist/ccache-config
+      PERSIST_DIR: /home/arc-runner/actions-runner/persist/
 
     steps:
 
