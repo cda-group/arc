@@ -3,21 +3,27 @@ Below are instructions for setting up a custom runner, running in a Docker conta
 ```bash
 # Setup docker
 
-docker pull ubuntu:16.04
-docker run -i -t ubuntu:16.04 /bin/bash
+docker pull ubuntu:18.04
+docker run -i -t ubuntu:18.04 /bin/bash
+
+# Setup user
+
+passwd # change root password
+adduser arc-runner sudo
+su -l arc-runner
 
 # Install apt dependencies
 
-apt update && apt upgrade -y
-apt install -y git vim curl z3 libz3-dev curl libssl-dev gcc pkg-config make ninja-build python zip openjdk-8-jdk python-software-properties software-properties-common
-add-apt-repository ppa:git-core/ppa -y
-apt update && apt upgrade -y
+sudo add-apt-repository ppa:git-core/ppa -y
+sudo apt update && apt upgrade -y
+sudo apt install -y git vim curl z3 libz3-dev curl libssl-dev gcc pkg-config make ninja-build python zip openjdk-8-jdk software-properties-common texlive-xetex latexmk
 
 # Install Rust
 
 curl https://sh.rustup.rs -sSf | sh
 source $HOME/.cargo/env
 echo 'source $HOME/.cargo/env' >> ~/.bashrc
+rustup toolchain add nightly
 rustup target add wasm32-unknown-unknown
 cargo install mdbook
 
@@ -26,7 +32,7 @@ cargo install mdbook
 cd ~/
 curl -L https://github.com/Kitware/CMake/releases/download/v3.18.1/cmake-3.18.1.tar.gz --output cmake.tar.gz
 tar -xf cmake.tar.gz
-cd ~/cmake
+cd cmake-3.18.1/
 ./bootstrap
 make
 make install
@@ -35,27 +41,26 @@ make install
 
 curl -L https://releases.llvm.org/9.0.0/clang+llvm-9.0.0-x86_64-linux-gnu-ubuntu-16.04.tar.xz --output llvm.tar.xz
 tar -xf llvm.tar.xz
+mv clang+llvm-9.0.0-x86_64-linux-gnu-ubuntu-18.04 llvm
 cd llvm
 export PATH=~/llvm/bin:$PATH
 export LD_LIBRARY_PATH=~/llvm/lib:$LD_LIBRARY_PATH
 echo 'export PATH=~/llvm/bin:$PATH' >> ~/.bashrc
 echo 'export LD_LIBRARY_PATH=~/llvm/lib:$LD_LIBRARY_PATH' >> ~/.bashrc
 
-# Install SBT / Scala / Java
+# Install OCaml
 
-curl https://piccolo.link/sbt-1.3.13.zip -L --output sbt.zip
-unzip sbt.zip
-export PATH=~/sbt/bin:$PATH
-echo 'export PATH=~/sbt/bin:$PATH' >> ~/.bashrc
+sudo bash -c "sh <(curl -fsSL https://raw.githubusercontent.com/ocaml/opam/master/shell/install.sh)"
+opam init # Make sure to disable sandboxing
+eval $(opam env)
+opam switch create 4.13.1
+eval $(opam env)
+opam install dune
 
 # Install GitHub Actions Runner
 
 # Follow this tutorial (Which generates a unique token):
-#
-#     https://github.com/cda-group/arc/settings/actions/add-new-runner?arch=x64&os=linux
-#
-# NOTE: You need to run this
-export RUNNER_ALLOW_RUNASROOT=1
+#     https://github.com/cda-group/arc/settings/actions/runners/new?arch=x64&os=linux
 
 # Setup Runner
 
