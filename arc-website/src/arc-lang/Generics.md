@@ -15,7 +15,7 @@ Bounds ::= ":" [Path]"&"+
 ### Explicit generic function
 
 ```arc-lang
-{{#include ../../../arc-lang/examples/generic.arc:example}}
+{{#include ../../../arc-lang/examples/generic-function.arc:example}}
 ```
 
 ### Inferred generic function

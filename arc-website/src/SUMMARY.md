@@ -1,6 +1,6 @@
 # Summary
 
-- [Problem and Motivation](problem-motivation.md)
+- [Introduction](introduction.md)
 - [Getting Started](getting-started.md)
 - [Tour of Arc-Lang](tour/mod.md)
   - [Basics](tour/basics.md)
