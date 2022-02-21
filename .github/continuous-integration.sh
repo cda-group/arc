@@ -19,7 +19,7 @@ if [[ -d "${PERSIST_DIR}/ccache-cachedir" ]]; then
     echo "The Ccache directory exists at ${PERSIST_DIR}/ccache-cachedir"
 else
     echo "Creating Ccache directory at ${PERSIST_DIR}/ccache-cachedir"
-    sudo mkdir -p ${PERSIST_DIR}/ccache-cachedir
+    mkdir -p ${PERSIST_DIR}/ccache-cachedir
     envsubst > ${PERSIST_DIR}/ccache-config <<EOF
     max_size = 20G
     cache_dir = ${PERSIST_DIR}/ccache-cachedir
@@ -31,7 +31,7 @@ if [[ -d "${SCCACHE_DIR}" ]]; then
     echo "It contains $(du -hs ${SCCACHE_DIR} | cut -f1)"
 else
     echo "Creating Sccache directory at ${SCCACHE_DIR}"
-    sudo mkdir -p ${SCCACHE_DIR}
+    mkdir -p ${SCCACHE_DIR}
 fi
 
 function check-ccache {
