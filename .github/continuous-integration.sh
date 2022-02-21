@@ -51,7 +51,7 @@ function run-mlir-tests {
     run-step ninja -C $A2M_BUILD/llvm-build/ check-arc-mlir
 }
 
-function run-arc-runtime-test {
+function run-runtime-tests {
     cd arc-runtime
     run-step arc-cargo "$@"
 }
@@ -76,6 +76,6 @@ case $1 in
     cargo)
 	# We assume this is a arc-runtime cargo command line
 	shift
-	run-arc-runtime-test "$@"
+	run-runtime-tests "$@"
 	;;
 esac
