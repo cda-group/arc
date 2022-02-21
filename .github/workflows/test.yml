@@ -3,10 +3,10 @@ name: test
 on:
   pull_request:
     paths:
-      - "arc-lang"
-      - "arc-mlir"
-      - "arc-runtime"
-      - "arc-python"
+      - "arc-lang/**"
+      - "arc-mlir/**"
+      - "arc-runtime/**"
+      - "arc-python/**"
     branches:
       - master
 
