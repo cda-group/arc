@@ -1,6 +1,9 @@
 name: GitHub pages
 
 on:
+  pull_request:
+    branches:
+      - master
   push:
     branches:
       - master
@@ -8,30 +11,64 @@ on:
 jobs:
   build-deploy:
     runs-on: ubuntu-18.04
+
     steps:
-      - uses: actions/checkout@v2
+    - name: Checkout source
+      uses: actions/checkout@v2
 
-      - name: Setup mdbook
-        uses: peaceiris/actions-mdbook@v1
-        with:
-          mdbook-version: 'latest'
+    - name: Install LaTeX dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install texlive-xetex latexmk texlive-bibtex-extra biber
 
-      - name: Install mdbook-linkcheck
-        run: cargo install mdbook-linkcheck
+    - name: Build Arc-Report
+      run: |
+        latexmk arc-report/main.tex -outdir=arc-report/target -cd -silent -xelatex -bibtex -pdf > /dev/null
+        mv arc-report/target/main.pdf arc-website/src/Arc-Report.pdf
 
-      - name: Build custom mdbook preprocessors
-        run: |
-          cargo build -C arc-website/grammar/Cargo.toml
-          cargo build -C arc-website/syntax/Cargo.toml
+    - name: Setup mdbook
+      uses: peaceiris/actions-mdbook@v1
+      with:
+        mdbook-version: 'latest'
 
-      - name: Build documentation
-        run: mdbook build arc-website/ --dest-dir arc-website/docs
+    - name: Cache custom mdbook preprocessors
+      uses: actions/cache@v2
+      with:
+        path: |
+          ~/.cargo/registry
+          ~/.cargo/git
+          arc-website/**/target
+        key: ${{ runner.os }}-cargo-${{ hashFiles('arc-website/**/Cargo.lock') }}
 
-      - name: Deploy to gh-pages
-        if: success()
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          deploy_key: ${{ secrets.GITHUB_PAGES }}
-          publish_dir: arc-website/docs
-          force_orphan: true
+    - name: Build grammar preprocessors
+      run: cargo build --manifest-path arc-website/grammar/Cargo.toml
 
+    - name: Build syntax preprocessors
+      run: cargo build --manifest-path arc-website/syntax/Cargo.toml
+
+    - name: Build mdbook-linkcheck preprocessor
+      uses: actions-rs/install@v0.1
+      with:
+        crate: mdbook-linkcheck
+        version: latest
+        use-tool-cache: true
+
+    - name: Build mdbook-bib preprocessor
+      uses: actions-rs/install@v0.1
+      with:
+        crate: mdbook-bib
+        version: latest
+        use-tool-cache: true
+
+    - name: Build Arc-Website
+      run: |
+        cd arc-website
+        mdbook build --dest-dir docs
+
+    - name: Deploy to gh-pages
+      if: ${{ success() && github.event_name == 'push' && github.ref == 'refs/heads/master' }}
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        deploy_key: ${{ secrets.GITHUB_PAGES }}
+        publish_dir: arc-website/docs
+        force_orphan: true
