@@ -2,7 +2,13 @@ name: test
 
 on:
   pull_request:
-    branches: [ master ]
+    paths:
+      - "arc-lang"
+      - "arc-mlir"
+      - "arc-runtime"
+      - "arc-python"
+    branches:
+      - master
 
 jobs:
   build:
