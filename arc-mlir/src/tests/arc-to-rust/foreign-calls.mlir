@@ -13,12 +13,6 @@ module @arctorustforeigncalls {
   func private @callee_struct(%in : !arc.struct<foo : si32>)
        -> !arc.struct<foo : si32>
 
-  func private @callee_tuple(%in : tuple<si32,si32>) ->
-       tuple<si32,si32>
-
-  func private @callee_mixed(%in : tuple<si32,si32,!arc.struct<a : si32>>)
-       -> tuple<si32,si32,!arc.struct<a : si32>>
-
   func @caller0() -> () {
     call @callee_void_void() : () -> ()
     return
@@ -42,15 +36,4 @@ module @arctorustforeigncalls {
     return %r : !arc.struct<foo : si32>
   }
 
-  func @caller_tuple(%in : tuple<si32,si32>) -> tuple<si32,si32> {
-    %r = call @callee_tuple(%in) : (tuple<si32,si32>) -> tuple<si32,si32>
-    return %r : tuple<si32,si32>
-  }
-
-  func @caller_mixed(%in : tuple<si32,si32,!arc.struct<a : si32>>)
-       -> tuple<si32,si32,!arc.struct<a : si32>> {
-    %r = call @callee_mixed(%in) : (tuple<si32,si32,!arc.struct<a : si32>>)
-       	      			    -> tuple<si32,si32,!arc.struct<a : si32>>
-    return %in : tuple<si32,si32,!arc.struct<a : si32>>
-  }
 }

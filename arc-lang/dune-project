@@ -1,0 +1,4 @@
+(lang dune 2.7)
+(cram enable)
+(name arc_script_prototyping)
+(using menhir 2.0)

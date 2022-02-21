@@ -1,5 +1,5 @@
 // RUN: arc-mlir-rust-test %t %s -rustinclude %s.rust-tests
-// RUN: arc-mlir-rust-test canon-%t %s -rustinclude %s.rust-tests -canonicalize
+// RUN: arc-mlir-rust-test %t-canon %s -rustinclude %s.rust-tests -canonicalize
 // RUN: arc-mlir-rust-test %t-roundtrip-scf %s -rustinclude %s.rust-tests -canonicalize -remove-scf -canonicalize -to-scf -canonicalize
 
 module @toplevel {
@@ -129,15 +129,6 @@ module @toplevel {
     %r = call_indirect %f(%in) : (si32) -> si32
     return %r : si32
   }
-
-  func private @crate_Identity() -> ((!arc.stream<!arc.struct<key: si32, value: si32>>) -> !arc.stream<!arc.struct<key: si32, value: si32>>)
-
-    func @crate_main(%input_0: !arc.stream<!arc.struct<key: si32, value: si32>>) -> !arc.stream<!arc.struct<key: si32, value: si32>> {
-        %x_8 = constant @crate_Identity : () -> ((!arc.stream<!arc.struct<key: si32, value: si32>>) -> !arc.stream<!arc.struct<key: si32, value: si32>>)
-        %x_9 = call_indirect %x_8() : () -> ((!arc.stream<!arc.struct<key: si32, value: si32>>) -> !arc.stream<!arc.struct<key: si32, value: si32>>)
-        %x_A = call_indirect %x_9(%input_0) : (!arc.stream<!arc.struct<key: si32, value: si32>>) -> !arc.stream<!arc.struct<key: si32, value: si32>>
-        return %x_A : !arc.stream<!arc.struct<key: si32, value: si32>>
-    }
 
   func private @an_external_fun_with_other_name0(si32) -> si32 attributes { "arc.rust_name" = "the_name_on_the_rust_side" }
 

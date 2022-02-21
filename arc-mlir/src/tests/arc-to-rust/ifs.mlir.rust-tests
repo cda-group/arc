@@ -1,17 +1,18 @@
 #[cfg(test)]
 mod tests {
   use crate::arctorustifs::*;
+  #[rewrite(main)]
   #[test]
   fn test() {
-    assert_eq!(test_0(), 65);
-    assert_eq!(test_1(true, 0, 1), 0);
-    assert_eq!(test_1(false, 0, 1), 1);
-    assert_eq!(test_1(true, 1, 0), 1);
-    assert_eq!(test_1(false, 1, 0), 0);
+    assert_eq!(call!(test_0()), 65);
+    assert_eq!(call!(test_1(true, 0, 1)), 0);
+    assert_eq!(call!(test_1(false, 0, 1)), 1);
+    assert_eq!(call!(test_1(true, 1, 0)), 1);
+    assert_eq!(call!(test_1(false, 1, 0)), 0);
 
-    assert_eq!(test_3(true, 0, 1), 0);
-    assert_eq!(test_3(false, 0, 1), 1);
-    assert_eq!(test_3(true, 1, 0), 1);
-    assert_eq!(test_3(false, 1, 0), 0);
+    assert_eq!(call!(test_3(true, 0, 1)), 0);
+    assert_eq!(call!(test_3(false, 0, 1)), 1);
+    assert_eq!(call!(test_3(true, 1, 0)), 1);
+    assert_eq!(call!(test_3(false, 1, 0)), 0);
   }
 }

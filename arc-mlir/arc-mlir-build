@@ -33,6 +33,9 @@ LLVM_SRC_DIR="$A2M/llvm-project"
 LLVM_BUILD_DIR="$A2M_BUILD/llvm-build/"
 LLVM_INSTALL_DIR="$A2M_BUILD/llvm-install"
 
+ARC_LANG_SRC_DIR="${A2M}/../arc-lang/"
+ARC_LANG_BUILD_DIR="${A2M_BUILD}/arc-lang/"
+
 # default to a debug build
 BUILD_FLAVOUR="${BUILD_FLAVOUR:-Debug}"
 
