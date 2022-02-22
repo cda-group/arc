@@ -6,7 +6,7 @@ src = "src"
 title = "Arc-Lang"
 
 [build]
-build-dir = "book"
+build-dir = "target"
 create-missing = true
 
 [preprocessor.grammar]
