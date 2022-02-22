@@ -24,7 +24,7 @@ jobs:
     - name: Build Arc-Report
       run: |
         latexmk arc-report/main.tex -outdir=arc-report/target -cd -silent -xelatex -bibtex -pdf > /dev/null
-        mv arc-report/target/main.pdf arc-website/src/Arc-Report.pdf
+        mv arc-report/target/main.pdf arc-docs/src/Arc-Report.pdf
 
     - name: Setup mdbook
       uses: peaceiris/actions-mdbook@v1
@@ -39,11 +39,11 @@ jobs:
           ~/.cargo/git
           ~/.cargo/bin/mdbook-linkcheck
           ~/.cargo/bin/mdbook-bib
-          arc-website/arc-preprocessor/target
-        key: ${{ runner.os }}-cargo-${{ hashFiles('arc-website/arc-preprocessor/Cargo.lock') }}
+          arc-docs/arc-preprocessor/target
+        key: ${{ runner.os }}-cargo-${{ hashFiles('arc-docs/arc-preprocessor/Cargo.lock') }}
 
     - name: Build arc preprocessor
-      run: cargo build --manifest-path arc-website/arc-preprocessor/Cargo.toml
+      run: cargo build --manifest-path arc-docs/arc-preprocessor/Cargo.toml
 
     - name: Build linkcheck preprocessor
       run: |
@@ -57,9 +57,9 @@ jobs:
           cargo install mdbook-linkcheck --version=0.7.6
         fi
 
-    - name: Build Arc-Website
+    - name: Build Arc-Docs
       run: |
-        cd arc-website
+        cd arc-docs
         mdbook build
 
     - name: Deploy to gh-pages
