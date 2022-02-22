@@ -9,22 +9,18 @@ title = "Arc-Lang"
 build-dir = "target"
 create-missing = true
 
-[preprocessor.grammar]
-command = "./grammar/target/debug/grammar"
-renderer = ["html"]
-
-[preprocessor.syntax]
-command = "./syntax/target/debug/syntax"
+[preprocessor.arc-preprocessor]
+command = "./arc-preprocessor/target/debug/arc-preprocessor"
 renderer = ["html"]
 after = ["links"]
-
-[preprocess.index]
-
-[preprocess.links]
 
 [preprocessor.bib]
 title = "References"
 bibliography = "references.bib"
+
+[preprocess.index]
+
+[preprocess.links]
 
 [output.html]
 default-theme = "rust"

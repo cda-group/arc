@@ -37,28 +37,25 @@ jobs:
         path: |
           ~/.cargo/registry
           ~/.cargo/git
-          arc-website/**/target
-        key: ${{ runner.os }}-cargo-${{ hashFiles('arc-website/**/Cargo.lock') }}
+          ~/.cargo/bin/mdbook-linkcheck
+          ~/.cargo/bin/mdbook-bib
+          arc-website/arc-preprocessor/target
+        key: ${{ runner.os }}-cargo-${{ hashFiles('arc-website/arc-preprocessor/Cargo.lock') }}
 
-    - name: Build grammar preprocessors
-      run: cargo build --manifest-path arc-website/grammar/Cargo.toml
+    - name: Build arc preprocessor
+      run: cargo build --manifest-path arc-website/arc-preprocessor/Cargo.toml
 
-    - name: Build syntax preprocessors
-      run: cargo build --manifest-path arc-website/syntax/Cargo.toml
+    - name: Build linkcheck preprocessor
+      run: |
+        if [ ! -f ~/.cargo/bin/mdbook-bib ]; then
+          cargo install mdbook-bib --version=0.0.4
+        fi
 
-    - name: Build mdbook-linkcheck preprocessor
-      uses: actions-rs/install@v0.1
-      with:
-        crate: mdbook-linkcheck
-        version: latest
-        use-tool-cache: true
-
-    - name: Build mdbook-bib preprocessor
-      uses: actions-rs/install@v0.1
-      with:
-        crate: mdbook-bib
-        version: latest
-        use-tool-cache: true
+    - name: Build bib preprocessor
+      run: |
+        if [ ! -f ~/.cargo/bin/mdbook-linkcheck ]; then
+          cargo install mdbook-linkcheck --version=0.7.6
+        fi
 
     - name: Build Arc-Website
       run: |
