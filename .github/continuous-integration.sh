@@ -7,7 +7,7 @@ echo "The work dir is ${A2M_BUILD}"
 export PATH="$A2M_BUILD/llvm-build/bin:$PATH"
 export RUSTC_WRAPPER="/home/arc-runner/.cargo/bin/sccache"
 export SCCACHE_DIR="${PERSIST_DIR}/sccache"
-export SCCACHE_CACHE_SIZE="2G"
+export SCCACHE_CACHE_SIZE="20G"
 export CARGO_INCREMENTAL="0"
 
 function run-step {
@@ -15,12 +15,21 @@ function run-step {
     "$@"
 }
 
+mkdir -p ${PERSIST_DIR}
+
 if [[ -d "${PERSIST_DIR}/ccache-cachedir" ]]; then
     echo "The Ccache directory exists at ${PERSIST_DIR}/ccache-cachedir"
 else
     echo "Creating Ccache directory at ${PERSIST_DIR}/ccache-cachedir"
-    sudo mkdir -p ${PERSIST_DIR}/ccache-cachedir
-    envsubst > ${PERSIST_DIR}/ccache-config <<EOF
+    mkdir -p ${PERSIST_DIR}/ccache-cachedir
+fi
+
+if [[ -f "${CCACHE_CONFIGPATH}" ]]; then
+    echo "The Ccache config is:"
+    cat "${CCACHE_CONFIGPATH}"
+else
+    echo "Creating Ccache config at ${CCACHE_CONFIGPATH}"
+    envsubst > ${CCACHE_CONFIGPATH} <<EOF
     max_size = 20G
     cache_dir = ${PERSIST_DIR}/ccache-cachedir
 EOF
@@ -31,13 +40,13 @@ if [[ -d "${SCCACHE_DIR}" ]]; then
     echo "It contains $(du -hs ${SCCACHE_DIR} | cut -f1)"
 else
     echo "Creating Sccache directory at ${SCCACHE_DIR}"
-    sudo mkdir -p ${SCCACHE_DIR}
+    mkdir -p ${SCCACHE_DIR}
 fi
 
 function check-ccache {
-    echo "Ccache statistics:"
+    echo "=== Ccache statistics ==="
     ccache -s
-    echo "Cccache statistics:"
+    echo "=== Sccache statistics ==="
     sccache --show-stats
 }
 

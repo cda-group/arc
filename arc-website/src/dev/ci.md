@@ -16,7 +16,7 @@ su -l arc-runner
 
 sudo add-apt-repository ppa:git-core/ppa -y
 sudo apt update && apt upgrade -y
-sudo apt install -y git vim curl z3 libz3-dev curl libssl-dev gcc pkg-config make ninja-build python zip openjdk-8-jdk software-properties-common texlive-xetex latexmk
+sudo apt install -y git vim curl z3 libz3-dev curl libssl-dev gcc pkg-config make ninja-build python zip openjdk-8-jdk software-properties-common texlive-xetex latexmk gettext ccache
 
 # Install Rust
 
@@ -25,7 +25,9 @@ source $HOME/.cargo/env
 echo 'source $HOME/.cargo/env' >> ~/.bashrc
 rustup toolchain add nightly
 rustup target add wasm32-unknown-unknown
+rustup default nightly
 cargo install mdbook
+cargo install sccache
 
 # Install Cmake
 
@@ -55,7 +57,9 @@ opam init # Make sure to disable sandboxing
 eval $(opam env)
 opam switch create 4.13.1
 eval $(opam env)
+opam install core
 opam install dune
+opam install menhir
 
 # Install GitHub Actions Runner
 

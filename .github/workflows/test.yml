@@ -27,7 +27,7 @@ jobs:
 
       # Update LLVM dependency
     - name: Update submodule
-      run: git submodule update --init --recursive
+      run: git submodule update --force --init --recursive
 
     - name: Check ccache setup
       run: ./.github/continuous-integration.sh check-ccache
