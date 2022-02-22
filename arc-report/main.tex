@@ -44,8 +44,11 @@
 
 % Code
 \usepackage{listings} % Code listings
-\usepackage{courier} % Courier font
-\lstset{basicstyle=\footnotesize\ttfamily,breaklines=true}
+\lstset{
+    rangebeginprefix=\#\ ANCHOR:\ ,
+    rangeendprefix=\#\ ANCHOR_END:\ ,
+    includerangemarker=false
+}
 
 \parskip 0pt % No vertical space between paragraphs
 \setlist[itemize]{noitemsep, topsep=10pt} % No vertical space between list items
