@@ -1,4 +1,4 @@
-\documentclass{report}
+\documentclass{article}
 
 % Document
 \usepackage{subfiles} % Allow splitting project into files
@@ -15,7 +15,6 @@
 % Tables
 \usepackage{csvsimple} % Convert CSV files into LaTeX tables
 \usepackage{longtable} % Tables that span multiple pages
-%\captionsetup[table]{skip=10pt}
 \usepackage{booktabs} % Prettier tables
 \usepackage{supertabular} % Tables that span multiple pages
 \usepackage{multirow} % Nested rows in table
@@ -25,16 +24,10 @@
 \usepackage{marginnote} % Add todo notes to margin
 
 % References
-% \usepackage{cite} % Improved handling of numerical citations
 \usepackage{natbib} % Flexible bibliography support
 
 % Spacing
-\usepackage{mparhack} % Allow multiple paragraphs in text
-\usepackage{marginfix} % Allow multiple paragraphs in text
 \usepackage{titlesec} % Select alternative section titles
-\titlespacing*{\section}{0pt}{1.1\baselineskip}{\baselineskip}
-\titlespacing*{\subsection}{0pt}{1.1\baselineskip}{\baselineskip}
-\titlespacing*{\subsubsection}{0pt}{1.1\baselineskip}{\baselineskip}
 
 % Lists
 \usepackage{enumitem} % Enumerated lists
@@ -44,8 +37,11 @@
 
 % Code
 \usepackage{listings} % Code listings
-\usepackage{courier} % Courier font
-\lstset{basicstyle=\footnotesize\ttfamily,breaklines=true}
+\lstset{
+    rangebeginprefix=\#\ ANCHOR:\ ,
+    rangeendprefix=\#\ ANCHOR_END:\ ,
+    includerangemarker=false
+}
 
 \parskip 0pt % No vertical space between paragraphs
 \setlist[itemize]{noitemsep, topsep=10pt} % No vertical space between list items
@@ -84,21 +80,19 @@
 
 \subfile{sections/abstract}
 
-%\tableofcontents
+\tableofcontents
 
 \subfile{sections/introduction}
 
 \subfile{sections/tour-of-arc-lang}
 
 \subfile{sections/high-level-model}
-
+  
 \subfile{sections/execution-model}
 
 \subfile{sections/related-work}
 
 \subfile{sections/conclusion}
-
-\cite{CDA-Midterm}
 
 \bibliographystyle{plain}
 \bibliography{bibliography/references}
