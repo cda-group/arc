@@ -12,6 +12,8 @@ env:
   ZOLA_VERSION: 0.15.3
   MDBOOK_LINKCHECK_VERSION: 0.7.6
   MDBOOK_BIB_VERSION: 0.0.4
+  APT_PKG_VERSION: 1
+  APT_PKG_DIR: cached-apt-packages
 
 jobs:
   build-deploy:
@@ -23,6 +25,26 @@ jobs:
 
     - name: Update apt index
       run: sudo apt-get update
+
+    - name: Cache apt-get packages
+      uses: actions/cache@v2
+      id: cache-apt
+      with:
+        path: ${{ env.APT_PKG_DIR }}
+        key: ${{ env.APT_PKG_VERSION }}
+
+    - name: Copy apt-get packages cache
+      if: steps.cache-apt.outputs.cache-hit == 'true'
+      run: sudo cp --verbose --force --recursive ${{ env.APT_PKG_DIR }}/* /
+
+    - name: Install apt-get packages
+      env:
+        PACKAGES: texlive-xetex latexmk texlive-bibtex-extra biber
+      if: steps.cache-apt.outputs.cache-hit != 'true'
+      run: |
+        mkdir -p ${{ env.APT_PKG_DIR }}
+        sudo apt-get install ${{ env.PACKAGES }}
+        sudo dpkg -L ${{ env.PACKAGES }} | while IFS= read -r f; do if test -f $f; then echo $f; fi; done | xargs cp --parents --target-directory ${{ env.APT_PKG_DIR }}/
 
     # ---- cargo ----
 
@@ -73,9 +95,6 @@ jobs:
         cargo install --path=zola --version=${{ env.ZOLA_VERSION }} zola
 
     # ---- arc-report ----
-
-    - name: Install LaTeX dependencies
-      run: sudo apt-get install texlive-xetex latexmk texlive-bibtex-extra biber
 
     - name: Build arc-report
       run: make -C arc-report
