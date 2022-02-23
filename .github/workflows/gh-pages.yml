@@ -8,6 +8,11 @@ on:
     branches:
       - master
 
+env:
+  ZOLA_VERSION: 0.15.3
+  MDBOOK_LINKCHECK_VERSION: 0.7.6
+  MDBOOK_BIB_VERSION: 0.0.4
+
 jobs:
   build-deploy:
     runs-on: ubuntu-18.04
@@ -18,6 +23,54 @@ jobs:
 
     - name: Update apt index
       run: sudo apt-get update
+
+    # ---- cargo ----
+
+    - name: Cache arc-preprocessor
+      id: cache-arc-preprocessor
+      uses: actions/cache@v2
+      with:
+        path: arc-docs/arc-preprocessor/target
+        key: ${{ runner.os }}-cargo-${{ hashFiles('arc-docs/arc-preprocessor/**') }}
+
+    - name: Cache mdbook-bib
+      id: cache-mdbook-bib
+      uses: actions/cache@v2
+      with:
+        path: ~/.cargo/bin/mdbook-bib
+        key: ${{ runner.os }}-cargo-${{ env.MDBOOK_BIB_VERSION }}
+
+    - name: Cache mdbook-linkcheck
+      id: cache-mdbook-linkcheck
+      uses: actions/cache@v2
+      with:
+        path: ~/.cargo/bin/mdbook-linkcheck
+        key: ${{ runner.os }}-cargo-${{ env.MDBOOK_LINKCHECK_VERSION }}
+
+    - name: Cache zola
+      id: cache-zola
+      uses: actions/cache@v2
+      with:
+        path: ~/.cargo/bin/zola
+        key: ${{ runner.os }}-cargo-${{ env.ZOLA_VERSION }}
+
+    - name: Build arc-preprocessor
+      if: steps.cache-arc-preprocessor.outputs.cache-hit != 'true'
+      run: cargo build --manifest-path arc-docs/arc-preprocessor/Cargo.toml
+
+    - name: Build mdbook-bib
+      if: steps.cache-mdbook-bib.outputs.cache-hit != 'true'
+      run: cargo install mdbook-bib --version=${{ env.MDBOOK_BIB_VERSION }}
+
+    - name: Build mdbook-linkcheck
+      if: steps.cache-mdbook-linkcheck.outputs.cache-hit != 'true'
+      run: cargo install mdbook-linkcheck --version=${{ env.MDBOOK_LINKCHECK_VERSION }}
+
+    - name: Build zola
+      if: steps.cache-zola.outputs.cache-hit != 'true'
+      run: |
+        git clone https://github.com/getzola/zola.git
+        cargo install --path=zola --version=${{ env.ZOLA_VERSION }} zola
 
     # ---- arc-report ----
 
@@ -34,32 +87,6 @@ jobs:
       with:
         mdbook-version: 'latest'
 
-    - name: Cache mdbook preprocessors
-      uses: actions/cache@v2
-      with:
-        path: |
-          ~/.cargo/registry
-          ~/.cargo/git
-          ~/.cargo/bin/mdbook-linkcheck
-          ~/.cargo/bin/mdbook-bib
-          arc-docs/arc-preprocessor/target
-        key: ${{ runner.os }}-cargo-${{ hashFiles('arc-docs/arc-preprocessor/**') }}
-
-    - name: Build arc-preprocessor
-      run: cargo build --manifest-path arc-docs/arc-preprocessor/Cargo.toml
-
-    - name: Build linkcheck-preprocessor
-      run: |
-        if [ ! -f ~/.cargo/bin/mdbook-bib ]; then
-          cargo install mdbook-bib --version=0.0.4
-        fi
-
-    - name: Build bib-preprocessor
-      run: |
-        if [ ! -f ~/.cargo/bin/mdbook-linkcheck ]; then
-          cargo install mdbook-linkcheck --version=0.7.6
-        fi
-
     - name: Build arc-docs
       run: make -C arc-docs
 
@@ -75,18 +102,11 @@ jobs:
       run: git submodule update --init arc-website/themes/adidoks
 
     - name: Build arc-website
-      if: github.ref != 'refs/heads/master'
-      uses: shalzz/zola-deploy-action@master
-      env:
-        BUILD_DIR: arc-website
-        BUILD_FLAGS: --drafts
-        BUILD_ONLY: true
+      run: make -C arc-website
 
-    - name: Build and deploy arc-website to gh-pages
-      if: github.ref == 'refs/heads/master'
-      uses: shalzz/zola-deploy-action@master
-      env:
-        BUILD_DIR: arc-website
-        BUILD_FLAGS: --drafts
-        GITHUB_TOKEN: ${{ secrets.ACTIONS_DEPLOY_KEY }}
-        PAGES_BRANCH: gh-pages
+    - name: Deploy to gh-pages
+      uses: peaceiris/actions-gh-pages@v3
+      if: ${{ github.ref == 'refs/heads/main' }}
+      with:
+        deploy_key: ${{ secrets.ACTIONS_DEPLOY_KEY }}
+        publish_dir: arc-website/target
