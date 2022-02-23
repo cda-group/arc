@@ -1,6 +1,7 @@
 # Arc
 
-[![](https://img.shields.io/badge/docs-online-brightgreen)](https://segeljakt.github.io/arc-website/doc.html)
+[![](https://img.shields.io/badge/docs-online-brightgreen)](https://cda-group.github.io/arc/)
+[![](https://img.shields.io/badge/report-online-brightgreen)](https://cda-group.github.io/arc/Arc-Report.pdf)
 
 Programming language for data stream analysis.
 
