@@ -16,22 +16,25 @@ jobs:
     - name: Checkout source
       uses: actions/checkout@v2
 
-    - name: Install LaTeX dependencies
-      run: |
-        sudo apt-get update
-        sudo apt-get install texlive-xetex latexmk texlive-bibtex-extra biber
+    - name: Update apt index
+      run: sudo apt-get update
 
-    - name: Build Arc-Report
-      run: |
-        latexmk arc-report/main.tex -outdir=arc-report/target -cd -silent -xelatex -bibtex -pdf > /dev/null
-        mv arc-report/target/main.pdf arc-website/src/Arc-Report.pdf
+    # ---- arc-report ----
+
+    - name: Install LaTeX dependencies
+      run: sudo apt-get install texlive-xetex latexmk texlive-bibtex-extra biber
+
+    - name: Build arc-report
+      run: make -C arc-report
+
+    # ---- arc-docs ----
 
     - name: Setup mdbook
       uses: peaceiris/actions-mdbook@v1
       with:
         mdbook-version: 'latest'
 
-    - name: Cache custom mdbook preprocessors
+    - name: Cache mdbook preprocessors
       uses: actions/cache@v2
       with:
         path: |
@@ -39,36 +42,51 @@ jobs:
           ~/.cargo/git
           ~/.cargo/bin/mdbook-linkcheck
           ~/.cargo/bin/mdbook-bib
-          arc-website/arc-preprocessor/target
-        key: ${{ runner.os }}-cargo-${{ hashFiles('arc-website/arc-preprocessor/Cargo.lock') }}
+          arc-docs/arc-preprocessor/target
+        key: ${{ runner.os }}-cargo-${{ hashFiles('arc-docs/arc-preprocessor/**') }}
 
-    - name: Build arc preprocessor
-      run: cargo build --manifest-path arc-website/arc-preprocessor/Cargo.toml
+    - name: Build arc-preprocessor
+      run: cargo build --manifest-path arc-docs/arc-preprocessor/Cargo.toml
 
-    - name: Build linkcheck preprocessor
+    - name: Build linkcheck-preprocessor
       run: |
         if [ ! -f ~/.cargo/bin/mdbook-bib ]; then
           cargo install mdbook-bib --version=0.0.4
         fi
 
-    - name: Build bib preprocessor
+    - name: Build bib-preprocessor
       run: |
         if [ ! -f ~/.cargo/bin/mdbook-linkcheck ]; then
           cargo install mdbook-linkcheck --version=0.7.6
         fi
 
-    - name: Build Arc-Website
-      run: |
-        cd arc-website
-        mdbook build
+    - name: Build arc-docs
+      run: make -C arc-docs
 
-    - name: Deploy to gh-pages
-      if: |
-        success() &&
-        github.event_name == 'push' &&
-        github.ref == 'refs/heads/master'
-      uses: peaceiris/actions-gh-pages@v3
-      with:
-        deploy_key: ${{ secrets.ACTIONS_DEPLOY_KEY }}
-        publish_dir: arc-website/target/html
-        force_orphan: true
+    # ---- arc-website ----
+
+    - name: Move artifacts to arc-website
+      run: |
+        mkdir arc-website/static
+        mv arc-report/target/main.pdf arc-website/static/Arc-Report.pdf
+        mv arc-docs/target/html arc-website/static/docs
+
+    - name: Update arc-website theme submodule
+      run: git submodule update --init arc-website/themes/adidoks
+
+    - name: Build arc-website
+      if: github.ref != 'refs/heads/master'
+      uses: shalzz/zola-deploy-action@master
+      env:
+        BUILD_DIR: arc-website
+        BUILD_FLAGS: --drafts
+        BUILD_ONLY: true
+
+    - name: Build and deploy arc-website to gh-pages
+      if: github.ref == 'refs/heads/master'
+      uses: shalzz/zola-deploy-action@master
+      env:
+        BUILD_DIR: arc-website
+        BUILD_FLAGS: --drafts
+        GITHUB_TOKEN: ${{ secrets.ACTIONS_DEPLOY_KEY }}
+        PAGES_BRANCH: gh-pages

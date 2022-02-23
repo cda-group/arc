@@ -159,3 +159,7 @@ _build/
 
 book/
 **/*.pdf
+
+# zola
+
+static/
