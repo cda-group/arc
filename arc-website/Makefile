@@ -1,0 +1,2 @@
+all:
+	zola build

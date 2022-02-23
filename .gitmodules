@@ -7,3 +7,6 @@
 [submodule "arc-mlir/corrosion"]
 	path = arc-mlir/src/corrosion
 	url = https://github.com/AndrewGaspar/corrosion.git
+[submodule "arc-website/themes/adidoks"]
+	path = arc-website/themes/adidoks
+	url = https://github.com/aaranxu/adidoks.git
