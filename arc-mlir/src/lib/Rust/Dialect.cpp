@@ -406,8 +406,13 @@ void RustFuncOp::writeRust(RustPrinterStream &PS) {
   }
 
   PS << "// " << (isMethod ? "Method" : "") << "\n";
-  if (useArclangRuntime)
-    PS << "#[rewrite]\n";
+  if (useArclangRuntime) {
+    if ((*this)->hasAttr("arc.annotation"))
+      PS << (*this)->getAttrOfType<StringAttr>("rust.annotation").getValue()
+         << "\n";
+    else
+      PS << "#[rewrite]\n";
+  }
   PS << "pub fn ";
   if ((*this)->hasAttr("arc.rust_name"))
     PS << (*this)->getAttrOfType<StringAttr>("arc.rust_name").getValue();
@@ -447,7 +452,34 @@ void RustFuncOp::writeRust(RustPrinterStream &PS) {
 }
 
 // Write this function as Rust code to os
-void RustExtFuncOp::writeRust(RustPrinterStream &PS) {}
+void RustExtFuncOp::writeRust(RustPrinterStream &PS) {
+  // External functions are normally declared elsewhere, so there is
+  // no need for a "protype" to be output. A special case is where an
+  // external function has the `rust.annotation` attribute in which
+  // case it should be emitted as a function with an empty body and
+  // with the annotation.
+
+  if (!(*this)->hasAttr("rust.annotation"))
+    return;
+
+  PS << (*this)->getAttrOfType<StringAttr>("rust.annotation").getValue()
+     << "\npub fn " << getName() << "(";
+
+  FunctionType fType = getType().cast<FunctionType>();
+
+  unsigned numFuncArguments = fType.getNumInputs();
+  for (unsigned i = 0; i < numFuncArguments; i++) {
+    Type t = fType.getInput(i);
+    if (i != 0)
+      PS << ", ";
+    PS << "arg" << i << " : " << t;
+  }
+  PS << ") ";
+  if (fType.getNumResults()) { // The return type
+    PS << "-> " << getType().getResult(0) << " ";
+  }
+  PS << "{}\n";
+}
 
 void RustReturnOp::writeRust(RustPrinterStream &PS) {
   if (getNumOperands())

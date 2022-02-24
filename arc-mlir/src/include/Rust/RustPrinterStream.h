@@ -58,6 +58,9 @@ class RustPrinterStream {
   // Tracking of the named types which has already been output.
   DenseSet<unsigned> OutputEnumTypes, OutputStructTypes;
 
+  // Functions having the rust.declare atrtibute
+  DenseSet<Operation *> DeclaredFunctions;
+
   std::map<std::string, std::string> CrateDependencies;
   std::map<std::string, std::string> CrateDirectives;
 
@@ -107,6 +110,18 @@ public:
       o << "pub use arc_runtime::prelude::*;\n";
     }
     o << "pub use hexf::*;\n";
+
+    if (!isLegacy() && !DeclaredFunctions.empty()) {
+      o << "declare_functions!(";
+      for (Operation *t : DeclaredFunctions) {
+        if (t->hasAttr("arc.rust_name"))
+          o << t->getAttrOfType<StringAttr>("arc.rust_name").getValue();
+        else
+          o << t->getAttrOfType<StringAttr>("sym_name").getValue();
+        o << ", ";
+      }
+      o << ");\n";
+    }
 
     for (auto i : CrateDirectives)
       o << i.second << "\n";
@@ -164,9 +179,12 @@ public:
       // Although a function reference is a constant in MLIR it is not
       // in our Rust dialect, so we need to handle them specially.
 
-      if (Operation *target = SymbolTable::lookupNearestSymbolFrom(v, str))
-	if (target->hasAttr("arc.rust_name"))
-	  str = target->getAttrOfType<StringAttr>("arc.rust_name");
+      if (Operation *target = SymbolTable::lookupNearestSymbolFrom(v, str)) {
+        if (target->hasAttr("arc.rust_name"))
+          str = target->getAttrOfType<StringAttr>("arc.rust_name");
+        if (target->hasAttr("rust.declare"))
+          DeclaredFunctions.insert(target);
+      }
 
       auto found = Value2ID.find(v);
       int id = 0;
