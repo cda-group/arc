@@ -1104,6 +1104,11 @@ struct FuncOpLowering : public OpConversionPattern<mlir::FuncOp> {
       attributes.push_back(NamedAttribute(
           StringAttr::get(ctx, "arc.use_nonpersistent"), UnitAttr::get(ctx)));
 
+    if (func->hasAttr("rust.annotation"))
+      attributes.push_back(
+          NamedAttribute(StringAttr::get(ctx, "rust.annotation"),
+                         func->getAttr("rust.annotation")));
+
     TypeConverter::SignatureConversion sigConv(func.getNumArguments());
     mlir::FunctionType funcType =
         TypeConverter.convertFunctionSignature(func.getType(), sigConv);
