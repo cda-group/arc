@@ -101,7 +101,7 @@ macro_rules! letroot {
 
 #[macro_export]
 macro_rules! _vector {
-    ([$($x:expr),+], $ctx:expr) => {{
+    ([$($x:expr),* $(,)?], $ctx:expr) => {{
         let stack = $ctx.mutator().shadow_stack();
         letroot!(vec = stack, Some(Vec::new($ctx)));
 
