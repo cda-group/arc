@@ -47,14 +47,6 @@ macro_rules! access {
     };
 }
 
-/// Construct a new function type.
-#[macro_export]
-macro_rules! fun_type {
-    (($($inputs:ty),+) -> $output:ty) => {
-        fn($($inputs),+) -> $output
-    }
-}
-
 #[macro_export]
 macro_rules! letroot {
     ($var_name:ident : $t:ty  = $stack:expr, $value:expr) => {
