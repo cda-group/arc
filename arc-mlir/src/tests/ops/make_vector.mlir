@@ -21,7 +21,7 @@ module @toplevel {
     %c = arith.constant 1 : i1
     %d = arith.constant 0 : i1
 
-    // expected-error@+2 {{'arc.make_vector' op requires the same element type for all operands and results}}
+    // expected-error@+2 {{'arc.make_vector' op result #0 must be 1D tensor of any type values, but got 'tuple<i1, i1, i1, i1>'}}
     // expected-note@+1 {{see current operation:}}
     %1 = "arc.make_vector"(%b, %b, %c, %d) : (i1, i1, i1, i1) -> tuple<i1,i1,i1,i1>
     return
@@ -36,7 +36,7 @@ module @toplevel {
     %c = arith.constant 1 : i1
     %d = arith.constant 0 : i1
 
-    // expected-error@+2 {{'arc.make_vector' op requires the same element type for all operands and results}}
+    // expected-error@+2 {{'arc.make_vector' op result #0 must be 1D tensor of any type values, but got 'tensor<f32>'}}
     // expected-note@+1 {{see current operation:}}
     %1 = "arc.make_vector"(%b, %b, %c, %d) : (i1, i1, i1, i1) -> tensor<f32>
     return
