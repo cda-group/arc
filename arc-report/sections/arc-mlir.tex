@@ -1,0 +1,82 @@
+\section{Arc-MLIR}
+
+MLIR is used in the Arc-Lang compiler back-end. It is used for both standard compiler optimizations and transforms but also as convenient framework in which to express Arc-Lang-specific transforms. The MLIR/LLVM infrastructure for testing is also used to run Arc-Lang regression and unit tests.
+
+The purpose of the Arc-Lang compiler back-end is to do domain specific transforms and optimizations which improves the efficiency of the program when running on Arcon. Doing transforms such as operator fusion and operator reordering requires a number of standard compiler techniques such as liveness analysis, constant propagation and common sub-expression elimination. By using the MLIR infrastructure, which implements many of these standard algorithms, we can concentrate on what is specific to Arc-Lang. By using MLIR we also have a robust and extensible intermediary representation with tools for parsing, printing and verifying structure invariants of the processed program representation.
+
+TODO: MLIR blurb and flesh out the bullets.
+
+\begin{itemize}
+  \item [MLIR](https://mlir.llvm.org/) is a Multi-Level Intermediate Representation
+  \item Extensibility
+  \item Dialects
+  \item Types
+  \item Standard transforms and optimizations on custom dialects
+  \item Tooling infrastructure: command line parsing, debug flags, pass ordering, error reporting.
+  \item Testing support: Powerful DAG-matching tool to verify structure and syntax of output; Error report verification integration with the error reporting in the tooling infrastructure
+\end{itemize}
+
+\subsection{Structure}
+
+The Arc-Lang front-end processes the Arc-Lang source code and produces a representation of the program in the arc-Lang MLIR dialect for further processing. The parts of the Arc-Lang compiler pipeline which uses MLIR is implemented in a tool called `arc-mlir`. The tool is implemented using the MLIR tooling framework and allows the user to, on the command line, select which optimizations and transforms to run. Input to the `arc-mlir` tool is MLIR-IR in the Arc-Lang dialect and output is in either: the Arc-Lang IR dialect, the Rust dialect or textual Rust source code.
+
+\subsection{The Arc MLIR Dialect}
+
+The Arc MLIR dialect is an MLIR dialect in which it is possible to represent all Arc-Lang language constructs in a way that allows the generation of a syntactically and semantically valid Rust program. The dialect consists of operations from the `standard`, `scf`, and `arith` dialects provided by upstream MLIR, but also a number of custom operations and types specific to Arc-Lang.
+
+\subsubsection{Arc Dialect Types}
+
+The \texttt{arc} dialect includes a number of types which are not provided by one of the upstream dialects, these include:
+\begin{itemize}
+  \item \texttt{arc.adt<string>} An opaque type which wraps a Rust type. It is preserved by all IR transformations. When Rust source code is output, values of this type will be declared as type \texttt{string}.
+  \item \texttt{arc.enum} A Rust-style enum. A discriminated union where each named variant maps to a type. Structural equality applies to enum types.
+  \item \texttt{arc.struct} An aggregate type which aggregates a set of named and typed fields. Structural equality applies to struct types.
+  \item \texttt{arc.stream} A type which corresponds to event streams in Arc-Lang. The stream is instantiated with the type of the event it carries.
+\end{itemize}
+
+\subsubsection{Custom Arc Dialect Operations}
+
+In the \texttt{arith} dialect, MLIR provides arithmetic operations on integer and floating point values. MLIR provides three integer types: one type which only specifies the number of bits \texttt{i<n>}, an explicitly signed integer type \texttt{si<n>}, and an explicitly unsigned integer type. The arithmetic operations on integers in \texttt{arith} are only specified for the \texttt{i<n>} integer type. In that, \texttt{arith} follows the model chosen by LLVM in that the signed/unsigned semantics for an operation is selected by the operation, for example \texttt{divi}/\texttt{divui} for signed/unsigned integer division. As both our input and output languages (Arc-Lang and Rust respectively) derive the signed/unsigned semantics from the type, we have chosen to use the explicitly signed/unsigned integer types. The alternative would require the component responsible for Rust output to derive the type of integer variables from the operations applied to them, something that is not always possible if no operations with different semantics are applied to them. Therefore the \texttt{arc} dialect defines its own polymorphic arithmetic operations operating on signed/unsigned integers.
+
+TODO: operations
+
+TODO: event handler
+
+TODO: Structure of the Arc-Lang program: Each block produces a result, SSA-ish. No branches between blocks.
+
+TODO: structured control flow
+
+\subsubsection{Rust MLIR Dialect}
+
+TODO: Operations which capture the structure of Rust.
+
+TODO: Types are the rust type as a string.
+
+TODO: Name mangling to produce Rust type names for the aggregate types.
+
+TODO: Not intended to be the subject of any transforms or optimizations, that is done by rustc.
+
+\subsection{Standard Transforms and Optimizations}
+
+TODO: canonicalization; CSE; constant propagation and folding; constant lifting.
+
+\subsection{Custom Transforms}
+
+TODO: From SCF to BBs: In order to use additional optimizations and
+transforms.
+
+TODO: From BBs to SCF, needed for Rust (no goto).
+
+TODO: FSM-transform, for selective and nested receive in event handlers.
+
+\subsection{Rust Output}
+
+TODO: Abstracting away reference counting, borrows etc. Handled by macros in the runtime system libraries.
+
+TODO: No formatting, rustfmt handles that.
+
+\subsection{Testing}
+
+TODO: Use Lit for unit and regression tests
+
+TODO: Use built-in support in tooling to check that errors occur where we expect them.
