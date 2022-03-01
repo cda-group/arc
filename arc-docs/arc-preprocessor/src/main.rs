@@ -135,6 +135,7 @@ fn preprocess_grammar(book: &mut Book) {
                     let s = subterm_regex.replace_all(&s, subterm_subst);
                     let s = nonterm_regex.replace_all(&s, nonterm_subst);
                     let s = head_regex.replace_all(&s, head_subst);
+                    let s = s.trim();
                     format!("<pre><code>{}</code></pre>", s)
                 })
                 .into_owned();
@@ -159,6 +160,7 @@ fn preprocess_snippet(book: &mut Book) {
                     let s = caps.get(2).unwrap().as_str();
                     let s = keyword_regex.replace_all(&s, keyword_subst);
                     let s = comment_regex.replace_all(&s, comment_subst);
+                    let s = s.trim();
                     if caps.get(1).is_some() {
                         format!(
                             r#"<pre><code style="background-color:#FFC590">{}</code></pre>"#,
