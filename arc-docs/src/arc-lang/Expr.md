@@ -16,7 +16,7 @@ Expr ::=
   | [[DataFlow]]     # Dataflow expression
 
 Constructor ::=
-  | "#{" ([Name] ":" [Expr])","* "}"          # Record-construction
+  | "#{" ([Name] ":" [Expr])","* "}"        # Record-construction
   | "(" [Expr]","+ ")"                  # Tuple-construction
   | "[" [Expr]","* "]"                  # Array-construction
   | [Expr]? ".." ("="? [Expr])?         # Range-construction
@@ -94,6 +94,14 @@ Operators are defined as follows, with precedence from highest to lowest:
 | Primary expressions                            | Nullary |         |               | No            |
 
 (*) Operand is optional.
+
+## Builtin Functions
+
+The builtin functions of Arc-Lang are listed here.
+
+```arc-lang
+{{#exec grep -F 'extern def' ../arc-lang/stdlib/stdlib.arc}}
+```
 
 ## Examples
 
