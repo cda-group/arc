@@ -77,6 +77,7 @@ impl Preprocessor for ArcLang {
     }
 
     fn run(&self, _: &PreprocessorContext, mut book: Book) -> Result<Book, Error> {
+        preprocess_exec(&mut book);
         preprocess_grammar(&mut book);
         preprocess_snippet(&mut book);
 
@@ -86,6 +87,27 @@ impl Preprocessor for ArcLang {
     fn supports_renderer(&self, renderer: &str) -> bool {
         renderer != "not-supported"
     }
+}
+
+fn preprocess_exec(book: &mut Book) {
+    let exec_regex = regex::Regex::new(r"\{\{#exec (.*?)\}\}").unwrap();
+    book.for_each_mut(|item| {
+        if let mdbook::BookItem::Chapter(ch) = item {
+            ch.content = exec_regex
+                .replace_all(&ch.content, |caps: &regex::Captures<'_>| {
+                    let s = caps.get(1).unwrap().as_str();
+                    let s = std::process::Command::new("/bin/sh")
+                        .arg("-c")
+                        .arg(s)
+                        .output()
+                        .unwrap();
+                    let s = s.stdout;
+                    let s = std::str::from_utf8(s.as_ref()).unwrap();
+                    format!("{}", s)
+                })
+                .into_owned();
+        }
+    });
 }
 
 fn preprocess_grammar(book: &mut Book) {
