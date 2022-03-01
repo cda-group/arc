@@ -68,7 +68,7 @@ impl ArcLang {
 
 const KEYWORDS: &[&str] = &[
     "and", "or", "xor", "band", "bor", "bxor", "is", "not", "in", "class", "instance", "def",
-    "task", "on", "emit", "val", "var", "fun", "fun", "unit", "mod",
+    "task", "on", "emit", "val", "var", "fun", "fun", "unit", "mod", "extern",
 ];
 
 impl Preprocessor for ArcLang {
