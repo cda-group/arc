@@ -1,4 +1,24 @@
 #!/bin/bash
 
+ARGS=()
+
+while test $# -gt 0
+do
+  if [ $1 = "--build-dir" ]
+  then
+    BUILD_DIR=$2
+    shift
+  else
+    ARGS+=($1)
+  fi
+  shift
+done
+
 eval $(opam env)
-exec dune "$@"
+
+if [ $BUILD_DIR = "" ]
+then
+  exec dune "${ARGS[@]}"
+else
+  (cd $BUILD_DIR; exec dune "${ARGS[@]}")
+fi
