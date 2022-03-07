@@ -12,6 +12,6 @@ add_mlir_dialect_library(RustDialect
 target_link_libraries(RustDialect
   PUBLIC
   MLIRIR
-  MLIRStandard
+  MLIRFunc
   LLVMSupport
 )

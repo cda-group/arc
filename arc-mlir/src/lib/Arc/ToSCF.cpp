@@ -315,7 +315,7 @@ private:
           buildBranchTo(br.getFalseDest(), br.getFalseDestOperands(),
                         block2variantStruct, block2variantName,
                         block2live2Field, stateTy, map, f->getLoc(), rewriter);
-        } else if (ReturnOp r = dyn_cast<ReturnOp>(op)) {
+        } else if (func::ReturnOp r = dyn_cast<func::ReturnOp>(op)) {
           SmallVector<Value, 1> values;
 
           if (r.getNumOperands())
@@ -335,9 +335,9 @@ private:
     if (f.getType().getNumResults()) {
       Value r = rewriter.create<arc::EnumAccessOp>(
           f.getLoc(), funReturnTy, loop.getResult(0), returnValueVariantName);
-      rewriter.create<ReturnOp>(f.getLoc(), r);
+      rewriter.create<func::ReturnOp>(f.getLoc(), r);
     } else
-      rewriter.create<ReturnOp>(f.getLoc());
+      rewriter.create<func::ReturnOp>(f.getLoc());
 
     // Remove all basic blocks from the original function, only
     // leaving the new entry block.

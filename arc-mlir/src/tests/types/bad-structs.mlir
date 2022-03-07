@@ -32,7 +32,7 @@ module @toplevel {
 module @toplevel {
   func @fail4(%in : !arc.struct<foo : i32, bar : f32>) -> !arc.struct<foo : i32, baz : f32> {
   // expected-error@+2 {{type of return operand 0 ('!arc.struct<foo : i32, bar : f32>') doesn't match function result type ('!arc.struct<foo : i32, baz : f32>')}}
-  // expected-note@+1 {{see current operation: "std.return"(%arg0) : (!arc.struct<foo : i32, bar : f32>) -> ()}}
+  // expected-note@+1 {{see current operation: "func.return"(%arg0) : (!arc.struct<foo : i32, bar : f32>) -> ()}}
     return %in : !arc.struct<foo : i32, bar : f32>
   }
 }

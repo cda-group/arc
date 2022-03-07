@@ -82,7 +82,7 @@ int main(int argc, char **argv) {
   mlir::registerAllPasses();
 
   mlir::DialectRegistry registry;
-  registry.insert<mlir::StandardOpsDialect>();
+  registry.insert<func::FuncDialect>();
   registry.insert<arith::ArithmeticDialect>();
   registry.insert<math::MathDialect>();
   registry.insert<scf::SCFDialect>();

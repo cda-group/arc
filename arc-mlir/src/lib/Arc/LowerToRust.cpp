@@ -71,13 +71,13 @@ struct ArcReturnOpLowering : public OpConversionPattern<ArcReturnOp> {
   };
 };
 
-struct ReturnOpLowering : public OpConversionPattern<mlir::ReturnOp> {
+struct ReturnOpLowering : public OpConversionPattern<func::ReturnOp> {
 
   ReturnOpLowering(MLIRContext *ctx, RustTypeConverter &typeConverter)
-      : OpConversionPattern<mlir::ReturnOp>(typeConverter, ctx, 1) {}
+      : OpConversionPattern<func::ReturnOp>(typeConverter, ctx, 1) {}
 
   LogicalResult
-  matchAndRewrite(mlir::ReturnOp op, OpAdaptor adaptor,
+  matchAndRewrite(func::ReturnOp op, OpAdaptor adaptor,
                   ConversionPatternRewriter &rewriter) const final {
     rewriter.replaceOpWithNewOp<rust::RustReturnOp>(
         op, llvm::None,
@@ -149,13 +149,13 @@ struct SCFLoopYieldOpLowering : public OpConversionPattern<scf::YieldOp> {
   };
 };
 
-struct StdCallOpLowering : public OpConversionPattern<CallOp> {
+struct StdCallOpLowering : public OpConversionPattern<func::CallOp> {
   StdCallOpLowering(MLIRContext *ctx, RustTypeConverter &typeConverter)
-      : OpConversionPattern<CallOp>(typeConverter, ctx, 1),
+      : OpConversionPattern<func::CallOp>(typeConverter, ctx, 1),
         TypeConverter(typeConverter) {}
 
   LogicalResult
-  matchAndRewrite(CallOp o, OpAdaptor adaptor,
+  matchAndRewrite(func::CallOp o, OpAdaptor adaptor,
                   ConversionPatternRewriter &rewriter) const final {
     SmallVector<Type, 4> resultTypes;
     for (auto r : o.getResultTypes())
@@ -169,13 +169,14 @@ private:
   RustTypeConverter &TypeConverter;
 };
 
-struct StdCallIndirectOpLowering : public OpConversionPattern<CallIndirectOp> {
+struct StdCallIndirectOpLowering
+    : public OpConversionPattern<func::CallIndirectOp> {
   StdCallIndirectOpLowering(MLIRContext *ctx, RustTypeConverter &typeConverter)
-      : OpConversionPattern<CallIndirectOp>(typeConverter, ctx, 1),
+      : OpConversionPattern<func::CallIndirectOp>(typeConverter, ctx, 1),
         TypeConverter(typeConverter) {}
 
   LogicalResult
-  matchAndRewrite(CallIndirectOp o, OpAdaptor adaptor,
+  matchAndRewrite(func::CallIndirectOp o, OpAdaptor adaptor,
                   ConversionPatternRewriter &rewriter) const final {
     SmallVector<Type, 4> resultTypes;
     for (auto r : o.getResultTypes())
@@ -275,14 +276,14 @@ private:
   }
 };
 
-struct StdConstantOpLowering : public OpConversionPattern<mlir::ConstantOp> {
+struct StdConstantOpLowering : public OpConversionPattern<func::ConstantOp> {
 
   StdConstantOpLowering(MLIRContext *ctx, RustTypeConverter &typeConverter)
-      : OpConversionPattern<mlir::ConstantOp>(typeConverter, ctx, 1),
+      : OpConversionPattern<func::ConstantOp>(typeConverter, ctx, 1),
         TypeConverter(typeConverter) {}
 
   LogicalResult
-  matchAndRewrite(mlir::ConstantOp cOp, OpAdaptor adaptor,
+  matchAndRewrite(func::ConstantOp cOp, OpAdaptor adaptor,
                   ConversionPatternRewriter &rewriter) const final {
     Attribute attr = cOp.getValueAttr();
     if (attr.isa<SymbolRefAttr>())
@@ -300,7 +301,7 @@ private:
     return success();
   }
 
-  LogicalResult convertSymbolRef(mlir::ConstantOp op,
+  LogicalResult convertSymbolRef(func::ConstantOp op,
                                  ConversionPatternRewriter &rewriter) const {
     SymbolRefAttr attr = op.getValueAttr().cast<SymbolRefAttr>();
     Operation *refOp =

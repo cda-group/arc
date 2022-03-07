@@ -93,9 +93,9 @@ LogicalResult IfLowering::matchAndRewrite(arc::IfOp ifOp,
   if (isa<arc::LoopBreakOp>(thenTerminator)) {
     // Leave it in, the while lowering will remove it
   } else if (isa<arc::ArcReturnOp>(thenTerminator) ||
-             isa<ReturnOp>(thenTerminator)) {
-    rewriter.create<ReturnOp>(loc, thenTerminator->getResultTypes(),
-                              thenTerminatorOperands);
+             isa<func::ReturnOp>(thenTerminator)) {
+    rewriter.create<func::ReturnOp>(loc, thenTerminator->getResultTypes(),
+                                    thenTerminatorOperands);
     rewriter.eraseOp(thenTerminator);
   } else {
     rewriter.create<BranchOp>(loc, continueBlock, thenTerminatorOperands);
@@ -117,9 +117,9 @@ LogicalResult IfLowering::matchAndRewrite(arc::IfOp ifOp,
       // Leave it in, the while lowering will remove it
     }
     if (isa<arc::ArcReturnOp>(elseTerminator) ||
-        isa<ReturnOp>(elseTerminator)) {
-      rewriter.create<ReturnOp>(loc, elseTerminator->getResultTypes(),
-                                elseTerminatorOperands);
+        isa<func::ReturnOp>(elseTerminator)) {
+      rewriter.create<func::ReturnOp>(loc, elseTerminator->getResultTypes(),
+                                      elseTerminatorOperands);
       rewriter.eraseOp(elseTerminator);
     } else {
       rewriter.create<BranchOp>(loc, continueBlock, elseTerminatorOperands);
@@ -139,7 +139,7 @@ LogicalResult IfLowering::matchAndRewrite(arc::IfOp ifOp,
 LogicalResult
 ArcReturnLowering::matchAndRewrite(ArcReturnOp op,
                                    PatternRewriter &rewriter) const {
-  rewriter.replaceOpWithNewOp<ReturnOp>(op, op.operands());
+  rewriter.replaceOpWithNewOp<func::ReturnOp>(op, op.operands());
   return success();
 }
 
