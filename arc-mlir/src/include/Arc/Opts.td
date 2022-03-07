@@ -24,7 +24,7 @@
 #define ARC_OPTS
 
 #ifndef STANDARD_OPS
-include "../../mlir/include/mlir/Dialect/StandardOps/IR/Ops.td"
+include "../../mlir/include/mlir/Dialect/Func/IR/FuncOps.td"
 include "../../mlir/include/mlir/Dialect/Arithmetic/IR/ArithmeticOps.td"
 #endif // STANDARD_OPS
 

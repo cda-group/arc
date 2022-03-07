@@ -23,7 +23,7 @@ def LowerToRust : Pass<"arc-to-rust", "ModuleOp"> {
   let dependentDialects = [
         "arc::ArcDialect",
         "rust::RustDialect",
-        "StandardOpsDialect"
+        "mlir::func::FuncDialect"
   ];
 }
 
@@ -33,7 +33,7 @@ def RemoveSCF : Pass<"remove-scf", "FuncOp"> {
 
   let dependentDialects = [
         "arc::ArcDialect",
-        "StandardOpsDialect"
+        "mlir::func::FuncDialect"
   ];
 }
 
@@ -43,7 +43,7 @@ def ToSCF : Pass<"to-scf", "ModuleOp"> {
 
   let dependentDialects = [
         "arc::ArcDialect",
-        "StandardOpsDialect"
+        "mlir::func::FuncDialect"
   ];
 }
 
@@ -53,7 +53,7 @@ def ToNonpersistent : Pass<"to-nonpersistent", "ModuleOp"> {
 
   let dependentDialects = [
         "arc::ArcDialect",
-        "StandardOpsDialect"
+        "mlir::func::FuncDialect"
   ];
 }
 

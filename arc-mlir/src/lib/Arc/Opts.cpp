@@ -24,7 +24,7 @@
 #include "Arc/Arc.h"
 #include <llvm/Support/raw_ostream.h>
 #include <mlir/Dialect/Arithmetic/IR/Arithmetic.h>
-#include <mlir/Dialect/StandardOps/IR/Ops.h>
+#include <mlir/Dialect/Func/IR/FuncOps.h>
 #include <mlir/IR/BlockAndValueMapping.h>
 #include <mlir/IR/Matchers.h>
 #include <mlir/IR/PatternMatch.h>
