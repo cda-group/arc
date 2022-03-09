@@ -3,7 +3,7 @@
 # Try to guess the location of the arc-mlir repository
 
 if [[ -z "$A2M" ]] ; then
-    A2M=$(realpath $(dirname "$(which "$0")")/)
+    A2M=$(realpath $(dirname "$(which "$0")")/arc-mlir)
     echo The arc-mlir repository is assumed to be at ${A2M}, override by setting A2M.
 else
     echo A2M is ${A2M}

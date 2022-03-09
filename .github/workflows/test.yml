@@ -33,7 +33,7 @@ jobs:
       run: ./.github/continuous-integration.sh check-ccache
 
     - name: Build MLIR + LLVM + arc-lang
-      run: ./.github/continuous-integration.sh run-mlir-build
+      run: ./.github/continuous-integration.sh run-build
       env:
         A2M_BUILD: ${{ format('{0}/build', runner.temp) }}
 
