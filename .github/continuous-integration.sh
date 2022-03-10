@@ -50,10 +50,8 @@ function check-ccache {
     sccache --show-stats
 }
 
-function run-mlir-build {
-    cd arc-mlir
-    A2M_CCACHE="1" BUILD_FLAVOUR="Release" A2M_ASSERTS="1" \
-	      run-step ./arc-mlir-build
+function run-build {
+    A2M_CCACHE="1" BUILD_FLAVOUR="Release" A2M_ASSERTS="1" run-step ./build
 }
 
 function run-mlir-tests {
@@ -74,8 +72,8 @@ case $1 in
 	check-cargo
 	;;
 
-    run-mlir-build)
-	run-mlir-build
+    run-build)
+	run-build
 	;;
 
     run-mlir-tests)

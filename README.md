@@ -56,17 +56,9 @@ Note: All features have not yet been implemented :)
 
 ```bash
 git clone git@github.com:cda-group/arc.git
-
 cd arc/
-
-# Fetch LLVM
 git submodule update --init --recursive
-
-# Build
-./arc-mlir/arc-mlir-build
-
-# Run tests
-ninja -C ./arc-mlir/build/llvm-build/ check-arc-mlir
+./build
 ```
 
 ## Documentation
