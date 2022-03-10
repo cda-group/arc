@@ -5,8 +5,9 @@ set -e
 usage () {
   echo "Usage: $0 [OPTIONS] [check|build|run] <INPUT-FILE> [-- <MLIR-OPTS>]"
   echo "Options:"
-  echo "  -h       Show this help message"
-  echo "  -o <DIR> Output directory (defaults to ./target/)"
+  echo "  -h          Show this help message"
+  echo "  -o <DIR>    Output crate directory"
+  echo "  -t <DIR>    Output crate target directory"
   exit 0
 }
 
@@ -20,7 +21,9 @@ else
   }
 fi
 
-while getopts ho: opt; do
+CARGO_FLAGS=()
+
+while getopts ho:t: opt; do
     case $opt in
         h)
             usage
@@ -28,7 +31,10 @@ while getopts ho: opt; do
         o)
             CRATE_DIR="$OPTARG"
             ;;
-        \?)
+        t)
+            CRATE_TARGET_DIR="$OPTARG"
+            ;;
+        *)
             echo "Invalid option: $OPTARG" >&2
             usage
             exit 1
@@ -36,33 +42,16 @@ while getopts ho: opt; do
     esac
 done
 
+if [ ! -z "$CRATE_TARGET_DIR" ]; then
+    CARGO_FLAGS+=("--target-dir=$CRATE_TARGET_DIR")
+fi
+
 shift "$((OPTIND - 1))"
 
-debug "Parsed options"
-
-while [[ $# -gt 0 ]]; do
+if [ $# -gt 0 ]; then
     case $1 in
-        --)
-            shift
-            break
-            ;;
-        check)
-            CARGO_MODE=check
-            INPUT_FILE="$(realpath $2)"
-            shift 3
-            break
-            ;;
-        build)
-            CARGO_MODE=build
-            INPUT_FILE="$(realpath $2)"
-            shift 3
-            break
-            ;;
-        run)
-            CARGO_MODE=run
-            INPUT_FILE="$(realpath $2)"
-            shift 3
-            break
+        check|build|run)
+            CARGO_MODE="$1"
             ;;
         *)
             echo "Invalid subcommand: $1" >&2
@@ -70,12 +59,14 @@ while [[ $# -gt 0 ]]; do
             exit 1
             ;;
     esac
-done
+    shift
+else
+    echo "No subcommand specified" >&2
+    usage
+fi
 
-debug "Parsed subcommand"
-debug "MLIR args: $@"
+debug "CARGO_MODE: $CARGO_MODE"
 
-# Find root directory (borrowed from https://github.com/frej/fast-export/blob/dbb8158527719e67874e0bba37970e48e1aaedfb/hg-fast-export.sh#L6)
 READLINK="readlink"
 if command -v greadlink > /dev/null; then
   READLINK="greadlink" # Prefer greadlink over readlink
@@ -83,6 +74,33 @@ fi
 
 debug "READLINK: $READLINK"
 
+if [[ $# -gt 0 ]]; then
+    export INPUT_FILE="$($READLINK -f "$1")"
+    shift
+else
+    echo "No input file specified" >&2
+    usage
+    exit 1
+fi
+
+debug "INPUT_FILE: $INPUT_FILE"
+
+if [[ $# -gt 0 ]]; then
+    case $1 in
+        --)
+            shift
+            ;;
+        *)
+            echo "Found unexpected argument: $1" >&2
+            usage
+            exit 1
+            ;;
+    esac
+fi
+
+debug "MLIR args: $@"
+
+# Find root directory (borrowed from https://github.com/frej/fast-export/blob/dbb8158527719e67874e0bba37970e48e1aaedfb/hg-fast-export.sh#L6)
 if ! $READLINK -f "$(which "$0")" > /dev/null 2>&1; then
     ROOT="$(dirname "$(which "$0")")"
 else
@@ -91,7 +109,7 @@ fi
 
 debug "ROOT: $ROOT"
 
-CRATE_NAME="$(basename "$INPUT_FILE" .arc)-crate"
+export CRATE_NAME="$(basename "$INPUT_FILE" .arc)-crate"
 debug "CRATE_NAME: $CRATE_NAME"
 
 if [ -z "$INPUT_FILE" ]; then
@@ -110,6 +128,8 @@ CRATE_TOML_FILE="$CRATE_DIR/Cargo.toml"
 debug "CRATE_DIR: $CRATE_DIR"
 debug "CRATE_MAIN_FILE: $CRATE_MAIN_FILE"
 debug "CRATE_TOML_FILE: $CRATE_TOML_FILE"
+
+CARGO_FLAGS+=("--manifest-path=$CRATE_TOML_FILE")
 
 if [ -z "$ARC_LANG" ]; then
     ARC_LANG="$ROOT/arc-mlir/build/llvm-build/bin/arc-lang"
@@ -132,7 +152,7 @@ fi
 debug "ARC_MLIR: $ARC_MLIR"
 
 if [ -z "$ARC_RUNTIME_DIR" ]; then
-    ARC_RUNTIME_DIR="$ROOT/arc-runtime/"
+    export ARC_RUNTIME_DIR="$ROOT/arc-runtime/"
 fi
 
 debug "ARC_RUNTIME_DIR: $ARC_RUNTIME_DIR"
@@ -140,39 +160,36 @@ debug "ARC_RUNTIME_DIR: $ARC_RUNTIME_DIR"
 mkdir -p "$CRATE_DIR/src"
 
 # Create the Cargo.toml
-envsubst > "$CRATE_DIR/Cargo.toml" <<'EOF'
+envsubst > "$CRATE_TOML_FILE" <<'EOF'
 [package]
-name        = "$CRATE_NAME"
-version     = "0.0.0"
-edition     = "2021"
-license     = "MIT"
-description = "Generic MLIR-to-Rust test case"
+name    = "$CRATE_NAME"
+version = "0.0.0"
+edition = "2021"
 
 [dependencies]
-arc-runtime = { version = "=0.0.0", path = "$ARC_RUNTIME_DIR", features = ["legacy"] }
+arc-runtime = { version = "=0.0.0", path = "$ARC_RUNTIME_DIR" }
 hexf        = { version = "0.2.1" }
-ndarray     = { version = "0.13.0" }
-prost       = { version = "0.7.0" }
+serde       = { version = "1.0.136" }
 
 [profile.dev]
-debug = false
+opt-level = 0
+split-debuginfo = "unpacked"
 EOF
 
-debug "Cargo.toml: $(cat "$CRATE_DIR/Cargo.toml")"
+[ "$ARC_DEBUG" ] && echo "$CRATE_TOML_FILE: " && cat "$CRATE_TOML_FILE"
 
-echo '#![feature(unboxed_closures)]' > "$CRATE_MAIN_FILE"
+envsubst > "$CRATE_MAIN_FILE" <<'EOF'
+// Generated source for $INPUT_FILE
+#![feature(unboxed_closures)]
+#![feature(imported_main)]
+EOF
+
 "$ARC_LANG" "$INPUT_FILE" | "$ARC_MLIR" "$@" -arc-to-rust -inline-rust -arc-lang-runtime >> "$CRATE_MAIN_FILE"
 
-case "$CARGO_MODE" in
-    check)
-        cargo check --manifest-path "$CRATE_TOML_FILE"
-        ;;
-    build)
-        cargo build --manifest-path "$CRATE_TOML_FILE"
-        ;;
-    run)
-        cargo run --manifest-path "$CRATE_TOML_FILE"
-        ;;
-esac
+echo 'fn main() { toplevel::main() }' >> "$CRATE_MAIN_FILE"
 
-[ "$ARC_DEBUG" ] && echo "Generated code: " && cat "$CRATE_MAIN_FILE"
+[ "$ARC_DEBUG" ] && echo "$CRATE_MAIL_FILE: " && cat "$CRATE_MAIN_FILE"
+
+debug "CARGO_FLAGS: $CARGO_FLAGS"
+
+cargo "$CARGO_MODE" "${CARGO_FLAGS[@]}"
