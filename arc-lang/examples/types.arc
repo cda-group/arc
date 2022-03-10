@@ -2,7 +2,7 @@
 # RUN: arc-lang %s | arc-mlir-rust-test %t - -rustinclude %s.rust-tests
 # RUN: arc-lang %s | arc-mlir-rust-test %t-canon - -rustinclude %s.rust-tests -canonicalize
 
-extern def test(
+extern def main(
 # ANCHOR: record
 #{x:i32, y:str} # Record-type
 # ANCHOR_END: record

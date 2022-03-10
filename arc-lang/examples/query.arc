@@ -23,3 +23,5 @@ def test1(s: Stream[#{k:i32,v:i32}]) =
             count = count
     }
 # ANCHOR_END: explicit
+
+def main() {}

@@ -13,7 +13,7 @@ def area(shape) = match shape {
     Shape::Circle(radius) => 3.14 * radius ** 2
 }
 
-def test() {
+def main() {
     val a0 = area(Shape::Rectangle(5.0, 3.0));
     val a1 = area(Shape::Circle(3.0));
 }

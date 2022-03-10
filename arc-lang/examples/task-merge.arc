@@ -13,7 +13,7 @@ task merge(s0, s1, f): (s2) {
     }
 }
 
-def test() {
+def main() {
     val stream0 = read_numbers_stream();
     val stream1 = read_numbers_stream();
     val stream2 = merge(stream0, stream1, (+));

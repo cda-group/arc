@@ -9,3 +9,5 @@ def test(i) {
     }
 }
 # ANCHOR_END: example
+
+def main() {}

@@ -16,3 +16,5 @@ mod foo {
 def relative() = foo::bar::baz
 def absolute() = ::foo::bar::baz
 # ANCHOR_END: example
+
+def main() {}

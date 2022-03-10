@@ -5,7 +5,7 @@
 # ANCHOR: example
 val pi = 3.14;
 
-def test() {
+def main() {
     val x = pi * 2.0;
 }
 # ANCHOR_END: example

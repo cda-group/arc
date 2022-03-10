@@ -5,7 +5,7 @@
 # ANCHOR: example
 def area(shape) = shape.x * shape.y
 
-def test() {
+def main() {
     val line = #{x:5};
     val rect = #{y:10|line};
     val cube = #{z:20|rect};

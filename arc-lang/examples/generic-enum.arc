@@ -8,7 +8,7 @@ enum Option[T] {
     None
 }
 
-def test() {
+def main() {
 
     match Option::Some(5) {
         Option::Some(x) => assert(x == 5),

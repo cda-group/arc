@@ -5,5 +5,5 @@
 # Binary operators can be lifted into functions.
 def apply(binop, l, r) = binop(l, r)
 
-def test() = apply((+), 1, 3)
+def main() = apply((+), 1, 3)
 # ANCHOR_END: example

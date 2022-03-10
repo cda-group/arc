@@ -8,3 +8,5 @@ def bar() {
     3
 }
 # ANCHOR_END: example
+
+def main() {}

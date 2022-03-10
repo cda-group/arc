@@ -15,3 +15,7 @@ def fib(n) {
     return a;
 }
 # ANCHOR_END: example
+
+def main() = {
+    fib(10);
+}

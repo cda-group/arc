@@ -10,8 +10,6 @@ class Add<T> {
 
 # ANCHOR: instance
 instance Add<#{sum:i32}> {
-    def add(l, r) {
-        #{sum: l.sum + r.sum}
-    }
+    def add(l, r) = #{sum: l.sum + r.sum}
 }
 # ANCHOR_END: instance

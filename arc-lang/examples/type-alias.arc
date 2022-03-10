@@ -15,7 +15,7 @@ def length(line) {
     sqrt(a**2 + b**2)
 }
 
-def test() {
+def main() {
     val p0 = {x:0, y:1};
     val p1 = {x:5, y:9};
     val line = {start:p0, end:p1};

@@ -5,7 +5,7 @@
 # ANCHOR: example
 # Lambdas can both capture their environment and be passed around as values.
 
-def test() {
+def main() {
     val a = 1;
     val b = 2;
     val x = fun(c) = a + b + c;
