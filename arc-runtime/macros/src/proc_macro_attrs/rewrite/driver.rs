@@ -44,7 +44,7 @@ pub(crate) fn rewrite(_attr: syn::AttributeArgs, item: syn::ItemFn) -> pm::Token
             }
         }
 
-        fn #id() {
+        pub fn #id() {
             let system = KompactConfig::default().build().unwrap();
             let component = system.create(move || #component_id::new());
             system.start(&component);
