@@ -124,6 +124,7 @@ fi
 
 CRATE_MAIN_FILE="$CRATE_DIR/src/main.rs"
 CRATE_TOML_FILE="$CRATE_DIR/Cargo.toml"
+CRATE_MLIR_FILE="$CRATE_DIR/src/main.mlir"
 
 debug "CRATE_DIR: $CRATE_DIR"
 debug "CRATE_MAIN_FILE: $CRATE_MAIN_FILE"
@@ -184,7 +185,11 @@ envsubst > "$CRATE_MAIN_FILE" <<'EOF'
 #![feature(imported_main)]
 EOF
 
-"$ARC_LANG" "$INPUT_FILE" | "$ARC_MLIR" "$@" -arc-to-rust -inline-rust -arc-lang-runtime >> "$CRATE_MAIN_FILE"
+"$ARC_LANG" "$INPUT_FILE" > "$CRATE_MLIR_FILE"
+  
+[ "$ARC_DEBUG" ] && echo "$CRATE_MLIR_FILE: " && cat "$CRATE_MLIR_FILE"
+
+"$ARC_MLIR" "$CRATE_MLIR_FILE" "$@" -arc-to-rust -inline-rust -arc-lang-runtime >> "$CRATE_MAIN_FILE"
 
 echo 'fn main() { toplevel::main() }' >> "$CRATE_MAIN_FILE"
 
