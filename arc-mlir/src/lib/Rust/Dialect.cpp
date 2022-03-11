@@ -407,7 +407,7 @@ void RustFuncOp::writeRust(RustPrinterStream &PS) {
 
   PS << "// " << (isMethod ? "Method" : "") << "\n";
   if (useArclangRuntime) {
-    if ((*this)->hasAttr("arc.annotation"))
+    if ((*this)->hasAttr("rust.annotation"))
       PS << (*this)->getAttrOfType<StringAttr>("rust.annotation").getValue()
          << "\n";
     else
