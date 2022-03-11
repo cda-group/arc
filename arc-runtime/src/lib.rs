@@ -65,7 +65,6 @@ pub mod prelude {
     pub use crate::access;
     pub use crate::convert_reflexive;
     pub use crate::declare_functions;
-    pub use crate::fun_type;
     pub use crate::function;
     pub use crate::letroot;
     pub use crate::val;

@@ -47,14 +47,6 @@ macro_rules! access {
     };
 }
 
-/// Construct a new function type.
-#[macro_export]
-macro_rules! fun_type {
-    (($($inputs:ty),+) -> $output:ty) => {
-        fn($($inputs),+) -> $output
-    }
-}
-
 #[macro_export]
 macro_rules! letroot {
     ($var_name:ident : $t:ty  = $stack:expr, $value:expr) => {
@@ -101,7 +93,7 @@ macro_rules! letroot {
 
 #[macro_export]
 macro_rules! _vector {
-    ([$($x:expr),+], $ctx:expr) => {{
+    ([$($x:expr),* $(,)?], $ctx:expr) => {{
         let stack = $ctx.mutator().shadow_stack();
         letroot!(vec = stack, Some(Vec::new($ctx)));
 

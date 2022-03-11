@@ -8,7 +8,7 @@ use std::ptr::NonNull;
 
 #[macro_export]
 macro_rules! declare_functions {
-    ($($id:ident),*) => {
+    ($($id:ident),* $(,)?) => {
         #[derive(Send, Sync, Unpin, Collectable, Finalize, NoTrace)]
         pub struct Function<I: 'static, O: 'static> {
             pub ptr: fn(I, Context) -> O,
