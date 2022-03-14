@@ -47,10 +47,6 @@ while getopts ho:t:r opt; do
     esac
 done
 
-if [ ! -z "$CRATE_TARGET_DIR" ]; then
-    CARGO_FLAGS+=("--target-dir=$CRATE_TARGET_DIR")
-fi
-
 if [ -z "$COMPILE_MODE" ]; then
     COMPILE_MODE="debug"
 fi
@@ -131,6 +127,10 @@ if [ -z "$CRATE_DIR" ]; then
     CRATE_DIR="$(dirname "$INPUT_FILE")/$CRATE_NAME"
 fi
 
+if [ -z "$CRATE_TARGET_DIR" ]; then
+    CRATE_TARGET_DIR="$CRATE_DIR/target"
+fi
+
 CRATE_MAIN_FILE="$CRATE_DIR/src/main.rs"
 CRATE_TOML_FILE="$CRATE_DIR/Cargo.toml"
 CRATE_MLIR_FILE="$CRATE_DIR/src/main.mlir"
@@ -140,6 +140,7 @@ debug "CRATE_MAIN_FILE: $CRATE_MAIN_FILE"
 debug "CRATE_TOML_FILE: $CRATE_TOML_FILE"
 
 CARGO_FLAGS+=("--manifest-path=$CRATE_TOML_FILE")
+CARGO_FLAGS+=("--target-dir=$CRATE_TARGET_DIR")
 
 if [ -z "$ARC_LANG" ]; then
     ARC_LANG="$ROOT/arc-mlir/build/llvm-build/bin/arc-lang"
