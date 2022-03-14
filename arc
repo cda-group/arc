@@ -8,6 +8,7 @@ usage () {
   echo "  -h          Show this help message"
   echo "  -o <DIR>    Output crate directory"
   echo "  -t <DIR>    Output crate target directory"
+  echo "  -r          Compile in release mode"
   exit 0
 }
 
@@ -23,7 +24,7 @@ fi
 
 CARGO_FLAGS=()
 
-while getopts ho:t: opt; do
+while getopts ho:t:r opt; do
     case $opt in
         h)
             usage
@@ -33,6 +34,10 @@ while getopts ho:t: opt; do
             ;;
         t)
             CRATE_TARGET_DIR="$OPTARG"
+            ;;
+        r)
+            COMPILE_MODE="release"
+            CARGO_FLAGS+=("--release")
             ;;
         *)
             echo "Invalid option: $OPTARG" >&2
@@ -44,6 +49,10 @@ done
 
 if [ ! -z "$CRATE_TARGET_DIR" ]; then
     CARGO_FLAGS+=("--target-dir=$CRATE_TARGET_DIR")
+fi
+
+if [ -z "$COMPILE_MODE" ]; then
+    COMPILE_MODE="debug"
 fi
 
 shift "$((OPTIND - 1))"
