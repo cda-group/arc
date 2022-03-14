@@ -162,11 +162,24 @@ fi
 
 debug "ARC_MLIR: $ARC_MLIR"
 
-if [ -z "$ARC_RUNTIME_DIR" ]; then
-    export ARC_RUNTIME_DIR="$ROOT/arc-runtime/"
+# We could be running from either the installed location or the
+# build tree.
+INSTALLED_SHARED_DIR="$ROOT/../share/arc/"
+if [ -d "${INSTALLED_SHARED_DIR}" ]; then
+    # Looks like we are running from the installed location
+    export ARC_RUNTIME_SOURCE_DIR="${INSTALLED_SHARED_DIR}/arc-runtime"
+    export ARC_LANG_STDLIB_PATH="${INSTALLED_SHARED_DIR}/stdlib/stdlib.arc"
+    export ARC_MLIR_STDLIB_PATH="${INSTALLED_SHARED_DIR}/stdlib/stdlib.mlir"
+else
+    # We are running from the build tree
+    export ARC_RUNTIME_SOURCE_DIR="@ARC_RUNTIME_SRC_DIR@"
+    export ARC_LANG_STDLIB_PATH="@ARC_LANG_SRC_DIR@/stdlib/stdlib.arc"
+    export ARC_MLIR_STDLIB_PATH="@ARC_LANG_SRC_DIR@/stdlib/stdlib.mlir"
 fi
 
-debug "ARC_RUNTIME_DIR: $ARC_RUNTIME_DIR"
+debug "ARC_RUNTIME_SOURCE_DIR: $ARC_RUNTIME_SOURCE_DIR"
+debug "ARC_LANG_STDLIB_PATH: $ARC_LANG_STDLIB_PATH"
+debug "ARC_MLIR_STDLIB_PATH: $ARC_MLIR_STDLIB_PATH"
 
 mkdir -p "$CRATE_DIR/src"
 
