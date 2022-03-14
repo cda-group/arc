@@ -8,6 +8,7 @@ usage () {
   echo "  -h          Show this help message"
   echo "  -o <DIR>    Output crate directory"
   echo "  -t <DIR>    Output crate target directory"
+  echo "  -r          Compile in release mode"
   exit 0
 }
 
@@ -23,7 +24,7 @@ fi
 
 CARGO_FLAGS=()
 
-while getopts ho:t: opt; do
+while getopts ho:t:r opt; do
     case $opt in
         h)
             usage
@@ -34,6 +35,10 @@ while getopts ho:t: opt; do
         t)
             CRATE_TARGET_DIR="$OPTARG"
             ;;
+        r)
+            COMPILE_MODE="release"
+            CARGO_FLAGS+=("--release")
+            ;;
         *)
             echo "Invalid option: $OPTARG" >&2
             usage
@@ -42,8 +47,8 @@ while getopts ho:t: opt; do
     esac
 done
 
-if [ ! -z "$CRATE_TARGET_DIR" ]; then
-    CARGO_FLAGS+=("--target-dir=$CRATE_TARGET_DIR")
+if [ -z "$COMPILE_MODE" ]; then
+    COMPILE_MODE="debug"
 fi
 
 shift "$((OPTIND - 1))"
@@ -109,7 +114,7 @@ fi
 
 debug "ROOT: $ROOT"
 
-export CRATE_NAME="$(basename "$INPUT_FILE" .arc)-crate"
+export CRATE_NAME="$(basename "$INPUT_FILE" .arc)"
 debug "CRATE_NAME: $CRATE_NAME"
 
 if [ -z "$INPUT_FILE" ]; then
@@ -119,7 +124,11 @@ fi
 debug "INPUT_FILE: $INPUT_FILE"
 
 if [ -z "$CRATE_DIR" ]; then
-    CRATE_DIR="$(dirname "$INPUT_FILE")/$CRATE_NAME"
+    CRATE_DIR="$(dirname "$INPUT_FILE")/$CRATE_NAME.crate"
+fi
+
+if [ -z "$CRATE_TARGET_DIR" ]; then
+    CRATE_TARGET_DIR="$CRATE_DIR/target"
 fi
 
 CRATE_MAIN_FILE="$CRATE_DIR/src/main.rs"
@@ -131,6 +140,7 @@ debug "CRATE_MAIN_FILE: $CRATE_MAIN_FILE"
 debug "CRATE_TOML_FILE: $CRATE_TOML_FILE"
 
 CARGO_FLAGS+=("--manifest-path=$CRATE_TOML_FILE")
+CARGO_FLAGS+=("--target-dir=$CRATE_TARGET_DIR")
 
 if [ -z "$ARC_LANG" ]; then
     ARC_LANG="$ROOT/arc-mlir/build/llvm-build/bin/arc-lang"
