@@ -143,9 +143,9 @@ CARGO_FLAGS+=("--manifest-path=$CRATE_TOML_FILE")
 CARGO_FLAGS+=("--target-dir=$CRATE_TARGET_DIR")
 
 if [ -z "$ARC_LANG" ]; then
-    ARC_LANG="$ROOT/arc-mlir/build/llvm-build/bin/arc-lang"
+    ARC_LANG="$ROOT/arc-lang"
     if [ ! -f "$ARC_LANG" ]; then
-        echo "Could not find arc-lang. Did you run \'$ARC_DIR./build\'?"
+        echo "Could not find arc-lang."
         exit 1
     fi
 fi
@@ -153,9 +153,9 @@ fi
 debug "ARC_LANG: $ARC_LANG"
 
 if [ -z "$ARC_MLIR" ]; then
-    ARC_MLIR="$ROOT/arc-mlir/build/llvm-build/bin/arc-mlir"
+    ARC_MLIR="$ROOT/arc-mlir"
     if [ ! -f "$ARC_LANG" ]; then
-        echo "Could not find arc-mlir. Did you run './build'?"
+        echo "Could not find arc-mlir."
         exit 1
     fi
 fi
@@ -172,19 +172,7 @@ mkdir -p "$CRATE_DIR/src"
 
 # Create the Cargo.toml
 envsubst > "$CRATE_TOML_FILE" <<'EOF'
-[package]
-name    = "$CRATE_NAME"
-version = "0.0.0"
-edition = "2021"
-
-[dependencies]
-arc-runtime = { version = "=0.0.0", path = "$ARC_RUNTIME_DIR" }
-hexf        = { version = "0.2.1" }
-serde       = { version = "1.0.136" }
-
-[profile.dev]
-opt-level = 0
-split-debuginfo = "unpacked"
+@CARGO_TOML_TEMPLATE@
 EOF
 
 [ "$ARC_DEBUG" ] && echo "$CRATE_TOML_FILE: " && cat "$CRATE_TOML_FILE"

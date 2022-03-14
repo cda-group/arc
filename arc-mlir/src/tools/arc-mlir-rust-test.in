@@ -17,7 +17,7 @@ MAIN="${WORK_DIR}/src/main.rs"
 TEST_NAME=$(basename ${WORK_DIR})
 TEST_NAME=${TEST_NAME//.mlir.tmp/}
 TEST_NAME=${TEST_NAME//.arc.tmp/}
-export TEST_NAME=${TEST_NAME//-/_}
+export CRATE_NAME=${TEST_NAME//-/_}
 
 CARGO_DEP_FRAGMENT="${MLIR_FILE%.mlir}.cargo-dep"
 echo "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
@@ -39,24 +39,7 @@ mkdir -p ${WORK_DIR}/src
 
 # Create the Cargo.toml
 envsubst > ${WORK_DIR}/Cargo.toml <<'EOF'
-[package]
-name        = "${TEST_NAME}"
-version     = "0.0.0"
-authors     = ["The arc-mlir testing gnome"]
-edition     = "2021"
-license     = "MIT"
-description = "Generic MLIR-to-Rust test case"
-
-[dependencies]
-arc-runtime         = { version = "=0.0.0", path = "${ARC_RUNTIME_SOURCE_DIR}", features = ["legacy"] }
-hexf                = { version = "0.2.1" }
-ndarray             = { version = "0.13.0" }
-prost               = { version = "0.7.0" }
-serde               = { version = "1.0.136" }
-
-[profile.dev]
-debug = false
-
+@CARGO_TOML_TEMPLATE@
 EOF
 
 # Allow a test to include extra dependencies in the Cargo.toml
