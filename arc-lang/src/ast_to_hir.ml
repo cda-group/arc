@@ -493,7 +493,7 @@ and lower_arg_expr (e:Ast.expr) ctx =
   let (vs, ctx) = ctx |> Ctx.pop_ascope in
   match vs with
   | [] ->
-      let ctx = ctx |> Ctx.add_stmts ss in
+      let ctx = ctx |> Ctx.add_stmts (ss |> List.rev) in
       (v, ctx)
   | vs ->
       let (ps, ctx) = vs |> mapm (fun v ctx ->
