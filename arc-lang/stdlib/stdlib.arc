@@ -195,7 +195,32 @@ extern type char;
 # ANCHOR: string
 extern type String;
 
+@{mangled: "String_concat"}
 extern def concat(String, String): String;
+
+@{mangled: "String_with_capacity"}
+extern def str_with_capacity(u32): String;
+
+@{mangled: "String_push_char"}
+extern def push_char(String, char): String;
+
+@{mangled: "String_remove_char"}
+extern def remove_char(String, u32): char;
+
+@{mangled: "String_insert_char"}
+extern def insert_char(String, u32, char): char;
+
+@{mangled: "String_is_empty"}
+extern def is_empty_str(String): bool;
+
+@{mangled: "String_split_off"}
+extern def split_off(String, u32): String;
+
+@{mangled: "String_clear"}
+extern def clear_str(String);
+
+extern def str_eq(String, String): bool;
+
 # ANCHOR_END: string
 
 # ------------------------------------------------------
