@@ -70,6 +70,7 @@ tools = [
     'mlir-translate',
     'arc-mlir',
     'arc-lang',
+    'arc',
 ]
 
 llvm_config.add_tool_substitutions(tools, tool_dirs)
