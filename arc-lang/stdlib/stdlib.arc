@@ -185,6 +185,14 @@ extern def str_eq(String, String): bool;
 
 # ------------------------------------------------------
 
+extern def assert(bool);
+
+extern def print(String);
+
+extern def panic(String);
+
+# ------------------------------------------------------
+
 # ANCHOR: option
 enum Option[T] {
     Some(T),

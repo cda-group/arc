@@ -1,8 +1,10 @@
 use crate::context::Context;
 use crate::data::convert_reflexive;
 use crate::data::garbage::alloc_identity;
+use crate::data::strings::String;
+use crate::data::Alloc;
+use crate::data::DynSendable;
 use crate::data::DynSharable;
-use crate::prelude::*;
 
 pub use bool;
 pub use char;
@@ -58,3 +60,15 @@ alloc_identity!(unit);
 pub const unit: unit = ();
 #[allow(non_upper_case_globals)]
 pub const Unit: unit = ();
+
+pub fn assert(b: bool, _ctx: Context) {
+    assert!(b);
+}
+
+pub fn panic(s: String, _ctx: Context) {
+    panic!("{}", s.as_str())
+}
+
+pub fn print(s: String, _ctx: Context) {
+    println!("{}", s.as_str())
+}
