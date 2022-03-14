@@ -1,6 +1,9 @@
 use crate::context::Context;
 use crate::data::convert_reflexive;
 use crate::data::garbage::alloc_identity;
+use crate::data::strings::String;
+use crate::data::Alloc;
+use crate::data::DynSendable;
 use crate::data::DynSharable;
 use crate::prelude::*;
 

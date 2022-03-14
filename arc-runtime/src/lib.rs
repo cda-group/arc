@@ -61,6 +61,10 @@ pub mod prelude {
     pub use crate::runtime::Runtime;
     pub use crate::task::message::TaskMessage;
 
+    pub use crate::data::primitives::assert;
+    pub use crate::data::primitives::panic;
+    pub use crate::data::primitives::print;
+
     // Declarative macros
     pub use crate::access;
     pub use crate::convert_reflexive;

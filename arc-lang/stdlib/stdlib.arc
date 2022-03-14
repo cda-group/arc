@@ -200,6 +200,14 @@ extern def concat(String, String): String;
 
 # ------------------------------------------------------
 
+extern def assert(bool);
+
+extern def print(String);
+
+extern def panic(String);
+
+# ------------------------------------------------------
+
 # ANCHOR: option
 enum Option[T] {
     Some(T),
