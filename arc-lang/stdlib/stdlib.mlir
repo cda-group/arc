@@ -264,6 +264,11 @@ func @pow_f64(%a : f64, %b : f64) -> f64 attributes {rust.declare} {
 
 // Logical operations
 
+func @eq_i1(%a : i1, %b : i1) -> i1 attributes {rust.declare} {
+  %r = arith.cmpi "eq", %a, %b : i1
+  return %r : i1
+}
+
 func @and_i1(%arg0: i1, %arg1: i1) -> i1 attributes {rust.declare} {
   %0 = arith.andi %arg0, %arg1 : i1
   return %0 : i1

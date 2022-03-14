@@ -59,7 +59,7 @@ extern def band(i32, i32): bool;
 @{intrinsic: "neg_i32"}
 extern def neg(i32): i32;
 
-extern def to_string(i32): String;
+extern def i32_to_string(i32): String;
 
 # ------------------------------------------------------
 
@@ -75,14 +75,94 @@ extern type u16;
 @{intrinsic: "u64"}
 extern type u32;
 
-@{intrinsic: "u128"}
-extern type u64;
+@{intrinsic: "add_u32"}
+extern def +u32(u32, u32): u32;
+
+@{intrinsic: "sub_u32"}
+extern def -u32(u32, u32): u32;
+
+@{intrinsic: "mul_u32"}
+extern def *u32(u32, u32): u32;
+
+@{intrinsic: "div_u32"}
+extern def /u32(u32, u32): u32;
+
+@{intrinsic: "pow_u32"}
+extern def **u32(u32, u32): u32;
+
+@{intrinsic: "rem_u32"}
+extern def %u32(u32, u32): u32;
+
+@{intrinsic: "eq_u32"}
+extern def ==u32(u32, u32): bool;
+
+@{intrinsic: "geq_u32"}
+extern def >=u32(u32, u32): bool;
+
+@{intrinsic: "leq_u32"}
+extern def <=u32(u32, u32): bool;
+
+@{intrinsic: "gt_u32"}
+extern def >u32(u32, u32): bool;
+
+@{intrinsic: "lt_u32"}
+extern def <u32(u32, u32): bool;
+
+@{intrinsic: "neg_u32"}
+extern def negu32(u32): u32;
+
+# ------------------------------------------------------
 
 @{intrinsic: "u64"}
+extern type u64;
+
+@{intrinsic: "u128"}
 extern type u128;
+
+# ------------------------------------------------------
 
 @{intrinsic: "f32"}
 extern type f32;
+
+@{intrinsic: "add_f32"}
+extern def +f32(f32, f32): f32;
+
+@{intrinsic: "sub_f32"}
+extern def -f32(f32, f32): f32;
+
+@{intrinsic: "mul_f32"}
+extern def *f32(f32, f32): f32;
+
+@{intrinsic: "div_f32"}
+extern def /f32(f32, f32): f32;
+
+@{intrinsic: "pow_f32"}
+extern def **f32(f32, f32): f32;
+
+@{intrinsic: "rem_f32"}
+extern def %f32(f32, f32): f32;
+
+@{intrinsic: "eq_f32"}
+extern def ==f32(f32, f32): bool;
+
+@{intrinsic: "geq_f32"}
+extern def >=f32(f32, f32): bool;
+
+@{intrinsic: "leq_f32"}
+extern def <=f32(f32, f32): bool;
+
+@{intrinsic: "gt_f32"}
+extern def >f32(f32, f32): bool;
+
+@{intrinsic: "lt_f32"}
+extern def <f32(f32, f32): bool;
+
+@{intrinsic: "neg_f32"}
+extern def negf32(f32): f32;
+
+extern def f32_to_string(i32): String;
+
+# ------------------------------------------------------
 
 @{intrinsic: "f64"}
 extern type f64;
@@ -101,8 +181,10 @@ extern def or(bool, bool): bool;
 @{intrinsic: "xor_i1"}
 extern def xor(bool, bool): bool;
 
-@{intrinsic: "not_i1"}
-extern def not(bool): bool;
+@{intrinsic: "eq_i1"}
+extern def ==bool(bool, bool): bool;
+
+def not(c) = if c ==bool true { false } else { true }
 
 # ------------------------------------------------------
 

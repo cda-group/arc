@@ -581,8 +581,8 @@ and lower_expr expr ctx =
       ctx |> Ctx.update_cell v0 v1
   | Ast.EBinOp (Ast.BNotIn, e0, e1) ->
       lower_expr (Ast.EUnOp (Ast.UNot, (Ast.EBinOp (Ast.BIn, e0, e1)))) ctx
-  | Ast.EBinOp (Ast.BNeq, e0, e1) ->
-      lower_expr (Ast.EUnOp (Ast.UNot, (Ast.EBinOp (Ast.BEq, e0, e1)))) ctx
+  | Ast.EBinOp (Ast.BNeq s, e0, e1) ->
+      lower_expr (Ast.EUnOp (Ast.UNot, (Ast.EBinOp (Ast.BEq s, e0, e1)))) ctx
   | Ast.EBinOp (op, e0, e1) ->
       let (v0, ctx) = lower_binop op ctx in
       let (v1, ctx) = lower_expr e0 ctx in
@@ -729,9 +729,8 @@ and lower_receiver (p, e0, e1) ctx =
   (v0, (ss, v1), ctx)
 
 and lower_unop op ctx =
-  match op with
-  | Ast.UNot -> ctx |> Ctx.add_expr (Hir.EItem (["not"], []))
-  | Ast.UNeg -> ctx |> Ctx.add_expr (Hir.EItem (["neg"], []))
+  let x = Ast.unop_name op in
+  ctx |> Ctx.add_expr (Hir.EItem ([x], []))
 
 and lower_compr_clauses cs e0 ctx =
   match cs with

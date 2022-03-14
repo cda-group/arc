@@ -488,26 +488,33 @@ and pr_arm (p, e) ctx =
   pr " => ";
   pr_expr e ctx;
 
+and pr_suffixed x s _ctx =
+  match s with
+  | Some s ->
+      pr "%s%s" x s
+  | None ->
+      pr "%s" x
+
 and pr_binop op _ctx =
   match op with
-  | BAdd -> pr "+"
+  | BAdd s -> pr_suffixed "+" s _ctx
   | BAnd -> pr "and"
   | BBand -> pr "band"
   | BBor -> pr "bor"
   | BBxor -> pr "bxor"
-  | BDiv -> pr "/"
-  | BEq -> pr "="
-  | BGeq -> pr ">="
-  | BGt -> pr ">"
-  | BLeq -> pr "<="
-  | BLt -> pr "<"
-  | BMod -> pr "%s" "%"
-  | BMul -> pr "*"
+  | BDiv s -> pr_suffixed "/" s _ctx
+  | BEq s -> pr_suffixed "==" s _ctx
+  | BGeq s -> pr_suffixed ">=" s _ctx
+  | BGt s -> pr_suffixed ">" s _ctx
+  | BLeq s -> pr_suffixed "<=" s _ctx
+  | BLt s -> pr_suffixed "<" s _ctx
+  | BMod s -> pr_suffixed "%%" s _ctx
+  | BMul s -> pr_suffixed "*" s _ctx
   | BMut -> pr "="
-  | BNeq -> pr "!="
+  | BNeq s -> pr_suffixed "!=" s _ctx
   | BOr -> pr "|"
-  | BPow -> pr "^"
-  | BSub -> pr "-"
+  | BPow s -> pr_suffixed "**" s _ctx
+  | BSub s -> pr_suffixed "-" s _ctx
   | BXor -> pr "xor"
   | BIn -> pr "in"
   | BRExc -> pr ".."
@@ -517,5 +524,5 @@ and pr_binop op _ctx =
 
 and pr_unop op _ctx =
   match op with
-  | UNeg -> pr "-"
+  | UNeg s -> pr_suffixed "-" s _ctx
   | UNot -> pr "not"

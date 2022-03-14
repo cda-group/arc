@@ -516,16 +516,6 @@ and infer_lit t l (ctx:Ctx.t) =
   | Ast.LChar _ ->
       ctx |> unify t (atom "char")
 
-and infer_unop t0 op v1 (ctx:Ctx.t) =
-  let typeof v = ctx |> Ctx.typeof v in
-  match op with
-  | Ast.UNeg ->
-      ctx |> unify t0 (atom "bool")
-          |> unify t0 (typeof v1)
-  | Ast.UNot ->
-      ctx |> unify t0 (atom "bool")
-          |> unify t0 (typeof v1)
-
 and infer_ssa (ctx:Ctx.t) (v0, t0, e0) =
   let ctx = infer_ssa_rhs ctx (v0, t0, e0) in
   let ctx = ctx |> Ctx.bind_v v0 t0 in

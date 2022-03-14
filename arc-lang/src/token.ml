@@ -32,6 +32,19 @@ type token =
   | AtSign
   | Underscore
   | Bar
+(*= Float extensions =======================================================*)
+  | EqEqSuffix of string
+  | GeqSuffix of string
+  | GtSuffix of string
+  | LeqSuffix of string
+  | LtSuffix of string
+  | MinusSuffix of string
+  | NeqSuffix of string
+  | PercentSuffix of string
+  | PlusSuffix of string
+  | SlashSuffix of string
+  | StarSuffix of string
+  | StarStarSuffix of string
 (*= Keywords ================================================================*)
   | And
   | As
