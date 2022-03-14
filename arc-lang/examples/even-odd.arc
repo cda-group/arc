@@ -10,3 +10,7 @@ def is_even(n) = if n == 0 { true } else { is_odd(n-1) }
 
 def is_odd(n) = if n == 0 { false } else { is_even(n-1) }
 # ANCHOR_END: example
+
+def main() = {
+  is_even(10);
+}

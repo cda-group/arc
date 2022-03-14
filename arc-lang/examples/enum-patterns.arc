@@ -2,7 +2,7 @@
 # RUN: arc-lang %s | arc-mlir-rust-test %t - -rustinclude %s.rust-tests
 # RUN: arc-lang %s | arc-mlir-rust-test %t-canon - -rustinclude %s.rust-tests -canonicalize
 
-def test() {
+def main() {
 # ANCHOR: example
 # Pattern matching on enums
 val a = Option::Some(3);

@@ -1,15 +1,22 @@
+# XFAIL: *
 # RUN: arc-lang %s | arc-mlir-rust-test %t - -rustinclude %s.rust-tests
 # RUN: arc-lang %s | arc-mlir-rust-test %t-canon - -rustinclude %s.rust-tests -canonicalize
 
 enum Expr {
     Num(i32),
-    Add((i32, i32))
+    Add(Expr, Expr)
 }
 
 def eval(e) {
     match e {
         Expr::Num(x) => x,
-        Expr::Add((a, b)) => a + b,
-        _ => 0
+        Expr::Add(a, b) => eval(a) + eval(b),
     }
+}
+
+def main() {
+    let x = eval(Expr::Num(1));
+    let y = eval(Expr::Add((1, 2)));
+    assert(x == 1);
+    assert(y == 3);
 }

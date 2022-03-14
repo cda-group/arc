@@ -6,7 +6,7 @@ enum Foo[T] {
     Bar(T)
 }
 
-def qux() {
+def main() {
     Foo::Bar(1);
     Foo::Bar(1.0);
 }

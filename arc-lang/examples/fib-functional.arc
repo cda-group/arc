@@ -11,3 +11,7 @@ def fib(n) = match n {
     n => fib(n-2) + fib(n-1)
 }
 # ANCHOR_END: example
+
+def main() = {
+    fib(10);
+}

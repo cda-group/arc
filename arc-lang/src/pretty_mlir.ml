@@ -32,7 +32,11 @@ and pr_item (x, i) ctx =
       | Some t -> pr_return_type t ctx;
       | None -> ()
       end;
-      pr " ";
+      pr " attributes { rust.declare ";
+      begin if x = "main" then
+        pr ", rust.annotation = \"#[rewrite(main)]\" ";
+      end;
+      pr "}";
       pr_block b ctx;
   | Mlir.ITask (ps0, ps1, b) ->
       pr "func @";

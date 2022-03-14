@@ -13,7 +13,7 @@ task split(s0, f): (s1, s2) {
     }
 }
 
-def test() {
+def main() {
     val stream0 = read_numbers_stream();
     val (stream1, stream2) = split(stream0, stream1);
 }

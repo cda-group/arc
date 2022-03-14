@@ -6,3 +6,5 @@ def foo() = bar(1)
 
 def bar(a) = a
 # ANCHOR_END: example
+
+def main() {}

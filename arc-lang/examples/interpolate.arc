@@ -5,7 +5,7 @@
 # ANCHOR: example
 # String interpolation is supported using the $ and ${} syntax.
 
-def test() {
+def main() {
   val hello = "hello";
   val world = "world";
   val result = "$hello $world, 1+2 = ${1+2}";

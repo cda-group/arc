@@ -11,5 +11,5 @@ mod foo {
     }
 }
 
-def zot() = foo::bar::baz::qux()
+def main() = foo::bar::baz::qux()
 # ANCHOR_END: example

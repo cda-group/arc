@@ -9,3 +9,5 @@ task identity(source): (sink) {
     }
 }
 # ANCHOR_END: example
+
+def main() {}
