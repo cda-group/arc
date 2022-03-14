@@ -18,7 +18,7 @@
 #include "mlir/IR/Diagnostics.h"
 #include "mlir/IR/Location.h"
 #include "mlir/IR/MLIRContext.h"
-#include "mlir/Parser.h"
+#include "mlir/Parser/Parser.h"
 #include "mlir/Pass/Pass.h"
 #include "mlir/Pass/PassManager.h"
 #include "mlir/Support/ToolUtilities.h"
@@ -48,7 +48,7 @@ static LogicalResult performActions(raw_ostream &os, bool verifyDiagnostics,
                                     bool verifyPasses, SourceMgr &sourceMgr,
                                     MLIRContext *context,
                                     const PassPipelineCLParser &passPipeline) {
-  OwningOpRef<ModuleOp> module(parseSourceFile(sourceMgr, context));
+  OwningOpRef<ModuleOp> module(parseSourceFile<ModuleOp>(sourceMgr, context));
   if (!module)
     return failure();
 
