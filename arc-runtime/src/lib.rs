@@ -50,7 +50,6 @@ pub mod prelude {
     pub use crate::data::primitives::u8;
     pub use crate::data::primitives::unit;
     pub use crate::data::primitives::Unit;
-    pub use crate::data::strings::String;
     pub use crate::data::vectors::Vec;
     pub use crate::data::Abstract;
     pub use crate::data::Concrete;
@@ -60,6 +59,19 @@ pub mod prelude {
     pub use crate::data::Sharable;
     pub use crate::runtime::Runtime;
     pub use crate::task::message::TaskMessage;
+
+    pub use crate::data::strings::String;
+    pub use crate::data::strings::String_clear;
+    pub use crate::data::strings::String_from_str;
+    pub use crate::data::strings::String_insert;
+    pub use crate::data::strings::String_is_empty;
+    pub use crate::data::strings::String_len;
+    pub use crate::data::strings::String_new;
+    pub use crate::data::strings::String_push;
+    pub use crate::data::strings::String_push_str;
+    pub use crate::data::strings::String_remove;
+    pub use crate::data::strings::String_split_off;
+    pub use crate::data::strings::String_with_capacity;
 
     // Declarative macros
     pub use crate::access;

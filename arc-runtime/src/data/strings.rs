@@ -48,6 +48,7 @@ impl DynSendable for sendable::String {
 
 pub use sharable::String;
 
+#[rewrite]
 impl String {
     pub fn new(ctx: Context) -> String {
         sharable::ConcreteString::new(ctx.mutator()).alloc(ctx)
@@ -71,27 +72,27 @@ impl String {
         new.alloc(ctx)
     }
 
-    pub fn remove(&mut self, idx: usize, _: Context) -> char {
+    pub fn remove(mut self, idx: usize, _ctx: Context) -> char {
         self.0.remove(idx)
     }
 
-    pub fn insert(&mut self, idx: usize, ch: char, ctx: Context) {
+    pub fn insert(mut self, idx: usize, ch: char, ctx: Context) {
         self.0.insert(ctx.mutator(), idx, ch)
     }
 
-    pub fn is_empty(&mut self, _: Context) -> bool {
+    pub fn is_empty(mut self, _ctx: Context) -> bool {
         self.0.is_empty()
     }
 
-    pub fn split_off(&mut self, at: usize, ctx: Context) -> String {
+    pub fn split_off(mut self, at: usize, ctx: Context) -> String {
         self.0.split_off(ctx.mutator(), at).alloc(ctx)
     }
 
-    pub fn clear(&mut self, _: Context) {
+    pub fn clear(mut self, _ctx: Context) {
         self.0.clear()
     }
 
-    pub fn len(&self, _: Context) -> usize {
+    pub fn len(self, _ctx: Context) -> usize {
         self.0.len()
     }
 }
