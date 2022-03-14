@@ -732,6 +732,7 @@ and lower_unop op ctx =
   match op with
   | Ast.UNot -> ctx |> Ctx.add_expr (Hir.EItem (["not"], []))
   | Ast.UNeg -> ctx |> Ctx.add_expr (Hir.EItem (["neg"], []))
+  | Ast.UNegf -> ctx |> Ctx.add_expr (Hir.EItem (["negf"], []))
 
 and lower_compr_clauses cs e0 ctx =
   match cs with

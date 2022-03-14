@@ -60,6 +60,19 @@ rule main =
   | "_"        { Underscore }
   | "|"        { Bar }
   | "@"        { AtSign }
+(*= Float extensions =======================================================*)
+  | "!=."      { NeqDot }
+  | "%."       { PercentDot }
+  | "**."      { StarStarDot }
+  | "*."       { StarDot }
+  | "+."       { PlusDot }
+  | "-."       { MinusDot }
+  | "/."       { SlashDot }
+  | "<."       { LtDot }
+  | "<=."      { LeqDot }
+  | "==."      { EqEqDot }
+  | ">."       { GtDot }
+  | ">=."      { GeqDot }
 (*= Keywords ================================================================*)
   | "and"      { And }
   | "as"       { As }

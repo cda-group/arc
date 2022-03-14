@@ -111,18 +111,18 @@ separated_nonempty_llist_rev(s, x):
   | "or" { Ast.BOr }
   | "xor" { Ast.BXor }
   | "and" { Ast.BAnd }
-  | "==" { Ast.BEq }
-  | "!=" { Ast.BNeq }
-  | "<" { Ast.BLt }
-  | ">" { Ast.BGt }
-  | "<=" { Ast.BLeq }
-  | ">=" { Ast.BGeq }
-  | "+" { Ast.BAdd }
-  | "-" { Ast.BSub }
-  | "%" { Ast.BMod }
-  | "*" { Ast.BMul }
-  | "/" { Ast.BDiv }
-  | "**" { Ast.BPow }
+  | "==" { Ast.BEq }  | "==." { Ast.BEqf }
+  | "!=" { Ast.BNeq } | "!=." { Ast.BNeqf }
+  | "<" { Ast.BLt }   | "<." { Ast.BLtf }
+  | ">" { Ast.BGt }   | ">." { Ast.BGtf }
+  | "<=" { Ast.BLeq } | "<=." { Ast.BLeqf }
+  | ">=" { Ast.BGeq } | ">=." { Ast.BGeqf }
+  | "+" { Ast.BAdd }  | "+." { Ast.BAddf }
+  | "-" { Ast.BSub }  | "-." { Ast.BSubf }
+  | "%" { Ast.BMod }  | "%." { Ast.BModf }
+  | "*" { Ast.BMul }  | "*." { Ast.BMulf }
+  | "/" { Ast.BDiv }  | "/." { Ast.BDivf }
+  | "**" { Ast.BPow } | "**." { Ast.BPowf }
 
 %inline unop:
   | "not" { Ast.UNot }
@@ -185,44 +185,46 @@ expr4:
 %inline op5:
   | "==" { Ast.BEq }
   | "!=" { Ast.BNeq }
+  | "==." { Ast.BEqf }
+  | "!=." { Ast.BNeqf }
 expr5:
   | expr6 { $1 }
   | expr5 op5 expr6 { Ast.EBinOp ($2, $1, $3)}
 
 %inline op6:
-  | "<" { Ast.BLt }
-  | ">" { Ast.BGt }
-  | "<=" { Ast.BLeq }
-  | ">=" { Ast.BGeq }
+  | "<" { Ast.BLt }   | "<." { Ast.BLtf }
+  | ">" { Ast.BGt }   | ">." { Ast.BGtf }
+  | "<=" { Ast.BLeq } | "<=." { Ast.BLeqf }
+  | ">=" { Ast.BGeq } | ">=." { Ast.BGeqf }
   
 expr6:
   | expr7 { $1 }
   | expr6 op6 expr7 { Ast.EBinOp ($2, $1, $3)}
 
 %inline op7:
-  | "+" { Ast.BAdd }
-  | "-" { Ast.BSub }
-  | "%" { Ast.BMod }
+  | "+" { Ast.BAdd } | "+." { Ast.BAddf }
+  | "-" { Ast.BSub } | "-." { Ast.BSubf }
+  | "%" { Ast.BMod } | "%." { Ast.BModf }
 expr7:
   | expr8 { $1 }
   | expr7 op7 expr8 { Ast.EBinOp ($2, $1, $3)}
   
 %inline op8:
-  | "*" { Ast.BMul }
-  | "/" { Ast.BDiv }
+  | "*" { Ast.BMul } | "*." { Ast.BMulf }
+  | "/" { Ast.BDiv } | "/." { Ast.BDivf }
 expr8:
   | expr9 { $1 }
   | expr8 op8 expr9 { Ast.EBinOp ($2, $1, $3)}
 
 %inline op9:
   | "not" { Ast.UNot }
-  | "-" { Ast.UNeg }
+  | "-" { Ast.UNeg } | "-." { Ast.UNegf }
 expr9:
   | expr10 { $1 }
   | op9 expr9 { Ast.EUnOp ($1, $2)}
 
 %inline op10:
-  | "**" { Ast.BPow }
+  | "**" { Ast.BPow } | "**." { Ast.BPowf }
 expr10:
   | expr11 { $1 }
   | expr11 op10 expr10 { Ast.EBinOp ($2, $1, $3)}

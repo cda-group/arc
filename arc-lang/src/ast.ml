@@ -62,24 +62,24 @@ and ty =
   | TArray  of ty
 
 and binop =
-  | BAdd
+  | BAdd | BAddf
   | BAnd
   | BBand
   | BBor
   | BBxor
-  | BDiv
-  | BEq
-  | BGeq
-  | BGt
-  | BLeq
-  | BLt
-  | BMod
-  | BMul
+  | BDiv | BDivf
+  | BEq  | BEqf
+  | BGeq | BGeqf
+  | BGt  | BGtf
+  | BLeq | BLeqf
+  | BLt  | BLtf
+  | BMod | BModf
+  | BMul | BMulf
   | BMut
-  | BNeq
+  | BNeq | BNeqf
   | BOr
-  | BPow
-  | BSub
+  | BPow | BPowf
+  | BSub | BSubf
   | BXor
   | BIn
   | BRExc
@@ -88,7 +88,7 @@ and binop =
   | BNotIn
 
 and unop =
-  | UNeg
+  | UNeg | UNegf
   | UNot
 
 and size = int
@@ -178,33 +178,33 @@ and ord =
 
 let rec unop_name op =
   match op with
-  | UNeg -> "neg"
+  | UNeg -> "neg" | UNegf -> "negf"
   | UNot -> "not"
 
 and binop_name op =
   match op with
-  | BAdd -> "add"
+  | BAdd -> "add" | BAddf -> "addf"
   | BAnd -> "and"
   | BBand -> "band"
   | BBor -> "bor"
   | BBxor -> "bxor"
-  | BDiv -> "div"
-  | BGeq -> "geq"
-  | BGt -> "gt"
-  | BLeq -> "leq"
-  | BLt -> "lt"
-  | BMod -> "mod"
-  | BMul -> "mul"
-  | BNeq -> "neq"
+  | BDiv -> "div" | BDivf -> "divf"
+  | BGeq -> "geq" | BGeqf -> "geqf"
+  | BGt -> "gt"   | BGtf -> "gtf"
+  | BLeq -> "leq" | BLeqf -> "leqf"
+  | BLt -> "lt"   | BLtf -> "ltf"
+  | BMod -> "mod" | BModf -> "modf"
+  | BMul -> "mul" | BMulf -> "mulf"
+  | BNeq -> "neq" | BNeqf -> "neqf"
   | BOr -> "or"
-  | BPow -> "pow"
-  | BSub -> "sub"
+  | BPow -> "pow" | BPowf -> "powf"
+  | BSub -> "sub" | BSubf -> "subf"
   | BXor -> "xor"
   | BIn -> "contains"
   | BNotIn -> "not_contains"
   | BRExc -> "rexc"
   | BRInc -> "rinc"
-  | BEq -> "eq"
+  | BEq -> "eq" | BEqf -> "eq"
   | BMut -> "mut"
   | BBy -> "by"
 

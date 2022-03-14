@@ -32,6 +32,19 @@ type token =
   | AtSign
   | Underscore
   | Bar
+(*= Float extensions =======================================================*)
+  | EqEqDot
+  | GeqDot
+  | GtDot
+  | LeqDot
+  | LtDot
+  | MinusDot
+  | NeqDot
+  | PercentDot
+  | PlusDot
+  | SlashDot
+  | StarDot
+  | StarStarDot
 (*= Keywords ================================================================*)
   | And
   | As

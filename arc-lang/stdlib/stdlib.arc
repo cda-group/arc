@@ -59,7 +59,7 @@ extern def band(i32, i32): bool;
 @{intrinsic: "neg_i32"}
 extern def neg(i32): i32;
 
-extern def to_string(i32): String;
+extern def i32_to_string(i32): String;
 
 # ------------------------------------------------------
 
@@ -81,8 +81,50 @@ extern type u64;
 @{intrinsic: "u64"}
 extern type u128;
 
+# ------------------------------------------------------
+
 @{intrinsic: "f32"}
 extern type f32;
+
+@{intrinsic: "add_f32"}
+extern def +.(f32, f32): f32;
+
+@{intrinsic: "sub_f32"}
+extern def -.(f32, f32): f32;
+
+@{intrinsic: "mul_f32"}
+extern def *.(f32, f32): f32;
+
+@{intrinsic: "div_f32"}
+extern def /.(f32, f32): f32;
+
+@{intrinsic: "pow_f32"}
+extern def **.(f32, f32): f32;
+
+@{intrinsic: "rem_f32"}
+extern def %.(f32, f32): f32;
+
+@{intrinsic: "eq_f32"}
+extern def ==.(f32, f32): bool;
+
+@{intrinsic: "geq_f32"}
+extern def >=.(f32, f32): bool;
+
+@{intrinsic: "leq_f32"}
+extern def <=.(f32, f32): bool;
+
+@{intrinsic: "gt_f32"}
+extern def >.(f32, f32): bool;
+
+@{intrinsic: "lt_f32"}
+extern def <.(f32, f32): bool;
+
+@{intrinsic: "neg_f32"}
+extern def negf(f32): f32;
+
+extern def f32_to_string(i32): String;
+
+# ------------------------------------------------------
 
 @{intrinsic: "f64"}
 extern type f64;
