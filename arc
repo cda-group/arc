@@ -114,7 +114,7 @@ fi
 
 debug "ROOT: $ROOT"
 
-export CRATE_NAME="$(basename "$INPUT_FILE" .arc)-crate"
+export CRATE_NAME="$(basename "$INPUT_FILE" .arc)"
 debug "CRATE_NAME: $CRATE_NAME"
 
 if [ -z "$INPUT_FILE" ]; then
@@ -124,7 +124,7 @@ fi
 debug "INPUT_FILE: $INPUT_FILE"
 
 if [ -z "$CRATE_DIR" ]; then
-    CRATE_DIR="$(dirname "$INPUT_FILE")/$CRATE_NAME"
+    CRATE_DIR="$(dirname "$INPUT_FILE")/$CRATE_NAME.crate"
 fi
 
 if [ -z "$CRATE_TARGET_DIR" ]; then
