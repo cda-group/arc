@@ -202,7 +202,7 @@ EOF
 
 "$ARC_MLIR" "$CRATE_MLIR_FILE" "$@" -arc-to-rust -inline-rust -arc-lang-runtime >> "$CRATE_MAIN_FILE"
 
-echo 'fn main() { toplevel::main() }' >> "$CRATE_MAIN_FILE"
+echo 'fn main() { toplevel::main(); }' >> "$CRATE_MAIN_FILE"
 
 [ "$ARC_DEBUG" ] && echo "$CRATE_MAIN_FILE: " && cat "$CRATE_MAIN_FILE"
 
