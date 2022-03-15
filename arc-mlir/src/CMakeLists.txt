@@ -49,3 +49,8 @@ add_subdirectory(tools)
 add_custom_target(arc-runtime-check DEPENDS check-arc-mlir
   COMMAND cd ${ARC_SCRIPT_SRC_DIR}; ${ARC_CARGO_BIN}/arc-cargo test --package=arc-runtime
 )
+
+install(DIRECTORY ${ARC_LANG_SRC_DIR}/stdlib DESTINATION share/arc/)
+install(DIRECTORY ${ARC_RUNTIME_SRC_DIR} DESTINATION share/arc/)
+install(PROGRAMS ${LLVM_TOOLS_BINARY_DIR}/arc DESTINATION bin)
+install(PROGRAMS ${LLVM_TOOLS_BINARY_DIR}/arc-lang DESTINATION bin)

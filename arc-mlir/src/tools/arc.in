@@ -143,9 +143,9 @@ CARGO_FLAGS+=("--manifest-path=$CRATE_TOML_FILE")
 CARGO_FLAGS+=("--target-dir=$CRATE_TARGET_DIR")
 
 if [ -z "$ARC_LANG" ]; then
-    ARC_LANG="$ROOT/arc-mlir/build/llvm-build/bin/arc-lang"
+    ARC_LANG="$ROOT/arc-lang"
     if [ ! -f "$ARC_LANG" ]; then
-        echo "Could not find arc-lang. Did you run \'$ARC_DIR./build\'?"
+        echo "Could not find arc-lang."
         exit 1
     fi
 fi
@@ -153,38 +153,39 @@ fi
 debug "ARC_LANG: $ARC_LANG"
 
 if [ -z "$ARC_MLIR" ]; then
-    ARC_MLIR="$ROOT/arc-mlir/build/llvm-build/bin/arc-mlir"
+    ARC_MLIR="$ROOT/arc-mlir"
     if [ ! -f "$ARC_LANG" ]; then
-        echo "Could not find arc-mlir. Did you run './build'?"
+        echo "Could not find arc-mlir."
         exit 1
     fi
 fi
 
 debug "ARC_MLIR: $ARC_MLIR"
 
-if [ -z "$ARC_RUNTIME_DIR" ]; then
-    export ARC_RUNTIME_DIR="$ROOT/arc-runtime/"
+# We could be running from either the installed location or the
+# build tree.
+INSTALLED_SHARED_DIR="$ROOT/../share/arc/"
+if [ -d "${INSTALLED_SHARED_DIR}" ]; then
+    # Looks like we are running from the installed location
+    export ARC_RUNTIME_SOURCE_DIR="${INSTALLED_SHARED_DIR}/arc-runtime"
+    export ARC_LANG_STDLIB_PATH="${INSTALLED_SHARED_DIR}/stdlib/stdlib.arc"
+    export ARC_MLIR_STDLIB_PATH="${INSTALLED_SHARED_DIR}/stdlib/stdlib.mlir"
+else
+    # We are running from the build tree
+    export ARC_RUNTIME_SOURCE_DIR="@ARC_RUNTIME_SRC_DIR@"
+    export ARC_LANG_STDLIB_PATH="@ARC_LANG_SRC_DIR@/stdlib/stdlib.arc"
+    export ARC_MLIR_STDLIB_PATH="@ARC_LANG_SRC_DIR@/stdlib/stdlib.mlir"
 fi
 
-debug "ARC_RUNTIME_DIR: $ARC_RUNTIME_DIR"
+debug "ARC_RUNTIME_SOURCE_DIR: $ARC_RUNTIME_SOURCE_DIR"
+debug "ARC_LANG_STDLIB_PATH: $ARC_LANG_STDLIB_PATH"
+debug "ARC_MLIR_STDLIB_PATH: $ARC_MLIR_STDLIB_PATH"
 
 mkdir -p "$CRATE_DIR/src"
 
 # Create the Cargo.toml
 envsubst > "$CRATE_TOML_FILE" <<'EOF'
-[package]
-name    = "$CRATE_NAME"
-version = "0.0.0"
-edition = "2021"
-
-[dependencies]
-arc-runtime = { version = "=0.0.0", path = "$ARC_RUNTIME_DIR" }
-hexf        = { version = "0.2.1" }
-serde       = { version = "1.0.136" }
-
-[profile.dev]
-opt-level = 0
-split-debuginfo = "unpacked"
+@CARGO_TOML_TEMPLATE@
 EOF
 
 [ "$ARC_DEBUG" ] && echo "$CRATE_TOML_FILE: " && cat "$CRATE_TOML_FILE"
@@ -201,10 +202,13 @@ EOF
 
 "$ARC_MLIR" "$CRATE_MLIR_FILE" "$@" -arc-to-rust -inline-rust -arc-lang-runtime >> "$CRATE_MAIN_FILE"
 
-echo 'fn main() { toplevel::main() }' >> "$CRATE_MAIN_FILE"
+echo 'fn main() { toplevel::main(); }' >> "$CRATE_MAIN_FILE"
 
-[ "$ARC_DEBUG" ] && echo "$CRATE_MAIL_FILE: " && cat "$CRATE_MAIN_FILE"
+[ "$ARC_DEBUG" ] && echo "$CRATE_MAIN_FILE: " && cat "$CRATE_MAIN_FILE"
 
 debug "CARGO_FLAGS: $CARGO_FLAGS"
 
-cargo "$CARGO_MODE" "${CARGO_FLAGS[@]}"
+ARC_CARGO="${ARC_CARGO:-cargo}"
+debug "CARGO: $ARC_CARGO"
+
+"$ARC_CARGO" "$CARGO_MODE" "${CARGO_FLAGS[@]}"

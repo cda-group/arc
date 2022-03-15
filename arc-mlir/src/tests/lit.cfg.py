@@ -54,11 +54,7 @@ llvm_config.with_environment('PATH', config.llvm_tools_dir, append_path=True)
 
 from pathlib import Path
 
-# /path/to/arc/arc-mlir/src/tests/lit.cfg.py => /path/to/arc/arc-lang/stdlib/
-arc_stdlib_dir = Path(__file__).parents[3] / 'arc-lang' / 'stdlib' 
-
-llvm_config.with_environment('ARC_LANG_STDLIB_PATH', arc_stdlib_dir / 'stdlib.arc')
-llvm_config.with_environment('ARC_MLIR_STDLIB_PATH', arc_stdlib_dir / 'stdlib.mlir')
+llvm_config.with_environment('ARC_CARGO', 'arc-cargo')
 
 tool_dirs = [config.mlir_tools_dir, config.llvm_tools_dir,
              config.arcscript_tools_dir]
@@ -68,6 +64,7 @@ tools = [
     'mlir-translate',
     'arc-mlir',
     'arc-lang',
+    'arc',
 ]
 
 llvm_config.add_tool_substitutions(tools, tool_dirs)

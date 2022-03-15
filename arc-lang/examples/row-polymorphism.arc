@@ -1,5 +1,5 @@
-# RUN: arc-lang %s | arc-mlir-rust-test %t - -rustinclude %s.rust-tests
-# RUN: arc-lang %s | arc-mlir-rust-test %t-canon - -rustinclude %s.rust-tests -canonicalize
+# RUN: arc -o %t run %s -- -rustinclude %s.rust-tests
+# RUN: arc -o %t-canon run %s -- -rustinclude %s.rust-tests -canonicalize
 
 def foo[T](x: #{y:i32|T}): i32 = x.y
 
