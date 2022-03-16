@@ -259,7 +259,7 @@ and lower_expr t e ctx =
         | Ast.LBool b -> Mlir.EConst (Mlir.CBool b)
         | Ast.LString s -> Mlir.EConst (Mlir.CAdt (Printf.sprintf "String::from(\\\"%s\\\")" s))
         | Ast.LUnit -> Mlir.ENoop
-        | Ast.LChar _ -> todo ()
+        | Ast.LChar c -> Mlir.EConst (Mlir.CAdt (Printf.sprintf "'%c'" c))
       in
       (e, ctx)
   | Mir.ELoop b ->
