@@ -179,9 +179,11 @@ and pr_ssa (lhs, e) ctx =
   | Mlir.EConst c ->
       begin match c with
       | Mlir.CInt d ->
-          pr "arc.constant %d : si32" d;
+          pr "arc.constant %d : " d;
+          pr_lhs_type lhs ctx;
       | Mlir.CFloat f ->
-          pr "arith.constant %f : f32" f;
+          pr "arith.constant %f : " f;
+          pr_lhs_type lhs ctx;
       | Mlir.CBool b ->
           pr "arith.constant %b" b;
       | Mlir.CFun x ->

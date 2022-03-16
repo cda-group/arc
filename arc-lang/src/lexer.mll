@@ -146,6 +146,12 @@ rule main =
   | int        { Int (int_of_string (Lexing.lexeme lexbuf)) }
   | float      { Float (float_of_string (Lexing.lexeme lexbuf)) }
   | percentage { Float (float_of_string (Lexing.sub_lexeme lexbuf lexbuf.lex_start_pos (lexbuf.lex_curr_pos-1)) /. 100.0) }
+  | int int_suffix {
+    let (p, s) = prefix_suffix lexbuf in
+    IntSuffix ((int_of_string p), s) }
+  | float float_suffix {
+    let (p, s) = prefix_suffix lexbuf in
+    FloatSuffix ((float_of_string p), s) }
   | char       { Char (Lexing.lexeme_char lexbuf 1) }
   | '"'        { string (Buffer.create 17) lexbuf }
   | datetime   { String (Lexing.lexeme lexbuf) }

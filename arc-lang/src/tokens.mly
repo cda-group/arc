@@ -92,6 +92,8 @@
 %token <string> Name
 %token <int> Int 
 %token <float> Float
+%token <int * Ast.int_suffix> IntSuffix
+%token <float * Ast.float_suffix> FloatSuffix
 %token <bool> Bool
 %token <char> Char
 %token Unit "unit"

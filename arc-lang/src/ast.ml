@@ -91,11 +91,11 @@ and unop =
   | UNeg of string option
   | UNot
 
-and size = int
-and sign = bool
+and int_suffix = string
+and float_suffix = string
 and lit =
-  | LInt of int * (sign * size) option
-  | LFloat of float * size option
+  | LInt of int * int_suffix option
+  | LFloat of float * float_suffix option
   | LBool of bool
   | LString of string
   | LUnit

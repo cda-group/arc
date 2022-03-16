@@ -124,13 +124,11 @@ and pr_annot (x, l) ctx =
 
 and pr_lit l _ctx =
   match l with
-  | Ast.LInt (c, Some (true, size)) -> pr "%di%d" c size
-  | Ast.LInt (c, Some (false, size)) -> pr "%du%d" c size
+  | Ast.LInt (c, Some s) -> pr "%d%s" c s;
   | Ast.LInt (c, None) -> pr "%d" c
-  | Ast.LFloat (c, Some size) -> pr "%ff%d" c size;
+  | Ast.LFloat (c, Some s) -> pr "%f%s" c s;
   | Ast.LFloat (c, None) -> pr "%f" c;
   | Ast.LBool c -> pr "%b" c;
   | Ast.LUnit -> pr "unit";
   | Ast.LString c -> pr "\"%s\"" c
   | Ast.LChar c -> pr "%c" c
-

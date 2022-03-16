@@ -400,5 +400,7 @@ ty1:
   | Char { Ast.LChar $1 }
   | Int { Ast.LInt ($1, None) }
   | Float { Ast.LFloat ($1, None) }
+  | IntSuffix { Ast.LInt (fst $1, Some (snd $1)) }
+  | FloatSuffix { Ast.LFloat (fst $1, Some (snd $1)) }
   | "unit" { Ast.LUnit }
   | String { Ast.LString $1 }

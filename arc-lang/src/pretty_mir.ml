@@ -208,16 +208,3 @@ and pr_expr e ctx =
         pr_list pr_type ts ctx;
         pr "]";
       end
-
-and pr_lit l _ctx =
-  match l with
-  | LInt (c, Some (true, size)) -> pr "%di%d" c size
-  | LInt (c, Some (false, size)) -> pr "%du%d" c size
-  | LInt (c, None) -> pr "%d" c
-  | LFloat (c, Some size) -> pr "%ff%d" c size;
-  | LFloat (c, None) -> pr "%f" c;
-  | LBool c -> pr "%b" c;
-  | LUnit -> pr "unit";
-  | LString c -> pr "\"%s\"" c
-  | LChar c -> pr "%c" c
-

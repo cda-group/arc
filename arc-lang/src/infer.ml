@@ -503,10 +503,14 @@ and infer_item (ctx:Ctx.t) (xs, i) : Ctx.t =
 
 and infer_lit t l (ctx:Ctx.t) =
   match l with
-  | Ast.LInt (_, _suffix) ->
+  | Ast.LInt (_, None) ->
       ctx |> unify t (atom "i32")
-  | Ast.LFloat (_, _suffix) ->
+  | Ast.LInt (_, Some s) ->
+      ctx |> unify t (atom s)
+  | Ast.LFloat (_, None) ->
       ctx |> unify t (atom "f32")
+  | Ast.LFloat (_, Some s) ->
+      ctx |> unify t (atom s)
   | Ast.LBool _ ->
       ctx |> unify t (atom "bool")
   | Ast.LString _ ->

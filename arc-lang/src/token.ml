@@ -92,6 +92,8 @@ type token =
 (*= Identifiers and Literals ================================================*)
   | Name of string
   | Int of int
+  | IntSuffix of (int * Ast.int_suffix)
+  | FloatSuffix of (float * Ast.float_suffix)
   | Float of float
   | Bool of bool
   | Char of char
