@@ -22,6 +22,12 @@ impl<T: Garbage> Clone for Gc<T> {
     }
 }
 
+impl<T: Sharable> Gc<T> {
+    pub fn inner(self) -> T {
+        (*self.0).clone()
+    }
+}
+
 pub trait Alloc<T> {
     fn alloc(self, ctx: Context) -> T;
 }

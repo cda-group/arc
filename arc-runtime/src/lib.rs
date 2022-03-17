@@ -90,6 +90,11 @@ pub mod prelude {
     pub use crate::data::vectors::Vec_remove;
     pub use crate::data::vectors::Vec_with_capacity;
 
+    pub use crate::data::cells::Cell;
+    pub use crate::data::cells::Cell_get;
+    pub use crate::data::cells::Cell_new;
+    pub use crate::data::cells::Cell_set;
+
     // Declarative macros
     pub use crate::access;
     pub use crate::convert_reflexive;

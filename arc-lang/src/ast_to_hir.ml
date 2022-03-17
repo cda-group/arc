@@ -287,7 +287,7 @@ module Ctx = struct
     | [x] when ts = [] ->
         begin match ctx |> find_vname x with
         | Some (v, MVal) -> (v, ctx)
-        | Some (v, MVar) -> read_cell v ctx
+        | Some (v, MVar) -> get_cell v ctx
         | None -> ctx |> resolve_expr_path xs
         end
     | _ -> ctx |> resolve_expr_path xs
@@ -318,13 +318,13 @@ module Ctx = struct
     ctx |> add_expr (Hir.ECall (v_fun, [v]))
 
   (* Retrieve the value from a cell *)
-  and read_cell v ctx =
+  and get_cell v ctx =
     let (t, ctx) = ctx |> fresh_t in
     let (v_fun, ctx) = ctx |> add_expr (Hir.EItem (["read"], [t])) in
     ctx |> add_expr (Hir.ECall (v_fun, [v]))
 
   (* Update the value inside a cell *)
-  and update_cell v0 v1 ctx =
+  and set_cell v0 v1 ctx =
     let (t, ctx) = ctx |> fresh_t in
     let (v_fun, ctx) = ctx |> add_expr (Hir.EItem (["update"], [t])) in
     ctx |> add_expr (Hir.ECall (v_fun, [v0; v1]))
@@ -543,7 +543,7 @@ and lower_call e es ctx =
       | [x] when ts = [] ->
           begin match ctx |> Ctx.find_vname x with
           | Some (_, Ctx.MVal) -> lower_call e es ctx
-          | Some (v, Ctx.MVar) -> Ctx.read_cell v ctx
+          | Some (v, Ctx.MVar) -> Ctx.get_cell v ctx
           | None -> ctx |> resolve_call_path xs
           end
       | _ -> ctx |> resolve_call_path xs
@@ -578,7 +578,7 @@ and lower_expr expr ctx =
   | Ast.EBinOp (Ast.BMut, e0, e1) ->
       let (v0, ctx) = Ctx.resolve_lvalue e0 ctx in
       let (v1, ctx) = lower_expr e1 ctx in
-      ctx |> Ctx.update_cell v0 v1
+      ctx |> Ctx.set_cell v0 v1
   | Ast.EBinOp (Ast.BNotIn, e0, e1) ->
       lower_expr (Ast.EUnOp (Ast.UNot, (Ast.EBinOp (Ast.BIn, e0, e1)))) ctx
   | Ast.EBinOp (Ast.BNeq s, e0, e1) ->
@@ -768,7 +768,7 @@ and lower_field_expr (x, e) (ctx:Ctx.t) =
       match ctx |> Ctx.find_vname x with
       | Some (v, MVal) -> ((x, v), ctx)
       | Some (v, MVar) ->
-          let (v, ctx) = Ctx.read_cell v ctx in
+          let (v, ctx) = Ctx.get_cell v ctx in
           ((x, v), ctx)
       | None -> panic "Name not found"
 

@@ -8,6 +8,7 @@ pub mod vectors;
 pub mod dataframe;
 pub mod series;
 pub mod channels;
+pub mod cells;
 
 use crate::data::garbage::Garbage;
 use serde_traitobject::Deserialize as DynDeserialize;

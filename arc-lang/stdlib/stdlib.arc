@@ -283,9 +283,14 @@ extern def capacity[T](Array[T]): u32;
 
 extern type Cell[T];
 
+@{mangled: "Cell_new"}
 extern def cell[T](T): Cell[T];
-extern def update[T](Cell[T], T);
-extern def read[T](Cell[T]): T;
+
+@{mangled: "Cell_set"}
+extern def set_cell[T](Cell[T], T);
+
+@{mangled: "Cell_get"}
+extern def get_cell[T](Cell[T]): T;
 
 # ------------------------------------------------------
 
