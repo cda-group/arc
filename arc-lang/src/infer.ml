@@ -532,6 +532,11 @@ and infer_ssa_rhs ctx (v0, t0, e0) =
       let (t2, ctx) = ctx |> Ctx.fresh_t in
       let t3 = Hir.TRowExtend ((x, t0), t2) in
       ctx |> unify (Hir.TRecord t3) (typeof v1)
+  | Hir.EUpdate (v1, x, v2) ->
+      let (t2, ctx) = ctx |> Ctx.fresh_t in
+      let t3 = Hir.TRowExtend ((x, (typeof v2)), t2) in
+      ctx |> unify t0 (atom "unit")
+          |> unify (Hir.TRecord t3) (typeof v1)
   | Hir.ECall (v1, vs) ->
       ctx |> unify (typeof v1) (Hir.TFunc (ts_of_vs vs ctx, t0))
   | Hir.ECast (v1, t2) ->

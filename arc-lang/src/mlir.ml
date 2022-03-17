@@ -53,6 +53,7 @@ and binop =
   | BXor
 and expr =
   | EAccess   of arg * name
+  | EUpdate   of arg * name * arg
   | ECall     of arg * args
   | EEmit     of arg * arg
   | EEnwrap   of path * arg option

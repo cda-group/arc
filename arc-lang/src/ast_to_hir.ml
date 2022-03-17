@@ -292,17 +292,6 @@ module Ctx = struct
         end
     | _ -> ctx |> resolve_expr_path xs
 
-  and resolve_lvalue e ctx =
-    match e with
-    | Ast.EPath ([x], []) ->
-        (* L-value must be a cell. TODO: Support more L-values *)
-        begin match ctx |> find_vname x with
-        | Some (v, MVar) -> (v, ctx)
-        | Some (_, MVal) -> panic "L-value is a value"
-        | None -> panic "Variable not bound"
-        end
-    | _ -> panic "Expected variable, found path"
-
   (* Returns set of currently visible variables *)
   and visible ctx =
     let rec visible vstack acc =
@@ -320,13 +309,13 @@ module Ctx = struct
   (* Retrieve the value from a cell *)
   and get_cell v ctx =
     let (t, ctx) = ctx |> fresh_t in
-    let (v_fun, ctx) = ctx |> add_expr (Hir.EItem (["read"], [t])) in
+    let (v_fun, ctx) = ctx |> add_expr (Hir.EItem (["get_cell"], [t])) in
     ctx |> add_expr (Hir.ECall (v_fun, [v]))
 
   (* Update the value inside a cell *)
   and set_cell v0 v1 ctx =
     let (t, ctx) = ctx |> fresh_t in
-    let (v_fun, ctx) = ctx |> add_expr (Hir.EItem (["update"], [t])) in
+    let (v_fun, ctx) = ctx |> add_expr (Hir.EItem (["set_cell"], [t])) in
     ctx |> add_expr (Hir.ECall (v_fun, [v0; v1]))
 
   (* Create an empty block *)
@@ -349,11 +338,15 @@ module Ctx = struct
     let (v_append, ctx) = ctx |> add_expr (Hir.EItem (["append"], [t])) in
     ctx |> add_expr (Hir.ECall (v_append, [v0; v1]))
 
-  (* Retrieve the value from a cell *)
   and get_array v0 v1 ctx =
     let (t, ctx) = ctx |> fresh_t in
     let (v_fun, ctx) = ctx |> add_expr (Hir.EItem (["get"], [t])) in
     ctx |> add_expr (Hir.ECall (v_fun, [v0; v1]))
+
+  and replace_array v0 v1 v2 ctx =
+    let (t, ctx) = ctx |> fresh_t in
+    let (v_fun, ctx) = ctx |> add_expr (Hir.EItem (["replace"], [t])) in
+    ctx |> add_expr (Hir.ECall (v_fun, [v0; v1; v2]))
 
   and nominal x ts = Hir.TNominal ([x], ts)
 
@@ -555,6 +548,28 @@ and lower_expr_opt e (ctx:Ctx.t) =
   | Some e -> lower_expr e ctx
   | None -> ctx |> Ctx.add_expr (Hir.ELit Ast.LUnit)
 
+and lower_mut e0 e1 ctx =
+  let (v1, ctx) = lower_expr e1 ctx in
+  match e0 with
+  | Ast.EPath ([x], []) ->
+      begin match ctx |> Ctx.find_vname x with
+      | Some (v0, Ctx.MVar) -> ctx |> Ctx.set_cell v0 v1
+      | Some (_, Ctx.MVal) -> panic "L-value is a value"
+      | None -> panic "Variable not bound"
+      end
+  | Ast.ESelect (e00, e01) ->
+      let (v00, ctx) = lower_expr e00 ctx in
+      let (v01, ctx) = lower_expr e01 ctx in
+      ctx |> Ctx.replace_array v00 v01 v1
+  | Ast.EProject (e00, i) ->
+      let (v00, ctx) = lower_expr e00 ctx in
+      ctx |> Ctx.add_expr (Hir.EUpdate (v00, index_to_field i, v1))
+  | Ast.EAccess (e00, x) ->
+      let (v00, ctx) = lower_expr e00 ctx in
+      ctx |> Ctx.add_expr (Hir.EUpdate (v00, x, v1))
+  | _ -> panic "Expected variable, found path"
+
+
 and lower_expr expr ctx =
   match expr with
   | Ast.EAnon ->
@@ -576,9 +591,7 @@ and lower_expr expr ctx =
           ctx |> Ctx.append_array v0 v1
       end
   | Ast.EBinOp (Ast.BMut, e0, e1) ->
-      let (v0, ctx) = Ctx.resolve_lvalue e0 ctx in
-      let (v1, ctx) = lower_expr e1 ctx in
-      ctx |> Ctx.set_cell v0 v1
+      lower_mut e0 e1 ctx
   | Ast.EBinOp (Ast.BNotIn, e0, e1) ->
       lower_expr (Ast.EUnOp (Ast.UNot, (Ast.EBinOp (Ast.BIn, e0, e1)))) ctx
   | Ast.EBinOp (Ast.BNeq s, e0, e1) ->

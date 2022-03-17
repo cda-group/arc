@@ -115,6 +115,8 @@ and pr_ssa (lhs, e) ctx =
       pr_paren (pr_arg_type a0) ctx;
       pr " -> ";
       pr_lhs_type lhs ctx;
+  | Mlir.EUpdate (_a0, _x1, _a1) ->
+      todo ()
   | Mlir.ECall (a0, args) ->
       pr "call_indirect ";
       pr_arg_var a0 ctx;

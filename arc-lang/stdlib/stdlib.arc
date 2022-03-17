@@ -264,6 +264,9 @@ extern def get[T](Array[T], u32): T;
 @{mangled: "Vec_insert"}
 extern def insert[T](Array[T], u32, T);
 
+@{mangled: "Vec_replace"}
+extern def replace[T](Array[T], u32, T);
+
 @{mangled: "Vec_is_empty"}
 extern def is_empty[T](Array[T]): bool;
 
