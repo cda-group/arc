@@ -56,24 +56,47 @@ impl<T: Sendable> DynSendable for sendable::Vec<T> {
 pub use sharable::Vec;
 
 impl<T: Sharable> Vec<T> {
-    pub fn new(ctx: Context) -> Self {
-        sharable::ConcreteVec::<T>::new(ctx.mutator()).alloc(ctx)
-    }
-
-    pub fn with_capacity(capacity: usize, ctx: Context) -> Self {
-        sharable::ConcreteVec::<T>::with_capacity(ctx.mutator(), capacity).alloc(ctx)
-    }
-
-    pub fn write_barrier(&mut self, ctx: Context) {
-        self.0.write_barrier(ctx.mutator())
-    }
-
     pub fn as_slice(&self, ctx: Context) -> &[T] {
         self.0.as_slice()
     }
-
+    pub fn retain<F>(mut self, f: F, ctx: Context)
+    where
+        F: FnMut(&T) -> bool,
+    {
+        self.0.retain(f);
+    }
     pub fn as_slice_mut(&mut self, ctx: Context) -> &mut [T] {
         self.0.as_slice_mut()
+    }
+
+    pub fn dedup(mut self, ctx: Context)
+    where
+        T: PartialEq,
+    {
+        self.0.dedup();
+    }
+
+    pub fn write_barrier(mut self, ctx: Context) {
+        self.0.write_barrier(ctx.mutator())
+    }
+
+    pub fn shrink_to(mut self, min_capacity: usize, ctx: Context) {
+        self.0.shrink_to(ctx.mutator(), min_capacity);
+    }
+
+    pub fn resize(mut self, new_len: usize, value: T, ctx: Context) {
+        self.0.resize(ctx.mutator(), new_len, value);
+    }
+}
+
+#[rewrite]
+impl<T: Sharable> Vec<T> {
+    pub fn new(ctx: Context) -> Vec<T> {
+        sharable::ConcreteVec::<T>::new(ctx.mutator()).alloc(ctx)
+    }
+
+    pub fn with_capacity(capacity: usize, ctx: Context) -> Vec<T> {
+        sharable::ConcreteVec::<T>::with_capacity(ctx.mutator(), capacity).alloc(ctx)
     }
 
     pub fn capacity(self, ctx: Context) -> usize {
@@ -84,23 +107,8 @@ impl<T: Sharable> Vec<T> {
         self.0.len()
     }
 
-    pub fn shrink_to(mut self, min_capacity: usize, ctx: Context) {
-        self.0.shrink_to(ctx.mutator(), min_capacity);
-    }
-
-    pub fn retain<F>(mut self, f: F, ctx: Context)
-    where
-        F: FnMut(&T) -> bool,
-    {
-        self.0.retain(f);
-    }
-
     pub fn clear(mut self, ctx: Context) {
         self.0.clear();
-    }
-
-    pub fn resize(mut self, new_len: usize, value: T, ctx: Context) {
-        self.0.resize(ctx.mutator(), new_len, value);
     }
 
     pub fn push(mut self, value: T, ctx: Context) {
@@ -115,7 +123,7 @@ impl<T: Sharable> Vec<T> {
         self.0.remove(index)
     }
 
-    pub fn at(self, index: usize, ctx: Context) -> T {
+    pub fn get(self, index: usize, ctx: Context) -> T {
         self.0.at(index).clone()
     }
 
@@ -126,11 +134,12 @@ impl<T: Sharable> Vec<T> {
     pub fn is_empty(self, ctx: Context) -> bool {
         self.0.is_empty()
     }
+}
 
-    pub fn dedup(mut self, ctx: Context)
-    where
-        T: PartialEq,
-    {
-        self.0.dedup();
-    }
+#[allow(non_snake_case)]
+pub fn Vec_dedup<T: Sharable>(self_param: Vec<T>, ctx: Context)
+where
+    T: PartialEq,
+{
+    Vec::dedup(self_param, ctx)
 }

@@ -350,9 +350,9 @@ module Ctx = struct
     ctx |> add_expr (Hir.ECall (v_append, [v0; v1]))
 
   (* Retrieve the value from a cell *)
-  and select_array v0 v1 ctx =
+  and get_array v0 v1 ctx =
     let (t, ctx) = ctx |> fresh_t in
-    let (v_fun, ctx) = ctx |> add_expr (Hir.EItem (["select"], [t])) in
+    let (v_fun, ctx) = ctx |> add_expr (Hir.EItem (["get"], [t])) in
     ctx |> add_expr (Hir.ECall (v_fun, [v0; v1]))
 
   and nominal x ts = Hir.TNominal ([x], ts)
@@ -612,7 +612,7 @@ and lower_expr expr ctx =
   | Ast.ESelect (e0, e1) ->
       let (v0, ctx) = lower_expr e0 ctx in
       let (v1, ctx) = lower_expr e1 ctx in
-      ctx |> Ctx.select_array v0 v1
+      ctx |> Ctx.get_array v0 v1
   | Ast.ERecord (fs, _) ->
       let (fs, ctx) = fs |> mapm lower_field_expr ctx in
       ctx |> Ctx.add_expr (Hir.ERecord fs)

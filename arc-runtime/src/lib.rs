@@ -50,7 +50,6 @@ pub mod prelude {
     pub use crate::data::primitives::u8;
     pub use crate::data::primitives::unit;
     pub use crate::data::primitives::Unit;
-    pub use crate::data::vectors::Vec;
     pub use crate::data::Abstract;
     pub use crate::data::Concrete;
     pub use crate::data::DynSendable;
@@ -76,6 +75,20 @@ pub mod prelude {
     pub use crate::data::strings::String_remove;
     pub use crate::data::strings::String_split_off;
     pub use crate::data::strings::String_with_capacity;
+
+    pub use crate::data::vectors::Vec;
+    pub use crate::data::vectors::Vec_capacity;
+    pub use crate::data::vectors::Vec_clear;
+    pub use crate::data::vectors::Vec_dedup;
+    pub use crate::data::vectors::Vec_get;
+    pub use crate::data::vectors::Vec_insert;
+    pub use crate::data::vectors::Vec_is_empty;
+    pub use crate::data::vectors::Vec_len;
+    pub use crate::data::vectors::Vec_new;
+    pub use crate::data::vectors::Vec_pop;
+    pub use crate::data::vectors::Vec_push;
+    pub use crate::data::vectors::Vec_remove;
+    pub use crate::data::vectors::Vec_with_capacity;
 
     // Declarative macros
     pub use crate::access;

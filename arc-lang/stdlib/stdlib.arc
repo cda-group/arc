@@ -246,13 +246,38 @@ enum Option[T] {
 extern type Array[T];
 # ANCHOR_END: array
 
+@{mangled: "Vec_new"}
 extern def array[T](): Array[T];
+
+@{mangled: "Vec_push"}
 extern def push[T](Array[T], T);
+
+@{mangled: "Vec_pop"}
 extern def pop[T](Array[T]);
-extern def select[T](Array[T], i32): T;
-extern def len[T](Array[T]): i32;
+
+@{mangled: "Vec_remove"}
+extern def remove[T](Array[T], u32): T;
+
+@{mangled: "Vec_select"}
+extern def get[T](Array[T], u32): T;
+
+@{mangled: "Vec_insert"}
+extern def insert[T](Array[T], u32, T);
+
+@{mangled: "Vec_is_empty"}
+extern def is_empty[T](Array[T]): bool;
+
+@{mangled: "Vec_len"}
+extern def len[T](Array[T]): u32;
+
+@{mangled: "Vec_extend"}
 extern def extend[T](Array[T], Array[T]);
-extern def contains[T](T, Array[T]): bool;
+
+@{mangled: "Vec_clear"}
+extern def clear[T](Array[T]);
+
+@{mangled: "Vec_capacity"}
+extern def capacity[T](Array[T]): u32;
 
 # ------------------------------------------------------
 
