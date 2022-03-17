@@ -68,7 +68,7 @@ impl ArcLang {
 
 const KEYWORDS: &[&str] = &[
     "and", "or", "xor", "band", "bor", "bxor", "is", "not", "in", "class", "instance", "def",
-    "task", "on", "emit", "val", "var", "fun", "fun", "unit", "mod",
+    "task", "on", "emit", "val", "var", "fun", "fun", "unit", "mod", "extern",
 ];
 
 impl Preprocessor for ArcLang {
@@ -77,6 +77,7 @@ impl Preprocessor for ArcLang {
     }
 
     fn run(&self, _: &PreprocessorContext, mut book: Book) -> Result<Book, Error> {
+        preprocess_exec(&mut book);
         preprocess_grammar(&mut book);
         preprocess_snippet(&mut book);
 
@@ -86,6 +87,27 @@ impl Preprocessor for ArcLang {
     fn supports_renderer(&self, renderer: &str) -> bool {
         renderer != "not-supported"
     }
+}
+
+fn preprocess_exec(book: &mut Book) {
+    let exec_regex = regex::Regex::new(r"\{\{#exec (.*?)\}\}").unwrap();
+    book.for_each_mut(|item| {
+        if let mdbook::BookItem::Chapter(ch) = item {
+            ch.content = exec_regex
+                .replace_all(&ch.content, |caps: &regex::Captures<'_>| {
+                    let s = caps.get(1).unwrap().as_str();
+                    let s = std::process::Command::new("/bin/sh")
+                        .arg("-c")
+                        .arg(s)
+                        .output()
+                        .unwrap();
+                    let s = s.stdout;
+                    let s = std::str::from_utf8(s.as_ref()).unwrap();
+                    format!("{}", s)
+                })
+                .into_owned();
+        }
+    });
 }
 
 fn preprocess_grammar(book: &mut Book) {
@@ -113,6 +135,7 @@ fn preprocess_grammar(book: &mut Book) {
                     let s = subterm_regex.replace_all(&s, subterm_subst);
                     let s = nonterm_regex.replace_all(&s, nonterm_subst);
                     let s = head_regex.replace_all(&s, head_subst);
+                    let s = s.trim();
                     format!("<pre><code>{}</code></pre>", s)
                 })
                 .into_owned();
@@ -137,6 +160,7 @@ fn preprocess_snippet(book: &mut Book) {
                     let s = caps.get(2).unwrap().as_str();
                     let s = keyword_regex.replace_all(&s, keyword_subst);
                     let s = comment_regex.replace_all(&s, comment_subst);
+                    let s = s.trim();
                     if caps.get(1).is_some() {
                         format!(
                             r#"<pre><code style="background-color:#FFC590">{}</code></pre>"#,

@@ -1,13 +1,10 @@
 # Word Count (Not yet fully supported)
 
-
-## Implementation
+Word count is a simple way to count the number of words in a text. The code for calculating a wordcount is as follows.
 
 ```
-val lines = read_stdin();
-
 val word_counts =
-  from line in lines,
+  from line in read_stdin(),
        word in line.split(" ")
   yield #{word, count:1}
   keyby word

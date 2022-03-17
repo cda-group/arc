@@ -1,0 +1,6 @@
+# Items
+
+```grammar
+Item ::=
+  | [Func]
+```
