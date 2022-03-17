@@ -296,27 +296,31 @@ extern def get_cell[T](Cell[T]): T;
 
 extern type Iter[T];
 
+@{mangled: "Iter_next"}
 extern def next[T](Iter[T], T): T;
 
 # ------------------------------------------------------
 
 extern type Range[T];
 
+@{mangled: "Range_new"}
 extern def new_range[T](T, T): Range[T];
+
+@{mangled: "Range_leq"}
 extern def leq_range[T](Range[T], T): bool;
+
+@{mangled: "Range_geq"}
 extern def geq_range[T](Range[T], T): bool;
+
+@{mangled: "Range_lt"}
 extern def lt_range[T](Range[T], T): bool;
+
+@{mangled: "Range_gt"}
 extern def gt_range[T](Range[T], T): bool;
 
 # ------------------------------------------------------
 
 extern type Stream[T];
 
+@{mangled: "Stream_map"}
 extern def map[A,B](Stream[A], fun(A):B): Stream[B];
-extern def key_by[K,V](Stream[V], fun(V):K): KStream[K,V];
-
-# ------------------------------------------------------
-
-extern type KStream[K,V];
-
-extern def fold[K,V](KStream[K,V], fun(V,V):V): Stream[V];
