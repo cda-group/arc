@@ -4,7 +4,7 @@
 - [Getting Started](getting-started.md)
 - [Tour of Arc-Lang](tour/mod.md)
   - [Basics](tour/basics.md)
-  - [Tasks](tour/tasks.md)
+  - [Tasks and Channels](tour/tasks.md)
   - [Queries](tour/queries.md)
 - [Examples](examples/mod.md)
   - [Word Count](examples/word-count.md)

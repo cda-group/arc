@@ -3,18 +3,13 @@
 # RUN: arc -o %t-canon run %s -- -rustinclude %s.rust-tests -canonicalize
 
 # ANCHOR: example
-task union(s0, s1): (s2) {
+task map(i, f): (o) {
     loop {
-        on {
-            x in s0 => s2 ! x,
-            x in s1 => s2 ! x,
-        }
+        o ! f(receive i);
     }
 }
 
 def main() {
-    val stream0 = 0..100;
-    val stream1 = 0..100;
-    val stream2 = union(stream0, stream1);
+    val c = map(c, fun(x) = x + 1);
 }
 # ANCHOR_END: example
