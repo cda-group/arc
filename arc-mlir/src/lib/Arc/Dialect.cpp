@@ -160,21 +160,21 @@ void arc::ConstantIntOp::print(OpAsmPrinter &printer) {
   printer << ' ' << value();
 }
 
-static LogicalResult verify(arc::ConstantIntOp constOp) {
-  auto opType = constOp.getType();
-  auto value = constOp.value();
-  auto valueType = value.getType();
+LogicalResult arc::ConstantIntOp::verify() {
+  auto opType = getType();
+  auto v = value();
+  auto valueType = v.getType();
 
   // ODS already generates checks to make sure the result type is
   // valid. We just need to additionally check that the value's
   // attribute type is consistent with the result type.
-  if (value.isa<IntegerAttr>()) {
+  if (v.isa<IntegerAttr>()) {
     if (valueType != opType)
-      return constOp.emitOpError("result type (")
+      return emitOpError("result type (")
              << opType << ") does not match value type (" << valueType << ")";
     return success();
   } else {
-    return constOp.emitOpError("cannot have value of type ") << valueType;
+    return emitOpError("cannot have value of type ") << valueType;
   }
 
   return success();
@@ -269,7 +269,7 @@ OpFoldResult DivIOp::fold(ArrayRef<Attribute> operands) {
 //===----------------------------------------------------------------------===//
 // EmitOp
 //===----------------------------------------------------------------------===//
-LogicalResult EmitOp::customVerify() {
+LogicalResult EmitOp::verify() {
   auto Operation = this->getOperation();
   auto ElemTy = Operation->getOperand(0).getType();
   auto StreamTy =
@@ -283,7 +283,7 @@ LogicalResult EmitOp::customVerify() {
 //===----------------------------------------------------------------------===//
 // Enums
 //===----------------------------------------------------------------------===//
-LogicalResult EnumAccessOp::customVerify() {
+LogicalResult EnumAccessOp::verify() {
   auto ResultTy = result().getType();
   auto SourceTy = value().getType().cast<EnumType>();
   auto VariantTys = SourceTy.getVariants();
@@ -307,7 +307,7 @@ LogicalResult EnumAccessOp::customVerify() {
          << WantedVariant << "' does not exist in " << SourceTy;
 }
 
-LogicalResult EnumCheckOp::customVerify() {
+LogicalResult EnumCheckOp::verify() {
   auto SourceTy = value().getType().cast<EnumType>();
   auto VariantTys = SourceTy.getVariants();
   auto WantedVariant = (*this)->getAttrOfType<StringAttr>("variant").getValue();
@@ -320,7 +320,7 @@ LogicalResult EnumCheckOp::customVerify() {
          << WantedVariant << "' does not exist in " << SourceTy;
 }
 
-LogicalResult MakeEnumOp::customVerify() {
+LogicalResult MakeEnumOp::verify() {
   auto ResultTy = result().getType().cast<EnumType>();
   Type SourceTy = NoneType::get(getContext());
   auto VariantTys = ResultTy.getVariants();
@@ -346,7 +346,7 @@ LogicalResult MakeEnumOp::customVerify() {
          << WantedVariant << "' does not exist in " << ResultTy;
 }
 
-LogicalResult MakeVectorOp::customVerify() {
+LogicalResult MakeVectorOp::verify() {
   auto Operation = this->getOperation();
   auto NumOperands = Operation->getNumOperands();
   auto ElemTy = Operation->getOperand(0).getType();
@@ -362,7 +362,7 @@ LogicalResult MakeVectorOp::customVerify() {
   return mlir::success();
 }
 
-LogicalResult MakeStructOp::customVerify() {
+LogicalResult MakeStructOp::verify() {
   auto Operation = this->getOperation();
   auto NumOperands = Operation->getNumOperands();
   auto StructTy = Operation->getResult(0).getType().cast<StructType>();
@@ -380,7 +380,7 @@ LogicalResult MakeStructOp::customVerify() {
   return mlir::success();
 }
 
-LogicalResult MakeTensorOp::customVerify() {
+LogicalResult MakeTensorOp::verify() {
   auto Operation = this->getOperation();
   auto NumOperands = Operation->getNumOperands();
   auto TensorTy = Operation->getResult(0).getType().cast<RankedTensorType>();
@@ -397,7 +397,7 @@ LogicalResult MakeTensorOp::customVerify() {
   return mlir::success();
 }
 
-LogicalResult MakeTupleOp::customVerify() {
+LogicalResult MakeTupleOp::verify() {
   auto Operation = this->getOperation();
   auto NumOperands = Operation->getNumOperands();
   auto TupleTy = Operation->getResult(0).getType().cast<TupleType>();
@@ -418,7 +418,7 @@ LogicalResult MakeTupleOp::customVerify() {
   return mlir::success();
 }
 
-LogicalResult IndexTupleOp::customVerify() {
+LogicalResult IndexTupleOp::verify() {
   auto Operation = this->getOperation();
   auto ResultTy = Operation->getResult(0).getType();
   auto TupleTy = Operation->getOperand(0).getType().cast<TupleType>();
@@ -437,7 +437,7 @@ LogicalResult IndexTupleOp::customVerify() {
   return mlir::success();
 }
 
-LogicalResult ArcBlockResultOp::customVerify() {
+LogicalResult ArcBlockResultOp::verify() {
   // Check that our type matches the type of our parent if-op
   auto Op = this->getOperation();
   auto Parent = Op->getParentOp();
@@ -472,7 +472,7 @@ LogicalResult ArcBlockResultOp::customVerify() {
   return mlir::success();
 }
 
-LogicalResult IfOp::customVerify() {
+LogicalResult IfOp::verify() {
   if (this->getOperation()->getNumResults() > 1) {
     emitOpError("cannot return more than one result");
     return mlir::failure();
@@ -494,33 +494,33 @@ LogicalResult IfOp::customVerify() {
   return mlir::success();
 }
 
-static LogicalResult verify(LoopBreakOp breakOp) {
+LogicalResult LoopBreakOp::verify() {
   // HasParent<"scf::WhileOp"> in the .td apparently only looks at the
   // immediate parent and not all parents. Therefore we have to check
   // that we are inside a loop here.
-  scf::WhileOp loopOp = breakOp->getParentOfType<scf::WhileOp>();
+  scf::WhileOp loopOp = (*this)->getParentOfType<scf::WhileOp>();
   if (!loopOp)
-    return breakOp.emitOpError("must be inside a scf.while region");
+    return emitOpError("must be inside a scf.while region");
 
   // Now check that what we return matches the type of the parent
-  unsigned noofResults = breakOp.getNumOperands();
+  unsigned noofResults = getNumOperands();
   unsigned noofParentResults = loopOp.getNumResults();
 
   if (noofResults != noofParentResults)
-    breakOp.emitOpError("returns ")
+    emitOpError("returns ")
         << noofResults << " values parent expects " << noofParentResults;
 
-  auto breakTypes = breakOp.getOperandTypes();
+  auto breakTypes = getOperandTypes();
   auto loopTypes = loopOp.getResultTypes();
   for (unsigned i = 0; i < noofResults; i++)
     if (breakTypes[i] != loopTypes[i])
-      breakOp.emitOpError(
+      emitOpError(
           "type signature does not match signature of parent 'scf.while'");
 
   return success();
 }
 
-LogicalResult MergeOp::customVerify() {
+LogicalResult MergeOp::verify() {
   auto Operation = this->getOperation();
   auto BuilderTy = Operation->getOperand(0).getType().cast<BuilderType>();
   auto BuilderMergeTy = BuilderTy.getMergeType();
@@ -535,7 +535,7 @@ LogicalResult MergeOp::customVerify() {
   return mlir::success();
 }
 
-LogicalResult ResultOp::customVerify() {
+LogicalResult ResultOp::verify() {
   auto Operation = this->getOperation();
   auto BuilderTy = Operation->getOperand(0).getType().cast<BuilderType>();
   auto BuilderResultTy = BuilderTy.getResultType();
@@ -546,7 +546,7 @@ LogicalResult ResultOp::customVerify() {
   return mlir::success();
 }
 
-LogicalResult StructAccessOp::customVerify() {
+LogicalResult StructAccessOp::verify() {
   auto Operation = this->getOperation();
   auto ResultTy = Operation->getResult(0).getType();
   auto StructTy = Operation->getOperand(0).getType().cast<StructType>();
@@ -627,7 +627,7 @@ OpFoldResult arc::OrOp::fold(ArrayRef<Attribute> operands) {
 //===----------------------------------------------------------------------===//
 // ReceiveOp
 //===----------------------------------------------------------------------===//
-LogicalResult ReceiveOp::customVerify() {
+LogicalResult ReceiveOp::verify() {
   // Check that we're located inside a task
   FuncOp function = getOperation()->getParentOfType<FuncOp>();
   if (!function->hasAttr("arc.is_task")) {
@@ -675,29 +675,29 @@ OpFoldResult RemIOp::fold(ArrayRef<Attribute> operands) {
 //===----------------------------------------------------------------------===//
 // ArcReturnOp
 //===----------------------------------------------------------------------===//
-static LogicalResult verify(ArcReturnOp returnOp) {
-  FuncOp function = returnOp->getParentOfType<FuncOp>();
+LogicalResult ArcReturnOp::verify() {
+  FuncOp function = (*this)->getParentOfType<FuncOp>();
   if (!function)
-    return returnOp.emitOpError("expects parent op builtin.func");
+    return emitOpError("expects parent op builtin.func");
 
-  FunctionType funType = function.getType();
+  FunctionType funType = function.getFunctionType().cast<FunctionType>();
 
-  if (funType.getNumResults() == 0 && returnOp.operands())
-    return returnOp.emitOpError("cannot return a value from a void function");
+  if (funType.getNumResults() == 0 && operands())
+    return emitOpError("cannot return a value from a void function");
 
-  if (!returnOp.operands() && funType.getNumResults())
-    return returnOp.emitOpError("operation must return a ")
+  if (!operands() && funType.getNumResults())
+    return emitOpError("operation must return a ")
            << funType.getResult(0) << " value";
 
   if (!funType.getNumResults())
     return success();
 
-  Type returnType = returnOp.getOperand(0).getType();
+  Type returnType = getOperand(0).getType();
   Type funReturnType = funType.getResult(0);
 
   if (funReturnType != returnType) {
-    return returnOp.emitOpError("result type does not match the type of the "
-                                "function: expected ")
+    return emitOpError("result type does not match the type of the "
+                       "function: expected ")
            << funReturnType << " but found " << returnType;
   }
   return success();
@@ -724,7 +724,7 @@ OpFoldResult arc::SelectOp::fold(ArrayRef<Attribute> operands) {
 //===----------------------------------------------------------------------===//
 // SendOp
 //===----------------------------------------------------------------------===//
-LogicalResult SendOp::customVerify() {
+LogicalResult SendOp::verify() {
   // Check that we're located inside a task
   FuncOp function = getOperation()->getParentOfType<FuncOp>();
   if (!function->hasAttr("arc.is_task")) {
@@ -781,7 +781,7 @@ OpFoldResult arc::XOrOp::fold(ArrayRef<Attribute> operands) {
 //===----------------------------------------------------------------------===//
 // StateAppender operations
 //===----------------------------------------------------------------------===//
-LogicalResult StateAppenderFoldOp::customVerify() {
+LogicalResult StateAppenderFoldOp::verify() {
   auto InitTy = init().getType();
   auto ResultTy = res().getType();
   StringAttr funName = StringAttr::get(this->getContext(), fun());
@@ -790,7 +790,7 @@ LogicalResult StateAppenderFoldOp::customVerify() {
   auto StateTy = state().getType().cast<ArconAppenderType>().getType();
 
   FuncOp F = dyn_cast<FuncOp>(Callee);
-  FunctionType FT = F.type().dyn_cast<FunctionType>();
+  FunctionType FT = F.getFunctionType().dyn_cast<FunctionType>();
 
   if (!F)
     return emitOpError("fold function operand is not a function ");
@@ -826,7 +826,7 @@ LogicalResult StateAppenderFoldOp::customVerify() {
   return mlir::success();
 }
 
-LogicalResult StateAppenderPushOp::customVerify() {
+LogicalResult StateAppenderPushOp::verify() {
   auto ValTy = value().getType();
   auto StateTy = state().getType().cast<ArconAppenderType>().getType();
   if (ValTy != StateTy)
@@ -838,7 +838,7 @@ LogicalResult StateAppenderPushOp::customVerify() {
 //===----------------------------------------------------------------------===//
 // StateMap operations
 //===----------------------------------------------------------------------===//
-LogicalResult StateMapContainsOp::customVerify() {
+LogicalResult StateMapContainsOp::verify() {
   auto KeyTy = key().getType();
   auto ExpectedKeyTy = state().getType().cast<ArconMapType>().getKeyType();
   if (KeyTy != ExpectedKeyTy)
@@ -847,7 +847,7 @@ LogicalResult StateMapContainsOp::customVerify() {
   return mlir::success();
 }
 
-LogicalResult StateMapGetOp::customVerify() {
+LogicalResult StateMapGetOp::verify() {
   auto ValTy = result().getType();
   auto KeyTy = key().getType();
   auto ExpectedKeyTy = state().getType().cast<ArconMapType>().getKeyType();
@@ -861,7 +861,7 @@ LogicalResult StateMapGetOp::customVerify() {
   return mlir::success();
 }
 
-LogicalResult StateMapInsertOp::customVerify() {
+LogicalResult StateMapInsertOp::verify() {
   auto ValTy = value().getType();
   auto KeyTy = key().getType();
   auto ExpectedKeyTy = state().getType().cast<ArconMapType>().getKeyType();
@@ -875,7 +875,7 @@ LogicalResult StateMapInsertOp::customVerify() {
   return mlir::success();
 }
 
-LogicalResult StateMapRemoveOp::customVerify() {
+LogicalResult StateMapRemoveOp::verify() {
   auto KeyTy = key().getType();
   auto ExpectedKeyTy = state().getType().cast<ArconMapType>().getKeyType();
   if (KeyTy != ExpectedKeyTy)
@@ -887,7 +887,7 @@ LogicalResult StateMapRemoveOp::customVerify() {
 //===----------------------------------------------------------------------===//
 // StateValue operations
 //===----------------------------------------------------------------------===//
-LogicalResult StateValueWriteOp::customVerify() {
+LogicalResult StateValueWriteOp::verify() {
   auto ValTy = value().getType();
   auto StateTy = state().getType().cast<ArconValueType>().getType();
   if (ValTy != StateTy)
@@ -896,7 +896,7 @@ LogicalResult StateValueWriteOp::customVerify() {
   return mlir::success();
 }
 
-LogicalResult StateValueReadOp::customVerify() {
+LogicalResult StateValueReadOp::verify() {
   auto Operation = this->getOperation();
   auto ValTy = state().getType().cast<ArconValueType>().getType();
   auto ResultTy = Operation->getResult(0).getType();

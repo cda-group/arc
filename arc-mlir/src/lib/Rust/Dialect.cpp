@@ -133,7 +133,7 @@ void RustDialect::printType(Type type, DialectAsmPrinter &os) const {
 
 /// Hook for FunctionLike verifier.
 LogicalResult RustFuncOp::verifyType() {
-  Type type = getTypeAttr().getValue();
+  Type type = getFunctionType();
   if (!type.isa<FunctionType>())
     return emitOpError("requires '" + getTypeAttrName() +
                        "' attribute of function type");
@@ -165,7 +165,7 @@ LogicalResult RustFuncOp::verifyType() {
 
 /// Hook for FunctionLike verifier.
 LogicalResult RustExtFuncOp::verifyType() {
-  Type type = getTypeAttr().getValue();
+  Type type = getFunctionType();
   if (!type.isa<FunctionType>())
     return emitOpError("requires '" + getTypeAttrName() +
                        "' attribute of function type");
@@ -181,7 +181,7 @@ LogicalResult RustFuncOp::verifyBody() {
                          << " arguments to body region, found "
                          << numBlockArguments;
 
-  ArrayRef<Type> funcArgTypes = getType().getInputs();
+  ArrayRef<Type> funcArgTypes = getArgumentTypes();
   for (unsigned i = 0; i < numFuncArguments; ++i) {
     Type blockArgType = front().getArgument(i).getType();
     if (funcArgTypes[i] != blockArgType)
@@ -193,30 +193,30 @@ LogicalResult RustFuncOp::verifyBody() {
   return success();
 }
 
-static LogicalResult verify(RustReturnOp returnOp) {
-  RustFuncOp function = returnOp->getParentOfType<RustFuncOp>();
+LogicalResult RustReturnOp::verify() {
+  RustFuncOp function = (*this)->getParentOfType<RustFuncOp>();
 
   if (!function)
-    return returnOp.emitOpError("expects 'rust.func' parent");
+    return emitOpError("expects 'rust.func' parent");
 
-  FunctionType funType = function.getType();
+  FunctionType funType = function.getFunctionType();
 
-  if (funType.getNumResults() == 0 && returnOp.operands())
-    return returnOp.emitOpError("cannot return a value from a void function");
+  if (funType.getNumResults() == 0 && operands())
+    return emitOpError("cannot return a value from a void function");
 
-  if (!returnOp.operands() && funType.getNumResults())
-    return returnOp.emitOpError("operation must return a ")
+  if (!operands() && funType.getNumResults())
+    return emitOpError("operation must return a ")
            << funType.getResult(0) << " value";
 
   if (!funType.getNumResults())
     return success();
 
-  Type returnType = returnOp.getOperand(0).getType();
+  Type returnType = getOperand(0).getType();
   Type funReturnType = funType.getResult(0);
 
   if (funReturnType != returnType) {
-    return returnOp.emitOpError("result type does not match the type of the "
-                                "function: expected ")
+    return emitOpError("result type does not match the type of the "
+                       "function: expected ")
            << funReturnType << " but found " << returnType;
   }
   return success();
@@ -436,8 +436,9 @@ void RustFuncOp::writeRust(RustPrinterStream &PS) {
     PS.printAsArg(v) << ": " << v.getType();
   }
   PS << ") ";
-  if (getType().getNumResults()) { // The return type
-    PS << "-> " << getType().getResult(0) << " ";
+  FunctionType funcTy = getFunctionType();
+  if (funcTy.getNumResults()) { // The return type
+    PS << "-> " << funcTy.getResult(0) << " ";
   }
 
   // Dumping the body
@@ -465,7 +466,7 @@ void RustExtFuncOp::writeRust(RustPrinterStream &PS) {
   PS << (*this)->getAttrOfType<StringAttr>("rust.annotation").getValue()
      << "\npub fn " << getName() << "(";
 
-  FunctionType fType = getType().cast<FunctionType>();
+  FunctionType fType = getFunctionType();
 
   unsigned numFuncArguments = fType.getNumInputs();
   for (unsigned i = 0; i < numFuncArguments; i++) {
@@ -476,7 +477,7 @@ void RustExtFuncOp::writeRust(RustPrinterStream &PS) {
   }
   PS << ") ";
   if (fType.getNumResults()) { // The return type
-    PS << "-> " << getType().getResult(0) << " ";
+    PS << "-> " << fType.getResult(0) << " ";
   }
   PS << "{}\n";
 }
@@ -570,27 +571,27 @@ void RustLoopOp::writeRust(RustPrinterStream &PS) {
   PS << "};\n";
 }
 
-static LogicalResult verify(RustLoopBreakOp breakOp) {
+LogicalResult RustLoopBreakOp::verify() {
   // HasParent<"RustLoopOp"> in the .td apparently only looks at the
   // immediate parent and not all parents. Therefore we have to check
   // that we are inside a loop here.
-  RustLoopOp loopOp = breakOp->getParentOfType<RustLoopOp>();
+  RustLoopOp loopOp = (*this)->getParentOfType<RustLoopOp>();
   if (!loopOp)
-    return breakOp.emitOpError("must be inside a rust.loop region");
+    return emitOpError("must be inside a rust.loop region");
 
   // Now check that what we return matches the type of the parent
-  unsigned noofResults = breakOp.getNumOperands();
+  unsigned noofResults = getNumOperands();
   unsigned noofParentResults = loopOp.getNumResults();
 
   if (noofResults != noofParentResults)
-    return breakOp.emitOpError("returns ")
+    return emitOpError("returns ")
            << noofResults << " values parent expects " << noofParentResults;
 
-  auto breakTypes = breakOp.getOperandTypes();
+  auto breakTypes = getOperandTypes();
   auto loopTypes = loopOp.getResultTypes();
   for (unsigned i = 0; i < noofResults; i++)
     if (breakTypes[i] != loopTypes[i])
-      return breakOp.emitOpError(
+      return emitOpError(
           "type signature does not match signature of parent 'rust.loop'");
 
   return success();
@@ -733,19 +734,19 @@ void RustIfOp::writeRust(RustPrinterStream &PS) {
   PS << "};\n";
 }
 
-static LogicalResult verify(RustIfOp ifOp) {
+LogicalResult RustIfOp::verify() {
   // Check that the terminators are a rust.loop.break or a
   // rust.block.result.
-  auto &thenTerm = ifOp.thenRegion().getBlocks().back().back();
-  auto &elseTerm = ifOp.elseRegion().getBlocks().back().back();
+  auto &thenTerm = thenRegion().getBlocks().back().back();
+  auto &elseTerm = elseRegion().getBlocks().back().back();
 
   if ((isa<RustBlockResultOp>(thenTerm) || isa<RustLoopBreakOp>(thenTerm) ||
        isa<RustReturnOp>(thenTerm)) &&
       (isa<RustBlockResultOp>(elseTerm) || isa<RustLoopBreakOp>(elseTerm) ||
        isa<RustReturnOp>(elseTerm)))
     return success();
-  return ifOp.emitOpError("expects terminators to be 'rust.loop.break' or "
-                          "'rust.block.result' operations");
+  return emitOpError("expects terminators to be 'rust.loop.break' or "
+                     "'rust.block.result' operations");
 }
 
 //===----------------------------------------------------------------------===//

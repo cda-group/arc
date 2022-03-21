@@ -153,7 +153,7 @@ def MakeVectorOp
   let results = (outs 1DTensorOf<[AnyType]>);
   let hasCanonicalizer = 1;
   let extraClassDeclaration = [{ LogicalResult customVerify(); }];
-  let verifier = [{ return customVerify(); }];
+  let hasVerifier = 1;
 }
 
 def ArcKeepOp : Arc_Op<"keep", []> {
@@ -237,7 +237,7 @@ def MakeStructOp : Arc_Op<"make_struct", [NoSideEffect]> {
   let arguments = (ins Variadic<AnyType>:$values);
   let results = (outs AnyStruct:$result);
   let extraClassDeclaration = [{ LogicalResult customVerify(); }];
-  let verifier = [{ return customVerify(); }];
+  let hasVerifier = 1;
 
   let assemblyFormat = [{
     `(` ($values^ `:` type($values) )? `)` attr-dict `:` type($result)
@@ -255,7 +255,7 @@ def MakeEnumOp : Arc_Op<"make_enum", [NoSideEffect]> {
   let arguments = (ins Variadic<AnyType>:$values, StrAttr:$variant);
   let results = (outs AnyEnum:$result);
   let extraClassDeclaration = [{ LogicalResult customVerify(); }];
-  let verifier = [{ return customVerify(); }];
+  let hasVerifier = 1;
 
   let assemblyFormat =
     "`(` ($values^ `:` type($values))? `)` `as` $variant attr-dict `:` type($result)";
@@ -269,7 +269,7 @@ def MakeTupleOp : Arc_Op<"make_tuple", [NoSideEffect]> {
   let arguments = (ins Variadic<AnyType>:$values);
   let results = (outs AnyTuple);
   let extraClassDeclaration = [{ LogicalResult customVerify(); }];
-  let verifier = [{ return customVerify(); }];
+  let hasVerifier = 1;
 }
 
 def MakeTensorOp : Arc_Op<"make_tensor",
@@ -282,7 +282,7 @@ def MakeTensorOp : Arc_Op<"make_tensor",
   let arguments = (ins Variadic<ArcTensorElementType>:$values);
   let results = (outs StaticShapeTensorOf<[ArcTensorElementType]>);
   let extraClassDeclaration = [{ LogicalResult customVerify(); }];
-  let verifier = [{ return customVerify(); }];
+  let hasVerifier = 1;
 }
 
 def IndexTupleOp : Arc_Op<"index_tuple", [NoSideEffect]> {
@@ -294,7 +294,7 @@ def IndexTupleOp : Arc_Op<"index_tuple", [NoSideEffect]> {
                    Confined<I64Attr, [IntNonNegative]>:$index);
   let results = (outs AnyType);
   let extraClassDeclaration = [{ LogicalResult customVerify(); }];
-  let verifier = [{ return customVerify(); }];
+  let hasVerifier = 1;
   let hasCanonicalizer = 1;
 }
 
@@ -313,7 +313,7 @@ def ArcBlockResultOp :
   }];
   let arguments = (ins Variadic<AnyType>:$result);
   let extraClassDeclaration = [{ LogicalResult customVerify(); }];
-  let verifier = [{ return customVerify(); }];
+  let hasVerifier = 1;
 }
 
 def IfOp : Arc_Op<"if", [SingleBlock]> {
@@ -335,7 +335,7 @@ def IfOp : Arc_Op<"if", [SingleBlock]> {
   let regions = (region SizedRegion<1>:$thenRegion, SizedRegion<1>:$elseRegion);
   let results = (outs Variadic<AnyType>:$result);
   let extraClassDeclaration = [{ LogicalResult customVerify(); }];
-  let verifier = [{ return customVerify(); }];
+  let hasVerifier = 1;
   let hasCanonicalizer = 1;
 }
 
@@ -347,7 +347,7 @@ def LoopBreakOp : Arc_Op<"loop.break", [NoSideEffect, Terminator]> {
 
   let arguments = (ins Variadic<AnyType>:$results);
 
-  let verifier = [{ return ::verify(*this); }];
+  let hasVerifier = 1;
 }
 
 def MakeAppenderOp : Arc_Op<"make_appender", [NoSideEffect, Linear]> {
@@ -381,7 +381,7 @@ def MergeOp : Arc_Op<"merge", [NoSideEffect, Linear]> {
   }];
   let arguments = (ins AnyBuilder:$builder, AnyValue:$value);
   let results = (outs AnyBuilder);
-  let verifier = [{ return customVerify(); }];
+  let hasVerifier = 1;
   let extraClassDeclaration = [{ LogicalResult customVerify(); }];
 }
 
@@ -401,7 +401,7 @@ def ResultOp : Arc_Op<"result", [NoSideEffect]> {
   }];
   let arguments = (ins AnyAppender:$builder);
   let results = (outs AnyType);
-  let verifier = [{ return customVerify(); }];
+  let hasVerifier = 1;
   let extraClassDeclaration = [{ LogicalResult customVerify(); }];
 }
 
@@ -431,7 +431,7 @@ def Arc_ConstantIntOp : Arc_Op<"constant", [ConstantLike, NoSideEffect]> {
     AnyArcInteger:$constant
   );
   let hasCustomAssemblyFormat = 1;
-  let verifier = [{ return ::verify(*this); }];
+  let hasVerifier = 1;
   let hasFolder = 1;
 
   let extraClassDeclaration = [{
@@ -482,8 +482,6 @@ def Arc_CmpIOp : Arc_Op<"cmpi",
     }
   }];
 
-  let verifier = [{ return success(); }];
-
   let hasFolder = 1;
 
   let assemblyFormat = "$predicate `,` $lhs `,` $rhs attr-dict `:` type($lhs)";
@@ -500,7 +498,7 @@ def Arc_EmitOp : Arc_Op<"emit", []> {
       ArcStream:$stream
   );
   let results = (outs);
-  let verifier = [{ return customVerify(); }];
+  let hasVerifier = 1;
 
   let extraClassDeclaration = [{ LogicalResult customVerify(); }];
 }
@@ -513,7 +511,7 @@ def Arc_ReceiveOp : Arc_Op<"receive", []> {
 
   let arguments = (ins ArcSourceStream:$source);
   let results = (outs StreamElementType:$value);
-  let verifier = [{ return customVerify(); }];
+  let hasVerifier = 1;
 
   let extraClassDeclaration = [{ LogicalResult customVerify(); }];
 }
@@ -532,7 +530,6 @@ def Arc_SelectOp : Arc_Op<"select", [NoSideEffect, SameOperandsAndResultShape,
                        ArcIntegerLike:$true_value,
                        ArcIntegerLike:$false_value);
   let results = (outs ArcIntegerLike:$result);
-  let verifier = ?;
 
   let extraClassDeclaration = [{
       Value getCondition() { return condition(); }
@@ -558,7 +555,7 @@ def Arc_SendOp : Arc_Op<"send", []> {
       ArcSinkStream:$sink
   );
   let results = (outs);
-  let verifier = [{ return customVerify(); }];
+  let hasVerifier = 1;
 
   let extraClassDeclaration = [{ LogicalResult customVerify(); }];
 }
@@ -576,7 +573,7 @@ def EnumAccessOp : Arc_Op<"enum_access", [NoSideEffect]> {
   let arguments = (ins AnyEnum:$value, StrAttr:$variant);
   let results = (outs AnyType:$result);
   let extraClassDeclaration = [{ LogicalResult customVerify(); }];
-  let verifier = [{ return customVerify(); }];
+  let hasVerifier = 1;
   let hasCanonicalizer = 1;
   let assemblyFormat =
     "$variant `in` `(` $value `:` type($value) `)` attr-dict `:` type($result)";
@@ -595,7 +592,7 @@ def EnumCheckOp : Arc_Op<"enum_check", [NoSideEffect]> {
   let arguments = (ins AnyEnum:$value, StrAttr:$variant);
   let results = (outs BoolLike:$result);
   let extraClassDeclaration = [{ LogicalResult customVerify(); }];
-  let verifier = [{ return customVerify(); }];
+  let hasVerifier = 1;
   let hasCanonicalizer = 1;
   let assemblyFormat =
     "`(` $value `:` type($value) `)` `is` $variant attr-dict `:` type($result)";
@@ -614,7 +611,7 @@ def StructAccessOp : Arc_Op<"struct_access", [NoSideEffect]> {
   let arguments = (ins AnyStruct:$value, StrAttr : $field);
   let results = (outs AnyType);
   let extraClassDeclaration = [{ LogicalResult customVerify(); }];
-  let verifier = [{ return customVerify(); }];
+  let hasVerifier = 1;
   let hasCanonicalizer = 1;
 }
 
@@ -699,7 +696,7 @@ def Arc_StateAppenderPushOp : Arc_Op<"appender_push", []> {
   let arguments = (ins ArcStateAppender:$state, StreamElementType:$value);
   let results = (outs);
   let extraClassDeclaration = [{ LogicalResult customVerify(); }];
-  let verifier = [{ return customVerify(); }];
+  let hasVerifier = 1;
 }
 
 def Arc_StateAppenderFoldOp : Arc_Op<"appender_fold",
@@ -712,7 +709,7 @@ def Arc_StateAppenderFoldOp : Arc_Op<"appender_fold",
                        FlatSymbolRefAttr:$fun);
   let results = (outs StreamElementType:$res);
   let extraClassDeclaration = [{ LogicalResult customVerify(); }];
-  let verifier = [{ return customVerify(); }];
+  let hasVerifier = 1;
   let builders = [
     OpBuilder<(ins "Value":$state, "Value":$init, "StringRef":$callee)>
   ];
@@ -727,7 +724,7 @@ class Arc_KeyedStateMapOp<string mnemonic,
   let arguments = (ins ArcStateMap:$state,
                        StreamElementType:$key);
   let extraClassDeclaration = [{ LogicalResult customVerify(); }];
-  let verifier = [{ return customVerify(); }];
+  let hasVerifier = 1;
 }
 
 def Arc_StateMapContainsOp : Arc_KeyedStateMapOp<"map_contains", []> {
@@ -756,7 +753,7 @@ def Arc_StateMapInsertOp : Arc_Op<"map_insert", []> {
                        StreamElementType:$value);
   let results = (outs);
   let extraClassDeclaration = [{ LogicalResult customVerify(); }];
-  let verifier = [{ return customVerify(); }];
+  let hasVerifier = 1;
 }
 
 def Arc_StateMapRemoveOp : Arc_KeyedStateMapOp<"map_remove", []> {
@@ -777,7 +774,7 @@ def Arc_StateValueWriteOp : Arc_Op<"value_write", []> {
   let arguments = (ins ArcStateValue:$state, StreamElementType:$value);
   let results = (outs);
   let extraClassDeclaration = [{ LogicalResult customVerify(); }];
-  let verifier = [{ return customVerify(); }];
+  let hasVerifier = 1;
 }
 
 def Arc_StateValueReadOp : Arc_Op<"value_read", []> {
@@ -788,7 +785,7 @@ def Arc_StateValueReadOp : Arc_Op<"value_read", []> {
   let arguments = (ins ArcStateValue:$state);
   let results = (outs StreamElementType);
   let extraClassDeclaration = [{ LogicalResult customVerify(); }];
-  let verifier = [{ return customVerify(); }];
+  let hasVerifier = 1;
 }
 
 def PanicOp : Arc_Op<"panic", []> {
@@ -821,7 +818,7 @@ def ArcReturnOp : Arc_Op<"return", [Terminator]> {
 
   let arguments = (ins Optional<AnyType>:$operands);
 
-  let verifier = [{ return ::verify(*this); }];
+  let hasVerifier = 1;
 }
 
 

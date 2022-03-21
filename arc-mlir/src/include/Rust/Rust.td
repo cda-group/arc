@@ -186,12 +186,11 @@ def RustCallIndirectOp : Rust_Op<"call_indirect", [
     // Write this op as Rust code to os
     void writeRust(RustPrinterStream &os);
   }];
-
-  let verifier = ?;
 }
 
 
-def Rust_RustFuncOp : Rust_Op<"func", [FunctionOpInterface, IsolatedFromAbove, Symbol]> {
+def Rust_RustFuncOp : Rust_Op<"func",
+  [FunctionOpInterface, IsolatedFromAbove, Symbol]> {
   let summary = "A function";
 
   let description = [{
@@ -199,17 +198,23 @@ def Rust_RustFuncOp : Rust_Op<"func", [FunctionOpInterface, IsolatedFromAbove, S
 
   let regions = (region AnyRegion:$body);
 
+  let arguments = (ins SymbolNameAttr:$sym_name,
+                       TypeAttrOf<FunctionType>:$function_type,
+                       OptionalAttr<StrAttr>:$sym_visibility);
   let extraClassDeclaration = [{
-    /// Returns the type of the function this Op defines.
-    FunctionType getType() {
-      return getTypeAttr().getValue().cast<FunctionType>();
+    FunctionType getFunctionType() {
+      return getFunctionTypeAttr().getValue().cast<FunctionType>();
     }
 
     /// Returns the argument types of this function.
-    ArrayRef<Type> getArgumentTypes() { return getType().getInputs(); }
+    ArrayRef<Type> getArgumentTypes() {
+      return getFunctionType().cast<FunctionType>().getInputs();
+    }
 
     /// Returns the result types of this function.
-    ArrayRef<Type> getResultTypes() { return getType().getResults(); }
+    ArrayRef<Type> getResultTypes() {
+      return getFunctionType().cast<FunctionType>().getResults();
+    }
 
     /// Hook for FunctionOpInterface verifier.
     LogicalResult verifyType();
@@ -222,25 +227,32 @@ def Rust_RustFuncOp : Rust_Op<"func", [FunctionOpInterface, IsolatedFromAbove, S
   }];
 }
 
-def Rust_RustExtFuncOp : Rust_Op<"extfunc", [FunctionOpInterface, IsolatedFromAbove, Symbol]> {
+def Rust_RustExtFuncOp : Rust_Op<"extfunc",
+  [FunctionOpInterface, IsolatedFromAbove, Symbol]> {
   let summary = "An external function";
 
   let description = [{
   }];
 
   let regions = (region AnyRegion:$empty_body);
+  let arguments = (ins SymbolNameAttr:$sym_name,
+                       TypeAttrOf<FunctionType>:$function_type,
+                       OptionalAttr<StrAttr>:$sym_visibility);
 
   let extraClassDeclaration = [{
-    /// Returns the type of the function this Op defines.
-    FunctionType getType() {
-      return getTypeAttr().getValue().cast<FunctionType>();
-    }
+     FunctionType getFunctionType() {
+       return getFunctionTypeAttr().getValue().cast<FunctionType>();
+     }
 
     /// Returns the argument types of this function.
-    ArrayRef<Type> getArgumentTypes() { return getType().getInputs(); }
+    ArrayRef<Type> getArgumentTypes() {
+      return getFunctionType().cast<FunctionType>().getInputs();
+    }
 
     /// Returns the result types of this function.
-    ArrayRef<Type> getResultTypes() { return getType().getResults(); }
+    ArrayRef<Type> getResultTypes() {
+      return getFunctionType().cast<FunctionType>().getResults();
+    }
 
     /// Hook for FunctionOpInterface verifier.
     LogicalResult verifyType();
@@ -321,7 +333,7 @@ def Rust_RustLoopBreakOp : Rust_Op<"loop.break",
     void writeRust(RustPrinterStream &os);
   }];
 
-  let verifier = [{ return ::verify(*this); }];
+  let hasVerifier = 1;
 }
 
 def Rust_RustReturnOp : Rust_Op<"return", [Terminator]> {
@@ -334,7 +346,7 @@ def Rust_RustReturnOp : Rust_Op<"return", [Terminator]> {
 
   let arguments = (ins Optional<AnyRustType>:$operands);
 
-  let verifier = [{ return ::verify(*this); }];
+  let hasVerifier = 1;
 
   let extraClassDeclaration = [{
     // Write this function as Rust code to os
@@ -570,7 +582,7 @@ def Rust_RustIfOp
     // Write this operation as Rust code to the stream
     void writeRust(RustPrinterStream &);
   }];
-  let verifier = [{ return ::verify(*this); }];
+  let hasVerifier = 1;
 }
 
 def Rust_RustMakeEnumOp

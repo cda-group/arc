@@ -176,8 +176,9 @@ private:
     // Create a variant to hold the result
     StringAttr returnValueVariantName =
         StringAttr::get(getContext(), "ReturnValue");
-    Type funReturnTy = f.getType().getNumResults() ? f.getType().getResult(0)
-                                                   : rewriter.getNoneType();
+    FunctionType funTy = f.getFunctionType();
+    Type funReturnTy =
+        funTy.getNumResults() ? funTy.getResult(0) : rewriter.getNoneType();
     types::EnumType::VariantTy returnValueVariant{returnValueVariantName,
                                                   funReturnTy};
     enumVariants.push_back(returnValueVariant);
@@ -332,7 +333,7 @@ private:
 
     // Return the result
     rewriter.setInsertionPointAfter(loop);
-    if (f.getType().getNumResults()) {
+    if (f.getFunctionType().getNumResults()) {
       Value r = rewriter.create<arc::EnumAccessOp>(
           f.getLoc(), funReturnTy, loop.getResult(0), returnValueVariantName);
       rewriter.create<func::ReturnOp>(f.getLoc(), r);
