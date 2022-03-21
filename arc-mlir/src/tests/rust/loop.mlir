@@ -18,7 +18,7 @@ module @"loop_crate" {
     "rust.return"(%0#1) : (!rust<"u64">) -> ()
 }) {
     sym_name = "a_while_loop",
-    type = (!rust<"u64">, !rust<"u64">, !rust<"u64">) -> !rust<"u64">
+    function_type = (!rust<"u64">, !rust<"u64">, !rust<"u64">) -> !rust<"u64">
    } : () -> ()
 
 "rust.func"() ( {
@@ -46,7 +46,7 @@ module @"loop_crate" {
     "rust.return"(%0#1) : (!rust<"u64">) -> ()
 }) {
     sym_name = "a_while_loop_with_a_break_in_before",
-    type = (!rust<"u64">, !rust<"u64">, !rust<"u64">) -> !rust<"u64">
+    function_type = (!rust<"u64">, !rust<"u64">, !rust<"u64">) -> !rust<"u64">
    } : () -> ()
 
 "rust.func"() ( {
@@ -74,7 +74,7 @@ module @"loop_crate" {
     "rust.return"(%0#1) : (!rust<"u64">) -> ()
 }) {
     sym_name = "a_while_loop_with_a_break_in_after",
-    type = (!rust<"u64">, !rust<"u64">, !rust<"u64">) -> !rust<"u64">
+    function_type = (!rust<"u64">, !rust<"u64">, !rust<"u64">) -> !rust<"u64">
    } : () -> ()
 }
 

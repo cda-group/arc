@@ -308,14 +308,14 @@ private:
         SymbolTable::lookupNearestSymbolFrom(op->getParentOp(), attr);
 
     if (rust::RustFuncOp o = dyn_cast<rust::RustFuncOp>(refOp)) {
-      Type ty = o.getType();
+      Type ty = o.getFunctionType();
       Type rustTy = TypeConverter.convertType(ty);
 
       rewriter.replaceOpWithNewOp<rust::RustConstantOp>(op, rustTy,
                                                         o.getName());
       return success();
     } else if (rust::RustExtFuncOp o = dyn_cast<rust::RustExtFuncOp>(refOp)) {
-      Type ty = o.getType();
+      Type ty = o.getFunctionType();
       Type rustTy = TypeConverter.convertType(ty);
 
       rewriter.replaceOpWithNewOp<rust::RustConstantOp>(op, rustTy,
@@ -1116,10 +1116,10 @@ struct FuncOpLowering : public OpConversionPattern<mlir::FuncOp> {
 
     TypeConverter::SignatureConversion sigConv(func.getNumArguments());
     mlir::FunctionType funcType =
-        TypeConverter.convertFunctionSignature(func.getType(), sigConv);
+        TypeConverter.convertFunctionSignature(func.getFunctionType(), sigConv);
 
     attributes.push_back(
-        NamedAttribute(StringAttr::get(ctx, "type"), TypeAttr::get(funcType)));
+        NamedAttribute(StringAttr::get(ctx, "function_type"), TypeAttr::get(funcType)));
     attributes.push_back(NamedAttribute(StringAttr::get(ctx, "sym_name"),
                                         StringAttr::get(ctx, func.getName())));
 
