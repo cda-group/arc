@@ -762,6 +762,36 @@ private:
   RustTypeConverter &TypeConverter;
 };
 
+struct StdCmpIOpLowering : public OpConversionPattern<mlir::arith::CmpIOp> {
+  StdCmpIOpLowering(MLIRContext *ctx, RustTypeConverter &typeConverter)
+      : OpConversionPattern<mlir::arith::CmpIOp>(typeConverter, ctx, 1),
+        TypeConverter(typeConverter) {}
+
+  LogicalResult
+  matchAndRewrite(mlir::arith::CmpIOp o, OpAdaptor adaptor,
+                  ConversionPatternRewriter &rewriter) const final {
+    Type rustTy = TypeConverter.convertType(o.getType());
+    const char *cmpOp = NULL;
+    switch (o.getPredicate()) {
+    case mlir::arith::CmpIPredicate::eq:
+      cmpOp = "==";
+      break;
+    case mlir::arith::CmpIPredicate::ne:
+      cmpOp = "!=";
+      break;
+    default:
+      o.emitError("unhandled std.cmpi operation");
+      return failure();
+    }
+    rewriter.replaceOpWithNewOp<rust::RustBinaryOp>(
+        o, rustTy, cmpOp, adaptor.getLhs(), adaptor.getRhs());
+    return success();
+  };
+
+private:
+  RustTypeConverter &TypeConverter;
+};
+
 struct ArithSelectOpLowering
     : public OpConversionPattern<mlir::arith::SelectOp> {
   ArithSelectOpLowering(MLIRContext *ctx, RustTypeConverter &typeConverter)
@@ -1118,8 +1148,8 @@ struct FuncOpLowering : public OpConversionPattern<mlir::FuncOp> {
     mlir::FunctionType funcType =
         TypeConverter.convertFunctionSignature(func.getFunctionType(), sigConv);
 
-    attributes.push_back(
-        NamedAttribute(StringAttr::get(ctx, "function_type"), TypeAttr::get(funcType)));
+    attributes.push_back(NamedAttribute(StringAttr::get(ctx, "function_type"),
+                                        TypeAttr::get(funcType)));
     attributes.push_back(NamedAttribute(StringAttr::get(ctx, "sym_name"),
                                         StringAttr::get(ctx, func.getName())));
 
@@ -1248,6 +1278,7 @@ void ArcToRustLoweringPass::runOnOperation() {
 
   patterns.insert<ArcCmpIOpLowering>(&getContext(), typeConverter);
   patterns.insert<StdCmpFOpLowering>(&getContext(), typeConverter);
+  patterns.insert<StdCmpIOpLowering>(&getContext(), typeConverter);
 
   patterns.insert<ArcUnaryFloatOpLowering<math::SinOp, ArcUnaryFloatOp::sin>>(
       &getContext(), typeConverter);
