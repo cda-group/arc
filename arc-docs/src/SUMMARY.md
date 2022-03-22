@@ -51,5 +51,8 @@
     - [Items](dev/arc-mlir/Item.md)
       - [Functions](dev/arc-mlir/Func.md)
     - [Parameters](dev/arc-mlir/Params.md)
+  - [Arc-Runtime Reference](dev/arc-runtime/mod.md)
+    - [Execution Model](dev/arc-runtime/execution-model.md)
+    - [Data Model](dev/arc-runtime/data-model.md)
 - [History](history/mod.md)
   - [Tasks](history/tasks.md)

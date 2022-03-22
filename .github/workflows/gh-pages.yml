@@ -26,6 +26,19 @@ jobs:
 
     # ---- cargo ----
 
+    - name: Install Cargo nightly
+      uses: actions-rs/toolchain@v1
+      with:
+          toolchain: nightly
+          override: true
+
+    - name: Cache arc-runtime-docs
+      id: cache-arc-runtime-docs
+      uses: actions/cache@v2
+      with:
+        path: arc-docs/src/target
+        key: ${{ runner.os }}-cargo-${{ hashFiles('arc-runtime/**') }}
+
     - name: Cache arc-preprocessor
       id: cache-arc-preprocessor
       uses: actions/cache@v2
@@ -53,6 +66,12 @@ jobs:
       with:
         path: ~/.cargo/bin/zola
         key: ${{ runner.os }}-cargo-${{ env.ZOLA_VERSION }}
+
+    - name: Build arc-runtime-docs
+      if: steps.cache-arc-runtime-docs.outputs.cache-hit != 'true'
+      run: |
+        cargo +nightly doc --document-private-items --no-deps --target-dir=arc-docs/src/target --manifest-path=arc-runtime/Cargo.toml 
+        cargo +nightly doc --document-private-items --no-deps --target-dir=arc-docs/src/target --manifest-path=arc-runtime/macros/Cargo.toml 
 
     - name: Build arc-preprocessor
       if: steps.cache-arc-preprocessor.outputs.cache-hit != 'true'
