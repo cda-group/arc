@@ -8,5 +8,13 @@ mod tests {
     assert_eq!(call!(and_i1(true, true)), true);
     assert_eq!(call!(or_i1(false, true)), true);
     assert_eq!(call!(xor_i1(true, true)), false);
+    assert_eq!(call!(eq_i1(true, true)), true);
+    assert_eq!(call!(eq_i1(false, true)), false);
+    assert_eq!(call!(eq_i1(true, false)), false);
+    assert_eq!(call!(eq_i1(false, false)), true);
+    assert_eq!(call!(ne_i1(true, true)), false);
+    assert_eq!(call!(ne_i1(false, true)), true);
+    assert_eq!(call!(ne_i1(true, false)), true);
+    assert_eq!(call!(ne_i1(false, false)), false);
   }
 }
