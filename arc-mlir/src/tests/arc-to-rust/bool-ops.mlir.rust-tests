@@ -16,5 +16,9 @@ mod tests {
     assert_eq!(call!(ne_i1(false, true)), true);
     assert_eq!(call!(ne_i1(true, false)), true);
     assert_eq!(call!(ne_i1(false, false)), false);
+    assert_eq!(call!(not_i1(false)), true);
+    assert_eq!(call!(not_i1(true)), false);
+    assert_eq!(call!(not_select_i1(false)), true);
+    assert_eq!(call!(not_select_i1(true)), false);
   }
 }
