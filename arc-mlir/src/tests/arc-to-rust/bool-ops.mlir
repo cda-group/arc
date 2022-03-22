@@ -23,4 +23,15 @@ module @toplevel {
     %r = arith.cmpi "ne", %a, %b : i1
     return %r : i1
   }
+  func @not_i1(%arg0: i1) -> i1 {
+    %0 = arith.constant 1 : i1
+    %1 = arith.xori %arg0, %0 : i1
+    return %1 : i1
+  }
+  func @not_select_i1(%arg0: i1) -> i1 {
+    %0 = arith.constant 0 : i1
+    %1 = arith.constant 1 : i1
+    %2 = arith.select %arg0, %0, %1 : i1
+    return %2 : i1
+  }
 }
