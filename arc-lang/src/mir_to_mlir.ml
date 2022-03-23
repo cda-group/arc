@@ -69,8 +69,8 @@ and lower_item ((xs, ts), i) (ctx:Ctx.t) =
       ctx |> Ctx.add_item x (Mlir.IAssign (t0, b))
   | Mir.IEnum _ -> ctx
   | Mir.IExternDef (a, ps, t) ->
-      if not (is_intrinsic a) then
-        let (x, ctx) = ctx |> resolve_intrinsic a (xs, ts) in
+      if not (is_mlir a) then
+        let (x, ctx) = ctx |> resolve_mlir a (xs, ts) in
         let (ts, ctx) = ps |> filter_unit |> mapm lower_type ctx in
         let ps = ts |> Hir.indexes_to_fields in
         let (t, ctx) = lower_type t ctx in
@@ -138,7 +138,7 @@ and lower_type t ctx =
           (Mlir.TEnum vs, ctx)
       | Mir.IExternType a ->
           begin
-            match a |> List.assoc_opt "intrinsic" with
+            match a |> List.assoc_opt "mlir" with
             | Some Some Ast.LString x ->
                 (Mlir.TNative x, ctx)
             | None ->
@@ -285,7 +285,7 @@ and lower_expr t e ctx =
       | Mir.IVal _ -> todo ()
       | Mir.IEnum _ -> unreachable ()
       | Mir.IExternDef (a, _, _) ->
-          let (x, ctx) = ctx |> resolve_intrinsic a (xs, ts) in
+          let (x, ctx) = ctx |> resolve_mlir a (xs, ts) in
           (Mlir.EConst (Mlir.CFun x), ctx)
       | Mir.IExternType _ -> unreachable ()
       | Mir.IDef _ ->
@@ -294,14 +294,14 @@ and lower_expr t e ctx =
       | Mir.ITask _ -> todo ()
       | Mir.IVariant _ -> unreachable ()
 
-and is_intrinsic d =
-  d |> assoc_opt "intrinsic" |> Option.is_some
+and is_mlir d =
+  d |> assoc_opt "mlir" |> Option.is_some
 
-and resolve_intrinsic d (xs, ts) ctx =
-  match d |> List.assoc_opt "intrinsic" with
+and resolve_mlir d (xs, ts) ctx =
+  match d |> List.assoc_opt "mlir" with
   | Some Some Ast.LString y -> (y, ctx)
   | None -> lower_path (xs, ts) ctx
-  | _ -> panic "Found non-string as intrinsic"
+  | _ -> panic "Found non-string as mlir"
 
 and lower_field_type (x, t) ctx =
   let (t, ctx) = lower_type t ctx in
