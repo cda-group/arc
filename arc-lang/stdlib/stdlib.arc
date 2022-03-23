@@ -59,6 +59,7 @@ extern def band(i32, i32): bool;
 @{mlir: "neg_i32"}
 extern def neg(i32): i32;
 
+@{rust: "String_from_i32"}
 extern def i32_to_string(i32): String;
 
 # ------------------------------------------------------
@@ -198,30 +199,40 @@ extern type char;
 # ANCHOR: string
 extern type String;
 
-@{mangled: "String_concat"}
+@{rust: "&'static str"}
+extern type str;
+
+@{rust: "String_new"}
+extern def new_str(): String;
+
+@{rust: "String_from_str"}
+extern def from_str(str): String;
+
+@{rust: "String_concat"}
 extern def concat(String, String): String;
 
-@{mangled: "String_with_capacity"}
+@{rust: "String_with_capacity"}
 extern def str_with_capacity(u32): String;
 
-@{mangled: "String_push_char"}
-extern def push_char(String, char): String;
+@{rust: "String_push_char"}
+extern def push_char(String, char): unit;
 
-@{mangled: "String_remove_char"}
+@{rust: "String_remove_char"}
 extern def remove_char(String, u32): char;
 
-@{mangled: "String_insert_char"}
-extern def insert_char(String, u32, char): char;
+@{rust: "String_insert_char"}
+extern def insert_char(String, u32, char): unit;
 
-@{mangled: "String_is_empty"}
+@{rust: "String_is_empty"}
 extern def is_empty_str(String): bool;
 
-@{mangled: "String_split_off"}
+@{rust: "String_split_off"}
 extern def split_off(String, u32): String;
 
-@{mangled: "String_clear"}
+@{rust: "String_clear"}
 extern def clear_str(String);
 
+@{rust: "String_eq"}
 extern def str_eq(String, String): bool;
 
 # ANCHOR_END: string
@@ -249,84 +260,84 @@ enum Option[T] {
 extern type Array[T];
 # ANCHOR_END: array
 
-@{mangled: "Vec_new"}
+@{rust: "Vec_new"}
 extern def array[T](): Array[T];
 
-@{mangled: "Vec_push"}
+@{rust: "Vec_push"}
 extern def push[T](Array[T], T);
 
-@{mangled: "Vec_pop"}
+@{rust: "Vec_pop"}
 extern def pop[T](Array[T]);
 
-@{mangled: "Vec_remove"}
+@{rust: "Vec_remove"}
 extern def remove[T](Array[T], u32): T;
 
-@{mangled: "Vec_select"}
+@{rust: "Vec_select"}
 extern def get[T](Array[T], u32): T;
 
-@{mangled: "Vec_insert"}
+@{rust: "Vec_insert"}
 extern def insert[T](Array[T], u32, T);
 
-@{mangled: "Vec_replace"}
+@{rust: "Vec_replace"}
 extern def replace[T](Array[T], u32, T);
 
-@{mangled: "Vec_is_empty"}
+@{rust: "Vec_is_empty"}
 extern def is_empty[T](Array[T]): bool;
 
-@{mangled: "Vec_len"}
+@{rust: "Vec_len"}
 extern def len[T](Array[T]): u32;
 
-@{mangled: "Vec_extend"}
+@{rust: "Vec_extend"}
 extern def extend[T](Array[T], Array[T]);
 
-@{mangled: "Vec_clear"}
+@{rust: "Vec_clear"}
 extern def clear[T](Array[T]);
 
-@{mangled: "Vec_capacity"}
+@{rust: "Vec_capacity"}
 extern def capacity[T](Array[T]): u32;
 
 # ------------------------------------------------------
 
 extern type Cell[T];
 
-@{mangled: "Cell_new"}
+@{rust: "Cell_new"}
 extern def cell[T](T): Cell[T];
 
-@{mangled: "Cell_set"}
+@{rust: "Cell_set"}
 extern def set_cell[T](Cell[T], T);
 
-@{mangled: "Cell_get"}
+@{rust: "Cell_get"}
 extern def get_cell[T](Cell[T]): T;
 
 # ------------------------------------------------------
 
 extern type Iter[T];
 
-@{mangled: "Iter_next"}
+@{rust: "Iter_next"}
 extern def next[T](Iter[T], T): T;
 
 # ------------------------------------------------------
 
 extern type Range[T];
 
-@{mangled: "Range_new"}
+@{rust: "Range_new"}
 extern def new_range[T](T, T): Range[T];
 
-@{mangled: "Range_leq"}
+@{rust: "Range_leq"}
 extern def leq_range[T](Range[T], T): bool;
 
-@{mangled: "Range_geq"}
+@{rust: "Range_geq"}
 extern def geq_range[T](Range[T], T): bool;
 
-@{mangled: "Range_lt"}
+@{rust: "Range_lt"}
 extern def lt_range[T](Range[T], T): bool;
 
-@{mangled: "Range_gt"}
+@{rust: "Range_gt"}
 extern def gt_range[T](Range[T], T): bool;
 
 # ------------------------------------------------------
 
 extern type Stream[T];
 
-@{mangled: "Stream_map"}
+@{rust: "Stream_map"}
 extern def map[A,B](Stream[A], fun(A):B): Stream[B];
