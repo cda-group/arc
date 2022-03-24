@@ -72,6 +72,7 @@ void RustDialect::initialize() {
   addTypes<RustSinkStreamType>();
   addTypes<RustSourceStreamType>();
   addTypes<RustTensorType>();
+  addTypes<RustGenericADTType>();
   addTypes<RustTupleType>();
 
   auto ctx = getContext();
@@ -116,6 +117,8 @@ void RustDialect::printType(Type type, DialectAsmPrinter &os) const {
   else if (auto t = type.dyn_cast<RustSourceStreamType>())
     t.print(os);
   else if (auto t = type.dyn_cast<RustStructType>())
+    t.print(os);
+  else if (auto t = type.dyn_cast<RustGenericADTType>())
     t.print(os);
   else if (auto t = type.dyn_cast<RustTensorType>())
     t.print(os);
@@ -241,6 +244,8 @@ RustPrinterStream &operator<<(RustPrinterStream &os, const Type &type) {
     os.print(os.getBodyStream(), t);
   else if (auto t = type.dyn_cast<RustSourceStreamType>())
     os.print(os.getBodyStream(), t);
+  else if (auto t = type.dyn_cast<RustGenericADTType>())
+    t.printAsRust(os);
   else if (auto t = type.dyn_cast<RustTensorType>())
     t.printAsRust(os);
   else if (auto t = type.dyn_cast<RustTupleType>())
@@ -840,6 +845,8 @@ std::string getTypeString(Type type) {
     return t.getRustType();
   if (auto t = type.dyn_cast<RustTupleType>())
     return t.getRustType();
+  if (auto t = type.dyn_cast<RustGenericADTType>())
+    return t.getRustType();
   if (auto t = type.dyn_cast<RustTensorType>())
     return t.getRustType();
   if (auto t = type.dyn_cast<RustType>())
@@ -859,6 +866,8 @@ static std::string getTypeSignature(Type type) {
   if (auto t = type.dyn_cast<RustStructType>())
     return t.getSignature();
   if (auto t = type.dyn_cast<RustTupleType>())
+    return t.getSignature();
+  if (auto t = type.dyn_cast<RustGenericADTType>())
     return t.getSignature();
   if (auto t = type.dyn_cast<RustTensorType>())
     return t.getSignature();
@@ -1582,6 +1591,126 @@ std::string RustStructType::getSignature() const {
 }
 
 std::string RustStructTypeStorage::getSignature() const { return signature; }
+
+//===----------------------------------------------------------------------===//
+// RustGenericADTType
+//===----------------------------------------------------------------------===//
+
+struct RustGenericADTTypeStorage : public TypeStorage {
+  using KeyTy = std::pair<std::string, llvm::ArrayRef<mlir::Type>>;
+
+  RustGenericADTTypeStorage(StringRef name, ArrayRef<Type> parms, unsigned id)
+      : name(name), parameters(parms.begin(), parms.end()), id(id) {
+
+    std::string str;
+    llvm::raw_string_ostream s(str);
+    s << name << "<";
+
+    bool first = true;
+    for (auto &p : parameters) {
+      if (!first)
+        s << ", ";
+      s << getTypeSignature(p);
+      first = false;
+    }
+    s << ">";
+    signature = s.str();
+  }
+
+  std::string name;
+  SmallVector<Type, 4> parameters;
+  unsigned id;
+
+  bool operator==(const KeyTy &key) const {
+    return KeyTy(name, parameters) == key;
+  }
+
+  static llvm::hash_code hashKey(const KeyTy &key) {
+    return llvm::hash_combine(key);
+  }
+
+  static RustGenericADTTypeStorage *construct(TypeStorageAllocator &allocator,
+                                              KeyTy key) {
+    return new (allocator.allocate<RustGenericADTTypeStorage>())
+        RustGenericADTTypeStorage(key.first, key.second, idCounter++);
+  }
+
+  RustPrinterStream &printAsRust(RustPrinterStream &os) const;
+  raw_ostream &printAsRustNamedType(raw_ostream &os) const;
+  void print(DialectAsmPrinter &os) const { os << signature; }
+
+  std::string getRustType() const;
+
+  void emitNestedTypedefs(rust::RustPrinterStream &os) const;
+  std::string getSignature() const;
+
+private:
+  static unsigned idCounter;
+  std::string signature;
+};
+
+unsigned RustGenericADTTypeStorage::idCounter = 0;
+
+RustGenericADTType RustGenericADTType::get(RustDialect *dialect,
+                                           StringRef templateName,
+                                           ArrayRef<Type> parameters) {
+  return Base::get(dialect->getContext(), templateName, parameters);
+}
+
+void RustGenericADTType::print(DialectAsmPrinter &os) const {
+  getImpl()->print(os);
+}
+
+RustPrinterStream &
+RustGenericADTType::printAsRust(RustPrinterStream &os) const {
+  return getImpl()->printAsRust(os);
+}
+
+raw_ostream &RustGenericADTType::printAsRustNamedType(raw_ostream &os) const {
+  return getImpl()->printAsRustNamedType(os);
+}
+
+std::string RustGenericADTType::getRustType() const {
+  return getImpl()->getRustType();
+}
+
+std::string RustGenericADTTypeStorage::getRustType() const { return signature; }
+
+RustPrinterStream &
+RustGenericADTTypeStorage::printAsRust(RustPrinterStream &ps) const {
+  emitNestedTypedefs(ps);
+  ps << signature;
+  return ps;
+}
+
+void RustGenericADTType::emitNestedTypedefs(rust::RustPrinterStream &ps) const {
+  return getImpl()->emitNestedTypedefs(ps);
+}
+
+void RustGenericADTTypeStorage::emitNestedTypedefs(
+    rust::RustPrinterStream &ps) const {
+  // First ensure that any types used by this type are defined
+  for (unsigned i = 0; i < parameters.size(); i++)
+    if (parameters[i].isa<RustStructType>())
+      ps.writeStructDefiniton(parameters[i].cast<RustStructType>());
+    else if (parameters[i].isa<RustTupleType>())
+      parameters[i].cast<RustTupleType>().emitNestedTypedefs(ps);
+}
+
+raw_ostream &
+RustGenericADTTypeStorage::printAsRustNamedType(raw_ostream &os) const {
+
+  os << signature;
+  return os;
+}
+
+std::string RustGenericADTType::getSignature() const {
+  return getImpl()->getSignature();
+}
+
+std::string RustGenericADTTypeStorage::getSignature() const {
+  return signature;
+}
 
 //===----------------------------------------------------------------------===//
 // RustTensorType

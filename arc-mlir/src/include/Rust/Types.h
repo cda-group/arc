@@ -41,6 +41,7 @@ namespace types {
 
 struct RustTypeStorage;
 struct RustEnumTypeStorage;
+struct RustGenericADTTypeStorage;
 struct RustSinkStreamTypeStorage;
 struct RustSourceStreamTypeStorage;
 struct RustStreamTypeStorage;
@@ -49,6 +50,7 @@ struct RustTupleTypeStorage;
 struct RustTensorTypeStorage;
 
 class RustEnumType;
+class RustGenericADTType;
 
 //===----------------------------------------------------------------------===//
 // Rust Types
@@ -160,6 +162,22 @@ public:
   typedef std::pair<mlir::StringAttr, Type> EnumVariantTy;
   static RustEnumType get(RustDialect *dialect,
                           ArrayRef<EnumVariantTy> variants);
+  void emitNestedTypedefs(rust::RustPrinterStream &ps) const;
+  std::string getSignature() const;
+};
+
+class RustGenericADTType : public Type::TypeBase<RustGenericADTType, Type,
+                                                 RustGenericADTTypeStorage> {
+public:
+  using Base::Base;
+
+  void print(DialectAsmPrinter &os) const;
+  rust::RustPrinterStream &printAsRust(rust::RustPrinterStream &os) const;
+  raw_ostream &printAsRustNamedType(raw_ostream &os) const;
+  std::string getRustType() const;
+
+  static RustGenericADTType get(RustDialect *dialect, StringRef name,
+                                ArrayRef<Type> parameters);
   void emitNestedTypedefs(rust::RustPrinterStream &ps) const;
   std::string getSignature() const;
 };
