@@ -43,6 +43,7 @@ public:
 
 protected:
   Type convertADTType(arc::types::ADTType type);
+  Type convertADTTemplateType(arc::types::ADTGenericType type);
   Type convertEnumType(arc::types::EnumType type);
   Type convertFloatType(FloatType type);
   Type convertFunctionType(FunctionType type);
@@ -963,6 +964,9 @@ struct SendOpLowering : public OpConversionPattern<arc::SendOp> {
 RustTypeConverter::RustTypeConverter(MLIRContext *ctx)
     : Ctx(ctx), Dialect(ctx->getOrLoadDialect<rust::RustDialect>()) {
   addConversion([&](arc::types::ADTType type) { return convertADTType(type); });
+  addConversion([&](arc::types::ADTGenericType type) {
+    return convertADTTemplateType(type);
+  });
   addConversion(
       [&](arc::types::EnumType type) { return convertEnumType(type); });
   addConversion([&](FloatType type) { return convertFloatType(type); });
@@ -989,12 +993,23 @@ RustTypeConverter::RustTypeConverter(MLIRContext *ctx)
   addConversion([](rust::types::RustSinkStreamType type) { return type; });
   addConversion([](rust::types::RustSourceStreamType type) { return type; });
   addConversion([](rust::types::RustStructType type) { return type; });
+  addConversion([](rust::types::RustGenericADTType type) { return type; });
   addConversion([](rust::types::RustTensorType type) { return type; });
   addConversion([](rust::types::RustTupleType type) { return type; });
 }
 
 Type RustTypeConverter::convertADTType(arc::types::ADTType type) {
   return rust::types::RustType::get(type.getContext(), type.getTypeName());
+}
+
+Type RustTypeConverter::convertADTTemplateType(
+    arc::types::ADTGenericType type) {
+  SmallVector<Type, 4> parameters;
+
+  for (const auto &t : type.getParameterTypes())
+    parameters.push_back(convertType(t));
+  return rust::types::RustGenericADTType::get(Dialect, type.getTemplateName(),
+                                              parameters);
 }
 
 Type RustTypeConverter::convertEnumType(arc::types::EnumType type) {
