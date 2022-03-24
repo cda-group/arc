@@ -211,7 +211,7 @@ esac
 
 [ "$ARC_DEBUG" ] && echo "$CRATE_MLIR_FILE: " && cat "$CRATE_MLIR_FILE"
 
-"$ARC_MLIR" "$CRATE_MLIR_FILE" "$@" -arc-to-rust -inline-rust -arc-lang-runtime >> "$CRATE_MAIN_FILE"
+"$ARC_MLIR" "$CRATE_MLIR_FILE" "$@" -arc-to-rust -inline-rust >> "$CRATE_MAIN_FILE"
 
 case $CARGO_MODE in
     test)
