@@ -97,7 +97,13 @@ def ArcTensorElementType : Type<Or<[
         AnyFloat.predicate]>,
     "arc-tensor-element">;
 
-def ADTType : Type<CPred<"$_self.isa<ADTType>()">, "an ADT type">;
+def ADTType : Type<Or<[
+        CPred<"$_self.isa<ADTType>()">,
+        CPred<"$_self.isa<ADTGenericType>()">]>,
+    "arc-adt">;
+def ADTSimpleType : Type<CPred<"$_self.isa<ADTType>()">, "an ADT type">;
+def ADTGenericType : Type<CPred<"$_self.isa<ADTGenericType>()">, "an ADT template type">;
+
 def AnyBuilder : Type<CPred<"$_self.isa<BuilderType>()">, "any builder">;
 def AnyAppender : Type<CPred<"$_self.isa<AppenderType>()">, "any appender">;
 def AnyEnum : Type<CPred<"$_self.isa<EnumType>()">, "any enum">;

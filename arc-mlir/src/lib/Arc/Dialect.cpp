@@ -51,6 +51,7 @@ void ArcDialect::initialize(void) {
 #include "Arc/Arc.cpp.inc"
       >();
   addTypes<ADTType>();
+  addTypes<ADTGenericType>();
   addTypes<AppenderType>();
   addTypes<ArconAppenderType>();
   addTypes<ArconMapType>();
@@ -72,6 +73,8 @@ Type ArcDialect::parseType(DialectAsmParser &parser) const {
     return nullptr;
   if (keyword == "adt")
     return ADTType::parse(parser);
+  if (keyword == "generic_adt")
+    return ADTGenericType::parse(parser);
   if (keyword == "appender")
     return AppenderType::parse(parser);
   if (keyword == "arcon.appender")
@@ -100,6 +103,8 @@ Type ArcDialect::parseType(DialectAsmParser &parser) const {
 
 void ArcDialect::printType(Type type, DialectAsmPrinter &os) const {
   if (auto t = type.dyn_cast<ADTType>())
+    t.print(os);
+  else if (auto t = type.dyn_cast<ADTGenericType>())
     t.print(os);
   else if (auto t = type.dyn_cast<AppenderType>())
     t.print(os);
@@ -999,6 +1004,74 @@ Type ADTType::parse(DialectAsmParser &parser) {
 
 void ADTType::print(DialectAsmPrinter &os) const {
   os << "adt<\"" << getTypeName() << "\">";
+}
+
+//===----------------------------------------------------------------------===//
+// ADTTemplateType
+//===----------------------------------------------------------------------===//
+struct ADTGenericTypeStorage : public mlir::TypeStorage {
+  using KeyTy = std::pair<std::string, llvm::ArrayRef<mlir::Type>>;
+
+  ADTGenericTypeStorage(StringRef name, ArrayRef<Type> parms)
+      : name(name), parameters(parms.begin(), parms.end()) {}
+
+  bool operator==(const KeyTy &k) const { return k == KeyTy(name, parameters); }
+
+  static llvm::hash_code hashKey(const KeyTy &key) {
+    return llvm::hash_value(key);
+  }
+
+  static KeyTy getKey(std::string name, llvm::ArrayRef<mlir::Type> parameters) {
+    return KeyTy(name, parameters);
+  }
+
+  static ADTGenericTypeStorage *construct(mlir::TypeStorageAllocator &allocator,
+                                          const KeyTy &key) {
+    return new (allocator.allocate<ADTGenericTypeStorage>())
+        ADTGenericTypeStorage(key.first, key.second);
+  }
+
+  std::string name;
+  SmallVector<Type, 4> parameters;
+};
+
+ADTGenericType ADTGenericType::get(mlir::MLIRContext *ctx, StringRef name,
+                                   llvm::ArrayRef<mlir::Type> parameterTypes) {
+  return Base::get(ctx, name, parameterTypes);
+}
+
+StringRef ADTGenericType::getTemplateName() const { return getImpl()->name; }
+
+llvm::ArrayRef<mlir::Type> ADTGenericType::getParameterTypes() const {
+  return getImpl()->parameters;
+}
+
+Type ADTGenericType::parse(DialectAsmParser &parser) {
+  SmallVector<mlir::Type, 3> parameterTypes;
+
+  if (parser.parseLess())
+    return nullptr;
+  std::string typeName;
+  if (parser.parseString(&typeName))
+    return nullptr;
+  while (true) {
+    if (succeeded(parser.parseOptionalGreater()))
+      return ADTGenericType::get(parser.getBuilder().getContext(), typeName,
+                                 parameterTypes);
+    if (parser.parseComma())
+      return nullptr;
+    mlir::Type ty;
+    if (parser.parseType(ty))
+      return nullptr;
+    parameterTypes.push_back(ty);
+  }
+}
+
+void ADTGenericType::print(DialectAsmPrinter &os) const {
+  os << "generic_adt<\"" << getTemplateName();
+  for (mlir::Type t : getParameterTypes())
+    os << ", " << t;
+  os << "\">";
 }
 
 //===----------------------------------------------------------------------===//
