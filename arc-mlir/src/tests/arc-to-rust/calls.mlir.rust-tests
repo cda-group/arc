@@ -8,25 +8,24 @@ pub fn an_external_fun3(i: i32) -> i32 {
   return i;
 }
 
-#[rewrite]
-pub fn an_external_fun1() -> function!((i32) -> i32) {
-  return an_external_fun3;
-}
+// TODO: Try to find a way to support returning functions into Arc-Lang
+// #[rewrite]
+// pub fn an_external_fun1() -> function!((i32) -> i32) {
+//   return function!(an_external_fun3);
+// }
 
+#[rewrite]
 pub fn the_name_on_the_rust_side(i: i32) -> i32 {
   return i;
 }
 
-#[cfg(test)]
-mod tests {
-  use crate::toplevel::*;
-  #[rewrite(main)]
-  #[test]
-  fn test() {
-  assert_eq!(call!(callee_si32_si32(17)), 17);
-  assert_eq!(call!(caller1(4711)), 4711);
-  assert_eq!(call!(call_external2(13)), 13);
-  assert_eq!(call!(call_renamed_local(14)), 14);
-  assert_eq!(call!(defined_in_arc(15)), 15);
-  }
+use super::*;
+#[rewrite(main)]
+#[test]
+fn test() {
+    assert_eq!(call!(callee_si32_si32(17)), 17);
+    assert_eq!(call!(caller1(4711)), 4711);
+    assert_eq!(call!(call_external2(13)), 13);
+    assert_eq!(call!(call_renamed_local(14)), 14);
+    assert_eq!(call!(defined_in_arc(15)), 15);
 }

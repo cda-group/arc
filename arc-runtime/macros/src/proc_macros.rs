@@ -69,7 +69,7 @@ pub fn is(input: TokenStream) -> TokenStream {
     let mut path: syn::Path = parse(&mut iter);
     concrete_enum_path(&mut path);
     let data: syn::Expr = parse(&mut iter);
-    quote::quote!(if let #path(_) = #data.0.as_ref() { true } else { false }).into()
+    quote::quote!(matches!(*#data.0.clone(), #path(_))).into()
 }
 
 pub fn unwrap(input: TokenStream) -> TokenStream {

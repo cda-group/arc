@@ -486,7 +486,7 @@ and lower_arg_expr (e:Ast.expr) ctx =
   let (vs, ctx) = ctx |> Ctx.pop_ascope in
   match vs with
   | [] ->
-      let ctx = ctx |> Ctx.add_stmts ss in
+      let ctx = ctx |> Ctx.add_stmts (ss |> List.rev) in
       (v, ctx)
   | vs ->
       let (ps, ctx) = vs |> mapm (fun v ctx ->
@@ -651,7 +651,7 @@ and lower_expr expr ctx =
       ctx |> Ctx.add_expr (Hir.EAccess (v, Hir.index_to_field i))
   | Ast.EBlock b ->
       let ((ss, v), ctx) = lower_block b ctx in
-      let ctx = ctx |> Ctx.add_stmts ss in
+      let ctx = ctx |> Ctx.add_stmts (ss |> List.rev) in
       (v, ctx)
   | Ast.EFunc (ps, e) ->
 (*       Pretty_ast.pr_expr e Pretty.Ctx.brief; *)
@@ -1065,15 +1065,21 @@ and lower_binop op (ctx:Ctx.t) =
 
 and splice_regex = (Str.regexp "\\${[^}]+}\\|\\$[a-zA-Z_][a-zA-Z0-9_]*")
 
+and str_to_string s ctx =
+  let (v0, ctx) = ctx |> Ctx.add_expr (Hir.ELit (Ast.LString s)) in
+  let (v1, ctx) = ctx |> Ctx.add_expr (Hir.EItem (["from_str"], [])) in
+  let (v, ctx) = ctx |> Ctx.add_expr (Hir.ECall (v1, [v0])) in
+  (v, ctx)
+
 and lower_lit l (ctx:Ctx.t) =
   match l with
   (* Lower interpolated string literals *)
-  | Ast.LString c ->
-      let (vs, ctx) = c |> Str.full_split splice_regex
+  | Ast.LString s ->
+      let (vs, ctx) = s |> Str.full_split splice_regex
         |> mapm (fun s ctx ->
           match s with
           | Str.Text s ->
-              ctx |> Ctx.add_expr (Hir.ELit (Ast.LString s))
+              str_to_string s ctx
           | Str.Delim s ->
               let s = String.sub s 1 ((String.length s) - 1) in
               let e = Parser.expr Lexer.main (Lexing.from_string s) in
@@ -1090,7 +1096,7 @@ and lower_lit l (ctx:Ctx.t) =
           let (v0, ctx) = ctx |> Ctx.add_expr (Hir.EItem (["concat"], [])) in
           ctx |> Ctx.add_expr (Hir.ECall (v0, [v1; v2]))
         ) (v, ctx)
-      | _ -> unreachable ()
+      | [] -> str_to_string s ctx
       end
   | _ -> ctx |> Ctx.add_expr (Hir.ELit l)
 

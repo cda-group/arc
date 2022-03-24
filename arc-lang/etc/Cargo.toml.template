@@ -1,17 +1,14 @@
 [package]
-name        = "${CRATE_NAME}"
-version     = "0.0.0"
-authors     = ["The arc-mlir testing gnome"]
-edition     = "2021"
-license     = "MIT"
-description = "Generic MLIR-to-Rust test case"
+name    = "${CRATE_NAME}"
+version = "0.0.0"
+edition = "2021"
 
 [dependencies]
-arc-runtime         = { version = "=0.0.0", path = "${ARC_RUNTIME_SOURCE_DIR}", features = ["legacy"] }
-hexf                = { version = "0.2.1" }
-ndarray             = { version = "0.13.0" }
-prost               = { version = "0.7.0" }
-serde               = { version = "1.0.136" }
+arc-runtime = { version = "=0.0.0", path = "${ARC_RUNTIME_SOURCE_DIR}" }
+hexf        = { version = "0.2.1" }
+serde       = { version = "1.0.136" }
 
 [profile.dev]
+opt-level = 0
+split-debuginfo = "unpacked"
 debug = false

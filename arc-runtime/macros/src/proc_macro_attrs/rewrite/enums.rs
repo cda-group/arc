@@ -130,6 +130,7 @@ pub(crate) fn rewrite(_: syn::AttributeArgs, mut item: syn::ItemEnum) -> pm::Tok
 
         use #sharable_mod_id::#abstract_id;
         use #sharable_mod_id::#concrete_id::*;
+        use #sharable_mod_id::#concrete_id;
 
         impl #sharable_impl_generics DynSharable for #sharable_mod_id::#abstract_id #type_generics #where_clause {
             type T = #sendable_mod_id::#abstract_id #into_generics;

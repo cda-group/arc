@@ -5,7 +5,7 @@ use crate::data::strings::String;
 use crate::data::Alloc;
 use crate::data::DynSendable;
 use crate::data::DynSharable;
-use crate::prelude::*;
+use macros::rewrite;
 
 pub use bool;
 pub use char;
@@ -61,3 +61,18 @@ alloc_identity!(unit);
 pub const unit: unit = ();
 #[allow(non_upper_case_globals)]
 pub const Unit: unit = ();
+
+#[rewrite]
+pub fn assert(b: bool) {
+    assert!(b);
+}
+
+#[rewrite]
+pub fn panic(s: String) {
+    panic!("{}", s.as_str())
+}
+
+#[rewrite]
+pub fn print(s: String) {
+    println!("{}", s.as_str())
+}

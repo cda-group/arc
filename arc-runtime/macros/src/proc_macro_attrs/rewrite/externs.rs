@@ -9,14 +9,19 @@ pub(crate) fn rewrite(_attr: syn::AttributeArgs, item: syn::ItemFn) -> pm::Token
 #[cfg(not(feature = "legacy"))]
 pub(crate) fn rewrite(attr: syn::AttributeArgs, mut item: syn::ItemFn) -> pm::TokenStream {
     let unmangled = get_attr_val("unmangled", &attr);
-    let params = item.sig.inputs.iter().map(|arg| {
-        if let syn::FnArg::Typed(p) = arg {
-            &p.pat
-        } else {
-            unreachable!()
-        }
-    });
-    item.sig.abi = None;
-    item.block = syn::parse_quote!({ #unmangled(#(#params),*) });
-    quote::quote!(#item).into()
+    if unmangled != item.sig.ident {
+        let tys = item.sig.inputs.iter().map(|arg| {
+            if let syn::FnArg::Typed(p) = arg {
+                &p.ty
+            } else {
+                unreachable!()
+            }
+        });
+        item.sig.abi = None;
+        item.sig.inputs = syn::parse_quote!(x: (#(#tys,)*), ctx: Context);
+        item.block = syn::parse_quote!({ #unmangled(x, ctx) });
+        quote::quote!(#item).into()
+    } else {
+        quote::quote!().into()
+    }
 }

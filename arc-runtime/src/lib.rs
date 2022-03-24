@@ -66,15 +66,18 @@ pub mod prelude {
     pub use crate::data::strings::String;
     pub use crate::data::strings::String_clear;
     pub use crate::data::strings::String_from_str;
-    pub use crate::data::strings::String_insert;
+    pub use crate::data::strings::String_insert_char;
     pub use crate::data::strings::String_is_empty;
     pub use crate::data::strings::String_len;
     pub use crate::data::strings::String_new;
-    pub use crate::data::strings::String_push;
+    pub use crate::data::strings::String_push_char;
     pub use crate::data::strings::String_push_str;
     pub use crate::data::strings::String_remove;
     pub use crate::data::strings::String_split_off;
     pub use crate::data::strings::String_with_capacity;
+    pub use crate::data::strings::String_from_i32;
+    pub use crate::data::strings::String_eq;
+    pub use crate::data::strings::String_concat;
 
     pub use crate::data::vectors::Vec;
     pub use crate::data::vectors::Vec_capacity;

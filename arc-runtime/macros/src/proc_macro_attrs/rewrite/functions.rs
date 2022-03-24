@@ -2,6 +2,7 @@ use crate::has_attr_key;
 use proc_macro as pm;
 use proc_macro2 as pm2;
 // use quote::quote;
+use quote::quote;
 use std::collections::HashMap;
 use syn::visit_mut::VisitMut;
 
@@ -36,9 +37,10 @@ pub(crate) fn rewrite(_attr: syn::AttributeArgs, mut item: syn::ItemFn) -> pm::T
     item.sig.ident = id;
     item.sig.inputs.push(syn::parse_quote!(ctx: Context));
     quote::quote!(
-        use arc_runtime::prelude::*;
-        #wrapper_item #item
-    ).into()
+        #wrapper_item
+        #item
+    )
+    .into()
 }
 
 pub(crate) struct Visitor {
@@ -53,7 +55,7 @@ impl Default for Visitor {
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone, Copy)]
 enum MemKind {
     Heap,
     Stack,
@@ -82,10 +84,23 @@ impl VisitMut for Visitor {
             MemKind::Heap
         };
 
-        self.scopes
-            .last_mut()
-            .map(|s| s.insert(get_pat_ident(&i.pat), kind))
-            .unwrap();
+        let last = self.scopes.last_mut().unwrap();
+        match i.pat.as_ref() {
+            syn::Pat::Ident(p) => {
+                last.insert(p.ident.clone(), kind);
+            }
+            syn::Pat::Tuple(p) => {
+                for p in p.elems.iter() {
+                    match p {
+                        syn::Pat::Ident(p) => {
+                            last.insert(p.ident.clone(), kind);
+                        }
+                        _ => panic!("Expected id- or tuple-id pattern, got {}", quote!(#i)),
+                    }
+                }
+            }
+            _ => panic!("Expected id- or tuple-id pattern, got {}", quote!(#i)),
+        }
     }
 
     fn visit_block_mut(&mut self, i: &mut syn::Block) {
@@ -157,14 +172,6 @@ fn is_primitive(t: &syn::Type) -> bool {
             _ => false,
         },
         _ => false,
-    }
-}
-
-fn get_pat_ident(p: &syn::Pat) -> syn::Ident {
-    if let syn::Pat::Ident(i) = &*p {
-        i.ident.clone()
-    } else {
-        panic!("Expected an identifier")
     }
 }
 

@@ -4,7 +4,7 @@
 
 module @arctorustloops {
 
-  func @a_while_loop(%first : ui64, %limit : ui64, %accum : ui64) -> ui64 {
+  func @a_while_loop(%first : ui64, %limit : ui64, %accum : ui64) -> ui64 attributes { rust.declare } {
        %res_cnt, %res_sum = scf.while (%arg1 = %first, %sum = %accum) : (ui64, ui64) -> (ui64, ui64) {
          %condition = arc.cmpi "lt", %arg1, %limit : ui64
          scf.condition(%condition) %arg1, %sum : ui64, ui64
@@ -18,7 +18,7 @@ module @arctorustloops {
        return %res_sum : ui64
   }
 
-  func @a_while_loop_with_a_break_in_before(%first : ui64, %limit : ui64, %accum : ui64) -> ui64 {
+  func @a_while_loop_with_a_break_in_before(%first : ui64, %limit : ui64, %accum : ui64) -> ui64 attributes { rust.declare } {
        %res_cnt, %res_sum = scf.while (%arg1 = %first, %sum = %accum) : (ui64, ui64) -> (ui64, ui64) {
          %condition = arc.cmpi "lt", %arg1, %limit : ui64
 
@@ -41,7 +41,7 @@ module @arctorustloops {
        return %res_sum : ui64
   }
 
-  func @a_while_loop_with_a_break_in_after(%first : ui64, %limit : ui64, %accum : ui64) -> ui64 {
+  func @a_while_loop_with_a_break_in_after(%first : ui64, %limit : ui64, %accum : ui64) -> ui64 attributes { rust.declare } {
        %res_cnt, %res_sum = scf.while (%arg1 = %first, %sum = %accum) : (ui64, ui64) -> (ui64, ui64) {
          %condition = arc.cmpi "lt", %arg1, %limit : ui64
          scf.condition(%condition) %arg1, %sum : ui64, ui64
@@ -64,7 +64,7 @@ module @arctorustloops {
        return %res_sum : ui64
   }
 
-  func @a_while_loop_with_a_return_in_before(%first : ui64, %limit : ui64, %accum : ui64) -> ui64 {
+  func @a_while_loop_with_a_return_in_before(%first : ui64, %limit : ui64, %accum : ui64) -> ui64 attributes { rust.declare } {
        %res_cnt, %res_sum = scf.while (%arg1 = %first, %sum = %accum) : (ui64, ui64) -> (ui64, ui64) {
          %condition = arc.cmpi "lt", %arg1, %limit : ui64
 
@@ -87,7 +87,7 @@ module @arctorustloops {
        return %res_sum : ui64
   }
 
-  func @a_while_loop_with_a_return_in_after(%first : ui64, %limit : ui64, %accum : ui64) -> ui64 {
+  func @a_while_loop_with_a_return_in_after(%first : ui64, %limit : ui64, %accum : ui64) -> ui64 attributes { rust.declare } {
        %res_cnt, %res_sum = scf.while (%arg1 = %first, %sum = %accum) : (ui64, ui64) -> (ui64, ui64) {
          %condition = arc.cmpi "lt", %arg1, %limit : ui64
          scf.condition(%condition) %arg1, %sum : ui64, ui64

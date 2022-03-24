@@ -164,6 +164,7 @@ extern def <f32(f32, f32): bool;
 @{mlir: "neg_f32"}
 extern def negf32(f32): f32;
 
+@{mlir: "String_from_f32"}
 extern def f32_to_string(i32): String;
 
 # ------------------------------------------------------

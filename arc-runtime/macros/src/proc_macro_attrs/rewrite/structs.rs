@@ -5,7 +5,10 @@ use crate::new_id;
 
 #[cfg(not(feature = "legacy"))]
 #[allow(unused)]
-pub(crate) fn rewrite(args: syn::AttributeArgs, item: syn::ItemStruct) -> pm::TokenStream {
+pub(crate) fn rewrite(args: syn::AttributeArgs, mut item: syn::ItemStruct) -> pm::TokenStream {
+    item.fields.iter_mut().for_each(|field| {
+        field.vis = syn::parse_quote!(pub);
+    });
     let (_, type_generics, where_clause) = item.generics.split_for_impl();
 
     let mut sharable_impl_generics = item.generics.params.clone();

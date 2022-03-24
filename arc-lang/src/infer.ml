@@ -514,7 +514,7 @@ and infer_lit t l (ctx:Ctx.t) =
   | Ast.LBool _ ->
       ctx |> unify t (atom "bool")
   | Ast.LString _ ->
-      ctx |> unify t (atom "String")
+      ctx |> unify t (atom "str")
   | Ast.LUnit ->
       ctx |> unify t (atom "unit")
   | Ast.LChar _ ->

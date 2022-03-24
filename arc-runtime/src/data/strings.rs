@@ -58,7 +58,7 @@ impl String {
         sharable::ConcreteString::with_capacity(ctx.mutator(), capacity).alloc(ctx)
     }
 
-    pub fn push(mut self, ch: char, ctx: Context) {
+    pub fn push_char(mut self, ch: char, ctx: Context) {
         self.0.push(ctx.mutator(), ch)
     }
 
@@ -72,27 +72,44 @@ impl String {
         new.alloc(ctx)
     }
 
-    pub fn remove(mut self, idx: usize, _ctx: Context) -> char {
-        self.0.remove(idx)
+    pub fn remove(mut self, idx: u32, _ctx: Context) -> char {
+        self.0.remove(idx as usize)
     }
 
-    pub fn insert(mut self, idx: usize, ch: char, ctx: Context) {
-        self.0.insert(ctx.mutator(), idx, ch)
+    pub fn insert_char(mut self, idx: u32, ch: char, ctx: Context) {
+        self.0.insert(ctx.mutator(), idx as usize, ch)
     }
 
     pub fn is_empty(mut self, _ctx: Context) -> bool {
         self.0.is_empty()
     }
 
-    pub fn split_off(mut self, at: usize, ctx: Context) -> String {
-        self.0.split_off(ctx.mutator(), at).alloc(ctx)
+    pub fn split_off(mut self, at: u32, ctx: Context) -> String {
+        self.0.split_off(ctx.mutator(), at as usize).alloc(ctx)
     }
 
     pub fn clear(mut self, _ctx: Context) {
         self.0.clear()
     }
 
-    pub fn len(self, _ctx: Context) -> usize {
-        self.0.len()
+    pub fn len(self, _ctx: Context) -> u32 {
+        self.0.len() as u32
+    }
+
+    pub fn from_i32(i: i32, ctx: Context) -> String {
+        let mut new = String::new(ctx);
+        new.0.push_str(ctx.mutator(), &i.to_string());
+        new
+    }
+
+    pub fn eq(self, other: String, ctx: Context) -> bool {
+        self.0.eq(&other.0)
+    }
+
+    pub fn concat(self, other: String, ctx: Context) -> String {
+        let mut new = String::new(ctx);
+        new.0.push_str(ctx.mutator(), &self.0);
+        new.0.push_str(ctx.mutator(), &other.0);
+        new
     }
 }

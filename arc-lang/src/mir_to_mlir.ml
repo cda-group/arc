@@ -5,36 +5,20 @@ module Ctx = struct
     mir: Mir.mir;
     mlir: Mlir.mlir;
     stack: scope list;
-    subctx: subctx list;
   }
   and scope = {
     vsubst: (Mlir.name * Mlir.ty) list;
   }
-  and subctx =
-    | STask of {
-      input_handle: Mlir.arg;
-      output_handle: Mlir.arg
-    }
 
   let add_item xs i ctx = { ctx with mlir = (xs, i)::ctx.mlir }
-  let make mir = { mir; mlir = []; stack = []; subctx = []; }
-
-  let push_subctx c ctx = { ctx with subctx = c::ctx.subctx }
-  let pop_subctx ctx = { ctx with subctx = ctx.subctx |> tl }
+  let make mir = { mir; mlir = []; stack = [] }
 
   let push_scope ctx = { ctx with stack = { vsubst = [] }::ctx.stack }
   let pop_scope ctx = { ctx with stack = ctx.stack |> tl }
 
-  let get_input_handle ctx = match ctx.subctx |> hd with
-  | STask {input_handle; _} -> input_handle
-
-  let get_output_handle ctx = match ctx.subctx |> hd with
-  | STask {output_handle; _} -> output_handle
-
   let bind_var x (t:Mlir.ty) ctx =
     match ctx.stack with
-    | hd::tl ->
-        { ctx with stack = { vsubst = (x, t)::hd.vsubst}::tl }
+    | hd::tl -> { ctx with stack = { vsubst = (x, t)::hd.vsubst}::tl }
     | _ -> unreachable ()
 
   let typeof_opt x ctx =
@@ -94,7 +78,6 @@ and lower_item ((xs, ts), i) (ctx:Ctx.t) =
       let (ps0, ctx) = ps0 |> mapm_filter lower_param ctx in
       let (ps1, ctx) = ps1 |> mapm_filter lower_param ctx in
       let (b, ctx) = lower_block b (fun _ -> Mlir.EReturn None) ctx in
-      let ctx = ctx |> Ctx.pop_subctx in
       ctx |> Ctx.add_item x (Mlir.ITask (ps0, ps1, b))
   | Mir.IVariant _ -> ctx
 
@@ -272,7 +255,7 @@ and lower_expr t e ctx =
         | Ast.LInt (d, _) -> Mlir.EConst (Mlir.CInt d)
         | Ast.LFloat (f, _) -> Mlir.EConst (Mlir.CFloat f)
         | Ast.LBool b -> Mlir.EConst (Mlir.CBool b)
-        | Ast.LString s -> Mlir.EConst (Mlir.CAdt (Printf.sprintf "String::from(\\\"%s\\\")" s))
+        | Ast.LString s -> Mlir.EConst (Mlir.CAdt (Printf.sprintf "\\\"%s\\\"" s))
         | Ast.LUnit -> Mlir.ENoop
         | Ast.LChar c -> Mlir.EConst (Mlir.CAdt (Printf.sprintf "'%c'" c))
       in

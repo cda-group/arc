@@ -15,7 +15,7 @@ val a2 = "world";
 a2.push_char('!');
 assert(a2.str_eq("world!"));
 
-a2.insert_char(0u32, '1');
+a2.insert_char(0u32, '!');
 assert(str_eq(a2, "!world!"));
 
 val a3 = "";
