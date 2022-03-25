@@ -33,8 +33,6 @@ if [ -f "${CARGO_DEP_FRAGMENT}.cargo-dep" ]; then
 fi
 echo "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
 
-# Clean the work directory
-rm -rf ${WORK_DIR}
 mkdir -p ${WORK_DIR}/src
 
 # Create the Cargo.toml
