@@ -3,7 +3,7 @@
 set -e
 
 usage () {
-  echo "Usage: $0 [OPTIONS] [check|build|run] <INPUT-FILE> [-- <MLIR-OPTS>]"
+  echo "Usage: $0 [OPTIONS] [check|build|run|test] <INPUT-FILE> [-- <MLIR-OPTS>]"
   echo "Options:"
   echo "  -h          Show this help message"
   echo "  -o <DIR>    Output crate directory"
@@ -55,7 +55,7 @@ shift "$((OPTIND - 1))"
 
 if [ $# -gt 0 ]; then
     case $1 in
-        check|build|run)
+        check|build|run|test)
             CARGO_MODE="$1"
             ;;
         *)
@@ -213,9 +213,21 @@ esac
 
 "$ARC_MLIR" "$CRATE_MLIR_FILE" "$@" -arc-to-rust -inline-rust -arc-lang-runtime >> "$CRATE_MAIN_FILE"
 
-echo 'fn main() { toplevel::main(); }' >> "$CRATE_MAIN_FILE"
-
-[ "$ARC_DEBUG" ] && echo "$CRATE_MAIN_FILE: " && cat "$CRATE_MAIN_FILE"
+case $CARGO_MODE in
+    test)
+        TEST_FILE="$INPUT_FILE.rust-tests"
+        if [ -f "$TEST_FILE" ]; then
+            cat "$TEST_FILE" >> "$CRATE_MAIN_FILE"
+            echo 'fn main() { panic!("Crate is compiled for testing-purposes only."); }' >> "$CRATE_MAIN_FILE"
+        else
+            echo "No test file found for $INPUT_FILE" >&2
+            exit 1
+        fi
+        ;;
+    run|check|build)
+        echo 'fn main() { toplevel::main(); }' >> "$CRATE_MAIN_FILE"
+        ;;
+esac
 
 debug "CARGO_FLAGS: $CARGO_FLAGS"
 
