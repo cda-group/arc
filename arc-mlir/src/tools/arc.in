@@ -114,7 +114,7 @@ fi
 
 debug "ROOT: $ROOT"
 
-export CRATE_NAME="$(basename "$INPUT_FILE" .arc)"
+export CRATE_NAME="$(basename $(basename "$INPUT_FILE" .arc) .mlir)"
 debug "CRATE_NAME: $CRATE_NAME"
 
 if [ -z "$INPUT_FILE" ]; then
@@ -196,8 +196,19 @@ envsubst > "$CRATE_MAIN_FILE" <<'EOF'
 #![feature(imported_main)]
 EOF
 
-"$ARC_LANG" "$INPUT_FILE" > "$CRATE_MLIR_FILE"
-  
+case $INPUT_FILE in
+    *.arc)
+        "$ARC_LANG" "$INPUT_FILE" > "$CRATE_MLIR_FILE"
+        ;;
+    *.mlir)
+        CRATE_MLIR_FILE="$INPUT_FILE"
+        ;;
+    *)
+        echo "Unsupported input filetype: $INPUT_FILE" >&2
+        exit 1
+        ;;
+esac
+
 [ "$ARC_DEBUG" ] && echo "$CRATE_MLIR_FILE: " && cat "$CRATE_MLIR_FILE"
 
 "$ARC_MLIR" "$CRATE_MLIR_FILE" "$@" -arc-to-rust -inline-rust -arc-lang-runtime >> "$CRATE_MAIN_FILE"
