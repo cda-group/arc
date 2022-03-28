@@ -5,11 +5,11 @@ use crate::new_id;
 
 #[cfg(not(feature = "legacy"))]
 #[allow(unused)]
-pub(crate) fn rewrite(args: syn::AttributeArgs, struct_item: syn::ItemStruct) -> pm::TokenStream {
-    let (_, type_generics, where_clause) = struct_item.generics.split_for_impl();
+pub(crate) fn rewrite(args: syn::AttributeArgs, item: syn::ItemStruct) -> pm::TokenStream {
+    let (_, type_generics, where_clause) = item.generics.split_for_impl();
 
-    let mut sharable_impl_generics = struct_item.generics.params.clone();
-    let mut sendable_impl_generics = struct_item.generics.params.clone();
+    let mut sharable_impl_generics = item.generics.params.clone();
+    let mut sendable_impl_generics = item.generics.params.clone();
 
     sharable_impl_generics.iter_mut().for_each(|g| {
         if let syn::GenericParam::Type(t) = g {
@@ -24,7 +24,7 @@ pub(crate) fn rewrite(args: syn::AttributeArgs, struct_item: syn::ItemStruct) ->
     let sharable_impl_generics = quote::quote!(<#sharable_impl_generics>);
     let sendable_impl_generics = quote::quote!(<#sendable_impl_generics>);
 
-    let into_generics: Vec<_> = struct_item
+    let into_generics: Vec<_> = item
         .generics
         .params
         .iter()
@@ -43,15 +43,15 @@ pub(crate) fn rewrite(args: syn::AttributeArgs, struct_item: syn::ItemStruct) ->
         quote::quote!(<#(#into_generics),*>)
     };
 
-    let abstract_id = struct_item.ident.clone();
-    let concrete_id = new_id(format!("Concrete{}", struct_item.ident));
-    let sharable_mod_id = new_id(format!("sharable_struct_{}", struct_item.ident));
-    let sendable_mod_id = new_id(format!("sendable_struct_{}", struct_item.ident));
+    let abstract_id = item.ident.clone();
+    let concrete_id = new_id(format!("Concrete{}", item.ident));
+    let sharable_mod_id = new_id(format!("sharable_{}", item.ident));
+    let sendable_mod_id = new_id(format!("sendable_{}", item.ident));
 
-    let mut concrete_sharable_struct_item = struct_item.clone();
-    let mut concrete_sendable_struct_item = struct_item.clone();
+    let mut concrete_sharable_item = item.clone();
+    let mut concrete_sendable_item = item.clone();
 
-    concrete_sharable_struct_item
+    concrete_sharable_item
         .generics
         .params
         .iter_mut()
@@ -60,7 +60,7 @@ pub(crate) fn rewrite(args: syn::AttributeArgs, struct_item: syn::ItemStruct) ->
                 t.bounds.push(syn::parse_quote!(Sharable))
             }
         });
-    concrete_sendable_struct_item
+    concrete_sendable_item
         .generics
         .params
         .iter_mut()
@@ -70,17 +70,17 @@ pub(crate) fn rewrite(args: syn::AttributeArgs, struct_item: syn::ItemStruct) ->
             }
         });
 
-    concrete_sharable_struct_item.ident = concrete_id.clone();
-    concrete_sendable_struct_item.ident = concrete_id.clone();
+    concrete_sharable_item.ident = concrete_id.clone();
+    concrete_sendable_item.ident = concrete_id.clone();
 
     // Generate the sendable struct
-    concrete_sendable_struct_item
+    concrete_sendable_item
         .fields
         .iter_mut()
         .for_each(|f| {
             let ty = f.ty.clone();
             if let syn::Type::Path(t) = &ty {
-                if !struct_item.generics.params.iter().any(|x| match x {
+                if !item.generics.params.iter().any(|x| match x {
                     syn::GenericParam::Type(x) => t.path.is_ident(&x.ident),
                     _ => false,
                 }) {
@@ -91,7 +91,7 @@ pub(crate) fn rewrite(args: syn::AttributeArgs, struct_item: syn::ItemStruct) ->
             }
         });
 
-    let field_id = concrete_sendable_struct_item
+    let field_id = concrete_sendable_item
         .fields
         .iter()
         .map(|f| &f.ident)
@@ -108,7 +108,7 @@ pub(crate) fn rewrite(args: syn::AttributeArgs, struct_item: syn::ItemStruct) ->
             pub struct #abstract_id #sharable_impl_generics(pub Gc<#concrete_id #type_generics>) #where_clause;
 
             #[derive(Clone, Debug, Collectable, Finalize, Trace)]
-            #concrete_sharable_struct_item
+            #concrete_sharable_item
         }
 
         mod #sendable_mod_id {
@@ -122,7 +122,7 @@ pub(crate) fn rewrite(args: syn::AttributeArgs, struct_item: syn::ItemStruct) ->
 
             #[derive(Clone, Debug, Deserialize, Serialize)]
             #[serde(bound = "")]
-            #concrete_sendable_struct_item
+            #concrete_sendable_item
         }
 
         use #sharable_mod_id::#abstract_id;
@@ -151,12 +151,12 @@ pub(crate) fn rewrite(args: syn::AttributeArgs, struct_item: syn::ItemStruct) ->
 
 #[cfg(feature = "legacy")]
 #[allow(unused)]
-pub(crate) fn rewrite(_: syn::AttributeArgs, mut struct_item: syn::ItemStruct) -> pm::TokenStream {
-    let abstract_id = struct_item.ident.clone();
-    let concrete_id = new_id(format!("Concrete{}", struct_item.ident));
-    let mod_id = new_id(format!("send_{}", struct_item.ident));
+pub(crate) fn rewrite(_: syn::AttributeArgs, mut item: syn::ItemStruct) -> pm::TokenStream {
+    let abstract_id = item.ident.clone();
+    let concrete_id = new_id(format!("Concrete{}", item.ident));
+    let mod_id = new_id(format!("send_{}", item.ident));
 
-    struct_item.ident = concrete_id.clone();
+    item.ident = concrete_id.clone();
 
     quote!(
 
@@ -166,7 +166,7 @@ pub(crate) fn rewrite(_: syn::AttributeArgs, mut struct_item: syn::ItemStruct) -
         pub struct #abstract_id(pub std::rc::Rc<#concrete_id>);
 
         #[derive(Clone, Debug)]
-        #struct_item
+        #item
     )
     .into()
 }
