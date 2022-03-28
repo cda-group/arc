@@ -72,7 +72,7 @@ pub(crate) fn rewrite(args: syn::AttributeArgs, struct_item: syn::ItemStruct) ->
             type T = #sendable_mod_id::#abstract_id;
             fn into_sendable(&self, ctx: Context) -> Self::T {
                 #sendable_mod_id::#concrete_id {
-                    #(#field_id: self.0.#field_id.clone().into_sendable(ctx)),*
+                    #(#field_id: (self.0).#field_id.clone().into_sendable(ctx)),*
                 }.into()
             }
         }
@@ -81,7 +81,7 @@ pub(crate) fn rewrite(args: syn::AttributeArgs, struct_item: syn::ItemStruct) ->
             type T = #sharable_mod_id::#abstract_id;
             fn into_sharable(&self, ctx: Context) -> Self::T {
                 #sharable_mod_id::#concrete_id {
-                    #(#field_id: self.0.#field_id.into_sharable(ctx)),*
+                    #(#field_id: (self.0).#field_id.into_sharable(ctx)),*
                 }.alloc(ctx)
             }
         }
