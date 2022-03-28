@@ -15,6 +15,7 @@ module Ctx = struct
     next_row_uid: Gen.t;
     subctx: subctx list;
     instances: ty list NameMap.t; (* Fully inferred instantiations *)
+    debug: Debug.t;
   }
   (* The frame of a polymorphic item which is currently being inferred *)
   and frame = {
@@ -72,7 +73,7 @@ module Ctx = struct
     | CTask of ty * ty
     | CLoop of ty
 
-  let rec make hir = {
+  let rec make hir debug = {
     hir = hir;
     schemes = PathMap.empty;
     definitions = [];
@@ -81,6 +82,7 @@ module Ctx = struct
     next_row_uid = Gen.make ();
     subctx = [];
     instances = NameMap.empty;
+    debug;
   }
 
   and return_ty ctx =
@@ -269,21 +271,19 @@ and generalise s t =
 
 (* Unifies two types *)
 and unify t0 t1 (ctx:Ctx.t) =
-(*   begin *)
-(*     let ctx = Pretty.Ctx.brief in *)
-(*     Printf.printf "Unifying: "; *)
-(*     Pretty_hir.pr_type t0 ctx; *)
-(*     Printf.printf " = "; *)
-(*     Pretty_hir.pr_type t1 ctx; *)
-(*     Printf.printf " \n"; *)
-(*   end; *)
+  if ctx.debug = Verbose then
+    begin
+      let ctx = Pretty.Ctx.brief in
+      Printf.printf "Unifying: ";
+      Pretty_hir.pr_type t0 ctx;
+      Printf.printf " = ";
+      Pretty_hir.pr_type t1 ctx;
+      Printf.printf " \n";
+    end;
   let s0 = ctx |> Ctx.get_tsubst in
   let (s1, ctx) = ctx |> mgu (apply s0 t0) (apply s0 t1) in
 (*   Debug.debug_substitutions s1; *)
   let ctx = ctx |> Ctx.update_tsubst (compose s1 s0) in
-(*   Printf.printf "---------------------------------"; *)
-(*   Debug.debug_substitutions (ctx |> Ctx.get_tsubst); *)
-(*   Printf.printf "=================================\n\n"; *)
   ctx
 
 and unify_ts ts0 ts1 (ctx:Ctx.t) =
@@ -353,7 +353,7 @@ and mgu t0 t1 ctx : ((Hir.name * Hir.ty) list * Ctx.t) =
       Printf.printf " != ";
       Pretty_hir.pr_type t1 pr_ctx;
       Printf.printf " \n";
-      Pretty_hir.pr_hir ctx.hir;
+      Pretty_hir.pr_hir ctx.hir ctx.debug;
       panic "Types do not unify"
 
 and rewrite_row x0 r0 (ctx:Ctx.t) =
@@ -377,8 +377,8 @@ and rewrite_row x0 r0 (ctx:Ctx.t) =
   | _ ->
       panic "Unexpected type"
 
-let rec infer_hir hir = 
-  let (ctx:Ctx.t) = Ctx.make hir in
+let rec infer_hir hir debug = 
+  let (ctx:Ctx.t) = Ctx.make hir debug in
   let ctx = hir |> foldl infer_item ctx in
   let hir = ctx.definitions |> map (fun (xs, i) -> (xs, Hir.smap_item (inst_ssa ctx.instances) i)) in
   hir |> rev

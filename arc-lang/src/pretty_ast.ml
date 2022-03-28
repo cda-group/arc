@@ -11,8 +11,12 @@ let pr_tail f a ctx =
       ()
   end
 
-let rec pr_ast (ast:Ast.ast) =
-  let ctx = Ctx.brief in
+let rec pr_ast (ast:Ast.ast) debug =
+  let ctx = if debug = Debug.Verbose then
+    Ctx.verbose
+  else
+    Ctx.brief
+  in
   ast |> filter (show_item ctx) |> List.iter (fun i -> pr_item i ctx);
   pr "\n";
 

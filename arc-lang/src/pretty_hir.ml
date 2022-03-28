@@ -2,8 +2,12 @@ open Hir
 open Pretty
 open Utils
 
-let rec pr_hir (hir:Hir.hir) =
-  let ctx = Ctx.brief in
+let rec pr_hir (hir:Hir.hir) debug =
+  let ctx = if debug = Debug.Verbose then
+    Ctx.verbose
+  else
+    Ctx.brief
+  in
   hir |> filter (show_item ctx) |> List.iter (fun i -> pr_item i ctx);
   pr "\n";
 
