@@ -12,6 +12,11 @@ pub(crate) fn rewrite(_attr: syn::AttributeArgs, item: syn::ItemFn) -> pm::Token
 
 #[cfg(not(feature = "legacy"))]
 pub(crate) fn rewrite(_attr: syn::AttributeArgs, mut item: syn::ItemFn) -> pm::TokenStream {
+    item.sig.generics.params.iter_mut().for_each(|p| {
+        if let syn::GenericParam::Type(ref mut p) = *p {
+            p.bounds.push(syn::parse_quote!(Sharable));
+        }
+    });
     use crate::new_id;
     Visitor::default().visit_item_fn_mut(&mut item);
     let (ids, tys): (Vec<_>, Vec<_>) = item
@@ -24,16 +29,10 @@ pub(crate) fn rewrite(_attr: syn::AttributeArgs, mut item: syn::ItemFn) -> pm::T
         })
         .unzip();
 
-    let output = &item.sig.output;
-
     let id = new_id(format!("_{}", item.sig.ident));
-    let wrapper_id = &item.sig.ident;
-    let wrapper_item: syn::ItemFn = syn::parse_quote!(
-        #[inline(always)]
-        pub fn #wrapper_id((#(#ids,)*) : (#(#tys,)*), ctx: Context) #output {
-            #id(#(#ids,)* ctx)
-        }
-    );
+    let mut wrapper_item = item.clone();
+    wrapper_item.block = syn::parse_quote!({ #id(#(#ids,)* ctx) });
+    wrapper_item.sig.inputs = syn::parse_quote!((#(#ids,)*) : (#(#tys,)*), ctx: Context);
     item.sig.ident = id;
     item.sig.inputs.push(syn::parse_quote!(ctx: Context));
     quote::quote!(
