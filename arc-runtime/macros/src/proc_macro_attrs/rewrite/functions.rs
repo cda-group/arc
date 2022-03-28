@@ -94,6 +94,10 @@ impl VisitMut for Visitor {
         self.scopes.pop();
     }
 
+    fn visit_expr_assign_mut(&mut self, i: &mut syn::ExprAssign) {
+        syn::visit_mut::visit_expr_mut(self, &mut i.right);
+    }
+
     fn visit_expr_mut(&mut self, i: &mut syn::Expr) {
         syn::visit_mut::visit_expr_mut(self, i);
         if let syn::Expr::Path(expr) = i {
