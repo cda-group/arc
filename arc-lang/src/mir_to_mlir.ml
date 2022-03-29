@@ -71,7 +71,7 @@ and lower_item ((xs, ts), i) (ctx:Ctx.t) =
   | Mir.IExternDef (a, ps, t) ->
       if not (is_defined_in_mlir a) then
         let (x, ctx) = lower_path (xs, ts) ctx in
-        let (x_rust, ctx) = lower_extern_def_path a ctx in
+        let (x_rust, ctx) = lower_extern_def_path x a ctx in
         let (ts, ctx) = ps |> filter_unit |> mapm lower_type ctx in
         let ps = ts |> Hir.indexes_to_fields in
         let (t, ctx) = lower_type t ctx in
@@ -316,11 +316,11 @@ and lower_extern_use_path d (xs, ts) ctx =
   | None -> lower_path (xs, ts) ctx
   | _ -> panic "Found non-string as mlir"
 
-and lower_extern_def_path d ctx =
+and lower_extern_def_path x d ctx =
   match d |> List.assoc_opt "rust" with
   | Some Some Ast.LString y -> (y, ctx)
-  | None -> panic "rust attribute must be specified"
-  | _ -> panic "Found non-string as rust"
+  | None -> panic (Printf.sprintf "rust attribute must be specified for %s" x)
+  | _ -> panic (Printf.sprintf "Found non-string as rust attribute-value for %s" x)
 
 and lower_field_type (x, t) ctx =
   let (t, ctx) = lower_type t ctx in
