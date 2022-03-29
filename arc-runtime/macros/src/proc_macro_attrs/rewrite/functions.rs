@@ -30,7 +30,7 @@ pub(crate) fn rewrite(_attr: syn::AttributeArgs, mut item: syn::ItemFn) -> pm::T
     let wrapper_id = &item.sig.ident;
     let wrapper_item: syn::ItemFn = syn::parse_quote!(
         #[inline(always)]
-        fn #wrapper_id((#(#ids,)*) : (#(#tys,)*), ctx: Context) #output {
+        pub fn #wrapper_id((#(#ids,)*) : (#(#tys,)*), ctx: Context) #output {
             #id(#(#ids,)* ctx)
         }
     );

@@ -108,7 +108,7 @@ pub fn derive_alloc(input: syn::DeriveInput) -> TokenStream {
     let abstract_id = &input.ident;
     let concrete_id = new_id(format!("Concrete{}", abstract_id));
     quote::quote!(
-        impl #impl_generics Alloc<#abstract_id> for #concrete_id #type_generics #where_clause {
+        impl #impl_generics Alloc<#abstract_id #type_generics> for #concrete_id #type_generics #where_clause {
             fn alloc(self, ctx: Context) -> #abstract_id #type_generics {
                 #abstract_id(ctx.mutator().allocate(self, AllocationSpace::New).into())
             }
