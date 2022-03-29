@@ -80,10 +80,15 @@ and pr_type t ctx =
   | Mlir.TEnum vts ->
       pr "!arc.enum";
       pr_angle (pr_list (pr_field pr_type) vts) ctx;
-  | Mlir.TAdt (x, ts) ->
+  | Mlir.TAdt x ->
       pr "!arc.adt";
       pr "<";
-      pr_path x ctx;
+      pr_quote (pr_path x) ctx;
+      pr ">";
+  | Mlir.TGAdt (x, ts) ->
+      pr "!arc.generic_adt";
+      pr "<";
+      pr_quote (pr_path x) ctx;
       pr ", ";
       pr_types ts ctx;
       pr ">";

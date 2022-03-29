@@ -146,7 +146,10 @@ and lower_type t ctx =
                 begin match a |> List.assoc_opt "rust" with
                 | Some Some Ast.LString x ->
                     let (ts, ctx) = lower_types ts ctx in
-                    (Mlir.TAdt (x, ts), ctx)
+                    if ts = [] then
+                      (Mlir.TAdt x, ctx)
+                    else
+                      (Mlir.TGAdt (x, ts), ctx)
                 | _ -> panic "Expected literal string, got something else"
                 end
             | _ -> panic "Expected mlir or rust attribute"
@@ -181,8 +184,13 @@ and mangle_types ts =
 and mangle_type t =
   let rec mangle_type t acc =
     match t with
-    | Mlir.TAdt (x, ts) ->
+    | Mlir.TAdt x ->
         let acc = "Adt"::acc in
+        let acc = x::acc in
+        let acc = "End"::acc in
+        acc
+    | Mlir.TGAdt (x, ts) ->
+        let acc = "GAdt"::acc in
         let acc = x::acc in
         let acc = mangle_types ts acc in
         let acc = "End"::acc in

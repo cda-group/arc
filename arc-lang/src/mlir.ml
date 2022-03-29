@@ -21,7 +21,8 @@ and ty =
   | TFunc    of tys * ty
   | TRecord  of ty fields
   | TEnum    of ty fields
-  | TAdt     of path * tys
+  | TAdt     of path
+  | TGAdt    of path * tys
   | TStream  of ty
   | TNative  of name
 and num =
