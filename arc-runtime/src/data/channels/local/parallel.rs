@@ -1,7 +1,5 @@
 use derive_more::Constructor as New;
 use kompact::prelude::*;
-use tokio::sync::broadcast::Receiver;
-use tokio::sync::broadcast::Sender;
 
 use std::collections::hash_map::DefaultHasher;
 use std::hash::Hash;

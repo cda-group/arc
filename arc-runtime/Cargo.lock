@@ -48,6 +48,7 @@ name = "arc-runtime"
 version = "0.0.0"
 dependencies = [
  "arrow2 0.9.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "async-broadcast",
  "comet-extra",
  "derive_more",
  "dyn-clone",
@@ -65,7 +66,6 @@ dependencies = [
  "serde_traitobject",
  "slog",
  "time 0.3.7",
- "tokio",
  "uuid",
 ]
 
@@ -156,6 +156,18 @@ name = "as_num"
 version = "0.2.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "62eaa19b325e1b3dc2f7b9b6de544dd536619e3dcf986fc391b2c643f10d68c0"
+
+[[package]]
+name = "async-broadcast"
+version = "0.4.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "1bbd92a9bd0e9c1298118ecf8a2f825e86b12c3ec9e411573e34aaf3a0c03cdd"
+dependencies = [
+ "easy-parallel",
+ "event-listener",
+ "futures-core",
+ "parking_lot",
+]
 
 [[package]]
 name = "async-channel"
@@ -785,6 +797,12 @@ name = "dyn-clone"
 version = "1.0.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "ee2626afccd7561a06cf1367e2950c4718ea04565e20fb5029b6c7d8ad09abcf"
+
+[[package]]
+name = "easy-parallel"
+version = "3.2.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "6907e25393cdcc1f4f3f513d9aac1e840eb1cc341a0fccb01171f7d14d10b946"
 
 [[package]]
 name = "either"

@@ -22,7 +22,6 @@ uuid              = { version = "0.8.2" }
 rand              = { version = "0.8.3" }
 dyn-clone         = { version = "1.0.4" }
 comet             = { git = "https://github.com/Starlight-JS/comet", package = "comet-extra", rev = "c2f96f8" }
-tokio             = { version = "1.15.0", features = ["sync"] }
 derive_more       = { version = "0.99.17", default-features = false, features = ["from", "into", "deref", "deref_mut", "constructor", "as_ref"] }
 futures           = { version = "0.3.19" }
 replace_with      = { version = "0.1.7" }
@@ -31,7 +30,9 @@ serde_derive      = { version = "1.0.136" }
 serde             = { version = "1.0.136" }
 serde_traitobject = { version = "0.2.7" }
 polars            = { git = "https://github.com/pola-rs/polars", rev = "a04786c", optional = true }
+async-broadcast   = { version = "0.4.0" }
 
+# tokio             = { version = "1.15.0", features = ["sync"] }
 # crossfire       = { version = "0.1.7" }
 # paste           = { version = "1.0.5" }
 # coz             = { version = "0.1.3" }
