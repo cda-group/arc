@@ -18,12 +18,13 @@ and pr_item (x, i) ctx =
   match i with
   | Mlir.IAssign _ ->
       todo ()
-  | Mlir.IExternFunc (ps, t) ->
+  | Mlir.IExternFunc (x_rust, ps, t) ->
       pr "func private @";
       pr_path x ctx;
       pr_params ps ctx;
       pr " -> ";
       pr_type t ctx;
+      pr " attributes { rust.declare, rust.annotation=\"#[rewrite(unmangled = \\\"%s\\\")]\"}" x_rust
   | Mlir.IFunc (ps, t, b) ->
       pr "func @";
       pr_path x ctx;
@@ -79,9 +80,13 @@ and pr_type t ctx =
   | Mlir.TEnum vts ->
       pr "!arc.enum";
       pr_angle (pr_list (pr_field pr_type) vts) ctx;
-  | Mlir.TAdt (x, _ts) ->
+  | Mlir.TAdt (x, ts) ->
       pr "!arc.adt";
-      pr_angle (pr_quote (pr_path x)) ctx;
+      pr "<";
+      pr_path x ctx;
+      pr ", ";
+      pr_types ts ctx;
+      pr ">";
   | Mlir.TStream t ->
       pr "!arc.stream";
       pr_angle (pr_type t) ctx;

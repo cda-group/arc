@@ -192,11 +192,13 @@ def not(c) = if c ==bool true { false } else { true }
 
 # ------------------------------------------------------
 
+@{rust: "char"}
 extern type char;
 
 # ------------------------------------------------------
 
 # ANCHOR: string
+@{rust: "String"}
 extern type String;
 
 @{rust: "&'static str"}
@@ -239,10 +241,13 @@ extern def str_eq(String, String): bool;
 
 # ------------------------------------------------------
 
+@{rust: "assert"}
 extern def assert(bool);
 
+@{rust: "print"}
 extern def print(String);
 
+@{rust: "panic"}
 extern def panic(String);
 
 # ------------------------------------------------------
@@ -257,6 +262,7 @@ enum Option[T] {
 # ------------------------------------------------------
 
 # ANCHOR: array
+@{rust: "Vec"}
 extern type Array[T];
 # ANCHOR_END: array
 
@@ -298,6 +304,7 @@ extern def capacity[T](Array[T]): u32;
 
 # ------------------------------------------------------
 
+@{rust: "Cell"}
 extern type Cell[T];
 
 @{rust: "Cell_new"}
@@ -311,6 +318,7 @@ extern def get_cell[T](Cell[T]): T;
 
 # ------------------------------------------------------
 
+@{rust: "Iter"}
 extern type Iter[T];
 
 @{rust: "Iter_next"}
@@ -318,6 +326,7 @@ extern def next[T](Iter[T], T): T;
 
 # ------------------------------------------------------
 
+@{rust: "Range"}
 extern type Range[T];
 
 @{rust: "Range_new"}
@@ -337,6 +346,7 @@ extern def gt_range[T](Range[T], T): bool;
 
 # ------------------------------------------------------
 
+@{rust: "Stream"}
 extern type Stream[T];
 
 @{rust: "Stream_map"}

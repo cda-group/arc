@@ -69,12 +69,13 @@ and lower_item ((xs, ts), i) (ctx:Ctx.t) =
       ctx |> Ctx.add_item x (Mlir.IAssign (t0, b))
   | Mir.IEnum _ -> ctx
   | Mir.IExternDef (a, ps, t) ->
-      if not (is_mlir a) then
-        let (x, ctx) = ctx |> resolve_mlir a (xs, ts) in
+      if not (is_defined_in_mlir a) then
+        let (x, ctx) = lower_path (xs, ts) ctx in
+        let (x_rust, ctx) = lower_extern_def_path a ctx in
         let (ts, ctx) = ps |> filter_unit |> mapm lower_type ctx in
         let ps = ts |> Hir.indexes_to_fields in
         let (t, ctx) = lower_type t ctx in
-        ctx |> Ctx.add_item x (Mlir.IExternFunc (ps, t))
+        ctx |> Ctx.add_item x (Mlir.IExternFunc (x_rust, ps, t))
       else
         ctx
   | Mir.IExternType _ -> ctx
@@ -142,9 +143,13 @@ and lower_type t ctx =
             | Some Some Ast.LString x ->
                 (Mlir.TNative x, ctx)
             | None ->
-              let (xs, ctx) = lower_path (xs, ts) ctx in
-              (Mlir.TAdt (xs, []), ctx)
-            | _ -> panic "Expected literal string, got something else"
+                begin match a |> List.assoc_opt "rust" with
+                | Some Some Ast.LString x ->
+                    let (ts, ctx) = lower_types ts ctx in
+                    (Mlir.TAdt (x, ts), ctx)
+                | _ -> panic "Expected literal string, got something else"
+                end
+            | _ -> panic "Expected mlir or rust attribute"
           end
       | _ -> unreachable ()
       end
@@ -285,7 +290,7 @@ and lower_expr t e ctx =
       | Mir.IVal _ -> todo ()
       | Mir.IEnum _ -> unreachable ()
       | Mir.IExternDef (a, _, _) ->
-          let (x, ctx) = ctx |> resolve_mlir a (xs, ts) in
+          let (x, ctx) = ctx |> lower_extern_use_path a (xs, ts) in
           (Mlir.EConst (Mlir.CFun x), ctx)
       | Mir.IExternType _ -> unreachable ()
       | Mir.IDef _ ->
@@ -294,14 +299,20 @@ and lower_expr t e ctx =
       | Mir.ITask _ -> todo ()
       | Mir.IVariant _ -> unreachable ()
 
-and is_mlir d =
+and is_defined_in_mlir d =
   d |> assoc_opt "mlir" |> Option.is_some
 
-and resolve_mlir d (xs, ts) ctx =
+and lower_extern_use_path d (xs, ts) ctx =
   match d |> List.assoc_opt "mlir" with
   | Some Some Ast.LString y -> (y, ctx)
   | None -> lower_path (xs, ts) ctx
   | _ -> panic "Found non-string as mlir"
+
+and lower_extern_def_path d ctx =
+  match d |> List.assoc_opt "rust" with
+  | Some Some Ast.LString y -> (y, ctx)
+  | None -> panic "rust attribute must be specified"
+  | _ -> panic "Found non-string as rust"
 
 and lower_field_type (x, t) ctx =
   let (t, ctx) = lower_type t ctx in

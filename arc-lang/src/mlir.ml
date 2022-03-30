@@ -13,7 +13,7 @@ and param = name * ty
 and block = ops
 and item =
   | IAssign     of ty * block
-  | IExternFunc of params * ty
+  | IExternFunc of name * params * ty
   | IFunc       of params * ty option * block
   | ITask       of params * params * block
 and tys = ty list
