@@ -3,7 +3,6 @@ use quote::quote;
 
 use crate::new_id;
 
-#[cfg(not(feature = "legacy"))]
 #[allow(unused)]
 pub(crate) fn rewrite(args: syn::AttributeArgs, mut item: syn::ItemStruct) -> pm::TokenStream {
     item.fields.iter_mut().for_each(|field| {
@@ -150,26 +149,4 @@ pub(crate) fn rewrite(args: syn::AttributeArgs, mut item: syn::ItemStruct) -> pm
         }
 
     ).into()
-}
-
-#[cfg(feature = "legacy")]
-#[allow(unused)]
-pub(crate) fn rewrite(_: syn::AttributeArgs, mut item: syn::ItemStruct) -> pm::TokenStream {
-    let abstract_id = item.ident.clone();
-    let concrete_id = new_id(format!("Concrete{}", item.ident));
-    let mod_id = new_id(format!("send_{}", item.ident));
-
-    item.ident = concrete_id.clone();
-
-    quote!(
-
-        use arc_runtime::prelude::*;
-        #[derive(Clone, Debug, From, Deref)]
-        #[from(forward)]
-        pub struct #abstract_id(pub std::rc::Rc<#concrete_id>);
-
-        #[derive(Clone, Debug)]
-        #item
-    )
-    .into()
 }

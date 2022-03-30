@@ -4,12 +4,6 @@ use proc_macro as pm;
 use proc_macro::TokenStream;
 use proc_macro2 as pm2;
 
-#[cfg(feature = "legacy")]
-pub fn call(input: syn::Expr) -> TokenStream {
-    quote::quote!(#input).into()
-}
-
-#[cfg(not(feature = "legacy"))]
 pub fn call(input: syn::Expr) -> TokenStream {
     match input {
         syn::Expr::Call(e) => {
@@ -25,12 +19,6 @@ pub fn call(input: syn::Expr) -> TokenStream {
     }
 }
 
-#[cfg(feature = "legacy")]
-pub fn call_indirect(input: syn::Expr) -> TokenStream {
-    quote::quote!(#input).into()
-}
-
-#[cfg(not(feature = "legacy"))]
 pub fn call_indirect(input: syn::Expr) -> TokenStream {
     match input {
         syn::Expr::Call(e) => {
@@ -46,16 +34,6 @@ pub fn call_indirect(input: syn::Expr) -> TokenStream {
     }
 }
 
-#[cfg(feature = "legacy")]
-pub fn enwrap(input: TokenStream) -> TokenStream {
-    let mut iter = input.into_iter();
-    let mut path: syn::Path = parse(&mut iter);
-    concrete_enum_path(&mut path);
-    let data: syn::Expr = parse(&mut iter);
-    quote::quote!(#path(#data).into()).into()
-}
-
-#[cfg(not(feature = "legacy"))]
 pub fn enwrap(input: TokenStream) -> TokenStream {
     let mut iter = input.into_iter();
     let mut path: syn::Path = parse(&mut iter);
@@ -80,15 +58,6 @@ pub fn unwrap(input: TokenStream) -> TokenStream {
     quote::quote!(if let #path(v) = &*#expr.0 { v.clone() } else { unreachable!() }).into()
 }
 
-#[cfg(feature = "legacy")]
-pub fn new(input: TokenStream) -> TokenStream {
-    let mut iter = input.into_iter();
-    let mut data: syn::ExprStruct = parse(&mut iter);
-    concrete_struct_path(&mut data.path);
-    quote::quote!((#data).into()).into()
-}
-
-#[cfg(not(feature = "legacy"))]
 pub fn new(input: TokenStream) -> TokenStream {
     let mut iter = input.into_iter();
     let mut data: syn::ExprStruct = parse(&mut iter);

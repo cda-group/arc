@@ -5,7 +5,6 @@ use quote::quote;
 
 use crate::new_id;
 
-#[cfg(not(feature = "legacy"))]
 #[allow(unused)]
 pub(crate) fn rewrite(_: syn::AttributeArgs, mut item: syn::ItemEnum) -> pm::TokenStream {
     let (_, type_generics, where_clause) = item.generics.split_for_impl();
@@ -156,29 +155,6 @@ pub(crate) fn rewrite(_: syn::AttributeArgs, mut item: syn::ItemEnum) -> pm::Tok
             }
         }
 
-    )
-    .into()
-}
-
-#[cfg(feature = "legacy")]
-#[allow(unused)]
-pub(crate) fn rewrite(_: syn::AttributeArgs, mut item: syn::ItemEnum) -> pm::TokenStream {
-    let abstract_id = item.ident.clone();
-    let concrete_id = new_id(format!("Concrete{}", abstract_id));
-    let mod_id = new_id(format!("send_{}", abstract_id));
-
-    item.ident = concrete_id.clone();
-
-    quote!(
-
-        #[derive(Clone, Debug, From)]
-        #[from(forward)]
-        pub struct #abstract_id(pub std::rc::Rc<#concrete_id>);
-
-        #[derive(Clone, Debug)]
-        #item
-
-        use #concrete_id::*;
     )
     .into()
 }

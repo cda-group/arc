@@ -7,9 +7,6 @@ edition = "2018"
 [lib]
 proc-macro = true
 
-[features]
-legacy = []
-
 [dependencies]
 quote       = { version = "1.0.8" }
 syn         = { version = "1.0.58", features = ["full", "visit-mut"] }

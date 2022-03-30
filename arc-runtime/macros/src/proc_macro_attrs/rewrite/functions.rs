@@ -6,12 +6,6 @@ use quote::quote;
 use std::collections::HashMap;
 use syn::visit_mut::VisitMut;
 
-#[cfg(feature = "legacy")]
-pub(crate) fn rewrite(_attr: syn::AttributeArgs, item: syn::ItemFn) -> pm::TokenStream {
-    quote::quote!(#item).into()
-}
-
-#[cfg(not(feature = "legacy"))]
 pub(crate) fn rewrite(_attr: syn::AttributeArgs, mut item: syn::ItemFn) -> pm::TokenStream {
     item.sig.generics.params.iter_mut().for_each(|p| {
         if let syn::GenericParam::Type(ref mut p) = *p {

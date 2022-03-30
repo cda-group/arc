@@ -1,12 +1,6 @@
 use crate::get_attr_val;
 use proc_macro as pm;
 
-#[cfg(feature = "legacy")]
-pub(crate) fn rewrite(_attr: syn::AttributeArgs, item: syn::ItemFn) -> pm::TokenStream {
-    quote::quote!(#item).into()
-}
-
-#[cfg(not(feature = "legacy"))]
 pub(crate) fn rewrite(attr: syn::AttributeArgs, mut item: syn::ItemFn) -> pm::TokenStream {
     let unmangled = get_attr_val("unmangled", &attr);
     if unmangled != item.sig.ident {

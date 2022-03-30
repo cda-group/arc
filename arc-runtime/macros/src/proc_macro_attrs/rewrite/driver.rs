@@ -1,13 +1,7 @@
 use proc_macro as pm;
+use crate::new_id;
 
-#[cfg(feature = "legacy")]
 pub(crate) fn rewrite(_attr: syn::AttributeArgs, item: syn::ItemFn) -> pm::TokenStream {
-    quote::quote!(#item).into()
-}
-
-#[cfg(not(feature = "legacy"))]
-pub(crate) fn rewrite(_attr: syn::AttributeArgs, item: syn::ItemFn) -> pm::TokenStream {
-    use crate::new_id;
     let block = &item.block;
     let id = item.sig.ident;
     let component_id = new_id(format!("{}Component", id));
