@@ -287,21 +287,10 @@ module Ctx = struct
     | [x] when ts = [] ->
         begin match ctx |> find_vname x with
         | Some (v, MVal) -> (v, ctx)
-        | Some (v, MVar) -> read_cell v ctx
+        | Some (v, MVar) -> get_cell v ctx
         | None -> ctx |> resolve_expr_path xs
         end
     | _ -> ctx |> resolve_expr_path xs
-
-  and resolve_lvalue e ctx =
-    match e with
-    | Ast.EPath ([x], []) ->
-        (* L-value must be a cell. TODO: Support more L-values *)
-        begin match ctx |> find_vname x with
-        | Some (v, MVar) -> (v, ctx)
-        | Some (_, MVal) -> panic "L-value is a value"
-        | None -> panic "Variable not bound"
-        end
-    | _ -> panic "Expected variable, found path"
 
   (* Returns set of currently visible variables *)
   and visible ctx =
@@ -318,15 +307,15 @@ module Ctx = struct
     ctx |> add_expr (Hir.ECall (v_fun, [v]))
 
   (* Retrieve the value from a cell *)
-  and read_cell v ctx =
+  and get_cell v ctx =
     let (t, ctx) = ctx |> fresh_t in
-    let (v_fun, ctx) = ctx |> add_expr (Hir.EItem (["read"], [t])) in
+    let (v_fun, ctx) = ctx |> add_expr (Hir.EItem (["get_cell"], [t])) in
     ctx |> add_expr (Hir.ECall (v_fun, [v]))
 
   (* Update the value inside a cell *)
-  and update_cell v0 v1 ctx =
+  and set_cell v0 v1 ctx =
     let (t, ctx) = ctx |> fresh_t in
-    let (v_fun, ctx) = ctx |> add_expr (Hir.EItem (["update"], [t])) in
+    let (v_fun, ctx) = ctx |> add_expr (Hir.EItem (["set_cell"], [t])) in
     ctx |> add_expr (Hir.ECall (v_fun, [v0; v1]))
 
   (* Create an empty block *)
@@ -349,11 +338,15 @@ module Ctx = struct
     let (v_append, ctx) = ctx |> add_expr (Hir.EItem (["append"], [t])) in
     ctx |> add_expr (Hir.ECall (v_append, [v0; v1]))
 
-  (* Retrieve the value from a cell *)
-  and select_array v0 v1 ctx =
+  and get_array v0 v1 ctx =
     let (t, ctx) = ctx |> fresh_t in
-    let (v_fun, ctx) = ctx |> add_expr (Hir.EItem (["select"], [t])) in
+    let (v_fun, ctx) = ctx |> add_expr (Hir.EItem (["get"], [t])) in
     ctx |> add_expr (Hir.ECall (v_fun, [v0; v1]))
+
+  and replace_array v0 v1 v2 ctx =
+    let (t, ctx) = ctx |> fresh_t in
+    let (v_fun, ctx) = ctx |> add_expr (Hir.EItem (["replace"], [t])) in
+    ctx |> add_expr (Hir.ECall (v_fun, [v0; v1; v2]))
 
   and nominal x ts = Hir.TNominal ([x], ts)
 
@@ -493,7 +486,7 @@ and lower_arg_expr (e:Ast.expr) ctx =
   let (vs, ctx) = ctx |> Ctx.pop_ascope in
   match vs with
   | [] ->
-      let ctx = ctx |> Ctx.add_stmts ss in
+      let ctx = ctx |> Ctx.add_stmts (ss |> List.rev) in
       (v, ctx)
   | vs ->
       let (ps, ctx) = vs |> mapm (fun v ctx ->
@@ -543,7 +536,7 @@ and lower_call e es ctx =
       | [x] when ts = [] ->
           begin match ctx |> Ctx.find_vname x with
           | Some (_, Ctx.MVal) -> lower_call e es ctx
-          | Some (v, Ctx.MVar) -> Ctx.read_cell v ctx
+          | Some (v, Ctx.MVar) -> Ctx.get_cell v ctx
           | None -> ctx |> resolve_call_path xs
           end
       | _ -> ctx |> resolve_call_path xs
@@ -554,6 +547,28 @@ and lower_expr_opt e (ctx:Ctx.t) =
   match e with
   | Some e -> lower_expr e ctx
   | None -> ctx |> Ctx.add_expr (Hir.ELit Ast.LUnit)
+
+and lower_mut e0 e1 ctx =
+  let (v1, ctx) = lower_expr e1 ctx in
+  match e0 with
+  | Ast.EPath ([x], []) ->
+      begin match ctx |> Ctx.find_vname x with
+      | Some (v0, Ctx.MVar) -> ctx |> Ctx.set_cell v0 v1
+      | Some (_, Ctx.MVal) -> panic "L-value is a value"
+      | None -> panic "Variable not bound"
+      end
+  | Ast.ESelect (e00, e01) ->
+      let (v00, ctx) = lower_expr e00 ctx in
+      let (v01, ctx) = lower_expr e01 ctx in
+      ctx |> Ctx.replace_array v00 v01 v1
+  | Ast.EProject (e00, i) ->
+      let (v00, ctx) = lower_expr e00 ctx in
+      ctx |> Ctx.add_expr (Hir.EUpdate (v00, index_to_field i, v1))
+  | Ast.EAccess (e00, x) ->
+      let (v00, ctx) = lower_expr e00 ctx in
+      ctx |> Ctx.add_expr (Hir.EUpdate (v00, x, v1))
+  | _ -> panic "Expected variable, found path"
+
 
 and lower_expr expr ctx =
   match expr with
@@ -576,13 +591,11 @@ and lower_expr expr ctx =
           ctx |> Ctx.append_array v0 v1
       end
   | Ast.EBinOp (Ast.BMut, e0, e1) ->
-      let (v0, ctx) = Ctx.resolve_lvalue e0 ctx in
-      let (v1, ctx) = lower_expr e1 ctx in
-      ctx |> Ctx.update_cell v0 v1
+      lower_mut e0 e1 ctx
   | Ast.EBinOp (Ast.BNotIn, e0, e1) ->
       lower_expr (Ast.EUnOp (Ast.UNot, (Ast.EBinOp (Ast.BIn, e0, e1)))) ctx
-  | Ast.EBinOp (Ast.BNeq, e0, e1) ->
-      lower_expr (Ast.EUnOp (Ast.UNot, (Ast.EBinOp (Ast.BEq, e0, e1)))) ctx
+  | Ast.EBinOp (Ast.BNeq s, e0, e1) ->
+      lower_expr (Ast.EUnOp (Ast.UNot, (Ast.EBinOp (Ast.BEq s, e0, e1)))) ctx
   | Ast.EBinOp (op, e0, e1) ->
       let (v0, ctx) = lower_binop op ctx in
       let (v1, ctx) = lower_expr e0 ctx in
@@ -612,7 +625,7 @@ and lower_expr expr ctx =
   | Ast.ESelect (e0, e1) ->
       let (v0, ctx) = lower_expr e0 ctx in
       let (v1, ctx) = lower_expr e1 ctx in
-      ctx |> Ctx.select_array v0 v1
+      ctx |> Ctx.get_array v0 v1
   | Ast.ERecord (fs, _) ->
       let (fs, ctx) = fs |> mapm lower_field_expr ctx in
       ctx |> Ctx.add_expr (Hir.ERecord fs)
@@ -638,7 +651,7 @@ and lower_expr expr ctx =
       ctx |> Ctx.add_expr (Hir.EAccess (v, Hir.index_to_field i))
   | Ast.EBlock b ->
       let ((ss, v), ctx) = lower_block b ctx in
-      let ctx = ctx |> Ctx.add_stmts ss in
+      let ctx = ctx |> Ctx.add_stmts (ss |> List.rev) in
       (v, ctx)
   | Ast.EFunc (ps, e) ->
 (*       Pretty_ast.pr_expr e Pretty.Ctx.brief; *)
@@ -729,9 +742,8 @@ and lower_receiver (p, e0, e1) ctx =
   (v0, (ss, v1), ctx)
 
 and lower_unop op ctx =
-  match op with
-  | Ast.UNot -> ctx |> Ctx.add_expr (Hir.EItem (["not"], []))
-  | Ast.UNeg -> ctx |> Ctx.add_expr (Hir.EItem (["neg"], []))
+  let x = Ast.unop_name op in
+  ctx |> Ctx.add_expr (Hir.EItem ([x], []))
 
 and lower_compr_clauses cs e0 ctx =
   match cs with
@@ -769,7 +781,7 @@ and lower_field_expr (x, e) (ctx:Ctx.t) =
       match ctx |> Ctx.find_vname x with
       | Some (v, MVal) -> ((x, v), ctx)
       | Some (v, MVar) ->
-          let (v, ctx) = Ctx.read_cell v ctx in
+          let (v, ctx) = Ctx.get_cell v ctx in
           ((x, v), ctx)
       | None -> panic "Name not found"
 
@@ -1053,15 +1065,21 @@ and lower_binop op (ctx:Ctx.t) =
 
 and splice_regex = (Str.regexp "\\${[^}]+}\\|\\$[a-zA-Z_][a-zA-Z0-9_]*")
 
+and str_to_string s ctx =
+  let (v0, ctx) = ctx |> Ctx.add_expr (Hir.ELit (Ast.LString s)) in
+  let (v1, ctx) = ctx |> Ctx.add_expr (Hir.EItem (["from_str"], [])) in
+  let (v, ctx) = ctx |> Ctx.add_expr (Hir.ECall (v1, [v0])) in
+  (v, ctx)
+
 and lower_lit l (ctx:Ctx.t) =
   match l with
   (* Lower interpolated string literals *)
-  | Ast.LString c ->
-      let (vs, ctx) = c |> Str.full_split splice_regex
+  | Ast.LString s ->
+      let (vs, ctx) = s |> Str.full_split splice_regex
         |> mapm (fun s ctx ->
           match s with
           | Str.Text s ->
-              ctx |> Ctx.add_expr (Hir.ELit (Ast.LString s))
+              str_to_string s ctx
           | Str.Delim s ->
               let s = String.sub s 1 ((String.length s) - 1) in
               let e = Parser.expr Lexer.main (Lexing.from_string s) in
@@ -1078,7 +1096,7 @@ and lower_lit l (ctx:Ctx.t) =
           let (v0, ctx) = ctx |> Ctx.add_expr (Hir.EItem (["concat"], [])) in
           ctx |> Ctx.add_expr (Hir.ECall (v0, [v1; v2]))
         ) (v, ctx)
-      | _ -> unreachable ()
+      | [] -> str_to_string s ctx
       end
   | _ -> ctx |> Ctx.add_expr (Hir.ELit l)
 

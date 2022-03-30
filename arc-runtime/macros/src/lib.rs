@@ -10,6 +10,7 @@ mod proc_macro_attrs {
         pub mod enums;
         pub mod externs;
         pub mod functions;
+        pub mod impls;
         pub mod nonpersistent_tasks;
         pub mod persistent_tasks;
         pub mod structs;
@@ -239,7 +240,8 @@ pub fn rewrite(attr: TokenStream, input: TokenStream) -> TokenStream {
             proc_macro_attrs::rewrite::driver::rewrite(attr, item)
         }
         syn::Item::Fn(item) => proc_macro_attrs::rewrite::functions::rewrite(attr, item),
-        _ => panic!("#[rewrite] expects an enum, struct, function, or module as input."),
+        syn::Item::Impl(item) => proc_macro_attrs::rewrite::impls::rewrite(attr, item),
+        _ => panic!("#[rewrite] expects an enum, struct, function, impl, or module as input."),
     }
 }
 

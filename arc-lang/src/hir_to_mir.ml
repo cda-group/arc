@@ -71,6 +71,8 @@ and lower_expr (e:Hir.expr) (ctx:Ctx.t) =
   match e with
   | Hir.EAccess (v, x) ->
       (Mir.EAccess (v, x), ctx)
+  | Hir.EUpdate (v0, x, v1) ->
+      (Mir.EUpdate (v0, x, v1), ctx)
   | Hir.ECall (v, vs) ->
       (Mir.ECall (v, vs), ctx)
   | Hir.ECast (v, t) ->

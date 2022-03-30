@@ -62,24 +62,24 @@ and ty =
   | TArray  of ty
 
 and binop =
-  | BAdd
+  | BAdd of string option
   | BAnd
   | BBand
   | BBor
   | BBxor
-  | BDiv
-  | BEq
-  | BGeq
-  | BGt
-  | BLeq
-  | BLt
-  | BMod
-  | BMul
+  | BDiv of string option
+  | BEq of string option
+  | BGeq of string option
+  | BGt of string option
+  | BLeq of string option
+  | BLt of string option
+  | BMod of string option
+  | BMul of string option
   | BMut
-  | BNeq
+  | BNeq of string option
   | BOr
-  | BPow
-  | BSub
+  | BPow of string option
+  | BSub of string option
   | BXor
   | BIn
   | BRExc
@@ -88,14 +88,14 @@ and binop =
   | BNotIn
 
 and unop =
-  | UNeg
+  | UNeg of string option
   | UNot
 
-and size = int
-and sign = bool
+and int_suffix = string
+and float_suffix = string
 and lit =
-  | LInt of int * (sign * size) option
-  | LFloat of float * size option
+  | LInt of int * int_suffix option
+  | LFloat of float * float_suffix option
   | LBool of bool
   | LString of string
   | LUnit
@@ -178,33 +178,38 @@ and ord =
 
 let rec unop_name op =
   match op with
-  | UNeg -> "neg"
+  | UNeg s -> suffixed "neg" s
   | UNot -> "not"
+
+and suffixed x s =
+  match s with
+  | Some s -> Printf.sprintf "%s%s" x s
+  | None -> Printf.sprintf "%s" x
 
 and binop_name op =
   match op with
-  | BAdd -> "add"
+  | BAdd s -> suffixed "add" s
   | BAnd -> "and"
   | BBand -> "band"
   | BBor -> "bor"
   | BBxor -> "bxor"
-  | BDiv -> "div"
-  | BGeq -> "geq"
-  | BGt -> "gt"
-  | BLeq -> "leq"
-  | BLt -> "lt"
-  | BMod -> "mod"
-  | BMul -> "mul"
-  | BNeq -> "neq"
+  | BDiv s -> suffixed "div" s
+  | BGeq s -> suffixed "geq" s
+  | BGt s -> suffixed "gt" s
+  | BLeq s -> suffixed "leq" s
+  | BLt s -> suffixed "lt" s
+  | BMod s -> suffixed "mod" s
+  | BMul s -> suffixed "mul" s
+  | BNeq s -> suffixed "neq" s
   | BOr -> "or"
-  | BPow -> "pow"
-  | BSub -> "sub"
+  | BPow s -> suffixed "pow" s
+  | BSub s -> suffixed "sub" s
   | BXor -> "xor"
   | BIn -> "contains"
   | BNotIn -> "not_contains"
   | BRExc -> "rexc"
   | BRInc -> "rinc"
-  | BEq -> "eq"
+  | BEq s -> suffixed "eq" s
   | BMut -> "mut"
   | BBy -> "by"
 

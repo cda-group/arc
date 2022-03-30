@@ -4,6 +4,16 @@
 
   exception SyntaxError of string
 
+  let suffix_regex = (Str.regexp "[iufb].+")
+
+  let prefix_suffix lexbuf =
+    let s = Lexing.lexeme lexbuf in
+    match (Str.full_split suffix_regex s) with
+    | [Str.Text prefix; Str.Delim suffix] -> (prefix, suffix)
+    | _ -> raise (SyntaxError "Entered unreachable code")
+
+  let suffix lexbuf = prefix_suffix lexbuf |> snd
+
   let next_line lexbuf =
     let pos = lexbuf.lex_curr_p in
     lexbuf.lex_curr_p <-
@@ -24,6 +34,10 @@ let newline = '\r' | '\n' | "\r\n"
 let name = ['a'-'z' 'A'-'Z' '_'] ['a'-'z' 'A'-'Z' '0'-'9' '_']*
 let unit = "unit"
 let datetime = int '-' int '-' int ('T' int ':' int ':' int)?
+let int_suffix = "i8" | "i16" | "i32" | "i64" | "i128" | "u8" | "u16" | "u32" | "u64" | "u128"
+let float_suffix = "f32" | "f64"
+let bool_suffix = "bool"
+let suffix = int_suffix | float_suffix | bool_suffix
 
 rule main =
   parse
@@ -60,6 +74,19 @@ rule main =
   | "_"        { Underscore }
   | "|"        { Bar }
   | "@"        { AtSign }
+(*= Float extensions =======================================================*)
+  | "!=" suffix { NeqSuffix (suffix lexbuf) }
+  | "%" suffix  { PercentSuffix (suffix lexbuf) }
+  | "**" suffix { StarStarSuffix (suffix lexbuf) }
+  | "*" suffix  { StarSuffix (suffix lexbuf) }
+  | "+" suffix  { PlusSuffix (suffix lexbuf) }
+  | "-" suffix  { MinusSuffix (suffix lexbuf) }
+  | "/" suffix  { SlashSuffix (suffix lexbuf) }
+  | "<" suffix  { LtSuffix (suffix lexbuf) }
+  | "<=" suffix { LeqSuffix (suffix lexbuf) }
+  | "==" suffix { EqEqSuffix (suffix lexbuf) }
+  | ">" suffix  { GtSuffix (suffix lexbuf) }
+  | ">=" suffix { GeqSuffix (suffix lexbuf) }
 (*= Keywords ================================================================*)
   | "and"      { And }
   | "as"       { As }
@@ -119,6 +146,12 @@ rule main =
   | int        { Int (int_of_string (Lexing.lexeme lexbuf)) }
   | float      { Float (float_of_string (Lexing.lexeme lexbuf)) }
   | percentage { Float (float_of_string (Lexing.sub_lexeme lexbuf lexbuf.lex_start_pos (lexbuf.lex_curr_pos-1)) /. 100.0) }
+  | int int_suffix {
+    let (p, s) = prefix_suffix lexbuf in
+    IntSuffix ((int_of_string p), s) }
+  | float float_suffix {
+    let (p, s) = prefix_suffix lexbuf in
+    FloatSuffix ((float_of_string p), s) }
   | char       { Char (Lexing.lexeme_char lexbuf 1) }
   | '"'        { string (Buffer.create 17) lexbuf }
   | datetime   { String (Lexing.lexeme lexbuf) }

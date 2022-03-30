@@ -5,13 +5,12 @@ use quote::quote;
 
 use crate::new_id;
 
-#[cfg(not(feature = "legacy"))]
 #[allow(unused)]
-pub(crate) fn rewrite(_: syn::AttributeArgs, mut enum_item: syn::ItemEnum) -> pm::TokenStream {
-    let (_, type_generics, where_clause) = enum_item.generics.split_for_impl();
+pub(crate) fn rewrite(_: syn::AttributeArgs, mut item: syn::ItemEnum) -> pm::TokenStream {
+    let (_, type_generics, where_clause) = item.generics.split_for_impl();
 
-    let mut sharable_impl_generics = enum_item.generics.params.clone();
-    let mut sendable_impl_generics = enum_item.generics.params.clone();
+    let mut sharable_impl_generics = item.generics.params.clone();
+    let mut sendable_impl_generics = item.generics.params.clone();
 
     sharable_impl_generics.iter_mut().for_each(|g| {
         if let syn::GenericParam::Type(t) = g {
@@ -26,7 +25,7 @@ pub(crate) fn rewrite(_: syn::AttributeArgs, mut enum_item: syn::ItemEnum) -> pm
     let sharable_impl_generics = quote::quote!(<#sharable_impl_generics>);
     let sendable_impl_generics = quote::quote!(<#sendable_impl_generics>);
 
-    let into_generics: Vec<_> = enum_item
+    let into_generics: Vec<_> = item
         .generics
         .params
         .iter()
@@ -45,15 +44,15 @@ pub(crate) fn rewrite(_: syn::AttributeArgs, mut enum_item: syn::ItemEnum) -> pm
         quote::quote!(<#(#into_generics),*>)
     };
 
-    let abstract_id = enum_item.ident.clone();
+    let abstract_id = item.ident.clone();
     let concrete_id = new_id(format!("Concrete{}", abstract_id));
-    let sharable_mod_id = new_id(format!("sharable_enum_{}", abstract_id));
-    let sendable_mod_id = new_id(format!("sendable_enum_{}", abstract_id));
+    let sharable_mod_id = new_id(format!("sharable_{}", abstract_id));
+    let sendable_mod_id = new_id(format!("sendable_{}", abstract_id));
 
-    let mut concrete_sharable_enum_item = enum_item.clone();
-    let mut concrete_sendable_enum_item = enum_item.clone();
+    let mut concrete_sharable_item = item.clone();
+    let mut concrete_sendable_item = item.clone();
 
-    concrete_sharable_enum_item
+    concrete_sharable_item
         .generics
         .params
         .iter_mut()
@@ -62,7 +61,7 @@ pub(crate) fn rewrite(_: syn::AttributeArgs, mut enum_item: syn::ItemEnum) -> pm
                 t.bounds.push(syn::parse_quote!(Sharable))
             }
         });
-    concrete_sendable_enum_item
+    concrete_sendable_item
         .generics
         .params
         .iter_mut()
@@ -72,17 +71,17 @@ pub(crate) fn rewrite(_: syn::AttributeArgs, mut enum_item: syn::ItemEnum) -> pm
             }
         });
 
-    concrete_sharable_enum_item.ident = concrete_id.clone();
-    concrete_sendable_enum_item.ident = concrete_id.clone();
+    concrete_sharable_item.ident = concrete_id.clone();
+    concrete_sendable_item.ident = concrete_id.clone();
 
-    concrete_sendable_enum_item
+    concrete_sendable_item
         .variants
         .iter_mut()
         .for_each(|f| {
             f.fields.iter_mut().for_each(|f| {
                 let ty = f.ty.clone();
                 if let syn::Type::Path(t) = &ty {
-                    if !enum_item.generics.params.iter().any(|x| match x {
+                    if !item.generics.params.iter().any(|x| match x {
                         syn::GenericParam::Type(x) => t.path.is_ident(&x.ident),
                         _ => false,
                     }) {
@@ -94,7 +93,7 @@ pub(crate) fn rewrite(_: syn::AttributeArgs, mut enum_item: syn::ItemEnum) -> pm
             })
         });
 
-    let variant_id = concrete_sharable_enum_item
+    let variant_id = concrete_sharable_item
         .variants
         .iter()
         .map(|v| &v.ident)
@@ -111,7 +110,7 @@ pub(crate) fn rewrite(_: syn::AttributeArgs, mut enum_item: syn::ItemEnum) -> pm
             pub struct #abstract_id #sharable_impl_generics (pub Gc<#concrete_id #type_generics>) #where_clause;
 
             #[derive(Clone, Debug, Collectable, Finalize, Trace)]
-            #concrete_sharable_enum_item
+            #concrete_sharable_item
         }
 
         pub mod #sendable_mod_id {
@@ -125,11 +124,12 @@ pub(crate) fn rewrite(_: syn::AttributeArgs, mut enum_item: syn::ItemEnum) -> pm
  
             #[derive(Clone, Debug, Serialize, Deserialize)]
             #[serde(bound = "")]
-            #concrete_sendable_enum_item
+            #concrete_sendable_item
         }
 
         use #sharable_mod_id::#abstract_id;
         use #sharable_mod_id::#concrete_id::*;
+        use #sharable_mod_id::#concrete_id;
 
         impl #sharable_impl_generics DynSharable for #sharable_mod_id::#abstract_id #type_generics #where_clause {
             type T = #sendable_mod_id::#abstract_id #into_generics;
@@ -155,29 +155,6 @@ pub(crate) fn rewrite(_: syn::AttributeArgs, mut enum_item: syn::ItemEnum) -> pm
             }
         }
 
-    )
-    .into()
-}
-
-#[cfg(feature = "legacy")]
-#[allow(unused)]
-pub(crate) fn rewrite(_: syn::AttributeArgs, mut enum_item: syn::ItemEnum) -> pm::TokenStream {
-    let abstract_id = enum_item.ident.clone();
-    let concrete_id = new_id(format!("Concrete{}", abstract_id));
-    let mod_id = new_id(format!("send_{}", abstract_id));
-
-    enum_item.ident = concrete_id.clone();
-
-    quote!(
-
-        #[derive(Clone, Debug, From)]
-        #[from(forward)]
-        pub struct #abstract_id(pub std::rc::Rc<#concrete_id>);
-
-        #[derive(Clone, Debug)]
-        #enum_item
-
-        use #concrete_id::*;
     )
     .into()
 }

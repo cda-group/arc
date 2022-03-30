@@ -32,6 +32,19 @@ type token =
   | AtSign
   | Underscore
   | Bar
+(*= Float extensions =======================================================*)
+  | EqEqSuffix of string
+  | GeqSuffix of string
+  | GtSuffix of string
+  | LeqSuffix of string
+  | LtSuffix of string
+  | MinusSuffix of string
+  | NeqSuffix of string
+  | PercentSuffix of string
+  | PlusSuffix of string
+  | SlashSuffix of string
+  | StarSuffix of string
+  | StarStarSuffix of string
 (*= Keywords ================================================================*)
   | And
   | As
@@ -79,6 +92,8 @@ type token =
 (*= Identifiers and Literals ================================================*)
   | Name of string
   | Int of int
+  | IntSuffix of (int * Ast.int_suffix)
+  | FloatSuffix of (float * Ast.float_suffix)
   | Float of float
   | Bool of bool
   | Char of char

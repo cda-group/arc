@@ -10,7 +10,6 @@ name = "arc_runtime"
 path = "src/lib.rs"
 
 [features]
-legacy     = ["macros/legacy"]
 dataframes = ["polars"]
 
 [dependencies]

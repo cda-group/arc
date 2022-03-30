@@ -62,6 +62,7 @@ mod list {
     #[test]
     fn test() {
         let l: List = enwrap!(ListNil, unit);
+        let _x: bool = is!(ListCons, l);
         let h: Cons = new!(Cons { v: 5, t: l });
         let l: List = enwrap!(ListCons, h);
         let h: Cons = unwrap!(ListCons, l);

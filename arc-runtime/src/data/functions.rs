@@ -15,7 +15,7 @@ macro_rules! declare_functions {
             pub tag: FunctionTag<I, O>,
         }
         #[derive(Debug, Copy, Send, Sync, Unpin, Serialize, Deserialize)]
-        pub struct FunctionTag<I, O>(Tag, std::marker::PhantomData<(I, O)>);
+        pub struct FunctionTag<I, O>(pub Tag, pub std::marker::PhantomData<(I, O)>);
         #[derive(Debug, Clone, Copy, Send, Serialize, Deserialize)]
         #[allow(non_camel_case_types)]
         pub enum Tag {
@@ -75,20 +75,6 @@ macro_rules! declare_functions {
     };
 }
 
-#[cfg(feature = "legacy")]
-#[macro_export]
-macro_rules! function {
-    // Create a function value
-    ($fun:ident) => {
-        $fun
-    };
-    // Create a function type
-    (($($input:ty),* $(,)?) -> $output:ty) => {
-        fn($($input,)*) -> $output
-    };
-}
-
-#[cfg(not(feature = "legacy"))]
 #[macro_export]
 macro_rules! function {
     // Create a function value

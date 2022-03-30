@@ -50,8 +50,6 @@ pub mod prelude {
     pub use crate::data::primitives::u8;
     pub use crate::data::primitives::unit;
     pub use crate::data::primitives::Unit;
-    pub use crate::data::strings::String;
-    pub use crate::data::vectors::Vec;
     pub use crate::data::Abstract;
     pub use crate::data::Concrete;
     pub use crate::data::DynSendable;
@@ -60,6 +58,45 @@ pub mod prelude {
     pub use crate::data::Sharable;
     pub use crate::runtime::Runtime;
     pub use crate::task::message::TaskMessage;
+
+    pub use crate::data::primitives::assert;
+    pub use crate::data::primitives::panic;
+    pub use crate::data::primitives::print;
+
+    pub use crate::data::strings::String;
+    pub use crate::data::strings::String_clear;
+    pub use crate::data::strings::String_from_str;
+    pub use crate::data::strings::String_insert_char;
+    pub use crate::data::strings::String_is_empty;
+    pub use crate::data::strings::String_len;
+    pub use crate::data::strings::String_new;
+    pub use crate::data::strings::String_push_char;
+    pub use crate::data::strings::String_push_str;
+    pub use crate::data::strings::String_remove;
+    pub use crate::data::strings::String_split_off;
+    pub use crate::data::strings::String_with_capacity;
+    pub use crate::data::strings::String_from_i32;
+    pub use crate::data::strings::String_eq;
+    pub use crate::data::strings::String_concat;
+
+    pub use crate::data::vectors::Vec;
+    pub use crate::data::vectors::Vec_capacity;
+    pub use crate::data::vectors::Vec_clear;
+    pub use crate::data::vectors::Vec_dedup;
+    pub use crate::data::vectors::Vec_get;
+    pub use crate::data::vectors::Vec_insert;
+    pub use crate::data::vectors::Vec_is_empty;
+    pub use crate::data::vectors::Vec_len;
+    pub use crate::data::vectors::Vec_new;
+    pub use crate::data::vectors::Vec_pop;
+    pub use crate::data::vectors::Vec_push;
+    pub use crate::data::vectors::Vec_remove;
+    pub use crate::data::vectors::Vec_with_capacity;
+
+    pub use crate::data::cells::Cell;
+    pub use crate::data::cells::Cell_get;
+    pub use crate::data::cells::Cell_new;
+    pub use crate::data::cells::Cell_set;
 
     // Declarative macros
     pub use crate::access;

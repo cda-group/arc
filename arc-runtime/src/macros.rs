@@ -5,15 +5,6 @@
 /// let a = 5;
 /// let b = val!(a);
 /// ```
-#[cfg(feature = "legacy")]
-#[macro_export]
-macro_rules! val {
-    ($arg:expr) => {
-        $arg.clone()
-    };
-}
-
-#[cfg(not(feature = "legacy"))]
 #[macro_export]
 macro_rules! val {
     ($arg:expr) => {

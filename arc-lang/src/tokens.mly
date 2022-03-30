@@ -31,6 +31,19 @@
 %token Underscore "_"
 %token Bar "|"
 %token AtSign "@"
+(*= Float extensions ========================================================*)
+%token <string> NeqSuffix "!=."
+%token <string> PercentSuffix "%." 
+%token <string> StarStarSuffix "**."
+%token <string> StarSuffix "*." 
+%token <string> PlusSuffix "+." 
+%token <string> MinusSuffix "-." 
+%token <string> SlashSuffix "/." 
+%token <string> LeqSuffix "<=."
+%token <string> EqEqSuffix "==."
+%token <string> GeqSuffix ">=."
+%token <string> LtSuffix "<."
+%token <string> GtSuffix ">."
 (*= Keywords ================================================================*)
 %token And "and"
 %token As "as"
@@ -79,6 +92,8 @@
 %token <string> Name
 %token <int> Int 
 %token <float> Float
+%token <int * Ast.int_suffix> IntSuffix
+%token <float * Ast.float_suffix> FloatSuffix
 %token <bool> Bool
 %token <char> Char
 %token Unit "unit"

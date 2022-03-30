@@ -133,6 +133,12 @@ and pr_expr e ctx =
       pr_var v ctx;
       pr ".";
       pr_name x ctx;
+  | EUpdate (v0, x, v1) ->
+      pr_var v0 ctx;
+      pr ".";
+      pr_name x ctx;
+      pr " = ";
+      pr_var v1 ctx;
   | ECall (v, vs) ->
       pr_var v ctx;
       pr_paren (pr_list pr_var vs) ctx;
@@ -209,18 +215,6 @@ and pr_expr_field (x, v) ctx =
   pr_name x ctx;
   pr ": ";
   pr_var v ctx;
-
-and pr_lit l _ctx =
-  match l with
-  | LInt (c, Some (true, size)) -> pr "%di%d" c size
-  | LInt (c, Some (false, size)) -> pr "%du%d" c size
-  | LInt (c, None) -> pr "%d" c
-  | LFloat (c, Some size) -> pr "%ff%d" c size;
-  | LFloat (c, None) -> pr "%f" c;
-  | LBool c -> pr "%b" c;
-  | LUnit -> pr "unit";
-  | LString c -> pr "\"%s\"" c
-  | LChar c -> pr "%c" c
 
 and pr_var x ctx =
   pr "val!";

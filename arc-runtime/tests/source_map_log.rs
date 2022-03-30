@@ -41,7 +41,7 @@ macro_rules! compile_test {
                 let i = self.vec.clone();
                 for x in 0..i.clone().len(ctx) {
                     let j = i.clone();
-                    let v = j.at(x, ctx);
+                    let v = j.get(x, ctx);
                     self.pushable.push(v.clone(), ctx).await?;
                 }
                 Control::Finished

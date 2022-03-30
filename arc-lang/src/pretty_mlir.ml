@@ -18,12 +18,13 @@ and pr_item (x, i) ctx =
   match i with
   | Mlir.IAssign _ ->
       todo ()
-  | Mlir.IExternFunc (ps, t) ->
+  | Mlir.IExternFunc (x_rust, ps, t) ->
       pr "func private @";
       pr_path x ctx;
       pr_params ps ctx;
       pr " -> ";
       pr_type t ctx;
+      pr " attributes { rust.declare, rust.annotation=\"#[rewrite(unmangled = \\\"%s\\\")]\"}" x_rust
   | Mlir.IFunc (ps, t, b) ->
       pr "func @";
       pr_path x ctx;
@@ -32,11 +33,11 @@ and pr_item (x, i) ctx =
       | Some t -> pr_return_type t ctx;
       | None -> ()
       end;
-      pr " attributes { rust.declare ";
+      pr " attributes { rust.declare";
       begin if x = "main" then
-        pr ", rust.annotation = \"#[rewrite(main)]\" ";
+        pr ", rust.annotation = \"#[rewrite(main)]\"";
       end;
-      pr "}";
+      pr " } ";
       pr_block b ctx;
   | Mlir.ITask (ps0, ps1, b) ->
       pr "func @";
@@ -79,9 +80,18 @@ and pr_type t ctx =
   | Mlir.TEnum vts ->
       pr "!arc.enum";
       pr_angle (pr_list (pr_field pr_type) vts) ctx;
-  | Mlir.TAdt (x, _ts) ->
+  | Mlir.TAdt x ->
       pr "!arc.adt";
-      pr_angle (pr_quote (pr_path x)) ctx;
+      pr "<";
+      pr_quote (pr_path x) ctx;
+      pr ">";
+  | Mlir.TGAdt (x, ts) ->
+      pr "!arc.generic_adt";
+      pr "<";
+      pr_quote (pr_path x) ctx;
+      pr ", ";
+      pr_types ts ctx;
+      pr ">";
   | Mlir.TStream t ->
       pr "!arc.stream";
       pr_angle (pr_type t) ctx;
@@ -115,6 +125,8 @@ and pr_ssa (lhs, e) ctx =
       pr_paren (pr_arg_type a0) ctx;
       pr " -> ";
       pr_lhs_type lhs ctx;
+  | Mlir.EUpdate (_a0, _x1, _a1) ->
+      todo ()
   | Mlir.ECall (a0, args) ->
       pr "call_indirect ";
       pr_arg_var a0 ctx;
@@ -179,9 +191,11 @@ and pr_ssa (lhs, e) ctx =
   | Mlir.EConst c ->
       begin match c with
       | Mlir.CInt d ->
-          pr "arc.constant %d : si32" d;
+          pr "arc.constant %d : " d;
+          pr_lhs_type lhs ctx;
       | Mlir.CFloat f ->
-          pr "arith.constant %f : f32" f;
+          pr "arith.constant %f : " f;
+          pr_lhs_type lhs ctx;
       | Mlir.CBool b ->
           pr "arith.constant %b" b;
       | Mlir.CFun x ->

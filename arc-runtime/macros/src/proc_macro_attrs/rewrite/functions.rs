@@ -2,16 +2,16 @@ use crate::has_attr_key;
 use proc_macro as pm;
 use proc_macro2 as pm2;
 // use quote::quote;
+use quote::quote;
 use std::collections::HashMap;
 use syn::visit_mut::VisitMut;
 
-#[cfg(feature = "legacy")]
-pub(crate) fn rewrite(_attr: syn::AttributeArgs, item: syn::ItemFn) -> pm::TokenStream {
-    quote::quote!(#item).into()
-}
-
-#[cfg(not(feature = "legacy"))]
 pub(crate) fn rewrite(_attr: syn::AttributeArgs, mut item: syn::ItemFn) -> pm::TokenStream {
+    item.sig.generics.params.iter_mut().for_each(|p| {
+        if let syn::GenericParam::Type(ref mut p) = *p {
+            p.bounds.push(syn::parse_quote!(Sharable));
+        }
+    });
     use crate::new_id;
     Visitor::default().visit_item_fn_mut(&mut item);
     let (ids, tys): (Vec<_>, Vec<_>) = item
@@ -24,22 +24,17 @@ pub(crate) fn rewrite(_attr: syn::AttributeArgs, mut item: syn::ItemFn) -> pm::T
         })
         .unzip();
 
-    let output = &item.sig.output;
-
     let id = new_id(format!("_{}", item.sig.ident));
-    let wrapper_id = &item.sig.ident;
-    let wrapper_item: syn::ItemFn = syn::parse_quote!(
-        #[inline(always)]
-        pub fn #wrapper_id((#(#ids,)*) : (#(#tys,)*), ctx: Context) #output {
-            #id(#(#ids,)* ctx)
-        }
-    );
+    let mut wrapper_item = item.clone();
+    wrapper_item.block = syn::parse_quote!({ #id(#(#ids,)* ctx) });
+    wrapper_item.sig.inputs = syn::parse_quote!((#(#ids,)*) : (#(#tys,)*), ctx: Context);
     item.sig.ident = id;
     item.sig.inputs.push(syn::parse_quote!(ctx: Context));
     quote::quote!(
-        use arc_runtime::prelude::*;
-        #wrapper_item #item
-    ).into()
+        #wrapper_item
+        #item
+    )
+    .into()
 }
 
 pub(crate) struct Visitor {
@@ -54,7 +49,7 @@ impl Default for Visitor {
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone, Copy)]
 enum MemKind {
     Heap,
     Stack,
@@ -83,16 +78,33 @@ impl VisitMut for Visitor {
             MemKind::Heap
         };
 
-        self.scopes
-            .last_mut()
-            .map(|s| s.insert(get_pat_ident(&i.pat), kind))
-            .unwrap();
+        let last = self.scopes.last_mut().unwrap();
+        match i.pat.as_ref() {
+            syn::Pat::Ident(p) => {
+                last.insert(p.ident.clone(), kind);
+            }
+            syn::Pat::Tuple(p) => {
+                for p in p.elems.iter() {
+                    match p {
+                        syn::Pat::Ident(p) => {
+                            last.insert(p.ident.clone(), kind);
+                        }
+                        _ => panic!("Expected id- or tuple-id pattern, got {}", quote!(#i)),
+                    }
+                }
+            }
+            _ => panic!("Expected id- or tuple-id pattern, got {}", quote!(#i)),
+        }
     }
 
     fn visit_block_mut(&mut self, i: &mut syn::Block) {
         self.scopes.push(HashMap::new());
         syn::visit_mut::visit_block_mut(self, i);
         self.scopes.pop();
+    }
+
+    fn visit_expr_assign_mut(&mut self, i: &mut syn::ExprAssign) {
+        syn::visit_mut::visit_expr_mut(self, &mut i.right);
     }
 
     fn visit_expr_mut(&mut self, i: &mut syn::Expr) {
@@ -154,14 +166,6 @@ fn is_primitive(t: &syn::Type) -> bool {
             _ => false,
         },
         _ => false,
-    }
-}
-
-fn get_pat_ident(p: &syn::Pat) -> syn::Ident {
-    if let syn::Pat::Ident(i) = &*p {
-        i.ident.clone()
-    } else {
-        panic!("Expected an identifier")
     }
 }
 

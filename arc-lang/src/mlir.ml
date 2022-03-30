@@ -13,7 +13,7 @@ and param = name * ty
 and block = ops
 and item =
   | IAssign     of ty * block
-  | IExternFunc of params * ty
+  | IExternFunc of name * params * ty
   | IFunc       of params * ty option * block
   | ITask       of params * params * block
 and tys = ty list
@@ -21,7 +21,8 @@ and ty =
   | TFunc    of tys * ty
   | TRecord  of ty fields
   | TEnum    of ty fields
-  | TAdt     of path * tys
+  | TAdt     of path
+  | TGAdt    of path * tys
   | TStream  of ty
   | TNative  of name
 and num =
@@ -53,6 +54,7 @@ and binop =
   | BXor
 and expr =
   | EAccess   of arg * name
+  | EUpdate   of arg * name * arg
   | ECall     of arg * args
   | EEmit     of arg * arg
   | EEnwrap   of path * arg option

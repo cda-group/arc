@@ -16,9 +16,21 @@ impl<T> Garbage for T where T: Collectable + Trace + Finalize {}
 #[as_ref(forward)]
 pub struct Gc<T: Garbage>(comet::api::Gc<T, Immix>);
 
+impl<T: PartialEq + Garbage> PartialEq for Gc<T> {
+    fn eq(&self, other: &Self) -> bool {
+        self.0 == other.0
+    }
+}
+
 impl<T: Garbage> Clone for Gc<T> {
     fn clone(&self) -> Self {
         self.0.into()
+    }
+}
+
+impl<T: Sharable> Gc<T> {
+    pub fn inner(self) -> T {
+        (*self.0).clone()
     }
 }
 

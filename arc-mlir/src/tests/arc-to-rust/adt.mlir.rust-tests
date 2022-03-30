@@ -4,7 +4,6 @@ mod tests {
   #[rewrite(main)]
   #[test]
   fn test() {
-   ok0(17);
    let tmp0 = call!(ok2(4711));
    assert_eq!(tmp0, 4711);
 

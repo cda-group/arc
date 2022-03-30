@@ -5,36 +5,20 @@ module Ctx = struct
     mir: Mir.mir;
     mlir: Mlir.mlir;
     stack: scope list;
-    subctx: subctx list;
   }
   and scope = {
     vsubst: (Mlir.name * Mlir.ty) list;
   }
-  and subctx =
-    | STask of {
-      input_handle: Mlir.arg;
-      output_handle: Mlir.arg
-    }
 
   let add_item xs i ctx = { ctx with mlir = (xs, i)::ctx.mlir }
-  let make mir = { mir; mlir = []; stack = []; subctx = []; }
-
-  let push_subctx c ctx = { ctx with subctx = c::ctx.subctx }
-  let pop_subctx ctx = { ctx with subctx = ctx.subctx |> tl }
+  let make mir = { mir; mlir = []; stack = [] }
 
   let push_scope ctx = { ctx with stack = { vsubst = [] }::ctx.stack }
   let pop_scope ctx = { ctx with stack = ctx.stack |> tl }
 
-  let get_input_handle ctx = match ctx.subctx |> hd with
-  | STask {input_handle; _} -> input_handle
-
-  let get_output_handle ctx = match ctx.subctx |> hd with
-  | STask {output_handle; _} -> output_handle
-
   let bind_var x (t:Mlir.ty) ctx =
     match ctx.stack with
-    | hd::tl ->
-        { ctx with stack = { vsubst = (x, t)::hd.vsubst}::tl }
+    | hd::tl -> { ctx with stack = { vsubst = (x, t)::hd.vsubst}::tl }
     | _ -> unreachable ()
 
   let typeof_opt x ctx =
@@ -69,12 +53,13 @@ and lower_item ((xs, ts), i) (ctx:Ctx.t) =
       ctx |> Ctx.add_item x (Mlir.IAssign (t0, b))
   | Mir.IEnum _ -> ctx
   | Mir.IExternDef (a, ps, t) ->
-      if not (is_intrinsic a) then
-        let (x, ctx) = ctx |> resolve_intrinsic a (xs, ts) in
+      if not (is_defined_in_mlir a) then
+        let (x, ctx) = lower_path (xs, ts) ctx in
+        let (x_rust, ctx) = lower_extern_def_path x a ctx in
         let (ts, ctx) = ps |> filter_unit |> mapm lower_type ctx in
         let ps = ts |> Hir.indexes_to_fields in
         let (t, ctx) = lower_type t ctx in
-        ctx |> Ctx.add_item x (Mlir.IExternFunc (ps, t))
+        ctx |> Ctx.add_item x (Mlir.IExternFunc (x_rust, ps, t))
       else
         ctx
   | Mir.IExternType _ -> ctx
@@ -93,7 +78,6 @@ and lower_item ((xs, ts), i) (ctx:Ctx.t) =
       let (ps0, ctx) = ps0 |> mapm_filter lower_param ctx in
       let (ps1, ctx) = ps1 |> mapm_filter lower_param ctx in
       let (b, ctx) = lower_block b (fun _ -> Mlir.EReturn None) ctx in
-      let ctx = ctx |> Ctx.pop_subctx in
       ctx |> Ctx.add_item x (Mlir.ITask (ps0, ps1, b))
   | Mir.IVariant _ -> ctx
 
@@ -138,13 +122,20 @@ and lower_type t ctx =
           (Mlir.TEnum vs, ctx)
       | Mir.IExternType a ->
           begin
-            match a |> List.assoc_opt "intrinsic" with
+            match a |> List.assoc_opt "mlir" with
             | Some Some Ast.LString x ->
                 (Mlir.TNative x, ctx)
             | None ->
-              let (xs, ctx) = lower_path (xs, ts) ctx in
-              (Mlir.TAdt (xs, []), ctx)
-            | _ -> panic "Expected literal string, got something else"
+                begin match a |> List.assoc_opt "rust" with
+                | Some Some Ast.LString x ->
+                    let (ts, ctx) = lower_types ts ctx in
+                    if ts = [] then
+                      (Mlir.TAdt x, ctx)
+                    else
+                      (Mlir.TGAdt (x, ts), ctx)
+                | _ -> panic "Expected literal string, got something else"
+                end
+            | _ -> panic "Expected mlir or rust attribute"
           end
       | _ -> unreachable ()
       end
@@ -176,8 +167,13 @@ and mangle_types ts =
 and mangle_type t =
   let rec mangle_type t acc =
     match t with
-    | Mlir.TAdt (x, ts) ->
+    | Mlir.TAdt x ->
         let acc = "Adt"::acc in
+        let acc = x::acc in
+        let acc = "End"::acc in
+        acc
+    | Mlir.TGAdt (x, ts) ->
+        let acc = "GAdt"::acc in
         let acc = x::acc in
         let acc = mangle_types ts acc in
         let acc = "End"::acc in
@@ -230,6 +226,8 @@ and lower_expr t e ctx =
   match e with
   | Mir.EAccess (v0, x0) ->
       (Mlir.EAccess (arg v0, x0), ctx)
+  | Mir.EUpdate (v0, x0, v1) ->
+      (Mlir.EUpdate (arg v0, x0, arg v1), ctx)
   | Mir.ECall (v0, vs) ->
       (Mlir.ECall (arg v0, args vs), ctx)
   | Mir.ECast _ -> todo ()
@@ -257,9 +255,9 @@ and lower_expr t e ctx =
         | Ast.LInt (d, _) -> Mlir.EConst (Mlir.CInt d)
         | Ast.LFloat (f, _) -> Mlir.EConst (Mlir.CFloat f)
         | Ast.LBool b -> Mlir.EConst (Mlir.CBool b)
-        | Ast.LString s -> Mlir.EConst (Mlir.CAdt (Printf.sprintf "String::from(\\\"%s\\\")" s))
+        | Ast.LString s -> Mlir.EConst (Mlir.CAdt (Printf.sprintf "\\\"%s\\\"" s))
         | Ast.LUnit -> Mlir.ENoop
-        | Ast.LChar _ -> todo ()
+        | Ast.LChar c -> Mlir.EConst (Mlir.CAdt (Printf.sprintf "'%c'" c))
       in
       (e, ctx)
   | Mir.ELoop b ->
@@ -283,7 +281,7 @@ and lower_expr t e ctx =
       | Mir.IVal _ -> todo ()
       | Mir.IEnum _ -> unreachable ()
       | Mir.IExternDef (a, _, _) ->
-          let (x, ctx) = ctx |> resolve_intrinsic a (xs, ts) in
+          let (x, ctx) = ctx |> lower_extern_use_path a (xs, ts) in
           (Mlir.EConst (Mlir.CFun x), ctx)
       | Mir.IExternType _ -> unreachable ()
       | Mir.IDef _ ->
@@ -292,14 +290,20 @@ and lower_expr t e ctx =
       | Mir.ITask _ -> todo ()
       | Mir.IVariant _ -> unreachable ()
 
-and is_intrinsic d =
-  d |> assoc_opt "intrinsic" |> Option.is_some
+and is_defined_in_mlir d =
+  d |> assoc_opt "mlir" |> Option.is_some
 
-and resolve_intrinsic d (xs, ts) ctx =
-  match d |> List.assoc_opt "intrinsic" with
+and lower_extern_use_path d (xs, ts) ctx =
+  match d |> List.assoc_opt "mlir" with
   | Some Some Ast.LString y -> (y, ctx)
   | None -> lower_path (xs, ts) ctx
-  | _ -> panic "Found non-string as intrinsic"
+  | _ -> panic "Found non-string as mlir"
+
+and lower_extern_def_path x d ctx =
+  match d |> List.assoc_opt "rust" with
+  | Some Some Ast.LString y -> (y, ctx)
+  | None -> panic (Printf.sprintf "rust attribute must be specified for %s" x)
+  | _ -> panic (Printf.sprintf "Found non-string as rust attribute-value for %s" x)
 
 and lower_field_type (x, t) ctx =
   let (t, ctx) = lower_type t ctx in
