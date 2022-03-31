@@ -1,6 +1,18 @@
 #[cfg(test)]
 mod tests {
- use crate::arctorustadt::*;
+  use crate::arctorustadt::*;
+
+  #[rewrite]
+  pub struct Foo<A> {
+    pub a: A,
+  }
+
+  #[rewrite]
+  pub struct Bar<A, B> {
+    pub a: A,
+    pub b: B,
+  }
+
   #[rewrite(main)]
   #[test]
   fn test() {

@@ -56,6 +56,7 @@ struct StreamTypeStorage;
 struct EnumTypeStorage;
 struct StructTypeStorage;
 struct ADTTypeStorage;
+struct ADTGenericTypeStorage;
 
 //===----------------------------------------------------------------------===//
 // Arc Types
@@ -70,6 +71,21 @@ public:
 
   /// Returns the Rust name for this type.
   StringRef getTypeName() const;
+
+  static Type parse(DialectAsmParser &parser);
+  void print(DialectAsmPrinter &os) const;
+};
+
+class ADTGenericType : public mlir::Type::TypeBase<ADTGenericType, mlir::Type,
+                                                   ADTGenericTypeStorage> {
+public:
+  using Base::Base;
+
+  static ADTGenericType get(mlir::MLIRContext *ctx, StringRef name,
+                            llvm::ArrayRef<mlir::Type> parameterTypes);
+
+  StringRef getTemplateName() const;
+  llvm::ArrayRef<mlir::Type> getParameterTypes() const;
 
   static Type parse(DialectAsmParser &parser);
   void print(DialectAsmPrinter &os) const;

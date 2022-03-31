@@ -16,4 +16,19 @@ func @ok0(%in : !arc.adt<"i32">) -> () {
     %out = arc.adt_constant "4711" : !arc.adt<"i32">
     return %out : !arc.adt<"i32">
   }
+
+  func @ok6(%in : !arc.generic_adt<"crate::arctorustadt::tests::sharable_Foo::Foo", ui32>)
+     -> !arc.generic_adt<"crate::arctorustadt::tests::sharable_Foo::Foo", ui32> {
+     return %in : !arc.generic_adt<"crate::arctorustadt::tests::sharable_Foo::Foo", ui32>
+  }
+
+  func @ok7(%in : !arc.generic_adt<"crate::arctorustadt::tests::sharable_Bar::Bar", ui32, !arc.generic_adt<"crate::arctorustadt::tests::sharable_Foo::Foo", f64>>)
+    -> !arc.generic_adt<"crate::arctorustadt::tests::sharable_Bar::Bar", ui32, !arc.generic_adt<"crate::arctorustadt::tests::sharable_Foo::Foo", f64>> {
+    return %in : !arc.generic_adt<"crate::arctorustadt::tests::sharable_Bar::Bar", ui32, !arc.generic_adt<"crate::arctorustadt::tests::sharable_Foo::Foo", f64>>
+  }
+
+  func @ok8(%in : !arc.generic_adt<"crate::arctorustadt::tests::sharable_Bar::Bar", ui32, !arc.adt<"i32">>)
+    -> !arc.generic_adt<"crate::arctorustadt::tests::sharable_Bar::Bar", ui32, !arc.adt<"i32">> {
+    return %in : !arc.generic_adt<"crate::arctorustadt::tests::sharable_Bar::Bar", ui32, !arc.adt<"i32">>
+  }
 }
