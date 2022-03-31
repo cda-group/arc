@@ -52,10 +52,6 @@ static llvm::cl::opt<std::string>
                 llvm::cl::desc("Include this file into the generated module"),
                 llvm::cl::value_desc("filename"));
 
-static llvm::cl::opt<bool>
-    useArclangRuntime("arc-lang-runtime",
-                      llvm::cl::desc("Use the new arc-lang runtime"));
-
 //===----------------------------------------------------------------------===//
 // RustDialect
 //===----------------------------------------------------------------------===//
@@ -88,7 +84,7 @@ void RustDialect::initialize() {
   u16Ty = RustType::get(ctx, "u16");
   u32Ty = RustType::get(ctx, "u32");
   u64Ty = RustType::get(ctx, "u64");
-  noneTy = RustType::get(ctx, useArclangRuntime ? "unit" : "Unit");
+  noneTy = RustType::get(ctx, "unit");
 }
 
 //===----------------------------------------------------------------------===//
@@ -268,9 +264,7 @@ LogicalResult rust::writeModuleAsInline(ModuleOp module, llvm::raw_ostream &o) {
     return failure();
   }
 
-  RustPrinterStream PS(module.getName()->str(), rustInclude,
-                       useArclangRuntime ? RustPrinterStream::NEW
-                                         : RustPrinterStream::LEGACY);
+  RustPrinterStream PS(module.getName()->str(), rustInclude);
 
   for (Operation &operation : module) {
     if (RustFuncOp op = dyn_cast<RustFuncOp>(operation))
@@ -358,15 +352,10 @@ void RustCallOp::writeRust(RustPrinterStream &PS) {
   if (target && target->hasAttr("arc.rust_name"))
     callee = target->getAttrOfType<StringAttr>("arc.rust_name").getValue();
 
-  if (useArclangRuntime)
-    PS << "call!(";
-  PS << callee << "(";
+  PS << "call!(" << callee << "(";
   for (auto a : getOperands())
     PS << a << ", ";
-  PS << ")";
-  if (useArclangRuntime)
-    PS << ")";
-  PS << ";\n";
+  PS << "));\n";
 }
 
 void RustCallIndirectOp::writeRust(RustPrinterStream &PS) {
@@ -376,15 +365,10 @@ void RustCallIndirectOp::writeRust(RustPrinterStream &PS) {
     PS << "let ";
     PS.printAsArg(r) << ":" << r.getType() << " = ";
   }
-  if (useArclangRuntime)
-    PS << "call_indirect!(";
-  PS << "(" << getCallee() << ")(";
+  PS << "call_indirect!((" << getCallee() << ")(";
   for (auto a : getArgOperands())
     PS << a << ", ";
-  PS << ")";
-  if (useArclangRuntime)
-    PS << ")";
-  PS << ";\n";
+  PS << "));\n";
 }
 
 // Write this function as Rust code to os
@@ -411,13 +395,11 @@ void RustFuncOp::writeRust(RustPrinterStream &PS) {
   }
 
   PS << "// " << (isMethod ? "Method" : "") << "\n";
-  if (useArclangRuntime) {
-    if ((*this)->hasAttr("rust.annotation"))
-      PS << (*this)->getAttrOfType<StringAttr>("rust.annotation").getValue()
-         << "\n";
-    else
-      PS << "#[rewrite]\n";
-  }
+  if ((*this)->hasAttr("rust.annotation"))
+    PS << (*this)->getAttrOfType<StringAttr>("rust.annotation").getValue()
+       << "\n";
+  else
+    PS << "#[rewrite]\n";
   PS << "pub fn ";
   if ((*this)->hasAttr("arc.rust_name"))
     PS << (*this)->getAttrOfType<StringAttr>("arc.rust_name").getValue();
@@ -1066,7 +1048,7 @@ RustEnumTypeStorage::printAsRust(RustPrinterStream &ps) const {
   // First ensure that any structs used by this struct are defined
   emitNestedTypedefs(ps);
 
-  os << "#[" << (useArclangRuntime ? "" : "codegen::") << "rewrite]\n";
+  os << "#[rewrite]\n";
 
   os << "pub enum ";
   printAsRustNamedType(os) << " {\n";
@@ -1548,7 +1530,7 @@ RustStructTypeStorage::printAsRust(RustPrinterStream &ps) const {
   // First ensure that any structs used by this struct are defined
   emitNestedTypedefs(ps);
 
-  os << "#[" << (useArclangRuntime ? "" : "codegen::") << "rewrite]\n";
+  os << "#[rewrite]\n";
 
   os << "pub struct ";
   printAsRustNamedType(os) << " {\n  ";
@@ -1557,8 +1539,7 @@ RustStructTypeStorage::printAsRust(RustPrinterStream &ps) const {
     if (i != 0)
       os << ",\n  ";
 
-    os << "  " << (useArclangRuntime ? "" : "pub ")
-       << structFields[i].first.getValue() << " : ";
+    os << "  " << structFields[i].first.getValue() << " : ";
     ps.printAsRust(os, structFields[i].second);
   }
   os << "\n}\n";

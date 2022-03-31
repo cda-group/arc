@@ -48,7 +48,7 @@ fi
 # Create dummy wrapper .rs-file which includes the generated test-case
 
 echo '#![feature(unboxed_closures)]' > ${MAIN}
-arc-mlir ${MLIR_FILE} "$@" -arc-to-rust -inline-rust -arc-lang-runtime >> ${MAIN}
+arc-mlir ${MLIR_FILE} "$@" -arc-to-rust -inline-rust >> ${MAIN}
 
 cat >> ${MAIN} <<EOF
 fn main() {
