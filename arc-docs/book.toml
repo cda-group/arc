@@ -1,6 +1,7 @@
 [book]
 authors = ["Klas Segeljakt", "Frej Drejhammar"]
 description = "Arc-Lang documentation."
+language = "en"
 multilingual = false
 src = "src"
 title = "Arc-Lang"
@@ -23,12 +24,12 @@ bibliography = "references.bib"
 [preprocess.links]
 
 [output.html]
-default-theme = "rust"
+theme = "theme"
 no-section-label = true
 git_repository_url = "www.github.com/cda-group/arc"
 git_repository_icon = "fa-github"
 mathjax-support = true
-additional-css = ["style.css"]
+curly-quotes = false
 
 [output.html.playpen]
 editable = false
@@ -40,3 +41,10 @@ enable = true
 [output.linkcheck]
 follow-web-links = false
 warning-policy = "error"
+
+[output.html.fold]
+enable = false
+level = 0
+
+[output.html.print]
+enable = true
