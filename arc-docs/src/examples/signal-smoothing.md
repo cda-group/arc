@@ -4,8 +4,8 @@
 
 ## Implementation
 
-```
-fun query(stream) {
+```arc-lang
+def query(stream) {
     stream
       .swindow(5, 1, fun(v): (v[0] + 2*v[1] + 4*v[2] + 2*v[3] + v[4]) / 10.0)
       .swindow(2, 1, fun(f): f[1] - f[0])
@@ -14,21 +14,21 @@ fun query(stream) {
 
 And
 
-```
+```arc-lang
 from s in stream
 window
-  length 5
-  stride 1
-  compute fun(v): (v[0] + 2*v[1] + 4*v[2] + 2*v[3] + v[4]) / 10.0
+    length 5
+    stride 1
+    compute fun(v): (v[0] + 2*v[1] + 4*v[2] + 2*v[3] + v[4]) / 10.0
 window
-  length 2
-  stride 1
-  compute fun(f): f[1] - f[0]
+    length 2
+    stride 1
+    compute fun(f): f[1] - f[0]
 ```
 
 ## Implementation ([StreamQL](https://dl.acm.org/doi/pdf/10.1145/3428251))
 
-```
+```text
 Q<V,F> smooth = sWindow(5, 1, (a, b, c, d, e) -> (a + 2*y + 4*c + 2*d + e) / 10.0);
 Q<F,D> deriv = sWindow(2, 1, (a, b) -> b - a);
 Q<V,D> query = pipeline(smooth, deriv);

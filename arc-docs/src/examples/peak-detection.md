@@ -10,7 +10,7 @@
 
 ## Implementation
 
-```
+```arc-lang
 def query(stream, PEAK_CNT, THRESH, SILENCE_CNT) {
     stream
         .iterate(fun(stream):
@@ -26,7 +26,7 @@ def query(stream, PEAK_CNT, THRESH, SILENCE_CNT) {
 
 ## Implementation ([StreamQL](https://dl.acm.org/doi/pdf/10.1145/3428251))
 
-```
+```text
 Q<V,V> start = search(v -> v > THRESH);
 Q<V,V> take = take(PEAK_CNT);
 Q<V,V> max = reduce((x, y) -> (y > x) ? y : x);

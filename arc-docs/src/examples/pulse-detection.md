@@ -16,7 +16,7 @@
 
 ## Implementation (arc-lang)
 
-```
+```arc-lang
 type V = i32;
 type T = time;
 type VT = {val: V, ts: T};
@@ -41,7 +41,7 @@ fun query(stream: ~VT, Thred: V) -> ~PTV {
 
 ## Implementation ([StreamQL](https://dl.acm.org/doi/pdf/10.1145/3428251))
 
-```
+```text
 # Pre-process the signal
 lowPass = IIR({−1,2}, {1,0,0,0,0,−2,0,0,0,0,1})
 
