@@ -68,7 +68,10 @@ impl ArcLang {
 
 const KEYWORDS: &[&str] = &[
     "and", "or", "xor", "band", "bor", "bxor", "is", "not", "in", "class", "instance", "def",
-    "task", "on", "emit", "val", "var", "fun", "fun", "unit", "mod", "extern",
+    "task", "on", "receive", "val", "var", "fun", "mod", "extern", "enum", "type", "match", "loop",
+    "for", "while", "if", "else", "return", "break", "continue", "use", "as", "from", "group",
+    "window", "compute", "every", "order", "yield", "where", "desc", "of", "reduce", "after",
+    "join",
 ];
 
 impl Preprocessor for ArcLang {
@@ -89,6 +92,7 @@ impl Preprocessor for ArcLang {
     }
 }
 
+/// Expand `{{exec <cmd>}}` into the output of executing `<cmd>` using bash.
 fn preprocess_exec(book: &mut Book) {
     let exec_regex = regex::Regex::new(r"\{\{#exec (.*?)\}\}").unwrap();
     book.for_each_mut(|item| {
@@ -110,6 +114,7 @@ fn preprocess_exec(book: &mut Book) {
     });
 }
 
+/// Adds syntax highlighting and links to `grammar` code blocks.
 fn preprocess_grammar(book: &mut Book) {
     let grammar_regex = regex::Regex::new(r"(?s)```grammar\n(.*?)```").unwrap();
     let head_regex = regex::Regex::new(r"([A-Z][A-Za-z]*)( ::=.*)").unwrap();
@@ -143,6 +148,7 @@ fn preprocess_grammar(book: &mut Book) {
     });
 }
 
+/// Adds syntax highlighting to `arc-lang` code blocks.
 fn preprocess_snippet(book: &mut Book) {
     let grammar_regex = regex::Regex::new(r"(?s)```arc-lang(-todo)?\n(.*?)```").unwrap();
     let comment_regex = regex::Regex::new(r"#[^{].*").unwrap();
@@ -153,12 +159,21 @@ fn preprocess_snippet(book: &mut Book) {
     ))
     .unwrap();
     let keyword_subst = r"${1}<b>${2}</b>${3}";
+    let numeric_regex = regex::Regex::new(
+        r"([^a-zA-Z0-9])([0-9]+((\.[0-9]+)|%|ns|us|ms|s|m|h|d|w|((-[0-9]+-[0-9]+T[0-9]+)?:[0-9]+:[0-9]+))?)",
+    )
+    .unwrap();
+    let numeric_subst = r#"${1}<b style="color:darkorange">${2}</b>"#;
+    let textual_regex = regex::Regex::new(r##"("[^"]+")|'[^']'"##).unwrap();
+    let textual_subst = r#"<b style="color:green">${0}</b>"#;
     book.for_each_mut(|item| {
         if let mdbook::BookItem::Chapter(ch) = item {
             ch.content = grammar_regex
                 .replace_all(&ch.content, |caps: &regex::Captures<'_>| {
                     let s = caps.get(2).unwrap().as_str();
                     let s = keyword_regex.replace_all(&s, keyword_subst);
+                    let s = textual_regex.replace_all(&s, textual_subst);
+                    let s = numeric_regex.replace_all(&s, numeric_subst);
                     let s = comment_regex.replace_all(&s, comment_subst);
                     let s = s.trim();
                     if caps.get(1).is_some() {
