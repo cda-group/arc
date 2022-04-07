@@ -1,8 +1,138 @@
+\section{MLIR}
+
+MLIR~\cite{MLIR}, \textit{Multi-Level Intermediate Representation}, is
+a framework for implementing code generators, optimizers and code
+translators. Central to the framework is the extensible generic
+intermediary representation for describing programs, often called the
+MLIR language.
+
+The MLIR language is flexible enough to describe different types of
+programs, ranging from Fortran to dataflow graphs (as used by
+TensorFlow). Not only does MLIR provide a representation for the
+program of interest, it also provides a unified framework for
+transforming and optimizing that representation. MLIR provides many
+ready-made optimizations, for example: common subexpression
+elimination, constant folding, loop optimizations, memory layout
+transforms, and vectorization.
+
+MLIR is currently used by many domain specific languages and tools,
+for example: TensorFlow; Flang (a Fortran compiler where MLIR is used
+for the high lever IR before sinking to LLVM-IR); NPComp (A MLIR based
+compiler toolkit for numerical python programs).
+
+\subsection{Concepts in the MLIR Language}
+
+TODO: Blurb + the subsubsections are here to structure the writing,
+they will probably be removed.
+
+TODO: The MLIR language is SSA.
+
+\subsubsection{Operations}
+
+The core entity of the MLIR language is the \textit{operation}. An
+operation has zero or more inputs and outputs. It can also encapsulate
+zero or more \textit{regions} each containing at least one
+\textit{block}, which in turn can contain one or more
+operations. Operations can also be annotated using named
+\textit{attributes}.
+
+All operations have a canonical syntax, but the the MLIR framework
+allows for custom syntax when it improves readability.
+
+In the standard dialect there are an operation for describing a
+compilation unit and functions.
+
+\subsubsection{Dialects}
+
+To support decentralized development and composability, operations and
+types are members of a \textit{dialect}. A dialect typically contains
+operations used for describing a particular kind of program. Multiple
+dialects can be used by a single MLIR program. \textit{Builtin}
+dialect defines types, operations and attributes applicable to many
+problem domains and programming paradigms.
+
+\subsubsection{Interfaces}
+
+It is desirable that a transform which modifies a program, can be
+written in a way which does not require the transform to have
+knowledge about particular dialect operations. For example, for a
+transform which does common subexpression elemination it should be
+enough to know that two identical expressions lack
+side-effects. Properties of operations are indicated by implementing
+\textit{interfaces}, typically defined by a transform or a dialect.
+
+\subsubsection{Types}
+
+The MLIR language is typed. Types are defined by dialects and use
+structural equality. The \textit{Builtin} dialect defines most commin
+primitive types including floats, functions, integers, pointers,
+tensors, and vectors.
+
+\subsubsection{Transforms}
+
+The MLIR language provides many standard transforms such as common
+sub-expression elimination, inlining, loop-invariant code motion, and
+dead-code elimination. Dialect-specific transforms are also provided
+to, for example, perform loop fusion in the
+Structured-Control-Flow-dialect. Various conversion, to convert
+between dialects, and lower the abstraction level from a high-level
+dialect to a low-level representation such as LLVM-IR is also
+provided.
+
+\subsection{Tooling}
+
+Not only does MLIR provide many ready-built operations, types and
+transforms for a language implementor, it also provides a number of
+tools and support libraries to reduce the amount of work needed to
+implement custom dialects.
+
+There is support on TableGen for defining new dialects, operations and
+transform passes. Operations can be specified using a domain specific
+language, specifying operands, types and even custom syntax. TableGen
+will produce all boilerplate needed for parsing, printing, and type
+checking. Custom C++-code can be added to extend the
+boilerplate. TableGen is aware of dialects and will alsa generate
+prototypes for the methods needed to implement the interface.
+
+Library support for implementing conversion transforms is also
+provided by the MLIR framework, this includes a pattern matching
+language and runtime support for performing matching and rewrites.
+
+MLIR inherits many of the testing tools from LLVM, this includes Lit,
+a test suite runner and FileCheck, a pattern matching file verifier
+which allows you to check that output from MLIR have the correct
+form. The MLIR framework also includes support for producing error
+reports, and just like in LLVM, there is built-in support for
+verifying that erroneous MLIR produces the expected errors and
+warnings during testing.
+
+MLIR makes use of the support libraries in LLVM, this means that an
+MLIR user has a rich set of ADTs and convenience libraries at its
+disposal, this includes efficient bump memory allocators, tokenizers,
+command line parsers and a debugging and logging framework.
+
 \section{Arc-MLIR}
 
-MLIR is used in the Arc-Lang compiler back-end. It is used for both standard compiler optimizations and transforms but also as convenient framework in which to express Arc-Lang-specific transforms. The MLIR/LLVM infrastructure for testing is also used to run Arc-Lang regression and unit tests.
 
-The purpose of the Arc-Lang compiler back-end is to do domain specific transforms and optimizations which improves the efficiency of the program when running on Arcon. Doing transforms such as operator fusion and operator reordering requires a number of standard compiler techniques such as liveness analysis, constant propagation and common sub-expression elimination. By using the MLIR infrastructure, which implements many of these standard algorithms, we can concentrate on what is specific to Arc-Lang. By using MLIR we also have a robust and extensible intermediary representation with tools for parsing, printing and verifying structure invariants of the processed program representation.
+* Why are we using mlir, risks
+
+MLIR is used in the Arc-Lang compiler back-end. It is used for both
+standard compiler optimizations and transforms but also as a
+convenient framework in which to express Arc-Lang-specific
+transforms. The MLIR/LLVM infrastructure for testing is also used to
+run Arc-Lang regression and unit tests.
+
+The purpose of the Arc-Lang compiler back-end is to do domain specific
+transforms and optimizations which improves the efficiency of the
+program when running on Arcon. Doing transforms such as operator
+fusion and operator reordering requires a number of standard compiler
+techniques such as liveness analysis, constant propagation and common
+sub-expression elimination. By using the MLIR infrastructure, which
+implements many of these standard algorithms, we can concentrate on
+what is specific to Arc-Lang. By using MLIR we also have a robust and
+extensible intermediary representation with tools for parsing,
+printing and verifying structure invariants of the processed program
+representation.
 
 TODO: MLIR blurb and flesh out the bullets.
 
@@ -45,6 +175,8 @@ TODO: event handler
 TODO: Structure of the Arc-Lang program: Each block produces a result, SSA-ish. No branches between blocks.
 
 TODO: structured control flow
+
+TODO: Explicit signedness on integers
 
 \subsubsection{Rust MLIR Dialect}
 
