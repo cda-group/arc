@@ -31,6 +31,16 @@ syn keyword arcOperator bxor
 syn keyword arcOperator is
 syn keyword arcOperator not
 syn keyword arcOperator in
+syn keyword arcOperator from
+syn keyword arcOperator where
+syn keyword arcOperator yield
+syn keyword arcOperator group
+syn keyword arcOperator compute
+syn keyword arcOperator window
+syn keyword arcOperator sort
+syn keyword arcOperator join
+syn keyword arcOperator every
+syn keyword arcOperator ascending
 hi def link arcOperator Operator
 "=============================================================================
 " Statements
