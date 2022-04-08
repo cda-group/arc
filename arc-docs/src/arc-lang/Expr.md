@@ -16,13 +16,13 @@ Expr ::=
   | [[DataFlow]]     # Dataflow expression
 
 Constructor ::=
-  | "#{" ([Name] ":" [Expr])","* "}"        # Record-construction
-  | "(" [Expr]","+ ")"                  # Tuple-construction
-  | "[" [Expr]","* "]"                  # Array-construction
-  | [Expr]? ".." ("="? [Expr])?         # Range-construction
-  | "fun" [Params] ":" [Expr]           # Lambda-function construction
-  | "task" [Params]? ":" [Params] [Expr]  # Lambda-task construction
-  | [Path] "(" [Expr] ")"               # Enum-variant construction
+  | "#{" ([Name] ":" [Expr])","* "}"          # Record-construction
+  | "(" [Expr]","+ ")"                    # Tuple-construction
+  | "[" [Expr]","* "]"                    # Array-construction
+  | [Expr]? ".." ("="? [Expr])?           # Range-construction
+  | "fun" [Params] (":" [Type])? "=" [Expr]   # Lambda-function construction
+  | "task" [Params]? ":" [Params] "=" [Expr]  # Lambda-task construction
+  | [Path] "(" [Expr] ")"                 # Enum-variant construction
 
 Operation ::=
   | [Expr] [[BinOp]] [Expr]   # Binary operation
@@ -61,13 +61,13 @@ DataFlow ::=
 Query ::= "from" ([Pattern] "in" [Expr])","+ [[QueryStmt]]+
 
 QueryStmt ::=
-  | "yield" [Expr]                                # Select
-  | "where" [Expr]                                # Filter
-  | "join" [Expr] ("on" [Expr])?                      # Join
-  | "keyby" (([Name] "=")? [Expr])","*                  # Partition
-  | "reduce" ([Name] "=")? [Expr] ("of" [Expr])? "id" [Expr]  # Aggregation
-  | "sort" [Expr] "desc"?                           # Sort
-  | "window" [Expr] ("every" [Expr])? ("at" [Expr])?      # Sliding or tumbling window
+  | "yield" [Expr]                            # Select
+  | "where" [Expr]                            # Filter
+  | "join" [Expr] ("on" [Expr])?                  # Join
+  | "keyby" (([Name] "=")? [Expr])","*              # Partition
+  | "compute" ([Name] "=")? [Expr] ("of" [Expr])?     # Aggregation
+  | "sort" [Expr] "desc"?                       # Sort
+  | "window" [Expr] ("every" [Expr])? ("at" [Expr])?  # Sliding or tumbling window
 ```
 
 ## Operators
