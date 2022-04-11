@@ -11,6 +11,6 @@ Use ::= "use" [Path] ("as" [Name])?;
 
 The following code creates a `Person`-type and an alias and use it as a `Human`.
 
-```text
+```arc-lang
 {{#include ../../../arc-lang/examples/uses.arc:example}}
 ```

@@ -2,20 +2,17 @@
 # RUN: arc -o %t run %s -- -rustinclude %s.rust-tests
 # RUN: arc -o %t-canon run %s -- -rustinclude %s.rust-tests -canonicalize
 
-extern def read_numbers_stream(): Stream[i32];
-
 # ANCHOR: example
-task merge(s0, s1, f): (s2) {
+task merge(s0, s1): (s2) {
     loop {
-        val x = receive s0;
-        val y = receive s1;
-        s2 emit f(x, y);
+        s2 ! (receive s0);
+        s2 ! (receive s1);
     }
 }
 
 def main() {
-    val stream0 = read_numbers_stream();
-    val stream1 = read_numbers_stream();
-    val stream2 = merge(stream0, stream1, (+));
+    val stream0 = 0..100;
+    val stream1 = 0..100;
+    val stream2 = merge(stream0, stream1);
 }
 # ANCHOR_END: example

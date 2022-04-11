@@ -1,6 +1,6 @@
 # Tasks
 
-A **task** is an asynchronous function which can suspend its execution to wait for events. The `receive`, `on`, and `!` expressions can only be used inside tasks.
+A **task** is an asynchronous function which can suspend its execution to wait for events. The `receive`, `on`, and `!` expressions can (for now) only be used inside tasks.
 
 ```grammar
 Task ::= "task" [Name] [Generics]? [Params] ":" [Params] [Block]
@@ -10,19 +10,19 @@ Task ::= "task" [Name] [Generics]? [Params] ":" [Params] [Block]
 
 ### Basic task
 
-```text
+```arc-lang
 {{#include ../../../arc-lang/examples/task-identity.arc:example}}
 ```
 
 ### Lambda tasks
 
-```text
+```arc-lang
 {{#include ../../../arc-lang/examples/task-lambda.arc:example}}
 ```
 
 ### Multi-Input Tasks
 
-```text
+```arc-lang
 {{#include ../../../arc-lang/examples/task-merge.arc:example}}
 ```
 

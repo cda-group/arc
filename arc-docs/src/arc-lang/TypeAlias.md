@@ -10,6 +10,6 @@ TypeAlias ::= "type" [Name] [Generics]? "=" [Type] ";"
 
 The following code defines type aliases for representing lines on a two-dimensional plane, and a function for calculating the length of a line.
 
-```text
+```arc-lang
 {{#include ../../../arc-lang/examples/type-alias.arc:example}}
 ```

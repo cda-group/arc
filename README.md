@@ -63,23 +63,21 @@ git submodule update --init --recursive
 
 ## Documentation
 
-* [Getting started](https://cda-group.github.io/arc/getting-started.html)
-* [Examples](https://cda-group.github.io/arc/getting-started.html)
-* [Language Reference](https://cda-group.github.io/arc/arc-lang/mod.md.html)
-* [Contributing](https://cda-group.github.io/arc/arc-lang/arc-lang/contributing.html)
+* [Getting started](https://cda-group.github.io/arc/docs/getting-started.html)
+* [Language Reference](https://cda-group.github.io/arc/docs/arc-lang/mod.md.html)
+* [Developers](https://cda-group.github.io/arc/arc-lang/docs/arc-lang/contributing.html)
 
 ## Project Structure
 
 * [`arc-lang`](https://github.com/cda-group/arc/tree/master/arc-lang) - A compiler for Arc-Lang.
 * [`arc-mlir`](https://github.com/cda-group/arc/tree/master/arc-mlir) - An optimizer for Arc-Lang.
-* [`arc-codegen`](https://github.com/cda-group/arc/tree/master/arc-codegen) - A code generator for Arc-Lang which targets different runtime backends.
 * [`arc-runtime`](https://github.com/cda-group/arc/tree/master/arc-runtime) - A local runtime which supports the execution of Arc-Lang programs.
 * [`arc-python`](https://github.com/cda-group/arc/tree/master/arc-python) - A Python library for writing Arc-Lang applications.
 
 ## Related Projects
 
-* [`arcon`](https://github.com/cda-group/arcon) - A distributed runtime which will support execution of Arc.
-* [`kompact`](https://github.com/kompics/kompact) - A component-actor middleware which Arc's local runtime and Arcon are both implemented in.
+* [`arcon`](https://github.com/cda-group/arcon) - A distributed runtime which will support execution of Arc-Lang.
+* [`kompact`](https://github.com/kompics/kompact) - A component-actor middleware which Arc-Runtime and Arcon are both implemented in.
 
 ## Other
 
