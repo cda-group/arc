@@ -209,7 +209,7 @@ LogicalResult WhileLowering::matchAndRewrite(scf::WhileOp whileOp,
 }
 
 void RemoveSCF::runOnOperation() {
-  mlir::FuncOp f = getOperation();
+  mlir::func::FuncOp f = getOperation();
 
   // In order to match arc.loop.breaks to their enclosing scf.while we
   // add an unique attribute to each scf.while. We then tag all
@@ -245,6 +245,6 @@ void RemoveSCF::runOnOperation() {
     signalPassFailure();
 }
 
-std::unique_ptr<OperationPass<FuncOp>> arc::createRemoveSCFPass() {
+std::unique_ptr<OperationPass<mlir::func::FuncOp>> arc::createRemoveSCFPass() {
   return std::make_unique<RemoveSCF>();
 }

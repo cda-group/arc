@@ -39,7 +39,7 @@ std::unique_ptr<OperationPass<ModuleOp>> createLowerToRustPass();
 
 /// Create a pass for converting structured flow-control to branches
 /// between basic blocks.
-std::unique_ptr<OperationPass<FuncOp>> createRemoveSCFPass();
+std::unique_ptr<OperationPass<mlir::func::FuncOp>> createRemoveSCFPass();
 
 /// Create a pass for converting branches
 /// between basic blocks to structured flow-control.

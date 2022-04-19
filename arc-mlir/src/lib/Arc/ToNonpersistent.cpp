@@ -32,7 +32,7 @@ struct ToNonpersistent : public ToNonpersistentBase<ToNonpersistent> {
 } // end anonymous namespace.
 
 void ToNonpersistent::runOnOperation() {
-  getOperation().walk([&](FuncOp f) {
+  getOperation().walk([&](mlir::func::FuncOp f) {
     if (f->hasAttr("arc.is_task")) {
       f->setAttr("arc.is_toplevel_task_function", UnitAttr::get(&getContext()));
       f->setAttr("arc.use_nonpersistent", UnitAttr::get(&getContext()));

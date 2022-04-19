@@ -1103,14 +1103,14 @@ RustTypeConverter::convertFunctionSignature(Type ty, SignatureConversion &SC) {
   return funcType;
 }
 
-struct FuncOpLowering : public OpConversionPattern<mlir::FuncOp> {
+struct FuncOpLowering : public OpConversionPattern<mlir::func::FuncOp> {
 
   FuncOpLowering(MLIRContext *ctx, RustTypeConverter &typeConverter)
-      : OpConversionPattern<mlir::FuncOp>(typeConverter, ctx, 1),
+      : OpConversionPattern<mlir::func::FuncOp>(typeConverter, ctx, 1),
         TypeConverter(typeConverter) {}
 
   LogicalResult
-  matchAndRewrite(mlir::FuncOp func, OpAdaptor adaptor,
+  matchAndRewrite(mlir::func::FuncOp func, OpAdaptor adaptor,
                   ConversionPatternRewriter &rewriter) const final {
     MLIRContext *ctx = func.getContext();
     SmallVector<NamedAttribute, 4> attributes;
@@ -1185,7 +1185,7 @@ private:
   LogicalResult buildLocalFun(ConversionPatternRewriter &rewriter,
                               ArrayRef<Value> &operands,
                               SmallVector<NamedAttribute, 4> &attributes,
-                              mlir::FuncOp &func, Operation *op,
+                              mlir::func::FuncOp &func, Operation *op,
                               TypeConverter::SignatureConversion &sigConv,
                               MLIRContext *ctx) const {
 
@@ -1206,7 +1206,7 @@ private:
   LogicalResult buildExternalFun(ConversionPatternRewriter &rewriter,
                                  ArrayRef<Value> &operands,
                                  SmallVector<NamedAttribute, 4> &attributes,
-                                 mlir::FuncOp &func, Operation *op,
+                                 mlir::func::FuncOp &func, Operation *op,
                                  TypeConverter::SignatureConversion &sigConv,
                                  MLIRContext *ctx) const {
     auto newOp = rewriter.create<rust::RustExtFuncOp>(

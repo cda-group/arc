@@ -634,7 +634,8 @@ OpFoldResult arc::OrOp::fold(ArrayRef<Attribute> operands) {
 //===----------------------------------------------------------------------===//
 LogicalResult ReceiveOp::verify() {
   // Check that we're located inside a task
-  FuncOp function = getOperation()->getParentOfType<FuncOp>();
+  mlir::func::FuncOp function =
+      getOperation()->getParentOfType<mlir::func::FuncOp>();
   if (!function->hasAttr("arc.is_task")) {
     emitOpError("can only be used inside a task");
     return mlir::failure();
@@ -681,7 +682,7 @@ OpFoldResult RemIOp::fold(ArrayRef<Attribute> operands) {
 // ArcReturnOp
 //===----------------------------------------------------------------------===//
 LogicalResult ArcReturnOp::verify() {
-  FuncOp function = (*this)->getParentOfType<FuncOp>();
+  mlir::func::FuncOp function = (*this)->getParentOfType<mlir::func::FuncOp>();
   if (!function)
     return emitOpError("expects parent op builtin.func");
 
@@ -731,7 +732,8 @@ OpFoldResult arc::SelectOp::fold(ArrayRef<Attribute> operands) {
 //===----------------------------------------------------------------------===//
 LogicalResult SendOp::verify() {
   // Check that we're located inside a task
-  FuncOp function = getOperation()->getParentOfType<FuncOp>();
+  mlir::func::FuncOp function =
+      getOperation()->getParentOfType<mlir::func::FuncOp>();
   if (!function->hasAttr("arc.is_task")) {
     emitOpError("can only be used inside a task");
     return mlir::failure();
@@ -794,7 +796,7 @@ LogicalResult StateAppenderFoldOp::verify() {
       this->getOperation(), funName);
   auto StateTy = state().getType().cast<ArconAppenderType>().getType();
 
-  FuncOp F = dyn_cast<FuncOp>(Callee);
+  mlir::func::FuncOp F = dyn_cast<mlir::func::FuncOp>(Callee);
   FunctionType FT = F.getFunctionType().dyn_cast<FunctionType>();
 
   if (!F)
