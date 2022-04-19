@@ -24,6 +24,7 @@
 #define ARC_OPS
 
 #ifndef OP_BASE
+include "../../mlir/include/mlir/IR/EnumAttr.td"
 include "../../mlir/include/mlir/IR/OpBase.td"
 include "../../mlir/include/mlir/Interfaces/CallInterfaces.td"
 include "../../mlir/include/mlir/Interfaces/InferTypeOpInterface.td"

@@ -50,10 +50,10 @@ struct ToSCF : public ToSCFBase<ToSCF> {
 
 } // end anonymous namespace.
 
-struct FunPattern : public OpRewritePattern<mlir::FuncOp> {
-  using OpRewritePattern<mlir::FuncOp>::OpRewritePattern;
+struct FunPattern : public OpRewritePattern<mlir::func::FuncOp> {
+  using OpRewritePattern<mlir::func::FuncOp>::OpRewritePattern;
 
-  LogicalResult matchAndRewrite(mlir::FuncOp fun,
+  LogicalResult matchAndRewrite(mlir::func::FuncOp fun,
                                 PatternRewriter &rewriter) const override {
     bool foundBr = false;
     fun->walk<WalkOrder::PreOrder>([&](BranchOp br) { foundBr = true; });
@@ -107,7 +107,8 @@ private:
     rewriter.create<arc::ArcBlockResultOp>(loc, destState);
   }
 
-  LogicalResult transformFun(mlir::FuncOp f, PatternRewriter &rewriter) const {
+  LogicalResult transformFun(mlir::func::FuncOp f,
+                             PatternRewriter &rewriter) const {
     LLVM_DEBUG({
       llvm::dbgs() << "=== Function ===\n";
       auto &block = f->getRegion(0).front();
