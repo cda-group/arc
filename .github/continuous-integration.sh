@@ -63,6 +63,40 @@ function run-runtime-tests {
     run-step arc-cargo "$@"
 }
 
+function install-cmake {
+    wget https://github.com/Kitware/CMake/releases/download/v3.23.1/cmake-3.23.1.tar.gz
+    tar -xf cmake-3.23.1.tar.gz
+    cd cmake-3.23.1
+    ./configure
+    make
+    make install
+}
+
+function install-rust {
+    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- --default-toolchain nightly -y
+}
+
+function install-ocaml {
+    opam init -y --disable-sandboxing
+    eval $(opam config env)
+    opam install -y dune core menhir
+}
+
+function install-ubuntu-packages {
+    sudo apt update
+    sudo apt install software-properties-common
+    add-apt-repository ppa:avsm/ppa
+    sudo apt update
+    sudo apt install -y clang libssl-dev ninja-build wget make curl opam
+    (install-ocaml)
+    (install-cmake)
+}
+
+function install-macos-packages {
+    (install-ocaml)
+    (install-cmake)
+}
+
 case $1 in
     check-ccache)
 	check-ccache
@@ -79,6 +113,14 @@ case $1 in
     run-mlir-tests)
 	run-mlir-tests
 	;;
+
+    install-ubuntu-packages)
+  install-ubuntu-packages
+  ;;
+
+    install-macos-packages)
+  install-macos-packages
+  ;;
 
     cargo)
 	# We assume this is a arc-runtime cargo command line
