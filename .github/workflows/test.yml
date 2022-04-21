@@ -7,7 +7,7 @@ on:
       - "arc-mlir/**"
       - "arc-runtime/**"
       - "arc-python/**"
-      - ".github/**"
+      - ".github/workflows/test.yml"
     branches:
       - master
 
@@ -63,3 +63,8 @@ jobs:
 
     - name: Check for dirty tree
       run: ./check-for-dirty-tree
+
+    - name: Generate build number
+      uses: einaregilsson/build-number@v3
+      with:
+        token: ${{ secrets.github_token }}
