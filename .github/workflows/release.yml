@@ -25,7 +25,7 @@ jobs:
         submodules: 'recursive'
 
     - name: Install packages (Ubuntu)
-      if: matrix.os == 'ubuntu-18.04'
+      if: matrix.os == 'ubuntu-latest'
       run: ./.github/continuous-integration.sh install-ubuntu-packages
 
   # - name: Install packages (macOS)
