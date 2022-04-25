@@ -21,6 +21,8 @@ jobs:
     steps:
     - name: Checkout source
       uses: actions/checkout@v2
+      with:
+        submodules: 'recursive'
 
     - name: Install packages (Ubuntu)
       if: matrix.os == 'ubuntu-18.04'
