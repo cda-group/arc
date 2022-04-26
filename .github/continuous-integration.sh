@@ -6,8 +6,6 @@ echo "The work dir is ${A2M_BUILD}"
 
 export PATH="$A2M_BUILD/llvm-build/bin:$PATH"
 export RUSTC_WRAPPER="/home/arc-runner/.cargo/bin/sccache"
-export SCCACHE_DIR="${PERSIST_DIR}/sccache"
-export SCCACHE_CACHE_SIZE="20G"
 export CARGO_INCREMENTAL="0"
 
 function run-step {
@@ -15,32 +13,40 @@ function run-step {
     "$@"
 }
 
-mkdir -p ${PERSIST_DIR}
+export -f run-step
 
-if [[ -d "${PERSIST_DIR}/ccache-cachedir" ]]; then
-    echo "The Ccache directory exists at ${PERSIST_DIR}/ccache-cachedir"
-else
-    echo "Creating Ccache directory at ${PERSIST_DIR}/ccache-cachedir"
-    mkdir -p ${PERSIST_DIR}/ccache-cachedir
-fi
+if [ ! -z "${PERSIST_DIR}" ]; then
+    export SCCACHE_CACHE_SIZE="20G"
+    export SCCACHE_DIR="${PERSIST_DIR}/sccache"
+    mkdir -p ${PERSIST_DIR}
 
-if [[ -f "${CCACHE_CONFIGPATH}" ]]; then
-    echo "The Ccache config is:"
-    cat "${CCACHE_CONFIGPATH}"
-else
-    echo "Creating Ccache config at ${CCACHE_CONFIGPATH}"
-    envsubst > ${CCACHE_CONFIGPATH} <<EOF
-    max_size = 20G
-    cache_dir = ${PERSIST_DIR}/ccache-cachedir
+    if [[ -d "${PERSIST_DIR}/ccache-cachedir" ]]; then
+        echo "The Ccache directory exists at ${PERSIST_DIR}/ccache-cachedir"
+    else
+        echo "Creating Ccache directory at ${PERSIST_DIR}/ccache-cachedir"
+        mkdir -p ${PERSIST_DIR}/ccache-cachedir
+    fi
+
+    if [[ -f "${CCACHE_CONFIGPATH}" ]]; then
+        echo "The Ccache config is:"
+        cat "${CCACHE_CONFIGPATH}"
+    else
+        echo "Creating Ccache config at ${CCACHE_CONFIGPATH}"
+        envsubst > ${CCACHE_CONFIGPATH} <<EOF
+        max_size = 20G
+        cache_dir = ${PERSIST_DIR}/ccache-cachedir
 EOF
-fi
+    fi
 
-if [[ -d "${SCCACHE_DIR}" ]]; then
-    echo "The Sccache directory exists at ${SCCACHE_DIR}"
-    echo "It contains $(du -hs ${SCCACHE_DIR} | cut -f1)"
+    if [[ -d "${SCCACHE_DIR}" ]]; then
+        echo "The Sccache directory exists at ${SCCACHE_DIR}"
+        echo "It contains $(du -hs ${SCCACHE_DIR} | cut -f1)"
+    else
+        echo "Creating Sccache directory at ${SCCACHE_DIR}"
+        mkdir -p ${SCCACHE_DIR}
+    fi
 else
-    echo "Creating Sccache directory at ${SCCACHE_DIR}"
-    mkdir -p ${SCCACHE_DIR}
+    echo "The PERSIST_DIR is not set. Not using ccache or sccache."
 fi
 
 function check-ccache {
@@ -51,7 +57,13 @@ function check-ccache {
 }
 
 function run-build {
-    A2M_CCACHE="1" BUILD_FLAVOUR="Release" A2M_ASSERTS="1" run-step ./build
+    A2M_CMAKE_DEFS=('BUILD_FLAVOUR="Release"' 'A2M_ASSERTS="1"')
+
+    if [[ ! -z "${PERSIST_DIR}" ]]; then
+        A2M_CMAKE_DEFS+=('A2M_CCACHE="1"')
+    fi
+
+    env "${A2M_CMAKE_DEFS[@]}" bash -c run-step ./build
 }
 
 function run-mlir-tests {
