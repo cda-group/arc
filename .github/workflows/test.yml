@@ -8,6 +8,7 @@ on:
       - "arc-runtime/**"
       - "arc-python/**"
       - ".github/workflows/test.yml"
+      - ".github/workflows/continuous-integration.sh"
     branches:
       - master
 
