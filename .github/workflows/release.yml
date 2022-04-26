@@ -27,13 +27,19 @@ jobs:
     - name: Install packages (Ubuntu)
       if: matrix.os == 'ubuntu-latest'
       run: ./.github/continuous-integration.sh install-ubuntu-packages
+      env:
+        A2M_BUILD: ${{ format('{0}/build', runner.temp) }}
 
   # - name: Install packages (macOS)
   #   if: matrix.os == 'macos-latest'
   #   run: ./.github/continuous-integration.sh install-macos-packages
+  #   env:
+  #     A2M_BUILD: ${{ format('{0}/build', runner.temp) }}
 
     - name: Build artifacts
       run: ./build
+      env:
+        A2M_BUILD: ${{ format('{0}/build', runner.temp) }}
 
     - name: Create package
       shell: bash
@@ -43,12 +49,14 @@ jobs:
         mkdir -p "$package"/{bin,share}
 
         mv README.md "$package"
-        mv arc-mlir/build/llvm-build/bin/{arc,arc-lang,arc-mlir} "$package/bin"
+        mv "$A2M_BUILD"/llvm-build/bin/{arc,arc-lang,arc-mlir} "$package/bin"
         mv {arc-runtime,arc-lang/stdlib} "$package/share"
 
         tar cvf "$package.tar" "$package"
 
         echo "ASSET=$package.tar" >> $GITHUB_ENV
+      env:
+        A2M_BUILD: ${{ format('{0}/build', runner.temp) }}
 
     - name: Release package
       uses: actions/upload-release-asset@v1.0.1
