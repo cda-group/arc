@@ -9,6 +9,12 @@ export RUSTC_WRAPPER="/home/arc-runner/.cargo/bin/sccache"
 export CARGO_INCREMENTAL="0"
 
 function run-step {
+    ( IFS=:
+      for p in $PATH; do
+      echo DIR: "$p"
+      ls "$p" || echo unreadable
+      done
+    )
     echo "Running \'$@\'"
     "$@"
 }
