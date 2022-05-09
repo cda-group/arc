@@ -3,7 +3,7 @@
 // -----
 
 module @toplevel {
-  func @main() {
+  func.func @main() {
     %a = arith.constant 0 : i1
     %b = arith.constant 3.14 : f64
     %c = arith.constant 0.693 : f64
@@ -20,7 +20,7 @@ module @toplevel {
 // -----
 
 module @toplevel {
-  func @main() {
+  func.func @main() {
     %a = arith.constant 0 : i1
     %f = arith.constant 3.14 : f64
 
@@ -34,7 +34,7 @@ module @toplevel {
 // -----
 
 module @toplevel {
-  func @main() {
+  func.func @main() {
     %a = arith.constant 0 : i1
     %b = arith.constant 3.14 : f32
     %c = arith.constant 0.693 : f64
@@ -53,7 +53,7 @@ module @toplevel {
 // -----
 
 module @toplevel {
-  func @main() {
+  func.func @main() {
     %a = arith.constant 0 : i1
     %b = arith.constant 3.14 : f32
     %c = arith.constant 0.693 : f64
@@ -66,7 +66,7 @@ module @toplevel {
 // -----
 
 module @toplevel {
-  func @main() {
+  func.func @main() {
     %a = arith.constant 0 : i1
     %b = arith.constant 3.14 : f32
     %c = arith.constant 0.693 : f64
@@ -80,7 +80,7 @@ module @toplevel {
 // -----
 
 module @toplevel {
-  func @main() {
+  func.func @main() {
     %a = arith.constant 0 : i1
     %b = arith.constant 3.14 : f32
     %c = arith.constant 0.693 : f64
@@ -94,7 +94,7 @@ module @toplevel {
 // -----
 
 module @toplevel {
-  func @main() {
+  func.func @main() {
     %a = arith.constant 0 : i1
     %b = arith.constant 3.14 : f32
     %c = arith.constant 0.693 : f64
@@ -108,7 +108,7 @@ module @toplevel {
 // -----
 
 module @toplevel {
-  func @main() {
+  func.func @main() {
     %a = arith.constant 0 : i1
     %b = arith.constant 3.14 : f64
     %c = arith.constant 0.693 : f64
@@ -124,7 +124,7 @@ module @toplevel {
 // -----
 
 module @toplevel {
-  func @main() {
+  func.func @main() {
     %a = arith.constant 0 : i1
     %b = arith.constant 3.14 : f64
     %c = arith.constant 0.693 : f64
@@ -144,7 +144,7 @@ module @toplevel {
 // -----
 
 module @toplevel {
-  func @main() {
+  func.func @main() {
     %a = arith.constant 0 : i1
     %b = arith.constant 3.14 : f32
     %c = arith.constant 0.693 : f64
@@ -162,7 +162,7 @@ module @toplevel {
 // -----
 
 module @toplevel {
-  func @main() {
+  func.func @main() {
     %a = arith.constant 0 : i1
     %b = arith.constant 3.14 : f32
     %c = arith.constant 0.693 : f32
@@ -180,7 +180,7 @@ module @toplevel {
 // -----
 
 module @toplevel {
-  func @main() {
+  func.func @main() {
     %a = arith.constant 0 : i1
     %b = arith.constant 3.14 : f32
     %c = arith.constant 0.693 : f32
@@ -198,7 +198,7 @@ module @toplevel {
 // -----
 
 module @toplevel {
-  func @main() {
+  func.func @main() {
     %a = arith.constant 0 : i1
     %b = arith.constant 3.14 : f32
     %c = arith.constant 0.693 : f32
@@ -216,7 +216,7 @@ module @toplevel {
 // -----
 
 module @toplevel {
-  func @main() {
+  func.func @main() {
     %a = arith.constant 0 : i1
     %b = arith.constant 3.14 : f32
     %c = arith.constant 0.693 : f32
@@ -234,7 +234,7 @@ module @toplevel {
 // -----
 
 module @toplevel {
-  func @main() {
+  func.func @main() {
     %a = arith.constant 0 : i1
     %b = arc.constant 66 : ui64
     "arc.if"(%a) ( {
@@ -251,7 +251,7 @@ module @toplevel {
 // -----
 
 module @toplevel {
-  func @main() {
+  func.func @main() {
     %a = arith.constant 0 : i1
     %b = arc.constant 66 : ui64
     %c = arc.constant 7 : ui64
@@ -267,7 +267,7 @@ module @toplevel {
 // -----
 
 module @toplevel {
-  func @main() -> ui64 {
+  func.func @main() -> ui64 {
     %a = arith.constant 0 : i1
     %b = arc.constant 66 : ui64
     %c = arc.constant 7 : ui64
@@ -283,7 +283,7 @@ module @toplevel {
 // -----
 
 module @toplevel {
-  func @main() -> ui64 {
+  func.func @main() -> ui64 {
     %a = arith.constant 0 : i1
     %b = arc.constant 66 : ui64
     %c = arc.constant 7 : si64
@@ -301,7 +301,7 @@ module @toplevel {
 // -----
 
 module @toplevel {
-  func @main() {
+  func.func @main() {
     %a = arith.constant 0 : i1
     %b = arc.constant 66 : ui64
     %c = arc.constant 7 : ui64
@@ -319,7 +319,7 @@ module @toplevel {
 // -----
 
 module @toplevel {
-  func @main() -> ui64 {
+  func.func @main() -> ui64 {
     %a = arith.constant 0 : i1
     %b = arc.constant 66 : ui64
     "arc.if"(%a) ( {

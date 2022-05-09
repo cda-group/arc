@@ -19,14 +19,14 @@ and pr_item (x, i) ctx =
   | Mlir.IAssign _ ->
       todo ()
   | Mlir.IExternFunc (x_rust, ps, t) ->
-      pr "func private @";
+      pr "func.func private @";
       pr_path x ctx;
       pr_params ps ctx;
       pr " -> ";
       pr_type t ctx;
       pr " attributes { rust.declare, rust.annotation=\"#[rewrite(unmangled = \\\"%s\\\")]\"}" x_rust
   | Mlir.IFunc (ps, t, b) ->
-      pr "func @";
+      pr "func.func @";
       pr_path x ctx;
       pr_params ps ctx;
       begin match t with
@@ -40,7 +40,7 @@ and pr_item (x, i) ctx =
       pr " } ";
       pr_block b ctx;
   | Mlir.ITask (ps0, ps1, b) ->
-      pr "func @";
+      pr "func.func @";
       pr_path x ctx;
       pr_params ps0 ctx;
       pr_params ps1 ctx;

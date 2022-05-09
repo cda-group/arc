@@ -3,7 +3,7 @@
 // -----
 
 module @toplevel {
-  func @main() {
+  func.func @main() {
     %0 = "arc.make_appender"() : () -> !arc.appender<i32>
     %r = "arc.result"(%0) : (!arc.appender<i32>) -> tensor<i32>
     return
@@ -13,7 +13,7 @@ module @toplevel {
 // -----
 
 module @toplevel {
-  func @main() {
+  func.func @main() {
     %v = arith.constant 0 : i32
 
     // expected-error@+2 {{'arc.make_appender' op requires zero operands}}
@@ -28,7 +28,7 @@ module @toplevel {
 // -----
 
 module @toplevel {
-  func @main() {
+  func.func @main() {
     // SHOULD FAIL
     %0 = "arc.make_appender"() {size = -1} : () -> !arc.appender<i32>
     %b = "arc.result"(%0) : (!arc.appender<i32>) -> tensor<i32>
@@ -39,7 +39,7 @@ module @toplevel {
 // -----
 
 module @toplevel {
-  func @main() {
+  func.func @main() {
     // expected-error@+2 {{'arc.make_appender' op result #0 must be any appender, but got 'i32'}}
     // expected-note@+1 {{see current operation: %0 = "arc.make_appender"}}
     %0 = "arc.make_appender"() : () -> i32

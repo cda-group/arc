@@ -3,7 +3,7 @@
 // -----
 
 module @toplevel {
-  func @main() {
+  func.func @main() {
     %a = arith.constant 0 : i1
     %b = arith.constant 1 : i1
     %c = arith.constant 0 : i1
@@ -16,7 +16,7 @@ module @toplevel {
 // -----
 
 module @toplevel {
-  func @main() {
+  func.func @main() {
     %a = arith.constant 0 : i1
     %b = arith.constant 1 : i1
     // expected-error@+2 {{'arc.make_tuple' op operand types do not match: expected 'f32' but found 'i1'}}
@@ -29,7 +29,7 @@ module @toplevel {
 // -----
 
 module @toplevel {
-  func @main() {
+  func.func @main() {
     %a = arith.constant -3.40282347E+38 : f32 // expected-note {{prior use here}}
     %b = arith.constant 0 : i1
     // expected-error@+1 {{use of value '%a' expects different type than prior uses: 'i1' vs 'f32'}}
@@ -41,7 +41,7 @@ module @toplevel {
 // -----
 
 module @toplevel {
-  func @main() {
+  func.func @main() {
     %a = arith.constant 0 : i1
     %b = arith.constant 1 : i1
     // expected-error@+2 {{'arc.make_tuple' op result does not match the number of operands: expected 1 but found 2 operands}}
@@ -54,7 +54,7 @@ module @toplevel {
 // -----
 
 module @toplevel {
-  func @main() {
+  func.func @main() {
     // expected-error@+2 {{'arc.make_tuple' op tuple must contain at least one element}}
     // expected-note@+1 {{see current operation:}}
     %1 = "arc.make_tuple"() : () -> tuple<>

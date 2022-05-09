@@ -1,7 +1,7 @@
 // RUN: arc-mlir -split-input-file --canonicalize %s | FileCheck %s
 
 module @toplevel {
-  func @main() -> i1 {
+  func.func @main() -> i1 {
     %a = arith.constant 0 : i1
     %b = arith.constant 1 : i1
 
@@ -17,7 +17,7 @@ module @toplevel {
 // -----
 
 module @toplevel {
-  func @main() -> si32 {
+  func.func @main() -> si32 {
     %a = arc.constant 7 : si32
     %b = arc.constant 17 : si32
 
@@ -34,7 +34,7 @@ module @toplevel {
 // -----
 
 module @toplevel {
-  func @main(%struct : !arc.struct<a : si32, b : si32>) -> si32 {
+  func.func @main(%struct : !arc.struct<a : si32, b : si32>) -> si32 {
     %elem = "arc.struct_access"(%struct) { field = "b" } : (!arc.struct<a : si32, b : si32>) -> si32
 
     return %elem : si32

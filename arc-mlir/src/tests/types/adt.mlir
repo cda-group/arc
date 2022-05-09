@@ -4,11 +4,11 @@
 
 module @toplevel {
 
-  func @ok0(%in : !arc.adt<"i32">) -> () {
+  func.func @ok0(%in : !arc.adt<"i32">) -> () {
     return
   }
 
-  func @ok2(%in : !arc.adt<"i32">) -> !arc.adt<"i32"> {
+  func.func @ok2(%in : !arc.adt<"i32">) -> !arc.adt<"i32"> {
     return %in : !arc.adt<"i32">
   }
 }

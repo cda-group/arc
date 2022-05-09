@@ -3,20 +3,20 @@
 // RUN: arc-mlir -canonicalize %s | arc-mlir
 
 module @toplevel {
-  func @ok0() -> !arc.struct<a : i32, b : f32> {
+  func.func @ok0() -> !arc.struct<a : i32, b : f32> {
     %a = arith.constant 4 : i32
     %b = arith.constant 3.14 : f32
     %r = arc.make_struct(%a, %b : i32, f32) : !arc.struct<a : i32, b : f32>
     return %r : !arc.struct<a : i32, b : f32>
   }
 
-  func @ok1() -> !arc.struct<a : i32> {
+  func.func @ok1() -> !arc.struct<a : i32> {
     %a = arith.constant 4 : i32
     %r = arc.make_struct(%a : i32) : !arc.struct<a : i32>
     return %r : !arc.struct<a : i32>
   }
 
-  func @ok2() -> !arc.struct<a : i32, b : !arc.struct<a : i32> > {
+  func.func @ok2() -> !arc.struct<a : i32, b : !arc.struct<a : i32> > {
     %a = arith.constant 4 : i32
     %b = arith.constant 3 : i32
     %s = arc.make_struct(%b : i32) : !arc.struct<a : i32>
@@ -24,7 +24,7 @@ module @toplevel {
     return %r : !arc.struct<a : i32, b : !arc.struct<a : i32>>
   }
 
-  func @ok6() -> si32 {
+  func.func @ok6() -> si32 {
     %a = arc.constant 4 : si32
     %b = arc.constant 3 : si32
     %s = arc.make_struct(%b : si32) : !arc.struct<a : si32>
@@ -33,7 +33,7 @@ module @toplevel {
     return %r_a : si32
   }
 
-  func @ok7() -> si32 {
+  func.func @ok7() -> si32 {
     %a = arc.constant 4 : si32
     %b = arc.constant 3 : si32
     %s = arc.make_struct(%b : si32) : !arc.struct<a : si32>

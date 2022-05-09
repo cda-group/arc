@@ -3,7 +3,7 @@
 // -----
 
 module @toplevel {
-  func @main() {
+  func.func @main() {
     %a = arith.constant false
     %b = arith.constant true
 
@@ -17,7 +17,7 @@ module @toplevel {
 // -----
 
 module @toplevel {
-  func @main() {
+  func.func @main() {
     %a = arith.constant false
     %b = arith.constant true
     %tuple = "arc.make_tuple"(%a, %b) : (i1, i1) -> tuple<i1,i1>
@@ -32,7 +32,7 @@ module @toplevel {
 // -----
 
 module @toplevel {
-  func @main() {
+  func.func @main() {
     %a = arith.constant false
     %b = arith.constant true
     %tuple = "arc.make_tuple"(%a, %b) : (i1, i1) -> tuple<i1,i1>
@@ -47,7 +47,7 @@ module @toplevel {
 // -----
 
 module @toplevel {
-  func @main() {
+  func.func @main() {
     %a = arith.constant false
     %b = arith.constant true
     %tuple = "arc.make_tuple"(%a, %b) : (i1, i1) -> tuple<i1,i1>
@@ -62,7 +62,7 @@ module @toplevel {
 // -----
 
 module @toplevel {
-  func @main() {
+  func.func @main() {
     %a = arith.constant false
     %b = arith.constant true
     %tuple = "arc.make_tuple"(%a, %b) : (i1, i1) -> tuple<i1,i1>

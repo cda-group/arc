@@ -1,6 +1,6 @@
 // RUN: arc-mlir --canonicalize %s | FileCheck %s
 module @toplevel {
-  func @main(%arg0 : i64) {
+  func.func @main(%arg0 : i64) {
     %cst_0 = arith.constant -3.40282347E+38 : f32
 // CHECK-DAG: [[V1XF32:%[^ ]+]] = arith.constant dense<-3.40282347E+38> : tensor<1xf32>
     %0 = "arc.make_vector"(%cst_0) : (f32) -> tensor<1xf32>

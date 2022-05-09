@@ -3,7 +3,7 @@
 // RUN: arc-mlir -canonicalize %s | arc-mlir
 module @toplevel {
 
-  func @MyOperator(// Imutables
+  func.func @MyOperator(// Imutables
                    !arc.struct<dummy : si32>,
 		   // State
                    !arc.struct<dummy : si32>,

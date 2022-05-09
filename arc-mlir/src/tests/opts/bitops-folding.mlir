@@ -1,6 +1,6 @@
 // RUN: arc-mlir --canonicalize %s | FileCheck %s
 module @toplevel {
-  func @main(%arg0 : i1) {
+  func.func @main(%arg0 : i1) {
 
     %cst_0 = arc.constant 32837: ui16
     // CHECK-DAG: [[CST0:%[^ ]+]] = arc.constant 32837 : ui16

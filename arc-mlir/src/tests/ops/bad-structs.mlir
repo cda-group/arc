@@ -1,7 +1,7 @@
 // RUN: arc-mlir %s -split-input-file -verify-diagnostics
 
 module @toplevel {
-  func @bad0() -> !arc.struct<a : i32, b : f32> {
+  func.func @bad0() -> !arc.struct<a : i32, b : f32> {
     %a = arith.constant 4 : i32
     %b = arith.constant 3.14 : f32
     // expected-error@+2 {{'arc.make_struct' op expected 2 fields, but found 0}}
@@ -14,7 +14,7 @@ module @toplevel {
 // -----
 
 module @toplevel {
-  func @bad0() -> !arc.struct<a : i32, b : f32> {
+  func.func @bad0() -> !arc.struct<a : i32, b : f32> {
     %a = arith.constant 4 : i32
     %b = arith.constant 3.14 : f32
     // expected-error@+2 {{'arc.make_struct' op expected 2 fields, but found 1}}
@@ -27,7 +27,7 @@ module @toplevel {
 // -----
 
 module @toplevel {
-  func @bad0() -> !arc.struct<a : i32, b : f32> {
+  func.func @bad0() -> !arc.struct<a : i32, b : f32> {
     %a = arith.constant 4 : i32
     %b = arith.constant 3.14 : f32
     %c = arith.constant 47.11 : f64
@@ -41,7 +41,7 @@ module @toplevel {
 // -----
 
 module @toplevel {
-  func @bad() -> si32 {
+  func.func @bad() -> si32 {
     %a = arc.constant 4 : si32
     %b = arc.constant 3 : si32
     %s = arc.make_struct(%b : si32) : !arc.struct<a : si32>
@@ -56,7 +56,7 @@ module @toplevel {
 // -----
 
 module @toplevel {
-  func @bad() -> si32 {
+  func.func @bad() -> si32 {
     %a = arc.constant 4 : si32
     %b = arith.constant 3.14 : f32
     %r = arc.make_struct(%a, %b : si32, f32) : !arc.struct<a : si32, b : f32>

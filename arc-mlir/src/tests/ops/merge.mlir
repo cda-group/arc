@@ -3,7 +3,7 @@
 // -----
 
 module @toplevel {
-  func @main() {
+  func.func @main() {
     %v = arith.constant 5 : i32
     %0 = "arc.make_appender"() : () -> !arc.appender<i32>
     %1 = "arc.merge"(%0, %v) : (!arc.appender<i32>, i32) -> !arc.appender<i32>
@@ -15,7 +15,7 @@ module @toplevel {
 // -----
 
 module @toplevel {
-  func @main() {
+  func.func @main() {
     %v = arith.constant 5 : i64
     %0 = "arc.make_appender"() : () -> !arc.appender<i32>
 
@@ -31,7 +31,7 @@ module @toplevel {
 // -----
 
 module @toplevel {
-  func @main() {
+  func.func @main() {
     %0 = "arc.make_appender"() : () -> !arc.appender<i32>
     %v = arith.constant 5 : i32
 
@@ -47,7 +47,7 @@ module @toplevel {
 // -----
 
 module @toplevel {
-  func @main() {
+  func.func @main() {
     %v1 = arith.constant 5 : i32
     %v2 = arith.constant 5 : i32
 

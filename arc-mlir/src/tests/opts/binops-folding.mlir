@@ -1,6 +1,6 @@
 // RUN: arc-mlir --canonicalize %s | FileCheck %s
 module @toplevel {
-  func @main(%arg0 : i64) {
+  func.func @main(%arg0 : i64) {
     %si8_max = arc.constant 127 : si8
     %si8_max_minus_1 = arc.constant 126 : si8
     %si8_one = arc.constant 1 : si8

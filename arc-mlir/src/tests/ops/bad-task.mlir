@@ -1,7 +1,7 @@
 // RUN: arc-mlir %s -split-input-file -verify-diagnostics
 module @toplevel {
 
-  func @MyOperator(// Imutables
+  func.func @MyOperator(// Imutables
                    !arc.struct<dummy : si32>,
 		   // State
                    !arc.struct<dummy : si32>,
@@ -26,7 +26,7 @@ module @toplevel {
 
 module @toplevel {
 
-  func @MyOperator(// Imutables
+  func.func @MyOperator(// Imutables
                    !arc.struct<p0 : f32, p1 : si32>,
 		   // State
                    !arc.struct<state1 : !arc.arcon.value<!arc.struct<i : si32, f : f32>>,
@@ -62,7 +62,7 @@ module @toplevel {
 
 module @toplevel {
 
-  func @MyOperator(// Imutables
+  func.func @MyOperator(// Imutables
                    !arc.struct<p0 : f32, p1 : si32>,
 		   // State
                    !arc.struct<state1 : !arc.arcon.value<!arc.struct<i : si32, f : f32>>,
@@ -95,7 +95,7 @@ module @toplevel {
 
 module @toplevel {
 
-  func @MyOperator(// Imutables
+  func.func @MyOperator(// Imutables
                    !arc.struct<p0 : f32, p1 : si32>,
 		   // State
                    !arc.struct<state1 : !arc.arcon.value<!arc.struct<i : si32, f : f32>>,
@@ -131,11 +131,11 @@ module @toplevel {
 // -----
 
 module @toplevel {
-  func @FoldFun() -> () {
+  func.func @FoldFun() -> () {
     return
   }
 
-  func @MyOperator(// Imutables
+  func.func @MyOperator(// Imutables
                    !arc.struct<p0 : f32, p1 : si32>,
 		   // State
                    !arc.struct<state1 : !arc.arcon.value<!arc.struct<i : si32, f : f32>>,
@@ -178,12 +178,12 @@ module @toplevel {
 
 module @toplevel {
 
-  func @FoldFun(si32, si32) -> () {
+  func.func @FoldFun(si32, si32) -> () {
   ^bb0(%a: si32, %b : si32):
     return
   }
 
-  func @MyOperator(// Imutables
+  func.func @MyOperator(// Imutables
                    !arc.struct<p0 : f32, p1 : si32>,
 		   // State
                    !arc.struct<state1 : !arc.arcon.value<!arc.struct<i : si32, f : f32>>,
@@ -226,13 +226,13 @@ module @toplevel {
 
 module @toplevel {
 
-  func @FoldFun(si32, si32) -> si32 {
+  func.func @FoldFun(si32, si32) -> si32 {
   ^bb0(%a: si32, %b : si32):
     %i = arc.constant 4 : si32
     return %i : si32
   }
 
-  func @MyOperator(// Imutables
+  func.func @MyOperator(// Imutables
                    !arc.struct<p0 : f32, p1 : si32>,
 		   // State
                    !arc.struct<state1 : !arc.arcon.value<!arc.struct<i : si32, f : f32>>,
@@ -275,13 +275,13 @@ module @toplevel {
 
 module @toplevel {
 
-  func @FoldFun(f32, si32) -> si32 {
+  func.func @FoldFun(f32, si32) -> si32 {
   ^bb0(%a: f32, %b : si32):
     %i = arc.constant 4 : si32
     return %i : si32
   }
 
-  func @MyOperator(// Imutables
+  func.func @MyOperator(// Imutables
                    !arc.struct<p0 : f32, p1 : si32>,
 		   // State
                    !arc.struct<state1 : !arc.arcon.value<!arc.struct<i : si32, f : f32>>,
@@ -324,13 +324,13 @@ module @toplevel {
 
 module @toplevel {
 
-  func @FoldFun(f32, si32) -> f32 {
+  func.func @FoldFun(f32, si32) -> f32 {
   ^bb0(%a: f32, %b : si32):
     %f = arith.constant 3.14 : f32
     return %f : f32
   }
 
-  func @MyOperator(// Imutables
+  func.func @MyOperator(// Imutables
                    !arc.struct<p0 : f32, p1 : si32>,
 		   // State
                    !arc.struct<state1 : !arc.arcon.value<!arc.struct<i : si32, f : f32>>,
@@ -373,13 +373,13 @@ module @toplevel {
 
 module @toplevel {
 
-  func @FoldFun(f32, !arc.struct<i : si32, f : f32>) -> f32 {
+  func.func @FoldFun(f32, !arc.struct<i : si32, f : f32>) -> f32 {
   ^bb0(%a: f32, %b : !arc.struct<i : si32, f : f32>):
     %f = arith.constant 3.14 : f32
     return %f : f32
   }
 
-  func @MyOperator(// Imutables
+  func.func @MyOperator(// Imutables
                    !arc.struct<p0 : f32, p1 : si32>,
 		   // State
                    !arc.struct<state1 : !arc.arcon.value<!arc.struct<i : si32, f : f32>>,
@@ -417,13 +417,13 @@ module @toplevel {
 // -----
 module @toplevel {
 
-  func @FoldFun(f32, !arc.struct<i : si32, f : f32>) -> f32 {
+  func.func @FoldFun(f32, !arc.struct<i : si32, f : f32>) -> f32 {
   ^bb0(%a: f32, %b : !arc.struct<i : si32, f : f32>):
     %f = arith.constant 3.14 : f32
     return %f : f32
   }
 
-  func @MyOperator(// Imutables
+  func.func @MyOperator(// Imutables
                    !arc.struct<p0 : f32, p1 : si32>,
 		   // State
                    !arc.struct<state1 : !arc.arcon.value<!arc.struct<i : si32, f : f32>>,
@@ -462,13 +462,13 @@ module @toplevel {
 // -----
 module @toplevel {
 
-  func @FoldFun(f32, !arc.struct<i : si32, f : f32>) -> f32 {
+  func.func @FoldFun(f32, !arc.struct<i : si32, f : f32>) -> f32 {
   ^bb0(%a: f32, %b : !arc.struct<i : si32, f : f32>):
     %f = arith.constant 3.14 : f32
     return %f : f32
   }
 
-  func @MyOperator(// Imutables
+  func.func @MyOperator(// Imutables
                    !arc.struct<p0 : f32, p1 : si32>,
 		   // State
                    !arc.struct<state1 : !arc.arcon.value<!arc.struct<i : si32, f : f32>>,
@@ -506,13 +506,13 @@ return
 // -----
 module @toplevel {
 
-  func @FoldFun(f32, !arc.struct<i : si32, f : f32>) -> f32 {
+  func.func @FoldFun(f32, !arc.struct<i : si32, f : f32>) -> f32 {
   ^bb0(%a: f32, %b : !arc.struct<i : si32, f : f32>):
     %f = arith.constant 3.14 : f32
     return %f : f32
   }
 
-  func @MyOperator(// Imutables
+  func.func @MyOperator(// Imutables
                    !arc.struct<p0 : f32, p1 : si32>,
 		   // State
                    !arc.struct<state1 : !arc.arcon.value<!arc.struct<i : si32, f : f32>>,
@@ -549,13 +549,13 @@ return
 // -----
 module @toplevel {
 
-  func @FoldFun(f32, !arc.struct<i : si32, f : f32>) -> f32 {
+  func.func @FoldFun(f32, !arc.struct<i : si32, f : f32>) -> f32 {
   ^bb0(%a: f32, %b : !arc.struct<i : si32, f : f32>):
     %f = arith.constant 3.14 : f32
     return %f : f32
   }
 
-  func @MyOperator(// Imutables
+  func.func @MyOperator(// Imutables
                    !arc.struct<p0 : f32, p1 : si32>,
 		   // State
                    !arc.struct<state1 : !arc.arcon.value<!arc.struct<i : si32, f : f32>>,
@@ -593,13 +593,13 @@ return
 // -----
 module @toplevel {
 
-  func @FoldFun(f32, !arc.struct<i : si32, f : f32>) -> f32 {
+  func.func @FoldFun(f32, !arc.struct<i : si32, f : f32>) -> f32 {
   ^bb0(%a: f32, %b : !arc.struct<i : si32, f : f32>):
     %f = arith.constant 3.14 : f32
     return %f : f32
   }
 
-  func @MyOperator(// Imutables
+  func.func @MyOperator(// Imutables
                    !arc.struct<p0 : f32, p1 : si32>,
 		   // State
                    !arc.struct<state1 : !arc.arcon.value<!arc.struct<i : si32, f : f32>>,

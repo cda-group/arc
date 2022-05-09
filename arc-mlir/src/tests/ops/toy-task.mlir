@@ -3,7 +3,7 @@
 // RUN: arc-mlir -canonicalize %s | arc-mlir
 
 module @toplevel {
-  func @id(%a : !arc.stream.source<si32>,
+  func.func @id(%a : !arc.stream.source<si32>,
            %b : !arc.stream.source<si32>,
            %c : !arc.stream.sink<si32>,
            %d : !arc.stream.sink<si32>) -> ()
