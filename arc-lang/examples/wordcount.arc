@@ -12,11 +12,11 @@ def wordcount(lines) =
 # ANCHOR_END: example
 
 def main() {
-# ANCOR: polymorphic
+# ANCHOR: polymorphic
 val df = DataFrame::read("/path/to/data.csv");
 val wc0 = wordcount(df);
 
-val s = Stream::read("localhost:8080");
+val s = DataStream::read("localhost:8080");
 val wc1 = wordcount(s);
-# ANCOR_END: polymorphic
+# ANCHOR_END: polymorphic
 }

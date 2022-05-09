@@ -40,7 +40,16 @@ syn keyword arcOperator window
 syn keyword arcOperator sort
 syn keyword arcOperator join
 syn keyword arcOperator every
-syn keyword arcOperator ascending
+syn keyword arcOperator desc
+syn keyword arcOperator reduce
+syn keyword arcOperator on
+syn keyword arcOperator receive
+syn keyword arcOperator of
+syn keyword arcOperator with
+syn keyword arcOperator split
+syn keyword arcOperator error
+syn keyword arcOperator after
+syn keyword arcOperator order
 hi def link arcOperator Operator
 "=============================================================================
 " Statements
@@ -49,10 +58,10 @@ syn keyword arcStatement class
 syn keyword arcStatement instance
 syn keyword arcStatement def
 syn keyword arcStatement task
-syn keyword arcStatement on
 syn keyword arcStatement emit
 syn keyword arcStatement val
 syn keyword arcStatement var
+syn keyword arcStatement fun
 hi def link arcStatement Statement
 "=============================================================================
 " Conditionals
@@ -61,7 +70,6 @@ hi def link arcConditional Conditional
 "=============================================================================
 " Reserved Keywords
 "=============================================================================
-syn keyword arcStatement fun
 hi def link arcKeyword Keyword
 "=============================================================================
 " Primitive Types
