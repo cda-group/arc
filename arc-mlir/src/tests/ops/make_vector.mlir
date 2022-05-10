@@ -1,7 +1,7 @@
 // RUN: arc-mlir %s -split-input-file -verify-diagnostics
 
 module @toplevel {
-  func @main() {
+  func.func @main() {
     %a = arith.constant -3.40282347E+38 : f32 // expected-note {{prior use here}}
     %b = arith.constant 0 : i1
     %c = arith.constant 1 : i1
@@ -16,7 +16,7 @@ module @toplevel {
 // -----
 
 module @toplevel {
-  func @main() {
+  func.func @main() {
     %b = arith.constant 0 : i1
     %c = arith.constant 1 : i1
     %d = arith.constant 0 : i1
@@ -31,7 +31,7 @@ module @toplevel {
 // -----
 
 module @toplevel {
-  func @main() {
+  func.func @main() {
     %b = arith.constant 0 : i1
     %c = arith.constant 1 : i1
     %d = arith.constant 0 : i1
@@ -46,7 +46,7 @@ module @toplevel {
 // -----
 
 module @toplevel {
-  func @main() {
+  func.func @main() {
     %b = arith.constant 0 : i1
     %c = arith.constant 1 : i1
     %d = arith.constant 0 : i1
@@ -61,7 +61,7 @@ module @toplevel {
 // -----
 
 module @toplevel {
-  func @main() {
+  func.func @main() {
     %b = arith.constant 0 : i1
     %c = arith.constant 1 : i1
     %d = arith.constant 0 : i1
@@ -76,7 +76,7 @@ module @toplevel {
 // -----
 
 module @toplevel {
-  func @main() {
+  func.func @main() {
     %b = arith.constant 0 : i1
     %c = arith.constant 1 : i1
     %d = arith.constant 0 : i1

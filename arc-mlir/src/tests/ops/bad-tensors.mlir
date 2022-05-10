@@ -1,7 +1,7 @@
 // RUN: arc-mlir %s -split-input-file -verify-diagnostics
 
 module @toplevel {
-  func @make_0() -> tensor<?x2xf32> {
+  func.func @make_0() -> tensor<?x2xf32> {
     %a = arith.constant 0.0 : f32
     %b = arith.constant 1.0 : f32
     %c = arith.constant 2.0 : f32
@@ -18,7 +18,7 @@ module @toplevel {
 // -----
 
 module @toplevel {
-  func @make_0() -> tensor<*xf32> {
+  func.func @make_0() -> tensor<*xf32> {
     %a = arith.constant 0.0 : f32
     %b = arith.constant 1.0 : f32
     %c = arith.constant 2.0 : f32
@@ -34,7 +34,7 @@ module @toplevel {
 
 // -----
 
-func @make_0() -> tensor<2x2xf32> {
+func.func @make_0() -> tensor<2x2xf32> {
     %a = arith.constant 0.0 : f32
     %b = arith.constant 1.0 : f32
     %c = arith.constant 2.0 : f64
@@ -49,7 +49,7 @@ func @make_0() -> tensor<2x2xf32> {
 
 // -----
 
-func @make_0() -> tensor<1x2xf32> {
+func.func @make_0() -> tensor<1x2xf32> {
     %a = arith.constant 0.0 : f32
     %b = arith.constant 1.0 : f32
     %c = arith.constant 2.0 : f32

@@ -1,7 +1,7 @@
 // RUN: arc-mlir -split-input-file --canonicalize %s | FileCheck %s
 
 module @toplevel {
-  func @main() -> i1 {
+  func.func @main() -> i1 {
     %a = arith.constant 0 : i1
     %b = arith.constant 1 : i1
 
@@ -17,7 +17,7 @@ module @toplevel {
 // -----
 
 module @toplevel {
-  func @main() -> i1 {
+  func.func @main() -> i1 {
     %a = arith.constant 0 : i1
     %b = arith.constant 1 : i1
 
@@ -33,7 +33,7 @@ module @toplevel {
 // -----
 
 module @toplevel {
-  func @main() -> si32 {
+  func.func @main() -> si32 {
     %a = arc.constant 17 : si32
     %b = arc.constant 7 : si32
 
@@ -49,7 +49,7 @@ module @toplevel {
 // -----
 
 module @toplevel {
-  func @main() -> si32 {
+  func.func @main() -> si32 {
     %a = arc.constant 17 : si32
     %b = arc.constant 7 : si32
 
@@ -65,7 +65,7 @@ module @toplevel {
 // -----
 
 module @toplevel {
-  func @main(%enum : !arc.enum<a : si32, b : si32>) -> si32 {
+  func.func @main(%enum : !arc.enum<a : si32, b : si32>) -> si32 {
     %elem = arc.enum_access "a" in (%enum : !arc.enum<a : si32, b : si32>) : si32
 
     return %elem : si32
@@ -77,7 +77,7 @@ module @toplevel {
 // -----
 
 module @toplevel {
-  func @main(%enum : !arc.enum<a : si32, b : si32>) -> si32 {
+  func.func @main(%enum : !arc.enum<a : si32, b : si32>) -> si32 {
     %elem = arc.enum_access "b" in (%enum : !arc.enum<a : si32, b : si32>) : si32
 
     return %elem : si32
@@ -89,7 +89,7 @@ module @toplevel {
 // -----
 
 module @toplevel {
-  func @main(%enum : !arc.enum<a : si32, b : si32>) -> i1 {
+  func.func @main(%enum : !arc.enum<a : si32, b : si32>) -> i1 {
     %bool = arc.enum_check (%enum : !arc.enum<a : si32, b : si32>) is "a" : i1
 
     return %bool : i1
@@ -101,7 +101,7 @@ module @toplevel {
 // -----
 
 module @toplevel {
-  func @main() -> i1 {
+  func.func @main() -> i1 {
     %a = arc.constant 17 : si32
     %b = arc.constant 7 : si32
 
@@ -117,7 +117,7 @@ module @toplevel {
 // -----
 
 module @toplevel {
-  func @main() -> i1 {
+  func.func @main() -> i1 {
     %a = arc.constant 17 : si32
     %b = arc.constant 7 : si32
 

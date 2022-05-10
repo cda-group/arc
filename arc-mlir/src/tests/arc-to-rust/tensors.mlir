@@ -4,17 +4,17 @@
 // RUN: arc-mlir-rust-test %t-roundtrip-scf %s -rustinclude %s.rust-tests -canonicalize -remove-scf -canonicalize -to-scf -canonicalize
 
 module @arctorusttensors {
-  func @in_out_0(%0 : tensor<4xsi32>) -> tensor<4xsi32> {
+  func.func @in_out_0(%0 : tensor<4xsi32>) -> tensor<4xsi32> {
     return %0 : tensor<4xsi32>
   }
-  func @in_out_1(%0 : tensor<4x5xsi32>) -> tensor<4x5xsi32> {
+  func.func @in_out_1(%0 : tensor<4x5xsi32>) -> tensor<4x5xsi32> {
     return %0 : tensor<4x5xsi32>
   }
-  func @in_out_2(%0 : tensor<?xsi32>) -> tensor<?xsi32> {
+  func.func @in_out_2(%0 : tensor<?xsi32>) -> tensor<?xsi32> {
     return %0 : tensor<?xsi32>
   }
 
-  func @make_0() -> tensor<1xf32> {
+  func.func @make_0() -> tensor<1xf32> {
     %a = arith.constant 0.0 : f32
 
     %0 = "arc.make_tensor"(%a) : (f32)
@@ -22,7 +22,7 @@ module @arctorusttensors {
     return %0 : tensor<1xf32>
   }
 
-  func @make_1() -> tensor<2xf32> {
+  func.func @make_1() -> tensor<2xf32> {
     %a = arith.constant 0.0 : f32
     %b = arith.constant 1.0 : f32
 
@@ -31,7 +31,7 @@ module @arctorusttensors {
     return %0 : tensor<2xf32>
   }
 
-  func @make_2() -> tensor<3xf32> {
+  func.func @make_2() -> tensor<3xf32> {
     %a = arith.constant 0.0 : f32
     %b = arith.constant 1.0 : f32
     %c = arith.constant 2.0 : f32
@@ -41,7 +41,7 @@ module @arctorusttensors {
     return %0 : tensor<3xf32>
   }
 
-  func @make_3() -> tensor<2x3x4xf32> {
+  func.func @make_3() -> tensor<2x3x4xf32> {
     %v0 = arith.constant 0.0 : f32
     %v1 = arith.constant 1.0 : f32
     %v2 = arith.constant 2.0 : f32

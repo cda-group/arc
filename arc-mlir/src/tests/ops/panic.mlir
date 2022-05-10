@@ -3,12 +3,12 @@
 // RUN: arc-mlir -canonicalize %s | arc-mlir
 
 module @toplevel {
-  func @trigger_panic0() -> () {
+  func.func @trigger_panic0() -> () {
     arc.panic()
     return
   }
 
-  func @trigger_panic1() -> () {
+  func.func @trigger_panic1() -> () {
     arc.panic("foo")
     return
   }

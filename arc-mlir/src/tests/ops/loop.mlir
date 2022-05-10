@@ -3,7 +3,7 @@
 // -----
 
 module @toplevel {
-  func @main() {
+  func.func @main() {
     %a = arith.constant 0 : i1
     %b = arith.constant 3.14 : f32
     %c = arith.constant 0.693 : f32
@@ -22,7 +22,7 @@ module @toplevel {
 
 module @arctorustloops {
 
-  func @a_while_loop(%first : ui64, %limit : ui64, %accum : ui64) -> ui64 {
+  func.func @a_while_loop(%first : ui64, %limit : ui64, %accum : ui64) -> ui64 {
        %res_cnt, %res_sum = scf.while (%arg1 = %first, %sum = %accum) : (ui64, ui64) -> (ui64, ui64) {
          %condition = arc.cmpi "lt", %arg1, %limit : ui64
          scf.condition(%condition) %arg1, %sum : ui64, ui64
@@ -42,7 +42,7 @@ module @arctorustloops {
 
 module @arctorustloops {
 
-  func @a_while_loop_with_a_break_in_before(%first : ui64, %limit : ui64, %accum : ui64) -> ui64 {
+  func.func @a_while_loop_with_a_break_in_before(%first : ui64, %limit : ui64, %accum : ui64) -> ui64 {
        %res_cnt, %res_sum = scf.while (%arg1 = %first, %sum = %accum) : (ui64, ui64) -> (ui64, ui64) {
          %condition = arc.cmpi "lt", %arg1, %limit : ui64
 
@@ -71,7 +71,7 @@ module @arctorustloops {
 
 module @arctorustloops {
 
-  func @a_while_loop_with_a_break_in_after(%first : ui64, %limit : ui64, %accum : ui64) -> ui64 {
+  func.func @a_while_loop_with_a_break_in_after(%first : ui64, %limit : ui64, %accum : ui64) -> ui64 {
        %res_cnt, %res_sum = scf.while (%arg1 = %first, %sum = %accum) : (ui64, ui64) -> (ui64, ui64) {
          %condition = arc.cmpi "lt", %arg1, %limit : ui64
          scf.condition(%condition) %arg1, %sum : ui64, ui64
@@ -99,7 +99,7 @@ module @arctorustloops {
 
 module @arctorustloops {
 
-  func @a_while_loop_with_a_break_in_after(%first : ui64, %limit : ui64, %accum : ui64) -> ui64 {
+  func.func @a_while_loop_with_a_break_in_after(%first : ui64, %limit : ui64, %accum : ui64) -> ui64 {
        %res_cnt, %res_sum = scf.while (%arg1 = %first, %sum = %accum) : (ui64, ui64) -> (ui64, ui64) {
          %condition = arc.cmpi "lt", %arg1, %limit : ui64
          scf.condition(%condition) %arg1, %sum : ui64, ui64

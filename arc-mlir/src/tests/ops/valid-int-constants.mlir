@@ -6,7 +6,7 @@
 // RUN: arc-mlir -mlir-print-op-generic %s | arc-mlir --canonicalize | FileCheck %s
 
 module @toplevel {
-  func @main() {
+  func.func @main() {
     %si8_min = arc.constant -128 : si8
 //CHECK-DAG: [[SI8MIN:%[^ ]+]] = arc.constant -128 : si8
     %si8_max = arc.constant 127 : si8

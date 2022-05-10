@@ -8,7 +8,7 @@
 //CHECK-DAG: [[C1000:%[^ ]+]] = arith.constant 1000 : i32
 
 module @toplevel {
-  func @main(%arg0: i1) -> () {
+  func.func @main(%arg0: i1) -> () {
     %false = arith.constant 0 : i1
     %true = arith.constant 1 : i1
 
