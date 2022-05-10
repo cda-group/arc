@@ -1143,6 +1143,10 @@ struct FuncOpLowering : public OpConversionPattern<mlir::func::FuncOp> {
       attributes.push_back(NamedAttribute(StringAttr::get(ctx, "rust.declare"),
                                           func->getAttr("rust.declare")));
 
+    if (func->hasAttr("rust.async"))
+      attributes.push_back(NamedAttribute(StringAttr::get(ctx, "rust.async"),
+                                          func->getAttr("rust.async")));
+
     TypeConverter::SignatureConversion sigConv(func.getNumArguments());
     mlir::FunctionType funcType =
         TypeConverter.convertFunctionSignature(func.getFunctionType(), sigConv);
