@@ -359,7 +359,10 @@ void RustFuncOp::writeRust(RustPrinterStream &PS) {
        << "\n";
   else
     PS << "#[rewrite]\n";
-  PS << "pub fn ";
+  PS << "pub ";
+  if ((*this)->hasAttr("rust.async"))
+    PS << "async ";
+  PS << "fn ";
   if ((*this)->hasAttr("arc.rust_name"))
     PS << (*this)->getAttrOfType<StringAttr>("arc.rust_name").getValue();
   else
