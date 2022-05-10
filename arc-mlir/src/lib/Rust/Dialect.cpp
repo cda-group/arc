@@ -329,7 +329,11 @@ void RustCallOp::writeRust(RustPrinterStream &PS) {
   if (target && target->hasAttr("arc.rust_name"))
     callee = target->getAttrOfType<StringAttr>("arc.rust_name").getValue();
 
-  PS << "call!(" << callee << "(";
+  if (target && target->hasAttr("rust.async"))
+    PS << "call_async!(";
+  else
+    PS << "call!(";
+  PS << callee << "(";
   for (auto a : getOperands())
     PS << a << ", ";
   PS << "));\n";
