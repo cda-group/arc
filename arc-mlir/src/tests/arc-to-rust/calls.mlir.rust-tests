@@ -19,6 +19,11 @@ pub fn the_name_on_the_rust_side(i: i32) -> i32 {
   return i;
 }
 
+#[rewrite]
+pub async fn an_external_async_fun() -> i32 {
+  return 1;
+}
+
 use super::*;
 #[rewrite(main)]
 #[test]
@@ -28,4 +33,5 @@ fn test() {
     assert_eq!(call!(call_external2(13)), 13);
     assert_eq!(call!(call_renamed_local(14)), 14);
     assert_eq!(call!(defined_in_arc(15)), 15);
+    assert_eq!(block_on(call!(call_external_async())), 1);
 }
