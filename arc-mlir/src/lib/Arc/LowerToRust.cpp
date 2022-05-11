@@ -1127,29 +1127,13 @@ struct FuncOpLowering : public OpConversionPattern<mlir::func::FuncOp> {
       attributes.push_back(NamedAttribute(StringAttr::get(ctx, "arc.rust_name"),
                                           func->getAttr("arc.rust_name")));
 
-    if (func->hasAttr("arc.task_name"))
-      attributes.push_back(NamedAttribute(StringAttr::get(ctx, "arc.task_name"),
-                                          func->getAttr("arc.task_name")));
     if (func->hasAttr("arc.mod_name"))
       attributes.push_back(NamedAttribute(StringAttr::get(ctx, "arc.mod_name"),
                                           func->getAttr("arc.mod_name")));
 
-    if (func->hasAttr("arc.is_event_handler"))
-      attributes.push_back(
-          NamedAttribute(StringAttr::get(ctx, "arc.is_event_handler"),
-                         func->getAttr("arc.is_event_handler")));
-    if (func->hasAttr("arc.is_init"))
-      attributes.push_back(NamedAttribute(StringAttr::get(ctx, "arc.is_init"),
-                                          func->getAttr("arc.is_init")));
-
-    if (func->hasAttr("arc.is_toplevel_task_function"))
-      attributes.push_back(
-          NamedAttribute(StringAttr::get(ctx, "arc.is_toplevel_task_function"),
-                         UnitAttr::get(ctx)));
-    if (func->hasAttr("arc.use_nonpersistent"))
-      attributes.push_back(NamedAttribute(
-          StringAttr::get(ctx, "arc.use_nonpersistent"), UnitAttr::get(ctx)));
-
+    if (func->hasAttr("arc.is_task"))
+      attributes.push_back(NamedAttribute(StringAttr::get(ctx, "arc.is_task"),
+                                          func->getAttr("arc.is_task")));
     if (func->hasAttr("rust.annotation"))
       attributes.push_back(
           NamedAttribute(StringAttr::get(ctx, "rust.annotation"),

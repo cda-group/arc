@@ -45,10 +45,6 @@ std::unique_ptr<OperationPass<mlir::func::FuncOp>> createRemoveSCFPass();
 /// between basic blocks to structured flow-control.
 std::unique_ptr<OperationPass<ModuleOp>> createToSCFPass();
 
-/// Create a pass for converting a task to its nonpersistent form
-std::unique_ptr<OperationPass<ModuleOp>> createToNonpersistent();
-
-
 } // namespace arc
 
 #endif // ARC_PASSES_H

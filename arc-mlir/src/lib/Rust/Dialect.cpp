@@ -136,29 +136,6 @@ LogicalResult RustFuncOp::verifyType() {
   if (!type.isa<FunctionType>())
     return emitOpError("requires '" + getTypeAttrName() +
                        "' attribute of function type");
-
-  if ((*this)->hasAttr("arc.task_name") && (*this)->hasAttr("arc.mod_name") &&
-      (*this)->hasAttr("arc.is_event_handler")) {
-    // We want to check:
-    //  * The first argument is a struct
-    //  * The second argument is an enum
-    //  * The this argument is a stream type
-    // This is enough to avoid segfaults in later stages, errors undetected here
-    // will trigger type errors when the generated Rust is compiled.
-    if (getNumArguments() != 3)
-      return emitOpError(
-          ": task event handlers are expected to have 3 arguments, found " +
-          Twine(getNumArguments()));
-    if (!front().getArgument(0).getType().isa<RustStructType>())
-      return emitOpError(": The first argument to a task event handler is "
-                         "expected to be a struct");
-    if (!front().getArgument(1).getType().isa<RustEnumType>())
-      return emitOpError(": The second argument to a task event handler is "
-                         "expected to be an enum");
-    if (!front().getArgument(2).getType().isa<RustStreamType>())
-      return emitOpError(": The third argument to a task event handler is "
-                         "expected to be a stream");
-  }
   return success();
 }
 
@@ -373,28 +350,6 @@ void RustCallIndirectOp::writeRust(RustPrinterStream &PS) {
 
 // Write this function as Rust code to os
 void RustFuncOp::writeRust(RustPrinterStream &PS) {
-  bool isNonpersistentTask =
-      (*this)->hasAttr("arc.is_toplevel_task_function") &&
-      (*this)->hasAttr("arc.use_nonpersistent");
-  bool isMethod = (*this)->hasAttr("arc.task_name") &&
-                  (*this)->hasAttr("arc.mod_name") &&
-                  !(*this)->hasAttr("arc.is_event_handler");
-
-  if (isNonpersistentTask) {
-    // Construct rewrite directive
-    PS << "#[rewrite(nonpersistent)]\n";
-
-    // Generate the named type for the task
-    PS << "mod " << (*this).getName() << "{\n";
-  }
-  if (isMethod) {
-    PS << "impl "
-       << (*this)->getAttrOfType<StringAttr>("arc.mod_name").getValue()
-       << "::" << (*this)->getAttrOfType<StringAttr>("arc.task_name").getValue()
-       << " {\n";
-  }
-
-  PS << "// " << (isMethod ? "Method" : "") << "\n";
   if ((*this)->hasAttr("rust.annotation"))
     PS << (*this)->getAttrOfType<StringAttr>("rust.annotation").getValue()
        << "\n";
@@ -403,8 +358,6 @@ void RustFuncOp::writeRust(RustPrinterStream &PS) {
   PS << "pub fn ";
   if ((*this)->hasAttr("arc.rust_name"))
     PS << (*this)->getAttrOfType<StringAttr>("arc.rust_name").getValue();
-  else if ((*this)->hasAttr("arc.is_toplevel_task_function"))
-    PS << "task";
   else
     PS << getName();
   PS << "(";
@@ -416,7 +369,7 @@ void RustFuncOp::writeRust(RustPrinterStream &PS) {
     Type t = v.getType();
     if (i != 0)
       PS << ", ";
-    if (isNonpersistentTask) {
+    if ((*this)->hasAttr("arc.is_task")) {
       if (RustSinkStreamType st = t.dyn_cast<RustSinkStreamType>())
         PS << "#[output]";
     }
@@ -434,8 +387,6 @@ void RustFuncOp::writeRust(RustPrinterStream &PS) {
     ::writeRust(operation, PS);
   }
   PS << "}\n";
-  if (isNonpersistentTask || isMethod)
-    PS << "}\n";
   PS.clearAliases();
 }
 
