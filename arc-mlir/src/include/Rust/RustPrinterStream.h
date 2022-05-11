@@ -94,7 +94,8 @@ public:
     o << "pub use hexf::*;\n";
 
     if (!DeclaredFunctions.empty()) {
-      o << "declare_functions!(";
+      o << "declare!(";
+      o << "functions: [ ";
       for (Operation *t : DeclaredFunctions) {
         if (t->hasAttr("arc.rust_name"))
           o << t->getAttrOfType<StringAttr>("arc.rust_name").getValue();
@@ -102,6 +103,7 @@ public:
           o << t->getAttrOfType<StringAttr>("sym_name").getValue();
         o << ", ";
       }
+      o << "]";
       o << ");\n";
     }
 
