@@ -1,0 +1,24 @@
+#[rewrite(nonpersistent)]
+async fn source(mut i: Vec<i32>, #[output] mut o: Pushable<i32>) {
+    for x in i.into_iter().cloned() {
+        push!(o, x);
+    }
+}
+
+#[rewrite(nonpersistent)]
+async fn log(mut i: Pullable<i32>) {
+    loop {
+        println!("Logging {}", pull!(i));
+    }
+}
+
+use arc_runtime::data::channels::local::multicast::Pullable;
+
+#[rewrite(main)]
+#[test]
+fn rewrite_impersistent_task() {
+    let v: Vec<i32> = vector![1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+    let s: Pullable<i32> = call!(source(v));
+    let s: Pullable<i32> = call!(id(s));
+    call!(log(s));
+}
