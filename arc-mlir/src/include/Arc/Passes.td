@@ -47,14 +47,4 @@ def ToSCF : Pass<"to-scf", "ModuleOp"> {
   ];
 }
 
-def ToNonpersistent : Pass<"to-nonpersistent", "ModuleOp"> {
-  let summary = "Convert arc tasks to their nonpersistent representation";
-  let constructor = "arc::createToNonpersistent()";
-
-  let dependentDialects = [
-        "arc::ArcDialect",
-        "mlir::func::FuncDialect"
-  ];
-}
-
 #endif // ARC_PASSES
