@@ -190,6 +190,7 @@ pub mod prelude {
 
     pub use futures::future::BoxFuture;
     pub use futures::future::FutureExt;
+    pub use futures::executor::block_on;
 
     pub use replace_with::replace_with_or_abort_and_return;
 
