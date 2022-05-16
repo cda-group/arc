@@ -76,6 +76,15 @@ macro_rules! declare_functions {
 }
 
 #[macro_export]
+macro_rules! declare {
+    (functions:[$($id:ident),* $(,)?], tasks:[]) => {
+        declare_functions! {
+            $($id),*
+        }
+    };
+}
+
+#[macro_export]
 macro_rules! function {
     // Create a function value
     ($fun:ident) => {

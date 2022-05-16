@@ -350,6 +350,9 @@ void RustCallIndirectOp::writeRust(RustPrinterStream &PS) {
 
 // Write this function as Rust code to os
 void RustFuncOp::writeRust(RustPrinterStream &PS) {
+  if ((*this)->hasAttr("arc.is_task"))
+    PS.addTask(this);
+
   if ((*this)->hasAttr("rust.annotation"))
     PS << (*this)->getAttrOfType<StringAttr>("rust.annotation").getValue()
        << "\n";

@@ -58,8 +58,10 @@ class RustPrinterStream {
   // Tracking of the named types which has already been output.
   DenseSet<unsigned> OutputEnumTypes, OutputStructTypes;
 
-  // Functions having the rust.declare atrtibute
+  // Functions having the rust.declare attribute
   DenseSet<Operation *> DeclaredFunctions;
+  // Tasks to declare, triggered by the arc.is_task attribute
+  DenseSet<RustFuncOp *> DeclaredTasks;
 
   std::map<std::string, std::string> CrateDependencies;
   std::map<std::string, std::string> CrateDirectives;
@@ -93,8 +95,9 @@ public:
 
     o << "pub use hexf::*;\n";
 
-    if (!DeclaredFunctions.empty()) {
-      o << "declare_functions!(";
+    if (!DeclaredFunctions.empty() || !DeclaredTasks.empty()) {
+      o << "declare!(";
+      o << "functions: [ ";
       for (Operation *t : DeclaredFunctions) {
         if (t->hasAttr("arc.rust_name"))
           o << t->getAttrOfType<StringAttr>("arc.rust_name").getValue();
@@ -102,6 +105,25 @@ public:
           o << t->getAttrOfType<StringAttr>("sym_name").getValue();
         o << ", ";
       }
+      o << "],";
+      o << "tasks: [ ";
+      for (RustFuncOp *t : DeclaredTasks) {
+        if ((*t)->hasAttr("arc.rust_name"))
+          o << (*t)->getAttrOfType<StringAttr>("arc.rust_name").getValue();
+        else
+          o << (*t)->getAttrOfType<StringAttr>("sym_name").getValue();
+        o << "(";
+        unsigned numFuncArguments = t->getNumArguments();
+        for (unsigned i = 0; i < numFuncArguments; i++) {
+          Value v = t->front().getArgument(i);
+          if (i != 0)
+            o << ", ";
+          o << "v" << std::to_string(Value2ID[v]) << ": "
+            << getTypeString(v.getType());
+        }
+        o << "), ";
+      }
+      o << "]";
       o << ");\n";
     }
 
@@ -135,6 +157,8 @@ public:
   }
 
   void addAlias(Type t, std::string identifier) { TypeAliases[t] = identifier; }
+
+  void addTask(RustFuncOp *task) { DeclaredTasks.insert(task); }
 
   void clearAliases() { ValueAliases.clear(); }
 
