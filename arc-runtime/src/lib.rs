@@ -111,6 +111,7 @@ pub mod prelude {
 
     // Procedural macros
     pub use macros::call;
+    pub use macros::call_async;
     pub use macros::call_indirect;
     pub use macros::enwrap;
     pub use macros::erase;
