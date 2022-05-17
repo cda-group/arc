@@ -150,4 +150,12 @@ module @toplevel {
 
   // func private @an_external_fun3(si32) -> si32 attributes { rust.declare }
 
+  // Async functions
+  func.func private @an_external_async_fun() -> si32 attributes { rust.async }
+
+  func.func @call_external_async() -> si32 attributes { rust.declare, rust.async } {
+    %r = call @an_external_async_fun() : () -> si32
+    return %r : si32
+  }
+
 }

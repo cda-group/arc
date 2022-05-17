@@ -26,7 +26,11 @@ pub(crate) fn rewrite(_attr: syn::AttributeArgs, mut item: syn::ItemFn) -> pm::T
 
     let id = new_id(format!("_{}", item.sig.ident));
     let mut wrapper_item = item.clone();
-    wrapper_item.block = syn::parse_quote!({ #id(#(#ids,)* ctx) });
+    if wrapper_item.sig.asyncness.is_some() {
+        wrapper_item.block = syn::parse_quote!({ #id(#(#ids,)* ctx).await });
+    } else {
+        wrapper_item.block = syn::parse_quote!({ #id(#(#ids,)* ctx) });
+    }
     wrapper_item.sig.inputs = syn::parse_quote!((#(#ids,)*) : (#(#tys,)*), ctx: Context);
     item.sig.ident = id;
     item.sig.inputs.push(syn::parse_quote!(ctx: Context));

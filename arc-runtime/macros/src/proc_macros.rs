@@ -19,6 +19,21 @@ pub fn call(input: syn::Expr) -> TokenStream {
     }
 }
 
+pub fn call_async(input: syn::Expr) -> TokenStream {
+    match input {
+        syn::Expr::Call(e) => {
+            let func = e.func;
+            let args = e.args;
+            if args.len() == 1 && !args.trailing_punct() {
+                quote::quote!(#func((#args,), ctx).await).into()
+            } else {
+                quote::quote!(#func((#args), ctx).await).into()
+            }
+        }
+        _ => panic!("Expected function call expression"),
+    }
+}
+
 pub fn call_indirect(input: syn::Expr) -> TokenStream {
     match input {
         syn::Expr::Call(e) => {

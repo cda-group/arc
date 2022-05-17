@@ -84,6 +84,11 @@ pub fn call(input: TokenStream) -> TokenStream {
 }
 
 #[proc_macro]
+pub fn call_async(input: TokenStream) -> TokenStream {
+    proc_macros::call_async(syn::parse_macro_input!(input as syn::Expr))
+}
+
+#[proc_macro]
 pub fn call_indirect(input: TokenStream) -> TokenStream {
     proc_macros::call_indirect(syn::parse_macro_input!(input as syn::Expr))
 }
