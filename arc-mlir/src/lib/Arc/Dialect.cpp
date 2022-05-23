@@ -1625,7 +1625,7 @@ Type StructType::parse(DialectAsmParser &parser) {
       return nullptr;
 
     elementTypes.push_back(elementType);
-    parser.parseOptionalComma();
+    (void)parser.parseOptionalComma();
   }
 }
 
