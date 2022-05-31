@@ -1,106 +1,85 @@
-open Lexer
 open Lexing
 open Printf
 open Utils
 
-let menu () =
-  print_endline "Usage:";
-  print_endline "$ arc-lang <file> [--debug [verbose]]";
-  print_endline "$ cat <file> | arc-lang [--debug [verbose]]"
-
-let print_position outx lexbuf =
-  let pos = lexbuf.lex_curr_p in
-  fprintf outx "%s:%d:%d" pos.pos_fname pos.pos_lnum (pos.pos_cnum - pos.pos_bol + 1)
-
-let print_debug debug stage f data =
-    if debug <> Debug.Silent then begin
-      printf "[:::%s:::]\n" stage;
-      f data
-    end
-
-let lexer inx filename =
+let file_to_mod (file, inx) =
   let lexbuf = Lexing.from_channel inx in
-  lexbuf.lex_curr_p <- { lexbuf.lex_curr_p with pos_fname = filename };
-  lexbuf
-
-let get_env key =
-  match Sys.getenv_opt key with
-  | Some value -> value
-  | None -> panic (Printf.sprintf "Environment variable $%s was not set" key)
-
-
-let compile inx filename debug =
-
-  let lexbuf = lexer inx filename in
-
+  lexbuf.lex_curr_p <- { lexbuf.lex_curr_p with pos_fname = file };
   try
-    
-    let ast = Parser.program Lexer.main lexbuf in
-    print_debug debug "AST" (Pretty_ast.pr_ast ast) debug;
-
-    let stdlibpath = get_env "ARC_LANG_STDLIB_PATH" in
-    let inx = Core.In_channel.create stdlibpath in
-    let lexbuf = lexer inx stdlibpath in
-
-    let stlib = Parser.program Lexer.main lexbuf in
-
-    print_debug debug "AST (Stdlib)" (Pretty_ast.pr_ast stlib) debug;
-
-    let ast = ast @ stlib in
-
-    let table = Declare.declare ast in
-
-    let hir = Ast_to_hir.hir_of_ast table ast in
-    print_debug debug "HIR" (Pretty_hir.pr_hir hir) debug;
-
-    let hir = Infer.infer_hir hir debug in
-    print_debug debug "HIR (Inferred)" (Pretty_hir.pr_hir hir) debug;
-
-    let mir = Hir_to_mir.mir_of_hir hir in
-    print_debug debug "MIR" Pretty_mir.pr_mir mir;
-
-    print_debug debug "Rust" Mir_to_rust.pr_mir mir;
-
-    let mlir = Mir_to_mlir.mlir_of_mir mir in
-    print_debug debug "MLIR" Pretty_mlir.pr_mlir (mlir, "");
-
-    let stdlibpath = get_env "ARC_MLIR_STDLIB_PATH" in
-    let ch = open_in stdlibpath in
-    let stdlib = really_input_string ch (in_channel_length ch) in
-    close_in ch;
-    Pretty_mlir.pr_mlir (mlir, stdlib);
-
+    let items = Parser.program Lexer.main lexbuf in
+    Ast.IMod (NoLoc, [], file, items)
   with
-    | Utils.Compiler_error msg ->
-      eprintf "Compiler Error: %s. %s" msg (Printexc.get_backtrace ());
-      exit (-1)
-    | SyntaxError msg ->
-      eprintf "Syntax Error: %a: %s\n" print_position lexbuf msg;
-      exit (-1)
-    | Parser.Error -> 
-      eprintf "Parser Error: %a\n" print_position lexbuf;
-      exit (-1)
+  | Error.ParsingError (loc, msg) -> Error.report loc msg
+  | Error.LexingError (loc, msg) -> Error.report loc msg
+  | Parser.Error -> Error.report (Lexer.loc lexbuf) "Parser Error"
+
+let compile ast =
+  try
+    if !Args.show_parsed then Print.Ast.pr_ast ast;
+
+    let graph = Declare.declare ast in
+    if !Args.show_declared then Graph.debug graph;
+
+    let ir1 = Ast_to_ir1.ast_to_ir1 graph ast in
+    if !Args.show_desugared then Print.Ir1.pr_ir1 ir1;
+
+    let ir1 = Infer_ir1.infer_ir1 ir1 in
+    if !Args.show_inferred then Print.Ir1.pr_ir1 ir1;
+
+    let ir2 = Ir1_to_ir2.ir1_to_ir2 ir1 in
+    if !Args.show_patcomped then Print.Ir2.pr_ir2 ir2;
+
+    let ir3 = Ir2_to_ir3.ir2_to_ir3 ir2 in
+    if !Args.show_monomorphised then Print.Ir3.pr_ir3 ir3;
+
+    let mlir = Ir3_to_mlir.ir3_to_mlir ir3 in
+    if !Args.show_mlir then Print.Mlir.pr_mlir mlir;
+    ()
+  with
+  | Error.TypingError (loc, msg) -> Error.report loc msg
+  | Error.NamingError (loc, msg) -> Error.report loc msg
+
+let check_duplicates input =
+    let d = Utils.duplicates String.compare input in
+    if d <> [] then
+      let d = d |> String.concat ", " in
+      raise (Error.InputError (sprintf "Found duplicate file-modules: %s" d))
+    else
+      ()
+
+let filepath_to_modname path =
+  path
+    |> Filename.basename
+    |> Filename.remove_extension
+    |> Str.global_replace (Str.regexp "-") "_"
 
 let main =
-    let argv = Core.Sys.get_argv () in
-    match argv with
-    | [| _ |] ->
-        compile Core.In_channel.stdin "stdin" Debug.Silent;
-    | [| _; "--debug" |] ->
-        compile Core.In_channel.stdin "stdin" Debug.Brief;
-    | [| _; "--debug"; "verbose" |] ->
-        compile Core.In_channel.stdin "stdin" Debug.Verbose;
-    | [| _; filename |] ->
-        let inx = Core.In_channel.create filename in
-        compile inx filename Debug.Silent;
-        Core.In_channel.close inx;
-    | [| _; filename; "--debug"; "verbose" |] ->
-        let inx = Core.In_channel.create filename in
-        compile inx filename Debug.Verbose;
-        Core.In_channel.close inx;
-    | [| _; filename; "--debug" |] ->
-        let inx = Core.In_channel.create filename in
-        compile inx filename Debug.Brief;
-        Core.In_channel.close inx;
-    | _ ->
-        menu ()
+  Args.parse ();
+  try
+    let input = match !Args.input with
+    | [] -> [("stdin", Core.In_channel.stdin)]
+    | input -> input |> List.map (function i -> (filepath_to_modname i, Core.In_channel.create i))
+    in
+    let input = ("std", Core.In_channel.create Args.arc_lang_stdlibpath)::input in
+    check_duplicates (input |> map fst);
+    let ast = input |> map (fun file -> file_to_mod file) in
+    let ast = match ast with
+    | [] -> unreachable ()
+    | std_mod::user_mods ->
+        let std_mod = if !Args.show_std then
+          std_mod
+        else
+          Ast.std_loc std_mod
+        in
+        let prelude = Ast.extract_prelude std_mod in
+        let user_mods = user_mods |> List.map (function i -> Ast.add_prelude prelude i) in
+        std_mod::user_mods
+    in
+    compile ast;
+  with
+  | Utils.Panic msg ->
+      eprintf "Panic: %s. %s" msg (Printexc.get_backtrace ());
+      exit 1
+  | Error.InputError msg ->
+      eprintf "InputError: %s" msg;
+      exit 1

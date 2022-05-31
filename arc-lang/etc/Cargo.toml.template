@@ -4,9 +4,11 @@ version = "0.0.0"
 edition = "2021"
 
 [dependencies]
-arc-runtime = { version = "=0.0.0", path = "${ARC_RUNTIME_SOURCE_DIR}" }
-hexf        = { version = "0.2.1" }
-serde       = { version = "1.0.136" }
+arc-runtime  = { version = "=0.0.0", path = "${ARC_RUNTIME_SOURCE_DIR}" }
+hexf         = { version = "0.2.1" }
+serde        = { version = "1.0.136" }
+serde_state  = { version = "0.4.8" }
+serde_derive = { version = "1.0.136" }
 
 [profile.dev]
 opt-level = 0

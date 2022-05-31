@@ -3,14 +3,14 @@
 use arc_runtime::prelude::*;
 
 #[rewrite]
-pub struct Foo<A> {
-    pub a: A,
+struct Foo<A> {
+    a: A,
 }
 
 #[rewrite]
-pub struct Bar<A, B> {
-    pub a: A,
-    pub b: B,
+struct Bar<A, B> {
+    a: A,
+    b: B,
 }
 
 type Baz = Bar<Foo<i32>, Bar<i32, i32>>;

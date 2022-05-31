@@ -1,59 +1,94 @@
-use comet::immix::Immix;
-use comet::immix::ImmixOptions;
-use comet::mutator::MutatorRef;
+use crate::data::gc::Heap;
+use crate::manager::TaskMessage;
 use derive_more::Constructor as New;
 use kompact::prelude::*;
+use rskafka::client::Client as Kafka;
+use serde_json::Value;
 
+use crate::data::serde::SerdeState;
+use crate::dispatch::Execute;
 use crate::prelude::Send;
 use crate::prelude::Sync;
 use crate::prelude::Unpin;
+use std::cell::UnsafeCell;
+use std::collections::HashMap;
+use std::collections::HashSet;
 use std::sync::Arc;
 
 /// The context of a single task.
-#[derive(Copy, Clone, Send, Sync, Unpin)]
-pub struct Context(*mut Core);
+#[derive(Send, Sync, Unpin)]
+pub struct Context<E: Execute>(*mut Core<E>);
 
-/// The data stored by the context.
-#[derive(New)]
-struct Core {
-    pub component: Arc<dyn CoreContainer>,
-    pub mutator: MutatorRef<Immix>,
+impl<E: Execute> Copy for Context<E> {}
+impl<E: Execute> Clone for Context<E> {
+    fn clone(&self) -> Self {
+        *self
+    }
 }
 
-impl Context {
-    #[allow(clippy::mut_from_ref)]
-    fn as_mut(&self) -> &mut Core {
-        // SAFETY: This is safe because the context is only ever accessed from a single task.
+/// The data stored by the context.
+pub struct Core<E: Execute> {
+    pub heap: Heap,
+    pub manager: ActorRef<TaskMessage<E>>,
+    pub serde: SerdeState,
+    pub partition: i32,
+    pub task_count: usize,
+    pub phantom: std::marker::PhantomData<E>,
+}
+
+impl<E: Execute> std::ops::Deref for Context<E> {
+    type Target = Core<E>;
+
+    fn deref(&self) -> &Self::Target {
+        unsafe { &*self.0 }
+    }
+}
+
+impl<E: Execute> std::ops::DerefMut for Context<E> {
+    fn deref_mut(&mut self) -> &mut Core<E> {
         unsafe { &mut *self.0 }
     }
 }
 
-impl Context {
-    pub fn new(component: Arc<dyn CoreContainer>, mutator: MutatorRef<Immix>) -> Self {
-        Self(Box::leak(Box::new(Core::new(component, mutator))) as *mut Core)
-    }
-    pub fn destroy(self) {
-        // SAFETY: This is safe because the context is managed entirely by the code generator. This
-        // function is only ever called once.
-        unsafe {
-            Box::from_raw(self.0);
+impl<E: Execute> Core<E> {
+    pub fn new(heap: Heap, manager: ActorRef<TaskMessage<E>>) -> Self {
+        Self {
+            heap,
+            manager,
+            serde: SerdeState::new(heap),
+            partition: 0,
+            task_count: 0,
+            phantom: std::marker::PhantomData,
         }
     }
-    #[allow(clippy::mut_from_ref)]
-    pub fn mutator(&self) -> &mut MutatorRef<Immix> {
-        &mut self.as_mut().mutator
+
+    pub fn execute(&mut self, task: E, heap: Heap) {
+        self.task_count += 1;
+        self.manager.tell(TaskMessage::ExecuteTask(task, heap));
     }
-    #[allow(clippy::mut_from_ref)]
-    pub fn component(&self) -> &mut Arc<dyn CoreContainer> {
-        &mut self.as_mut().component
+}
+
+impl<E: Execute> Context<E> {
+    pub fn new(manager: ActorRef<TaskMessage<E>>) -> Self {
+        Self::new_with_heap(Heap::new(), manager)
     }
-    pub fn launch<C, F>(&self, f: F)
-    where
-        F: FnOnce() -> C,
-        C: ComponentDefinition + 'static,
-    {
-        let system = self.as_mut().component.system();
-        let c = system.create(f);
-        system.start(&c);
+    pub fn new_with_heap(heap: Heap, manager: ActorRef<TaskMessage<E>>) -> Self {
+        Self(Box::into_raw(Box::new(Core::new(heap, manager))))
+    }
+    pub fn guard(self) -> Guard<E> {
+        Guard { ctx: self }
+    }
+}
+
+pub struct Guard<E: Execute> {
+    ctx: Context<E>,
+}
+
+impl<E: Execute> Drop for Guard<E> {
+    fn drop(&mut self) {
+        self.ctx.manager.tell(TaskMessage::CompleteTask);
+        unsafe {
+            Box::from_raw(self.ctx.0);
+        }
     }
 }

@@ -12,9 +12,10 @@ val v4: String          = 2020-12-16T16:00:00; # DateTime
 val v5: char            = 'c';                 # Character
 val v6: String          = "hello";             # String
 val v7: String          = "$v6 world";         # String (Interpolated)
-val v8: #{x:i32, y:i32} = #{x:5, y:8};         # Record
-val v9: Option[i32]     = Option::Some(3);     # Enum variant
-val v10: [i32]          = [1,2,3];             # Vector
-val v11: fun(i32): i32  = fun(x:i32) = x;      # Lambda function
+val v8: (i32, i32)      = (5, 8);              # Tuple
+val v9: #{x:i32, y:i32} = #{x:5, y:8};         # Record
+val v10: Option[i32]    = Some(3);             # Enum variant
+val v11: [i32]          = [1,2,3];             # Vector
+val v12: fun(i32): i32  = fun(x:i32) = x;      # Lambda function
 # ANCHOR_END: example
 }

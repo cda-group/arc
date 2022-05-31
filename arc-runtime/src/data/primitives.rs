@@ -1,10 +1,8 @@
 use crate::context::Context;
-use crate::data::convert_reflexive;
-use crate::data::garbage::alloc_identity;
-use crate::data::strings::String;
-use crate::data::Alloc;
-use crate::data::DynSendable;
-use crate::data::DynSharable;
+// use crate::data::strings::String;
+use crate::data::gc::Heap;
+use crate::data::strings::Str;
+use crate::data::Data;
 use macros::rewrite;
 
 pub use bool;
@@ -26,53 +24,26 @@ pub type unit = ();
 pub type Unit = ();
 pub use std::ops::Range;
 
-convert_reflexive!(i8);
-convert_reflexive!(i16);
-convert_reflexive!(i32);
-convert_reflexive!(i64);
-convert_reflexive!(i128);
-convert_reflexive!(u8);
-convert_reflexive!(u16);
-convert_reflexive!(u32);
-convert_reflexive!(u64);
-convert_reflexive!(u128);
-convert_reflexive!(f32);
-convert_reflexive!(f64);
-convert_reflexive!(bool);
-// convert_reflexive!(char);
-convert_reflexive!(unit);
-
-alloc_identity!(i8);
-alloc_identity!(i16);
-alloc_identity!(i32);
-alloc_identity!(i64);
-alloc_identity!(i128);
-alloc_identity!(u8);
-alloc_identity!(u16);
-alloc_identity!(u32);
-alloc_identity!(u64);
-alloc_identity!(f32);
-alloc_identity!(f64);
-alloc_identity!(bool);
-alloc_identity!(char);
-alloc_identity!(unit);
-
 #[allow(non_upper_case_globals)]
 pub const unit: unit = ();
 #[allow(non_upper_case_globals)]
 pub const Unit: unit = ();
 
-#[rewrite]
-pub fn assert(b: bool) {
+use crate::prelude::*;
+
+#[rewrite(generic)]
+pub fn bool_assert(b: bool) {
     assert!(b);
 }
 
-#[rewrite]
-pub fn panic(s: String) {
+#[rewrite(generic)]
+#[allow(non_snake_case)]
+pub fn Str_panic(s: Str) {
     panic!("{}", s.as_str())
 }
 
-#[rewrite]
-pub fn print(s: String) {
+#[rewrite(generic)]
+#[allow(non_snake_case)]
+pub fn Str_print(s: Str) {
     println!("{}", s.as_str())
 }

@@ -5,16 +5,16 @@
 # ANCHOR: example
 enum Shape[T] {
     Rectangle(T, T),
-    Circle(T),
+    Square(T),
 }
 
 def area(shape) = match shape {
     Shape::Rectangle(width, height) => width * height,
-    Shape::Circle(radius) => 3.14 * radius ** 2
+    Shape::Square(length) => 2 * length
 }
 
 def main() {
-    val a0 = area(Shape::Rectangle(5.0, 3.0));
-    val a1 = area(Shape::Circle(3.0));
+    val a0 = area(Shape::Rectangle(5, 3));
+    val a1 = area(Shape::Square(3));
 }
 # ANCHOR_END: example

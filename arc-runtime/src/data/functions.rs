@@ -1,85 +1,73 @@
-use crate::context::Context;
-use crate::data::DynSharable;
-use comet::api::Collectable;
-use comet::api::Finalize;
-use comet::api::Trace;
-use std::fmt::Debug;
-use std::ptr::NonNull;
-
 #[macro_export]
-macro_rules! declare_functions {
-    ($($id:ident),* $(,)?) => {
-        #[derive(Send, Sync, Unpin, Collectable, Finalize, NoTrace)]
+macro_rules! declare {
+    {
+        functions: [$($function_id:ident),* $(,)?],
+        tasks: [$($task_id:ident ($state_id:ident)),* $(,)?]
+    } => {
+        #[derive(Send, Sync, Unpin, NoTrace)]
         pub struct Function<I: 'static, O: 'static> {
-            pub ptr: fn(I, Context) -> O,
-            pub tag: FunctionTag<I, O>,
+            pub ptr: fn(I, Context<Task>) -> O,
+            pub tag: FunctionTag,
         }
-        #[derive(Debug, Copy, Send, Sync, Unpin, Serialize, Deserialize)]
-        pub struct FunctionTag<I, O>(pub Tag, pub std::marker::PhantomData<(I, O)>);
-        #[derive(Debug, Clone, Copy, Send, Serialize, Deserialize)]
+        use serde_derive::Deserialize;
+        use serde_derive::Serialize;
+        use serde::Serialize;
+        use serde::Deserialize;
+        #[derive(Copy, Clone, Send, Debug, Serialize, Deserialize)]
         #[allow(non_camel_case_types)]
-        pub enum Tag {
-            $($id,)*
+        pub enum FunctionTag {
+            $($function_id,)*
+            Unreachable,
         }
+        impl<I, O> Copy for Function<I, O> {}
         impl<I, O> Clone for Function<I, O> {
             fn clone(&self) -> Self {
-                Self { ptr: self.ptr.clone(), tag: self.tag.clone() }
+                *self
             }
         }
         impl<I, O> std::fmt::Debug for Function<I, O> {
             fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-                Ok(())
+                write!(f, "Function<{:?}>", self.tag)
             }
         }
-        impl<I, O> Clone for FunctionTag<I, O> {
-            fn clone(&self) -> Self {
-                Self(self.0, std::marker::PhantomData)
+        impl<I, O> SerializeState<SerdeState> for Function<I, O> {
+            fn serialize_state<S: Serializer>(&self, s: S, ctx: &SerdeState) -> Result<S::Ok, S::Error> {
+                self.tag.serialize(s)
             }
         }
-        impl<I, O> DynSharable for Function<I, O> {
-            type T = FunctionTag<I, O>;
-            fn into_sendable(&self, ctx: Context) -> Self::T {
-                self.tag.clone()
-            }
-        }
-        impl<I: 'static, O: 'static> DynSendable for FunctionTag<I, O> {
-            type T = Function<I, O>;
-            fn into_sharable(&self, ctx: Context) -> Self::T {
+        impl<'de, I, O> DeserializeState<'de, SerdeState> for Function<I, O> {
+            fn deserialize_state<D: Deserializer<'de>>(ctx: &mut SerdeState, d: D) -> Result<Self, D::Error> {
                 unsafe {
-                    match self.0 {
-                        $(Tag::$id => Function {
-                            ptr: std::mem::transmute($id as usize),
-                            tag: self.clone()
-                        }),*
-                    }
-                }
-            }
-        }
-        impl<I, O> Serialize for Function<I, O> {
-            fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
-                self.tag.0.serialize(serializer)
-            }
-        }
-        impl<'i, I, O> Deserialize<'i> for Function<I, O> {
-            fn deserialize<D: Deserializer<'i>>(deserializer: D) -> Result<Self, D::Error> {
-                unsafe {
-                    match Tag::deserialize(deserializer)? {
-                        $(Tag::$id => Ok(Function {
-                            ptr: std::mem::transmute($id as usize),
-                            tag: FunctionTag(Tag::$id, std::marker::PhantomData)
+                    match FunctionTag::deserialize(d)? {
+                        $(FunctionTag::$function_id => Ok(Function {
+                            ptr: std::mem::transmute($function_id as usize),
+                            tag: FunctionTag::$function_id
                         }),)*
+                        FunctionTag::Unreachable => unreachable!()
                     }
                 }
             }
         }
-    };
-}
-
-#[macro_export]
-macro_rules! declare {
-    (functions:[$($id:ident),* $(,)?], tasks:[]) => {
-        declare_functions! {
-            $($id),*
+        #[derive(Copy, Clone, Debug, Send, Sync, Unpin, Trace)]
+        #[serde_state]
+        #[allow(non_camel_case_types)]
+        pub struct Task {
+            tag: TaskTag,
+        }
+        #[derive(Copy, Clone, Debug, Send, Sync, Unpin, Trace, From)]
+        #[serde_state]
+        #[allow(non_camel_case_types)]
+        pub enum TaskTag {
+            $($task_id($state_id),)*
+            Unreachable
+        }
+        impl Execute for Task {
+            fn execute(self, ctx: Context<Self>) -> Pin<Box<dyn Future<Output = ()> + Send>> {
+                match self.tag {
+                    $(TaskTag::$task_id(state) => Box::pin($task_id((state,), ctx)),)*
+                    TaskTag::Unreachable => unreachable!()
+                }
+            }
         }
     };
 }
@@ -90,7 +78,7 @@ macro_rules! function {
     ($fun:ident) => {
         Function {
             ptr: $fun,
-            tag: FunctionTag(Tag::$fun, std::marker::PhantomData),
+            tag: FunctionTag::$fun,
         }
     };
     // Create a function type

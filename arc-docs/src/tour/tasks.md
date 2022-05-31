@@ -1,24 +1,24 @@
 # Tasks and Channels
 
-Datastreams have become a prominent data model for analysing live data. A *datastream* is conceptually an infinite sequence of events, where an *event* is a data point produced by the stream at a specific moment in time. Arc-Lang provides the concept of tasks and channels to support fine grained processing of datastreams. A *channel* is a buffer of events which supports two basic operations. Data can be *pushed* and *pulled* into and out of the channel's buffer by tasks. In this context, a *task* is a stackless coroutine. A coroutine is a function that can suspend its execution to be resumed at a later time. Tasks can thus await events to arrive on ingoing channels, do some processing, and emit new events onto outgoing channels. To suspend, the coroutine must save its execution state at the point of suspension. While a stackful coroutine (i.e., lightweight thread) saves its call-stack when suspending, a stackless coroutine does not. Stackful coroutines are therefore able to suspend inside deeply nested stack-frames whereas stackless coroutines may only suspend in their outermost stack-frame. The motivation of having stackless coroutines however is their predictability, since the size of their state is constant and known at compile-time.
+Datastreams have become a prominent data model for analysing live data. A *datastream* is conceptually an infinite sequence of events, where an *event* is a data point produced by the stream at a specific moment in time. Arc-Lang provides the concept of tasks and channels to support fine grained processing of datastreams. A *channel* is a buffer of events which supports two basic operations. Data can be *pushed* into the channel and *pulled* from it by tasks. In this context, a *task* is a stackless coroutine. A *coroutine* is a function that can suspend its execution to be resumed at a later time. Tasks can thus await events to arrive on ingoing channels, do some processing, and emit new events onto outgoing channels. To suspend, the coroutine must save its execution state at the point of suspension. While a stackful coroutine (i.e., lightweight thread) saves its call-stack when suspending, a stackless coroutine does not. Stackful coroutines are therefore able to suspend inside deeply nested stack-frames whereas stackless coroutines may only suspend in their outermost stack-frame. The motivation of having stackless coroutines however is their predictability, since the size of their state is constant and known at compile-time.
 
 ```arc-lang
 {{#include ../../../arc-lang/examples/task-map.arc:example}}
 ```
 
-In the above code, `map` is a task which takes a stream on an input channel `i`, a function `f`, and produces a stream on an output channel `o`. The execution of the task enters an infinite loop which receives events from `i` using the `receive` operator, applies function `f`, and emits the result to `o` using the `!` operator. The `main` function instantiates the task using function application syntax.
+In the above code, `map` is a task which takes a stream on an input channel `i`, a function `f`, and produces a stream on an output channel `o`. The execution of the task enters an infinite loop which pulls events from `i`, applies a function `f`, and pushes the result to `o`. The `main` function instantiates the task using function application syntax.
 
 ## Directions
 
-All channels have a *direction*. Data can either be pushed into a channel or pulled out of it, but not both. Tasks which push data are referred to as "*producers*" and tasks which pull data are referred to as "*consumers*". It is possible for a task to simultaneously be both a producer and a consumer, but not for the same channel. We refer to pull-only channels as streams (`Stream[T]`) and push-only channels as drains (`Drain[T]`). To make the idea more clear, consider this fully type annotated example:
+All channels have a *direction*. Data can either be pushed into a channel or pulled out of it, but not both. Tasks which push data are referred to as "*producers*" and tasks which pull data are referred to as "*consumers*". It is possible for a task to simultaneously be both a producer and a consumer, but not for the same channel. To make the idea more clear, consider this fully type annotated example:
 
 ```arc-lang
-{{#include ../../../arc-lang/examples/task-map.arc:annotated}}
+{{#include ../../../arc-lang/examples/task-map-annotated.arc:example}}
 ```
 
 ## Deadlock Avoidance
 
-The purpose of introducing tasks and directions is to avoid deadlocks that may occur from cyclic channel-dependencies. To give an example, channels in the Go language have directions like Arc-Lang but no task-abstraction. Go instead exposes the more general concept of goroutines which are lightweight threads that can suspend execution anywhere. For example, it is possible in Go to write the following:
+The purpose of introducing tasks and directions is to avoid deadlocks that may occur from cyclic channel-dependencies. To give an example, channels in the Go language have directions like Arc-Lang but no task-abstraction. Go instead supports goroutines which are stackful coroutines. For example, it is possible in Go to write the following:
 
 ```go
 package main
@@ -35,32 +35,27 @@ func main() {
 }
 ```
 
-The above code has a problem. The `map` function is both a consumer and producer of the same channel. This cyclic dependency causes a deadlock. In contrast, Arc-Lang restricts programs such that channels can only be created by instantiating tasks. Once a task is created its inputs cannot change. The output channel of a task cannot end up as an input channel to the same task or any upstream task. This prevents arbitrary cycles from being created in the dataflow graph, and thus prevents deadlocks. Code such as the following will result in a syntax error:
+The above code has a problem. The `map` function running inside the goroutine is both a consumer and producer of the same channel. This cyclic dependency causes a deadlock. In contrast, Arc-Lang restricts programs such that channels can only be created by instantiating tasks. Once a task is created its inputs cannot change. The output channel of a task cannot end up as an input channel to the same task or any upstream task. This prevents arbitrary cycles from being created in the dataflow graph, and thus prevents deadlocks. Code such as the following will result in a syntax error:
 
 ```arc-lang
-{{#include ../../../arc-lang/examples/fail-task-map.arc:example}}
+{{#include ../../../arc-lang/examples/task-map-fail.arc:example}}
 ```
 
-## Exceptions
+## Non-Termination
 
-Operations on streams are by default assumed to succeed without failure, but may also throw *exceptions* which can be handled by the user. Exceptions are thrown in two scenarios:
+Arc-Lang targets applications that must run continuously without graceful termination. For this reason, tasks and streams cannot terminate while the program is executing. To prevent a task from terminating, we restricts its body to have the never type `!`. This effectively forces the task to contain an infinite loop.
 
-1) When receiving data from a channel which has no producer and whose buffer is empty.
-2) When emitting data into a channel which has no consumers.
-
-By catching exceptions, tasks can prolong their execution beyond the lifetime of their channels. This is especially useful when tasks have multiple input and output channels, as uncaught exceptions will terminate the task.
+As a result, code such as the following does not type check.
 
 ```arc-lang
-{{#include ../../../arc-lang/examples/task-exception-at-consumer.arc:example}}
+{{#include ../../../arc-lang/examples/non-termination-fail.arc:example}}
 ```
 
-In the above code, a `producer` task is sending data to a `consumer` task over a stream. The producer terminates once it is done sending all of its data. Since there are no more tasks which can emit data into the stream (i.e., no more references to the output stream), an exception will be raised when trying to receive data from the input stream.
+On the other hand, this code type checks:
 
 ```arc-lang
-{{#include ../../../arc-lang/examples/task-exception-at-producer.arc:example}}
+{{#include ../../../arc-lang/examples/non-termination.arc:example}}
 ```
-
-The above code shows the opposite scenario, where a consumer can potentially terminate and raise an exception at the producer.
 
 ## Flow Control
 

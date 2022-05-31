@@ -6,32 +6,19 @@ use proc_macro2 as pm2;
 mod proc_macro_derives;
 mod proc_macro_attrs {
     pub mod rewrite {
-        pub mod driver;
         pub mod enums;
         pub mod externs;
         pub mod functions;
         pub mod impls;
-        pub mod nonpersistent_tasks;
-        pub mod persistent_tasks;
+        pub mod main;
+        pub mod structs;
+    }
+    pub mod serde_state {
+        pub mod enums;
         pub mod structs;
     }
 }
 mod proc_macros;
-
-#[proc_macro_derive(Abstract)]
-pub fn derive_abstract(input: TokenStream) -> TokenStream {
-    proc_macro_derives::derive_abstract(syn::parse_macro_input!(input as syn::DeriveInput))
-}
-
-#[proc_macro_derive(Collectable)]
-pub fn derive_collectable(input: TokenStream) -> TokenStream {
-    proc_macro_derives::derive_collectable(syn::parse_macro_input!(input as syn::DeriveInput))
-}
-
-#[proc_macro_derive(Finalize)]
-pub fn derive_finalize(input: TokenStream) -> TokenStream {
-    proc_macro_derives::derive_finalize(syn::parse_macro_input!(input as syn::DeriveInput))
-}
 
 #[proc_macro_derive(NoTrace)]
 pub fn derive_notrace(input: TokenStream) -> TokenStream {
@@ -41,16 +28,6 @@ pub fn derive_notrace(input: TokenStream) -> TokenStream {
 #[proc_macro_derive(Trace)]
 pub fn derive_trace(input: TokenStream) -> TokenStream {
     proc_macro_derives::derive_trace(syn::parse_macro_input!(input as syn::DeriveInput))
-}
-
-#[proc_macro_derive(Garbage)]
-pub fn derive_garbage(input: TokenStream) -> TokenStream {
-    proc_macro_derives::derive_garbage(syn::parse_macro_input!(input as syn::DeriveInput))
-}
-
-#[proc_macro_derive(Alloc)]
-pub fn derive_alloc(input: TokenStream) -> TokenStream {
-    proc_macro_derives::derive_alloc(syn::parse_macro_input!(input as syn::DeriveInput))
 }
 
 #[proc_macro_derive(Send)]
@@ -84,6 +61,11 @@ pub fn call(input: TokenStream) -> TokenStream {
 }
 
 #[proc_macro]
+pub fn spawn(input: TokenStream) -> TokenStream {
+    proc_macros::spawn(syn::parse_macro_input!(input as syn::Expr))
+}
+
+#[proc_macro]
 pub fn call_async(input: TokenStream) -> TokenStream {
     proc_macros::call_async(syn::parse_macro_input!(input as syn::Expr))
 }
@@ -91,6 +73,11 @@ pub fn call_async(input: TokenStream) -> TokenStream {
 #[proc_macro]
 pub fn call_indirect(input: TokenStream) -> TokenStream {
     proc_macros::call_indirect(syn::parse_macro_input!(input as syn::Expr))
+}
+
+#[proc_macro]
+pub fn call_async_indirect(input: TokenStream) -> TokenStream {
+    proc_macros::call_async_indirect(syn::parse_macro_input!(input as syn::Expr))
 }
 
 /// Enwraps a value into an enum-variant.
@@ -173,6 +160,38 @@ pub fn new(input: TokenStream) -> TokenStream {
     proc_macros::new(input)
 }
 
+/// Get the value of a variable.
+///
+/// ```
+/// use arc_runtime::prelude::*;
+/// let a = 5;
+/// let b = val!(a);
+/// ```
+#[proc_macro]
+pub fn val(input: TokenStream) -> TokenStream {
+    proc_macros::val(input)
+}
+
+/// Access a struct's field.
+///
+/// ```
+/// use arc_runtime::prelude::*;
+/// #[rewrite]
+/// pub struct Bar {
+///     pub x: i32,
+///     pub y: i32
+/// }
+/// #[rewrite(main)]
+/// fn test() {
+///     let a = new!(Bar { x: 0, y: 1 });
+///     let b = access!(a, x);
+/// }
+/// ```
+#[proc_macro]
+pub fn access(input: TokenStream) -> TokenStream {
+    proc_macros::access(input)
+}
+
 #[proc_macro]
 pub fn vector(input: TokenStream) -> TokenStream {
     proc_macros::vector(input)
@@ -189,63 +208,37 @@ pub fn unerase(input: TokenStream) -> TokenStream {
 }
 
 #[proc_macro]
-pub fn push(input: TokenStream) -> TokenStream {
-    proc_macros::push(input)
-}
-
-#[proc_macro]
-pub fn pull(input: TokenStream) -> TokenStream {
-    proc_macros::pull(input)
-}
-
-#[proc_macro]
-pub fn pull_transition(input: TokenStream) -> TokenStream {
-    proc_macros::pull_transition(input)
-}
-
-#[proc_macro]
-pub fn push_transition(input: TokenStream) -> TokenStream {
-    proc_macros::push_transition(input)
-}
-
-#[proc_macro]
 pub fn transition(input: TokenStream) -> TokenStream {
     proc_macros::transition(input)
-}
-
-#[proc_macro]
-pub fn terminate(input: TokenStream) -> TokenStream {
-    proc_macros::terminate(input)
-}
-
-#[proc_macro]
-pub fn wait(input: TokenStream) -> TokenStream {
-    proc_macros::wait(input)
 }
 
 #[proc_macro_attribute]
 pub fn rewrite(attr: TokenStream, input: TokenStream) -> TokenStream {
     let attr = syn::parse_macro_input!(attr as syn::AttributeArgs);
     let item = syn::parse_macro_input!(input as syn::Item);
+    let metas = get_metas(&attr);
     match item {
         syn::Item::Enum(item) => proc_macro_attrs::rewrite::enums::rewrite(attr, item),
         syn::Item::Struct(item) => proc_macro_attrs::rewrite::structs::rewrite(attr, item),
-        syn::Item::Fn(item) if has_meta_name_val("unmangled", &get_metas(&attr)) => {
+        syn::Item::Fn(item) if has_meta_name_val("unmangled", &metas) => {
             proc_macro_attrs::rewrite::externs::rewrite(attr, item)
         }
-        syn::Item::Fn(item)
-            if item.sig.asyncness.is_some() && has_meta_key("nonpersistent", &get_metas(&attr)) =>
-        {
-            proc_macro_attrs::rewrite::nonpersistent_tasks::rewrite(attr, item)
-        }
-        syn::Item::Mod(item) if has_meta_key("persistent", &get_metas(&attr)) => {
-            proc_macro_attrs::rewrite::persistent_tasks::rewrite(attr, item)
-        }
-        syn::Item::Fn(item) if has_meta_key("main", &get_metas(&attr)) => {
-            proc_macro_attrs::rewrite::driver::rewrite(attr, item)
+        syn::Item::Fn(item) if has_meta_key("main", &metas) => {
+            proc_macro_attrs::rewrite::main::rewrite(attr, item)
         }
         syn::Item::Fn(item) => proc_macro_attrs::rewrite::functions::rewrite(attr, item),
         syn::Item::Impl(item) => proc_macro_attrs::rewrite::impls::rewrite(attr, item),
+        _ => panic!("#[rewrite] expects an enum, struct, function, impl, or module as input."),
+    }
+}
+
+#[proc_macro_attribute]
+pub fn serde_state(attr: TokenStream, input: TokenStream) -> TokenStream {
+    let attr = syn::parse_macro_input!(attr as syn::AttributeArgs);
+    let item = syn::parse_macro_input!(input as syn::Item);
+    match item {
+        syn::Item::Enum(item) => proc_macro_attrs::serde_state::enums::serde_state(attr, item),
+        syn::Item::Struct(item) => proc_macro_attrs::serde_state::structs::serde_state(attr, item),
         _ => panic!("#[rewrite] expects an enum, struct, function, impl, or module as input."),
     }
 }
@@ -255,7 +248,7 @@ pub(crate) fn new_id(s: impl ToString) -> syn::Ident {
 }
 
 pub(crate) fn get_metas(attr: &[syn::NestedMeta]) -> Vec<syn::Meta> {
-    attr.into_iter()
+    attr.iter()
         .filter_map(|a| match a {
             syn::NestedMeta::Meta(m) => Some(m.clone()),
             _ => None,
@@ -263,7 +256,7 @@ pub(crate) fn get_metas(attr: &[syn::NestedMeta]) -> Vec<syn::Meta> {
         .collect()
 }
 
-pub(crate) fn has_attr_key(name: &str, attr: &[syn::Attribute]) -> bool {
+pub(crate) fn _has_attr_key(name: &str, attr: &[syn::Attribute]) -> bool {
     attr.iter()
         .any(|a| matches!(a.parse_meta(), Ok(syn::Meta::Path(x)) if x.is_ident(name)))
 }
@@ -279,10 +272,8 @@ pub(crate) fn has_meta_name_val(name: &str, meta: &[syn::Meta]) -> bool {
 }
 
 pub(crate) fn _has_nested_meta_key(name: &str, meta: &[syn::NestedMeta]) -> bool {
-    meta.iter().any(|m| match m {
-        syn::NestedMeta::Meta(syn::Meta::Path(x)) if x.is_ident(name) => true,
-        _ => false,
-    })
+    meta.iter()
+        .any(|m| matches!(m, syn::NestedMeta::Meta(syn::Meta::Path(x)) if x.is_ident(name)))
 }
 
 #[allow(unused)]
@@ -303,7 +294,7 @@ pub(crate) fn get_attr_val(name: &str, attr: &[syn::NestedMeta]) -> syn::Ident {
         .unwrap_or_else(|| panic!("`{} = <id>` missing from identifiers", name))
 }
 
-pub(crate) fn split_name_type(params: Vec<syn::FnArg>) -> (Vec<syn::Ident>, Vec<syn::Type>) {
+pub(crate) fn _split_name_type(params: Vec<syn::FnArg>) -> (Vec<syn::Ident>, Vec<syn::Type>) {
     params
         .into_iter()
         .map(|p| match p {

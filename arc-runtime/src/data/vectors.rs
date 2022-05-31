@@ -1,145 +1,149 @@
 use crate::prelude::*;
 
-pub mod sharable {
-    use crate::prelude::*;
+#[derive(Copy, Clone, From, Debug, Send, Sync, Unpin, Trace)]
+#[from(forward)]
+#[serde_state]
+pub struct Vector<T: Data>(pub Gc<Vec<T>>);
 
-    #[derive(
-        Clone, From, Deref, DerefMut, Finalize, Collectable, Debug, Send, Sync, Unpin, Trace,
-    )]
-    #[from(forward)]
-    pub struct Vec<T: Sharable>(pub Gc<ConcreteVec<T>>);
-
-    pub type ConcreteVec<T> = comet::alloc::vector::Vector<T, Immix>;
-
-    impl<T: Sharable> Alloc<Vec<T>> for ConcreteVec<T> {
-        fn alloc(self, ctx: Context) -> Vec<T> {
-            Vec(ctx.mutator().allocate(self, AllocationSpace::New).into())
-        }
+impl<T: Trace> Trace for Vec<T> {
+    fn trace(&self, heap: Heap) {
+        self.iter().for_each(|item| item.trace(heap));
+    }
+    fn root(&self, heap: Heap) {
+        self.iter().for_each(|item| item.root(heap));
+    }
+    fn unroot(&self, heap: Heap) {
+        self.iter().for_each(|item| item.unroot(heap));
+    }
+    fn copy(&self, heap: Heap) -> Self {
+        self.iter().map(|v| v.copy(heap)).collect::<Vec<_>>()
     }
 }
 
-mod sendable {
-    use crate::prelude::*;
-
-    #[derive(Clone, From, Send, Serialize, Deserialize)]
-    #[serde(bound = "")]
-    #[from(forward)]
-    pub struct Vec<T: Sendable>(pub ConcreteVec<T>);
-
-    pub type ConcreteVec<T> = std::vec::Vec<T>;
-}
-
-impl<T: Sharable> DynSharable for sharable::Vec<T> {
-    type T = sendable::Vec<T::T>;
-    fn into_sendable(&self, ctx: Context) -> Self::T {
-        self.0
-            .iter()
-            .map(|v| v.clone().into_sendable(ctx))
-            .collect::<std::vec::Vec<_>>()
-            .into_boxed_slice()
-            .into()
-    }
-}
-
-impl<T: Sendable> DynSendable for sendable::Vec<T> {
-    type T = sharable::Vec<T::T>;
-    fn into_sharable(&self, ctx: Context) -> Self::T {
-        let mut s = Vec::<T::T>::with_capacity(self.0.len(), ctx);
-        for v in self.0.iter() {
-            let v = v.into_sharable(ctx);
-            s.0.push(ctx.mutator(), v);
-        }
-        s
-    }
-}
-
-pub use sharable::Vec;
-
-impl<T: Sharable> Vec<T> {
-    pub fn as_slice(&self, ctx: Context) -> &[T] {
-        self.0.as_slice()
-    }
-    pub fn retain<F>(mut self, f: F, ctx: Context)
+impl<T: Data> Vector<T> {
+    pub fn retain<F>(mut self, f: F, ctx: Context<impl Execute>)
     where
         F: FnMut(&T) -> bool,
     {
         self.0.retain(f);
     }
-    pub fn as_slice_mut(&mut self, ctx: Context) -> &mut [T] {
-        self.0.as_slice_mut()
+    pub fn as_slice_mut(&mut self, ctx: Context<impl Execute>) -> &mut [T] {
+        self.0.as_mut_slice()
     }
 
-    pub fn dedup(mut self, ctx: Context)
+    pub fn dedup(mut self, ctx: Context<impl Execute>)
     where
         T: PartialEq,
     {
         self.0.dedup();
     }
 
-    pub fn write_barrier(mut self, ctx: Context) {
-        self.0.write_barrier(ctx.mutator())
+    pub fn shrink_to(mut self, min_capacity: usize, ctx: Context<impl Execute>) {
+        self.0.shrink_to(min_capacity);
     }
 
-    pub fn shrink_to(mut self, min_capacity: usize, ctx: Context) {
-        self.0.shrink_to(ctx.mutator(), min_capacity);
+    pub fn resize(mut self, new_len: usize, value: T, ctx: Context<impl Execute>) {
+        self.0.resize(new_len, value);
     }
+}
 
-    pub fn resize(mut self, new_len: usize, value: T, ctx: Context) {
-        self.0.resize(ctx.mutator(), new_len, value);
+impl<T: Data> std::ops::Deref for Vector<T> {
+    type Target = [T];
+    fn deref(&self) -> &[T] {
+        self.0.deref()
+    }
+}
+
+impl<T: Data> std::ops::DerefMut for Vector<T> {
+    fn deref_mut(&mut self) -> &mut [T] {
+        self.0.deref_mut()
     }
 }
 
 #[rewrite]
-impl<T: Sharable> Vec<T> {
-    pub fn new(ctx: Context) -> Vec<T> {
-        sharable::ConcreteVec::<T>::new(ctx.mutator()).alloc(ctx)
+impl<T: Data> Vector<T> {
+    pub fn iterator(self, ctx: Context<impl Execute>) -> VectorIterator<T> {
+        VectorIterator::new(self)
     }
 
-    pub fn with_capacity(capacity: usize, ctx: Context) -> Vec<T> {
-        sharable::ConcreteVec::<T>::with_capacity(ctx.mutator(), capacity).alloc(ctx)
+    pub fn new(ctx: Context<impl Execute>) -> Vector<T> {
+        Vector(ctx.heap.allocate(Vec::<T>::new()))
     }
 
-    pub fn capacity(self, ctx: Context) -> usize {
+    pub fn from_vec(vec: Vec<T>, ctx: Context<impl Execute>) -> Vector<T> {
+        Vector(ctx.heap.allocate(vec))
+    }
+
+    pub fn with_capacity(capacity: usize, ctx: Context<impl Execute>) -> Vector<T> {
+        Vector(ctx.heap.allocate(Vec::<T>::with_capacity(capacity)))
+    }
+
+    pub fn capacity(self, ctx: Context<impl Execute>) -> usize {
         self.0.capacity()
     }
 
-    pub fn len(self, ctx: Context) -> usize {
+    pub fn len(self, ctx: Context<impl Execute>) -> usize {
         self.0.len()
     }
 
-    pub fn clear(mut self, ctx: Context) {
+    pub fn clear(mut self, ctx: Context<impl Execute>) {
         self.0.clear();
     }
 
-    pub fn push(mut self, value: T, ctx: Context) {
-        self.0.push(ctx.mutator(), value);
+    pub fn push(mut self, value: T, ctx: Context<impl Execute>) {
+        self.0.push(value);
     }
 
-    pub fn pop(mut self, ctx: Context) -> Option<T> {
+    pub fn pop(mut self, ctx: Context<impl Execute>) -> Option<T> {
         self.0.pop()
     }
 
-    pub fn remove(mut self, index: usize, ctx: Context) -> T {
+    pub fn remove(mut self, index: usize, ctx: Context<impl Execute>) -> T {
         self.0.remove(index)
     }
 
-    pub fn get(self, index: usize, ctx: Context) -> T {
-        self.0.at(index).clone()
+    pub fn get(self, index: usize, ctx: Context<impl Execute>) -> T {
+        self.0[index]
     }
 
-    pub fn insert(mut self, index: usize, value: T, ctx: Context) {
-        self.0.insert(ctx.mutator(), index, value);
+    pub fn insert(mut self, index: usize, value: T, ctx: Context<impl Execute>) {
+        self.0.insert(index, value);
     }
 
-    pub fn is_empty(self, ctx: Context) -> bool {
+    pub fn is_empty(self, ctx: Context<impl Execute>) -> bool {
         self.0.is_empty()
     }
 }
 
 #[allow(non_snake_case)]
-pub fn Vec_dedup<T: Sharable>(self_param: Vec<T>, ctx: Context)
+pub fn Vector_dedup<T: Data>(self_param: Vector<T>, ctx: Context<impl Execute>)
 where
     T: PartialEq,
 {
-    Vec::dedup(self_param, ctx)
+    Vector::dedup(self_param, ctx)
+}
+
+#[derive(Copy, Clone, From, Debug, Send, Sync, Unpin, Trace)]
+#[from(forward)]
+#[serde_state]
+pub struct VectorIterator<T: Data> {
+    vec: Vector<T>,
+    offset: u64,
+}
+
+#[rewrite]
+impl<T: Data> VectorIterator<T> {
+    fn new(vec: Vector<T>) -> VectorIterator<T> {
+        VectorIterator { vec, offset: 0 }
+    }
+
+    pub fn is_empty(self, ctx: Context<impl Execute>) -> bool {
+        self.offset >= self.vec.len(ctx) as u64
+    }
+
+    pub fn next(mut self, ctx: Context<impl Execute>) -> T {
+        let index = self.offset as usize;
+        self.offset += 1;
+        self.vec.get(index, ctx)
+    }
 }

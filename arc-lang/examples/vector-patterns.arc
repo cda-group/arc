@@ -8,8 +8,7 @@ def main() {
 val a = [1,2,3];
 
 match a {
-    [1, ..] => 1,
-    [.., 3] => 3,
+    [1,2|t] => 1,
     _ => 0
 };
 # ANCHOR_END: example

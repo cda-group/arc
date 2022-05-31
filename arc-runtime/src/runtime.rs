@@ -1,6 +1,3 @@
-use comet::immix::Immix;
-use comet::immix::ImmixOptions;
-use comet::mutator::MutatorRef;
 use kompact::prelude::*;
 
 pub struct Runtime {

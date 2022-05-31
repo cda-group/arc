@@ -1,9 +1,14 @@
 
-exception Compiler_error of string
+exception Panic of string
 
-let todo () = raise (Compiler_error "Not yet implemented")
-and unreachable () = raise (Compiler_error "Entered unreachable code")
-and panic msg = raise (Compiler_error (Printf.sprintf "Panic: %s" msg))
+let todo () = raise (Panic "Not yet implemented")
+and unreachable () = raise (Panic "Entered unreachable code")
+and panic msg = raise (Panic (Printf.sprintf "%s" msg))
+
+let report_line_error (loc : Lexing.position) msg exit_num =
+  print_endline ("File: " ^ Filename.basename loc.pos_fname ^ " Line: " ^ string_of_int loc.pos_lnum);
+  print_endline msg;
+  exit exit_num
 
 let max_by f l =
   let rec max_by f l mk mv =
@@ -59,7 +64,7 @@ let zip_with_from f l0_init l1_init acc =
         (l1_init |> List.length)
     )
   in
-  zip l0_init l1_init acc
+  (zip l0_init l1_init acc) |> List.rev
 
 let zip_with f l0_init l1_init =
   zip_with_from f l0_init l1_init []
@@ -86,11 +91,43 @@ let get_or x d l = match l |> List.assoc_opt x with
   | Some v -> v
   | None -> d
 
+let duplicates f l =
+  let sorted = List.sort (fun a b -> f a b) l in
+  let rec duplicates' l acc =
+    match l with
+    | a::b::t ->
+        if a = b then
+          duplicates' t (a::acc)
+        else
+          duplicates' (b::t) acc
+    | _ ->
+        acc
+  in
+  duplicates' sorted []
+
+and remove x l =
+  let rec remove' l acc =
+    match l with
+    | h::t ->
+        if h = x then
+          remove' t acc
+        else
+          remove' t (h::acc)
+    | _ ->
+        acc
+  in
+  let acc = remove' l [] in
+  acc |> List.rev
+
 let map = List.map
+let map_assoc f = map (function (k, v) -> (k, f v))
 let filter = List.filter
 let foldl = List.fold_left
 let find_map = List.find_map
 let assoc = List.assoc
+let get x l = match List.assoc_opt x l with
+  | Some v -> v
+  | None -> raise (Panic (Printf.sprintf "Key %s not found in list [%s]" x (l |> map fst |> String.concat ", ")))
 let assoc_opt = List.assoc_opt
 let mem = List.mem
 let rev = List.rev
@@ -101,4 +138,4 @@ let diff l0 l1 = l0 |> filter (fun x -> not (l1 |> elem x))
 let dom l = l |> map (fun (a, _) -> a)
 let sprintf = Printf.sprintf
 let exists = List.exists
-
+and last l = l |> List.rev |> hd

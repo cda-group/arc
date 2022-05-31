@@ -7,16 +7,14 @@ enum Expr {
     Add(Expr, Expr)
 }
 
-def eval(e) {
-    match e {
-        Expr::Num(x) => x,
-        Expr::Add(a, b) => eval(a) + eval(b),
-    }
+def eval(e) = match e {
+    Expr::Num(x) => x,
+    Expr::Add(a, b) => eval(a) + eval(b),
 }
 
 def main() {
-    let x = eval(Expr::Num(1));
-    let y = eval(Expr::Add((1, 2)));
+    val x = eval(Expr::Num(1));
+    val y = eval(Expr::Add(1, 2));
     assert(x == 1);
     assert(y == 3);
 }

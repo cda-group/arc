@@ -1,11 +1,9 @@
 #![allow(deprecated)]
 
+use uuid::Uuid;
 use wheel::wheels::quad_wheel::QuadWheelWithOverflow;
 use wheel::wheels::Skip;
 use wheel::UuidOnlyTimerEntry as Entry;
-use uuid::Uuid;
-
-use crate::data::DynSharable;
 
 use std::collections::HashMap;
 use std::time::Duration;

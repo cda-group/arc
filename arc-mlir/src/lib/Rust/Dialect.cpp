@@ -776,11 +776,12 @@ void RustPanicOp::writeRust(RustPrinterStream &PS) {
 
 void RustReceiveOp::writeRust(RustPrinterStream &PS) {
   auto r = getResult();
-  PS.let(r) << "pull!(" << source() << ");\n";
+  PS << "let ";
+  PS.printAsArg(r) << ":" << r.getType() << " = call_async!(PullChan_pull(" << source() << "));\n";
 }
 
 void RustSendOp::writeRust(RustPrinterStream &PS) {
-  PS << "push!(" << value() << "," << sink() << ");\n";
+  PS << "call_async!(PushChan_push(" << sink() << "," << value() << "));\n";
 }
 
 void RustSpawnOp::writeRust(RustPrinterStream &PS) {

@@ -7,7 +7,7 @@ Type ::=
   | "#{" ([Name] ":" [Type])","+ "}"   # Record-type
   | "(" [Type]","+ ")"             # Tuple-type
   | "fun" "(" [Type]","+ ")" ":" [Type]  # Function-type
-  | [Type]? ".." ("="? [Type])?    # Range-type
+  | "[" [Type] "]"               # Array-type
   | [Path] ("[" [Type]","* "]")?     # Item-type (with optional type parameters)
 ```
 
@@ -18,9 +18,8 @@ Some examples of different types:
 ```arc-lang
 {{#include ../../../arc-lang/examples/types.arc:record}}
 {{#include ../../../arc-lang/examples/types.arc:tuple}}
+{{#include ../../../arc-lang/examples/types.arc:array}}
 {{#include ../../../arc-lang/examples/types.arc:function}}
-{{#include ../../../arc-lang/examples/types.arc:inclusive_range}}
-{{#include ../../../arc-lang/examples/types.arc:exclusive_range}}
 ```
 
 # Standard types

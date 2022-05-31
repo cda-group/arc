@@ -16,8 +16,12 @@ pub(crate) fn rewrite(_attr: syn::AttributeArgs, item: syn::ItemImpl) -> pm::Tok
             let method_name = &item.sig.ident;
             let name = new_id(format!("{}_{}", ty_name, method_name));
             let output = &item.sig.output;
-            if matches!(inputs[0], syn::FnArg::Receiver(_)) {
-                inputs[0] = syn::parse_quote!(self_param: #ty_name #ty_generics);
+            if let Some(syn::FnArg::Receiver(r)) = inputs.first() {
+                if r.reference.is_some() {
+                    inputs[0] = syn::parse_quote!(self_param: &#ty_name #ty_generics);
+                } else {
+                    inputs[0] = syn::parse_quote!(self_param: #ty_name #ty_generics);
+                }
             }
             let ctx = match inputs.pop().unwrap() {
                 syn::FnArg::Receiver(_) => unreachable!("Receiver in impl method"),
@@ -32,11 +36,20 @@ pub(crate) fn rewrite(_attr: syn::AttributeArgs, item: syn::ItemImpl) -> pm::Tok
                     syn::FnArg::Typed(i) => (&i.pat, &i.ty),
                 })
                 .unzip();
-            functions.push(quote! {
-                pub fn #name #impl_generics ((#(#ids,)*):(#(#tys,)*), #ctx_id: #ctx_ty) #output #where_clause {
-                    #ty_name::#method_name(#(#ids,)* #ctx_id)
+            let item = if item.sig.asyncness.is_some() {
+                quote! {
+                    pub async fn #name #impl_generics ((#(#ids,)*):(#(#tys,)*), #ctx_id: #ctx_ty) #output #where_clause {
+                        #ty_name::#method_name(#(#ids,)* #ctx_id).await
+                    }
                 }
-            });
+            } else {
+                quote! {
+                    pub fn #name #impl_generics ((#(#ids,)*):(#(#tys,)*), #ctx_id: #ctx_ty) #output #where_clause {
+                        #ty_name::#method_name(#(#ids,)* #ctx_id)
+                    }
+                }
+            };
+            functions.push(item);
         }
     }
 

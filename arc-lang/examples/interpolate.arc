@@ -8,6 +8,6 @@
 def main() {
   val hello = "hello";
   val world = "world";
-  val result = "$hello $world, 1+2 = ${1+2}";
+  val result = "$hello $world, 1+2 = ${i32_to_string(1+2)}";
 }
 # ANCHOR_END: example

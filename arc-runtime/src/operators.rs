@@ -1,7 +1,7 @@
 //! Builtin streaming operators. Everything required to support the SQL-interface.
 #![allow(clippy::type_complexity)]
 
-use crate::data::Sharable;
+use crate::data::Data;
 use crate::prelude::*;
 
 use crate::data::channels::local::multicast as clm;
@@ -21,42 +21,42 @@ use kompact::prelude::*;
 
 use std::sync::Arc;
 
-impl<I: Sharable> clm::Pullable<I> {
-    pub fn iterate<O: Sharable>(self, f: fn(Self) -> (Self, clm::Pullable<O>)) -> clm::Pullable<O> {
+impl<I: Data> clm::PullChan<I> {
+    pub fn iterate<O: Data>(self, f: fn(Self) -> (Self, clm::PullChan<O>)) -> clm::PullChan<O> {
         todo!()
     }
 
-//     pub fn key_by<K: Sharable>(self, f: fn(I) -> K) -> cld::Pullable<I> {
-//         todo!()
-//     }
+    //     pub fn key_by<K: Data>(self, f: fn(I) -> K) -> cld::PullChan<I> {
+    //         todo!()
+    //     }
 
-    pub fn map<O: Sharable>(self, f: fn(I) -> O) -> clm::Pullable<O> {
+    pub fn map<O: Data>(self, f: fn(I) -> O) -> clm::PullChan<O> {
         todo!()
     }
 
-    pub fn filter(self, f: fn(I) -> bool) -> clm::Pullable<I> {
+    pub fn filter(self, f: fn(I) -> bool) -> clm::PullChan<I> {
         todo!()
     }
 
-    pub fn flat_map<O: Sharable>(self, f: fn(I) -> clm::Pullable<O>) -> clm::Pullable<O> {
+    pub fn flat_map<O: Data>(self, f: fn(I) -> clm::PullChan<O>) -> clm::PullChan<O> {
         todo!()
     }
 
-    pub fn reduce<O: Sharable>(self, f: fn(O, I) -> O) -> clm::Pullable<O> {
+    pub fn reduce<O: Data>(self, f: fn(O, I) -> O) -> clm::PullChan<O> {
         todo!()
     }
 
-//     pub fn join<K: Sharable + Hash>(
-//         self,
-//         other: clw::Pullable<I>,
-//         f: fn(I, I) -> K,
-//     ) -> clm::Pullable<I> {
-//         todo!()
-//     }
-//
-//     pub fn tumbling_window<O: Sharable>(self, len: Duration) -> clw::Pullable<O> {
-//         todo!()
-//     }
+    //     pub fn join<K: Data + Hash>(
+    //         self,
+    //         other: clw::PullChan<I>,
+    //         f: fn(I, I) -> K,
+    //     ) -> clm::PullChan<I> {
+    //         todo!()
+    //     }
+    //
+    //     pub fn tumbling_window<O: Data>(self, len: Duration) -> clw::PullChan<O> {
+    //         todo!()
+    //     }
 }
 
 pub struct DataGen<T> {
@@ -77,7 +77,7 @@ impl<T> DataGen<T> {
     }
 }
 
-impl<T: Sharable> Iterator for DataGen<T>
+impl<T: Data> Iterator for DataGen<T>
 where
     Standard: Distribution<T>,
 {

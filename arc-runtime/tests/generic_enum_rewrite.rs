@@ -3,12 +3,12 @@
 use arc_runtime::prelude::*;
 
 #[rewrite]
-pub enum Foo<A> {
+enum Foo<A> {
     X(A),
 }
 
 #[rewrite]
-pub enum Bar<A, B> {
+enum Bar<A, B> {
     X(A),
     Y(B),
 }

@@ -13,33 +13,30 @@ path = "src/lib.rs"
 dataframes = ["polars"]
 
 [dependencies]
-macros            = { path = "./macros" }
-kompact           = { git = "https://github.com/kompics/kompact", rev = "e9deae8", features = ["silent_logging"]}
-slog              = { version = "2.7.0" }
-time              = { version = "0.3.5", features = ["rand", "macros"] }
-wheel             = { version = "1.1.0", package = "hierarchical_hash_wheel_timer" }
-uuid              = { version = "0.8.2" }
-rand              = { version = "0.8.3" }
-dyn-clone         = { version = "1.0.4" }
-comet             = { git = "https://github.com/Starlight-JS/comet", package = "comet-extra", rev = "c2f96f8" }
-tokio             = { version = "1.15.0", features = ["sync"] }
-derive_more       = { version = "0.99.17", default-features = false, features = ["from", "into", "deref", "deref_mut", "constructor", "as_ref"] }
-futures           = { version = "0.3.19" }
-replace_with      = { version = "0.1.7" }
-hexf              = { version = "0.2.1" }
-serde_derive      = { version = "1.0.136" }
-serde             = { version = "1.0.136" }
-serde_traitobject = { version = "0.2.7" }
-polars            = { git = "https://github.com/pola-rs/polars", rev = "a04786c", optional = true }
-
-# crossfire       = { version = "0.1.7" }
-# paste           = { version = "1.0.5" }
-# coz             = { version = "0.1.3" }
-# arrayvec        = { version = "0.7.0" }
-# lazy_static     = { version = "1.4.0" }
-# async-recursion = { version = "0.3.2" }
-# erased-serde    = { version = "0.3.17" }
+macros             = { path = "./macros" }
+kompact            = { version = "0.11.0", features = ["thread_pinning"] }
+slog               = { version = "2.7.0" }
+time               = { version = "0.3.5", features = ["rand", "macros"] }
+wheel              = { version = "1.1.0", package = "hierarchical_hash_wheel_timer" }
+rand               = { version = "0.8.3" }
+dyn-clone          = { version = "1.0.4" }
+uuid               = { version = "0.8.2", features = ["v4"] }
+tokio              = { version = "1.15.0", features = ["full"] }
+derive_more        = { version = "0.99.17", default-features = false, features = ["from", "into", "deref", "deref_mut", "constructor", "as_ref"] }
+futures            = { version = "0.3.19" }
+replace_with       = { version = "0.1.7" }
+hexf               = { version = "0.2.1" }
+serde_derive       = { version = "1.0.136" }
+serde              = { version = "1.0.136", features = ["rc"], package = "serde" }
+serde_traitobject  = { version = "0.2.7" }
+serde_json         = { version = "1.0.79" }
+serde_state        = { version = "0.4.8" }
+serde_derive_state = { version = "0.4.10" }
+polars             = { version = "0.22.8", optional = true }
+rskafka            = { version = "0.2.0" }
+core_affinity      = { version = "0.5.10" }
+async-std          = { version = "1.11.0", default-features = false, features = ["unstable"] }
+async-trait        = { version = "0.1.53" }
 
 [dev-dependencies]
-arrow2    = { version = "0.9.1" }
 omnipaxos = { git = "https://github.com/haraldng/omnipaxos", rev = "36dd86d" }

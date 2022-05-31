@@ -4,11 +4,11 @@
 
 # ANCHOR: example
 def wordcount(lines) =
-    from line in lines,
-         word in line.split(" ")
-    group word
-    window 10m every 5m
-    compute count
+    from line in lines, word in line.split(" ") {
+        group word
+            window step 10m duration 5m
+            compute count
+    }
 # ANCHOR_END: example
 
 def main() {

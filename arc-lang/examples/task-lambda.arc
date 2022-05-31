@@ -4,9 +4,9 @@
 
 # ANCHOR: example
 def test(i) {
-    task: (o) = loop {
-        on x in i => o ! x
-    }
+    val map = task(): (o) = loop {
+        o.push(i.pull());
+    };
 }
 # ANCHOR_END: example
 

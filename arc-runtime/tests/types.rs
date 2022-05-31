@@ -1,71 +1,82 @@
 mod basic1 {
     use arc_runtime::prelude::*;
+
+    declare!(functions: [], tasks: []);
+
     #[rewrite]
-    pub struct Point {
-        pub x: i32,
-        pub y: i32,
+    struct Point {
+        x: i32,
+        y: i32,
     }
 
     #[rewrite]
-    pub enum Foo {
-        FooBar(i32),
-        FooBaz(f32),
+    enum Foo {
+        Bar(i32),
+        Baz(f32),
     }
 }
 
 mod basic2 {
     use arc_runtime::prelude::*;
+
+    declare!(functions: [], tasks: []);
+
     #[rewrite]
-    pub struct A {
-        pub b: B,
+    struct A {
+        b: B,
     }
 
     #[rewrite]
-    pub struct B {
-        pub c: i32,
+    struct B {
+        c: i32,
     }
 }
 
 mod basic3 {
     use arc_runtime::prelude::*;
+
+    declare!(functions: [], tasks: []);
+
     #[rewrite]
-    pub enum A {
-        AB(B),
-        AC(C),
+    enum A {
+        B(B),
+        C(C),
     }
 
     #[rewrite]
-    pub struct B {
-        pub v: i32,
+    struct B {
+        v: i32,
     }
 
     #[rewrite]
-    pub struct C {}
+    struct C {}
 }
 
 mod list {
     use arc_runtime::prelude::*;
 
+    declare!(functions: [], tasks: []);
+
     #[rewrite]
-    pub enum List {
-        ListCons(Cons),
-        ListNil(unit),
+    enum List {
+        Cons(Cons),
+        Nil(unit),
     }
 
     #[rewrite]
-    pub struct Cons {
-        pub v: i32,
-        pub t: List,
+    struct Cons {
+        v: i32,
+        t: List,
     }
 
     #[rewrite(main)]
     #[test]
     fn test() {
-        let l: List = enwrap!(ListNil, unit);
-        let _x: bool = is!(ListCons, l);
-        let h: Cons = new!(Cons { v: 5, t: l });
-        let l: List = enwrap!(ListCons, h);
-        let h: Cons = unwrap!(ListCons, l);
+        let l = enwrap!(List::Nil, unit);
+        let _x = is!(List::Cons, l);
+        let h = new!(Cons { v: 5, t: l });
+        let l = enwrap!(List::Cons, h);
+        let h = unwrap!(List::Cons, l);
         assert_eq!(h.v, 5);
     }
 }
@@ -73,34 +84,84 @@ mod list {
 mod structs {
     use arc_runtime::prelude::*;
 
+    declare!(functions: [], tasks: []);
+
     #[rewrite]
-    pub struct Foo {
-        pub a: i32,
-        pub b: Bar,
+    struct Foo {
+        a: i32,
+        b: Bar,
     }
 
     #[rewrite]
-    pub struct Bar {}
+    struct Bar {}
 
     #[rewrite(main)]
     #[test]
     fn test() {
-        let x0: Bar = new!(Bar {});
-        let _f: Foo = new!(Foo { a: 0, b: x0 });
+        let x0 = new!(Bar {});
+        let _f = new!(Foo { a: 0, b: x0 });
     }
 }
 
 mod unit {
     use arc_runtime::prelude::*;
 
+    declare!(functions: [], tasks: []);
+
     #[rewrite]
-    pub enum Foo {
-        FooBar(unit),
+    enum Foo {
+        Bar(unit),
     }
 
     #[rewrite(main)]
     #[test]
     fn test() {
-        let _x: Foo = enwrap!(FooBar, unit);
+        let _x = enwrap!(Foo::Bar, unit);
+    }
+}
+
+mod compact_structs {
+    use arc_runtime::prelude::*;
+
+    declare!(functions: [], tasks: []);
+
+    #[rewrite(compact)]
+    struct CompactFoo {
+        a: i32,
+        b: CompactBar,
+    }
+
+    #[rewrite(compact)]
+    struct CompactBar {}
+
+    #[rewrite(main)]
+    #[test]
+    fn test() {
+        let x0 = new!(CompactBar {});
+        let _f = new!(CompactFoo { a: 0, b: x0 });
+    }
+}
+
+mod compact_enums {
+    use arc_runtime::prelude::*;
+
+    declare!(functions: [], tasks: []);
+
+    #[rewrite(compact)]
+    enum CompactFoo {
+        Bar(i32),
+        Baz(CompactBaz),
+    }
+
+    #[rewrite(compact)]
+    enum CompactBaz {
+        Qux(i32),
+    }
+
+    #[rewrite(main)]
+    #[test]
+    fn test() {
+        let x0 = enwrap!(CompactFoo::Bar, 1);
+        let _f = enwrap!(CompactFoo::Baz, enwrap!(CompactBaz::Qux, 2));
     }
 }

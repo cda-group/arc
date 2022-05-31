@@ -5,7 +5,7 @@
 # ANCHOR: example
 task map(i, f): (o) {
     for x in i {
-        o ! f(x);
+        o.push(f(x));
     }
 }
 # ANCHOR_END: example

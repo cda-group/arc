@@ -30,7 +30,6 @@ syn keyword arcOperator bor
 syn keyword arcOperator bxor
 syn keyword arcOperator is
 syn keyword arcOperator not
-syn keyword arcOperator in
 syn keyword arcOperator from
 syn keyword arcOperator where
 syn keyword arcOperator yield
@@ -42,7 +41,6 @@ syn keyword arcOperator join
 syn keyword arcOperator every
 syn keyword arcOperator desc
 syn keyword arcOperator reduce
-syn keyword arcOperator on
 syn keyword arcOperator receive
 syn keyword arcOperator of
 syn keyword arcOperator with
@@ -57,6 +55,7 @@ hi def link arcOperator Operator
 syn keyword arcStatement class
 syn keyword arcStatement instance
 syn keyword arcStatement def
+syn keyword arcStatement async
 syn keyword arcStatement task
 syn keyword arcStatement emit
 syn keyword arcStatement val
@@ -66,6 +65,11 @@ hi def link arcStatement Statement
 "=============================================================================
 " Conditionals
 "=============================================================================
+syn keyword arcConditional catch
+syn keyword arcConditional try
+syn keyword arcConditional finally
+syn keyword arcConditional on
+syn keyword arcConditional in
 hi def link arcConditional Conditional
 "=============================================================================
 " Reserved Keywords
@@ -96,5 +100,5 @@ hi def link arcConstant Constant
 "=============================================================================
 " Comments
 "=============================================================================
-syn match arcComment "#[^{].*"
+syn match arcComment "#[^{(].*"
 hi def link arcComment Comment

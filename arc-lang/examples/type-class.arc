@@ -3,13 +3,17 @@
 # RUN: arc -o %t-canon run %s -- -rustinclude %s.rust-tests -canonicalize
 
 # ANCHOR: class
-class Add<T> {
-    def add(T, T): T;
+class Foo[T] {
+    def bar(T): T;
 }
 # ANCHOR_END: class
 
 # ANCHOR: instance
-instance Add<#{sum:i32}> {
-    def add(l, r) = #{sum: l.sum + r.sum}
+instance[T] Foo[T] {
+    def bar(x) = x
 }
 # ANCHOR_END: instance
+
+def main() {
+    val x = bar(1);
+}

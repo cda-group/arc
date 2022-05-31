@@ -3,11 +3,7 @@
 # RUN: arc -o %t-canon run %s -- -rustinclude %s.rust-tests -canonicalize
 
 # ANCHOR: example
-task identity(source): (sink) {
-    loop {
-        on event in source => sink ! event;
-    }
-}
+task identity(i): (o) = loop { o.push(i.pull()); }
 # ANCHOR_END: example
 
 def main() {}

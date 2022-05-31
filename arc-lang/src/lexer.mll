@@ -1,18 +1,18 @@
 {
   open Lexing
   open Token
+  open Error
+  open Utils
 
-  exception SyntaxError of string
-
-  let suffix_regex = (Str.regexp "[iufb].+")
+  let suffix_regex = (Str.regexp "[iuf].+")
 
   let prefix_suffix lexbuf =
     let s = Lexing.lexeme lexbuf in
     match (Str.full_split suffix_regex s) with
     | [Str.Text prefix; Str.Delim suffix] -> (prefix, suffix)
-    | _ -> raise (SyntaxError "Entered unreachable code")
+    | _ -> panic "Entered unreachable code"
 
-  let suffix lexbuf = prefix_suffix lexbuf |> snd
+  let loc lexbuf = Loc (Lexing.lexeme_start_p lexbuf, Lexing.lexeme_end_p lexbuf)
 
   let next_line lexbuf =
     let pos = lexbuf.lex_curr_p in
@@ -36,8 +36,6 @@ let unit = "unit"
 let datetime = int '-' int '-' int ('T' int ':' int ':' int)?
 let int_suffix = "i8" | "i16" | "i32" | "i64" | "i128" | "u8" | "u16" | "u32" | "u64" | "u128"
 let float_suffix = "f32" | "f64"
-let bool_suffix = "bool"
-let suffix = int_suffix | float_suffix | bool_suffix
 
 rule main =
   parse
@@ -46,12 +44,12 @@ rule main =
   | "["        { BrackL }
   | "]"        { BrackR }
   | "#{"       { PoundBraceL }
+  | "#("       { PoundParenL }
   | "{"        { BraceL }
   | "}"        { BraceR }
   | "<"        { AngleL }
   | ">"        { AngleR }
 (*= Operators ==============================================================*)
-  | "!"        { Bang }
   | "!="       { Neq }
   | "%"        { Percent }
   | "*"        { Star }
@@ -74,26 +72,15 @@ rule main =
   | "_"        { Underscore }
   | "|"        { Bar }
   | "@"        { AtSign }
-(*= Float extensions =======================================================*)
-  | "!=" suffix { NeqSuffix (suffix lexbuf) }
-  | "%" suffix  { PercentSuffix (suffix lexbuf) }
-  | "**" suffix { StarStarSuffix (suffix lexbuf) }
-  | "*" suffix  { StarSuffix (suffix lexbuf) }
-  | "+" suffix  { PlusSuffix (suffix lexbuf) }
-  | "-" suffix  { MinusSuffix (suffix lexbuf) }
-  | "/" suffix  { SlashSuffix (suffix lexbuf) }
-  | "<" suffix  { LtSuffix (suffix lexbuf) }
-  | "<=" suffix { LeqSuffix (suffix lexbuf) }
-  | "==" suffix { EqEqSuffix (suffix lexbuf) }
-  | ">" suffix  { GtSuffix (suffix lexbuf) }
-  | ">=" suffix { GeqSuffix (suffix lexbuf) }
 (*= Keywords ================================================================*)
   | "and"      { And }
   | "as"       { As }
+  | "async"    { Async }
   | "break"    { Break }
   | "band"     { Band }
   | "bor"      { Bor }
   | "bxor"     { Bxor }
+  | "catch"    { Catch }
   | "class"    { Class }
   | "continue" { Continue }
   | "def"      { Def }
@@ -102,6 +89,7 @@ rule main =
   | "else"     { Else }
   | "enum"     { Enum }
   | "extern"   { Extern }
+  | "finally"  { Finally }
   | "for"      { For }
   | "from"     { From }
   | "fun"      { Fun }
@@ -113,15 +101,18 @@ rule main =
   | "loop"     { Loop }
   | "match"    { Match }
   | "mod"      { Mod }
+  | "neg"      { Neg }
   | "not"      { Not }
   | "on"       { On }
   | "or"       { Or }
   | "order"    { Or }
   | "of"       { Of }
   | "return"   { Return }
-  | "reduce"   { Reduce }
+  | "compute"  { Compute }
   | "step"     { Step }
   | "task"     { Task }
+  | "throw"    { Throw }
+  | "try"      { Try }
   | "type"     { Type }
   | "val"      { Val }
   | "var"      { Var }
@@ -145,25 +136,25 @@ rule main =
   | name       { Name (Lexing.lexeme lexbuf) }
   | int        { Int (int_of_string (Lexing.lexeme lexbuf)) }
   | float      { Float (float_of_string (Lexing.lexeme lexbuf)) }
-  | percentage { Float (float_of_string (Lexing.sub_lexeme lexbuf lexbuf.lex_start_pos (lexbuf.lex_curr_pos-1)) /. 100.0) }
   | int int_suffix {
     let (p, s) = prefix_suffix lexbuf in
     IntSuffix ((int_of_string p), s) }
   | float float_suffix {
     let (p, s) = prefix_suffix lexbuf in
     FloatSuffix ((float_of_string p), s) }
+  | percentage { Float (float_of_string (Lexing.sub_lexeme lexbuf lexbuf.lex_start_pos (lexbuf.lex_curr_pos-1)) /. 100.0) }
   | char       { Char (Lexing.lexeme_char lexbuf 1) }
   | '"'        { string (Buffer.create 17) lexbuf }
   | datetime   { String (Lexing.lexeme lexbuf) }
-  | '#'        { line_comment lexbuf; main lexbuf }
+  | '#'        { line_comment lexbuf }
   | whitespace { main lexbuf }
   | newline    { next_line lexbuf; main lexbuf }
-  | _          { raise (SyntaxError ("Unexpected char: '" ^ (Lexing.lexeme lexbuf) ^ "'")) }
+  | _          { raise (LexingError (loc lexbuf, "Unexpected char: '" ^ (Lexing.lexeme lexbuf) ^ "'")) }
   | eof        { Eof }
 
 and line_comment =
   parse
-  | newline { () }
+  | newline { next_line lexbuf; main lexbuf }
   | _ { line_comment lexbuf }
 
 and string buf =
@@ -180,5 +171,5 @@ and string buf =
     { Buffer.add_string buf (Lexing.lexeme lexbuf);
       string buf lexbuf
     }
-  | _ { raise (SyntaxError ("Illegal string character: " ^ Lexing.lexeme lexbuf)) }
-  | eof { raise (SyntaxError ("String is not terminated")) }
+  | _ { raise (LexingError (loc lexbuf, "Illegal string character: " ^ Lexing.lexeme lexbuf)) }
+  | eof { raise (LexingError (loc lexbuf, "String is not terminated")) }

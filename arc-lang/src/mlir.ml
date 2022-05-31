@@ -1,79 +1,59 @@
-type mlir = (path * item) list
+open Error
+
+type mlir = (symbol * item) list
 and names = name list
 and name = string
-and path = name
+and value = name
+and symbol = name
 and 't fields = 't field list
 and 't field = name * 't
-and ops = op list
-and op = param option * expr
+and 't variants = 't variant list
+and 't variant = name * 't
+and ssas = ssa list
+and ssa = param option * op
 and args = arg list
-and arg = name * ty
+and arg = value * ty
 and params = param list
-and param = name * ty
-and block = ops
+and param = value * ty
+and block = ssas
+and async = bool
 and item =
-  | IAssign     of ty * block
-  | IExternFunc of name * params * ty
-  | IFunc       of params * ty option * block
-  | ITask       of params * params * block
+  | IExternFunc of loc * symbol * async * params * ty
+  | IFunc       of loc * params * ty option * block
 and tys = ty list
 and ty =
   | TFunc    of tys * ty
   | TRecord  of ty fields
   | TEnum    of ty fields
-  | TAdt     of path
-  | TGAdt    of path * tys
-  | TStream  of ty
+  | TAdt     of name * tys
   | TNative  of name
-and num =
-  | NFlt
-  | NInt
-and eq =
-  | EqFlt
-  | EqInt
-  | EqBool
-and binop =
-  | BAdd  of num
-  | BAnd
-  | BBand
-  | BBor
-  | BBxor
-  | BDiv  of num
-  | BEqu  of eq
-  | BGeq  of num
-  | BGt   of num
-  | BLeq  of num
-  | BLt   of num
-  | BMod  of num
-  | BMul  of num
-  | BMut
-  | BNeq  of eq
-  | BOr
-  | BPow  of num
-  | BSub  of num
-  | BXor
-and expr =
-  | EAccess   of arg * name
-  | EUpdate   of arg * name * arg
-  | ECall     of arg * args
-  | EEmit     of arg * arg
-  | EEnwrap   of path * arg option
-  | EIf       of arg * block * block
-  | EIs       of path * arg
-  | EConst    of const
-  | ELoop     of block
-  | ERecord   of names * tys
-  | EReceive  of arg
-  | EUnwrap   of path * arg
-  | EReturn   of arg option
-  | EBreak    of arg option
-  | EContinue
-  | EYield
-  | EResult   of arg option
-  | ENoop
+and ops = op list
+and op =
+  | OAccess   of loc * arg * name
+  | OUpdate   of loc * arg * name * arg
+  | OCallExpr of loc * arg * args
+  | OCallItem of loc * symbol * args
+  | OEnwrap   of loc * name * arg option
+  | OIf       of loc * arg * block * block
+  | OCheck    of loc * name * arg
+  | OConst    of loc * const
+  | OLoop     of loc * block
+  | ORecord   of loc * names * tys
+  | OUnwrap   of loc * name * arg
+  | OReturn   of loc * arg option
+  | OBreak    of loc * arg option
+  | OContinue of loc
+  | OYield    of loc
+  | OResult   of loc * arg option
+  | OSpawn    of loc * symbol * args
 and const =
   | CBool  of bool
-  | CFun   of path
+  | CFun   of symbol
   | CInt   of int
   | CFloat of float
   | CAdt   of string
+
+let item_loc i =
+  match i with
+  | IExternFunc (i, _, _, _, _) -> i
+  | IFunc       (i, _, _, _) -> i

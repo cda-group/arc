@@ -1,20 +1,29 @@
-pub mod erased;
-pub mod functions;
-pub mod garbage;
-pub mod primitives;
-pub mod strings;
-pub mod vectors;
+pub mod cells;
+pub mod channels;
 #[cfg(feature = "dataframes")]
 pub mod dataframe;
+pub mod unsafe_channels;
+pub mod atomic_channel;
+// pub mod erased;
+pub mod dicts;
+pub mod functions;
+pub mod gc;
+pub mod primitives;
+pub mod serde;
 pub mod series;
-pub mod channels;
-pub mod cells;
+pub mod strings;
+pub mod vectors;
 
-use crate::data::garbage::Garbage;
-use serde_traitobject::Deserialize as DynDeserialize;
-use serde_traitobject::Serialize as DynSerialize;
+// pub mod deserialiser;
+// pub mod error;
+// pub mod serialiser;
 
-use comet::gc_base::GcBase;
+use std::collections::HashMap;
+use std::collections::HashSet;
+
+// use crate::data::serde::DynSerde;
+use crate::data::serde::Serde;
+
 use dyn_clone::DynClone;
 
 use std::fmt::Debug;
@@ -22,50 +31,16 @@ use std::hash::Hash;
 
 use crate::prelude::*;
 
-pub trait Concrete {
-    type Abstract;
+// pub trait DynData: Send + Sync + Unpin + DynClone + Trace + Debug + DynSerde {}
+// impl<T> DynData for T where T: Send + Sync + Unpin + DynClone + Trace + Debug + DynSerde {}
+
+pub trait Data: Sized + Send + Sync + Unpin + Trace + Debug + Serde + Debug + Clone + Copy {}
+impl<T> Data for T where
+    T: Sized + Send + Sync + Unpin + Trace + Debug + Serde + Debug + Clone + Copy
+{
 }
 
-pub trait Abstract {
-    type Concrete;
-}
+pub trait Key: Data + Eq + Hash {}
+impl<T> Key for T where T: Data + Eq + Hash {}
 
-pub trait DynSendable: AsyncSafe + DynClone + DynSerialize + DynDeserialize {
-    type T: Sharable;
-    fn into_sharable(&self, ctx: Context) -> Self::T;
-}
-
-pub trait DynSharable: AsyncSafe + DynClone + Garbage + Debug {
-    type T: Sendable;
-    fn into_sendable(&self, ctx: Context) -> Self::T;
-}
-
-pub trait AsyncSafe: Send + Sync + Unpin {}
-impl<T> AsyncSafe for T where T: Send + Sync + Unpin {}
-
-pub trait Sendable: Sized + DynSendable + Clone + Serialize + DeserializeOwned {}
-pub trait Sharable: Sized + DynSharable + Clone {}
-pub trait DataItem: Sized + Copy + Debug + AsyncSafe {}
-
-impl<T> Sharable for T where T: Sized + DynSharable + Clone {}
-impl<T> Sendable for T where T: Sized + DynSendable + Clone + Serialize + DeserializeOwned {}
-impl<T> DataItem for T where T: Sized + Copy + Debug + AsyncSafe {}
-
-dyn_clone::clone_trait_object!(<T> DynSharable<T = T>);
-dyn_clone::clone_trait_object!(<T> DynSendable<T = T>);
-
-#[macro_export]
-macro_rules! convert_reflexive {
-    {$({$($impl_generics:tt)+})* $ty:ty $({$($where_clause:tt)+})*} => {
-        impl $(<$($impl_generics)+>)* DynSharable for $ty $($($where_clause)+)* {
-            type T = Self;
-            fn into_sendable(&self, _: Context) -> Self { self.clone() }
-        }
-        impl $(<$($impl_generics)+>)* DynSendable for $ty $($($where_clause)+)* {
-            type T = Self;
-            fn into_sharable(&self, _: Context) -> Self { self.clone() }
-        }
-    }
-}
-
-pub use convert_reflexive;
+// dyn_clone::clone_trait_object!(DynData);

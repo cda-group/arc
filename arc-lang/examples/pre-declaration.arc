@@ -3,7 +3,7 @@
 # RUN: arc -o %t-canon run %s -- -rustinclude %s.rust-tests -canonicalize
 
 # ANCHOR: example
-def add(a: i32, b: i32): i32;
+def add(i32, i32): i32;
 
 def add(a, b) = a + b
 # ANCHOR_END: example

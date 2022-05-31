@@ -5,16 +5,12 @@
 # ANCHOR: example
 mod foo {
     mod bar {
-        val baz = 3
-        def relative() = baz
-        def absolute() = ::foo::bar::baz
+        val baz = 3;
+        # def qux() = baz
     }
-    def relative() = bar::baz
-    def absolute() = ::foo::bar::baz
+    def qux() = bar::baz
 }
-
-def relative() = foo::bar::baz
-def absolute() = ::foo::bar::baz
+def qux() = foo::bar::baz
 # ANCHOR_END: example
 
 def main() {}

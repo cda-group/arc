@@ -4,12 +4,12 @@ type token =
   | BrackL
   | BrackR
   | PoundBraceL
+  | PoundParenL
   | BraceL
   | BraceR
   | AngleL
   | AngleR
 (*= Operators ==============================================================*)
-  | Bang
   | Neq
   | Percent
   | Star
@@ -32,26 +32,15 @@ type token =
   | AtSign
   | Underscore
   | Bar
-(*= Float extensions =======================================================*)
-  | EqEqSuffix of string
-  | GeqSuffix of string
-  | GtSuffix of string
-  | LeqSuffix of string
-  | LtSuffix of string
-  | MinusSuffix of string
-  | NeqSuffix of string
-  | PercentSuffix of string
-  | PlusSuffix of string
-  | SlashSuffix of string
-  | StarSuffix of string
-  | StarStarSuffix of string
 (*= Keywords ================================================================*)
   | And
   | As
+  | Async
   | Break
   | Band
   | Bor
   | Bxor
+  | Catch
   | Class
   | Continue
   | Def
@@ -60,6 +49,7 @@ type token =
   | Else
   | Enum
   | Extern
+  | Finally
   | For
   | From
   | Fun
@@ -71,15 +61,18 @@ type token =
   | Loop
   | Match
   | Mod
+  | Neg
   | Not
   | On
   | Or
   | Of
   | Order
   | Return
-  | Reduce
+  | Compute
   | Step
   | Task
+  | Throw
+  | Try
   | Type
   | Val
   | Var
@@ -93,8 +86,8 @@ type token =
   | Name of string
   | Int of int
   | IntSuffix of (int * Ast.int_suffix)
-  | FloatSuffix of (float * Ast.float_suffix)
   | Float of float
+  | FloatSuffix of (float * Ast.float_suffix)
   | Bool of bool
   | Char of char
   | String of string

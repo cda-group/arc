@@ -10,7 +10,7 @@ def main() {
     val rect = #{y:10|line};
     val cube = #{z:20|rect};
 
-    area(line); # ERROR
+    # area(line); # ERROR
     area(rect); # OK
     area(cube); # OK
 }
