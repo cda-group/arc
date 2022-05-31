@@ -412,7 +412,10 @@ void RustExtFuncOp::writeRust(RustPrinterStream &PS) {
     return;
 
   PS << (*this)->getAttrOfType<StringAttr>("rust.annotation").getValue()
-     << "\npub fn " << getName() << "(";
+     << "\npub ";
+  if ((*this)->hasAttr("rust.async"))
+    PS << "async ";
+  PS << "fn " << getName() << "(";
 
   FunctionType fType = getFunctionType();
 
