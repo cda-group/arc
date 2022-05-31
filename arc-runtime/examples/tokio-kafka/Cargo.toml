@@ -1,0 +1,18 @@
+[package]
+name = "tokio-kafka"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+futures           = { version = "0.3.21" }
+serde             = { version = "1.0.136", features = ["derive"] }
+serde_json        = { version = "1.0.79" }
+tokio             = { version = "1.17.0", features = ["full"] }
+tokio-serde       = { version = "0.8.0", features = ["json"] }
+tokio-stream      = { version = "0.1.8" }
+tokio-tungstenite = { version = "0.17.1" }
+tokio-util        = { version = "0.7.0", features = ["full"] }
+rskafka           = { version = "0.2.0" }
+rdkafka           = { version = "0.28.0" }
