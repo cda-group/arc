@@ -304,6 +304,11 @@ public:
     return *this;
   }
 
+  RustPrinterStream &print(llvm::raw_ostream &o, types::RustGenericADTType t) {
+    t.printAsRust(o, *this);
+    return *this;
+  }
+
   void writeEnumDefiniton(types::RustEnumType t) {
     unsigned id = t.getEnumTypeId();
 
@@ -390,6 +395,11 @@ public:
     }
     if (types::RustTupleType rt = ty.dyn_cast<types::RustTupleType>()) {
       rt.printAsRust(*this);
+      return s;
+    }
+    if (types::RustGenericADTType rt =
+            ty.dyn_cast<types::RustGenericADTType>()) {
+      this->print(s, rt);
       return s;
     }
     s << "unhandled type";

@@ -31,4 +31,9 @@ module @arctorustadt {
     -> !arc.generic_adt<"crate::arctorustadt::tests::sharable_Bar::Bar", ui32, !arc.adt<"i32">> {
     return %in : !arc.generic_adt<"crate::arctorustadt::tests::sharable_Bar::Bar", ui32, !arc.adt<"i32">>
   }
+
+  func.func @ok9(%in : !arc.struct<foo : !arc.generic_adt<"crate::arctorustadt::tests::sharable_Bar::Bar", ui32, !arc.adt<"i32">>>)
+    -> !arc.struct<foo : !arc.generic_adt<"crate::arctorustadt::tests::sharable_Bar::Bar", ui32, !arc.adt<"i32">>> {
+    return %in : !arc.struct<foo : !arc.generic_adt<"crate::arctorustadt::tests::sharable_Bar::Bar", ui32, !arc.adt<"i32">>>
+  }
 }

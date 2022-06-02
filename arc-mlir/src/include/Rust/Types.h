@@ -172,7 +172,7 @@ public:
   using Base::Base;
 
   void print(DialectAsmPrinter &os) const;
-  rust::RustPrinterStream &printAsRust(rust::RustPrinterStream &os) const;
+  raw_ostream &printAsRust(raw_ostream &os, rust::RustPrinterStream &ps) const;
   raw_ostream &printAsRustNamedType(raw_ostream &os) const;
   std::string getRustType() const;
 
