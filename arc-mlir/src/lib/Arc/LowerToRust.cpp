@@ -999,7 +999,7 @@ RustTypeConverter::RustTypeConverter(MLIRContext *ctx)
 }
 
 Type RustTypeConverter::convertADTType(arc::types::ADTType type) {
-  return rust::types::RustType::get(type.getContext(), type.getTypeName());
+  return rust::types::RustGenericADTType::get(Dialect, type.getTypeName(), {});
 }
 
 Type RustTypeConverter::convertADTTemplateType(

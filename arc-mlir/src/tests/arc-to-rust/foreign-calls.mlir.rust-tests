@@ -12,6 +12,6 @@ pub fn callee_si32_x2_si32(a : i32, b : i32) -> i32 {
 }
 
 #[rewrite]
-pub fn callee_struct(x : Struct3fooi32End) -> Struct3fooi32End {
+pub fn callee_struct(x : Struct3foo3i32End) -> Struct3foo3i32End {
     return x
 }
