@@ -67,7 +67,12 @@ class RustPrinterStream {
   std::map<std::string, std::string> CrateDirectives;
 
   DenseMap<Value, std::string> ValueAliases;
-  DenseMap<Type, std::string> TypeAliases;
+
+  // This maps function types to their mangled names. In contrast to
+  // the other types, which caches the mangled name in their type
+  // storage class, we have to maintain the mapping in the
+  // RustPrinterStream as we don't want to extend the upstream class.
+  DenseMap<Type, std::string> FunctionTypes;
 
   std::string ModuleName;
   std::string Includefile;
@@ -118,8 +123,8 @@ public:
           Value v = t->front().getArgument(i);
           if (i != 0)
             o << ", ";
-          o << "v" << std::to_string(Value2ID[v]) << ": "
-            << getTypeString(v.getType());
+          o << "v" << std::to_string(Value2ID[v]) << ": ";
+          printType(o, v.getType());
         }
         o << "), ";
       }
@@ -156,8 +161,6 @@ public:
     ValueAliases[v] = identifier;
   }
 
-  void addAlias(Type t, std::string identifier) { TypeAliases[t] = identifier; }
-
   void addTask(RustFuncOp *task) { DeclaredTasks.insert(task); }
 
   void clearAliases() { ValueAliases.clear(); }
@@ -179,50 +182,7 @@ public:
       return "val!(v" + std::to_string(id) + ")";
   }
 
-  std::string getConstant(RustConstantOp v) {
-    StringAttr str = v.getValue().dyn_cast<StringAttr>();
-    if (FunctionType fType = v.getType().dyn_cast<FunctionType>()) {
-      // Although a function reference is a constant in MLIR it is not
-      // in our Rust dialect, so we need to handle them specially.
-
-      if (Operation *target = SymbolTable::lookupNearestSymbolFrom(v, str)) {
-        if (target->hasAttr("arc.rust_name"))
-          str = target->getAttrOfType<StringAttr>("arc.rust_name");
-        if (target->hasAttr("rust.declare"))
-          DeclaredFunctions.insert(target);
-      }
-
-      auto found = Value2ID.find(v);
-      int id = 0;
-      if (found == Value2ID.end()) {
-        id = NextID++;
-        Value2ID[v] = id;
-        Body << "let v" << id << " : ";
-
-        printAsRust(Body, fType) << " = function!(" << str.getValue() << ");\n";
-      } else
-        id = found->second;
-      return "v" + std::to_string(id);
-    }
-    auto found = Value2ID.find(v);
-    int id = 0;
-    if (found == Value2ID.end()) {
-      id = --NextConstID;
-      Value2ID[v] = id;
-    } else
-      id = found->second;
-    types::RustType cType = v.getType().cast<types::RustType>();
-    Constants << "const C" << -id << " : ";
-    cType.printAsRust(Constants) << " = " << str.getValue() << ";\n";
-    return "C" + std::to_string(-id);
-  }
-
-  std::string getTypeString(Type t) {
-    auto alias = TypeAliases.find(t);
-    if (alias == TypeAliases.end())
-      return rust::types::getTypeString(t);
-    return alias->second;
-  }
+  std::string getConstant(RustConstantOp v);
 
   RustPrinterStream &print(Value v) {
     Body << get(v);
@@ -254,86 +214,7 @@ public:
     return *this;
   }
 
-  RustPrinterStream &print(llvm::raw_ostream &o, types::RustType t) {
-    if (printTypeAlias(o, t))
-      return *this;
-    t.printAsRust(o);
-    return *this;
-  }
-
-  RustPrinterStream &print(llvm::raw_ostream &o, types::RustEnumType t) {
-    if (printTypeAlias(o, t))
-      return *this;
-    writeEnumDefiniton(t);
-    t.printAsRustNamedType(o);
-    return *this;
-  }
-
-  RustPrinterStream &print(llvm::raw_ostream &o, types::RustStructType t) {
-    if (printTypeAlias(o, t))
-      return *this;
-    writeStructDefiniton(t);
-    t.printAsRustNamedType(o);
-    return *this;
-  }
-
-  RustPrinterStream &print(llvm::raw_ostream &o, types::RustStreamType t) {
-    if (printTypeAlias(o, t))
-      return *this;
-    printAsRust(o, t);
-    return *this;
-  }
-
-  RustPrinterStream &print(llvm::raw_ostream &o, types::RustSinkStreamType t) {
-    if (printTypeAlias(o, t))
-      return *this;
-    printAsRust(o, t);
-    return *this;
-  }
-
-  RustPrinterStream &print(llvm::raw_ostream &o,
-                           types::RustSourceStreamType t) {
-    if (printTypeAlias(o, t))
-      return *this;
-    printAsRust(o, t);
-    return *this;
-  }
-
-  RustPrinterStream &print(llvm::raw_ostream &o, FunctionType t) {
-    printAsRust(o, t);
-    return *this;
-  }
-
-  RustPrinterStream &print(llvm::raw_ostream &o, types::RustGenericADTType t) {
-    t.printAsRust(o, *this);
-    return *this;
-  }
-
-  void writeEnumDefiniton(types::RustEnumType t) {
-    unsigned id = t.getEnumTypeId();
-
-    // Only output an enum definition once
-    if (OutputEnumTypes.find(id) == OutputEnumTypes.end()) {
-      OutputEnumTypes.insert(id);
-      t.printAsRust(*this);
-    }
-  }
-
-  void writeStructDefiniton(types::RustStructType t) {
-    unsigned id = t.getStructTypeId();
-
-    // Only output a struct definition once
-    if (OutputStructTypes.find(id) == OutputStructTypes.end()) {
-      OutputStructTypes.insert(id);
-      t.printAsRust(*this);
-    }
-  }
-
-  template <typename T>
-  RustPrinterStream &print(llvm::raw_ostream &o, T t) {
-    o << t;
-    return *this;
-  }
+  void printType(llvm::raw_ostream &o, Type t);
 
   void registerDependency(std::string key, std::string value) {
     CrateDependencies[key] = value;
@@ -343,87 +224,17 @@ public:
     CrateDirectives[key] = value;
   }
 
-  llvm::raw_ostream &printAsRust(llvm::raw_ostream &s, const Type ty) {
-    if (FunctionType fType = ty.dyn_cast<FunctionType>()) {
-      s << "function!((";
-      for (Type t : fType.getInputs()) {
-        printAsRust(s, t) << ",";
-      }
-      s << ")";
-      if (fType.getNumResults()) {
-        s << " -> ";
-        printAsRust(s, fType.getResult(0));
-      }
-      s << ")";
-      return s;
-    }
-    if (types::RustType rt = ty.dyn_cast<types::RustType>()) {
-      rt.printAsRust(s);
-      return s;
-    }
-    if (types::RustEnumType rt = ty.dyn_cast<types::RustEnumType>()) {
-      this->print(s, rt);
-      return s;
-    }
-    if (types::RustStreamType rt = ty.dyn_cast<types::RustStreamType>()) {
-      s << "Stream<<";
-      printAsRust(s, rt.getType());
-      s << " as Convert>::T>";
-      return s;
-    }
-    if (types::RustSinkStreamType rt =
-            ty.dyn_cast<types::RustSinkStreamType>()) {
-      s << "Pushable<";
-      printAsRust(s, rt.getType());
-      s << ">";
-      return s;
-    }
-    if (types::RustSourceStreamType rt =
-            ty.dyn_cast<types::RustSourceStreamType>()) {
-      s << "Pullable<";
-      printAsRust(s, rt.getType());
-      s << ">";
-      return s;
-    }
-    if (types::RustStructType rt = ty.dyn_cast<types::RustStructType>()) {
-      this->print(s, rt);
-      return s;
-    }
-    if (types::RustTensorType rt = ty.dyn_cast<types::RustTensorType>()) {
-      rt.printAsRust(*this);
-      return s;
-    }
-    if (types::RustTupleType rt = ty.dyn_cast<types::RustTupleType>()) {
-      rt.printAsRust(*this);
-      return s;
-    }
-    if (types::RustGenericADTType rt =
-            ty.dyn_cast<types::RustGenericADTType>()) {
-      this->print(s, rt);
-      return s;
-    }
-    s << "unhandled type";
-    return s;
-  }
-
-private:
-  bool printTypeAlias(llvm::raw_ostream &o, Type t) {
-    auto alias = TypeAliases.find(t);
-    if (alias == TypeAliases.end())
-      return false;
-    o << alias->second;
-    return true;
-  }
+  std::string getMangledName(FunctionType fTy);
+  void printAsRust(llvm::raw_ostream &o, FunctionType fTy);
 };
 
 RustPrinterStream &operator<<(RustPrinterStream &os, const Value &v);
 
-RustPrinterStream &operator<<(RustPrinterStream &os, const types::RustType &t);
+RustPrinterStream &operator<<(RustPrinterStream &os, const Type &t);
 
-template <typename T>
-RustPrinterStream &operator<<(RustPrinterStream &os, const T &t) {
-  return os.print(os.getBodyStream(), t);
-}
+RustPrinterStream &operator<<(RustPrinterStream &os, const llvm::StringRef &s);
+
+RustPrinterStream &operator<<(RustPrinterStream &os, uint64_t u);
 
 } // namespace rust
 

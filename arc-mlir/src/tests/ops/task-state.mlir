@@ -1,3 +1,4 @@
+// RUN: arc-mlir %s | arc-mlir
 // RUN: arc-mlir %s
 //!
 //! ```txt

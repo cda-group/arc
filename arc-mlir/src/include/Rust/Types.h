@@ -61,11 +61,10 @@ public:
   using Base::Base;
 
   static RustType get(MLIRContext *context, StringRef type);
-  void print(DialectAsmPrinter &os) const;
-  raw_ostream &printAsRust(raw_ostream &os) const;
-  StringRef getRustType() const;
+  void printAsMLIR(DialectAsmPrinter &os) const;
+  void printAsRust(llvm::raw_ostream &o, rust::RustPrinterStream &ps);
+
   bool isBool() const;
-  bool isUnit() const;
 
   static RustType getFloatTy(RustDialect *dialect);
   static RustType getDoubleTy(RustDialect *dialect);
@@ -75,7 +74,7 @@ public:
   typedef std::pair<mlir::StringAttr, Type> EnumVariantTy;
   typedef std::pair<mlir::StringAttr, Type> StructFieldTy;
 
-  std::string getSignature() const;
+  std::string getMangledName(rust::RustPrinterStream &ps);
 };
 
 class RustStreamType
@@ -83,14 +82,14 @@ class RustStreamType
 public:
   using Base::Base;
 
-  void print(DialectAsmPrinter &os) const;
-  rust::RustPrinterStream &printAsRust(rust::RustPrinterStream &os) const;
-  std::string getRustType() const;
+  void printAsMLIR(DialectAsmPrinter &os) const;
+  void printAsRust(llvm::raw_ostream &o, rust::RustPrinterStream &os);
+
   Type getType() const;
 
   static RustStreamType get(RustDialect *dialect, Type item);
-  void emitNestedTypedefs(rust::RustPrinterStream &ps) const;
-  std::string getSignature() const;
+
+  std::string getMangledName(rust::RustPrinterStream &ps);
 };
 
 class RustSinkStreamType : public Type::TypeBase<RustSinkStreamType, Type,
@@ -98,14 +97,14 @@ class RustSinkStreamType : public Type::TypeBase<RustSinkStreamType, Type,
 public:
   using Base::Base;
 
-  void print(DialectAsmPrinter &os) const;
-  rust::RustPrinterStream &printAsRust(rust::RustPrinterStream &os) const;
-  std::string getRustType() const;
+  void printAsMLIR(DialectAsmPrinter &os) const;
+  void printAsRust(llvm::raw_ostream &o, rust::RustPrinterStream &os);
+
   Type getType() const;
 
   static RustSinkStreamType get(RustDialect *dialect, Type item);
-  void emitNestedTypedefs(rust::RustPrinterStream &ps) const;
-  std::string getSignature() const;
+
+  std::string getMangledName(rust::RustPrinterStream &ps);
 };
 
 class RustSourceStreamType
@@ -114,14 +113,14 @@ class RustSourceStreamType
 public:
   using Base::Base;
 
-  void print(DialectAsmPrinter &os) const;
-  rust::RustPrinterStream &printAsRust(rust::RustPrinterStream &os) const;
-  std::string getRustType() const;
+  void printAsMLIR(DialectAsmPrinter &os) const;
+  void printAsRust(llvm::raw_ostream &o, rust::RustPrinterStream &os);
+
   Type getType() const;
 
   static RustSourceStreamType get(RustDialect *dialect, Type item);
-  void emitNestedTypedefs(rust::RustPrinterStream &ps) const;
-  std::string getSignature() const;
+
+  std::string getMangledName(rust::RustPrinterStream &ps);
 };
 
 class RustStructType
@@ -129,10 +128,9 @@ class RustStructType
 public:
   using Base::Base;
 
-  void print(DialectAsmPrinter &os) const;
-  rust::RustPrinterStream &printAsRust(rust::RustPrinterStream &os) const;
-  raw_ostream &printAsRustNamedType(raw_ostream &os) const;
-  std::string getRustType() const;
+  void printAsMLIR(DialectAsmPrinter &os) const;
+  void printAsRust(llvm::raw_ostream &o, rust::RustPrinterStream &os);
+
   unsigned getStructTypeId() const;
   unsigned getNumFields() const;
   StringRef getFieldName(unsigned idx) const;
@@ -141,8 +139,7 @@ public:
   typedef std::pair<mlir::StringAttr, Type> StructFieldTy;
   static RustStructType get(RustDialect *dialect,
                             ArrayRef<StructFieldTy> fields);
-  void emitNestedTypedefs(rust::RustPrinterStream &ps) const;
-  std::string getSignature() const;
+  std::string getMangledName(rust::RustPrinterStream &ps);
 };
 
 class RustEnumType
@@ -150,10 +147,9 @@ class RustEnumType
 public:
   using Base::Base;
 
-  void print(DialectAsmPrinter &os) const;
-  rust::RustPrinterStream &printAsRust(rust::RustPrinterStream &os) const;
-  raw_ostream &printAsRustNamedType(raw_ostream &os) const;
-  std::string getRustType() const;
+  void printAsMLIR(DialectAsmPrinter &os) const;
+  void printAsRust(llvm::raw_ostream &o, rust::RustPrinterStream &os);
+
   unsigned getEnumTypeId() const;
   StringRef getVariantName(unsigned idx) const;
   Type getVariantType(unsigned idx) const;
@@ -162,8 +158,8 @@ public:
   typedef std::pair<mlir::StringAttr, Type> EnumVariantTy;
   static RustEnumType get(RustDialect *dialect,
                           ArrayRef<EnumVariantTy> variants);
-  void emitNestedTypedefs(rust::RustPrinterStream &ps) const;
-  std::string getSignature() const;
+
+  std::string getMangledName(rust::RustPrinterStream &ps);
 };
 
 class RustGenericADTType : public Type::TypeBase<RustGenericADTType, Type,
@@ -171,15 +167,13 @@ class RustGenericADTType : public Type::TypeBase<RustGenericADTType, Type,
 public:
   using Base::Base;
 
-  void print(DialectAsmPrinter &os) const;
-  raw_ostream &printAsRust(raw_ostream &os, rust::RustPrinterStream &ps) const;
-  raw_ostream &printAsRustNamedType(raw_ostream &os) const;
-  std::string getRustType() const;
+  void printAsMLIR(DialectAsmPrinter &os) const;
+  void printAsRust(llvm::raw_ostream &o, rust::RustPrinterStream &os);
 
   static RustGenericADTType get(RustDialect *dialect, StringRef name,
                                 ArrayRef<Type> parameters);
-  void emitNestedTypedefs(rust::RustPrinterStream &ps) const;
-  std::string getSignature() const;
+
+  std::string getMangledName(rust::RustPrinterStream &ps);
 };
 
 class RustTensorType
@@ -187,15 +181,14 @@ class RustTensorType
 public:
   using Base::Base;
 
-  void print(DialectAsmPrinter &os) const;
-  rust::RustPrinterStream &printAsRust(rust::RustPrinterStream &os) const;
-  std::string getRustType() const;
+  void printAsMLIR(DialectAsmPrinter &os) const;
+  void printAsRust(llvm::raw_ostream &o, rust::RustPrinterStream &os);
 
   static RustTensorType get(RustDialect *dialect, Type elementTy,
                             ArrayRef<int64_t> dimensions);
 
   ArrayRef<int64_t> getDimensions() const;
-  std::string getSignature() const;
+  std::string getMangledName(rust::RustPrinterStream &ps);
 };
 
 class RustTupleType
@@ -203,13 +196,11 @@ class RustTupleType
 public:
   using Base::Base;
 
-  void print(DialectAsmPrinter &os) const;
-  rust::RustPrinterStream &printAsRust(rust::RustPrinterStream &os) const;
-  std::string getRustType() const;
+  void printAsMLIR(DialectAsmPrinter &os) const;
+  void printAsRust(llvm::raw_ostream &o, rust::RustPrinterStream &os);
 
   static RustTupleType get(RustDialect *dialect, ArrayRef<Type> fields);
-  void emitNestedTypedefs(rust::RustPrinterStream &ps) const;
-  std::string getSignature() const;
+  std::string getMangledName(rust::RustPrinterStream &ps);
 };
 
 } // namespace types
