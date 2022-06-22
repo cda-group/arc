@@ -1565,35 +1565,42 @@ void EnumType::print(DialectAsmPrinter &os) const {
 // StructType
 //===----------------------------------------------------------------------===//
 struct StructTypeStorage : public mlir::TypeStorage {
-  using KeyTy = llvm::ArrayRef<StructType::FieldTy>;
+  using KeyTy = std::pair<bool, llvm::ArrayRef<StructType::FieldTy>>;
 
-  StructTypeStorage(llvm::ArrayRef<StructType::FieldTy> elementTypes)
-      : fields(elementTypes) {}
+  StructTypeStorage(bool isCompact,
+                    llvm::ArrayRef<StructType::FieldTy> elementTypes)
+      : isCompact(isCompact), fields(elementTypes) {}
 
-  bool operator==(const KeyTy &key) const { return key == fields; }
-
-  static llvm::hash_code hashKey(const KeyTy &key) {
-    return llvm::hash_value(key);
+  bool operator==(const KeyTy &key) const {
+    return key.first == isCompact && key.second == fields;
   }
 
-  static KeyTy getKey(llvm::ArrayRef<StructType::FieldTy> elementTypes) {
-    return KeyTy(elementTypes);
+  static llvm::hash_code hashKey(const KeyTy &key) {
+    return llvm::hash_combine(llvm::hash_value(key.first),
+                              llvm::hash_value(key.second));
+  }
+
+  static KeyTy getKey(bool isCompact,
+                      llvm::ArrayRef<StructType::FieldTy> elementTypes) {
+    return KeyTy(isCompact, elementTypes);
   }
 
   static StructTypeStorage *construct(mlir::TypeStorageAllocator &allocator,
                                       const KeyTy &key) {
-    llvm::ArrayRef<StructType::FieldTy> elementTypes = allocator.copyInto(key);
+    llvm::ArrayRef<StructType::FieldTy> elementTypes =
+        allocator.copyInto(key.second);
 
     return new (allocator.allocate<StructTypeStorage>())
-        StructTypeStorage(elementTypes);
+        StructTypeStorage(key.first, elementTypes);
   }
 
+  bool isCompact;
   llvm::ArrayRef<StructType::FieldTy> fields;
 };
 
-StructType StructType::get(mlir::MLIRContext *ctx,
+StructType StructType::get(mlir::MLIRContext *ctx, bool isCompact,
                            llvm::ArrayRef<StructType::FieldTy> elementTypes) {
-  return Base::get(ctx, elementTypes);
+  return Base::get(ctx, isCompact, elementTypes);
 }
 
 /// Returns the element types of this struct type.
@@ -1604,17 +1611,30 @@ llvm::ArrayRef<StructType::FieldTy> StructType::getFields() const {
 
 size_t StructType::getNumFields() const { return getFields().size(); }
 
+bool StructType::isCompact() const { return getImpl()->isCompact; }
+
 Type StructType::parse(DialectAsmParser &parser) {
+  bool isCompact = false;
+
   if (parser.parseLess())
     return nullptr;
+
+  if (!parser.parseOptionalLess())
+    isCompact = true;
+
   Builder &builder = parser.getBuilder();
 
   SmallVector<StructType::FieldTy, 3> elementTypes;
   while (true) {
     StringRef name;
 
-    if (succeeded(parser.parseOptionalGreater()))
-      return StructType::get(parser.getBuilder().getContext(), elementTypes);
+    if (succeeded(parser.parseOptionalGreater())) {
+      if (isCompact && parser.parseGreater())
+        return nullptr;
+
+      return StructType::get(parser.getBuilder().getContext(), isCompact,
+                             elementTypes);
+    }
 
     if (parser.parseKeyword(&name) || parser.parseColon())
       return nullptr;
@@ -1631,7 +1651,10 @@ Type StructType::parse(DialectAsmParser &parser) {
 
 void StructType::print(DialectAsmPrinter &os) const {
   // Print the struct type according to the parser format.
-  os << "struct<";
+  os << "struct";
+  if (isCompact())
+    os << "<";
+  os << "<";
   auto fields = getFields();
   for (unsigned i = 0; i < getNumFields(); i++) {
     if (i != 0)
@@ -1639,6 +1662,8 @@ void StructType::print(DialectAsmPrinter &os) const {
     os << fields[i].first.getValue() << " : " << fields[i].second;
   }
   os << '>';
+  if (isCompact())
+    os << ">";
 }
 
 } // namespace types

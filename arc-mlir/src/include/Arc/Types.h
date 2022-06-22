@@ -230,7 +230,7 @@ public:
 
   typedef std::pair<mlir::StringAttr, mlir::Type> FieldTy;
 
-  static StructType get(mlir::MLIRContext *ctx,
+  static StructType get(mlir::MLIRContext *ctx, bool isCompact,
                         llvm::ArrayRef<FieldTy> elementTypes);
 
   /// Returns the fields of this struct type.
@@ -238,6 +238,9 @@ public:
 
   /// Returns the number of fields held by this struct.
   size_t getNumFields() const;
+
+  // Returns true if this struct is compact
+  bool isCompact() const;
 
   static Type parse(DialectAsmParser &parser);
   void print(DialectAsmPrinter &os) const;
