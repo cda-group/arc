@@ -36,3 +36,14 @@ module @toplevel {
     return %in : !arc.struct<foo : i32, bar : f32>
   }
 }
+
+// -----
+
+module @toplevel {
+  func.func @bad13() -> !arc.struct<> {
+// expected-note@+1 {{prior use here}}
+    %r = arc.make_struct() : !arc.struct<<>>
+// expected-error@+1 {{use of value '%r' expects different type than prior uses: '!arc.struct<>' vs '!arc.struct<<>>'}}
+    return %r : !arc.struct<>
+  }
+}
