@@ -1285,23 +1285,28 @@ Type RustSourceStreamTypeStorage::getType() const { return item; }
 //===----------------------------------------------------------------------===//
 
 struct RustStructTypeStorage : public TypeStorage {
-  RustStructTypeStorage(ArrayRef<RustStructType::StructFieldTy> fields)
-      : structFields(fields.begin(), fields.end()) {}
+  RustStructTypeStorage(bool isCompact,
+                        ArrayRef<RustStructType::StructFieldTy> fields)
+      : structFields(fields.begin(), fields.end()), compact(isCompact) {}
 
   SmallVector<RustStructType::StructFieldTy, 4> structFields;
 
-  using KeyTy = ArrayRef<RustStructType::StructFieldTy>;
+  using KeyTy = std::pair<bool, ArrayRef<RustStructType::StructFieldTy>>;
 
-  bool operator==(const KeyTy &key) const { return key == KeyTy(structFields); }
+  bool operator==(const KeyTy &key) const {
+    KeyTy self(compact, structFields);
+    return key.first == self.first && key.second == self.second;
+  }
 
   static llvm::hash_code hashKey(const KeyTy &key) {
-    return llvm::hash_combine(key);
+    return llvm::hash_combine(llvm::hash_value(key.first),
+                              llvm::hash_value(key.second));
   }
 
   static RustStructTypeStorage *construct(TypeStorageAllocator &allocator,
                                           const KeyTy &key) {
     return new (allocator.allocate<RustStructTypeStorage>())
-        RustStructTypeStorage(key);
+        RustStructTypeStorage(key.first, key.second);
   }
 
   void printAsRust(llvm::raw_ostream &o, rust::RustPrinterStream &ps);
@@ -1311,20 +1316,24 @@ struct RustStructTypeStorage : public TypeStorage {
   unsigned getNumFields() const;
   StringRef getFieldName(unsigned idx) const;
   Type getFieldType(unsigned idx) const;
+  bool isCompact() const { return compact; }
 
   std::string getMangledName(rust::RustPrinterStream &ps);
 
 private:
+  bool compact;
   std::string mangledName;
 };
 
-RustStructType RustStructType::get(RustDialect *dialect,
+RustStructType RustStructType::get(RustDialect *dialect, bool isCompact,
                                    ArrayRef<StructFieldTy> fields) {
-  return Base::get(dialect->getContext(), fields);
+  return Base::get(dialect->getContext(), isCompact, fields);
 }
 
 void RustStructTypeStorage::printAsMLIR(DialectAsmPrinter &os) const {
   os << "struct<";
+  if (isCompact())
+    os << "<";
   for (unsigned i = 0; i < structFields.size(); i++) {
     if (i != 0)
       os << ", ";
@@ -1332,6 +1341,8 @@ void RustStructTypeStorage::printAsMLIR(DialectAsmPrinter &os) const {
     os << " : ";
     ::printAsMLIR(structFields[i].second, os);
   }
+  if (isCompact())
+    os << "<";
   os << ">";
 }
 
@@ -1368,6 +1379,8 @@ Type RustStructTypeStorage::getFieldType(unsigned idx) const {
   return structFields[idx].second;
 }
 
+bool RustStructType::isCompact() const { return getImpl()->isCompact(); }
+
 std::string RustStructType::getMangledName(rust::RustPrinterStream &ps) {
   return getImpl()->getMangledName(ps);
 }
@@ -1378,6 +1391,9 @@ std::string RustStructTypeStorage::getMangledName(rust::RustPrinterStream &ps) {
 
   std::string buffer;
   llvm::raw_string_ostream mangled(buffer);
+
+  if (isCompact())
+    mangled << "Compact";
   mangled << "Struct";
 
   for (auto &f : structFields) {
@@ -1391,7 +1407,10 @@ std::string RustStructTypeStorage::getMangledName(rust::RustPrinterStream &ps) {
 
   llvm::raw_ostream &tyStream = ps.getNamedTypesStream();
 
-  tyStream << "#[rewrite]\n";
+  if (isCompact())
+    tyStream << "#[rewrite(compact)]\n";
+  else
+    tyStream << "#[rewrite]\n";
   tyStream << "pub struct " << mangledName << " {\n  ";
 
   for (unsigned i = 0; i < structFields.size(); i++) {
