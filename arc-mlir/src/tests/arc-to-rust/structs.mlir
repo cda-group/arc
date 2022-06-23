@@ -85,5 +85,16 @@ module @arctoruststructs {
     return %r : !arc.struct<>
   }
 
+  func.func @ok13() -> !arc.struct<<>> {
+    %r = arc.make_struct() : !arc.struct<<>>
+    return %r : !arc.struct<<>>
+  }
+
+  func.func @ok14() -> !arc.struct<<a : si32>> {
+    %a = arc.constant 4 : si32
+    %r = arc.make_struct(%a : si32) : !arc.struct<<a : si32>>
+    return %r : !arc.struct<<a : si32>>
+  }
+
 
 }

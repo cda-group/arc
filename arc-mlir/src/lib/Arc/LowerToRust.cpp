@@ -1075,7 +1075,7 @@ Type RustTypeConverter::convertStructType(arc::types::StructType type) {
     Type t = convertType(f.second);
     fields.push_back(std::make_pair(f.first, t));
   }
-  return rust::types::RustStructType::get(Dialect, fields);
+  return rust::types::RustStructType::get(Dialect, type.isCompact(), fields);
 }
 
 Type RustTypeConverter::convertTensorType(RankedTensorType type) {

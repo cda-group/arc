@@ -135,9 +135,10 @@ public:
   unsigned getNumFields() const;
   StringRef getFieldName(unsigned idx) const;
   Type getFieldType(unsigned idx) const;
+  bool isCompact() const;
 
   typedef std::pair<mlir::StringAttr, Type> StructFieldTy;
-  static RustStructType get(RustDialect *dialect,
+  static RustStructType get(RustDialect *dialect, bool isCompact,
                             ArrayRef<StructFieldTy> fields);
   std::string getMangledName(rust::RustPrinterStream &ps);
 };
