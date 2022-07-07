@@ -23,10 +23,13 @@
 #ifndef ARC_DIALECT_H_
 #define ARC_DIALECT_H_
 
+#include <mlir/Dialect/Func/IR/FuncOps.h>
 #include <mlir/IR/Builders.h>
 #include <mlir/IR/BuiltinOps.h>
 #include <mlir/IR/Dialect.h>
+#include <mlir/IR/FunctionInterfaces.h>
 #include <mlir/IR/Operation.h>
+#include <mlir/Interfaces/CallInterfaces.h>
 #include <mlir/Interfaces/InferTypeOpInterface.h>
 #include <mlir/Interfaces/SideEffectInterfaces.h>
 
