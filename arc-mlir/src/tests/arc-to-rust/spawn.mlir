@@ -1,6 +1,6 @@
 // RUN: arc-mlir %s | arc-mlir
 // RUN: arc-mlir -canonicalize %s | arc-mlir
-
+// RUN: arc-mlir -canonicalize -arc-to-rust %s | FileCheck %s
 module @arctorustspawn {
 
   func.func @id(%in : !arc.stream.source<si32>,
@@ -26,6 +26,7 @@ module @arctorustspawn {
                     %out : !arc.stream.sink<si32>) {
        arc.spawn @id(%in, %out) : (!arc.stream.source<si32>,
                                    !arc.stream.sink<si32>) -> ()
+// CHECK: "rust.spawn"(%arg0, %arg1) {callee = @id} : (!rust<"<i32>">, !rust<"<i32>">) -> ()
        return
     }
 }

@@ -150,6 +150,19 @@ struct SCFLoopYieldOpLowering : public OpConversionPattern<scf::YieldOp> {
   };
 };
 
+struct SpawnOpLowering : public OpConversionPattern<arc::ArcSpawnOp> {
+  SpawnOpLowering(MLIRContext *ctx, RustTypeConverter &typeConverter)
+      : OpConversionPattern<arc::ArcSpawnOp>(typeConverter, ctx, 1) {}
+
+  LogicalResult
+  matchAndRewrite(arc::ArcSpawnOp o, OpAdaptor adaptor,
+                  ConversionPatternRewriter &rewriter) const final {
+    rewriter.replaceOpWithNewOp<rust::RustSpawnOp>(o, adaptor.callee(),
+                                                   adaptor.getOperands());
+    return success();
+  };
+};
+
 struct StdCallOpLowering : public OpConversionPattern<func::CallOp> {
   StdCallOpLowering(MLIRContext *ctx, RustTypeConverter &typeConverter)
       : OpConversionPattern<func::CallOp>(typeConverter, ctx, 1),
@@ -1327,6 +1340,7 @@ void ArcToRustLoweringPass::runOnOperation() {
   patterns.insert<ArithSelectOpLowering>(&getContext(), typeConverter);
   patterns.insert<ReceiveOpLowering>(&getContext(), typeConverter);
   patterns.insert<SendOpLowering>(&getContext(), typeConverter);
+  patterns.insert<SpawnOpLowering>(&getContext(), typeConverter);
   patterns.insert<StructAccessOpLowering>(&getContext(), typeConverter);
   patterns.insert<StdCallOpLowering>(&getContext(), typeConverter);
   patterns.insert<StdCallIndirectOpLowering>(&getContext(), typeConverter);
