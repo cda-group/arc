@@ -1,0 +1,8 @@
+#[cfg(test)]
+mod tests {
+  use crate::arctorustspawn::*;
+  #[rewrite(main)]
+  #[test]
+  fn test() {
+  }
+}
