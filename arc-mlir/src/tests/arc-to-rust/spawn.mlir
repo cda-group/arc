@@ -1,6 +1,10 @@
 // RUN: arc-mlir %s | arc-mlir
 // RUN: arc-mlir -canonicalize %s | arc-mlir
 // RUN: arc-mlir -canonicalize -arc-to-rust %s | FileCheck %s
+// RUN: arc-mlir-rust-test %t %s -rustinclude %s.rust-tests
+// RUN: arc-mlir-rust-test %t-canon %s -rustinclude %s.rust-tests -canonicalize
+// RUN: arc-mlir-rust-test %t-roundtrip-scf %s -rustinclude %s.rust-tests -canonicalize -remove-scf -canonicalize -to-scf -canonicalize
+
 module @arctorustspawn {
 
   func.func @id(%in : !arc.stream.source<si32>,
