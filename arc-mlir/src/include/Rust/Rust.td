@@ -354,6 +354,34 @@ def Rust_RustReturnOp : Rust_Op<"return", [Terminator]> {
   }];
 }
 
+def RustSpawnOp : Rust_Op<"spawn", [CallOpInterface]> {
+    // Stolen in large parts from std.call
+  let summary = "spawn operation";
+  let arguments = (ins FlatSymbolRefAttr:$callee, Variadic<AnyType>:$operands);
+
+  let extraClassDeclaration = [{
+    // For the CallOpInterface
+    StringRef getCallee() { return callee(); }
+    FunctionType getCalleeType();
+
+    /// Get the argument operands to the called function.
+    operand_range getArgOperands() {
+      return {arg_operand_begin(), arg_operand_end()};
+    }
+
+    operand_iterator arg_operand_begin() { return operand_begin(); }
+    operand_iterator arg_operand_end() { return operand_end(); }
+
+    /// Return the callee of this operation.
+    CallInterfaceCallable getCallableForCallee() {
+      return (*this)->getAttrOfType<SymbolRefAttr>("callee");
+    }
+
+    // Write this op as Rust code to os
+    void writeRust(RustPrinterStream &os);
+  }];
+}
+
 def Rust_RustConstantOp : Rust_Op<"constant", [NoSideEffect]> {
   let summary = "a rust constant.";
   let description = [{
