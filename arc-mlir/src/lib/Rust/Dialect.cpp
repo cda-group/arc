@@ -858,9 +858,13 @@ namespace rust {
 namespace types {
 
 struct RustTypeStorage : public TypeStorage {
-  RustTypeStorage(std::string type) : rustType(type) {}
+  RustTypeStorage(std::string type) : rustType(type), mangledName(type) {
+    if (rustType[0] == '"')
+      mangledName = rustType.substr(1, rustType.length() - 2);
+  }
 
   std::string rustType;
+  std::string mangledName;
 
   using KeyTy = std::string;
 
@@ -878,7 +882,9 @@ struct RustTypeStorage : public TypeStorage {
   void printAsMLIR(DialectAsmPrinter &os) const;
   void printAsRust(llvm::raw_ostream &o, rust::RustPrinterStream &ps);
 
-  std::string getMangledName(rust::RustPrinterStream &ps) { return rustType; };
+  std::string getMangledName(rust::RustPrinterStream &ps) const {
+    return mangledName;
+  };
 
   bool isBool() const;
 };
@@ -908,7 +914,9 @@ void RustType::printAsRust(llvm::raw_ostream &o, rust::RustPrinterStream &ps) {
   getImpl()->printAsRust(o, ps);
 }
 
-bool RustTypeStorage::isBool() const { return rustType.compare("bool") == 0; }
+bool RustTypeStorage::isBool() const {
+  return mangledName.compare("bool") == 0;
+}
 
 bool RustType::isBool() const { return getImpl()->isBool(); }
 
