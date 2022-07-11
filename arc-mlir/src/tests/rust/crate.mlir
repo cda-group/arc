@@ -51,7 +51,7 @@ module @"name-of-the-crate-2" {
 // -----
 
 module @"name-of-the-crate-3" {
-// expected-error@+2 {{'rust.func' op expected body region argument #0 to be of type '!rust.f64', found '!rust.f32'}}
+// expected-error@+2 {{'rust.func' op expected body region argument #0 to be of type '!rust<"f64">', found '!rust<"f32">'}}
 // expected-note@+1 {{see current operation: "rust.func"() (}}
 "rust.func"() ( {
  ^bb0(%arg0: !rust<"f32">):
@@ -65,7 +65,7 @@ module @"name-of-the-crate-3" {
 module @"name-of-the-crate-3" {
 "rust.func"() ( {
  ^bb0(%arg0: !rust<"f32">):
-// expected-error@+2 {{'rust.return' op result type does not match the type of the function: expected '!rust.f64' but found '!rust.f32'}}
+// expected-error@+2 {{'rust.return' op result type does not match the type of the function: expected '!rust<"f64">' but found '!rust<"f32">'}}
 // expected-note@+1 {{see current operation: "rust.return"}}
  "rust.return"(%arg0) : (!rust<"f32">) -> ()
 }) {sym_name = "the-function-name-1",
