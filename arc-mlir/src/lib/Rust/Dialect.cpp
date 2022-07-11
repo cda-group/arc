@@ -332,6 +332,8 @@ static RustPrinterStream &writeRust(Operation &operation,
     op.writeRust(PS);
   else if (RustSendOp op = dyn_cast<RustSendOp>(operation))
     op.writeRust(PS);
+  else if (RustSpawnOp op = dyn_cast<RustSpawnOp>(operation))
+    op.writeRust(PS);
   else {
     operation.emitError("Unsupported operation");
   }
@@ -798,6 +800,19 @@ void RustReceiveOp::writeRust(RustPrinterStream &PS) {
 
 void RustSendOp::writeRust(RustPrinterStream &PS) {
   PS << "push!(" << value() << "," << sink() << ");\n";
+}
+
+void RustSpawnOp::writeRust(RustPrinterStream &PS) {
+  StringRef callee = getCallee();
+  StringAttr calleeName = StringAttr::get(this->getContext(), getCallee());
+  Operation *target = SymbolTable::lookupNearestSymbolFrom(*this, calleeName);
+  if (target && target->hasAttr("arc.rust_name"))
+    callee = target->getAttrOfType<StringAttr>("arc.rust_name").getValue();
+
+  PS << "spawn!(" << callee << ", ";
+  for (auto a : getArgOperands())
+    PS << a << ", ";
+  PS << ");\n";
 }
 
 void RustTensorOp::writeRust(RustPrinterStream &PS) {

@@ -25,7 +25,6 @@
 #include <llvm/Support/raw_ostream.h>
 #include <mlir/Dialect/Arithmetic/IR/Arithmetic.h>
 #include <mlir/Dialect/CommonFolders.h>
-#include <mlir/Dialect/Func/IR/FuncOps.h>
 #include <mlir/Dialect/SCF/IR/SCF.h>
 #include <mlir/IR/Builders.h>
 #include <mlir/IR/BuiltinTypes.h>
@@ -707,6 +706,46 @@ LogicalResult ArcReturnOp::verify() {
            << funReturnType << " but found " << returnType;
   }
   return success();
+}
+
+//===----------------------------------------------------------------------===//
+// ArcSpawnOp
+//===----------------------------------------------------------------------===//
+
+LogicalResult ArcSpawnOp::verifySymbolUses(SymbolTableCollection &symbolTable) {
+  // In large parts stolen from the func::CallOp.
+  using namespace mlir::func;
+  // Check that the callee attribute was specified.
+  auto fnAttr = (*this)->getAttrOfType<FlatSymbolRefAttr>("callee");
+  if (!fnAttr)
+    return emitOpError("requires a 'callee' symbol reference attribute");
+  FuncOp fn = symbolTable.lookupNearestSymbolFrom<FuncOp>(*this, fnAttr);
+  if (!fn)
+    return emitOpError() << "'" << fnAttr.getValue()
+                         << "' does not reference a valid function";
+
+  if (!fn->hasAttr("arc.is_task"))
+    return emitOpError("'callee' must be a task");
+
+  // Verify that the operand and result types match the callee.
+  auto fnType = fn.getFunctionType();
+  if (fnType.getNumInputs() != getNumOperands())
+    return emitOpError("incorrect number of operands for callee");
+
+  for (unsigned i = 0, e = fnType.getNumInputs(); i != e; ++i)
+    if (getOperand(i).getType() != fnType.getInput(i))
+      return emitOpError("operand type mismatch: expected operand type ")
+             << fnType.getInput(i) << ", but provided "
+             << getOperand(i).getType() << " for operand number " << i;
+
+  if (fnType.getNumResults() != 0)
+    return emitOpError("'callee' should not have a result");
+  return success();
+}
+
+FunctionType ArcSpawnOp::getCalleeType() {
+  SmallVector<Type, 1> resultTypes;
+  return FunctionType::get(getContext(), getOperandTypes(), resultTypes);
 }
 
 //===----------------------------------------------------------------------===//

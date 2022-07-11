@@ -26,6 +26,7 @@
 #ifndef OP_BASE
 include "../../mlir/include/mlir/IR/EnumAttr.td"
 include "../../mlir/include/mlir/IR/OpBase.td"
+include "../../mlir/include/mlir/IR/SymbolInterfaces.td"
 include "../../mlir/include/mlir/Interfaces/CallInterfaces.td"
 include "../../mlir/include/mlir/Interfaces/InferTypeOpInterface.td"
 include "../../mlir/include/mlir/Interfaces/SideEffectInterfaces.td"
@@ -828,6 +829,38 @@ def ArcReturnOp : Arc_Op<"return", [Terminator]> {
   let hasVerifier = 1;
 }
 
+def ArcSpawnOp : Arc_Op<"spawn", [
+      CallOpInterface,
+      DeclareOpInterfaceMethods<SymbolUserOpInterface>
+    ]> {
+  let summary = "Spawn a new task.";
+
+  let description = [{ Spawn a new task. The new task starts to
+    execute `fun` with the given parameters.  }];
+
+  let arguments = (ins FlatSymbolRefAttr:$callee, Variadic<AnyType>:$operands);
+
+  let extraClassDeclaration = [{
+    FunctionType getCalleeType();
+
+    /// Get the argument operands to the called function.
+    operand_range getArgOperands() {
+      return {arg_operand_begin(), arg_operand_end()};
+    }
+
+    operand_iterator arg_operand_begin() { return ++operand_begin(); }
+    operand_iterator arg_operand_end() { return operand_end(); }
+
+    /// Return the callee of this operation.
+    CallInterfaceCallable getCallableForCallee() {
+      return (*this)->getAttrOfType<SymbolRefAttr>("callee");
+    }
+  }];
+
+  let assemblyFormat = [{
+    $callee `(` $operands `)` attr-dict `:` functional-type($operands, results)
+  }];
+}
 
 
 #endif // ARC_OPS
