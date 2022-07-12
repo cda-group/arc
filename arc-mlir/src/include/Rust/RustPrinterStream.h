@@ -226,6 +226,8 @@ public:
 
   std::string getMangledName(FunctionType fTy);
   void printAsRust(llvm::raw_ostream &o, FunctionType fTy);
+
+  RustPrinterStream &let(const Value v);
 };
 
 RustPrinterStream &operator<<(RustPrinterStream &os, const Value &v);
