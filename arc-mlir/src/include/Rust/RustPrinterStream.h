@@ -61,7 +61,7 @@ class RustPrinterStream {
   // Functions having the rust.declare attribute
   DenseSet<Operation *> DeclaredFunctions;
   // Tasks to declare, triggered by the arc.is_task attribute
-  DenseSet<RustFuncOp *> DeclaredTasks;
+  DenseSet<RustFuncOp> DeclaredTasks;
 
   std::map<std::string, std::string> CrateDependencies;
   std::map<std::string, std::string> CrateDirectives;
@@ -112,15 +112,15 @@ public:
       }
       o << "],";
       o << "tasks: [ ";
-      for (RustFuncOp *t : DeclaredTasks) {
-        if ((*t)->hasAttr("arc.rust_name"))
-          o << (*t)->getAttrOfType<StringAttr>("arc.rust_name").getValue();
+      for (RustFuncOp &t : DeclaredTasks) {
+        if (t->hasAttr("arc.rust_name"))
+          o << t->getAttrOfType<StringAttr>("arc.rust_name").getValue();
         else
-          o << (*t)->getAttrOfType<StringAttr>("sym_name").getValue();
+          o << t->getAttrOfType<StringAttr>("sym_name").getValue();
         o << "(";
-        unsigned numFuncArguments = t->getNumArguments();
+        unsigned numFuncArguments = t.getNumArguments();
         for (unsigned i = 0; i < numFuncArguments; i++) {
-          Value v = t->front().getArgument(i);
+          Value v = t.front().getArgument(i);
           if (i != 0)
             o << ", ";
           o << "v" << std::to_string(Value2ID[v]) << ": ";
@@ -161,7 +161,7 @@ public:
     ValueAliases[v] = identifier;
   }
 
-  void addTask(RustFuncOp *task) { DeclaredTasks.insert(task); }
+  void addTask(RustFuncOp &task) { DeclaredTasks.insert(task); }
 
   void clearAliases() { ValueAliases.clear(); }
 
