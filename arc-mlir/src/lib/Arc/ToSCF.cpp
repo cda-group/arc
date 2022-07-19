@@ -208,10 +208,20 @@ private:
     LLVM_DEBUG(llvm::dbgs() << "** Enum **\n" << stateTy << "\n");
 
     // Create the initial state for the loop
-    Value initStruct = rewriter.create<arc::MakeStructOp>(
+    arc::MakeStructOp initStructOp = rewriter.create<arc::MakeStructOp>(
         f->getLoc(), block2variantStruct[&entryBB], newEntryBB->getArguments());
-    Value initState = rewriter.create<MakeEnumOp>(
+    Value initStruct = initStructOp;
+    MakeEnumOp initStateOp = rewriter.create<MakeEnumOp>(
         f->getLoc(), stateTy, initStruct, block2variantName[&entryBB]);
+    Value initState = initStateOp;
+
+    if (OnlyRunOnTransformedTasks) {
+      initStructOp->setAttr("arc.task_initial_struct",
+                            UnitAttr::get(getContext()));
+      initStateOp->setAttr("arc.task_initial_enum",
+                           UnitAttr::get(getContext()));
+    }
+
     SmallVector<Type, 1> loopVarTypes;
     SmallVector<Value, 1> loopOps;
 
@@ -221,6 +231,9 @@ private:
     // Create the while loop and the before and after basic blocks
     scf::WhileOp loop =
         rewriter.create<scf::WhileOp>(f->getLoc(), loopVarTypes, loopOps);
+    if (OnlyRunOnTransformedTasks) {
+      (*loop).setAttr("arc.task_loop", UnitAttr::get(getContext()));
+    }
     Block *beforeBB = rewriter.createBlock(&loop.getBefore());
 
     auto tmp = SmallVector<Location>(loopVarTypes.size(), f->getLoc());
