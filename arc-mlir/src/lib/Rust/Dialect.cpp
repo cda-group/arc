@@ -1241,6 +1241,9 @@ struct RustSourceStreamTypeStorage : public TypeStorage {
   Type getType() const;
 
   std::string getMangledName(rust::RustPrinterStream &ps);
+
+private:
+  std::string mangledName;
 };
 
 std::string RustSourceStreamType::getMangledName(rust::RustPrinterStream &ps) {
@@ -1249,7 +1252,16 @@ std::string RustSourceStreamType::getMangledName(rust::RustPrinterStream &ps) {
 
 std::string
 RustSourceStreamTypeStorage::getMangledName(rust::RustPrinterStream &ps) {
-  return "<a stream should not be output as rust>";
+  if (!mangledName.empty())
+    return mangledName;
+
+  std::string buffer;
+  std::string mn = ::getMangledName(item, ps);
+
+  llvm::raw_string_ostream mangled(buffer);
+  mangled << "PullableStream" << mn.size() << mn << "End";
+  mangledName = mangled.str();
+  return mangledName;
 }
 
 RustSourceStreamType RustSourceStreamType::get(RustDialect *dialect,
@@ -1274,6 +1286,7 @@ void RustSourceStreamType::printAsRust(llvm::raw_ostream &o,
 
 void RustSourceStreamTypeStorage::printAsRust(llvm::raw_ostream &o,
                                               rust::RustPrinterStream &ps) {
+  getMangledName(ps);
   o << "Pullable<" << ::getMangledName(item, ps) << ">";
 }
 
