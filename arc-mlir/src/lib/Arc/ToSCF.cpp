@@ -25,6 +25,7 @@
 #include "mlir/Support/LogicalResult.h"
 #include "mlir/Transforms/DialectConversion.h"
 #include "mlir/Transforms/GreedyPatternRewriteDriver.h"
+#include "llvm/Support/CommandLine.h"
 #include "llvm/Support/Debug.h"
 #include "llvm/Support/ScopedPrinter.h"
 
@@ -33,6 +34,11 @@ using namespace mlir::cf;
 using namespace arc;
 
 #define DEBUG_TYPE "to-scf"
+
+llvm::cl::opt<bool>
+    OnlyRunOnTransformedTasks("to-scf-only-tasks",
+                              llvm::cl::desc("Only run the pass on tasks"),
+                              llvm::cl::init(false));
 
 //===----------------------------------------------------------------------===//
 // ToSCFPass
@@ -55,6 +61,9 @@ struct FunPattern : public OpRewritePattern<mlir::func::FuncOp> {
 
   LogicalResult matchAndRewrite(mlir::func::FuncOp fun,
                                 PatternRewriter &rewriter) const override {
+    if (OnlyRunOnTransformedTasks && !fun->hasAttr("arc.is_task"))
+      return success();
+
     bool foundBr = false;
     fun->walk<WalkOrder::PreOrder>([&](BranchOp br) { foundBr = true; });
     fun->walk<WalkOrder::PreOrder>([&](CondBranchOp br) { foundBr = true; });
