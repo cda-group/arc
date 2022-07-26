@@ -420,6 +420,9 @@ void RustFuncOp::writeRust(RustPrinterStream &PS) {
   if ((*this)->hasAttr("arc.is_task"))
     PS.addTask(*this);
 
+  if ((*this)->hasAttr("rust.declare"))
+    PS.addDeclaredFunction(getOperation());
+
   if ((*this)->hasAttr("rust.annotation"))
     PS << (*this)->getAttrOfType<StringAttr>("rust.annotation").getValue()
        << "\n";

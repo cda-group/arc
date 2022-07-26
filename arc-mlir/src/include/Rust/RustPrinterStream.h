@@ -162,6 +162,7 @@ public:
   }
 
   void addTask(RustFuncOp &task) { DeclaredTasks.insert(task); }
+  void addDeclaredFunction(Operation *f) { DeclaredFunctions.insert(f); }
 
   void clearAliases() { ValueAliases.clear(); }
 
