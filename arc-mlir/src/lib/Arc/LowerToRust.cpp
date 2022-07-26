@@ -952,8 +952,11 @@ struct ReceiveOpLowering : public OpConversionPattern<arc::ReceiveOp> {
   matchAndRewrite(ReceiveOp o, OpAdaptor adaptor,
                   ConversionPatternRewriter &rewriter) const final {
     Type retTy = TypeConverter.convertType(o.getType());
-    rewriter.replaceOpWithNewOp<rust::RustReceiveOp>(o, retTy,
-                                                     adaptor.source());
+    auto n = rewriter.replaceOpWithNewOp<rust::RustReceiveOp>(o, retTy,
+                                                              adaptor.source());
+    if (o->hasAttr("arc.statepoint"))
+      n->setAttr("arc.statepoint", UnitAttr::get(getContext()));
+
     return success();
   };
 
