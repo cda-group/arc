@@ -23,14 +23,20 @@
 #include "mlir/Support/LLVM.h"
 #include "mlir/Support/LogicalResult.h"
 #include "mlir/Transforms/DialectConversion.h"
+#include "llvm/Support/CommandLine.h"
 
 using namespace mlir;
 using namespace mlir::cf;
 using namespace arc;
+using namespace llvm;
 
 //===----------------------------------------------------------------------===//
 // RemoveSCFPass
 //===----------------------------------------------------------------------===//
+
+cl::opt<bool> OnlyRunOnTasks("remove-scf-only-tasks",
+                             cl::desc("Only run the pass on tasks"),
+                             cl::init(false));
 
 /// This is a lowering of arc operations to the Rust dialect.
 namespace {
@@ -210,6 +216,9 @@ LogicalResult WhileLowering::matchAndRewrite(scf::WhileOp whileOp,
 
 void RemoveSCF::runOnOperation() {
   mlir::func::FuncOp f = getOperation();
+
+  if (OnlyRunOnTasks && !f->hasAttr("arc.is_task"))
+    return;
 
   // In order to match arc.loop.breaks to their enclosing scf.while we
   // add an unique attribute to each scf.while. We then tag all

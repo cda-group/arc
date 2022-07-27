@@ -47,4 +47,23 @@ def ToSCF : Pass<"to-scf", "ModuleOp"> {
   ];
 }
 
+def ToFSM : Pass<"to-fsm", "ModuleOp"> {
+  let summary = "Convert functions with blocking operations into FSMs";
+  let constructor = "arc::createToFSMPass()";
+
+  let dependentDialects = [
+        "arc::ArcDialect",
+        "mlir::func::FuncDialect"
+  ];
+}
+
+def RestartableTask : Pass<"restartable-task", "ModuleOp"> {
+  let summary = "Split task functions into an initialization and one execute function in order to allow them to be estartable";
+  let constructor = "arc::createRestartableTaskPass()";
+
+  let dependentDialects = [
+        "arc::ArcDialect",
+        "mlir::func::FuncDialect"
+  ];
+}
 #endif // ARC_PASSES

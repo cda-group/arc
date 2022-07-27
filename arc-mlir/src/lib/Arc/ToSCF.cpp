@@ -25,6 +25,7 @@
 #include "mlir/Support/LogicalResult.h"
 #include "mlir/Transforms/DialectConversion.h"
 #include "mlir/Transforms/GreedyPatternRewriteDriver.h"
+#include "llvm/Support/CommandLine.h"
 #include "llvm/Support/Debug.h"
 #include "llvm/Support/ScopedPrinter.h"
 
@@ -33,6 +34,11 @@ using namespace mlir::cf;
 using namespace arc;
 
 #define DEBUG_TYPE "to-scf"
+
+llvm::cl::opt<bool>
+    OnlyRunOnTransformedTasks("to-scf-only-tasks",
+                              llvm::cl::desc("Only run the pass on tasks"),
+                              llvm::cl::init(false));
 
 //===----------------------------------------------------------------------===//
 // ToSCFPass
@@ -55,6 +61,9 @@ struct FunPattern : public OpRewritePattern<mlir::func::FuncOp> {
 
   LogicalResult matchAndRewrite(mlir::func::FuncOp fun,
                                 PatternRewriter &rewriter) const override {
+    if (OnlyRunOnTransformedTasks && !fun->hasAttr("arc.is_task"))
+      return success();
+
     bool foundBr = false;
     fun->walk<WalkOrder::PreOrder>([&](BranchOp br) { foundBr = true; });
     fun->walk<WalkOrder::PreOrder>([&](CondBranchOp br) { foundBr = true; });
@@ -199,10 +208,20 @@ private:
     LLVM_DEBUG(llvm::dbgs() << "** Enum **\n" << stateTy << "\n");
 
     // Create the initial state for the loop
-    Value initStruct = rewriter.create<arc::MakeStructOp>(
+    arc::MakeStructOp initStructOp = rewriter.create<arc::MakeStructOp>(
         f->getLoc(), block2variantStruct[&entryBB], newEntryBB->getArguments());
-    Value initState = rewriter.create<MakeEnumOp>(
+    Value initStruct = initStructOp;
+    MakeEnumOp initStateOp = rewriter.create<MakeEnumOp>(
         f->getLoc(), stateTy, initStruct, block2variantName[&entryBB]);
+    Value initState = initStateOp;
+
+    if (OnlyRunOnTransformedTasks) {
+      initStructOp->setAttr("arc.task_initial_struct",
+                            UnitAttr::get(getContext()));
+      initStateOp->setAttr("arc.task_initial_enum",
+                           UnitAttr::get(getContext()));
+    }
+
     SmallVector<Type, 1> loopVarTypes;
     SmallVector<Value, 1> loopOps;
 
@@ -212,6 +231,9 @@ private:
     // Create the while loop and the before and after basic blocks
     scf::WhileOp loop =
         rewriter.create<scf::WhileOp>(f->getLoc(), loopVarTypes, loopOps);
+    if (OnlyRunOnTransformedTasks) {
+      (*loop).setAttr("arc.task_loop", UnitAttr::get(getContext()));
+    }
     Block *beforeBB = rewriter.createBlock(&loop.getBefore());
 
     auto tmp = SmallVector<Location>(loopVarTypes.size(), f->getLoc());
