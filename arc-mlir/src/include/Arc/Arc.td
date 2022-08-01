@@ -27,6 +27,7 @@
 include "../../mlir/include/mlir/IR/EnumAttr.td"
 include "../../mlir/include/mlir/IR/OpBase.td"
 include "../../mlir/include/mlir/IR/SymbolInterfaces.td"
+include "../../mlir/include/mlir/IR/BuiltinAttributeInterfaces.td"
 include "../../mlir/include/mlir/Interfaces/CallInterfaces.td"
 include "../../mlir/include/mlir/Interfaces/InferTypeOpInterface.td"
 include "../../mlir/include/mlir/Interfaces/SideEffectInterfaces.td"
@@ -432,7 +433,7 @@ def Arc_ConstantIntOp : Arc_Op<"constant", [ConstantLike, NoSideEffect]> {
   }];
 
   let arguments = (ins
-    AnyAttr:$value
+    TypedAttrInterface:$value
   );
 
   let results = (outs
