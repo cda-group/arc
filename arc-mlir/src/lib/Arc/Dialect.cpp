@@ -155,8 +155,7 @@ ParseResult ConstantIntOp::parse(OpAsmParser &parser, OperationState &state) {
   Attribute value;
   if (parser.parseAttribute(value, "value", state.attributes))
     return failure();
-
-  Type type = value.getType();
+  Type type = value.cast<TypedAttr>().getType();
   return parser.addTypeToList(type, state.types);
 }
 
@@ -166,7 +165,7 @@ void arc::ConstantIntOp::print(OpAsmPrinter &printer) {
 
 LogicalResult arc::ConstantIntOp::verify() {
   auto opType = getType();
-  auto v = value();
+  TypedAttr v = value();
   auto valueType = v.getType();
 
   // ODS already generates checks to make sure the result type is
@@ -241,7 +240,7 @@ OpFoldResult arc::CmpIOp::fold(ArrayRef<Attribute> operands) {
   auto rhs = operands.back().dyn_cast_or_null<IntegerAttr>();
   if (!lhs || !rhs)
     return {};
-  bool isUnsigned = operands[0].getType().isUnsignedInteger();
+  bool isUnsigned = lhs.cast<TypedAttr>().getType().isUnsignedInteger();
   auto val = applyCmpPredicate(getPredicate(), isUnsigned, lhs.getValue(),
                                rhs.getValue());
   return BoolAttr::get(getContext(), val);
