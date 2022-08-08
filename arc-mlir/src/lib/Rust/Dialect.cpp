@@ -772,8 +772,8 @@ void RustBlockResultOp::writeRust(RustPrinterStream &PS) {
 
 void RustPanicOp::writeRust(RustPrinterStream &PS) {
   PS << "panic!(";
-  if (msg().hasValue())
-    PS << "\"" << msg().getValue() << "\"";
+  if (msg().has_value())
+    PS << "\"" << msg().value() << "\"";
   PS << ");\n";
 }
 

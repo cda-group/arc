@@ -499,9 +499,9 @@ struct PanicOpLowering : public OpConversionPattern<arc::PanicOp> {
   matchAndRewrite(PanicOp o, OpAdaptor adaptor,
                   ConversionPatternRewriter &rewriter) const final {
     auto msg = o.msg();
-    if (msg.hasValue())
+    if (msg.has_value())
       rewriter.replaceOpWithNewOp<rust::RustPanicOp>(
-          o, StringAttr::get(Ctx, msg.getValue()));
+          o, StringAttr::get(Ctx, msg.value()));
     else
       rewriter.replaceOpWithNewOp<rust::RustPanicOp>(o, nullptr);
 
