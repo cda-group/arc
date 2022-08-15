@@ -300,7 +300,7 @@ def IndexTupleOp : Arc_Op<"index_tuple", [NoSideEffect]> {
     A pure operation which reads a value from a tuple.
   }];
   let arguments = (ins AnyTuple:$value,
-                   Confined<I64Attr, [IntNonNegative]>:$index);
+                   ConfinedAttr<I64Attr, [IntNonNegative]>:$index);
   let results = (outs AnyType);
   let extraClassDeclaration = [{ LogicalResult customVerify(); }];
   let hasVerifier = 1;
@@ -370,7 +370,7 @@ def MakeAppenderOp : Arc_Op<"make_appender", [NoSideEffect, Linear]> {
     %a = arc.make_appender() {size = 10} : () -> !arc.appender<i32>
     ```
   }];
-  let arguments = (Confined<I64Attr, [IntNonNegative]>:$size);
+  let arguments = (ConfinedAttr<I64Attr, [IntNonNegative]>:$size);
   let results = (outs AnyAppender);
 }
 
