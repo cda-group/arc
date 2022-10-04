@@ -109,7 +109,6 @@ def RustCallOp : Rust_Op<"call", [CallOpInterface]> {
 
   let extraClassDeclaration = [{
     // For the CallOpInterface
-    StringRef getCallee() { return callee(); }
     FunctionType getCalleeType();
 
     /// Get the argument operands to the called function.
@@ -134,7 +133,7 @@ def RustCallOp : Rust_Op<"call", [CallOpInterface]> {
 def RustCallIndirectOp : Rust_Op<"call_indirect", [
       CallOpInterface,
       TypesMatchWith<"callee input types match argument types",
-                     "callee", "operands",
+                     "callee", "ops",
                      "$_self.cast<FunctionType>().getInputs()">,
       TypesMatchWith<"callee result types match result types",
                      "callee", "results",
@@ -159,19 +158,17 @@ def RustCallIndirectOp : Rust_Op<"call_indirect", [
     ```
   }];
 
-  let arguments = (ins FunctionType:$callee, Variadic<AnyType>:$operands);
+  let arguments = (ins FunctionType:$callee, Variadic<AnyType>:$ops);
   let results = (outs Variadic<AnyType>:$results);
 
   let builders = [
-    OpBuilder<(ins "Value":$callee, CArg<"ValueRange", "{}">:$operands), [{
+    OpBuilder<(ins "Value":$callee, CArg<"ValueRange", "{}">:$ops), [{
       $_state.operands.push_back(callee);
-      $_state.addOperands(operands);
+      $_state.addOperands(ops);
       $_state.addTypes(callee.getType().cast<FunctionType>().getResults());
     }]>];
 
   let extraClassDeclaration = [{
-    Value getCallee() { return getOperand(0); }
-
     /// Get the argument operands to the called function.
     operand_range getArgOperands() {
       return {arg_operand_begin(), arg_operand_end()};
@@ -202,10 +199,6 @@ def Rust_RustFuncOp : Rust_Op<"func",
                        TypeAttrOf<FunctionType>:$function_type,
                        OptionalAttr<StrAttr>:$sym_visibility);
   let extraClassDeclaration = [{
-    FunctionType getFunctionType() {
-      return getFunctionTypeAttr().getValue().cast<FunctionType>();
-    }
-
     /// Returns the argument types of this function.
     ArrayRef<Type> getArgumentTypes() {
       return getFunctionType().cast<FunctionType>().getInputs();
@@ -240,10 +233,6 @@ def Rust_RustExtFuncOp : Rust_Op<"extfunc",
                        OptionalAttr<StrAttr>:$sym_visibility);
 
   let extraClassDeclaration = [{
-     FunctionType getFunctionType() {
-       return getFunctionTypeAttr().getValue().cast<FunctionType>();
-     }
-
     /// Returns the argument types of this function.
     ArrayRef<Type> getArgumentTypes() {
       return getFunctionType().cast<FunctionType>().getInputs();
@@ -361,7 +350,6 @@ def RustSpawnOp : Rust_Op<"spawn", [CallOpInterface]> {
 
   let extraClassDeclaration = [{
     // For the CallOpInterface
-    StringRef getCallee() { return callee(); }
     FunctionType getCalleeType();
 
     /// Get the argument operands to the called function.
@@ -393,7 +381,9 @@ def Rust_RustConstantOp : Rust_Op<"constant", [NoSideEffect]> {
   let results = (outs AnyRustType);
 
   let extraClassDeclaration = [{
-    Attribute getValue() { return (*this)->getAttr("value"); }
+    StringAttr getValueAsStringAttr() {
+      return (*this)->getAttr("value").dyn_cast<StringAttr>();
+    }
     // Write this constant as Rust code to os
     void writeRust(RustPrinterStream &);
   }];
@@ -409,9 +399,6 @@ def Rust_RustEnumAccessOp : Rust_Op<"enum_access", [NoSideEffect]> {
   let results = (outs AnyRustType);
 
   let extraClassDeclaration = [{
-    StringRef getVariant() {
-      return (*this)->getAttrOfType<StringAttr>("variant").getValue();
-    }
     // Write this constant as Rust code to os
     void writeRust(RustPrinterStream &);
   }];
@@ -427,9 +414,6 @@ def Rust_RustEnumCheckOp : Rust_Op<"enum_check", [NoSideEffect]> {
   let results = (outs BoolRustType);
 
   let extraClassDeclaration = [{
-    StringRef getVariant() {
-      return (*this)->getAttrOfType<StringAttr>("variant").getValue();
-    }
     // Write this constant as Rust code to os
     void writeRust(RustPrinterStream &);
   }];
@@ -445,9 +429,6 @@ def Rust_RustFieldAccessOp : Rust_Op<"field_access", [NoSideEffect]> {
   let results = (outs AnyRustType);
 
   let extraClassDeclaration = [{
-    StringRef getField() {
-      return (*this)->getAttrOfType<StringAttr>("field").getValue();
-    }
     // Write this constant as Rust code to os
     void writeRust(RustPrinterStream &);
   }];
@@ -480,14 +461,10 @@ def Rust_RustMethodCallOp : Rust_Op<"method_call", []> {
   }];
 
   let arguments = (ins StrAttr : $method, AnyRustType : $obj,
-                   Variadic<AnyRustType>:$operands);
+                   Variadic<AnyRustType>:$ops);
   let results = (outs AnyRustType);
 
   let extraClassDeclaration = [{
-    StringRef getMethod() {
-      return (*this)->getAttrOfType<StringAttr>("method").getValue();
-    }
-
     // Write this operation as Rust code to the stream
     void writeRust(RustPrinterStream &);
   }];

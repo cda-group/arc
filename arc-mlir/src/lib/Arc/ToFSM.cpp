@@ -34,7 +34,11 @@ using namespace arc;
 
 /// This is a lowering of arc operations to the Rust dialect.
 namespace {
-struct ToFSMPass : public ToFSMBase<ToFSMPass> {
+
+#define GEN_PASS_DEF_TOFSM
+#include "Arc/Passes.h.inc"
+
+struct ToFSMPass : public impl::ToFSMBase<ToFSMPass> {
   void runOnOperation() final;
 };
 } // end anonymous namespace.

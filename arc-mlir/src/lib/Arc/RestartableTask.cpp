@@ -37,7 +37,12 @@ using namespace arc;
 
 /// This is a lowering of arc operations to the Rust dialect.
 namespace {
-struct RestartableTaskPass : public RestartableTaskBase<RestartableTaskPass> {
+
+#define GEN_PASS_DEF_RESTARTABLETASK
+#include "Arc/Passes.h.inc"
+
+struct RestartableTaskPass
+    : public impl::RestartableTaskBase<RestartableTaskPass> {
   void runOnOperation() final;
 };
 } // end anonymous namespace.
@@ -76,7 +81,7 @@ void RestartableTaskPass::runOnOperation() {
     }
     // Create the FSM body function
     FunctionType funTy =
-        FunctionType::get(&getContext(), makeEnum.result().getType(), {});
+        FunctionType::get(&getContext(), makeEnum.getResult().getType(), {});
     std::string name =
         f->getAttrOfType<StringAttr>("sym_name").getValue().str() + "_body";
     func::FuncOp bodyFunc = func::FuncOp::create(f->getLoc(), name, funTy);
@@ -116,10 +121,10 @@ void RestartableTaskPass::runOnOperation() {
     IRRewriter rewriter(&getContext());
     Block *entryBB = rewriter.createBlock(&bodyFunc->getRegion(0));
     auto blockArgs = SmallVector<Location>(1, f->getLoc());
-    entryBB->addArguments({makeEnum.result().getType()}, blockArgs);
+    entryBB->addArguments({makeEnum.getResult().getType()}, blockArgs);
     rewriter.setInsertionPointToEnd(entryBB);
 
-    map.map(makeEnum.result(), entryBB->getArgument(0));
+    map.map(makeEnum.getResult(), entryBB->getArgument(0));
     for (Operation *op : toClone) {
       Operation *newOp = rewriter.clone(*op, map);
       if (op->getNumResults())
@@ -132,7 +137,7 @@ void RestartableTaskPass::runOnOperation() {
     // Patch the original function and replace the while-loop with
     // a call to the new function.
     rewriter.setInsertionPoint(whileOp);
-    auto callArgs = SmallVector<Value, 1>{makeEnum.result()};
+    auto callArgs = SmallVector<Value, 1>{makeEnum.getResult()};
     rewriter.eraseOp(whileOp->getBlock()->getTerminator());
     rewriter.create<func::ReturnOp>(makeEnum.getLoc(), callArgs);
     rewriter.eraseOp(whileOp);
@@ -140,7 +145,7 @@ void RestartableTaskPass::runOnOperation() {
     // Patch the return type
     FunctionType origFunTy = f.getFunctionType();
     FunctionType modFunTy = FunctionType::get(
-        &getContext(), origFunTy.getInputs(), {makeEnum.result().getType()});
+        &getContext(), origFunTy.getInputs(), {makeEnum.getResult().getType()});
     f.setFunctionTypeAttr(TypeAttr::get(modFunTy));
 
     LLVM_DEBUG({

@@ -25,7 +25,7 @@
 
 #ifndef STANDARD_OPS
 include "../../mlir/include/mlir/Dialect/Func/IR/FuncOps.td"
-include "../../mlir/include/mlir/Dialect/Arithmetic/IR/ArithmeticOps.td"
+include "../../mlir/include/mlir/Dialect/Arith/IR/ArithOps.td"
 include "../../mlir/include/mlir/IR/PatternBase.td"
 #endif // STANDARD_OPS
 

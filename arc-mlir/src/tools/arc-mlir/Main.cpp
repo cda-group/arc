@@ -33,7 +33,7 @@
 #include <llvm/Support/ToolOutputFile.h>
 #include <llvm/Support/raw_ostream.h>
 #include <memory>
-#include <mlir/Dialect/Arithmetic/IR/Arithmetic.h>
+#include <mlir/Dialect/Arith/IR/Arith.h>
 #include <mlir/Dialect/Math/IR/Math.h>
 #include <mlir/Dialect/SCF/IR/SCF.h>
 #include <mlir/IR/AsmState.h>
@@ -83,7 +83,7 @@ int main(int argc, char **argv) {
 
   mlir::DialectRegistry registry;
   registry.insert<func::FuncDialect>();
-  registry.insert<arith::ArithmeticDialect>();
+  registry.insert<arith::ArithDialect>();
   registry.insert<math::MathDialect>();
   registry.insert<scf::SCFDialect>();
   registry.insert<ArcDialect>();
