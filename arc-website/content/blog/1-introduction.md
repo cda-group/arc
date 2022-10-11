@@ -6,9 +6,6 @@ updated = 2022-03-17
 draft = false
 template = "blog/page.html"
 
-[taxonomies]
-authors = ["segeljakt"]
-
 [extra]
 lead = ""
 +++

@@ -9,7 +9,7 @@ on:
       - master
 
 env:
-  ZOLA_VERSION: 0.15.3
+  ZOLA_VERSION: 0.16.1
   MDBOOK_LINKCHECK_VERSION: 0.7.6
   MDBOOK_BIB_VERSION: 0.0.4
 
@@ -89,6 +89,7 @@ jobs:
       if: steps.cache-zola.outputs.cache-hit != 'true'
       run: |
         git clone https://github.com/getzola/zola.git
+        git -C zola checkout ad6c83412391dd748d4a9d8f3a0568687e73a447
         cargo install --path=zola --version=${{ env.ZOLA_VERSION }} zola
 
     # ---- arc-report ----

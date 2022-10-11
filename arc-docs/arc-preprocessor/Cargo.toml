@@ -6,7 +6,7 @@ edition = "2018"
 
 [dependencies]
 regex = "1.5.4"
-mdbook = "0.4.15"
+mdbook = "0.4.21"
 serde_json = "1.0.64"
 anyhow = "1.0.40"
 clap = "2.33.3"
