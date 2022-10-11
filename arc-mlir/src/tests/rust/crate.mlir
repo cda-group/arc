@@ -28,7 +28,7 @@ module @"name-of-the-crate-0" {
 module @"name-of-the-crate-1" {
 
 // expected-error@+2 {{'rust.func' op requires attribute 'function_type'}}
-// expected-note@+1 {{see current operation: "rust.func"() (}}
+// expected-note-re@+1 {{see current operation:}}
 "rust.func"() ( {
  ^bb0(%arg0: !rust<"f32">):
  "rust.return"(%arg0) : (!rust<"f32">) -> ()
@@ -40,7 +40,7 @@ module @"name-of-the-crate-1" {
 
 module @"name-of-the-crate-2" {
 // expected-error@+2 {{'rust.func' op expected 1 arguments to body region, found 2}}
-// expected-note@+1 {{see current operation: "rust.func"() (}}
+// expected-note@+1 {{see current operation:}}
 "rust.func"() ( {
  ^bb0(%arg0: !rust<"f32">, %arg1: !rust<"f32">):
  "rust.return"(%arg0) : (!rust<"f32">) -> ()
@@ -52,7 +52,7 @@ module @"name-of-the-crate-2" {
 
 module @"name-of-the-crate-3" {
 // expected-error@+2 {{'rust.func' op expected body region argument #0 to be of type '!rust<"f64">', found '!rust<"f32">'}}
-// expected-note@+1 {{see current operation: "rust.func"() (}}
+// expected-note@+1 {{see current operation:}}
 "rust.func"() ( {
  ^bb0(%arg0: !rust<"f32">):
  "rust.return"(%arg0) : (!rust<"f32">) -> ()

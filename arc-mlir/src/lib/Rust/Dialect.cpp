@@ -341,7 +341,7 @@ static RustPrinterStream &writeRust(Operation &operation,
 }
 
 std::string RustPrinterStream::getConstant(RustConstantOp v) {
-  StringAttr str = v.getValue().dyn_cast<StringAttr>();
+  StringAttr str = v.getValueAsStringAttr();
   if (FunctionType fType = v.getType().dyn_cast<FunctionType>()) {
     // Although a function reference is a constant in MLIR it is not
     // in our Rust dialect, so we need to handle them specially.
@@ -459,7 +459,7 @@ void RustFuncOp::writeRust(RustPrinterStream &PS) {
 
   // Dumping the body
   PS << "{\n";
-  for (Operation &operation : this->body().front()) {
+  for (Operation &operation : this->getBody().front()) {
     ::writeRust(operation, PS);
   }
   PS << "}\n";
@@ -516,9 +516,9 @@ void RustUnaryOp::writeRust(RustPrinterStream &PS) {
 
 void RustLoopOp::writeRust(RustPrinterStream &PS) {
   PS << "// Loop variables\n";
-  Block::BlockArgListType before_args = before().front().getArguments();
-  Block::BlockArgListType after_args = after().front().getArguments();
-  OperandRange inits = this->inits();
+  Block::BlockArgListType before_args = getBefore().front().getArguments();
+  Block::BlockArgListType after_args = getAfter().front().getArguments();
+  OperandRange inits = this->getInits();
 
   assert(inits.size() == before_args.size());
 
@@ -551,10 +551,10 @@ void RustLoopOp::writeRust(RustPrinterStream &PS) {
   // Emit the loop body
   PS << "loop {\n";
   PS << "// Before\n";
-  for (Operation &operation : before().front())
+  for (Operation &operation : getBefore().front())
     ::writeRust(operation, PS);
   RustLoopConditionOp cond = getConditionOp();
-  auto passed_on = cond.args();
+  auto passed_on = cond.getArgs();
   PS << "// Pass on state from the before to the after part\n";
   assert(passed_on.size() == after_args.size());
 
@@ -568,11 +568,11 @@ void RustLoopOp::writeRust(RustPrinterStream &PS) {
   }
 
   PS << "// After\n";
-  for (Operation &operation : after().front())
+  for (Operation &operation : getAfter().front())
     ::writeRust(operation, PS);
 
   RustLoopYieldOp yield = getYieldOp();
-  auto updated = yield.results();
+  auto updated = yield.getResults();
   PS << "// Update the loop variables for the next iteration\n";
   assert(before_args.size() == updated.size());
   for (unsigned idx = 0; idx < before_args.size(); idx++) {
@@ -616,7 +616,7 @@ void RustLoopBreakOp::writeRust(RustPrinterStream &PS) {
   PS << "break";
   if (getNumOperands() != 1) {
     PS << " (";
-    for (auto arg : results())
+    for (auto arg : getResults())
       PS << arg << ",";
     PS << ")";
   }
@@ -629,7 +629,7 @@ void RustLoopConditionOp::writeRust(RustPrinterStream &PS) {
   PS << "break";
   if (getNumOperands() != 1) {
     PS << " (";
-    for (auto arg : args())
+    for (auto arg : getArgs())
       PS << arg << ",";
     PS << ")";
   }
@@ -644,9 +644,9 @@ void RustLoopYieldOp::writeRust(RustPrinterStream &PS) {
 void RustMakeEnumOp::writeRust(RustPrinterStream &PS) {
   auto r = getResult();
   RustEnumType et = r.getType().cast<RustEnumType>();
-  PS.let(r) << "enwrap!(" << et << "::" << variant() << ", ";
-  if (values().size())
-    PS << values()[0];
+  PS.let(r) << "enwrap!(" << et << "::" << getVariant() << ", ";
+  if (getValues().size())
+    PS << getValues()[0];
   else
     PS << "()";
   PS << ");\n";
@@ -668,8 +668,8 @@ void RustMakeStructOp::writeRust(RustPrinterStream &PS) {
 
 void RustMethodCallOp::writeRust(RustPrinterStream &PS) {
   auto r = getResult();
-  PS.let(r) << obj() << "." << getMethod() << "(";
-  auto args = operands();
+  PS.let(r) << getObj() << "." << getMethod() << "(";
+  auto args = getOps();
   for (unsigned i = 0; i < args.size(); i++) {
     if (i != 0)
       PS << ", ";
@@ -681,41 +681,41 @@ void RustMethodCallOp::writeRust(RustPrinterStream &PS) {
 
 void RustBinaryOp::writeRust(RustPrinterStream &PS) {
   auto r = getResult();
-  PS.let(r) << LHS() << " " << getOperator() << " " << RHS() << ";\n";
+  PS.let(r) << getLHS() << " " << getOperator() << " " << getRHS() << ";\n";
 }
 
 void RustBinaryRcOp::writeRust(RustPrinterStream &PS) {
   auto r = getResult();
-  PS.let(r) << "Rc::new(&*" << LHS() << " " << getOperator() << " &*" << RHS()
-            << ");\n";
+  PS.let(r) << "Rc::new(&*" << getLHS() << " " << getOperator() << " &*"
+            << getRHS() << ");\n";
 }
 
 void RustCompOp::writeRust(RustPrinterStream &PS) {
   auto r = getResult();
-  PS.let(r) << LHS() << " " << getOperator() << " " << RHS() << ";\n";
+  PS.let(r) << getLHS() << " " << getOperator() << " " << getRHS() << ";\n";
 }
 
 void RustEmitOp::writeRust(RustPrinterStream &PS) {
-  PS << "self.emit(" << value() << ");\n";
+  PS << "self.emit(" << getValue() << ");\n";
 }
 
 void RustEnumAccessOp::writeRust(RustPrinterStream &PS) {
   auto r = getResult();
-  RustEnumType et = theEnum().getType().cast<RustEnumType>();
-  PS.let(r) << "unwrap!(" << et << "::" << getVariant() << ", " << theEnum()
+  RustEnumType et = getTheEnum().getType().cast<RustEnumType>();
+  PS.let(r) << "unwrap!(" << et << "::" << getVariant() << ", " << getTheEnum()
             << ");\n";
 }
 
 void RustEnumCheckOp::writeRust(RustPrinterStream &PS) {
   auto r = getResult();
-  RustEnumType et = theEnum().getType().cast<RustEnumType>();
-  PS.let(r) << "is!(" << et << "::" << getVariant() << ", " << theEnum()
+  RustEnumType et = getTheEnum().getType().cast<RustEnumType>();
+  PS.let(r) << "is!(" << et << "::" << getVariant() << ", " << getTheEnum()
             << ");\n";
 }
 
 void RustFieldAccessOp::writeRust(RustPrinterStream &PS) {
   auto r = getResult();
-  PS.let(r) << "access!(" << aggregate() << ", " << getField() << ");\n";
+  PS.let(r) << "access!(" << getAggregate() << ", " << getField() << ");\n";
 }
 
 void RustIfOp::writeRust(RustPrinterStream &PS) {
@@ -726,10 +726,10 @@ void RustIfOp::writeRust(RustPrinterStream &PS) {
   // No clone is needed here as it will be inserted by the block
   // result.
   PS << " if " << getOperand() << " {\n";
-  for (Operation &operation : thenRegion().front())
+  for (Operation &operation : getThenRegion().front())
     ::writeRust(operation, PS);
   PS << "} else {\n";
-  for (Operation &operation : elseRegion().front())
+  for (Operation &operation : getElseRegion().front())
     ::writeRust(operation, PS);
   PS << "};\n";
 }
@@ -737,8 +737,8 @@ void RustIfOp::writeRust(RustPrinterStream &PS) {
 LogicalResult RustIfOp::verify() {
   // Check that the terminators are a rust.loop.break or a
   // rust.block.result.
-  auto &thenTerm = thenRegion().getBlocks().back().back();
-  auto &elseTerm = elseRegion().getBlocks().back().back();
+  auto &thenTerm = getThenRegion().getBlocks().back().back();
+  auto &elseTerm = getElseRegion().getBlocks().back().back();
 
   if ((isa<RustBlockResultOp>(thenTerm) || isa<RustLoopBreakOp>(thenTerm) ||
        isa<RustReturnOp>(thenTerm)) &&
@@ -754,11 +754,11 @@ LogicalResult RustIfOp::verify() {
 //===----------------------------------------------------------------------===//
 
 RustLoopConditionOp RustLoopOp::getConditionOp() {
-  return cast<RustLoopConditionOp>(before().front().getTerminator());
+  return cast<RustLoopConditionOp>(getBefore().front().getTerminator());
 }
 
 RustLoopYieldOp RustLoopOp::getYieldOp() {
-  return cast<RustLoopYieldOp>(after().front().getTerminator());
+  return cast<RustLoopYieldOp>(getAfter().front().getTerminator());
 }
 
 void RustBlockResultOp::writeRust(RustPrinterStream &PS) {
@@ -772,24 +772,24 @@ void RustBlockResultOp::writeRust(RustPrinterStream &PS) {
 
 void RustPanicOp::writeRust(RustPrinterStream &PS) {
   PS << "panic!(";
-  if (msg().has_value())
-    PS << "\"" << msg().value() << "\"";
+  if (getMsg().has_value())
+    PS << "\"" << getMsg().value() << "\"";
   PS << ");\n";
 }
 
 void RustReceiveOp::writeRust(RustPrinterStream &PS) {
   auto r = getResult();
-  PS.let(r) << "pull!(" << source();
+  PS.let(r) << "pull!(" << getSource();
   if ((*this)->hasAttr("arc.statepoint")) {
     RustLoopOp loop = (*this)->getParentOfType<RustLoopOp>();
-    BlockArgument a = loop.after().front().getArgument(0);
+    BlockArgument a = loop.getAfter().front().getArgument(0);
     PS << ", " << a;
   }
   PS << ");\n";
 }
 
 void RustSendOp::writeRust(RustPrinterStream &PS) {
-  PS << "push!(" << value() << "," << sink() << ");\n";
+  PS << "push!(" << getValue() << "," << getSink() << ");\n";
 }
 
 void RustSpawnOp::writeRust(RustPrinterStream &PS) {
@@ -808,11 +808,11 @@ void RustSpawnOp::writeRust(RustPrinterStream &PS) {
 void RustTensorOp::writeRust(RustPrinterStream &PS) {
   auto r = getResult();
   PS.let(r) << "Rc::new(Array::from_shape_vec((";
-  RustTensorType t = result().getType().cast<RustTensorType>();
+  RustTensorType t = getResult().getType().cast<RustTensorType>();
   for (int64_t d : t.getDimensions())
     PS << d << ", ";
   PS << "), vec![";
-  auto args = values();
+  auto args = getValues();
   for (unsigned i = 0; i < args.size(); i++) {
     auto v = args[i];
     PS << v << ", ";

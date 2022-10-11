@@ -442,11 +442,6 @@ def Arc_ConstantIntOp : Arc_Op<"constant", [ConstantLike, NoSideEffect]> {
   let hasCustomAssemblyFormat = 1;
   let hasVerifier = 1;
   let hasFolder = 1;
-
-  let extraClassDeclaration = [{
-    Attribute getValue() { return (*this)->getAttr("value"); }
-  }];
-
 }
 
 def Arc_CMPI_P_EQ : I64EnumAttrCase<"eq", 0>;
@@ -481,14 +476,7 @@ def Arc_CmpIOp : Arc_Op<"cmpi",
   let results = (outs BoolLike:$result);
 
   let extraClassDeclaration = [{
-    static StringRef getPredicateAttrName() { return "predicate"; }
     static Arc_CmpIPredicate getPredicateByName(StringRef name);
-
-    Arc_CmpIPredicate getPredicate() {
-      return (Arc_CmpIPredicate)
-          (*this)->getAttrOfType<IntegerAttr>(getPredicateAttrName())
-              .getInt();
-    }
   }];
 
   let hasFolder = 1;
@@ -539,12 +527,6 @@ def Arc_SelectOp : Arc_Op<"select", [NoSideEffect, SameOperandsAndResultShape,
                        ArcIntegerLike:$true_value,
                        ArcIntegerLike:$false_value);
   let results = (outs ArcIntegerLike:$result);
-
-  let extraClassDeclaration = [{
-      Value getCondition() { return condition(); }
-      Value getTrueValue() { return true_value(); }
-      Value getFalseValue() { return false_value(); }
-  }];
 
   let hasFolder = 1;
 

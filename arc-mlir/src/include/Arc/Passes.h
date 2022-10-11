@@ -17,7 +17,7 @@
 #include <memory>
 #include <mlir/Pass/Pass.h>
 
-#include <mlir/Dialect/Arithmetic/IR/Arithmetic.h>
+#include <mlir/Dialect/Arith/IR/Arith.h>
 #include <mlir/Dialect/Math/IR/Math.h>
 #include <mlir/Dialect/SCF/IR/SCF.h>
 #include <mlir/Dialect/Func/IR/FuncOps.h>
@@ -28,9 +28,6 @@
 using namespace mlir;
 
 namespace arc {
-
-#define GEN_PASS_CLASSES
-#include "Arc/Passes.h.inc"
 
 void registerArcPasses();
 

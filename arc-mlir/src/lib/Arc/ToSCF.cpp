@@ -46,7 +46,10 @@ llvm::cl::opt<bool>
 
 /// This is a lowering of arc operations to the Rust dialect.
 namespace {
-struct ToSCF : public ToSCFBase<ToSCF> {
+#define GEN_PASS_DEF_TOSCF
+#include "Arc/Passes.h.inc"
+
+struct ToSCF : public impl::ToSCFBase<ToSCF> {
   void runOnOperation() final;
 
   void getDependentDialects(DialectRegistry &registry) const override {
@@ -279,10 +282,10 @@ private:
           bodyResult = thisIf;
         } else {
           rewriter.create<arc::ArcBlockResultOp>(f->getLoc(),
-                                                 thisIf.getResult(0));
+                                                 thisIf.getResult()[0]);
         }
-        bodyBB = rewriter.createBlock(&thisIf.thenRegion());
-        nextBB = rewriter.createBlock(&thisIf.elseRegion());
+        bodyBB = rewriter.createBlock(&thisIf.getThenRegion());
+        nextBB = rewriter.createBlock(&thisIf.getElseRegion());
       } else {
         bodyBB = nextBB;
       }
@@ -328,14 +331,14 @@ private:
           IfOp destIf =
               rewriter.create<arc::IfOp>(f->getLoc(), stateTy, conditional);
           rewriter.create<arc::ArcBlockResultOp>(f->getLoc(),
-                                                 destIf.getResult(0));
+                                                 destIf.getResult()[0]);
 
-          Block *thenBB = rewriter.createBlock(&destIf.thenRegion());
+          Block *thenBB = rewriter.createBlock(&destIf.getThenRegion());
           rewriter.setInsertionPointToEnd(thenBB);
           buildBranchTo(br.getTrueDest(), br.getTrueDestOperands(),
                         block2variantStruct, block2variantName,
                         block2live2Field, stateTy, map, f->getLoc(), rewriter);
-          Block *elseBB = rewriter.createBlock(&destIf.elseRegion());
+          Block *elseBB = rewriter.createBlock(&destIf.getElseRegion());
           rewriter.setInsertionPointToEnd(elseBB);
           buildBranchTo(br.getFalseDest(), br.getFalseDestOperands(),
                         block2variantStruct, block2variantName,

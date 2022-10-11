@@ -23,7 +23,7 @@
 
 #include <llvm/ADT/StringSwitch.h>
 #include <llvm/Support/raw_ostream.h>
-#include <mlir/Dialect/Arithmetic/IR/Arithmetic.h>
+#include <mlir/Dialect/Arith/IR/Arith.h>
 #include <mlir/Dialect/CommonFolders.h>
 #include <mlir/Dialect/SCF/IR/SCF.h>
 #include <mlir/IR/Builders.h>
@@ -138,11 +138,11 @@ void ArcDialect::printType(Type type, DialectAsmPrinter &os) const {
 // Stolen from standard dialect
 OpFoldResult arc::AndOp::fold(ArrayRef<Attribute> operands) {
   /// and(x, 0) -> 0
-  if (matchPattern(rhs(), m_Zero()))
-    return rhs();
+  if (matchPattern(getRhs(), m_Zero()))
+    return getRhs();
   /// and(x,x) -> x
-  if (lhs() == rhs())
-    return rhs();
+  if (getLhs() == getRhs())
+    return getRhs();
 
   return constFoldBinaryOp<IntegerAttr>(operands,
                                         [](APInt a, APInt b) { return a & b; });
@@ -160,12 +160,12 @@ ParseResult ConstantIntOp::parse(OpAsmParser &parser, OperationState &state) {
 }
 
 void arc::ConstantIntOp::print(OpAsmPrinter &printer) {
-  printer << ' ' << value();
+  printer << ' ' << getValue();
 }
 
 LogicalResult arc::ConstantIntOp::verify() {
   auto opType = getType();
-  TypedAttr v = value();
+  TypedAttr v = getValue();
   auto valueType = v.getType();
 
   // ODS already generates checks to make sure the result type is
@@ -185,7 +185,7 @@ LogicalResult arc::ConstantIntOp::verify() {
 
 OpFoldResult ConstantIntOp::fold(ArrayRef<Attribute> operands) {
   assert(operands.empty() && "constant has no operands");
-  return value();
+  return getValue();
 }
 
 /// Materialize a single constant operation from a given attribute value with
@@ -287,10 +287,10 @@ LogicalResult EmitOp::verify() {
 // Enums
 //===----------------------------------------------------------------------===//
 LogicalResult EnumAccessOp::verify() {
-  auto ResultTy = result().getType();
-  auto SourceTy = value().getType().cast<EnumType>();
+  auto ResultTy = getResult().getType();
+  auto SourceTy = getValue().getType().cast<EnumType>();
   auto VariantTys = SourceTy.getVariants();
-  auto WantedVariant = variant();
+  auto WantedVariant = getVariant();
 
   if (ResultTy.isa<NoneType>())
     return emitError(": accessing a ")
@@ -311,7 +311,7 @@ LogicalResult EnumAccessOp::verify() {
 }
 
 LogicalResult EnumCheckOp::verify() {
-  auto SourceTy = value().getType().cast<EnumType>();
+  auto SourceTy = getValue().getType().cast<EnumType>();
   auto VariantTys = SourceTy.getVariants();
   auto WantedVariant = (*this)->getAttrOfType<StringAttr>("variant").getValue();
 
@@ -324,16 +324,16 @@ LogicalResult EnumCheckOp::verify() {
 }
 
 LogicalResult MakeEnumOp::verify() {
-  auto ResultTy = result().getType().cast<EnumType>();
+  auto ResultTy = getResult().getType().cast<EnumType>();
   Type SourceTy = NoneType::get(getContext());
   auto VariantTys = ResultTy.getVariants();
-  auto WantedVariant = variant();
-
-  if (values().size() > 1)
+  auto WantedVariant = getVariant();
+  auto values = getValues();
+  if (values.size() > 1)
     return emitOpError(": only a single value expected");
 
-  if (values().size())
-    SourceTy = values()[0].getType();
+  if (values.size())
+    SourceTy = values[0].getType();
 
   // Check that the given type matches the specified variant.
   for (auto &i : VariantTys)
@@ -483,8 +483,8 @@ LogicalResult IfOp::verify() {
 
   // Check that the terminators are a arc.loop.break or a
   // arc.block.result.
-  auto &thenTerm = thenRegion().getBlocks().back().back();
-  auto &elseTerm = elseRegion().getBlocks().back().back();
+  auto &thenTerm = getThenRegion().getBlocks().back().back();
+  auto &elseTerm = getElseRegion().getBlocks().back().back();
 
   if ((isa<ArcBlockResultOp>(thenTerm) || isa<LoopBreakOp>(thenTerm) ||
        isa<ArcReturnOp>(thenTerm)) &&
@@ -568,8 +568,8 @@ LogicalResult StructAccessOp::verify() {
 
 OpFoldResult AddIOp::fold(ArrayRef<Attribute> operands) {
   /// addi(x, 0) -> x
-  if (matchPattern(rhs(), m_Zero()))
-    return lhs();
+  if (matchPattern(getRhs(), m_Zero()))
+    return getLhs();
 
   bool isUnsigned = getType().isUnsignedInteger();
   bool overflowDetected = false;
@@ -589,10 +589,10 @@ OpFoldResult AddIOp::fold(ArrayRef<Attribute> operands) {
 // Mostly stolen from the standard dialect
 OpFoldResult MulIOp::fold(ArrayRef<Attribute> operands) {
   /// muli(x, 0) -> 0
-  if (matchPattern(rhs(), m_Zero()))
-    return rhs();
+  if (matchPattern(getRhs(), m_Zero()))
+    return getRhs();
   /// muli(x, 1) -> x
-  if (matchPattern(rhs(), m_One()))
+  if (matchPattern(getRhs(), m_One()))
     return getOperand(0);
 
   bool isUnsigned = getType().isUnsignedInteger();
@@ -617,11 +617,11 @@ OpFoldResult MulIOp::fold(ArrayRef<Attribute> operands) {
 
 OpFoldResult arc::OrOp::fold(ArrayRef<Attribute> operands) {
   /// or(x, 0) -> x
-  if (matchPattern(rhs(), m_Zero()))
-    return lhs();
+  if (matchPattern(getRhs(), m_Zero()))
+    return getLhs();
   /// or(x,x) -> x
-  if (lhs() == rhs())
-    return rhs();
+  if (getLhs() == getRhs())
+    return getRhs();
 
   return constFoldBinaryOp<IntegerAttr>(operands,
                                         [](APInt a, APInt b) { return a | b; });
@@ -639,8 +639,8 @@ LogicalResult ReceiveOp::verify() {
     return mlir::failure();
   }
   // Check that the stream's element type matches what we receive
-  auto ElemTy = value().getType();
-  SourceStreamType StreamTy = source().getType().cast<SourceStreamType>();
+  auto ElemTy = getValue().getType();
+  SourceStreamType StreamTy = getSource().getType().cast<SourceStreamType>();
   if (ElemTy != StreamTy.getType())
     return emitOpError("Can't receive a value of type ")
            << ElemTy << " from a " << StreamTy << " stream";
@@ -777,8 +777,8 @@ LogicalResult SendOp::verify() {
     return mlir::failure();
   }
   // Check that the stream's element type matches what we send
-  auto ElemTy = value().getType();
-  SinkStreamType StreamTy = sink().getType().cast<SinkStreamType>();
+  auto ElemTy = getValue().getType();
+  SinkStreamType StreamTy = getSink().getType().cast<SinkStreamType>();
   if (ElemTy != StreamTy.getType())
     return emitOpError("Can't send value of type ")
            << ElemTy << " on a " << StreamTy << " stream";
@@ -791,8 +791,8 @@ LogicalResult SendOp::verify() {
 // Mostly stolen from the standard dialect
 OpFoldResult SubIOp::fold(ArrayRef<Attribute> operands) {
   /// addi(x, 0) -> x
-  if (matchPattern(rhs(), m_Zero()))
-    return lhs();
+  if (matchPattern(getRhs(), m_Zero()))
+    return getLhs();
 
   bool isUnsigned = getType().isUnsignedInteger();
   bool overflowDetected = false;
@@ -813,10 +813,10 @@ OpFoldResult SubIOp::fold(ArrayRef<Attribute> operands) {
 // Stolen from standard dialect
 OpFoldResult arc::XOrOp::fold(ArrayRef<Attribute> operands) {
   /// xor(x, 0) -> x
-  if (matchPattern(rhs(), m_Zero()))
-    return lhs();
+  if (matchPattern(getRhs(), m_Zero()))
+    return getLhs();
   /// xor(x,x) -> 0
-  if (lhs() == rhs())
+  if (getLhs() == getRhs())
     return Builder(getContext()).getZeroAttr(getType());
 
   return constFoldBinaryOp<IntegerAttr>(operands,
@@ -827,12 +827,12 @@ OpFoldResult arc::XOrOp::fold(ArrayRef<Attribute> operands) {
 // StateAppender operations
 //===----------------------------------------------------------------------===//
 LogicalResult StateAppenderFoldOp::verify() {
-  auto InitTy = init().getType();
-  auto ResultTy = res().getType();
-  StringAttr funName = StringAttr::get(this->getContext(), fun());
+  auto InitTy = getInit().getType();
+  auto ResultTy = getRes().getType();
+  StringAttr funName = StringAttr::get(this->getContext(), getFun());
   Operation *Callee = ::mlir::SymbolTable::lookupNearestSymbolFrom(
       this->getOperation(), funName);
-  auto StateTy = state().getType().cast<ArconAppenderType>().getType();
+  auto StateTy = getState().getType().cast<ArconAppenderType>().getType();
 
   mlir::func::FuncOp F = dyn_cast<mlir::func::FuncOp>(Callee);
   FunctionType FT = F.getFunctionType().dyn_cast<FunctionType>();
@@ -872,8 +872,8 @@ LogicalResult StateAppenderFoldOp::verify() {
 }
 
 LogicalResult StateAppenderPushOp::verify() {
-  auto ValTy = value().getType();
-  auto StateTy = state().getType().cast<ArconAppenderType>().getType();
+  auto ValTy = getValue().getType();
+  auto StateTy = getState().getType().cast<ArconAppenderType>().getType();
   if (ValTy != StateTy)
     return emitOpError("can't push a value of type ")
            << ValTy << " to an appender expecting type " << StateTy;
@@ -884,8 +884,8 @@ LogicalResult StateAppenderPushOp::verify() {
 // StateMap operations
 //===----------------------------------------------------------------------===//
 LogicalResult StateMapContainsOp::verify() {
-  auto KeyTy = key().getType();
-  auto ExpectedKeyTy = state().getType().cast<ArconMapType>().getKeyType();
+  auto KeyTy = getKey().getType();
+  auto ExpectedKeyTy = getState().getType().cast<ArconMapType>().getKeyType();
   if (KeyTy != ExpectedKeyTy)
     return emitOpError("key type ")
            << KeyTy << " does not match map key type " << ExpectedKeyTy;
@@ -893,10 +893,10 @@ LogicalResult StateMapContainsOp::verify() {
 }
 
 LogicalResult StateMapGetOp::verify() {
-  auto ValTy = result().getType();
-  auto KeyTy = key().getType();
-  auto ExpectedKeyTy = state().getType().cast<ArconMapType>().getKeyType();
-  auto ExpectedValTy = state().getType().cast<ArconMapType>().getValueType();
+  auto ValTy = getResult().getType();
+  auto KeyTy = getKey().getType();
+  auto ExpectedKeyTy = getState().getType().cast<ArconMapType>().getKeyType();
+  auto ExpectedValTy = getState().getType().cast<ArconMapType>().getValueType();
   if (KeyTy != ExpectedKeyTy)
     return emitOpError("key type ")
            << KeyTy << " does not match map key type " << ExpectedKeyTy;
@@ -907,10 +907,10 @@ LogicalResult StateMapGetOp::verify() {
 }
 
 LogicalResult StateMapInsertOp::verify() {
-  auto ValTy = value().getType();
-  auto KeyTy = key().getType();
-  auto ExpectedKeyTy = state().getType().cast<ArconMapType>().getKeyType();
-  auto ExpectedValTy = state().getType().cast<ArconMapType>().getValueType();
+  auto ValTy = getValue().getType();
+  auto KeyTy = getKey().getType();
+  auto ExpectedKeyTy = getState().getType().cast<ArconMapType>().getKeyType();
+  auto ExpectedValTy = getState().getType().cast<ArconMapType>().getValueType();
   if (KeyTy != ExpectedKeyTy)
     return emitOpError("key type ")
            << KeyTy << " does not match map key type " << ExpectedKeyTy;
@@ -921,8 +921,8 @@ LogicalResult StateMapInsertOp::verify() {
 }
 
 LogicalResult StateMapRemoveOp::verify() {
-  auto KeyTy = key().getType();
-  auto ExpectedKeyTy = state().getType().cast<ArconMapType>().getKeyType();
+  auto KeyTy = getKey().getType();
+  auto ExpectedKeyTy = getState().getType().cast<ArconMapType>().getKeyType();
   if (KeyTy != ExpectedKeyTy)
     return emitOpError("key type ")
            << KeyTy << " does not match map key type " << ExpectedKeyTy;
@@ -933,8 +933,8 @@ LogicalResult StateMapRemoveOp::verify() {
 // StateValue operations
 //===----------------------------------------------------------------------===//
 LogicalResult StateValueWriteOp::verify() {
-  auto ValTy = value().getType();
-  auto StateTy = state().getType().cast<ArconValueType>().getType();
+  auto ValTy = getValue().getType();
+  auto StateTy = getState().getType().cast<ArconValueType>().getType();
   if (ValTy != StateTy)
     return emitOpError("Can't write a value of type ")
            << ValTy << " to a state value of type" << StateTy;
@@ -943,7 +943,7 @@ LogicalResult StateValueWriteOp::verify() {
 
 LogicalResult StateValueReadOp::verify() {
   auto Operation = this->getOperation();
-  auto ValTy = state().getType().cast<ArconValueType>().getType();
+  auto ValTy = getState().getType().cast<ArconValueType>().getType();
   auto ResultTy = Operation->getResult(0).getType();
   if (ValTy != ResultTy)
     return emitOpError("Expected result type ") << ValTy << " not " << ResultTy;

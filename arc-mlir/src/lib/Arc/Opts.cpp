@@ -23,7 +23,7 @@
 
 #include "Arc/Arc.h"
 #include <llvm/Support/raw_ostream.h>
-#include <mlir/Dialect/Arithmetic/IR/Arithmetic.h>
+#include <mlir/Dialect/Arith/IR/Arith.h>
 #include <mlir/Dialect/Func/IR/FuncOps.h>
 #include <mlir/IR/BlockAndValueMapping.h>
 #include <mlir/IR/Matchers.h>
@@ -69,7 +69,7 @@ struct ConstantFoldIf : public mlir::OpRewritePattern<arc::IfOp> {
       return failure();
 
     int64_t cond = cast<arith::ConstantIntOp>(def).value();
-    Region &region = cond ? op.thenRegion() : op.elseRegion();
+    Region &region = cond ? op.getThenRegion() : op.getElseRegion();
     Block &block = region.getBlocks().front();
 
     Operation *block_result =
@@ -104,12 +104,12 @@ struct ConstantFoldIndexTuple
   mlir::LogicalResult
   matchAndRewrite(arc::IndexTupleOp op,
                   PatternRewriter &rewriter) const override {
-    Operation *def = op.value().getDefiningOp();
+    Operation *def = op.getValue().getDefiningOp();
 
     arc::MakeTupleOp mt = def ? dyn_cast<arc::MakeTupleOp>(def) : nullptr;
     if (!mt)
       return failure();
-    rewriter.replaceOp(op, mt.values()[op.index()]);
+    rewriter.replaceOp(op, mt.getValues()[op.getIndex()]);
     return success();
   }
 };
@@ -122,11 +122,11 @@ struct ConstantFoldEnumAccess
   mlir::LogicalResult
   matchAndRewrite(arc::EnumAccessOp op,
                   PatternRewriter &rewriter) const override {
-    Operation *def = op.value().getDefiningOp();
+    Operation *def = op.getValue().getDefiningOp();
     arc::MakeEnumOp me = dyn_cast_or_null<arc::MakeEnumOp>(def);
-    if (!me || !me.variant().equals(op.variant()))
+    if (!me || !me.getVariant().equals(op.getVariant()))
       return failure();
-    rewriter.replaceOp(op, me.values()[0]);
+    rewriter.replaceOp(op, me.getValues()[0]);
     return success();
   }
 };
@@ -138,13 +138,13 @@ struct ConstantFoldEnumCheck : public mlir::OpRewritePattern<arc::EnumCheckOp> {
   mlir::LogicalResult
   matchAndRewrite(arc::EnumCheckOp op,
                   PatternRewriter &rewriter) const override {
-    Operation *def = op.value().getDefiningOp();
+    Operation *def = op.getValue().getDefiningOp();
     arc::MakeEnumOp me = dyn_cast_or_null<arc::MakeEnumOp>(def);
     if (!me)
       return failure();
 
     arith::ConstantIntOp isTrue = rewriter.create<arith::ConstantIntOp>(
-        op.getLoc(), me.variant().equals(op.variant()), 1);
+        op.getLoc(), me.getVariant().equals(op.getVariant()), 1);
     Value r = isTrue;
     rewriter.replaceOp(op, r);
     return success();
@@ -159,8 +159,8 @@ struct ConstantFoldStructAccess
   mlir::LogicalResult
   matchAndRewrite(arc::StructAccessOp op,
                   PatternRewriter &rewriter) const override {
-    Operation *def = op.value().getDefiningOp();
-    auto field = op.field();
+    Operation *def = op.getValue().getDefiningOp();
+    auto field = op.getField();
     arc::MakeStructOp ms = dyn_cast_or_null<arc::MakeStructOp>(def);
     if (!ms)
       return failure();
@@ -168,7 +168,7 @@ struct ConstantFoldStructAccess
     unsigned idx = 0;
     for (auto &i : st.getFields()) {
       if (i.first.getValue().equals(field)) {
-        rewriter.replaceOp(op, ms.values()[idx]);
+        rewriter.replaceOp(op, ms.getValues()[idx]);
         return success();
       }
       idx++;

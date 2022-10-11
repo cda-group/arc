@@ -27,7 +27,11 @@ using namespace arc;
 
 /// This is a lowering of arc operations to the Rust dialect.
 namespace {
-struct ArcToRustLoweringPass : public LowerToRustBase<ArcToRustLoweringPass> {
+#define GEN_PASS_DEF_LOWERTORUST
+#include "Arc/Passes.h.inc"
+
+struct ArcToRustLoweringPass
+    : public impl::LowerToRustBase<ArcToRustLoweringPass> {
   void runOnOperation() final;
 };
 } // end anonymous namespace.
@@ -104,13 +108,14 @@ struct SCFWhileOpLowering : public OpConversionPattern<scf::WhileOp> {
     rust::RustLoopOp loop = rewriter.create<rust::RustLoopOp>(
         op->getLoc(), resTys, adaptor.getOperands());
 
-    rewriter.inlineRegionBefore(o.getBefore(), loop.before(),
-                                loop.before().end());
-    rewriter.inlineRegionBefore(o.getAfter(), loop.after(), loop.after().end());
+    rewriter.inlineRegionBefore(o.getBefore(), loop.getBefore(),
+                                loop.getBefore().end());
+    rewriter.inlineRegionBefore(o.getAfter(), loop.getAfter(),
+                                loop.getAfter().end());
 
-    if (failed(rewriter.convertRegionTypes(&loop.before(), TypeConverter)))
+    if (failed(rewriter.convertRegionTypes(&loop.getBefore(), TypeConverter)))
       return failure();
-    if (failed(rewriter.convertRegionTypes(&loop.after(), TypeConverter)))
+    if (failed(rewriter.convertRegionTypes(&loop.getAfter(), TypeConverter)))
       return failure();
 
     rewriter.replaceOp(op, loop.getResults());
@@ -157,7 +162,7 @@ struct SpawnOpLowering : public OpConversionPattern<arc::ArcSpawnOp> {
   LogicalResult
   matchAndRewrite(arc::ArcSpawnOp o, OpAdaptor adaptor,
                   ConversionPatternRewriter &rewriter) const final {
-    rewriter.replaceOpWithNewOp<rust::RustSpawnOp>(o, adaptor.callee(),
+    rewriter.replaceOpWithNewOp<rust::RustSpawnOp>(o, adaptor.getCallee(),
                                                    adaptor.getOperands());
     return success();
   };
@@ -421,9 +426,9 @@ struct ConstantADTOpLowering : public OpConversionPattern<arc::ConstantADTOp> {
   LogicalResult
   matchAndRewrite(arc::ConstantADTOp o, OpAdaptor adaptor,
                   ConversionPatternRewriter &rewriter) const final {
-    Type rustTy = TypeConverter.convertType(o.result().getType());
+    Type rustTy = TypeConverter.convertType(o.getResult().getType());
     rewriter.replaceOpWithNewOp<rust::RustConstantOp>(o, rustTy,
-                                                      adaptor.value());
+                                                      adaptor.getValue());
     return success();
   };
 
@@ -446,12 +451,12 @@ struct IfOpLowering : public OpConversionPattern<arc::IfOp> {
       resTys.push_back(retTy);
     }
     auto newOp = rewriter.create<rust::RustIfOp>(o.getLoc(), resTys,
-                                                 adaptor.condition());
+                                                 adaptor.getCondition());
 
-    rewriter.inlineRegionBefore(o.thenRegion(), newOp.thenRegion(),
-                                newOp.thenRegion().end());
-    rewriter.inlineRegionBefore(o.elseRegion(), newOp.elseRegion(),
-                                newOp.elseRegion().end());
+    rewriter.inlineRegionBefore(o.getThenRegion(), newOp.getThenRegion(),
+                                newOp.getThenRegion().end());
+    rewriter.inlineRegionBefore(o.getElseRegion(), newOp.getElseRegion(),
+                                newOp.getElseRegion().end());
     rewriter.replaceOp(o, newOp.getResults());
     return success();
   };
@@ -470,7 +475,7 @@ struct IndexTupleOpLowering : public OpConversionPattern<arc::IndexTupleOp> {
                   ConversionPatternRewriter &rewriter) const final {
     Type retTy = TypeConverter.convertType(o.getType());
     rewriter.replaceOpWithNewOp<rust::RustFieldAccessOp>(
-        o, retTy, adaptor.value(), std::to_string(o.index()));
+        o, retTy, adaptor.getValue(), std::to_string(o.getIndex()));
     return success();
   };
 
@@ -498,7 +503,7 @@ struct PanicOpLowering : public OpConversionPattern<arc::PanicOp> {
   LogicalResult
   matchAndRewrite(PanicOp o, OpAdaptor adaptor,
                   ConversionPatternRewriter &rewriter) const final {
-    auto msg = o.msg();
+    auto msg = o.getMsg();
     if (msg.has_value())
       rewriter.replaceOpWithNewOp<rust::RustPanicOp>(
           o, StringAttr::get(Ctx, msg.value()));
@@ -539,10 +544,10 @@ struct MakeEnumOpLowering : public OpConversionPattern<MakeEnumOp> {
   matchAndRewrite(MakeEnumOp op, OpAdaptor adaptor,
                   ConversionPatternRewriter &rewriter) const final {
     Type retTy = TypeConverter.convertType(op.getType());
-    std::string variant_str(op.variant());
+    std::string variant_str(op.getVariant());
     SmallVector<Value, 1> values;
-    if (op.values().size())
-      values.push_back(adaptor.values()[0]);
+    if (op.getValues().size())
+      values.push_back(adaptor.getValues()[0]);
     rewriter.replaceOpWithNewOp<rust::RustMakeEnumOp>(op, retTy, values,
                                                       variant_str);
     return success();
@@ -614,10 +619,10 @@ struct ArcIntArithmeticOpLowering : public OpConversionPattern<T> {
     Type rustTy = TypeConverter.convertType(o.getType());
     if (rustTy.isa<rust::types::RustTensorType>())
       rewriter.replaceOpWithNewOp<rust::RustBinaryRcOp>(
-          o, rustTy, opStr[arithOp], adaptor.lhs(), adaptor.rhs());
+          o, rustTy, opStr[arithOp], adaptor.getLhs(), adaptor.getRhs());
     else
       rewriter.replaceOpWithNewOp<rust::RustBinaryOp>(
-          o, rustTy, opStr[arithOp], adaptor.lhs(), adaptor.rhs());
+          o, rustTy, opStr[arithOp], adaptor.getLhs(), adaptor.getRhs());
     return success();
   };
 
@@ -658,7 +663,7 @@ struct ArcCmpIOpLowering : public OpConversionPattern<arc::CmpIOp> {
       break;
     }
     rewriter.replaceOpWithNewOp<rust::RustBinaryOp>(
-        o, rustTy, cmpOp, adaptor.lhs(), adaptor.rhs());
+        o, rustTy, cmpOp, adaptor.getLhs(), adaptor.getRhs());
     return success();
   };
 
@@ -818,11 +823,11 @@ struct ArithSelectOpLowering
     // ordinary arc if.
     auto thisIf = rewriter.replaceOpWithNewOp<arc::IfOp>(
         o, o.getType(), adaptor.getCondition());
-    Block *thenBB = rewriter.createBlock(&thisIf.thenRegion());
+    Block *thenBB = rewriter.createBlock(&thisIf.getThenRegion());
     rewriter.setInsertionPointToEnd(thenBB);
     rewriter.create<arc::ArcBlockResultOp>(o.getLoc(), adaptor.getTrueValue());
 
-    Block *elseBB = rewriter.createBlock(&thisIf.elseRegion());
+    Block *elseBB = rewriter.createBlock(&thisIf.getElseRegion());
     rewriter.setInsertionPointToEnd(elseBB);
     rewriter.create<arc::ArcBlockResultOp>(o.getLoc(), adaptor.getFalseValue());
 
@@ -881,9 +886,9 @@ struct EnumAccessOpLowering : public OpConversionPattern<arc::EnumAccessOp> {
   matchAndRewrite(EnumAccessOp o, OpAdaptor adaptor,
                   ConversionPatternRewriter &rewriter) const final {
     Type retTy = TypeConverter.convertType(o.getType());
-    std::string variant_str(o.variant());
+    std::string variant_str(o.getVariant());
     rewriter.replaceOpWithNewOp<rust::RustEnumAccessOp>(
-        o, retTy, adaptor.value(), variant_str);
+        o, retTy, adaptor.getValue(), variant_str);
     return success();
   };
 
@@ -901,9 +906,9 @@ struct StructAccessOpLowering
   matchAndRewrite(StructAccessOp o, OpAdaptor adaptor,
                   ConversionPatternRewriter &rewriter) const final {
     Type retTy = TypeConverter.convertType(o.getType());
-    std::string idx_str(o.field());
+    std::string idx_str(o.getField());
     rewriter.replaceOpWithNewOp<rust::RustFieldAccessOp>(
-        o, retTy, adaptor.value(), idx_str);
+        o, retTy, adaptor.getValue(), idx_str);
     return success();
   };
 
@@ -920,9 +925,9 @@ struct EnumCheckOpLowering : public OpConversionPattern<arc::EnumCheckOp> {
   matchAndRewrite(EnumCheckOp o, OpAdaptor adaptor,
                   ConversionPatternRewriter &rewriter) const final {
     Type retTy = TypeConverter.convertType(o.getType());
-    std::string variant_str(o.variant());
+    std::string variant_str(o.getVariant());
     rewriter.replaceOpWithNewOp<rust::RustEnumCheckOp>(
-        o, retTy, adaptor.value(), variant_str);
+        o, retTy, adaptor.getValue(), variant_str);
     return success();
   };
 
@@ -937,8 +942,8 @@ struct EmitOpLowering : public OpConversionPattern<arc::EmitOp> {
   LogicalResult
   matchAndRewrite(EmitOp o, OpAdaptor adaptor,
                   ConversionPatternRewriter &rewriter) const final {
-    rewriter.replaceOpWithNewOp<rust::RustEmitOp>(o, adaptor.value(),
-                                                  adaptor.stream());
+    rewriter.replaceOpWithNewOp<rust::RustEmitOp>(o, adaptor.getValue(),
+                                                  adaptor.getStream());
     return success();
   };
 };
@@ -952,8 +957,8 @@ struct ReceiveOpLowering : public OpConversionPattern<arc::ReceiveOp> {
   matchAndRewrite(ReceiveOp o, OpAdaptor adaptor,
                   ConversionPatternRewriter &rewriter) const final {
     Type retTy = TypeConverter.convertType(o.getType());
-    auto n = rewriter.replaceOpWithNewOp<rust::RustReceiveOp>(o, retTy,
-                                                              adaptor.source());
+    auto n = rewriter.replaceOpWithNewOp<rust::RustReceiveOp>(
+        o, retTy, adaptor.getSource());
     if (o->hasAttr("arc.statepoint"))
       n->setAttr("arc.statepoint", UnitAttr::get(getContext()));
 
@@ -971,8 +976,8 @@ struct SendOpLowering : public OpConversionPattern<arc::SendOp> {
   LogicalResult
   matchAndRewrite(SendOp o, OpAdaptor adaptor,
                   ConversionPatternRewriter &rewriter) const final {
-    rewriter.replaceOpWithNewOp<rust::RustSendOp>(o, adaptor.value(),
-                                                  adaptor.sink());
+    rewriter.replaceOpWithNewOp<rust::RustSendOp>(o, adaptor.getValue(),
+                                                  adaptor.getSink());
     return success();
   };
 };
@@ -1215,9 +1220,9 @@ private:
                                  MLIRContext *ctx) const {
     auto newOp = rewriter.create<rust::RustExtFuncOp>(
         op->getLoc(), SmallVector<mlir::Type, 1>({}), operands, attributes);
-    rewriter.applySignatureConversion(&newOp.getBody(), sigConv);
+    rewriter.applySignatureConversion(&newOp.getEmptyBody(), sigConv);
 
-    if (failed(rewriter.convertRegionTypes(&newOp.getBody(), TypeConverter,
+    if (failed(rewriter.convertRegionTypes(&newOp.getEmptyBody(), TypeConverter,
                                            &sigConv)))
       return failure();
 

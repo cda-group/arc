@@ -40,7 +40,10 @@ cl::opt<bool> OnlyRunOnTasks("remove-scf-only-tasks",
 
 /// This is a lowering of arc operations to the Rust dialect.
 namespace {
-struct RemoveSCF : public RemoveSCFBase<RemoveSCF> {
+#define GEN_PASS_DEF_REMOVESCF
+#include "Arc/Passes.h.inc"
+
+struct RemoveSCF : public impl::RemoveSCFBase<RemoveSCF> {
   void runOnOperation() final;
 };
 
@@ -91,7 +94,7 @@ LogicalResult IfLowering::matchAndRewrite(arc::IfOp ifOp,
 
   // Move blocks from the "then" region to the region containing 'scf.if',
   // place it before the continuation block, and branch to it.
-  auto &thenRegion = ifOp.thenRegion();
+  auto &thenRegion = ifOp.getThenRegion();
   auto *thenBlock = &thenRegion.front();
   Operation *thenTerminator = thenRegion.back().getTerminator();
   ValueRange thenTerminatorOperands = thenTerminator->getOperands();
@@ -113,7 +116,7 @@ LogicalResult IfLowering::matchAndRewrite(arc::IfOp ifOp,
   // 'scf.if', place it before the continuation block and branch to it.  It
   // will be placed after the "then" regions.
   auto *elseBlock = continueBlock;
-  auto &elseRegion = ifOp.elseRegion();
+  auto &elseRegion = ifOp.getElseRegion();
   if (!elseRegion.empty()) {
     elseBlock = &elseRegion.front();
     Operation *elseTerminator = elseRegion.back().getTerminator();
@@ -134,7 +137,7 @@ LogicalResult IfLowering::matchAndRewrite(arc::IfOp ifOp,
     rewriter.inlineRegionBefore(elseRegion, continueBlock);
   }
   rewriter.setInsertionPointToEnd(condBlock);
-  rewriter.create<CondBranchOp>(loc, ifOp.condition(), thenBlock,
+  rewriter.create<CondBranchOp>(loc, ifOp.getCondition(), thenBlock,
                                 /*trueArgs=*/ArrayRef<Value>(), elseBlock,
                                 /*falseArgs=*/ArrayRef<Value>());
   // Ok, we're done!
@@ -200,7 +203,7 @@ LogicalResult WhileLowering::matchAndRewrite(scf::WhileOp whileOp,
   // Patch away the arc.loop.break-operations with direct branches
   for (arc::LoopBreakOp op : breaks) {
     rewriter.setInsertionPointAfter(op);
-    rewriter.replaceOpWithNewOp<BranchOp>(op, continuation, op.results());
+    rewriter.replaceOpWithNewOp<BranchOp>(op, continuation, op.getResults());
   }
 
   rewriter.setInsertionPointToEnd(afterLast);
