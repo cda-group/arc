@@ -56,7 +56,7 @@ class Arc_Op<string mnemonic, list<Trait> traits = []>
 
 /* The structure for these unary operands is stolen from the standard dialect */
 class Arc_UnaryOp<string mnemonic, list<Trait> traits = []>
-    : Op<Arc_Dialect, mnemonic, !listconcat(traits, [NoSideEffect])> {
+    : Op<Arc_Dialect, mnemonic, !listconcat(traits, [Pure])> {
   let results = (outs AnyType);
 }
 
@@ -153,7 +153,7 @@ def Affine : PredOpTrait<
 //===----------------------------------------------------------------------===//
 
 def MakeVectorOp
-    : Arc_Op<"make_vector", [NoSideEffect, SameOperandsAndResultElementType]> {
+    : Arc_Op<"make_vector", [Pure, SameOperandsAndResultElementType]> {
   let summary = "create a vector from a sequence of values";
   let description = [{
     A pure operation which turns its arguments into a vector.
@@ -235,7 +235,7 @@ def ErfOp : Arc_FloatUnaryOp<"erf"> {
   }];
 }
 
-def MakeStructOp : Arc_Op<"make_struct", [NoSideEffect]> {
+def MakeStructOp : Arc_Op<"make_struct", [Pure]> {
   let summary = "create a struct from a sequence of values";
   let description = [{
     A pure operation which turns its arguments into a struct.
@@ -253,7 +253,7 @@ def MakeStructOp : Arc_Op<"make_struct", [NoSideEffect]> {
   }];
 }
 
-def MakeEnumOp : Arc_Op<"make_enum", [NoSideEffect]> {
+def MakeEnumOp : Arc_Op<"make_enum", [Pure]> {
   let summary = "create an enum from a values";
   let description = [{
     A pure operation which turns its argument into an enum.
@@ -270,7 +270,7 @@ def MakeEnumOp : Arc_Op<"make_enum", [NoSideEffect]> {
     "`(` ($values^ `:` type($values))? `)` `as` $variant attr-dict `:` type($result)";
 }
 
-def MakeTupleOp : Arc_Op<"make_tuple", [NoSideEffect]> {
+def MakeTupleOp : Arc_Op<"make_tuple", [Pure]> {
   let summary = "create a tuple from a sequence of values";
   let description = [{
     A pure operation which turns its arguments into a tuple.
@@ -282,7 +282,7 @@ def MakeTupleOp : Arc_Op<"make_tuple", [NoSideEffect]> {
 }
 
 def MakeTensorOp : Arc_Op<"make_tensor",
-                          [NoSideEffect, SameOperandsAndResultElementType]> {
+                          [Pure, SameOperandsAndResultElementType]> {
   let summary = "create a tensor from a sequence of values";
   let description = [{
     A pure operation which turns its arguments into a tensor. The
@@ -294,7 +294,7 @@ def MakeTensorOp : Arc_Op<"make_tensor",
   let hasVerifier = 1;
 }
 
-def IndexTupleOp : Arc_Op<"index_tuple", [NoSideEffect]> {
+def IndexTupleOp : Arc_Op<"index_tuple", [Pure]> {
   let summary = "index into a tuple using a constant value";
   let description = [{
     A pure operation which reads a value from a tuple.
@@ -348,7 +348,7 @@ def IfOp : Arc_Op<"if", [SingleBlock]> {
   let hasCanonicalizer = 1;
 }
 
-def LoopBreakOp : Arc_Op<"loop.break", [NoSideEffect, Terminator]> {
+def LoopBreakOp : Arc_Op<"loop.break", [Pure, Terminator]> {
   let summary = "break out of a loop";
   let description = [{
      Break out of a loop producing a result
@@ -359,7 +359,7 @@ def LoopBreakOp : Arc_Op<"loop.break", [NoSideEffect, Terminator]> {
   let hasVerifier = 1;
 }
 
-def MakeAppenderOp : Arc_Op<"make_appender", [NoSideEffect, Linear]> {
+def MakeAppenderOp : Arc_Op<"make_appender", [Pure, Linear]> {
   let summary = "instantiate a new appender";
   let description = [{
     The "arc.make_appender" operation instantiates and returns a new appender.
@@ -374,7 +374,7 @@ def MakeAppenderOp : Arc_Op<"make_appender", [NoSideEffect, Linear]> {
   let results = (outs AnyAppender);
 }
 
-def MergeOp : Arc_Op<"merge", [NoSideEffect, Linear]> {
+def MergeOp : Arc_Op<"merge", [Pure, Linear]> {
   let summary = "merge a value into a builder";
   let description = [{
     The "arc.merge" operation takes a builder and a value, and returns a new
@@ -394,7 +394,7 @@ def MergeOp : Arc_Op<"merge", [NoSideEffect, Linear]> {
   let extraClassDeclaration = [{ LogicalResult customVerify(); }];
 }
 
-def ResultOp : Arc_Op<"result", [NoSideEffect]> {
+def ResultOp : Arc_Op<"result", [Pure]> {
   let summary = "materialize a builder into a value";
   let description = [{
     The "arc.result" operation takes a builder and materializes it into a value
@@ -414,7 +414,7 @@ def ResultOp : Arc_Op<"result", [NoSideEffect]> {
   let extraClassDeclaration = [{ LogicalResult customVerify(); }];
 }
 
-def Arc_ConstantADTOp : Arc_Op<"adt_constant", [NoSideEffect]> {
+def Arc_ConstantADTOp : Arc_Op<"adt_constant", [Pure]> {
   let summary = "Declare an ADT constant";
   let description = [{
     ```
@@ -426,7 +426,7 @@ def Arc_ConstantADTOp : Arc_Op<"adt_constant", [NoSideEffect]> {
   let assemblyFormat = " $value attr-dict `:` type($result)";
 }
 
-def Arc_ConstantIntOp : Arc_Op<"constant", [ConstantLike, NoSideEffect]> {
+def Arc_ConstantIntOp : Arc_Op<"constant", [ConstantLike, Pure]> {
   let summary = "The op that declares an Arc integer constant";
 
   let description = [{
@@ -459,7 +459,7 @@ def Arc_CmpIPredicateAttr : I64EnumAttr<
 }
 
 def Arc_CmpIOp : Arc_Op<"cmpi",
-    [NoSideEffect, SameTypeOperands, SameOperandsAndResultShape,
+    [Pure, SameTypeOperands, SameOperandsAndResultShape,
      TypesMatchWith<
        "result type has i1 element type and same shape as operands",
        "lhs", "result", "getI1SameShape($_self)">]> {
@@ -513,7 +513,7 @@ def Arc_ReceiveOp : Arc_Op<"receive", []> {
   let extraClassDeclaration = [{ LogicalResult customVerify(); }];
 }
 
-def Arc_SelectOp : Arc_Op<"select", [NoSideEffect, SameOperandsAndResultShape,
+def Arc_SelectOp : Arc_Op<"select", [Pure, SameOperandsAndResultShape,
      AllTypesMatch<["true_value", "false_value", "result"]>,
      TypesMatchWith<"condition type matches i1 equivalent of result type",
                      "result", "condition",
@@ -551,7 +551,7 @@ def Arc_SendOp : Arc_Op<"send", []> {
   let extraClassDeclaration = [{ LogicalResult customVerify(); }];
 }
 
-def EnumAccessOp : Arc_Op<"enum_access", [NoSideEffect]> {
+def EnumAccessOp : Arc_Op<"enum_access", [Pure]> {
   let summary = "access a variant of an enum";
   let description = [{
     A pure operation which acccesses a variant of an enum.
@@ -570,7 +570,7 @@ def EnumAccessOp : Arc_Op<"enum_access", [NoSideEffect]> {
     "$variant `in` `(` $value `:` type($value) `)` attr-dict `:` type($result)";
 }
 
-def EnumCheckOp : Arc_Op<"enum_check", [NoSideEffect]> {
+def EnumCheckOp : Arc_Op<"enum_check", [Pure]> {
   let summary = "Check if an enum is of a particular variant";
   let description = [{
     A pure operation which checks if an enum is of a particular variant.
@@ -589,7 +589,7 @@ def EnumCheckOp : Arc_Op<"enum_check", [NoSideEffect]> {
     "`(` $value `:` type($value) `)` `is` $variant attr-dict `:` type($result)";
 }
 
-def StructAccessOp : Arc_Op<"struct_access", [NoSideEffect]> {
+def StructAccessOp : Arc_Op<"struct_access", [Pure]> {
   let summary = "access a field of a struct";
   let description = [{
     A pure operation which acccesses a field of a struct.
@@ -612,7 +612,7 @@ def StructAccessOp : Arc_Op<"struct_access", [NoSideEffect]> {
 // accessor to operands.  Stolen from standard dialect.
 class ArcArithmeticOp<string mnemonic, list<Trait> traits = []> :
     Op<Arc_Dialect, mnemonic,
-       !listconcat(traits, [NoSideEffect, SameOperandsAndResultType])> {
+       !listconcat(traits, [Pure, SameOperandsAndResultType])> {
 
   let results = (outs AnyType);
   let hasCustomAssemblyFormat = 1;

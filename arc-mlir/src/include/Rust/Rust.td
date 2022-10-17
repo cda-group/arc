@@ -252,7 +252,7 @@ def Rust_RustExtFuncOp : Rust_Op<"extfunc",
 }
 
 // Stolen from SCF
-def Rust_RustLoopOp : Rust_Op<"loop", [RecursiveSideEffects]> {
+def Rust_RustLoopOp : Rust_Op<"loop", [RecursiveMemoryEffects]> {
   let summary = "A Rust loop ";
   let description = [{
   }];
@@ -274,7 +274,7 @@ def Rust_RustLoopOp : Rust_Op<"loop", [RecursiveSideEffects]> {
 // Stolen from SCF
 def Rust_RustLoopConditionOp : Rust_Op<"loop.condition", [
   HasParent<"RustLoopOp">,
-  NoSideEffect,
+  Pure,
   Terminator
 ]> {
   let summary = "loop continuation condition";
@@ -292,7 +292,7 @@ def Rust_RustLoopConditionOp : Rust_Op<"loop.condition", [
 
 // Stolen from SCF
 def Rust_RustLoopYieldOp : Rust_Op<"loop.yield",
-                              [NoSideEffect, Terminator,
+                              [Pure, Terminator,
                                HasParent<"RustLoopOp">]> {
   let summary = "loop yield and termination operation";
   let description = [{
@@ -309,7 +309,7 @@ def Rust_RustLoopYieldOp : Rust_Op<"loop.yield",
 }
 
 def Rust_RustLoopBreakOp : Rust_Op<"loop.break",
-                              [NoSideEffect, Terminator]> {
+                              [Pure, Terminator]> {
   let summary = "break out of a loop";
   let description = [{
      Break out of a loop producing a result
@@ -370,7 +370,7 @@ def RustSpawnOp : Rust_Op<"spawn", [CallOpInterface]> {
   }];
 }
 
-def Rust_RustConstantOp : Rust_Op<"constant", [NoSideEffect]> {
+def Rust_RustConstantOp : Rust_Op<"constant", [Pure]> {
   let summary = "a rust constant.";
   let description = [{
     A Rust constant, the value attribute is the string representation of the
@@ -389,7 +389,7 @@ def Rust_RustConstantOp : Rust_Op<"constant", [NoSideEffect]> {
   }];
 }
 
-def Rust_RustEnumAccessOp : Rust_Op<"enum_access", [NoSideEffect]> {
+def Rust_RustEnumAccessOp : Rust_Op<"enum_access", [Pure]> {
   let summary = "Access to a variant of an enum";
   let description = [{
     Access to a variant of an enum.
@@ -404,7 +404,7 @@ def Rust_RustEnumAccessOp : Rust_Op<"enum_access", [NoSideEffect]> {
   }];
 }
 
-def Rust_RustEnumCheckOp : Rust_Op<"enum_check", [NoSideEffect]> {
+def Rust_RustEnumCheckOp : Rust_Op<"enum_check", [Pure]> {
   let summary = "Check if an enum is of a particular variant";
   let description = [{
    A pure operation which checks if an enum is of a particular variant.
@@ -419,7 +419,7 @@ def Rust_RustEnumCheckOp : Rust_Op<"enum_check", [NoSideEffect]> {
   }];
 }
 
-def Rust_RustFieldAccessOp : Rust_Op<"field_access", [NoSideEffect]> {
+def Rust_RustFieldAccessOp : Rust_Op<"field_access", [Pure]> {
   let summary = "Access to a field";
   let description = [{
     Access to a field, for example in a tuple or a struct.
