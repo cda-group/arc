@@ -845,5 +845,20 @@ def ArcSpawnOp : Arc_Op<"spawn", [
   }];
 }
 
+def Arc_FilterOp : Arc_Op<"filter", [
+      DeclareOpInterfaceMethods<SymbolUserOpInterface>
+    ]> {
+  let summary = "Standard filter dataflow op";
+  let description = [{
+    Standard filter dataflow op.
+  }];
+
+  let arguments = (ins
+      ArcSourceStream:$input,
+      FlatSymbolRefAttr:$predicate
+  );
+  let results = (outs ArcSourceStream:$output);
+  let hasVerifier = 1;
+}
 
 #endif // ARC_OPS

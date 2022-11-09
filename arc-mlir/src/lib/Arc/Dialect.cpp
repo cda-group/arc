@@ -951,6 +951,48 @@ LogicalResult StateValueReadOp::verify() {
 }
 
 //===----------------------------------------------------------------------===//
+// FilterOp
+//===----------------------------------------------------------------------===//
+LogicalResult FilterOp::verify() {
+  // The type correctnes of the predicate is checked in
+  // verifySymbolUses(), here is enough to check that the types of our
+  // input and ouput streams match.
+  if (getInput().getType() != getOutput().getType())
+    return emitOpError("input and output streams should have the same types");
+
+  return mlir::success();
+}
+
+LogicalResult FilterOp::verifySymbolUses(SymbolTableCollection &symbolTable) {
+  // In large parts stolen from the func::CallOp.
+  using namespace mlir::func;
+  // Check that the callee attribute was specified.
+  auto fnAttr = (*this)->getAttrOfType<FlatSymbolRefAttr>("predicate");
+  if (!fnAttr)
+    return emitOpError("requires a 'predicate' symbol reference attribute");
+  FuncOp fn = symbolTable.lookupNearestSymbolFrom<FuncOp>(*this, fnAttr);
+  if (!fn)
+    return emitOpError() << "'" << fnAttr.getValue()
+                         << "' does not reference a valid function";
+  // Verify that we are dealing with a predicate, i.e one argument and
+  // a boolean result.
+  auto fnType = fn.getFunctionType();
+  if (fnType.getNumInputs() != 1)
+    return emitOpError("incorrect number of operands for predicate");
+  if (fnType.getNumResults() != 1)
+    return emitOpError("incorrect number of results for predicate");
+  IntegerType returnType = fnType.getResult(0).dyn_cast<IntegerType>();
+  if (!returnType || returnType.getWidth() != 1)
+    return emitOpError("predicate does not return a boolean");
+  SourceStreamType sst = getInput().getType().cast<SourceStreamType>();
+  if (fnType.getInput(0) != sst.getElementType())
+    return emitOpError("predicate type mismatch: expected operand type ")
+           << fnType.getInput(0) << ", but received" << sst.getElementType();
+
+  return success();
+}
+
+//===----------------------------------------------------------------------===//
 // General helpers for comparison ops, stolen from the standard dialect
 //===----------------------------------------------------------------------===//
 
