@@ -861,4 +861,19 @@ def Arc_FilterOp : Arc_Op<"filter", [
   let hasVerifier = 1;
 }
 
+def Arc_MapOp : Arc_Op<"map", [
+      DeclareOpInterfaceMethods<SymbolUserOpInterface>
+    ]> {
+  let summary = "Standard map dataflow op";
+  let description = [{
+    Standard map dataflow op.
+  }];
+
+  let arguments = (ins
+      ArcSourceStream:$input,
+      FlatSymbolRefAttr:$map_fun
+  );
+  let results = (outs ArcSourceStream:$output);
+}
+
 #endif // ARC_OPS
