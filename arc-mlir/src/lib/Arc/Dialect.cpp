@@ -993,6 +993,46 @@ LogicalResult FilterOp::verifySymbolUses(SymbolTableCollection &symbolTable) {
 }
 
 //===----------------------------------------------------------------------===//
+// MapOp
+//===----------------------------------------------------------------------===//
+LogicalResult MapOp::verifySymbolUses(SymbolTableCollection &symbolTable) {
+  // In large parts stolen from the func::CallOp.
+  using namespace mlir::func;
+  // Check that the callee attribute was specified.
+  auto fnAttr = (*this)->getAttrOfType<FlatSymbolRefAttr>("map_fun");
+  if (!fnAttr)
+    return emitOpError("requires a 'map_fun' symbol reference attribute");
+  FuncOp fn = symbolTable.lookupNearestSymbolFrom<FuncOp>(*this, fnAttr);
+  if (!fn)
+    return emitOpError() << "'" << fnAttr.getValue()
+                         << "' does not reference a valid function";
+  // Verify that the map function has the right number of arguments
+  // and results.
+  auto fnType = fn.getFunctionType();
+  if (fnType.getNumInputs() != 1)
+    return emitOpError("incorrect number of operands for map function");
+  if (fnType.getNumResults() != 1)
+    return emitOpError("incorrect number of results for map function");
+
+  // Check that the argument type matches the input stream element type.
+  Type inputType =
+      getInput().getType().cast<SourceStreamType>().getElementType();
+  if (fnType.getInput(0) != inputType)
+    return emitOpError("map function type mismatch: input stream contains ")
+           << inputType << " but map function expects " << fnType.getInput(0);
+
+  // Check that the return type matches the output stream element type.
+  Type outputType =
+      getOutput().getType().cast<SourceStreamType>().getElementType();
+  Type returnType = fnType.getResult(0);
+  if (returnType != outputType)
+    return emitOpError("map function type mismatch: output stream contains ")
+           << outputType << " but map function returns " << returnType;
+
+  return success();
+}
+
+//===----------------------------------------------------------------------===//
 // General helpers for comparison ops, stolen from the standard dialect
 //===----------------------------------------------------------------------===//
 
