@@ -72,7 +72,7 @@ module @toplevel {
 }
 // -----
 
-// Check for the wrong number of operands to the map function
+// Check for missing environment
 module @toplevel {
   func.func @flip(%in : ui32, %extra : ui32) -> ui32 {
     %one = arc.constant 0xFFFFFFFF: ui32
@@ -82,7 +82,7 @@ module @toplevel {
 
   func.func @flip_map(%in : !arc.stream.source<ui32>)
   	    -> !arc.stream.source<ui32> {
-// expected-error@+2 {{'arc.map' op incorrect number of operands for map function}}
+// expected-error@+2 {{'arc.map' op map function expects environment but no 'map_fun_env_thunk' attribute set}}
 // expected-note@+1 {{see current operation}}
     %out = "arc.map"(%in) { map_fun=@flip} : (!arc.stream.source<ui32>) -> !arc.stream.source<ui32>
     return %out : !arc.stream.source<ui32>
@@ -106,4 +106,60 @@ module @toplevel {
     return %out : !arc.stream.source<ui32>
   }
 }
+// -----
 
+// Check for redundant environment
+module @toplevel {
+  func.func @flip_env() -> ui32 {
+    %env = arc.constant 0xFFFFFFFF: ui32
+    return %env : ui32
+  }
+
+  func.func @flip(%in : ui32) -> ui32 {
+    %one = arc.constant 0xFFFFFFFF: ui32
+    %flipped = arc.and %in, %one : ui32
+    return %flipped : ui32
+  }
+
+  func.func @flip_map(%in : !arc.stream.source<ui32>)
+  	    -> !arc.stream.source<ui32> {
+// expected-error@+2 {{'arc.map' op map function does not expect an environment but 'map_fun_env_thunk' attribute set}}
+// expected-note@+1 {{see current operation}}
+    %out = "arc.map"(%in) { map_fun=@flip, map_fun_env_thunk=@flip_env} : (!arc.stream.source<ui32>) -> !arc.stream.source<ui32>
+    return %out : !arc.stream.source<ui32>
+  }
+}
+// -----
+// Check for type mismatched environment
+module @toplevel {
+  func.func @flip_env() -> si32 {
+    %env = arc.constant 0 : si32
+    return %env : si32
+  }
+
+  func.func @flip(%in : ui32, %extra : ui32) -> ui32 {
+    %one = arc.constant 0xFFFFFFFF: ui32
+    %flipped = arc.and %in, %one : ui32
+    return %flipped : ui32
+  }
+
+  func.func @flip_map(%in : !arc.stream.source<ui32>)
+  	    -> !arc.stream.source<ui32> {
+// expected-error@+2 {{'arc.map' op map function environment type mismatch:}}
+// expected-note@+1 {{see current operation}}
+    %out = "arc.map"(%in) { map_fun=@flip, map_fun_env_thunk=@flip_env} : (!arc.stream.source<ui32>) -> !arc.stream.source<ui32>
+    return %out : !arc.stream.source<ui32>
+  }
+}
+// -----
+
+// Check for a missing map function
+module @toplevel {
+  func.func @flip_map(%in : !arc.stream.source<ui32>)
+  	    -> !arc.stream.source<ui32> {
+// expected-error@+2 {{'arc.map' op 'flip' does not reference a valid function}}
+// expected-note@+1 {{see current operation}}
+    %out = "arc.map"(%in) { map_fun=@flip} : (!arc.stream.source<ui32>) -> !arc.stream.source<ui32>
+    return %out : !arc.stream.source<ui32>
+  }
+}
