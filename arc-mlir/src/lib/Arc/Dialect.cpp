@@ -777,8 +777,6 @@ LogicalResult MapOp::verifySymbolUses(SymbolTableCollection &symbolTable) {
   using namespace mlir::func;
   // Check that the callee attribute was specified.
   auto fnAttr = (*this)->getAttrOfType<FlatSymbolRefAttr>("map_fun");
-  if (!fnAttr)
-    return emitOpError("requires a 'map_fun' symbol reference attribute");
   FuncOp fn = symbolTable.lookupNearestSymbolFrom<FuncOp>(*this, fnAttr);
   if (!fn)
     return emitOpError() << "'" << fnAttr.getValue()
@@ -786,18 +784,45 @@ LogicalResult MapOp::verifySymbolUses(SymbolTableCollection &symbolTable) {
   // Verify that the map function has the right number of arguments
   // and results.
   auto fnType = fn.getFunctionType();
-  if (fnType.getNumInputs() != 1)
+  if (fnType.getNumInputs() < 1 || fnType.getNumInputs() > 2)
     return emitOpError("incorrect number of operands for map function");
   if (fnType.getNumResults() != 1)
     return emitOpError("incorrect number of results for map function");
 
-  // Check that the argument type matches the input stream element type.
+  // Check that the map function argument type matches the input
+  // stream element type.
   Type inputType =
       getInput().getType().cast<SourceStreamType>().getElementType();
   if (fnType.getInput(0) != inputType)
     return emitOpError("map function type mismatch: input stream contains ")
            << inputType << " but map function expects " << fnType.getInput(0);
 
+  // Check that the environment thunk has the right type
+  auto thunkAttr =
+      (*this)->getAttrOfType<FlatSymbolRefAttr>("map_fun_env_thunk");
+  if (!thunkAttr && fnType.getNumInputs() > 1)
+    return emitOpError("map function expects environment but no "
+                       "'map_fun_env_thunk' attribute set");
+  if (thunkAttr && fnType.getNumInputs() == 1)
+    return emitOpError("map function does not expect an environment but "
+                       "'map_fun_env_thunk' attribute set");
+  if (thunkAttr) {
+    FuncOp thunk =
+        symbolTable.lookupNearestSymbolFrom<FuncOp>(*this, thunkAttr);
+    if (!thunk)
+      return emitOpError() << "'" << thunkAttr.getValue()
+                           << "' does not reference a valid function";
+    auto thunkType = thunk.getFunctionType();
+    if (thunkType.getNumInputs() != 0)
+      return emitOpError("environment thunk cannot take any arguments");
+    if (thunkType.getNumResults() != 1)
+      return emitOpError("environment thunk must return a value");
+    if (thunkType.getResult(0) != fnType.getInput(1))
+      return emitOpError("map function environment type mismatch: expected "
+                         "operand type ")
+             << fnType.getInput(1) << ", but thunk returns "
+             << thunkType.getResult(0);
+  }
   // Check that the return type matches the output stream element type.
   Type outputType =
       getOutput().getType().cast<SourceStreamType>().getElementType();

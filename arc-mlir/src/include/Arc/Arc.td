@@ -634,7 +634,8 @@ def Arc_MapOp : Arc_Op<"map", [
 
   let arguments = (ins
       ArcSourceStream:$input,
-      FlatSymbolRefAttr:$map_fun
+      FlatSymbolRefAttr:$map_fun,
+      OptionalAttr<FlatSymbolRefAttr>:$map_fun_env_thunk
   );
   let results = (outs ArcSourceStream:$output);
 }
