@@ -37,4 +37,22 @@ module @toplevel {
     return %r : !arc.stream.source<ui32>
   }
 
+  func.func @is_same_with_env(%in : ui32, %env : ui32) -> i1 {
+    %bool = arc.cmpi "eq", %in, %env : ui32
+    return %bool : i1
+  }
+
+  func.func @one_thunk() -> ui32 {
+    %t = arc.constant 1: ui32
+    return %t : ui32
+  }
+
+
+  func.func @filter_with_env(%in : !arc.stream.source<ui32>)
+  	    -> !arc.stream.source<ui32> {
+    %out = "arc.filter"(%in) { predicate=@is_same_with_env, predicate_env_thunk=@one_thunk } : (!arc.stream.source<ui32>) -> !arc.stream.source<ui32>
+    return %out : !arc.stream.source<ui32>
+  }
+
+
 }
