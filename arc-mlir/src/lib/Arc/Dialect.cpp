@@ -717,20 +717,54 @@ LogicalResult FilterOp::verifySymbolUses(SymbolTableCollection &symbolTable) {
   if (!fn)
     return emitOpError() << "'" << fnAttr.getValue()
                          << "' does not reference a valid function";
-  // Verify that we are dealing with a predicate, i.e one argument and
-  // a boolean result.
+  // Verify that the predicate returns a boolean.
   auto fnType = fn.getFunctionType();
-  if (fnType.getNumInputs() != 1)
-    return emitOpError("incorrect number of operands for predicate");
   if (fnType.getNumResults() != 1)
     return emitOpError("incorrect number of results for predicate");
+  if (fnType.getNumInputs() < 1 || fnType.getNumInputs() > 2)
+    return emitOpError("incorrect number of operands for predicate");
   IntegerType returnType = fnType.getResult(0).dyn_cast<IntegerType>();
   if (!returnType || returnType.getWidth() != 1)
     return emitOpError("predicate does not return a boolean");
+
+  // Check that the predicate arguments match up, we must have at
+  // least one operand, and it must match the type of the stream.
+  if (fnType.getNumInputs() < 1)
+    return emitOpError("incorrect number of operands for predicate");
   SourceStreamType sst = getInput().getType().cast<SourceStreamType>();
   if (fnType.getInput(0) != sst.getElementType())
     return emitOpError("predicate type mismatch: expected operand type ")
            << fnType.getInput(0) << ", but received" << sst.getElementType();
+
+  // If the predicate requires a closure, check that the types match up
+  auto thunkAttr =
+      (*this)->getAttrOfType<FlatSymbolRefAttr>("predicate_env_thunk");
+  if (fnType.getNumInputs() == 2) {
+    // The predicate requires an environment
+    if (!thunkAttr)
+      return emitOpError("predicate expects environment but no "
+                         "'predicate_env_thunk' attribute set");
+    FuncOp thunk =
+        symbolTable.lookupNearestSymbolFrom<FuncOp>(*this, thunkAttr);
+    if (!thunk)
+      return emitOpError() << "'" << thunkAttr.getValue()
+                           << "' does not reference a valid function";
+
+    auto thunkType = thunk.getFunctionType();
+    if (thunkType.getNumInputs() != 0)
+      return emitOpError("environment thunk cannot take any arguments");
+    if (thunkType.getNumResults() != 1)
+      return emitOpError("environment thunk must return a value");
+    if (thunkType.getResult(0) != fnType.getInput(1))
+      return emitOpError("predicate environment type mismatch: expected "
+                         "operand type ")
+             << fnType.getInput(1) << ", but thunk returns "
+             << thunkType.getResult(0);
+  } else {
+    if (thunkAttr)
+      return emitOpError("map function does not expect an environment but "
+                         "'predicate_env_thunk' attribute set");
+  }
 
   return success();
 }

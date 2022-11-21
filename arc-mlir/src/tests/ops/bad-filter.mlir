@@ -75,9 +75,26 @@ module @toplevel {
 }
 
 // -----
-// Check for a predicate with the wrong number of arguments
+// Check for a predicate with too few arguments
 module @toplevel {
   func.func @is_odd() -> i1 {
+    %one = arith.constant 1: i1
+    return %one : i1
+  }
+
+  func.func @odd_filter(%in : !arc.stream.source<ui32>)
+  	    -> !arc.stream.source<ui32> {
+// expected-error@+2 {{'arc.filter' op incorrect number of operands for predicate}}
+// expected-note@+1 {{see current operation}}
+    %out = "arc.filter"(%in) { predicate=@is_odd} : (!arc.stream.source<ui32>) -> !arc.stream.source<ui32>
+    return %out : !arc.stream.source<ui32>
+  }
+}
+
+// -----
+// Check for a predicate with too many arguments
+module @toplevel {
+  func.func @is_odd(%elem : ui32, %env : ui32, %extra : ui32) -> i1 {
     %one = arith.constant 1: i1
     return %one : i1
   }
@@ -126,6 +143,87 @@ module @toplevel {
     %out = "arc.filter"(%in) { predicate=@is_odd} : (!arc.stream.source<ui32>) -> !arc.stream.source<si32>
 // expected-error@+1 {{use of value '%out' expects different type than prior uses: 'si32' vs '!arc.stream.source<si32>}}
     return %out : si32
+  }
+
+}
+
+// -----
+// Check for a missing environment in the filter call
+module @toplevel {
+  func.func @is_odd(%in : ui32, %env : si32) -> i1 {
+    %one = arc.constant 1: ui32
+    %bit = arc.and %in, %one : ui32
+    %bool = arc.cmpi "eq", %bit, %one : ui32
+    return %bool : i1
+  }
+
+  func.func @odd_filter(%in : !arc.stream.source<ui32>)
+  	    -> !arc.stream.source<ui32> {
+// expected-note@+2 {{see current}}
+// expected-error@+1 {{'arc.filter' op predicate expects environment but no 'predicate_env_thunk' attribute set}}
+    %out = "arc.filter"(%in) { predicate=@is_odd} : (!arc.stream.source<ui32>) -> !arc.stream.source<ui32>
+    return %out : !arc.stream.source<ui32>
+  }
+
+}
+
+// -----
+// Check for a not needed environment in the filter call
+module @toplevel {
+  func.func @is_odd(%in : ui32) -> i1 {
+    %one = arc.constant 1: ui32
+    %bit = arc.and %in, %one : ui32
+    %bool = arc.cmpi "eq", %bit, %one : ui32
+    return %bool : i1
+  }
+
+  func.func @dummy_env() -> () {
+    return
+  }
+
+  func.func @odd_filter(%in : !arc.stream.source<ui32>)
+  	    -> !arc.stream.source<ui32> {
+    %one = arc.constant 1: ui32
+// expected-note@+2 {{see current}}
+// expected-error@+1 {{'arc.filter' op map function does not expect an environment but 'predicate_env_thunk' attribute set}}
+    %out = "arc.filter"(%in) { predicate=@is_odd, predicate_env_thunk=@dummy_env} : (!arc.stream.source<ui32>) -> !arc.stream.source<ui32>
+    return %out : !arc.stream.source<ui32>
+  }
+
+}
+
+// -----
+// Check for an environment mismatch
+module @toplevel {
+
+  func.func @is_same_with_env(%in : ui32, %env : ui32) -> i1 {
+    %bool = arc.cmpi "eq", %in, %env : ui32
+    return %bool : i1
+  }
+
+  func.func @thunk() -> si32 {
+    %t = arc.constant 1: si32
+    return %t : si32
+  }
+
+  func.func @filter_with_env(%in : !arc.stream.source<ui32>)
+  	    -> !arc.stream.source<ui32> {
+// expected-note@+2 {{see current}}
+// expected-error@+1 {{'arc.filter' op predicate environment type mismatch:}}
+    %out = "arc.filter"(%in) { predicate=@is_same_with_env, predicate_env_thunk=@thunk} : (!arc.stream.source<ui32>) -> !arc.stream.source<ui32>
+    return %out : !arc.stream.source<ui32>
+  }
+}
+
+// -----
+// Check for a missing predicate
+module @toplevel {
+  func.func @odd_filter(%in : !arc.stream.source<ui32>)
+  	    -> !arc.stream.source<ui32> {
+// expected-error@+2 {{'arc.filter' op 'is_odd' does not reference a valid function}}
+// expected-note@+1 {{see current operation}}
+    %out = "arc.filter"(%in) { predicate=@is_odd} : (!arc.stream.source<ui32>) -> !arc.stream.source<ui32>
+    return %out : !arc.stream.source<ui32>
   }
 
 }

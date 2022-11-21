@@ -617,7 +617,8 @@ def Arc_FilterOp : Arc_Op<"filter", [
 
   let arguments = (ins
       ArcSourceStream:$input,
-      FlatSymbolRefAttr:$predicate
+      FlatSymbolRefAttr:$predicate,
+      OptionalAttr<FlatSymbolRefAttr>:$predicate_env_thunk
   );
   let results = (outs ArcSourceStream:$output);
   let hasVerifier = 1;
