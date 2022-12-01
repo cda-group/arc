@@ -433,6 +433,27 @@ private:
   RustTypeConverter &TypeConverter;
 };
 
+struct FilterOpLowering : public OpConversionPattern<FilterOp> {
+  FilterOpLowering(MLIRContext *ctx, RustTypeConverter &typeConverter)
+      : OpConversionPattern<FilterOp>(typeConverter, ctx, 1),
+        TypeConverter(typeConverter) {}
+
+  LogicalResult
+  matchAndRewrite(FilterOp o, OpAdaptor adaptor,
+                  ConversionPatternRewriter &rewriter) const final {
+    Type retTy = TypeConverter.convertType(o.getType());
+
+    auto predAttr = o->getAttrOfType<FlatSymbolRefAttr>("predicate");
+    auto thunkAttr = o->getAttrOfType<FlatSymbolRefAttr>("predicate_env_thunk");
+    rewriter.replaceOpWithNewOp<rust::FilterOp>(o, retTy, adaptor.getInput(),
+                                                predAttr, thunkAttr);
+    return success();
+  };
+
+private:
+  RustTypeConverter &TypeConverter;
+};
+
 struct IfOpLowering : public OpConversionPattern<arc::IfOp> {
   IfOpLowering(MLIRContext *ctx, RustTypeConverter &typeConverter)
       : OpConversionPattern<arc::IfOp>(typeConverter, ctx, 1),
@@ -1141,6 +1162,7 @@ void ArcToRustLoweringPass::runOnOperation() {
   RewritePatternSet patterns(&getContext());
   patterns.insert<ReturnOpLowering>(&getContext(), typeConverter);
   patterns.insert<ArcReturnOpLowering>(&getContext(), typeConverter);
+  patterns.insert<FilterOpLowering>(&getContext(), typeConverter);
   patterns.insert<FuncOpLowering>(&getContext(), typeConverter);
   patterns.insert<StdConstantOpLowering>(&getContext(), typeConverter);
   patterns.insert<ArithConstantOpLowering>(&getContext(), typeConverter);
