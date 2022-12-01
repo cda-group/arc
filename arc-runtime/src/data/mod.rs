@@ -1,4 +1,3 @@
-pub mod erased;
 pub mod functions;
 pub mod garbage;
 pub mod primitives;
@@ -11,8 +10,6 @@ pub mod channels;
 pub mod cells;
 
 use crate::data::garbage::Garbage;
-use serde_traitobject::Deserialize as DynDeserialize;
-use serde_traitobject::Serialize as DynSerialize;
 
 use comet::gc_base::GcBase;
 use dyn_clone::DynClone;
@@ -30,7 +27,7 @@ pub trait Abstract {
     type Concrete;
 }
 
-pub trait DynSendable: AsyncSafe + DynClone + DynSerialize + DynDeserialize {
+pub trait DynSendable: AsyncSafe + DynClone {
     type T: Sharable;
     fn into_sharable(&self, ctx: Context) -> Self::T;
 }
