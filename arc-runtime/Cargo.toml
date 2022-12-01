@@ -29,7 +29,7 @@ replace_with      = { version = "0.1.7" }
 hexf              = { version = "0.2.1" }
 serde_derive      = { version = "1.0.136" }
 serde             = { version = "1.0.136" }
-serde_traitobject = { version = "0.2.7" }
+# serde_traitobject = { version = "0.2.7" }
 polars            = { git = "https://github.com/pola-rs/polars", rev = "a04786c", optional = true }
 
 # crossfire       = { version = "0.1.7" }

@@ -31,7 +31,6 @@ pub mod prelude {
     pub use crate::control::Control::Finished;
     pub use crate::data::channels;
     pub use crate::data::channels::Channel;
-    pub use crate::data::erased::Erased;
     pub use crate::data::garbage::Alloc;
     pub use crate::data::garbage::Gc;
     pub use crate::data::primitives::bool;
