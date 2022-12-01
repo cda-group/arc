@@ -656,4 +656,20 @@ def Rust_RustPanicOp : Rust_Op<"panic", []> {
   }];
 }
 
+def Rust_MapOp : Rust_Op<"map", [
+      DeclareOpInterfaceMethods<SymbolUserOpInterface>
+    ]> {
+  let summary = "Standard map dataflow op";
+  let description = [{
+    Standard map dataflow op.
+  }];
+
+  let arguments = (ins
+      AnyRustSourceStream:$input,
+      FlatSymbolRefAttr:$map_fun,
+      OptionalAttr<FlatSymbolRefAttr>:$map_fun_env_thunk
+  );
+  let results = (outs AnyRustSourceStream:$output);
+}
+
 #endif // RUST_OPS

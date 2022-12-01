@@ -747,6 +747,16 @@ RustLoopYieldOp RustLoopOp::getYieldOp() {
   return cast<RustLoopYieldOp>(getAfter().front().getTerminator());
 }
 
+//===----------------------------------------------------------------------===//
+// RustMapOp
+//===----------------------------------------------------------------------===//
+LogicalResult MapOp::verifySymbolUses(SymbolTableCollection &symbolTable) {
+  // The verification is needed for the SymbolUserOpInterface, but as
+  // this operation is only created by our own conversion, we chet by
+  // not doing any verification.
+  return success();
+}
+
 void RustBlockResultOp::writeRust(RustPrinterStream &PS) {
   if (getNumOperands() == 0) {
     PS << "// No value\n";
