@@ -1097,6 +1097,18 @@ struct FuncOpLowering : public OpConversionPattern<mlir::func::FuncOp> {
     if (func->hasAttr("arc.is_task"))
       attributes.push_back(NamedAttribute(StringAttr::get(ctx, "arc.is_task"),
                                           func->getAttr("arc.is_task")));
+    if (func->hasAttr("arc.is_graph")) {
+      attributes.push_back(NamedAttribute(StringAttr::get(ctx, "arc.is_graph"),
+                                          func->getAttr("arc.is_graph")));
+      if (func->hasAttr("arc.source_params"))
+        attributes.push_back(
+            NamedAttribute(StringAttr::get(ctx, "arc.source_params"),
+                           func->getAttr("arc.source_params")));
+      if (func->hasAttr("arc.sink_params"))
+        attributes.push_back(
+            NamedAttribute(StringAttr::get(ctx, "arc.sink_params"),
+                           func->getAttr("arc.sink_params")));
+    }
     if (func->hasAttr("rust.annotation"))
       attributes.push_back(
           NamedAttribute(StringAttr::get(ctx, "rust.annotation"),

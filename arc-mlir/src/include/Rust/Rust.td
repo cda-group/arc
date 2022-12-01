@@ -192,6 +192,8 @@ def Rust_RustFuncOp : Rust_Op<"func",
                        OptionalAttr<StrAttr>:$sym_visibility,
                        OptionalAttr<DictArrayAttr>:$arg_attrs,
                        OptionalAttr<DictArrayAttr>:$res_attrs);
+  let hasVerifier = 1;
+
   let extraClassDeclaration = [{
     /// Returns the argument types of this function.
     ArrayRef<Type> getArgumentTypes() {
