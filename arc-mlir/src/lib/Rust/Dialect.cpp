@@ -694,6 +694,16 @@ void RustFieldAccessOp::writeRust(RustPrinterStream &PS) {
   PS.let(r) << "access!(" << getAggregate() << ", " << getField() << ");\n";
 }
 
+//===----------------------------------------------------------------------===//
+// RustFilterOp
+//===----------------------------------------------------------------------===//
+LogicalResult FilterOp::verifySymbolUses(SymbolTableCollection &symbolTable) {
+  // The verification is needed for the SymbolUserOpInterface, but as
+  // this operation is only created by our own conversion, we chet by
+  // not doing any verification.
+  return success();
+}
+
 void RustIfOp::writeRust(RustPrinterStream &PS) {
   if (getNumResults() != 0) {
     auto r = getResult(0);

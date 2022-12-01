@@ -527,6 +527,22 @@ def Rust_RustCompOp : Rust_Op<"compop", [SameTypeOperands]> {
   }];
 }
 
+def Rust_FilterOp : Rust_Op<"filter", [
+      DeclareOpInterfaceMethods<SymbolUserOpInterface>
+    ]> {
+  let summary = "Standard filter dataflow op";
+  let description = [{
+    Standard filter dataflow op.
+  }];
+
+  let arguments = (ins
+      AnyRustSourceStream:$input,
+      FlatSymbolRefAttr:$predicate,
+      OptionalAttr<FlatSymbolRefAttr>:$predicate_env_thunk
+  );
+  let results = (outs AnyRustSourceStream:$output);
+}
+
 def Rust_RustBlockResultOp
     : Rust_Op<"block.result",
               [HasParent<"RustIfOp">, Terminator]> {
