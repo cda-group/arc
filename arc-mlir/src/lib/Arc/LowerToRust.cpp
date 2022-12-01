@@ -556,6 +556,28 @@ private:
   RustTypeConverter &TypeConverter;
 };
 
+struct MapOpLowering : public OpConversionPattern<MapOp> {
+  MapOpLowering(MLIRContext *ctx, RustTypeConverter &typeConverter)
+      : OpConversionPattern<MapOp>(typeConverter, ctx, 1),
+        TypeConverter(typeConverter) {}
+
+  LogicalResult
+  matchAndRewrite(MapOp o, OpAdaptor adaptor,
+                  ConversionPatternRewriter &rewriter) const final {
+    Type retTy = TypeConverter.convertType(o.getType());
+    auto funAttr = o->getAttrOfType<FlatSymbolRefAttr>("map_fun");
+    auto thunkAttr = o->getAttrOfType<FlatSymbolRefAttr>("map_fun_env_thunk");
+
+    rewriter.replaceOpWithNewOp<rust::MapOp>(o, retTy, adaptor.getInput(),
+                                             funAttr, thunkAttr);
+
+    return success();
+  };
+
+private:
+  RustTypeConverter &TypeConverter;
+};
+
 namespace ArcIntArithmeticOp {
 typedef enum {
   AddIOp = 0,
@@ -1258,6 +1280,7 @@ void ArcToRustLoweringPass::runOnOperation() {
   patterns.insert<ConstantADTOpLowering>(&getContext(), typeConverter);
   patterns.insert<MakeEnumOpLowering>(&getContext(), typeConverter);
   patterns.insert<MakeStructOpLowering>(&getContext(), typeConverter);
+  patterns.insert<MapOpLowering>(&getContext(), typeConverter);
   patterns.insert<LoopBreakOpLowering>(&getContext(), typeConverter);
   patterns.insert<EnumAccessOpLowering>(&getContext(), typeConverter);
   patterns.insert<EnumCheckOpLowering>(&getContext(), typeConverter);
