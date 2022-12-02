@@ -137,6 +137,71 @@ LogicalResult RustFuncOp::verifyType() {
   return success();
 }
 
+LogicalResult RustFuncOp::verifyValidJSONAttrib(std::string attribName,
+                                                unsigned noofParams) {
+  Operation *op = getOperation();
+  StringAttr attr = op->getAttrOfType<StringAttr>(attribName);
+
+  if (!attr)
+    return emitOpError("missing '")
+           << attribName << "' attribute on function encoding a graph";
+
+  auto value = llvm::json::parse(attr.getValue());
+  if (llvm::Error E = value.takeError()) {
+    return emitOpError("failed to parse JSON attribute '")
+           << attribName << "': " << toString(std::move(E)) << "\n'"
+           << attr.getValue();
+  }
+
+  llvm::json::Object *obj = value.get().getAsObject();
+  for (unsigned i = 0; i < noofParams; i++)
+    if (!obj->get(std::to_string(i)))
+      return emitOpError("JSON attribute '")
+             << attribName << "' did not contain a \"" << i << "\" key";
+
+  return mlir::success();
+}
+
+LogicalResult RustFuncOp::verify() {
+  // Check special requirements for the function encoding the graph
+  if (!(*this)->hasAttr("arc.is_graph"))
+    return mlir::success();
+  Operation *op = getOperation();
+  StringAttr srcAttr = op->getAttrOfType<StringAttr>("arc.source_params");
+  if (!srcAttr)
+    return emitOpError(
+        "missing 'arc.source_params' attribute on function encoding a graph");
+
+  LogicalResult r =
+      verifyValidJSONAttrib("arc.source_params", getNumArguments());
+  if (r.failed())
+    return r;
+
+  StringAttr sinkAttr = op->getAttrOfType<StringAttr>("arc.sink_params");
+  if (!sinkAttr)
+    return emitOpError(
+        "missing 'arc.sink_params' attribute on function encoding a graph");
+
+  r = verifyValidJSONAttrib("arc.sink_params", 1);
+  if (r.failed())
+    return r;
+
+  if (op->getNumRegions() > 1)
+    return emitOpError("has too many regions for a function encoding a graph");
+  if (op->getRegion(0).getBlocks().size() > 1)
+    return emitOpError("has too many blocks for a function encoding a graph");
+
+  for (Operation &o : op->getRegion(0).getBlocks().begin()->getOperations()) {
+    if (!dyn_cast<FilterOp>(o) && !dyn_cast<MapOp>(o) &&
+        !dyn_cast<RustReturnOp>(o))
+      return emitOpError("contains operations not legal in a function encoding "
+                         "a graph: ")
+             << o;
+  }
+
+  return mlir::success();
+}
+
 /// Hook for FunctionLike verifier.
 LogicalResult RustExtFuncOp::verifyType() {
   Type type = getFunctionType();
