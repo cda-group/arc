@@ -211,6 +211,10 @@ def Rust_RustFuncOp : Rust_Op<"func",
     /// Verifies the body of the function.
     LogicalResult verifyBody();
 
+    /// Verifies the structure of a JSON attribute.
+    LogicalResult verifyValidJSONAttrib(std::string attribName,
+                                        unsigned noofParams);
+
     // Write this function as Rust code to os
     void writeRust(RustPrinterStream &os);
   }];
