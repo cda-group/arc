@@ -25,6 +25,7 @@
 #include "Rust/RustPrinterStream.h"
 #include <llvm/Support/CommandLine.h>
 #include <llvm/Support/FileSystem.h>
+#include <llvm/Support/JSON.h>
 #include <llvm/Support/Path.h>
 #include <llvm/Support/raw_ostream.h>
 #include <mlir/IR/BuiltinOps.h>
@@ -425,6 +426,15 @@ std::string RustPrinterStream::getConstant(RustConstantOp v) {
   return "C" + std::to_string(-id);
 }
 
+static StringRef nameOfRustFunction(Operation *op, StringRef name) {
+  MLIRContext *ctx = op->getContext();
+  StringAttr calleeName = StringAttr::get(ctx, name);
+  Operation *target = SymbolTable::lookupNearestSymbolFrom(op, calleeName);
+  if (target && target->hasAttr("arc.rust_name"))
+    return target->getAttrOfType<StringAttr>("arc.rust_name").getValue();
+  return name;
+}
+
 void RustCallOp::writeRust(RustPrinterStream &PS) {
   bool has_result = getNumResults();
   if (has_result) {
@@ -462,6 +472,10 @@ void RustCallIndirectOp::writeRust(RustPrinterStream &PS) {
 
 // Write this function as Rust code to os
 void RustFuncOp::writeRust(RustPrinterStream &PS) {
+  if ((*this)->hasAttr("arc.is_graph")) {
+    writeGraph(PS);
+    return;
+  }
   if ((*this)->hasAttr("arc.is_task"))
     PS.addTask(*this);
 
@@ -511,6 +525,60 @@ void RustFuncOp::writeRust(RustPrinterStream &PS) {
   PS.clearAliases();
 }
 
+llvm::json::Object parseJSONAttrib(Operation *op, StringRef attribName) {
+  StringAttr attr = op->getAttrOfType<StringAttr>(attribName);
+  auto value = llvm::json::parse(attr.getValue());
+  if (llvm::Error E = value.takeError()) {
+    llvm::errs() << "JSON attribute " << attribName << " could not be parsed\n";
+    llvm::errs() << E << "\n";
+    consumeError(std::move(E));
+  }
+  return *value.get().getAsObject();
+}
+
+static void dumpJsonObject(RustPrinterStream &PS,
+                           const llvm::json::Object *obj) {
+  for (auto &elem : *obj) {
+    PS.getBodyStream() << ", " << elem.first << " : " << elem.second;
+  }
+}
+
+void RustFuncOp::writeGraph(RustPrinterStream &PS) {
+  Operation *op = getOperation();
+  llvm::json::Object srcParams = parseJSONAttrib(op, "arc.source_params");
+
+  PS << "//" << getName() << " is a graph and has been dumped as JSON\n";
+  PS << "/*\nJSON_START_MARKER\n";
+
+  PS << "{\n";
+  PS << "  \"graph\": {\n";
+  // Generate a value for each parameter
+  for (unsigned i = 0; i < getNumArguments(); i++) {
+    Value v = front().getArgument(i);
+    RustSourceStreamType t = v.getType().cast<RustSourceStreamType>();
+    PS << "    \"";
+    PS.printAsArg(v);
+    PS << "\" : { \"Source\": { ";
+    PS << "\"element_type\" : \"" << t.getType() << "\"";
+    dumpJsonObject(PS, srcParams.getObject(std::to_string(i)));
+    PS << "}\n";
+  }
+
+  for (Operation &o : op->getRegion(0).getBlocks().begin()->getOperations()) {
+    if (FilterOp f = dyn_cast<FilterOp>(o)) {
+      f.writeJSON(PS);
+    } else if (MapOp m = dyn_cast<MapOp>(o)) {
+      m.writeJSON(PS);
+    } else if (RustReturnOp r = dyn_cast<RustReturnOp>(o)) {
+      r.writeJSON(PS);
+    }
+  }
+
+  PS << "  }\n";
+  PS << "}\n";
+  PS << "JSON_END_MARKER\n*/\n";
+}
+
 // Write this function as Rust code to os
 void RustExtFuncOp::writeRust(RustPrinterStream &PS) {
   // External functions are normally declared elsewhere, so there is
@@ -549,6 +617,18 @@ void RustReturnOp::writeRust(RustPrinterStream &PS) {
     PS << "return " << getOperand(0) << ";\n";
   else
     PS << "return;\n";
+}
+
+void RustReturnOp::writeJSON(RustPrinterStream &PS) {
+  Value v = getReturnedValue();
+  PS << "    \"";
+  PS.printFreeVariable();
+  PS << "\" : { \"Sink\" : { \"input\" : ";
+  PS.printAsLValue(v);
+  RustFuncOp function = (*this)->getParentOfType<RustFuncOp>();
+  llvm::json::Object params = parseJSONAttrib(function, "arc.sink_params");
+  dumpJsonObject(PS, params.getObject("0"));
+  PS << "},\n";
 }
 
 void RustConstantOp::writeRust(RustPrinterStream &PS) { PS.getConstant(*this); }
@@ -769,6 +849,23 @@ LogicalResult FilterOp::verifySymbolUses(SymbolTableCollection &symbolTable) {
   return success();
 }
 
+void FilterOp::writeJSON(RustPrinterStream &PS) {
+  Value v = getOutput();
+  PS << "    \"";
+  PS.printAsLValue(v);
+  PS << "\" : { \"Filter\": { \"input\": \"";
+  PS.printAsLValue(getInput());
+  PS << "\"";
+  PS << ", \"fun\":\""
+     << nameOfRustFunction(this->getOperation(), getPredicate()) << "\"";
+  if (auto thunk = getPredicateEnvThunk())
+    PS << ", \"env\":\""
+       << nameOfRustFunction(this->getOperation(), *getPredicateEnvThunk())
+       << "\"";
+
+  PS << "]}},\n";
+}
+
 void RustIfOp::writeRust(RustPrinterStream &PS) {
   if (getNumResults() != 0) {
     auto r = getResult(0);
@@ -820,6 +917,24 @@ LogicalResult MapOp::verifySymbolUses(SymbolTableCollection &symbolTable) {
   // this operation is only created by our own conversion, we chet by
   // not doing any verification.
   return success();
+}
+
+void MapOp::writeJSON(RustPrinterStream &PS) {
+  Value v = getOutput();
+
+  PS << "    \"";
+  PS.printAsLValue(v);
+  PS << "\" : { \"Map\": { \"input\": \"";
+  PS.printAsLValue(getInput());
+  PS << "\"";
+  PS << ", \"fun\":\"" << nameOfRustFunction(this->getOperation(), getMapFun())
+     << "\"";
+  if (auto thunk = getMapFunEnvThunk())
+    PS << ", \"env\":\""
+       << nameOfRustFunction(this->getOperation(), *getMapFunEnvThunk())
+       << "\"";
+
+  PS << "}},\n";
 }
 
 void RustBlockResultOp::writeRust(RustPrinterStream &PS) {

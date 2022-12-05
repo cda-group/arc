@@ -215,6 +215,12 @@ public:
     return *this;
   }
 
+  RustPrinterStream &printFreeVariable() {
+    int id = NextID++;
+    Body << "v" << std::to_string(id);
+    return *this;
+  }
+
   void printType(llvm::raw_ostream &o, Type t);
 
   void registerDependency(std::string key, std::string value) {
