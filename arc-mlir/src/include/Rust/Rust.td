@@ -333,7 +333,7 @@ def Rust_RustReturnOp : Rust_Op<"return", [Terminator]> {
     by an incovation of the `rust.func`.
   }];
 
-  let arguments = (ins Optional<AnyRustType>:$operands);
+  let arguments = (ins Optional<AnyRustType>:$returned_value);
 
   let hasVerifier = 1;
 

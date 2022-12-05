@@ -686,10 +686,10 @@ LogicalResult ArcReturnOp::verify() {
 
   FunctionType funType = function.getFunctionType().cast<FunctionType>();
 
-  if (funType.getNumResults() == 0 && operands())
+  if (funType.getNumResults() == 0 && getReturnedValue())
     return emitOpError("cannot return a value from a void function");
 
-  if (!operands() && funType.getNumResults())
+  if (!getReturnedValue() && funType.getNumResults())
     return emitOpError("operation must return a ")
            << funType.getResult(0) << " value";
 

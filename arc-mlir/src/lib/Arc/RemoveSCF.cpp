@@ -148,7 +148,7 @@ LogicalResult IfLowering::matchAndRewrite(arc::IfOp ifOp,
 LogicalResult
 ArcReturnLowering::matchAndRewrite(ArcReturnOp op,
                                    PatternRewriter &rewriter) const {
-  rewriter.replaceOpWithNewOp<func::ReturnOp>(op, op.operands());
+  rewriter.replaceOpWithNewOp<func::ReturnOp>(op, op.getReturnedValue());
   return success();
 }
 
