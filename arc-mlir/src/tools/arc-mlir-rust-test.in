@@ -14,6 +14,7 @@ MLIR_FILE="$2"
 shift 2 # The rest of the arguments goes to arc-mlir
 
 MAIN="${WORK_DIR}/src/main.rs"
+JSON="${WORK_DIR}/src/main.json"
 TEST_NAME=$(basename ${WORK_DIR})
 TEST_NAME=${TEST_NAME//.mlir.tmp/}
 TEST_NAME=${TEST_NAME//.arc.tmp/}
@@ -48,7 +49,9 @@ fi
 # Create dummy wrapper .rs-file which includes the generated test-case
 
 echo '#![feature(unboxed_closures)]' > ${MAIN}
-arc-mlir ${MLIR_FILE} "$@" -arc-to-rust -inline-rust >> ${MAIN}
+arc-mlir ${MLIR_FILE} "$@" -arc-to-rust -inline-rust | \
+    tee ${MAIN} | \
+    sed '/^JSON_START_MARKER$/,/^JSON_END_MARKER$/{//!b};d' > ${JSON}
 
 cat >> ${MAIN} <<EOF
 fn main() {
