@@ -218,7 +218,10 @@ def Rust_RustFuncOp : Rust_Op<"func",
 
     // Write this function as Rust code to os
     void writeRust(RustPrinterStream &os);
-  }];
+
+    // Write this function as a JSON graph to os
+    void writeGraph(RustPrinterStream &os);
+}];
 }
 
 def Rust_RustExtFuncOp : Rust_Op<"extfunc",
@@ -343,6 +346,9 @@ def Rust_RustReturnOp : Rust_Op<"return", [Terminator]> {
   let extraClassDeclaration = [{
     // Write this function as Rust code to os
     void writeRust(RustPrinterStream &);
+
+    // Write this function as JSON code to os
+    void writeJSON(RustPrinterStream &);
   }];
 }
 
@@ -548,6 +554,10 @@ def Rust_FilterOp : Rust_Op<"filter", [
       OptionalAttr<FlatSymbolRefAttr>:$predicate_env_thunk
   );
   let results = (outs AnyRustSourceStream:$output);
+  let extraClassDeclaration = [{
+    // Write this function as JSON code to os
+    void writeJSON(RustPrinterStream &);
+  }];
 }
 
 def Rust_RustBlockResultOp
@@ -676,6 +686,10 @@ def Rust_MapOp : Rust_Op<"map", [
       OptionalAttr<FlatSymbolRefAttr>:$map_fun_env_thunk
   );
   let results = (outs AnyRustSourceStream:$output);
+  let extraClassDeclaration = [{
+    // Write this function as JSON code to os
+    void writeJSON(RustPrinterStream &);
+  }];
 }
 
 #endif // RUST_OPS

@@ -2,7 +2,7 @@
 // RUN: arc-mlir %s | arc-mlir
 // RUN: arc-mlir -canonicalize %s | arc-mlir
 
-module @_program attributes {arc.source_params="{0:\"localhost:8080\"}", arc.sink_params="{0:\"localhost:8081\"}"} {
+module @_program {
     func.func @_f0(%p: !arc.struct<age:si32, name:!arc.adt<"Str">, height:si32, weight:si32>, %env: !arc.struct<>) -> i1 {
         %_x0 = "arc.struct_access"(%p) {field="age"} : (!arc.struct<age:si32, name:!arc.adt<"Str">, height:si32, weight:si32>) -> si32
         %_x1 = arc.constant 10 : si32
@@ -44,7 +44,10 @@ module @_program attributes {arc.source_params="{0:\"localhost:8080\"}", arc.sin
     }
 
     func.func @graph(%_x1 : !arc.stream.source<!arc.struct<age:si32, name:!arc.adt<"Str">, height:si32, weight:si32>>) -> !arc.stream.source<!arc.struct<name:!arc.adt<"Str">>>
-        attributes { arc.is_graph } {
+        attributes {
+	  arc.is_graph,
+	  arc.source_params="{\"0\" : {\"arg0\" : \"localhost:8080\"}}",
+	  arc.sink_params="{\"0\" : {\"arg0\" : \"localhost:8081\"}}"} {
         %_x5 = "arc.filter"(%_x1) {predicate=@_f0, predicate_env_thunk=@_f0_thunk} : (!arc.stream.source<!arc.struct<age:si32, name:!arc.adt<"Str">, height:si32, weight:si32>>) ->
 	       !arc.stream.source<!arc.struct<age:si32, name:!arc.adt<"Str">, height:si32, weight:si32>>
 
