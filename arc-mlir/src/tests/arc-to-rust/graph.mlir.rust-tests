@@ -1,0 +1,9 @@
+#[cfg(test)]
+mod tests {
+  use crate::program::*;
+  #[rewrite(main)]
+  #[test]
+  fn test() {
+  // What should go here?
+  }
+}
