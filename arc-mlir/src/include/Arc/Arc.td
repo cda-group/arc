@@ -807,7 +807,7 @@ def ArcReturnOp : Arc_Op<"return", [Terminator]> {
     by an incovation of the `function`.
   }];
 
-  let arguments = (ins Optional<AnyType>:$operands);
+  let arguments = (ins Optional<AnyType>:$returnedValue);
 
   let hasVerifier = 1;
 }

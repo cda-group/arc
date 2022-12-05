@@ -181,10 +181,10 @@ LogicalResult RustReturnOp::verify() {
 
   FunctionType funType = function.getFunctionType();
 
-  if (funType.getNumResults() == 0 && operands())
+  if (funType.getNumResults() == 0 && getReturnedValue())
     return emitOpError("cannot return a value from a void function");
 
-  if (!operands() && funType.getNumResults())
+  if (!getReturnedValue() && funType.getNumResults())
     return emitOpError("operation must return a ")
            << funType.getResult(0) << " value";
 
@@ -656,7 +656,7 @@ void RustMakeStructOp::writeRust(RustPrinterStream &PS) {
   auto r = getResult();
   RustStructType st = r.getType().cast<RustStructType>();
   PS.let(r) << "new!(" << st << " { ";
-  auto args = operands();
+  auto args = getOperands();
   for (unsigned i = 0; i < args.size(); i++) {
     if (i != 0)
       PS << ", ";
@@ -823,7 +823,7 @@ void RustTensorOp::writeRust(RustPrinterStream &PS) {
 void RustTupleOp::writeRust(RustPrinterStream &PS) {
   auto r = getResult();
   PS.let(r) << "(";
-  auto args = operands();
+  auto args = getOperands();
   for (unsigned i = 0; i < args.size(); i++) {
     auto v = args[i];
     PS << v << ", ";

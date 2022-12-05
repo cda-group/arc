@@ -347,7 +347,7 @@ private:
           SmallVector<Value, 1> values;
 
           if (r.getNumOperands())
-            values.push_back(map.lookup(r.operands()[0]));
+            values.push_back(map.lookup(r.getOperands()[0]));
           Value returnState = rewriter.create<MakeEnumOp>(
               f->getLoc(), stateTy, values, returnValueVariant.first);
           rewriter.create<arc::ArcBlockResultOp>(f->getLoc(), returnState);
