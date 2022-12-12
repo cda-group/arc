@@ -70,7 +70,7 @@ struct ArcReturnOpLowering : public OpConversionPattern<ArcReturnOp> {
   matchAndRewrite(ArcReturnOp op, OpAdaptor adaptor,
                   ConversionPatternRewriter &rewriter) const final {
     rewriter.replaceOpWithNewOp<rust::RustReturnOp>(
-        op, llvm::None,
+        op, std::nullopt,
         adaptor.getOperands().size() ? adaptor.getOperands()[0] : Value());
     return success();
   };
@@ -85,7 +85,7 @@ struct ReturnOpLowering : public OpConversionPattern<func::ReturnOp> {
   matchAndRewrite(func::ReturnOp op, OpAdaptor adaptor,
                   ConversionPatternRewriter &rewriter) const final {
     rewriter.replaceOpWithNewOp<rust::RustReturnOp>(
-        op, llvm::None,
+        op, std::nullopt,
         adaptor.getOperands().size() ? adaptor.getOperands()[0] : Value());
     return success();
   };
@@ -136,7 +136,7 @@ struct SCFLoopConditionOpLowering
   matchAndRewrite(scf::ConditionOp op, OpAdaptor adaptor,
                   ConversionPatternRewriter &rewriter) const final {
     rewriter.replaceOpWithNewOp<rust::RustLoopConditionOp>(
-        op, llvm::None, adaptor.getOperands());
+        op, std::nullopt, adaptor.getOperands());
     return success();
   };
 };
@@ -149,7 +149,7 @@ struct SCFLoopYieldOpLowering : public OpConversionPattern<scf::YieldOp> {
   LogicalResult
   matchAndRewrite(scf::YieldOp op, OpAdaptor adaptor,
                   ConversionPatternRewriter &rewriter) const final {
-    rewriter.replaceOpWithNewOp<rust::RustLoopYieldOp>(op, llvm::None,
+    rewriter.replaceOpWithNewOp<rust::RustLoopYieldOp>(op, std::nullopt,
                                                        adaptor.getOperands());
     return success();
   };

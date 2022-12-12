@@ -197,7 +197,9 @@ def Rust_RustFuncOp : Rust_Op<"func",
 
   let arguments = (ins SymbolNameAttr:$sym_name,
                        TypeAttrOf<FunctionType>:$function_type,
-                       OptionalAttr<StrAttr>:$sym_visibility);
+                       OptionalAttr<StrAttr>:$sym_visibility,
+                       OptionalAttr<DictArrayAttr>:$arg_attrs,
+                       OptionalAttr<DictArrayAttr>:$res_attrs);
   let extraClassDeclaration = [{
     /// Returns the argument types of this function.
     ArrayRef<Type> getArgumentTypes() {
@@ -230,7 +232,9 @@ def Rust_RustExtFuncOp : Rust_Op<"extfunc",
   let regions = (region AnyRegion:$empty_body);
   let arguments = (ins SymbolNameAttr:$sym_name,
                        TypeAttrOf<FunctionType>:$function_type,
-                       OptionalAttr<StrAttr>:$sym_visibility);
+                       OptionalAttr<StrAttr>:$sym_visibility,
+                       OptionalAttr<DictArrayAttr>:$arg_attrs,
+                       OptionalAttr<DictArrayAttr>:$res_attrs);
 
   let extraClassDeclaration = [{
     /// Returns the argument types of this function.

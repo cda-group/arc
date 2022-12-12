@@ -138,7 +138,7 @@ void RustDialect::printType(Type type, DialectAsmPrinter &os) const {
 LogicalResult RustFuncOp::verifyType() {
   Type type = getFunctionType();
   if (!type.isa<FunctionType>())
-    return emitOpError("requires '" + getTypeAttrName() +
+    return emitOpError("requires '" + getFunctionTypeAttrName().str() +
                        "' attribute of function type");
   return success();
 }
@@ -147,7 +147,7 @@ LogicalResult RustFuncOp::verifyType() {
 LogicalResult RustExtFuncOp::verifyType() {
   Type type = getFunctionType();
   if (!type.isa<FunctionType>())
-    return emitOpError("requires '" + getTypeAttrName() +
+    return emitOpError("requires '" + getFunctionTypeAttrName().str() +
                        "' attribute of function type");
   return success();
 }
