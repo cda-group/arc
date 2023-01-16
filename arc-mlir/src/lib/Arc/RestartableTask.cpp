@@ -16,9 +16,9 @@
 #include "Arc/Passes.h"
 #include "mlir/Dialect/ControlFlow/IR/ControlFlowOps.h"
 #include "mlir/Dialect/SCF/IR/SCF.h"
-#include "mlir/IR/BlockAndValueMapping.h"
 #include "mlir/IR/BuiltinOps.h"
 #include "mlir/IR/BuiltinTypes.h"
+#include "mlir/IR/IRMapping.h"
 #include "mlir/IR/MLIRContext.h"
 #include "mlir/Support/LLVM.h"
 #include "mlir/Support/LogicalResult.h"
@@ -117,7 +117,7 @@ void RestartableTaskPass::runOnOperation() {
     });
 
     // Clone the while-loop into the new body function
-    BlockAndValueMapping map;
+    IRMapping map;
     IRRewriter rewriter(&getContext());
     Block *entryBB = rewriter.createBlock(&bodyFunc->getRegion(0));
     auto blockArgs = SmallVector<Location>(1, f->getLoc());

@@ -17,9 +17,9 @@
 #include "mlir/Analysis/Liveness.h"
 #include "mlir/Dialect/ControlFlow/IR/ControlFlowOps.h"
 #include "mlir/Dialect/SCF/IR/SCF.h"
-#include "mlir/IR/BlockAndValueMapping.h"
 #include "mlir/IR/BuiltinOps.h"
 #include "mlir/IR/BuiltinTypes.h"
+#include "mlir/IR/IRMapping.h"
 #include "mlir/IR/MLIRContext.h"
 #include "mlir/Support/LLVM.h"
 #include "mlir/Support/LogicalResult.h"
@@ -105,8 +105,8 @@ private:
                 DenseMap<Block *, StringAttr> &block2variantName,
                 DenseMap<Block *, SmallVector<std::pair<Value, StringAttr>>>
                     &block2live2Field,
-                types::EnumType stateTy, BlockAndValueMapping &map,
-                Location loc, PatternRewriter &rewriter) const {
+                types::EnumType stateTy, IRMapping &map, Location loc,
+                PatternRewriter &rewriter) const {
     SmallVector<Value, 4> destArgs;
     for (auto a : destOps)
       destArgs.push_back(map.lookup(a));
@@ -294,7 +294,7 @@ private:
       // Prepare to clone the body by setting up a mapping which maps
       // the original values to values extracted from the state
       // struct.
-      BlockAndValueMapping map;
+      IRMapping map;
 
       // First extract the struct for this BB
       types::EnumType::VariantTy variantInfo = block2variant[b];
