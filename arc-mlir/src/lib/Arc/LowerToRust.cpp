@@ -1180,7 +1180,7 @@ struct FuncOpLowering : public OpConversionPattern<mlir::func::FuncOp> {
     SmallVector<Value, 4> operandsArray;
     for (auto i : adaptor.getOperands())
       operandsArray.push_back(i);
-    ArrayRef<Value> operands = llvm::makeArrayRef(operandsArray);
+    ArrayRef<Value> operands = ArrayRef(operandsArray);
     if (func.isExternal())
       return buildExternalFun(rewriter, operands, attributes, func, func,
                               sigConv, ctx);

@@ -25,7 +25,7 @@
 #include <llvm/Support/raw_ostream.h>
 #include <mlir/Dialect/Arith/IR/Arith.h>
 #include <mlir/Dialect/Func/IR/FuncOps.h>
-#include <mlir/IR/BlockAndValueMapping.h>
+#include <mlir/IR/IRMapping.h>
 #include <mlir/IR/Matchers.h>
 #include <mlir/IR/PatternMatch.h>
 
@@ -54,7 +54,7 @@ ConstantValuesToDenseAttributes(mlir::OpResult result,
     arith::ConstantOp def = cast<arith::ConstantOp>(a.getDefiningOp());
     attribs.push_back(def.getValue());
   }
-  return DenseElementsAttr::get(st, llvm::makeArrayRef(attribs));
+  return DenseElementsAttr::get(st, ArrayRef(attribs));
 }
 
 struct ConstantFoldIf : public mlir::OpRewritePattern<arc::IfOp> {
@@ -75,7 +75,7 @@ struct ConstantFoldIf : public mlir::OpRewritePattern<arc::IfOp> {
     Operation *block_result =
         block.getTerminator()->getOperand(0).getDefiningOp();
     Operation *cloned_result = nullptr;
-    BlockAndValueMapping mapper;
+    IRMapping mapper;
     // We do the rewrite manually and not using
     // PatternRewriter::cloneRegion*() as we don't want to preserve
     // the blocks.
