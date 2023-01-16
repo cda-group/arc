@@ -32,12 +32,12 @@ jobs:
           toolchain: nightly
           override: true
 
-    - name: Cache arc-runtime-docs
-      id: cache-arc-runtime-docs
-      uses: actions/cache@v2
+    - name: Cache arc-sys-docs
+      id: cache-arc-sys-docs
+      uses: actions/cache@v3
       with:
         path: arc-docs/src/target
-        key: ${{ runner.os }}-cargo-${{ hashFiles('arc-runtime/**') }}
+        key: ${{ runner.os }}-cargo-${{ hashFiles('arc-sys/**') }}
 
     - name: Cache arc-preprocessor
       id: cache-arc-preprocessor
@@ -67,11 +67,13 @@ jobs:
         path: ~/.cargo/bin/zola
         key: ${{ runner.os }}-cargo-${{ env.ZOLA_VERSION }}
 
-    - name: Build arc-runtime-docs
-      if: steps.cache-arc-runtime-docs.outputs.cache-hit != 'true'
-      run: |
-        cargo +nightly doc --document-private-items --no-deps --target-dir=arc-docs/src/target --manifest-path=arc-runtime/Cargo.toml 
-        cargo +nightly doc --document-private-items --no-deps --target-dir=arc-docs/src/target --manifest-path=arc-runtime/macros/Cargo.toml 
+    - name: Build arc-sys-docs
+      if: steps.cache-arc-sys-docs.outputs.cache-hit != 'true'
+      env:
+        ARC_LANG_CMD: 'NONE' # Do not build Arc-Lang
+        ARC_MLIR_CMD: 'NONE' # Do not build Arc-MLIR
+        RUSTDOCFLAGS: '--enable-index-page -Zunstable-options'
+      run: cargo +nightly doc --document-private-items --no-deps --target-dir=arc-docs/src/target --manifest-path=arc-sys/Cargo.toml 
 
     - name: Build arc-preprocessor
       if: steps.cache-arc-preprocessor.outputs.cache-hit != 'true'

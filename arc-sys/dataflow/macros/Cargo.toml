@@ -1,0 +1,17 @@
+[package]
+name    = "macros"
+version = "0.0.0"
+authors = ["Klas Segeljakt <klasseg@kth.se>"]
+edition = "2018"
+
+[lib]
+proc-macro = true
+
+[dependencies]
+quote       = { version = "1.0.23" }
+syn         = { version = "1.0.107", features = ["full", "visit-mut"] }
+proc-macro2 = { version = "1.0.50" }
+
+[dev-dependencies]
+dataflow = { path = "../" }
+serde    = { version = "1.0.130", features = ["derive"] }

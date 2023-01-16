@@ -58,8 +58,8 @@ function run-mlir-tests {
     run-step ninja -C $ARC_MLIR_BUILD/llvm-build/ check-arc-mlir
 }
 
-function run-runtime-tests {
-    cd arc-runtime
+function run-sys-tests {
+    cd arc-sys
     run-step arc-cargo "$@"
 }
 
@@ -123,8 +123,8 @@ case $1 in
   ;;
 
     cargo)
-	# We assume this is a arc-runtime cargo command line
+	# We assume this is a arc-sys cargo command line
 	shift
-	run-runtime-tests "$@"
+	run-sys-tests "$@"
 	;;
 esac

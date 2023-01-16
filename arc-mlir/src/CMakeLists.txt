@@ -26,7 +26,7 @@ get_filename_component(ARC_LANG_SRC_DIR "../../arc-lang"
 get_filename_component(ARC_LANG_BUILD_DIR "../../arc-lang/build"
   REALPATH BASE_DIR ${CMAKE_CURRENT_BINARY_DIR} CACHE)
 
-get_filename_component(ARC_RUNTIME_SRC_DIR "../../arc-runtime"
+get_filename_component(ARC_DATAFLOW_SRC_DIR "../../arc-sys/dataflow"
   REALPATH BASE_DIR ${CMAKE_CURRENT_SOURCE_DIR} CACHE)
 
 get_filename_component(ARC_MLIR_SRC_DIR "../"
@@ -46,11 +46,11 @@ add_subdirectory(lib)
 add_subdirectory(tests)
 add_subdirectory(tools)
 
-add_custom_target(arc-runtime-check DEPENDS check-arc-mlir
-  COMMAND cd ${ARC_SCRIPT_SRC_DIR}; ${ARC_CARGO_BIN}/arc-cargo test --package=arc-runtime
+add_custom_target(arc-sys-check DEPENDS check-arc-mlir
+  COMMAND cd ${ARC_SCRIPT_SRC_DIR}; ${ARC_CARGO_BIN}/arc-cargo test
 )
 
 install(DIRECTORY ${ARC_LANG_SRC_DIR}/stdlib DESTINATION share/arc/)
-install(DIRECTORY ${ARC_RUNTIME_SRC_DIR} DESTINATION share/arc/)
+install(DIRECTORY ${ARC_DATAFLOW_SRC_DIR} DESTINATION share/arc/)
 install(PROGRAMS ${LLVM_TOOLS_BINARY_DIR}/arc DESTINATION bin)
 install(PROGRAMS ${LLVM_TOOLS_BINARY_DIR}/arc-lang DESTINATION bin)

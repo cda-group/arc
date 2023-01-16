@@ -1,0 +1,18 @@
+[package]
+name = "shared"
+version = "0.0.0"
+edition = "2021"
+
+[dependencies]
+const_format       = { version = "0.2.30" }
+halfbrown          = { version = "0.1.18", features  = ["serde"] }
+raw-cpuid          = { version = "10.6.0", features  = ["serde"] }
+serde              = { version = "1.0.152", features = ["derive", "rc"] }
+serde_json         = { version = "1.0.91", features = ["preserve_order"] }
+tokio              = { version = "1.24.2", features  = ["net", "process"] }
+tokio-serde        = { version = "0.8.0", features   = ["json"] }
+tokio-util         = { version = "0.7.4", features   = ["full"] }
+console-subscriber = { version = "0.1.8" }
+tracing-subscriber = { version = "0.3.16" }
+tracing            = { version = "0.1.37" }
+indexmap           = { version = "1.9.2", features = ["serde"] }

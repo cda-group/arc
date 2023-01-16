@@ -44,7 +44,7 @@ jobs:
 
         mv README.md "$package"
         mv arc-mlir/build/llvm-build/bin/{arc,arc-lang,arc-mlir} "$package/bin"
-        mv {arc-runtime,arc-lang/stdlib} "$package/share"
+        mv {arc-sys,arc-lang/stdlib} "$package/share"
 
         tar cvf "$package.tar" "$package"
 

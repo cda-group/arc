@@ -5,7 +5,7 @@ on:
     paths:
       - "arc-lang/**"
       - "arc-mlir/**"
-      - "arc-runtime/**"
+      - "arc-sys/**"
       - "arc-python/**"
       - "build"
       - ".github/workflows/test.yml"
@@ -39,7 +39,7 @@ jobs:
       env:
         ARC_MLIR_BUILD: ${{ format('{0}/build', runner.temp) }}
 
-    - name: Pre-build arc-runtime
+    - name: Pre-build arc-sys
       run: ./.github/continuous-integration.sh cargo test
       env:
         ARC_MLIR_BUILD: ${{ format('{0}/build', runner.temp) }}
@@ -49,7 +49,7 @@ jobs:
       env:
         ARC_MLIR_BUILD: ${{ format('{0}/build', runner.temp) }}
 
-    - name: "Run arc-runtime test: clippy"
+    - name: "Run arc-sys test: clippy"
       run: ./.github/continuous-integration.sh cargo clippy
       env:
         ARC_MLIR_BUILD: ${{ format('{0}/build', runner.temp) }}
@@ -57,7 +57,7 @@ jobs:
     - name: "Ccache/Sccache statistics"
       run: ./.github/continuous-integration.sh check-ccache
 
-#    - name: "Run arc-runtime test: fmt -- -v --check"
+#    - name: "Run arc-sys test: fmt -- -v --check"
 #      run: ./.github/continuous-integration.sh cargo fmt -- -v --check
 #      env:
 #        ARC_MLIR_BUILD: ${{ format('{0}/build', runner.temp) }}

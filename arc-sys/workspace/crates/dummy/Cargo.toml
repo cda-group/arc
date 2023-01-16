@@ -1,0 +1,7 @@
+[package]
+name = "dummy"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+pipeline = { path = "/Users/klasseg/Workspace/arc/arc-sys/pipeline" }

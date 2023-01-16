@@ -1,0 +1,10 @@
+[workspace]
+
+members = [
+  "coordinator",
+  "worker",
+  "client",
+  "shared",
+  "dataflow",
+  "dataflow/macros",
+]
