@@ -136,7 +136,7 @@ void ArcDialect::printType(Type type, DialectAsmPrinter &os) const {
 //===----------------------------------------------------------------------===//
 
 // Stolen from standard dialect
-OpFoldResult arc::AndOp::fold(ArrayRef<Attribute> operands) {
+OpFoldResult arc::AndOp::fold(FoldAdaptor operands) {
   /// and(x, 0) -> 0
   if (matchPattern(getRhs(), m_Zero()))
     return getRhs();
@@ -144,7 +144,7 @@ OpFoldResult arc::AndOp::fold(ArrayRef<Attribute> operands) {
   if (getLhs() == getRhs())
     return getRhs();
 
-  return constFoldBinaryOp<IntegerAttr>(operands,
+  return constFoldBinaryOp<IntegerAttr>(operands.getOperands(),
                                         [](APInt a, APInt b) { return a & b; });
 }
 
@@ -183,8 +183,8 @@ LogicalResult arc::ConstantIntOp::verify() {
   return success();
 }
 
-OpFoldResult ConstantIntOp::fold(ArrayRef<Attribute> operands) {
-  assert(operands.empty() && "constant has no operands");
+OpFoldResult ConstantIntOp::fold(FoldAdaptor operands) {
+  assert(operands.getOperands().empty() && "constant has no operands");
   return getValue();
 }
 
@@ -233,11 +233,11 @@ static bool applyCmpPredicate(Arc_CmpIPredicate predicate, bool isUnsigned,
 }
 
 // Constant folding hook for comparisons.
-OpFoldResult arc::CmpIOp::fold(ArrayRef<Attribute> operands) {
-  assert(operands.size() == 2 && "cmpi takes two arguments");
+OpFoldResult arc::CmpIOp::fold(FoldAdaptor operands) {
+  assert(operands.getOperands().size() == 2 && "cmpi takes two arguments");
 
-  auto lhs = operands.front().dyn_cast_or_null<IntegerAttr>();
-  auto rhs = operands.back().dyn_cast_or_null<IntegerAttr>();
+  auto lhs = operands.getLhs().dyn_cast_or_null<IntegerAttr>();
+  auto rhs = operands.getRhs().dyn_cast_or_null<IntegerAttr>();
   if (!lhs || !rhs)
     return {};
   bool isUnsigned = lhs.cast<TypedAttr>().getType().isUnsignedInteger();
@@ -251,21 +251,23 @@ OpFoldResult arc::CmpIOp::fold(ArrayRef<Attribute> operands) {
 //===----------------------------------------------------------------------===//
 // Mostly stolen from standard dialect
 
-OpFoldResult DivIOp::fold(ArrayRef<Attribute> operands) {
-  assert(operands.size() == 2 && "binary operation takes two operands");
+OpFoldResult DivIOp::fold(FoldAdaptor operands) {
+  assert(operands.getOperands().size() == 2 &&
+         "binary operation takes two operands");
 
   bool isUnsigned = getType().isUnsignedInteger();
   // Don't fold if it would overflow or if it requires a division by zero.
   bool overflowOrDiv0 = false;
-  auto result = constFoldBinaryOp<IntegerAttr>(operands, [&](APInt a, APInt b) {
-    if (overflowOrDiv0 || !b) {
-      overflowOrDiv0 = true;
-      return a;
-    }
-    if (isUnsigned)
-      return a.udiv(b);
-    return a.sdiv_ov(b, overflowOrDiv0);
-  });
+  auto result = constFoldBinaryOp<IntegerAttr>(
+      operands.getOperands(), [&](APInt a, APInt b) {
+        if (overflowOrDiv0 || !b) {
+          overflowOrDiv0 = true;
+          return a;
+        }
+        if (isUnsigned)
+          return a.udiv(b);
+        return a.sdiv_ov(b, overflowOrDiv0);
+      });
   return overflowOrDiv0 ? Attribute() : result;
 }
 
@@ -566,20 +568,21 @@ LogicalResult StructAccessOp::verify() {
   return emitOpError("field '") << Field << "' does not exist in " << StructTy;
 }
 
-OpFoldResult AddIOp::fold(ArrayRef<Attribute> operands) {
+OpFoldResult AddIOp::fold(FoldAdaptor operands) {
   /// addi(x, 0) -> x
   if (matchPattern(getRhs(), m_Zero()))
     return getLhs();
 
   bool isUnsigned = getType().isUnsignedInteger();
   bool overflowDetected = false;
-  auto result = constFoldBinaryOp<IntegerAttr>(operands, [&](APInt a, APInt b) {
-    if (overflowDetected)
-      return a;
-    if (isUnsigned)
-      return a.uadd_ov(b, overflowDetected);
-    return a.sadd_ov(b, overflowDetected);
-  });
+  auto result = constFoldBinaryOp<IntegerAttr>(
+      operands.getOperands(), [&](APInt a, APInt b) {
+        if (overflowDetected)
+          return a;
+        if (isUnsigned)
+          return a.uadd_ov(b, overflowDetected);
+        return a.sadd_ov(b, overflowDetected);
+      });
   return overflowDetected ? Attribute() : result;
 }
 
@@ -587,7 +590,7 @@ OpFoldResult AddIOp::fold(ArrayRef<Attribute> operands) {
 // MulIOp
 //===----------------------------------------------------------------------===//
 // Mostly stolen from the standard dialect
-OpFoldResult MulIOp::fold(ArrayRef<Attribute> operands) {
+OpFoldResult MulIOp::fold(FoldAdaptor operands) {
   /// muli(x, 0) -> 0
   if (matchPattern(getRhs(), m_Zero()))
     return getRhs();
@@ -599,15 +602,16 @@ OpFoldResult MulIOp::fold(ArrayRef<Attribute> operands) {
 
   // Don't fold if it would overflow
   bool overflow = false;
-  auto result = constFoldBinaryOp<IntegerAttr>(operands, [&](APInt a, APInt b) {
-    if (overflow || !b) {
-      overflow = true;
-      return a;
-    }
-    if (isUnsigned)
-      return a.umul_ov(b, overflow);
-    return a.smul_ov(b, overflow);
-  });
+  auto result = constFoldBinaryOp<IntegerAttr>(
+      operands.getOperands(), [&](APInt a, APInt b) {
+        if (overflow || !b) {
+          overflow = true;
+          return a;
+        }
+        if (isUnsigned)
+          return a.umul_ov(b, overflow);
+        return a.smul_ov(b, overflow);
+      });
   return overflow ? Attribute() : result;
 }
 
@@ -615,7 +619,7 @@ OpFoldResult MulIOp::fold(ArrayRef<Attribute> operands) {
 // OrOp
 //===----------------------------------------------------------------------===//
 
-OpFoldResult arc::OrOp::fold(ArrayRef<Attribute> operands) {
+OpFoldResult arc::OrOp::fold(FoldAdaptor operands) {
   /// or(x, 0) -> x
   if (matchPattern(getRhs(), m_Zero()))
     return getLhs();
@@ -623,7 +627,7 @@ OpFoldResult arc::OrOp::fold(ArrayRef<Attribute> operands) {
   if (getLhs() == getRhs())
     return getRhs();
 
-  return constFoldBinaryOp<IntegerAttr>(operands,
+  return constFoldBinaryOp<IntegerAttr>(operands.getOperands(),
                                         [](APInt a, APInt b) { return a | b; });
 }
 
@@ -651,10 +655,11 @@ LogicalResult ReceiveOp::verify() {
 // RemIOp
 //===----------------------------------------------------------------------===//
 // Mostly stolen from standard dialect
-OpFoldResult RemIOp::fold(ArrayRef<Attribute> operands) {
-  assert(operands.size() == 2 && "remi_unsigned takes two operands");
+OpFoldResult RemIOp::fold(FoldAdaptor operands) {
+  assert(operands.getOperands().size() == 2 &&
+         "remi_unsigned takes two operands");
 
-  auto rhs = operands.back().dyn_cast_or_null<IntegerAttr>();
+  auto rhs = operands.getRhs().dyn_cast_or_null<IntegerAttr>();
   if (!rhs)
     return {};
   auto rhsValue = rhs.getValue();
@@ -667,7 +672,7 @@ OpFoldResult RemIOp::fold(ArrayRef<Attribute> operands) {
   if (rhsValue.isNullValue())
     return {};
 
-  auto lhs = operands.front().dyn_cast_or_null<IntegerAttr>();
+  auto lhs = operands.getLhs().dyn_cast_or_null<IntegerAttr>();
   if (!lhs)
     return {};
   bool isUnsigned = getType().isUnsignedInteger();
@@ -752,7 +757,7 @@ FunctionType ArcSpawnOp::getCalleeType() {
 //===----------------------------------------------------------------------===//
 
 // Stolen from standard dialect
-OpFoldResult arc::SelectOp::fold(ArrayRef<Attribute> operands) {
+OpFoldResult arc::SelectOp::fold(FoldAdaptor operands) {
   auto condition = getCondition();
 
   // select true, %0, %1 => %0
@@ -789,20 +794,21 @@ LogicalResult SendOp::verify() {
 // SubIOp
 //===----------------------------------------------------------------------===//
 // Mostly stolen from the standard dialect
-OpFoldResult SubIOp::fold(ArrayRef<Attribute> operands) {
+OpFoldResult SubIOp::fold(FoldAdaptor operands) {
   /// addi(x, 0) -> x
   if (matchPattern(getRhs(), m_Zero()))
     return getLhs();
 
   bool isUnsigned = getType().isUnsignedInteger();
   bool overflowDetected = false;
-  auto result = constFoldBinaryOp<IntegerAttr>(operands, [&](APInt a, APInt b) {
-    if (overflowDetected)
-      return a;
-    if (isUnsigned)
-      return a.usub_ov(b, overflowDetected);
-    return a.ssub_ov(b, overflowDetected);
-  });
+  auto result = constFoldBinaryOp<IntegerAttr>(
+      operands.getOperands(), [&](APInt a, APInt b) {
+        if (overflowDetected)
+          return a;
+        if (isUnsigned)
+          return a.usub_ov(b, overflowDetected);
+        return a.ssub_ov(b, overflowDetected);
+      });
   return overflowDetected ? Attribute() : result;
 }
 
@@ -811,7 +817,7 @@ OpFoldResult SubIOp::fold(ArrayRef<Attribute> operands) {
 //===----------------------------------------------------------------------===//
 
 // Stolen from standard dialect
-OpFoldResult arc::XOrOp::fold(ArrayRef<Attribute> operands) {
+OpFoldResult arc::XOrOp::fold(FoldAdaptor operands) {
   /// xor(x, 0) -> x
   if (matchPattern(getRhs(), m_Zero()))
     return getLhs();
@@ -819,7 +825,7 @@ OpFoldResult arc::XOrOp::fold(ArrayRef<Attribute> operands) {
   if (getLhs() == getRhs())
     return Builder(getContext()).getZeroAttr(getType());
 
-  return constFoldBinaryOp<IntegerAttr>(operands,
+  return constFoldBinaryOp<IntegerAttr>(operands.getOperands(),
                                         [](APInt a, APInt b) { return a ^ b; });
 }
 

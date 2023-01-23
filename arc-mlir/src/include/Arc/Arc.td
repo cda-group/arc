@@ -45,6 +45,7 @@ def Arc_Dialect : Dialect {
       void printType(Type type, DialectAsmPrinter &os) const override;
   }];
   let hasConstantMaterializer = 1;
+  let useFoldAPI = kEmitFoldAdaptorFolder;
 }
 
 //===----------------------------------------------------------------------===//

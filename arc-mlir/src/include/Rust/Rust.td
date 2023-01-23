@@ -48,7 +48,7 @@ def Rust_Dialect : Dialect {
                       u8Ty, u16Ty, u32Ty, u64Ty,
                       noneTy;
   }];
-
+  let useFoldAPI = kEmitFoldAdaptorFolder;
 }
 
 //===----------------------------------------------------------------------===//
