@@ -51,13 +51,8 @@ void ArcDialect::initialize(void) {
       >();
   addTypes<ADTType>();
   addTypes<ADTGenericType>();
-  addTypes<AppenderType>();
-  addTypes<ArconAppenderType>();
-  addTypes<ArconMapType>();
-  addTypes<ArconValueType>();
   addTypes<SinkStreamType>();
   addTypes<SourceStreamType>();
-  addTypes<StreamType>();
   addTypes<EnumType>();
   addTypes<StructType>();
 }
@@ -74,20 +69,10 @@ Type ArcDialect::parseType(DialectAsmParser &parser) const {
     return ADTType::parse(parser);
   if (keyword == "generic_adt")
     return ADTGenericType::parse(parser);
-  if (keyword == "appender")
-    return AppenderType::parse(parser);
-  if (keyword == "arcon.appender")
-    return ArconAppenderType::parse(parser);
-  if (keyword == "arcon.map")
-    return ArconMapType::parse(parser);
-  if (keyword == "arcon.value")
-    return ArconValueType::parse(parser);
   if (keyword == "stream.sink")
     return SinkStreamType::parse(parser);
   if (keyword == "stream.source")
     return SourceStreamType::parse(parser);
-  if (keyword == "stream")
-    return StreamType::parse(parser);
   if (keyword == "enum")
     return EnumType::parse(parser);
   if (keyword == "struct")
@@ -105,19 +90,9 @@ void ArcDialect::printType(Type type, DialectAsmPrinter &os) const {
     t.print(os);
   else if (auto t = type.dyn_cast<ADTGenericType>())
     t.print(os);
-  else if (auto t = type.dyn_cast<AppenderType>())
-    t.print(os);
-  else if (auto t = type.dyn_cast<ArconAppenderType>())
-    t.print(os);
-  else if (auto t = type.dyn_cast<ArconMapType>())
-    t.print(os);
-  else if (auto t = type.dyn_cast<ArconValueType>())
-    t.print(os);
   else if (auto t = type.dyn_cast<SinkStreamType>())
     t.print(os);
   else if (auto t = type.dyn_cast<SourceStreamType>())
-    t.print(os);
-  else if (auto t = type.dyn_cast<StreamType>())
     t.print(os);
   else if (auto t = type.dyn_cast<EnumType>())
     t.print(os);
@@ -439,32 +414,6 @@ LogicalResult LoopBreakOp::verify() {
   return success();
 }
 
-LogicalResult MergeOp::verify() {
-  auto Operation = this->getOperation();
-  auto BuilderTy = Operation->getOperand(0).getType().cast<BuilderType>();
-  auto BuilderMergeTy = BuilderTy.getMergeType();
-  auto MergeTy = Operation->getOperand(1).getType();
-  auto NewBuilderTy = Operation->getResult(0).getType().cast<BuilderType>();
-  if (BuilderMergeTy != MergeTy)
-    return emitOpError("operand type does not match merge type, found ")
-           << MergeTy << " but expected " << BuilderMergeTy;
-  if (BuilderTy != NewBuilderTy)
-    return emitOpError("result type does not match builder type, found: ")
-           << NewBuilderTy << " but expected " << BuilderTy;
-  return mlir::success();
-}
-
-LogicalResult ResultOp::verify() {
-  auto Operation = this->getOperation();
-  auto BuilderTy = Operation->getOperand(0).getType().cast<BuilderType>();
-  auto BuilderResultTy = BuilderTy.getResultType();
-  auto ResultTy = Operation->getResult(0).getType().cast<BuilderType>();
-  if (BuilderResultTy != ResultTy)
-    return emitOpError("result type does not match that of builder, found ")
-           << ResultTy << " but expected " << BuilderResultTy;
-  return mlir::success();
-}
-
 LogicalResult StructAccessOp::verify() {
   auto Operation = this->getOperation();
   auto ResultTy = Operation->getResult(0).getType();
@@ -744,132 +693,6 @@ OpFoldResult arc::XOrOp::fold(FoldAdaptor operands) {
 }
 
 //===----------------------------------------------------------------------===//
-// StateAppender operations
-//===----------------------------------------------------------------------===//
-LogicalResult StateAppenderFoldOp::verify() {
-  auto InitTy = getInit().getType();
-  auto ResultTy = getRes().getType();
-  StringAttr funName = StringAttr::get(this->getContext(), getFun());
-  Operation *Callee = ::mlir::SymbolTable::lookupNearestSymbolFrom(
-      this->getOperation(), funName);
-  auto StateTy = getState().getType().cast<ArconAppenderType>().getType();
-
-  mlir::func::FuncOp F = dyn_cast<mlir::func::FuncOp>(Callee);
-  FunctionType FT = F.getFunctionType().dyn_cast<FunctionType>();
-
-  if (!F)
-    return emitOpError("fold function operand is not a function ");
-
-  if (FT.getNumInputs() != 2)
-    return emitOpError("folding function has the wrong number of operands, "
-                       "expected 2, found ")
-           << FT.getNumInputs();
-
-  if (FT.getNumResults() != 1)
-    return emitOpError("folding function has to return a single value, found ")
-           << FT.getNumResults() << " values";
-
-  if (InitTy != ResultTy)
-    return emitOpError("expected init type ")
-           << InitTy << " to match result type " << ResultTy;
-
-  if (InitTy != FT.getInput(0))
-    return emitOpError("expected type of accumulator initializer")
-           << " to match type of folding function accumulator, found "
-           << FT.getResult(0) << " expected " << InitTy;
-
-  if (FT.getResult(0) != FT.getInput(0))
-    return emitOpError("expected type of folding function accumulator to")
-           << " match folding function result type, found " << FT.getResult(0)
-           << " expected " << FT.getInput(0);
-
-  if (StateTy != FT.getInput(1))
-    return emitOpError("expected type of folding function input to")
-           << " match appender type, found " << FT.getResult(0) << " expected "
-           << FT.getInput(1);
-
-  return mlir::success();
-}
-
-LogicalResult StateAppenderPushOp::verify() {
-  auto ValTy = getValue().getType();
-  auto StateTy = getState().getType().cast<ArconAppenderType>().getType();
-  if (ValTy != StateTy)
-    return emitOpError("can't push a value of type ")
-           << ValTy << " to an appender expecting type " << StateTy;
-  return mlir::success();
-}
-
-//===----------------------------------------------------------------------===//
-// StateMap operations
-//===----------------------------------------------------------------------===//
-LogicalResult StateMapContainsOp::verify() {
-  auto KeyTy = getKey().getType();
-  auto ExpectedKeyTy = getState().getType().cast<ArconMapType>().getKeyType();
-  if (KeyTy != ExpectedKeyTy)
-    return emitOpError("key type ")
-           << KeyTy << " does not match map key type " << ExpectedKeyTy;
-  return mlir::success();
-}
-
-LogicalResult StateMapGetOp::verify() {
-  auto ValTy = getResult().getType();
-  auto KeyTy = getKey().getType();
-  auto ExpectedKeyTy = getState().getType().cast<ArconMapType>().getKeyType();
-  auto ExpectedValTy = getState().getType().cast<ArconMapType>().getValueType();
-  if (KeyTy != ExpectedKeyTy)
-    return emitOpError("key type ")
-           << KeyTy << " does not match map key type " << ExpectedKeyTy;
-  if (ValTy != ExpectedValTy)
-    return emitOpError("result type ")
-           << ValTy << " does not match map value type " << ExpectedValTy;
-  return mlir::success();
-}
-
-LogicalResult StateMapInsertOp::verify() {
-  auto ValTy = getValue().getType();
-  auto KeyTy = getKey().getType();
-  auto ExpectedKeyTy = getState().getType().cast<ArconMapType>().getKeyType();
-  auto ExpectedValTy = getState().getType().cast<ArconMapType>().getValueType();
-  if (KeyTy != ExpectedKeyTy)
-    return emitOpError("key type ")
-           << KeyTy << " does not match map key type " << ExpectedKeyTy;
-  if (ValTy != ExpectedValTy)
-    return emitOpError("value type ")
-           << ValTy << " does not match map value type " << ExpectedValTy;
-  return mlir::success();
-}
-
-LogicalResult StateMapRemoveOp::verify() {
-  auto KeyTy = getKey().getType();
-  auto ExpectedKeyTy = getState().getType().cast<ArconMapType>().getKeyType();
-  if (KeyTy != ExpectedKeyTy)
-    return emitOpError("key type ")
-           << KeyTy << " does not match map key type " << ExpectedKeyTy;
-  return mlir::success();
-}
-
-//===----------------------------------------------------------------------===//
-// StateValue operations
-//===----------------------------------------------------------------------===//
-LogicalResult StateValueWriteOp::verify() {
-  auto ValTy = getValue().getType();
-  auto StateTy = getState().getType().cast<ArconValueType>().getType();
-  if (ValTy != StateTy)
-    return emitOpError("Can't write a value of type ")
-           << ValTy << " to a state value of type" << StateTy;
-  return mlir::success();
-}
-
-LogicalResult StateValueReadOp::verify() {
-  auto Operation = this->getOperation();
-  auto ValTy = getState().getType().cast<ArconValueType>().getType();
-  auto ResultTy = Operation->getResult(0).getType();
-  if (ValTy != ResultTy)
-    return emitOpError("Expected result type ") << ValTy << " not " << ResultTy;
-  return mlir::success();
-}
-
 //===----------------------------------------------------------------------===//
 // FilterOp
 //===----------------------------------------------------------------------===//
@@ -1111,271 +934,6 @@ void ADTGenericType::print(DialectAsmPrinter &os) const {
 }
 
 //===----------------------------------------------------------------------===//
-// ArconType
-//===----------------------------------------------------------------------===//
-
-struct ArconTypeStorage : public TypeStorage {
-  ArconTypeStorage(Type containedTy, std::string keyword)
-      : TypeStorage(), containedType(containedTy), keyword(keyword) {}
-
-  using KeyTy = Type;
-
-  bool operator==(const KeyTy &key) const { return key == containedType; }
-
-  Type containedType;
-  std::string keyword;
-};
-
-Type ArconType::getContainedType() const {
-  return static_cast<ImplType *>(impl)->containedType;
-}
-
-StringRef ArconType::getKeyword() const {
-  return static_cast<ImplType *>(impl)->keyword;
-}
-
-bool isBuilderType(Type type) { return type.isa<AppenderType>(); }
-
-void ArconType::print(DialectAsmPrinter &os) const {
-  os << getKeyword() << "<" << getContainedType() << ">";
-}
-
-//===----------------------------------------------------------------------===//
-// ArconAppenderType
-//===----------------------------------------------------------------------===//
-struct ArconAppenderTypeStorage : public ArconTypeStorage {
-  using KeyTy = Type;
-
-  ArconAppenderTypeStorage(Type elementType)
-      : ArconTypeStorage(elementType, "arcon.appender") {}
-
-  static ArconAppenderTypeStorage *
-  construct(mlir::TypeStorageAllocator &allocator, const KeyTy &key) {
-    return new (allocator.allocate<ArconValueTypeStorage>())
-        ArconAppenderTypeStorage(key);
-  }
-};
-
-ArconAppenderType ArconAppenderType::get(mlir::Type elementType) {
-  mlir::MLIRContext *ctx = elementType.getContext();
-  return Base::get(ctx, elementType);
-}
-
-/// Returns the element type of this stream type.
-mlir::Type ArconAppenderType::getType() const { return getContainedType(); }
-
-Type ArconAppenderType::parse(DialectAsmParser &parser) {
-  if (parser.parseLess())
-    return nullptr;
-
-  mlir::Type elementType;
-  if (parser.parseType(elementType))
-    return nullptr;
-
-  if (parser.parseGreater())
-    return Type();
-  return ArconAppenderType::get(elementType);
-}
-
-//===----------------------------------------------------------------------===//
-// ArconMapType
-//===----------------------------------------------------------------------===//
-struct ArconMapTypeStorage : public ArconTypeStorage {
-  using KeyTy = std::pair<Type, Type>;
-
-  ArconMapTypeStorage(Type keyType, Type valueType)
-      : ArconTypeStorage(keyType, "arcon.map"), valueType(valueType) {}
-
-  static llvm::hash_code hashKey(const KeyTy &key) {
-    return llvm::hash_combine(key.first, key.second);
-  }
-
-  static KeyTy getKey(Type keyType, Type valueType) {
-    return KeyTy(keyType, valueType);
-  }
-
-  bool operator==(const KeyTy &key) const {
-    return key.first == containedType && key.second == valueType;
-  }
-
-  static ArconMapTypeStorage *construct(mlir::TypeStorageAllocator &allocator,
-                                        const KeyTy &key) {
-    return new (allocator.allocate<ArconMapTypeStorage>())
-        ArconMapTypeStorage(key.first, key.second);
-  }
-
-  Type valueType;
-};
-
-ArconMapType ArconMapType::get(mlir::Type keyType, mlir::Type valueType) {
-  mlir::MLIRContext *ctx = keyType.getContext();
-  return Base::get(ctx, keyType, valueType);
-}
-
-mlir::Type ArconMapType::getKeyType() const { return getContainedType(); }
-
-mlir::Type ArconMapType::getValueType() const {
-
-  return static_cast<ImplType *>(impl)->valueType;
-}
-
-Type ArconMapType::parse(DialectAsmParser &parser) {
-  if (parser.parseLess())
-    return nullptr;
-
-  mlir::Type keyType;
-  if (parser.parseType(keyType))
-    return nullptr;
-
-  if (parser.parseComma())
-    return nullptr;
-
-  mlir::Type valueType;
-  if (parser.parseType(valueType))
-    return nullptr;
-
-  if (parser.parseGreater())
-    return Type();
-  return ArconMapType::get(keyType, valueType);
-}
-
-void ArconMapType::print(DialectAsmPrinter &os) const {
-  os << getKeyword() << "<" << getKeyType() << ", " << getValueType() << ">";
-}
-
-//===----------------------------------------------------------------------===//
-// ArconValueType
-//===----------------------------------------------------------------------===//
-struct ArconValueTypeStorage : public ArconTypeStorage {
-  using KeyTy = Type;
-
-  ArconValueTypeStorage(Type elementType)
-      : ArconTypeStorage(elementType, "arcon.value") {}
-
-  static ArconValueTypeStorage *construct(mlir::TypeStorageAllocator &allocator,
-                                          const KeyTy &key) {
-    return new (allocator.allocate<ArconValueTypeStorage>())
-        ArconValueTypeStorage(key);
-  }
-};
-
-ArconValueType ArconValueType::get(mlir::Type elementType) {
-  mlir::MLIRContext *ctx = elementType.getContext();
-  return Base::get(ctx, elementType);
-}
-
-/// Returns the element type of this stream type.
-mlir::Type ArconValueType::getType() const { return getContainedType(); }
-
-Type ArconValueType::parse(DialectAsmParser &parser) {
-  if (parser.parseLess())
-    return nullptr;
-
-  mlir::Type elementType;
-  if (parser.parseType(elementType))
-    return nullptr;
-
-  if (parser.parseGreater())
-    return Type();
-  return ArconValueType::get(elementType);
-}
-
-//===----------------------------------------------------------------------===//
-// BuilderType
-//===----------------------------------------------------------------------===//
-
-struct BuilderTypeStorage : public TypeStorage {
-  BuilderTypeStorage(Type mergeTy, Type resultTy)
-      : TypeStorage(), mergeType(mergeTy), resultType(resultTy) {}
-
-  using KeyTy = std::pair<Type, Type>;
-
-  bool operator==(const KeyTy &key) const {
-    return key.first == mergeType && key.second == resultType;
-  }
-
-  Type mergeType;
-  Type resultType;
-};
-
-Type BuilderType::getMergeType() const {
-  return static_cast<ImplType *>(impl)->mergeType;
-}
-
-Type BuilderType::getResultType() const {
-  return static_cast<ImplType *>(impl)->resultType;
-}
-
-//===----------------------------------------------------------------------===//
-// AppenderType
-//===----------------------------------------------------------------------===//
-
-struct AppenderTypeStorage : public BuilderTypeStorage {
-  AppenderTypeStorage(Type mergeTy, RankedTensorType resultTy)
-      : BuilderTypeStorage(mergeTy, resultTy) {}
-
-  using KeyTy = std::pair<Type, RankedTensorType>;
-
-  static llvm::hash_code hashKey(const KeyTy &key) {
-    return llvm::hash_combine(key.first, key.second);
-  }
-
-  static KeyTy getKey(Type mergeType, RankedTensorType resultType) {
-    return KeyTy(mergeType, resultType);
-  }
-
-  static AppenderTypeStorage *construct(TypeStorageAllocator &allocator,
-                                        const KeyTy &key) {
-    return new (allocator.allocate<AppenderTypeStorage>())
-        AppenderTypeStorage(key.first, key.second);
-  }
-};
-
-AppenderType AppenderType::get(Type mergeType, RankedTensorType resultType) {
-  return Base::get(mergeType.getContext(), mergeType, resultType);
-}
-
-AppenderType
-AppenderType::getChecked(function_ref<InFlightDiagnostic()> emitError,
-                         Type mergeType, RankedTensorType resultType,
-                         Location loc) {
-  return Base::getChecked(emitError, mergeType.getContext(), mergeType,
-                          resultType);
-}
-
-Type AppenderType::parse(DialectAsmParser &parser) {
-  if (parser.parseLess())
-    return nullptr;
-  Location loc = parser.getEncodedSourceLoc(parser.getCurrentLocation());
-  mlir::Type mergeType;
-  if (parser.parseType(mergeType))
-    return nullptr;
-  if (parser.parseGreater())
-    return nullptr;
-
-  ArrayRef<int64_t> shape = {};
-  RankedTensorType resultType = RankedTensorType::getChecked(
-      mlir::detail::getDefaultDiagnosticEmitFn(loc), shape, mergeType);
-
-  return AppenderType::getChecked(mlir::detail::getDefaultDiagnosticEmitFn(loc),
-                                  mergeType, resultType, loc);
-}
-
-void AppenderType::print(DialectAsmPrinter &os) const {
-  os << "appender" << '<' << getMergeType() << '>';
-}
-
-LogicalResult AppenderType::verify(function_ref<InFlightDiagnostic()> emitError,
-                                   Type mergeType,
-                                   RankedTensorType resultType) {
-  if (!isValueType(mergeType)) {
-    return emitError() << "appender merge type must be a value type: found "
-                       << mergeType;
-  }
-  return success();
-}
-
-//===----------------------------------------------------------------------===//
 // StreamTypeBase
 //===----------------------------------------------------------------------===//
 
@@ -1476,42 +1034,6 @@ Type SourceStreamType::parse(DialectAsmParser &parser) {
   if (t)
     return SourceStreamType::get(t);
   return nullptr;
-}
-
-//===----------------------------------------------------------------------===//
-// StreamType
-//===----------------------------------------------------------------------===//
-struct StreamTypeStorage : public ArconTypeStorage {
-  using KeyTy = Type;
-
-  StreamTypeStorage(Type elementType)
-      : ArconTypeStorage(elementType, "stream") {}
-
-  static StreamTypeStorage *construct(mlir::TypeStorageAllocator &allocator,
-                                      const KeyTy &key) {
-    return new (allocator.allocate<StreamTypeStorage>()) StreamTypeStorage(key);
-  }
-};
-
-StreamType StreamType::get(mlir::Type elementType) {
-  mlir::MLIRContext *ctx = elementType.getContext();
-  return Base::get(ctx, elementType);
-}
-
-/// Returns the element type of this stream type.
-mlir::Type StreamType::getType() const { return getContainedType(); }
-
-Type StreamType::parse(DialectAsmParser &parser) {
-  if (parser.parseLess())
-    return nullptr;
-
-  mlir::Type elementType;
-  if (parser.parseType(elementType))
-    return nullptr;
-
-  if (parser.parseGreater())
-    return Type();
-  return StreamType::get(elementType);
 }
 
 //===----------------------------------------------------------------------===//

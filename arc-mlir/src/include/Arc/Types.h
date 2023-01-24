@@ -37,18 +37,11 @@ namespace types {
 //===----------------------------------------------------------------------===//
 
 bool isValueType(Type type);
-bool isBuilderType(Type type);
 
 //===----------------------------------------------------------------------===//
 // Arc Type Storages
 //===----------------------------------------------------------------------===//
 
-struct ArconTypeStorage;
-struct ArconValueTypeStorage;
-struct ArconAppenderTypeStorage;
-struct ArconMapTypeStorage;
-struct BuilderTypeStorage;
-struct AppenderTypeStorage;
 struct SinkStreamTypeStorage;
 struct SourceStreamTypeStorage;
 struct StreamTypeBaseStorage;
@@ -91,82 +84,6 @@ public:
   void print(DialectAsmPrinter &os) const;
 };
 
-class BuilderType : public Type {
-public:
-  using ImplType = BuilderTypeStorage;
-  using Type::Type;
-
-  Type getMergeType() const;
-  Type getResultType() const;
-};
-
-class AppenderType
-    : public Type::TypeBase<AppenderType, BuilderType, AppenderTypeStorage> {
-public:
-  using Base::Base;
-
-  static AppenderType get(Type mergeType, RankedTensorType resultType);
-  static AppenderType getChecked(function_ref<InFlightDiagnostic()> emitError,
-                                 Type mergeType, RankedTensorType resultType,
-                                 Location loc);
-  static LogicalResult verify(function_ref<InFlightDiagnostic()> emitError,
-                              Type mergeType, RankedTensorType resultType);
-  static Type parse(DialectAsmParser &parser);
-  void print(DialectAsmPrinter &os) const;
-};
-
-class ArconType : public Type {
-public:
-  virtual ~ArconType(){};
-  using ImplType = ArconTypeStorage;
-  using Type::Type;
-
-  Type getContainedType() const;
-  StringRef getKeyword() const;
-  virtual void print(DialectAsmPrinter &os) const;
-};
-
-class ArconValueType : public mlir::Type::TypeBase<ArconValueType, ArconType,
-                                                   ArconValueTypeStorage> {
-public:
-  using Base::Base;
-
-  static ArconValueType get(mlir::Type elementType);
-
-  /// Returns the type of the stream elements
-  mlir::Type getType() const;
-
-  static Type parse(DialectAsmParser &parser);
-};
-
-class ArconAppenderType
-    : public mlir::Type::TypeBase<ArconAppenderType, ArconType,
-                                  ArconAppenderTypeStorage> {
-public:
-  using Base::Base;
-
-  static ArconAppenderType get(mlir::Type elementType);
-
-  /// Returns the type of the stream elements
-  mlir::Type getType() const;
-
-  static Type parse(DialectAsmParser &parser);
-};
-
-class ArconMapType : public mlir::Type::TypeBase<ArconMapType, ArconType,
-                                                 ArconMapTypeStorage> {
-public:
-  using Base::Base;
-
-  static ArconMapType get(mlir::Type keyType, mlir::Type elementType);
-
-  mlir::Type getKeyType() const;
-  mlir::Type getValueType() const;
-
-  static Type parse(DialectAsmParser &parser);
-  virtual void print(DialectAsmPrinter &os) const override;
-};
-
 class StreamTypeBase : public Type {
 public:
   virtual ~StreamTypeBase(){};
@@ -203,19 +120,6 @@ public:
   using Base::Base;
 
   static SourceStreamType get(mlir::Type elementType);
-
-  /// Returns the type of the stream elements
-  mlir::Type getType() const;
-
-  static Type parse(DialectAsmParser &parser);
-};
-
-class StreamType
-    : public mlir::Type::TypeBase<StreamType, ArconType, StreamTypeStorage> {
-public:
-  using Base::Base;
-
-  static StreamType get(mlir::Type elementType);
 
   /// Returns the type of the stream elements
   mlir::Type getType() const;

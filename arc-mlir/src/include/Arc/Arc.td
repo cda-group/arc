@@ -103,7 +103,6 @@ def ADTSimpleType : Type<CPred<"$_self.isa<ADTType>()">, "an ADT type">;
 def ADTGenericType : Type<CPred<"$_self.isa<ADTGenericType>()">, "an ADT template type">;
 
 def AnyBuilder : Type<CPred<"$_self.isa<BuilderType>()">, "any builder">;
-def AnyAppender : Type<CPred<"$_self.isa<AppenderType>()">, "any appender">;
 def AnyEnum : Type<CPred<"$_self.isa<EnumType>()">, "any enum">;
 def AnyStruct : Type<CPred<"$_self.isa<StructType>()">, "any struct">;
 def ArcSinkStream : Type<CPred<"$_self.isa<SinkStreamType>()">,
@@ -113,8 +112,6 @@ def ArcSourceStream : Type<CPred<"$_self.isa<SourceStreamType>()">,
 def ArcStream : Type<CPred<"$_self.isa<StreamType>()">, "a stream">;
 def ArcStateValue : Type<CPred<"$_self.isa<ArconValueType>()">,
                                 "an arcon value type">;
-def ArcStateAppender : Type<CPred<"$_self.isa<ArconAppenderType>()">,
-                                  "an arcon appender type">;
 def ArcStateMap : Type<CPred<"$_self.isa<ArconMapType>()">,
                              "an arcon map type">;
 
@@ -296,61 +293,6 @@ def LoopBreakOp : Arc_Op<"loop.break", [Pure, Terminator]> {
   let arguments = (ins Variadic<AnyType>:$results);
 
   let hasVerifier = 1;
-}
-
-def MakeAppenderOp : Arc_Op<"make_appender", [Pure, Linear]> {
-  let summary = "instantiate a new appender";
-  let description = [{
-    The "arc.make_appender" operation instantiates and returns a new appender.
-    The appender's initial storage `size` can optionally be given as an
-    attribute. Note that the result of this operation must be used exactly once.
-
-    ```mlir
-    %a = arc.make_appender() {size = 10} : () -> !arc.appender<i32>
-    ```
-  }];
-  let arguments = (ConfinedAttr<I64Attr, [IntNonNegative]>:$size);
-  let results = (outs AnyAppender);
-}
-
-def MergeOp : Arc_Op<"merge", [Pure, Linear]> {
-  let summary = "merge a value into a builder";
-  let description = [{
-    The "arc.merge" operation takes a builder and a value, and returns a new
-    builder with the value stored into the old builder. The old builder is
-    consumed in the process. Note that the result of this operation must be
-    used exactly once.
-
-    ```mlir
-    %a = "arc.make_appender"() : () -> !arc.appender<i32>
-    %v = arith.constant 5 : i32
-    %b = "arc.merge"(%a, %v) : (!arc.appender<i32>, i32) -> !arc.appender<i32>
-    ```
-  }];
-  let arguments = (ins AnyBuilder:$builder, AnyValue:$value);
-  let results = (outs AnyBuilder);
-  let hasVerifier = 1;
-  let extraClassDeclaration = [{ LogicalResult customVerify(); }];
-}
-
-def ResultOp : Arc_Op<"result", [Pure]> {
-  let summary = "materialize a builder into a value";
-  let description = [{
-    The "arc.result" operation takes a builder and materializes it into a value
-    of its result type. The resulting value is returned, and the builder is
-    consumed in the process.
-
-    ```mlir
-    %a = "arc.make_appender"() : () -> !arc.appender<i32>
-    %v = arith.constant 5 : i32
-    %b = "arc.merge"(%a, %v) : (!arc.appender<i32>, i32) -> !arc.appender<i32>
-    %r = "arc.result"(%b) : (!arc.appender<i32>) -> i32
-    ```
-  }];
-  let arguments = (ins AnyAppender:$builder);
-  let results = (outs AnyType);
-  let hasVerifier = 1;
-  let extraClassDeclaration = [{ LogicalResult customVerify(); }];
 }
 
 def Arc_ConstantADTOp : Arc_Op<"adt_constant", [Pure]> {
@@ -598,108 +540,6 @@ def Arc_RemIOp : ArcIntArithmeticOp<"remi"> {
 def Arc_XOrOp : ArcIntArithmeticOp<"xor", [Commutative]> {
   let summary = "integer binary xor";
   let hasFolder = 1;
-}
-
-// State appender
-
-def Arc_StateAppenderPushOp : Arc_Op<"appender_push", []> {
-  let summary = "Add a value to an Arcon appender";
-  let description = [{
-    Add a value to an Arcon appender.
-  }];
-  let arguments = (ins ArcStateAppender:$state, StreamElementType:$value);
-  let results = (outs);
-  let extraClassDeclaration = [{ LogicalResult customVerify(); }];
-  let hasVerifier = 1;
-}
-
-def Arc_StateAppenderFoldOp : Arc_Op<"appender_fold",
-    []> { // DeclareOpInterfaceMethods<CallOpInterface>
-  let summary = "Add a value to an Arcon appender";
-  let description = [{
-    Add a value to an Arcon appender.
-  }];
-  let arguments = (ins ArcStateAppender:$state, StreamElementType:$init,
-                       FlatSymbolRefAttr:$fun);
-  let results = (outs StreamElementType:$res);
-  let extraClassDeclaration = [{ LogicalResult customVerify(); }];
-  let hasVerifier = 1;
-  let builders = [
-    OpBuilder<(ins "Value":$state, "Value":$init, "StringRef":$callee)>
-  ];
-
-}
-
-// State maps
-
-class Arc_KeyedStateMapOp<string mnemonic,
-                          list<Trait> traits = []>
-    : Arc_Op<mnemonic, traits> {
-  let arguments = (ins ArcStateMap:$state,
-                       StreamElementType:$key);
-  let extraClassDeclaration = [{ LogicalResult customVerify(); }];
-  let hasVerifier = 1;
-}
-
-def Arc_StateMapContainsOp : Arc_KeyedStateMapOp<"map_contains", []> {
-  let summary = "Check if a value is in an Arcon state map";
-  let description = [{
-    Check if a value is in an Arcon state map.
-  }];
-  let results = (outs BoolLike:$result);
-}
-
-def Arc_StateMapGetOp : Arc_KeyedStateMapOp<"map_get", []> {
-  let summary = "Look up a value in an Arcon state map";
-  let description = [{
-    Look up a value in an Arcon state map.
-  }];
-  let results = (outs StreamElementType:$result);
-}
-
-def Arc_StateMapInsertOp : Arc_Op<"map_insert", []> {
-  let summary = "Insert a value into a an Arcon state map";
-  let description = [{
-    Insert a value into a an Arcon state map.
-  }];
-  let arguments = (ins ArcStateMap:$state,
-                       StreamElementType:$key,
-                       StreamElementType:$value);
-  let results = (outs);
-  let extraClassDeclaration = [{ LogicalResult customVerify(); }];
-  let hasVerifier = 1;
-}
-
-def Arc_StateMapRemoveOp : Arc_KeyedStateMapOp<"map_remove", []> {
-  let summary = "Remove a value from an Arcon state map";
-  let description = [{
-    Remove a value from an Arcon state map.
-  }];
-  let results = (outs);
-}
-
-// State values
-
-def Arc_StateValueWriteOp : Arc_Op<"value_write", []> {
-  let summary = "Set an Arcon state value";
-  let description = [{
-    Set an Arcon state value.
-  }];
-  let arguments = (ins ArcStateValue:$state, StreamElementType:$value);
-  let results = (outs);
-  let extraClassDeclaration = [{ LogicalResult customVerify(); }];
-  let hasVerifier = 1;
-}
-
-def Arc_StateValueReadOp : Arc_Op<"value_read", []> {
-  let summary = "Read an Arcon state value";
-  let description = [{
-    Read an Arcon state value.
-  }];
-  let arguments = (ins ArcStateValue:$state);
-  let results = (outs StreamElementType);
-  let extraClassDeclaration = [{ LogicalResult customVerify(); }];
-  let hasVerifier = 1;
 }
 
 def PanicOp : Arc_Op<"panic", []> {
