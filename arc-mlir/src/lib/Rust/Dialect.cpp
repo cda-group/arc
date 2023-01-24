@@ -69,7 +69,6 @@ void RustDialect::initialize() {
   addTypes<RustSourceStreamType>();
   addTypes<RustTensorType>();
   addTypes<RustGenericADTType>();
-  addTypes<RustTupleType>();
 
   auto ctx = getContext();
 
@@ -117,8 +116,6 @@ static void printAsMLIR(Type type, DialectAsmPrinter &os) {
   else if (auto t = type.dyn_cast<RustGenericADTType>())
     t.printAsMLIR(os);
   else if (auto t = type.dyn_cast<RustTensorType>())
-    t.printAsMLIR(os);
-  else if (auto t = type.dyn_cast<RustTupleType>())
     t.printAsMLIR(os);
   else if (auto t = type.dyn_cast<RustEnumType>())
     t.printAsMLIR(os);
@@ -221,8 +218,6 @@ static std::string getMangledName(Type type, rust::RustPrinterStream &ps) {
     return t.getMangledName(ps);
   else if (auto t = type.dyn_cast<RustTensorType>())
     return t.getMangledName(ps);
-  else if (auto t = type.dyn_cast<RustTupleType>())
-    return t.getMangledName(ps);
   else if (auto t = type.dyn_cast<RustEnumType>())
     return t.getMangledName(ps);
   else if (auto t = type.dyn_cast<FunctionType>())
@@ -245,8 +240,6 @@ static void printAsRust(Type type, llvm::raw_ostream &o,
   else if (auto t = type.dyn_cast<RustGenericADTType>())
     t.printAsRust(o, ps);
   else if (auto t = type.dyn_cast<RustTensorType>())
-    t.printAsRust(o, ps);
-  else if (auto t = type.dyn_cast<RustTupleType>())
     t.printAsRust(o, ps);
   else if (auto t = type.dyn_cast<RustEnumType>())
     t.printAsRust(o, ps);
@@ -321,8 +314,6 @@ static RustPrinterStream &writeRust(Operation &operation,
   else if (RustMethodCallOp op = dyn_cast<RustMethodCallOp>(operation))
     op.writeRust(PS);
   else if (RustTensorOp op = dyn_cast<RustTensorOp>(operation))
-    op.writeRust(PS);
-  else if (RustTupleOp op = dyn_cast<RustTupleOp>(operation))
     op.writeRust(PS);
   else if (RustPanicOp op = dyn_cast<RustPanicOp>(operation))
     op.writeRust(PS);
@@ -812,17 +803,6 @@ void RustTensorOp::writeRust(RustPrinterStream &PS) {
     PS << v << ", ";
   }
   PS << "]).unwrap());\n";
-}
-
-void RustTupleOp::writeRust(RustPrinterStream &PS) {
-  auto r = getResult();
-  PS.let(r) << "(";
-  auto args = getOperands();
-  for (unsigned i = 0; i < args.size(); i++) {
-    auto v = args[i];
-    PS << v << ", ";
-  }
-  PS << ");\n";
 }
 
 //===----------------------------------------------------------------------===//
@@ -1680,108 +1660,13 @@ ArrayRef<int64_t> RustTensorType::getDimensions() const {
 }
 
 //===----------------------------------------------------------------------===//
-// RustTupleType
-//===----------------------------------------------------------------------===//
-
-struct RustTupleTypeStorage : public TypeStorage {
-  RustTupleTypeStorage(ArrayRef<Type> fields)
-      : tupleFields(fields.begin(), fields.end()) {}
-
-  SmallVector<Type, 4> tupleFields;
-
-  using KeyTy = ArrayRef<Type>;
-
-  bool operator==(const KeyTy &key) const { return key == KeyTy(tupleFields); }
-
-  static llvm::hash_code hashKey(const KeyTy &key) {
-    return llvm::hash_combine(key);
-  }
-
-  static RustTupleTypeStorage *construct(TypeStorageAllocator &allocator,
-                                         const KeyTy &key) {
-    return new (allocator.allocate<RustTupleTypeStorage>())
-        RustTupleTypeStorage(key);
-  }
-
-  void printAsRust(llvm::raw_ostream &o, rust::RustPrinterStream &ps);
-  void printAsMLIR(DialectAsmPrinter &os) const;
-
-  std::string getMangledName(rust::RustPrinterStream &ps);
-
-private:
-  std::string mangledName;
-};
-
-RustTupleType RustTupleType::get(RustDialect *dialect, ArrayRef<Type> fields) {
-  return Base::get(dialect->getContext(), fields);
-}
-
-void RustTupleTypeStorage::printAsMLIR(DialectAsmPrinter &os) const {
-  os << "tuple<";
-  for (unsigned i = 0; i < tupleFields.size(); i++) {
-    if (i != 0)
-      os << ", ";
-    ::printAsMLIR(tupleFields[i], os);
-  }
-  os << ">";
-}
-
-void RustTupleType::printAsMLIR(DialectAsmPrinter &os) const {
-  getImpl()->printAsMLIR(os);
-}
-
-void RustTupleType::printAsRust(llvm::raw_ostream &o,
-                                rust::RustPrinterStream &ps) {
-  getImpl()->printAsRust(o, ps);
-}
-
-std::string RustTupleType::getMangledName(rust::RustPrinterStream &ps) {
-  return getImpl()->getMangledName(ps);
-}
-
-std::string RustTupleTypeStorage::getMangledName(rust::RustPrinterStream &ps) {
-  if (!mangledName.empty())
-    return mangledName;
-
-  std::string buffer;
-  llvm::raw_string_ostream mangled(buffer);
-  mangled << "Tuple";
-
-  for (auto &f : tupleFields) {
-    std::string tmp = ::getMangledName(f, ps);
-    mangled << tmp.size() << tmp;
-  }
-  mangled << "End";
-  mangledName = mangled.str();
-
-  llvm::raw_ostream &tyStream = ps.getNamedTypesStream();
-
-  tyStream << "type " << mangledName << " = "
-           << "(";
-  for (unsigned i = 0; i < tupleFields.size(); i++) {
-    if (i != 0)
-      tyStream << ",\n";
-    tyStream << ::getMangledName(tupleFields[i], ps);
-  }
-  tyStream << ");\n";
-
-  return mangledName;
-}
-
-void RustTupleTypeStorage::printAsRust(llvm::raw_ostream &o,
-                                       rust::RustPrinterStream &ps) {
-  ps.registerDirective("rc-import", "use std::rc::Rc;\n");
-  ps << getMangledName(ps);
-}
-
 } // namespace types
 
 static bool isAnyRustType(Type type) {
   if (type.isa<RustType>() || type.isa<RustStructType>() ||
-      type.isa<RustTupleType>() || type.isa<RustTensorType>() ||
-      type.isa<RustEnumType>() || type.isa<RustStreamType>() ||
-      type.isa<RustSinkStreamType>() || type.isa<RustSourceStreamType>() ||
-      type.isa<RustGenericADTType>())
+      type.isa<RustTensorType>() || type.isa<RustEnumType>() ||
+      type.isa<RustStreamType>() || type.isa<RustSinkStreamType>() ||
+      type.isa<RustSourceStreamType>() || type.isa<RustGenericADTType>())
     return true;
   if (type.isa<FunctionType>())
     return isRustFunctionType(type);

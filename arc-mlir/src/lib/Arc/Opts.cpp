@@ -74,24 +74,6 @@ struct ConstantFoldIf : public mlir::OpRewritePattern<arc::IfOp> {
   }
 };
 
-struct ConstantFoldIndexTuple
-    : public mlir::OpRewritePattern<arc::IndexTupleOp> {
-  ConstantFoldIndexTuple(MLIRContext *ctx)
-      : OpRewritePattern<arc::IndexTupleOp>(ctx, /*benefit=*/1) {}
-
-  mlir::LogicalResult
-  matchAndRewrite(arc::IndexTupleOp op,
-                  PatternRewriter &rewriter) const override {
-    Operation *def = op.getValue().getDefiningOp();
-
-    arc::MakeTupleOp mt = def ? dyn_cast<arc::MakeTupleOp>(def) : nullptr;
-    if (!mt)
-      return failure();
-    rewriter.replaceOp(op, mt.getValues()[op.getIndex()]);
-    return success();
-  }
-};
-
 struct ConstantFoldEnumAccess
     : public mlir::OpRewritePattern<arc::EnumAccessOp> {
   ConstantFoldEnumAccess(MLIRContext *ctx)
@@ -172,11 +154,6 @@ void EnumCheckOp::getCanonicalizationPatterns(RewritePatternSet &results,
 void IfOp::getCanonicalizationPatterns(RewritePatternSet &results,
                                        MLIRContext *ctx) {
   results.insert<ConstantFoldIf>(ctx);
-}
-
-void IndexTupleOp::getCanonicalizationPatterns(RewritePatternSet &results,
-                                               MLIRContext *ctx) {
-  results.insert<ConstantFoldIndexTuple>(ctx);
 }
 
 void StructAccessOp::getCanonicalizationPatterns(RewritePatternSet &results,

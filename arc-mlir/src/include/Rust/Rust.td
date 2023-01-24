@@ -58,7 +58,7 @@ def Rust_Dialect : Dialect {
 class Rust_Op<string mnemonic, list<Trait> traits = []>
     : Op<Rust_Dialect, mnemonic, traits>;
 
-def AnyRustType : Type<CPred<"$_self.isa<RustType>() || $_self.isa<RustStructType>() || $_self.isa<RustTupleType>() || $_self.isa<RustTensorType>() || $_self.isa<RustEnumType>() || isRustFunctionType($_self) || $_self.isa<RustStreamType>() || $_self.isa<RustSinkStreamType>() || $_self.isa<RustSourceStreamType>() || $_self.isa<RustGenericADTType>()">, "any RustType">;
+def AnyRustType : Type<CPred<"$_self.isa<RustType>() || $_self.isa<RustStructType>() || $_self.isa<RustTensorType>() || $_self.isa<RustEnumType>() || isRustFunctionType($_self) || $_self.isa<RustStreamType>() || $_self.isa<RustSinkStreamType>() || $_self.isa<RustSourceStreamType>() || $_self.isa<RustGenericADTType>()">, "any RustType">;
 
 def AnyRustStream :
     Type<CPred<"$_self.isa<RustStreamType>()">, "any RustStream">;
@@ -426,7 +426,7 @@ def Rust_RustEnumCheckOp : Rust_Op<"enum_check", [Pure]> {
 def Rust_RustFieldAccessOp : Rust_Op<"field_access", [Pure]> {
   let summary = "Access to a field";
   let description = [{
-    Access to a field, for example in a tuple or a struct.
+    Access to a field, for example in a struct.
   }];
 
   let arguments = (ins AnyRustType : $aggregate, StrAttr : $field);
@@ -638,22 +638,6 @@ def Rust_RustTensorOp : Rust_Op<"make_tensor", []> {
   }];
   let arguments = (ins Variadic<RustTensorElementType>:$values);
   let results = (outs RustTensorType:$result);
-  let extraClassDeclaration = [{
-    // Write this operation as Rust code to the stream
-    void writeRust(RustPrinterStream &);
-  }];
-}
-
-
-
-def Rust_RustTupleOp
-    : Rust_Op<"tuple", []> {
-  let summary = "constructs a tuple";
-  let description = [{
-    "rust.tuple" constructs a tuple
-  }];
-  let arguments = (ins Variadic<AnyRustType>:$operands);
-  let results = (outs AnyRustType);
   let extraClassDeclaration = [{
     // Write this operation as Rust code to the stream
     void writeRust(RustPrinterStream &);

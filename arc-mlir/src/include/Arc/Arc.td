@@ -258,17 +258,6 @@ def MakeEnumOp : Arc_Op<"make_enum", [Pure]> {
     "`(` ($values^ `:` type($values))? `)` `as` $variant attr-dict `:` type($result)";
 }
 
-def MakeTupleOp : Arc_Op<"make_tuple", [Pure]> {
-  let summary = "create a tuple from a sequence of values";
-  let description = [{
-    A pure operation which turns its arguments into a tuple.
-  }];
-  let arguments = (ins Variadic<AnyType>:$values);
-  let results = (outs AnyTuple);
-  let extraClassDeclaration = [{ LogicalResult customVerify(); }];
-  let hasVerifier = 1;
-}
-
 def MakeTensorOp : Arc_Op<"make_tensor",
                           [Pure, SameOperandsAndResultElementType]> {
   let summary = "create a tensor from a sequence of values";
@@ -280,19 +269,6 @@ def MakeTensorOp : Arc_Op<"make_tensor",
   let results = (outs StaticShapeTensorOf<[ArcTensorElementType]>);
   let extraClassDeclaration = [{ LogicalResult customVerify(); }];
   let hasVerifier = 1;
-}
-
-def IndexTupleOp : Arc_Op<"index_tuple", [Pure]> {
-  let summary = "index into a tuple using a constant value";
-  let description = [{
-    A pure operation which reads a value from a tuple.
-  }];
-  let arguments = (ins AnyTuple:$value,
-                   ConfinedAttr<I64Attr, [IntNonNegative]>:$index);
-  let results = (outs AnyType);
-  let extraClassDeclaration = [{ LogicalResult customVerify(); }];
-  let hasVerifier = 1;
-  let hasCanonicalizer = 1;
 }
 
 def ArcBlockResultOp :

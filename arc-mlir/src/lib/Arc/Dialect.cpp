@@ -373,46 +373,6 @@ LogicalResult MakeTensorOp::verify() {
   return mlir::success();
 }
 
-LogicalResult MakeTupleOp::verify() {
-  auto Operation = this->getOperation();
-  auto NumOperands = Operation->getNumOperands();
-  auto TupleTy = Operation->getResult(0).getType().cast<TupleType>();
-  auto ElemTys = TupleTy.getTypes();
-  if (NumOperands != TupleTy.size())
-    return emitOpError(
-               "result does not match the number of operands: expected ")
-           << TupleTy.size() << " but found " << NumOperands << " operands";
-  if (NumOperands == 0)
-    return emitOpError("tuple must contain at least one element ");
-  unsigned I = 0;
-  for (const Type &ElemTy : Operation->getOperands().getTypes()) {
-    if (ElemTys[I] != ElemTy)
-      return emitOpError("operand types do not match: expected ")
-             << ElemTys[I] << " but found " << ElemTy;
-    I++;
-  }
-  return mlir::success();
-}
-
-LogicalResult IndexTupleOp::verify() {
-  auto Operation = this->getOperation();
-  auto ResultTy = Operation->getResult(0).getType();
-  auto TupleTy = Operation->getOperand(0).getType().cast<TupleType>();
-  auto Index =
-      (*this)->getAttrOfType<IntegerAttr>("index").getValue().getZExtValue();
-  auto NumElems = TupleTy.size();
-  if (Index >= NumElems)
-    return emitOpError("index ")
-           << Index << " is out-of-bounds for tuple with size " << NumElems;
-  auto ElemTys = TupleTy.getTypes();
-  auto IndexTy = ElemTys[Index];
-  if (IndexTy != ResultTy)
-    return emitOpError("element type at index ")
-           << Index << " does not match result: expected " << ResultTy
-           << " but found " << IndexTy;
-  return mlir::success();
-}
-
 LogicalResult ArcBlockResultOp::verify() {
   // Check that our type matches the type of our parent if-op
   auto Op = this->getOperation();
@@ -1051,12 +1011,6 @@ bool isValueType(Type type) {
       type.isa<ComplexType>() || type.isa<ComplexType>() ||
       type.isa<NoneType>())
     return true;
-  if (type.isa<TupleType>()) {
-    for (auto t : type.cast<TupleType>().getTypes())
-      if (!isValueType(t))
-        return false;
-    return true;
-  }
   return false;
 }
 
