@@ -58,7 +58,7 @@ def Rust_Dialect : Dialect {
 class Rust_Op<string mnemonic, list<Trait> traits = []>
     : Op<Rust_Dialect, mnemonic, traits>;
 
-def AnyRustType : Type<CPred<"$_self.isa<RustType>() || $_self.isa<RustStructType>() || $_self.isa<RustTensorType>() || $_self.isa<RustEnumType>() || isRustFunctionType($_self) || $_self.isa<RustStreamType>() || $_self.isa<RustSinkStreamType>() || $_self.isa<RustSourceStreamType>() || $_self.isa<RustGenericADTType>()">, "any RustType">;
+def AnyRustType : Type<CPred<"$_self.isa<RustType>() || $_self.isa<RustStructType>() || $_self.isa<RustEnumType>() || isRustFunctionType($_self) || $_self.isa<RustStreamType>() || $_self.isa<RustSinkStreamType>() || $_self.isa<RustSourceStreamType>() || $_self.isa<RustGenericADTType>()">, "any RustType">;
 
 def AnyRustStream :
     Type<CPred<"$_self.isa<RustStreamType>()">, "any RustStream">;
@@ -76,13 +76,6 @@ def AnyRustEnum :
     Type<CPred<"$_self.isa<RustEnumType>()">, "any RustEnum">;
 
 def BoolRustType : Type<CPred<"$_self.isa<RustType>() && $_self.cast<RustType>().isBool()">, "a Rust boolean type">;
-
-def RustTensorElementType :
-    Type<CPred<"$_self.isa<RustType>()">, "a rust tensor element type">;
-
-def RustTensorType :
-    Type<CPred<"$_self.isa<RustTensorType>()">, "a rust tensor element type">;
-
 
 //===----------------------------------------------------------------------===//
 // Rust Operations
@@ -624,20 +617,6 @@ def Rust_RustSendOp
     : Rust_Op<"send", []> {
   let summary = "Send data on a sink stream";
   let arguments = (ins AnyRustType:$value, AnyRustSinkStream:$sink);
-  let extraClassDeclaration = [{
-    // Write this operation as Rust code to the stream
-    void writeRust(RustPrinterStream &);
-  }];
-}
-
-def Rust_RustTensorOp : Rust_Op<"make_tensor", []> {
-  let summary = "create a tensor from a sequence of values";
-  let description = [{
-    A pure operation which turns its arguments into a tensor. The
-    tensor values are given in column-major order
-  }];
-  let arguments = (ins Variadic<RustTensorElementType>:$values);
-  let results = (outs RustTensorType:$result);
   let extraClassDeclaration = [{
     // Write this operation as Rust code to the stream
     void writeRust(RustPrinterStream &);

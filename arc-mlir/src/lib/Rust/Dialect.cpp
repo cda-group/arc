@@ -67,7 +67,6 @@ void RustDialect::initialize() {
   addTypes<RustStreamType>();
   addTypes<RustSinkStreamType>();
   addTypes<RustSourceStreamType>();
-  addTypes<RustTensorType>();
   addTypes<RustGenericADTType>();
 
   auto ctx = getContext();
@@ -114,8 +113,6 @@ static void printAsMLIR(Type type, DialectAsmPrinter &os) {
   else if (auto t = type.dyn_cast<RustStructType>())
     t.printAsMLIR(os);
   else if (auto t = type.dyn_cast<RustGenericADTType>())
-    t.printAsMLIR(os);
-  else if (auto t = type.dyn_cast<RustTensorType>())
     t.printAsMLIR(os);
   else if (auto t = type.dyn_cast<RustEnumType>())
     t.printAsMLIR(os);
@@ -216,8 +213,6 @@ static std::string getMangledName(Type type, rust::RustPrinterStream &ps) {
     return t.getMangledName(ps);
   else if (auto t = type.dyn_cast<RustGenericADTType>())
     return t.getMangledName(ps);
-  else if (auto t = type.dyn_cast<RustTensorType>())
-    return t.getMangledName(ps);
   else if (auto t = type.dyn_cast<RustEnumType>())
     return t.getMangledName(ps);
   else if (auto t = type.dyn_cast<FunctionType>())
@@ -238,8 +233,6 @@ static void printAsRust(Type type, llvm::raw_ostream &o,
   else if (auto t = type.dyn_cast<RustSourceStreamType>())
     t.printAsRust(o, ps);
   else if (auto t = type.dyn_cast<RustGenericADTType>())
-    t.printAsRust(o, ps);
-  else if (auto t = type.dyn_cast<RustTensorType>())
     t.printAsRust(o, ps);
   else if (auto t = type.dyn_cast<RustEnumType>())
     t.printAsRust(o, ps);
@@ -312,8 +305,6 @@ static RustPrinterStream &writeRust(Operation &operation,
   else if (RustMakeStructOp op = dyn_cast<RustMakeStructOp>(operation))
     op.writeRust(PS);
   else if (RustMethodCallOp op = dyn_cast<RustMethodCallOp>(operation))
-    op.writeRust(PS);
-  else if (RustTensorOp op = dyn_cast<RustTensorOp>(operation))
     op.writeRust(PS);
   else if (RustPanicOp op = dyn_cast<RustPanicOp>(operation))
     op.writeRust(PS);
@@ -788,21 +779,6 @@ void RustSpawnOp::writeRust(RustPrinterStream &PS) {
   for (auto a : getArgOperands())
     PS << a << ", ";
   PS << ");\n";
-}
-
-void RustTensorOp::writeRust(RustPrinterStream &PS) {
-  auto r = getResult();
-  PS.let(r) << "Rc::new(Array::from_shape_vec((";
-  RustTensorType t = getResult().getType().cast<RustTensorType>();
-  for (int64_t d : t.getDimensions())
-    PS << d << ", ";
-  PS << "), vec![";
-  auto args = getValues();
-  for (unsigned i = 0; i < args.size(); i++) {
-    auto v = args[i];
-    PS << v << ", ";
-  }
-  PS << "]).unwrap());\n";
 }
 
 //===----------------------------------------------------------------------===//
@@ -1560,113 +1536,13 @@ void RustGenericADTTypeStorage::printAsMLIR(DialectAsmPrinter &os) const {
   os << ">";
 }
 
-//===----------------------------------------------------------------------===//
-// RustTensorType
-//===----------------------------------------------------------------------===//
-
-struct RustTensorTypeStorage : public TypeStorage {
-  using KeyTy = std::pair<Type, ArrayRef<int64_t>>;
-
-  RustTensorTypeStorage(KeyTy key)
-      : elementTy(key.first), dimensions(key.second.begin(), key.second.end()) {
-  }
-
-  Type elementTy;
-  SmallVector<int64_t, 3> dimensions;
-
-  bool operator==(const KeyTy &key) const {
-    return key == KeyTy(elementTy, dimensions);
-  }
-
-  static llvm::hash_code hashKey(const KeyTy &key) {
-    return llvm::hash_combine(key);
-  }
-
-  static RustTensorTypeStorage *construct(TypeStorageAllocator &allocator,
-                                          const KeyTy &key) {
-    return new (allocator.allocate<RustTensorTypeStorage>())
-        RustTensorTypeStorage(key);
-  }
-
-  void printAsRust(llvm::raw_ostream &o, rust::RustPrinterStream &ps);
-  void printAsMLIR(DialectAsmPrinter &os) const;
-
-  ArrayRef<int64_t> getDimensions() const { return dimensions; }
-  std::string getMangledName(rust::RustPrinterStream &ps);
-
-private:
-  std::string mangledName;
-};
-
-RustTensorType RustTensorType::get(RustDialect *dialect, Type elementTy,
-                                   ArrayRef<int64_t> dimensions) {
-  return Base::get(dialect->getContext(), elementTy, dimensions);
-}
-
-void RustTensorTypeStorage::printAsMLIR(DialectAsmPrinter &os) const {
-  os << "tensor<";
-  for (unsigned i = 0; i < dimensions.size(); i++)
-    os << dimensions[i] << "x";
-  ::printAsMLIR(elementTy, os);
-  os << ">";
-}
-
-void RustTensorType::printAsMLIR(DialectAsmPrinter &os) const {
-  getImpl()->printAsMLIR(os);
-}
-
-void RustTensorType::printAsRust(llvm::raw_ostream &o,
-                                 rust::RustPrinterStream &ps) {
-  getImpl()->printAsRust(o, ps);
-}
-
-std::string RustTensorType::getMangledName(rust::RustPrinterStream &ps) {
-  return getImpl()->getMangledName(ps);
-}
-
-std::string RustTensorTypeStorage::getMangledName(rust::RustPrinterStream &ps) {
-  if (!mangledName.empty())
-    return mangledName;
-
-  std::string buffer;
-  llvm::raw_string_ostream mangled(buffer);
-  mangled << "Tensor";
-  for (unsigned i = 0; i < dimensions.size(); i++)
-    mangled << dimensions[i] << "x";
-  mangled << ::getMangledName(elementTy, ps);
-  mangledName = mangled.str();
-
-  llvm::raw_ostream &tyStream = ps.getNamedTypesStream();
-
-  tyStream << "type " << mangledName << " = "
-           << "Rc<Array<" << ::getMangledName(elementTy, ps) << ", Dim<[Ix; "
-           << dimensions.size() << "]>>>\n";
-
-  return mangledName;
-}
-
-void RustTensorTypeStorage::printAsRust(llvm::raw_ostream &o,
-                                        rust::RustPrinterStream &ps) {
-  ps.registerDirective("rc-import", "use std::rc::Rc;\n");
-  ps.registerDirective("ndarray-import", "use ndarray::{Array,Dim,Ix};\n");
-  ps.registerDependency("ndarray",
-                        (Twine("\"") + CrateVersions::ndarray + "\"").str());
-
-  o << getMangledName(ps);
-}
-
-ArrayRef<int64_t> RustTensorType::getDimensions() const {
-  return getImpl()->getDimensions();
-}
-
-//===----------------------------------------------------------------------===//
 } // namespace types
 
 static bool isAnyRustType(Type type) {
   if (type.isa<RustType>() || type.isa<RustStructType>() ||
-      type.isa<RustTensorType>() || type.isa<RustEnumType>() ||
-      type.isa<RustStreamType>() || type.isa<RustSinkStreamType>() ||
-      type.isa<RustSourceStreamType>() || type.isa<RustGenericADTType>())
+      type.isa<RustEnumType>() || type.isa<RustStreamType>() ||
+      type.isa<RustSinkStreamType>() || type.isa<RustSourceStreamType>() ||
+      type.isa<RustGenericADTType>())
     return true;
   if (type.isa<FunctionType>())
     return isRustFunctionType(type);

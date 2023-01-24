@@ -53,7 +53,6 @@ protected:
   Type convertFunctionType(FunctionType type);
   Type convertIntegerType(IntegerType type);
   Type convertNoneType(NoneType type);
-  Type convertTensorType(RankedTensorType type);
   Type convertStreamType(arc::types::StreamType type);
   Type convertSinkStreamType(arc::types::SinkStreamType type);
   Type convertSourceStreamType(arc::types::SourceStreamType type);
@@ -538,24 +537,6 @@ private:
   RustTypeConverter &TypeConverter;
 };
 
-struct MakeTensorOpLowering : public OpConversionPattern<arc::MakeTensorOp> {
-  MakeTensorOpLowering(MLIRContext *ctx, RustTypeConverter &typeConverter)
-      : OpConversionPattern<arc::MakeTensorOp>(typeConverter, ctx, 1),
-        TypeConverter(typeConverter) {}
-
-  LogicalResult
-  matchAndRewrite(MakeTensorOp o, OpAdaptor adaptor,
-                  ConversionPatternRewriter &rewriter) const final {
-    Type retTy = TypeConverter.convertType(o.getType());
-    rewriter.replaceOpWithNewOp<rust::RustTensorOp>(o, retTy,
-                                                    adaptor.getOperands());
-    return success();
-  };
-
-private:
-  RustTypeConverter &TypeConverter;
-};
-
 namespace ArcIntArithmeticOp {
 typedef enum {
   AddIOp = 0,
@@ -580,12 +561,8 @@ struct ArcIntArithmeticOpLowering : public OpConversionPattern<T> {
   matchAndRewrite(T o, typename T::Adaptor adaptor,
                   ConversionPatternRewriter &rewriter) const final {
     Type rustTy = TypeConverter.convertType(o.getType());
-    if (rustTy.isa<rust::types::RustTensorType>())
-      rewriter.replaceOpWithNewOp<rust::RustBinaryRcOp>(
-          o, rustTy, opStr[arithOp], adaptor.getLhs(), adaptor.getRhs());
-    else
-      rewriter.replaceOpWithNewOp<rust::RustBinaryOp>(
-          o, rustTy, opStr[arithOp], adaptor.getLhs(), adaptor.getRhs());
+    rewriter.replaceOpWithNewOp<rust::RustBinaryOp>(
+        o, rustTy, opStr[arithOp], adaptor.getLhs(), adaptor.getRhs());
     return success();
   };
 
@@ -658,12 +635,8 @@ struct StdArithmeticOpLowering : public OpConversionPattern<T> {
   matchAndRewrite(T o, typename T::Adaptor adaptor,
                   ConversionPatternRewriter &rewriter) const final {
     Type rustTy = TypeConverter.convertType(o.getType());
-    if (rustTy.isa<rust::types::RustTensorType>())
-      rewriter.replaceOpWithNewOp<rust::RustBinaryRcOp>(
-          o, rustTy, opStr[arithOp], adaptor.getLhs(), adaptor.getRhs());
-    else
-      rewriter.replaceOpWithNewOp<rust::RustBinaryOp>(
-          o, rustTy, opStr[arithOp], adaptor.getLhs(), adaptor.getRhs());
+    rewriter.replaceOpWithNewOp<rust::RustBinaryOp>(
+        o, rustTy, opStr[arithOp], adaptor.getLhs(), adaptor.getRhs());
     return success();
   };
 
@@ -943,7 +916,6 @@ RustTypeConverter::RustTypeConverter(MLIRContext *ctx)
   addConversion([&](FloatType type) { return convertFloatType(type); });
   addConversion([&](FunctionType type) { return convertFunctionType(type); });
   addConversion([&](IntegerType type) { return convertIntegerType(type); });
-  addConversion([&](RankedTensorType type) { return convertTensorType(type); });
   addConversion(
       [&](arc::types::StreamType type) { return convertStreamType(type); });
   addConversion([&](arc::types::SinkStreamType type) {
@@ -964,7 +936,6 @@ RustTypeConverter::RustTypeConverter(MLIRContext *ctx)
   addConversion([](rust::types::RustSourceStreamType type) { return type; });
   addConversion([](rust::types::RustStructType type) { return type; });
   addConversion([](rust::types::RustGenericADTType type) { return type; });
-  addConversion([](rust::types::RustTensorType type) { return type; });
 }
 
 Type RustTypeConverter::convertADTType(arc::types::ADTType type) {
@@ -1045,11 +1016,6 @@ Type RustTypeConverter::convertStructType(arc::types::StructType type) {
     fields.push_back(std::make_pair(f.first, t));
   }
   return rust::types::RustStructType::get(Dialect, type.isCompact(), fields);
-}
-
-Type RustTypeConverter::convertTensorType(RankedTensorType type) {
-  Type t = convertType(type.getElementType());
-  return rust::types::RustTensorType::get(Dialect, t, type.getShape());
 }
 
 FunctionType
@@ -1276,7 +1242,6 @@ void ArcToRustLoweringPass::runOnOperation() {
   patterns.insert<IfOpLowering>(&getContext(), typeConverter);
   patterns.insert<BlockResultOpLowering>(&getContext(), typeConverter);
   patterns.insert<ConstantADTOpLowering>(&getContext(), typeConverter);
-  patterns.insert<MakeTensorOpLowering>(&getContext(), typeConverter);
   patterns.insert<MakeEnumOpLowering>(&getContext(), typeConverter);
   patterns.insert<MakeStructOpLowering>(&getContext(), typeConverter);
   patterns.insert<LoopBreakOpLowering>(&getContext(), typeConverter);

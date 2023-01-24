@@ -89,17 +89,11 @@ def AnyValue : Type<Or<[
 ]>, "any value type">;
 
 // Type constraint for arc integer-like types: arc-integers integers, indices,
-// vectors of arc integers, tensors of arc integers.
+// vectors of arc integers of arc integers.
 def ArcIntegerLike : TypeConstraint<Or<[
         AnyArcInteger.predicate, Index.predicate,
-        VectorOf<[AnyArcInteger]>.predicate,
-        TensorOf<[AnyArcInteger]>.predicate]>,
+        VectorOf<[AnyArcInteger]>.predicate]>,
     "arc-integer-like">;
-
-def ArcTensorElementType : Type<Or<[
-        AnyArcInteger.predicate, Index.predicate,
-        AnyFloat.predicate]>,
-    "arc-tensor-element">;
 
 def ADTType : Type<Or<[
         CPred<"$_self.isa<ADTType>()">,
@@ -168,8 +162,7 @@ def TanOp : Arc_FloatUnaryOp<"tan"> {
   let description = [{
     The `tan` operation computes the tangent of a given value.
     It takes one operand and returns one result of the same type. This type may
-    be a float scalar type, a vector whose element type is float, or a tensor of
-    floats. It has no standard attributes.
+    be a float scalar type, a vector whose element type is float. It has no standard attributes.
   }];
 }
 
@@ -178,8 +171,7 @@ def AcosOp : Arc_FloatUnaryOp<"acos"> {
   let description = [{
     The `sin` operation computes the arcus cosine of a given value.
     It takes one operand and returns one result of the same type. This type may
-    be a float scalar type, a vector whose element type is float, or a tensor of
-    floats. It has no standard attributes.
+    be a float scalar type, a vector whose element type is float. It has no standard attributes.
   }];
 }
 
@@ -188,8 +180,7 @@ def AsinOp : Arc_FloatUnaryOp<"asin"> {
   let description = [{
     The `sin` operation computes the arcus sine of a given value.
     It takes one operand and returns one result of the same type. This type may
-    be a float scalar type, a vector whose element type is float, or a tensor of
-    floats. It has no standard attributes.
+    be a float scalar type, a vector whose element type is float. It has no standard attributes.
   }];
 }
 
@@ -198,8 +189,7 @@ def CoshOp : Arc_FloatUnaryOp<"cosh"> {
   let description = [{
     The `cosh` operation computes the hyperbolic cosine of a given value.
     It takes one operand and returns one result of the same type. This type may
-    be a float scalar type, a vector whose element type is float, or a tensor of
-    floats. It has no standard attributes.
+    be a float scalar type, a vector whose element type is float. It has no standard attributes.
   }];
 }
 
@@ -208,8 +198,7 @@ def SinhOp : Arc_FloatUnaryOp<"sinh"> {
   let description = [{
     The `sinh` operation computes the hyperbolic sine of a given value.
     It takes one operand and returns one result of the same type. This type may
-    be a float scalar type, a vector whose element type is float, or a tensor of
-    floats. It has no standard attributes.
+    be a float scalar type, a vector whose element type is float. It has no standard attributes.
   }];
 }
 
@@ -218,8 +207,7 @@ def ErfOp : Arc_FloatUnaryOp<"erf"> {
   let description = [{
     The `erf' operation computes the Gauss error function of a given value.
     It takes one operand and returns one result of the same type. This type may
-    be a float scalar type, a vector whose element type is float, or a tensor of
-    floats. It has no standard attributes.
+    be a float scalar type, a vector whose element type is float. It has no standard attributes.
   }];
 }
 
@@ -256,19 +244,6 @@ def MakeEnumOp : Arc_Op<"make_enum", [Pure]> {
 
   let assemblyFormat =
     "`(` ($values^ `:` type($values))? `)` `as` $variant attr-dict `:` type($result)";
-}
-
-def MakeTensorOp : Arc_Op<"make_tensor",
-                          [Pure, SameOperandsAndResultElementType]> {
-  let summary = "create a tensor from a sequence of values";
-  let description = [{
-    A pure operation which turns its arguments into a tensor. The
-    tensor values are given in column-major order
-  }];
-  let arguments = (ins Variadic<ArcTensorElementType>:$values);
-  let results = (outs StaticShapeTensorOf<[ArcTensorElementType]>);
-  let extraClassDeclaration = [{ LogicalResult customVerify(); }];
-  let hasVerifier = 1;
 }
 
 def ArcBlockResultOp :
@@ -567,10 +542,10 @@ class ArcArithmeticOp<string mnemonic, list<Trait> traits = []> :
 }
 
 // Base class for standard arithmetic operations on integers, vectors
-// and tensors thereof. This operation takes two operands and returns
+// thereof. This operation takes two operands and returns
 // one result, each of these is required to be of the same type.  This
 // type may be an integer scalar type, a vector whose element type is
-// an integer type, or an integer tensor. The custom assembly form of
+// an integer type. The custom assembly form of
 // the operation is as follows. Stolen from standard dialect.
 //
 //     <op>i %0, %1 : i32
