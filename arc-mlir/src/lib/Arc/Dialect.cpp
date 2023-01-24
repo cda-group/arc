@@ -1427,7 +1427,7 @@ struct SinkStreamTypeStorage : public StreamTypeBaseStorage {
 
   static SinkStreamTypeStorage *construct(mlir::TypeStorageAllocator &allocator,
                                           const KeyTy &key) {
-    return new (allocator.allocate<StreamTypeStorage>())
+    return new (allocator.allocate<SinkStreamTypeStorage>())
         SinkStreamTypeStorage(key);
   }
 };
@@ -1458,7 +1458,7 @@ struct SourceStreamTypeStorage : public StreamTypeBaseStorage {
 
   static SourceStreamTypeStorage *
   construct(mlir::TypeStorageAllocator &allocator, const KeyTy &key) {
-    return new (allocator.allocate<StreamTypeStorage>())
+    return new (allocator.allocate<SourceStreamTypeStorage>())
         SourceStreamTypeStorage(key);
   }
 };
