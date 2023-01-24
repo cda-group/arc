@@ -485,22 +485,6 @@ def Arc_CmpIOp : Arc_Op<"cmpi",
   let assemblyFormat = "$predicate `,` $lhs `,` $rhs attr-dict `:` type($lhs)";
 }
 
-def Arc_EmitOp : Arc_Op<"emit", []> {
-  let summary = "Emit a value on a stream";
-  let description = [{
-    Emit a value on a stream
-  }];
-
-  let arguments = (ins
-      StreamElementType:$value,
-      ArcStream:$stream
-  );
-  let results = (outs);
-  let hasVerifier = 1;
-
-  let extraClassDeclaration = [{ LogicalResult customVerify(); }];
-}
-
 def Arc_ReceiveOp : Arc_Op<"receive", []> {
   let summary = "Receive a value from a stream";
   let description = [{

@@ -324,8 +324,6 @@ static RustPrinterStream &writeRust(Operation &operation,
     op.writeRust(PS);
   else if (RustTupleOp op = dyn_cast<RustTupleOp>(operation))
     op.writeRust(PS);
-  else if (RustEmitOp op = dyn_cast<RustEmitOp>(operation))
-    op.writeRust(PS);
   else if (RustPanicOp op = dyn_cast<RustPanicOp>(operation))
     op.writeRust(PS);
   else if (RustReceiveOp op = dyn_cast<RustReceiveOp>(operation))
@@ -693,10 +691,6 @@ void RustBinaryRcOp::writeRust(RustPrinterStream &PS) {
 void RustCompOp::writeRust(RustPrinterStream &PS) {
   auto r = getResult();
   PS.let(r) << getLHS() << " " << getOperator() << " " << getRHS() << ";\n";
-}
-
-void RustEmitOp::writeRust(RustPrinterStream &PS) {
-  PS << "self.emit(" << getValue() << ");\n";
 }
 
 void RustEnumAccessOp::writeRust(RustPrinterStream &PS) {

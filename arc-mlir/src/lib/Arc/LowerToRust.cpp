@@ -935,19 +935,6 @@ private:
   RustTypeConverter &TypeConverter;
 };
 
-struct EmitOpLowering : public OpConversionPattern<arc::EmitOp> {
-  EmitOpLowering(MLIRContext *ctx, RustTypeConverter &typeConverter)
-      : OpConversionPattern<arc::EmitOp>(typeConverter, ctx, 1) {}
-
-  LogicalResult
-  matchAndRewrite(EmitOp o, OpAdaptor adaptor,
-                  ConversionPatternRewriter &rewriter) const final {
-    rewriter.replaceOpWithNewOp<rust::RustEmitOp>(o, adaptor.getValue(),
-                                                  adaptor.getStream());
-    return success();
-  };
-};
-
 struct ReceiveOpLowering : public OpConversionPattern<arc::ReceiveOp> {
   ReceiveOpLowering(MLIRContext *ctx, RustTypeConverter &typeConverter)
       : OpConversionPattern<arc::ReceiveOp>(typeConverter, ctx, 1),
@@ -1343,7 +1330,6 @@ void ArcToRustLoweringPass::runOnOperation() {
   patterns.insert<LoopBreakOpLowering>(&getContext(), typeConverter);
   patterns.insert<EnumAccessOpLowering>(&getContext(), typeConverter);
   patterns.insert<EnumCheckOpLowering>(&getContext(), typeConverter);
-  patterns.insert<EmitOpLowering>(&getContext(), typeConverter);
   patterns.insert<PanicOpLowering>(&getContext(), typeConverter);
   patterns.insert<ArithSelectOpLowering>(&getContext(), typeConverter);
   patterns.insert<ReceiveOpLowering>(&getContext(), typeConverter);

@@ -272,19 +272,6 @@ OpFoldResult DivIOp::fold(FoldAdaptor operands) {
 }
 
 //===----------------------------------------------------------------------===//
-// EmitOp
-//===----------------------------------------------------------------------===//
-LogicalResult EmitOp::verify() {
-  auto Operation = this->getOperation();
-  auto ElemTy = Operation->getOperand(0).getType();
-  auto StreamTy =
-      Operation->getOperand(1).getType().cast<StreamType>().getType();
-  if (ElemTy != StreamTy)
-    return emitOpError("Can't emit element of type ")
-           << ElemTy << " on stream of " << StreamTy;
-  return mlir::success();
-}
-
 //===----------------------------------------------------------------------===//
 // Enums
 //===----------------------------------------------------------------------===//
