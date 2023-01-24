@@ -599,7 +599,7 @@ def Rust_RustMakeStructOp
     : Rust_Op<"make_struct", []> {
   let summary = "constructs a struct";
   let description = [{
-    "rust.struct" constructs a tuple
+    "rust.struct" constructs a struct
   }];
   let arguments = (ins Variadic<AnyRustType>:$operands);
   let results = (outs AnyRustStruct);
