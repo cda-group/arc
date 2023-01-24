@@ -153,19 +153,6 @@ def Affine : PredOpTrait<
 // Arc Operations
 //===----------------------------------------------------------------------===//
 
-def MakeVectorOp
-    : Arc_Op<"make_vector", [Pure, SameOperandsAndResultElementType]> {
-  let summary = "create a vector from a sequence of values";
-  let description = [{
-    A pure operation which turns its arguments into a vector.
-  }];
-  let arguments = (ins Variadic<AnyType>:$values);
-  let results = (outs 1DTensorOf<[AnyType]>);
-  let hasCanonicalizer = 1;
-  let extraClassDeclaration = [{ LogicalResult customVerify(); }];
-  let hasVerifier = 1;
-}
-
 def ArcKeepOp : Arc_Op<"keep", []> {
   let summary = "Operation consuming anything and having side effects.";
   let description = [{

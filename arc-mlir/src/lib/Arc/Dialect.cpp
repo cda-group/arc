@@ -338,22 +338,6 @@ LogicalResult MakeEnumOp::verify() {
          << WantedVariant << "' does not exist in " << ResultTy;
 }
 
-LogicalResult MakeVectorOp::verify() {
-  auto Operation = this->getOperation();
-  auto NumOperands = Operation->getNumOperands();
-  auto ElemTy = Operation->getOperand(0).getType();
-  auto TensorTy = Operation->getResult(0).getType().cast<TensorType>();
-  if (!TensorTy.hasStaticShape())
-    return emitOpError("result must have static shape: expected ")
-           << RankedTensorType::get({NumOperands}, ElemTy);
-  if (NumOperands != TensorTy.getNumElements())
-    return emitOpError(
-               "result does not match the number of operands: expected ")
-           << TensorTy.getNumElements() << " but found " << NumOperands
-           << " operands";
-  return mlir::success();
-}
-
 LogicalResult MakeStructOp::verify() {
   auto Operation = this->getOperation();
   auto NumOperands = Operation->getNumOperands();

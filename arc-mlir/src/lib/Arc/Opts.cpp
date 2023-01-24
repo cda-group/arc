@@ -35,28 +35,6 @@ using namespace arc;
 
 namespace {
 
-bool AllValuesAreArithConstant(Operation::operand_range &ops) {
-  for (const mlir::Value &a : ops) {
-    Operation *op = a.getDefiningOp();
-    if (!op || !isa<arith::ConstantOp>(op))
-      return false;
-  }
-  return true;
-}
-
-DenseElementsAttr
-ConstantValuesToDenseAttributes(mlir::OpResult result,
-                                Operation::operand_range &ops) {
-  ShapedType st = result.getType().cast<ShapedType>();
-  std::vector<Attribute> attribs;
-
-  for (const mlir::Value &a : ops) {
-    arith::ConstantOp def = cast<arith::ConstantOp>(a.getDefiningOp());
-    attribs.push_back(def.getValue());
-  }
-  return DenseElementsAttr::get(st, ArrayRef(attribs));
-}
-
 struct ConstantFoldIf : public mlir::OpRewritePattern<arc::IfOp> {
   ConstantFoldIf(MLIRContext *ctx)
       : OpRewritePattern<arc::IfOp>(ctx, /*benefit=*/1) {}
@@ -189,11 +167,6 @@ void EnumAccessOp::getCanonicalizationPatterns(RewritePatternSet &results,
 void EnumCheckOp::getCanonicalizationPatterns(RewritePatternSet &results,
                                               MLIRContext *ctx) {
   results.insert<ConstantFoldEnumCheck>(ctx);
-}
-
-void MakeVectorOp::getCanonicalizationPatterns(RewritePatternSet &results,
-                                               MLIRContext *ctx) {
-  populateWithGenerated(results);
 }
 
 void IfOp::getCanonicalizationPatterns(RewritePatternSet &results,

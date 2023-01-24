@@ -36,8 +36,5 @@ include "../../include/Arc/Arc.td"
 def AllValuesAreConstants : Constraint<CPred<"AllValuesAreArithConstant($0)">>;
 def ConstantValuesToDenseAttributes :
     NativeCodeCall<"ConstantValuesToDenseAttributes($0, $1)">;
-def ConstantMakeVectorPattern1 : Pat<(MakeVectorOp:$result $values),
-          (Arith_ConstantOp (ConstantValuesToDenseAttributes $result, $values)),
-          [(AllValuesAreConstants $values)]>;
 
 #endif // ARC_OPTS
