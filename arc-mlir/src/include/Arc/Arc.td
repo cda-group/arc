@@ -89,17 +89,11 @@ def AnyValue : Type<Or<[
 ]>, "any value type">;
 
 // Type constraint for arc integer-like types: arc-integers integers, indices,
-// vectors of arc integers, tensors of arc integers.
+// vectors of arc integers of arc integers.
 def ArcIntegerLike : TypeConstraint<Or<[
         AnyArcInteger.predicate, Index.predicate,
-        VectorOf<[AnyArcInteger]>.predicate,
-        TensorOf<[AnyArcInteger]>.predicate]>,
+        VectorOf<[AnyArcInteger]>.predicate]>,
     "arc-integer-like">;
-
-def ArcTensorElementType : Type<Or<[
-        AnyArcInteger.predicate, Index.predicate,
-        AnyFloat.predicate]>,
-    "arc-tensor-element">;
 
 def ADTType : Type<Or<[
         CPred<"$_self.isa<ADTType>()">,
@@ -109,7 +103,6 @@ def ADTSimpleType : Type<CPred<"$_self.isa<ADTType>()">, "an ADT type">;
 def ADTGenericType : Type<CPred<"$_self.isa<ADTGenericType>()">, "an ADT template type">;
 
 def AnyBuilder : Type<CPred<"$_self.isa<BuilderType>()">, "any builder">;
-def AnyAppender : Type<CPred<"$_self.isa<AppenderType>()">, "any appender">;
 def AnyEnum : Type<CPred<"$_self.isa<EnumType>()">, "any enum">;
 def AnyStruct : Type<CPred<"$_self.isa<StructType>()">, "any struct">;
 def ArcSinkStream : Type<CPred<"$_self.isa<SinkStreamType>()">,
@@ -119,8 +112,6 @@ def ArcSourceStream : Type<CPred<"$_self.isa<SourceStreamType>()">,
 def ArcStream : Type<CPred<"$_self.isa<StreamType>()">, "a stream">;
 def ArcStateValue : Type<CPred<"$_self.isa<ArconValueType>()">,
                                 "an arcon value type">;
-def ArcStateAppender : Type<CPred<"$_self.isa<ArconAppenderType>()">,
-                                  "an arcon appender type">;
 def ArcStateMap : Type<CPred<"$_self.isa<ArconMapType>()">,
                              "an arcon map type">;
 
@@ -153,19 +144,6 @@ def Affine : PredOpTrait<
 // Arc Operations
 //===----------------------------------------------------------------------===//
 
-def MakeVectorOp
-    : Arc_Op<"make_vector", [Pure, SameOperandsAndResultElementType]> {
-  let summary = "create a vector from a sequence of values";
-  let description = [{
-    A pure operation which turns its arguments into a vector.
-  }];
-  let arguments = (ins Variadic<AnyType>:$values);
-  let results = (outs 1DTensorOf<[AnyType]>);
-  let hasCanonicalizer = 1;
-  let extraClassDeclaration = [{ LogicalResult customVerify(); }];
-  let hasVerifier = 1;
-}
-
 def ArcKeepOp : Arc_Op<"keep", []> {
   let summary = "Operation consuming anything and having side effects.";
   let description = [{
@@ -181,8 +159,7 @@ def TanOp : Arc_FloatUnaryOp<"tan"> {
   let description = [{
     The `tan` operation computes the tangent of a given value.
     It takes one operand and returns one result of the same type. This type may
-    be a float scalar type, a vector whose element type is float, or a tensor of
-    floats. It has no standard attributes.
+    be a float scalar type, a vector whose element type is float. It has no standard attributes.
   }];
 }
 
@@ -191,8 +168,7 @@ def AcosOp : Arc_FloatUnaryOp<"acos"> {
   let description = [{
     The `sin` operation computes the arcus cosine of a given value.
     It takes one operand and returns one result of the same type. This type may
-    be a float scalar type, a vector whose element type is float, or a tensor of
-    floats. It has no standard attributes.
+    be a float scalar type, a vector whose element type is float. It has no standard attributes.
   }];
 }
 
@@ -201,8 +177,7 @@ def AsinOp : Arc_FloatUnaryOp<"asin"> {
   let description = [{
     The `sin` operation computes the arcus sine of a given value.
     It takes one operand and returns one result of the same type. This type may
-    be a float scalar type, a vector whose element type is float, or a tensor of
-    floats. It has no standard attributes.
+    be a float scalar type, a vector whose element type is float. It has no standard attributes.
   }];
 }
 
@@ -211,8 +186,7 @@ def CoshOp : Arc_FloatUnaryOp<"cosh"> {
   let description = [{
     The `cosh` operation computes the hyperbolic cosine of a given value.
     It takes one operand and returns one result of the same type. This type may
-    be a float scalar type, a vector whose element type is float, or a tensor of
-    floats. It has no standard attributes.
+    be a float scalar type, a vector whose element type is float. It has no standard attributes.
   }];
 }
 
@@ -221,8 +195,7 @@ def SinhOp : Arc_FloatUnaryOp<"sinh"> {
   let description = [{
     The `sinh` operation computes the hyperbolic sine of a given value.
     It takes one operand and returns one result of the same type. This type may
-    be a float scalar type, a vector whose element type is float, or a tensor of
-    floats. It has no standard attributes.
+    be a float scalar type, a vector whose element type is float. It has no standard attributes.
   }];
 }
 
@@ -231,8 +204,7 @@ def ErfOp : Arc_FloatUnaryOp<"erf"> {
   let description = [{
     The `erf' operation computes the Gauss error function of a given value.
     It takes one operand and returns one result of the same type. This type may
-    be a float scalar type, a vector whose element type is float, or a tensor of
-    floats. It has no standard attributes.
+    be a float scalar type, a vector whose element type is float. It has no standard attributes.
   }];
 }
 
@@ -269,43 +241,6 @@ def MakeEnumOp : Arc_Op<"make_enum", [Pure]> {
 
   let assemblyFormat =
     "`(` ($values^ `:` type($values))? `)` `as` $variant attr-dict `:` type($result)";
-}
-
-def MakeTupleOp : Arc_Op<"make_tuple", [Pure]> {
-  let summary = "create a tuple from a sequence of values";
-  let description = [{
-    A pure operation which turns its arguments into a tuple.
-  }];
-  let arguments = (ins Variadic<AnyType>:$values);
-  let results = (outs AnyTuple);
-  let extraClassDeclaration = [{ LogicalResult customVerify(); }];
-  let hasVerifier = 1;
-}
-
-def MakeTensorOp : Arc_Op<"make_tensor",
-                          [Pure, SameOperandsAndResultElementType]> {
-  let summary = "create a tensor from a sequence of values";
-  let description = [{
-    A pure operation which turns its arguments into a tensor. The
-    tensor values are given in column-major order
-  }];
-  let arguments = (ins Variadic<ArcTensorElementType>:$values);
-  let results = (outs StaticShapeTensorOf<[ArcTensorElementType]>);
-  let extraClassDeclaration = [{ LogicalResult customVerify(); }];
-  let hasVerifier = 1;
-}
-
-def IndexTupleOp : Arc_Op<"index_tuple", [Pure]> {
-  let summary = "index into a tuple using a constant value";
-  let description = [{
-    A pure operation which reads a value from a tuple.
-  }];
-  let arguments = (ins AnyTuple:$value,
-                   ConfinedAttr<I64Attr, [IntNonNegative]>:$index);
-  let results = (outs AnyType);
-  let extraClassDeclaration = [{ LogicalResult customVerify(); }];
-  let hasVerifier = 1;
-  let hasCanonicalizer = 1;
 }
 
 def ArcBlockResultOp :
@@ -358,61 +293,6 @@ def LoopBreakOp : Arc_Op<"loop.break", [Pure, Terminator]> {
   let arguments = (ins Variadic<AnyType>:$results);
 
   let hasVerifier = 1;
-}
-
-def MakeAppenderOp : Arc_Op<"make_appender", [Pure, Linear]> {
-  let summary = "instantiate a new appender";
-  let description = [{
-    The "arc.make_appender" operation instantiates and returns a new appender.
-    The appender's initial storage `size` can optionally be given as an
-    attribute. Note that the result of this operation must be used exactly once.
-
-    ```mlir
-    %a = arc.make_appender() {size = 10} : () -> !arc.appender<i32>
-    ```
-  }];
-  let arguments = (ConfinedAttr<I64Attr, [IntNonNegative]>:$size);
-  let results = (outs AnyAppender);
-}
-
-def MergeOp : Arc_Op<"merge", [Pure, Linear]> {
-  let summary = "merge a value into a builder";
-  let description = [{
-    The "arc.merge" operation takes a builder and a value, and returns a new
-    builder with the value stored into the old builder. The old builder is
-    consumed in the process. Note that the result of this operation must be
-    used exactly once.
-
-    ```mlir
-    %a = "arc.make_appender"() : () -> !arc.appender<i32>
-    %v = arith.constant 5 : i32
-    %b = "arc.merge"(%a, %v) : (!arc.appender<i32>, i32) -> !arc.appender<i32>
-    ```
-  }];
-  let arguments = (ins AnyBuilder:$builder, AnyValue:$value);
-  let results = (outs AnyBuilder);
-  let hasVerifier = 1;
-  let extraClassDeclaration = [{ LogicalResult customVerify(); }];
-}
-
-def ResultOp : Arc_Op<"result", [Pure]> {
-  let summary = "materialize a builder into a value";
-  let description = [{
-    The "arc.result" operation takes a builder and materializes it into a value
-    of its result type. The resulting value is returned, and the builder is
-    consumed in the process.
-
-    ```mlir
-    %a = "arc.make_appender"() : () -> !arc.appender<i32>
-    %v = arith.constant 5 : i32
-    %b = "arc.merge"(%a, %v) : (!arc.appender<i32>, i32) -> !arc.appender<i32>
-    %r = "arc.result"(%b) : (!arc.appender<i32>) -> i32
-    ```
-  }];
-  let arguments = (ins AnyAppender:$builder);
-  let results = (outs AnyType);
-  let hasVerifier = 1;
-  let extraClassDeclaration = [{ LogicalResult customVerify(); }];
 }
 
 def Arc_ConstantADTOp : Arc_Op<"adt_constant", [Pure]> {
@@ -483,22 +363,6 @@ def Arc_CmpIOp : Arc_Op<"cmpi",
   let hasFolder = 1;
 
   let assemblyFormat = "$predicate `,` $lhs `,` $rhs attr-dict `:` type($lhs)";
-}
-
-def Arc_EmitOp : Arc_Op<"emit", []> {
-  let summary = "Emit a value on a stream";
-  let description = [{
-    Emit a value on a stream
-  }];
-
-  let arguments = (ins
-      StreamElementType:$value,
-      ArcStream:$stream
-  );
-  let results = (outs);
-  let hasVerifier = 1;
-
-  let extraClassDeclaration = [{ LogicalResult customVerify(); }];
 }
 
 def Arc_ReceiveOp : Arc_Op<"receive", []> {
@@ -620,10 +484,10 @@ class ArcArithmeticOp<string mnemonic, list<Trait> traits = []> :
 }
 
 // Base class for standard arithmetic operations on integers, vectors
-// and tensors thereof. This operation takes two operands and returns
+// thereof. This operation takes two operands and returns
 // one result, each of these is required to be of the same type.  This
 // type may be an integer scalar type, a vector whose element type is
-// an integer type, or an integer tensor. The custom assembly form of
+// an integer type. The custom assembly form of
 // the operation is as follows. Stolen from standard dialect.
 //
 //     <op>i %0, %1 : i32
@@ -676,108 +540,6 @@ def Arc_RemIOp : ArcIntArithmeticOp<"remi"> {
 def Arc_XOrOp : ArcIntArithmeticOp<"xor", [Commutative]> {
   let summary = "integer binary xor";
   let hasFolder = 1;
-}
-
-// State appender
-
-def Arc_StateAppenderPushOp : Arc_Op<"appender_push", []> {
-  let summary = "Add a value to an Arcon appender";
-  let description = [{
-    Add a value to an Arcon appender.
-  }];
-  let arguments = (ins ArcStateAppender:$state, StreamElementType:$value);
-  let results = (outs);
-  let extraClassDeclaration = [{ LogicalResult customVerify(); }];
-  let hasVerifier = 1;
-}
-
-def Arc_StateAppenderFoldOp : Arc_Op<"appender_fold",
-    []> { // DeclareOpInterfaceMethods<CallOpInterface>
-  let summary = "Add a value to an Arcon appender";
-  let description = [{
-    Add a value to an Arcon appender.
-  }];
-  let arguments = (ins ArcStateAppender:$state, StreamElementType:$init,
-                       FlatSymbolRefAttr:$fun);
-  let results = (outs StreamElementType:$res);
-  let extraClassDeclaration = [{ LogicalResult customVerify(); }];
-  let hasVerifier = 1;
-  let builders = [
-    OpBuilder<(ins "Value":$state, "Value":$init, "StringRef":$callee)>
-  ];
-
-}
-
-// State maps
-
-class Arc_KeyedStateMapOp<string mnemonic,
-                          list<Trait> traits = []>
-    : Arc_Op<mnemonic, traits> {
-  let arguments = (ins ArcStateMap:$state,
-                       StreamElementType:$key);
-  let extraClassDeclaration = [{ LogicalResult customVerify(); }];
-  let hasVerifier = 1;
-}
-
-def Arc_StateMapContainsOp : Arc_KeyedStateMapOp<"map_contains", []> {
-  let summary = "Check if a value is in an Arcon state map";
-  let description = [{
-    Check if a value is in an Arcon state map.
-  }];
-  let results = (outs BoolLike:$result);
-}
-
-def Arc_StateMapGetOp : Arc_KeyedStateMapOp<"map_get", []> {
-  let summary = "Look up a value in an Arcon state map";
-  let description = [{
-    Look up a value in an Arcon state map.
-  }];
-  let results = (outs StreamElementType:$result);
-}
-
-def Arc_StateMapInsertOp : Arc_Op<"map_insert", []> {
-  let summary = "Insert a value into a an Arcon state map";
-  let description = [{
-    Insert a value into a an Arcon state map.
-  }];
-  let arguments = (ins ArcStateMap:$state,
-                       StreamElementType:$key,
-                       StreamElementType:$value);
-  let results = (outs);
-  let extraClassDeclaration = [{ LogicalResult customVerify(); }];
-  let hasVerifier = 1;
-}
-
-def Arc_StateMapRemoveOp : Arc_KeyedStateMapOp<"map_remove", []> {
-  let summary = "Remove a value from an Arcon state map";
-  let description = [{
-    Remove a value from an Arcon state map.
-  }];
-  let results = (outs);
-}
-
-// State values
-
-def Arc_StateValueWriteOp : Arc_Op<"value_write", []> {
-  let summary = "Set an Arcon state value";
-  let description = [{
-    Set an Arcon state value.
-  }];
-  let arguments = (ins ArcStateValue:$state, StreamElementType:$value);
-  let results = (outs);
-  let extraClassDeclaration = [{ LogicalResult customVerify(); }];
-  let hasVerifier = 1;
-}
-
-def Arc_StateValueReadOp : Arc_Op<"value_read", []> {
-  let summary = "Read an Arcon state value";
-  let description = [{
-    Read an Arcon state value.
-  }];
-  let arguments = (ins ArcStateValue:$state);
-  let results = (outs StreamElementType);
-  let extraClassDeclaration = [{ LogicalResult customVerify(); }];
-  let hasVerifier = 1;
 }
 
 def PanicOp : Arc_Op<"panic", []> {

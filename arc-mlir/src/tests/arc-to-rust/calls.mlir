@@ -21,15 +21,6 @@ module @toplevel {
     return %in : !arc.struct<foo : si32>
   }
 
-  func.func @callee_tuple(%in : tuple<si32,si32>) -> tuple<si32,si32> attributes { rust.declare } {
-    return %in : tuple<si32,si32>
-  }
-
-  func.func @callee_mixed(%in : tuple<si32,si32,!arc.struct<a : si32>>)
-       -> tuple<si32,si32,!arc.struct<a : si32>> attributes { rust.declare }  {
-    return %in : tuple<si32,si32,!arc.struct<a : si32>>
-  }
-
   func.func @caller0() -> () attributes { rust.declare }  {
     call @callee_void_void() : () -> ()
     return
@@ -51,27 +42,6 @@ module @toplevel {
     %r = call @callee_struct(%in) : (!arc.struct<foo : si32>)
        	      			     -> !arc.struct<foo : si32>
     return %r : !arc.struct<foo : si32>
-  }
-
-  func.func @caller_tuple(%in : tuple<si32,si32>) -> tuple<si32,si32> attributes { rust.declare } {
-    %r = call @callee_tuple(%in) : (tuple<si32,si32>) -> tuple<si32,si32>
-    return %r : tuple<si32,si32>
-  }
-
-  func.func @caller_mixed(%in : tuple<si32,si32,!arc.struct<a : si32>>)
-       -> tuple<si32,si32,!arc.struct<a : si32>> attributes { rust.declare } {
-    %r = call @callee_mixed(%in) : (tuple<si32,si32,!arc.struct<a : si32>>)
-       	      			    -> tuple<si32,si32,!arc.struct<a : si32>>
-    return %in : tuple<si32,si32,!arc.struct<a : si32>>
-  }
-
-  func.func @indir_call0(%in : tuple<si32,si32,!arc.struct<a : si32>>)
-       -> tuple<si32,si32,!arc.struct<a : si32>> attributes { rust.declare } {
-    %f = constant @caller_mixed : (tuple<si32,si32,!arc.struct<a : si32>>)
-         -> tuple<si32,si32,!arc.struct<a : si32>>
-    %r = call_indirect %f(%in) : (tuple<si32,si32,!arc.struct<a : si32>>)
-         -> tuple<si32,si32,!arc.struct<a : si32>>
-    return %r : tuple<si32,si32,!arc.struct<a : si32>>
   }
 
   func.func @enumfun(%in : !arc.enum<ea : si32, eb : f32>)

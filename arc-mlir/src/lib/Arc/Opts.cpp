@@ -35,28 +35,6 @@ using namespace arc;
 
 namespace {
 
-bool AllValuesAreArithConstant(Operation::operand_range &ops) {
-  for (const mlir::Value &a : ops) {
-    Operation *op = a.getDefiningOp();
-    if (!op || !isa<arith::ConstantOp>(op))
-      return false;
-  }
-  return true;
-}
-
-DenseElementsAttr
-ConstantValuesToDenseAttributes(mlir::OpResult result,
-                                Operation::operand_range &ops) {
-  ShapedType st = result.getType().cast<ShapedType>();
-  std::vector<Attribute> attribs;
-
-  for (const mlir::Value &a : ops) {
-    arith::ConstantOp def = cast<arith::ConstantOp>(a.getDefiningOp());
-    attribs.push_back(def.getValue());
-  }
-  return DenseElementsAttr::get(st, ArrayRef(attribs));
-}
-
 struct ConstantFoldIf : public mlir::OpRewritePattern<arc::IfOp> {
   ConstantFoldIf(MLIRContext *ctx)
       : OpRewritePattern<arc::IfOp>(ctx, /*benefit=*/1) {}
@@ -92,24 +70,6 @@ struct ConstantFoldIf : public mlir::OpRewritePattern<arc::IfOp> {
       rewriter.insert(cloned);
     }
     rewriter.replaceOp(op, cloned_result->getResults());
-    return success();
-  }
-};
-
-struct ConstantFoldIndexTuple
-    : public mlir::OpRewritePattern<arc::IndexTupleOp> {
-  ConstantFoldIndexTuple(MLIRContext *ctx)
-      : OpRewritePattern<arc::IndexTupleOp>(ctx, /*benefit=*/1) {}
-
-  mlir::LogicalResult
-  matchAndRewrite(arc::IndexTupleOp op,
-                  PatternRewriter &rewriter) const override {
-    Operation *def = op.getValue().getDefiningOp();
-
-    arc::MakeTupleOp mt = def ? dyn_cast<arc::MakeTupleOp>(def) : nullptr;
-    if (!mt)
-      return failure();
-    rewriter.replaceOp(op, mt.getValues()[op.getIndex()]);
     return success();
   }
 };
@@ -191,19 +151,9 @@ void EnumCheckOp::getCanonicalizationPatterns(RewritePatternSet &results,
   results.insert<ConstantFoldEnumCheck>(ctx);
 }
 
-void MakeVectorOp::getCanonicalizationPatterns(RewritePatternSet &results,
-                                               MLIRContext *ctx) {
-  populateWithGenerated(results);
-}
-
 void IfOp::getCanonicalizationPatterns(RewritePatternSet &results,
                                        MLIRContext *ctx) {
   results.insert<ConstantFoldIf>(ctx);
-}
-
-void IndexTupleOp::getCanonicalizationPatterns(RewritePatternSet &results,
-                                               MLIRContext *ctx) {
-  results.insert<ConstantFoldIndexTuple>(ctx);
 }
 
 void StructAccessOp::getCanonicalizationPatterns(RewritePatternSet &results,

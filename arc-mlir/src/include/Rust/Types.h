@@ -46,8 +46,6 @@ struct RustSinkStreamTypeStorage;
 struct RustSourceStreamTypeStorage;
 struct RustStreamTypeStorage;
 struct RustStructTypeStorage;
-struct RustTupleTypeStorage;
-struct RustTensorTypeStorage;
 
 class RustEnumType;
 class RustGenericADTType;
@@ -174,33 +172,6 @@ public:
   static RustGenericADTType get(RustDialect *dialect, StringRef name,
                                 ArrayRef<Type> parameters);
 
-  std::string getMangledName(rust::RustPrinterStream &ps);
-};
-
-class RustTensorType
-    : public Type::TypeBase<RustTensorType, Type, RustTensorTypeStorage> {
-public:
-  using Base::Base;
-
-  void printAsMLIR(DialectAsmPrinter &os) const;
-  void printAsRust(llvm::raw_ostream &o, rust::RustPrinterStream &os);
-
-  static RustTensorType get(RustDialect *dialect, Type elementTy,
-                            ArrayRef<int64_t> dimensions);
-
-  ArrayRef<int64_t> getDimensions() const;
-  std::string getMangledName(rust::RustPrinterStream &ps);
-};
-
-class RustTupleType
-    : public Type::TypeBase<RustTupleType, Type, RustTupleTypeStorage> {
-public:
-  using Base::Base;
-
-  void printAsMLIR(DialectAsmPrinter &os) const;
-  void printAsRust(llvm::raw_ostream &o, rust::RustPrinterStream &os);
-
-  static RustTupleType get(RustDialect *dialect, ArrayRef<Type> fields);
   std::string getMangledName(rust::RustPrinterStream &ps);
 };
 

@@ -53,9 +53,6 @@ protected:
   Type convertFunctionType(FunctionType type);
   Type convertIntegerType(IntegerType type);
   Type convertNoneType(NoneType type);
-  Type convertTensorType(RankedTensorType type);
-  Type convertTupleType(TupleType type);
-  Type convertStreamType(arc::types::StreamType type);
   Type convertSinkStreamType(arc::types::SinkStreamType type);
   Type convertSourceStreamType(arc::types::SourceStreamType type);
   Type convertStructType(arc::types::StructType type);
@@ -465,24 +462,6 @@ private:
   RustTypeConverter &TypeConverter;
 };
 
-struct IndexTupleOpLowering : public OpConversionPattern<arc::IndexTupleOp> {
-  IndexTupleOpLowering(MLIRContext *ctx, RustTypeConverter &typeConverter)
-      : OpConversionPattern<arc::IndexTupleOp>(typeConverter, ctx, 1),
-        TypeConverter(typeConverter) {}
-
-  LogicalResult
-  matchAndRewrite(IndexTupleOp o, OpAdaptor adaptor,
-                  ConversionPatternRewriter &rewriter) const final {
-    Type retTy = TypeConverter.convertType(o.getType());
-    rewriter.replaceOpWithNewOp<rust::RustFieldAccessOp>(
-        o, retTy, adaptor.getValue(), std::to_string(o.getIndex()));
-    return success();
-  };
-
-private:
-  RustTypeConverter &TypeConverter;
-};
-
 struct LoopBreakOpLowering : public OpConversionPattern<arc::LoopBreakOp> {
   LoopBreakOpLowering(MLIRContext *ctx, RustTypeConverter &typeConverter)
       : OpConversionPattern<arc::LoopBreakOp>(typeConverter, ctx, 1) {}
@@ -557,42 +536,6 @@ private:
   RustTypeConverter &TypeConverter;
 };
 
-struct MakeTensorOpLowering : public OpConversionPattern<arc::MakeTensorOp> {
-  MakeTensorOpLowering(MLIRContext *ctx, RustTypeConverter &typeConverter)
-      : OpConversionPattern<arc::MakeTensorOp>(typeConverter, ctx, 1),
-        TypeConverter(typeConverter) {}
-
-  LogicalResult
-  matchAndRewrite(MakeTensorOp o, OpAdaptor adaptor,
-                  ConversionPatternRewriter &rewriter) const final {
-    Type retTy = TypeConverter.convertType(o.getType());
-    rewriter.replaceOpWithNewOp<rust::RustTensorOp>(o, retTy,
-                                                    adaptor.getOperands());
-    return success();
-  };
-
-private:
-  RustTypeConverter &TypeConverter;
-};
-
-struct MakeTupleOpLowering : public OpConversionPattern<arc::MakeTupleOp> {
-  MakeTupleOpLowering(MLIRContext *ctx, RustTypeConverter &typeConverter)
-      : OpConversionPattern<arc::MakeTupleOp>(typeConverter, ctx, 1),
-        TypeConverter(typeConverter) {}
-
-  LogicalResult
-  matchAndRewrite(MakeTupleOp o, OpAdaptor adaptor,
-                  ConversionPatternRewriter &rewriter) const final {
-    Type retTy = TypeConverter.convertType(o.getType());
-    rewriter.replaceOpWithNewOp<rust::RustTupleOp>(o, retTy,
-                                                   adaptor.getOperands());
-    return success();
-  };
-
-private:
-  RustTypeConverter &TypeConverter;
-};
-
 namespace ArcIntArithmeticOp {
 typedef enum {
   AddIOp = 0,
@@ -617,12 +560,8 @@ struct ArcIntArithmeticOpLowering : public OpConversionPattern<T> {
   matchAndRewrite(T o, typename T::Adaptor adaptor,
                   ConversionPatternRewriter &rewriter) const final {
     Type rustTy = TypeConverter.convertType(o.getType());
-    if (rustTy.isa<rust::types::RustTensorType>())
-      rewriter.replaceOpWithNewOp<rust::RustBinaryRcOp>(
-          o, rustTy, opStr[arithOp], adaptor.getLhs(), adaptor.getRhs());
-    else
-      rewriter.replaceOpWithNewOp<rust::RustBinaryOp>(
-          o, rustTy, opStr[arithOp], adaptor.getLhs(), adaptor.getRhs());
+    rewriter.replaceOpWithNewOp<rust::RustBinaryOp>(
+        o, rustTy, opStr[arithOp], adaptor.getLhs(), adaptor.getRhs());
     return success();
   };
 
@@ -695,12 +634,8 @@ struct StdArithmeticOpLowering : public OpConversionPattern<T> {
   matchAndRewrite(T o, typename T::Adaptor adaptor,
                   ConversionPatternRewriter &rewriter) const final {
     Type rustTy = TypeConverter.convertType(o.getType());
-    if (rustTy.isa<rust::types::RustTensorType>())
-      rewriter.replaceOpWithNewOp<rust::RustBinaryRcOp>(
-          o, rustTy, opStr[arithOp], adaptor.getLhs(), adaptor.getRhs());
-    else
-      rewriter.replaceOpWithNewOp<rust::RustBinaryOp>(
-          o, rustTy, opStr[arithOp], adaptor.getLhs(), adaptor.getRhs());
+    rewriter.replaceOpWithNewOp<rust::RustBinaryOp>(
+        o, rustTy, opStr[arithOp], adaptor.getLhs(), adaptor.getRhs());
     return success();
   };
 
@@ -935,19 +870,6 @@ private:
   RustTypeConverter &TypeConverter;
 };
 
-struct EmitOpLowering : public OpConversionPattern<arc::EmitOp> {
-  EmitOpLowering(MLIRContext *ctx, RustTypeConverter &typeConverter)
-      : OpConversionPattern<arc::EmitOp>(typeConverter, ctx, 1) {}
-
-  LogicalResult
-  matchAndRewrite(EmitOp o, OpAdaptor adaptor,
-                  ConversionPatternRewriter &rewriter) const final {
-    rewriter.replaceOpWithNewOp<rust::RustEmitOp>(o, adaptor.getValue(),
-                                                  adaptor.getStream());
-    return success();
-  };
-};
-
 struct ReceiveOpLowering : public OpConversionPattern<arc::ReceiveOp> {
   ReceiveOpLowering(MLIRContext *ctx, RustTypeConverter &typeConverter)
       : OpConversionPattern<arc::ReceiveOp>(typeConverter, ctx, 1),
@@ -993,10 +915,6 @@ RustTypeConverter::RustTypeConverter(MLIRContext *ctx)
   addConversion([&](FloatType type) { return convertFloatType(type); });
   addConversion([&](FunctionType type) { return convertFunctionType(type); });
   addConversion([&](IntegerType type) { return convertIntegerType(type); });
-  addConversion([&](RankedTensorType type) { return convertTensorType(type); });
-  addConversion([&](TupleType type) { return convertTupleType(type); });
-  addConversion(
-      [&](arc::types::StreamType type) { return convertStreamType(type); });
   addConversion([&](arc::types::SinkStreamType type) {
     return convertSinkStreamType(type);
   });
@@ -1015,8 +933,6 @@ RustTypeConverter::RustTypeConverter(MLIRContext *ctx)
   addConversion([](rust::types::RustSourceStreamType type) { return type; });
   addConversion([](rust::types::RustStructType type) { return type; });
   addConversion([](rust::types::RustGenericADTType type) { return type; });
-  addConversion([](rust::types::RustTensorType type) { return type; });
-  addConversion([](rust::types::RustTupleType type) { return type; });
 }
 
 Type RustTypeConverter::convertADTType(arc::types::ADTType type) {
@@ -1075,10 +991,6 @@ Type RustTypeConverter::convertNoneType(NoneType type) {
   return rust::types::RustType::getNoneTy(Dialect);
 }
 
-Type RustTypeConverter::convertStreamType(arc::types::StreamType type) {
-  return rust::types::RustStreamType::get(Dialect, convertType(type.getType()));
-}
-
 Type RustTypeConverter::convertSinkStreamType(arc::types::SinkStreamType type) {
   return rust::types::RustSinkStreamType::get(Dialect,
                                               convertType(type.getType()));
@@ -1097,18 +1009,6 @@ Type RustTypeConverter::convertStructType(arc::types::StructType type) {
     fields.push_back(std::make_pair(f.first, t));
   }
   return rust::types::RustStructType::get(Dialect, type.isCompact(), fields);
-}
-
-Type RustTypeConverter::convertTensorType(RankedTensorType type) {
-  Type t = convertType(type.getElementType());
-  return rust::types::RustTensorType::get(Dialect, t, type.getShape());
-}
-
-Type RustTypeConverter::convertTupleType(TupleType type) {
-  SmallVector<Type, 4> elements;
-  for (Type t : type)
-    elements.push_back(convertType(t));
-  return rust::types::RustTupleType::get(Dialect, elements);
 }
 
 FunctionType
@@ -1333,17 +1233,13 @@ void ArcToRustLoweringPass::runOnOperation() {
       &getContext(), typeConverter);
 
   patterns.insert<IfOpLowering>(&getContext(), typeConverter);
-  patterns.insert<IndexTupleOpLowering>(&getContext(), typeConverter);
   patterns.insert<BlockResultOpLowering>(&getContext(), typeConverter);
   patterns.insert<ConstantADTOpLowering>(&getContext(), typeConverter);
-  patterns.insert<MakeTupleOpLowering>(&getContext(), typeConverter);
-  patterns.insert<MakeTensorOpLowering>(&getContext(), typeConverter);
   patterns.insert<MakeEnumOpLowering>(&getContext(), typeConverter);
   patterns.insert<MakeStructOpLowering>(&getContext(), typeConverter);
   patterns.insert<LoopBreakOpLowering>(&getContext(), typeConverter);
   patterns.insert<EnumAccessOpLowering>(&getContext(), typeConverter);
   patterns.insert<EnumCheckOpLowering>(&getContext(), typeConverter);
-  patterns.insert<EmitOpLowering>(&getContext(), typeConverter);
   patterns.insert<PanicOpLowering>(&getContext(), typeConverter);
   patterns.insert<ArithSelectOpLowering>(&getContext(), typeConverter);
   patterns.insert<ReceiveOpLowering>(&getContext(), typeConverter);
