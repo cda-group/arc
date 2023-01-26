@@ -2,48 +2,48 @@
 
 # Try to guess the location of the arc-mlir repository
 
-if [[ -z "$A2M" ]] ; then
-    A2M=$(realpath $(dirname "$(which "$0")")/arc-mlir)
-    echo The arc-mlir repository is assumed to be at ${A2M}, override by setting A2M.
+if [[ -z "$ARC_MLIR" ]] ; then
+    ARC_MLIR=$(realpath $(dirname "$(which "$0")")/arc-mlir)
+    echo The arc-mlir repository is assumed to be at ${ARC_MLIR}, override by setting ARC_MLIR.
 else
-    echo A2M is ${A2M}
+    echo ARC_MLIR is ${ARC_MLIR}
 fi
 
-if [[ -z "$A2M_BUILD" ]] ; then
-    echo "No build directory specified with A2M_BUILD, assuming ${A2M}/build"
-    A2M_BUILD="${A2M}/build"
+if [[ -z "$ARC_MLIR_BUILD" ]] ; then
+    echo "No build directory specified with ARC_MLIR_BUILD, assuming ${ARC_MLIR}/build"
+    ARC_MLIR_BUILD="${ARC_MLIR}/build"
 else
-    echo "Will use $A2M_BUILD as the scratch directory"
+    echo "Will use $ARC_MLIR_BUILD as the scratch directory"
 fi
 
-if [ ! -f ${A2M}/.guessed-arc-mlir ]; then
+if [ ! -f ${ARC_MLIR}/.guessed-arc-mlir ]; then
     echo "Waiting 10s before proceeding, next run will proceed directly"
-    touch ${A2M}/.guessed-arc-mlir
+    touch ${ARC_MLIR}/.guessed-arc-mlir
     sleep 10
 fi
 
 # prefer gold if it is available
-A2M_LINKER_SELECTION=""
+ARC_MLIR_LINKER_SELECTION=""
 if command -v ld.gold >/dev/null 2>&1; then
     echo "Will use gold"
-    A2M_LINKER_SELECTION="-DLLVM_USE_LINKER=gold"
+    ARC_MLIR_LINKER_SELECTION="-DLLVM_USE_LINKER=gold"
 fi
 
-LLVM_SRC_DIR="$A2M/llvm-project"
-LLVM_BUILD_DIR="$A2M_BUILD/llvm-build/"
-LLVM_INSTALL_DIR="$A2M_BUILD/llvm-install"
+LLVM_SRC_DIR="$ARC_MLIR/llvm-project"
+LLVM_BUILD_DIR="$ARC_MLIR_BUILD/llvm-build/"
+LLVM_INSTALL_DIR="$ARC_MLIR_BUILD/llvm-install"
 
-ARC_LANG_SRC_DIR="${A2M}/../arc-lang/"
-ARC_LANG_BUILD_DIR="${A2M_BUILD}/arc-lang/"
+ARC_LANG_SRC_DIR="${ARC_MLIR}/../arc-lang/"
+ARC_LANG_BUILD_DIR="${ARC_MLIR_BUILD}/arc-lang/"
 
 # default to a debug build
 BUILD_FLAVOUR="${BUILD_FLAVOUR:-Debug}"
 
 # Do we want assertions?
-A2M_ASSERTS="${A2M_ASSERTS:+-DLLVM_ENABLE_ASSERTIONS=ON}"
+ARC_MLIR_ASSERTS="${ARC_MLIR_ASSERTS:+-DLLVM_ENABLE_ASSERTIONS=ON}"
 
 # Do we want ccache?
-A2M_CCACHE="${A2M_CCACHE:+-DLLVM_CCACHE_BUILD=1}"
+ARC_MLIR_CCACHE="${ARC_MLIR_CCACHE:+-DLLVM_CCACHE_BUILD=1}"
 
 echo "Will build a $BUILD_FLAVOUR build"
 
@@ -69,15 +69,15 @@ function llvm-cmake {
        -DCMAKE_EXPORT_COMPILE_COMMANDS=1 \
        -DCMAKE_BUILD_TYPE=$BUILD_FLAVOUR \
        -DLLVM_TARGETS_TO_BUILD="host" \
-       $A2M_ASSERTS \
-       $A2M_LINKER_SELECTION \
+       $ARC_MLIR_LINKER_SELECTION \
+       $ARC_MLIR_ASSERTS \
        -DBUILD_SHARED_LIBS=0 \
        -DLLVM_USE_SPLIT_DWARF=ON \
-       $A2M_CCACHE \
+       $ARC_MLIR_CCACHE \
        -DLLVM_BUILD_EXAMPLES=OFF \
        -DLLVM_ENABLE_PROJECTS=mlir\
        -DLLVM_EXTERNAL_PROJECTS="arc-mlir" \
-       -DLLVM_EXTERNAL_ARC_MLIR_SOURCE_DIR="$A2M/src" \
+       -DLLVM_EXTERNAL_ARC_MLIR_SOURCE_DIR="$ARC_MLIR/src" \
        -DLLVM_HAVE_TF_API="OFF" \
        $LLVM_SRC_DIR/llvm || fail "cmaking LLVM"
 }
