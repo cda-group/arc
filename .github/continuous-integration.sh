@@ -2,9 +2,9 @@
 
 set -e # Terminates as soon as something fails
 
-echo "The work dir is ${A2M_BUILD}"
+echo "The work dir is ${ARC_MLIR_BUILD}"
 
-export PATH="$A2M_BUILD/llvm-build/bin:$PATH"
+export PATH="$ARC_MLIR_BUILD/llvm-build/bin:$PATH"
 export RUSTC_WRAPPER="/home/arc-runner/.cargo/bin/sccache"
 export SCCACHE_DIR="${PERSIST_DIR}/sccache"
 export SCCACHE_CACHE_SIZE="20G"
@@ -51,11 +51,11 @@ function check-ccache {
 }
 
 function run-build {
-    A2M_CCACHE="1" BUILD_FLAVOUR="Release" A2M_ASSERTS="1" run-step ./build
+    ARC_MLIR_CCACHE="1" BUILD_FLAVOUR="Release" ARC_MLIR_ASSERTS="1" run-step ./build
 }
 
 function run-mlir-tests {
-    run-step ninja -C $A2M_BUILD/llvm-build/ check-arc-mlir
+    run-step ninja -C $ARC_MLIR_BUILD/llvm-build/ check-arc-mlir
 }
 
 function run-runtime-tests {

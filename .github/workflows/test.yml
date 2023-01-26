@@ -36,22 +36,22 @@ jobs:
     - name: Build MLIR + LLVM + arc-lang
       run: ./.github/continuous-integration.sh run-build
       env:
-        A2M_BUILD: ${{ format('{0}/build', runner.temp) }}
+        ARC_MLIR_BUILD: ${{ format('{0}/build', runner.temp) }}
 
     - name: Pre-build arc-runtime
       run: ./.github/continuous-integration.sh cargo test
       env:
-        A2M_BUILD: ${{ format('{0}/build', runner.temp) }}
+        ARC_MLIR_BUILD: ${{ format('{0}/build', runner.temp) }}
 
     - name: Run MLIR tests
       run: ./.github/continuous-integration.sh run-mlir-tests
       env:
-        A2M_BUILD: ${{ format('{0}/build', runner.temp) }}
+        ARC_MLIR_BUILD: ${{ format('{0}/build', runner.temp) }}
 
     - name: "Run arc-runtime test: clippy"
       run: ./.github/continuous-integration.sh cargo clippy
       env:
-        A2M_BUILD: ${{ format('{0}/build', runner.temp) }}
+        ARC_MLIR_BUILD: ${{ format('{0}/build', runner.temp) }}
 
     - name: "Ccache/Sccache statistics"
       run: ./.github/continuous-integration.sh check-ccache
@@ -59,7 +59,7 @@ jobs:
 #    - name: "Run arc-runtime test: fmt -- -v --check"
 #      run: ./.github/continuous-integration.sh cargo fmt -- -v --check
 #      env:
-#        A2M_BUILD: ${{ format('{0}/build', runner.temp) }}
+#        ARC_MLIR_BUILD: ${{ format('{0}/build', runner.temp) }}
 
     - name: Check for dirty tree
       run: ./check-for-dirty-tree
