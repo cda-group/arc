@@ -7,6 +7,7 @@ on:
       - "arc-mlir/**"
       - "arc-runtime/**"
       - "arc-python/**"
+      - "build"
       - ".github/workflows/test.yml"
     branches:
       - master
