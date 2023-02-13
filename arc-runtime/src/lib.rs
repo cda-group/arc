@@ -21,7 +21,6 @@ pub mod macros;
 pub mod operators;
 pub mod runtime;
 pub mod task;
-pub mod timer;
 
 pub mod prelude {
     // Data types
