@@ -17,7 +17,6 @@ macros            = { path = "./macros" }
 kompact           = { git = "https://github.com/kompics/kompact", rev = "e9deae8", features = ["silent_logging"]}
 slog              = { version = "2.7.0" }
 time              = { version = "0.3.5", features = ["rand", "macros"] }
-wheel             = { version = "1.1.0", package = "hierarchical_hash_wheel_timer" }
 uuid              = { version = "0.8.2" }
 rand              = { version = "0.8.3" }
 dyn-clone         = { version = "1.0.4" }
