@@ -123,6 +123,17 @@ public:
   static Type parse(DialectAsmParser &parser);
 };
 
+class StreamType
+    : public mlir::Type::TypeBase<StreamType, StreamTypeBase,
+                                  StreamTypeStorage> {
+public:
+  using Base::Base;
+
+  static StreamType get(mlir::Type keyType, mlir::Type elementType);
+
+  static Type parse(DialectAsmParser &parser);
+};
+
 class StructType
     : public mlir::Type::TypeBase<StructType, mlir::Type, StructTypeStorage> {
 public:
