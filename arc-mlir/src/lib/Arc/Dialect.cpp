@@ -53,6 +53,7 @@ void ArcDialect::initialize(void) {
   addTypes<ADTGenericType>();
   addTypes<SinkStreamType>();
   addTypes<SourceStreamType>();
+  addTypes<StreamType>();
   addTypes<EnumType>();
   addTypes<StructType>();
 }
@@ -73,6 +74,8 @@ Type ArcDialect::parseType(DialectAsmParser &parser) const {
     return SinkStreamType::parse(parser);
   if (keyword == "stream.source")
     return SourceStreamType::parse(parser);
+  if (keyword == "stream")
+    return StreamType::parse(parser);
   if (keyword == "enum")
     return EnumType::parse(parser);
   if (keyword == "struct")
@@ -93,6 +96,8 @@ void ArcDialect::printType(Type type, DialectAsmPrinter &os) const {
   else if (auto t = type.dyn_cast<SinkStreamType>())
     t.print(os);
   else if (auto t = type.dyn_cast<SourceStreamType>())
+    t.print(os);
+  else if (auto t = type.dyn_cast<StreamType>())
     t.print(os);
   else if (auto t = type.dyn_cast<EnumType>())
     t.print(os);
@@ -1085,7 +1090,7 @@ struct SourceStreamTypeStorage : public StreamTypeBaseStorage {
   using KeyTy = std::pair<Type, Type>;
 
   SourceStreamTypeStorage(Type keyType, Type elementType)
-      : StreamTypeBaseStorage(keyType, elementType, "stream.source") {}
+      : StreamTypeBaseStorage(keyType, elementType, "stream") {}
 
   static SourceStreamTypeStorage *
   construct(mlir::TypeStorageAllocator &allocator, const KeyTy &key) {
@@ -1104,6 +1109,34 @@ Type SourceStreamType::parse(DialectAsmParser &parser) {
   auto t = parseStreamType(parser);
   if (t)
     return SourceStreamType::get(t->first, t->second);
+  return nullptr;
+}
+
+//===----------------------------------------------------------------------===//
+// StreamType
+//===----------------------------------------------------------------------===//
+struct StreamTypeStorage : public StreamTypeBaseStorage {
+  using KeyTy = std::pair<Type, Type>;
+
+  StreamTypeStorage(Type keyType, Type elementType)
+      : StreamTypeBaseStorage(keyType, elementType, "stream.sink") {}
+
+  static StreamTypeStorage *construct(mlir::TypeStorageAllocator &allocator,
+                                      const KeyTy &key) {
+    return new (allocator.allocate<SinkStreamTypeStorage>())
+        StreamTypeStorage(key.first, key.second);
+  }
+};
+
+StreamType StreamType::get(mlir::Type keyType, mlir::Type elementType) {
+  mlir::MLIRContext *ctx = elementType.getContext();
+  return Base::get(ctx, keyType, elementType);
+}
+
+Type StreamType::parse(DialectAsmParser &parser) {
+  Optional<std::pair<Type, Type>> t = parseStreamType(parser);
+  if (t)
+    return StreamType::get(t->first, t->second);
   return nullptr;
 }
 
