@@ -18,23 +18,23 @@ module @toplevel {
     return %bool : i1
   }
 
-  func.func @odd_filter(%in : !arc.stream.source<ui32>)
-  	    -> !arc.stream.source<ui32> {
-    %out = "arc.filter"(%in) { predicate=@is_odd} : (!arc.stream.source<ui32>) -> !arc.stream.source<ui32>
-    return %out : !arc.stream.source<ui32>
+  func.func @odd_filter(%in : !arc.stream.source<ui32, ui32>)
+  	    -> !arc.stream.source<ui32, ui32> {
+    %out = "arc.filter"(%in) { predicate=@is_odd} : (!arc.stream.source<ui32, ui32>) -> !arc.stream.source<ui32, ui32>
+    return %out : !arc.stream.source<ui32, ui32>
   }
 
-  func.func @even_filter(%in : !arc.stream.source<ui32>)
-  	    -> !arc.stream.source<ui32> {
-    %out = "arc.filter"(%in) { predicate=@is_even} : (!arc.stream.source<ui32>) -> !arc.stream.source<ui32>
-    return %out : !arc.stream.source<ui32>
+  func.func @even_filter(%in : !arc.stream.source<ui32, ui32>)
+  	    -> !arc.stream.source<ui32, ui32> {
+    %out = "arc.filter"(%in) { predicate=@is_even} : (!arc.stream.source<ui32, ui32>) -> !arc.stream.source<ui32, ui32>
+    return %out : !arc.stream.source<ui32, ui32>
   }
 
-  func.func @chained_filter(%in : !arc.stream.source<ui32>)
-  	    -> !arc.stream.source<ui32> {
-    %t = "arc.filter"(%in) { predicate=@is_even} : (!arc.stream.source<ui32>) -> !arc.stream.source<ui32>
-    %r = "arc.filter"(%t) { predicate=@is_odd} : (!arc.stream.source<ui32>) -> !arc.stream.source<ui32>
-    return %r : !arc.stream.source<ui32>
+  func.func @chained_filter(%in : !arc.stream.source<ui32, ui32>)
+  	    -> !arc.stream.source<ui32, ui32> {
+    %t = "arc.filter"(%in) { predicate=@is_even} : (!arc.stream.source<ui32, ui32>) -> !arc.stream.source<ui32, ui32>
+    %r = "arc.filter"(%t) { predicate=@is_odd} : (!arc.stream.source<ui32, ui32>) -> !arc.stream.source<ui32, ui32>
+    return %r : !arc.stream.source<ui32, ui32>
   }
 
   func.func @is_same_with_env(%in : ui32, %env : ui32) -> i1 {
@@ -48,10 +48,10 @@ module @toplevel {
   }
 
 
-  func.func @filter_with_env(%in : !arc.stream.source<ui32>)
-  	    -> !arc.stream.source<ui32> {
-    %out = "arc.filter"(%in) { predicate=@is_same_with_env, predicate_env_thunk=@one_thunk } : (!arc.stream.source<ui32>) -> !arc.stream.source<ui32>
-    return %out : !arc.stream.source<ui32>
+  func.func @filter_with_env(%in : !arc.stream.source<ui32, ui32>)
+  	    -> !arc.stream.source<ui32, ui32> {
+    %out = "arc.filter"(%in) { predicate=@is_same_with_env, predicate_env_thunk=@one_thunk } : (!arc.stream.source<ui32, ui32>) -> !arc.stream.source<ui32, ui32>
+    return %out : !arc.stream.source<ui32, ui32>
   }
 
 
