@@ -91,12 +91,14 @@ public:
   using Type::Type;
 
   Type getElementType() const;
+  Type getKeyType() const;
   StringRef getKeyword() const;
   virtual void print(DialectAsmPrinter &os) const;
   static Type parse(DialectAsmParser &parser);
 
 protected:
-  static Type parseElementType(DialectAsmParser &parser);
+  static Optional<std::pair<Type, Type>>
+  parseStreamType(DialectAsmParser &parser);
 };
 
 class SinkStreamType
@@ -105,7 +107,7 @@ class SinkStreamType
 public:
   using Base::Base;
 
-  static SinkStreamType get(mlir::Type elementType);
+  static SinkStreamType get(mlir::Type keyType, mlir::Type elementType);
 
   /// Returns the type of the stream elements
   mlir::Type getType() const;
@@ -119,7 +121,7 @@ class SourceStreamType
 public:
   using Base::Base;
 
-  static SourceStreamType get(mlir::Type elementType);
+  static SourceStreamType get(mlir::Type keyType, mlir::Type elementType);
 
   /// Returns the type of the stream elements
   mlir::Type getType() const;
