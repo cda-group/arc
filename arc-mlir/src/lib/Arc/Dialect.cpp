@@ -508,7 +508,7 @@ LogicalResult ReceiveOp::verify() {
   // Check that the stream's element type matches what we receive
   auto ElemTy = getValue().getType();
   SourceStreamType StreamTy = getSource().getType().cast<SourceStreamType>();
-  if (ElemTy != StreamTy.getType())
+  if (ElemTy != StreamTy.getElementType())
     return emitOpError("Can't receive a value of type ")
            << ElemTy << " from a " << StreamTy << " stream";
   return mlir::success();
@@ -647,7 +647,7 @@ LogicalResult SendOp::verify() {
   // Check that the stream's element type matches what we send
   auto ElemTy = getValue().getType();
   SinkStreamType StreamTy = getSink().getType().cast<SinkStreamType>();
-  if (ElemTy != StreamTy.getType())
+  if (ElemTy != StreamTy.getElementType())
     return emitOpError("Can't send value of type ")
            << ElemTy << " on a " << StreamTy << " stream";
   return mlir::success();
@@ -1071,9 +1071,6 @@ SinkStreamType SinkStreamType::get(mlir::Type keyType, mlir::Type elementType) {
   return Base::get(ctx, keyType, elementType);
 }
 
-/// Returns the element type of this stream type.
-mlir::Type SinkStreamType::getType() const { return getElementType(); }
-
 Type SinkStreamType::parse(DialectAsmParser &parser) {
   Optional<std::pair<Type, Type>> t = parseStreamType(parser);
   if (t)
@@ -1102,9 +1099,6 @@ SourceStreamType SourceStreamType::get(mlir::Type keyType,
   mlir::MLIRContext *ctx = elementType.getContext();
   return Base::get(ctx, keyType, elementType);
 }
-
-/// Returns the element type of this stream type.
-mlir::Type SourceStreamType::getType() const { return getElementType(); }
 
 Type SourceStreamType::parse(DialectAsmParser &parser) {
   auto t = parseStreamType(parser);

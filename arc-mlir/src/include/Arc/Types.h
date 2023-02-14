@@ -109,9 +109,6 @@ public:
 
   static SinkStreamType get(mlir::Type keyType, mlir::Type elementType);
 
-  /// Returns the type of the stream elements
-  mlir::Type getType() const;
-
   static Type parse(DialectAsmParser &parser);
 };
 
@@ -122,9 +119,6 @@ public:
   using Base::Base;
 
   static SourceStreamType get(mlir::Type keyType, mlir::Type elementType);
-
-  /// Returns the type of the stream elements
-  mlir::Type getType() const;
 
   static Type parse(DialectAsmParser &parser);
 };
