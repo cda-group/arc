@@ -26,7 +26,7 @@ module @arctorustspawn {
                     %out : !arc.stream.sink<ui32, si32>) {
        arc.spawn @id(%in, %out) : (!arc.stream.source<ui32, si32>,
                                    !arc.stream.sink<ui32, si32>) -> ()
-// CHECK: "rust.spawn"(%arg0, %arg1) {callee = @id} : (!rust<<i32>>, !rust<<i32>>) -> ()
+// CHECK: "rust.spawn"(%arg0, %arg1) {callee = @id} : (!rust<<u32, i32>>, !rust<<u32, i32>>) -> ()
        return
     }
 }
