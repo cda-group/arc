@@ -53,6 +53,7 @@ protected:
   Type convertFunctionType(FunctionType type);
   Type convertIntegerType(IntegerType type);
   Type convertNoneType(NoneType type);
+  Type convertStreamType(arc::types::StreamType type);
   Type convertSinkStreamType(arc::types::SinkStreamType type);
   Type convertSourceStreamType(arc::types::SourceStreamType type);
   Type convertStructType(arc::types::StructType type);
@@ -957,6 +958,8 @@ RustTypeConverter::RustTypeConverter(MLIRContext *ctx)
   addConversion([&](FloatType type) { return convertFloatType(type); });
   addConversion([&](FunctionType type) { return convertFunctionType(type); });
   addConversion([&](IntegerType type) { return convertIntegerType(type); });
+  addConversion(
+      [&](arc::types::StreamType type) { return convertStreamType(type); });
   addConversion([&](arc::types::SinkStreamType type) {
     return convertSinkStreamType(type);
   });
@@ -1031,6 +1034,12 @@ Type RustTypeConverter::convertIntegerType(IntegerType type) {
 
 Type RustTypeConverter::convertNoneType(NoneType type) {
   return rust::types::RustType::getNoneTy(Dialect);
+}
+
+Type RustTypeConverter::convertStreamType(arc::types::StreamType type) {
+  return rust::types::RustStreamType::get(Dialect,
+                                          convertType(type.getKeyType()),
+                                          convertType(type.getElementType()));
 }
 
 Type RustTypeConverter::convertSinkStreamType(arc::types::SinkStreamType type) {
