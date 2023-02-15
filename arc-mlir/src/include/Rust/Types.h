@@ -45,6 +45,7 @@ struct RustGenericADTTypeStorage;
 struct RustSinkStreamTypeStorage;
 struct RustSourceStreamTypeStorage;
 struct RustStreamTypeStorage;
+struct RustStreamTypeBaseStorage;
 struct RustStructTypeStorage;
 
 class RustEnumType;
@@ -75,30 +76,39 @@ public:
   std::string getMangledName(rust::RustPrinterStream &ps);
 };
 
-class RustStreamType
-    : public Type::TypeBase<RustStreamType, Type, RustStreamTypeStorage> {
+class RustStreamTypeBase : public Type {
+public:
+  virtual ~RustStreamTypeBase(){};
+  using ImplType = RustStreamTypeBaseStorage;
+  using Type::Type;
+
+  Type getElementType() const;
+  Type getKeyType() const;
+};
+
+class RustStreamType : public Type::TypeBase<RustStreamType, RustStreamTypeBase,
+                                             RustStreamTypeStorage> {
 public:
   using Base::Base;
 
   void printAsMLIR(DialectAsmPrinter &os) const;
   void printAsRust(llvm::raw_ostream &o, rust::RustPrinterStream &os);
 
-  Type getType() const;
+  Type getElementType() const;
 
   static RustStreamType get(RustDialect *dialect, Type item);
 
   std::string getMangledName(rust::RustPrinterStream &ps);
 };
 
-class RustSinkStreamType : public Type::TypeBase<RustSinkStreamType, Type,
-                                                 RustSinkStreamTypeStorage> {
+class RustSinkStreamType
+    : public Type::TypeBase<RustSinkStreamType, RustStreamTypeBase,
+                            RustSinkStreamTypeStorage> {
 public:
   using Base::Base;
 
   void printAsMLIR(DialectAsmPrinter &os) const;
   void printAsRust(llvm::raw_ostream &o, rust::RustPrinterStream &os);
-
-  Type getType() const;
 
   static RustSinkStreamType get(RustDialect *dialect, Type item);
 
@@ -106,15 +116,13 @@ public:
 };
 
 class RustSourceStreamType
-    : public Type::TypeBase<RustSourceStreamType, Type,
+    : public Type::TypeBase<RustSourceStreamType, RustStreamTypeBase,
                             RustSourceStreamTypeStorage> {
 public:
   using Base::Base;
 
   void printAsMLIR(DialectAsmPrinter &os) const;
   void printAsRust(llvm::raw_ostream &o, rust::RustPrinterStream &os);
-
-  Type getType() const;
 
   static RustSourceStreamType get(RustDialect *dialect, Type item);
 
