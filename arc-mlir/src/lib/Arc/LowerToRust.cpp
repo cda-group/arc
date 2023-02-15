@@ -1036,13 +1036,15 @@ Type RustTypeConverter::convertNoneType(NoneType type) {
 
 Type RustTypeConverter::convertSinkStreamType(arc::types::SinkStreamType type) {
   return rust::types::RustSinkStreamType::get(
-      Dialect, convertType(type.getElementType()));
+      Dialect, convertType(type.getKeyType()),
+      convertType(type.getElementType()));
 }
 
 Type RustTypeConverter::convertSourceStreamType(
     arc::types::SourceStreamType type) {
   return rust::types::RustSourceStreamType::get(
-      Dialect, convertType(type.getElementType()));
+      Dialect, convertType(type.getKeyType()),
+      convertType(type.getElementType()));
 }
 
 Type RustTypeConverter::convertStructType(arc::types::StructType type) {

@@ -559,7 +559,8 @@ void RustFuncOp::writeGraph(RustPrinterStream &PS) {
     PS << "    \"";
     PS.printAsArg(v);
     PS << "\" : { \"Source\": { ";
-    PS << "\"element_type\" : \"" << t.getElementType() << "\"";
+    PS << "\"element_type\" : \"" << t.getElementType() << "\", ";
+    PS << "\"key_type\" : \"" << t.getKeyType() << "\"";
     dumpJsonObject(PS, srcParams.getObject(std::to_string(i)));
     PS << "}\n";
   }
@@ -1215,8 +1216,12 @@ void RustEnumTypeStorage::printAsRust(llvm::raw_ostream &o,
 //===----------------------------------------------------------------------===//
 
 struct RustStreamTypeBaseStorage : public TypeStorage {
-  RustStreamTypeBaseStorage(Type keyTy, Type containedTy)
-      : TypeStorage(), keyType(keyTy), containedType(containedTy) {}
+  RustStreamTypeBaseStorage(std::string mangledPrefix, std::string mlirPrefix,
+                            std::string rustPrefix, Type keyTy,
+                            Type containedTy)
+      : TypeStorage(), keyType(keyTy), containedType(containedTy),
+        mangledPrefix(mangledPrefix), mlirPrefix(mlirPrefix),
+        rustPrefix(rustPrefix) {}
 
   using KeyTy = std::pair<Type, Type>;
 
@@ -1228,8 +1233,20 @@ struct RustStreamTypeBaseStorage : public TypeStorage {
     return llvm::hash_combine(key.first, key.second);
   }
 
+  std::string getMangledName(rust::RustPrinterStream &ps);
+
+  void printAsRust(llvm::raw_ostream &o, rust::RustPrinterStream &ps);
+  void printAsMLIR(DialectAsmPrinter &os);
+
   Type keyType;
   Type containedType;
+
+private:
+  std::string mangledPrefix;
+  std::string mangledName;
+
+  std::string mlirPrefix;
+  std::string rustPrefix;
 };
 
 Type RustStreamTypeBase::getElementType() const {
@@ -1240,60 +1257,63 @@ Type RustStreamTypeBase::getKeyType() const {
   return static_cast<ImplType *>(impl)->keyType;
 }
 
+std::string
+RustStreamTypeBaseStorage::getMangledName(rust::RustPrinterStream &ps) {
+
+  if (!mangledName.empty())
+    return mangledName;
+
+  std::string mangledKeyType = ::getMangledName(keyType, ps);
+  std::string mangledContainedType = ::getMangledName(containedType, ps);
+
+  std::string buffer;
+  llvm::raw_string_ostream mangled(buffer);
+  mangled << mangledPrefix;
+  mangled << mangledKeyType.size() << mangledKeyType;
+  mangled << mangledContainedType.size() << mangledContainedType << "End";
+  mangledName = mangled.str();
+  return mangledName;
+}
+
+void RustStreamTypeBaseStorage::printAsRust(llvm::raw_ostream &o,
+                                            rust::RustPrinterStream &ps) {
+  o << rustPrefix << "<" << ::getMangledName(keyType, ps) << ", "
+    << ::getMangledName(containedType, ps) << ">";
+}
+
+void RustStreamTypeBaseStorage::printAsMLIR(DialectAsmPrinter &os) {
+  os << mlirPrefix << "<";
+  ::printAsMLIR(keyType, os);
+  os << ", ";
+  ::printAsMLIR(containedType, os);
+  os << ">";
+}
+
 //===----------------------------------------------------------------------===//
 // RustStreamType
 //===----------------------------------------------------------------------===//
 
 struct RustStreamTypeStorage : public RustStreamTypeBaseStorage {
-  RustStreamTypeStorage(Type item) : RustStreamTypeBaseStorage(0, item) {}
+  RustStreamTypeStorage(Type key, Type item)
+      : RustStreamTypeBaseStorage("Stream", "stream", "Stream", key, item) {}
 
   using KeyTy = RustStreamTypeBaseStorage::KeyTy;
 
   static RustStreamTypeStorage *construct(TypeStorageAllocator &allocator,
                                           const KeyTy &key) {
     return new (allocator.allocate<RustStreamTypeStorage>())
-        RustStreamTypeStorage(key.second);
+        RustStreamTypeStorage(key.first, key.second);
   }
 
-  void printAsRust(llvm::raw_ostream &o, rust::RustPrinterStream &ps);
-  void printAsMLIR(DialectAsmPrinter &os);
-
   Type getType() const;
-
-  std::string getMangledName(rust::RustPrinterStream &ps);
-
-private:
-  std::string mangledName;
-
-  std::string getMangledName();
 };
 
 std::string RustStreamType::getMangledName(rust::RustPrinterStream &ps) {
   return getImpl()->getMangledName(ps);
 }
 
-std::string RustStreamTypeStorage::getMangledName(rust::RustPrinterStream &ps) {
-  if (!mangledName.empty())
-    return mangledName;
-
-  std::string mn = ::getMangledName(containedType, ps);
-
-  std::string buffer;
-  llvm::raw_string_ostream mangled(buffer);
-  mangled << "Stream";
-  mangled << mn.size() << mn << "End";
-  mangledName = mangled.str();
-  return mangledName;
-}
-
-RustStreamType RustStreamType::get(RustDialect *dialect, Type item) {
-  return Base::get(dialect->getContext(), std::pair<Type, Type>(0, item));
-}
-
-void RustStreamTypeStorage::printAsMLIR(DialectAsmPrinter &os) {
-  os << "stream<";
-  ::printAsMLIR(containedType, os);
-  os << ">";
+RustStreamType RustStreamType::get(RustDialect *dialect, Type key, Type item) {
+  return Base::get(dialect->getContext(), std::pair<Type, Type>(key, item));
 }
 
 void RustStreamType::printAsMLIR(DialectAsmPrinter &os) const {
@@ -1305,71 +1325,36 @@ void RustStreamType::printAsRust(llvm::raw_ostream &o,
   getImpl()->printAsRust(o, ps);
 }
 
-void RustStreamTypeStorage::printAsRust(llvm::raw_ostream &o,
-                                        rust::RustPrinterStream &ps) {
-  o << "Stream<" << ::getMangledName(containedType, ps) << ">";
-}
-
 //===----------------------------------------------------------------------===//
 // RustSinkStreamType
 //===----------------------------------------------------------------------===//
 struct RustSinkStreamTypeStorage : public RustStreamTypeBaseStorage {
-  RustSinkStreamTypeStorage(Type item) : RustStreamTypeBaseStorage(0, item) {}
+  RustSinkStreamTypeStorage(Type key, Type item)
+      : RustStreamTypeBaseStorage("PushableStream", "", "Pushable", key, item) {
+  }
 
   using KeyTy = RustStreamTypeBaseStorage::KeyTy;
 
   static RustSinkStreamTypeStorage *construct(TypeStorageAllocator &allocator,
                                               const KeyTy &key) {
     return new (allocator.allocate<RustSinkStreamTypeStorage>())
-        RustSinkStreamTypeStorage(key.second);
+        RustSinkStreamTypeStorage(key.first, key.second);
   }
 
-  void printAsMLIR(DialectAsmPrinter &os) const;
-  void printAsRust(llvm::raw_ostream &o, rust::RustPrinterStream &ps);
-
   Type getType() const;
-  std::string getMangledName(rust::RustPrinterStream &ps);
-
-private:
-  std::string mangledName;
 };
 
 std::string RustSinkStreamType::getMangledName(rust::RustPrinterStream &ps) {
   return getImpl()->getMangledName(ps);
 }
 
-std::string
-RustSinkStreamTypeStorage::getMangledName(rust::RustPrinterStream &ps) {
-  if (!mangledName.empty())
-    return mangledName;
-
-  std::string buffer;
-  std::string mn = ::getMangledName(containedType, ps);
-
-  llvm::raw_string_ostream mangled(buffer);
-  mangled << "PushableStream" << mn.size() << mn << "End";
-  mangledName = mangled.str();
-  return mangledName;
-}
-
-RustSinkStreamType RustSinkStreamType::get(RustDialect *dialect, Type item) {
-  return Base::get(dialect->getContext(), std::pair<Type, Type>(0, item));
+RustSinkStreamType RustSinkStreamType::get(RustDialect *dialect, Type key,
+                                           Type item) {
+  return Base::get(dialect->getContext(), std::pair<Type, Type>(key, item));
 }
 
 void RustSinkStreamType::printAsMLIR(DialectAsmPrinter &os) const {
   getImpl()->printAsMLIR(os);
-}
-
-void RustSinkStreamTypeStorage::printAsMLIR(DialectAsmPrinter &os) const {
-  os << "<";
-  ::printAsMLIR(containedType, os);
-  os << ">";
-}
-
-void RustSinkStreamTypeStorage::printAsRust(llvm::raw_ostream &o,
-                                            rust::RustPrinterStream &ps) {
-  getMangledName(ps);
-  o << "Pushable<" << ::getMangledName(containedType, ps) << ">";
 }
 
 void RustSinkStreamType::printAsRust(llvm::raw_ostream &o,
@@ -1381,70 +1366,37 @@ void RustSinkStreamType::printAsRust(llvm::raw_ostream &o,
 // RustSourceStreamType
 //===----------------------------------------------------------------------===//
 struct RustSourceStreamTypeStorage : public RustStreamTypeBaseStorage {
-  RustSourceStreamTypeStorage(Type item) : RustStreamTypeBaseStorage(0, item) {}
+  RustSourceStreamTypeStorage(Type key, Type item)
+      : RustStreamTypeBaseStorage("PullableStream", "", "Pullable", key, item) {
+  }
 
   using KeyTy = RustStreamTypeBaseStorage::KeyTy;
 
   static RustSourceStreamTypeStorage *construct(TypeStorageAllocator &allocator,
                                                 const KeyTy &key) {
     return new (allocator.allocate<RustSourceStreamTypeStorage>())
-        RustSourceStreamTypeStorage(key.second);
+        RustSourceStreamTypeStorage(key.first, key.second);
   }
 
-  void printAsRust(llvm::raw_ostream &o, rust::RustPrinterStream &ps);
-
-  void printAsMLIR(DialectAsmPrinter &os) const;
-
   Type getType() const;
-
-  std::string getMangledName(rust::RustPrinterStream &ps);
-
-private:
-  std::string mangledName;
 };
 
 std::string RustSourceStreamType::getMangledName(rust::RustPrinterStream &ps) {
   return getImpl()->getMangledName(ps);
 }
 
-std::string
-RustSourceStreamTypeStorage::getMangledName(rust::RustPrinterStream &ps) {
-  if (!mangledName.empty())
-    return mangledName;
-
-  std::string buffer;
-  std::string mn = ::getMangledName(containedType, ps);
-
-  llvm::raw_string_ostream mangled(buffer);
-  mangled << "PullableStream" << mn.size() << mn << "End";
-  mangledName = mangled.str();
-  return mangledName;
-}
-
-RustSourceStreamType RustSourceStreamType::get(RustDialect *dialect,
+RustSourceStreamType RustSourceStreamType::get(RustDialect *dialect, Type key,
                                                Type item) {
-  return Base::get(dialect->getContext(), std::pair<Type, Type>(0, item));
+  return Base::get(dialect->getContext(), std::pair<Type, Type>(key, item));
 }
 
 void RustSourceStreamType::printAsMLIR(DialectAsmPrinter &os) const {
   getImpl()->printAsMLIR(os);
 }
 
-void RustSourceStreamTypeStorage::printAsMLIR(DialectAsmPrinter &os) const {
-  os << "<";
-  ::printAsMLIR(containedType, os);
-  os << ">";
-}
-
 void RustSourceStreamType::printAsRust(llvm::raw_ostream &o,
                                        rust::RustPrinterStream &ps) {
   return getImpl()->printAsRust(o, ps);
-}
-
-void RustSourceStreamTypeStorage::printAsRust(llvm::raw_ostream &o,
-                                              rust::RustPrinterStream &ps) {
-  getMangledName(ps);
-  o << "Pullable<" << ::getMangledName(containedType, ps) << ">";
 }
 
 //===----------------------------------------------------------------------===//
