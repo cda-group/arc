@@ -555,7 +555,7 @@ void RustFuncOp::writeGraph(RustPrinterStream &PS) {
   // Generate a value for each parameter
   for (unsigned i = 0; i < getNumArguments(); i++) {
     Value v = front().getArgument(i);
-    RustSourceStreamType t = v.getType().cast<RustSourceStreamType>();
+    RustStreamType t = v.getType().cast<RustStreamType>();
     PS << "    \"";
     PS.printAsArg(v);
     PS << "\" : { \"Source\": { ";

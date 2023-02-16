@@ -736,7 +736,7 @@ LogicalResult FilterOp::verifySymbolUses(SymbolTableCollection &symbolTable) {
   // least one operand, and it must match the type of the stream.
   if (fnType.getNumInputs() < 1)
     return emitOpError("incorrect number of operands for predicate");
-  SourceStreamType sst = getInput().getType().cast<SourceStreamType>();
+  StreamType sst = getInput().getType().cast<StreamType>();
   if (fnType.getInput(0) != sst.getElementType())
     return emitOpError("predicate type mismatch: expected operand type ")
            << fnType.getInput(0) << ", but received" << sst.getElementType();
@@ -796,8 +796,7 @@ LogicalResult MapOp::verifySymbolUses(SymbolTableCollection &symbolTable) {
 
   // Check that the map function argument type matches the input
   // stream element type.
-  Type inputType =
-      getInput().getType().cast<SourceStreamType>().getElementType();
+  Type inputType = getInput().getType().cast<StreamType>().getElementType();
   if (fnType.getInput(0) != inputType)
     return emitOpError("map function type mismatch: input stream contains ")
            << inputType << " but map function expects " << fnType.getInput(0);
@@ -829,8 +828,7 @@ LogicalResult MapOp::verifySymbolUses(SymbolTableCollection &symbolTable) {
              << thunkType.getResult(0);
   }
   // Check that the return type matches the output stream element type.
-  Type outputType =
-      getOutput().getType().cast<SourceStreamType>().getElementType();
+  Type outputType = getOutput().getType().cast<StreamType>().getElementType();
   Type returnType = fnType.getResult(0);
   if (returnType != outputType)
     return emitOpError("map function type mismatch: output stream contains ")
@@ -1090,7 +1088,7 @@ struct SourceStreamTypeStorage : public StreamTypeBaseStorage {
   using KeyTy = std::pair<Type, Type>;
 
   SourceStreamTypeStorage(Type keyType, Type elementType)
-      : StreamTypeBaseStorage(keyType, elementType, "stream") {}
+      : StreamTypeBaseStorage(keyType, elementType, "stream.source") {}
 
   static SourceStreamTypeStorage *
   construct(mlir::TypeStorageAllocator &allocator, const KeyTy &key) {
@@ -1119,7 +1117,7 @@ struct StreamTypeStorage : public StreamTypeBaseStorage {
   using KeyTy = std::pair<Type, Type>;
 
   StreamTypeStorage(Type keyType, Type elementType)
-      : StreamTypeBaseStorage(keyType, elementType, "stream.sink") {}
+      : StreamTypeBaseStorage(keyType, elementType, "stream") {}
 
   static StreamTypeStorage *construct(mlir::TypeStorageAllocator &allocator,
                                       const KeyTy &key) {
