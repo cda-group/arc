@@ -194,7 +194,8 @@ LogicalResult RustFuncOp::verify() {
 
   for (Operation &o : op->getRegion(0).getBlocks().begin()->getOperations()) {
     if (!dyn_cast<FilterOp>(o) && !dyn_cast<KeybyOp>(o) &&
-        !dyn_cast<MapOp>(o) && !dyn_cast<RustReturnOp>(o))
+        !dyn_cast<MapOp>(o) && !dyn_cast<RustReturnOp>(o) &&
+        !dyn_cast<UnionOp>(o))
       return emitOpError("contains operations not legal in a function encoding "
                          "a graph: ")
              << o;
@@ -573,6 +574,8 @@ void RustFuncOp::writeGraph(RustPrinterStream &PS) {
     } else if (KeybyOp m = dyn_cast<KeybyOp>(o)) {
       m.writeJSON(PS);
     } else if (RustReturnOp r = dyn_cast<RustReturnOp>(o)) {
+      r.writeJSON(PS);
+    } else if (UnionOp r = dyn_cast<UnionOp>(o)) {
       r.writeJSON(PS);
     }
   }
@@ -1010,6 +1013,22 @@ void RustSpawnOp::writeRust(RustPrinterStream &PS) {
   for (auto a : getArgOperands())
     PS << a << ", ";
   PS << ");\n";
+}
+
+//===----------------------------------------------------------------------===//
+// RustUnionOp
+//===----------------------------------------------------------------------===//
+void UnionOp::writeJSON(RustPrinterStream &PS) {
+  Value v = getOutput();
+
+  PS << "    \"";
+  PS.printAsLValue(v);
+  PS << "\" : { \"Union\": { \"input_a\": \"";
+  PS.printAsLValue(getInputA());
+  PS << "\", \"input_b\": \"";
+  PS.printAsLValue(getInputB());
+  PS << "\"";
+  PS << "}},\n";
 }
 
 //===----------------------------------------------------------------------===//
