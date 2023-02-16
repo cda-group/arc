@@ -712,4 +712,18 @@ def Rust_KeybyOp : Rust_Op<"keyby", [
   }];
 }
 
+def Rust_UnionOp : Rust_Op<"union", []> {
+  let summary = "Standard union dataflow op";
+  let description = [{
+    Standard union dataflow op.
+  }];
+
+  let arguments = (ins AnyRustStream:$inputA, AnyRustStream:$inputB);
+  let results = (outs AnyRustStream:$output);
+  let extraClassDeclaration = [{
+    // Write this function as JSON code to os
+    void writeJSON(RustPrinterStream &);
+  }];
+}
+
 #endif // RUST_OPS
