@@ -1218,6 +1218,26 @@ private:
   }
 };
 
+struct UnionOpLowering : public OpConversionPattern<UnionOp> {
+  UnionOpLowering(MLIRContext *ctx, RustTypeConverter &typeConverter)
+      : OpConversionPattern<UnionOp>(typeConverter, ctx, 1),
+        TypeConverter(typeConverter) {}
+
+  LogicalResult
+  matchAndRewrite(UnionOp o, OpAdaptor adaptor,
+                  ConversionPatternRewriter &rewriter) const final {
+    Type retTy = TypeConverter.convertType(o.getType());
+
+    rewriter.replaceOpWithNewOp<rust::UnionOp>(o, retTy, adaptor.getInputA(),
+                                               adaptor.getInputB());
+
+    return success();
+  };
+
+private:
+  RustTypeConverter &TypeConverter;
+};
+
 void ArcToRustLoweringPass::runOnOperation() {
   RustTypeConverter typeConverter(&getContext());
 
@@ -1341,6 +1361,7 @@ void ArcToRustLoweringPass::runOnOperation() {
   patterns.insert<StdCallIndirectOpLowering>(&getContext(), typeConverter);
   patterns.insert<StdCallOpLowering>(&getContext(), typeConverter);
   patterns.insert<StructAccessOpLowering>(&getContext(), typeConverter);
+  patterns.insert<UnionOpLowering>(&getContext(), typeConverter);
 
   if (failed(applyFullConversion(getOperation(), target, std::move(patterns))))
     signalPassFailure();
