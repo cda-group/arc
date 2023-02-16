@@ -692,4 +692,24 @@ def Rust_MapOp : Rust_Op<"map", [
   }];
 }
 
+def Rust_KeybyOp : Rust_Op<"keyby", [
+      DeclareOpInterfaceMethods<SymbolUserOpInterface>
+    ]> {
+  let summary = "Standard keyby dataflow op";
+  let description = [{
+    Standard keyby dataflow op.
+  }];
+
+  let arguments = (ins
+      AnyRustStream:$input,
+      FlatSymbolRefAttr:$key_fun,
+      OptionalAttr<FlatSymbolRefAttr>:$key_fun_env_thunk
+  );
+  let results = (outs AnyRustStream:$output);
+  let extraClassDeclaration = [{
+    // Write this function as JSON code to os
+    void writeJSON(RustPrinterStream &);
+  }];
+}
+
 #endif // RUST_OPS

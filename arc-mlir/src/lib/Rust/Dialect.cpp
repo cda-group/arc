@@ -193,8 +193,8 @@ LogicalResult RustFuncOp::verify() {
     return emitOpError("has too many blocks for a function encoding a graph");
 
   for (Operation &o : op->getRegion(0).getBlocks().begin()->getOperations()) {
-    if (!dyn_cast<FilterOp>(o) && !dyn_cast<MapOp>(o) &&
-        !dyn_cast<RustReturnOp>(o))
+    if (!dyn_cast<FilterOp>(o) && !dyn_cast<KeybyOp>(o) &&
+        !dyn_cast<MapOp>(o) && !dyn_cast<RustReturnOp>(o))
       return emitOpError("contains operations not legal in a function encoding "
                          "a graph: ")
              << o;
@@ -570,6 +570,8 @@ void RustFuncOp::writeGraph(RustPrinterStream &PS) {
       f.writeJSON(PS);
     } else if (MapOp m = dyn_cast<MapOp>(o)) {
       m.writeJSON(PS);
+    } else if (KeybyOp m = dyn_cast<KeybyOp>(o)) {
+      m.writeJSON(PS);
     } else if (RustReturnOp r = dyn_cast<RustReturnOp>(o)) {
       r.writeJSON(PS);
     }
@@ -908,6 +910,34 @@ RustLoopConditionOp RustLoopOp::getConditionOp() {
 
 RustLoopYieldOp RustLoopOp::getYieldOp() {
   return cast<RustLoopYieldOp>(getAfter().front().getTerminator());
+}
+
+//===----------------------------------------------------------------------===//
+// RustKeybyOp
+//===----------------------------------------------------------------------===//
+LogicalResult KeybyOp::verifySymbolUses(SymbolTableCollection &symbolTable) {
+  // The verification is needed for the SymbolUserOpInterface, but as
+  // this operation is only created by our own conversion, we chet by
+  // not doing any verification.
+  return success();
+}
+
+void KeybyOp::writeJSON(RustPrinterStream &PS) {
+  Value v = getOutput();
+
+  PS << "    \"";
+  PS.printAsLValue(v);
+  PS << "\" : { \"Keyby\": { \"input\": \"";
+  PS.printAsLValue(getInput());
+  PS << "\"";
+  PS << ", \"fun\":\"" << nameOfRustFunction(this->getOperation(), getKeyFun())
+     << "\"";
+  if (auto thunk = getKeyFunEnvThunk())
+    PS << ", \"env\":\""
+       << nameOfRustFunction(this->getOperation(), *getKeyFunEnvThunk())
+       << "\"";
+
+  PS << "}},\n";
 }
 
 //===----------------------------------------------------------------------===//
