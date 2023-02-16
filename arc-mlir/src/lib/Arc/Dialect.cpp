@@ -775,6 +775,83 @@ LogicalResult FilterOp::verifySymbolUses(SymbolTableCollection &symbolTable) {
 }
 
 //===----------------------------------------------------------------------===//
+// KeybyOp
+//===----------------------------------------------------------------------===//
+LogicalResult KeybyOp::verify() {
+  // The type correctnes of the predicate is checked in
+  // verifySymbolUses(), here is enough to check that the types of our
+  // input and ouput streams match.
+  if (getInput().getType().cast<StreamType>().getElementType() !=
+      getOutput().getType().cast<StreamType>().getElementType())
+    return emitOpError(
+        "input and output streams should have the same element type");
+
+  return mlir::success();
+}
+
+LogicalResult KeybyOp::verifySymbolUses(SymbolTableCollection &symbolTable) {
+  // In large parts stolen from the func::CallOp.
+  using namespace mlir::func;
+  // Check that the callee attribute was specified.
+  auto fnAttr = (*this)->getAttrOfType<FlatSymbolRefAttr>("key_fun");
+  FuncOp fn = symbolTable.lookupNearestSymbolFrom<FuncOp>(*this, fnAttr);
+  if (!fn)
+    return emitOpError() << "'" << fnAttr.getValue()
+                         << "' does not reference a valid function";
+  // Verify that the keyby function has the right number of arguments
+  // and results.
+  auto fnType = fn.getFunctionType();
+  if (fnType.getNumInputs() < 1 || fnType.getNumInputs() > 2)
+    return emitOpError("incorrect number of operands for keyby function");
+  if (fnType.getNumResults() != 1)
+    return emitOpError("incorrect number of results for keyby function");
+
+  // Check that the keyby function argument type matches the input
+  // stream element type.
+  Type inputType = getInput().getType().cast<StreamType>().getElementType();
+  if (fnType.getInput(0) != inputType)
+    return emitOpError("keyby function type mismatch: input stream contains ")
+           << inputType << " but keyby function expects " << fnType.getInput(0);
+
+  // Check that the environment thunk has the right type
+  auto thunkAttr =
+      (*this)->getAttrOfType<FlatSymbolRefAttr>("key_fun_env_thunk");
+  if (!thunkAttr && fnType.getNumInputs() > 1)
+    return emitOpError("keyby function expects environment but no "
+                       "'key_fun_env_thunk' attribute set");
+  if (thunkAttr && fnType.getNumInputs() == 1)
+    return emitOpError("keyby function does not expect an environment but "
+                       "'key_fun_env_thunk' attribute set");
+  if (thunkAttr) {
+    FuncOp thunk =
+        symbolTable.lookupNearestSymbolFrom<FuncOp>(*this, thunkAttr);
+    if (!thunk)
+      return emitOpError() << "'" << thunkAttr.getValue()
+                           << "' does not reference a valid function";
+    auto thunkType = thunk.getFunctionType();
+    if (thunkType.getNumInputs() != 0)
+      return emitOpError("environment thunk cannot take any arguments");
+    if (thunkType.getNumResults() != 1)
+      return emitOpError("environment thunk must return a value");
+    if (thunkType.getResult(0) != fnType.getInput(1))
+      return emitOpError("keyby function environment type mismatch: expected "
+                         "operand type ")
+             << fnType.getInput(1) << ", but thunk returns "
+             << thunkType.getResult(0);
+  }
+  // Check that the return type matches the output stream element type.
+  Type outputType = getOutput().getType().cast<StreamType>().getKeyType();
+  Type returnType = fnType.getResult(0);
+
+  if (returnType != outputType)
+    return emitOpError(
+               "keyby function type mismatch: output stream key type is ")
+           << outputType << " but keyby function returns " << returnType;
+
+  return success();
+}
+
+//===----------------------------------------------------------------------===//
 // MapOp
 //===----------------------------------------------------------------------===//
 LogicalResult MapOp::verifySymbolUses(SymbolTableCollection &symbolTable) {

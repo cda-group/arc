@@ -625,6 +625,23 @@ def Arc_FilterOp : Arc_Op<"filter", [
   let hasVerifier = 1;
 }
 
+def Arc_KeybyOp : Arc_Op<"keyby", [
+      DeclareOpInterfaceMethods<SymbolUserOpInterface>
+    ]> {
+  let summary = "Standard keyby dataflow op";
+  let description = [{
+    Standard keyby dataflow op.
+  }];
+
+  let arguments = (ins
+      ArcStream:$input,
+      FlatSymbolRefAttr:$key_fun,
+      OptionalAttr<FlatSymbolRefAttr>:$key_fun_env_thunk
+  );
+  let results = (outs ArcStream:$output);
+  let hasVerifier = 1;
+}
+
 def Arc_MapOp : Arc_Op<"map", [
       DeclareOpInterfaceMethods<SymbolUserOpInterface>
     ]> {
