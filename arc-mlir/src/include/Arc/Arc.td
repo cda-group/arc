@@ -657,4 +657,15 @@ def Arc_MapOp : Arc_Op<"map", [
   let results = (outs ArcStream:$output);
 }
 
+def Arc_UnionOp : Arc_Op<"union", []> {
+  let summary = "Standard union dataflow op";
+  let description = [{
+    Standard union dataflow op.
+  }];
+
+  let arguments = (ins ArcStream:$input_a, ArcStream:$input_b);
+  let results = (outs ArcStream:$output);
+  let hasVerifier = 1;
+}
+
 #endif // ARC_OPS

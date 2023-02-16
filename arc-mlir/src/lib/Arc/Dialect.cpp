@@ -915,6 +915,19 @@ LogicalResult MapOp::verifySymbolUses(SymbolTableCollection &symbolTable) {
 }
 
 //===----------------------------------------------------------------------===//
+// UnionOp
+//===----------------------------------------------------------------------===//
+LogicalResult UnionOp::verify() {
+  if (getInputA().getType() != getInputB().getType())
+    return emitOpError("both input streams should have the same type");
+
+  if (getInputA().getType() != getOutput().getType())
+    return emitOpError("input and output streams should have the same type");
+
+  return mlir::success();
+}
+
+//===----------------------------------------------------------------------===//
 // General helpers for comparison ops, stolen from the standard dialect
 //===----------------------------------------------------------------------===//
 
