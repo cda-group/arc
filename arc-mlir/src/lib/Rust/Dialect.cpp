@@ -1257,6 +1257,10 @@ Type RustStreamTypeBase::getKeyType() const {
   return static_cast<ImplType *>(impl)->keyType;
 }
 
+std::string RustStreamTypeBase::getMangledName(rust::RustPrinterStream &ps) {
+  return static_cast<ImplType *>(impl)->getMangledName(ps);
+}
+
 std::string
 RustStreamTypeBaseStorage::getMangledName(rust::RustPrinterStream &ps) {
 
@@ -1289,6 +1293,15 @@ void RustStreamTypeBaseStorage::printAsMLIR(DialectAsmPrinter &os) {
   os << ">";
 }
 
+void RustStreamTypeBase::printAsMLIR(DialectAsmPrinter &os) const {
+  static_cast<ImplType *>(impl)->printAsMLIR(os);
+}
+
+void RustStreamTypeBase::printAsRust(llvm::raw_ostream &o,
+                                     rust::RustPrinterStream &ps) {
+  static_cast<ImplType *>(impl)->printAsRust(o, ps);
+}
+
 //===----------------------------------------------------------------------===//
 // RustStreamType
 //===----------------------------------------------------------------------===//
@@ -1308,21 +1321,8 @@ struct RustStreamTypeStorage : public RustStreamTypeBaseStorage {
   Type getType() const;
 };
 
-std::string RustStreamType::getMangledName(rust::RustPrinterStream &ps) {
-  return getImpl()->getMangledName(ps);
-}
-
 RustStreamType RustStreamType::get(RustDialect *dialect, Type key, Type item) {
   return Base::get(dialect->getContext(), std::pair<Type, Type>(key, item));
-}
-
-void RustStreamType::printAsMLIR(DialectAsmPrinter &os) const {
-  getImpl()->printAsMLIR(os);
-}
-
-void RustStreamType::printAsRust(llvm::raw_ostream &o,
-                                 rust::RustPrinterStream &ps) {
-  getImpl()->printAsRust(o, ps);
 }
 
 //===----------------------------------------------------------------------===//
@@ -1344,22 +1344,9 @@ struct RustSinkStreamTypeStorage : public RustStreamTypeBaseStorage {
   Type getType() const;
 };
 
-std::string RustSinkStreamType::getMangledName(rust::RustPrinterStream &ps) {
-  return getImpl()->getMangledName(ps);
-}
-
 RustSinkStreamType RustSinkStreamType::get(RustDialect *dialect, Type key,
                                            Type item) {
   return Base::get(dialect->getContext(), std::pair<Type, Type>(key, item));
-}
-
-void RustSinkStreamType::printAsMLIR(DialectAsmPrinter &os) const {
-  getImpl()->printAsMLIR(os);
-}
-
-void RustSinkStreamType::printAsRust(llvm::raw_ostream &o,
-                                     rust::RustPrinterStream &ps) {
-  getImpl()->printAsRust(o, ps);
 }
 
 //===----------------------------------------------------------------------===//
@@ -1381,22 +1368,9 @@ struct RustSourceStreamTypeStorage : public RustStreamTypeBaseStorage {
   Type getType() const;
 };
 
-std::string RustSourceStreamType::getMangledName(rust::RustPrinterStream &ps) {
-  return getImpl()->getMangledName(ps);
-}
-
 RustSourceStreamType RustSourceStreamType::get(RustDialect *dialect, Type key,
                                                Type item) {
   return Base::get(dialect->getContext(), std::pair<Type, Type>(key, item));
-}
-
-void RustSourceStreamType::printAsMLIR(DialectAsmPrinter &os) const {
-  getImpl()->printAsMLIR(os);
-}
-
-void RustSourceStreamType::printAsRust(llvm::raw_ostream &o,
-                                       rust::RustPrinterStream &ps) {
-  return getImpl()->printAsRust(o, ps);
 }
 
 //===----------------------------------------------------------------------===//

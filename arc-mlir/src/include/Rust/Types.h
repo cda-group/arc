@@ -84,6 +84,11 @@ public:
 
   Type getElementType() const;
   Type getKeyType() const;
+
+  std::string getMangledName(rust::RustPrinterStream &ps);
+
+  void printAsMLIR(DialectAsmPrinter &os) const;
+  void printAsRust(llvm::raw_ostream &o, rust::RustPrinterStream &os);
 };
 
 class RustStreamType : public Type::TypeBase<RustStreamType, RustStreamTypeBase,
@@ -91,12 +96,7 @@ class RustStreamType : public Type::TypeBase<RustStreamType, RustStreamTypeBase,
 public:
   using Base::Base;
 
-  void printAsMLIR(DialectAsmPrinter &os) const;
-  void printAsRust(llvm::raw_ostream &o, rust::RustPrinterStream &os);
-
   static RustStreamType get(RustDialect *dialect, Type key, Type item);
-
-  std::string getMangledName(rust::RustPrinterStream &ps);
 };
 
 class RustSinkStreamType
@@ -105,12 +105,7 @@ class RustSinkStreamType
 public:
   using Base::Base;
 
-  void printAsMLIR(DialectAsmPrinter &os) const;
-  void printAsRust(llvm::raw_ostream &o, rust::RustPrinterStream &os);
-
   static RustSinkStreamType get(RustDialect *dialect, Type key, Type item);
-
-  std::string getMangledName(rust::RustPrinterStream &ps);
 };
 
 class RustSourceStreamType
@@ -119,12 +114,7 @@ class RustSourceStreamType
 public:
   using Base::Base;
 
-  void printAsMLIR(DialectAsmPrinter &os) const;
-  void printAsRust(llvm::raw_ostream &o, rust::RustPrinterStream &os);
-
   static RustSourceStreamType get(RustDialect *dialect, Type key, Type item);
-
-  std::string getMangledName(rust::RustPrinterStream &ps);
 };
 
 class RustStructType
