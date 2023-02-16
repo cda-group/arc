@@ -517,6 +517,28 @@ private:
   MLIRContext *Ctx;
 };
 
+struct KeybyOpLowering : public OpConversionPattern<KeybyOp> {
+  KeybyOpLowering(MLIRContext *ctx, RustTypeConverter &typeConverter)
+      : OpConversionPattern<KeybyOp>(typeConverter, ctx, 1),
+        TypeConverter(typeConverter) {}
+
+  LogicalResult
+  matchAndRewrite(KeybyOp o, OpAdaptor adaptor,
+                  ConversionPatternRewriter &rewriter) const final {
+    Type retTy = TypeConverter.convertType(o.getType());
+    auto funAttr = o->getAttrOfType<FlatSymbolRefAttr>("key_fun");
+    auto thunkAttr = o->getAttrOfType<FlatSymbolRefAttr>("key_fun_env_thunk");
+
+    rewriter.replaceOpWithNewOp<rust::KeybyOp>(o, retTy, adaptor.getInput(),
+                                               funAttr, thunkAttr);
+
+    return success();
+  };
+
+private:
+  RustTypeConverter &TypeConverter;
+};
+
 struct MakeStructOpLowering : public OpConversionPattern<arc::MakeStructOp> {
   MakeStructOpLowering(MLIRContext *ctx, RustTypeConverter &typeConverter)
       : OpConversionPattern<arc::MakeStructOp>(typeConverter, ctx, 1),
@@ -1298,26 +1320,27 @@ void ArcToRustLoweringPass::runOnOperation() {
   patterns.insert<ArcUnaryFloatOpLowering<math::SqrtOp, ArcUnaryFloatOp::sqrt>>(
       &getContext(), typeConverter);
 
-  patterns.insert<IfOpLowering>(&getContext(), typeConverter);
+  patterns.insert<ArithSelectOpLowering>(&getContext(), typeConverter);
   patterns.insert<BlockResultOpLowering>(&getContext(), typeConverter);
   patterns.insert<ConstantADTOpLowering>(&getContext(), typeConverter);
+  patterns.insert<EnumAccessOpLowering>(&getContext(), typeConverter);
+  patterns.insert<EnumCheckOpLowering>(&getContext(), typeConverter);
+  patterns.insert<IfOpLowering>(&getContext(), typeConverter);
+  patterns.insert<KeybyOpLowering>(&getContext(), typeConverter);
+  patterns.insert<LoopBreakOpLowering>(&getContext(), typeConverter);
   patterns.insert<MakeEnumOpLowering>(&getContext(), typeConverter);
   patterns.insert<MakeStructOpLowering>(&getContext(), typeConverter);
   patterns.insert<MapOpLowering>(&getContext(), typeConverter);
-  patterns.insert<LoopBreakOpLowering>(&getContext(), typeConverter);
-  patterns.insert<EnumAccessOpLowering>(&getContext(), typeConverter);
-  patterns.insert<EnumCheckOpLowering>(&getContext(), typeConverter);
   patterns.insert<PanicOpLowering>(&getContext(), typeConverter);
-  patterns.insert<ArithSelectOpLowering>(&getContext(), typeConverter);
   patterns.insert<ReceiveOpLowering>(&getContext(), typeConverter);
-  patterns.insert<SendOpLowering>(&getContext(), typeConverter);
-  patterns.insert<SpawnOpLowering>(&getContext(), typeConverter);
-  patterns.insert<StructAccessOpLowering>(&getContext(), typeConverter);
-  patterns.insert<StdCallOpLowering>(&getContext(), typeConverter);
-  patterns.insert<StdCallIndirectOpLowering>(&getContext(), typeConverter);
-  patterns.insert<SCFWhileOpLowering>(&getContext(), typeConverter);
   patterns.insert<SCFLoopConditionOpLowering>(&getContext(), typeConverter);
   patterns.insert<SCFLoopYieldOpLowering>(&getContext(), typeConverter);
+  patterns.insert<SCFWhileOpLowering>(&getContext(), typeConverter);
+  patterns.insert<SendOpLowering>(&getContext(), typeConverter);
+  patterns.insert<SpawnOpLowering>(&getContext(), typeConverter);
+  patterns.insert<StdCallIndirectOpLowering>(&getContext(), typeConverter);
+  patterns.insert<StdCallOpLowering>(&getContext(), typeConverter);
+  patterns.insert<StructAccessOpLowering>(&getContext(), typeConverter);
 
   if (failed(applyFullConversion(getOperation(), target, std::move(patterns))))
     signalPassFailure();
