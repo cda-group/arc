@@ -549,11 +549,11 @@ def Rust_FilterOp : Rust_Op<"filter", [
   }];
 
   let arguments = (ins
-      AnyRustSourceStream:$input,
+      AnyRustStream:$input,
       FlatSymbolRefAttr:$predicate,
       OptionalAttr<FlatSymbolRefAttr>:$predicate_env_thunk
   );
-  let results = (outs AnyRustSourceStream:$output);
+  let results = (outs AnyRustStream:$output);
   let extraClassDeclaration = [{
     // Write this function as JSON code to os
     void writeJSON(RustPrinterStream &);
@@ -681,11 +681,11 @@ def Rust_MapOp : Rust_Op<"map", [
   }];
 
   let arguments = (ins
-      AnyRustSourceStream:$input,
+      AnyRustStream:$input,
       FlatSymbolRefAttr:$map_fun,
       OptionalAttr<FlatSymbolRefAttr>:$map_fun_env_thunk
   );
-  let results = (outs AnyRustSourceStream:$output);
+  let results = (outs AnyRustStream:$output);
   let extraClassDeclaration = [{
     // Write this function as JSON code to os
     void writeJSON(RustPrinterStream &);

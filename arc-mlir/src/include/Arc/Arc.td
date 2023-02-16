@@ -617,11 +617,11 @@ def Arc_FilterOp : Arc_Op<"filter", [
   }];
 
   let arguments = (ins
-      ArcSourceStream:$input,
+      ArcStream:$input,
       FlatSymbolRefAttr:$predicate,
       OptionalAttr<FlatSymbolRefAttr>:$predicate_env_thunk
   );
-  let results = (outs ArcSourceStream:$output);
+  let results = (outs ArcStream:$output);
   let hasVerifier = 1;
 }
 
@@ -634,11 +634,11 @@ def Arc_MapOp : Arc_Op<"map", [
   }];
 
   let arguments = (ins
-      ArcSourceStream:$input,
+      ArcStream:$input,
       FlatSymbolRefAttr:$map_fun,
       OptionalAttr<FlatSymbolRefAttr>:$map_fun_env_thunk
   );
-  let results = (outs ArcSourceStream:$output);
+  let results = (outs ArcStream:$output);
 }
 
 #endif // ARC_OPS

@@ -43,20 +43,20 @@ module @_program {
       return %env_for_f0 : !arc.struct<>
     }
 
-    func.func @graph(%_x1 : !arc.stream.source<ui32, !arc.struct<age:si32, name:!arc.adt<"Str">, height:si32, weight:si32>>) -> !arc.stream.source<ui32, !arc.struct<name:!arc.adt<"Str">>>
+    func.func @graph(%_x1 : !arc.stream<ui32, !arc.struct<age:si32, name:!arc.adt<"Str">, height:si32, weight:si32>>) -> !arc.stream<ui32, !arc.struct<name:!arc.adt<"Str">>>
         attributes {
 	  arc.is_graph,
 	  arc.source_params="{\"0\" : {\"arg0\" : \"localhost:8080\"}}",
 	  arc.sink_params="{\"0\" : {\"arg0\" : \"localhost:8081\"}}"} {
-        %_x5 = "arc.filter"(%_x1) {predicate=@_f0, predicate_env_thunk=@_f0_thunk} : (!arc.stream.source<ui32, !arc.struct<age:si32, name:!arc.adt<"Str">, height:si32, weight:si32>>) ->
-	       !arc.stream.source<ui32, !arc.struct<age:si32, name:!arc.adt<"Str">, height:si32, weight:si32>>
+        %_x5 = "arc.filter"(%_x1) {predicate=@_f0, predicate_env_thunk=@_f0_thunk} : (!arc.stream<ui32, !arc.struct<age:si32, name:!arc.adt<"Str">, height:si32, weight:si32>>) ->
+	       !arc.stream<ui32, !arc.struct<age:si32, name:!arc.adt<"Str">, height:si32, weight:si32>>
 
-	%_x9 = "arc.map"(%_x5) {map_fun=@_f1, map_fun_env_thunk=@_f1_thunk} : (!arc.stream.source<ui32, !arc.struct<age:si32, name:!arc.adt<"Str">, height:si32, weight:si32>>) ->
-	     !arc.stream.source<ui32, !arc.struct<name:!arc.adt<"Str">, height:si32, weight:si32>>
+	%_x9 = "arc.map"(%_x5) {map_fun=@_f1, map_fun_env_thunk=@_f1_thunk} : (!arc.stream<ui32, !arc.struct<age:si32, name:!arc.adt<"Str">, height:si32, weight:si32>>) ->
+	     !arc.stream<ui32, !arc.struct<name:!arc.adt<"Str">, height:si32, weight:si32>>
 
-	%_x13 = "arc.map"(%_x9) {map_fun=@_f2} : (!arc.stream.source<ui32, !arc.struct<name:!arc.adt<"Str">, height:si32, weight:si32>>) ->
-	      !arc.stream.source<ui32, !arc.struct<name:!arc.adt<"Str">>>
+	%_x13 = "arc.map"(%_x9) {map_fun=@_f2} : (!arc.stream<ui32, !arc.struct<name:!arc.adt<"Str">, height:si32, weight:si32>>) ->
+	      !arc.stream<ui32, !arc.struct<name:!arc.adt<"Str">>>
 
-	return %_x13 : !arc.stream.source<ui32, !arc.struct<name:!arc.adt<"Str">>>
+	return %_x13 : !arc.stream<ui32, !arc.struct<name:!arc.adt<"Str">>>
     }
 }

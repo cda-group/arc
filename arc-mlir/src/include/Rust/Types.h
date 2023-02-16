@@ -94,8 +94,6 @@ public:
   void printAsMLIR(DialectAsmPrinter &os) const;
   void printAsRust(llvm::raw_ostream &o, rust::RustPrinterStream &os);
 
-  Type getElementType() const;
-
   static RustStreamType get(RustDialect *dialect, Type key, Type item);
 
   std::string getMangledName(rust::RustPrinterStream &ps);
