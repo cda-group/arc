@@ -528,11 +528,11 @@ OpFoldResult RemIOp::fold(FoldAdaptor operands) {
   auto rhsValue = rhs.getValue();
 
   // x % 1 = 0
-  if (rhsValue.isOneValue())
+  if (rhsValue.isOne())
     return IntegerAttr::get(rhs.getType(), APInt(rhsValue.getBitWidth(), 0));
 
   // Don't fold if it requires division by zero.
-  if (rhsValue.isNullValue())
+  if (rhsValue.isZero())
     return {};
 
   auto lhs = operands.getLhs().dyn_cast_or_null<IntegerAttr>();

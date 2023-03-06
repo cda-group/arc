@@ -3,9 +3,6 @@
 CARGO_TARGET_DIR="${CARGO_TARGET_DIR:-@ARC_CARGO_TARGET_DIR@}"
 export CARGO_TARGET_DIR
 
-# Work around bug in cargo that makes crates.io updates fail.
-export CARGO_HTTP_DEBUG='true'
-
 export PATH="@ARC_TOOLS_BIN_DIR@:$PATH"
 
 exec cargo "$@"

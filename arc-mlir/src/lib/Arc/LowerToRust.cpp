@@ -283,8 +283,7 @@ private:
     unsigned width = ty.getIntOrFloatBitWidth();
     switch (width) {
     case 1:
-      return returnResult(op, rustTy, v.isNullValue() ? "false" : "true",
-                          rewriter);
+      return returnResult(op, rustTy, v.isZero() ? "false" : "true", rewriter);
     default:
       op.emitError("unhandled constant integer width");
       return failure();
