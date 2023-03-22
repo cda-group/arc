@@ -119,7 +119,11 @@ jobs:
         mv arc-docs/target/html arc-website/static/docs
 
     - name: Update arc-website theme submodule
-      run: git submodule update --init arc-website/themes/adidoks
+      run: |
+        git submodule update --init arc-website/themes/adidoks
+        mkdir -p arc-website/templates
+        cp arc-website/themes/adidoks/templates/blog/page.html \
+           arc-website/templates/blog.html
 
     - name: Build arc-website
       run: make -C arc-website build
