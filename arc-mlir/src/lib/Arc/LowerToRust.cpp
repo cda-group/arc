@@ -1015,10 +1015,8 @@ RustTypeConverter::convertFunctionSignature(Type ty, SignatureConversion &SC) {
   mlir::FunctionType funcType =
       convertType(ty.cast<mlir::FunctionType>()).cast<mlir::FunctionType>();
 
-  for (auto &en : llvm::enumerate(funcType.getInputs())) {
-    Type type = en.value();
-    SC.addInputs(en.index(), convertType(type));
-  }
+  for (auto [index, type] : llvm::enumerate(funcType.getInputs()))
+    SC.addInputs(index, convertType(type));
 
   return funcType;
 }
