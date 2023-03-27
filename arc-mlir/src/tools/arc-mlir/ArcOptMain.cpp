@@ -55,7 +55,8 @@ static LogicalResult performActions(raw_ostream &os, bool verifyDiagnostics,
   // Apply any pass manager command line options.
   PassManager pm(module.get()->getName(), OpPassManager::Nesting::Implicit);
   pm.enableVerifier(verifyPasses);
-  applyPassManagerCLOptions(pm);
+  if (mlir::failed(applyPassManagerCLOptions(pm)))
+    return failure();
 
   auto errorHandler = [&](const Twine &msg) {
     emitError(UnknownLoc::get(context)) << msg;
