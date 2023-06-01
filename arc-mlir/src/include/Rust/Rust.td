@@ -103,6 +103,11 @@ def RustCallOp : Rust_Op<"call", [CallOpInterface]> {
     // For the CallOpInterface
     FunctionType getCalleeType();
 
+    // For the CallOpInterface
+    void setCalleeFromCallable(CallInterfaceCallable callee) {
+      (*this)->setAttr("callee", callee.get<SymbolRefAttr>());
+    }
+
     /// Get the argument operands to the called function.
     operand_range getArgOperands() {
       return {arg_operand_begin(), arg_operand_end()};
@@ -171,6 +176,11 @@ def RustCallIndirectOp : Rust_Op<"call_indirect", [
 
     /// Return the callee of this operation.
     CallInterfaceCallable getCallableForCallee() { return getCallee(); }
+
+    // For the CallOpInterface
+    void setCalleeFromCallable(CallInterfaceCallable callee) {
+      (*this)->setAttr("callee", callee.get<SymbolRefAttr>());
+    }
 
     // Write this op as Rust code to os
     void writeRust(RustPrinterStream &os);
@@ -347,6 +357,11 @@ def RustSpawnOp : Rust_Op<"spawn", [CallOpInterface]> {
   let extraClassDeclaration = [{
     // For the CallOpInterface
     FunctionType getCalleeType();
+
+    // For the CallOpInterface
+    void setCalleeFromCallable(CallInterfaceCallable callee) {
+      (*this)->setAttr("callee", callee.get<SymbolRefAttr>());
+    }
 
     /// Get the argument operands to the called function.
     operand_range getArgOperands() {
