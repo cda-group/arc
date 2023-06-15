@@ -586,7 +586,14 @@ def ArcSpawnOp : Arc_Op<"spawn", [
   let arguments = (ins FlatSymbolRefAttr:$callee, Variadic<AnyType>:$operands);
 
   let extraClassDeclaration = [{
+    // For the CallOpInterface
     FunctionType getCalleeType();
+
+    // For the CallOpInterface
+    void setCalleeFromCallable(CallInterfaceCallable callee) {
+      (*this)->setAttr("callee", callee.get<SymbolRefAttr>());
+    }
+
 
     /// Get the argument operands to the called function.
     operand_range getArgOperands() {
