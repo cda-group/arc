@@ -5,5 +5,3 @@ Arc-Runtime is a runtime library, for executing Arc-Lang programs, which focuses
 Arc-MLIR supports ahead-of-time standard compiler optimisations as well as logical and physical optimisations of streaming-relational operators. However, Arc-MLIR makes no assumptions of where programs will execute and what the input data will be. That is, all Arc-MLIR optimisations are based on the source code itself.
 
 Arc-Runtime supports runtime optimisations which might rely on information that is only known during execution. Streaming programs are expected to run for an indefinite duration and must therefore be able to adapt to changes in their environment. Among its responsibilities, Arc-Runtime must therefore be able to take care of specialisation, scheduling, and scaling decisions.
-
-For more information, see the [internal developer documentation of the Arc-Runtime](../../target/doc/arc_runtime/index.html).
