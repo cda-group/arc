@@ -40,6 +40,7 @@
 #include <mlir/IR/BuiltinOps.h>
 #include <mlir/IR/MLIRContext.h>
 #include <mlir/InitAllDialects.h>
+#include <mlir/InitAllExtensions.h>
 #include <mlir/InitAllPasses.h>
 #include <mlir/Parser/Parser.h>
 #include <mlir/Pass/Pass.h>
@@ -88,6 +89,7 @@ int main(int argc, char **argv) {
   registry.insert<scf::SCFDialect>();
   registry.insert<ArcDialect>();
   registry.insert<rust::RustDialect>();
+  registerAllExtensions(registry);
   arc::registerArcPasses();
 
   // Register any command line options.
