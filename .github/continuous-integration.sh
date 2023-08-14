@@ -5,7 +5,7 @@ set -e # Terminates as soon as something fails
 echo "The work dir is ${ARC_MLIR_BUILD}"
 
 export PATH="$ARC_MLIR_BUILD/llvm-build/bin:$PATH"
-export RUSTC_WRAPPER="/home/arc-runner/.cargo/bin/sccache"
+export RUSTC_WRAPPER="$USER/.cargo/bin/sccache"
 export SCCACHE_DIR="${PERSIST_DIR}/sccache"
 export SCCACHE_CACHE_SIZE="20G"
 export CARGO_INCREMENTAL="0"
