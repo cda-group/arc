@@ -607,6 +607,10 @@ def ArcSpawnOp : Arc_Op<"spawn", [
     CallInterfaceCallable getCallableForCallee() {
       return (*this)->getAttrOfType<SymbolRefAttr>("callee");
     }
+
+    MutableOperandRange getArgOperandsMutable() {
+      return getOperandsMutable();
+    }
   }];
 
   let assemblyFormat = [{
