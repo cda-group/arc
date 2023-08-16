@@ -20,7 +20,7 @@ jobs:
         #   target: x86_64-apple-darwin
     steps:
     - name: Checkout source
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
       with:
         submodules: 'recursive'
 
@@ -44,7 +44,7 @@ jobs:
 
         mv README.md "$package"
         mv arc-mlir/build/llvm-build/bin/{arc,arc-lang,arc-mlir} "$package/bin"
-        mv {arc-runtime,arc-lang/stdlib} "$package/share"
+        mv {arc-lang/stdlib} "$package/share"
 
         tar cvf "$package.tar" "$package"
 

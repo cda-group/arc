@@ -1,25 +1,24 @@
 // Empty
 #[cfg(test)]
 mod tests {
-  use crate::toplevel::*;
-  #[rewrite(main)]
-  #[test]
-  fn it_works() {
-    assert_eq!(is!(Enum1ai321bf32End::a, call!(ok0())), true);
-    assert_eq!(is!(Enum1ai321bf32End::b, call!(ok1())), true);
-    assert_eq!(is!(Enum1ai32End::a, call!(ok2())), true);
-    assert_eq!(is!(Enum1ai321bEnum1ai32EndEnd::a, call!(ok3())), true);
-    assert_eq!(is!(Enum1ai321bEnum1ai32EndEnd::b, call!(ok4())), true);
-    let c0 : i32 = 17;
-    let tmp0 :Enum1ai321bf32End  = enwrap!(Enum1ai321bf32End::a, c0);
-    let c1 : f32 = 17.0;
-    let tmp1 : Enum1ai321bf32End = enwrap!(Enum1ai321bf32End::b, c1);
-    assert_eq!(call!(access0(tmp0)), c0);
-    assert_eq!(call!(access1(tmp1)), c1);
+    use crate::toplevel::*;
+    #[test]
+    fn it_works() {
+        assert_eq!(matches!(ok0(), Enum1ai321bf32End::a(_)), true);
+        assert_eq!(matches!(ok1(), Enum1ai321bf32End::b(_)), true);
+        assert_eq!(matches!(ok2(), Enum1ai32End::a(_)), true);
+        assert_eq!(matches!(ok3(), Enum1ai321bEnum1ai32EndEnd::a(_)), true);
+        assert_eq!(matches!(ok4(), Enum1ai321bEnum1ai32EndEnd::b(_)), true);
+        let c0: i32 = 17;
+        let tmp0: Enum1ai321bf32End = Enum1ai321bf32End::a(c0);
+        let c1: f32 = 17.0;
+        let tmp1: Enum1ai321bf32End = Enum1ai321bf32End::b(c1);
+        assert_eq!(access0(tmp0), c0);
+        assert_eq!(access1(tmp1), c1);
 
-    let c2 : Enum1ai321bf32End = enwrap!(Enum1ai321bf32End::b, 3.14);
-    let c3 : Enum1ai321bf32End = enwrap!(Enum1ai321bf32End::a, 3);
-    assert_eq!(call!(check0(c2)), false);
-    assert_eq!(call!(check0(c3)), true);
-  }
+        let c2: Enum1ai321bf32End = Enum1ai321bf32End::b(3.14);
+        let c3: Enum1ai321bf32End = Enum1ai321bf32End::a(3);
+        assert_eq!(check0(c2), false);
+        assert_eq!(check0(c3), true);
+    }
 }

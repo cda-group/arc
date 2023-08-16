@@ -57,7 +57,7 @@ from pathlib import Path
 llvm_config.with_environment('ARC_CARGO', 'arc-cargo')
 
 tool_dirs = [config.mlir_tools_dir, config.llvm_tools_dir,
-             config.arcscript_tools_dir]
+             config.arclang_tools_dir]
 tools = [
     'mlir-opt',
     'mlir-tblgen',

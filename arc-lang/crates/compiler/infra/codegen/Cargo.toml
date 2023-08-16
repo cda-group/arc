@@ -1,0 +1,9 @@
+[package]
+name = "codegen"
+version.workspace = true
+edition.workspace = true
+
+[dependencies]
+config.workspace  = true
+colored.workspace = true
+colors.workspace  = true

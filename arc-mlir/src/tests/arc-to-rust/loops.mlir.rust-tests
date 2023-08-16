@@ -1,15 +1,13 @@
 #[cfg(test)]
 mod tests {
-  use super::*;
-  use crate::arctorustloops::*;
-  use hexf::*;
-  #[rewrite(main)]
-  #[test]
-  fn it_works() {
-    assert_eq!(call!(a_while_loop(0, 5, 3)), 13);
-    assert_eq!(call!(a_while_loop_with_a_break_in_before(0, 5, 1)), 2);
-    assert_eq!(call!(a_while_loop_with_a_break_in_after(0, 10, 3)), 4);
-    assert_eq!(call!(a_while_loop_with_a_return_in_before(0, 5, 1)), 2);
-    assert_eq!(call!(a_while_loop_with_a_return_in_after(0, 10, 3)), 4);
-  }
+    use super::*;
+    use crate::arctorustloops::*;
+    #[test]
+    fn it_works() {
+        assert_eq!(a_while_loop(0, 5, 3), 13);
+        assert_eq!(a_while_loop_with_a_break_in_before(0, 5, 1), 2);
+        assert_eq!(a_while_loop_with_a_break_in_after(0, 10, 3), 4);
+        assert_eq!(a_while_loop_with_a_return_in_before(0, 5, 1), 2);
+        assert_eq!(a_while_loop_with_a_return_in_after(0, 10, 3), 4);
+    }
 }

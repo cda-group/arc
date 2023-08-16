@@ -1,0 +1,12 @@
+[package]
+name = "write-value"
+version.workspace = true
+edition.workspace = true
+
+[dependencies]
+hir.workspace = true
+value.workspace = true
+builtins.workspace = true
+codegen.workspace = true
+write-hir.workspace = true
+colors.workspace = true

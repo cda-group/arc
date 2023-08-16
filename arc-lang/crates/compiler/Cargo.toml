@@ -1,0 +1,42 @@
+[package]
+name = "compiler"
+version.workspace = true
+edition.workspace = true
+
+[dependencies]
+im-rc.workspace = true
+anyhow.workspace = true
+
+info.workspace = true
+codegen.workspace = true
+config.workspace = true
+build.workspace = true
+diagnostics.workspace = true
+ast.workspace = true
+hir.workspace = true
+rust.workspace = true
+mlir.workspace = true
+sources.workspace = true
+
+write-ast.workspace = true
+write-hir.workspace = true
+write-mlir.workspace = true
+write-rust.workspace = true
+write-value.workspace = true
+
+parser.workspace = true
+lexer.workspace = true
+ast-prelude.workspace = true
+ast-to-hir.workspace = true
+hir-to-mlir.workspace = true
+hir-to-rust.workspace = true
+hir-lambda-lift.workspace = true
+hir-type-inference.workspace = true
+hir-patcomp.workspace = true
+hir-monomorphise.workspace = true
+hir-reachable.workspace = true
+hir-interpreter.workspace = true
+
+logging.workspace = true
+
+value.workspace = true

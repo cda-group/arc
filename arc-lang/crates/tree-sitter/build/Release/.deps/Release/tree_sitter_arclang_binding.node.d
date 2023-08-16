@@ -1,0 +1,1 @@
+cmd_Release/tree_sitter_arclang_binding.node := c++ -bundle -undefined dynamic_lookup -Wl,-search_paths_first -mmacosx-version-min=10.13 -arch arm64 -L./Release -stdlib=libc++ -L/opt/homebrew/opt/llvm/lib -o Release/tree_sitter_arclang_binding.node Release/obj.target/tree_sitter_arclang_binding/bindings/node/binding.o Release/obj.target/tree_sitter_arclang_binding/src/parser.o 

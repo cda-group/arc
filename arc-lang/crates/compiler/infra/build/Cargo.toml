@@ -1,0 +1,13 @@
+[package]
+name = "build"
+version.workspace = true
+edition.workspace = true
+
+[dependencies]
+indoc.workspace = true
+names.workspace = true
+time.workspace = true
+diagnostics.workspace = true
+anyhow.workspace = true
+tracing.workspace = true
+directories.workspace = true

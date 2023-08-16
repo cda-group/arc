@@ -1,5 +1,0 @@
-# Values
-
-```grammar
-Value ::= "%" [Name]
-```

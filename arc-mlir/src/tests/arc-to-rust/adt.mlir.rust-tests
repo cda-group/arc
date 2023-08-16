@@ -1,25 +1,21 @@
 #[cfg(test)]
 mod tests {
-  use crate::arctorustadt::*;
+    use crate::arctorustadt::*;
 
-  #[rewrite]
-  pub struct Foo<A> {
-    pub a: A,
-  }
+    #[data]
+    pub struct Foo<A: Data> {
+        pub a: A,
+    }
 
-  #[rewrite]
-  pub struct Bar<A, B> {
-    pub a: A,
-    pub b: B,
-  }
+    #[data]
+    pub struct Bar<A: Data, B: Data> {
+        pub a: A,
+        pub b: B,
+    }
 
-  #[rewrite(main)]
-  #[test]
-  fn test() {
-   let tmp0 = call!(ok2(4711));
-   assert_eq!(tmp0, 4711);
-
-   let tmp2 = call!(ok4());
-   assert_eq!(tmp2, 4711);
-  }
+    #[test]
+    fn test() {
+        assert_eq!(ok2(4711), 4711);
+        assert_eq!(ok4(), 4711);
+    }
 }

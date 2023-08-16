@@ -1,0 +1,18 @@
+[package]      
+name = "parser"
+build = "build.rs"
+version.workspace = true
+edition.workspace = true
+
+[dependencies]
+ast.workspace = true
+lexer.workspace = true
+info.workspace = true
+diagnostics.workspace = true
+sources.workspace = true
+lalrpop-util.workspace = true
+im-rc.workspace = true
+syn.workspace = true
+
+[build-dependencies]     
+lalrpop.workspace = true

@@ -1,4 +1,0 @@
-#!/bin/bash
-
-eval $(opam env)
-exec dune "$@"

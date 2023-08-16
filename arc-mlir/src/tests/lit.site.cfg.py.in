@@ -32,7 +32,7 @@ config.mlir_src_root = "@MLIR_SOURCE_DIR@"
 config.mlir_obj_root = "@MLIR_BINARY_DIR@"
 config.mlir_tools_dir = "@MLIR_TOOLS_DIR@"
 config.linalg_test_lib_dir = "@MLIR_DIALECT_LINALG_INTEGRATION_TEST_LIB_DIR@"
-config.arcscript_tools_dir = "@ARC_SCRIPT_TOOLS_DIR@"
+config.arclang_tools_dir = "@ARC_LANG_TOOLS_DIR@"
 
 # Support substitution of the tools_dir with user parameters. This is
 # used when we can't determine the tool dir at configuration time.
@@ -48,4 +48,4 @@ import lit.llvm
 lit.llvm.initialize(lit_config, config)
 
 # Let the main config do the real work.
-lit_config.load_config(config, "@ARC_MLIR_SOURCE_DIR@/tests/lit.cfg.py")
+lit_config.load_config(config, "@ARC_MLIR_SRC_DIR@/tests/lit.cfg.py")

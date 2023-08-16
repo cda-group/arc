@@ -1,0 +1,10 @@
+[package]
+name = "hir"
+version.workspace = true
+edition.workspace = true
+
+[dependencies]
+info.workspace = true
+codegen.workspace = true
+utils.workspace = true
+im-rc.workspace = true

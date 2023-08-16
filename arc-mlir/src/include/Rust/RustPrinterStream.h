@@ -84,60 +84,20 @@ public:
         Includefile(includefile){};
 
   void flush(llvm::raw_ostream &o) {
-    o << "#![allow(non_snake_case)]\n"
-      << "#![allow(unused_must_use)]\n"
-      << "#![allow(non_camel_case_types)]"
-      << "#![allow(dead_code)]\n"
-      << "#![allow(unused_variables)]\n"
-      << "#![allow(unused_imports)]\n"
-      << "#![allow(unused_braces)]\n"
-      << "#![allow(non_camel_case_types)]\n";
+    o << "#[allow(unused)]\n"
+         "#[allow(non_snake_case)]\n"
+         "#[allow(non_camel_case_types)]\n";
 
     o << "pub mod " << ModuleName
       << "{\n"
          "use super::*;\n"
-         "pub use arc_runtime::prelude::*;\n";
-
-    o << "pub use hexf::*;\n";
-
-    if (!DeclaredFunctions.empty() || !DeclaredTasks.empty()) {
-      o << "declare!(";
-      o << "functions: [ ";
-      for (Operation *t : DeclaredFunctions) {
-        if (t->hasAttr("arc.rust_name"))
-          o << t->getAttrOfType<StringAttr>("arc.rust_name").getValue();
-        else
-          o << t->getAttrOfType<StringAttr>("sym_name").getValue();
-        o << ", ";
-      }
-      o << "],";
-      o << "tasks: [ ";
-      for (RustFuncOp &t : DeclaredTasks) {
-        if (t->hasAttr("arc.rust_name"))
-          o << t->getAttrOfType<StringAttr>("arc.rust_name").getValue();
-        else
-          o << t->getAttrOfType<StringAttr>("sym_name").getValue();
-        o << "(";
-        unsigned numFuncArguments = t.getNumArguments();
-        for (unsigned i = 0; i < numFuncArguments; i++) {
-          Value v = t.front().getArgument(i);
-          if (i != 0)
-            o << ", ";
-          o << "v" << std::to_string(Value2ID[v]) << ": ";
-          printType(o, v.getType());
-        }
-        o << "), ";
-      }
-      o << "]";
-      o << ");\n";
-    }
+         "pub use runtime::prelude::*;\n";
 
     for (auto i : CrateDirectives)
       o << i.second << "\n";
     o << Constants.str();
     o << TypeUses.str();
-    std::string types = NamedTypes.str();
-    o << types;
+    o << NamedTypes.str();
     o << Body.str();
     if (!Includefile.empty())
       o << "include!(\"" << Includefile << "\");\n";
@@ -180,7 +140,7 @@ public:
     if (id < 0)
       return "C" + std::to_string(-id);
     else
-      return "val!(v" + std::to_string(id) + ")";
+      return "v" + std::to_string(id) + ".clone()";
   }
 
   std::string getConstant(RustConstantOp v);

@@ -1,0 +1,28 @@
+[package]
+name = "builtins"
+version.workspace = true
+edition.workspace = true
+
+[dependencies]
+macros.workspace = true
+image.workspace = true
+ort.workspace = true
+ndarray.workspace = true
+time.workspace = true
+serde.workspace = true
+float-cmp.workspace = true
+tokio.workspace = true
+tokio-util.workspace = true
+formats.workspace = true
+num.workspace = true
+num-traits.workspace = true
+url.workspace = true
+tokio-stream.workspace = true
+futures.workspace = true
+tracing.workspace = true
+once_cell.workspace = true
+derive_more.workspace = true
+minus.workspace = true
+hyper.workspace = true
+# ouroborus.workspace = true
+# polars.workspace = true

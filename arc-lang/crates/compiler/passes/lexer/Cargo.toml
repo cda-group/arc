@@ -1,0 +1,12 @@
+[package]      
+name = "lexer"
+version.workspace = true
+edition.workspace = true
+
+[dependencies]
+diagnostics.workspace = true
+info.workspace = true
+logos.workspace = true
+syn.workspace = true
+quote.workspace = true
+regex.workspace = true

@@ -1,0 +1,32 @@
+[package]
+name = "hir-interpreter"
+version.workspace = true
+edition.workspace = true
+
+[dependencies]
+value.workspace = true
+ast.workspace = true
+hir.workspace = true
+utils.workspace = true
+stack.workspace = true
+info.workspace = true
+name-gen.workspace = true
+im-rc.workspace = true
+time.workspace = true
+diagnostics.workspace = true
+anyhow.workspace = true
+builtins.workspace = true
+codegen.workspace = true
+serde.workspace = true
+derive_more.workspace = true
+num-traits.workspace = true
+hir-reachable.workspace = true
+hir-to-mlir.workspace = true
+hir-to-rust.workspace = true
+build.workspace = true
+kafka.workspace = true
+ast-prelude.workspace = true
+write-ast.workspace = true
+write-rust.workspace = true
+write-hir.workspace = true
+minus.workspace = true

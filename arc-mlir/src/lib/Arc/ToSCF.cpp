@@ -176,8 +176,7 @@ private:
       for (auto v : liveOut)
         LLVM_DEBUG(llvm::dbgs() << "  " << v << "\n");
       // We need a struct for each block
-      types::StructType t =
-          types::StructType::get(getContext(), false, elements);
+      types::StructType t = types::StructType::get(getContext(), elements);
       block2variantStruct[b] = t;
       LLVM_DEBUG(llvm::dbgs() << "Entry struct type " << t << "\n");
       StringAttr variantName = getBlockVariantName(i);

@@ -267,7 +267,7 @@ private:
       }
     }
 
-    Twine str = "hexf" + Twine(width) + "!(\"" + hex + "\")";
+    Twine str = "hexf::hexf" + Twine(width) + "!(\"" + hex + "\")";
     std::string cst = str.str();
 
     return returnResult(op, rustTy, cst, rewriter);
@@ -1007,7 +1007,7 @@ Type RustTypeConverter::convertStructType(arc::types::StructType type) {
     Type t = convertType(f.second);
     fields.push_back(std::make_pair(f.first, t));
   }
-  return rust::types::RustStructType::get(Dialect, type.isCompact(), fields);
+  return rust::types::RustStructType::get(Dialect, fields);
 }
 
 FunctionType

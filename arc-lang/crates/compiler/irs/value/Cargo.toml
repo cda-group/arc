@@ -1,0 +1,15 @@
+[package]
+name = "value"
+version.workspace = true
+edition.workspace = true
+
+[dependencies]
+serde.workspace = true
+builtins.workspace = true
+im-rc.workspace = true
+hir.workspace = true
+ast.workspace = true
+info.workspace = true
+
+[dev-dependencies]
+serde_json.workspace = true

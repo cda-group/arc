@@ -1,0 +1,14 @@
+[package]
+name = "formats"
+version.workspace = true
+edition.workspace = true
+
+[dependencies]
+atoi.workspace = true
+csv-core.workspace = true
+itoa.workspace = true
+lexical-parse-float.workspace = true
+ryu.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+tracing.workspace = true

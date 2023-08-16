@@ -1,0 +1,16 @@
+[package]
+name = "hir-to-rust"
+version.workspace = true
+edition.workspace = true
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+hir.workspace = true
+rust.workspace = true
+diagnostics.workspace = true
+im-rc.workspace = true
+info.workspace = true
+name-gen.workspace = true
+stack.workspace = true
+utils.workspace = true

@@ -11,46 +11,22 @@ OCaml (and dune), Rust (and cargo), and C++ (and CMake and Ninja).
 
 ## Examples
 
-A basic streaming word-count application can be written in functional-style as follows:
-```
-val wordcounts = lines
-  .flatmap(_.split(" "))
-  .keyby(_)
-  .window(
-    length = 10min,
-    stride = 3min
-  )
-  .count()
-```
-
-The same code can also be written using a more declarative, relational-style, syntax. This concept is borrowed from [Morel](https://github.com/julianhyde/morel) and applied to streaming data.
+A streaming word-count application can be implemented in Arc-Lang as follows.
 
 ```
-val wordcounts =
-  from
-    line in lines,
-    word in line.split(" ")
-  keyby word
-  window
-    length = 10min
-    stride = 3min
-  reduce count
-    identity 1;
+def main() =
+    from line: String in source(topic: "text"),
+         word in line.split(" ") {
+        group word
+        window count as w {
+            length 10min
+            step 3min
+            compute count
+        }
+        select {word, w.count}
+        into sink(topic: "wordcount")
+    }
 ```
-
-## Feature highlights
-
-* Statically typed with global type inference.
-* Parametric polymorphism (generics and rows) and ad-hoc polymorphism (type classes).
-* Mix of functional syntax, imperative control-flow/mutation, and relational operators.
-* Algebraic data types.
-* First-class data streams.
-* Complex event processing using tasks.
-* Window-based computation.
-* Low-level compilation and distributed execution.
-* Command-line interface for data ingestion.
-
-Note: All features have not yet been implemented :)
 
 ## Installation
 
@@ -71,13 +47,7 @@ git submodule update --init --recursive
 
 * [`arc-lang`](https://github.com/cda-group/arc/tree/master/arc-lang) - A compiler for Arc-Lang.
 * [`arc-mlir`](https://github.com/cda-group/arc/tree/master/arc-mlir) - An optimizer for Arc-Lang.
-* [`arc-runtime`](https://github.com/cda-group/arc/tree/master/arc-runtime) - A local runtime which supports the execution of Arc-Lang programs.
-* [`arc-python`](https://github.com/cda-group/arc/tree/master/arc-python) - A Python library for writing Arc-Lang applications.
-
-## Related Projects
-
-* [`arcon`](https://github.com/cda-group/arcon) - A distributed runtime which will support execution of Arc-Lang.
-* [`kompact`](https://github.com/kompics/kompact) - A component-actor middleware which Arc-Runtime and Arcon are both implemented in.
+* [`arc-sys`](https://github.com/cda-group/arc/tree/master/arc-sys) - A distributed system for executing Arc-Lang programs.
 
 ## Other
 

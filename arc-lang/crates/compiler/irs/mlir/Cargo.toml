@@ -1,0 +1,10 @@
+[package]
+name = "mlir"
+version.workspace = true
+edition.workspace = true
+
+[dependencies]
+value.workspace = true
+info.workspace = true
+codegen.workspace = true
+im-rc.workspace = true

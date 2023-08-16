@@ -1,0 +1,10 @@
+[package]
+name = "ast-prelude"
+version.workspace = true
+edition.workspace = true
+
+[dependencies]
+ast.workspace = true
+info.workspace = true
+im-rc.workspace = true
+utils.workspace = true

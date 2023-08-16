@@ -1,0 +1,12 @@
+[package]
+name = "diagnostics"
+version.workspace = true
+edition.workspace = true
+
+[dependencies]
+info.workspace = true
+ariadne.workspace = true
+config.workspace = true
+sources.workspace = true
+backtrace.workspace = true
+syn.workspace = true

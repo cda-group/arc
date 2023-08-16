@@ -1,0 +1,9 @@
+[package]
+name = "completer"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+lexer.workspace = true
+rustyline.workspace = true
+clap.workspace = true

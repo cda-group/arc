@@ -1,0 +1,13 @@
+[package]
+name = "write-rust"
+version.workspace = true
+edition.workspace = true
+
+[dependencies]
+builtins.workspace = true
+rust.workspace = true
+utils.workspace = true
+im-rc.workspace = true
+time.workspace = true
+codegen.workspace = true
+value.workspace = true

@@ -1,0 +1,28 @@
+[package]
+name = "tree-sitter-arclang"
+description = "arclang grammar for the tree-sitter parsing library"
+version = "0.0.1"
+keywords = ["incremental", "parsing", "arclang"]
+categories = ["parsing", "text-editors"]
+repository = "https://github.com/tree-sitter/tree-sitter-arclang"
+edition = "2018"
+license = "MIT"
+
+build = "bindings/rust/build.rs"
+include = [
+  "bindings/rust/*",
+  "grammar.js",
+  "queries/*",
+  "src/*",
+]
+
+[lib]
+path = "bindings/rust/lib.rs"
+
+[dependencies]
+tree-sitter = "~0.20.10"
+tree-sitter-highlight = "0.20.1"
+ansi_term = "0.12.1"
+
+[build-dependencies]
+cc = "1.0"

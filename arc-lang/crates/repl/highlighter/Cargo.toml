@@ -1,0 +1,12 @@
+[package]
+name = "highlighter"
+version.workspace = true
+edition.workspace = true
+
+[dependencies]
+rustyline.workspace = true
+colors.workspace = true
+colored.workspace = true
+lexer.workspace = true
+regex.workspace = true
+clap.workspace = true

@@ -1,0 +1,19 @@
+[package]
+name = "hir-to-mlir"
+version.workspace = true
+edition.workspace = true
+
+[dependencies]
+codegen.workspace = true
+hir.workspace = true
+mlir.workspace = true
+parser.workspace = true
+utils.workspace = true
+info.workspace = true
+diagnostics.workspace = true
+im-rc.workspace = true
+regex.workspace = true
+lazy_static.workspace = true
+stack.workspace = true
+name-gen.workspace = true
+value.workspace = true

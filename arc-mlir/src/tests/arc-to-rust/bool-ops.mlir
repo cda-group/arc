@@ -15,11 +15,11 @@ module @toplevel {
     %0 = arith.xori %arg0, %arg1 : i1
     return %0 : i1
   }
-  func.func @eq_i1(%a : i1, %b : i1) -> i1 attributes {rust.declare} {
+  func.func @eq_i1(%a : i1, %b : i1) -> i1 {
     %r = arith.cmpi "eq", %a, %b : i1
     return %r : i1
   }
-  func.func @ne_i1(%a : i1, %b : i1) -> i1 attributes {rust.declare} {
+  func.func @ne_i1(%a : i1, %b : i1) -> i1 {
     %r = arith.cmpi "ne", %a, %b : i1
     return %r : i1
   }
