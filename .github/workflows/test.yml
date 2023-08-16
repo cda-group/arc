@@ -33,6 +33,8 @@ jobs:
 
     - name: Check ccache setup
       run: ./.github/continuous-integration.sh check-ccache
+      env:
+        ARC_MLIR_BUILD: ${{ format('{0}/build', runner.temp) }}
 
     - name: Build MLIR + LLVM + arc-lang
       run: ./.github/continuous-integration.sh run-build

@@ -123,6 +123,10 @@ def RustCallOp : Rust_Op<"call", [CallOpInterface]> {
 
     // Write this op as Rust code to os
     void writeRust(RustPrinterStream &os);
+
+    MutableOperandRange getArgOperandsMutable() {
+      return getOperandsMutable();
+    }
   }];
 
 }
@@ -184,6 +188,10 @@ def RustCallIndirectOp : Rust_Op<"call_indirect", [
 
     // Write this op as Rust code to os
     void writeRust(RustPrinterStream &os);
+
+    MutableOperandRange getArgOperandsMutable() {
+      return getOpsMutable();
+    }
   }];
 }
 
@@ -378,6 +386,10 @@ def RustSpawnOp : Rust_Op<"spawn", [CallOpInterface]> {
 
     // Write this op as Rust code to os
     void writeRust(RustPrinterStream &os);
+
+    MutableOperandRange getArgOperandsMutable() {
+      return getOperandsMutable();
+    }
   }];
 }
 
