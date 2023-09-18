@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    
+    <link rel="icon" type="image/png" href="/favicon_ico">
+
+    <style>
+    :root {
+        /* Primary theme color */
+        --primary-color: white;
+        /* Primary theme text color */
+        --primary-text-color: #543631;
+        --primary-text-color-over: #000;
+        /* Primary theme link color */
+        --primary-link-color: #F9BB2D;
+        /* Secondary color: the background body color */
+        --secondary-color: white;
+        --secondary-text-color: #303030;
+        /* Highlight text color of table of content */
+        --toc-highlight-text-color: #d46e13;
+        --toc-background-color: white;
+        --code-color: #4a4a4a;
+        --code-background-color: white;
+        --shadow-color: #ddd;
+        /* Font used for headers (h1 & h2) */
+        --header-font-family: "Fira Sans", sans-serif;
+        /* Font used for text */
+        --text-font-family: "Fira Sans", sans-serif;
+    }
+</style>
+
+    
+    <link href="https://fonts.googleapis.com/css?family=Alfa+Slab+One&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Fira+Sans:400,500,600&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="/normalize.css">
+    <link rel="stylesheet" href="https://cda-group.github.io/arc/juice.css">
+    
+    
+</head>
+
+<body>
+    
+
+    <header class="pos-absolute" style="background-color: transparent">
+        
+
+<a href="https://cda-group.github.io/arc/">
+    <div class="logo">
+        <img src="https://cda-group.github.io/arc/logo.png" alt="logo">
+        Arc-Lang
+    </div>
+</a>
+
+<nav>
+    
+    
+    
+    <a class="nav-item subtitle-text" href="https://cda-group.github.io/arc/showcases/">Showcases</a>
+    
+    
+    
+    
+    <a class="nav-item subtitle-text" href="https://cda-group.github.io/arc/changelog/">Changelog</a>
+    
+    
+    
+    
+    <a class="nav-item subtitle-text" href="https://cda-group.github.io/arc/about/">About</a>
+    
+    
+    
+    
+    
+    
+        
+        <a class="nav-item subtitle-text" href="https://github.com/cda-group/arc">Github</a>
+        
+    
+</nav>
+
+    </header>
+
+    <div class="hero">
+        
+  <script async defer src="https://buttons.github.io/buttons.js"></script>
+  <section class="text-center">
+      <h1 class="heading-text" style="font-size: 50px">
+          Arc-Lang
+      </h1>
+      <h2 class="title-text">
+          A programming language for data stream processing.
+      </h2>
+      <img class="hero-image" style="width: 50%" src="https://cda-group.github.io/arc/logo.png">
+  </section>
+
+<pre><code style="font-size: 18px;">
+<span class="keyword">type</span> Item = {name:<span class="type">String</span>, price:<span class="type">f64</span>, mass:<span class="type">f64</span>};
+<span class="keyword">type</span> Order = {id:<span class="type">u32</span>, items: <span class="type">Vec</span>[Item], t:<span class="type">Time</span>, src_id:<span class="type">u32</span>, dst_id:<span class="type">u32</span>};
+<span class="keyword">type</span> Location = {id:<span class="type">u32</span>, lon:<span class="type">f64</span>, lat:<span class="type">f64</span>};
+
+<span class="keyword">val</span> model: <span class="type">Model</span> = open(<span class="string">"cost_predictor.onnx"</span>).read_bytes().load_model();
+<span class="keyword">val</span> locations: <span class="type">Set</span>[Location] = open(<span class="string">"locations.csv"</span>).read_bytes().decode(csv());
+
+<span class="comment">---</span><span class="keyword">rust</span>
+<span class="keyword">fn</span> distance(src: Location, dst: Location) -> <span class="type">f64</span> { <span class="comment">/* ... */</span> }
+<span class="comment">---</span>
+
+<span class="keyword">from</span> o:Order <span class="keyword">in</span> source(kafka(<span class="string">"127.0.0.1:9092"</span>, <span class="string">"orders"</span>), json())
+<span class="keyword">join</span> src <span class="keyword">in</span> locations <span class="keyword">on</span> src.id == o.src_id
+<span class="keyword">join</span> dst <span class="keyword">in</span> locations <span class="keyword">on</span> dst.id == o.dst_id
+<span class="keyword">with</span> features = [
+  o.items.map(_.mass).sum(),
+  o.t.day().to_f64(),
+  distance(src, dst)
+].into_matrix()
+<span class="keyword">with</span> prediction = model.predict(features)
+<span class="keyword">select</span> {o.id, shipment_cost: prediction[0]}
+<span class="keyword">into</span> sink(kafka(<span class="string">"127.0.0.1:9092"</span>, <span class="string">"cost_predictions"</span>), json());
+</code></pre>
+<style>
+   .keyword {
+     color:rgb(0,95,135);
+     font-weight:bold;
+     line-height:1.5;
+   }
+   .numeric {
+     color:rgb(215,95,0);
+     line-height:1.5;
+   }
+   .string {
+     color:rgb(95,135,0);
+     line-height:1.5;
+   }
+   .builtin {
+     color:rgb(0,135,0);
+     line-height:1.5;
+   }
+   .command {
+     color:rgb(135,0,175);
+     line-height:1.5;
+   }
+   .comment {
+     color:rgb(135,135,135);
+     font-style=italic;
+     line-height:1.5;
+   }
+   .type {
+     color:rgb(215,0,135);
+     font-weight:bold;
+     line-height:1.5;
+   }
+</style>
+
+
+  <div class="explore-more text"
+      onclick="document.getElementById('features').scrollIntoView({behavior: 'smooth'})">
+      <p style="font-size: 30px">
+      Get Started ⇩
+      </p>
+  </div>
+
+  <style>
+      .hero section {
+          padding: 0 5rem;
+      }
+
+      .mySlides {
+          display: none;
+      }
+
+      @media screen and (max-width: 768px) {
+          .hero section {
+              padding: 0 2rem;
+          }
+          .hero-image {
+              display: none
+          }
+      }
+  </style>
+
+  <script>
+  var myIndex = 0;
+  carousel();
+
+  function carousel() {
+    var i;
+    var x = document.getElementsByClassName("mySlides");
+    for (i = 0; i < x.length; i++) {
+      x[i].style.display = "none";  
+    }
+    myIndex++;
+    if (myIndex > x.length) {myIndex = 1}    
+    x[myIndex-1].style.display = "block";  
+    setTimeout(carousel, 2000); // Change image every 2 seconds
+  }
+  </script>
+
+    </div>
+
+    
+
+    <main>
+        
+        
+        
+        
+        
+        <div class="toc">
+            <div class="toc-sticky">
+                
+                <div class="toc-item">
+                    <a class="subtext" href="https://cda-group.github.io/arc/#features">Features</a>
+                </div>
+                
+                
+                <div class="toc-item">
+                    <a class="subtext" href="https://cda-group.github.io/arc/#installation">Installation</a>
+                </div>
+                
+                
+                <div class="toc-item">
+                    <a class="subtext" href="https://cda-group.github.io/arc/#usage">Usage</a>
+                </div>
+                
+                
+                <div class="toc-item">
+                    <a class="subtext" href="https://cda-group.github.io/arc/#an-example">An example</a>
+                </div>
+                
+                
+                <div class="toc-item">
+                    <a class="subtext" href="https://cda-group.github.io/arc/#more">More</a>
+                </div>
+                
+                
+            </div>
+        </div>
+        
+        
+
+        <div class="content text">
+            
+            <div id="features" class="heading-text">Overview</div>
+            <p><strong>Arc-Lang</strong> is a programming language for processing data streams.</p>
+<h2 id="features">Features</h2>
+<ul>
+<li>Consume and produce streams using different connectors (e.g., Kafka, TCP, files).</li>
+<li>Decode and encode events using different data formats (e.g., CSV, JSON, Avro).</li>
+<li>Interactively create dataflows that transform, filter and aggregate data through concise query syntax.</li>
+<li>Transparently execute programs locally or distributed.</li>
+<li>Inject Rust and Python code into programs.</li>
+</ul>
+<h2 id="installation">Installation</h2>
+<pre><code>
+$ <span class="string">git</span> <span class="string">clone</span> https://github.com/cda-group/arc -b klas/v0.1.0 --single-branch
+$ <span class="string">cargo</span> <span class="string">install</span> --path arc/arc-lang
+</code></pre>
+<h2 id="usage">Usage</h2>
+<pre><code>
+$ <span class="string">arc-lang</span>
+>> print(<span class="string">"Hello world!"</span>);
+Hello world!
+</code></pre>
+<h2 id="an-example">An example</h2>
+<pre><code>
+$ <span class="keyword">for</span> i <span class="keyword">in</span> {<span class="numeric">1</span>..<span class="numeric">100</span>}; <span class="keyword">do</span> <span class="string">echo</span> $RANDOM; <span class="keyword">done</span> > data.csv
+$ <span class="string">arc-lang</span>
+>> <span class="keyword">from</span> n:<span class="type">i32</span> <span class="keyword">in</span> source(file(<span class="string">"data.csv"</span>), csv())
+   <span class="keyword">select</span> {result:n+<span class="numeric">1</span>}
+   <span class="keyword">into</span> sink(file(<span class="string">"output.csv"</span>), csv());
+</code></pre>
+<h2 id="more">More</h2>
+<ul>
+<li>Learn more about how to use Arc-Lang in the <a href="/book/index.html">Arc-Lang Book</a>.</li>
+<li>View the specification of Arc-Lang in the <a href="/Arc-Lang-Report.pdf">Arc-Lang Research Report</a>.</li>
+</ul>
+
+            
+        </div>
+
+        
+        
+    </main>
+
+    
+    <footer>
+        <small class="subtext">
+            <a href="https://huhu.io">Huhu.io</a> © 2021
+        </small>
+    </footer>
+    
+</body>
+<script>
+    const scrollHandler = entries => {
+        // Find the first entry which intersecting and ratio > 0.9 to highlight.
+        let entry = entries.find(entry => {
+            return entry.isIntersecting && entry.intersectionRatio > 0.9;
+        });
+        if (!entry) return;
+
+        document.querySelectorAll(".toc a").forEach((item) => {
+            item.classList.remove("active");
+        });
+
+        // let url = new URL(`#${entry.target.id}`);
+        let link = document.querySelector(`.toc a[href$="${decodeURIComponent(`#${entry.target.id}`)}"]`)
+        if (link) {
+            link.classList.add("active");
+            link.scrollIntoView({ behavior: "auto", block: "nearest" });
+        }
+    };
+    // Set -100px root margin to improve highlight experience.
+    const observer = new IntersectionObserver(scrollHandler, { threshold: 1 });
+    let items = document.querySelectorAll('h1,h2,h3,h4,h5,h6');
+    items.forEach(item => observer.observe(item));
+</script>
+
+</html>

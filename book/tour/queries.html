@@ -1,0 +1,415 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Queries - The Arc-Lang Book</title>
+
+
+        <!-- Custom HTML head -->
+        
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="The Arc-Lang Book">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+        <!-- MathJax -->
+        <script async type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item "><a href="../introduction.html">Introduction</a></li><li class="chapter-item "><a href="../getting-started.html">Getting Started</a></li><li class="chapter-item expanded "><a href="../tour/mod.html">Tour of Arc-Lang</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../tour/queries.html" class="active">Queries</a></li></ol></li><li class="chapter-item "><a href="../examples/mod.html">Examples</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="../examples/word-count.html">Word Count</a></li><li class="chapter-item "><a href="../examples/tf-idf.html">TF-IDF</a></li><li class="chapter-item "><a href="../examples/sensor-data-aggregation.html">Sensor Data Aggregation</a></li><li class="chapter-item "><a href="../examples/deduplication.html">Deduplication</a></li><li class="chapter-item "><a href="../examples/fraud-detection.html">Fraud Detection</a></li></ol></li><li class="chapter-item "><a href="../command-line-interface.html">Command Line Interface</a></li><li class="chapter-item "><a href="../arc-lang/mod.html">Arc-Lang Reference</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="../arc-lang/Program.html">Programs</a></li><li class="chapter-item "><a href="../arc-lang/Name.html">Names</a></li><li class="chapter-item "><a href="../arc-lang/Path.html">Paths</a></li><li class="chapter-item "><a href="../arc-lang/Value.html">Values</a></li><li class="chapter-item "><a href="../arc-lang/Type.html">Types</a></li><li class="chapter-item "><a href="../dev/arc-mlir/Effects.html">Effects</a></li><li class="chapter-item "><a href="../arc-lang/Block.html">Blocks</a></li><li class="chapter-item "><a href="../arc-lang/Stmt.html">Statements</a></li><li class="chapter-item "><a href="../arc-lang/Expr.html">Expressions</a></li><li class="chapter-item "><a href="../arc-lang/Pattern.html">Patterns</a></li><li class="chapter-item "><a href="../arc-lang/Query.html">Queries</a></li><li class="chapter-item "><a href="../arc-lang/Item.html">Items</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="../arc-lang/TypeAlias.html">Type Aliases</a></li><li class="chapter-item "><a href="../arc-lang/TypeClass.html">Type Classes</a></li><li class="chapter-item "><a href="../arc-lang/Instance.html">Type Class Instances</a></li><li class="chapter-item "><a href="../arc-lang/ExternDef.html">Extern Functions</a></li><li class="chapter-item "><a href="../arc-lang/ExternType.html">Extern Types</a></li><li class="chapter-item "><a href="../arc-lang/Use.html">Uses</a></li><li class="chapter-item "><a href="../arc-lang/Module.html">Modules</a></li></ol></li><li class="chapter-item "><a href="../arc-lang/Body.html">Function bodies</a></li><li class="chapter-item "><a href="../arc-lang/Arms.html">Arms</a></li><li class="chapter-item "><a href="../arc-lang/Sinks.html">Sinks</a></li><li class="chapter-item "><a href="../arc-lang/Params.html">Parameters</a></li><li class="chapter-item "><a href="../arc-lang/Generics.html">Generics</a></li><li class="chapter-item "><a href="../arc-lang/TypeArgs.html">Type Arguments</a></li><li class="chapter-item "><a href="../arc-lang/Assign.html">Assignments</a></li><li class="chapter-item "><a href="../arc-lang/Annots.html">Annotations</a></li></ol></li><li class="chapter-item "><a href="../stdlib/mod.html">Standard library</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="../stdlib/String.html">Strings</a></li><li class="chapter-item "><a href="../stdlib/Array.html">Arrays</a></li><li class="chapter-item "><a href="../stdlib/DataFrame.html">DataFrames</a></li><li class="chapter-item "><a href="../stdlib/Channel.html">Channels</a></li></ol></li><li class="chapter-item "><a href="../dev/mod.html">Development</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="../dev/ci.html">Continuous Integration</a></li><li class="chapter-item "><a href="../dev/arc-lang/mod.html">Arc-Lang Reference</a></li><li class="chapter-item "><a href="../dev/arc-mlir/mod.html">Arc-MLIR Reference</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="../dev/arc-mlir/Program.html">Programs</a></li><li class="chapter-item "><a href="../dev/arc-mlir/Name.html">Names</a></li><li class="chapter-item "><a href="../dev/arc-mlir/Operation.html">Operations</a></li><li class="chapter-item "><a href="../dev/arc-mlir/Type.html">Types</a></li><li class="chapter-item "><a href="../dev/arc-mlir/Value.html">Values</a></li><li class="chapter-item "><a href="../dev/arc-mlir/Block.html">Blocks</a></li><li class="chapter-item "><a href="../dev/arc-mlir/Item.html">Items</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="../dev/arc-mlir/Func.html">Functions</a></li></ol></li><li class="chapter-item "><a href="../dev/arc-mlir/Params.html">Parameters</a></li></ol></li><li class="chapter-item "><a href="../dev/arc-sys/mod.html">Arc-Sys Reference</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="../dev/arc-sys/execution-model.html">Execution Model</a></li></ol></li></ol></li><li class="chapter-item "><a href="../bibliography.html">Bibliography</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">The Arc-Lang Book</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="queries"><a class="header" href="#queries">Queries</a></h1>
+<p>Arc-Lang allows the formulation of queries over data collections (similar to SQL). This concept is borrowed from <a href="https://github.com/julianhyde/morel">Morel</a> which embeds SQL-style queries over relations in StandardML. The following query defines a word-count application.</p>
+<pre><code>{{#include ../../../arc-lang/examples/wordcount.arc:example}}
+</code></pre>
+<p>The top-level statements provided by Arc-Lang are:</p>
+<div class="table-wrapper"><table><thead><tr><th>Operator</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>from</code></td><td>Iterate over data items</td></tr>
+<tr><td><code>yield</code></td><td>Map data items</td></tr>
+<tr><td><code>where</code></td><td>Filter data items</td></tr>
+<tr><td><code>join</code></td><td>Join data items on a common predicate</td></tr>
+<tr><td><code>group</code></td><td>Group data items by a key</td></tr>
+<tr><td><code>window</code></td><td>Sliding or tumbling window</td></tr>
+<tr><td><code>compute</code></td><td>Aggregate data items</td></tr>
+<tr><td><code>reduce</code></td><td>Rolling aggregate data items</td></tr>
+<tr><td><code>sort</code></td><td>Sort data items</td></tr>
+<tr><td><code>split</code></td><td>Split data items into distinct collections</td></tr>
+</tbody></table>
+</div>
+<p>The exact syntax of these statements is described <a href="../arc-lang/Expr.html#Query">here</a>.</p>
+<h2 id="query-expressions"><a class="header" href="#query-expressions">Query expressions</a></h2>
+<p>A <em>query</em> in Arc-Lang is a type of expression that takes data collections as operands and evaluates into a data collection as output. A data collection could either be a finite dataframe or an infinite datastream. Queries begin with the <code>from</code> keyword and are followed by a set of statements. The <code>from</code> statement can in of itself be used to compute the cross product between collections.</p>
+<pre><code><b style="color:rgb(0,95,135);">val</b> a = [<p style="color:rgb(215,95,0);">1</p>,<p style="color:rgb(215,95,0);">2</p>];
+<b style="color:rgb(0,95,135);">val</b> b = [<p style="color:rgb(215,95,0);">3</p>];
+
+<b style="color:rgb(0,95,135);">val</b> c = <b style="color:rgb(0,95,135);">from</b> x <b style="color:rgb(0,95,135);">in</b> a, y <b style="color:rgb(0,95,135);">in</b> b;
+
+# Equivalent to:
+# <b style="color:rgb(0,95,135);">val</b> c = a.flatmap(<b style="color:rgb(0,95,135);">fun</b>(x) = b.map(<b style="color:rgb(0,95,135);">fun</b>(y) = {x:x,y:y}));
+
+assert(c == [{x:<p style="color:rgb(215,95,0);">1</p>,y:<p style="color:rgb(215,95,0);">3</p>},{x:<p style="color:rgb(215,95,0);">2</p>,y:<p style="color:rgb(215,95,0);">3</p>}]);
+</code></pre>
+<h2 id="projection"><a class="header" href="#projection">Projection</a></h2>
+<p>The <code>yield</code> clause can be used to project elements</p>
+<pre><code><b style="color:rgb(0,95,135);">val</b> a = [[[<p style="color:rgb(215,95,0);">0</p>,<p style="color:rgb(215,95,0);">1</p>]],[[<p style="color:rgb(215,95,0);">2</p>,<p style="color:rgb(215,95,0);">3</p>]],[[<p style="color:rgb(215,95,0);">4</p>,<p style="color:rgb(215,95,0);">5</p>]]];
+
+<b style="color:rgb(0,95,135);">val</b> b = <b style="color:rgb(0,95,135);">from</b> x <b style="color:rgb(0,95,135);">in</b> a, y <b style="color:rgb(0,95,135);">in</b> x yield y+<p style="color:rgb(215,95,0);">1</p>;
+
+# Equivalent to:
+# <b style="color:rgb(0,95,135);">val</b> b = a.flatmap(<b style="color:rgb(0,95,135);">fun</b>(x) = x.map(<b style="color:rgb(0,95,135);">fun</b>(y) = {x:x,y:y}))
+#          .map(<b style="color:rgb(0,95,135);">fun</b>(r) = r.y + <p style="color:rgb(215,95,0);">1</p>);
+
+assert(b == [<p style="color:rgb(215,95,0);">1</p>,<p style="color:rgb(215,95,0);">2</p>,<p style="color:rgb(215,95,0);">3</p>,<p style="color:rgb(215,95,0);">4</p>,<p style="color:rgb(215,95,0);">5</p>,<p style="color:rgb(215,95,0);">6</p>]);
+</code></pre>
+<h2 id="selection"><a class="header" href="#selection">Selection</a></h2>
+<p>The <code>where</code> clause can be used for retaining elements which satisfy a predicate.</p>
+<pre><code><b style="color:rgb(0,95,135);">val</b> a = [<p style="color:rgb(215,95,0);">0</p>,<p style="color:rgb(215,95,0);">1</p>,<p style="color:rgb(215,95,0);">2</p>,<p style="color:rgb(215,95,0);">3</p>,<p style="color:rgb(215,95,0);">4</p>];
+
+<b style="color:rgb(0,95,135);">val</b> b = <b style="color:rgb(0,95,135);">from</b> x <b style="color:rgb(0,95,135);">in</b> a <b style="color:rgb(0,95,135);">where</b> x % <p style="color:rgb(215,95,0);">2</p> == <p style="color:rgb(215,95,0);">0</p>;
+
+# Equivalent to:
+# <b style="color:rgb(0,95,135);">val</b> b = a.filter(<b style="color:rgb(0,95,135);">fun</b>(x) = x % <p style="color:rgb(215,95,0);">2</p> == <p style="color:rgb(215,95,0);">0</p>);
+
+assert(a, [<p style="color:rgb(215,95,0);">0</p>,<p style="color:rgb(215,95,0);">2</p>,<p style="color:rgb(215,95,0);">4</p>]);
+</code></pre>
+<p>Any kind of expression can be used as a predicate, as long as it evaluates into a boolean value.</p>
+<h2 id="ordering"><a class="header" href="#ordering">Ordering</a></h2>
+<p>The <code>order</code> clause can be used to sort elements according to a comparison function. By default, sorting is ascending.</p>
+<pre><code><b style="color:rgb(0,95,135);">val</b> a = [<p style="color:rgb(215,95,0);">3</p>,<p style="color:rgb(215,95,0);">1</p>,<p style="color:rgb(215,95,0);">2</p>,<p style="color:rgb(215,95,0);">4</p>,<p style="color:rgb(215,95,0);">0</p>];
+<b style="color:rgb(0,95,135);">val</b> b = [{k:<p style="color:rgb(215,95,0);">3</p>,v:<p style="color:rgb(215,95,0);">3</p>},{k:<p style="color:rgb(215,95,0);">1</p>,v:<p style="color:rgb(215,95,0);">2</p>},{k:<p style="color:rgb(215,95,0);">2</p>,v:<p style="color:rgb(215,95,0);">9</p>},{k:<p style="color:rgb(215,95,0);">4</p>,v:<p style="color:rgb(215,95,0);">1</p>},{k:<p style="color:rgb(215,95,0);">0</p>,v:<p style="color:rgb(215,95,0);">3</p>}];
+
+<b style="color:rgb(0,95,135);">val</b> c = <b style="color:rgb(0,95,135);">from</b> x <b style="color:rgb(0,95,135);">in</b> a <b style="color:rgb(0,95,135);">order</b> x;
+<b style="color:rgb(0,95,135);">val</b> d = <b style="color:rgb(0,95,135);">from</b> x <b style="color:rgb(0,95,135);">in</b> a <b style="color:rgb(0,95,135);">order</b> x <b style="color:rgb(0,95,135);">desc</b>;
+<b style="color:rgb(0,95,135);">val</b> e = <b style="color:rgb(0,95,135);">from</b> x <b style="color:rgb(0,95,135);">in</b> a <b style="color:rgb(0,95,135);">order</b> x with <b style="color:rgb(0,95,135);">fun</b>(x,y) = x <= y;
+<b style="color:rgb(0,95,135);">val</b> f = <b style="color:rgb(0,95,135);">from</b> x <b style="color:rgb(0,95,135);">in</b> a <b style="color:rgb(0,95,135);">order</b> x <b style="color:rgb(0,95,135);">on</b> x.k;
+
+# Equivalent to:
+# <b style="color:rgb(0,95,135);">val</b> c = x._sort(<b style="color:rgb(0,95,135);">fun</b>(x) = x);
+# <b style="color:rgb(0,95,135);">val</b> d = x._sort(<b style="color:rgb(0,95,135);">fun</b>(x) = x, _desc: Order::Descending);
+# <b style="color:rgb(0,95,135);">val</b> e = x._sort(<b style="color:rgb(0,95,135);">fun</b>(x) = x, _compare: <b style="color:rgb(0,95,135);">fun</b>(x,y) = x <= y);
+# <b style="color:rgb(0,95,135);">val</b> f = x._sort(<b style="color:rgb(0,95,135);">fun</b>(x) = x, _on: <b style="color:rgb(0,95,135);">fun</b>(x) = x.k);
+
+assert(c == [<p style="color:rgb(215,95,0);">0</p>,<p style="color:rgb(215,95,0);">1</p>,<p style="color:rgb(215,95,0);">2</p>,<p style="color:rgb(215,95,0);">3</p>,<p style="color:rgb(215,95,0);">4</p>]);
+assert(d == [<p style="color:rgb(215,95,0);">4</p>,<p style="color:rgb(215,95,0);">3</p>,<p style="color:rgb(215,95,0);">2</p>,<p style="color:rgb(215,95,0);">1</p>,<p style="color:rgb(215,95,0);">0</p>]);
+assert(e == [<p style="color:rgb(215,95,0);">0</p>,<p style="color:rgb(215,95,0);">1</p>,<p style="color:rgb(215,95,0);">2</p>,<p style="color:rgb(215,95,0);">3</p>,<p style="color:rgb(215,95,0);">4</p>]);
+assert(f == [{k:<p style="color:rgb(215,95,0);">0</p>,v:<p style="color:rgb(215,95,0);">3</p>},{k:<p style="color:rgb(215,95,0);">1</p>,v:<p style="color:rgb(215,95,0);">2</p>},{k:<p style="color:rgb(215,95,0);">2</p>,v:<p style="color:rgb(215,95,0);">9</p>},{k:<p style="color:rgb(215,95,0);">3</p>,v:<p style="color:rgb(215,95,0);">3</p>},{k:<p style="color:rgb(215,95,0);">4</p>,v:<p style="color:rgb(215,95,0);">1</p>}];
+</code></pre>
+<p>Streams cannot be sorted since sorting requires that the input is finite.</p>
+<h2 id="aggregating"><a class="header" href="#aggregating">Aggregating</a></h2>
+<p>The <code>compute</code> clause can be used to aggregate values.</p>
+<pre><code><b style="color:rgb(0,95,135);">val</b> a = [<p style="color:rgb(215,95,0);">1</p>,<p style="color:rgb(215,95,0);">2</p>,<p style="color:rgb(215,95,0);">3</p>];
+<b style="color:rgb(0,95,135);">val</b> b = [{v:<p style="color:rgb(215,95,0);">1</p>},{v:<p style="color:rgb(215,95,0);">2</p>},{v:<p style="color:rgb(215,95,0);">3</p>}];
+
+<b style="color:rgb(0,95,135);">val</b> c = <b style="color:rgb(0,95,135);">from</b> x <b style="color:rgb(0,95,135);">in</b> a <b style="color:rgb(0,95,135);">compute</b> sum;
+<b style="color:rgb(0,95,135);">val</b> d = <b style="color:rgb(0,95,135);">from</b> x <b style="color:rgb(0,95,135);">in</b> b <b style="color:rgb(0,95,135);">compute</b> sum <b style="color:rgb(0,95,135);">of</b> x.v;
+
+# Equivalent to:
+# <b style="color:rgb(0,95,135);">val</b> c = a._compute(sum);
+# <b style="color:rgb(0,95,135);">val</b> d = a._compute(sum, _of: <b style="color:rgb(0,95,135);">fun</b>(x) = x.v);
+
+assert(c == {sum:<p style="color:rgb(215,95,0);">6</p>});
+assert(d == {sum:<p style="color:rgb(215,95,0);">6</p>});
+</code></pre>
+<p>Aggregation is only allowed on finite-sized data collections.</p>
+<h3 id="rolling-aggregates"><a class="header" href="#rolling-aggregates">Rolling Aggregates</a></h3>
+<p>The <code>reduce</code> clause can be used to compute rolling aggregates.</p>
+<pre><code><b style="color:rgb(0,95,135);">val</b> a = [<p style="color:rgb(215,95,0);">1</p>,<p style="color:rgb(215,95,0);">2</p>,<p style="color:rgb(215,95,0);">3</p>];
+
+<b style="color:rgb(0,95,135);">val</b> c = <b style="color:rgb(0,95,135);">from</b> x <b style="color:rgb(0,95,135);">in</b> a reduce sum;
+
+# Equivalent to:
+# <b style="color:rgb(0,95,135);">val</b> c = a._reduce(sum);
+
+assert(c == [{sum:<p style="color:rgb(215,95,0);">1</p>}, {sum:<p style="color:rgb(215,95,0);">3</p>}, {sum:<p style="color:rgb(215,95,0);">6</p>}]);
+</code></pre>
+<p>Rolling aggregates are allowed on both finite- and infinite-sized data collections.</p>
+<h3 id="custom-aggregators"><a class="header" href="#custom-aggregators">Custom Aggregators</a></h3>
+<p>It is possible to define custom aggregators that can be used inside <code>compute</code> clauses. The <code>sum</code>, <code>count</code>, and <code>average</code> aggregators are monoids:</p>
+<pre><code><b style="color:rgb(0,95,135);">val</b> count = Aggregator::Monoid({
+    lift: <b style="color:rgb(0,95,135);">fun</b>(x) = {count: <p style="color:rgb(215,95,0);">1</p>},
+    identity: <b style="color:rgb(0,95,135);">fun</b>() = {count: <p style="color:rgb(215,95,0);">0</p>},
+    merge: <b style="color:rgb(0,95,135);">fun</b>(x,y) = {count: x.count+y.count},
+    lower: <b style="color:rgb(0,95,135);">fun</b>(x) = x,
+});
+
+<b style="color:rgb(0,95,135);">val</b> sum = Aggregator::Monoid({
+    lift: <b style="color:rgb(0,95,135);">fun</b>(x) = {sum: x},
+    identity: <b style="color:rgb(0,95,135);">fun</b>() = {sum: <p style="color:rgb(215,95,0);">0</p>},
+    merge: <b style="color:rgb(0,95,135);">fun</b>(x,y) = {sum: x.sum+y.sum},
+    lower: <b style="color:rgb(0,95,135);">fun</b>(x) = x,
+});
+
+<b style="color:rgb(0,95,135);">val</b> average = Aggregator::Monoid({
+    lift: <b style="color:rgb(0,95,135);">fun</b>(x) = {sum: x, count: <p style="color:rgb(215,95,0);">1</p>},
+    identity: <b style="color:rgb(0,95,135);">fun</b>() = {sum: <p style="color:rgb(215,95,0);">0</p>, count: <p style="color:rgb(215,95,0);">0</p>},
+    merge: <b style="color:rgb(0,95,135);">fun</b>(x,y) = {sum: x.sum+y.sum, count: x.count+y.count},
+    lower: <b style="color:rgb(0,95,135);">fun</b>(x) = {average: x.sum/x.count},
+});
+</code></pre>
+<p>Aggregators that operate on the whole input such as <code>median</code> are holistic:</p>
+<pre><code><b style="color:rgb(0,95,135);">val</b> median = Aggregator::Holistic(
+    <b style="color:rgb(0,95,135);">fun</b>(v) = {
+        <b style="color:rgb(0,95,135);">val</b> n = v.len();
+        <b style="color:rgb(0,95,135);">if</b> n % <p style="color:rgb(215,95,0);">2</p> == <p style="color:rgb(215,95,0);">0</p> {
+            (v[n/<p style="color:rgb(215,95,0);">2</p>] + v[n/<p style="color:rgb(215,95,0);">2</p>+<p style="color:rgb(215,95,0);">1</p>])/<p style="color:rgb(215,95,0);">2</p>
+        } <b style="color:rgb(0,95,135);">else</b> {
+            v[n/<p style="color:rgb(215,95,0);">2</p>+<p style="color:rgb(215,95,0);">1</p>]
+        }
+    }
+);
+</code></pre>
+<h2 id="grouping"><a class="header" href="#grouping">Grouping</a></h2>
+<p>The <code>group</code> clause can be used to group elements by key into partitions. After grouping, it is possible to apply a partition-wise transformation.</p>
+<pre><code><b style="color:rgb(0,95,135);">val</b> a = [{k:<p style="color:rgb(215,95,0);">1</p>,v:<p style="color:rgb(215,95,0);">2</p>}, {k:<p style="color:rgb(215,95,0);">2</p>,v:<p style="color:rgb(215,95,0);">2</p>}, {k:<p style="color:rgb(215,95,0);">2</p>,v:<p style="color:rgb(215,95,0);">2</p>}];
+
+<b style="color:rgb(0,95,135);">val</b> b = <b style="color:rgb(0,95,135);">from</b> x <b style="color:rgb(0,95,135);">in</b> a <b style="color:rgb(0,95,135);">group</b> x.k;
+<b style="color:rgb(0,95,135);">val</b> c = <b style="color:rgb(0,95,135);">from</b> x <b style="color:rgb(0,95,135);">in</b> a <b style="color:rgb(0,95,135);">group</b> x.k <b style="color:rgb(0,95,135);">compute</b> average <b style="color:rgb(0,95,135);">of</b> x.v;
+
+# Equivalent to:
+# <b style="color:rgb(0,95,135);">val</b> b = a._group(<b style="color:rgb(0,95,135);">fun</b>(x) = x.k);
+# <b style="color:rgb(0,95,135);">val</b> d = a._group(<b style="color:rgb(0,95,135);">fun</b>(x) = x.k, _compute: sum, _of: <b style="color:rgb(0,95,135);">fun</b>(v) = x.v);
+
+assert(b == [{k:<p style="color:rgb(215,95,0);">1</p>,v:[<p style="color:rgb(215,95,0);">2</p>]},{k:<p style="color:rgb(215,95,0);">2</p>,v:[<p style="color:rgb(215,95,0);">2</p>,<p style="color:rgb(215,95,0);">2</p>]}]);
+assert(d == [{k:<p style="color:rgb(215,95,0);">1</p>,sum:<p style="color:rgb(215,95,0);">2</p>},{k:<p style="color:rgb(215,95,0);">2</p>,sum:<p style="color:rgb(215,95,0);">4</p>}]);
+</code></pre>
+<h2 id="windowing"><a class="header" href="#windowing">Windowing</a></h2>
+<p>The <code>window</code> clause can be used to slice data collections into multiple, possibly overlapping, partitions. Like <code>group</code>, a transformation can be applied per-partition. The <code>after</code> clause starts the window at an offset, and the <code>every</code> clause specifies the slide of a sliding window.</p>
+<pre><code><b style="color:rgb(0,95,135);">val</b> a = [{t:<p style="color:rgb(215,95,0);">2022</p>-<p style="color:rgb(215,95,0);">01</p>-01T00:<p style="color:rgb(215,95,0);">00</p>:<p style="color:rgb(215,95,0);">01</p>,v:<p style="color:rgb(215,95,0);">1</p>}, {t:<p style="color:rgb(215,95,0);">2022</p>-<p style="color:rgb(215,95,0);">01</p>-01T00:<p style="color:rgb(215,95,0);">00</p>:<p style="color:rgb(215,95,0);">04</p>,v:<p style="color:rgb(215,95,0);">2</p>}, {t:<p style="color:rgb(215,95,0);">2022</p>-<p style="color:rgb(215,95,0);">01</p>-01T00:<p style="color:rgb(215,95,0);">00</p>:<p style="color:rgb(215,95,0);">09</p>,v:<p style="color:rgb(215,95,0);">3</p>}];
+
+<b style="color:rgb(0,95,135);">val</b> b = <b style="color:rgb(0,95,135);">from</b> x <b style="color:rgb(0,95,135);">in</b> a window 5s <b style="color:rgb(0,95,135);">on</b> x.t;
+<b style="color:rgb(0,95,135);">val</b> e = <b style="color:rgb(0,95,135);">from</b> x <b style="color:rgb(0,95,135);">in</b> a window 5s <b style="color:rgb(0,95,135);">on</b> x.t <b style="color:rgb(0,95,135);">compute</b> count;
+<b style="color:rgb(0,95,135);">val</b> c = <b style="color:rgb(0,95,135);">from</b> x <b style="color:rgb(0,95,135);">in</b> a window 5s <b style="color:rgb(0,95,135);">on</b> x.t after <p style="color:rgb(215,95,0);">00</p>:<p style="color:rgb(215,95,0);">00</p>:<p style="color:rgb(215,95,0);">02</p>;
+<b style="color:rgb(0,95,135);">val</b> d = <b style="color:rgb(0,95,135);">from</b> x <b style="color:rgb(0,95,135);">in</b> a window 5s <b style="color:rgb(0,95,135);">on</b> x.t every 3s;
+
+# Equivalent to:
+# <b style="color:rgb(0,95,135);">val</b> b = a._window(_length: 5s);
+# <b style="color:rgb(0,95,135);">val</b> b = a._window(_length: 5s, _on: <b style="color:rgb(0,95,135);">fun</b>(x): x.t, _compute: count);
+# <b style="color:rgb(0,95,135);">val</b> c = a._window(_length: 5s, _on: <b style="color:rgb(0,95,135);">fun</b>(x): x.t, _after: <p style="color:rgb(215,95,0);">2020</p>-<p style="color:rgb(215,95,0);">01</p>-01T00:<p style="color:rgb(215,95,0);">00</p>:<p style="color:rgb(215,95,0);">02</p>);
+# <b style="color:rgb(0,95,135);">val</b> d = a._window(_length: 5s, _on: <b style="color:rgb(0,95,135);">fun</b>(x): x.t, _every: 3s);
+
+assert(b == [{t:<p style="color:rgb(215,95,0);">2020</p>-<p style="color:rgb(215,95,0);">01</p>-01T00:<p style="color:rgb(215,95,0);">00</p>:<p style="color:rgb(215,95,0);">05</p>,v:[<p style="color:rgb(215,95,0);">1</p>,<p style="color:rgb(215,95,0);">2</p>]}, {t:<p style="color:rgb(215,95,0);">2020</p>-<p style="color:rgb(215,95,0);">01</p>-01T00:<p style="color:rgb(215,95,0);">00</p>:<p style="color:rgb(215,95,0);">10</p>,v:[<p style="color:rgb(215,95,0);">3</p>]}]);
+assert(e == [{t:<p style="color:rgb(215,95,0);">2020</p>-<p style="color:rgb(215,95,0);">01</p>-01T00:<p style="color:rgb(215,95,0);">00</p>:<p style="color:rgb(215,95,0);">05</p>,count:<p style="color:rgb(215,95,0);">2</p>}, {t:<p style="color:rgb(215,95,0);">2020</p>-<p style="color:rgb(215,95,0);">01</p>-01T00:<p style="color:rgb(215,95,0);">00</p>:<p style="color:rgb(215,95,0);">10</p>,count:<p style="color:rgb(215,95,0);">1</p>}]);
+assert(c == [{t:<p style="color:rgb(215,95,0);">2020</p>-<p style="color:rgb(215,95,0);">01</p>-01T00:<p style="color:rgb(215,95,0);">00</p>:<p style="color:rgb(215,95,0);">07</p>,v:[<p style="color:rgb(215,95,0);">1</p>,<p style="color:rgb(215,95,0);">2</p>]}, {t:<p style="color:rgb(215,95,0);">2020</p>-<p style="color:rgb(215,95,0);">01</p>-01T00:<p style="color:rgb(215,95,0);">00</p>:<p style="color:rgb(215,95,0);">12</p>,v:[<p style="color:rgb(215,95,0);">3</p>]}]);
+assert(d == [{t:<p style="color:rgb(215,95,0);">2020</p>-<p style="color:rgb(215,95,0);">01</p>-01T00:<p style="color:rgb(215,95,0);">00</p>:<p style="color:rgb(215,95,0);">05</p>,v:[<p style="color:rgb(215,95,0);">1</p>,<p style="color:rgb(215,95,0);">2</p>]}, {t:<p style="color:rgb(215,95,0);">2020</p>-<p style="color:rgb(215,95,0);">01</p>-01T00:<p style="color:rgb(215,95,0);">00</p>:<p style="color:rgb(215,95,0);">08</p>,v:[<p style="color:rgb(215,95,0);">2</p>]}, {t:<p style="color:rgb(215,95,0);">2020</p>-<p style="color:rgb(215,95,0);">01</p>-01T00:<p style="color:rgb(215,95,0);">00</p>:<p style="color:rgb(215,95,0);">11</p>,v:[<p style="color:rgb(215,95,0);">3</p>]}]);
+</code></pre>
+<h2 id="joining"><a class="header" href="#joining">Joining</a></h2>
+<p>The <code>join</code> clause can be used to join multiple data collections together whose records satisfy a common predicate. It is logically equivalent to a Cartesian-product between the two collections followed by a selection.</p>
+<pre><code><b style="color:rgb(0,95,135);">val</b> a = [{id:<p style="color:rgb(215,95,0);">0</p>,name:<p style="color:rgb(95,135,0);">"Tim"</p>}, {id:<p style="color:rgb(215,95,0);">1</p>,name:<p style="color:rgb(95,135,0);">"Bob"</p>}];
+<b style="color:rgb(0,95,135);">val</b> b = [{id:<p style="color:rgb(215,95,0);">0</p>,age:<p style="color:rgb(215,95,0);">30</p>}, {id:<p style="color:rgb(215,95,0);">1</p>,age:<p style="color:rgb(215,95,0);">100</p>}];
+
+<b style="color:rgb(0,95,135);">val</b> c = <b style="color:rgb(0,95,135);">from</b> x <b style="color:rgb(0,95,135);">in</b> a <b style="color:rgb(0,95,135);">join</b> y <b style="color:rgb(0,95,135);">in</b> b <b style="color:rgb(0,95,135);">on</b> x.id == y.id;
+
+# Equivalent to
+# <b style="color:rgb(0,95,135);">val</b> c = a._join(b, <b style="color:rgb(0,95,135);">fun</b>(x,y) = x.id == y.id);
+
+assert(c == [{a:{id:<p style="color:rgb(215,95,0);">0</p>,name:<p style="color:rgb(95,135,0);">"Tim"</p>},b:{id:<p style="color:rgb(215,95,0);">0</p>,age:<p style="color:rgb(215,95,0);">30</p>}}, {a:{id:<p style="color:rgb(215,95,0);">1</p>,name:<p style="color:rgb(95,135,0);">"Bob"</p>},b:{id:<p style="color:rgb(215,95,0);">1</p>,age:<p style="color:rgb(215,95,0);">100</p>}}]);
+</code></pre>
+<h3 id="windowed-joins"><a class="header" href="#windowed-joins">Windowed Joins</a></h3>
+<p>Joins require at least one of their input collections to be finite. A <code>join</code> operation over two streams must be followed by a <code>window</code> operation.</p>
+<pre><code><b style="color:rgb(0,95,135);">val</b> a = [{id:<p style="color:rgb(215,95,0);">0</p>,name:<p style="color:rgb(95,135,0);">"Tim"</p>,t:<p style="color:rgb(215,95,0);">2020</p>-<p style="color:rgb(215,95,0);">01</p>-01T00:<p style="color:rgb(215,95,0);">00</p>:<p style="color:rgb(215,95,0);">01</p>}, {id:<p style="color:rgb(215,95,0);">1</p>,name:<p style="color:rgb(95,135,0);">"Bob"</p>,t:<p style="color:rgb(215,95,0);">2020</p>-<p style="color:rgb(215,95,0);">01</p>-01T00:<p style="color:rgb(215,95,0);">00</p>:<p style="color:rgb(215,95,0);">09</p>}];
+<b style="color:rgb(0,95,135);">val</b> b = [{id:<p style="color:rgb(215,95,0);">0</p>,age:<p style="color:rgb(215,95,0);">30</p>,t:<p style="color:rgb(215,95,0);">2020</p>-<p style="color:rgb(215,95,0);">01</p>-01T00:<p style="color:rgb(215,95,0);">00</p>:<p style="color:rgb(215,95,0);">02</p>}, {id:<p style="color:rgb(215,95,0);">1</p>,age:<p style="color:rgb(215,95,0);">100</p>,t:<p style="color:rgb(215,95,0);">2020</p>-<p style="color:rgb(215,95,0);">01</p>-01T00:<p style="color:rgb(215,95,0);">00</p>:<p style="color:rgb(215,95,0);">04</p>}];
+
+<b style="color:rgb(0,95,135);">val</b> c =
+    <b style="color:rgb(0,95,135);">from</b> x <b style="color:rgb(0,95,135);">in</b> a
+    <b style="color:rgb(0,95,135);">join</b> y <b style="color:rgb(0,95,135);">in</b> b <b style="color:rgb(0,95,135);">on</b> x.id == y.id
+    window 5s <b style="color:rgb(0,95,135);">on</b> x.t, y.t;
+
+assert(c == [{a:{id:<p style="color:rgb(215,95,0);">0</p>,name:<p style="color:rgb(95,135,0);">"Tim"</p>,t:<p style="color:rgb(215,95,0);">2020</p>-<p style="color:rgb(215,95,0);">01</p>-01T00:<p style="color:rgb(215,95,0);">00</p>:<p style="color:rgb(215,95,0);">01</p>}, b:{id:<p style="color:rgb(215,95,0);">0</p>,age:<p style="color:rgb(215,95,0);">30</p>,t:<p style="color:rgb(215,95,0);">2020</p>-<p style="color:rgb(215,95,0);">01</p>-01T00:<p style="color:rgb(215,95,0);">00</p>:<p style="color:rgb(215,95,0);">02</p>}}]);
+</code></pre>
+<h2 id="splitting"><a class="header" href="#splitting">Splitting</a></h2>
+<p>The <code>split</code> operator can be used to split a collection into two collections.</p>
+<pre><code><b style="color:rgb(0,95,135);">val</b> a = [Ok(<p style="color:rgb(215,95,0);">1</p>), Err(<p style="color:rgb(215,95,0);">2</p>), Ok(<p style="color:rgb(215,95,0);">3</p>)];
+
+<b style="color:rgb(0,95,135);">val</b> (b, c) = <b style="color:rgb(0,95,135);">from</b> a split error;
+<b style="color:rgb(0,95,135);">val</b> (d, e) = <b style="color:rgb(0,95,135);">from</b> a split with <b style="color:rgb(0,95,135);">fun</b>(x) = <b style="color:rgb(0,95,135);">match</b> x {
+    Ok(v) => Either::L(v),
+    Err(v) => Either::R(v),
+};
+
+# Equivalent to:
+# <b style="color:rgb(0,95,135);">val</b> (b, c) = a._split(_with: split_error);
+# <b style="color:rgb(0,95,135);">val</b> (d, e) = a._split(_with: <b style="color:rgb(0,95,135);">fun</b>(x) = <b style="color:rgb(0,95,135);">match</b> x {
+#     Ok(v) => Either::L(v),
+#     Err(v) => Either::R(v),
+# });
+
+assert(b == [<p style="color:rgb(215,95,0);">1</p>, <p style="color:rgb(215,95,0);">3</p>] <b style="color:rgb(0,95,135);">and</b> c == [<p style="color:rgb(215,95,0);">2</p>]);
+assert(d == [<p style="color:rgb(215,95,0);">1</p>, <p style="color:rgb(215,95,0);">3</p>] <b style="color:rgb(0,95,135);">and</b> e == [<p style="color:rgb(215,95,0);">2</p>]);
+</code></pre>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../tour/mod.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next" href="../examples/mod.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../tour/mod.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next" href="../examples/mod.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script type="text/javascript">
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../searcher.js" type="text/javascript" charset="utf-8"></script>
+
+        <script src="../clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+
+
+    </body>
+</html>
