@@ -1,0 +1,16 @@
+[package]
+name = "hir-type-inference"
+version.workspace = true
+edition.workspace = true
+
+[dependencies]
+im-rc.workspace = true
+hir.workspace = true
+write-hir.workspace = true
+utils.workspace = true
+codegen.workspace = true
+info.workspace = true
+diagnostics.workspace = true
+name-gen.workspace = true
+stack.workspace = true
+tracing.workspace = true

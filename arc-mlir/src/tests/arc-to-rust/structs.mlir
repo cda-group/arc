@@ -72,7 +72,6 @@ module @arctoruststructs {
     %s = arc.make_struct(%b : si32) : !arc.struct<a : si32>
     %r0 = arc.make_struct(%a, %s : si32, !arc.struct<a : si32>) : !arc.struct<a : si32, b : !arc.struct<a : si32>>
     %r1 = arc.make_struct(%a, %s : si32, !arc.struct<a : si32>) : !arc.struct<a : si32, b : !arc.struct<a : si32>>
-
     return %a : si32
   }
 
@@ -84,17 +83,4 @@ module @arctoruststructs {
     %r = arc.make_struct() : !arc.struct<>
     return %r : !arc.struct<>
   }
-
-  func.func @ok13() -> !arc.struct<<>> {
-    %r = arc.make_struct() : !arc.struct<<>>
-    return %r : !arc.struct<<>>
-  }
-
-  func.func @ok14() -> !arc.struct<<a : si32>> {
-    %a = arc.constant 4 : si32
-    %r = arc.make_struct(%a : si32) : !arc.struct<<a : si32>>
-    return %r : !arc.struct<<a : si32>>
-  }
-
-
 }

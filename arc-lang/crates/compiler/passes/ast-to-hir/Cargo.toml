@@ -1,0 +1,19 @@
+[package]
+name = "ast-to-hir"
+version.workspace = true
+edition.workspace = true
+
+[dependencies]
+codegen.workspace = true
+ast.workspace = true
+hir.workspace = true
+parser.workspace = true
+name-gen.workspace = true
+utils.workspace = true
+info.workspace = true
+diagnostics.workspace = true
+im-rc.workspace = true
+regex.workspace = true
+lazy_static.workspace = true
+ast-prelude.workspace = true
+stack.workspace = true

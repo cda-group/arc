@@ -1,0 +1,13 @@
+[package]
+name = "hir-patcomp"
+version.workspace = true
+edition.workspace = true
+
+[dependencies]
+im-rc.workspace = true
+hir.workspace = true
+utils.workspace = true
+info.workspace = true
+stack.workspace = true
+name-gen.workspace = true
+diagnostics.workspace = true

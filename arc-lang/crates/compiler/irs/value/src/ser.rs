@@ -1,0 +1,56 @@
+use crate::*;
+
+impl Serialize for Value {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        match self.kind.as_ref() {
+            VAggregator(v) => v.serialize(serializer),
+            VArray(v) => v.0.serialize(serializer),
+            VBlob(v) => v.serialize(serializer),
+            VBool(v) => v.serialize(serializer),
+            VChar(v) => v.serialize(serializer),
+            VDict(v) => v.serialize(serializer),
+            VDiscretizer(v) => v.serialize(serializer),
+            VDuration(v) => v.serialize(serializer),
+            VEncoding(v) => v.serialize(serializer),
+            VF32(v) => v.serialize(serializer),
+            VF64(v) => v.serialize(serializer),
+            VFile(v) => unreachable!(),
+            VFunction(v) => v.serialize(serializer),
+            VI128(v) => v.serialize(serializer),
+            VI16(v) => v.serialize(serializer),
+            VI32(v) => v.serialize(serializer),
+            VI64(v) => v.serialize(serializer),
+            VI8(v) => v.serialize(serializer),
+            VMatrix(v) => v.serialize(serializer),
+            VModel(v) => v.serialize(serializer),
+            VOption(v) => v.serialize(serializer),
+            VPath(v) => v.serialize(serializer),
+            VReader(v) => v.serialize(serializer),
+            VRecord(v) => v.serialize(serializer),
+            VResult(v) => v.serialize(serializer),
+            VSet(v) => v.serialize(serializer),
+            VSocketAddr(v) => v.serialize(serializer),
+            VStream(v) => unreachable!(),
+            VString(v) => v.serialize(serializer),
+            VTime(v) => v.serialize(serializer),
+            VTimeSource(v) => v.serialize(serializer),
+            VTuple(v) => v.serialize(serializer),
+            VU128(v) => v.serialize(serializer),
+            VU16(v) => v.serialize(serializer),
+            VU32(v) => v.serialize(serializer),
+            VU64(v) => v.serialize(serializer),
+            VU8(v) => v.serialize(serializer),
+            VUnit(v) => v.serialize(serializer),
+            VUrl(v) => v.serialize(serializer),
+            VUsize(v) => v.serialize(serializer),
+            VVariant(v) => v.serialize(serializer),
+            VVec(v) => v.serialize(serializer),
+            VWriter(v) => v.serialize(serializer),
+            VDataflow(v) => unreachable!(),
+            VInstance(v) => unreachable!(),
+        }
+    }
+}

@@ -5,8 +5,6 @@ on:
     paths:
       - "arc-lang/**"
       - "arc-mlir/**"
-      - "arc-runtime/**"
-      - "arc-python/**"
       - "build"
       - ".github/workflows/test.yml"
     branches:
@@ -25,7 +23,7 @@ jobs:
 
       # Checkout branch which we want to test
     - name: Checkout source
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
 
       # Update LLVM dependency
     - name: Update submodule
@@ -41,28 +39,13 @@ jobs:
       env:
         ARC_MLIR_BUILD: ${{ format('{0}/build', runner.temp) }}
 
-    - name: Pre-build arc-runtime
-      run: ./.github/continuous-integration.sh cargo test
-      env:
-        ARC_MLIR_BUILD: ${{ format('{0}/build', runner.temp) }}
-
     - name: Run MLIR tests
       run: ./.github/continuous-integration.sh run-mlir-tests
       env:
         ARC_MLIR_BUILD: ${{ format('{0}/build', runner.temp) }}
 
-    - name: "Run arc-runtime test: clippy"
-      run: ./.github/continuous-integration.sh cargo clippy
-      env:
-        ARC_MLIR_BUILD: ${{ format('{0}/build', runner.temp) }}
-
     - name: "Ccache/Sccache statistics"
       run: ./.github/continuous-integration.sh check-ccache
-
-#    - name: "Run arc-runtime test: fmt -- -v --check"
-#      run: ./.github/continuous-integration.sh cargo fmt -- -v --check
-#      env:
-#        ARC_MLIR_BUILD: ${{ format('{0}/build', runner.temp) }}
 
     - name: Check for dirty tree
       run: ./check-for-dirty-tree

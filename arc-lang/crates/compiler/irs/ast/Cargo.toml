@@ -1,0 +1,11 @@
+[package]
+name = "ast"
+version.workspace = true
+edition.workspace = true
+
+[dependencies]
+info.workspace = true
+codegen.workspace = true
+im-rc.workspace = true
+lexer.workspace = true
+syn.workspace = true

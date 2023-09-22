@@ -1,0 +1,224 @@
+[workspace]
+members = [
+  "crates/repl",
+  "crates/compiler",
+  "crates/compiler/infra/build",
+  "crates/compiler/infra/codegen",
+  "crates/compiler/infra/diagnostics",
+  "crates/compiler/infra/info",
+  "crates/compiler/infra/name-gen",
+  "crates/compiler/infra/sources",
+  "crates/compiler/infra/stack",
+  "crates/compiler/infra/utils",
+  "crates/compiler/infra/kafka",
+  "crates/compiler/irs/ast",
+  "crates/compiler/irs/hir",
+  "crates/compiler/irs/mlir",
+  "crates/compiler/irs/rust",
+  "crates/compiler/irs/flink",
+  "crates/compiler/irs/value",
+  "crates/compiler/passes/ast-prelude",
+  "crates/compiler/passes/ast-to-hir",
+  "crates/compiler/passes/hir-lambda-lift",
+  "crates/compiler/passes/hir-type-inference",
+  "crates/compiler/passes/hir-patcomp",
+  "crates/compiler/passes/hir-monomorphise",
+  "crates/compiler/passes/hir-interpreter",
+  "crates/compiler/passes/hir-reachable",
+  "crates/compiler/passes/hir-to-mlir",
+  "crates/compiler/passes/hir-to-rust",
+  "crates/compiler/passes/hir-to-flink",
+  "crates/compiler/codegen/write-ast",
+  "crates/compiler/codegen/write-hir",
+  "crates/compiler/codegen/write-value",
+  "crates/compiler/codegen/write-mlir",
+  "crates/compiler/codegen/write-rust",
+  "crates/compiler/codegen/write-flink",
+  "crates/manager",
+  "crates/runtime",
+  "crates/cloud/api",
+  "crates/cloud/client",
+  "crates/cloud/coordinator",
+  "crates/cloud/io",
+  "crates/cloud/query-compiler",
+  "crates/cloud/worker",
+  "crates/tree-sitter",
+  "crates/logging",
+  "crates/config",
+  "crates/book/mdbook-arc-lang",
+  "crates/book/mdbook-grammar",
+  "crates/book/mdbook-exec",
+  "crates/colors",
+  "crates/repl/completer",
+  "crates/repl/validator",
+  "crates/repl/highlighter",
+  "crates/version",
+]
+
+[workspace.package]
+version = "0.0.0"
+edition = "2021"
+authors = ["Klas Segeljakt", "Frej Drejhammar"]
+homepage = "https://cda-group.github.io/arc"
+repository = "https://github.com/cda-group/arc"
+readme = "README.md"
+
+[workspace.dependencies]
+repl                = { path = "crates/repl" }
+completer           = { path = "crates/repl/completer" }
+validator           = { path = "crates/repl/validator" }
+highlighter         = { path = "crates/repl/highlighter" }
+compiler            = { path = "crates/compiler" }
+config              = { path = "crates/config" }
+info                = { path = "crates/compiler/infra/info" }
+codegen             = { path = "crates/compiler/infra/codegen" }
+build               = { path = "crates/compiler/infra/build" }
+diagnostics         = { path = "crates/compiler/infra/diagnostics" }
+name-gen            = { path = "crates/compiler/infra/name-gen" }
+sources             = { path = "crates/compiler/infra/sources" }
+stack               = { path = "crates/compiler/infra/stack" }
+utils               = { path = "crates/compiler/infra/utils" }
+kafka               = { path = "crates/compiler/infra/kafka" }
+ast                 = { path = "crates/compiler/irs/ast" }
+hir                 = { path = "crates/compiler/irs/hir" }
+rust                = { path = "crates/compiler/irs/rust" }
+mlir                = { path = "crates/compiler/irs/mlir" }
+value               = { path = "crates/compiler/irs/value" }
+parser              = { path = "crates/compiler/passes/parser" }
+lexer               = { path = "crates/compiler/passes/lexer" }
+ast-prelude         = { path = "crates/compiler/passes/ast-prelude" }
+ast-to-hir          = { path = "crates/compiler/passes/ast-to-hir" }
+hir-lambda-lift     = { path = "crates/compiler/passes/hir-lambda-lift" }
+hir-type-inference  = { path = "crates/compiler/passes/hir-type-inference" }
+hir-patcomp         = { path = "crates/compiler/passes/hir-patcomp" }
+hir-monomorphise    = { path = "crates/compiler/passes/hir-monomorphise" }
+hir-interpreter     = { path = "crates/compiler/passes/hir-interpreter" }
+hir-reachable       = { path = "crates/compiler/passes/hir-reachable" }
+hir-to-mlir         = { path = "crates/compiler/passes/hir-to-mlir" }
+hir-to-rust         = { path = "crates/compiler/passes/hir-to-rust" }
+hir-to-flink        = { path = "crates/compiler/passes/hir-to-flink" }
+write-ast           = { path = "crates/compiler/codegen/write-ast" }
+write-hir           = { path = "crates/compiler/codegen/write-hir" }
+write-value         = { path = "crates/compiler/codegen/write-value" }
+write-rust          = { path = "crates/compiler/codegen/write-rust" }
+write-mlir          = { path = "crates/compiler/codegen/write-mlir" }
+write-flink         = { path = "crates/compiler/codegen/write-flink" }
+manager             = { path = "crates/manager" }
+
+runtime             = { path = "crates/runtime" }
+builtins            = { path = "crates/runtime/builtins" }
+formats             = { path = "crates/runtime/formats" }
+macros              = { path = "crates/runtime/macros" }
+runner              = { path = "crates/runtime/runner" }
+state               = { path = "crates/runtime/state" }
+timer               = { path = "crates/runtime/timer" }
+
+logging             = { path = "crates/logging" }
+version             = { path = "crates/version" }
+
+mdbook-arc-lang     = { path = "crates/book/mdbook-arc-lang" }
+mdbook-grammar      = { path = "crates/book/mdbook-grammar" }
+mdbook-exec         = { path = "crates/book/mdbook-exec" }
+colors              = { path = "crates/colors" }
+
+im-rc               = { version = "15.1.0", features = ["serde"] }
+uuid                = { version = "1.4.1" }
+rustyline           = { version = "12.0.0", features = ["derive", "custom-bindings"] }
+ariadne             = { version = "0.3.0" }
+indoc               = { version = "2.0.3" }
+colored             = { version = "2.0.4" }
+regex               = { version = "1.9.3" }
+clap                = { version = "4.3.23", features = ["derive", "string"] }
+shlex               = { version = "1.1.0" }
+anyhow              = { version = "1.0.75" }
+rdkafka             = { version = "0.33.2" }
+tokio               = { version = "1.32.0", features = ["full"] }
+time                = { version = "0.3.25", features = ["serde-human-readable", "std", "macros"] }
+backtrace           = { version = "0.3.68" }
+text-size           = { version = "1.1.1" }
+lalrpop             = { version = "0.20.0", features = [ "lexer" ] }
+lalrpop-util        = { version = "0.20.0" }
+logos               = { version = "0.13.0" }
+lazy_static         = { version = "1.4.0" }
+syn                 = { version = "2.0.29", features = ["full", "derive", "extra-traits"] }
+prettyplease        = { version = "0.2.12" }
+syntect             = { version = "5.1.0" }
+proc-macro2         = { version = "1.0.66" }
+quote               = { version = "1.0.33" }
+url                 = { version = "2.4.0", features = ["serde"] }
+derive_more         = { version = "0.99.17", default-features = false, features = ["from", "into", "deref", "deref_mut", "constructor", "as_ref", "unwrap"] }
+rust-format         = { version = "0.3.4", features = ["token_stream"] }
+names               = { version = "0.14.0" }
+csv-core            = { version = "0.1.10" }
+ryu                 = { version = "1.0.15" }
+lexical-parse-float = { version = "0.8.5", default-features = false, features = ["compact"] }
+itoa                = { version = "1.0.9" }
+atoi                = { version = "2.0.0", default-features = false }
+prost               = { version = "0.11.9" }
+hexf                = { version = "0.2.1" }
+bytes               = { version = "1.4.0" }
+serde               = { version = "=1.0.185", features = ["derive", "rc"] }
+serde_derive        = { version = "=1.0.185" }
+float-cmp           = { version = "0.9.0" }
+ort                 = { version = "1.15.2" }
+ndarray             = { version = "0.15.6", features = ["serde"] }
+image               = { version = "0.24.7" }
+sled                = { version = "0.34.7" }
+# tikv-client        = { version = "0.1.0", optional = true }
+serde_json          = { version = "1.0.105" }
+num                 = { version = "0.4.1" }
+num-traits          = { version = "0.2.16" }
+tokio-stream        = { version = "0.1.14" }
+tokio-util          = { version = "0.7.8", features  = ["full"] }
+futures             = { version = "0.3.28" }
+async-tempfile      = { version = "0.4.0" }
+tokio-serde         = { version = "0.8.0", features  = ["json"] }
+tracing             = { version = "0.1.37" }
+tracing-subscriber  = { version = "0.3.17", features = ["env-filter"] }
+arrayvec            = { version = "0.7.4" }
+cfg-if              = { version = "1.0.0" }
+built               = { version = "0.6.1", features = ["chrono"] }
+mdbook              = { version = "0.4.25" }
+directories         = { version = "5.0.1" }
+once_cell           = { version = "1.18.0" }
+polars              = { version = "0.32.1" }
+# ouroboros           = { version = "0.18.0" }
+minus               = { version = "5.4.0", features = ["static_output", "search"] }
+hyper               = { version = "0.14.27" }
+
+[package]
+name = "arc-lang"
+version.workspace = true
+edition.workspace = true
+
+[dependencies]
+compiler.workspace = true
+config.workspace = true
+clap.workspace = true
+anyhow.workspace = true
+tokio.workspace = true
+repl.workspace = true
+logging.workspace = true
+version.workspace = true
+tracing.workspace = true
+
+[dev-dependencies]
+runtime.workspace = true
+ast-prelude.workspace = true
+hir-interpreter.workspace = true
+ast.workspace = true
+
+[profile.dev]
+debug-assertions = false
+rpath = true # ONNX
+
+[profile.release]
+rpath = true # ONNX
+
+[[example]]
+name = "manual"
+path = "examples/manual.rs"
+
+[[example]]
+name = "predict"
+path = "examples/predict.rs"

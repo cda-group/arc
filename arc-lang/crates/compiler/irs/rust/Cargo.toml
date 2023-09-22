@@ -1,0 +1,9 @@
+[package]
+name = "rust"
+version.workspace = true
+edition.workspace = true
+
+[dependencies]
+im-rc.workspace = true
+value.workspace = true
+info.workspace = true

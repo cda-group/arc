@@ -163,3 +163,9 @@ book/
 # zola
 
 static/
+
+# JavaScript
+node_modules/
+
+arc-lang/examples/input/csv
+arc-lang/examples/input/jpg

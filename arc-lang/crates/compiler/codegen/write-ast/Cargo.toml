@@ -1,0 +1,12 @@
+[package]
+name = "write-ast"
+version.workspace = true
+edition.workspace = true
+
+[dependencies]
+ast.workspace = true
+codegen.workspace = true
+im-rc.workspace = true
+quote.workspace = true
+prettyplease.workspace = true
+syntect.workspace = true

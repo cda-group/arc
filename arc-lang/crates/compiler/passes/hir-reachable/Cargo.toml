@@ -1,0 +1,14 @@
+[package]
+name = "hir-reachable"
+version.workspace = true
+edition.workspace = true
+
+[dependencies]
+hir.workspace = true
+im-rc.workspace = true
+stack.workspace = true
+info.workspace = true
+diagnostics.workspace = true
+utils.workspace = true
+value.workspace = true
+builtins.workspace = true

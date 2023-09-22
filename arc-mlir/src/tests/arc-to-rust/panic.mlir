@@ -12,5 +12,4 @@ module @toplevel {
     arc.panic("foo")
     return
   }
-
 }

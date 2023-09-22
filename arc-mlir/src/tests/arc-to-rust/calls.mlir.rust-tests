@@ -1,37 +1,25 @@
-#[rewrite]
 pub fn an_external_fun0(i: i32) -> f32 {
-  return 3.14;
+    return 3.14;
 }
 
-#[rewrite]
 pub fn an_external_fun3(i: i32) -> i32 {
-  return i;
+    return i;
 }
 
-// TODO: Try to find a way to support returning functions into Arc-Lang
-// #[rewrite]
-// pub fn an_external_fun1() -> function!((i32) -> i32) {
-//   return function!(an_external_fun3);
-// }
+pub fn an_external_fun1() -> fn(i32) -> i32 {
+    return an_external_fun3;
+}
 
-#[rewrite]
 pub fn the_name_on_the_rust_side(i: i32) -> i32 {
-  return i;
-}
-
-#[rewrite]
-pub async fn an_external_async_fun() -> i32 {
-  return 1;
+    return i;
 }
 
 use super::*;
-#[rewrite(main)]
 #[test]
 fn test() {
-    assert_eq!(call!(callee_si32_si32(17)), 17);
-    assert_eq!(call!(caller1(4711)), 4711);
-    assert_eq!(call!(call_external2(13)), 13);
-    assert_eq!(call!(call_renamed_local(14)), 14);
-    assert_eq!(call!(defined_in_arc(15)), 15);
-    assert_eq!(block_on(call!(call_external_async())), 1);
+    assert_eq!(callee_si32_si32(17), 17);
+    assert_eq!(caller1(4711), 4711);
+    assert_eq!(call_external2(13), 13);
+    assert_eq!(call_renamed_local(14), 14);
+    assert_eq!(defined_in_arc(15), 15);
 }

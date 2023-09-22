@@ -167,33 +167,37 @@ debug "ARC_MLIR: $ARC_MLIR"
 INSTALLED_SHARED_DIR="$ROOT/../share/arc/"
 if [ -d "${INSTALLED_SHARED_DIR}" ]; then
     # Looks like we are running from the installed location
-    export ARC_RUNTIME_SOURCE_DIR="${INSTALLED_SHARED_DIR}/arc-runtime"
-    export ARC_LANG_STDLIB_PATH="${INSTALLED_SHARED_DIR}/stdlib/stdlib.arc"
-    export ARC_MLIR_STDLIB_PATH="${INSTALLED_SHARED_DIR}/stdlib/stdlib.mlir"
+    export ARC_RUNTIME_DIR="${INSTALLED_SHARED_DIR}/arc-lang/crates/runtime"
+    export ARC_LANG_STDLIB_PATH="${INSTALLED_SHARED_DIR}/stdlib/std.arc"
+    export ARC_MLIR_STDLIB_PATH="${INSTALLED_SHARED_DIR}/stdlib/std.mlir"
 else
     # We are running from the build tree
-    export ARC_RUNTIME_SOURCE_DIR="@ARC_RUNTIME_SRC_DIR@"
-    export ARC_LANG_STDLIB_PATH="@ARC_LANG_SRC_DIR@/stdlib/stdlib.arc"
-    export ARC_MLIR_STDLIB_PATH="@ARC_LANG_SRC_DIR@/stdlib/stdlib.mlir"
+    export ARC_RUNTIME_DIR="@ARC_RUNTIME_DIR@"
+    export ARC_LANG_STDLIB_PATH="@ARC_LANG_DIR@/stdlib/std.arc"
+    export ARC_MLIR_STDLIB_PATH="@ARC_LANG_DIR@/stdlib/std.mlir"
 fi
 
-debug "ARC_RUNTIME_SOURCE_DIR: $ARC_RUNTIME_SOURCE_DIR"
+debug "ARC_RUNTIME_DIR: $ARC_RUNTIME_DIR"
 debug "ARC_LANG_STDLIB_PATH: $ARC_LANG_STDLIB_PATH"
 debug "ARC_MLIR_STDLIB_PATH: $ARC_MLIR_STDLIB_PATH"
 
 mkdir -p "$CRATE_DIR/src"
 
 # Create the Cargo.toml
-envsubst > "$CRATE_TOML_FILE" <<'EOF'
-@CARGO_TOML_TEMPLATE@
+envsubst > ${WORK_DIR}/Cargo.toml <<'EOF'
+[package]
+name = "{TEST_NAME}"
+version = "0.0.0"
+edition = "2021"
+
+[dependencies]
+runtime = { path = "{RUNTIME_DIR}" }
 EOF
 
 [ "$ARC_DEBUG" ] && echo "$CRATE_TOML_FILE: " && cat "$CRATE_TOML_FILE"
 
 envsubst > "$CRATE_MAIN_FILE" <<'EOF'
 // Generated source for $INPUT_FILE
-#![feature(unboxed_closures)]
-#![feature(imported_main)]
 EOF
 
 case $INPUT_FILE in

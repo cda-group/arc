@@ -1,11 +1,10 @@
 #[cfg(test)]
 mod tests {
-use crate::arctorustfuncarguments::*;
-#[rewrite(main)]
-#[test]
-  fn it_works() {
-   assert_eq!(call!(zero_args()), 4711);
-   assert_eq!(call!(one_arg(4711)), 4711);
-   assert_eq!(call!(two_args(4712, 4711)), 4711);
-  }
+    use crate::arctorustfuncarguments::*;
+    #[test]
+    fn it_works() {
+        assert_eq!(zero_args(), 4711);
+        assert_eq!(one_arg(4711), 4711);
+        assert_eq!(two_args(4712, 4711), 4711);
+    }
 }

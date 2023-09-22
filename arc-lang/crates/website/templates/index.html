@@ -1,0 +1,120 @@
+{% extends "juice/templates/index.html" %}
+
+{% block hero %}
+  <script async defer src="https://buttons.github.io/buttons.js"></script>
+  <section class="text-center">
+      <h1 class="heading-text" style="font-size: 50px">
+          Arc-Lang
+      </h1>
+      <h2 class="title-text">
+          A programming language for data stream processing.
+      </h2>
+      <img class="hero-image" style="width: 50%" src="{{ get_url(path="logo.png") }}">
+  </section>
+
+<pre><code style="font-size:18px;">
+<span class="keyword">type</span> Item = {name:<span class="type">String</span>, price:<span class="type">f64</span>, mass:<span class="type">f64</span>};
+<span class="keyword">type</span> Order = {id:<span class="type">u32</span>, items: <span class="type">Vec</span>[Item], t:<span class="type">Time</span>, src_id:<span class="type">u32</span>, dst_id:<span class="type">u32</span>};
+<span class="keyword">type</span> Location = {id:<span class="type">u32</span>, lon:<span class="type">f64</span>, lat:<span class="type">f64</span>};
+
+<span class="keyword">val</span> model: <span class="type">Model</span> = open(<span class="string">"cost_predictor.onnx"</span>).read_bytes().load_model();
+<span class="keyword">val</span> locations: <span class="type">Set</span>[Location] = open(<span class="string">"locations.csv"</span>).read_bytes().decode(csv());
+
+<span class="comment">---</span><span class="keyword">rust</span>
+<span class="keyword">fn</span> distance(src: Location, dst: Location) -> <span class="type">f64</span> { <span class="comment">/* ... */</span> }
+<span class="comment">---</span>
+
+<span class="keyword">from</span> o:Order <span class="keyword">in</span> source(kafka(<span class="string">"127.0.0.1:9092"</span>, <span class="string">"orders"</span>), json())
+<span class="keyword">join</span> src <span class="keyword">in</span> locations <span class="keyword">on</span> src.id == o.src_id
+<span class="keyword">join</span> dst <span class="keyword">in</span> locations <span class="keyword">on</span> dst.id == o.dst_id
+<span class="keyword">with</span> features = [
+  o.items.map(_.mass).sum(),
+  o.t.day().to_f64(),
+  distance(src, dst)
+].into_matrix()
+<span class="keyword">with</span> prediction = model.predict(features)
+<span class="keyword">select</span> {o.id, shipment_cost: prediction[0]}
+<span class="keyword">into</span> sink(kafka(<span class="string">"127.0.0.1:9092"</span>, <span class="string">"cost_predictions"</span>), json());
+</code></pre>
+<style>
+   .keyword {
+     color:rgb(0,95,135);
+     font-weight:bold;
+     line-height:1.5;
+   }
+   .numeric {
+     color:rgb(215,95,0);
+     line-height:1.5;
+   }
+   .string {
+     color:rgb(95,135,0);
+     line-height:1.5;
+   }
+   .builtin {
+     color:rgb(0,135,0);
+     line-height:1.5;
+   }
+   .command {
+     color:rgb(135,0,175);
+     line-height:1.5;
+   }
+   .comment {
+     color:rgb(135,135,135);
+     font-style=italic;
+     line-height:1.5;
+   }
+   .type {
+     color:rgb(215,0,135);
+     font-weight:bold;
+     line-height:1.5;
+   }
+</style>
+
+
+  <div class="explore-more text"
+      onclick="document.getElementById('features').scrollIntoView({behavior: 'smooth'})">
+      <p style="font-size: 30px">
+      Get Started ⇩
+      </p>
+  </div>
+
+  <style>
+      .hero section {
+          padding: 0 5rem;
+      }
+
+      .mySlides {
+          display: none;
+      }
+
+      @media screen and (max-width: 768px) {
+          .hero section {
+              padding: 0 2rem;
+          }
+          .hero-image {
+              display: none
+          }
+      }
+  </style>
+
+  <script>
+  var myIndex = 0;
+  carousel();
+
+  function carousel() {
+    var i;
+    var x = document.getElementsByClassName("mySlides");
+    for (i = 0; i < x.length; i++) {
+      x[i].style.display = "none";  
+    }
+    myIndex++;
+    if (myIndex > x.length) {myIndex = 1}    
+    x[myIndex-1].style.display = "block";  
+    setTimeout(carousel, 2000); // Change image every 2 seconds
+  }
+  </script>
+{% endblock hero %}
+
+{% block favicon %}
+    <link rel="icon" type="image/png" href="/favicon_ico">
+{% endblock favicon %}

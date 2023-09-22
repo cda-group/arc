@@ -1,0 +1,10 @@
+[package]
+name = "write-hir"
+version.workspace = true
+edition.workspace = true
+
+[dependencies]
+hir.workspace = true
+codegen.workspace = true
+im-rc.workspace = true
+colors.workspace = true

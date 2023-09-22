@@ -1,0 +1,7 @@
+[package]
+name = "info"
+version.workspace = true
+edition.workspace = true
+
+[dependencies]
+text-size.workspace = true

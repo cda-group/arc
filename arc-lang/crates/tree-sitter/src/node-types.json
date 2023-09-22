@@ -1,0 +1,7771 @@
+[
+  {
+    "type": "arm",
+    "named": true,
+    "fields": {
+      "arm": {
+        "multiple": true,
+        "required": true,
+        "types": [
+          {
+            "type": "=>",
+            "named": false
+          },
+          {
+            "type": "expr_annot",
+            "named": true
+          },
+          {
+            "type": "expr_array",
+            "named": true
+          },
+          {
+            "type": "expr_array_access",
+            "named": true
+          },
+          {
+            "type": "expr_binary",
+            "named": true
+          },
+          {
+            "type": "expr_break",
+            "named": true
+          },
+          {
+            "type": "expr_call",
+            "named": true
+          },
+          {
+            "type": "expr_constant",
+            "named": true
+          },
+          {
+            "type": "expr_continue",
+            "named": true
+          },
+          {
+            "type": "expr_do",
+            "named": true
+          },
+          {
+            "type": "expr_for",
+            "named": true
+          },
+          {
+            "type": "expr_fun",
+            "named": true
+          },
+          {
+            "type": "expr_if",
+            "named": true
+          },
+          {
+            "type": "expr_loop",
+            "named": true
+          },
+          {
+            "type": "expr_match",
+            "named": true
+          },
+          {
+            "type": "expr_method_call",
+            "named": true
+          },
+          {
+            "type": "expr_name",
+            "named": true
+          },
+          {
+            "type": "expr_paren",
+            "named": true
+          },
+          {
+            "type": "expr_query",
+            "named": true
+          },
+          {
+            "type": "expr_record",
+            "named": true
+          },
+          {
+            "type": "expr_record_access",
+            "named": true
+          },
+          {
+            "type": "expr_return",
+            "named": true
+          },
+          {
+            "type": "expr_rust",
+            "named": true
+          },
+          {
+            "type": "expr_throw",
+            "named": true
+          },
+          {
+            "type": "expr_try",
+            "named": true
+          },
+          {
+            "type": "expr_tuple",
+            "named": true
+          },
+          {
+            "type": "expr_tuple_access",
+            "named": true
+          },
+          {
+            "type": "expr_while",
+            "named": true
+          },
+          {
+            "type": "pattern_annot",
+            "named": true
+          },
+          {
+            "type": "pattern_array",
+            "named": true
+          },
+          {
+            "type": "pattern_array_concat",
+            "named": true
+          },
+          {
+            "type": "pattern_constant",
+            "named": true
+          },
+          {
+            "type": "pattern_name",
+            "named": true
+          },
+          {
+            "type": "pattern_or",
+            "named": true
+          },
+          {
+            "type": "pattern_paren",
+            "named": true
+          },
+          {
+            "type": "pattern_record",
+            "named": true
+          },
+          {
+            "type": "pattern_record_concat",
+            "named": true
+          },
+          {
+            "type": "pattern_tuple",
+            "named": true
+          },
+          {
+            "type": "pattern_variant",
+            "named": true
+          },
+          {
+            "type": "pattern_wild",
+            "named": true
+          }
+        ]
+      }
+    }
+  },
+  {
+    "type": "attribute",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "constant_bool",
+          "named": true
+        },
+        {
+          "type": "constant_char",
+          "named": true
+        },
+        {
+          "type": "constant_float",
+          "named": true
+        },
+        {
+          "type": "constant_int",
+          "named": true
+        },
+        {
+          "type": "constant_string",
+          "named": true
+        },
+        {
+          "type": "constant_unit",
+          "named": true
+        },
+        {
+          "type": "name",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "block",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "expr_annot",
+          "named": true
+        },
+        {
+          "type": "expr_array",
+          "named": true
+        },
+        {
+          "type": "expr_array_access",
+          "named": true
+        },
+        {
+          "type": "expr_binary",
+          "named": true
+        },
+        {
+          "type": "expr_break",
+          "named": true
+        },
+        {
+          "type": "expr_call",
+          "named": true
+        },
+        {
+          "type": "expr_constant",
+          "named": true
+        },
+        {
+          "type": "expr_continue",
+          "named": true
+        },
+        {
+          "type": "expr_do",
+          "named": true
+        },
+        {
+          "type": "expr_for",
+          "named": true
+        },
+        {
+          "type": "expr_fun",
+          "named": true
+        },
+        {
+          "type": "expr_if",
+          "named": true
+        },
+        {
+          "type": "expr_loop",
+          "named": true
+        },
+        {
+          "type": "expr_match",
+          "named": true
+        },
+        {
+          "type": "expr_method_call",
+          "named": true
+        },
+        {
+          "type": "expr_name",
+          "named": true
+        },
+        {
+          "type": "expr_paren",
+          "named": true
+        },
+        {
+          "type": "expr_query",
+          "named": true
+        },
+        {
+          "type": "expr_record",
+          "named": true
+        },
+        {
+          "type": "expr_record_access",
+          "named": true
+        },
+        {
+          "type": "expr_return",
+          "named": true
+        },
+        {
+          "type": "expr_rust",
+          "named": true
+        },
+        {
+          "type": "expr_throw",
+          "named": true
+        },
+        {
+          "type": "expr_try",
+          "named": true
+        },
+        {
+          "type": "expr_tuple",
+          "named": true
+        },
+        {
+          "type": "expr_tuple_access",
+          "named": true
+        },
+        {
+          "type": "expr_while",
+          "named": true
+        },
+        {
+          "type": "stmt_code",
+          "named": true
+        },
+        {
+          "type": "stmt_def",
+          "named": true
+        },
+        {
+          "type": "stmt_enum",
+          "named": true
+        },
+        {
+          "type": "stmt_expr",
+          "named": true
+        },
+        {
+          "type": "stmt_type",
+          "named": true
+        },
+        {
+          "type": "stmt_val",
+          "named": true
+        },
+        {
+          "type": "stmt_var",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "code",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "constant_bool",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "constant_char",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "constant_string",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "string_content",
+          "named": true
+        },
+        {
+          "type": "string_interpolation",
+          "named": true
+        },
+        {
+          "type": "string_quote",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "constant_unit",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "expr_annot",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "expr_annot",
+          "named": true
+        },
+        {
+          "type": "expr_array",
+          "named": true
+        },
+        {
+          "type": "expr_array_access",
+          "named": true
+        },
+        {
+          "type": "expr_binary",
+          "named": true
+        },
+        {
+          "type": "expr_break",
+          "named": true
+        },
+        {
+          "type": "expr_call",
+          "named": true
+        },
+        {
+          "type": "expr_constant",
+          "named": true
+        },
+        {
+          "type": "expr_continue",
+          "named": true
+        },
+        {
+          "type": "expr_do",
+          "named": true
+        },
+        {
+          "type": "expr_for",
+          "named": true
+        },
+        {
+          "type": "expr_fun",
+          "named": true
+        },
+        {
+          "type": "expr_if",
+          "named": true
+        },
+        {
+          "type": "expr_loop",
+          "named": true
+        },
+        {
+          "type": "expr_match",
+          "named": true
+        },
+        {
+          "type": "expr_method_call",
+          "named": true
+        },
+        {
+          "type": "expr_name",
+          "named": true
+        },
+        {
+          "type": "expr_paren",
+          "named": true
+        },
+        {
+          "type": "expr_query",
+          "named": true
+        },
+        {
+          "type": "expr_record",
+          "named": true
+        },
+        {
+          "type": "expr_record_access",
+          "named": true
+        },
+        {
+          "type": "expr_return",
+          "named": true
+        },
+        {
+          "type": "expr_rust",
+          "named": true
+        },
+        {
+          "type": "expr_throw",
+          "named": true
+        },
+        {
+          "type": "expr_try",
+          "named": true
+        },
+        {
+          "type": "expr_tuple",
+          "named": true
+        },
+        {
+          "type": "expr_tuple_access",
+          "named": true
+        },
+        {
+          "type": "expr_while",
+          "named": true
+        },
+        {
+          "type": "type_array",
+          "named": true
+        },
+        {
+          "type": "type_array_concat",
+          "named": true
+        },
+        {
+          "type": "type_fun",
+          "named": true
+        },
+        {
+          "type": "type_never",
+          "named": true
+        },
+        {
+          "type": "type_nominal",
+          "named": true
+        },
+        {
+          "type": "type_paren",
+          "named": true
+        },
+        {
+          "type": "type_record",
+          "named": true
+        },
+        {
+          "type": "type_record_concat",
+          "named": true
+        },
+        {
+          "type": "type_tuple",
+          "named": true
+        },
+        {
+          "type": "type_unit",
+          "named": true
+        },
+        {
+          "type": "type_wild",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "expr_array",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "expr_annot",
+          "named": true
+        },
+        {
+          "type": "expr_array",
+          "named": true
+        },
+        {
+          "type": "expr_array_access",
+          "named": true
+        },
+        {
+          "type": "expr_binary",
+          "named": true
+        },
+        {
+          "type": "expr_break",
+          "named": true
+        },
+        {
+          "type": "expr_call",
+          "named": true
+        },
+        {
+          "type": "expr_constant",
+          "named": true
+        },
+        {
+          "type": "expr_continue",
+          "named": true
+        },
+        {
+          "type": "expr_do",
+          "named": true
+        },
+        {
+          "type": "expr_for",
+          "named": true
+        },
+        {
+          "type": "expr_fun",
+          "named": true
+        },
+        {
+          "type": "expr_if",
+          "named": true
+        },
+        {
+          "type": "expr_loop",
+          "named": true
+        },
+        {
+          "type": "expr_match",
+          "named": true
+        },
+        {
+          "type": "expr_method_call",
+          "named": true
+        },
+        {
+          "type": "expr_name",
+          "named": true
+        },
+        {
+          "type": "expr_paren",
+          "named": true
+        },
+        {
+          "type": "expr_query",
+          "named": true
+        },
+        {
+          "type": "expr_record",
+          "named": true
+        },
+        {
+          "type": "expr_record_access",
+          "named": true
+        },
+        {
+          "type": "expr_return",
+          "named": true
+        },
+        {
+          "type": "expr_rust",
+          "named": true
+        },
+        {
+          "type": "expr_throw",
+          "named": true
+        },
+        {
+          "type": "expr_try",
+          "named": true
+        },
+        {
+          "type": "expr_tuple",
+          "named": true
+        },
+        {
+          "type": "expr_tuple_access",
+          "named": true
+        },
+        {
+          "type": "expr_while",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "expr_array_access",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "expr_annot",
+          "named": true
+        },
+        {
+          "type": "expr_array",
+          "named": true
+        },
+        {
+          "type": "expr_array_access",
+          "named": true
+        },
+        {
+          "type": "expr_binary",
+          "named": true
+        },
+        {
+          "type": "expr_break",
+          "named": true
+        },
+        {
+          "type": "expr_call",
+          "named": true
+        },
+        {
+          "type": "expr_constant",
+          "named": true
+        },
+        {
+          "type": "expr_continue",
+          "named": true
+        },
+        {
+          "type": "expr_do",
+          "named": true
+        },
+        {
+          "type": "expr_for",
+          "named": true
+        },
+        {
+          "type": "expr_fun",
+          "named": true
+        },
+        {
+          "type": "expr_if",
+          "named": true
+        },
+        {
+          "type": "expr_loop",
+          "named": true
+        },
+        {
+          "type": "expr_match",
+          "named": true
+        },
+        {
+          "type": "expr_method_call",
+          "named": true
+        },
+        {
+          "type": "expr_name",
+          "named": true
+        },
+        {
+          "type": "expr_paren",
+          "named": true
+        },
+        {
+          "type": "expr_query",
+          "named": true
+        },
+        {
+          "type": "expr_record",
+          "named": true
+        },
+        {
+          "type": "expr_record_access",
+          "named": true
+        },
+        {
+          "type": "expr_return",
+          "named": true
+        },
+        {
+          "type": "expr_rust",
+          "named": true
+        },
+        {
+          "type": "expr_throw",
+          "named": true
+        },
+        {
+          "type": "expr_try",
+          "named": true
+        },
+        {
+          "type": "expr_tuple",
+          "named": true
+        },
+        {
+          "type": "expr_tuple_access",
+          "named": true
+        },
+        {
+          "type": "expr_while",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "expr_binary",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "expr_annot",
+          "named": true
+        },
+        {
+          "type": "expr_array",
+          "named": true
+        },
+        {
+          "type": "expr_array_access",
+          "named": true
+        },
+        {
+          "type": "expr_binary",
+          "named": true
+        },
+        {
+          "type": "expr_break",
+          "named": true
+        },
+        {
+          "type": "expr_call",
+          "named": true
+        },
+        {
+          "type": "expr_constant",
+          "named": true
+        },
+        {
+          "type": "expr_continue",
+          "named": true
+        },
+        {
+          "type": "expr_do",
+          "named": true
+        },
+        {
+          "type": "expr_for",
+          "named": true
+        },
+        {
+          "type": "expr_fun",
+          "named": true
+        },
+        {
+          "type": "expr_if",
+          "named": true
+        },
+        {
+          "type": "expr_loop",
+          "named": true
+        },
+        {
+          "type": "expr_match",
+          "named": true
+        },
+        {
+          "type": "expr_method_call",
+          "named": true
+        },
+        {
+          "type": "expr_name",
+          "named": true
+        },
+        {
+          "type": "expr_paren",
+          "named": true
+        },
+        {
+          "type": "expr_query",
+          "named": true
+        },
+        {
+          "type": "expr_record",
+          "named": true
+        },
+        {
+          "type": "expr_record_access",
+          "named": true
+        },
+        {
+          "type": "expr_return",
+          "named": true
+        },
+        {
+          "type": "expr_rust",
+          "named": true
+        },
+        {
+          "type": "expr_throw",
+          "named": true
+        },
+        {
+          "type": "expr_try",
+          "named": true
+        },
+        {
+          "type": "expr_tuple",
+          "named": true
+        },
+        {
+          "type": "expr_tuple_access",
+          "named": true
+        },
+        {
+          "type": "expr_while",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "expr_break",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": false,
+      "types": [
+        {
+          "type": "expr_annot",
+          "named": true
+        },
+        {
+          "type": "expr_array",
+          "named": true
+        },
+        {
+          "type": "expr_array_access",
+          "named": true
+        },
+        {
+          "type": "expr_binary",
+          "named": true
+        },
+        {
+          "type": "expr_break",
+          "named": true
+        },
+        {
+          "type": "expr_call",
+          "named": true
+        },
+        {
+          "type": "expr_constant",
+          "named": true
+        },
+        {
+          "type": "expr_continue",
+          "named": true
+        },
+        {
+          "type": "expr_do",
+          "named": true
+        },
+        {
+          "type": "expr_for",
+          "named": true
+        },
+        {
+          "type": "expr_fun",
+          "named": true
+        },
+        {
+          "type": "expr_if",
+          "named": true
+        },
+        {
+          "type": "expr_loop",
+          "named": true
+        },
+        {
+          "type": "expr_match",
+          "named": true
+        },
+        {
+          "type": "expr_method_call",
+          "named": true
+        },
+        {
+          "type": "expr_name",
+          "named": true
+        },
+        {
+          "type": "expr_paren",
+          "named": true
+        },
+        {
+          "type": "expr_query",
+          "named": true
+        },
+        {
+          "type": "expr_record",
+          "named": true
+        },
+        {
+          "type": "expr_record_access",
+          "named": true
+        },
+        {
+          "type": "expr_return",
+          "named": true
+        },
+        {
+          "type": "expr_rust",
+          "named": true
+        },
+        {
+          "type": "expr_throw",
+          "named": true
+        },
+        {
+          "type": "expr_try",
+          "named": true
+        },
+        {
+          "type": "expr_tuple",
+          "named": true
+        },
+        {
+          "type": "expr_tuple_access",
+          "named": true
+        },
+        {
+          "type": "expr_while",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "expr_call",
+    "named": true,
+    "fields": {
+      "function": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "expr_annot",
+            "named": true
+          },
+          {
+            "type": "expr_array",
+            "named": true
+          },
+          {
+            "type": "expr_array_access",
+            "named": true
+          },
+          {
+            "type": "expr_binary",
+            "named": true
+          },
+          {
+            "type": "expr_break",
+            "named": true
+          },
+          {
+            "type": "expr_call",
+            "named": true
+          },
+          {
+            "type": "expr_constant",
+            "named": true
+          },
+          {
+            "type": "expr_continue",
+            "named": true
+          },
+          {
+            "type": "expr_do",
+            "named": true
+          },
+          {
+            "type": "expr_for",
+            "named": true
+          },
+          {
+            "type": "expr_fun",
+            "named": true
+          },
+          {
+            "type": "expr_if",
+            "named": true
+          },
+          {
+            "type": "expr_loop",
+            "named": true
+          },
+          {
+            "type": "expr_match",
+            "named": true
+          },
+          {
+            "type": "expr_method_call",
+            "named": true
+          },
+          {
+            "type": "expr_name",
+            "named": true
+          },
+          {
+            "type": "expr_paren",
+            "named": true
+          },
+          {
+            "type": "expr_query",
+            "named": true
+          },
+          {
+            "type": "expr_record",
+            "named": true
+          },
+          {
+            "type": "expr_record_access",
+            "named": true
+          },
+          {
+            "type": "expr_return",
+            "named": true
+          },
+          {
+            "type": "expr_rust",
+            "named": true
+          },
+          {
+            "type": "expr_throw",
+            "named": true
+          },
+          {
+            "type": "expr_try",
+            "named": true
+          },
+          {
+            "type": "expr_tuple",
+            "named": true
+          },
+          {
+            "type": "expr_tuple_access",
+            "named": true
+          },
+          {
+            "type": "expr_while",
+            "named": true
+          }
+        ]
+      }
+    },
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "expr_annot",
+          "named": true
+        },
+        {
+          "type": "expr_array",
+          "named": true
+        },
+        {
+          "type": "expr_array_access",
+          "named": true
+        },
+        {
+          "type": "expr_binary",
+          "named": true
+        },
+        {
+          "type": "expr_break",
+          "named": true
+        },
+        {
+          "type": "expr_call",
+          "named": true
+        },
+        {
+          "type": "expr_constant",
+          "named": true
+        },
+        {
+          "type": "expr_continue",
+          "named": true
+        },
+        {
+          "type": "expr_do",
+          "named": true
+        },
+        {
+          "type": "expr_for",
+          "named": true
+        },
+        {
+          "type": "expr_fun",
+          "named": true
+        },
+        {
+          "type": "expr_if",
+          "named": true
+        },
+        {
+          "type": "expr_loop",
+          "named": true
+        },
+        {
+          "type": "expr_match",
+          "named": true
+        },
+        {
+          "type": "expr_method_call",
+          "named": true
+        },
+        {
+          "type": "expr_name",
+          "named": true
+        },
+        {
+          "type": "expr_paren",
+          "named": true
+        },
+        {
+          "type": "expr_query",
+          "named": true
+        },
+        {
+          "type": "expr_record",
+          "named": true
+        },
+        {
+          "type": "expr_record_access",
+          "named": true
+        },
+        {
+          "type": "expr_return",
+          "named": true
+        },
+        {
+          "type": "expr_rust",
+          "named": true
+        },
+        {
+          "type": "expr_throw",
+          "named": true
+        },
+        {
+          "type": "expr_try",
+          "named": true
+        },
+        {
+          "type": "expr_tuple",
+          "named": true
+        },
+        {
+          "type": "expr_tuple_access",
+          "named": true
+        },
+        {
+          "type": "expr_while",
+          "named": true
+        },
+        {
+          "type": "type_array",
+          "named": true
+        },
+        {
+          "type": "type_array_concat",
+          "named": true
+        },
+        {
+          "type": "type_fun",
+          "named": true
+        },
+        {
+          "type": "type_never",
+          "named": true
+        },
+        {
+          "type": "type_nominal",
+          "named": true
+        },
+        {
+          "type": "type_paren",
+          "named": true
+        },
+        {
+          "type": "type_record",
+          "named": true
+        },
+        {
+          "type": "type_record_concat",
+          "named": true
+        },
+        {
+          "type": "type_tuple",
+          "named": true
+        },
+        {
+          "type": "type_unit",
+          "named": true
+        },
+        {
+          "type": "type_wild",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "expr_constant",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "constant_bool",
+          "named": true
+        },
+        {
+          "type": "constant_char",
+          "named": true
+        },
+        {
+          "type": "constant_float",
+          "named": true
+        },
+        {
+          "type": "constant_int",
+          "named": true
+        },
+        {
+          "type": "constant_string",
+          "named": true
+        },
+        {
+          "type": "constant_unit",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "expr_continue",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "expr_do",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "block",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "expr_field",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "expr_field_expr",
+          "named": true
+        },
+        {
+          "type": "expr_field_name",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "expr_field_expr",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "expr_annot",
+          "named": true
+        },
+        {
+          "type": "expr_array",
+          "named": true
+        },
+        {
+          "type": "expr_array_access",
+          "named": true
+        },
+        {
+          "type": "expr_binary",
+          "named": true
+        },
+        {
+          "type": "expr_break",
+          "named": true
+        },
+        {
+          "type": "expr_call",
+          "named": true
+        },
+        {
+          "type": "expr_constant",
+          "named": true
+        },
+        {
+          "type": "expr_continue",
+          "named": true
+        },
+        {
+          "type": "expr_do",
+          "named": true
+        },
+        {
+          "type": "expr_for",
+          "named": true
+        },
+        {
+          "type": "expr_fun",
+          "named": true
+        },
+        {
+          "type": "expr_if",
+          "named": true
+        },
+        {
+          "type": "expr_loop",
+          "named": true
+        },
+        {
+          "type": "expr_match",
+          "named": true
+        },
+        {
+          "type": "expr_method_call",
+          "named": true
+        },
+        {
+          "type": "expr_name",
+          "named": true
+        },
+        {
+          "type": "expr_paren",
+          "named": true
+        },
+        {
+          "type": "expr_query",
+          "named": true
+        },
+        {
+          "type": "expr_record",
+          "named": true
+        },
+        {
+          "type": "expr_record_access",
+          "named": true
+        },
+        {
+          "type": "expr_return",
+          "named": true
+        },
+        {
+          "type": "expr_rust",
+          "named": true
+        },
+        {
+          "type": "expr_throw",
+          "named": true
+        },
+        {
+          "type": "expr_try",
+          "named": true
+        },
+        {
+          "type": "expr_tuple",
+          "named": true
+        },
+        {
+          "type": "expr_tuple_access",
+          "named": true
+        },
+        {
+          "type": "expr_while",
+          "named": true
+        },
+        {
+          "type": "name",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "expr_field_name",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "expr_annot",
+          "named": true
+        },
+        {
+          "type": "expr_array",
+          "named": true
+        },
+        {
+          "type": "expr_array_access",
+          "named": true
+        },
+        {
+          "type": "expr_binary",
+          "named": true
+        },
+        {
+          "type": "expr_break",
+          "named": true
+        },
+        {
+          "type": "expr_call",
+          "named": true
+        },
+        {
+          "type": "expr_constant",
+          "named": true
+        },
+        {
+          "type": "expr_continue",
+          "named": true
+        },
+        {
+          "type": "expr_do",
+          "named": true
+        },
+        {
+          "type": "expr_for",
+          "named": true
+        },
+        {
+          "type": "expr_fun",
+          "named": true
+        },
+        {
+          "type": "expr_if",
+          "named": true
+        },
+        {
+          "type": "expr_loop",
+          "named": true
+        },
+        {
+          "type": "expr_match",
+          "named": true
+        },
+        {
+          "type": "expr_method_call",
+          "named": true
+        },
+        {
+          "type": "expr_name",
+          "named": true
+        },
+        {
+          "type": "expr_paren",
+          "named": true
+        },
+        {
+          "type": "expr_query",
+          "named": true
+        },
+        {
+          "type": "expr_record",
+          "named": true
+        },
+        {
+          "type": "expr_record_access",
+          "named": true
+        },
+        {
+          "type": "expr_return",
+          "named": true
+        },
+        {
+          "type": "expr_rust",
+          "named": true
+        },
+        {
+          "type": "expr_throw",
+          "named": true
+        },
+        {
+          "type": "expr_try",
+          "named": true
+        },
+        {
+          "type": "expr_tuple",
+          "named": true
+        },
+        {
+          "type": "expr_tuple_access",
+          "named": true
+        },
+        {
+          "type": "expr_while",
+          "named": true
+        },
+        {
+          "type": "name",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "expr_for",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "block",
+          "named": true
+        },
+        {
+          "type": "expr_annot",
+          "named": true
+        },
+        {
+          "type": "expr_array",
+          "named": true
+        },
+        {
+          "type": "expr_array_access",
+          "named": true
+        },
+        {
+          "type": "expr_binary",
+          "named": true
+        },
+        {
+          "type": "expr_break",
+          "named": true
+        },
+        {
+          "type": "expr_call",
+          "named": true
+        },
+        {
+          "type": "expr_constant",
+          "named": true
+        },
+        {
+          "type": "expr_continue",
+          "named": true
+        },
+        {
+          "type": "expr_do",
+          "named": true
+        },
+        {
+          "type": "expr_for",
+          "named": true
+        },
+        {
+          "type": "expr_fun",
+          "named": true
+        },
+        {
+          "type": "expr_if",
+          "named": true
+        },
+        {
+          "type": "expr_loop",
+          "named": true
+        },
+        {
+          "type": "expr_match",
+          "named": true
+        },
+        {
+          "type": "expr_method_call",
+          "named": true
+        },
+        {
+          "type": "expr_name",
+          "named": true
+        },
+        {
+          "type": "expr_paren",
+          "named": true
+        },
+        {
+          "type": "expr_query",
+          "named": true
+        },
+        {
+          "type": "expr_record",
+          "named": true
+        },
+        {
+          "type": "expr_record_access",
+          "named": true
+        },
+        {
+          "type": "expr_return",
+          "named": true
+        },
+        {
+          "type": "expr_rust",
+          "named": true
+        },
+        {
+          "type": "expr_throw",
+          "named": true
+        },
+        {
+          "type": "expr_try",
+          "named": true
+        },
+        {
+          "type": "expr_tuple",
+          "named": true
+        },
+        {
+          "type": "expr_tuple_access",
+          "named": true
+        },
+        {
+          "type": "expr_while",
+          "named": true
+        },
+        {
+          "type": "pattern_annot",
+          "named": true
+        },
+        {
+          "type": "pattern_array",
+          "named": true
+        },
+        {
+          "type": "pattern_array_concat",
+          "named": true
+        },
+        {
+          "type": "pattern_constant",
+          "named": true
+        },
+        {
+          "type": "pattern_name",
+          "named": true
+        },
+        {
+          "type": "pattern_or",
+          "named": true
+        },
+        {
+          "type": "pattern_paren",
+          "named": true
+        },
+        {
+          "type": "pattern_record",
+          "named": true
+        },
+        {
+          "type": "pattern_record_concat",
+          "named": true
+        },
+        {
+          "type": "pattern_tuple",
+          "named": true
+        },
+        {
+          "type": "pattern_variant",
+          "named": true
+        },
+        {
+          "type": "pattern_wild",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "expr_fun",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "block",
+          "named": true
+        },
+        {
+          "type": "expr_annot",
+          "named": true
+        },
+        {
+          "type": "expr_array",
+          "named": true
+        },
+        {
+          "type": "expr_array_access",
+          "named": true
+        },
+        {
+          "type": "expr_binary",
+          "named": true
+        },
+        {
+          "type": "expr_break",
+          "named": true
+        },
+        {
+          "type": "expr_call",
+          "named": true
+        },
+        {
+          "type": "expr_constant",
+          "named": true
+        },
+        {
+          "type": "expr_continue",
+          "named": true
+        },
+        {
+          "type": "expr_do",
+          "named": true
+        },
+        {
+          "type": "expr_for",
+          "named": true
+        },
+        {
+          "type": "expr_fun",
+          "named": true
+        },
+        {
+          "type": "expr_if",
+          "named": true
+        },
+        {
+          "type": "expr_loop",
+          "named": true
+        },
+        {
+          "type": "expr_match",
+          "named": true
+        },
+        {
+          "type": "expr_method_call",
+          "named": true
+        },
+        {
+          "type": "expr_name",
+          "named": true
+        },
+        {
+          "type": "expr_paren",
+          "named": true
+        },
+        {
+          "type": "expr_query",
+          "named": true
+        },
+        {
+          "type": "expr_record",
+          "named": true
+        },
+        {
+          "type": "expr_record_access",
+          "named": true
+        },
+        {
+          "type": "expr_return",
+          "named": true
+        },
+        {
+          "type": "expr_rust",
+          "named": true
+        },
+        {
+          "type": "expr_throw",
+          "named": true
+        },
+        {
+          "type": "expr_try",
+          "named": true
+        },
+        {
+          "type": "expr_tuple",
+          "named": true
+        },
+        {
+          "type": "expr_tuple_access",
+          "named": true
+        },
+        {
+          "type": "expr_while",
+          "named": true
+        },
+        {
+          "type": "pattern_annot",
+          "named": true
+        },
+        {
+          "type": "pattern_array",
+          "named": true
+        },
+        {
+          "type": "pattern_array_concat",
+          "named": true
+        },
+        {
+          "type": "pattern_constant",
+          "named": true
+        },
+        {
+          "type": "pattern_name",
+          "named": true
+        },
+        {
+          "type": "pattern_or",
+          "named": true
+        },
+        {
+          "type": "pattern_paren",
+          "named": true
+        },
+        {
+          "type": "pattern_record",
+          "named": true
+        },
+        {
+          "type": "pattern_record_concat",
+          "named": true
+        },
+        {
+          "type": "pattern_tuple",
+          "named": true
+        },
+        {
+          "type": "pattern_variant",
+          "named": true
+        },
+        {
+          "type": "pattern_wild",
+          "named": true
+        },
+        {
+          "type": "type_array",
+          "named": true
+        },
+        {
+          "type": "type_array_concat",
+          "named": true
+        },
+        {
+          "type": "type_fun",
+          "named": true
+        },
+        {
+          "type": "type_never",
+          "named": true
+        },
+        {
+          "type": "type_nominal",
+          "named": true
+        },
+        {
+          "type": "type_paren",
+          "named": true
+        },
+        {
+          "type": "type_record",
+          "named": true
+        },
+        {
+          "type": "type_record_concat",
+          "named": true
+        },
+        {
+          "type": "type_tuple",
+          "named": true
+        },
+        {
+          "type": "type_unit",
+          "named": true
+        },
+        {
+          "type": "type_wild",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "expr_if",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "block",
+          "named": true
+        },
+        {
+          "type": "expr_annot",
+          "named": true
+        },
+        {
+          "type": "expr_array",
+          "named": true
+        },
+        {
+          "type": "expr_array_access",
+          "named": true
+        },
+        {
+          "type": "expr_binary",
+          "named": true
+        },
+        {
+          "type": "expr_break",
+          "named": true
+        },
+        {
+          "type": "expr_call",
+          "named": true
+        },
+        {
+          "type": "expr_constant",
+          "named": true
+        },
+        {
+          "type": "expr_continue",
+          "named": true
+        },
+        {
+          "type": "expr_do",
+          "named": true
+        },
+        {
+          "type": "expr_for",
+          "named": true
+        },
+        {
+          "type": "expr_fun",
+          "named": true
+        },
+        {
+          "type": "expr_if",
+          "named": true
+        },
+        {
+          "type": "expr_loop",
+          "named": true
+        },
+        {
+          "type": "expr_match",
+          "named": true
+        },
+        {
+          "type": "expr_method_call",
+          "named": true
+        },
+        {
+          "type": "expr_name",
+          "named": true
+        },
+        {
+          "type": "expr_paren",
+          "named": true
+        },
+        {
+          "type": "expr_query",
+          "named": true
+        },
+        {
+          "type": "expr_record",
+          "named": true
+        },
+        {
+          "type": "expr_record_access",
+          "named": true
+        },
+        {
+          "type": "expr_return",
+          "named": true
+        },
+        {
+          "type": "expr_rust",
+          "named": true
+        },
+        {
+          "type": "expr_throw",
+          "named": true
+        },
+        {
+          "type": "expr_try",
+          "named": true
+        },
+        {
+          "type": "expr_tuple",
+          "named": true
+        },
+        {
+          "type": "expr_tuple_access",
+          "named": true
+        },
+        {
+          "type": "expr_while",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "expr_loop",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "block",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "expr_match",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "arm",
+          "named": true
+        },
+        {
+          "type": "expr_annot",
+          "named": true
+        },
+        {
+          "type": "expr_array",
+          "named": true
+        },
+        {
+          "type": "expr_array_access",
+          "named": true
+        },
+        {
+          "type": "expr_binary",
+          "named": true
+        },
+        {
+          "type": "expr_break",
+          "named": true
+        },
+        {
+          "type": "expr_call",
+          "named": true
+        },
+        {
+          "type": "expr_constant",
+          "named": true
+        },
+        {
+          "type": "expr_continue",
+          "named": true
+        },
+        {
+          "type": "expr_do",
+          "named": true
+        },
+        {
+          "type": "expr_for",
+          "named": true
+        },
+        {
+          "type": "expr_fun",
+          "named": true
+        },
+        {
+          "type": "expr_if",
+          "named": true
+        },
+        {
+          "type": "expr_loop",
+          "named": true
+        },
+        {
+          "type": "expr_match",
+          "named": true
+        },
+        {
+          "type": "expr_method_call",
+          "named": true
+        },
+        {
+          "type": "expr_name",
+          "named": true
+        },
+        {
+          "type": "expr_paren",
+          "named": true
+        },
+        {
+          "type": "expr_query",
+          "named": true
+        },
+        {
+          "type": "expr_record",
+          "named": true
+        },
+        {
+          "type": "expr_record_access",
+          "named": true
+        },
+        {
+          "type": "expr_return",
+          "named": true
+        },
+        {
+          "type": "expr_rust",
+          "named": true
+        },
+        {
+          "type": "expr_throw",
+          "named": true
+        },
+        {
+          "type": "expr_try",
+          "named": true
+        },
+        {
+          "type": "expr_tuple",
+          "named": true
+        },
+        {
+          "type": "expr_tuple_access",
+          "named": true
+        },
+        {
+          "type": "expr_while",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "expr_method_call",
+    "named": true,
+    "fields": {
+      "name": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "name",
+            "named": true
+          }
+        ]
+      }
+    },
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "expr_annot",
+          "named": true
+        },
+        {
+          "type": "expr_array",
+          "named": true
+        },
+        {
+          "type": "expr_array_access",
+          "named": true
+        },
+        {
+          "type": "expr_binary",
+          "named": true
+        },
+        {
+          "type": "expr_break",
+          "named": true
+        },
+        {
+          "type": "expr_call",
+          "named": true
+        },
+        {
+          "type": "expr_constant",
+          "named": true
+        },
+        {
+          "type": "expr_continue",
+          "named": true
+        },
+        {
+          "type": "expr_do",
+          "named": true
+        },
+        {
+          "type": "expr_for",
+          "named": true
+        },
+        {
+          "type": "expr_fun",
+          "named": true
+        },
+        {
+          "type": "expr_if",
+          "named": true
+        },
+        {
+          "type": "expr_loop",
+          "named": true
+        },
+        {
+          "type": "expr_match",
+          "named": true
+        },
+        {
+          "type": "expr_method_call",
+          "named": true
+        },
+        {
+          "type": "expr_name",
+          "named": true
+        },
+        {
+          "type": "expr_paren",
+          "named": true
+        },
+        {
+          "type": "expr_query",
+          "named": true
+        },
+        {
+          "type": "expr_record",
+          "named": true
+        },
+        {
+          "type": "expr_record_access",
+          "named": true
+        },
+        {
+          "type": "expr_return",
+          "named": true
+        },
+        {
+          "type": "expr_rust",
+          "named": true
+        },
+        {
+          "type": "expr_throw",
+          "named": true
+        },
+        {
+          "type": "expr_try",
+          "named": true
+        },
+        {
+          "type": "expr_tuple",
+          "named": true
+        },
+        {
+          "type": "expr_tuple_access",
+          "named": true
+        },
+        {
+          "type": "expr_while",
+          "named": true
+        },
+        {
+          "type": "type_array",
+          "named": true
+        },
+        {
+          "type": "type_array_concat",
+          "named": true
+        },
+        {
+          "type": "type_fun",
+          "named": true
+        },
+        {
+          "type": "type_never",
+          "named": true
+        },
+        {
+          "type": "type_nominal",
+          "named": true
+        },
+        {
+          "type": "type_paren",
+          "named": true
+        },
+        {
+          "type": "type_record",
+          "named": true
+        },
+        {
+          "type": "type_record_concat",
+          "named": true
+        },
+        {
+          "type": "type_tuple",
+          "named": true
+        },
+        {
+          "type": "type_unit",
+          "named": true
+        },
+        {
+          "type": "type_wild",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "expr_name",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "name",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "expr_paren",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "expr_annot",
+          "named": true
+        },
+        {
+          "type": "expr_array",
+          "named": true
+        },
+        {
+          "type": "expr_array_access",
+          "named": true
+        },
+        {
+          "type": "expr_binary",
+          "named": true
+        },
+        {
+          "type": "expr_break",
+          "named": true
+        },
+        {
+          "type": "expr_call",
+          "named": true
+        },
+        {
+          "type": "expr_constant",
+          "named": true
+        },
+        {
+          "type": "expr_continue",
+          "named": true
+        },
+        {
+          "type": "expr_do",
+          "named": true
+        },
+        {
+          "type": "expr_for",
+          "named": true
+        },
+        {
+          "type": "expr_fun",
+          "named": true
+        },
+        {
+          "type": "expr_if",
+          "named": true
+        },
+        {
+          "type": "expr_loop",
+          "named": true
+        },
+        {
+          "type": "expr_match",
+          "named": true
+        },
+        {
+          "type": "expr_method_call",
+          "named": true
+        },
+        {
+          "type": "expr_name",
+          "named": true
+        },
+        {
+          "type": "expr_paren",
+          "named": true
+        },
+        {
+          "type": "expr_query",
+          "named": true
+        },
+        {
+          "type": "expr_record",
+          "named": true
+        },
+        {
+          "type": "expr_record_access",
+          "named": true
+        },
+        {
+          "type": "expr_return",
+          "named": true
+        },
+        {
+          "type": "expr_rust",
+          "named": true
+        },
+        {
+          "type": "expr_throw",
+          "named": true
+        },
+        {
+          "type": "expr_try",
+          "named": true
+        },
+        {
+          "type": "expr_tuple",
+          "named": true
+        },
+        {
+          "type": "expr_tuple_access",
+          "named": true
+        },
+        {
+          "type": "expr_while",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "expr_query",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "query_compute",
+          "named": true
+        },
+        {
+          "type": "query_from",
+          "named": true
+        },
+        {
+          "type": "query_group",
+          "named": true
+        },
+        {
+          "type": "query_into",
+          "named": true
+        },
+        {
+          "type": "query_join",
+          "named": true
+        },
+        {
+          "type": "query_order",
+          "named": true
+        },
+        {
+          "type": "query_over",
+          "named": true
+        },
+        {
+          "type": "query_roll",
+          "named": true
+        },
+        {
+          "type": "query_select",
+          "named": true
+        },
+        {
+          "type": "query_union",
+          "named": true
+        },
+        {
+          "type": "query_val",
+          "named": true
+        },
+        {
+          "type": "query_where",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "expr_record",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "expr_field",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "expr_record_access",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "expr_annot",
+          "named": true
+        },
+        {
+          "type": "expr_array",
+          "named": true
+        },
+        {
+          "type": "expr_array_access",
+          "named": true
+        },
+        {
+          "type": "expr_binary",
+          "named": true
+        },
+        {
+          "type": "expr_break",
+          "named": true
+        },
+        {
+          "type": "expr_call",
+          "named": true
+        },
+        {
+          "type": "expr_constant",
+          "named": true
+        },
+        {
+          "type": "expr_continue",
+          "named": true
+        },
+        {
+          "type": "expr_do",
+          "named": true
+        },
+        {
+          "type": "expr_for",
+          "named": true
+        },
+        {
+          "type": "expr_fun",
+          "named": true
+        },
+        {
+          "type": "expr_if",
+          "named": true
+        },
+        {
+          "type": "expr_loop",
+          "named": true
+        },
+        {
+          "type": "expr_match",
+          "named": true
+        },
+        {
+          "type": "expr_method_call",
+          "named": true
+        },
+        {
+          "type": "expr_name",
+          "named": true
+        },
+        {
+          "type": "expr_paren",
+          "named": true
+        },
+        {
+          "type": "expr_query",
+          "named": true
+        },
+        {
+          "type": "expr_record",
+          "named": true
+        },
+        {
+          "type": "expr_record_access",
+          "named": true
+        },
+        {
+          "type": "expr_return",
+          "named": true
+        },
+        {
+          "type": "expr_rust",
+          "named": true
+        },
+        {
+          "type": "expr_throw",
+          "named": true
+        },
+        {
+          "type": "expr_try",
+          "named": true
+        },
+        {
+          "type": "expr_tuple",
+          "named": true
+        },
+        {
+          "type": "expr_tuple_access",
+          "named": true
+        },
+        {
+          "type": "expr_while",
+          "named": true
+        },
+        {
+          "type": "name",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "expr_return",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": false,
+      "types": [
+        {
+          "type": "expr_annot",
+          "named": true
+        },
+        {
+          "type": "expr_array",
+          "named": true
+        },
+        {
+          "type": "expr_array_access",
+          "named": true
+        },
+        {
+          "type": "expr_binary",
+          "named": true
+        },
+        {
+          "type": "expr_break",
+          "named": true
+        },
+        {
+          "type": "expr_call",
+          "named": true
+        },
+        {
+          "type": "expr_constant",
+          "named": true
+        },
+        {
+          "type": "expr_continue",
+          "named": true
+        },
+        {
+          "type": "expr_do",
+          "named": true
+        },
+        {
+          "type": "expr_for",
+          "named": true
+        },
+        {
+          "type": "expr_fun",
+          "named": true
+        },
+        {
+          "type": "expr_if",
+          "named": true
+        },
+        {
+          "type": "expr_loop",
+          "named": true
+        },
+        {
+          "type": "expr_match",
+          "named": true
+        },
+        {
+          "type": "expr_method_call",
+          "named": true
+        },
+        {
+          "type": "expr_name",
+          "named": true
+        },
+        {
+          "type": "expr_paren",
+          "named": true
+        },
+        {
+          "type": "expr_query",
+          "named": true
+        },
+        {
+          "type": "expr_record",
+          "named": true
+        },
+        {
+          "type": "expr_record_access",
+          "named": true
+        },
+        {
+          "type": "expr_return",
+          "named": true
+        },
+        {
+          "type": "expr_rust",
+          "named": true
+        },
+        {
+          "type": "expr_throw",
+          "named": true
+        },
+        {
+          "type": "expr_try",
+          "named": true
+        },
+        {
+          "type": "expr_tuple",
+          "named": true
+        },
+        {
+          "type": "expr_tuple_access",
+          "named": true
+        },
+        {
+          "type": "expr_while",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "expr_rust",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "rust",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "expr_throw",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "expr_annot",
+          "named": true
+        },
+        {
+          "type": "expr_array",
+          "named": true
+        },
+        {
+          "type": "expr_array_access",
+          "named": true
+        },
+        {
+          "type": "expr_binary",
+          "named": true
+        },
+        {
+          "type": "expr_break",
+          "named": true
+        },
+        {
+          "type": "expr_call",
+          "named": true
+        },
+        {
+          "type": "expr_constant",
+          "named": true
+        },
+        {
+          "type": "expr_continue",
+          "named": true
+        },
+        {
+          "type": "expr_do",
+          "named": true
+        },
+        {
+          "type": "expr_for",
+          "named": true
+        },
+        {
+          "type": "expr_fun",
+          "named": true
+        },
+        {
+          "type": "expr_if",
+          "named": true
+        },
+        {
+          "type": "expr_loop",
+          "named": true
+        },
+        {
+          "type": "expr_match",
+          "named": true
+        },
+        {
+          "type": "expr_method_call",
+          "named": true
+        },
+        {
+          "type": "expr_name",
+          "named": true
+        },
+        {
+          "type": "expr_paren",
+          "named": true
+        },
+        {
+          "type": "expr_query",
+          "named": true
+        },
+        {
+          "type": "expr_record",
+          "named": true
+        },
+        {
+          "type": "expr_record_access",
+          "named": true
+        },
+        {
+          "type": "expr_return",
+          "named": true
+        },
+        {
+          "type": "expr_rust",
+          "named": true
+        },
+        {
+          "type": "expr_throw",
+          "named": true
+        },
+        {
+          "type": "expr_try",
+          "named": true
+        },
+        {
+          "type": "expr_tuple",
+          "named": true
+        },
+        {
+          "type": "expr_tuple_access",
+          "named": true
+        },
+        {
+          "type": "expr_while",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "expr_try",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "arm",
+          "named": true
+        },
+        {
+          "type": "block",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "expr_tuple",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "expr_annot",
+          "named": true
+        },
+        {
+          "type": "expr_array",
+          "named": true
+        },
+        {
+          "type": "expr_array_access",
+          "named": true
+        },
+        {
+          "type": "expr_binary",
+          "named": true
+        },
+        {
+          "type": "expr_break",
+          "named": true
+        },
+        {
+          "type": "expr_call",
+          "named": true
+        },
+        {
+          "type": "expr_constant",
+          "named": true
+        },
+        {
+          "type": "expr_continue",
+          "named": true
+        },
+        {
+          "type": "expr_do",
+          "named": true
+        },
+        {
+          "type": "expr_for",
+          "named": true
+        },
+        {
+          "type": "expr_fun",
+          "named": true
+        },
+        {
+          "type": "expr_if",
+          "named": true
+        },
+        {
+          "type": "expr_loop",
+          "named": true
+        },
+        {
+          "type": "expr_match",
+          "named": true
+        },
+        {
+          "type": "expr_method_call",
+          "named": true
+        },
+        {
+          "type": "expr_name",
+          "named": true
+        },
+        {
+          "type": "expr_paren",
+          "named": true
+        },
+        {
+          "type": "expr_query",
+          "named": true
+        },
+        {
+          "type": "expr_record",
+          "named": true
+        },
+        {
+          "type": "expr_record_access",
+          "named": true
+        },
+        {
+          "type": "expr_return",
+          "named": true
+        },
+        {
+          "type": "expr_rust",
+          "named": true
+        },
+        {
+          "type": "expr_throw",
+          "named": true
+        },
+        {
+          "type": "expr_try",
+          "named": true
+        },
+        {
+          "type": "expr_tuple",
+          "named": true
+        },
+        {
+          "type": "expr_tuple_access",
+          "named": true
+        },
+        {
+          "type": "expr_while",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "expr_tuple_access",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "expr_annot",
+          "named": true
+        },
+        {
+          "type": "expr_array",
+          "named": true
+        },
+        {
+          "type": "expr_array_access",
+          "named": true
+        },
+        {
+          "type": "expr_binary",
+          "named": true
+        },
+        {
+          "type": "expr_break",
+          "named": true
+        },
+        {
+          "type": "expr_call",
+          "named": true
+        },
+        {
+          "type": "expr_constant",
+          "named": true
+        },
+        {
+          "type": "expr_continue",
+          "named": true
+        },
+        {
+          "type": "expr_do",
+          "named": true
+        },
+        {
+          "type": "expr_for",
+          "named": true
+        },
+        {
+          "type": "expr_fun",
+          "named": true
+        },
+        {
+          "type": "expr_if",
+          "named": true
+        },
+        {
+          "type": "expr_loop",
+          "named": true
+        },
+        {
+          "type": "expr_match",
+          "named": true
+        },
+        {
+          "type": "expr_method_call",
+          "named": true
+        },
+        {
+          "type": "expr_name",
+          "named": true
+        },
+        {
+          "type": "expr_paren",
+          "named": true
+        },
+        {
+          "type": "expr_query",
+          "named": true
+        },
+        {
+          "type": "expr_record",
+          "named": true
+        },
+        {
+          "type": "expr_record_access",
+          "named": true
+        },
+        {
+          "type": "expr_return",
+          "named": true
+        },
+        {
+          "type": "expr_rust",
+          "named": true
+        },
+        {
+          "type": "expr_throw",
+          "named": true
+        },
+        {
+          "type": "expr_try",
+          "named": true
+        },
+        {
+          "type": "expr_tuple",
+          "named": true
+        },
+        {
+          "type": "expr_tuple_access",
+          "named": true
+        },
+        {
+          "type": "expr_while",
+          "named": true
+        },
+        {
+          "type": "index",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "expr_while",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "block",
+          "named": true
+        },
+        {
+          "type": "expr_annot",
+          "named": true
+        },
+        {
+          "type": "expr_array",
+          "named": true
+        },
+        {
+          "type": "expr_array_access",
+          "named": true
+        },
+        {
+          "type": "expr_binary",
+          "named": true
+        },
+        {
+          "type": "expr_break",
+          "named": true
+        },
+        {
+          "type": "expr_call",
+          "named": true
+        },
+        {
+          "type": "expr_constant",
+          "named": true
+        },
+        {
+          "type": "expr_continue",
+          "named": true
+        },
+        {
+          "type": "expr_do",
+          "named": true
+        },
+        {
+          "type": "expr_for",
+          "named": true
+        },
+        {
+          "type": "expr_fun",
+          "named": true
+        },
+        {
+          "type": "expr_if",
+          "named": true
+        },
+        {
+          "type": "expr_loop",
+          "named": true
+        },
+        {
+          "type": "expr_match",
+          "named": true
+        },
+        {
+          "type": "expr_method_call",
+          "named": true
+        },
+        {
+          "type": "expr_name",
+          "named": true
+        },
+        {
+          "type": "expr_paren",
+          "named": true
+        },
+        {
+          "type": "expr_query",
+          "named": true
+        },
+        {
+          "type": "expr_record",
+          "named": true
+        },
+        {
+          "type": "expr_record_access",
+          "named": true
+        },
+        {
+          "type": "expr_return",
+          "named": true
+        },
+        {
+          "type": "expr_rust",
+          "named": true
+        },
+        {
+          "type": "expr_throw",
+          "named": true
+        },
+        {
+          "type": "expr_try",
+          "named": true
+        },
+        {
+          "type": "expr_tuple",
+          "named": true
+        },
+        {
+          "type": "expr_tuple_access",
+          "named": true
+        },
+        {
+          "type": "expr_while",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "generic",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "name",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "meta",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "attribute",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "pattern_annot",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "pattern_annot",
+          "named": true
+        },
+        {
+          "type": "pattern_array",
+          "named": true
+        },
+        {
+          "type": "pattern_array_concat",
+          "named": true
+        },
+        {
+          "type": "pattern_constant",
+          "named": true
+        },
+        {
+          "type": "pattern_name",
+          "named": true
+        },
+        {
+          "type": "pattern_or",
+          "named": true
+        },
+        {
+          "type": "pattern_paren",
+          "named": true
+        },
+        {
+          "type": "pattern_record",
+          "named": true
+        },
+        {
+          "type": "pattern_record_concat",
+          "named": true
+        },
+        {
+          "type": "pattern_tuple",
+          "named": true
+        },
+        {
+          "type": "pattern_variant",
+          "named": true
+        },
+        {
+          "type": "pattern_wild",
+          "named": true
+        },
+        {
+          "type": "type_array",
+          "named": true
+        },
+        {
+          "type": "type_array_concat",
+          "named": true
+        },
+        {
+          "type": "type_fun",
+          "named": true
+        },
+        {
+          "type": "type_never",
+          "named": true
+        },
+        {
+          "type": "type_nominal",
+          "named": true
+        },
+        {
+          "type": "type_paren",
+          "named": true
+        },
+        {
+          "type": "type_record",
+          "named": true
+        },
+        {
+          "type": "type_record_concat",
+          "named": true
+        },
+        {
+          "type": "type_tuple",
+          "named": true
+        },
+        {
+          "type": "type_unit",
+          "named": true
+        },
+        {
+          "type": "type_wild",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "pattern_array",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "pattern_annot",
+          "named": true
+        },
+        {
+          "type": "pattern_array",
+          "named": true
+        },
+        {
+          "type": "pattern_array_concat",
+          "named": true
+        },
+        {
+          "type": "pattern_constant",
+          "named": true
+        },
+        {
+          "type": "pattern_name",
+          "named": true
+        },
+        {
+          "type": "pattern_or",
+          "named": true
+        },
+        {
+          "type": "pattern_paren",
+          "named": true
+        },
+        {
+          "type": "pattern_record",
+          "named": true
+        },
+        {
+          "type": "pattern_record_concat",
+          "named": true
+        },
+        {
+          "type": "pattern_tuple",
+          "named": true
+        },
+        {
+          "type": "pattern_variant",
+          "named": true
+        },
+        {
+          "type": "pattern_wild",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "pattern_array_concat",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "pattern_annot",
+          "named": true
+        },
+        {
+          "type": "pattern_array",
+          "named": true
+        },
+        {
+          "type": "pattern_array_concat",
+          "named": true
+        },
+        {
+          "type": "pattern_constant",
+          "named": true
+        },
+        {
+          "type": "pattern_name",
+          "named": true
+        },
+        {
+          "type": "pattern_or",
+          "named": true
+        },
+        {
+          "type": "pattern_paren",
+          "named": true
+        },
+        {
+          "type": "pattern_record",
+          "named": true
+        },
+        {
+          "type": "pattern_record_concat",
+          "named": true
+        },
+        {
+          "type": "pattern_tuple",
+          "named": true
+        },
+        {
+          "type": "pattern_variant",
+          "named": true
+        },
+        {
+          "type": "pattern_wild",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "pattern_constant",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "constant_bool",
+          "named": true
+        },
+        {
+          "type": "constant_char",
+          "named": true
+        },
+        {
+          "type": "constant_float",
+          "named": true
+        },
+        {
+          "type": "constant_int",
+          "named": true
+        },
+        {
+          "type": "constant_string",
+          "named": true
+        },
+        {
+          "type": "constant_unit",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "pattern_field",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "name",
+          "named": true
+        },
+        {
+          "type": "pattern_annot",
+          "named": true
+        },
+        {
+          "type": "pattern_array",
+          "named": true
+        },
+        {
+          "type": "pattern_array_concat",
+          "named": true
+        },
+        {
+          "type": "pattern_constant",
+          "named": true
+        },
+        {
+          "type": "pattern_name",
+          "named": true
+        },
+        {
+          "type": "pattern_or",
+          "named": true
+        },
+        {
+          "type": "pattern_paren",
+          "named": true
+        },
+        {
+          "type": "pattern_record",
+          "named": true
+        },
+        {
+          "type": "pattern_record_concat",
+          "named": true
+        },
+        {
+          "type": "pattern_tuple",
+          "named": true
+        },
+        {
+          "type": "pattern_variant",
+          "named": true
+        },
+        {
+          "type": "pattern_wild",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "pattern_name",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "name",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "pattern_or",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "pattern_annot",
+          "named": true
+        },
+        {
+          "type": "pattern_array",
+          "named": true
+        },
+        {
+          "type": "pattern_array_concat",
+          "named": true
+        },
+        {
+          "type": "pattern_constant",
+          "named": true
+        },
+        {
+          "type": "pattern_name",
+          "named": true
+        },
+        {
+          "type": "pattern_or",
+          "named": true
+        },
+        {
+          "type": "pattern_paren",
+          "named": true
+        },
+        {
+          "type": "pattern_record",
+          "named": true
+        },
+        {
+          "type": "pattern_record_concat",
+          "named": true
+        },
+        {
+          "type": "pattern_tuple",
+          "named": true
+        },
+        {
+          "type": "pattern_variant",
+          "named": true
+        },
+        {
+          "type": "pattern_wild",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "pattern_paren",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "pattern_annot",
+          "named": true
+        },
+        {
+          "type": "pattern_array",
+          "named": true
+        },
+        {
+          "type": "pattern_array_concat",
+          "named": true
+        },
+        {
+          "type": "pattern_constant",
+          "named": true
+        },
+        {
+          "type": "pattern_name",
+          "named": true
+        },
+        {
+          "type": "pattern_or",
+          "named": true
+        },
+        {
+          "type": "pattern_paren",
+          "named": true
+        },
+        {
+          "type": "pattern_record",
+          "named": true
+        },
+        {
+          "type": "pattern_record_concat",
+          "named": true
+        },
+        {
+          "type": "pattern_tuple",
+          "named": true
+        },
+        {
+          "type": "pattern_variant",
+          "named": true
+        },
+        {
+          "type": "pattern_wild",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "pattern_record",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "pattern_field",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "pattern_record_concat",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "pattern_annot",
+          "named": true
+        },
+        {
+          "type": "pattern_array",
+          "named": true
+        },
+        {
+          "type": "pattern_array_concat",
+          "named": true
+        },
+        {
+          "type": "pattern_constant",
+          "named": true
+        },
+        {
+          "type": "pattern_name",
+          "named": true
+        },
+        {
+          "type": "pattern_or",
+          "named": true
+        },
+        {
+          "type": "pattern_paren",
+          "named": true
+        },
+        {
+          "type": "pattern_record",
+          "named": true
+        },
+        {
+          "type": "pattern_record_concat",
+          "named": true
+        },
+        {
+          "type": "pattern_tuple",
+          "named": true
+        },
+        {
+          "type": "pattern_variant",
+          "named": true
+        },
+        {
+          "type": "pattern_wild",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "pattern_tuple",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "pattern_annot",
+          "named": true
+        },
+        {
+          "type": "pattern_array",
+          "named": true
+        },
+        {
+          "type": "pattern_array_concat",
+          "named": true
+        },
+        {
+          "type": "pattern_constant",
+          "named": true
+        },
+        {
+          "type": "pattern_name",
+          "named": true
+        },
+        {
+          "type": "pattern_or",
+          "named": true
+        },
+        {
+          "type": "pattern_paren",
+          "named": true
+        },
+        {
+          "type": "pattern_record",
+          "named": true
+        },
+        {
+          "type": "pattern_record_concat",
+          "named": true
+        },
+        {
+          "type": "pattern_tuple",
+          "named": true
+        },
+        {
+          "type": "pattern_variant",
+          "named": true
+        },
+        {
+          "type": "pattern_wild",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "pattern_variant",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "pattern_annot",
+          "named": true
+        },
+        {
+          "type": "pattern_array",
+          "named": true
+        },
+        {
+          "type": "pattern_array_concat",
+          "named": true
+        },
+        {
+          "type": "pattern_constant",
+          "named": true
+        },
+        {
+          "type": "pattern_field",
+          "named": true
+        },
+        {
+          "type": "pattern_name",
+          "named": true
+        },
+        {
+          "type": "pattern_or",
+          "named": true
+        },
+        {
+          "type": "pattern_paren",
+          "named": true
+        },
+        {
+          "type": "pattern_record",
+          "named": true
+        },
+        {
+          "type": "pattern_record_concat",
+          "named": true
+        },
+        {
+          "type": "pattern_tuple",
+          "named": true
+        },
+        {
+          "type": "pattern_variant",
+          "named": true
+        },
+        {
+          "type": "pattern_wild",
+          "named": true
+        },
+        {
+          "type": "variant_name",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "pattern_wild",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "program",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "stmt_code",
+          "named": true
+        },
+        {
+          "type": "stmt_def",
+          "named": true
+        },
+        {
+          "type": "stmt_enum",
+          "named": true
+        },
+        {
+          "type": "stmt_expr",
+          "named": true
+        },
+        {
+          "type": "stmt_type",
+          "named": true
+        },
+        {
+          "type": "stmt_val",
+          "named": true
+        },
+        {
+          "type": "stmt_var",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "query_compute",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "expr_annot",
+          "named": true
+        },
+        {
+          "type": "expr_array",
+          "named": true
+        },
+        {
+          "type": "expr_array_access",
+          "named": true
+        },
+        {
+          "type": "expr_binary",
+          "named": true
+        },
+        {
+          "type": "expr_break",
+          "named": true
+        },
+        {
+          "type": "expr_call",
+          "named": true
+        },
+        {
+          "type": "expr_constant",
+          "named": true
+        },
+        {
+          "type": "expr_continue",
+          "named": true
+        },
+        {
+          "type": "expr_do",
+          "named": true
+        },
+        {
+          "type": "expr_for",
+          "named": true
+        },
+        {
+          "type": "expr_fun",
+          "named": true
+        },
+        {
+          "type": "expr_if",
+          "named": true
+        },
+        {
+          "type": "expr_loop",
+          "named": true
+        },
+        {
+          "type": "expr_match",
+          "named": true
+        },
+        {
+          "type": "expr_method_call",
+          "named": true
+        },
+        {
+          "type": "expr_name",
+          "named": true
+        },
+        {
+          "type": "expr_paren",
+          "named": true
+        },
+        {
+          "type": "expr_query",
+          "named": true
+        },
+        {
+          "type": "expr_record",
+          "named": true
+        },
+        {
+          "type": "expr_record_access",
+          "named": true
+        },
+        {
+          "type": "expr_return",
+          "named": true
+        },
+        {
+          "type": "expr_rust",
+          "named": true
+        },
+        {
+          "type": "expr_throw",
+          "named": true
+        },
+        {
+          "type": "expr_try",
+          "named": true
+        },
+        {
+          "type": "expr_tuple",
+          "named": true
+        },
+        {
+          "type": "expr_tuple_access",
+          "named": true
+        },
+        {
+          "type": "expr_while",
+          "named": true
+        },
+        {
+          "type": "name",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "query_from",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "expr_annot",
+          "named": true
+        },
+        {
+          "type": "expr_array",
+          "named": true
+        },
+        {
+          "type": "expr_array_access",
+          "named": true
+        },
+        {
+          "type": "expr_binary",
+          "named": true
+        },
+        {
+          "type": "expr_break",
+          "named": true
+        },
+        {
+          "type": "expr_call",
+          "named": true
+        },
+        {
+          "type": "expr_constant",
+          "named": true
+        },
+        {
+          "type": "expr_continue",
+          "named": true
+        },
+        {
+          "type": "expr_do",
+          "named": true
+        },
+        {
+          "type": "expr_for",
+          "named": true
+        },
+        {
+          "type": "expr_fun",
+          "named": true
+        },
+        {
+          "type": "expr_if",
+          "named": true
+        },
+        {
+          "type": "expr_loop",
+          "named": true
+        },
+        {
+          "type": "expr_match",
+          "named": true
+        },
+        {
+          "type": "expr_method_call",
+          "named": true
+        },
+        {
+          "type": "expr_name",
+          "named": true
+        },
+        {
+          "type": "expr_paren",
+          "named": true
+        },
+        {
+          "type": "expr_query",
+          "named": true
+        },
+        {
+          "type": "expr_record",
+          "named": true
+        },
+        {
+          "type": "expr_record_access",
+          "named": true
+        },
+        {
+          "type": "expr_return",
+          "named": true
+        },
+        {
+          "type": "expr_rust",
+          "named": true
+        },
+        {
+          "type": "expr_throw",
+          "named": true
+        },
+        {
+          "type": "expr_try",
+          "named": true
+        },
+        {
+          "type": "expr_tuple",
+          "named": true
+        },
+        {
+          "type": "expr_tuple_access",
+          "named": true
+        },
+        {
+          "type": "expr_while",
+          "named": true
+        },
+        {
+          "type": "pattern_annot",
+          "named": true
+        },
+        {
+          "type": "pattern_array",
+          "named": true
+        },
+        {
+          "type": "pattern_array_concat",
+          "named": true
+        },
+        {
+          "type": "pattern_constant",
+          "named": true
+        },
+        {
+          "type": "pattern_name",
+          "named": true
+        },
+        {
+          "type": "pattern_or",
+          "named": true
+        },
+        {
+          "type": "pattern_paren",
+          "named": true
+        },
+        {
+          "type": "pattern_record",
+          "named": true
+        },
+        {
+          "type": "pattern_record_concat",
+          "named": true
+        },
+        {
+          "type": "pattern_tuple",
+          "named": true
+        },
+        {
+          "type": "pattern_variant",
+          "named": true
+        },
+        {
+          "type": "pattern_wild",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "query_group",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "expr_annot",
+          "named": true
+        },
+        {
+          "type": "expr_array",
+          "named": true
+        },
+        {
+          "type": "expr_array_access",
+          "named": true
+        },
+        {
+          "type": "expr_binary",
+          "named": true
+        },
+        {
+          "type": "expr_break",
+          "named": true
+        },
+        {
+          "type": "expr_call",
+          "named": true
+        },
+        {
+          "type": "expr_constant",
+          "named": true
+        },
+        {
+          "type": "expr_continue",
+          "named": true
+        },
+        {
+          "type": "expr_do",
+          "named": true
+        },
+        {
+          "type": "expr_for",
+          "named": true
+        },
+        {
+          "type": "expr_fun",
+          "named": true
+        },
+        {
+          "type": "expr_if",
+          "named": true
+        },
+        {
+          "type": "expr_loop",
+          "named": true
+        },
+        {
+          "type": "expr_match",
+          "named": true
+        },
+        {
+          "type": "expr_method_call",
+          "named": true
+        },
+        {
+          "type": "expr_name",
+          "named": true
+        },
+        {
+          "type": "expr_paren",
+          "named": true
+        },
+        {
+          "type": "expr_query",
+          "named": true
+        },
+        {
+          "type": "expr_record",
+          "named": true
+        },
+        {
+          "type": "expr_record_access",
+          "named": true
+        },
+        {
+          "type": "expr_return",
+          "named": true
+        },
+        {
+          "type": "expr_rust",
+          "named": true
+        },
+        {
+          "type": "expr_throw",
+          "named": true
+        },
+        {
+          "type": "expr_try",
+          "named": true
+        },
+        {
+          "type": "expr_tuple",
+          "named": true
+        },
+        {
+          "type": "expr_tuple_access",
+          "named": true
+        },
+        {
+          "type": "expr_while",
+          "named": true
+        },
+        {
+          "type": "name",
+          "named": true
+        },
+        {
+          "type": "query_compute",
+          "named": true
+        },
+        {
+          "type": "query_from",
+          "named": true
+        },
+        {
+          "type": "query_group",
+          "named": true
+        },
+        {
+          "type": "query_into",
+          "named": true
+        },
+        {
+          "type": "query_join",
+          "named": true
+        },
+        {
+          "type": "query_order",
+          "named": true
+        },
+        {
+          "type": "query_over",
+          "named": true
+        },
+        {
+          "type": "query_roll",
+          "named": true
+        },
+        {
+          "type": "query_select",
+          "named": true
+        },
+        {
+          "type": "query_union",
+          "named": true
+        },
+        {
+          "type": "query_val",
+          "named": true
+        },
+        {
+          "type": "query_where",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "query_into",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "expr_annot",
+          "named": true
+        },
+        {
+          "type": "expr_array",
+          "named": true
+        },
+        {
+          "type": "expr_array_access",
+          "named": true
+        },
+        {
+          "type": "expr_binary",
+          "named": true
+        },
+        {
+          "type": "expr_break",
+          "named": true
+        },
+        {
+          "type": "expr_call",
+          "named": true
+        },
+        {
+          "type": "expr_constant",
+          "named": true
+        },
+        {
+          "type": "expr_continue",
+          "named": true
+        },
+        {
+          "type": "expr_do",
+          "named": true
+        },
+        {
+          "type": "expr_for",
+          "named": true
+        },
+        {
+          "type": "expr_fun",
+          "named": true
+        },
+        {
+          "type": "expr_if",
+          "named": true
+        },
+        {
+          "type": "expr_loop",
+          "named": true
+        },
+        {
+          "type": "expr_match",
+          "named": true
+        },
+        {
+          "type": "expr_method_call",
+          "named": true
+        },
+        {
+          "type": "expr_name",
+          "named": true
+        },
+        {
+          "type": "expr_paren",
+          "named": true
+        },
+        {
+          "type": "expr_query",
+          "named": true
+        },
+        {
+          "type": "expr_record",
+          "named": true
+        },
+        {
+          "type": "expr_record_access",
+          "named": true
+        },
+        {
+          "type": "expr_return",
+          "named": true
+        },
+        {
+          "type": "expr_rust",
+          "named": true
+        },
+        {
+          "type": "expr_throw",
+          "named": true
+        },
+        {
+          "type": "expr_try",
+          "named": true
+        },
+        {
+          "type": "expr_tuple",
+          "named": true
+        },
+        {
+          "type": "expr_tuple_access",
+          "named": true
+        },
+        {
+          "type": "expr_while",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "query_join",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "expr_annot",
+          "named": true
+        },
+        {
+          "type": "expr_array",
+          "named": true
+        },
+        {
+          "type": "expr_array_access",
+          "named": true
+        },
+        {
+          "type": "expr_binary",
+          "named": true
+        },
+        {
+          "type": "expr_break",
+          "named": true
+        },
+        {
+          "type": "expr_call",
+          "named": true
+        },
+        {
+          "type": "expr_constant",
+          "named": true
+        },
+        {
+          "type": "expr_continue",
+          "named": true
+        },
+        {
+          "type": "expr_do",
+          "named": true
+        },
+        {
+          "type": "expr_for",
+          "named": true
+        },
+        {
+          "type": "expr_fun",
+          "named": true
+        },
+        {
+          "type": "expr_if",
+          "named": true
+        },
+        {
+          "type": "expr_loop",
+          "named": true
+        },
+        {
+          "type": "expr_match",
+          "named": true
+        },
+        {
+          "type": "expr_method_call",
+          "named": true
+        },
+        {
+          "type": "expr_name",
+          "named": true
+        },
+        {
+          "type": "expr_paren",
+          "named": true
+        },
+        {
+          "type": "expr_query",
+          "named": true
+        },
+        {
+          "type": "expr_record",
+          "named": true
+        },
+        {
+          "type": "expr_record_access",
+          "named": true
+        },
+        {
+          "type": "expr_return",
+          "named": true
+        },
+        {
+          "type": "expr_rust",
+          "named": true
+        },
+        {
+          "type": "expr_throw",
+          "named": true
+        },
+        {
+          "type": "expr_try",
+          "named": true
+        },
+        {
+          "type": "expr_tuple",
+          "named": true
+        },
+        {
+          "type": "expr_tuple_access",
+          "named": true
+        },
+        {
+          "type": "expr_while",
+          "named": true
+        },
+        {
+          "type": "pattern_annot",
+          "named": true
+        },
+        {
+          "type": "pattern_array",
+          "named": true
+        },
+        {
+          "type": "pattern_array_concat",
+          "named": true
+        },
+        {
+          "type": "pattern_constant",
+          "named": true
+        },
+        {
+          "type": "pattern_name",
+          "named": true
+        },
+        {
+          "type": "pattern_or",
+          "named": true
+        },
+        {
+          "type": "pattern_paren",
+          "named": true
+        },
+        {
+          "type": "pattern_record",
+          "named": true
+        },
+        {
+          "type": "pattern_record_concat",
+          "named": true
+        },
+        {
+          "type": "pattern_tuple",
+          "named": true
+        },
+        {
+          "type": "pattern_variant",
+          "named": true
+        },
+        {
+          "type": "pattern_wild",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "query_order",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "expr_annot",
+          "named": true
+        },
+        {
+          "type": "expr_array",
+          "named": true
+        },
+        {
+          "type": "expr_array_access",
+          "named": true
+        },
+        {
+          "type": "expr_binary",
+          "named": true
+        },
+        {
+          "type": "expr_break",
+          "named": true
+        },
+        {
+          "type": "expr_call",
+          "named": true
+        },
+        {
+          "type": "expr_constant",
+          "named": true
+        },
+        {
+          "type": "expr_continue",
+          "named": true
+        },
+        {
+          "type": "expr_do",
+          "named": true
+        },
+        {
+          "type": "expr_for",
+          "named": true
+        },
+        {
+          "type": "expr_fun",
+          "named": true
+        },
+        {
+          "type": "expr_if",
+          "named": true
+        },
+        {
+          "type": "expr_loop",
+          "named": true
+        },
+        {
+          "type": "expr_match",
+          "named": true
+        },
+        {
+          "type": "expr_method_call",
+          "named": true
+        },
+        {
+          "type": "expr_name",
+          "named": true
+        },
+        {
+          "type": "expr_paren",
+          "named": true
+        },
+        {
+          "type": "expr_query",
+          "named": true
+        },
+        {
+          "type": "expr_record",
+          "named": true
+        },
+        {
+          "type": "expr_record_access",
+          "named": true
+        },
+        {
+          "type": "expr_return",
+          "named": true
+        },
+        {
+          "type": "expr_rust",
+          "named": true
+        },
+        {
+          "type": "expr_throw",
+          "named": true
+        },
+        {
+          "type": "expr_try",
+          "named": true
+        },
+        {
+          "type": "expr_tuple",
+          "named": true
+        },
+        {
+          "type": "expr_tuple_access",
+          "named": true
+        },
+        {
+          "type": "expr_while",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "query_over",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "expr_annot",
+          "named": true
+        },
+        {
+          "type": "expr_array",
+          "named": true
+        },
+        {
+          "type": "expr_array_access",
+          "named": true
+        },
+        {
+          "type": "expr_binary",
+          "named": true
+        },
+        {
+          "type": "expr_break",
+          "named": true
+        },
+        {
+          "type": "expr_call",
+          "named": true
+        },
+        {
+          "type": "expr_constant",
+          "named": true
+        },
+        {
+          "type": "expr_continue",
+          "named": true
+        },
+        {
+          "type": "expr_do",
+          "named": true
+        },
+        {
+          "type": "expr_for",
+          "named": true
+        },
+        {
+          "type": "expr_fun",
+          "named": true
+        },
+        {
+          "type": "expr_if",
+          "named": true
+        },
+        {
+          "type": "expr_loop",
+          "named": true
+        },
+        {
+          "type": "expr_match",
+          "named": true
+        },
+        {
+          "type": "expr_method_call",
+          "named": true
+        },
+        {
+          "type": "expr_name",
+          "named": true
+        },
+        {
+          "type": "expr_paren",
+          "named": true
+        },
+        {
+          "type": "expr_query",
+          "named": true
+        },
+        {
+          "type": "expr_record",
+          "named": true
+        },
+        {
+          "type": "expr_record_access",
+          "named": true
+        },
+        {
+          "type": "expr_return",
+          "named": true
+        },
+        {
+          "type": "expr_rust",
+          "named": true
+        },
+        {
+          "type": "expr_throw",
+          "named": true
+        },
+        {
+          "type": "expr_try",
+          "named": true
+        },
+        {
+          "type": "expr_tuple",
+          "named": true
+        },
+        {
+          "type": "expr_tuple_access",
+          "named": true
+        },
+        {
+          "type": "expr_while",
+          "named": true
+        },
+        {
+          "type": "name",
+          "named": true
+        },
+        {
+          "type": "query_compute",
+          "named": true
+        },
+        {
+          "type": "query_from",
+          "named": true
+        },
+        {
+          "type": "query_group",
+          "named": true
+        },
+        {
+          "type": "query_into",
+          "named": true
+        },
+        {
+          "type": "query_join",
+          "named": true
+        },
+        {
+          "type": "query_order",
+          "named": true
+        },
+        {
+          "type": "query_over",
+          "named": true
+        },
+        {
+          "type": "query_roll",
+          "named": true
+        },
+        {
+          "type": "query_select",
+          "named": true
+        },
+        {
+          "type": "query_union",
+          "named": true
+        },
+        {
+          "type": "query_val",
+          "named": true
+        },
+        {
+          "type": "query_where",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "query_roll",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "expr_annot",
+          "named": true
+        },
+        {
+          "type": "expr_array",
+          "named": true
+        },
+        {
+          "type": "expr_array_access",
+          "named": true
+        },
+        {
+          "type": "expr_binary",
+          "named": true
+        },
+        {
+          "type": "expr_break",
+          "named": true
+        },
+        {
+          "type": "expr_call",
+          "named": true
+        },
+        {
+          "type": "expr_constant",
+          "named": true
+        },
+        {
+          "type": "expr_continue",
+          "named": true
+        },
+        {
+          "type": "expr_do",
+          "named": true
+        },
+        {
+          "type": "expr_for",
+          "named": true
+        },
+        {
+          "type": "expr_fun",
+          "named": true
+        },
+        {
+          "type": "expr_if",
+          "named": true
+        },
+        {
+          "type": "expr_loop",
+          "named": true
+        },
+        {
+          "type": "expr_match",
+          "named": true
+        },
+        {
+          "type": "expr_method_call",
+          "named": true
+        },
+        {
+          "type": "expr_name",
+          "named": true
+        },
+        {
+          "type": "expr_paren",
+          "named": true
+        },
+        {
+          "type": "expr_query",
+          "named": true
+        },
+        {
+          "type": "expr_record",
+          "named": true
+        },
+        {
+          "type": "expr_record_access",
+          "named": true
+        },
+        {
+          "type": "expr_return",
+          "named": true
+        },
+        {
+          "type": "expr_rust",
+          "named": true
+        },
+        {
+          "type": "expr_throw",
+          "named": true
+        },
+        {
+          "type": "expr_try",
+          "named": true
+        },
+        {
+          "type": "expr_tuple",
+          "named": true
+        },
+        {
+          "type": "expr_tuple_access",
+          "named": true
+        },
+        {
+          "type": "expr_while",
+          "named": true
+        },
+        {
+          "type": "name",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "query_select",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "expr_annot",
+          "named": true
+        },
+        {
+          "type": "expr_array",
+          "named": true
+        },
+        {
+          "type": "expr_array_access",
+          "named": true
+        },
+        {
+          "type": "expr_binary",
+          "named": true
+        },
+        {
+          "type": "expr_break",
+          "named": true
+        },
+        {
+          "type": "expr_call",
+          "named": true
+        },
+        {
+          "type": "expr_constant",
+          "named": true
+        },
+        {
+          "type": "expr_continue",
+          "named": true
+        },
+        {
+          "type": "expr_do",
+          "named": true
+        },
+        {
+          "type": "expr_for",
+          "named": true
+        },
+        {
+          "type": "expr_fun",
+          "named": true
+        },
+        {
+          "type": "expr_if",
+          "named": true
+        },
+        {
+          "type": "expr_loop",
+          "named": true
+        },
+        {
+          "type": "expr_match",
+          "named": true
+        },
+        {
+          "type": "expr_method_call",
+          "named": true
+        },
+        {
+          "type": "expr_name",
+          "named": true
+        },
+        {
+          "type": "expr_paren",
+          "named": true
+        },
+        {
+          "type": "expr_query",
+          "named": true
+        },
+        {
+          "type": "expr_record",
+          "named": true
+        },
+        {
+          "type": "expr_record_access",
+          "named": true
+        },
+        {
+          "type": "expr_return",
+          "named": true
+        },
+        {
+          "type": "expr_rust",
+          "named": true
+        },
+        {
+          "type": "expr_throw",
+          "named": true
+        },
+        {
+          "type": "expr_try",
+          "named": true
+        },
+        {
+          "type": "expr_tuple",
+          "named": true
+        },
+        {
+          "type": "expr_tuple_access",
+          "named": true
+        },
+        {
+          "type": "expr_while",
+          "named": true
+        },
+        {
+          "type": "name",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "query_union",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "expr_annot",
+          "named": true
+        },
+        {
+          "type": "expr_array",
+          "named": true
+        },
+        {
+          "type": "expr_array_access",
+          "named": true
+        },
+        {
+          "type": "expr_binary",
+          "named": true
+        },
+        {
+          "type": "expr_break",
+          "named": true
+        },
+        {
+          "type": "expr_call",
+          "named": true
+        },
+        {
+          "type": "expr_constant",
+          "named": true
+        },
+        {
+          "type": "expr_continue",
+          "named": true
+        },
+        {
+          "type": "expr_do",
+          "named": true
+        },
+        {
+          "type": "expr_for",
+          "named": true
+        },
+        {
+          "type": "expr_fun",
+          "named": true
+        },
+        {
+          "type": "expr_if",
+          "named": true
+        },
+        {
+          "type": "expr_loop",
+          "named": true
+        },
+        {
+          "type": "expr_match",
+          "named": true
+        },
+        {
+          "type": "expr_method_call",
+          "named": true
+        },
+        {
+          "type": "expr_name",
+          "named": true
+        },
+        {
+          "type": "expr_paren",
+          "named": true
+        },
+        {
+          "type": "expr_query",
+          "named": true
+        },
+        {
+          "type": "expr_record",
+          "named": true
+        },
+        {
+          "type": "expr_record_access",
+          "named": true
+        },
+        {
+          "type": "expr_return",
+          "named": true
+        },
+        {
+          "type": "expr_rust",
+          "named": true
+        },
+        {
+          "type": "expr_throw",
+          "named": true
+        },
+        {
+          "type": "expr_try",
+          "named": true
+        },
+        {
+          "type": "expr_tuple",
+          "named": true
+        },
+        {
+          "type": "expr_tuple_access",
+          "named": true
+        },
+        {
+          "type": "expr_while",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "query_val",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "expr_annot",
+          "named": true
+        },
+        {
+          "type": "expr_array",
+          "named": true
+        },
+        {
+          "type": "expr_array_access",
+          "named": true
+        },
+        {
+          "type": "expr_binary",
+          "named": true
+        },
+        {
+          "type": "expr_break",
+          "named": true
+        },
+        {
+          "type": "expr_call",
+          "named": true
+        },
+        {
+          "type": "expr_constant",
+          "named": true
+        },
+        {
+          "type": "expr_continue",
+          "named": true
+        },
+        {
+          "type": "expr_do",
+          "named": true
+        },
+        {
+          "type": "expr_for",
+          "named": true
+        },
+        {
+          "type": "expr_fun",
+          "named": true
+        },
+        {
+          "type": "expr_if",
+          "named": true
+        },
+        {
+          "type": "expr_loop",
+          "named": true
+        },
+        {
+          "type": "expr_match",
+          "named": true
+        },
+        {
+          "type": "expr_method_call",
+          "named": true
+        },
+        {
+          "type": "expr_name",
+          "named": true
+        },
+        {
+          "type": "expr_paren",
+          "named": true
+        },
+        {
+          "type": "expr_query",
+          "named": true
+        },
+        {
+          "type": "expr_record",
+          "named": true
+        },
+        {
+          "type": "expr_record_access",
+          "named": true
+        },
+        {
+          "type": "expr_return",
+          "named": true
+        },
+        {
+          "type": "expr_rust",
+          "named": true
+        },
+        {
+          "type": "expr_throw",
+          "named": true
+        },
+        {
+          "type": "expr_try",
+          "named": true
+        },
+        {
+          "type": "expr_tuple",
+          "named": true
+        },
+        {
+          "type": "expr_tuple_access",
+          "named": true
+        },
+        {
+          "type": "expr_while",
+          "named": true
+        },
+        {
+          "type": "pattern_annot",
+          "named": true
+        },
+        {
+          "type": "pattern_array",
+          "named": true
+        },
+        {
+          "type": "pattern_array_concat",
+          "named": true
+        },
+        {
+          "type": "pattern_constant",
+          "named": true
+        },
+        {
+          "type": "pattern_name",
+          "named": true
+        },
+        {
+          "type": "pattern_or",
+          "named": true
+        },
+        {
+          "type": "pattern_paren",
+          "named": true
+        },
+        {
+          "type": "pattern_record",
+          "named": true
+        },
+        {
+          "type": "pattern_record_concat",
+          "named": true
+        },
+        {
+          "type": "pattern_tuple",
+          "named": true
+        },
+        {
+          "type": "pattern_variant",
+          "named": true
+        },
+        {
+          "type": "pattern_wild",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "query_where",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "expr_annot",
+          "named": true
+        },
+        {
+          "type": "expr_array",
+          "named": true
+        },
+        {
+          "type": "expr_array_access",
+          "named": true
+        },
+        {
+          "type": "expr_binary",
+          "named": true
+        },
+        {
+          "type": "expr_break",
+          "named": true
+        },
+        {
+          "type": "expr_call",
+          "named": true
+        },
+        {
+          "type": "expr_constant",
+          "named": true
+        },
+        {
+          "type": "expr_continue",
+          "named": true
+        },
+        {
+          "type": "expr_do",
+          "named": true
+        },
+        {
+          "type": "expr_for",
+          "named": true
+        },
+        {
+          "type": "expr_fun",
+          "named": true
+        },
+        {
+          "type": "expr_if",
+          "named": true
+        },
+        {
+          "type": "expr_loop",
+          "named": true
+        },
+        {
+          "type": "expr_match",
+          "named": true
+        },
+        {
+          "type": "expr_method_call",
+          "named": true
+        },
+        {
+          "type": "expr_name",
+          "named": true
+        },
+        {
+          "type": "expr_paren",
+          "named": true
+        },
+        {
+          "type": "expr_query",
+          "named": true
+        },
+        {
+          "type": "expr_record",
+          "named": true
+        },
+        {
+          "type": "expr_record_access",
+          "named": true
+        },
+        {
+          "type": "expr_return",
+          "named": true
+        },
+        {
+          "type": "expr_rust",
+          "named": true
+        },
+        {
+          "type": "expr_throw",
+          "named": true
+        },
+        {
+          "type": "expr_try",
+          "named": true
+        },
+        {
+          "type": "expr_tuple",
+          "named": true
+        },
+        {
+          "type": "expr_tuple_access",
+          "named": true
+        },
+        {
+          "type": "expr_while",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "rust",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "stmt_code",
+    "named": true,
+    "fields": {
+      "code": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "code",
+            "named": true
+          }
+        ]
+      },
+      "lang": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "python",
+            "named": false
+          },
+          {
+            "type": "rust",
+            "named": false
+          }
+        ]
+      }
+    }
+  },
+  {
+    "type": "stmt_def",
+    "named": true,
+    "fields": {
+      "inner": {
+        "multiple": true,
+        "required": true,
+        "types": [
+          {
+            "type": "(",
+            "named": false
+          },
+          {
+            "type": ")",
+            "named": false
+          },
+          {
+            "type": ",",
+            "named": false
+          },
+          {
+            "type": ":",
+            "named": false
+          },
+          {
+            "type": ";",
+            "named": false
+          },
+          {
+            "type": "=",
+            "named": false
+          },
+          {
+            "type": "[",
+            "named": false
+          },
+          {
+            "type": "]",
+            "named": false
+          },
+          {
+            "type": "block",
+            "named": true
+          },
+          {
+            "type": "expr_annot",
+            "named": true
+          },
+          {
+            "type": "expr_array",
+            "named": true
+          },
+          {
+            "type": "expr_array_access",
+            "named": true
+          },
+          {
+            "type": "expr_binary",
+            "named": true
+          },
+          {
+            "type": "expr_break",
+            "named": true
+          },
+          {
+            "type": "expr_call",
+            "named": true
+          },
+          {
+            "type": "expr_constant",
+            "named": true
+          },
+          {
+            "type": "expr_continue",
+            "named": true
+          },
+          {
+            "type": "expr_do",
+            "named": true
+          },
+          {
+            "type": "expr_for",
+            "named": true
+          },
+          {
+            "type": "expr_fun",
+            "named": true
+          },
+          {
+            "type": "expr_if",
+            "named": true
+          },
+          {
+            "type": "expr_loop",
+            "named": true
+          },
+          {
+            "type": "expr_match",
+            "named": true
+          },
+          {
+            "type": "expr_method_call",
+            "named": true
+          },
+          {
+            "type": "expr_name",
+            "named": true
+          },
+          {
+            "type": "expr_paren",
+            "named": true
+          },
+          {
+            "type": "expr_query",
+            "named": true
+          },
+          {
+            "type": "expr_record",
+            "named": true
+          },
+          {
+            "type": "expr_record_access",
+            "named": true
+          },
+          {
+            "type": "expr_return",
+            "named": true
+          },
+          {
+            "type": "expr_rust",
+            "named": true
+          },
+          {
+            "type": "expr_throw",
+            "named": true
+          },
+          {
+            "type": "expr_try",
+            "named": true
+          },
+          {
+            "type": "expr_tuple",
+            "named": true
+          },
+          {
+            "type": "expr_tuple_access",
+            "named": true
+          },
+          {
+            "type": "expr_while",
+            "named": true
+          },
+          {
+            "type": "generic",
+            "named": true
+          },
+          {
+            "type": "pattern_annot",
+            "named": true
+          },
+          {
+            "type": "pattern_array",
+            "named": true
+          },
+          {
+            "type": "pattern_array_concat",
+            "named": true
+          },
+          {
+            "type": "pattern_constant",
+            "named": true
+          },
+          {
+            "type": "pattern_name",
+            "named": true
+          },
+          {
+            "type": "pattern_or",
+            "named": true
+          },
+          {
+            "type": "pattern_paren",
+            "named": true
+          },
+          {
+            "type": "pattern_record",
+            "named": true
+          },
+          {
+            "type": "pattern_record_concat",
+            "named": true
+          },
+          {
+            "type": "pattern_tuple",
+            "named": true
+          },
+          {
+            "type": "pattern_variant",
+            "named": true
+          },
+          {
+            "type": "pattern_wild",
+            "named": true
+          },
+          {
+            "type": "type_array",
+            "named": true
+          },
+          {
+            "type": "type_array_concat",
+            "named": true
+          },
+          {
+            "type": "type_fun",
+            "named": true
+          },
+          {
+            "type": "type_never",
+            "named": true
+          },
+          {
+            "type": "type_nominal",
+            "named": true
+          },
+          {
+            "type": "type_paren",
+            "named": true
+          },
+          {
+            "type": "type_record",
+            "named": true
+          },
+          {
+            "type": "type_record_concat",
+            "named": true
+          },
+          {
+            "type": "type_tuple",
+            "named": true
+          },
+          {
+            "type": "type_unit",
+            "named": true
+          },
+          {
+            "type": "type_wild",
+            "named": true
+          }
+        ]
+      },
+      "name": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "name",
+            "named": true
+          }
+        ]
+      }
+    },
+    "children": {
+      "multiple": false,
+      "required": false,
+      "types": [
+        {
+          "type": "meta",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "stmt_enum",
+    "named": true,
+    "fields": {
+      "inner": {
+        "multiple": true,
+        "required": true,
+        "types": [
+          {
+            "type": "(",
+            "named": false
+          },
+          {
+            "type": ")",
+            "named": false
+          },
+          {
+            "type": ",",
+            "named": false
+          },
+          {
+            "type": "[",
+            "named": false
+          },
+          {
+            "type": "]",
+            "named": false
+          },
+          {
+            "type": "generic",
+            "named": true
+          },
+          {
+            "type": "name",
+            "named": true
+          },
+          {
+            "type": "type_array",
+            "named": true
+          },
+          {
+            "type": "type_array_concat",
+            "named": true
+          },
+          {
+            "type": "type_field",
+            "named": true
+          },
+          {
+            "type": "type_fun",
+            "named": true
+          },
+          {
+            "type": "type_never",
+            "named": true
+          },
+          {
+            "type": "type_nominal",
+            "named": true
+          },
+          {
+            "type": "type_paren",
+            "named": true
+          },
+          {
+            "type": "type_record",
+            "named": true
+          },
+          {
+            "type": "type_record_concat",
+            "named": true
+          },
+          {
+            "type": "type_tuple",
+            "named": true
+          },
+          {
+            "type": "type_unit",
+            "named": true
+          },
+          {
+            "type": "type_wild",
+            "named": true
+          },
+          {
+            "type": "{",
+            "named": false
+          },
+          {
+            "type": "}",
+            "named": false
+          }
+        ]
+      },
+      "name": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "name",
+            "named": true
+          }
+        ]
+      },
+      "variant": {
+        "multiple": true,
+        "required": false,
+        "types": [
+          {
+            "type": "(",
+            "named": false
+          },
+          {
+            "type": ")",
+            "named": false
+          },
+          {
+            "type": ",",
+            "named": false
+          },
+          {
+            "type": "name",
+            "named": true
+          },
+          {
+            "type": "type_array",
+            "named": true
+          },
+          {
+            "type": "type_array_concat",
+            "named": true
+          },
+          {
+            "type": "type_field",
+            "named": true
+          },
+          {
+            "type": "type_fun",
+            "named": true
+          },
+          {
+            "type": "type_never",
+            "named": true
+          },
+          {
+            "type": "type_nominal",
+            "named": true
+          },
+          {
+            "type": "type_paren",
+            "named": true
+          },
+          {
+            "type": "type_record",
+            "named": true
+          },
+          {
+            "type": "type_record_concat",
+            "named": true
+          },
+          {
+            "type": "type_tuple",
+            "named": true
+          },
+          {
+            "type": "type_unit",
+            "named": true
+          },
+          {
+            "type": "type_wild",
+            "named": true
+          },
+          {
+            "type": "{",
+            "named": false
+          },
+          {
+            "type": "}",
+            "named": false
+          }
+        ]
+      }
+    },
+    "children": {
+      "multiple": false,
+      "required": false,
+      "types": [
+        {
+          "type": "meta",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "stmt_expr",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "expr_annot",
+          "named": true
+        },
+        {
+          "type": "expr_array",
+          "named": true
+        },
+        {
+          "type": "expr_array_access",
+          "named": true
+        },
+        {
+          "type": "expr_binary",
+          "named": true
+        },
+        {
+          "type": "expr_break",
+          "named": true
+        },
+        {
+          "type": "expr_call",
+          "named": true
+        },
+        {
+          "type": "expr_constant",
+          "named": true
+        },
+        {
+          "type": "expr_continue",
+          "named": true
+        },
+        {
+          "type": "expr_do",
+          "named": true
+        },
+        {
+          "type": "expr_for",
+          "named": true
+        },
+        {
+          "type": "expr_fun",
+          "named": true
+        },
+        {
+          "type": "expr_if",
+          "named": true
+        },
+        {
+          "type": "expr_loop",
+          "named": true
+        },
+        {
+          "type": "expr_match",
+          "named": true
+        },
+        {
+          "type": "expr_method_call",
+          "named": true
+        },
+        {
+          "type": "expr_name",
+          "named": true
+        },
+        {
+          "type": "expr_paren",
+          "named": true
+        },
+        {
+          "type": "expr_query",
+          "named": true
+        },
+        {
+          "type": "expr_record",
+          "named": true
+        },
+        {
+          "type": "expr_record_access",
+          "named": true
+        },
+        {
+          "type": "expr_return",
+          "named": true
+        },
+        {
+          "type": "expr_rust",
+          "named": true
+        },
+        {
+          "type": "expr_throw",
+          "named": true
+        },
+        {
+          "type": "expr_try",
+          "named": true
+        },
+        {
+          "type": "expr_tuple",
+          "named": true
+        },
+        {
+          "type": "expr_tuple_access",
+          "named": true
+        },
+        {
+          "type": "expr_while",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "stmt_type",
+    "named": true,
+    "fields": {
+      "inner": {
+        "multiple": true,
+        "required": true,
+        "types": [
+          {
+            "type": ",",
+            "named": false
+          },
+          {
+            "type": ";",
+            "named": false
+          },
+          {
+            "type": "=",
+            "named": false
+          },
+          {
+            "type": "[",
+            "named": false
+          },
+          {
+            "type": "]",
+            "named": false
+          },
+          {
+            "type": "generic",
+            "named": true
+          },
+          {
+            "type": "type_array",
+            "named": true
+          },
+          {
+            "type": "type_array_concat",
+            "named": true
+          },
+          {
+            "type": "type_fun",
+            "named": true
+          },
+          {
+            "type": "type_never",
+            "named": true
+          },
+          {
+            "type": "type_nominal",
+            "named": true
+          },
+          {
+            "type": "type_paren",
+            "named": true
+          },
+          {
+            "type": "type_record",
+            "named": true
+          },
+          {
+            "type": "type_record_concat",
+            "named": true
+          },
+          {
+            "type": "type_tuple",
+            "named": true
+          },
+          {
+            "type": "type_unit",
+            "named": true
+          },
+          {
+            "type": "type_wild",
+            "named": true
+          }
+        ]
+      },
+      "name": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "name",
+            "named": true
+          }
+        ]
+      }
+    },
+    "children": {
+      "multiple": false,
+      "required": false,
+      "types": [
+        {
+          "type": "meta",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "stmt_val",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "expr_annot",
+          "named": true
+        },
+        {
+          "type": "expr_array",
+          "named": true
+        },
+        {
+          "type": "expr_array_access",
+          "named": true
+        },
+        {
+          "type": "expr_binary",
+          "named": true
+        },
+        {
+          "type": "expr_break",
+          "named": true
+        },
+        {
+          "type": "expr_call",
+          "named": true
+        },
+        {
+          "type": "expr_constant",
+          "named": true
+        },
+        {
+          "type": "expr_continue",
+          "named": true
+        },
+        {
+          "type": "expr_do",
+          "named": true
+        },
+        {
+          "type": "expr_for",
+          "named": true
+        },
+        {
+          "type": "expr_fun",
+          "named": true
+        },
+        {
+          "type": "expr_if",
+          "named": true
+        },
+        {
+          "type": "expr_loop",
+          "named": true
+        },
+        {
+          "type": "expr_match",
+          "named": true
+        },
+        {
+          "type": "expr_method_call",
+          "named": true
+        },
+        {
+          "type": "expr_name",
+          "named": true
+        },
+        {
+          "type": "expr_paren",
+          "named": true
+        },
+        {
+          "type": "expr_query",
+          "named": true
+        },
+        {
+          "type": "expr_record",
+          "named": true
+        },
+        {
+          "type": "expr_record_access",
+          "named": true
+        },
+        {
+          "type": "expr_return",
+          "named": true
+        },
+        {
+          "type": "expr_rust",
+          "named": true
+        },
+        {
+          "type": "expr_throw",
+          "named": true
+        },
+        {
+          "type": "expr_try",
+          "named": true
+        },
+        {
+          "type": "expr_tuple",
+          "named": true
+        },
+        {
+          "type": "expr_tuple_access",
+          "named": true
+        },
+        {
+          "type": "expr_while",
+          "named": true
+        },
+        {
+          "type": "pattern_annot",
+          "named": true
+        },
+        {
+          "type": "pattern_array",
+          "named": true
+        },
+        {
+          "type": "pattern_array_concat",
+          "named": true
+        },
+        {
+          "type": "pattern_constant",
+          "named": true
+        },
+        {
+          "type": "pattern_name",
+          "named": true
+        },
+        {
+          "type": "pattern_or",
+          "named": true
+        },
+        {
+          "type": "pattern_paren",
+          "named": true
+        },
+        {
+          "type": "pattern_record",
+          "named": true
+        },
+        {
+          "type": "pattern_record_concat",
+          "named": true
+        },
+        {
+          "type": "pattern_tuple",
+          "named": true
+        },
+        {
+          "type": "pattern_variant",
+          "named": true
+        },
+        {
+          "type": "pattern_wild",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "stmt_var",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "expr_annot",
+          "named": true
+        },
+        {
+          "type": "expr_array",
+          "named": true
+        },
+        {
+          "type": "expr_array_access",
+          "named": true
+        },
+        {
+          "type": "expr_binary",
+          "named": true
+        },
+        {
+          "type": "expr_break",
+          "named": true
+        },
+        {
+          "type": "expr_call",
+          "named": true
+        },
+        {
+          "type": "expr_constant",
+          "named": true
+        },
+        {
+          "type": "expr_continue",
+          "named": true
+        },
+        {
+          "type": "expr_do",
+          "named": true
+        },
+        {
+          "type": "expr_for",
+          "named": true
+        },
+        {
+          "type": "expr_fun",
+          "named": true
+        },
+        {
+          "type": "expr_if",
+          "named": true
+        },
+        {
+          "type": "expr_loop",
+          "named": true
+        },
+        {
+          "type": "expr_match",
+          "named": true
+        },
+        {
+          "type": "expr_method_call",
+          "named": true
+        },
+        {
+          "type": "expr_name",
+          "named": true
+        },
+        {
+          "type": "expr_paren",
+          "named": true
+        },
+        {
+          "type": "expr_query",
+          "named": true
+        },
+        {
+          "type": "expr_record",
+          "named": true
+        },
+        {
+          "type": "expr_record_access",
+          "named": true
+        },
+        {
+          "type": "expr_return",
+          "named": true
+        },
+        {
+          "type": "expr_rust",
+          "named": true
+        },
+        {
+          "type": "expr_throw",
+          "named": true
+        },
+        {
+          "type": "expr_try",
+          "named": true
+        },
+        {
+          "type": "expr_tuple",
+          "named": true
+        },
+        {
+          "type": "expr_tuple_access",
+          "named": true
+        },
+        {
+          "type": "expr_while",
+          "named": true
+        },
+        {
+          "type": "pattern_annot",
+          "named": true
+        },
+        {
+          "type": "pattern_array",
+          "named": true
+        },
+        {
+          "type": "pattern_array_concat",
+          "named": true
+        },
+        {
+          "type": "pattern_constant",
+          "named": true
+        },
+        {
+          "type": "pattern_name",
+          "named": true
+        },
+        {
+          "type": "pattern_or",
+          "named": true
+        },
+        {
+          "type": "pattern_paren",
+          "named": true
+        },
+        {
+          "type": "pattern_record",
+          "named": true
+        },
+        {
+          "type": "pattern_record_concat",
+          "named": true
+        },
+        {
+          "type": "pattern_tuple",
+          "named": true
+        },
+        {
+          "type": "pattern_variant",
+          "named": true
+        },
+        {
+          "type": "pattern_wild",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "string_interpolation",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "block",
+          "named": true
+        },
+        {
+          "type": "name",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "type_array",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "type_array",
+          "named": true
+        },
+        {
+          "type": "type_array_concat",
+          "named": true
+        },
+        {
+          "type": "type_fun",
+          "named": true
+        },
+        {
+          "type": "type_never",
+          "named": true
+        },
+        {
+          "type": "type_nominal",
+          "named": true
+        },
+        {
+          "type": "type_paren",
+          "named": true
+        },
+        {
+          "type": "type_record",
+          "named": true
+        },
+        {
+          "type": "type_record_concat",
+          "named": true
+        },
+        {
+          "type": "type_tuple",
+          "named": true
+        },
+        {
+          "type": "type_unit",
+          "named": true
+        },
+        {
+          "type": "type_wild",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "type_array_concat",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "type_array",
+          "named": true
+        },
+        {
+          "type": "type_array_concat",
+          "named": true
+        },
+        {
+          "type": "type_fun",
+          "named": true
+        },
+        {
+          "type": "type_never",
+          "named": true
+        },
+        {
+          "type": "type_nominal",
+          "named": true
+        },
+        {
+          "type": "type_paren",
+          "named": true
+        },
+        {
+          "type": "type_record",
+          "named": true
+        },
+        {
+          "type": "type_record_concat",
+          "named": true
+        },
+        {
+          "type": "type_tuple",
+          "named": true
+        },
+        {
+          "type": "type_unit",
+          "named": true
+        },
+        {
+          "type": "type_wild",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "type_field",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "name",
+          "named": true
+        },
+        {
+          "type": "type_array",
+          "named": true
+        },
+        {
+          "type": "type_array_concat",
+          "named": true
+        },
+        {
+          "type": "type_fun",
+          "named": true
+        },
+        {
+          "type": "type_never",
+          "named": true
+        },
+        {
+          "type": "type_nominal",
+          "named": true
+        },
+        {
+          "type": "type_paren",
+          "named": true
+        },
+        {
+          "type": "type_record",
+          "named": true
+        },
+        {
+          "type": "type_record_concat",
+          "named": true
+        },
+        {
+          "type": "type_tuple",
+          "named": true
+        },
+        {
+          "type": "type_unit",
+          "named": true
+        },
+        {
+          "type": "type_wild",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "type_fun",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "type_array",
+          "named": true
+        },
+        {
+          "type": "type_array_concat",
+          "named": true
+        },
+        {
+          "type": "type_fun",
+          "named": true
+        },
+        {
+          "type": "type_never",
+          "named": true
+        },
+        {
+          "type": "type_nominal",
+          "named": true
+        },
+        {
+          "type": "type_paren",
+          "named": true
+        },
+        {
+          "type": "type_record",
+          "named": true
+        },
+        {
+          "type": "type_record_concat",
+          "named": true
+        },
+        {
+          "type": "type_tuple",
+          "named": true
+        },
+        {
+          "type": "type_unit",
+          "named": true
+        },
+        {
+          "type": "type_wild",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "type_name",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "name",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "type_nominal",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "type_array",
+          "named": true
+        },
+        {
+          "type": "type_array_concat",
+          "named": true
+        },
+        {
+          "type": "type_fun",
+          "named": true
+        },
+        {
+          "type": "type_name",
+          "named": true
+        },
+        {
+          "type": "type_never",
+          "named": true
+        },
+        {
+          "type": "type_nominal",
+          "named": true
+        },
+        {
+          "type": "type_paren",
+          "named": true
+        },
+        {
+          "type": "type_record",
+          "named": true
+        },
+        {
+          "type": "type_record_concat",
+          "named": true
+        },
+        {
+          "type": "type_tuple",
+          "named": true
+        },
+        {
+          "type": "type_unit",
+          "named": true
+        },
+        {
+          "type": "type_wild",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "type_paren",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "type_array",
+          "named": true
+        },
+        {
+          "type": "type_array_concat",
+          "named": true
+        },
+        {
+          "type": "type_fun",
+          "named": true
+        },
+        {
+          "type": "type_never",
+          "named": true
+        },
+        {
+          "type": "type_nominal",
+          "named": true
+        },
+        {
+          "type": "type_paren",
+          "named": true
+        },
+        {
+          "type": "type_record",
+          "named": true
+        },
+        {
+          "type": "type_record_concat",
+          "named": true
+        },
+        {
+          "type": "type_tuple",
+          "named": true
+        },
+        {
+          "type": "type_unit",
+          "named": true
+        },
+        {
+          "type": "type_wild",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "type_record",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "type_field",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "type_record_concat",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "type_array",
+          "named": true
+        },
+        {
+          "type": "type_array_concat",
+          "named": true
+        },
+        {
+          "type": "type_fun",
+          "named": true
+        },
+        {
+          "type": "type_never",
+          "named": true
+        },
+        {
+          "type": "type_nominal",
+          "named": true
+        },
+        {
+          "type": "type_paren",
+          "named": true
+        },
+        {
+          "type": "type_record",
+          "named": true
+        },
+        {
+          "type": "type_record_concat",
+          "named": true
+        },
+        {
+          "type": "type_tuple",
+          "named": true
+        },
+        {
+          "type": "type_unit",
+          "named": true
+        },
+        {
+          "type": "type_wild",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "type_tuple",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "type_array",
+          "named": true
+        },
+        {
+          "type": "type_array_concat",
+          "named": true
+        },
+        {
+          "type": "type_fun",
+          "named": true
+        },
+        {
+          "type": "type_never",
+          "named": true
+        },
+        {
+          "type": "type_nominal",
+          "named": true
+        },
+        {
+          "type": "type_paren",
+          "named": true
+        },
+        {
+          "type": "type_record",
+          "named": true
+        },
+        {
+          "type": "type_record_concat",
+          "named": true
+        },
+        {
+          "type": "type_tuple",
+          "named": true
+        },
+        {
+          "type": "type_unit",
+          "named": true
+        },
+        {
+          "type": "type_wild",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "type_unit",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "type_wild",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "variant_name",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "name",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "!=",
+    "named": false
+  },
+  {
+    "type": "$",
+    "named": false
+  },
+  {
+    "type": "&",
+    "named": false
+  },
+  {
+    "type": "'",
+    "named": false
+  },
+  {
+    "type": "(",
+    "named": false
+  },
+  {
+    "type": ")",
+    "named": false
+  },
+  {
+    "type": "*",
+    "named": false
+  },
+  {
+    "type": "*=",
+    "named": false
+  },
+  {
+    "type": "+",
+    "named": false
+  },
+  {
+    "type": "++",
+    "named": false
+  },
+  {
+    "type": "+=",
+    "named": false
+  },
+  {
+    "type": ",",
+    "named": false
+  },
+  {
+    "type": "-",
+    "named": false
+  },
+  {
+    "type": "---",
+    "named": false
+  },
+  {
+    "type": "-=",
+    "named": false
+  },
+  {
+    "type": ".",
+    "named": false
+  },
+  {
+    "type": "..",
+    "named": false
+  },
+  {
+    "type": "..=",
+    "named": false
+  },
+  {
+    "type": "/",
+    "named": false
+  },
+  {
+    "type": "/=",
+    "named": false
+  },
+  {
+    "type": ":",
+    "named": false
+  },
+  {
+    "type": "::",
+    "named": false
+  },
+  {
+    "type": ";",
+    "named": false
+  },
+  {
+    "type": "<",
+    "named": false
+  },
+  {
+    "type": "<=",
+    "named": false
+  },
+  {
+    "type": "=",
+    "named": false
+  },
+  {
+    "type": "==",
+    "named": false
+  },
+  {
+    "type": "=>",
+    "named": false
+  },
+  {
+    "type": ">",
+    "named": false
+  },
+  {
+    "type": ">=",
+    "named": false
+  },
+  {
+    "type": "@",
+    "named": false
+  },
+  {
+    "type": "[",
+    "named": false
+  },
+  {
+    "type": "]",
+    "named": false
+  },
+  {
+    "type": "_",
+    "named": false
+  },
+  {
+    "type": "and",
+    "named": false
+  },
+  {
+    "type": "as",
+    "named": false
+  },
+  {
+    "type": "break",
+    "named": false
+  },
+  {
+    "type": "catch",
+    "named": false
+  },
+  {
+    "type": "compute",
+    "named": false
+  },
+  {
+    "type": "constant_float",
+    "named": true
+  },
+  {
+    "type": "constant_int",
+    "named": true
+  },
+  {
+    "type": "continue",
+    "named": false
+  },
+  {
+    "type": "def",
+    "named": false
+  },
+  {
+    "type": "desc",
+    "named": false
+  },
+  {
+    "type": "do",
+    "named": false
+  },
+  {
+    "type": "else",
+    "named": false
+  },
+  {
+    "type": "enum",
+    "named": false
+  },
+  {
+    "type": "false",
+    "named": false
+  },
+  {
+    "type": "finally",
+    "named": false
+  },
+  {
+    "type": "for",
+    "named": false
+  },
+  {
+    "type": "from",
+    "named": false
+  },
+  {
+    "type": "fun",
+    "named": false
+  },
+  {
+    "type": "group",
+    "named": false
+  },
+  {
+    "type": "if",
+    "named": false
+  },
+  {
+    "type": "in",
+    "named": false
+  },
+  {
+    "type": "index",
+    "named": true
+  },
+  {
+    "type": "into",
+    "named": false
+  },
+  {
+    "type": "join",
+    "named": false
+  },
+  {
+    "type": "line_comment",
+    "named": true
+  },
+  {
+    "type": "loop",
+    "named": false
+  },
+  {
+    "type": "match",
+    "named": false
+  },
+  {
+    "type": "name",
+    "named": true
+  },
+  {
+    "type": "not",
+    "named": false
+  },
+  {
+    "type": "of",
+    "named": false
+  },
+  {
+    "type": "on",
+    "named": false
+  },
+  {
+    "type": "or",
+    "named": false
+  },
+  {
+    "type": "order",
+    "named": false
+  },
+  {
+    "type": "over",
+    "named": false
+  },
+  {
+    "type": "python",
+    "named": false
+  },
+  {
+    "type": "return",
+    "named": false
+  },
+  {
+    "type": "roll",
+    "named": false
+  },
+  {
+    "type": "rust",
+    "named": false
+  },
+  {
+    "type": "select",
+    "named": false
+  },
+  {
+    "type": "string_content",
+    "named": true
+  },
+  {
+    "type": "string_quote",
+    "named": true
+  },
+  {
+    "type": "throw",
+    "named": false
+  },
+  {
+    "type": "true",
+    "named": false
+  },
+  {
+    "type": "try",
+    "named": false
+  },
+  {
+    "type": "type",
+    "named": false
+  },
+  {
+    "type": "type_never",
+    "named": true
+  },
+  {
+    "type": "union",
+    "named": false
+  },
+  {
+    "type": "val",
+    "named": false
+  },
+  {
+    "type": "var",
+    "named": false
+  },
+  {
+    "type": "where",
+    "named": false
+  },
+  {
+    "type": "while",
+    "named": false
+  },
+  {
+    "type": "with",
+    "named": false
+  },
+  {
+    "type": "{",
+    "named": false
+  },
+  {
+    "type": "}",
+    "named": false
+  }
+]

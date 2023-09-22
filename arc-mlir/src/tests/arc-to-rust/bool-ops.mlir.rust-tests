@@ -1,24 +1,23 @@
 #[cfg(test)]
 mod tests {
 
-  use crate::toplevel::*;
-  #[rewrite(main)]
-  #[test]
-  fn it_works() {
-    assert_eq!(call!(and_i1(true, true)), true);
-    assert_eq!(call!(or_i1(false, true)), true);
-    assert_eq!(call!(xor_i1(true, true)), false);
-    assert_eq!(call!(eq_i1(true, true)), true);
-    assert_eq!(call!(eq_i1(false, true)), false);
-    assert_eq!(call!(eq_i1(true, false)), false);
-    assert_eq!(call!(eq_i1(false, false)), true);
-    assert_eq!(call!(ne_i1(true, true)), false);
-    assert_eq!(call!(ne_i1(false, true)), true);
-    assert_eq!(call!(ne_i1(true, false)), true);
-    assert_eq!(call!(ne_i1(false, false)), false);
-    assert_eq!(call!(not_i1(false)), true);
-    assert_eq!(call!(not_i1(true)), false);
-    assert_eq!(call!(not_select_i1(false)), true);
-    assert_eq!(call!(not_select_i1(true)), false);
-  }
+    use crate::toplevel::*;
+    #[test]
+    fn it_works() {
+        assert_eq!(and_i1(true, true), true);
+        assert_eq!(or_i1(false, true), true);
+        assert_eq!(xor_i1(true, true), false);
+        assert_eq!(eq_i1(true, true), true);
+        assert_eq!(eq_i1(false, true), false);
+        assert_eq!(eq_i1(true, false), false);
+        assert_eq!(eq_i1(false, false), true);
+        assert_eq!(ne_i1(true, true), false);
+        assert_eq!(ne_i1(false, true), true);
+        assert_eq!(ne_i1(true, false), true);
+        assert_eq!(ne_i1(false, false), false);
+        assert_eq!(not_i1(false), true);
+        assert_eq!(not_i1(true), false);
+        assert_eq!(not_select_i1(false), true);
+        assert_eq!(not_select_i1(true), false);
+    }
 }

@@ -1,0 +1,16 @@
+[package]
+name = "runtime"
+version.workspace = true
+edition.workspace = true
+
+[dependencies]
+macros.workspace = true
+builtins.workspace = true
+runner.workspace = true
+state.workspace = true
+formats.workspace = true
+
+tokio.workspace = true
+serde.workspace = true
+time.workspace = true
+hexf.workspace = true

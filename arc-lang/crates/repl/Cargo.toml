@@ -1,0 +1,24 @@
+[package]
+name = "repl"
+version.workspace = true
+edition.workspace = true
+
+[dependencies]
+compiler.workspace = true
+im-rc.workspace = true
+info.workspace = true
+codegen.workspace = true
+config.workspace = true
+build.workspace = true
+lexer.workspace = true
+rustyline.workspace = true
+colored.workspace = true
+regex.workspace = true
+clap.workspace = true
+shlex.workspace = true
+anyhow.workspace = true
+colors.workspace = true
+
+completer.workspace = true
+highlighter.workspace = true
+validator.workspace = true

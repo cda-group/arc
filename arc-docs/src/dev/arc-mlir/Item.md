@@ -1,6 +1,0 @@
-# Items
-
-```grammar
-Item ::=
-  | [Func]
-```

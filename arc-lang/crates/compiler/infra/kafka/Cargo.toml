@@ -1,0 +1,9 @@
+[package]
+name = "kafka"
+version.workspace = true
+edition.workspace = true
+
+[dependencies]
+rdkafka.workspace = true
+tokio.workspace = true
+anyhow.workspace = true

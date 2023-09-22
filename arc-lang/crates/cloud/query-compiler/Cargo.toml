@@ -1,0 +1,17 @@
+[package]
+name = "query-compiler"
+version = "0.0.0"
+edition = "2021"
+
+[dependencies]
+quote          = { version = "1.0.23" }
+api            = { path = "../api" }
+crepe          = { version = "0.1.7" }
+itertools      = { version = "0.10.5" }
+indoc          = { version = "1.0.8" }
+proc-macro2    = { version = "1.0.50" }
+serde_json     = { version = "1.0.91", features = ["preserve_order"] }
+halfbrown      = { version = "0.1.18", features = ["serde"] }
+regex          = { version = "1.7.1" }
+tracing        = { version = "0.1.37" }
+rust-format    = { version = "0.3.4", features = ["token_stream"] }

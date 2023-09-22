@@ -1,23 +1,21 @@
 #[cfg(test)]
 mod tests {
-  use crate::arctorustsimple::*;
-  use hexf::*;
-  #[rewrite(main)]
-  #[test]
-  fn it_works() {
-    assert_eq!(call!(returnf64()), hexf::hexf64!("0x1.91eb851eb851fp1"));
-    assert_eq!(call!(returnf32()), hexf::hexf32!("0x1.62e48ep-1"));
-    assert_eq!(call!(return_true()), true);
-    assert_eq!(call!(return_false()), false);
+    use crate::arctorustsimple::*;
+    #[test]
+    fn it_works() {
+        assert_eq!(returnf64(), hexf::hexf64!("0x1.91eb851eb851fp1"));
+        assert_eq!(returnf32(), hexf::hexf32!("0x1.62e48ep-1"));
+        assert_eq!(return_true(), true);
+        assert_eq!(return_false(), false);
 
-    assert_eq!(call!(return_ui8()), 0xFF);
-    assert_eq!(call!(return_ui16()), 0xFFFF);
-    assert_eq!(call!(return_ui32()), 0xFFFFFFFF);
-    assert_eq!(call!(return_ui64()), 0xFFFFFFFFFFFFFFFF);
+        assert_eq!(return_ui8(), 0xFF);
+        assert_eq!(return_ui16(), 0xFFFF);
+        assert_eq!(return_ui32(), 0xFFFFFFFF);
+        assert_eq!(return_ui64(), 0xFFFFFFFFFFFFFFFF);
 
-    assert_eq!(call!(return_si8()), -128);
-    assert_eq!(call!(return_si16()), -32768);
-    assert_eq!(call!(return_si32()), -2147483648);
-    assert_eq!(call!(return_si64()), -9223372036854775808);
-  }
+        assert_eq!(return_si8(), -128);
+        assert_eq!(return_si16(), -32768);
+        assert_eq!(return_si32(), -2147483648);
+        assert_eq!(return_si64(), -9223372036854775808);
+    }
 }

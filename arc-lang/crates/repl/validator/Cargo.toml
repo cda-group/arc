@@ -1,0 +1,8 @@
+[package]
+name = "validator"
+version.workspace = true
+edition.workspace = true
+
+[dependencies]
+rustyline.workspace = true
+colored.workspace = true

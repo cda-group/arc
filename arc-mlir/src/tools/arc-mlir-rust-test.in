@@ -3,10 +3,9 @@
 set -e
 
 export PATH="@ARC_TOOLS_BIN_DIR@:$PATH"
-export ARC_LANG_SOURCE_DIR="@ARC_LANG_SRC_DIR@"
-export ARC_MLIR_SOURCE_DIR="@ARC_MLIR_SRC_DIR@"
-export ARC_CODEGEN_SOURCE_DIR="@ARC_CODEGEN_SRC_DIR@"
-export ARC_RUNTIME_SOURCE_DIR="@ARC_RUNTIME_SRC_DIR@"
+export ARC_LANG_DIR="@ARC_LANG_DIR@"
+export ARC_MLIR_DIR="@ARC_MLIR_DIR@"
+export ARC_RUNTIME_DIR="@ARC_RUNTIME_DIR@"
 
 WORK_DIR="$1"
 TARGET_DIR="${WORK_DIR}.target"
@@ -17,12 +16,12 @@ MAIN="${WORK_DIR}/src/main.rs"
 TEST_NAME=$(basename ${WORK_DIR})
 TEST_NAME=${TEST_NAME//.mlir.tmp/}
 TEST_NAME=${TEST_NAME//.arc.tmp/}
-export CRATE_NAME=${TEST_NAME//-/_}
+export TEST_NAME
 
 CARGO_DEP_FRAGMENT="${MLIR_FILE%.mlir}.cargo-dep"
 echo "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
 rustc --version
-echo "Arc-lang sources are in: ${ARC_LANG_SOURCE_DIR}"
+echo "Arc-lang sources are in: ${ARC_LANG_DIR}"
 echo "Test name: ${TEST_NAME}"
 echo "MLIR input: ${MLIR_FILE}"
 echo "Crate will be written to: ${WORK_DIR}"
@@ -37,7 +36,13 @@ mkdir -p ${WORK_DIR}/src
 
 # Create the Cargo.toml
 envsubst > ${WORK_DIR}/Cargo.toml <<'EOF'
-@CARGO_TOML_TEMPLATE@
+[package]
+name = "${TEST_NAME}"
+version = "0.0.0"
+edition = "2021"
+
+[dependencies]
+runtime = { path = "${ARC_RUNTIME_DIR}" }
 EOF
 
 # Allow a test to include extra dependencies in the Cargo.toml
@@ -47,8 +52,7 @@ fi
 
 # Create dummy wrapper .rs-file which includes the generated test-case
 
-echo '#![feature(unboxed_closures)]' > ${MAIN}
-arc-mlir ${MLIR_FILE} "$@" -arc-to-rust -inline-rust >> ${MAIN}
+arc-mlir ${MLIR_FILE} "$@" -arc-to-rust -inline-rust > ${MAIN}
 
 cat >> ${MAIN} <<EOF
 fn main() {

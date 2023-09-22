@@ -1,0 +1,11 @@
+[package]
+name = "colors"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+homepage.workspace = true
+repository.workspace = true
+readme.workspace = true
+
+[dependencies]
+colored.workspace = true

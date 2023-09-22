@@ -1,0 +1,489 @@
+use ast::*;
+use im_rc::vector;
+use im_rc::Vector;
+use info::ByteIndex;
+use info::Spanned;
+use lexer::tokens::Token;
+use info::Info;
+use std::rc::Rc;
+use crate::error::parser_error;
+use diagnostics::Diagnostics;
+use info::SourceId;
+
+//=============================================================================
+// Grammar
+//=============================================================================
+
+grammar(id: SourceId, diagnostics: &mut Diagnostics);
+
+extern {
+    type Error = ();
+    type Location = ByteIndex;
+
+    enum Token {
+        // Grouping
+        "("         => Token::ParenL,
+        ")"         => Token::ParenR,
+        "["         => Token::BrackL,
+        "]"         => Token::BrackR,
+        "{"         => Token::BraceL,
+        "}"         => Token::BraceR,
+        "<"         => Token::AngleL,
+        ">"         => Token::AngleR,
+        // Operators
+        "!="        => Token::Neq,
+        "*"         => Token::Star,
+        "+"         => Token::Plus,
+        "++"        => Token::PlusPlus,
+        "&"         => Token::Ampersand,
+        ","         => Token::Comma,
+        "-"         => Token::Minus,
+        "."         => Token::Dot,
+        ".."        => Token::DotDot,
+        "..="       => Token::DotDotEq,
+        "/"         => Token::Slash,
+        ":"         => Token::Colon,
+        "::"        => Token::ColonColon,
+        ";"         => Token::Semi,
+        "<="        => Token::Leq,
+        ">="        => Token::Geq,
+        "="         => Token::Eq,
+        "=="        => Token::EqEq,
+        "=>"        => Token::Imply,
+        "_"         => Token::Underscore,
+        "|"         => Token::Bar,
+        "@"         => Token::AtSign,
+        "+="        => Token::PlusEq,
+        "-="        => Token::MinusEq,
+        "*="        => Token::StarEq,
+        "/="        => Token::SlashEq,
+        "~"         => Token::Tilde,
+        "!"         => Token::Bang,
+        "?"         => Token::Question,
+        // Keywords
+        "and"       => Token::And,
+        "as"        => Token::As,
+        "break"     => Token::Break,
+        "catch"     => Token::Catch,
+        "enum"      => Token::Enum,
+        "continue"  => Token::Continue,
+        "compute"   => Token::Compute,
+        "do"        => Token::Do,
+        "def"       => Token::Def,
+        "desc"      => Token::Desc,
+        "else"      => Token::Else,
+        "finally"   => Token::Finally,
+        "for"       => Token::For,
+        "from"      => Token::From,
+        "fun"       => Token::Fun,
+        "group"     => Token::Group,
+        "if"        => Token::If,
+        "in"        => Token::In,
+        "into"      => Token::Into,
+        "join"      => Token::Join,
+        "loop"      => Token::Loop,
+        "match"     => Token::Match,
+        "not"       => Token::Not,
+        "on"        => Token::On,
+        "of"        => Token::Of,
+        "or"        => Token::Or,
+        "return"    => Token::Return,
+        "repeat"    => Token::Repeat,
+        "throw"     => Token::Throw,
+        "try"       => Token::Try,
+        "type"      => Token::Type,
+        "val"       => Token::Val,
+        "var"       => Token::Var,
+        "with"      => Token::With,
+        "where"     => Token::Where,
+        "while"     => Token::While,
+        "with"      => Token::With,
+        "use"       => Token::Use,
+        "select"    => Token::Select,
+        "union"     => Token::Union,
+        "over"      => Token::Over,
+        "roll"      => Token::Roll,
+        "order"     => Token::Order,
+        // Identifiers and Literals
+        Inject      => Token::Inject(<(String, String)>),
+        Name        => Token::Name(<String>),
+        Int         => Token::Int(<i32>),
+        Float       => Token::Float(<f32>),
+        IntSuffix   => Token::IntSuffix(<(i32, String)>),
+        FloatSuffix => Token::FloatSuffix(<(f32, String)>),
+        Bool        => Token::Bool(<bool>),
+        Char        => Token::Char(<char>),
+        String      => Token::String(<String>),
+    }
+}
+
+Paren<X> = "(" <X> ")";
+Brack<X> = "[" <X> "]";
+Brace<X> = "{" <X> "}";
+
+Error: () = ! => diagnostics.push_error(parser_error(<>.error, id));
+
+#[inline] Epsilon: () = { () }
+
+#[inline] Default<X>: X = {
+    Epsilon => Default::default(),
+    X,
+}
+
+Fst<A, B> = <A> B;
+Snd<A, B> = A <B>;
+Split<A, B, C> = <A> B <C>;
+Pair<A, B> = A B;
+
+LList<X>: Vector<X> = {
+    Epsilon => vector![],
+    <mut l:LList<X>> <x:X> => { l.push_back(x); l }
+}
+
+NonemptyLList<X>: Vector<X> = {
+    X => vector![<>],
+    <mut l:NonemptyLList<X>> <x:X> => { l.push_back(x); l }
+}
+
+#[inline] SeparatedLList<S, X>: Vector<X> = {
+    Epsilon => vector![],
+    SeparatedNonemptyLList<S, X>
+}
+
+SeparatedNonemptyLList<S, X>: Vector<X> = {
+    X => vector![<>],
+    <mut l:SeparatedNonemptyLList<S, X>> S <x:X> => { l.push_back(x); l }
+}
+
+#[inline] SeparatedLListTrailing<S, X> = <SeparatedLList<S, X>> S?;
+
+#[inline] Seq<X> = SeparatedLListTrailing<",", X>;
+#[inline] SeqNonempty<X> = SeparatedNonemptyLList<",", X>;
+#[inline] SeqExplicit<X>: Vector<X> = <x:X> "," <mut l:SeparatedLList<",", X>> => { l.push_front(x); l };
+
+Spanned<X>: Spanned<X> = <l:@L> <x:X> <r:@R> => (x, Info::new(id, l, r));
+
+pub(crate) Program = LList<Stmt>;
+
+pub(crate) Splice: Splice = {
+    Name => SName(<>),
+    Block => SBlock(<>),
+}
+
+Attr: Attr = Spanned<(Name Snd<":", Const>?)> => Attr { x: <>.0.0, c: <>.0.1, info: <>.1 };
+Meta: Meta = Default<Snd<"@", Brace<Seq<Attr>>>>;
+
+DefBody<E>: Body = {
+  "=" <E> ";" => BExpr(<>),
+  <Block>     => BBlock(<>),
+}
+
+FunBody<E>: Body = {
+  "=" <E> => BExpr(<>),
+  <Block> => BBlock(<>),
+}
+
+TypeAnnot = ":" <Type<T0>>;
+
+Params = Paren<Seq<Param>>;
+Param = Pattern<P0>;
+
+Generics = Default<Brack<Seq<Generic>>>;
+Generic = Name;
+
+Bounds = Default<Snd<"where", Seq<Bound>>>;
+Bound = Name Brack<Seq<Type<T0>>>;
+
+Binop: Binop = {
+    Op3,
+    Op4,
+    Op5,
+    Op6,
+    Op7,
+    Op8,
+}
+
+Unop = Op9;
+
+Index = Int; // FIXME
+
+UseSuffix: UseSuffix = {
+    "*"             => UGlob,
+    Snd<"as", Name> => UAlias(<>),
+}
+
+#[inline] Expr<Primary>: Expr = Spanned<Primary> => (<>.0).with(<>.1);
+
+// Note: This cannot be succeeded by a brace
+E0<Primary>: ExprKind = {
+    "return" <Expr<E1<Primary>>?> => EFunReturn(<>),
+    "break" <Expr<E1<Primary>>?>  => ELoopBreak(<>),
+    "continue"                    => ELoopContinue,
+    "throw" <Expr<E1<Primary>>>   => EThrow(<>),
+    E1<Primary>,
+}
+
+// Note: This cannot be succeeded by a brace
+E1<Primary>: ExprKind = {
+    "from" <Pattern<P0>> "in" <Expr<E2<E12>>> <QueryStmts> => EQuery(<>),
+    "fun" <Params> <TypeAnnot?> <FunBody<Expr<E1<E13>>>>   => EFun(<>),
+    E2<Primary>,
+}
+
+Op2: Option<Binop> = {
+    "="  => None,
+    "+=" => Some(BAdd.with(<>)),
+    "-=" => Some(BSub.with(<>)),
+    "*=" => Some(BMul.with(<>)),
+    "/=" => Some(BDiv.with(<>)),
+}
+
+E2<Primary>: ExprKind = {
+    Expr<E2<Primary>> Op2 Expr<E3<Primary>> => EMut(<>),
+    E3<Primary>,
+}
+
+Op3: Binop = {
+    ".." => BRExc.with(<>),
+    "..=" => BRInc.with(<>),
+}
+E3<Primary>: ExprKind = {
+    Expr<E4<Primary>> Op3 Expr<E4<Primary>> => EBinop(<>),
+    E4<Primary>,
+}
+
+Op4: Binop = {
+    "or" => BOr.with(<>),
+    "and" => BAnd.with(<>),
+}
+E4<Primary>: ExprKind = {
+    Expr<E4<Primary>> Op4 Expr<E5<Primary>> => EBinop(<>),
+    E5<Primary>,
+}
+
+Op5: Binop = {
+    "==" => BEq.with(<>),
+    "!=" => BNeq.with(<>),
+}
+E5<Primary>: ExprKind = {
+    Expr<E5<Primary>> Op5 Expr<E6<Primary>> => EBinop(<>),
+    E6<Primary>,
+}
+
+Op6: Binop = {
+    "<" => BLt.with(<>),
+    ">" => BGt.with(<>),
+    "<=" => BLeq.with(<>),
+    ">=" => BGeq.with(<>),
+}
+E6<Primary>: ExprKind = {
+    Expr<E6<Primary>> Op6 Expr<E7<Primary>> => EBinop(<>),
+    E7<Primary>,
+}
+
+Op7: Binop = {
+    "+" => BAdd.with(<>),
+    "-" => BSub.with(<>),
+}
+E7<Primary>: ExprKind = {
+    Expr<E7<Primary>> Op7 Expr<E8<Primary>> => EBinop(<>),
+    <Expr<E7<Primary>>> "&" <Expr<E8<Primary>>> => ERecordConcat(<>),
+    <Expr<E7<Primary>>> "++" <Expr<E8<Primary>>> => EArrayConcat(<>),
+    E8<Primary>,
+}
+
+Op8: Binop = {
+    "*" => BMul.with(<>),
+    "/" => BDiv.with(<>),
+}
+E8<Primary>: ExprKind = {
+    Expr<E8<Primary>> Op8 Expr<E9<Primary>> => EBinop(<>),
+    E9<Primary>,
+}
+
+Op9: Unop = {
+    "not" => UNot.with(<>),
+    "-" => UNeg.with(<>),
+    "+" => UPos.with(<>),
+}
+E9<Primary>: ExprKind = {
+    Op9 Expr<E9<Primary>> => EUnop(<>),
+    E10<Primary>,
+}
+
+E10<Primary>: ExprKind = {
+    <Expr<E10<Primary>>> ":" <Type<T2>> => ETypeAnnot(<>),
+    <Expr<E10<Primary>>> "?" => EThrow(<>),
+    E11<Primary>,
+}
+
+E11<Primary>: ExprKind = {
+    Expr<Primary> Paren<Seq<Expr<E1<E12>>>>                                        => EFunCall(<>),
+    <Expr<E11<Primary>>> "." <Index>                                               => ETupleAccess(<>),
+    <Expr<E11<Primary>>> "." <Name>                                                => ERecordAccess(<>),
+    <Expr<E11<Primary>>> <Brack<Expr<E1<Primary>>>>                                => EArrayAccess(<>),
+    <Expr<E11<Primary>>> "." <Brace<Seq<Name>>>                                    => ERecordAccessMulti(<>),
+    <Expr<E11<Primary>>> "." <Name> <TypeArgsExplicit> <Paren<Seq<Expr<E1<E12>>>>> => EMethodCall(<>),
+    Primary,
+}
+
+// These may not be followed by a brace
+// This could allow `if Foo { ... } else { ... }`
+// to be parsed as `if <Ident> { ... } else { ... }`
+E12: ExprKind = {
+    Name Record<ExprField> => EVariantRecord(<>),
+    E13
+}
+
+ExprField: ExprField = {
+    Name Snd<":", Expr<E1<E12>>>? => FName(<>),
+    <Expr<E11<E12>>> "." <Name>   => FExpr(<>),
+}
+
+Dict<A, B> = Brace<SeqNonempty<Pair<A, Snd<":", B>>>>;
+Set<A> = Brace<SeqNonempty<A>>;
+
+TypeField = Pair<Name, Snd<":", Type<T0>>>;
+
+PatternField = Pair<Name, Snd<":", Pattern<P0>>?>;
+
+E13: ExprKind = {
+    Paren<Expr<E1<E12>>>                                         => EParen(<>),
+    Lit                                                          => ELit(<>),
+    Name TypeArgsExplicit                                        => EName(<>),
+    Array<Expr<E1<E12>>>                                         => EArray(<>),
+    Tuple<Expr<E1<E12>>>                                         => ETuple(<>),
+    Record<ExprField>                                            => ERecord(<>),
+    "do" <Block>                                                 => EDo(<>),
+    "if" <Expr<E2<E13>>> <Block> <Snd<"else", Block>?>           => EIfElse(<>),
+    "match" <Expr<E2<E13>>> <Brace<Arms>>                        => EMatch(<>),
+    "loop" <Block>                                               => ELoop(<>),
+    "while" <Expr<E2<E13>>> <Block>                              => EWhile(<>),
+    "for" <Pattern<P0>> "in" <Expr<E2<E13>>> <Block>             => EFor(<>),
+    "try" <Block> "catch" <Brace<Arms>> <Snd<"finally", Block>?> => ETry(<>),
+    Error                                                        => EError,
+}
+
+QueryStmts = NonemptyLList<QueryStmt>;
+QueryStmt: QueryStmt = {
+    "from" <Pattern<P0>> "in" <Expr<E2<E12>>>                            => QFrom(<>),
+    "with" <Pattern<P0>> "=" <Expr<E2<E12>>>                             => QWith(<>),
+    "where" <Expr<E2<E12>>>                                              => QWhere(<>),
+    "join" <Pattern<P0>> "in" <Expr<E2<E12>>> "on" <Expr<E2<E12>>>       => QJoinOn(<>),
+    "union" <Expr<E2<E12>>>                                              => QUnion(<>),
+    "group" <Expr<E2<E13>>> <Brace<QueryStmts>> <("as" <Name>)?>         => QGroup(<>),
+    "over" <Expr<E2<E13>>> <Brace<QueryStmts>> <("as" <Name>)?>          => QOver(<>),
+    "roll" <Expr<E2<E12>>> <("of" <Expr<E2<E12>>>)?> <("as" <Name>)?>    => QRoll(<>),
+    "compute" <Expr<E2<E12>>> <("of" <Expr<E2<E12>>>)?> <("as" <Name>)?> => QCompute(<>),
+    "select" <Expr<E2<E12>>>                                             => QSelect(<>),
+    "into" <Expr<E2<E12>>>                                               => QInto(<>),
+    "order" <Expr<E2<E12>>> <Order>                                      => QOrder(<>),
+}
+
+Order: Order = {
+    Epsilon => OAsc,
+    "desc" => ODesc,
+}
+
+Arms = SeqNonempty<Arm>;
+Arm = <Pattern<P0>> "=>" <Expr<E1<E12>>>;
+
+Block: Block = Spanned<Brace<Pair<Stmts, Expr<E0<E12>>?>>> => Block::new(<>.0.0, <>.0.1, <>.1);
+
+#[inline] Stmts = LList<Stmt>;
+Stmt: Stmt = Spanned<StmtKind> => Stmt { kind: <>.0, info: <>.1 };
+StmtKind: StmtKind = {
+    <Meta> "def" <Name> <Generics> <Params> <TypeAnnot?> <Bounds> <DefBody<Expr<E0<E12>>>> => SDef(<>),
+    <Meta> "enum" <Name> <Generics> <Bounds> <Brace<Seq<Variant>>>                         => SEnum(<>),
+    <Meta> "type" <Name> <Generics> "=" <Type<T0>> ";"                                     => SType(<>),
+    <Expr<E0<E12>>> ";"                                                                    => SExpr(<>),
+    "val" <Param> "=" <Expr<E0<E12>>> ";"                                                  => SVal(<>),
+    "var" <Param> "=" <Expr<E0<E12>>> ";"                                                  => SVar(<>),
+    Inject                                                                                 => SInject(<>.0, <>.1),
+    ";"                                                                                    => SNoop,
+}
+
+Variant: Variant = {
+  Name                      => VUnit(<>),
+  Name Paren<Seq<Type<T0>>> => VTuple(<>),
+  Name Record<TypeField>    => VRecord(<>),
+}
+
+Pattern<P>: Pattern = Spanned<P> => (<>.0).with(<>.1);
+
+P0: PatternKind = {
+    <Pattern<P1>> ":" <Type<T2>>     => PTypeAnnot(<>),
+    P1
+}
+
+P1: PatternKind = {
+    <Pattern<P1>> "or" <Pattern<P2>> => POr(<>),
+    <Pattern<P1>> "&" <Pattern<P2>>  => PRecordConcat(<>),
+    <Pattern<P1>> "++" <Pattern<P2>> => PArrayConcat(<>),
+    P2
+}
+
+P2: PatternKind = {
+    Paren<Pattern<P0>>           => PParen(<>),
+    Const                        => PConst(<>),
+    Name                         => PName(<>),
+    Name Paren<Seq<Pattern<P1>>> => PVariantTuple(<>),
+    Name Record<PatternField>    => PVariantRecord(<>),
+    Tuple<Pattern<P0>>           => PTuple(<>),
+    Record<PatternField>         => PRecord(<>),
+    Array<Pattern<P0>>           => PArray(<>),
+    "_"                          => PIgnore,
+    Error                        => PError,
+}
+
+Type<T>: Type = Spanned<T> => (<>.0).with(<>.1);
+
+T0: TypeKind = {
+    "fun" <Paren<Seq<Type<T0>>>> ":" <Type<T0>> => TFun(<>),
+    T1
+}
+
+T1: TypeKind = {
+    <Type<T1>> "&" <Type<T2>>  => TRecordConcat(<>),
+    <Type<T1>> "++" <Type<T2>> => TArrayConcat(<>),
+    T2
+}
+
+T2: TypeKind = {
+    Paren<Type<T0>>                  => TParen(<>),
+    Name TypeArgs                    => TName(<>),
+    Tuple<Type<T0>>                  => TTuple(<>),
+    Record<TypeField>                => TRecord(<>),
+    Brack<(Type<T0> Snd<";", Int>?)> => TArray(<>.0, <>.1),
+    "(" ")"                          => TUnit,
+    "!"                              => TNever,
+    "_"                              => TIgnore,
+    Error                            => TError,
+}
+
+TypeArgsExplicit = Default<Snd<"::", Brack<SeqNonempty<Type<T0>>>>>;
+TypeArgs = Default<Brack<SeqNonempty<Type<T0>>>>;
+
+Record<T> = Brace<Seq<T>>;
+Array<X>  = Brack<Seq<X>>;
+Tuple<X>  = Paren<SeqExplicit<X>>;
+
+Lit: Lit = {
+    Bool        => LBool(<>),
+    Char        => LChar(<>),
+    Int         => LInt(<>, None),
+    IntSuffix   => LInt(<>.0, Some(<>.1)),
+    Float       => LFloat(<>, None),
+    FloatSuffix => LFloat(<>.0, Some(<>.1)),
+    "(" ")"     => LUnit,
+    String      => LString(<>),
+}
+
+Const: Const = {
+    Bool    => CBool(<>),
+    Char    => CChar(<>),
+    Int     => CInt(<>),
+    Float   => CFloat(<>),
+    "(" ")" => CUnit,
+    String  => CString(<>),
+}

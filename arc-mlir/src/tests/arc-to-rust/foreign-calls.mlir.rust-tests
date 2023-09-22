@@ -1,17 +1,13 @@
-#[rewrite]
 pub fn callee_void_void() {}
 
-#[rewrite]
 pub fn callee_si32_si32(x: i32) -> i32 {
-    return x
+    return x;
 }
 
-#[rewrite]
-pub fn callee_si32_x2_si32(a : i32, b : i32) -> i32 {
-    return a + b
+pub fn callee_si32_x2_si32(a: i32, b: i32) -> i32 {
+    return a + b;
 }
 
-#[rewrite]
-pub fn callee_struct(x : Struct3foo3i32End) -> Struct3foo3i32End {
-    return x
+pub fn callee_struct(x: Struct3foo3i32End) -> Struct3foo3i32End {
+    return x;
 }

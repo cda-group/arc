@@ -1,0 +1,12 @@
+[package]
+name = "hir-monomorphise"
+version.workspace = true
+edition.workspace = true
+
+[dependencies]
+hir.workspace = true
+utils.workspace = true
+im-rc.workspace = true
+stack.workspace = true
+diagnostics.workspace = true
+info.workspace = true

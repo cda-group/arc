@@ -3,7 +3,7 @@ set(MLIR_INCLUDE_DIR
   ${CMAKE_CURRENT_SOURCE_DIR}/../../../llvm-project/mlir/include/
 )
 
-set(LLVM_TARGET_DEFINITIONS ${ARC_MLIR_SOURCE_DIR}/include/Arc/Arc.td)
+set(LLVM_TARGET_DEFINITIONS ${ARC_MLIR_SRC_DIR}/include/Arc/Arc.td)
 set(TBLGEN_INCDIRS "-I${CMAKE_CURRENT_SOURCE_DIR}/../../../llvm-project/mlir/include/")
 
 mlir_tablegen(ArcOps.h.inc -gen-op-decls)
@@ -15,7 +15,7 @@ mlir_tablegen(ArcOpsEnums.cpp.inc -gen-enum-defs)
 
 add_public_tablegen_target(ArcDialectOpsEnumsIncGen)
 
-set(LLVM_TARGET_DEFINITIONS ${ARC_MLIR_SOURCE_DIR}/include/Arc/Opts.td)
+set(LLVM_TARGET_DEFINITIONS ${ARC_MLIR_SRC_DIR}/include/Arc/Opts.td)
 set(TBLGEN_INCDIRS "-I${CMAKE_CURRENT_SOURCE_DIR}/../../../llvm-project/mlir/include/")
 mlir_tablegen(ArcOpts.h.inc -gen-rewriters ${TBLGEN_INCDIRS} "-I${CMAKE_CURRENT_SOURCE_DIR}/include")
 add_public_tablegen_target(ArcDialectOptsIncGen)

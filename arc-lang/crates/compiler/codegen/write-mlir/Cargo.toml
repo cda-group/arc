@@ -1,0 +1,15 @@
+[package]
+name = "write-mlir"
+version.workspace = true
+edition.workspace = true
+
+[dependencies]
+mlir.workspace = true
+hir-interpreter.workspace = true
+utils.workspace = true
+stack.workspace = true
+info.workspace = true
+name-gen.workspace = true
+codegen.workspace = true
+im-rc.workspace = true
+ast-prelude.workspace = true

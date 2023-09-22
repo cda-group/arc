@@ -82,7 +82,7 @@ void RustDialect::initialize() {
   u16Ty = RustType::get(ctx, "u16");
   u32Ty = RustType::get(ctx, "u32");
   u64Ty = RustType::get(ctx, "u64");
-  noneTy = RustType::get(ctx, "unit");
+  noneTy = RustType::get(ctx, "Unit");
 }
 
 //===----------------------------------------------------------------------===//
@@ -274,8 +274,6 @@ static RustPrinterStream &writeRust(Operation &operation,
     op.writeRust(PS);
   else if (RustBinaryOp op = dyn_cast<RustBinaryOp>(operation))
     op.writeRust(PS);
-  else if (RustBinaryRcOp op = dyn_cast<RustBinaryRcOp>(operation))
-    op.writeRust(PS);
   else if (RustCallOp op = dyn_cast<RustCallOp>(operation))
     op.writeRust(PS);
   else if (RustCallIndirectOp op = dyn_cast<RustCallIndirectOp>(operation))
@@ -329,8 +327,6 @@ std::string RustPrinterStream::getConstant(RustConstantOp v) {
     if (Operation *target = SymbolTable::lookupNearestSymbolFrom(v, str)) {
       if (target->hasAttr("arc.rust_name"))
         str = target->getAttrOfType<StringAttr>("arc.rust_name");
-      if (target->hasAttr("rust.declare"))
-        DeclaredFunctions.insert(target);
     }
 
     auto found = Value2ID.find(v);
@@ -339,10 +335,8 @@ std::string RustPrinterStream::getConstant(RustConstantOp v) {
       id = NextID++;
       Value2ID[v] = id;
       // A function constant has uses, or else we would not ouput it.
-      Body << "let v" << id << " : ";
-
-      Body << ::getMangledName(fType, *this);
-      Body << " = function!(" << str.getValue() << ");\n";
+      Body << "let v" << id << " : " << ::getMangledName(fType, *this)
+           << " = " << str.getValue() << ";\n";
     } else
       id = found->second;
     return "v" + std::to_string(id);
@@ -373,14 +367,10 @@ void RustCallOp::writeRust(RustPrinterStream &PS) {
   if (target && target->hasAttr("arc.rust_name"))
     callee = target->getAttrOfType<StringAttr>("arc.rust_name").getValue();
 
-  if (target && target->hasAttr("rust.async"))
-    PS << "call_async!(";
-  else
-    PS << "call!(";
   PS << callee << "(";
   for (auto a : getOperands())
     PS << a << ", ";
-  PS << "));\n";
+  PS << ");\n";
 }
 
 void RustCallIndirectOp::writeRust(RustPrinterStream &PS) {
@@ -389,29 +379,18 @@ void RustCallIndirectOp::writeRust(RustPrinterStream &PS) {
     auto r = getResult(0);
     PS.let(r);
   }
-  PS << "call_indirect!((" << getCallee() << ")(";
+  PS << "(" << getCallee() << ")(";
   for (auto a : getArgOperands())
     PS << a << ", ";
-  PS << "));\n";
+  PS << ");\n";
 }
 
 // Write this function as Rust code to os
 void RustFuncOp::writeRust(RustPrinterStream &PS) {
-  if ((*this)->hasAttr("arc.is_task"))
-    PS.addTask(*this);
-
-  if ((*this)->hasAttr("rust.declare"))
-    PS.addDeclaredFunction(getOperation());
-
   if ((*this)->hasAttr("rust.annotation"))
     PS << (*this)->getAttrOfType<StringAttr>("rust.annotation").getValue()
        << "\n";
-  else
-    PS << "#[rewrite]\n";
-  PS << "pub ";
-  if ((*this)->hasAttr("rust.async"))
-    PS << "async ";
-  PS << "fn ";
+  PS << "pub fn ";
   if ((*this)->hasAttr("arc.rust_name"))
     PS << (*this)->getAttrOfType<StringAttr>("arc.rust_name").getValue();
   else
@@ -422,14 +401,7 @@ void RustFuncOp::writeRust(RustPrinterStream &PS) {
   unsigned numFuncArguments = getNumArguments();
   for (unsigned i = 0; i < numFuncArguments; i++) {
     Value v = front().getArgument(i);
-    Type t = v.getType();
-    if (i != 0)
-      PS << ", ";
-    if ((*this)->hasAttr("arc.is_task")) {
-      if (RustSinkStreamType st = t.dyn_cast<RustSinkStreamType>())
-        PS << "#[output]";
-    }
-    PS.printAsArg(v) << ": " << v.getType();
+    PS.printAsArg(v) << ": " << v.getType() << ", ";
   }
   PS << ") ";
   FunctionType funcTy = getFunctionType();
@@ -458,19 +430,14 @@ void RustExtFuncOp::writeRust(RustPrinterStream &PS) {
     return;
 
   PS << (*this)->getAttrOfType<StringAttr>("rust.annotation").getValue()
-     << "\npub ";
-  if ((*this)->hasAttr("rust.async"))
-    PS << "async ";
-  PS << "fn " << getName() << "(";
+     << "\npub fn " << getName() << "(";
 
   FunctionType fType = getFunctionType();
 
   unsigned numFuncArguments = fType.getNumInputs();
   for (unsigned i = 0; i < numFuncArguments; i++) {
     Type t = fType.getInput(i);
-    if (i != 0)
-      PS << ", ";
-    PS << "arg" << i << " : " << t;
+    PS << "arg" << i << " : " << t << ", ";
   }
   PS << ") ";
   if (fType.getNumResults()) { // The return type
@@ -480,7 +447,7 @@ void RustExtFuncOp::writeRust(RustPrinterStream &PS) {
 }
 
 void RustReturnOp::writeRust(RustPrinterStream &PS) {
-  if (getNumOperands())
+  if (getNumOperands() > 0)
     PS << "return " << getOperand(0) << ";\n";
   else
     PS << "return;\n";
@@ -624,7 +591,7 @@ void RustLoopYieldOp::writeRust(RustPrinterStream &PS) {
 void RustMakeEnumOp::writeRust(RustPrinterStream &PS) {
   auto r = getResult();
   RustEnumType et = r.getType().cast<RustEnumType>();
-  PS.let(r) << "enwrap!(" << et << "::" << getVariant() << ", ";
+  PS.let(r) << et << "::" << getVariant() << "(";
   if (getValues().size())
     PS << getValues()[0];
   else
@@ -635,15 +602,13 @@ void RustMakeEnumOp::writeRust(RustPrinterStream &PS) {
 void RustMakeStructOp::writeRust(RustPrinterStream &PS) {
   auto r = getResult();
   RustStructType st = r.getType().cast<RustStructType>();
-  PS.let(r) << "new!(" << st << " { ";
+  PS.let(r) << st << " { ";
   auto args = getOperands();
   for (unsigned i = 0; i < args.size(); i++) {
-    if (i != 0)
-      PS << ", ";
     auto v = args[i];
-    PS << st.getFieldName(i) << " : " << v;
+    PS << st.getFieldName(i) << " : " << v << ", ";
   }
-  PS << "});\n";
+  PS << "};\n";
 }
 
 void RustMethodCallOp::writeRust(RustPrinterStream &PS) {
@@ -653,8 +618,7 @@ void RustMethodCallOp::writeRust(RustPrinterStream &PS) {
   for (unsigned i = 0; i < args.size(); i++) {
     if (i != 0)
       PS << ", ";
-    auto v = args[i];
-    PS << v;
+    PS << args[i];
   }
   PS << ");\n";
 }
@@ -662,12 +626,6 @@ void RustMethodCallOp::writeRust(RustPrinterStream &PS) {
 void RustBinaryOp::writeRust(RustPrinterStream &PS) {
   auto r = getResult();
   PS.let(r) << getLHS() << " " << getOperator() << " " << getRHS() << ";\n";
-}
-
-void RustBinaryRcOp::writeRust(RustPrinterStream &PS) {
-  auto r = getResult();
-  PS.let(r) << "Rc::new(&*" << getLHS() << " " << getOperator() << " &*"
-            << getRHS() << ");\n";
 }
 
 void RustCompOp::writeRust(RustPrinterStream &PS) {
@@ -678,20 +636,20 @@ void RustCompOp::writeRust(RustPrinterStream &PS) {
 void RustEnumAccessOp::writeRust(RustPrinterStream &PS) {
   auto r = getResult();
   RustEnumType et = getTheEnum().getType().cast<RustEnumType>();
-  PS.let(r) << "unwrap!(" << et << "::" << getVariant() << ", " << getTheEnum()
+  PS.let(r) << "unwrap!(" << getTheEnum() << ", " << et << "::" << getVariant() 
             << ");\n";
 }
 
 void RustEnumCheckOp::writeRust(RustPrinterStream &PS) {
   auto r = getResult();
   RustEnumType et = getTheEnum().getType().cast<RustEnumType>();
-  PS.let(r) << "is!(" << et << "::" << getVariant() << ", " << getTheEnum()
-            << ");\n";
+  PS.let(r) << "matches!(" << getTheEnum() << ", " << et << "::" << getVariant()
+            << "(_)" << ");\n";
 }
 
 void RustFieldAccessOp::writeRust(RustPrinterStream &PS) {
   auto r = getResult();
-  PS.let(r) << "access!(" << getAggregate() << ", " << getField() << ");\n";
+  PS.let(r) << getAggregate() << "." << getField() << ";\n";
 }
 
 void RustIfOp::writeRust(RustPrinterStream &PS) {
@@ -753,6 +711,7 @@ void RustPanicOp::writeRust(RustPrinterStream &PS) {
   PS << ");\n";
 }
 
+// TODO: The runtime right now requires code to be synchronous.
 void RustReceiveOp::writeRust(RustPrinterStream &PS) {
   auto r = getResult();
   PS.let(r) << "pull!(" << getSource();
@@ -764,10 +723,12 @@ void RustReceiveOp::writeRust(RustPrinterStream &PS) {
   PS << ");\n";
 }
 
+// TODO: The runtime right now requires code to be synchronous.
 void RustSendOp::writeRust(RustPrinterStream &PS) {
   PS << "push!(" << getValue() << "," << getSink() << ");\n";
 }
 
+// TODO: The runtime right now requires code to be synchronous.
 void RustSpawnOp::writeRust(RustPrinterStream &PS) {
   StringRef callee = getCallee();
   StringAttr calleeName = StringAttr::get(this->getContext(), getCallee());
@@ -782,13 +743,6 @@ void RustSpawnOp::writeRust(RustPrinterStream &PS) {
 }
 
 //===----------------------------------------------------------------------===//
-// Crate versions
-//===----------------------------------------------------------------------===//
-namespace rust {
-const char *CrateVersions::ndarray = "0.13.0";
-} // namespace rust
-
-//===----------------------------------------------------------------------===//
 // Rust types
 //===----------------------------------------------------------------------===//
 namespace rust {
@@ -798,6 +752,10 @@ struct RustTypeStorage : public TypeStorage {
   RustTypeStorage(std::string type) : rustType(type), mangledName(type) {
     if (rustType[0] == '"')
       mangledName = rustType.substr(1, rustType.length() - 2);
+    // TODO: Find a way to handle unit type so we can print "()" syntax and use "unit" for mangled.
+    // The below does not work since ::printAsRust() prints the mangledName
+    // if (rustType == "()")
+    //   mangledName = "unit";
   }
 
   std::string rustType;
@@ -933,8 +891,8 @@ void RustEnumTypeStorage::printAsMLIR(DialectAsmPrinter &os) const {
   for (unsigned i = 0; i < enumVariants.size(); i++) {
     if (i != 0)
       os << ", ";
-    os << enumVariants[i].first.getValue();
-    os << " : ";
+    os << enumVariants[i].first.getValue()
+       << " : ";
     ::printAsMLIR(enumVariants[i].second, os);
   }
   os << ">";
@@ -994,11 +952,13 @@ std::string RustEnumTypeStorage::getMangledName(rust::RustPrinterStream &ps) {
   mangledName = mangled.str();
 
   llvm::raw_ostream &tyStream = ps.getNamedTypesStream();
-  tyStream << "#[rewrite]\n";
+  tyStream << "#[data]\n";
   tyStream << "pub enum " << mangledName << " {\n";
   for (unsigned i = 0; i < enumVariants.size(); i++) {
+    if (i != 0)
+      tyStream << ",\n";
     tyStream << "  " << enumVariants[i].first.getValue() << "("
-             << ::getMangledName(enumVariants[i].second, ps) << "),\n";
+             << ::getMangledName(enumVariants[i].second, ps) << ")";
   }
   tyStream << "\n}\n";
 
@@ -1258,28 +1218,26 @@ Type RustSourceStreamTypeStorage::getType() const { return item; }
 //===----------------------------------------------------------------------===//
 
 struct RustStructTypeStorage : public TypeStorage {
-  RustStructTypeStorage(bool isCompact,
-                        ArrayRef<RustStructType::StructFieldTy> fields)
-      : structFields(fields.begin(), fields.end()), compact(isCompact) {}
+  RustStructTypeStorage(ArrayRef<RustStructType::StructFieldTy> fields)
+      : structFields(fields.begin(), fields.end()) {}
 
   SmallVector<RustStructType::StructFieldTy, 4> structFields;
 
-  using KeyTy = std::pair<bool, ArrayRef<RustStructType::StructFieldTy>>;
+  using KeyTy = ArrayRef<RustStructType::StructFieldTy>;
 
   bool operator==(const KeyTy &key) const {
-    KeyTy self(compact, structFields);
-    return key.first == self.first && key.second == self.second;
+    KeyTy self(structFields);
+    return key == self;
   }
 
   static llvm::hash_code hashKey(const KeyTy &key) {
-    return llvm::hash_combine(llvm::hash_value(key.first),
-                              llvm::hash_value(key.second));
+    return llvm::hash_combine(key);
   }
 
   static RustStructTypeStorage *construct(TypeStorageAllocator &allocator,
                                           const KeyTy &key) {
     return new (allocator.allocate<RustStructTypeStorage>())
-        RustStructTypeStorage(key.first, key.second);
+        RustStructTypeStorage(key);
   }
 
   void printAsRust(llvm::raw_ostream &o, rust::RustPrinterStream &ps);
@@ -1289,33 +1247,26 @@ struct RustStructTypeStorage : public TypeStorage {
   unsigned getNumFields() const;
   StringRef getFieldName(unsigned idx) const;
   Type getFieldType(unsigned idx) const;
-  bool isCompact() const { return compact; }
 
   std::string getMangledName(rust::RustPrinterStream &ps);
 
 private:
-  bool compact;
   std::string mangledName;
 };
 
-RustStructType RustStructType::get(RustDialect *dialect, bool isCompact,
+RustStructType RustStructType::get(RustDialect *dialect,
                                    ArrayRef<StructFieldTy> fields) {
-  return Base::get(dialect->getContext(), isCompact, fields);
+  return Base::get(dialect->getContext(), fields);
 }
 
 void RustStructTypeStorage::printAsMLIR(DialectAsmPrinter &os) const {
   os << "struct<";
-  if (isCompact())
-    os << "<";
   for (unsigned i = 0; i < structFields.size(); i++) {
     if (i != 0)
       os << ", ";
-    os << structFields[i].first.getValue();
-    os << " : ";
+    os << structFields[i].first.getValue() << " : ";
     ::printAsMLIR(structFields[i].second, os);
   }
-  if (isCompact())
-    os << "<";
   os << ">";
 }
 
@@ -1352,8 +1303,6 @@ Type RustStructTypeStorage::getFieldType(unsigned idx) const {
   return structFields[idx].second;
 }
 
-bool RustStructType::isCompact() const { return getImpl()->isCompact(); }
-
 std::string RustStructType::getMangledName(rust::RustPrinterStream &ps) {
   return getImpl()->getMangledName(ps);
 }
@@ -1365,8 +1314,6 @@ std::string RustStructTypeStorage::getMangledName(rust::RustPrinterStream &ps) {
   std::string buffer;
   llvm::raw_string_ostream mangled(buffer);
 
-  if (isCompact())
-    mangled << "Compact";
   mangled << "Struct";
 
   for (auto &f : structFields) {
@@ -1380,17 +1327,14 @@ std::string RustStructTypeStorage::getMangledName(rust::RustPrinterStream &ps) {
 
   llvm::raw_ostream &tyStream = ps.getNamedTypesStream();
 
-  if (isCompact())
-    tyStream << "#[rewrite(compact)]\n";
-  else
-    tyStream << "#[rewrite]\n";
-  tyStream << "pub struct " << mangledName << " {\n  ";
+  tyStream << "#[data]\n";
+  tyStream << "pub struct " << mangledName << " {\n";
 
   for (unsigned i = 0; i < structFields.size(); i++) {
     if (i != 0)
-      tyStream << ",\n  ";
+      tyStream << ",\n";
 
-    tyStream << "  " << structFields[i].first.getValue() << " : ";
+    tyStream << "  pub " << structFields[i].first.getValue() << ": ";
     tyStream << ::getMangledName(structFields[i].second, ps);
   }
   tyStream << "\n}\n";
@@ -1613,13 +1557,13 @@ std::string RustPrinterStream::getMangledName(FunctionType fTy) {
   FunctionTypes[fTy] = mn;
   llvm::raw_ostream &tyStream = getNamedTypesStream();
 
-  tyStream << "type " << mn << " = function!((";
+  tyStream << "type " << mn << " = fn(";
   for (Type t : fTy.getInputs())
     tyStream << ::getMangledName(t, *this) << ", ";
   tyStream << ")";
   if (fTy.getNumResults())
     tyStream << " -> " << ::getMangledName(fTy.getResult(0), *this);
-  tyStream << ");\n";
+  tyStream << ";\n";
 
   return mn;
 }

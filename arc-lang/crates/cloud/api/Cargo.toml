@@ -1,0 +1,9 @@
+[package]
+name = "api"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+halfbrown = { version = "0.1.18", features  = ["serde"] }
+indexmap  = { version = "1.9.2", features = ["serde"] }
+serde     = { version = "1.0.152", features = ["derive", "rc"] }
