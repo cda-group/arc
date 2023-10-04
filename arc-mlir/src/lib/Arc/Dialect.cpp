@@ -119,8 +119,8 @@ OpFoldResult arc::AndOp::fold(FoldAdaptor operands) {
   if (getLhs() == getRhs())
     return getRhs();
 
-  return constFoldBinaryOp<IntegerAttr>(operands.getOperands(),
-                                        [](APInt a, APInt b) { return a & b; });
+  return constFoldBinaryOp<IntegerAttr, IntegerAttr::ValueType, void>(
+      operands.getOperands(), [](APInt a, APInt b) { return a & b; });
 }
 
 //===----------------------------------------------------------------------===//
@@ -234,7 +234,7 @@ OpFoldResult DivIOp::fold(FoldAdaptor operands) {
   bool isUnsigned = getType().isUnsignedInteger();
   // Don't fold if it would overflow or if it requires a division by zero.
   bool overflowOrDiv0 = false;
-  auto result = constFoldBinaryOp<IntegerAttr>(
+  auto result = constFoldBinaryOp<IntegerAttr, IntegerAttr::ValueType, void>(
       operands.getOperands(), [&](APInt a, APInt b) {
         if (overflowOrDiv0 || !b) {
           overflowOrDiv0 = true;
@@ -439,7 +439,7 @@ OpFoldResult AddIOp::fold(FoldAdaptor operands) {
 
   bool isUnsigned = getType().isUnsignedInteger();
   bool overflowDetected = false;
-  auto result = constFoldBinaryOp<IntegerAttr>(
+  auto result = constFoldBinaryOp<IntegerAttr, IntegerAttr::ValueType, void>(
       operands.getOperands(), [&](APInt a, APInt b) {
         if (overflowDetected)
           return a;
@@ -466,7 +466,7 @@ OpFoldResult MulIOp::fold(FoldAdaptor operands) {
 
   // Don't fold if it would overflow
   bool overflow = false;
-  auto result = constFoldBinaryOp<IntegerAttr>(
+  auto result = constFoldBinaryOp<IntegerAttr, IntegerAttr::ValueType, void>(
       operands.getOperands(), [&](APInt a, APInt b) {
         if (overflow || !b) {
           overflow = true;
@@ -491,8 +491,8 @@ OpFoldResult arc::OrOp::fold(FoldAdaptor operands) {
   if (getLhs() == getRhs())
     return getRhs();
 
-  return constFoldBinaryOp<IntegerAttr>(operands.getOperands(),
-                                        [](APInt a, APInt b) { return a | b; });
+  return constFoldBinaryOp<IntegerAttr, IntegerAttr::ValueType, void>(
+      operands.getOperands(), [](APInt a, APInt b) { return a | b; });
 }
 
 //===----------------------------------------------------------------------===//
@@ -665,7 +665,7 @@ OpFoldResult SubIOp::fold(FoldAdaptor operands) {
 
   bool isUnsigned = getType().isUnsignedInteger();
   bool overflowDetected = false;
-  auto result = constFoldBinaryOp<IntegerAttr>(
+  auto result = constFoldBinaryOp<IntegerAttr, IntegerAttr::ValueType, void>(
       operands.getOperands(), [&](APInt a, APInt b) {
         if (overflowDetected)
           return a;
@@ -689,8 +689,8 @@ OpFoldResult arc::XOrOp::fold(FoldAdaptor operands) {
   if (getLhs() == getRhs())
     return Builder(getContext()).getZeroAttr(getType());
 
-  return constFoldBinaryOp<IntegerAttr>(operands.getOperands(),
-                                        [](APInt a, APInt b) { return a ^ b; });
+  return constFoldBinaryOp<IntegerAttr, IntegerAttr::ValueType, void>(
+      operands.getOperands(), [](APInt a, APInt b) { return a ^ b; });
 }
 
 //===----------------------------------------------------------------------===//
