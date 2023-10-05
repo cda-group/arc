@@ -25,7 +25,7 @@
 
 #ifndef OP_BASE
 include "../../mlir/include/mlir/IR/OpBase.td"
-include "../../mlir/include/mlir/IR/FunctionInterfaces.td"
+include "../../mlir/include/mlir/Interfaces/FunctionInterfaces.td"
 include "../../mlir/include/mlir/Interfaces/CallInterfaces.td"
 include "../../mlir/include/mlir/Interfaces/InferTypeOpInterface.td"
 include "../../mlir/include/mlir/Interfaces/SideEffectInterfaces.td"
@@ -221,6 +221,8 @@ def Rust_RustFuncOp : Rust_Op<"func",
       return getFunctionType().cast<FunctionType>().getResults();
     }
 
+    Region *getCallableRegion() { return &getBody(); }
+
     /// Hook for FunctionOpInterface verifier.
     LogicalResult verifyType();
 
@@ -256,6 +258,8 @@ def Rust_RustExtFuncOp : Rust_Op<"extfunc",
     ArrayRef<Type> getResultTypes() {
       return getFunctionType().cast<FunctionType>().getResults();
     }
+
+    Region *getCallableRegion() { return &getEmptyBody(); }
 
     /// Hook for FunctionOpInterface verifier.
     LogicalResult verifyType();

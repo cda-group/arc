@@ -194,8 +194,8 @@ pub fn wait(input: TokenStream) -> TokenStream {
 
 fn generate_wrapper(id: &syn::Ident) -> (pm2::TokenStream, impl Fn(syn::Expr) -> pm2::TokenStream) {
     let span = id.span().unwrap().start();
-    let line = span.line;
-    let column = span.column;
+    let line = span.line();
+    let column = span.column();
     let abstract_id: syn::Ident = new_id(format!("Wrapper_{}_{}", line, column));
     let concrete_id: syn::Ident = new_id(format!("ConcreteWrapper_{}_{}", line, column));
     let sharable_wrapper_mod_id = new_id(format!("sharable_{}", abstract_id));
